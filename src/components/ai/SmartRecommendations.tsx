@@ -6,13 +6,19 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useUserTracking } from "@/hooks/useUserTracking";
+import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
+import OptimizedPropertyImage from "@/components/property/OptimizedPropertyImage";
+import Price from "@/components/ui/Price";
 import { 
   Sparkles, 
   MapPin, 
   Home,
   TrendingUp,
-  Eye,
-  RefreshCw
+  RefreshCw,
+  Bed,
+  Bath,
+  Maximize,
+  Brain
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -24,6 +30,7 @@ interface SmartRecommendationsProps {
 const SmartRecommendations = ({ limit = 4, className = "" }: SmartRecommendationsProps) => {
   const { user } = useAuth();
   const { trackInteraction } = useUserTracking();
+  const { getPropertyImage } = useDefaultPropertyImage();
 
   const { data, isLoading, refetch, isFetching } = useQuery({
     queryKey: ['smart-recommendations', user?.id, limit],
@@ -32,16 +39,47 @@ const SmartRecommendations = ({ limit = 4, className = "" }: SmartRecommendation
         body: { limit },
       });
       if (error) throw error;
+
+      const results = data?.results || [];
+      // If results have property_id but not full data, fetch from properties table
+      if (results.length > 0 && results[0].property_id && !results[0].title) {
+        const ids = results.map((r: any) => r.property_id);
+        const scoreMap = new Map(results.map((r: any) => [r.property_id, r.match_score || r.ai_match_score_v2 || 0]));
+        const { data: props } = await supabase
+          .from('properties')
+          .select('id, title, city, location, price, property_type, images, thumbnail_url, bedrooms, bathrooms, area_sqm')
+          .in('id', ids);
+        
+        return {
+          recommendations: (props || []).map((p: any) => ({
+            property_id: p.id,
+            title: p.title,
+            city: p.city || p.location,
+            price: p.price,
+            property_type: p.property_type,
+            image_url: p.thumbnail_url || (p.images && p.images[0]) || '/placeholder.svg',
+            match_score: scoreMap.get(p.id) || 0,
+            bedrooms: p.bedrooms,
+            bathrooms: p.bathrooms,
+            area_sqm: p.area_sqm,
+          })),
+          userProfile: data?.user_ai_profile || {},
+        };
+      }
+
       return {
-        recommendations: (data?.results || []) as Array<{
-          property_id: string;
-          title: string;
-          city: string;
-          price: number;
-          property_type: string;
-          image_url: string;
-          match_score: number;
-        }>,
+        recommendations: results.map((r: any) => ({
+          property_id: r.property_id || r.id,
+          title: r.title || 'Properti',
+          city: r.city || r.location || 'Indonesia',
+          price: r.price || 0,
+          property_type: r.property_type || 'Rumah',
+          image_url: r.image_url || r.thumbnail_url || '/placeholder.svg',
+          match_score: r.match_score || r.ai_match_score_v2 || 0,
+          bedrooms: r.bedrooms || 0,
+          bathrooms: r.bathrooms || 0,
+          area_sqm: r.area_sqm || 0,
+        })),
         userProfile: data?.user_ai_profile || {},
       };
     },
@@ -67,11 +105,11 @@ const SmartRecommendations = ({ limit = 4, className = "" }: SmartRecommendation
 
   if (!user) {
     return (
-      <Card className={className}>
+      <Card className={`border-primary/10 bg-card/60 backdrop-blur-xl ${className}`}>
         <CardContent className="p-6 text-center">
-          <Sparkles className="h-12 w-12 text-accent-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-semibold mb-2">AI-Powered Recommendations</h3>
-          <p className="text-muted-foreground mb-4">Sign in to get personalized property recommendations.</p>
+          <Sparkles className="h-10 w-10 text-primary mx-auto mb-3" />
+          <h3 className="text-base font-semibold mb-1">Rekomendasi AI</h3>
+          <p className="text-sm text-muted-foreground">Masuk untuk mendapatkan rekomendasi properti yang dipersonalisasi.</p>
         </CardContent>
       </Card>
     );
@@ -79,35 +117,42 @@ const SmartRecommendations = ({ limit = 4, className = "" }: SmartRecommendation
 
   const loading = isLoading || isFetching;
 
+  const scoreColor = (s: number) =>
+    s >= 80 ? 'bg-chart-2 text-chart-2-foreground'
+    : s >= 60 ? 'bg-primary text-primary-foreground'
+    : 'bg-muted text-muted-foreground';
+
   return (
-    <Card className={`backdrop-blur-xl bg-card/60 border-gold-primary/15 ${className}`}>
-      <CardHeader className="p-2 pb-1.5">
+    <Card className={`backdrop-blur-xl bg-card/60 border-primary/10 ${className}`}>
+      <CardHeader className="p-3 pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-1.5 text-xs">
-            <div className="h-5 w-5 rounded bg-gold-primary/10 flex items-center justify-center">
-              <Sparkles className="h-3 w-3 text-gold-primary" />
+          <CardTitle className="flex items-center gap-2 text-sm">
+            <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-sm">
+              <Brain className="h-3.5 w-3.5 text-primary-foreground" />
             </div>
-            Smart Picks
-            <Badge className="bg-gold-primary/10 text-gold-primary text-[8px] px-1 py-0">AI</Badge>
+            <div>
+              <span className="font-bold">Rekomendasi Cerdas</span>
+              <Badge className="ml-2 bg-primary/10 text-primary text-[9px] px-1.5 py-0 border-0">AI</Badge>
+            </div>
           </CardTitle>
           <Button
             onClick={() => refetch()}
             size="sm"
             variant="ghost"
-            className="h-6 w-6 p-0"
+            className="h-7 w-7 p-0"
             disabled={loading}
           >
-            <RefreshCw className={`h-3 w-3 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
           </Button>
         </div>
         {userProfile?.property_type_preference && (
-          <div className="flex items-center gap-1 mt-1">
-            <span className="text-[8px] text-muted-foreground">Based on:</span>
-            <Badge variant="secondary" className="text-[8px] px-1 py-0">
+          <div className="flex items-center gap-1.5 mt-1.5">
+            <span className="text-[10px] text-muted-foreground">Berdasarkan:</span>
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5">
               {userProfile.property_type_preference}
             </Badge>
             {userProfile.preferred_city && (
-              <Badge variant="secondary" className="text-[8px] px-1 py-0">
+              <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5">
                 {userProfile.preferred_city}
               </Badge>
             )}
@@ -115,68 +160,95 @@ const SmartRecommendations = ({ limit = 4, className = "" }: SmartRecommendation
         )}
       </CardHeader>
 
-      <CardContent className="p-0">
+      <CardContent className="p-2 pt-0">
         {loading ? (
-          <div className="p-3 space-y-2">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="animate-pulse flex gap-2">
-                <div className="h-14 w-14 bg-muted rounded-lg flex-shrink-0" />
-                <div className="flex-1 space-y-1.5 py-1">
-                  <div className="h-3 bg-muted rounded w-3/4" />
-                  <div className="h-2.5 bg-muted rounded w-1/2" />
+          <div className="grid grid-cols-2 gap-2">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="animate-pulse rounded-lg overflow-hidden">
+                <div className="h-28 bg-muted rounded-t-lg" />
+                <div className="p-2 space-y-1.5">
+                  <div className="h-3.5 bg-muted rounded w-3/4" />
+                  <div className="h-3 bg-muted rounded w-1/2" />
+                  <div className="h-3 bg-muted rounded w-2/3" />
                 </div>
               </div>
             ))}
           </div>
         ) : recommendations.length > 0 ? (
-          <div className="space-y-0">
-            {recommendations.map((property) => (
+          <div className="grid grid-cols-2 gap-2">
+            {recommendations.map((property: any) => (
               <Link
                 key={property.property_id}
                 to={`/property/${property.property_id}`}
                 onClick={() => trackPropertyView(property.property_id, property)}
-                className="block p-2 hover:bg-muted/50 transition-colors border-b border-border/20 last:border-b-0"
+                className="block rounded-lg overflow-hidden border border-border/30 bg-card hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group"
               >
-                <div className="flex gap-2">
-                  <div className="relative flex-shrink-0">
-                    <img
-                      src={property.image_url || "/placeholder.svg"}
-                      alt={property.title}
-                      className="w-14 h-14 object-cover rounded-lg"
-                    />
-                    {property.match_score > 50 && (
-                      <Badge className="absolute -top-1.5 -right-1.5 bg-chart-1 text-primary-foreground text-[7px] px-1 py-0">
-                        <TrendingUp className="h-2 w-2 mr-0.5" />
-                        {Math.round(property.match_score)}%
-                      </Badge>
+                {/* Image */}
+                <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                  <OptimizedPropertyImage
+                    src={property.image_url || '/placeholder.svg'}
+                    alt={property.title}
+                    className="group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+
+                  {/* Match score badge */}
+                  {property.match_score > 0 && (
+                    <Badge className={`absolute top-1.5 left-1.5 text-[9px] font-bold border-0 gap-0.5 shadow-sm ${scoreColor(property.match_score)}`}>
+                      <TrendingUp className="h-2 w-2" />
+                      {Math.round(property.match_score)}%
+                    </Badge>
+                  )}
+
+                  {/* Price overlay */}
+                  <div className="absolute bottom-1.5 left-1.5">
+                    <div className="bg-background/80 backdrop-blur-sm rounded-md px-1.5 py-0.5 border border-border/30">
+                      <span className="text-xs font-bold text-foreground">
+                        <Price amount={property.price || 0} short />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-2 space-y-1">
+                  <h4 className="text-xs font-semibold text-foreground line-clamp-1">
+                    {property.title}
+                  </h4>
+                  <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                    <MapPin className="h-3 w-3 flex-shrink-0" />
+                    <span className="truncate">{property.city}</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                    <Home className="h-3 w-3 flex-shrink-0" />
+                    <span>{property.property_type}</span>
+                  </div>
+                  {/* Specs */}
+                  <div className="flex items-center gap-2 pt-1 border-t border-border/20">
+                    {Number(property.bedrooms) > 0 && (
+                      <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground">
+                        <Bed className="h-2.5 w-2.5" /> {property.bedrooms}
+                      </span>
                     )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-[10px] font-semibold text-foreground truncate">
-                      {property.title}
-                    </h4>
-                    <div className="flex items-center gap-1 text-[8px] text-muted-foreground mt-0.5">
-                      <MapPin className="h-2.5 w-2.5" />
-                      {property.city}
-                    </div>
-                    <div className="flex items-center gap-1 text-[8px] text-muted-foreground">
-                      <Home className="h-2.5 w-2.5" />
-                      {property.property_type}
-                    </div>
-                    <div className="text-[10px] font-bold text-gold-primary mt-0.5">
-                      IDR {property.price?.toLocaleString('id-ID')}
-                    </div>
-                  </div>
-                  <div className="flex items-center">
-                    <Eye className="h-3 w-3 text-muted-foreground" />
+                    {Number(property.bathrooms) > 0 && (
+                      <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground">
+                        <Bath className="h-2.5 w-2.5" /> {property.bathrooms}
+                      </span>
+                    )}
+                    {Number(property.area_sqm) > 0 && (
+                      <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground">
+                        <Maximize className="h-2.5 w-2.5" /> {property.area_sqm}m²
+                      </span>
+                    )}
                   </div>
                 </div>
               </Link>
             ))}
           </div>
         ) : (
-          <div className="p-4 text-center">
-            <p className="text-[10px] text-muted-foreground">Browse properties to unlock AI recommendations!</p>
+          <div className="py-6 text-center">
+            <Sparkles className="h-8 w-8 text-muted-foreground/40 mx-auto mb-2" />
+            <p className="text-xs text-muted-foreground">Jelajahi properti untuk membuka rekomendasi AI!</p>
           </div>
         )}
       </CardContent>
