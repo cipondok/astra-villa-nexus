@@ -5,6 +5,7 @@
 
 const SUPABASE_STORAGE_MARKER = '/storage/v1/object/public/';
 const SRCSET_WIDTHS = [320, 640, 960, 1280] as const;
+const DATASAVER_WIDTHS = [320, 400] as const;
 
 /** Check if a URL is a Supabase storage URL that supports transforms */
 export const isSupabaseStorageUrl = (url: string): boolean =>
@@ -34,12 +35,19 @@ export const PROPERTY_DETAIL_SIZES = '(max-width: 768px) 100vw, 60vw';
  */
 export const getResponsiveImageProps = (
   url: string,
-  sizes: string = PROPERTY_CARD_SIZES
+  sizes: string = PROPERTY_CARD_SIZES,
+  maxWidth?: number,
+  quality?: number
 ): { src: string; srcSet?: string; sizes?: string } => {
+  const q = quality ?? 75;
+  if (maxWidth && isSupabaseStorageUrl(url)) {
+    // Data saver: single smaller image, no srcSet
+    return { src: getResizedUrl(url, maxWidth, q) };
+  }
   const srcSet = buildSrcSet(url);
   if (!srcSet) return { src: url };
   return {
-    src: getResizedUrl(url, 640),
+    src: getResizedUrl(url, 640, q),
     srcSet,
     sizes,
   };

@@ -19,12 +19,20 @@ const CACHE_LIMITS = {
   properties: 50
 };
 
-// Cache durations (in milliseconds)
-const CACHE_DURATION = {
+// Cache durations (in milliseconds) — may be extended by data saver mode
+let CACHE_DURATION = {
   api: 5 * 60 * 1000,        // 5 minutes
   properties: 30 * 60 * 1000, // 30 minutes
   images: 7 * 24 * 60 * 60 * 1000, // 7 days
   profile: 60 * 60 * 1000     // 1 hour
+};
+
+const CACHE_DURATION_DEFAULT = { ...CACHE_DURATION };
+const CACHE_DURATION_DATASAVER = {
+  api: 30 * 60 * 1000,         // 30 minutes
+  properties: 2 * 60 * 60 * 1000, // 2 hours
+  images: 14 * 24 * 60 * 60 * 1000, // 14 days
+  profile: 4 * 60 * 60 * 1000  // 4 hours
 };
 
 // Static assets to cache on install
@@ -287,6 +295,16 @@ self.addEventListener('message', (event) => {
       
     case 'CLEANUP_OLD_CACHES':
       event.waitUntil(cleanupOldCaches());
+      break;
+
+    case 'DATA_SAVER_MODE':
+      if (payload && payload.enabled) {
+        CACHE_DURATION = { ...CACHE_DURATION_DATASAVER };
+        console.log('[SW] Data saver ON — extended cache durations');
+      } else {
+        CACHE_DURATION = { ...CACHE_DURATION_DEFAULT };
+        console.log('[SW] Data saver OFF — default cache durations');
+      }
       break;
   }
 });

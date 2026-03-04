@@ -31,7 +31,7 @@ const AuthenticatedHooks = lazy(() => import('@/components/AuthenticatedHooks'))
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import MaintenancePage from '@/pages/MaintenancePage';
 import { NetworkStatusIndicator } from '@/components/NetworkStatusIndicator';
-
+import { DataSaverProvider } from '@/contexts/DataSaverContext';
 // Lazy load all non-critical shell components — reduces initial parse time
 const Navigation = lazy(() => import('@/components/Navigation'));
 const ProfessionalFooter = lazy(() => import('@/components/ProfessionalFooter'));
@@ -449,6 +449,7 @@ function App() {
                     <AlertProvider>
                       <AuthProvider>
                         <NotificationProvider>
+                          <DataSaverProvider>
                           <PropertyComparisonProvider>
                             <AppContent />
                             <Suspense fallback={null}>
@@ -465,6 +466,7 @@ function App() {
                               <AuthNotificationHandler />
                             </Suspense>
                           </PropertyComparisonProvider>
+                          </DataSaverProvider>
                         </NotificationProvider>
                       </AuthProvider>
                     </AlertProvider>
