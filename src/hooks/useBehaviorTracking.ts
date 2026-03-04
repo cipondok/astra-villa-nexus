@@ -8,13 +8,49 @@ interface TrackEventParams {
   durationMs?: number;
 }
 
+const CACHE_INVALIDATION_DEBOUNCE_MS = 30_000; // 30 seconds
+
 /**
  * Lightweight hook to track user behavior for the AI Match Engine.
  * Batches events and debounces rapid-fire scroll/view events.
+ * Includes debounced cache invalidation — multiple events within 30s
+ * only trigger one cache invalidation.
  */
 export function useBehaviorTracking() {
   const lastEvent = useRef<string>('');
   const lastTime = useRef<number>(0);
+  const cacheInvalidationTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingInvalidation = useRef<string | null>(null); // userId waiting for invalidation
+
+  /**
+   * Debounced cache invalidation: marks user_ai_cache.recompute_needed = true
+   * but only fires once per 30-second window regardless of how many events occur.
+   */
+  const debouncedCacheInvalidation = useCallback((userId: string) => {
+    pendingInvalidation.current = userId;
+
+    // If a timer is already running, let it handle the batch
+    if (cacheInvalidationTimer.current) return;
+
+    cacheInvalidationTimer.current = setTimeout(async () => {
+      cacheInvalidationTimer.current = null;
+      const uid = pendingInvalidation.current;
+      if (!uid) return;
+      pendingInvalidation.current = null;
+
+      try {
+        await supabase
+          .from('user_ai_cache' as any)
+          .update({
+            last_activity_at: new Date().toISOString(),
+            recompute_needed: true,
+          })
+          .eq('user_id', uid);
+      } catch {
+        // Silent — cache invalidation is best-effort
+      }
+    }, CACHE_INVALIDATION_DEBOUNCE_MS);
+  }, []);
 
   const trackEvent = useCallback(async ({ eventType, propertyId, eventData, durationMs }: TrackEventParams) => {
     // Debounce: skip duplicate events within 500ms
@@ -36,11 +72,17 @@ export function useBehaviorTracking() {
         duration_ms: durationMs || null,
         page_url: window.location.pathname,
       });
+
+      // Trigger debounced cache invalidation for high-signal events
+      const highSignalEvents = ['save', 'inquiry', 'contact', 'view'];
+      if (highSignalEvents.includes(eventType)) {
+        debouncedCacheInvalidation(user.id);
+      }
     } catch (err) {
       // Silent fail - behavior tracking should never break UX
       console.debug('Behavior tracking error:', err);
     }
-  }, []);
+  }, [debouncedCacheInvalidation]);
 
   const trackView = useCallback((propertyId: string) => {
     trackEvent({ eventType: 'view', propertyId });
