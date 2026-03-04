@@ -18,6 +18,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import PropertyImageUpload from "./PropertyImageUpload";
 import LocationSelector from "./LocationSelector";
 import VRMediaUploader from "./VRMediaUploader";
+const PricingAdvisorWidget = lazy(() => import("./PricingAdvisorWidget"));
 
 interface PropertyFormData {
   title: string;
@@ -969,6 +970,17 @@ const RoleBasedPropertyForm = () => {
                 />
               </div>
             </div>
+
+            {/* Real-time Pricing Advisor */}
+            <Suspense fallback={null}>
+              <PricingAdvisorWidget
+                price={formData.price}
+                city={formData.city}
+                property_type={formData.property_type}
+                land_area_sqm={formData.land_area_sqm}
+                building_area_sqm={formData.building_area_sqm}
+              />
+            </Suspense>
 
             {/* AI Price Intelligence Panel */}
             <div className="relative rounded-xl overflow-hidden shadow-lg">
