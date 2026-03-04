@@ -128,6 +128,7 @@ export const VerificationSystemSettings = lazyRetry(() => import("./settings/Ver
 export const AuthRegistrationSettings = lazyRetry(() => import("./settings/AuthRegistrationSettings"));
 export const NearbyFacilitiesSettings = lazyRetry(() => import("./settings/NearbyFacilitiesSettings"));
 export const AIPerformanceDashboard = lazyRetry(() => import("./AIPerformanceDashboard"));
+export const AIModelWeightsPanel = lazyRetry(() => import("./AIModelWeightsPanel"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {

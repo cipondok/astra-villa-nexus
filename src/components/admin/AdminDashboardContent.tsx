@@ -106,6 +106,7 @@ import {
   AuthRegistrationSettings,
   NearbyFacilitiesSettings,
   AIPerformanceDashboard,
+  AIModelWeightsPanel,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -265,6 +266,7 @@ const renderSection = (
     case "auth-registration-settings": return <AuthRegistrationSettings />;
     case "off-plan-manager":        return <OffPlanProjectManager />;
     case "ai-performance":          return <AIPerformanceDashboard />;
+    case "ai-model-weights":        return <AIModelWeightsPanel />;
     default:                    return <AdminOverview />;
   }
 };

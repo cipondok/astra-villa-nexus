@@ -62,7 +62,8 @@ import {
   FlaskConical,
   Zap,
   Rocket,
-  Newspaper
+  Newspaper,
+  Sliders
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -423,6 +424,13 @@ export const navigationSections = {
       label: "AI Performance",
       icon: Activity,
       description: "Monitor AI recommendation effectiveness, CTR, and engagement metrics",
+      badge: "New"
+    },
+    {
+      key: "ai-model-weights",
+      label: "AI Model Weights",
+      icon: Sliders,
+      description: "View and auto-tune AI scoring weights, correlations, and model health",
       badge: "New"
     }
   ],
