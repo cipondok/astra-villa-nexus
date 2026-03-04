@@ -40,7 +40,7 @@ const LanguageToggleSwitch: React.FC<LanguageToggleSwitchProps> = ({ className =
         aria-expanded={open}
         aria-haspopup="listbox"
       >
-        <Globe className="h-3.5 w-3.5 text-muted-foreground" />
+        
         <span>{current.flag}</span>
         <span className="hidden sm:inline">{current.label}</span>
         <ChevronDown className={`h-3 w-3 text-muted-foreground transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
