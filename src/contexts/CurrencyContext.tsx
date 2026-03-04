@@ -38,10 +38,10 @@ const CurrencyContext = createContext<CurrencyContextProps | undefined>(undefine
 /** Map language → default currency */
 const LANG_CURRENCY_MAP: Record<string, CurrencyCode> = {
   id: "IDR",
-  en: "USD",
+  en: "IDR",
   zh: "SGD",
-  ja: "USD",
-  ko: "USD",
+  ja: "IDR",
+  ko: "IDR",
 };
 
 export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
