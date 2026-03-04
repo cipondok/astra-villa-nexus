@@ -155,7 +155,7 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
   // Listen for language changes and auto-switch currency if not manually set
   useEffect(() => {
     const handleStorage = () => {
-      const lang = safeLocalStorage.getItem("language") || "en";
+      const lang = safeLocalStorage.getItem("language") || "id";
       const { manuallySet } = useCurrencyStore.getState();
       if (!manuallySet && LANG_CURRENCY_MAP[lang]) {
         setCurrencyState(LANG_CURRENCY_MAP[lang]);
