@@ -71,6 +71,7 @@ export interface NavigationSection {
   icon: LucideIcon;
   description: string;
   badge?: string;
+}
 
 export const categories = [
   "overview",
