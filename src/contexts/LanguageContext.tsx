@@ -34,7 +34,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguageState] = useState<Language>(() => {
     const saved = safeLocalStorage.getItem("language");
     if (saved && VALID_LANGS.includes(saved as Language)) return saved as Language;
-    return detectBrowserLanguage();
+    return "id";
   });
 
   useEffect(() => {
