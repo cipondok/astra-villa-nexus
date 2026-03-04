@@ -54,16 +54,42 @@ export function useBehaviorTracking() {
     trackEvent({ eventType: 'search', eventData: { query, filters } });
   }, [trackEvent]);
 
-  const trackSave = useCallback((propertyId: string) => {
+  const trackSave = useCallback(async (propertyId: string) => {
     trackEvent({ eventType: 'save', propertyId });
+    // Also log conversion event for AI weight tuning
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from('ai_recommendation_events' as any).insert({
+          user_id: user.id,
+          property_id: propertyId,
+          event_type: 'save',
+          match_factors: {},
+          ai_match_score: 0,
+        });
+      }
+    } catch { /* silent */ }
   }, [trackEvent]);
 
   const trackScroll = useCallback((propertyId: string, scrollDepth: number) => {
     trackEvent({ eventType: 'scroll', propertyId, eventData: { scrollDepth } });
   }, [trackEvent]);
 
-  const trackInquiry = useCallback((propertyId: string) => {
+  const trackInquiry = useCallback(async (propertyId: string) => {
     trackEvent({ eventType: 'inquiry', propertyId });
+    // Also log conversion event for AI weight tuning
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from('ai_recommendation_events' as any).insert({
+          user_id: user.id,
+          property_id: propertyId,
+          event_type: 'inquiry',
+          match_factors: {},
+          ai_match_score: 0,
+        });
+      }
+    } catch { /* silent */ }
   }, [trackEvent]);
 
   return { trackEvent, trackView, trackClick, trackSearch, trackSave, trackScroll, trackInquiry };

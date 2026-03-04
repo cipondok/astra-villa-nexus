@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary'];
+    const validModes = ['investment_score', 'price_suggestion', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -1841,6 +1841,148 @@ Deno.serve(async (req) => {
           overall_contact_rate: totalImpressions > 0 ? Math.round((totalContacts / totalImpressions) * 10000) / 100 : 0,
         },
         overall_health: overallHealth,
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // ── MODE: auto_tune_ai_weights ──
+    // ══════════════════════════════════════════════════════════════════
+    if (mode === 'auto_tune_ai_weights') {
+      const FACTORS = ['location', 'price', 'feature', 'investment', 'popularity', 'collaborative'] as const;
+      const CONVERSION_TYPES = ['save', 'inquiry', 'contact'];
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+      // 1. Read current weights
+      const { data: weightRows } = await supabase
+        .from('ai_model_weights')
+        .select('factor, weight, updated_at');
+
+      const oldWeights: Record<string, number> = {};
+      let lastTuned: string | null = null;
+      for (const row of weightRows || []) {
+        oldWeights[row.factor] = row.weight;
+        if (!lastTuned || row.updated_at > lastTuned) lastTuned = row.updated_at;
+      }
+
+      // Ensure all factors exist
+      for (const f of FACTORS) {
+        if (!(f in oldWeights)) oldWeights[f] = 10;
+      }
+
+      // 2. Query recommendation events (last 30 days)
+      const { data: events, error: eventsErr } = await supabase
+        .from('ai_recommendation_events')
+        .select('event_type, match_factors, ai_match_score')
+        .gte('created_at', thirtyDaysAgo)
+        .limit(1000);
+
+      const allEvents = events || [];
+      const totalEvents = allEvents.length;
+
+      // 3. Calculate conversion correlations
+      const correlations: Record<string, number> = {};
+
+      for (const factor of FACTORS) {
+        let conversionsWithFactor = 0, totalWithFactor = 0;
+        let conversionsWithout = 0, totalWithout = 0;
+
+        for (const evt of allEvents) {
+          const mf = (evt.match_factors || {}) as Record<string, unknown>;
+          const factorValue = mf[factor];
+          const hasFactor = factorValue === true || (typeof factorValue === 'number' && factorValue > 0.5);
+          const isConversion = CONVERSION_TYPES.includes(evt.event_type);
+
+          if (hasFactor) {
+            totalWithFactor++;
+            if (isConversion) conversionsWithFactor++;
+          } else {
+            totalWithout++;
+            if (isConversion) conversionsWithout++;
+          }
+        }
+
+        const rateWith = totalWithFactor > 0 ? conversionsWithFactor / totalWithFactor : 0;
+        const rateWithout = totalWithout > 0 ? conversionsWithout / totalWithout : 0;
+        correlations[factor] = rateWith - rateWithout;
+      }
+
+      // 4. Data sufficiency check
+      const dataSufficiency = totalEvents >= 500 ? 'sufficient' : totalEvents >= 100 ? 'moderate' : 'insufficient';
+      const confidence = totalEvents >= 500 ? 'high' : totalEvents >= 100 ? 'medium' : 'low';
+
+      // 5. Compute adjustments
+      const avgCorrelation = Object.values(correlations).reduce((a, b) => a + b, 0) / FACTORS.length;
+      const SCALE = 30; // Scale factor to amplify small correlation diffs
+      const adjustments: Record<string, number> = {};
+      const newWeights: Record<string, number> = {};
+
+      for (const f of FACTORS) {
+        const rawAdj = Math.round((correlations[f] - avgCorrelation) * SCALE);
+        adjustments[f] = Math.max(-3, Math.min(3, rawAdj));
+        newWeights[f] = oldWeights[f] + adjustments[f];
+      }
+
+      // 6. Enforce minimum 5
+      for (const f of FACTORS) {
+        if (newWeights[f] < 5) {
+          const deficit = 5 - newWeights[f];
+          newWeights[f] = 5;
+          // Redistribute deficit from highest
+          const sorted = FACTORS.filter(x => x !== f).sort((a, b) => newWeights[b] - newWeights[a]);
+          for (let i = 0; i < deficit && i < sorted.length; i++) {
+            if (newWeights[sorted[i % sorted.length]] > 5) {
+              newWeights[sorted[i % sorted.length]]--;
+            }
+          }
+        }
+      }
+
+      // 7. Normalize to 100
+      let sum = Object.values(newWeights).reduce((a, b) => a + b, 0);
+      let diff = 100 - sum;
+      if (diff !== 0) {
+        const sortedByWeight = [...FACTORS].sort((a, b) => newWeights[b] - newWeights[a]);
+        let idx = 0;
+        while (diff !== 0) {
+          const step = diff > 0 ? 1 : -1;
+          if (newWeights[sortedByWeight[idx]] + step >= 5) {
+            newWeights[sortedByWeight[idx]] += step;
+            diff -= step;
+          }
+          idx = (idx + 1) % FACTORS.length;
+        }
+      }
+
+      // Recalculate actual adjustments after normalization
+      for (const f of FACTORS) {
+        adjustments[f] = newWeights[f] - oldWeights[f];
+      }
+
+      // 8. Only write if data is at least moderate
+      if (dataSufficiency !== 'insufficient') {
+        for (const f of FACTORS) {
+          await supabase
+            .from('ai_model_weights')
+            .update({ weight: newWeights[f], updated_at: new Date().toISOString(), updated_by: 'auto_tune' })
+            .eq('factor', f);
+        }
+      }
+
+      return new Response(JSON.stringify({
+        mode: 'auto_tune_ai_weights',
+        old_weights: oldWeights,
+        new_weights: newWeights,
+        adjustments,
+        model_health: {
+          total_events: totalEvents,
+          data_sufficiency: dataSufficiency,
+          confidence,
+          correlations,
+          last_tuned: lastTuned,
+          weights_updated: dataSufficiency !== 'insufficient',
+        },
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
