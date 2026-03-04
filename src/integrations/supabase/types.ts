@@ -1974,6 +1974,75 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_model_weights: {
+        Row: {
+          factor: string
+          id: string
+          updated_at: string
+          updated_by: string
+          weight: number
+        }
+        Insert: {
+          factor: string
+          id?: string
+          updated_at?: string
+          updated_by?: string
+          weight?: number
+        }
+        Update: {
+          factor?: string
+          id?: string
+          updated_at?: string
+          updated_by?: string
+          weight?: number
+        }
+        Relationships: []
+      }
+      ai_recommendation_events: {
+        Row: {
+          ai_match_score: number | null
+          created_at: string
+          event_type: string
+          id: string
+          match_factors: Json | null
+          property_id: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_match_score?: number | null
+          created_at?: string
+          event_type: string
+          id?: string
+          match_factors?: Json | null
+          property_id?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_match_score?: number | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          match_factors?: Json | null
+          property_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_recommendation_events_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_recommendation_events_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_training_specialists: {
         Row: {
           accuracy_score: number | null

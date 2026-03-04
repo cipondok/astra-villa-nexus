@@ -338,6 +338,34 @@ Deno.serve(async (req) => {
         expires_at: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
       });
 
+    // ── LOG IMPRESSION EVENTS (fire-and-forget) ──
+    const impressionRows = result.slice(0, 20).map((item: { id: string; ai_match_score_v2: number }) => {
+      // Find the candidate to snapshot match factors
+      const prop = finalCandidates!.find(c => c.id === item.id);
+      const matchFactors: Record<string, unknown> = {};
+      if (prop) {
+        matchFactors.location = preferredCity ? prop.city === preferredCity : false;
+        matchFactors.price = avgBudget > 0 && Number(prop.price) > 0
+          ? Math.max(0, 1 - Math.abs(Number(prop.price) - avgBudget) / avgBudget)
+          : 0;
+        matchFactors.feature = (poolAffinityPercent > 60 && prop.has_pool) || (propertyTypePreference && prop.property_type === propertyTypePreference);
+        matchFactors.investment = Number(prop.investment_score) || 0;
+        matchFactors.popularity = (saveCounts[prop.id] || 0) >= 5;
+        matchFactors.collaborative = (collaborativeCounts[prop.id] || 0) >= 1;
+      }
+      return {
+        user_id: userId,
+        property_id: item.id,
+        event_type: 'impression',
+        match_factors: matchFactors,
+        ai_match_score: item.ai_match_score_v2,
+      };
+    });
+
+    if (impressionRows.length > 0) {
+      supabase.from('ai_recommendation_events').insert(impressionRows).then(() => {});
+    }
+
     return json({ ranked_properties: result, user_ai_profile: userAiProfile });
 
   } catch (err) {
