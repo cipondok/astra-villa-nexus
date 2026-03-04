@@ -45,88 +45,54 @@ const PricingAdvisorWidget = ({ price, city, property_type, land_area_sqm, build
 
     setLoading(true);
     try {
-      // Fetch comparables from same city & type
-      const { data: comps } = await supabase
-        .from('properties')
-        .select('price, land_area_sqm, building_area_sqm, property_type')
-        .eq('city', city)
-        .eq('status', 'active')
-        .not('price', 'is', null)
-        .gt('price', 0)
-        .limit(50);
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
 
-      const validComps = (comps || []).filter(c => {
-        const cLand = Number(c.land_area_sqm) || 0;
-        const cBuild = Number(c.building_area_sqm) || 0;
-        return (cLand > 0 || cBuild > 0) && Number(c.price) > 0;
-      });
+      const response = await fetch(
+        `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/core-engine`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || '',
+          },
+          body: JSON.stringify({
+            mode: 'price_suggestion_inline',
+            price: priceNum,
+            city,
+            property_type,
+            land_area_sqm: landSqm,
+            building_area_sqm: buildSqm,
+          }),
+        }
+      );
 
-      // Same-type comps get priority
-      const sameType = validComps.filter(c => c.property_type === property_type);
-      const pool = sameType.length >= 3 ? sameType : validComps;
-
-      if (pool.length === 0) {
+      if (!response.ok) {
+        console.error('Core engine error:', response.status);
         setResult(null);
         setLoading(false);
         return;
       }
 
-      // Calculate avg price per sqm (prefer building, fallback to land)
-      const pricesPerSqm = pool.map(c => {
-        const cBuild = Number(c.building_area_sqm) || 0;
-        const cLand = Number(c.land_area_sqm) || 0;
-        const area = cBuild > 0 ? cBuild : cLand;
-        return Number(c.price) / area;
-      });
-      const avgPricePerSqm = pricesPerSqm.reduce((a, b) => a + b, 0) / pricesPerSqm.length;
+      const json = await response.json();
+      const data = json.data;
 
-      // Demand multiplier from comparable density
-      const demandMultiplier = pool.length >= 20 ? 1.08 : pool.length >= 10 ? 1.03 : pool.length >= 5 ? 1.0 : 0.95;
-
-      // FMV calc
-      const primaryArea = buildSqm > 0 ? buildSqm : landSqm;
-      const fmv = Math.round(avgPricePerSqm * primaryArea * demandMultiplier);
-
-      // Position
-      const ratio = priceNum / fmv;
-      const price_position: AdvisorResult['price_position'] =
-        ratio < 0.85 ? 'underpriced' : ratio > 1.15 ? 'overpriced' : 'fair';
-
-      // Time to sell prediction
-      const baseDays = 60;
-      const expected_days_on_market = Math.round(
-        price_position === 'underpriced' ? baseDays * 0.5 :
-        price_position === 'overpriced' ? baseDays * (1 + (ratio - 1.15) * 3) :
-        baseDays
-      );
-
-      // Recommended price (target sweet spot at 95% FMV for quick sale)
-      const recommended_price = Math.round(fmv * 0.98);
-
-      // Confidence
-      const confidence = Math.min(95, Math.round(40 + pool.length * 1.5 + (sameType.length >= 3 ? 15 : 0)));
-
-      // Reasoning
-      const reasoning: string[] = [];
-      if (price_position === 'overpriced') {
-        reasoning.push(`Listed ${Math.round((ratio - 1) * 100)}% above FMV — may deter serious buyers.`);
-      } else if (price_position === 'underpriced') {
-        reasoning.push(`Listed ${Math.round((1 - ratio) * 100)}% below FMV — expect fast inquiries.`);
-      } else {
-        reasoning.push(`Price aligns with market avg of ${formatIDR(Math.round(avgPricePerSqm))}/sqm.`);
+      if (!data || data.error || data.comparable_count === 0) {
+        setResult(null);
+        setLoading(false);
+        return;
       }
-      reasoning.push(`${pool.length} comparable listings in ${city} (${sameType.length} same type).`);
-      reasoning.push(`Demand multiplier: ${demandMultiplier}x based on market density.`);
 
       setResult({
-        recommended_price,
-        price_position,
-        expected_days_on_market,
-        reasoning,
-        confidence,
-        comparable_count: pool.length,
-        fmv,
-        demand_multiplier: demandMultiplier,
+        recommended_price: data.recommended_price,
+        price_position: data.price_position as AdvisorResult['price_position'],
+        expected_days_on_market: data.expected_days_on_market,
+        reasoning: data.reasoning || [],
+        confidence: data.confidence_score,
+        comparable_count: data.comparable_count,
+        fmv: data.fair_market_value,
+        demand_multiplier: data.demand_multiplier,
       });
     } catch (err) {
       console.error('Pricing advisor error:', err);
@@ -162,7 +128,7 @@ const PricingAdvisorWidget = ({ price, city, property_type, land_area_sqm, build
           </div>
           <div>
             <span className="font-semibold text-sm">AI Pricing Advisor</span>
-            <span className="ml-2 text-[10px] text-muted-foreground uppercase tracking-wider">Real-time</span>
+            <span className="ml-2 text-[10px] text-muted-foreground uppercase tracking-wider">Server-side</span>
           </div>
           {loading && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground ml-auto" />}
         </div>
