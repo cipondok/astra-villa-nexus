@@ -17,6 +17,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { Toaster as Sonner } from '@/components/ui/sonner';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import AdminOnlyRoute from '@/components/AdminOnlyRoute';
 import { DesignSystemProvider } from '@/components/DesignSystemProvider';
 import CookieSystem from '@/components/cookies/CookieSystem';
 import { useTranslation } from '@/i18n/useTranslation';
