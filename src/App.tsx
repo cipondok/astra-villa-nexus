@@ -17,6 +17,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { Toaster as Sonner } from '@/components/ui/sonner';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import AdminOnlyRoute from '@/components/AdminOnlyRoute';
 import { DesignSystemProvider } from '@/components/DesignSystemProvider';
 import CookieSystem from '@/components/cookies/CookieSystem';
 import { useTranslation } from '@/i18n/useTranslation';
@@ -227,7 +228,9 @@ const AppContent = () => {
                 <Route path="/province-properties" element={<ProvinceProperties />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/admin/design-system" element={<DesignSystemSettings />} />
-                <Route path="/admin/ai-performance" element={<AIPerformanceDashboard />} />
+                <Route element={<AdminOnlyRoute />}>
+                  <Route path="/admin/ai-performance" element={<AIPerformanceDashboard />} />
+                </Route>
                 <Route path="/agent-dashboard" element={<AgentDashboard />} />
                 <Route path="/agent" element={<Navigate to="/agent-dashboard" replace />} />
                 <Route path="/listings" element={<Navigate to="/agent-dashboard" replace />} />
