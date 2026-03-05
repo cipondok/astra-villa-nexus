@@ -352,6 +352,7 @@ export const navigationSections = {
       description: "AI-powered property appraisal, market value estimation, and price index tracking",
       badge: "New"
     },
+    {
       key: "maintenance-requests",
       label: "Maintenance Requests",
       icon: Wrench,
