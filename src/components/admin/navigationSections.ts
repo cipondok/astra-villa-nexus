@@ -764,6 +764,20 @@ export const navigationSections = {
       icon: Megaphone,
       description: "Paid advertising campaigns, budget tracking, ROAS, and platform performance",
       badge: "New"
+    },
+    {
+      key: "workforce-scheduler",
+      label: "Workforce Scheduler",
+      icon: Clock,
+      description: "Staff scheduling, shift management, and team utilization tracking",
+      badge: "New"
+    },
+    {
+      key: "loyalty-program",
+      label: "Loyalty Program",
+      icon: Gift,
+      description: "Points, tiers, rewards catalog, and member engagement tracking",
+      badge: "New"
     }
   ],
 
@@ -860,6 +874,20 @@ export const navigationSections = {
       label: "Verification System",
       icon: Shield,
       description: "Configure verification steps, tier requirements, and auto-approve rules for all roles",
+      badge: "New"
+    },
+    {
+      key: "tax-config",
+      label: "Tax Configuration",
+      icon: Receipt,
+      description: "Indonesian property tax rates, collections, and compliance reporting",
+      badge: "New"
+    },
+    {
+      key: "multi-language",
+      label: "Multi-Language",
+      icon: Languages,
+      description: "Translation management, language coverage, and localization tracking",
       badge: "New"
     }
   ],
