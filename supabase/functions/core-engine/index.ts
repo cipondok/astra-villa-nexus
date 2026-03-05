@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -2858,6 +2858,115 @@ Deno.serve(async (req) => {
           property_analysis: propertyAnalysis,
         },
         _meta: { elapsed_ms: elapsed },
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: deal_detector — Identify undervalued listings
+    // ═══════════════════════════════════════════
+    if (mode === 'deal_detector') {
+      const inputPropertyId = body.property_id;
+      let listingPrice = Number(body.property_price) || 0;
+      let marketValue = Number(body.estimated_market_value) || 0;
+      let demandHeat = Number(body.demand_heat_score) || 0;
+      let investmentScore = Number(body.investment_score) || 0;
+
+      // If property_id provided, auto-fetch price + compute FMV from comparables
+      if (inputPropertyId) {
+        const { data: prop } = await supabase
+          .from('properties')
+          .select('price, city, property_type, building_area_sqm, land_area_sqm, investment_score')
+          .eq('id', inputPropertyId)
+          .single();
+
+        if (!prop) {
+          return new Response(JSON.stringify({ error: 'Property not found' }), {
+            status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        if (!listingPrice) listingPrice = Number(prop.price) || 0;
+        if (!investmentScore) investmentScore = prop.investment_score || 0;
+
+        // Auto-compute market value from comparables if not provided
+        if (!marketValue && prop.city) {
+          const ba = Number(prop.building_area_sqm) || 0;
+          const la = Number(prop.land_area_sqm) || 0;
+          const primaryArea = ba > 0 ? ba : la;
+          const areaCol = ba > 0 ? 'building_area_sqm' : 'land_area_sqm';
+
+          if (primaryArea > 0) {
+            const { data: comps } = await supabase
+              .from('properties')
+              .select('price, building_area_sqm, land_area_sqm')
+              .eq('city', prop.city)
+              .eq('property_type', prop.property_type)
+              .eq('status', 'published')
+              .not('price', 'is', null).gt('price', 0)
+              .gte(areaCol, primaryArea * 0.7)
+              .lte(areaCol, primaryArea * 1.3)
+              .neq('id', inputPropertyId)
+              .limit(50);
+
+            const valid = (comps || []).filter((c: any) => Number(c.price) > 0 && Number(c[areaCol]) > 0);
+            if (valid.length >= 2) {
+              const ppm = valid.map((c: any) => Number(c.price) / Number(c[areaCol])).sort((a: number, b: number) => a - b);
+              const mid = Math.floor(ppm.length / 2);
+              const median = ppm.length % 2 !== 0 ? ppm[mid] : (ppm[mid - 1] + ppm[mid]) / 2;
+              const cc = valid.length;
+              const dm = cc >= 30 ? 1.10 : cc >= 15 ? 1.05 : cc >= 5 ? 1.0 : 0.95;
+              marketValue = Math.round(median * primaryArea * dm);
+            }
+          }
+        }
+      }
+
+      if (listingPrice <= 0 || marketValue <= 0) {
+        return new Response(JSON.stringify({ error: 'property_price and estimated_market_value (or property_id with comparables) are required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Deal score: positive = undervalued, negative = overpriced
+      const dealScoreRaw = (marketValue - listingPrice) / marketValue;
+      const dealScorePercent = Math.round(dealScoreRaw * 10000) / 100;
+
+      let dealRating: string;
+      if (dealScorePercent >= 10) dealRating = 'strong_deal';
+      else if (dealScorePercent >= 5) dealRating = 'good_deal';
+      else if (dealScorePercent >= -5) dealRating = 'fair_price';
+      else dealRating = 'overpriced';
+
+      // Generate explanation
+      let explanation: string;
+      const absPct = Math.abs(dealScorePercent).toFixed(1);
+      if (dealRating === 'strong_deal') {
+        explanation = `Listed ${absPct}% below market value — a strong deal.`;
+        if (demandHeat >= 70) explanation += ' High demand makes this a time-sensitive opportunity.';
+        if (investmentScore >= 70) explanation += ' Strong investment fundamentals.';
+      } else if (dealRating === 'good_deal') {
+        explanation = `Listed ${absPct}% below market value — a good deal worth considering.`;
+        if (investmentScore >= 60) explanation += ' Solid investment potential.';
+      } else if (dealRating === 'fair_price') {
+        explanation = `Priced within ${absPct}% of market value — fair and competitive.`;
+      } else {
+        explanation = `Listed ${absPct}% above market value — overpriced relative to comparables.`;
+        if (demandHeat < 50) explanation += ' Low demand may delay sale.';
+      }
+
+      return new Response(JSON.stringify({
+        mode: 'deal_detector',
+        data: {
+          deal_score_percent: dealScorePercent,
+          deal_rating: dealRating,
+          explanation,
+          listing_price: listingPrice,
+          estimated_market_value: marketValue,
+          demand_heat_score: demandHeat,
+          investment_score: investmentScore,
+        },
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
