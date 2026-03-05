@@ -253,6 +253,13 @@ export const navigationSections = {
       description: "View and manage all system notifications and alerts"
     },
     {
+      key: "notification-templates",
+      label: "Notification Templates",
+      icon: Mail,
+      description: "Manage email, push, SMS, and in-app notification templates with variables and preview",
+      badge: "New"
+    },
+    {
       key: "sample-property-generator",
       label: "Sample Property Generator",
       icon: Sparkles,
