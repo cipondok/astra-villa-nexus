@@ -136,6 +136,10 @@ import {
   PropertyQualityScore,
   UserSegmentation,
   RevenueForecasting,
+  ApiUsageMonitor,
+  TenantLeaseTracker,
+  SupportTicketAnalytics,
+  NotificationCenterManager,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -325,6 +329,10 @@ const renderSection = (
     case "property-quality":        return <PropertyQualityScore />;
     case "user-segmentation":       return <UserSegmentation />;
     case "revenue-forecasting":     return <RevenueForecasting />;
+    case "api-usage":               return <ApiUsageMonitor />;
+    case "tenant-leases":           return <TenantLeaseTracker />;
+    case "support-analytics":       return <SupportTicketAnalytics />;
+    case "notification-center":     return <NotificationCenterManager />;
     default:                    return <AdminOverview />;
   }
 };

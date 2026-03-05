@@ -318,6 +318,13 @@ export const navigationSections = {
       icon: Star,
       description: "Listing quality assessment: photo quality, descriptions, pricing accuracy, and completeness",
       badge: "New"
+    },
+    {
+      key: "tenant-leases",
+      label: "Tenant & Lease Tracker",
+      icon: FileText,
+      description: "Monitor lease agreements, payments, renewals, and tenant management",
+      badge: "New"
     }
   ],
 
@@ -584,6 +591,27 @@ export const navigationSections = {
       label: "Email Campaigns",
       icon: Mail,
       description: "Create, schedule, and track email campaigns with open/click rate analytics",
+      badge: "New"
+    },
+    {
+      key: "notification-center",
+      label: "Notification Center",
+      icon: Bell,
+      description: "Manage push, email, in-app, and SMS notifications with delivery analytics",
+      badge: "New"
+    },
+    {
+      key: "support-analytics",
+      label: "Support Analytics",
+      icon: MessageSquare,
+      description: "Ticket volume, response times, resolution rates, and agent performance",
+      badge: "New"
+    },
+    {
+      key: "api-usage",
+      label: "API Usage Monitor",
+      icon: Activity,
+      description: "Edge function performance, traffic patterns, latency, and error rates",
       badge: "New"
     }
   ],
