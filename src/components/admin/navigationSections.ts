@@ -84,7 +84,11 @@ import {
   Leaf,
   FileSignature,
   BellRing,
-  Terminal
+  Terminal,
+  Lock,
+  UserPlus,
+  Bot,
+  Gauge
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -342,6 +346,12 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "property-valuation",
+      label: "Property Valuation",
+      icon: Gauge,
+      description: "AI-powered property appraisal, market value estimation, and price index tracking",
+      badge: "New"
+    },
       key: "maintenance-requests",
       label: "Maintenance Requests",
       icon: Wrench,
@@ -353,6 +363,13 @@ export const navigationSections = {
       label: "Insurance Partners",
       icon: Shield,
       description: "Insurance partner management, policy tracking, and claims analytics",
+      badge: "New"
+    },
+    {
+      key: "escrow-management",
+      label: "Escrow Management",
+      icon: Lock,
+      description: "Property transaction escrow accounts, fund holds, and release management",
       badge: "New"
     }
   ],
@@ -497,6 +514,13 @@ export const navigationSections = {
       label: "AI Bot Management",
       icon: Monitor,
       description: "Manage AI bot interactions and performance"
+    },
+    {
+      key: "chatbot-training",
+      label: "Chatbot Training",
+      icon: Bot,
+      description: "Train AI intents, manage conversation flows, and monitor resolution rates",
+      badge: "New"
     },
     {
       key: "feedback-management",
@@ -788,6 +812,13 @@ export const navigationSections = {
       label: "Price Alerts",
       icon: BellRing,
       description: "User price drop watchlists, notification triggers, and conversion tracking",
+      badge: "New"
+    },
+    {
+      key: "affiliate-dashboard",
+      label: "Affiliate Program",
+      icon: UserPlus,
+      description: "Manage affiliates, referral codes, commission tiers, and payout tracking",
       badge: "New"
     }
   ],
