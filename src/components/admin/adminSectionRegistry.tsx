@@ -134,6 +134,9 @@ export const CronJobMonitor = lazyRetry(() => import("./CronJobMonitor"));
 export const WeightTuningHistory = lazyRetry(() => import("./WeightTuningHistory"));
 export const SystemHealthDashboard = lazyRetry(() => import("./SystemHealthDashboard"));
 export const AdminGuide = lazyRetry(() => import("./AdminGuide"));
+export const AuditTrailDashboard = lazyRetry(() => import("./AuditTrailDashboard"));
+export const RevenueAnalyticsDashboard = lazyRetry(() => import("./RevenueAnalyticsDashboard"));
+export const BulkPropertyActions = lazyRetry(() => import("./BulkPropertyActions"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
