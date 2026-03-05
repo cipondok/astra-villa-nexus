@@ -171,6 +171,10 @@ export const SubscriptionPlanManager = lazyRetry(() => import("./SubscriptionPla
 export const DocumentVerificationQueue = lazyRetry(() => import("./DocumentVerificationQueue"));
 export const MarketTrendsDashboard = lazyRetry(() => import("./MarketTrendsDashboard"));
 export const PlatformFeedbackHub = lazyRetry(() => import("./PlatformFeedbackHub"));
+export const ReferralProgramDashboard = lazyRetry(() => import("./ReferralProgramDashboard"));
+export const PaymentTransactionLog = lazyRetry(() => import("./PaymentTransactionLog"));
+export const PropertyStagingQueue = lazyRetry(() => import("./PropertyStagingQueue"));
+export const AgentPerformanceLeaderboard = lazyRetry(() => import("./AgentPerformanceLeaderboard"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
@@ -320,4 +324,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "document-verification": { label: "Document Verification", category: "Verification" },
   "market-trends": { label: "Market Trends", category: "Analytics" },
   "platform-feedback": { label: "Platform Feedback", category: "Support" },
+  "referral-program": { label: "Referral Program", category: "Marketing" },
+  "payment-transactions": { label: "Payment Transactions", category: "Finance" },
+  "property-staging": { label: "Property Staging", category: "Property System" },
+  "agent-leaderboard": { label: "Agent Leaderboard", category: "Analytics" },
 };
