@@ -168,6 +168,10 @@ import {
   ContractTemplateManager,
   PriceAlertManager,
   DeveloperPortal,
+  EscrowManagement,
+  AffiliateDashboard,
+  ChatBotTraining,
+  PropertyValuationTool,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -389,6 +393,10 @@ const renderSection = (
     case "contract-templates":   return <ContractTemplateManager />;
     case "price-alerts":         return <PriceAlertManager />;
     case "developer-portal":     return <DeveloperPortal />;
+    case "escrow-management":    return <EscrowManagement />;
+    case "affiliate-dashboard":  return <AffiliateDashboard />;
+    case "chatbot-training":     return <ChatBotTraining />;
+    case "property-valuation":   return <PropertyValuationTool />;
     default:                    return <AdminOverview />;
   }
 };

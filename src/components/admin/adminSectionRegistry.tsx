@@ -191,6 +191,10 @@ export const EnvironmentalSustainability = lazyRetry(() => import("./Environment
 export const ContractTemplateManager = lazyRetry(() => import("./ContractTemplateManager"));
 export const PriceAlertManager = lazyRetry(() => import("./PriceAlertManager"));
 export const DeveloperPortal = lazyRetry(() => import("./DeveloperPortal"));
+export const EscrowManagement = lazyRetry(() => import("./EscrowManagement"));
+export const AffiliateDashboard = lazyRetry(() => import("./AffiliateDashboard"));
+export const ChatBotTraining = lazyRetry(() => import("./ChatBotTraining"));
+export const PropertyValuationTool = lazyRetry(() => import("./PropertyValuationTool"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
@@ -356,4 +360,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "tax-config": { label: "Tax Configuration", category: "Finance" },
   "loyalty-program": { label: "Loyalty Program", category: "Marketing" },
   "multi-language": { label: "Multi-Language", category: "Settings" },
+  "escrow-management": { label: "Escrow Management", category: "Finance" },
+  "affiliate-dashboard": { label: "Affiliate Program", category: "Marketing" },
+  "chatbot-training": { label: "Chatbot Training", category: "AI & Tools" },
+  "property-valuation": { label: "Property Valuation", category: "Property System" },
 };
