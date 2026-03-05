@@ -753,6 +753,13 @@ export const navigationSections = {
       icon: Users,
       description: "End-to-end user journey funnel, touchpoint satisfaction, and drop-off analysis",
       badge: "New"
+    },
+    {
+      key: "ad-campaigns",
+      label: "Ad Campaigns",
+      icon: Megaphone,
+      description: "Paid advertising campaigns, budget tracking, ROAS, and platform performance",
+      badge: "New"
     }
   ],
 
