@@ -72,7 +72,7 @@ const TrendingSearchesWidget = lazy(() => import("@/components/home/TrendingSear
 const InvestorPathSelector = lazy(() => import("@/components/home/InvestorPathSelector"));
 const PropertySlideshow = lazy(() => import("@/components/PropertySlideshow"));
 const FeaturedPropertiesCarousel = lazy(() => import("@/components/home/FeaturedPropertiesCarousel"));
-const SmartCollectionsShowcase = lazy(() => import("@/components/home/SmartCollectionsShowcase"));
+const SmartCollectionsShowcase = lazy(() => import("@/components/home/SmartCollectionsV2"));
 const AIPriceEstimatorCTA = lazy(() => import("@/components/home/AIPriceEstimatorCTA"));
 const MarketIntelligenceCTA = lazy(() => import("@/components/home/MarketIntelligenceCTA"));
 const EarlyInvestmentCTA = lazy(() => import("@/components/home/EarlyInvestmentCTA"));
