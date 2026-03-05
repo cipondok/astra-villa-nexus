@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -2216,6 +2216,360 @@ Deno.serve(async (req) => {
           correlations,
           last_tuned: lastTuned,
           weights_updated: dataSufficiency !== 'insufficient',
+        },
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: property_intelligence
+    // ═══════════════════════════════════════════
+    if (mode === 'property_intelligence') {
+      if (!property_id) {
+        return new Response(JSON.stringify({ error: 'property_id is required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const { data: prop, error: propErr } = await supabase
+        .from('properties')
+        .select('id, price, city, property_type, land_area_sqm, building_area_sqm, investment_score, status, created_at, predicted_days_to_sell')
+        .eq('id', property_id)
+        .single();
+
+      if (propErr || !prop) {
+        return new Response(JSON.stringify({ error: 'Property not found' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const price = Number(prop.price) || 0;
+      const ba = Number(prop.building_area_sqm) || 0;
+      const la = Number(prop.land_area_sqm) || 0;
+      const primaryArea = ba > 0 ? ba : la;
+      const areaCol = ba > 0 ? 'building_area_sqm' : 'land_area_sqm';
+
+      // FMV estimate via comparables
+      let priceEstimate = price;
+      if (prop.city && primaryArea > 0) {
+        const minA = primaryArea * 0.7;
+        const maxA = primaryArea * 1.3;
+        const { data: comps } = await supabase
+          .from('properties')
+          .select('price, building_area_sqm, land_area_sqm')
+          .eq('city', prop.city)
+          .eq('property_type', prop.property_type)
+          .eq('status', 'published')
+          .not('price', 'is', null)
+          .gt('price', 0)
+          .gte(areaCol, minA)
+          .lte(areaCol, maxA)
+          .neq('id', property_id)
+          .limit(50);
+
+        const valid = (comps || []).filter(c => Number(c.price) > 0 && Number(c[areaCol]) > 0);
+        if (valid.length >= 3) {
+          const ppm = valid.map(c => Number(c.price) / Number(c[areaCol])).sort((a, b) => a - b);
+          const mid = Math.floor(ppm.length / 2);
+          const median = ppm.length % 2 !== 0 ? ppm[mid] : (ppm[mid - 1] + ppm[mid]) / 2;
+          priceEstimate = Math.round(median * primaryArea);
+        }
+      }
+
+      // Demand heat (simplified inline)
+      let demandHeatScore = 50;
+      if (prop.city) {
+        const thirtyAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+        const [listingsRes, viewsRes] = await Promise.all([
+          supabase.from('properties').select('id', { count: 'exact', head: true }).eq('city', prop.city).eq('status', 'published'),
+          supabase.from('property_analytics').select('views').eq('property_id', property_id).gte('date', thirtyAgo.split('T')[0]),
+        ]);
+        const listings = listingsRes.count || 1;
+        const views = (viewsRes.data || []).reduce((s: number, r: any) => s + (r.views || 0), 0);
+        const vpl = views / listings;
+        demandHeatScore = Math.min(100, Math.max(0, Math.round(vpl * 2 + (listings > 30 ? 20 : listings > 10 ? 10 : 0))));
+      }
+
+      // Popularity from analytics
+      const thirtyAgoDate = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
+      const { data: analytics } = await supabase
+        .from('property_analytics')
+        .select('views, saves, contacts')
+        .eq('property_id', property_id)
+        .gte('date', thirtyAgoDate);
+
+      const totalViews = (analytics || []).reduce((s: number, r: any) => s + (r.views || 0), 0);
+      const totalSaves = (analytics || []).reduce((s: number, r: any) => s + (r.saves || 0), 0);
+      const totalContacts = (analytics || []).reduce((s: number, r: any) => s + (r.contacts || 0), 0);
+      const popularityScore = Math.min(100, Math.round(totalViews * 0.4 + totalSaves * 3 + totalContacts * 10));
+
+      return new Response(JSON.stringify({
+        mode: 'property_intelligence',
+        data: {
+          price_estimate: priceEstimate,
+          investment_score: prop.investment_score || 0,
+          demand_heat_score: demandHeatScore,
+          expected_days_on_market: prop.predicted_days_to_sell || 60,
+          popularity_score: popularityScore,
+        },
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: buyer_profile
+    // ═══════════════════════════════════════════
+    if (mode === 'buyer_profile') {
+      const targetUserId = body.user_id || userId;
+      if (!targetUserId) {
+        return new Response(JSON.stringify({ error: 'user_id is required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const sixMonthsAgo = new Date(Date.now() - 180 * 86400000).toISOString();
+
+      // Fetch saved properties and viewed properties
+      const [savedRes, viewedRes, inquiryRes, profileRes] = await Promise.all([
+        supabase.from('saved_properties').select('property_id').eq('user_id', targetUserId),
+        supabase.from('activity_logs').select('metadata').eq('user_id', targetUserId).eq('activity_type', 'view').gte('created_at', sixMonthsAgo).limit(200),
+        supabase.from('inquiries').select('property_id').eq('user_id', targetUserId).gte('created_at', sixMonthsAgo),
+        supabase.from('profiles').select('subscription_type').eq('id', targetUserId).single(),
+      ]);
+
+      const propIds = new Set<string>();
+      (savedRes.data || []).forEach((s: any) => propIds.add(s.property_id));
+      (viewedRes.data || []).forEach((v: any) => { if (v.metadata?.property_id) propIds.add(v.metadata.property_id); });
+      (inquiryRes.data || []).forEach((i: any) => propIds.add(i.property_id));
+
+      let preferredCity = 'Unknown';
+      let avgBudget = 0;
+      let propertyTypePref = 'Unknown';
+      let investmentAffinity = 'low';
+
+      if (propIds.size > 0) {
+        const { data: props } = await supabase
+          .from('properties')
+          .select('city, price, property_type, investment_score')
+          .in('id', Array.from(propIds))
+          .limit(100);
+
+        if (props && props.length > 0) {
+          // City frequency
+          const cityFreq: Record<string, number> = {};
+          const typeFreq: Record<string, number> = {};
+          let totalPrice = 0; let priceCount = 0;
+          let totalInvScore = 0; let invCount = 0;
+
+          props.forEach((p: any) => {
+            if (p.city) cityFreq[p.city] = (cityFreq[p.city] || 0) + 1;
+            if (p.property_type) typeFreq[p.property_type] = (typeFreq[p.property_type] || 0) + 1;
+            if (p.price && Number(p.price) > 0) { totalPrice += Number(p.price); priceCount++; }
+            if (p.investment_score != null) { totalInvScore += Number(p.investment_score); invCount++; }
+          });
+
+          preferredCity = Object.entries(cityFreq).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Unknown';
+          propertyTypePref = Object.entries(typeFreq).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Unknown';
+          avgBudget = priceCount > 0 ? Math.round(totalPrice / priceCount) : 0;
+          const avgInv = invCount > 0 ? totalInvScore / invCount : 0;
+          investmentAffinity = avgInv >= 70 ? 'high' : avgInv >= 40 ? 'medium' : 'low';
+        }
+      }
+
+      // Buyer type classification
+      const savedCount = savedRes.data?.length || 0;
+      const inquiryCount = inquiryRes.data?.length || 0;
+      let buyerType = 'Browser';
+      if (inquiryCount >= 3 && savedCount >= 5) buyerType = 'Buyer';
+      else if (savedCount >= 2 || inquiryCount >= 1) buyerType = 'Considering';
+
+      return new Response(JSON.stringify({
+        mode: 'buyer_profile',
+        data: {
+          buyer_type: buyerType,
+          preferred_city: preferredCity,
+          avg_budget: avgBudget,
+          property_type_preference: propertyTypePref,
+          investment_affinity: investmentAffinity,
+        },
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: market_trend
+    // ═══════════════════════════════════════════
+    if (mode === 'market_trend') {
+      const city = body.city;
+      if (!city) {
+        return new Response(JSON.stringify({ error: 'city is required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const now = Date.now();
+      const thirtyAgo = new Date(now - 30 * 86400000).toISOString();
+      const sixtyAgo = new Date(now - 60 * 86400000).toISOString();
+
+      const [recentListings, prevListings, recentPrices, prevPrices, trendData] = await Promise.all([
+        supabase.from('properties').select('id', { count: 'exact', head: true }).eq('city', city).gte('created_at', thirtyAgo),
+        supabase.from('properties').select('id', { count: 'exact', head: true }).eq('city', city).gte('created_at', sixtyAgo).lt('created_at', thirtyAgo),
+        supabase.from('properties').select('price').eq('city', city).eq('status', 'published').not('price', 'is', null).gt('price', 0).gte('created_at', thirtyAgo),
+        supabase.from('properties').select('price').eq('city', city).eq('status', 'published').not('price', 'is', null).gt('price', 0).gte('created_at', sixtyAgo).lt('created_at', thirtyAgo),
+        supabase.from('market_trends').select('*').eq('city', city).order('month', { ascending: false }).limit(6),
+      ]);
+
+      const recentCount = recentListings.count || 0;
+      const prevCount = prevListings.count || 1;
+      const listingGrowthRate = Math.round(((recentCount - prevCount) / Math.max(prevCount, 1)) * 100);
+
+      const rPrices = (recentPrices.data || []).map((p: any) => Number(p.price)).filter((p: number) => p > 0);
+      const pPrices = (prevPrices.data || []).map((p: any) => Number(p.price)).filter((p: number) => p > 0);
+      const avgRecent = rPrices.length > 0 ? rPrices.reduce((a: number, b: number) => a + b, 0) / rPrices.length : 0;
+      const avgPrev = pPrices.length > 0 ? pPrices.reduce((a: number, b: number) => a + b, 0) / pPrices.length : 0;
+      const priceGrowthRate = avgPrev > 0 ? Math.round(((avgRecent - avgPrev) / avgPrev) * 100 * 100) / 100 : 0;
+
+      let demandTrend = 'stable';
+      if (priceGrowthRate > 3 && listingGrowthRate > 10) demandTrend = 'rising strongly';
+      else if (priceGrowthRate > 1) demandTrend = 'rising';
+      else if (priceGrowthRate < -3) demandTrend = 'declining';
+
+      let investmentOutlook = 'neutral';
+      if (demandTrend.includes('rising') && listingGrowthRate > 0) investmentOutlook = 'bullish';
+      else if (demandTrend === 'declining') investmentOutlook = 'bearish';
+
+      return new Response(JSON.stringify({
+        mode: 'market_trend',
+        data: {
+          demand_trend: demandTrend,
+          price_growth_rate: priceGrowthRate,
+          listing_growth_rate: listingGrowthRate,
+          investment_outlook: investmentOutlook,
+          recent_listings: recentCount,
+          avg_price_recent: Math.round(avgRecent),
+          historical_trends: (trendData.data || []).map((t: any) => ({
+            month: t.month,
+            avg_price: t.avg_price,
+            total_listings: t.total_listings,
+          })),
+        },
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: investment_projection
+    // ═══════════════════════════════════════════
+    if (mode === 'investment_projection') {
+      const propertyPrice = Number(body.property_price) || 0;
+      const rentalEstimate = Number(body.rental_estimate) || 0;
+      const appreciationRate = Number(body.appreciation_rate) || 5;
+
+      if (propertyPrice <= 0) {
+        return new Response(JSON.stringify({ error: 'property_price is required and must be positive' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const annualRent = rentalEstimate * 12;
+      const maintenancePct = 0.01;
+      const managementPct = 0.10;
+      const exitCostPct = 0.05;
+      const appRate = appreciationRate / 100;
+
+      const computeRoi = (years: number) => {
+        const futureValue = propertyPrice * Math.pow(1 + appRate, years);
+        const totalRent = Array.from({ length: years }, (_, i) =>
+          annualRent * Math.pow(1 + appRate * 0.3, i)
+        ).reduce((s, v) => s + v, 0);
+        const totalMaintenance = propertyPrice * maintenancePct * years;
+        const totalManagement = totalRent * managementPct;
+        const exitCosts = futureValue * exitCostPct;
+        const netProfit = (futureValue - propertyPrice) + totalRent - totalMaintenance - totalManagement - exitCosts;
+        return Math.round((netProfit / propertyPrice) * 100 * 100) / 100;
+      };
+
+      const roi5 = computeRoi(5);
+      const roi10 = computeRoi(10);
+
+      const grossYield = propertyPrice > 0 ? (annualRent / propertyPrice) * 100 : 0;
+      let riskLevel = 'medium';
+      if (grossYield >= 8 && appreciationRate >= 5) riskLevel = 'low';
+      else if (grossYield < 3 || appreciationRate < 2) riskLevel = 'high';
+
+      return new Response(JSON.stringify({
+        mode: 'investment_projection',
+        data: {
+          roi_5yr: roi5,
+          roi_10yr: roi10,
+          risk_level: riskLevel,
+          gross_yield_pct: Math.round(grossYield * 100) / 100,
+          annual_rental_income: annualRent,
+        },
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: lead_score
+    // ═══════════════════════════════════════════
+    if (mode === 'lead_score') {
+      const targetUserId = body.user_id || userId;
+      if (!targetUserId) {
+        return new Response(JSON.stringify({ error: 'user_id is required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const thirtyAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+      const sevenAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+
+      const [viewsRes, savesRes, inquiriesRes, recentViewsRes] = await Promise.all([
+        supabase.from('activity_logs').select('id', { count: 'exact', head: true }).eq('user_id', targetUserId).eq('activity_type', 'view').gte('created_at', thirtyAgo),
+        supabase.from('saved_properties').select('id', { count: 'exact', head: true }).eq('user_id', targetUserId).gte('saved_at', thirtyAgo),
+        supabase.from('inquiries').select('id', { count: 'exact', head: true }).eq('user_id', targetUserId).gte('created_at', thirtyAgo),
+        supabase.from('activity_logs').select('id', { count: 'exact', head: true }).eq('user_id', targetUserId).eq('activity_type', 'view').gte('created_at', sevenAgo),
+      ]);
+
+      const views30 = viewsRes.count || 0;
+      const saves30 = savesRes.count || 0;
+      const inquiries30 = inquiriesRes.count || 0;
+      const recentViews = recentViewsRes.count || 0;
+
+      // Scoring: views (max 20) + saves (max 25) + inquiries (max 35) + recency (max 20)
+      const viewScore = Math.min(20, views30 * 0.5);
+      const saveScore = Math.min(25, saves30 * 5);
+      const inquiryScore = Math.min(35, inquiries30 * 10);
+      const recencyScore = Math.min(20, recentViews * 2);
+      const leadScore = Math.round(viewScore + saveScore + inquiryScore + recencyScore);
+
+      let intentLevel: string;
+      if (inquiries30 >= 3 && saves30 >= 5) intentLevel = 'high';
+      else if (saves30 >= 2 || inquiries30 >= 1) intentLevel = 'medium';
+      else intentLevel = 'low';
+
+      let recommendedFollowup: string;
+      if (intentLevel === 'high') recommendedFollowup = 'Immediate outreach — schedule property viewing within 24h';
+      else if (intentLevel === 'medium') recommendedFollowup = 'Send curated listing recommendations within 3 days';
+      else recommendedFollowup = 'Add to nurture sequence — monthly market updates';
+
+      return new Response(JSON.stringify({
+        mode: 'lead_score',
+        data: {
+          lead_score: leadScore,
+          intent_level: intentLevel,
+          recommended_followup: recommendedFollowup,
+          signals: {
+            views_30d: views30,
+            saves_30d: saves30,
+            inquiries_30d: inquiries30,
+            recent_views_7d: recentViews,
+          },
         },
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
