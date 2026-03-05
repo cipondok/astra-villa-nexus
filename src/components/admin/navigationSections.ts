@@ -613,6 +613,34 @@ export const navigationSections = {
       icon: Activity,
       description: "Edge function performance, traffic patterns, latency, and error rates",
       badge: "New"
+    },
+    {
+      key: "vendor-performance",
+      label: "Vendor Performance",
+      icon: Store,
+      description: "Service provider metrics, quality scores, and category performance",
+      badge: "New"
+    },
+    {
+      key: "commission-tracker",
+      label: "Commission Tracker",
+      icon: DollarSign,
+      description: "Agent commissions, payouts, and revenue splits with trend analysis",
+      badge: "New"
+    },
+    {
+      key: "property-comparison",
+      label: "Property Comparison",
+      icon: ArrowLeftRight,
+      description: "Side-by-side property analysis with radar charts and detail tables",
+      badge: "New"
+    },
+    {
+      key: "system-audit-trail",
+      label: "System Audit Trail",
+      icon: Shield,
+      description: "Complete record of administrative actions, security events, and system changes",
+      badge: "New"
     }
   ],
 
