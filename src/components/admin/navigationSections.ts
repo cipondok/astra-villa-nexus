@@ -70,7 +70,8 @@ import {
   Flame,
   Heart,
   Star,
-  Store
+  Store,
+  FileCheck
 } from "lucide-react";
 
 export interface NavigationSection {
