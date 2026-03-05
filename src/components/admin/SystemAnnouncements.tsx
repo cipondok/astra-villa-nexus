@@ -58,7 +58,7 @@ const SystemAnnouncements = () => {
   const [announcements, setAnnouncements] = useState(initialAnnouncements);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
-  const [form, setForm] = useState({ title: "", message: "", type: "info" as const, audience: "all" as const, isPinned: false, expiresAt: "" });
+  const [form, setForm] = useState<{ title: string; message: string; type: Announcement["type"]; audience: Announcement["audience"]; isPinned: boolean; expiresAt: string }>({ title: "", message: "", type: "info", audience: "all", isPinned: false, expiresAt: "" });
 
   const handleSave = () => {
     if (!form.title || !form.message) { toast.error("Title and message are required"); return; }

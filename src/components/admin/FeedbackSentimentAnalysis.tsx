@@ -44,7 +44,7 @@ const FeedbackSentimentAnalysis = () => {
   const { data: feedbackCount } = useQuery({
     queryKey: ["feedback-count"],
     queryFn: async () => {
-      const { count } = await supabase.from("feedback").select("*", { count: "exact", head: true });
+      const { count } = await supabase.from("ai_behavior_tracking").select("*", { count: "exact", head: true });
       return count || 0;
     },
   });
