@@ -264,6 +264,13 @@ export const navigationSections = {
       icon: Building2,
       description: "Manage construction milestones, completion %, and off-plan project progress",
       badge: "New"
+    },
+    {
+      key: "bulk-property-actions",
+      label: "Bulk Property Actions",
+      icon: Layers,
+      description: "Mass update status, feature/unfeature, and export properties in bulk",
+      badge: "New"
     }
   ],
 
@@ -446,6 +453,13 @@ export const navigationSections = {
       label: "Weight Tuning History",
       icon: CalendarDays,
       description: "Track AI model weight changes across auto-tune cycles with visual diff",
+      badge: "New"
+    },
+    {
+      key: "revenue-analytics",
+      label: "Revenue Analytics",
+      icon: DollarSign,
+      description: "Track revenue, transactions, commissions, and payment method trends",
       badge: "New"
     }
   ],
