@@ -203,7 +203,6 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "security-monitoring": { label: "Security", category: "System" },
   "performance-monitor": { label: "Performance", category: "Analytics" },
   "report-export": { label: "Report Export", category: "System" },
-  "property-comparison": { label: "Property Comparison", category: "Property System" },
   "enhanced-search": { label: "Enhanced Search", category: "System" },
   "system-reports": { label: "System Reports", category: "System" },
   "daily-checkin": { label: "Daily Check-In", category: "Tokens" },
