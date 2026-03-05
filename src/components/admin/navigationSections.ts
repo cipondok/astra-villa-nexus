@@ -782,7 +782,7 @@ export const navigationSections = {
       icon: Gift,
       description: "Points, tiers, rewards catalog, and member engagement tracking",
       badge: "New"
-    }
+    },
     {
       key: "price-alerts",
       label: "Price Alerts",
