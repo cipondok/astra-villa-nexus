@@ -432,6 +432,13 @@ export const navigationSections = {
       icon: Sliders,
       description: "View and auto-tune AI scoring weights, correlations, and model health",
       badge: "New"
+    },
+    {
+      key: "dom-accuracy",
+      label: "DOM Prediction Accuracy",
+      icon: Target,
+      description: "Compare predicted vs actual days-on-market for sold properties",
+      badge: "New"
     }
   ],
 
