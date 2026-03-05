@@ -120,6 +120,10 @@ import {
   DataBackupExport,
   PlatformChangelog,
   APIUsageAnalytics,
+  SLAComplianceMonitor,
+  CompetitorAnalysis,
+  SystemAnnouncements,
+  FeedbackSentimentAnalysis,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -293,6 +297,10 @@ const renderSection = (
     case "data-backup":             return <DataBackupExport />;
     case "platform-changelog":      return <PlatformChangelog />;
     case "api-usage":               return <APIUsageAnalytics />;
+    case "sla-compliance":          return <SLAComplianceMonitor />;
+    case "competitor-analysis":     return <CompetitorAnalysis />;
+    case "system-announcements":    return <SystemAnnouncements />;
+    case "feedback-sentiment":      return <FeedbackSentimentAnalysis />;
     default:                    return <AdminOverview />;
   }
 };
