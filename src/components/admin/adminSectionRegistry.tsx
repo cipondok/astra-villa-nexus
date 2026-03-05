@@ -284,7 +284,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "user-engagement": { label: "User Engagement", category: "Analytics" },
   "data-backup": { label: "Data Backup & Export", category: "System & Tools" },
   "platform-changelog": { label: "Platform Changelog", category: "Help" },
-  "api-usage": { label: "API Usage Analytics", category: "Analytics" },
+  
   "sla-compliance": { label: "SLA Compliance", category: "Analytics" },
   "competitor-analysis": { label: "Competitor Analysis", category: "Analytics" },
   "system-announcements": { label: "System Announcements", category: "System" },
