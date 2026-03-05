@@ -469,6 +469,13 @@ export const navigationSections = {
       icon: DollarSign,
       description: "Track revenue, transactions, commissions, and payment method trends",
       badge: "New"
+    },
+    {
+      key: "user-engagement",
+      label: "User Engagement",
+      icon: Activity,
+      description: "DAU/MAU, session duration, retention, peak hours, and device analytics",
+      badge: "New"
     }
   ],
 
