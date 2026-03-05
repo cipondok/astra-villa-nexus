@@ -257,4 +257,6 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "audit-trail": { label: "Audit Trail", category: "Security" },
   "revenue-analytics": { label: "Revenue Analytics", category: "Analytics" },
   "bulk-property-actions": { label: "Bulk Property Actions", category: "Property System" },
+  "notification-templates": { label: "Notification Templates", category: "System" },
+  "user-engagement": { label: "User Engagement", category: "Analytics" },
 };
