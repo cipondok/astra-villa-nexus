@@ -155,6 +155,10 @@ export const PropertyHeatmapAnalytics = lazyRetry(() => import("./PropertyHeatma
 export const AdminActivityLog = lazyRetry(() => import("./AdminActivityLog"));
 export const PlatformHealthScore = lazyRetry(() => import("./PlatformHealthScore"));
 export const UserFunnelAnalysis = lazyRetry(() => import("./UserFunnelAnalysis"));
+export const EmailCampaignManager = lazyRetry(() => import("./EmailCampaignManager"));
+export const PropertyQualityScore = lazyRetry(() => import("./PropertyQualityScore"));
+export const UserSegmentation = lazyRetry(() => import("./UserSegmentation"));
+export const RevenueForecasting = lazyRetry(() => import("./RevenueForecasting"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
@@ -289,4 +293,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "admin-activity-log": { label: "Admin Activity Log", category: "Security" },
   "platform-health-score": { label: "Platform Health Score", category: "System" },
   "user-funnel": { label: "User Funnel Analysis", category: "Analytics" },
+  "email-campaigns": { label: "Email Campaigns", category: "Marketing" },
+  "property-quality": { label: "Property Quality Score", category: "Property System" },
+  "user-segmentation": { label: "User Segmentation", category: "Analytics" },
+  "revenue-forecasting": { label: "Revenue Forecasting", category: "Analytics" },
 };
