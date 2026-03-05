@@ -27,13 +27,19 @@ const RevenueAnalyticsDashboard = () => {
     queryKey: ["revenue-transactions", period],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("transactions")
-        .select("amount, transaction_type, status, created_at, payment_method")
+        .from("transaction_summary")
+        .select("*")
         .gte("created_at", startDate)
         .order("created_at", { ascending: true });
 
       if (error) throw error;
-      return data || [];
+      return (data || []) as Array<{
+        amount: number | null;
+        transaction_type: string | null;
+        status: string | null;
+        created_at: string;
+        payment_method: string | null;
+      }>;
     },
   });
 

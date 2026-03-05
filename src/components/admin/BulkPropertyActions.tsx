@@ -25,7 +25,7 @@ const BulkPropertyActions = () => {
     queryFn: async () => {
       let query = supabase
         .from("properties")
-        .select("id, title, status, property_type, city, price, created_at, views", { count: "exact" })
+        .select("id, title, status, property_type, city, price, created_at", { count: "exact" })
         .order("created_at", { ascending: false })
         .range(page * pageSize, (page + 1) * pageSize - 1);
 
@@ -102,9 +102,9 @@ const BulkPropertyActions = () => {
   const handleExport = () => {
     const rows = properties.filter((p) => selectedIds.size === 0 || selectedIds.has(p.id));
     const csv = [
-      "ID,Title,Status,Type,City,Price,Views,Created",
+      "ID,Title,Status,Type,City,Price,Created",
       ...rows.map((p) =>
-        [p.id, `"${p.title || ""}"`, p.status, p.property_type, p.city, p.price, p.views || 0, p.created_at].join(",")
+        [p.id, `"${p.title || ""}"`, p.status, p.property_type, p.city, p.price, p.created_at].join(",")
       ),
     ].join("\n");
 
@@ -189,7 +189,7 @@ const BulkPropertyActions = () => {
               <span className="text-[10px] font-medium text-muted-foreground flex-1">PROPERTY</span>
               <span className="text-[10px] font-medium text-muted-foreground w-20 text-center">STATUS</span>
               <span className="text-[10px] font-medium text-muted-foreground w-24 text-right">PRICE</span>
-              <span className="text-[10px] font-medium text-muted-foreground w-16 text-right">VIEWS</span>
+              <span className="text-[10px] font-medium text-muted-foreground w-16 text-right">DATE</span>
             </div>
 
             {isLoading ? (
@@ -222,7 +222,7 @@ const BulkPropertyActions = () => {
                   <span className="w-24 text-right text-xs text-foreground font-mono">
                     {p.price ? new Intl.NumberFormat("id-ID", { notation: "compact" }).format(Number(p.price)) : "—"}
                   </span>
-                  <span className="w-16 text-right text-xs text-muted-foreground">{p.views || 0}</span>
+                  <span className="w-16 text-right text-[10px] text-muted-foreground">{p.created_at ? format(new Date(p.created_at), "MM/dd") : "—"}</span>
                 </div>
               ))
             )}
