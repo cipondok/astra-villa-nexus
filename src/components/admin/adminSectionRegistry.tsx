@@ -151,6 +151,10 @@ export const ContentModerationQueue = lazyRetry(() => import("./ContentModeratio
 export const ABTestResults = lazyRetry(() => import("./ABTestResults"));
 export const GeoAnalytics = lazyRetry(() => import("./GeoAnalytics"));
 export const ScheduledReportsManager = lazyRetry(() => import("./ScheduledReportsManager"));
+export const PropertyHeatmapAnalytics = lazyRetry(() => import("./PropertyHeatmapAnalytics"));
+export const AdminActivityLog = lazyRetry(() => import("./AdminActivityLog"));
+export const PlatformHealthScore = lazyRetry(() => import("./PlatformHealthScore"));
+export const UserFunnelAnalysis = lazyRetry(() => import("./UserFunnelAnalysis"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
@@ -281,4 +285,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ab-test-results": { label: "A/B Test Results", category: "Analytics" },
   "geo-analytics": { label: "Geo Analytics", category: "Analytics" },
   "scheduled-reports": { label: "Scheduled Reports", category: "System & Tools" },
+  "property-heatmap": { label: "Property Heatmap", category: "Analytics" },
+  "admin-activity-log": { label: "Admin Activity Log", category: "Security" },
+  "platform-health-score": { label: "Platform Health Score", category: "System" },
+  "user-funnel": { label: "User Funnel Analysis", category: "Analytics" },
 };

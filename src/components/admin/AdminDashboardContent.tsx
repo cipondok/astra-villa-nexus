@@ -128,6 +128,10 @@ import {
   ABTestResults,
   GeoAnalytics,
   ScheduledReportsManager,
+  PropertyHeatmapAnalytics,
+  AdminActivityLog,
+  PlatformHealthScore,
+  UserFunnelAnalysis,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -309,6 +313,10 @@ const renderSection = (
     case "ab-test-results":         return <ABTestResults />;
     case "geo-analytics":           return <GeoAnalytics />;
     case "scheduled-reports":       return <ScheduledReportsManager />;
+    case "property-heatmap":        return <PropertyHeatmapAnalytics />;
+    case "admin-activity-log":      return <AdminActivityLog />;
+    case "platform-health-score":   return <PlatformHealthScore />;
+    case "user-funnel":             return <UserFunnelAnalysis />;
     default:                    return <AdminOverview />;
   }
 };
