@@ -160,6 +160,10 @@ import {
   InsurancePartnerManager,
   KnowledgeBaseManager,
   AdCampaignManager,
+  WorkforceScheduler,
+  TaxConfigCenter,
+  LoyaltyProgramManager,
+  MultiLanguageManager,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -373,6 +377,10 @@ const renderSection = (
     case "insurance-partners":      return <InsurancePartnerManager />;
     case "knowledge-base":          return <KnowledgeBaseManager />;
     case "ad-campaigns":            return <AdCampaignManager />;
+    case "workforce-scheduler":     return <WorkforceScheduler />;
+    case "tax-config":              return <TaxConfigCenter />;
+    case "loyalty-program":         return <LoyaltyProgramManager />;
+    case "multi-language":          return <MultiLanguageManager />;
     default:                    return <AdminOverview />;
   }
 };
