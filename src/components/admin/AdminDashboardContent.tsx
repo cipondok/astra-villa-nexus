@@ -124,6 +124,10 @@ import {
   CompetitorAnalysis,
   SystemAnnouncements,
   FeedbackSentimentAnalysis,
+  ContentModerationQueue,
+  ABTestResults,
+  GeoAnalytics,
+  ScheduledReportsManager,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));

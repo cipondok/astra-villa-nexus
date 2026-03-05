@@ -277,4 +277,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "competitor-analysis": { label: "Competitor Analysis", category: "Analytics" },
   "system-announcements": { label: "System Announcements", category: "System" },
   "feedback-sentiment": { label: "Feedback Sentiment", category: "Analytics" },
+  "content-moderation": { label: "Content Moderation", category: "Core Management" },
+  "ab-test-results": { label: "A/B Test Results", category: "Analytics" },
+  "geo-analytics": { label: "Geo Analytics", category: "Analytics" },
+  "scheduled-reports": { label: "Scheduled Reports", category: "System & Tools" },
 };
