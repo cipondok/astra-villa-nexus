@@ -152,6 +152,10 @@ import {
   PaymentTransactionLog,
   PropertyStagingQueue,
   AgentPerformanceLeaderboard,
+  InventoryAnalytics,
+  LeadScoringDashboard,
+  ComplianceReportingCenter,
+  CustomerJourneyMap,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -357,6 +361,10 @@ const renderSection = (
     case "payment-transactions":    return <PaymentTransactionLog />;
     case "property-staging":        return <PropertyStagingQueue />;
     case "agent-leaderboard":       return <AgentPerformanceLeaderboard />;
+    case "inventory-analytics":     return <InventoryAnalytics />;
+    case "lead-scoring":            return <LeadScoringDashboard />;
+    case "compliance-reporting":    return <ComplianceReportingCenter />;
+    case "customer-journey":        return <CustomerJourneyMap />;
     default:                    return <AdminOverview />;
   }
 };
