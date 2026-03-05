@@ -540,6 +540,20 @@ export const navigationSections = {
       icon: FlaskConical,
       description: "Experiment outcomes with statistical significance, conversion trends, and variant comparison",
       badge: "New"
+    },
+    {
+      key: "property-heatmap",
+      label: "Property Heatmap",
+      icon: Flame,
+      description: "User engagement intensity across page sections with click and view heatmaps",
+      badge: "New"
+    },
+    {
+      key: "user-funnel",
+      label: "User Funnel Analysis",
+      icon: TrendingUp,
+      description: "Conversion pipeline from visit to transaction with drop-off analysis by source",
+      badge: "New"
     }
   ],
 
@@ -730,6 +744,20 @@ export const navigationSections = {
       label: "Audit Trail",
       icon: Shield,
       description: "View all admin and user activity logs with search, filters, and CSV export",
+      badge: "New"
+    },
+    {
+      key: "admin-activity-log",
+      label: "Admin Activity Log",
+      icon: Activity,
+      description: "Real-time admin actions from activity_logs with type filtering and user tracking",
+      badge: "New"
+    },
+    {
+      key: "platform-health-score",
+      label: "Platform Health Score",
+      icon: Heart,
+      description: "Comprehensive wellness assessment: DB, API, security, UX, revenue, and infrastructure",
       badge: "New"
     }
   ],
