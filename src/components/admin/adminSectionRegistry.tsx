@@ -179,6 +179,10 @@ export const InventoryAnalytics = lazyRetry(() => import("./InventoryAnalytics")
 export const LeadScoringDashboard = lazyRetry(() => import("./LeadScoringDashboard"));
 export const ComplianceReportingCenter = lazyRetry(() => import("./ComplianceReportingCenter"));
 export const CustomerJourneyMap = lazyRetry(() => import("./CustomerJourneyMap"));
+export const MaintenanceRequestTracker = lazyRetry(() => import("./MaintenanceRequestTracker"));
+export const InsurancePartnerManager = lazyRetry(() => import("./InsurancePartnerManager"));
+export const KnowledgeBaseManager = lazyRetry(() => import("./KnowledgeBaseManager"));
+export const AdCampaignManager = lazyRetry(() => import("./AdCampaignManager"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
@@ -336,4 +340,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "lead-scoring": { label: "Lead Scoring", category: "Analytics" },
   "compliance-reporting": { label: "Compliance Reporting", category: "Governance" },
   "customer-journey": { label: "Customer Journey", category: "Analytics" },
+  "maintenance-requests": { label: "Maintenance Requests", category: "Property System" },
+  "insurance-partners": { label: "Insurance Partners", category: "Finance" },
+  "knowledge-base": { label: "Knowledge Base", category: "Help" },
+  "ad-campaigns": { label: "Ad Campaigns", category: "Marketing" },
 };

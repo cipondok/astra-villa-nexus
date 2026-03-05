@@ -156,6 +156,10 @@ import {
   LeadScoringDashboard,
   ComplianceReportingCenter,
   CustomerJourneyMap,
+  MaintenanceRequestTracker,
+  InsurancePartnerManager,
+  KnowledgeBaseManager,
+  AdCampaignManager,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -365,6 +369,10 @@ const renderSection = (
     case "lead-scoring":            return <LeadScoringDashboard />;
     case "compliance-reporting":    return <ComplianceReportingCenter />;
     case "customer-journey":        return <CustomerJourneyMap />;
+    case "maintenance-requests":    return <MaintenanceRequestTracker />;
+    case "insurance-partners":      return <InsurancePartnerManager />;
+    case "knowledge-base":          return <KnowledgeBaseManager />;
+    case "ad-campaigns":            return <AdCampaignManager />;
     default:                    return <AdminOverview />;
   }
 };

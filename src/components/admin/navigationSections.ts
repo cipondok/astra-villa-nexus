@@ -75,7 +75,8 @@ import {
   Share2,
   Camera,
   Trophy,
-  Package
+  Package,
+  BookOpen
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -330,6 +331,20 @@ export const navigationSections = {
       label: "Tenant & Lease Tracker",
       icon: FileText,
       description: "Monitor lease agreements, payments, renewals, and tenant management",
+      badge: "New"
+    },
+    {
+      key: "maintenance-requests",
+      label: "Maintenance Requests",
+      icon: Wrench,
+      description: "Property maintenance tracking, vendor assignment, and resolution monitoring",
+      badge: "New"
+    },
+    {
+      key: "insurance-partners",
+      label: "Insurance Partners",
+      icon: Shield,
+      description: "Insurance partner management, policy tracking, and claims analytics",
       badge: "New"
     }
   ],
@@ -738,6 +753,13 @@ export const navigationSections = {
       icon: Users,
       description: "End-to-end user journey funnel, touchpoint satisfaction, and drop-off analysis",
       badge: "New"
+    },
+    {
+      key: "ad-campaigns",
+      label: "Ad Campaigns",
+      icon: Megaphone,
+      description: "Paid advertising campaigns, budget tracking, ROAS, and platform performance",
+      badge: "New"
     }
   ],
 
@@ -1057,6 +1079,13 @@ export const navigationSections = {
       label: "System Announcements",
       icon: Megaphone,
       description: "Broadcast messages and alerts to platform users by audience segment",
+      badge: "New"
+    },
+    {
+      key: "knowledge-base",
+      label: "Knowledge Base",
+      icon: BookOpen,
+      description: "Help articles, FAQs, and video tutorials for platform users and admins",
       badge: "New"
     }
   ]
