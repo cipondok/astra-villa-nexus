@@ -74,7 +74,8 @@ import {
   FileCheck,
   Share2,
   Camera,
-  Trophy
+  Trophy,
+  Package
 } from "lucide-react";
 
 export interface NavigationSection {
