@@ -167,6 +167,10 @@ export const VendorPerformanceDashboard = lazyRetry(() => import("./VendorPerfor
 export const CommissionTracker = lazyRetry(() => import("./CommissionTracker"));
 export const PropertyComparisonTool = lazyRetry(() => import("./PropertyComparisonTool"));
 export const SystemAuditTrail = lazyRetry(() => import("./SystemAuditTrail"));
+export const SubscriptionPlanManager = lazyRetry(() => import("./SubscriptionPlanManager"));
+export const DocumentVerificationQueue = lazyRetry(() => import("./DocumentVerificationQueue"));
+export const MarketTrendsDashboard = lazyRetry(() => import("./MarketTrendsDashboard"));
+export const PlatformFeedbackHub = lazyRetry(() => import("./PlatformFeedbackHub"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
@@ -312,4 +316,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "commission-tracker": { label: "Commission Tracker", category: "Finance" },
   "property-comparison": { label: "Property Comparison", category: "Property System" },
   "system-audit-trail": { label: "System Audit Trail", category: "Security" },
+  "subscription-plans": { label: "Subscription Plans", category: "Finance" },
+  "document-verification": { label: "Document Verification", category: "Verification" },
+  "market-trends": { label: "Market Trends", category: "Analytics" },
+  "platform-feedback": { label: "Platform Feedback", category: "Support" },
 };
