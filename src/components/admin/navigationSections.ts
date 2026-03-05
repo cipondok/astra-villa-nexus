@@ -490,6 +490,27 @@ export const navigationSections = {
       icon: Activity,
       description: "DAU/MAU, session duration, retention, peak hours, and device analytics",
       badge: "New"
+    },
+    {
+      key: "sla-compliance",
+      label: "SLA Compliance",
+      icon: CheckCircle,
+      description: "Track SLA metrics, breach rates, and compliance across all operations",
+      badge: "New"
+    },
+    {
+      key: "competitor-analysis",
+      label: "Competitor Analysis",
+      icon: Globe,
+      description: "Indonesian property portal competitive landscape and feature comparison",
+      badge: "New"
+    },
+    {
+      key: "feedback-sentiment",
+      label: "Feedback Sentiment",
+      icon: MessageSquare,
+      description: "AI-powered sentiment analysis of user feedback with keyword trends",
+      badge: "New"
     }
   ],
 
@@ -788,6 +809,13 @@ export const navigationSections = {
       label: "Platform Changelog",
       icon: Newspaper,
       description: "Version history, release notes, and feature changelog with timeline view",
+      badge: "New"
+    },
+    {
+      key: "system-announcements",
+      label: "System Announcements",
+      icon: Megaphone,
+      description: "Broadcast messages and alerts to platform users by audience segment",
       badge: "New"
     }
   ]
