@@ -63,7 +63,8 @@ import {
   Zap,
   Rocket,
   Newspaper,
-  Sliders
+  Sliders,
+  Target
 } from "lucide-react";
 
 export interface NavigationSection {
