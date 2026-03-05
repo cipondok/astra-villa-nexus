@@ -151,6 +151,10 @@ export const ContentModerationQueue = lazyRetry(() => import("./ContentModeratio
 export const ABTestResults = lazyRetry(() => import("./ABTestResults"));
 export const GeoAnalytics = lazyRetry(() => import("./GeoAnalytics"));
 export const ScheduledReportsManager = lazyRetry(() => import("./ScheduledReportsManager"));
+export const PropertyHeatmapAnalytics = lazyRetry(() => import("./PropertyHeatmapAnalytics"));
+export const AdminActivityLog = lazyRetry(() => import("./AdminActivityLog"));
+export const PlatformHealthScore = lazyRetry(() => import("./PlatformHealthScore"));
+export const UserFunnelAnalysis = lazyRetry(() => import("./UserFunnelAnalysis"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
