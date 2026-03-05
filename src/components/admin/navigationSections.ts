@@ -1022,6 +1022,13 @@ export const navigationSections = {
       icon: Heart,
       description: "Comprehensive wellness assessment: DB, API, security, UX, revenue, and infrastructure",
       badge: "New"
+    },
+    {
+      key: "developer-portal",
+      label: "Developer Portal",
+      icon: Terminal,
+      description: "API keys, webhooks, endpoint analytics, and developer documentation",
+      badge: "New"
     }
   ],
 
