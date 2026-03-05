@@ -23349,6 +23349,57 @@ export type Database = {
         }
         Relationships: []
       }
+      user_intent_profiles: {
+        Row: {
+          avg_budget: number | null
+          buyer_type: string
+          created_at: string
+          id: string
+          inquiries_30d: number | null
+          intent_level: string
+          investment_affinity: string | null
+          last_active_at: string | null
+          preferred_city: string | null
+          property_type_preference: string | null
+          saves_30d: number | null
+          updated_at: string
+          user_id: string
+          views_30d: number | null
+        }
+        Insert: {
+          avg_budget?: number | null
+          buyer_type?: string
+          created_at?: string
+          id?: string
+          inquiries_30d?: number | null
+          intent_level?: string
+          investment_affinity?: string | null
+          last_active_at?: string | null
+          preferred_city?: string | null
+          property_type_preference?: string | null
+          saves_30d?: number | null
+          updated_at?: string
+          user_id: string
+          views_30d?: number | null
+        }
+        Update: {
+          avg_budget?: number | null
+          buyer_type?: string
+          created_at?: string
+          id?: string
+          inquiries_30d?: number | null
+          intent_level?: string
+          investment_affinity?: string | null
+          last_active_at?: string | null
+          preferred_city?: string | null
+          property_type_preference?: string | null
+          saves_30d?: number | null
+          updated_at?: string
+          user_id?: string
+          views_30d?: number | null
+        }
+        Relationships: []
+      }
       user_interactions: {
         Row: {
           created_at: string
