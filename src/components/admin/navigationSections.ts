@@ -66,7 +66,9 @@ import {
   Sliders,
   Target,
   Layers,
-  Megaphone
+  Megaphone,
+  Flame,
+  Heart
 } from "lucide-react";
 
 export interface NavigationSection {
