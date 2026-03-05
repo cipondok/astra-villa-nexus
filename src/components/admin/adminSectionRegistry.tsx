@@ -183,6 +183,10 @@ export const MaintenanceRequestTracker = lazyRetry(() => import("./MaintenanceRe
 export const InsurancePartnerManager = lazyRetry(() => import("./InsurancePartnerManager"));
 export const KnowledgeBaseManager = lazyRetry(() => import("./KnowledgeBaseManager"));
 export const AdCampaignManager = lazyRetry(() => import("./AdCampaignManager"));
+export const WorkforceScheduler = lazyRetry(() => import("./WorkforceScheduler"));
+export const TaxConfigCenter = lazyRetry(() => import("./TaxConfigCenter"));
+export const LoyaltyProgramManager = lazyRetry(() => import("./LoyaltyProgramManager"));
+export const MultiLanguageManager = lazyRetry(() => import("./MultiLanguageManager"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
@@ -344,4 +348,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "insurance-partners": { label: "Insurance Partners", category: "Finance" },
   "knowledge-base": { label: "Knowledge Base", category: "Help" },
   "ad-campaigns": { label: "Ad Campaigns", category: "Marketing" },
+  "workforce-scheduler": { label: "Workforce Scheduler", category: "Operations" },
+  "tax-config": { label: "Tax Configuration", category: "Finance" },
+  "loyalty-program": { label: "Loyalty Program", category: "Marketing" },
+  "multi-language": { label: "Multi-Language", category: "Settings" },
 };

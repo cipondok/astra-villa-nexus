@@ -76,7 +76,11 @@ import {
   Camera,
   Trophy,
   Package,
-  BookOpen
+  BookOpen,
+  Clock,
+  Receipt,
+  Gift,
+  Languages
 } from "lucide-react";
 
 export interface NavigationSection {
