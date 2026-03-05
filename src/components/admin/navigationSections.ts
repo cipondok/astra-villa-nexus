@@ -1072,6 +1072,13 @@ export const navigationSections = {
       icon: Megaphone,
       description: "Broadcast messages and alerts to platform users by audience segment",
       badge: "New"
+    },
+    {
+      key: "knowledge-base",
+      label: "Knowledge Base",
+      icon: BookOpen,
+      description: "Help articles, FAQs, and video tutorials for platform users and admins",
+      badge: "New"
     }
   ]
 };
