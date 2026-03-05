@@ -117,6 +117,9 @@ import {
   BulkPropertyActions,
   NotificationTemplatesManager,
   UserEngagementAnalytics,
+  DataBackupExport,
+  PlatformChangelog,
+  APIUsageAnalytics,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
