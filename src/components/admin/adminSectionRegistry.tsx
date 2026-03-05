@@ -187,6 +187,10 @@ export const WorkforceScheduler = lazyRetry(() => import("./WorkforceScheduler")
 export const TaxConfigCenter = lazyRetry(() => import("./TaxConfigCenter"));
 export const LoyaltyProgramManager = lazyRetry(() => import("./LoyaltyProgramManager"));
 export const MultiLanguageManager = lazyRetry(() => import("./MultiLanguageManager"));
+export const EnvironmentalSustainability = lazyRetry(() => import("./EnvironmentalSustainability"));
+export const ContractTemplateManager = lazyRetry(() => import("./ContractTemplateManager"));
+export const PriceAlertManager = lazyRetry(() => import("./PriceAlertManager"));
+export const DeveloperPortal = lazyRetry(() => import("./DeveloperPortal"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {

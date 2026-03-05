@@ -80,7 +80,11 @@ import {
   Clock,
   Receipt,
   Gift,
-  Languages
+  Languages,
+  Leaf,
+  FileSignature,
+  BellRing,
+  Terminal
 } from "lucide-react";
 
 export interface NavigationSection {
