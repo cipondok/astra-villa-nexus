@@ -2238,6 +2238,36 @@ export type Database = {
           },
         ]
       }
+      ai_weight_history: {
+        Row: {
+          created_at: string
+          data_quality: string | null
+          id: string
+          notes: string | null
+          total_events_analyzed: number | null
+          trigger_type: string
+          weights: Json
+        }
+        Insert: {
+          created_at?: string
+          data_quality?: string | null
+          id?: string
+          notes?: string | null
+          total_events_analyzed?: number | null
+          trigger_type?: string
+          weights: Json
+        }
+        Update: {
+          created_at?: string
+          data_quality?: string | null
+          id?: string
+          notes?: string | null
+          total_events_analyzed?: number | null
+          trigger_type?: string
+          weights?: Json
+        }
+        Relationships: []
+      }
       analytics_settings: {
         Row: {
           configuration: Json | null

@@ -1444,6 +1444,14 @@ Deno.serve(async (req) => {
 
       console.log(`Days to sell for ${property_id}: ${domResult.estimated_days_on_market} (${domResult.speed_category}), actual_stats: ${soldProps?.length || 0} sold comps`);
 
+      // Auto-save predicted DOM to properties table
+      if (property_id && domResult.estimated_days_on_market > 0) {
+        await supabase
+          .from('properties')
+          .update({ predicted_days_to_sell: domResult.estimated_days_on_market })
+          .eq('id', property_id);
+      }
+
       return new Response(JSON.stringify({
         mode: 'days_to_sell_prediction',
         data: {
@@ -2185,6 +2193,15 @@ Deno.serve(async (req) => {
             .update({ weight: newWeights[f], updated_at: new Date().toISOString(), updated_by: 'auto_tune' })
             .eq('factor', f);
         }
+
+        // Log weight history for tracking
+        await supabase.from('ai_weight_history').insert({
+          weights: newWeights,
+          trigger_type: 'auto_tune',
+          total_events_analyzed: totalEvents,
+          data_quality: dataSufficiency,
+          notes: `Correlations: ${JSON.stringify(correlations)}`,
+        });
       }
 
       return new Response(JSON.stringify({
