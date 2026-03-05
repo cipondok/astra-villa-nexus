@@ -164,6 +164,10 @@ import {
   TaxConfigCenter,
   LoyaltyProgramManager,
   MultiLanguageManager,
+  EnvironmentalSustainability,
+  ContractTemplateManager,
+  PriceAlertManager,
+  DeveloperPortal,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -381,6 +385,10 @@ const renderSection = (
     case "tax-config":              return <TaxConfigCenter />;
     case "loyalty-program":         return <LoyaltyProgramManager />;
     case "multi-language":          return <MultiLanguageManager />;
+    case "environmental-sustainability": return <EnvironmentalSustainability />;
+    case "contract-templates":   return <ContractTemplateManager />;
+    case "price-alerts":         return <PriceAlertManager />;
+    case "developer-portal":     return <DeveloperPortal />;
     default:                    return <AdminOverview />;
   }
 };

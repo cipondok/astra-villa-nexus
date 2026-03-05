@@ -80,7 +80,11 @@ import {
   Clock,
   Receipt,
   Gift,
-  Languages
+  Languages,
+  Leaf,
+  FileSignature,
+  BellRing,
+  Terminal
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -778,6 +782,13 @@ export const navigationSections = {
       icon: Gift,
       description: "Points, tiers, rewards catalog, and member engagement tracking",
       badge: "New"
+    },
+    {
+      key: "price-alerts",
+      label: "Price Alerts",
+      icon: BellRing,
+      description: "User price drop watchlists, notification triggers, and conversion tracking",
+      badge: "New"
     }
   ],
 
@@ -889,6 +900,20 @@ export const navigationSections = {
       icon: Languages,
       description: "Translation management, language coverage, and localization tracking",
       badge: "New"
+    },
+    {
+      key: "environmental-sustainability",
+      label: "Environmental Sustainability",
+      icon: Leaf,
+      description: "Green certifications, energy efficiency, carbon footprint, and water usage tracking",
+      badge: "New"
+    },
+    {
+      key: "contract-templates",
+      label: "Contract Templates",
+      icon: FileSignature,
+      description: "Indonesian property legal document templates with variable substitution and versioning",
+      badge: "New"
     }
   ],
 
@@ -996,6 +1021,13 @@ export const navigationSections = {
       label: "Platform Health Score",
       icon: Heart,
       description: "Comprehensive wellness assessment: DB, API, security, UX, revenue, and infrastructure",
+      badge: "New"
+    },
+    {
+      key: "developer-portal",
+      label: "Developer Portal",
+      icon: Terminal,
+      description: "API keys, webhooks, endpoint analytics, and developer documentation",
       badge: "New"
     }
   ],
