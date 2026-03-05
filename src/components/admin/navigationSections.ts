@@ -88,7 +88,11 @@ import {
   Lock,
   UserPlus,
   Bot,
-  Gauge
+  Gauge,
+  ShieldAlert,
+  Home as HomeIcon,
+  Banknote,
+  MessagesSquare
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -371,6 +375,13 @@ export const navigationSections = {
       label: "Escrow Management",
       icon: Lock,
       description: "Property transaction escrow accounts, fund holds, and release management",
+      badge: "New"
+    },
+    {
+      key: "smart-home",
+      label: "Smart Home Integration",
+      icon: HomeIcon,
+      description: "IoT device management, energy monitoring, and property automation controls",
       badge: "New"
     }
   ],
@@ -946,6 +957,13 @@ export const navigationSections = {
       icon: FileSignature,
       description: "Indonesian property legal document templates with variable substitution and versioning",
       badge: "New"
+    },
+    {
+      key: "currency-exchange",
+      label: "Currency Exchange",
+      icon: Banknote,
+      description: "Live FX rates, conversion tracking, and foreign buyer transaction volumes",
+      badge: "New"
     }
   ],
 
@@ -1061,6 +1079,13 @@ export const navigationSections = {
       icon: Terminal,
       description: "API keys, webhooks, endpoint analytics, and developer documentation",
       badge: "New"
+    },
+    {
+      key: "fraud-detection",
+      label: "Fraud Detection",
+      icon: ShieldAlert,
+      description: "Real-time fraud monitoring, risk scoring, duplicate detection, and case management",
+      badge: "New"
     }
   ],
 
@@ -1152,6 +1177,13 @@ export const navigationSections = {
       icon: Crown,
       description: "White-glove property service at 2% vs traditional 5-6% - photography, legal, moving, setup",
       badge: "Premium"
+    },
+    {
+      key: "community-forum",
+      label: "Community Forum",
+      icon: MessagesSquare,
+      description: "Forum moderation, category management, and member engagement analytics",
+      badge: "New"
     }
   ],
 

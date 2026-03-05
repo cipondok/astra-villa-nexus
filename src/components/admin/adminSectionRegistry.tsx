@@ -195,6 +195,10 @@ export const EscrowManagement = lazyRetry(() => import("./EscrowManagement"));
 export const AffiliateDashboard = lazyRetry(() => import("./AffiliateDashboard"));
 export const ChatBotTraining = lazyRetry(() => import("./ChatBotTraining"));
 export const PropertyValuationTool = lazyRetry(() => import("./PropertyValuationTool"));
+export const FraudDetectionDashboard = lazyRetry(() => import("./FraudDetectionDashboard"));
+export const SmartHomeIntegration = lazyRetry(() => import("./SmartHomeIntegration"));
+export const CurrencyExchangeMonitor = lazyRetry(() => import("./CurrencyExchangeMonitor"));
+export const CommunityForumManager = lazyRetry(() => import("./CommunityForumManager"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
