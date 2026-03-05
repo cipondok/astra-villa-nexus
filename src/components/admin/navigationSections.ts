@@ -65,7 +65,8 @@ import {
   Newspaper,
   Sliders,
   Target,
-  Layers
+  Layers,
+  Megaphone
 } from "lucide-react";
 
 export interface NavigationSection {
