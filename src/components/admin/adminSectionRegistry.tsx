@@ -134,6 +134,9 @@ export const CronJobMonitor = lazyRetry(() => import("./CronJobMonitor"));
 export const WeightTuningHistory = lazyRetry(() => import("./WeightTuningHistory"));
 export const SystemHealthDashboard = lazyRetry(() => import("./SystemHealthDashboard"));
 export const AdminGuide = lazyRetry(() => import("./AdminGuide"));
+export const AuditTrailDashboard = lazyRetry(() => import("./AuditTrailDashboard"));
+export const RevenueAnalyticsDashboard = lazyRetry(() => import("./RevenueAnalyticsDashboard"));
+export const BulkPropertyActions = lazyRetry(() => import("./BulkPropertyActions"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
@@ -248,4 +251,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ai-performance": { label: "AI Performance", category: "Analytics" },
   "system-health": { label: "System Health", category: "Technical" },
   "admin-guide": { label: "Admin Guide", category: "Help" },
+  "audit-trail": { label: "Audit Trail", category: "Security" },
+  "revenue-analytics": { label: "Revenue Analytics", category: "Analytics" },
+  "bulk-property-actions": { label: "Bulk Property Actions", category: "Property System" },
 };
