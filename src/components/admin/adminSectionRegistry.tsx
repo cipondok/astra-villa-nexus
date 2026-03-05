@@ -251,4 +251,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ai-performance": { label: "AI Performance", category: "Analytics" },
   "system-health": { label: "System Health", category: "Technical" },
   "admin-guide": { label: "Admin Guide", category: "Help" },
+  "audit-trail": { label: "Audit Trail", category: "Security" },
+  "revenue-analytics": { label: "Revenue Analytics", category: "Analytics" },
+  "bulk-property-actions": { label: "Bulk Property Actions", category: "Property System" },
 };

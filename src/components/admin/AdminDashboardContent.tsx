@@ -112,6 +112,9 @@ import {
   WeightTuningHistory,
   SystemHealthDashboard,
   AdminGuide,
+  AuditTrailDashboard,
+  RevenueAnalyticsDashboard,
+  BulkPropertyActions,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -277,6 +280,9 @@ const renderSection = (
     case "weight-tuning-history":   return <WeightTuningHistory />;
     case "system-health":           return <SystemHealthDashboard />;
     case "admin-guide":             return <AdminGuide />;
+    case "audit-trail":             return <AuditTrailDashboard />;
+    case "revenue-analytics":       return <RevenueAnalyticsDashboard />;
+    case "bulk-property-actions":   return <BulkPropertyActions />;
     default:                    return <AdminOverview />;
   }
 };
