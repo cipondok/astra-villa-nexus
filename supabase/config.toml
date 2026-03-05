@@ -198,3 +198,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.vendor-engine]
     verify_jwt = false
+
+  [functions.batch-dom-predictor]
+    verify_jwt = false
