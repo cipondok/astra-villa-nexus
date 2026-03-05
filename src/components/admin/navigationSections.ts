@@ -217,6 +217,13 @@ export const navigationSections = {
       icon: Activity,
       description: "Track edge function calls, error rates, peak hours, and latency metrics",
       badge: "New"
+    },
+    {
+      key: "scheduled-reports",
+      label: "Scheduled Reports",
+      icon: Calendar,
+      description: "Automated report generation with email delivery: daily, weekly, monthly, quarterly",
+      badge: "New"
     }
   ],
 
@@ -293,6 +300,13 @@ export const navigationSections = {
       label: "Bulk Property Actions",
       icon: Layers,
       description: "Mass update status, feature/unfeature, and export properties in bulk",
+      badge: "New"
+    },
+    {
+      key: "content-moderation",
+      label: "Content Moderation",
+      icon: Shield,
+      description: "Review flagged listings, reviews, images, and messages with approve/reject/escalate workflow",
       badge: "New"
     }
   ],
@@ -511,6 +525,20 @@ export const navigationSections = {
       label: "Feedback Sentiment",
       icon: MessageSquare,
       description: "AI-powered sentiment analysis of user feedback with keyword trends",
+      badge: "New"
+    },
+    {
+      key: "geo-analytics",
+      label: "Geo Analytics",
+      icon: Map,
+      description: "Regional performance by Indonesian city: listings, views, inquiries, and growth rates",
+      badge: "New"
+    },
+    {
+      key: "ab-test-results",
+      label: "A/B Test Results",
+      icon: FlaskConical,
+      description: "Experiment outcomes with statistical significance, conversion trends, and variant comparison",
       badge: "New"
     }
   ],

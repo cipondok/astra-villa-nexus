@@ -124,6 +124,10 @@ import {
   CompetitorAnalysis,
   SystemAnnouncements,
   FeedbackSentimentAnalysis,
+  ContentModerationQueue,
+  ABTestResults,
+  GeoAnalytics,
+  ScheduledReportsManager,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -301,6 +305,10 @@ const renderSection = (
     case "competitor-analysis":     return <CompetitorAnalysis />;
     case "system-announcements":    return <SystemAnnouncements />;
     case "feedback-sentiment":      return <FeedbackSentimentAnalysis />;
+    case "content-moderation":      return <ContentModerationQueue />;
+    case "ab-test-results":         return <ABTestResults />;
+    case "geo-analytics":           return <GeoAnalytics />;
+    case "scheduled-reports":       return <ScheduledReportsManager />;
     default:                    return <AdminOverview />;
   }
 };
