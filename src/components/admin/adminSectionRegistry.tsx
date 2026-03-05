@@ -262,4 +262,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "bulk-property-actions": { label: "Bulk Property Actions", category: "Property System" },
   "notification-templates": { label: "Notification Templates", category: "System" },
   "user-engagement": { label: "User Engagement", category: "Analytics" },
+  "data-backup": { label: "Data Backup & Export", category: "System & Tools" },
+  "platform-changelog": { label: "Platform Changelog", category: "Help" },
+  "api-usage": { label: "API Usage Analytics", category: "Analytics" },
 };
