@@ -3517,6 +3517,163 @@ Deno.serve(async (req) => {
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
+    // ── digital_twin: AI insights for 3D property model ──
+    if (mode === 'digital_twin') {
+      if (!property_id) {
+        return new Response(JSON.stringify({ error: 'property_id required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Fetch property data + scores in parallel
+      const [propResult, scoreResult, cityResult] = await Promise.all([
+        supabase.from('properties').select('id, title, price, city, state, property_type, bedrooms, bathrooms, area_sqm, building_area_sqm, land_area_sqm, glb_model_url, three_d_model_url, roi_percentage, rental_yield_percentage, legal_status, wna_eligible, view_type, listing_type, description').eq('id', property_id).single(),
+        supabase.from('property_engagement_scores').select('investment_score, engagement_score, livability_score, luxury_score, predicted_roi, roi_confidence').eq('property_id', property_id).maybeSingle(),
+        supabase.from('properties').select('id').eq('status', 'active').limit(1), // placeholder for city count
+      ]);
+
+      if (propResult.error || !propResult.data) {
+        return new Response(JSON.stringify({ error: 'Property not found' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const prop = propResult.data;
+      const scores = scoreResult.data || { investment_score: 0, engagement_score: 0, livability_score: 0, luxury_score: 0, predicted_roi: 0, roi_confidence: 0 };
+
+      // Get demand heat for city
+      let demandHeat = 50;
+      if (prop.city) {
+        const { count } = await supabase.from('properties').select('id', { count: 'exact', head: true }).eq('status', 'active').eq('city', prop.city);
+        demandHeat = Math.min(100, 20 + ((count || 0) * 2.5));
+      }
+
+      // Price forecast (5-year compound)
+      const baseRate = demandHeat > 70 ? 0.08 : demandHeat > 40 ? 0.05 : 0.03;
+      const investBonus = (scores.investment_score || 0) > 80 ? 0.02 : (scores.investment_score || 0) > 60 ? 0.01 : 0;
+      const growthRate = baseRate + investBonus;
+      const forecastPrice = Math.round((prop.price || 0) * Math.pow(1 + growthRate, 5));
+
+      // Generate room metadata based on property specs
+      const totalArea = prop.building_area_sqm || prop.area_sqm || 100;
+      const bedrooms = prop.bedrooms || 2;
+      const bathrooms = prop.bathrooms || 1;
+
+      // Standard room breakdown
+      const rooms: any[] = [];
+      const livingSize = Math.round(totalArea * 0.25);
+      rooms.push({ room_name: 'Living Room', size_sqm: livingSize, renovation_cost_estimate: livingSize * 2_500_000, market_appeal_score: 85 });
+      const kitchenSize = Math.round(totalArea * 0.15);
+      rooms.push({ room_name: 'Kitchen', size_sqm: kitchenSize, renovation_cost_estimate: kitchenSize * 4_000_000, market_appeal_score: 90 });
+      for (let i = 1; i <= bedrooms; i++) {
+        const bedSize = Math.round(totalArea * (i === 1 ? 0.18 : 0.12));
+        rooms.push({ room_name: i === 1 ? 'Master Bedroom' : `Bedroom ${i}`, size_sqm: bedSize, renovation_cost_estimate: bedSize * 2_000_000, market_appeal_score: i === 1 ? 88 : 75 });
+      }
+      for (let i = 1; i <= bathrooms; i++) {
+        const bathSize = Math.round(totalArea * 0.06);
+        rooms.push({ room_name: i === 1 ? 'Main Bathroom' : `Bathroom ${i}`, size_sqm: bathSize, renovation_cost_estimate: bathSize * 5_000_000, market_appeal_score: 82 });
+      }
+      if (totalArea > 150) {
+        const garageSize = Math.round(totalArea * 0.1);
+        rooms.push({ room_name: 'Garage', size_sqm: garageSize, renovation_cost_estimate: garageSize * 1_500_000, market_appeal_score: 65 });
+      }
+
+      // Use AI to generate insights
+      const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+      let propertyInsights = 'AI insights unavailable.';
+      let roomInsightsAI: string[] = [];
+      let investmentAnalysis = 'AI analysis unavailable.';
+
+      if (LOVABLE_API_KEY) {
+        try {
+          const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model: 'google/gemini-3-flash-preview',
+              messages: [
+                { role: 'system', content: 'You are a real estate analyst specializing in Indonesian luxury property. Provide concise, data-driven insights.' },
+                { role: 'user', content: `Analyze this property for a Digital Twin viewer:\n${JSON.stringify({ title: prop.title, city: prop.city, price: prop.price, type: prop.property_type, area: totalArea, bedrooms, bathrooms, investment_score: scores.investment_score, demand_heat: demandHeat, roi: prop.roi_percentage, forecast_5yr: forecastPrice, rooms: rooms.map(r => r.room_name) }, null, 2)}` },
+              ],
+              tools: [{
+                type: 'function',
+                function: {
+                  name: 'digital_twin_insights',
+                  description: 'Return property and room insights for digital twin',
+                  parameters: {
+                    type: 'object',
+                    properties: {
+                      property_insights: { type: 'string', description: 'Overall 2-3 sentence property insight' },
+                      room_insights: { type: 'array', items: { type: 'string' }, description: 'One insight per room, matching the room list order' },
+                      investment_analysis: { type: 'string', description: '2-3 sentence investment outlook' },
+                    },
+                    required: ['property_insights', 'room_insights', 'investment_analysis'],
+                    additionalProperties: false,
+                  },
+                },
+              }],
+              tool_choice: { type: 'function', function: { name: 'digital_twin_insights' } },
+            }),
+          });
+
+          if (aiResponse.ok) {
+            const aiData = await aiResponse.json();
+            const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+            if (toolCall?.function?.arguments) {
+              const parsed = JSON.parse(toolCall.function.arguments);
+              propertyInsights = parsed.property_insights || propertyInsights;
+              roomInsightsAI = parsed.room_insights || [];
+              investmentAnalysis = parsed.investment_analysis || investmentAnalysis;
+            }
+          } else if (aiResponse.status === 429 || aiResponse.status === 402) {
+            console.warn('AI rate limited/credits:', aiResponse.status);
+          }
+        } catch (aiErr) {
+          console.error('AI insights error:', aiErr);
+        }
+      }
+
+      // Merge AI insights into rooms
+      const enrichedRooms = rooms.map((r, i) => ({
+        ...r,
+        ai_insight: roomInsightsAI[i] || `${r.room_name}: ${r.size_sqm}sqm with IDR ${r.renovation_cost_estimate.toLocaleString()} renovation potential.`,
+      }));
+
+      return new Response(JSON.stringify({
+        mode: 'digital_twin',
+        data: {
+          property: {
+            id: prop.id,
+            title: prop.title,
+            city: prop.city,
+            price: prop.price,
+            property_type: prop.property_type,
+            area_sqm: totalArea,
+            bedrooms,
+            bathrooms,
+            glb_model_url: prop.glb_model_url || prop.three_d_model_url || null,
+            listing_type: prop.listing_type,
+          },
+          scores: {
+            investment_score: scores.investment_score || 0,
+            demand_heat_score: demandHeat,
+            livability_score: scores.livability_score || 0,
+            luxury_score: scores.luxury_score || 0,
+            engagement_score: scores.engagement_score || 0,
+          },
+          price_forecast: {
+            current_price: prop.price,
+            forecast_price: forecastPrice,
+            growth_rate: Math.round(growthRate * 10000) / 100,
+            forecast_years: 5,
+          },
+          property_insights: propertyInsights,
+          room_insights: enrichedRooms,
+          investment_analysis: investmentAnalysis,
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
   } catch (err) {
     console.error('core-engine error:', err);
     return new Response(JSON.stringify({ error: err instanceof Error ? err.message : 'Unknown error' }), {
