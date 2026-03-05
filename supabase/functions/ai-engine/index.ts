@@ -445,6 +445,8 @@ serve(async (req) => {
         return await handleRecommendations(payload);
       case "transcribe_audio":
         return await handleTranscription(payload);
+      case "property_assistant":
+        return await handlePropertyAssistant(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
