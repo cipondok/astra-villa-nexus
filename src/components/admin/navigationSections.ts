@@ -444,7 +444,7 @@ export const navigationSections = {
     {
       key: "weight-tuning-history",
       label: "Weight Tuning History",
-      icon: History,
+      icon: Clock,
       description: "Track AI model weight changes across auto-tune cycles with visual diff",
       badge: "New"
     }
