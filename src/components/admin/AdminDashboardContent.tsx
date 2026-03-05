@@ -109,6 +109,7 @@ import {
   AIModelWeightsPanel,
   DOMAccuracyReport,
   CronJobMonitor,
+  WeightTuningHistory,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -271,6 +272,7 @@ const renderSection = (
     case "ai-model-weights":        return <AIModelWeightsPanel />;
     case "dom-accuracy":            return <DOMAccuracyReport />;
     case "cron-monitor":            return <CronJobMonitor />;
+    case "weight-tuning-history":   return <WeightTuningHistory />;
     default:                    return <AdminOverview />;
   }
 };
