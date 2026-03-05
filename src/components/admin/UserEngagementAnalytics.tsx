@@ -4,8 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, Clock, TrendingUp, Activity, Eye } from "lucide-react";
-import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, LineChart, Line } from "recharts";
+import { Users, Clock, TrendingUp, Activity } from "lucide-react";
+import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { format, subDays, eachDayOfInterval } from "date-fns";
 
 const UserEngagementAnalytics = () => {
@@ -21,7 +21,6 @@ const UserEngagementAnalytics = () => {
         .select("id, user_id, created_at, last_activity_at, device_type")
         .gte("created_at", startDate)
         .order("created_at", { ascending: true });
-
       if (error) throw error;
       return data || [];
     },
@@ -38,49 +37,39 @@ const UserEngagementAnalytics = () => {
 
   const sessions = sessionData || [];
 
-  // DAU / MAU
   const dailyActiveUsers = (() => {
     const days = eachDayOfInterval({ start: subDays(new Date(), daysBack), end: new Date() });
     return days.map((day) => {
       const dayStr = format(day, "yyyy-MM-dd");
       const uniqueUsers = new Set(
         sessions
-          .filter((s) => format(new Date(s.started_at), "yyyy-MM-dd") === dayStr)
+          .filter((s) => format(new Date(s.created_at), "yyyy-MM-dd") === dayStr)
           .map((s) => s.user_id)
       );
       return { date: format(day, "MMM dd"), dau: uniqueUsers.size };
     });
   })();
 
-  // Monthly active (last 30 days unique)
   const mau = new Set(
     sessions
-      .filter((s) => new Date(s.started_at) >= subDays(new Date(), 30))
+      .filter((s) => new Date(s.created_at) >= subDays(new Date(), 30))
       .map((s) => s.user_id)
   ).size;
 
-  // Today's DAU
   const todayDau = new Set(
     sessions
-      .filter((s) => format(new Date(s.started_at), "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd"))
+      .filter((s) => format(new Date(s.created_at), "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd"))
       .map((s) => s.user_id)
   ).size;
 
-  // Avg session duration
   const avgSessionDuration = (() => {
     const durations = sessions
-      .filter((s) => s.ended_at)
-      .map((s) => (new Date(s.ended_at!).getTime() - new Date(s.started_at).getTime()) / 1000);
+      .filter((s) => s.last_activity_at)
+      .map((s) => (new Date(s.last_activity_at).getTime() - new Date(s.created_at).getTime()) / 1000)
+      .filter((d) => d > 0 && d < 86400);
     return durations.length > 0 ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length) : 0;
   })();
 
-  // Avg page views per session
-  const avgPageViews = (() => {
-    const views = sessions.filter((s) => s.page_views).map((s) => s.page_views || 0);
-    return views.length > 0 ? (views.reduce((a, b) => a + b, 0) / views.length).toFixed(1) : "0";
-  })();
-
-  // Sessions by device
   const deviceBreakdown = (() => {
     const devices: Record<string, number> = {};
     sessions.forEach((s) => {
@@ -92,23 +81,21 @@ const UserEngagementAnalytics = () => {
       .sort((a, b) => b.value - a.value);
   })();
 
-  // Hourly distribution
   const hourlyDistribution = (() => {
     const hours = Array.from({ length: 24 }, (_, i) => ({ hour: `${i}:00`, sessions: 0 }));
     sessions.forEach((s) => {
-      const h = new Date(s.started_at).getHours();
+      const h = new Date(s.created_at).getHours();
       hours[h].sessions++;
     });
     return hours;
   })();
 
-  // Retention (simplified: % of users returning within period)
   const retention = (() => {
     const userFirstVisit: Record<string, string> = {};
     const userLastVisit: Record<string, string> = {};
     sessions.forEach((s) => {
       if (!s.user_id) return;
-      const d = format(new Date(s.started_at), "yyyy-MM-dd");
+      const d = format(new Date(s.created_at), "yyyy-MM-dd");
       if (!userFirstVisit[s.user_id] || d < userFirstVisit[s.user_id]) userFirstVisit[s.user_id] = d;
       if (!userLastVisit[s.user_id] || d > userLastVisit[s.user_id]) userLastVisit[s.user_id] = d;
     });
@@ -142,7 +129,6 @@ const UserEngagementAnalytics = () => {
         </div>
       </div>
 
-      {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
         {[
           { label: "DAU (Today)", value: todayDau.toLocaleString(), icon: Users },
@@ -172,9 +158,7 @@ const UserEngagementAnalytics = () => {
 
         <TabsContent value="dau">
           <Card className="border-border/40">
-            <CardHeader className="pb-2 pt-3 px-4">
-              <CardTitle className="text-sm">Daily Active Users</CardTitle>
-            </CardHeader>
+            <CardHeader className="pb-2 pt-3 px-4"><CardTitle className="text-sm">Daily Active Users</CardTitle></CardHeader>
             <CardContent className="p-2">
               <ResponsiveContainer width="100%" height={280}>
                 <AreaChart data={dailyActiveUsers}>
@@ -197,9 +181,7 @@ const UserEngagementAnalytics = () => {
 
         <TabsContent value="hourly">
           <Card className="border-border/40">
-            <CardHeader className="pb-2 pt-3 px-4">
-              <CardTitle className="text-sm">Session Distribution by Hour</CardTitle>
-            </CardHeader>
+            <CardHeader className="pb-2 pt-3 px-4"><CardTitle className="text-sm">Session Distribution by Hour</CardTitle></CardHeader>
             <CardContent className="p-2">
               <ResponsiveContainer width="100%" height={280}>
                 <BarChart data={hourlyDistribution}>
@@ -216,9 +198,7 @@ const UserEngagementAnalytics = () => {
 
         <TabsContent value="devices">
           <Card className="border-border/40">
-            <CardHeader className="pb-2 pt-3 px-4">
-              <CardTitle className="text-sm">Sessions by Device Type</CardTitle>
-            </CardHeader>
+            <CardHeader className="pb-2 pt-3 px-4"><CardTitle className="text-sm">Sessions by Device Type</CardTitle></CardHeader>
             <CardContent className="p-4">
               {deviceBreakdown.length === 0 ? (
                 <p className="text-center text-sm text-muted-foreground py-8">No device data</p>
@@ -246,18 +226,17 @@ const UserEngagementAnalytics = () => {
         </TabsContent>
       </Tabs>
 
-      {/* Quick stats row */}
       <div className="grid grid-cols-2 gap-3">
-        <Card className="border-border/40">
-          <CardContent className="p-3">
-            <p className="text-xs text-muted-foreground mb-1">Avg Pages/Session</p>
-            <p className="text-2xl font-bold text-foreground">{avgPageViews}</p>
-          </CardContent>
-        </Card>
         <Card className="border-border/40">
           <CardContent className="p-3">
             <p className="text-xs text-muted-foreground mb-1">Total Sessions ({period})</p>
             <p className="text-2xl font-bold text-foreground">{sessions.length.toLocaleString()}</p>
+          </CardContent>
+        </Card>
+        <Card className="border-border/40">
+          <CardContent className="p-3">
+            <p className="text-xs text-muted-foreground mb-1">Unique Users ({period})</p>
+            <p className="text-2xl font-bold text-foreground">{new Set(sessions.map((s) => s.user_id)).size.toLocaleString()}</p>
           </CardContent>
         </Card>
       </div>
