@@ -199,6 +199,10 @@ export const FraudDetectionDashboard = lazyRetry(() => import("./FraudDetectionD
 export const SmartHomeIntegration = lazyRetry(() => import("./SmartHomeIntegration"));
 export const CurrencyExchangeMonitor = lazyRetry(() => import("./CurrencyExchangeMonitor"));
 export const CommunityForumManager = lazyRetry(() => import("./CommunityForumManager"));
+export const NeighborhoodInsights = lazyRetry(() => import("./NeighborhoodInsights"));
+export const DocumentSigningHub = lazyRetry(() => import("./DocumentSigningHub"));
+export const PropertyAuctionManager = lazyRetry(() => import("./PropertyAuctionManager"));
+export const TenantScreening = lazyRetry(() => import("./TenantScreening"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {

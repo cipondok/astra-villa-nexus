@@ -92,7 +92,11 @@ import {
   ShieldAlert,
   Home as HomeIcon,
   Banknote,
-  MessagesSquare
+  MessagesSquare,
+  Compass,
+  PenTool,
+  Gavel,
+  ScanEye
 } from "lucide-react";
 
 export interface NavigationSection {
