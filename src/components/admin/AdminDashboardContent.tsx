@@ -132,6 +132,10 @@ import {
   AdminActivityLog,
   PlatformHealthScore,
   UserFunnelAnalysis,
+  EmailCampaignManager,
+  PropertyQualityScore,
+  UserSegmentation,
+  RevenueForecasting,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
