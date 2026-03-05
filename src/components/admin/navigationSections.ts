@@ -68,7 +68,8 @@ import {
   Layers,
   Megaphone,
   Flame,
-  Heart
+  Heart,
+  Star
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -309,6 +310,13 @@ export const navigationSections = {
       label: "Content Moderation",
       icon: Shield,
       description: "Review flagged listings, reviews, images, and messages with approve/reject/escalate workflow",
+      badge: "New"
+    },
+    {
+      key: "property-quality",
+      label: "Property Quality Score",
+      icon: Star,
+      description: "Listing quality assessment: photo quality, descriptions, pricing accuracy, and completeness",
       badge: "New"
     }
   ],
@@ -555,6 +563,27 @@ export const navigationSections = {
       label: "User Funnel Analysis",
       icon: TrendingUp,
       description: "Conversion pipeline from visit to transaction with drop-off analysis by source",
+      badge: "New"
+    },
+    {
+      key: "user-segmentation",
+      label: "User Segmentation",
+      icon: Target,
+      description: "Behavioral cohorts: Active Searchers, Serious Buyers, VIP Power Users, and Dormant analysis",
+      badge: "New"
+    },
+    {
+      key: "revenue-forecasting",
+      label: "Revenue Forecasting",
+      icon: DollarSign,
+      description: "Projected MRR/ARR by revenue stream with quarterly targets and growth tracking",
+      badge: "New"
+    },
+    {
+      key: "email-campaigns",
+      label: "Email Campaigns",
+      icon: Mail,
+      description: "Create, schedule, and track email campaigns with open/click rate analytics",
       badge: "New"
     }
   ],

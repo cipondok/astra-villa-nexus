@@ -132,6 +132,10 @@ import {
   AdminActivityLog,
   PlatformHealthScore,
   UserFunnelAnalysis,
+  EmailCampaignManager,
+  PropertyQualityScore,
+  UserSegmentation,
+  RevenueForecasting,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -317,6 +321,10 @@ const renderSection = (
     case "admin-activity-log":      return <AdminActivityLog />;
     case "platform-health-score":   return <PlatformHealthScore />;
     case "user-funnel":             return <UserFunnelAnalysis />;
+    case "email-campaigns":         return <EmailCampaignManager />;
+    case "property-quality":        return <PropertyQualityScore />;
+    case "user-segmentation":       return <UserSegmentation />;
+    case "revenue-forecasting":     return <RevenueForecasting />;
     default:                    return <AdminOverview />;
   }
 };
