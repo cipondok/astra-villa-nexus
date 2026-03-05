@@ -387,6 +387,34 @@ export const navigationSections = {
       icon: HomeIcon,
       description: "IoT device management, energy monitoring, and property automation controls",
       badge: "New"
+    },
+    {
+      key: "neighborhood-insights",
+      label: "Neighborhood Insights",
+      icon: Compass,
+      description: "Livability scores, nearby facilities, safety ratings, and area analytics",
+      badge: "New"
+    },
+    {
+      key: "document-signing",
+      label: "Document Signing Hub",
+      icon: PenTool,
+      description: "Digital document signing, notary coordination, and contract lifecycle tracking",
+      badge: "New"
+    },
+    {
+      key: "property-auctions",
+      label: "Property Auctions",
+      icon: Gavel,
+      description: "Live auction management, bid tracking, and auction performance analytics",
+      badge: "New"
+    },
+    {
+      key: "tenant-screening",
+      label: "Tenant Screening",
+      icon: ScanEye,
+      description: "Background checks, credit scoring, employment verification, and application management",
+      badge: "New"
     }
   ],
 
