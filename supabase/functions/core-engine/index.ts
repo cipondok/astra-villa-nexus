@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -3405,6 +3405,116 @@ Deno.serve(async (req) => {
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
+    }
+
+    // ── map_search: properties in bounds with investment heatmap ──
+    if (mode === 'map_search') {
+      const { map_bounds, limit: mapLimit } = body;
+      if (!map_bounds || !map_bounds.north || !map_bounds.south || !map_bounds.east || !map_bounds.west) {
+        return new Response(JSON.stringify({ error: 'map_bounds with north, south, east, west required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const { north, south, east, west } = map_bounds;
+      const propertyLimit = Math.min(Number(mapLimit) || 200, 500);
+
+      // Fetch properties within bounds that have coordinates
+      const { data: boundsProps, error: bpErr } = await supabase
+        .from('properties')
+        .select('id, title, price, latitude, longitude, city, property_type, bedrooms, bathrooms, area_sqm, thumbnail_url, images, listing_type')
+        .eq('status', 'active')
+        .eq('approval_status', 'approved')
+        .not('latitude', 'is', null)
+        .not('longitude', 'is', null)
+        .gte('latitude', south)
+        .lte('latitude', north)
+        .gte('longitude', west)
+        .lte('longitude', east)
+        .limit(propertyLimit);
+
+      if (bpErr) throw bpErr;
+      const props = boundsProps || [];
+
+      if (props.length === 0) {
+        return new Response(JSON.stringify({
+          mode: 'map_search',
+          data: { properties: [], heatmap_points: [], total: 0 },
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      // Fetch engagement/investment scores for these properties
+      const propIds = props.map((p: any) => p.id);
+      const { data: scoreRows } = await supabase
+        .from('property_engagement_scores')
+        .select('property_id, investment_score, engagement_score')
+        .in('property_id', propIds);
+
+      const scoreMap: Record<string, { investment_score: number; engagement_score: number }> = {};
+      for (const s of scoreRows || []) {
+        scoreMap[s.property_id] = {
+          investment_score: s.investment_score || 0,
+          engagement_score: s.engagement_score || 0,
+        };
+      }
+
+      // Fetch demand heat per city (batch unique cities)
+      const uniqueCities = [...new Set(props.map((p: any) => p.city).filter(Boolean))] as string[];
+      const cityDemandMap: Record<string, number> = {};
+
+      if (uniqueCities.length > 0) {
+        // Count active listings per city as demand proxy
+        for (const city of uniqueCities) {
+          const { count } = await supabase
+            .from('properties')
+            .select('id', { count: 'exact', head: true })
+            .eq('status', 'active')
+            .eq('city', city);
+          // Normalize: 0-30 listings → score 20-100
+          const listingCount = count || 0;
+          cityDemandMap[city] = Math.min(100, 20 + (listingCount * 2.5));
+        }
+      }
+
+      // Build enriched properties + heatmap points
+      const properties = props.map((p: any) => {
+        const scores = scoreMap[p.id] || { investment_score: 0, engagement_score: 0 };
+        const demand_heat_score = cityDemandMap[p.city] || 30;
+        const heat_score = Math.round((scores.investment_score * 0.6 + demand_heat_score * 0.4) * 100) / 100;
+        const zone = heat_score >= 80 ? 'hot_investment' : heat_score >= 60 ? 'growing' : 'stable';
+
+        return {
+          id: p.id,
+          title: p.title,
+          latitude: p.latitude,
+          longitude: p.longitude,
+          price: p.price,
+          city: p.city,
+          property_type: p.property_type,
+          bedrooms: p.bedrooms,
+          bathrooms: p.bathrooms,
+          area_sqm: p.area_sqm,
+          thumbnail_url: p.thumbnail_url || (p.images && p.images[0]) || null,
+          listing_type: p.listing_type,
+          investment_score: scores.investment_score,
+          demand_heat_score,
+          heat_score,
+          zone,
+        };
+      });
+
+      // Heatmap points (for Mapbox heatmap layer)
+      const heatmap_points = properties.map((p: any) => ({
+        latitude: p.latitude,
+        longitude: p.longitude,
+        weight: p.heat_score / 100,
+        zone: p.zone,
+      }));
+
+      return new Response(JSON.stringify({
+        mode: 'map_search',
+        data: { properties, heatmap_points, total: properties.length },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
   } catch (err) {

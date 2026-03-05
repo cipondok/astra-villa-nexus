@@ -15748,12 +15748,14 @@ export type Database = {
           is_featured: boolean | null
           is_pre_launch: boolean | null
           land_area_sqm: number | null
+          latitude: number | null
           launch_date: string | null
           legal_checked: boolean
           legal_status: string | null
           listed_at: string | null
           listing_type: string
           location: string
+          longitude: number | null
           minimum_rental_days: number | null
           nearby_facilities: Json | null
           online_booking_enabled: boolean | null
@@ -15833,12 +15835,14 @@ export type Database = {
           is_featured?: boolean | null
           is_pre_launch?: boolean | null
           land_area_sqm?: number | null
+          latitude?: number | null
           launch_date?: string | null
           legal_checked?: boolean
           legal_status?: string | null
           listed_at?: string | null
           listing_type: string
           location: string
+          longitude?: number | null
           minimum_rental_days?: number | null
           nearby_facilities?: Json | null
           online_booking_enabled?: boolean | null
@@ -15918,12 +15922,14 @@ export type Database = {
           is_featured?: boolean | null
           is_pre_launch?: boolean | null
           land_area_sqm?: number | null
+          latitude?: number | null
           launch_date?: string | null
           legal_checked?: boolean
           legal_status?: string | null
           listed_at?: string | null
           listing_type?: string
           location?: string
+          longitude?: number | null
           minimum_rental_days?: number | null
           nearby_facilities?: Json | null
           online_booking_enabled?: boolean | null

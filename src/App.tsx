@@ -112,6 +112,7 @@ const AdvancedSearchPage = lazy(() => import('@/pages/AdvancedSearchPage'));
 const AstraDevelopment = lazy(() => import('@/pages/AstraDevelopment'));
 const BookingsPage = lazy(() => import('@/pages/BookingsPage'));
 const LocationMap = lazy(() => import('@/pages/LocationMap'));
+const AIMapSearchPage = lazy(() => import('@/pages/AIMapSearchPage'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const Help = lazy(() => import('@/pages/Help'));
 const About = lazy(() => import('@/pages/About'));
@@ -316,6 +317,8 @@ const AppContent = () => {
                 <Route path="/price-estimator" element={<AIPriceEstimator />} />
                 <Route path="/market-intelligence" element={<MarketIntelligence />} />
                 <Route path="/market-data" element={<MarketIntelligence />} />
+                <Route path="/ai-map" element={<AIMapSearchPage />} />
+                <Route path="/map-search" element={<AIMapSearchPage />} />
                 <Route path="*" element={<ErrorPage />} />
               </Routes>
             </Suspense>
