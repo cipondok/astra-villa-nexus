@@ -147,6 +147,10 @@ export const SLAComplianceMonitor = lazyRetry(() => import("./SLAComplianceMonit
 export const CompetitorAnalysis = lazyRetry(() => import("./CompetitorAnalysis"));
 export const SystemAnnouncements = lazyRetry(() => import("./SystemAnnouncements"));
 export const FeedbackSentimentAnalysis = lazyRetry(() => import("./FeedbackSentimentAnalysis"));
+export const ContentModerationQueue = lazyRetry(() => import("./ContentModerationQueue"));
+export const ABTestResults = lazyRetry(() => import("./ABTestResults"));
+export const GeoAnalytics = lazyRetry(() => import("./GeoAnalytics"));
+export const ScheduledReportsManager = lazyRetry(() => import("./ScheduledReportsManager"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
