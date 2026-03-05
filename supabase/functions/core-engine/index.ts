@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -3152,6 +3152,95 @@ Deno.serve(async (req) => {
           demand_heat_score: demandHeat,
           investment_score: invScore,
           yearly_projection: yearly,
+        },
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: buyer_intent — Purchase likelihood predictor
+    // ═══════════════════════════════════════════
+    if (mode === 'buyer_intent') {
+      const targetUserId = body.user_id || userId;
+      if (!targetUserId) {
+        return new Response(JSON.stringify({ error: 'user_id is required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const thirtyAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+
+      // All signals in parallel
+      const [viewsRes, savesRes, contactsRes, visitsRes, searchesRes] = await Promise.all([
+        // views_last_30_days
+        supabase.from('activity_logs').select('id', { count: 'exact', head: true })
+          .eq('user_id', targetUserId).eq('activity_type', 'view').gte('created_at', thirtyAgo),
+        // saved_properties
+        supabase.from('saved_properties').select('id', { count: 'exact', head: true })
+          .eq('user_id', targetUserId),
+        // contact_agent_actions (inquiries)
+        supabase.from('inquiries').select('id', { count: 'exact', head: true })
+          .eq('user_id', targetUserId).gte('created_at', thirtyAgo),
+        // visit_bookings
+        supabase.from('rental_bookings').select('id', { count: 'exact', head: true })
+          .eq('user_id', targetUserId).gte('created_at', thirtyAgo),
+        // search_frequency
+        supabase.from('activity_logs').select('id', { count: 'exact', head: true })
+          .eq('user_id', targetUserId).eq('activity_type', 'search').gte('created_at', thirtyAgo),
+      ]);
+
+      const views = viewsRes.count || 0;
+      const saves = savesRes.count || 0;
+      const contacts = contactsRes.count || 0;
+      const visits = visitsRes.count || 0;
+      const searches = searchesRes.count || 0;
+
+      // Scoring: each signal capped at its max
+      const viewScore = Math.min(20, Math.round(views * 0.4));           // ~50 views = max
+      const saveScore = Math.min(25, saves * 5);                         // 5 saves = max
+      const contactScore = Math.min(30, contacts * 10);                  // 3 contacts = max
+      const visitScore = Math.min(15, visits * 8);                       // 2 visits = max
+      const searchScore = Math.min(10, Math.round(searches * 0.5));      // 20 searches = max
+
+      const intentScore = viewScore + saveScore + contactScore + visitScore + searchScore;
+
+      let intentLevel: string;
+      let recommendedAction: string;
+      if (intentScore >= 81) {
+        intentLevel = 'very_high';
+        recommendedAction = 'Immediate agent contact — this buyer is ready to transact.';
+      } else if (intentScore >= 61) {
+        intentLevel = 'high';
+        recommendedAction = 'Notify assigned agent for proactive outreach within 24 hours.';
+      } else if (intentScore >= 31) {
+        intentLevel = 'moderate';
+        recommendedAction = 'Show investment insights and curated property recommendations.';
+      } else {
+        intentLevel = 'low';
+        recommendedAction = 'Nurture with personalized recommendations and market updates.';
+      }
+
+      return new Response(JSON.stringify({
+        mode: 'buyer_intent',
+        data: {
+          intent_score: intentScore,
+          intent_level: intentLevel,
+          recommended_action: recommendedAction,
+          signals: {
+            views_30d: views,
+            saved_properties: saves,
+            contact_agent_actions: contacts,
+            visit_bookings: visits,
+            search_frequency: searches,
+          },
+          breakdown: {
+            view_score: viewScore,
+            save_score: saveScore,
+            contact_score: contactScore,
+            visit_score: visitScore,
+            search_score: searchScore,
+          },
         },
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
