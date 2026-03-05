@@ -782,6 +782,13 @@ export const navigationSections = {
       icon: HelpCircle,
       description: "Complete admin panel user guide and feature documentation",
       badge: "New"
+    },
+    {
+      key: "platform-changelog",
+      label: "Platform Changelog",
+      icon: Newspaper,
+      description: "Version history, release notes, and feature changelog with timeline view",
+      badge: "New"
     }
   ]
 };
