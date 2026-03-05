@@ -159,6 +159,10 @@ export const EmailCampaignManager = lazyRetry(() => import("./EmailCampaignManag
 export const PropertyQualityScore = lazyRetry(() => import("./PropertyQualityScore"));
 export const UserSegmentation = lazyRetry(() => import("./UserSegmentation"));
 export const RevenueForecasting = lazyRetry(() => import("./RevenueForecasting"));
+export const ApiUsageMonitor = lazyRetry(() => import("./ApiUsageMonitor"));
+export const TenantLeaseTracker = lazyRetry(() => import("./TenantLeaseTracker"));
+export const SupportTicketAnalytics = lazyRetry(() => import("./SupportTicketAnalytics"));
+export const NotificationCenterManager = lazyRetry(() => import("./NotificationCenterManager"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
@@ -297,4 +301,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "property-quality": { label: "Property Quality Score", category: "Property System" },
   "user-segmentation": { label: "User Segmentation", category: "Analytics" },
   "revenue-forecasting": { label: "Revenue Forecasting", category: "Analytics" },
+  "api-usage": { label: "API Usage Monitor", category: "System" },
+  "tenant-leases": { label: "Tenant & Lease Tracker", category: "Property System" },
+  "support-analytics": { label: "Support Ticket Analytics", category: "Support" },
+  "notification-center": { label: "Notification Center", category: "Marketing" },
 };
