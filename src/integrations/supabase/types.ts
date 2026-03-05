@@ -15733,6 +15733,7 @@ export type Database = {
           panorama_360_urls: string[] | null
           payment_methods: Json | null
           payment_plan_available: boolean | null
+          predicted_days_to_sell: number | null
           premium_partner: boolean
           price: number | null
           property_features: Json | null
@@ -15817,6 +15818,7 @@ export type Database = {
           panorama_360_urls?: string[] | null
           payment_methods?: Json | null
           payment_plan_available?: boolean | null
+          predicted_days_to_sell?: number | null
           premium_partner?: boolean
           price?: number | null
           property_features?: Json | null
@@ -15901,6 +15903,7 @@ export type Database = {
           panorama_360_urls?: string[] | null
           payment_methods?: Json | null
           payment_plan_available?: boolean | null
+          predicted_days_to_sell?: number | null
           premium_partner?: boolean
           price?: number | null
           property_features?: Json | null
