@@ -114,6 +114,7 @@ const BookingsPage = lazy(() => import('@/pages/BookingsPage'));
 const LocationMap = lazy(() => import('@/pages/LocationMap'));
 const AIMapSearchPage = lazy(() => import('@/pages/AIMapSearchPage'));
 const DigitalTwinPage = lazy(() => import('@/pages/DigitalTwinPage'));
+const VirtualStagingPage = lazy(() => import('@/pages/VirtualStagingPage'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const Help = lazy(() => import('@/pages/Help'));
 const About = lazy(() => import('@/pages/About'));
@@ -321,6 +322,7 @@ const AppContent = () => {
                 <Route path="/ai-map" element={<AIMapSearchPage />} />
                 <Route path="/map-search" element={<AIMapSearchPage />} />
                 <Route path="/digital-twin/:id" element={<DigitalTwinPage />} />
+                <Route path="/virtual-staging" element={<VirtualStagingPage />} />
                 <Route path="*" element={<ErrorPage />} />
               </Routes>
             </Suspense>

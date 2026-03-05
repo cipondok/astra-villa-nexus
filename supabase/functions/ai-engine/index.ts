@@ -24,6 +24,96 @@ async function handleGenerateImage(payload: Record<string, unknown>) {
   return json({ mode: "generate_image", status: "not_implemented", payload });
 }
 
+async function handleVirtualStaging(payload: Record<string, unknown>) {
+  const { image_url, room_type, style } = payload as {
+    image_url?: string;
+    room_type?: string;
+    style?: string;
+  };
+
+  if (!image_url) return json({ error: "image_url is required" }, 400);
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  const roomLabel = room_type || "living room";
+  const styleLabel = style || "modern minimalist";
+
+  const prompt = `You are an expert interior designer. Take this empty/unfurnished ${roomLabel} photo and virtually stage it with beautiful, realistic ${styleLabel} furniture and decor. Keep the room's architecture, walls, floor, and windows exactly the same. Add appropriate furniture: sofas, tables, rugs, plants, lighting fixtures, art, and decorations that match the ${styleLabel} style. The result must look photorealistic, as if photographed by a professional real estate photographer. Maintain natural lighting and shadows.`;
+
+  try {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash-image",
+        messages: [
+          {
+            role: "user",
+            content: [
+              { type: "text", text: prompt },
+              { type: "image_url", image_url: { url: image_url } },
+            ],
+          },
+        ],
+        modalities: ["image", "text"],
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      const status = aiResponse.status;
+      if (status === 429) return json({ error: "Rate limited. Please try again shortly." }, 429);
+      if (status === 402) return json({ error: "AI credits required. Please add credits." }, 402);
+      const t = await aiResponse.text();
+      console.error("AI staging error:", status, t);
+      return json({ error: "AI image generation failed" }, 500);
+    }
+
+    const aiData = await aiResponse.json();
+    const generatedImage = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const aiText = aiData.choices?.[0]?.message?.content || "";
+
+    if (!generatedImage) {
+      return json({ error: "No image generated. The model may not have been able to process this image." }, 500);
+    }
+
+    // Upload to Supabase storage
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(supabaseUrl, serviceKey);
+
+    const fileName = `ai-staging/${crypto.randomUUID()}.png`;
+    const base64Data = generatedImage.replace(/^data:image\/\w+;base64,/, "");
+    const binaryData = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+
+    const { error: uploadErr } = await supabase.storage
+      .from("vr-media")
+      .upload(fileName, binaryData, { contentType: "image/png", upsert: false });
+
+    let storedUrl = generatedImage; // fallback to base64
+    if (!uploadErr) {
+      const { data: urlData } = supabase.storage.from("vr-media").getPublicUrl(fileName);
+      storedUrl = urlData.publicUrl;
+    } else {
+      console.error("Storage upload error:", uploadErr);
+    }
+
+    return json({
+      mode: "virtual_staging",
+      staged_image_url: storedUrl,
+      description: aiText,
+      room_type: roomLabel,
+      style: styleLabel,
+    });
+  } catch (err) {
+    console.error("Virtual staging error:", err);
+    return json({ error: err instanceof Error ? err.message : "Unknown error" }, 500);
+  }
+}
+
 async function handleNlpSearch(payload: Record<string, unknown>) {
   const query = String(payload.query || "").trim();
   if (!query) return json({ error: "query is required" }, 400);
@@ -447,6 +537,8 @@ serve(async (req) => {
         return await handleTranscription(payload);
       case "property_assistant":
         return await handlePropertyAssistant(payload);
+      case "virtual_staging":
+        return await handleVirtualStaging(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
