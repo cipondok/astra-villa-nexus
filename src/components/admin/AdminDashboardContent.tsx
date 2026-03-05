@@ -107,6 +107,7 @@ import {
   NearbyFacilitiesSettings,
   AIPerformanceDashboard,
   AIModelWeightsPanel,
+  DOMAccuracyReport,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -267,6 +268,7 @@ const renderSection = (
     case "off-plan-manager":        return <OffPlanProjectManager />;
     case "ai-performance":          return <AIPerformanceDashboard />;
     case "ai-model-weights":        return <AIModelWeightsPanel />;
+    case "dom-accuracy":            return <DOMAccuracyReport />;
     default:                    return <AdminOverview />;
   }
 };

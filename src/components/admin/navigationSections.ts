@@ -63,7 +63,8 @@ import {
   Zap,
   Rocket,
   Newspaper,
-  Sliders
+  Sliders,
+  Target
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -431,6 +432,13 @@ export const navigationSections = {
       label: "AI Model Weights",
       icon: Sliders,
       description: "View and auto-tune AI scoring weights, correlations, and model health",
+      badge: "New"
+    },
+    {
+      key: "dom-accuracy",
+      label: "DOM Prediction Accuracy",
+      icon: Target,
+      description: "Compare predicted vs actual days-on-market for sold properties",
       badge: "New"
     }
   ],
