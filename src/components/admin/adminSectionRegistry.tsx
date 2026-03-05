@@ -285,4 +285,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ab-test-results": { label: "A/B Test Results", category: "Analytics" },
   "geo-analytics": { label: "Geo Analytics", category: "Analytics" },
   "scheduled-reports": { label: "Scheduled Reports", category: "System & Tools" },
+  "property-heatmap": { label: "Property Heatmap", category: "Analytics" },
+  "admin-activity-log": { label: "Admin Activity Log", category: "Security" },
+  "platform-health-score": { label: "Platform Health Score", category: "System" },
+  "user-funnel": { label: "User Funnel Analysis", category: "Analytics" },
 };

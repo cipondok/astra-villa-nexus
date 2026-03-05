@@ -128,6 +128,10 @@ import {
   ABTestResults,
   GeoAnalytics,
   ScheduledReportsManager,
+  PropertyHeatmapAnalytics,
+  AdminActivityLog,
+  PlatformHealthScore,
+  UserFunnelAnalysis,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
