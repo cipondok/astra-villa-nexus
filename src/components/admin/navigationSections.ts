@@ -642,6 +642,41 @@ export const navigationSections = {
       icon: Shield,
       description: "Complete record of administrative actions, security events, and system changes",
       badge: "New"
+    },
+    {
+      key: "subscription-plans",
+      label: "Subscription Plans",
+      icon: Crown,
+      description: "Plan performance, MRR tracking, churn rates, and conversion funnels",
+      badge: "New"
+    },
+    {
+      key: "commission-tracker",
+      label: "Commission Tracker",
+      icon: DollarSign,
+      description: "Agent commissions, payouts, and revenue splits with trend analysis",
+      badge: "New"
+    },
+    {
+      key: "market-trends",
+      label: "Market Trends",
+      icon: TrendingUp,
+      description: "Price indices, supply/demand, hot areas, and property type performance",
+      badge: "New"
+    },
+    {
+      key: "document-verification",
+      label: "Document Verification",
+      icon: FileCheck,
+      description: "KTP, NPWP, SIUP, and license verification queue with approve/reject actions",
+      badge: "New"
+    },
+    {
+      key: "platform-feedback",
+      label: "Platform Feedback",
+      icon: MessageSquare,
+      description: "User feedback, sentiment trends, feature ratings, and review management",
+      badge: "New"
     }
   ],
 
