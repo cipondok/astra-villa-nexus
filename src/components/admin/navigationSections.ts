@@ -900,7 +900,7 @@ export const navigationSections = {
       icon: Languages,
       description: "Translation management, language coverage, and localization tracking",
       badge: "New"
-    }
+    },
     {
       key: "environmental-sustainability",
       label: "Environmental Sustainability",
