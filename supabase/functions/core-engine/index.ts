@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -2966,6 +2966,111 @@ Deno.serve(async (req) => {
           estimated_market_value: marketValue,
           demand_heat_score: demandHeat,
           investment_score: investmentScore,
+        },
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: similar_properties — Vector similarity search
+    // ═══════════════════════════════════════════
+    if (mode === 'similar_properties') {
+      if (!property_id) {
+        return new Response(JSON.stringify({ error: 'property_id is required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Fetch reference property
+      const { data: ref, error: refErr } = await supabase
+        .from('properties')
+        .select('id, city, property_type, price, kt, km, land_area_sqm, building_area_sqm, has_pool, investment_score')
+        .eq('id', property_id)
+        .single();
+
+      if (refErr || !ref) {
+        return new Response(JSON.stringify({ error: 'Property not found' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const refPrice = Number(ref.price) || 0;
+      const refBedrooms = Number(ref.kt) || 0;
+      const refInvScore = Number(ref.investment_score) || 0;
+
+      // Fetch candidates: same city OR same type, published, exclude self
+      // Broaden to get enough candidates, then score in-memory
+      const { data: candidates } = await supabase
+        .from('properties')
+        .select('id, city, property_type, price, kt, km, land_area_sqm, building_area_sqm, has_pool, investment_score, title, cover_image')
+        .eq('status', 'published')
+        .neq('id', property_id)
+        .or(`city.eq.${ref.city},property_type.eq.${ref.property_type}`)
+        .limit(200);
+
+      if (!candidates || candidates.length === 0) {
+        return new Response(JSON.stringify({
+          mode: 'similar_properties',
+          data: { similar_properties: [], reference_id: property_id },
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Score each candidate
+      const scored = candidates.map((c: any) => {
+        let score = 0;
+
+        // City match → +25
+        if (c.city && ref.city && c.city.toLowerCase() === ref.city.toLowerCase()) score += 25;
+
+        // Property type match → +20
+        if (c.property_type && ref.property_type && c.property_type === ref.property_type) score += 20;
+
+        // Price within ±25% → +20 (linear scale)
+        const cPrice = Number(c.price) || 0;
+        if (refPrice > 0 && cPrice > 0) {
+          const priceDiff = Math.abs(cPrice - refPrice) / refPrice;
+          if (priceDiff <= 0.25) {
+            score += Math.round(20 * (1 - priceDiff / 0.25));
+          }
+        }
+
+        // Bedrooms ±1 → +10
+        const cBed = Number(c.kt) || 0;
+        const bedDiff = Math.abs(cBed - refBedrooms);
+        if (bedDiff === 0) score += 10;
+        else if (bedDiff === 1) score += 5;
+
+        // Pool match → +10
+        if (ref.has_pool != null && c.has_pool === ref.has_pool) score += 10;
+
+        // Investment score similarity → +15 (linear scale, max diff 100)
+        const cInv = Number(c.investment_score) || 0;
+        const invDiff = Math.abs(cInv - refInvScore);
+        score += Math.round(15 * Math.max(0, 1 - invDiff / 50));
+
+        return {
+          id: c.id,
+          title: c.title,
+          city: c.city,
+          property_type: c.property_type,
+          price: c.price,
+          cover_image: c.cover_image,
+          similarity_score: score,
+        };
+      });
+
+      // Sort descending, limit 12
+      scored.sort((a: any, b: any) => b.similarity_score - a.similarity_score);
+      const topResults = scored.slice(0, 12);
+
+      return new Response(JSON.stringify({
+        mode: 'similar_properties',
+        data: {
+          similar_properties: topResults,
+          reference_id: property_id,
         },
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
