@@ -74,7 +74,7 @@ const PropertyQualityScore = () => {
         <Card className="border-border/40"><CardContent className="p-3 text-center">
           <AlertTriangle className="h-4 w-4 mx-auto mb-1 text-destructive" />
           <p className="text-xl font-bold text-destructive">{scoreDistribution[3].count + scoreDistribution[4].count}</p>
-          <p className="text-[10px] text-muted-foreground">Low Quality (<50)</p>
+          <p className="text-[10px] text-muted-foreground">{"Low Quality (<50)"}</p>
         </CardContent></Card>
         <Card className="border-border/40"><CardContent className="p-3 text-center">
           <TrendingUp className="h-4 w-4 mx-auto mb-1 text-primary" />
