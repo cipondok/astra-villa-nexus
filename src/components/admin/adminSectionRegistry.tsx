@@ -163,6 +163,10 @@ export const ApiUsageMonitor = lazyRetry(() => import("./ApiUsageMonitor"));
 export const TenantLeaseTracker = lazyRetry(() => import("./TenantLeaseTracker"));
 export const SupportTicketAnalytics = lazyRetry(() => import("./SupportTicketAnalytics"));
 export const NotificationCenterManager = lazyRetry(() => import("./NotificationCenterManager"));
+export const VendorPerformanceDashboard = lazyRetry(() => import("./VendorPerformanceDashboard"));
+export const CommissionTracker = lazyRetry(() => import("./CommissionTracker"));
+export const PropertyComparisonTool = lazyRetry(() => import("./PropertyComparisonTool"));
+export const SystemAuditTrail = lazyRetry(() => import("./SystemAuditTrail"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
@@ -305,4 +309,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "tenant-leases": { label: "Tenant & Lease Tracker", category: "Property System" },
   "support-analytics": { label: "Support Ticket Analytics", category: "Support" },
   "notification-center": { label: "Notification Center", category: "Marketing" },
+  "vendor-performance": { label: "Vendor Performance", category: "Vendor System" },
+  "commission-tracker": { label: "Commission Tracker", category: "Finance" },
+  "property-comparison": { label: "Property Comparison", category: "Property System" },
+  "system-audit-trail": { label: "System Audit Trail", category: "Security" },
 };
