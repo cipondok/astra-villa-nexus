@@ -202,6 +202,20 @@ export const navigationSections = {
       icon: Shield,
       description: "Configure rate limits, manage blocked IPs, partner API keys, and monitor abuse",
       badge: "New"
+    },
+    {
+      key: "data-backup",
+      label: "Data Backup & Export",
+      icon: Download,
+      description: "Export database tables as CSV or JSON with row counts and multi-table selection",
+      badge: "New"
+    },
+    {
+      key: "api-usage",
+      label: "API Usage Analytics",
+      icon: Activity,
+      description: "Track edge function calls, error rates, peak hours, and latency metrics",
+      badge: "New"
     }
   ],
 
