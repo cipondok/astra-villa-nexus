@@ -48,7 +48,7 @@ const DataBackupExport = () => {
         EXPORTABLE_TABLES.map(async (t) => {
           try {
             const { count, error } = await supabase
-              .from(t.name)
+              .from(t.name as any)
               .select("*", { count: "exact", head: true });
             counts[t.name] = error ? 0 : (count || 0);
           } catch {
