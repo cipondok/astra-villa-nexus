@@ -28,6 +28,7 @@ import PropertyRecommendations from '@/components/property/PropertyRecommendatio
 import { KPRCalculator } from '@/components/property/KPRCalculator';
 import PropertyMortgageWidget from '@/components/mortgage/PropertyMortgageWidget';
 import DaysOnMarketTracker from '@/components/property/DaysOnMarketTracker';
+import ValuationHistory from '@/components/property/ValuationHistory';
 import { PropertyPosterInfo } from '@/components/property/PropertyPosterInfo';
 import PropertyTrustBadges from '@/components/property/PropertyTrustBadges';
 import PropertyTrustShield from '@/components/property/PropertyTrustShield';
@@ -1196,6 +1197,9 @@ const PropertyDetail: React.FC = () => {
 
             {/* Days on Market Tracker */}
             <DaysOnMarketTracker propertyId={property.id} />
+
+            {/* Valuation History */}
+            <ValuationHistory propertyId={property.id} currentPrice={property.price} />
 
             {/* Investment Snapshot Widget */}
             <PropertyInvestmentWidget
