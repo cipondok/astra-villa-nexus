@@ -28520,6 +28520,32 @@ export type Database = {
           verification_date: string
         }[]
       }
+      get_cron_job_runs: {
+        Args: { p_limit?: number }
+        Returns: {
+          end_time: string
+          job_pid: number
+          jobid: number
+          return_message: string
+          runid: number
+          start_time: string
+          status: string
+        }[]
+      }
+      get_cron_jobs: {
+        Args: never
+        Returns: {
+          active: boolean
+          command: string
+          database: string
+          jobid: number
+          jobname: string
+          nodename: string
+          nodeport: number
+          schedule: string
+          username: string
+        }[]
+      }
       get_customer_own_survey_bookings: {
         Args: never
         Returns: {
