@@ -132,6 +132,8 @@ export const AIModelWeightsPanel = lazyRetry(() => import("./AIModelWeightsPanel
 export const DOMAccuracyReport = lazyRetry(() => import("./DOMAccuracyReport"));
 export const CronJobMonitor = lazyRetry(() => import("./CronJobMonitor"));
 export const WeightTuningHistory = lazyRetry(() => import("./WeightTuningHistory"));
+export const SystemHealthDashboard = lazyRetry(() => import("./SystemHealthDashboard"));
+export const AdminGuide = lazyRetry(() => import("./AdminGuide"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {

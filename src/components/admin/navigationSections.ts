@@ -624,6 +624,13 @@ export const navigationSections = {
       icon: CalendarDays,
       description: "View and monitor all scheduled pg_cron jobs with run history",
       badge: "New"
+    },
+    {
+      key: "system-health",
+      label: "System Health",
+      icon: Activity,
+      description: "Real-time infrastructure monitoring: DB, Auth, Storage, Edge Functions",
+      badge: "New"
     }
   ],
 
