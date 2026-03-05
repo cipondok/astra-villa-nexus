@@ -285,6 +285,8 @@ const renderSection = (
     case "audit-trail":             return <AuditTrailDashboard />;
     case "revenue-analytics":       return <RevenueAnalyticsDashboard />;
     case "bulk-property-actions":   return <BulkPropertyActions />;
+    case "notification-templates":  return <NotificationTemplatesManager />;
+    case "user-engagement":         return <UserEngagementAnalytics />;
     default:                    return <AdminOverview />;
   }
 };
