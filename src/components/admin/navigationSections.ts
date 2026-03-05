@@ -646,6 +646,13 @@ export const navigationSections = {
       icon: Activity,
       description: "Real-time infrastructure monitoring: DB, Auth, Storage, Edge Functions",
       badge: "New"
+    },
+    {
+      key: "audit-trail",
+      label: "Audit Trail",
+      icon: Shield,
+      description: "View all admin and user activity logs with search, filters, and CSV export",
+      badge: "New"
     }
   ],
 
