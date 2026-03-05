@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -3071,6 +3071,87 @@ Deno.serve(async (req) => {
         data: {
           similar_properties: topResults,
           reference_id: property_id,
+        },
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: price_forecast — Predict property value over time
+    // ═══════════════════════════════════════════
+    if (mode === 'price_forecast') {
+      if (!property_id) {
+        return new Response(JSON.stringify({ error: 'property_id is required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const forecastYears = Math.max(1, Math.min(20, Number(body.forecast_years) || 5));
+
+      // Fetch property + demand heat in parallel
+      const [propRes, ...rest] = await Promise.all([
+        supabase.from('properties').select('price, city, investment_score').eq('id', property_id).single(),
+      ]);
+
+      if (propRes.error || !propRes.data) {
+        return new Response(JSON.stringify({ error: 'Property not found' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const prop = propRes.data;
+      const currentPrice = Number(prop.price) || 0;
+      const invScore = Number(prop.investment_score) || 0;
+
+      if (currentPrice <= 0) {
+        return new Response(JSON.stringify({ error: 'Property has no valid price' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Compute demand heat for city
+      let demandHeat = 50;
+      if (prop.city) {
+        const thirtyAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+        const [listRes, newRes] = await Promise.all([
+          supabase.from('properties').select('id', { count: 'exact', head: true }).eq('city', prop.city).eq('status', 'published'),
+          supabase.from('properties').select('id', { count: 'exact', head: true }).eq('city', prop.city).gte('created_at', thirtyAgo),
+        ]);
+        const listings = listRes.count || 1;
+        const newListings = newRes.count || 0;
+        demandHeat = Math.min(100, Math.max(0, (newListings >= 20 ? 40 : newListings >= 10 ? 25 : 10) + (listings >= 50 ? 30 : listings >= 20 ? 20 : 10)));
+      }
+
+      // Base appreciation by demand
+      let baseRate: number;
+      if (demandHeat >= 70) baseRate = 0.08;
+      else if (demandHeat >= 40) baseRate = 0.05;
+      else baseRate = 0.03;
+
+      // Investment score adjustment
+      if (invScore > 80) baseRate += 0.02;
+      else if (invScore >= 60) baseRate += 0.01;
+
+      const growthRate = Math.round(baseRate * 10000) / 100; // as percentage
+      const forecastPrice = Math.round(currentPrice * Math.pow(1 + baseRate, forecastYears));
+
+      // Year-by-year breakdown
+      const yearly = Array.from({ length: forecastYears }, (_, i) => ({
+        year: i + 1,
+        price: Math.round(currentPrice * Math.pow(1 + baseRate, i + 1)),
+      }));
+
+      return new Response(JSON.stringify({
+        mode: 'price_forecast',
+        data: {
+          current_price: currentPrice,
+          forecast_price: forecastPrice,
+          growth_rate: growthRate,
+          forecast_years: forecastYears,
+          demand_heat_score: demandHeat,
+          investment_score: invScore,
+          yearly_projection: yearly,
         },
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
