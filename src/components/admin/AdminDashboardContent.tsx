@@ -117,6 +117,9 @@ import {
   BulkPropertyActions,
   NotificationTemplatesManager,
   UserEngagementAnalytics,
+  DataBackupExport,
+  PlatformChangelog,
+  APIUsageAnalytics,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -287,6 +290,9 @@ const renderSection = (
     case "bulk-property-actions":   return <BulkPropertyActions />;
     case "notification-templates":  return <NotificationTemplatesManager />;
     case "user-engagement":         return <UserEngagementAnalytics />;
+    case "data-backup":             return <DataBackupExport />;
+    case "platform-changelog":      return <PlatformChangelog />;
+    case "api-usage":               return <APIUsageAnalytics />;
     default:                    return <AdminOverview />;
   }
 };
