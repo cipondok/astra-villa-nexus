@@ -71,7 +71,10 @@ import {
   Heart,
   Star,
   Store,
-  FileCheck
+  FileCheck,
+  Share2,
+  Camera,
+  Trophy
 } from "lucide-react";
 
 export interface NavigationSection {
