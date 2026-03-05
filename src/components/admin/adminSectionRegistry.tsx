@@ -140,6 +140,9 @@ export const BulkPropertyActions = lazyRetry(() => import("./BulkPropertyActions
 export const NotificationTemplatesManager = lazyRetry(() => import("./NotificationTemplatesManager"));
 export const UserEngagementAnalytics = lazyRetry(() => import("./UserEngagementAnalytics"));
 export const AdminQuickActions = lazyRetry(() => import("./AdminQuickActions"));
+export const DataBackupExport = lazyRetry(() => import("./DataBackupExport"));
+export const PlatformChangelog = lazyRetry(() => import("./PlatformChangelog"));
+export const APIUsageAnalytics = lazyRetry(() => import("./APIUsageAnalytics"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
