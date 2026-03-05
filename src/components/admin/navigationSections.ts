@@ -68,7 +68,8 @@ import {
   Layers,
   Megaphone,
   Flame,
-  Heart
+  Heart,
+  Star
 } from "lucide-react";
 
 export interface NavigationSection {
