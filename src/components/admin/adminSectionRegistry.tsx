@@ -137,6 +137,9 @@ export const AdminGuide = lazyRetry(() => import("./AdminGuide"));
 export const AuditTrailDashboard = lazyRetry(() => import("./AuditTrailDashboard"));
 export const RevenueAnalyticsDashboard = lazyRetry(() => import("./RevenueAnalyticsDashboard"));
 export const BulkPropertyActions = lazyRetry(() => import("./BulkPropertyActions"));
+export const NotificationTemplatesManager = lazyRetry(() => import("./NotificationTemplatesManager"));
+export const UserEngagementAnalytics = lazyRetry(() => import("./UserEngagementAnalytics"));
+export const AdminQuickActions = lazyRetry(() => import("./AdminQuickActions"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
