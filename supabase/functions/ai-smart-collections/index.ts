@@ -263,6 +263,132 @@ serve(async (req) => {
       });
     }
 
+    // ─── GET SMART COLLECTIONS V2 ───
+    if (action === "get_smart_collections_v2") {
+      const limit = reqLimit || 12;
+
+      // 1) Fetch all active properties with needed fields
+      const { data: allProps, error: apErr } = await supabase
+        .from("properties")
+        .select("id, title, price, location, city, state, bedrooms, bathrooms, area_sqm, building_area_sqm, land_area_sqm, property_type, listing_type, images, thumbnail_url, roi_percentage, rental_yield_percentage, legal_status, wna_eligible, view_type, created_at")
+        .eq("status", "active")
+        .eq("approval_status", "approved");
+      if (apErr) throw apErr;
+      const props = allProps || [];
+
+      // 2) Fetch all engagement scores
+      const { data: allScores } = await supabase
+        .from("property_engagement_scores")
+        .select("property_id, engagement_score, investment_score, livability_score, luxury_score, predicted_roi, roi_confidence");
+      const scoresMap = new Map((allScores || []).map((s: any) => [s.property_id, s]));
+
+      // 3) Fetch saves in last 30 days
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+      const { data: recentFavs } = await supabase
+        .from("favorites")
+        .select("property_id")
+        .gte("created_at", thirtyDaysAgo);
+      const savesCount: Record<string, number> = {};
+      for (const f of recentFavs || []) {
+        if (f.property_id) savesCount[f.property_id] = (savesCount[f.property_id] || 0) + 1;
+      }
+
+      // 4) Compute city average prices
+      const cityPrices: Record<string, number[]> = {};
+      for (const p of props) {
+        if (p.city && p.price) {
+          if (!cityPrices[p.city]) cityPrices[p.city] = [];
+          cityPrices[p.city].push(p.price);
+        }
+      }
+      const cityAvgPrice: Record<string, number> = {};
+      for (const [city, prices] of Object.entries(cityPrices)) {
+        cityAvgPrice[city] = prices.reduce((a, b) => a + b, 0) / prices.length;
+      }
+
+      // 5) Compute FMV per city per property_type (median price/sqm)
+      const cityTypePsm: Record<string, number[]> = {};
+      for (const p of props) {
+        const area = p.building_area_sqm || p.area_sqm;
+        if (p.city && p.price && area && area > 0) {
+          const key = `${p.city}__${p.property_type || "any"}`;
+          if (!cityTypePsm[key]) cityTypePsm[key] = [];
+          cityTypePsm[key].push(p.price / area);
+        }
+      }
+      function getMedian(arr: number[]): number {
+        if (!arr.length) return 0;
+        const sorted = [...arr].sort((a, b) => a - b);
+        const mid = Math.floor(sorted.length / 2);
+        return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+      }
+
+      // Helper: enrich property with scores
+      function enrich(p: any) {
+        return { ...p, scores: scoresMap.get(p.id) || null };
+      }
+
+      // ── Collection 1: Best Investment Properties ──
+      const bestInvestment = props
+        .filter((p) => {
+          const s = scoresMap.get(p.id);
+          return s && (s.investment_score || 0) > 75 && (s.engagement_score || 0) > 60;
+        })
+        .sort((a, b) => ((scoresMap.get(b.id)?.investment_score || 0) - (scoresMap.get(a.id)?.investment_score || 0)))
+        .slice(0, limit)
+        .map(enrich);
+
+      // ── Collection 2: Luxury Villas ──
+      const luxuryVillas = props
+        .filter((p) => (p.property_type || "").toLowerCase() === "villa" && (p.price || 0) > 5_000_000_000)
+        .sort((a, b) => (b.price || 0) - (a.price || 0))
+        .slice(0, limit)
+        .map(enrich);
+
+      // ── Collection 3: Undervalued Deals ──
+      const undervalued = props
+        .map((p) => {
+          const area = p.building_area_sqm || p.area_sqm;
+          const key = `${p.city}__${p.property_type || "any"}`;
+          const medianPsm = getMedian(cityTypePsm[key] || []);
+          if (!area || !medianPsm || !p.price) return { ...p, deal_score_percent: 0 };
+          const fmv = medianPsm * area;
+          const deal = ((fmv - p.price) / fmv) * 100;
+          return { ...p, deal_score_percent: Math.round(deal * 100) / 100 };
+        })
+        .filter((p) => p.deal_score_percent > 10)
+        .sort((a, b) => b.deal_score_percent - a.deal_score_percent)
+        .slice(0, limit)
+        .map((p) => ({ ...enrich(p), deal_score_percent: p.deal_score_percent }));
+
+      // ── Collection 4: Trending Properties ──
+      const trending = props
+        .map((p) => ({ ...p, saves_last_30_days: savesCount[p.id] || 0 }))
+        .filter((p) => p.saves_last_30_days > 0)
+        .sort((a, b) => b.saves_last_30_days - a.saves_last_30_days)
+        .slice(0, limit)
+        .map((p) => ({ ...enrich(p), saves_last_30_days: p.saves_last_30_days }));
+
+      // ── Collection 5: Family Homes ──
+      const familyHomes = props
+        .filter((p) => (p.bedrooms || 0) >= 3 && p.city && p.price && p.price < (cityAvgPrice[p.city] || Infinity))
+        .sort((a, b) => (b.bedrooms || 0) - (a.bedrooms || 0))
+        .slice(0, limit)
+        .map(enrich);
+
+      const collections = [
+        { title: "Best Investment Properties", description: "High investment score with strong market demand", properties: bestInvestment },
+        { title: "Luxury Villas", description: "Premium villas priced above IDR 5 billion", properties: luxuryVillas },
+        { title: "Undervalued Deals", description: "Properties priced significantly below fair market value", properties: undervalued },
+        { title: "Trending Properties", description: "Most saved properties in the last 30 days", properties: trending },
+        { title: "Family Homes", description: "Spacious homes below city average price", properties: familyHomes },
+      ];
+
+      return new Response(JSON.stringify({ collections }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     // ─── PREDICT ROI ───
     if (action === "predict_roi") {
       if (!property_id) throw new Error("property_id required");
