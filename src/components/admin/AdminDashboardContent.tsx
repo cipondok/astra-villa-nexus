@@ -144,6 +144,10 @@ import {
   CommissionTracker,
   PropertyComparisonTool,
   SystemAuditTrail,
+  SubscriptionPlanManager,
+  DocumentVerificationQueue,
+  MarketTrendsDashboard,
+  PlatformFeedbackHub,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -341,6 +345,10 @@ const renderSection = (
     case "commission-tracker":      return <CommissionTracker />;
     case "property-comparison":     return <PropertyComparisonTool />;
     case "system-audit-trail":      return <SystemAuditTrail />;
+    case "subscription-plans":      return <SubscriptionPlanManager />;
+    case "document-verification":   return <DocumentVerificationQueue />;
+    case "market-trends":           return <MarketTrendsDashboard />;
+    case "platform-feedback":       return <PlatformFeedbackHub />;
     default:                    return <AdminOverview />;
   }
 };
