@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -3240,6 +3240,166 @@ Deno.serve(async (req) => {
             contact_score: contactScore,
             visit_score: visitScore,
             search_score: searchScore,
+          },
+        },
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: negotiation_assist — Optimal offer price advisor
+    // ═══════════════════════════════════════════
+    if (mode === 'negotiation_assist') {
+      if (!property_id) {
+        return new Response(JSON.stringify({ error: 'property_id is required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const { data: prop, error: propErr } = await supabase
+        .from('properties')
+        .select('price, city, property_type, building_area_sqm, land_area_sqm, investment_score, created_at, listed_at')
+        .eq('id', property_id)
+        .single();
+
+      if (propErr || !prop) {
+        return new Response(JSON.stringify({ error: 'Property not found' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const listingPrice = Number(prop.price) || 0;
+      if (listingPrice <= 0) {
+        return new Response(JSON.stringify({ error: 'Property has no valid price' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const invScore = Number(prop.investment_score) || 0;
+      const listedDate = prop.listed_at || prop.created_at;
+      const daysOnMarket = Math.max(0, Math.round((Date.now() - new Date(listedDate).getTime()) / 86400000));
+
+      // Parallel: comparables + demand heat signals
+      const ba = Number(prop.building_area_sqm) || 0;
+      const la = Number(prop.land_area_sqm) || 0;
+      const primaryArea = ba > 0 ? ba : la;
+      const areaCol = ba > 0 ? 'building_area_sqm' : 'land_area_sqm';
+      const thirtyAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+
+      const parallelQueries: Promise<any>[] = [
+        // [0] Demand: published listings in city
+        supabase.from('properties').select('id', { count: 'exact', head: true })
+          .eq('city', prop.city).eq('status', 'published'),
+        // [1] Demand: new listings 30d
+        supabase.from('properties').select('id', { count: 'exact', head: true })
+          .eq('city', prop.city).gte('created_at', thirtyAgo),
+      ];
+
+      // [2] Comparables (if area available)
+      if (primaryArea > 0 && prop.city) {
+        parallelQueries.push(
+          supabase.from('properties')
+            .select('price, building_area_sqm, land_area_sqm')
+            .eq('city', prop.city).eq('property_type', prop.property_type)
+            .eq('status', 'published').not('price', 'is', null).gt('price', 0)
+            .gte(areaCol, primaryArea * 0.7).lte(areaCol, primaryArea * 1.3)
+            .neq('id', property_id).limit(50)
+        );
+      }
+
+      const results = await Promise.all(parallelQueries);
+      const totalListings = results[0].count || 1;
+      const newListings = results[1].count || 0;
+
+      // Demand heat (simplified)
+      const demandHeat = Math.min(100, Math.max(0,
+        (newListings >= 20 ? 40 : newListings >= 10 ? 25 : 10) +
+        (totalListings >= 50 ? 30 : totalListings >= 20 ? 20 : 10)
+      ));
+
+      // FMV from comparables
+      let fmv = listingPrice;
+      let compCount = 0;
+      if (results[2]?.data) {
+        const valid = (results[2].data || []).filter((c: any) => Number(c.price) > 0 && Number(c[areaCol]) > 0);
+        compCount = valid.length;
+        if (compCount >= 2) {
+          const ppm = valid.map((c: any) => Number(c.price) / Number(c[areaCol])).sort((a: number, b: number) => a - b);
+          const mid = Math.floor(ppm.length / 2);
+          const median = ppm.length % 2 !== 0 ? ppm[mid] : (ppm[mid - 1] + ppm[mid]) / 2;
+          fmv = Math.round(median * primaryArea);
+        }
+      }
+
+      // ── Negotiation logic ──
+      let discountPct = 0;
+      const reasons: string[] = [];
+
+      // Price position
+      const priceRatio = listingPrice / fmv;
+      if (priceRatio > 1.15) {
+        discountPct += (priceRatio - 1) * 50; // e.g., 20% overpriced → ~10% discount
+        reasons.push(`Listed ${Math.round((priceRatio - 1) * 100)}% above market value.`);
+      } else if (priceRatio > 1.05) {
+        discountPct += (priceRatio - 1) * 30;
+        reasons.push(`Slightly above market value.`);
+      } else if (priceRatio < 0.9) {
+        discountPct -= 2; // Already underpriced, less room
+        reasons.push(`Already priced below market — limited negotiation room.`);
+      }
+
+      // Days on market
+      if (daysOnMarket > 120) {
+        discountPct += 8;
+        reasons.push(`On market ${daysOnMarket} days — seller likely motivated.`);
+      } else if (daysOnMarket > 60) {
+        discountPct += 5;
+        reasons.push(`On market ${daysOnMarket} days — some negotiation leverage.`);
+      } else if (daysOnMarket < 14) {
+        discountPct -= 2;
+        reasons.push(`Fresh listing (${daysOnMarket} days) — less room to negotiate.`);
+      }
+
+      // Demand heat
+      if (demandHeat >= 70) {
+        discountPct -= 3;
+        reasons.push(`Hot market — competitive offers expected.`);
+      } else if (demandHeat < 40) {
+        discountPct += 3;
+        reasons.push(`Cool market — buyers have leverage.`);
+      }
+
+      // Cap discount
+      discountPct = Math.max(-2, Math.min(20, discountPct));
+      const suggestedOffer = Math.round(listingPrice * (1 - discountPct / 100));
+      const marginPct = Math.round(discountPct * 100) / 100;
+
+      // Confidence
+      let confidence: number;
+      if (compCount >= 10) confidence = 90;
+      else if (compCount >= 5) confidence = 75;
+      else if (compCount >= 2) confidence = 60;
+      else confidence = 40;
+
+      const explanation = reasons.join(' ') + (discountPct > 0
+        ? ` Recommend offering ${marginPct}% below listing price.`
+        : ` Offer close to listing price for best chance of acceptance.`);
+
+      return new Response(JSON.stringify({
+        mode: 'negotiation_assist',
+        data: {
+          suggested_offer_price: suggestedOffer,
+          negotiation_margin_percent: marginPct,
+          negotiation_confidence: confidence,
+          explanation,
+          context: {
+            listing_price: listingPrice,
+            fair_market_value: fmv,
+            days_on_market: daysOnMarket,
+            demand_heat_score: demandHeat,
+            investment_score: invScore,
+            comparable_count: compCount,
           },
         },
       }), {
