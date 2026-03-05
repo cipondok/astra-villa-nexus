@@ -176,6 +176,10 @@ import {
   SmartHomeIntegration,
   CurrencyExchangeMonitor,
   CommunityForumManager,
+  NeighborhoodInsights,
+  DocumentSigningHub,
+  PropertyAuctionManager,
+  TenantScreening,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -405,6 +409,10 @@ const renderSection = (
     case "smart-home":           return <SmartHomeIntegration />;
     case "currency-exchange":    return <CurrencyExchangeMonitor />;
     case "community-forum":      return <CommunityForumManager />;
+    case "neighborhood-insights": return <NeighborhoodInsights />;
+    case "document-signing":     return <DocumentSigningHub />;
+    case "property-auctions":    return <PropertyAuctionManager />;
+    case "tenant-screening":     return <TenantScreening />;
     default:                    return <AdminOverview />;
   }
 };
