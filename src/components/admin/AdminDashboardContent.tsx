@@ -115,6 +115,8 @@ import {
   AuditTrailDashboard,
   RevenueAnalyticsDashboard,
   BulkPropertyActions,
+  NotificationTemplatesManager,
+  UserEngagementAnalytics,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
