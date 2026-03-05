@@ -172,6 +172,10 @@ import {
   AffiliateDashboard,
   ChatBotTraining,
   PropertyValuationTool,
+  FraudDetectionDashboard,
+  SmartHomeIntegration,
+  CurrencyExchangeMonitor,
+  CommunityForumManager,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -397,6 +401,10 @@ const renderSection = (
     case "affiliate-dashboard":  return <AffiliateDashboard />;
     case "chatbot-training":     return <ChatBotTraining />;
     case "property-valuation":   return <PropertyValuationTool />;
+    case "fraud-detection":      return <FraudDetectionDashboard />;
+    case "smart-home":           return <SmartHomeIntegration />;
+    case "currency-exchange":    return <CurrencyExchangeMonitor />;
+    case "community-forum":      return <CommunityForumManager />;
     default:                    return <AdminOverview />;
   }
 };
