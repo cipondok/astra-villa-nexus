@@ -246,4 +246,6 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "nearby-facilities-settings": { label: "Nearby & Payment Settings", category: "Property System" },
   "off-plan-manager": { label: "Off-Plan Project Manager", category: "Property System" },
   "ai-performance": { label: "AI Performance", category: "Analytics" },
+  "system-health": { label: "System Health", category: "Technical" },
+  "admin-guide": { label: "Admin Guide", category: "Help" },
 };
