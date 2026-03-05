@@ -115,6 +115,8 @@ import {
   AuditTrailDashboard,
   RevenueAnalyticsDashboard,
   BulkPropertyActions,
+  NotificationTemplatesManager,
+  UserEngagementAnalytics,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -283,6 +285,8 @@ const renderSection = (
     case "audit-trail":             return <AuditTrailDashboard />;
     case "revenue-analytics":       return <RevenueAnalyticsDashboard />;
     case "bulk-property-actions":   return <BulkPropertyActions />;
+    case "notification-templates":  return <NotificationTemplatesManager />;
+    case "user-engagement":         return <UserEngagementAnalytics />;
     default:                    return <AdminOverview />;
   }
 };

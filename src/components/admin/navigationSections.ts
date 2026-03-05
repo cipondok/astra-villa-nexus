@@ -253,6 +253,13 @@ export const navigationSections = {
       description: "View and manage all system notifications and alerts"
     },
     {
+      key: "notification-templates",
+      label: "Notification Templates",
+      icon: Mail,
+      description: "Manage email, push, SMS, and in-app notification templates with variables and preview",
+      badge: "New"
+    },
+    {
       key: "sample-property-generator",
       label: "Sample Property Generator",
       icon: Sparkles,
@@ -461,6 +468,13 @@ export const navigationSections = {
       label: "Revenue Analytics",
       icon: DollarSign,
       description: "Track revenue, transactions, commissions, and payment method trends",
+      badge: "New"
+    },
+    {
+      key: "user-engagement",
+      label: "User Engagement",
+      icon: Activity,
+      description: "DAU/MAU, session duration, retention, peak hours, and device analytics",
       badge: "New"
     }
   ],
