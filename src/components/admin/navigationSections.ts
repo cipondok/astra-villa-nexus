@@ -331,6 +331,20 @@ export const navigationSections = {
       icon: FileText,
       description: "Monitor lease agreements, payments, renewals, and tenant management",
       badge: "New"
+    },
+    {
+      key: "maintenance-requests",
+      label: "Maintenance Requests",
+      icon: Wrench,
+      description: "Property maintenance tracking, vendor assignment, and resolution monitoring",
+      badge: "New"
+    },
+    {
+      key: "insurance-partners",
+      label: "Insurance Partners",
+      icon: Shield,
+      description: "Insurance partner management, policy tracking, and claims analytics",
+      badge: "New"
     }
   ],
 
