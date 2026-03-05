@@ -2578,8 +2578,10 @@ Deno.serve(async (req) => {
 
     // ═══════════════════════════════════════════
     // MODE: ai_brain — Unified AI Intelligence
+    // Optimized: max parallel queries, no duplicates, <400ms target
     // ═══════════════════════════════════════════
     if (mode === 'ai_brain') {
+      const t0 = Date.now();
       const targetUserId = body.user_id || userId;
       if (!targetUserId) {
         return new Response(JSON.stringify({ error: 'user_id is required' }), {
@@ -2590,245 +2592,272 @@ Deno.serve(async (req) => {
       const targetPropertyId = body.property_id || null;
       const targetCity = body.city || null;
       const thirtyAgo = new Date(Date.now() - 30 * 86400000).toISOString();
-      const sevenAgo = new Date(Date.now() - 7 * 86400000).toISOString();
-      const sixMonthsAgo = new Date(Date.now() - 180 * 86400000).toISOString();
+      const thirtyAgoDate = thirtyAgo.split('T')[0];
+      const sixtyAgo = new Date(Date.now() - 60 * 86400000).toISOString();
 
-      // ── 1. User Intent Profile (read or compute & upsert) ──
-      let intentProfile: any = null;
-      const { data: existingIntent } = await supabase
-        .from('user_intent_profiles')
-        .select('*')
-        .eq('user_id', targetUserId)
-        .single();
+      // ══ PHASE 1: Parallel fan-out — intent profile + AI cache + property (if needed) ══
+      const phase1: Promise<any>[] = [
+        // [0] Intent profile (cached)
+        supabase.from('user_intent_profiles').select('*').eq('user_id', targetUserId).maybeSingle(),
+        // [1] AI recommendation cache
+        supabase.from('user_ai_cache').select('ranked_property_ids, created_at')
+          .eq('user_id', targetUserId).order('created_at', { ascending: false }).limit(1).maybeSingle(),
+        // [2] Activity counts for intent scoring (30d views)
+        supabase.from('activity_logs').select('id', { count: 'exact', head: true })
+          .eq('user_id', targetUserId).eq('activity_type', 'view').gte('created_at', thirtyAgo),
+        // [3] Saves count 30d
+        supabase.from('saved_properties').select('id', { count: 'exact', head: true })
+          .eq('user_id', targetUserId).gte('saved_at', thirtyAgo),
+        // [4] Inquiries count 30d
+        supabase.from('inquiries').select('id', { count: 'exact', head: true })
+          .eq('user_id', targetUserId).gte('created_at', thirtyAgo),
+      ];
 
-      if (existingIntent && existingIntent.updated_at &&
-          (Date.now() - new Date(existingIntent.updated_at).getTime()) < 60 * 60 * 1000) {
-        // Fresh enough (< 1 hour)
-        intentProfile = existingIntent;
-      } else {
-        // Recompute intent from activity
-        const [viewsRes, savesRes, inquiriesRes, savedPropsRes, viewedRes] = await Promise.all([
-          supabase.from('activity_logs').select('id', { count: 'exact', head: true })
-            .eq('user_id', targetUserId).eq('activity_type', 'view').gte('created_at', thirtyAgo),
-          supabase.from('saved_properties').select('id, property_id', { count: 'exact' })
-            .eq('user_id', targetUserId).gte('saved_at', thirtyAgo),
-          supabase.from('inquiries').select('id, property_id', { count: 'exact' })
-            .eq('user_id', targetUserId).gte('created_at', thirtyAgo),
-          supabase.from('saved_properties').select('property_id')
-            .eq('user_id', targetUserId),
-          supabase.from('activity_logs').select('metadata')
-            .eq('user_id', targetUserId).eq('activity_type', 'view')
-            .gte('created_at', sixMonthsAgo).limit(200),
-        ]);
+      // [5] Property fetch (conditional)
+      if (targetPropertyId) {
+        phase1.push(
+          supabase.from('properties')
+            .select('id, title, price, city, property_type, investment_score, predicted_days_to_sell, building_area_sqm, land_area_sqm, listing_type')
+            .eq('id', targetPropertyId).single()
+        );
+      }
 
-        const views30 = viewsRes.count || 0;
-        const saves30 = savesRes.count || 0;
-        const inquiries30 = inquiriesRes.count || 0;
+      const p1 = await Promise.all(phase1);
+      const intentRow = p1[0]?.data;
+      const aiCacheRow = p1[1]?.data;
+      const views30 = p1[2]?.count || 0;
+      const saves30 = p1[3]?.count || 0;
+      const inquiries30 = p1[4]?.count || 0;
+      const propertyRow = targetPropertyId ? p1[5]?.data : null;
 
-        // Classify intent
-        let intentLevel = 'browser';
-        let buyerType = 'Browser';
-        if (inquiries30 >= 3 && saves30 >= 5) { intentLevel = 'high'; buyerType = 'Buyer'; }
-        else if (saves30 >= 2 || inquiries30 >= 1) { intentLevel = 'medium'; buyerType = 'Considering'; }
+      // ══ Compute intent score (0-100) ══
+      const intentScore = Math.min(100, Math.round(
+        Math.min(20, views30 * 0.5) +
+        Math.min(25, saves30 * 5) +
+        Math.min(35, inquiries30 * 10) +
+        (views30 > 0 ? 10 : 0) + // recency signal
+        (saves30 > 0 ? 5 : 0) +
+        (inquiries30 > 0 ? 5 : 0)
+      ));
 
-        // Derive preferences from interacted properties
-        const propIds = new Set<string>();
-        (savedPropsRes.data || []).forEach((s: any) => propIds.add(s.property_id));
-        (viewedRes.data || []).forEach((v: any) => { if (v.metadata?.property_id) propIds.add(v.metadata.property_id); });
-        (inquiriesRes.data || []).forEach((i: any) => propIds.add(i.property_id));
+      let intentLevel = 'low';
+      if (inquiries30 >= 3 && saves30 >= 5) intentLevel = 'high';
+      else if (saves30 >= 2 || inquiries30 >= 1) intentLevel = 'medium';
 
-        let preferredCity = null;
-        let avgBudget = 0;
-        let propertyTypePref = null;
-        let investmentAffinity = 'low';
+      // Use cached intent if fresh (<1h), otherwise we already have counts
+      const intentFresh = intentRow?.updated_at &&
+        (Date.now() - new Date(intentRow.updated_at).getTime()) < 3600000;
 
-        if (propIds.size > 0) {
-          const { data: props } = await supabase
-            .from('properties')
-            .select('city, price, property_type, investment_score')
-            .in('id', Array.from(propIds))
-            .limit(100);
-
-          if (props && props.length > 0) {
-            const cityFreq: Record<string, number> = {};
-            const typeFreq: Record<string, number> = {};
-            let totalPrice = 0, priceCount = 0, totalInv = 0, invCount = 0;
-
-            props.forEach((p: any) => {
-              if (p.city) cityFreq[p.city] = (cityFreq[p.city] || 0) + 1;
-              if (p.property_type) typeFreq[p.property_type] = (typeFreq[p.property_type] || 0) + 1;
-              if (p.price && Number(p.price) > 0) { totalPrice += Number(p.price); priceCount++; }
-              if (p.investment_score != null) { totalInv += Number(p.investment_score); invCount++; }
-            });
-
-            preferredCity = Object.entries(cityFreq).sort((a, b) => b[1] - a[1])[0]?.[0] || null;
-            propertyTypePref = Object.entries(typeFreq).sort((a, b) => b[1] - a[1])[0]?.[0] || null;
-            avgBudget = priceCount > 0 ? Math.round(totalPrice / priceCount) : 0;
-            const avgInv = invCount > 0 ? totalInv / invCount : 0;
-            investmentAffinity = avgInv >= 70 ? 'high' : avgInv >= 40 ? 'medium' : 'low';
-          }
-        }
-
-        // Upsert intent profile
-        const profileData = {
+      if (!intentFresh) {
+        // Fire-and-forget upsert (don't await — saves ~50ms)
+        supabase.from('user_intent_profiles').upsert({
           user_id: targetUserId,
           intent_level: intentLevel,
-          buyer_type: buyerType,
-          preferred_city: preferredCity,
-          avg_budget: avgBudget,
-          property_type_preference: propertyTypePref,
-          investment_affinity: investmentAffinity,
+          buyer_type: intentLevel === 'high' ? 'Buyer' : intentLevel === 'medium' ? 'Considering' : 'Browser',
           views_30d: views30,
           saves_30d: saves30,
           inquiries_30d: inquiries30,
           last_active_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
-        };
-
-        await supabase.from('user_intent_profiles').upsert(profileData, { onConflict: 'user_id' });
-        intentProfile = profileData;
+        }, { onConflict: 'user_id' }).then(() => {});
       }
 
-      // ── 2. AI Recommendations from cache (ai-match-engine-v2 results) ──
-      let recommendations: any[] = [];
-      const { data: aiCache } = await supabase
-        .from('user_ai_cache')
-        .select('ranked_property_ids, created_at, expires_at')
-        .eq('user_id', targetUserId)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
+      // ══ PHASE 2: Parallel fan-out — recommendations + market + property analysis ══
+      // Determine city for market insight
+      const demandCity = targetCity || intentRow?.preferred_city || propertyRow?.city || null;
 
-      if (aiCache && aiCache.ranked_property_ids) {
-        const rankedIds = Array.isArray(aiCache.ranked_property_ids)
-          ? aiCache.ranked_property_ids
-          : [];
+      const phase2: Promise<any>[] = [];
+      const phase2Keys: string[] = [];
 
-        // Fetch top 10 property details
-        const topIds = rankedIds.slice(0, 10).map((r: any) => typeof r === 'string' ? r : r?.id || r?.property_id).filter(Boolean);
-        if (topIds.length > 0) {
-          const { data: recProps } = await supabase
-            .from('properties')
-            .select('id, title, city, price, property_type, investment_score, cover_image')
-            .in('id', topIds)
-            .eq('status', 'published')
-            .limit(10);
-
-          recommendations = (recProps || []).map((p: any) => {
-            const rank = rankedIds.findIndex((r: any) => (typeof r === 'string' ? r : r?.id || r?.property_id) === p.id);
-            return { ...p, ai_rank: rank + 1 };
-          }).sort((a: any, b: any) => a.ai_rank - b.ai_rank);
+      // [A] Recommendation property details from AI cache
+      let topRecIds: string[] = [];
+      if (aiCacheRow?.ranked_property_ids) {
+        const ranked = Array.isArray(aiCacheRow.ranked_property_ids) ? aiCacheRow.ranked_property_ids : [];
+        topRecIds = ranked.slice(0, 10).map((r: any) => typeof r === 'string' ? r : r?.id || r?.property_id).filter(Boolean);
+        if (topRecIds.length > 0) {
+          phase2.push(
+            supabase.from('properties')
+              .select('id, title, city, price, property_type, cover_image, investment_score')
+              .in('id', topRecIds).eq('status', 'published').limit(10)
+          );
+          phase2Keys.push('recs');
         }
       }
 
-      // ── 3. Market Demand Score (for user's preferred city or specified city) ──
-      const demandCity = targetCity || intentProfile?.preferred_city;
-      let marketDemand: any = null;
-
+      // [B] Market demand — city listings + recent prices
       if (demandCity) {
-        const [publishedRes, newListingsRes] = await Promise.all([
+        phase2.push(
           supabase.from('properties').select('id', { count: 'exact', head: true })
-            .eq('city', demandCity).eq('status', 'published'),
+            .eq('city', demandCity).eq('status', 'published')
+        );
+        phase2Keys.push('cityListings');
+
+        phase2.push(
           supabase.from('properties').select('id', { count: 'exact', head: true })
-            .eq('city', demandCity).gte('created_at', thirtyAgo),
-        ]);
+            .eq('city', demandCity).gte('created_at', thirtyAgo)
+        );
+        phase2Keys.push('cityNew');
 
-        const listingCount = publishedRes.count || 1;
-        const newListings = newListingsRes.count || 0;
+        // Price trend: recent vs previous 30d
+        phase2.push(
+          supabase.from('properties').select('price')
+            .eq('city', demandCity).eq('status', 'published').not('price', 'is', null).gt('price', 0)
+            .gte('created_at', thirtyAgo).limit(200)
+        );
+        phase2Keys.push('priceRecent');
 
-        // Get city property IDs for view/save counts
-        const { data: cityProps } = await supabase
-          .from('properties').select('id').eq('city', demandCity).eq('status', 'published').limit(500);
-        const cityPropIds = (cityProps || []).map((p: any) => p.id);
-
-        let totalViews = 0, totalSaves = 0;
-        if (cityPropIds.length > 0) {
-          const [vRes, sRes] = await Promise.all([
-            supabase.from('activity_logs').select('id', { count: 'exact', head: true })
-              .eq('activity_type', 'view').in('property_id', cityPropIds).gte('created_at', thirtyAgo),
-            supabase.from('saved_properties').select('id', { count: 'exact', head: true })
-              .in('property_id', cityPropIds).gte('saved_at', thirtyAgo),
-          ]);
-          totalViews = vRes.count || 0;
-          totalSaves = sRes.count || 0;
-        }
-
-        const viewsPerListing = totalViews / listingCount;
-        const savesPerListing = totalSaves / listingCount;
-
-        let demandScore = Math.min(100, Math.max(0,
-          (viewsPerListing >= 50 ? 40 : viewsPerListing >= 30 ? 30 : viewsPerListing >= 15 ? 20 : 10) +
-          (savesPerListing >= 10 ? 30 : savesPerListing >= 5 ? 20 : savesPerListing >= 2 ? 10 : 5) +
-          (newListings >= 20 ? 10 : newListings >= 10 ? 7 : 4)
-        ));
-
-        let heatLevel = demandScore >= 80 ? 'very hot' : demandScore >= 65 ? 'hot' : demandScore >= 50 ? 'stable' : 'cool';
-
-        marketDemand = {
-          city: demandCity,
-          heat_score: demandScore,
-          heat_level: heatLevel,
-          total_listings: listingCount,
-          new_listings_30d: newListings,
-          views_30d: totalViews,
-          saves_30d: totalSaves,
-        };
+        phase2.push(
+          supabase.from('properties').select('price')
+            .eq('city', demandCity).eq('status', 'published').not('price', 'is', null).gt('price', 0)
+            .gte('created_at', sixtyAgo).lt('created_at', thirtyAgo).limit(200)
+        );
+        phase2Keys.push('pricePrev');
       }
 
-      // ── 4. Property intelligence (if property_id provided) ──
-      let propertyIntel: any = null;
-      if (targetPropertyId) {
-        const { data: prop } = await supabase
-          .from('properties')
-          .select('id, title, price, city, property_type, investment_score, predicted_days_to_sell, building_area_sqm, land_area_sqm')
-          .eq('id', targetPropertyId)
-          .single();
-
-        if (prop) {
-          const { data: propAnalytics } = await supabase
-            .from('property_analytics')
+      // [C] Property analytics + comparables (if property_id)
+      if (propertyRow) {
+        phase2.push(
+          supabase.from('property_analytics')
             .select('views, saves, contacts')
             .eq('property_id', targetPropertyId)
-            .gte('date', thirtyAgo.split('T')[0]);
+            .gte('date', thirtyAgoDate)
+        );
+        phase2Keys.push('propAnalytics');
 
-          const pViews = (propAnalytics || []).reduce((s: number, r: any) => s + (r.views || 0), 0);
-          const pSaves = (propAnalytics || []).reduce((s: number, r: any) => s + (r.saves || 0), 0);
-          const pContacts = (propAnalytics || []).reduce((s: number, r: any) => s + (r.contacts || 0), 0);
+        // Comparables for pricing intelligence
+        const ba = Number(propertyRow.building_area_sqm) || 0;
+        const la = Number(propertyRow.land_area_sqm) || 0;
+        const primaryArea = ba > 0 ? ba : la;
+        const areaCol = ba > 0 ? 'building_area_sqm' : 'land_area_sqm';
 
-          propertyIntel = {
-            id: prop.id,
-            title: prop.title,
-            price: prop.price,
-            city: prop.city,
-            investment_score: prop.investment_score || 0,
-            expected_days_on_market: prop.predicted_days_to_sell || 60,
-            popularity: { views_30d: pViews, saves_30d: pSaves, contacts_30d: pContacts },
-          };
+        if (primaryArea > 0 && propertyRow.city) {
+          phase2.push(
+            supabase.from('properties')
+              .select('price, building_area_sqm, land_area_sqm')
+              .eq('city', propertyRow.city).eq('property_type', propertyRow.property_type)
+              .eq('status', 'published').not('price', 'is', null).gt('price', 0)
+              .gte(areaCol, primaryArea * 0.7).lte(areaCol, primaryArea * 1.3)
+              .neq('id', targetPropertyId).limit(50)
+          );
+          phase2Keys.push('comps');
         }
       }
 
-      console.log(`[ai_brain] user=${targetUserId} intent=${intentProfile?.intent_level} recs=${recommendations.length} city=${demandCity}`);
+      const p2 = await Promise.all(phase2);
+      const p2Map: Record<string, any> = {};
+      phase2Keys.forEach((k, i) => { p2Map[k] = p2[i]; });
+
+      // ══ BUILD: recommendations ══
+      let recommendations: any[] = [];
+      if (p2Map.recs?.data) {
+        const ranked = Array.isArray(aiCacheRow!.ranked_property_ids) ? aiCacheRow!.ranked_property_ids : [];
+        recommendations = (p2Map.recs.data || []).map((p: any) => {
+          const idx = topRecIds.indexOf(p.id);
+          return { ...p, ai_rank: idx + 1, match_score: Math.max(0, 100 - idx * 5) };
+        }).sort((a: any, b: any) => a.ai_rank - b.ai_rank);
+      }
+
+      // ══ BUILD: market_insight ══
+      let marketInsight: any = null;
+      if (demandCity && p2Map.cityListings) {
+        const listingCount = p2Map.cityListings.count || 1;
+        const newListings = p2Map.cityNew?.count || 0;
+
+        // Price trend
+        const rPrices = (p2Map.priceRecent?.data || []).map((p: any) => Number(p.price)).filter((n: number) => n > 0);
+        const pPrices = (p2Map.pricePrev?.data || []).map((p: any) => Number(p.price)).filter((n: number) => n > 0);
+        const avgRecent = rPrices.length > 0 ? rPrices.reduce((a: number, b: number) => a + b, 0) / rPrices.length : 0;
+        const avgPrev = pPrices.length > 0 ? pPrices.reduce((a: number, b: number) => a + b, 0) / pPrices.length : 0;
+        const priceTrendPct = avgPrev > 0 ? ((avgRecent - avgPrev) / avgPrev) * 100 : 0;
+
+        // Heat score (streamlined — no extra view queries, use listing velocity + price trend)
+        const velocityScore = newListings >= 20 ? 30 : newListings >= 10 ? 20 : newListings >= 5 ? 15 : 8;
+        const priceScore = priceTrendPct >= 5 ? 35 : priceTrendPct >= 2 ? 25 : priceTrendPct >= 0 ? 15 : 5;
+        const densityScore = listingCount >= 100 ? 35 : listingCount >= 50 ? 25 : listingCount >= 20 ? 15 : 5;
+        const heatScore = Math.min(100, Math.max(0, velocityScore + priceScore + densityScore));
+
+        let trend = 'stable';
+        if (priceTrendPct > 3) trend = 'rising';
+        else if (priceTrendPct < -3) trend = 'declining';
+
+        marketInsight = {
+          city: demandCity,
+          heat_score: heatScore,
+          trend,
+          price_growth_pct: Math.round(priceTrendPct * 100) / 100,
+          total_listings: listingCount,
+          new_listings_30d: newListings,
+        };
+      }
+
+      // ══ BUILD: property_analysis ══
+      let propertyAnalysis: any = null;
+      if (propertyRow) {
+        const price = Number(propertyRow.price) || 0;
+        const invScore = propertyRow.investment_score || 0;
+
+        // Pricing intelligence from comparables
+        let pricePosition = 'unknown';
+        let fmv = price;
+        if (p2Map.comps?.data) {
+          const ba = Number(propertyRow.building_area_sqm) || 0;
+          const la = Number(propertyRow.land_area_sqm) || 0;
+          const primaryArea = ba > 0 ? ba : la;
+          const areaCol = ba > 0 ? 'building_area_sqm' : 'land_area_sqm';
+
+          const valid = (p2Map.comps.data || []).filter((c: any) => Number(c.price) > 0 && Number(c[areaCol]) > 0);
+          if (valid.length >= 2) {
+            const ppm = valid.map((c: any) => Number(c.price) / Number(c[areaCol])).sort((a: number, b: number) => a - b);
+            const mid = Math.floor(ppm.length / 2);
+            const median = ppm.length % 2 !== 0 ? ppm[mid] : (ppm[mid - 1] + ppm[mid]) / 2;
+
+            // Demand multiplier
+            const cc = valid.length;
+            const dm = cc >= 30 ? 1.10 : cc >= 15 ? 1.05 : cc >= 5 ? 1.0 : 0.95;
+            fmv = Math.round(median * primaryArea * dm);
+
+            const ratio = price > 0 ? price / fmv : 0;
+            pricePosition = ratio > 1.15 ? 'overpriced' : ratio < 0.85 ? 'underpriced' : 'fair';
+          }
+        }
+
+        // Investment rating
+        let investmentRating = 'hold';
+        if (invScore >= 75 && pricePosition !== 'overpriced') investmentRating = 'strong buy';
+        else if (invScore >= 60) investmentRating = 'buy';
+        else if (invScore >= 40) investmentRating = 'hold';
+        else investmentRating = 'pass';
+
+        // Analytics
+        const pViews = (p2Map.propAnalytics?.data || []).reduce((s: number, r: any) => s + (r.views || 0), 0);
+        const pSaves = (p2Map.propAnalytics?.data || []).reduce((s: number, r: any) => s + (r.saves || 0), 0);
+        const pContacts = (p2Map.propAnalytics?.data || []).reduce((s: number, r: any) => s + (r.contacts || 0), 0);
+
+        propertyAnalysis = {
+          price_position: pricePosition,
+          fair_market_value: fmv,
+          investment_rating: investmentRating,
+          investment_score: invScore,
+          expected_days_on_market: propertyRow.predicted_days_to_sell || 60,
+          engagement: { views_30d: pViews, saves_30d: pSaves, contacts_30d: pContacts },
+        };
+      }
+
+      const elapsed = Date.now() - t0;
+      console.log(`[ai_brain] user=${targetUserId} intent=${intentLevel} recs=${recommendations.length} city=${demandCity} elapsed=${elapsed}ms`);
 
       return new Response(JSON.stringify({
         mode: 'ai_brain',
         data: {
-          user_intent: {
-            intent_level: intentProfile?.intent_level,
-            buyer_type: intentProfile?.buyer_type,
-            preferred_city: intentProfile?.preferred_city,
-            avg_budget: intentProfile?.avg_budget,
-            property_type_preference: intentProfile?.property_type_preference,
-            investment_affinity: intentProfile?.investment_affinity,
-            activity: {
-              views_30d: intentProfile?.views_30d,
-              saves_30d: intentProfile?.saves_30d,
-              inquiries_30d: intentProfile?.inquiries_30d,
-            },
+          recommendations,
+          buyer_profile: {
+            intent_level: intentLevel,
+            intent_score: intentScore,
           },
-          ai_recommendations: recommendations,
-          market_demand: marketDemand,
-          property_intelligence: propertyIntel,
+          market_insight: marketInsight,
+          property_analysis: propertyAnalysis,
         },
+        _meta: { elapsed_ms: elapsed },
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
