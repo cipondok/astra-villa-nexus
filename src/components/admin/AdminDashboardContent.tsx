@@ -110,6 +110,8 @@ import {
   DOMAccuracyReport,
   CronJobMonitor,
   WeightTuningHistory,
+  SystemHealthDashboard,
+  AdminGuide,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -273,6 +275,8 @@ const renderSection = (
     case "dom-accuracy":            return <DOMAccuracyReport />;
     case "cron-monitor":            return <CronJobMonitor />;
     case "weight-tuning-history":   return <WeightTuningHistory />;
+    case "system-health":           return <SystemHealthDashboard />;
+    case "admin-guide":             return <AdminGuide />;
     default:                    return <AdminOverview />;
   }
 };
