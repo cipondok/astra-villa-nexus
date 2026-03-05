@@ -610,6 +610,13 @@ export const navigationSections = {
       icon: Globe,
       description: "Manage city-by-city expansion strategy with phases, competitors, and marketing budgets",
       badge: "New"
+    },
+    {
+      key: "cron-monitor",
+      label: "Cron Job Monitor",
+      icon: CalendarDays,
+      description: "View and monitor all scheduled pg_cron jobs with run history",
+      badge: "New"
     }
   ],
 

@@ -130,6 +130,7 @@ export const NearbyFacilitiesSettings = lazyRetry(() => import("./settings/Nearb
 export const AIPerformanceDashboard = lazyRetry(() => import("./AIPerformanceDashboard"));
 export const AIModelWeightsPanel = lazyRetry(() => import("./AIModelWeightsPanel"));
 export const DOMAccuracyReport = lazyRetry(() => import("./DOMAccuracyReport"));
+export const CronJobMonitor = lazyRetry(() => import("./CronJobMonitor"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
