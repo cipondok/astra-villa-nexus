@@ -783,6 +783,13 @@ export const navigationSections = {
       description: "Points, tiers, rewards catalog, and member engagement tracking",
       badge: "New"
     }
+    {
+      key: "price-alerts",
+      label: "Price Alerts",
+      icon: BellRing,
+      description: "User price drop watchlists, notification triggers, and conversion tracking",
+      badge: "New"
+    }
   ],
 
   "content-settings": [
@@ -892,6 +899,20 @@ export const navigationSections = {
       label: "Multi-Language",
       icon: Languages,
       description: "Translation management, language coverage, and localization tracking",
+      badge: "New"
+    }
+    {
+      key: "environmental-sustainability",
+      label: "Environmental Sustainability",
+      icon: Leaf,
+      description: "Green certifications, energy efficiency, carbon footprint, and water usage tracking",
+      badge: "New"
+    },
+    {
+      key: "contract-templates",
+      label: "Contract Templates",
+      icon: FileSignature,
+      description: "Indonesian property legal document templates with variable substitution and versioning",
       badge: "New"
     }
   ],
