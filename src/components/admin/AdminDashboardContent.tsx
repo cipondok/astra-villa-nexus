@@ -148,6 +148,10 @@ import {
   DocumentVerificationQueue,
   MarketTrendsDashboard,
   PlatformFeedbackHub,
+  ReferralProgramDashboard,
+  PaymentTransactionLog,
+  PropertyStagingQueue,
+  AgentPerformanceLeaderboard,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -349,6 +353,10 @@ const renderSection = (
     case "document-verification":   return <DocumentVerificationQueue />;
     case "market-trends":           return <MarketTrendsDashboard />;
     case "platform-feedback":       return <PlatformFeedbackHub />;
+    case "referral-program":        return <ReferralProgramDashboard />;
+    case "payment-transactions":    return <PaymentTransactionLog />;
+    case "property-staging":        return <PropertyStagingQueue />;
+    case "agent-leaderboard":       return <AgentPerformanceLeaderboard />;
     default:                    return <AdminOverview />;
   }
 };

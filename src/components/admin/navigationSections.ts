@@ -71,7 +71,10 @@ import {
   Heart,
   Star,
   Store,
-  FileCheck
+  FileCheck,
+  Share2,
+  Camera,
+  Trophy
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -677,6 +680,34 @@ export const navigationSections = {
       label: "Platform Feedback",
       icon: MessageSquare,
       description: "User feedback, sentiment trends, feature ratings, and review management",
+      badge: "New"
+    },
+    {
+      key: "referral-program",
+      label: "Referral Program",
+      icon: Share2,
+      description: "Referral tracking, conversion rates, reward payouts, and top referrer rankings",
+      badge: "New"
+    },
+    {
+      key: "payment-transactions",
+      label: "Payment Transactions",
+      icon: CreditCard,
+      description: "Transaction log, payment methods, success rates, and daily volume tracking",
+      badge: "New"
+    },
+    {
+      key: "property-staging",
+      label: "Property Staging",
+      icon: Camera,
+      description: "Photo review queue, AI staging pipeline, and quality assessment scores",
+      badge: "New"
+    },
+    {
+      key: "agent-leaderboard",
+      label: "Agent Leaderboard",
+      icon: Trophy,
+      description: "Top agents by sales, ratings, response rates, and conversion efficiency",
       badge: "New"
     }
   ],
