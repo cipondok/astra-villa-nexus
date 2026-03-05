@@ -143,6 +143,10 @@ export const AdminQuickActions = lazyRetry(() => import("./AdminQuickActions"));
 export const DataBackupExport = lazyRetry(() => import("./DataBackupExport"));
 export const PlatformChangelog = lazyRetry(() => import("./PlatformChangelog"));
 export const APIUsageAnalytics = lazyRetry(() => import("./APIUsageAnalytics"));
+export const SLAComplianceMonitor = lazyRetry(() => import("./SLAComplianceMonitor"));
+export const CompetitorAnalysis = lazyRetry(() => import("./CompetitorAnalysis"));
+export const SystemAnnouncements = lazyRetry(() => import("./SystemAnnouncements"));
+export const FeedbackSentimentAnalysis = lazyRetry(() => import("./FeedbackSentimentAnalysis"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
@@ -265,4 +269,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "data-backup": { label: "Data Backup & Export", category: "System & Tools" },
   "platform-changelog": { label: "Platform Changelog", category: "Help" },
   "api-usage": { label: "API Usage Analytics", category: "Analytics" },
+  "sla-compliance": { label: "SLA Compliance", category: "Analytics" },
+  "competitor-analysis": { label: "Competitor Analysis", category: "Analytics" },
+  "system-announcements": { label: "System Announcements", category: "System" },
+  "feedback-sentiment": { label: "Feedback Sentiment", category: "Analytics" },
 };
