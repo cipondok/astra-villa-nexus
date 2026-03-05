@@ -109,9 +109,9 @@ const SystemHealthDashboard = () => {
   const { data: tableStats } = useQuery({
     queryKey: ["system-health-tables"],
     queryFn: async () => {
-      const tables = ["properties", "profiles", "user_sessions", "ai_recommendation_events", "activity_logs"];
+      const tableNames = ["properties", "profiles", "user_sessions", "ai_recommendation_events", "activity_logs"] as const;
       const results: { name: string; count: number }[] = [];
-      for (const t of tables) {
+      for (const t of tableNames) {
         const { count } = await supabase.from(t).select("*", { count: "exact", head: true });
         results.push({ name: t, count: count ?? 0 });
       }
