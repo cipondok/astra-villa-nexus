@@ -74,7 +74,8 @@ import {
   FileCheck,
   Share2,
   Camera,
-  Trophy
+  Trophy,
+  Package
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -708,6 +709,34 @@ export const navigationSections = {
       label: "Agent Leaderboard",
       icon: Trophy,
       description: "Top agents by sales, ratings, response rates, and conversion efficiency",
+      badge: "New"
+    },
+    {
+      key: "inventory-analytics",
+      label: "Inventory Analytics",
+      icon: Package,
+      description: "Property stock levels, turnover rates, stale listings, and availability tracking",
+      badge: "New"
+    },
+    {
+      key: "lead-scoring",
+      label: "Lead Scoring",
+      icon: Target,
+      description: "AI-powered lead quality assessment, conversion pipeline, and follow-up tracking",
+      badge: "New"
+    },
+    {
+      key: "compliance-reporting",
+      label: "Compliance Reporting",
+      icon: Shield,
+      description: "Regulatory compliance status, audit results, KYC/AML, and finding management",
+      badge: "New"
+    },
+    {
+      key: "customer-journey",
+      label: "Customer Journey",
+      icon: Users,
+      description: "End-to-end user journey funnel, touchpoint satisfaction, and drop-off analysis",
       badge: "New"
     }
   ],

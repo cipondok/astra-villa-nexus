@@ -175,6 +175,10 @@ export const ReferralProgramDashboard = lazyRetry(() => import("./ReferralProgra
 export const PaymentTransactionLog = lazyRetry(() => import("./PaymentTransactionLog"));
 export const PropertyStagingQueue = lazyRetry(() => import("./PropertyStagingQueue"));
 export const AgentPerformanceLeaderboard = lazyRetry(() => import("./AgentPerformanceLeaderboard"));
+export const InventoryAnalytics = lazyRetry(() => import("./InventoryAnalytics"));
+export const LeadScoringDashboard = lazyRetry(() => import("./LeadScoringDashboard"));
+export const ComplianceReportingCenter = lazyRetry(() => import("./ComplianceReportingCenter"));
+export const CustomerJourneyMap = lazyRetry(() => import("./CustomerJourneyMap"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
@@ -328,4 +332,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "payment-transactions": { label: "Payment Transactions", category: "Finance" },
   "property-staging": { label: "Property Staging", category: "Property System" },
   "agent-leaderboard": { label: "Agent Leaderboard", category: "Analytics" },
+  "inventory-analytics": { label: "Inventory Analytics", category: "Property System" },
+  "lead-scoring": { label: "Lead Scoring", category: "Analytics" },
+  "compliance-reporting": { label: "Compliance Reporting", category: "Governance" },
+  "customer-journey": { label: "Customer Journey", category: "Analytics" },
 };
