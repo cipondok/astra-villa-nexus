@@ -18,9 +18,9 @@ const UserEngagementAnalytics = () => {
       const startDate = subDays(new Date(), daysBack).toISOString();
       const { data, error } = await supabase
         .from("user_sessions")
-        .select("id, user_id, started_at, ended_at, page_views, device_type")
-        .gte("started_at", startDate)
-        .order("started_at", { ascending: true });
+        .select("id, user_id, created_at, last_activity_at, device_type")
+        .gte("created_at", startDate)
+        .order("created_at", { ascending: true });
 
       if (error) throw error;
       return data || [];
