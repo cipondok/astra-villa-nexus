@@ -440,6 +440,13 @@ export const navigationSections = {
       icon: Target,
       description: "Compare predicted vs actual days-on-market for sold properties",
       badge: "New"
+    },
+    {
+      key: "weight-tuning-history",
+      label: "Weight Tuning History",
+      icon: History,
+      description: "Track AI model weight changes across auto-tune cycles with visual diff",
+      badge: "New"
     }
   ],
 
