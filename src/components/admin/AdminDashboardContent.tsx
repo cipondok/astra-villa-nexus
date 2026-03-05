@@ -140,6 +140,10 @@ import {
   TenantLeaseTracker,
   SupportTicketAnalytics,
   NotificationCenterManager,
+  VendorPerformanceDashboard,
+  CommissionTracker,
+  PropertyComparisonTool,
+  SystemAuditTrail,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -333,6 +337,10 @@ const renderSection = (
     case "tenant-leases":           return <TenantLeaseTracker />;
     case "support-analytics":       return <SupportTicketAnalytics />;
     case "notification-center":     return <NotificationCenterManager />;
+    case "vendor-performance":      return <VendorPerformanceDashboard />;
+    case "commission-tracker":      return <CommissionTracker />;
+    case "property-comparison":     return <PropertyComparisonTool />;
+    case "system-audit-trail":      return <SystemAuditTrail />;
     default:                    return <AdminOverview />;
   }
 };
