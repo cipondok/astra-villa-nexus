@@ -1394,9 +1394,64 @@ Deno.serve(async (req) => {
     // ═══════════════════════════════════════════
     if (mode === 'days_to_sell_prediction') {
       const domResult = await computeDaysOnMarket(property, property_id);
-      console.log(`Days to sell for ${property_id}: ${domResult.estimated_days_on_market} (${domResult.speed_category})`);
 
-      return new Response(JSON.stringify({ mode: 'days_to_sell_prediction', data: domResult }), {
+      // Fetch actual DOM stats from sold properties in same city/type for validation
+      const { data: soldProps } = await supabase
+        .from('properties')
+        .select('days_on_market, price, sold_at, listed_at')
+        .eq('city', property.city)
+        .eq('property_type', property.property_type)
+        .not('days_on_market', 'is', null)
+        .not('sold_at', 'is', null)
+        .order('sold_at', { ascending: false })
+        .limit(50);
+
+      let actual_dom_stats = null;
+      if (soldProps && soldProps.length > 0) {
+        const doms = soldProps.map((p: any) => p.days_on_market as number).sort((a: number, b: number) => a - b);
+        const avg = Math.round(doms.reduce((s: number, v: number) => s + v, 0) / doms.length);
+        const median = doms[Math.floor(doms.length / 2)];
+        const min = doms[0];
+        const max = doms[doms.length - 1];
+        actual_dom_stats = {
+          sample_size: doms.length,
+          average: avg,
+          median,
+          min,
+          max,
+          prediction_accuracy: domResult.estimated_days_on_market > 0
+            ? Math.round((1 - Math.abs(domResult.estimated_days_on_market - median) / median) * 100)
+            : null,
+        };
+      }
+
+      // Current property's actual DOM (if listed)
+      const currentListedAt = (property as any).listed_at;
+      const currentSoldAt = (property as any).sold_at;
+      const currentDom = (property as any).days_on_market;
+      let current_dom_info = null;
+      if (currentListedAt) {
+        const listedDate = new Date(currentListedAt);
+        const now = currentSoldAt ? new Date(currentSoldAt) : new Date();
+        const activeDays = Math.max(1, Math.round((now.getTime() - listedDate.getTime()) / (1000 * 60 * 60 * 24)));
+        current_dom_info = {
+          listed_at: currentListedAt,
+          sold_at: currentSoldAt || null,
+          days_active: currentDom || activeDays,
+          is_sold: !!currentSoldAt,
+        };
+      }
+
+      console.log(`Days to sell for ${property_id}: ${domResult.estimated_days_on_market} (${domResult.speed_category}), actual_stats: ${soldProps?.length || 0} sold comps`);
+
+      return new Response(JSON.stringify({
+        mode: 'days_to_sell_prediction',
+        data: {
+          ...domResult,
+          actual_dom_stats,
+          current_dom_info,
+        },
+      }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
