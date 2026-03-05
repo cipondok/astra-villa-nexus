@@ -75,7 +75,8 @@ import {
   Share2,
   Camera,
   Trophy,
-  Package
+  Package,
+  BookOpen
 } from "lucide-react";
 
 export interface NavigationSection {
