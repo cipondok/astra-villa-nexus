@@ -64,7 +64,9 @@ import {
   Rocket,
   Newspaper,
   Sliders,
-  Target
+  Target,
+  Layers,
+  DollarSign
 } from "lucide-react";
 
 export interface NavigationSection {
