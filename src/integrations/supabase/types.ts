@@ -15690,6 +15690,7 @@ export type Database = {
           construction_phase: string | null
           construction_phases: Json | null
           created_at: string | null
+          days_on_market: number | null
           description: string | null
           developer_certified: boolean
           developer_id: string | null
@@ -15720,6 +15721,7 @@ export type Database = {
           launch_date: string | null
           legal_checked: boolean
           legal_status: string | null
+          listed_at: string | null
           listing_type: string
           location: string
           minimum_rental_days: number | null
@@ -15741,6 +15743,7 @@ export type Database = {
           roi_percentage: number | null
           seo_description: string | null
           seo_title: string | null
+          sold_at: string | null
           state: string | null
           status: string | null
           three_d_model_url: string | null
@@ -15771,6 +15774,7 @@ export type Database = {
           construction_phase?: string | null
           construction_phases?: Json | null
           created_at?: string | null
+          days_on_market?: number | null
           description?: string | null
           developer_certified?: boolean
           developer_id?: string | null
@@ -15801,6 +15805,7 @@ export type Database = {
           launch_date?: string | null
           legal_checked?: boolean
           legal_status?: string | null
+          listed_at?: string | null
           listing_type: string
           location: string
           minimum_rental_days?: number | null
@@ -15822,6 +15827,7 @@ export type Database = {
           roi_percentage?: number | null
           seo_description?: string | null
           seo_title?: string | null
+          sold_at?: string | null
           state?: string | null
           status?: string | null
           three_d_model_url?: string | null
@@ -15852,6 +15858,7 @@ export type Database = {
           construction_phase?: string | null
           construction_phases?: Json | null
           created_at?: string | null
+          days_on_market?: number | null
           description?: string | null
           developer_certified?: boolean
           developer_id?: string | null
@@ -15882,6 +15889,7 @@ export type Database = {
           launch_date?: string | null
           legal_checked?: boolean
           legal_status?: string | null
+          listed_at?: string | null
           listing_type?: string
           location?: string
           minimum_rental_days?: number | null
@@ -15903,6 +15911,7 @@ export type Database = {
           roi_percentage?: number | null
           seo_description?: string | null
           seo_title?: string | null
+          sold_at?: string | null
           state?: string | null
           status?: string | null
           three_d_model_url?: string | null
