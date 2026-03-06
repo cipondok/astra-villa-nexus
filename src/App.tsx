@@ -118,6 +118,7 @@ const VirtualStagingPage = lazy(() => import('@/pages/VirtualStagingPage'));
 const MarketReportPage = lazy(() => import('@/pages/MarketReportPage'));
 const FraudDetectorPage = lazy(() => import('@/pages/FraudDetectorPage'));
 const AIRecommendationsPage = lazy(() => import('@/pages/AIRecommendationsPage'));
+const ImageQualityAnalyzerPage = lazy(() => import('@/pages/ImageQualityAnalyzerPage'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const Help = lazy(() => import('@/pages/Help'));
 const About = lazy(() => import('@/pages/About'));
