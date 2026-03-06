@@ -1002,6 +1002,173 @@ Keep narration professional yet warm. Highlight unique selling points. Property:
   }
 }
 
+// ── Comparative Market Analysis ─────────────────────────────────────
+
+async function handleComparativeMarketAnalysis(payload: Record<string, unknown>) {
+  const {
+    property_title, city, district, property_type, listing_price,
+    land_area_sqm, building_area_sqm, bedrooms, bathrooms,
+    year_built, condition, amenities, legal_status
+  } = payload as Record<string, any>;
+
+  if (!city || !property_type || !listing_price) {
+    return json({ error: "city, property_type, and listing_price are required" }, 400);
+  }
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+  const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+  // Fetch comparable properties from database
+  let query = supabaseAdmin.from("properties").select("id, title, city, district, property_type, price, land_area_sqm, building_area_sqm, bedrooms, bathrooms, year_built, condition, amenities, legal_status, investment_score, roi_percentage, days_listed, created_at")
+    .eq("city", city)
+    .eq("property_type", property_type)
+    .eq("status", "active")
+    .gte("price", listing_price * 0.5)
+    .lte("price", listing_price * 2)
+    .limit(20);
+
+  if (district) query = query.eq("district", district);
+
+  const { data: comparables, error: dbError } = await query;
+  if (dbError) console.error("DB error fetching comparables:", dbError);
+
+  const compData = (comparables || []).map((p: any) => ({
+    title: p.title, price: p.price, city: p.city, district: p.district,
+    land_area: p.land_area_sqm, building_area: p.building_area_sqm,
+    bedrooms: p.bedrooms, bathrooms: p.bathrooms, year_built: p.year_built,
+    condition: p.condition, investment_score: p.investment_score,
+    roi: p.roi_percentage, days_listed: p.days_listed,
+    price_per_sqm: p.building_area_sqm ? Math.round(p.price / p.building_area_sqm) : (p.land_area_sqm ? Math.round(p.price / p.land_area_sqm) : null)
+  }));
+
+  const subjectProperty = JSON.stringify({
+    property_title, city, district, property_type, listing_price,
+    land_area_sqm, building_area_sqm, bedrooms, bathrooms,
+    year_built, condition, amenities, legal_status
+  });
+
+  try {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        tools: [{
+          type: "function",
+          function: {
+            name: "comparative_market_analysis",
+            description: "Generate a comprehensive CMA report.",
+            parameters: {
+              type: "object",
+              properties: {
+                estimated_market_value: { type: "number", description: "Fair market value in IDR" },
+                value_range: { type: "object", properties: { low: { type: "number" }, high: { type: "number" } }, required: ["low", "high"] },
+                price_positioning: { type: "string", enum: ["significantly_underpriced", "underpriced", "fair_value", "overpriced", "significantly_overpriced"] },
+                price_deviation_percent: { type: "number", description: "How far listing price deviates from FMV (%)" },
+                price_per_sqm: { type: "number" },
+                market_avg_price_per_sqm: { type: "number" },
+                comparables_summary: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      title: { type: "string" },
+                      price: { type: "number" },
+                      price_per_sqm: { type: "number" },
+                      similarity_score: { type: "number", description: "0-100" },
+                      key_differences: { type: "array", items: { type: "string" } },
+                      advantage: { type: "string", enum: ["subject", "comparable", "neutral"] }
+                    },
+                    required: ["title", "price", "similarity_score", "key_differences", "advantage"]
+                  }
+                },
+                market_conditions: {
+                  type: "object",
+                  properties: {
+                    demand_level: { type: "string", enum: ["very_low", "low", "moderate", "high", "very_high"] },
+                    supply_level: { type: "string", enum: ["very_low", "low", "moderate", "high", "very_high"] },
+                    market_trend: { type: "string", enum: ["declining", "stable", "growing", "booming"] },
+                    avg_days_on_market: { type: "number" },
+                    predicted_days_to_sell: { type: "number" },
+                    absorption_rate: { type: "string", description: "e.g. '2.5 months of inventory'" }
+                  },
+                  required: ["demand_level", "supply_level", "market_trend", "avg_days_on_market", "predicted_days_to_sell"]
+                },
+                strengths: { type: "array", items: { type: "string" } },
+                weaknesses: { type: "array", items: { type: "string" } },
+                opportunities: { type: "array", items: { type: "string" } },
+                threats: { type: "array", items: { type: "string" } },
+                pricing_recommendations: {
+                  type: "object",
+                  properties: {
+                    optimal_listing_price: { type: "number" },
+                    quick_sale_price: { type: "number" },
+                    premium_price: { type: "number" },
+                    reasoning: { type: "string" }
+                  },
+                  required: ["optimal_listing_price", "quick_sale_price", "premium_price", "reasoning"]
+                },
+                investment_outlook: {
+                  type: "object",
+                  properties: {
+                    annual_appreciation_estimate: { type: "number", description: "Percentage" },
+                    rental_yield_estimate: { type: "number", description: "Percentage" },
+                    five_year_projection: { type: "number" },
+                    investment_grade: { type: "string", enum: ["A", "B", "C", "D"] },
+                    recommendation: { type: "string" }
+                  },
+                  required: ["annual_appreciation_estimate", "rental_yield_estimate", "five_year_projection", "investment_grade", "recommendation"]
+                },
+                executive_summary: { type: "string" }
+              },
+              required: ["estimated_market_value", "value_range", "price_positioning", "price_deviation_percent",
+                         "comparables_summary", "market_conditions", "strengths", "weaknesses", "opportunities", "threats",
+                         "pricing_recommendations", "investment_outlook", "executive_summary"]
+            }
+          }
+        }],
+        tool_choice: { type: "function", function: { name: "comparative_market_analysis" } },
+        messages: [
+          {
+            role: "system",
+            content: `You are an expert Indonesian real estate market analyst specializing in Comparative Market Analysis (CMA). 
+Analyze the subject property against comparable listings to determine fair market value and provide actionable pricing insights.
+Use Indonesian Rupiah (IDR) for all prices. Consider Indonesian market dynamics: SHM vs HGB title impact, WNA eligibility premium, location premiums in Bali/Jakarta.
+Be data-driven and realistic with estimates. ${compData.length} comparable properties found in the database.`
+          },
+          {
+            role: "user",
+            content: `Generate a comprehensive CMA for this property:\n\nSubject Property:\n${subjectProperty}\n\nComparable Properties (${compData.length} found):\n${JSON.stringify(compData, null, 2)}`
+          }
+        ]
+      })
+    });
+
+    if (!aiResponse.ok) {
+      if (aiResponse.status === 429) return json({ error: "Rate limit exceeded. Please try again later." }, 429);
+      if (aiResponse.status === 402) return json({ error: "AI credits required. Please add credits." }, 402);
+      throw new Error(`AI analysis failed: ${aiResponse.status}`);
+    }
+
+    const data = await aiResponse.json();
+    const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall) throw new Error("No structured response from AI");
+
+    const result = JSON.parse(toolCall.function.arguments);
+    return json({ ...result, total_comparables_found: compData.length });
+  } catch (e) {
+    console.error("comparative_market_analysis error:", e);
+    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+  }
+}
+
 // ── Main router ─────────────────────────────────────────────────────
 
 serve(async (req) => {
@@ -1043,6 +1210,8 @@ serve(async (req) => {
         return await handleTenantScreening(payload);
       case "virtual_tour_generate":
         return await handleVirtualTourGenerate(payload);
+      case "comparative_market_analysis":
+        return await handleComparativeMarketAnalysis(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
