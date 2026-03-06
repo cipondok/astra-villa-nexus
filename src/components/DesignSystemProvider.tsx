@@ -1,7 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Component, type ReactNode } from 'react';
 import { useDesignSystem, type DesignSystemConfig } from '@/stores/designSystemStore';
 
-function ApplyDesignSystem({ config }: { config: DesignSystemConfig }) {
+// ErrorBoundary to catch zustand dual-React crashes
+class DesignSystemErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
+  static getDerivedStateFromError() { return { hasError: true }; }
+  render() {
+    if (this.state.hasError) return <>{this.props.children}</>;
+    return this.props.children;
+  }
+}
+
+function DesignSystemApplier({ children }: { children: ReactNode }) {
+  const { config } = useDesignSystem();
+
   useEffect(() => {
     const root = document.documentElement;
 
@@ -27,22 +39,13 @@ function ApplyDesignSystem({ config }: { config: DesignSystemConfig }) {
     root.style.setProperty('--easing', config.animations.easing);
   }, [config]);
 
-  return null;
+  return <>{children}</>;
 }
 
 export const DesignSystemProvider = ({ children }: { children: React.ReactNode }) => {
-  let config: DesignSystemConfig | null = null;
-  try {
-    const store = useDesignSystem();
-    config = store.config;
-  } catch {
-    // Fallback if zustand hook fails (dual React instance edge case)
-  }
-
   return (
-    <>
-      {config && <ApplyDesignSystem config={config} />}
-      {children}
-    </>
+    <DesignSystemErrorBoundary>
+      <DesignSystemApplier>{children}</DesignSystemApplier>
+    </DesignSystemErrorBoundary>
   );
 };
