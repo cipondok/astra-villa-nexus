@@ -69,7 +69,8 @@ import {
   Navigation,
   CheckCircle2,
   ClipboardCheck,
-  Loader2
+  Loader2,
+  MessageCircle
 } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -86,6 +87,7 @@ import AIMatchExplainer from '@/components/property/AIMatchExplainer';
 import { useUserAiProfile } from '@/hooks/useUserAiProfile';
 import { usePropertyMatchScore } from '@/hooks/usePropertyMatchScore';
 const PropertyNeighborhoodInsights = lazy(() => import('@/components/property/PropertyNeighborhoodInsights'));
+const PropertyChatbot = lazy(() => import('@/components/property/PropertyChatbot'));
 import { formatDistanceToNow } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 
