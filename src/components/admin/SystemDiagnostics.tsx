@@ -135,8 +135,8 @@ const SystemDiagnostics = () => {
   const { mutate: runDiagnostics, isPending: diagnosticsRunning } = useMutation({
     mutationFn: async () => {
       // Call database diagnostics edge function
-      const { data, error } = await supabase.functions.invoke('database-diagnostics', {
-        body: { action: 'full_diagnostics' }
+      const { data, error } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'database_diagnostics', payload: { action: 'full_diagnostics' } }
       });
       
       if (error) throw error;

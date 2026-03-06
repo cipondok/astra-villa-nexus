@@ -56,8 +56,8 @@ const ToolsManagementDashboard = () => {
     try {
       console.log('🚀 Starting system health check...');
       
-      const { data, error } = await supabase.functions.invoke('system-health-check', {
-        body: { timestamp: new Date().toISOString() }
+      const { data, error } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'system_health_check', payload: { timestamp: new Date().toISOString() } }
       });
 
       if (error) {

@@ -123,8 +123,9 @@ const VerificationManagement = () => {
       }
 
       // Call edge function to get verification requests with auth header
-      const { data, error } = await supabase.functions.invoke('get-verification-requests', {
+      const { data, error } = await supabase.functions.invoke('auth-engine', {
         body: {
+          action: 'get_verification_requests',
           type: selectedTab,
           status: statusFilter
         },

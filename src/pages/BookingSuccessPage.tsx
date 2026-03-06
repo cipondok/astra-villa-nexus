@@ -103,8 +103,8 @@ const BookingSuccessPage = () => {
       setBookingData(booking);
 
       // Generate invoice
-      const { data: invoice, error: invoiceError } = await supabase.functions.invoke('generate-invoice', {
-        body: { bookingId }
+      const { data: invoice, error: invoiceError } = await supabase.functions.invoke('payment-engine', {
+        body: { action: 'generate_invoice', bookingId }
       });
 
       if (!invoiceError && invoice.success) {

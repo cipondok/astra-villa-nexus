@@ -59,8 +59,8 @@ export function AlgorithmDashboard() {
 
   const loadAlgorithmMetrics = async () => {
     try {
-      const { data, error } = await supabase.functions.invoke('algorithm-analytics', {
-        body: { requestType: 'dashboard_metrics' }
+      const { data, error } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'algorithm_analytics', payload: { requestType: 'dashboard_metrics' } }
       });
 
       if (error) throw error;
@@ -79,11 +79,11 @@ export function AlgorithmDashboard() {
     const newState = !activeAlgorithms[algorithmName];
     
     try {
-      const { error } = await supabase.functions.invoke('algorithm-controller', {
-        body: {
+      const { error } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'algorithm_controller', payload: {
           action: newState ? 'enable' : 'disable',
           algorithm: algorithmName
-        }
+        }}
       });
 
       if (error) throw error;

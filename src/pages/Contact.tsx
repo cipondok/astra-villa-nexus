@@ -41,8 +41,9 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
-      const { error } = await supabase.functions.invoke('send-inquiry-email', {
+      const { error } = await supabase.functions.invoke('notification-engine', {
         body: {
+          action: 'send_inquiry_email',
           customer_email: formData.email,
           customer_name: formData.name,
           inquiry_type: formData.category || formData.subject || 'inquiry',

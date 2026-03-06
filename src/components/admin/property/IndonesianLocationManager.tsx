@@ -405,12 +405,12 @@ const IndonesianLocationManager = () => {
         logs: [...prev.logs, `Mode: ${modeDescriptions[syncMode]}`]
       } : null);
       
-      const { data, error } = await supabase.functions.invoke('sync-indonesia-locations', {
-        body: { 
+      const { data, error } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'sync_indonesia_locations', payload: {
           mode: syncMode,
           provinceId: syncMode === 'single-province' ? selectedSyncProvince : undefined,
           includeVillages: includeVillages
-        }
+        }}
       });
 
       if (error) throw error;

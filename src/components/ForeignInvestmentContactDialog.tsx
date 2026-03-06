@@ -45,8 +45,9 @@ export const ForeignInvestmentContactDialog = ({ open, onOpenChange }: ForeignIn
 
       // Send confirmation email via SMTP
       if (inquiry) {
-        await supabase.functions.invoke('send-inquiry-email', {
+        await supabase.functions.invoke('notification-engine', {
           body: {
+            action: 'send_inquiry_email',
             inquiry_id: inquiry.id,
             customer_email: formData.email,
             customer_name: formData.name,
