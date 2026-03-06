@@ -130,8 +130,8 @@ const SEOManagement = () => {
   // Generate all states mutation
   const generateAllStatesMutation = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('seo-content-generator', {
-        body: { action: 'generate-all-states' },
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'seo_generate', payload: { action: 'generate-all-states' } },
       });
       if (error) throw error;
       return data;
@@ -149,8 +149,8 @@ const SEOManagement = () => {
   // Generate all combinations mutation
   const generateAllCombinationsMutation = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('seo-content-generator', {
-        body: { action: 'generate-all-combinations' },
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'seo_generate', payload: { action: 'generate-all-combinations' } },
       });
       if (error) throw error;
       return data;
@@ -168,8 +168,8 @@ const SEOManagement = () => {
   // Generate all property posts mutation (new one-click feature)
   const generateAllPropertyPostsMutation = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('seo-content-generator', {
-        body: { action: 'generate-all-property-posts' },
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'seo_generate', payload: { action: 'generate-all-property-posts' } },
       });
       if (error) throw error;
       return data;
@@ -187,8 +187,8 @@ const SEOManagement = () => {
   // Sync property counts mutation
   const syncPropertyCountsMutation = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('seo-content-generator', {
-        body: { action: 'sync-property-counts' },
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'seo_generate', payload: { action: 'sync-property-counts' } },
       });
       if (error) throw error;
       return data;
@@ -205,8 +205,8 @@ const SEOManagement = () => {
   // Process queue mutation
   const processQueueMutation = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('seo-content-generator', {
-        body: { action: 'process-queue', batchSize: 5 },
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'seo_generate', payload: { action: 'process-queue', batchSize: 5 } },
       });
       if (error) throw error;
       return data;

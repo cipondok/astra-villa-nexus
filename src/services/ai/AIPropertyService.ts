@@ -186,8 +186,8 @@ class AIPropertyService {
     suggestions: string[];
   }> {
     try {
-      const { data, error } = await supabase.functions.invoke('analyze-property-image', {
-        body: { imageUrls }
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'image_quality_analyze', payload: { imageUrls } }
       });
 
       if (error) throw error;

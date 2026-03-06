@@ -69,8 +69,8 @@ export function usePropertyValuation() {
     setError(null);
 
     try {
-      const { data, error: invokeError } = await supabase.functions.invoke('property-valuation', {
-        body: input,
+      const { data, error: invokeError } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'property_valuation_report', payload: input },
       });
 
       if (invokeError) {
