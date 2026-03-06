@@ -109,8 +109,9 @@ const ServiceBookingForm = ({ service, onBookingCreated }: ServiceBookingFormPro
     
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('create-booking-payment', {
+      const { data, error } = await supabase.functions.invoke('payment-engine', {
         body: {
+          action: 'create_booking_payment',
           bookingId: bookingCreated,
           paymentMethod: formData.paymentMethod,
           amount: calculateTotal(),
