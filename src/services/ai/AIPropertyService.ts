@@ -93,8 +93,8 @@ class AIPropertyService {
     if (cached) return cached;
 
     try {
-      const { data, error } = await supabase.functions.invoke('predictive-pricing', {
-        body: { propertyId }
+      const { data, error } = await supabase.functions.invoke('core-engine', {
+        body: { property_id: propertyId, mode: 'price_suggestion' }
       });
 
       if (error) throw error;
