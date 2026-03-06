@@ -59,7 +59,7 @@ const AIRecommendationsPage = () => {
 
         return {
           recommendations: (props || []).map((p: any) => {
-            const scores = scoreMap.get(p.id) || { match_score: 0, match_reasons: {}, buyer_type: 'balanced', confidence: 0 };
+            const scores = (scoreMap.get(p.id) || { match_score: 0, match_reasons: {}, buyer_type: 'balanced', confidence: 0 }) as { match_score: number; match_reasons: any; buyer_type: string; confidence: number };
             return { ...p, match_score: scores.match_score, match_reasons: scores.match_reasons, buyer_type: scores.buyer_type, confidence: scores.confidence, image_url: p.thumbnail_url || (p.images && p.images[0]) || '/placeholder.svg' };
           }).sort((a: any, b: any) => b.match_score - a.match_score),
           userProfile: data?.user_ai_profile || {},
