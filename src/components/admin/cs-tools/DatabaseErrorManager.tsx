@@ -67,8 +67,8 @@ const DatabaseErrorManager = () => {
     setIsLoading(true);
     try {
       // Invoke diagnostics first so new errors are logged to tracking table
-      const { data: diagnosticData, error: diagnosticError } = await supabase.functions.invoke('database-diagnostics', {
-        body: { action: 'get_postgres_logs' }
+      const { data: diagnosticData, error: diagnosticError } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'database_diagnostics', payload: { action: 'get_postgres_logs' } }
       });
 
       if (diagnosticError) {
@@ -300,11 +300,11 @@ WHERE NOT EXISTS (
     setIsLoading(true);
     try {
       // Apply the actual fix via edge function with real error context
-      const { data: result, error } = await supabase.functions.invoke('database-fix', {
-        body: { 
+      const { data: result, error } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'database_fix', payload: {
           fixType,
           errors: errors.filter(e => !e.is_resolved && shouldErrorBeFixed(e, fixType))
-        }
+        }}
       });
 
       if (error) {

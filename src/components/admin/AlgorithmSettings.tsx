@@ -104,11 +104,11 @@ export function AlgorithmSettings({ onSettingsChange }: Props) {
       }
 
       // Apply settings to running algorithms
-      await supabase.functions.invoke('algorithm-controller', {
-        body: {
+      await supabase.functions.invoke('core-engine', {
+        body: { mode: 'algorithm_controller', payload: {
           action: 'update_config',
           config: config
-        }
+        }}
       });
 
       setHasChanges(false);

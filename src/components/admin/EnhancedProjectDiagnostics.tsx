@@ -259,8 +259,8 @@ const EnhancedProjectDiagnostics = () => {
       
       // Call database diagnostics
       try {
-        const { data, error } = await supabase.functions.invoke('database-diagnostics', {
-          body: { action: 'full_scan' }
+        const { data, error } = await supabase.functions.invoke('core-engine', {
+          body: { mode: 'database_diagnostics', payload: { action: 'full_scan' } }
         });
         
         if (error) {
