@@ -100,7 +100,7 @@ const AIPriceEstimator = () => {
           province,
           city,
           property_type: propertyType,
-        },
+        }}
       });
 
       if (error) throw error;
