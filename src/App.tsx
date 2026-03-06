@@ -360,6 +360,7 @@ const AppContent = () => {
                 <Route path="/ai-mortgage-advisor" element={<AIMortgageAdvisorPage />} />
                 <Route path="/ai-property-valuation" element={<AIPropertyValuationPage />} />
                 <Route path="/ai-tenant-matching" element={<AITenantMatchingPage />} />
+                <Route path="/ai-smart-pricing" element={<AISmartPricingPage />} />
                 <Route path="*" element={<ErrorPage />} />
               </Routes>
             </Suspense>
