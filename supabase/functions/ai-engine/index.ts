@@ -879,6 +879,129 @@ Be realistic and thorough. Flag concerns clearly but fairly.`
   }
 }
 
+// ── Virtual Tour Generator ──────────────────────────────────────────
+
+async function handleVirtualTourGenerate(payload: Record<string, unknown>) {
+  const { images, property_title, property_type, location } = payload as {
+    images?: { url: string; label?: string }[];
+    property_title?: string;
+    property_type?: string;
+    location?: string;
+  };
+
+  if (!images || !Array.isArray(images) || images.length < 2) {
+    return json({ error: "At least 2 images are required" }, 400);
+  }
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  const limitedImages = images.slice(0, 10);
+
+  const imageContent = limitedImages.map((img, i) => ([
+    { type: "text" as const, text: `Image ${i + 1}${img.label ? ` (${img.label})` : ""}:` },
+    { type: "image_url" as const, image_url: { url: img.url } }
+  ])).flat();
+
+  try {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        tools: [{
+          type: "function",
+          function: {
+            name: "generate_virtual_tour",
+            description: "Generate a virtual tour script from property images.",
+            parameters: {
+              type: "object",
+              properties: {
+                tour_title: { type: "string" },
+                tour_introduction: { type: "string", description: "A warm, engaging 2-3 sentence welcome narration" },
+                estimated_duration_minutes: { type: "number" },
+                stops: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      image_index: { type: "number", description: "0-based index of the image" },
+                      room_type: { type: "string" },
+                      room_name: { type: "string", description: "Friendly display name like 'Grand Living Room'" },
+                      narration: { type: "string", description: "2-4 sentence narration for this stop, like a real estate agent giving a tour" },
+                      hotspots: {
+                        type: "array",
+                        items: {
+                          type: "object",
+                          properties: {
+                            label: { type: "string" },
+                            description: { type: "string" },
+                            x_percent: { type: "number", description: "Horizontal position 0-100" },
+                            y_percent: { type: "number", description: "Vertical position 0-100" },
+                            category: { type: "string", enum: ["feature", "material", "amenity", "view", "dimension"] }
+                          },
+                          required: ["label", "description", "x_percent", "y_percent", "category"]
+                        }
+                      },
+                      key_features: { type: "array", items: { type: "string" } },
+                      mood: { type: "string", description: "One word: cozy, spacious, luxurious, bright, serene, modern, etc." },
+                      transition_text: { type: "string", description: "Short transition to next stop, empty for last stop" }
+                    },
+                    required: ["image_index", "room_type", "room_name", "narration", "hotspots", "key_features", "mood"]
+                  }
+                },
+                tour_conclusion: { type: "string", description: "Closing narration summarizing the property" },
+                property_highlights: { type: "array", items: { type: "string" }, description: "Top 5 selling points" },
+                suggested_flow: { type: "array", items: { type: "number" }, description: "Optimal order of image indices for the tour" }
+              },
+              required: ["tour_title", "tour_introduction", "estimated_duration_minutes", "stops", "tour_conclusion", "property_highlights", "suggested_flow"]
+            }
+          }
+        }],
+        tool_choice: { type: "function", function: { name: "generate_virtual_tour" } },
+        messages: [
+          {
+            role: "system",
+            content: `You are a luxury real estate virtual tour director. Analyze property images and create an immersive, narrated virtual tour experience. For each image:
+1. Identify the room/area type and give it an appealing name
+2. Write engaging narration as if you're a top real estate agent walking a buyer through
+3. Place 2-4 interactive hotspots on notable features (estimate x,y positions as percentages)
+4. Note key features and the room's mood
+5. Write smooth transitions between stops
+Keep narration professional yet warm. Highlight unique selling points. Property: ${property_title || "Luxury Property"}, Type: ${property_type || "Residential"}, Location: ${location || "Premium Location"}.`
+          },
+          {
+            role: "user",
+            content: [
+              { type: "text", text: `Generate a virtual tour for these ${limitedImages.length} property images:` },
+              ...imageContent
+            ]
+          }
+        ]
+      })
+    });
+
+    if (!aiResponse.ok) {
+      if (aiResponse.status === 429) return json({ error: "Rate limit exceeded. Please try again later." }, 429);
+      if (aiResponse.status === 402) return json({ error: "AI credits required. Please add credits." }, 402);
+      throw new Error(`AI analysis failed: ${aiResponse.status}`);
+    }
+
+    const data = await aiResponse.json();
+    const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall) throw new Error("No structured response from AI");
+
+    const result = JSON.parse(toolCall.function.arguments);
+    return json({ ...result, images: limitedImages });
+  } catch (e) {
+    console.error("virtual_tour_generate error:", e);
+    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+  }
+}
+
 // ── Main router ─────────────────────────────────────────────────────
 
 serve(async (req) => {
@@ -918,6 +1041,8 @@ serve(async (req) => {
         return await handleImageQualityAnalyze(payload);
       case "tenant_screening":
         return await handleTenantScreening(payload);
+      case "virtual_tour_generate":
+        return await handleVirtualTourGenerate(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
