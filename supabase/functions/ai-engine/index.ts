@@ -756,6 +756,129 @@ Return ONLY a valid JSON object (no markdown, no code blocks):
   });
 }
 
+// ── Tenant Screening ────────────────────────────────────────────────
+
+async function handleTenantScreening(payload: Record<string, unknown>) {
+  const {
+    full_name, email, phone, monthly_income, employment_type,
+    employer_name, employment_duration_months, previous_landlord_contact,
+    reason_for_moving, requested_rent, pets, num_occupants, credit_score,
+    has_criminal_record, eviction_history, references
+  } = payload as Record<string, any>;
+
+  if (!full_name || !monthly_income || !requested_rent) {
+    return json({ error: "full_name, monthly_income, and requested_rent are required" }, 400);
+  }
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  const tenantProfile = JSON.stringify({
+    full_name, email, phone, monthly_income, employment_type,
+    employer_name, employment_duration_months, previous_landlord_contact,
+    reason_for_moving, requested_rent, pets, num_occupants, credit_score,
+    has_criminal_record, eviction_history, references
+  });
+
+  try {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        tools: [{
+          type: "function",
+          function: {
+            name: "tenant_risk_assessment",
+            description: "Provide a comprehensive tenant risk assessment with scoring.",
+            parameters: {
+              type: "object",
+              properties: {
+                overall_score: { type: "number", description: "0-100 risk score, higher is better/safer" },
+                risk_level: { type: "string", enum: ["low", "moderate", "high", "critical"] },
+                income_to_rent_ratio: { type: "number", description: "Monthly income divided by rent" },
+                affordability_rating: { type: "string", enum: ["excellent", "good", "fair", "poor"] },
+                employment_stability: { type: "string", enum: ["excellent", "good", "fair", "poor", "unknown"] },
+                categories: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      name: { type: "string" },
+                      score: { type: "number", description: "0-100" },
+                      weight: { type: "number", description: "Percentage weight 0-100" },
+                      findings: { type: "array", items: { type: "string" } },
+                      recommendation: { type: "string" }
+                    },
+                    required: ["name", "score", "weight", "findings", "recommendation"]
+                  }
+                },
+                red_flags: { type: "array", items: { type: "string" } },
+                green_flags: { type: "array", items: { type: "string" } },
+                recommended_action: { type: "string", enum: ["approve", "approve_with_conditions", "further_review", "decline"] },
+                conditions: { type: "array", items: { type: "string" }, description: "Conditions if approve_with_conditions" },
+                verification_checklist: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      item: { type: "string" },
+                      status: { type: "string", enum: ["verified", "pending", "not_provided"] },
+                      priority: { type: "string", enum: ["required", "recommended", "optional"] }
+                    },
+                    required: ["item", "status", "priority"]
+                  }
+                },
+                summary: { type: "string" }
+              },
+              required: ["overall_score", "risk_level", "income_to_rent_ratio", "affordability_rating",
+                         "employment_stability", "categories", "red_flags", "green_flags",
+                         "recommended_action", "verification_checklist", "summary"]
+            }
+          }
+        }],
+        tool_choice: { type: "function", function: { name: "tenant_risk_assessment" } },
+        messages: [
+          {
+            role: "system",
+            content: `You are an expert tenant screening analyst for Indonesian real estate. Evaluate tenant applications thoroughly using these weighted categories:
+1. Financial Stability (30%): Income-to-rent ratio (ideal ≥3x), employment stability, income sources
+2. Rental History (25%): Previous landlord references, eviction history, lease compliance
+3. Identity & Verification (20%): Document completeness, contact verification, background checks
+4. Lifestyle Compatibility (15%): Occupancy count, pets, reason for moving
+5. Credit & Legal (10%): Credit score if available, criminal record, legal issues
+
+Be realistic and thorough. Flag concerns clearly but fairly.`
+          },
+          {
+            role: "user",
+            content: `Analyze this tenant application and provide a comprehensive risk assessment:\n\n${tenantProfile}`
+          }
+        ]
+      })
+    });
+
+    if (!aiResponse.ok) {
+      if (aiResponse.status === 429) return json({ error: "Rate limit exceeded. Please try again later." }, 429);
+      if (aiResponse.status === 402) return json({ error: "AI credits required. Please add credits." }, 402);
+      throw new Error(`AI analysis failed: ${aiResponse.status}`);
+    }
+
+    const data = await aiResponse.json();
+    const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall) throw new Error("No structured response from AI");
+
+    const result = JSON.parse(toolCall.function.arguments);
+    return json(result);
+  } catch (e) {
+    console.error("tenant_screening error:", e);
+    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+  }
+}
+
 // ── Main router ─────────────────────────────────────────────────────
 
 serve(async (req) => {
@@ -793,6 +916,8 @@ serve(async (req) => {
         return await handleMarketReport(payload);
       case "image_quality_analyze":
         return await handleImageQualityAnalyze(payload);
+      case "tenant_screening":
+        return await handleTenantScreening(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
