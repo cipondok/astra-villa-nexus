@@ -75,13 +75,13 @@ export function useAdvancedPropertySearch() {
     if (!userId || !searchResults?.length) return searchResults;
 
     try {
-      const { data: recommendations } = await supabase.functions.invoke('smart-recommendations', {
-        body: {
+      const { data: recommendations } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'recommendations', payload: {
           userId,
           type: 'properties',
           limit: 10,
           searchContext: searchOptions
-        }
+        }}
       });
 
       // Merge search results with personalized scoring

@@ -63,13 +63,13 @@ class AIPropertyService {
     if (cached) return cached;
 
     try {
-      const { data, error } = await supabase.functions.invoke('smart-recommendation-engine', {
-        body: { 
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'recommendations', payload: { 
           action: 'get_recommendations', 
           userId, 
           limit,
           includeDiscovery
-        }
+        }}
       });
 
       if (error) throw error;
@@ -212,8 +212,8 @@ class AIPropertyService {
     if (cached) return cached;
 
     try {
-      const { data, error } = await supabase.functions.invoke('user-behavior-analyzer', {
-        body: { userId }
+      const { data, error } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'buyer_profile', payload: { userId } }
       });
 
       if (error) throw error;

@@ -33,13 +33,13 @@ export function BehaviorAnalytics({ metrics }: BehaviorAnalyticsProps) {
   const loadBehaviorData = async () => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('user-behavior-analyzer', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'buyer_profile', payload: {
           requestType: 'detailed_analytics',
           timeRange,
           includeHeatmap: true,
           includeJourney: true
-        }
+        }}
       });
 
       if (error) throw error;
