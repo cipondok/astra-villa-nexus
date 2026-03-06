@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -4577,6 +4577,190 @@ Deno.serve(async (req) => {
             relation_types: ['viewed', 'saved', 'located_in', 'is_type', 'built_by', 'has_amenity'],
           },
           queried_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: investor_strategy — Generate optimal investment portfolio strategies
+    // ═══════════════════════════════════════════
+    if (mode === 'investor_strategy') {
+      const budget = Number(body.budget) || 0;
+      const location = (body.location || '').trim();
+      const riskLevel = (body.risk_level || 'medium') as 'low' | 'medium' | 'high';
+      const investmentGoal = (body.investment_goal || 'both') as 'capital_growth' | 'rental_yield' | 'both';
+
+      if (budget <= 0) {
+        return new Response(JSON.stringify({ error: 'budget is required and must be > 0' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Step 1: Fetch candidate properties within budget
+      let q = supabase
+        .from('properties')
+        .select('id, title, city, district, price, property_type, bedrooms, building_area_sqm, land_area_sqm, area_sqm, investment_score, demand_heat_score, rental_yield, image_url, images')
+        .eq('status', 'active')
+        .not('price', 'is', null)
+        .gt('price', 0)
+        .lte('price', budget);
+
+      if (location) q = q.ilike('city', `%${location}%`);
+
+      const { data: candidates, error: qErr } = await q
+        .order('investment_score', { ascending: false })
+        .limit(100);
+
+      if (qErr) throw qErr;
+      if (!candidates || candidates.length === 0) {
+        return new Response(JSON.stringify({
+          data: { strategies: [], message: 'No properties found matching criteria' },
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      // Step 2: Score each candidate
+      interface ScoredCandidate {
+        id: string; title: string; city: string; district: string | null;
+        price: number; property_type: string | null; bedrooms: number | null;
+        area_sqm: number; investment_score: number; heat_score: number;
+        rental_yield: number; forecast_growth: number; risk_factor: number;
+        roi_estimate: number; image_url: string | null;
+      }
+
+      const scored: ScoredCandidate[] = candidates.map(p => {
+        const invScore = Number(p.investment_score) || 50;
+        const heatScore = Number(p.demand_heat_score) || 50;
+        const rentalYield = Number(p.rental_yield) || (3 + (invScore / 50));
+        const area = Number(p.building_area_sqm) || Number(p.land_area_sqm) || Number(p.area_sqm) || 1;
+
+        // Forecast: base appreciation + heat/inv bonuses
+        const baseGrowth = 4;
+        const heatBonus = heatScore > 70 ? 3 : heatScore > 50 ? 1.5 : 0;
+        const invBonus = invScore > 80 ? 2 : invScore > 60 ? 1 : 0;
+        const forecastGrowth = Math.round((baseGrowth + heatBonus + invBonus) * 10) / 10;
+
+        // Risk factor 0-100: lower inv/heat = higher risk
+        const riskFactor = Math.round(100 - (invScore * 0.5 + heatScore * 0.3 + Math.min(rentalYield, 10) * 2));
+
+        // Estimated annual ROI = rental_yield + forecast_growth
+        const roiEstimate = Math.round((rentalYield + forecastGrowth) * 10) / 10;
+
+        return {
+          id: p.id, title: p.title || 'Untitled', city: p.city || '', district: p.district,
+          price: Number(p.price), property_type: p.property_type, bedrooms: p.bedrooms,
+          area_sqm: area, investment_score: invScore, heat_score: heatScore,
+          rental_yield: Math.round(rentalYield * 10) / 10,
+          forecast_growth: forecastGrowth, risk_factor: Math.max(0, Math.min(riskFactor, 100)),
+          roi_estimate: roiEstimate,
+          image_url: p.image_url || (Array.isArray(p.images) ? p.images[0] : null),
+        };
+      });
+
+      // Filter by risk tolerance
+      const riskThreshold = riskLevel === 'low' ? 40 : riskLevel === 'medium' ? 65 : 100;
+      const eligible = scored.filter(s => s.risk_factor <= riskThreshold);
+
+      // Sort by goal preference
+      if (investmentGoal === 'rental_yield') {
+        eligible.sort((a, b) => b.rental_yield - a.rental_yield);
+      } else if (investmentGoal === 'capital_growth') {
+        eligible.sort((a, b) => b.forecast_growth - a.forecast_growth);
+      } else {
+        eligible.sort((a, b) => b.roi_estimate - a.roi_estimate);
+      }
+
+      // Step 3: Build portfolio strategies using greedy knapsack
+      interface Strategy {
+        name: string;
+        properties: ScoredCandidate[];
+        total_investment: number;
+        portfolio_roi: number;
+        avg_risk: number;
+        diversification_score: number;
+        strategy_summary: string;
+      }
+
+      const strategies: Strategy[] = [];
+
+      // Strategy 1: Maximum ROI (greedy pick top ROI until budget)
+      const buildStrategy = (
+        pool: ScoredCandidate[],
+        name: string,
+        summaryPrefix: string,
+        maxProps: number = 5
+      ): Strategy | null => {
+        const picked: ScoredCandidate[] = [];
+        let remaining = budget;
+        for (const p of pool) {
+          if (picked.length >= maxProps) break;
+          if (p.price <= remaining) {
+            picked.push(p);
+            remaining -= p.price;
+          }
+        }
+        if (picked.length === 0) return null;
+
+        const totalInv = picked.reduce((s, p) => s + p.price, 0);
+        const weightedRoi = picked.reduce((s, p) => s + p.roi_estimate * (p.price / totalInv), 0);
+        const avgRisk = Math.round(picked.reduce((s, p) => s + p.risk_factor, 0) / picked.length);
+        const uniqueCities = new Set(picked.map(p => p.city)).size;
+        const uniqueTypes = new Set(picked.map(p => p.property_type)).size;
+        const divScore = Math.round(((uniqueCities / Math.max(picked.length, 1)) * 50) + ((uniqueTypes / Math.max(picked.length, 1)) * 50));
+
+        return {
+          name,
+          properties: picked,
+          total_investment: totalInv,
+          portfolio_roi: Math.round(weightedRoi * 10) / 10,
+          avg_risk: avgRisk,
+          diversification_score: divScore,
+          strategy_summary: `${summaryPrefix} ${picked.length} properties for Rp ${(totalInv / 1e9).toFixed(1)}B with projected ${weightedRoi.toFixed(1)}% annual ROI and ${avgRisk <= 40 ? 'low' : avgRisk <= 65 ? 'moderate' : 'high'} risk.`,
+        };
+      };
+
+      // S1: Max ROI
+      const s1Pool = [...eligible].sort((a, b) => b.roi_estimate - a.roi_estimate);
+      const s1 = buildStrategy(s1Pool, 'Maximum ROI', 'Aggressive growth strategy combining');
+      if (s1) strategies.push(s1);
+
+      // S2: Balanced (sort by composite of ROI + low risk)
+      const s2Pool = [...eligible].sort((a, b) => (b.roi_estimate - b.risk_factor * 0.05) - (a.roi_estimate - a.risk_factor * 0.05));
+      const s2 = buildStrategy(s2Pool, 'Balanced Growth', 'Risk-balanced portfolio of');
+      if (s2) strategies.push(s2);
+
+      // S3: Defensive / Rental Focus
+      const s3Pool = [...eligible].sort((a, b) => {
+        const aScore = a.rental_yield * 2 + (100 - a.risk_factor) * 0.1;
+        const bScore = b.rental_yield * 2 + (100 - b.risk_factor) * 0.1;
+        return bScore - aScore;
+      });
+      const s3 = buildStrategy(s3Pool, 'Stable Income', 'Conservative rental-focused strategy with');
+      if (s3) strategies.push(s3);
+
+      // S4: Diversified (force different cities/types)
+      const s4Pool: ScoredCandidate[] = [];
+      const usedCities = new Set<string>();
+      const usedTypes = new Set<string>();
+      for (const p of eligible) {
+        if (!usedCities.has(p.city) || !usedTypes.has(p.property_type || '')) {
+          s4Pool.push(p);
+          usedCities.add(p.city);
+          if (p.property_type) usedTypes.add(p.property_type);
+        }
+      }
+      const s4 = buildStrategy(s4Pool, 'Diversified Portfolio', 'Geographically and asset-diversified portfolio of');
+      if (s4) strategies.push(s4);
+
+      // Sort strategies by ROI descending
+      strategies.sort((a, b) => b.portfolio_roi - a.portfolio_roi);
+
+      return new Response(JSON.stringify({
+        data: {
+          strategies,
+          input: { budget, location, risk_level: riskLevel, investment_goal: investmentGoal },
+          candidates_scanned: candidates.length,
+          eligible_after_risk_filter: eligible.length,
+          generated_at: new Date().toISOString(),
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
