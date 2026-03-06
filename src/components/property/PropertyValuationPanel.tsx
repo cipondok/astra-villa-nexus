@@ -1,5 +1,5 @@
 import React from 'react';
-import { usePropertyValuation } from '@/hooks/usePropertyValuation';
+import { useAIPropertyValuation } from '@/hooks/useAIPropertyValuation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -22,7 +22,7 @@ interface Props {
 }
 
 const PropertyValuationPanel: React.FC<Props> = ({ propertyId }) => {
-  const { data, isLoading, error } = usePropertyValuation(propertyId);
+  const { data, isLoading, error } = useAIPropertyValuation(propertyId);
 
   if (isLoading) {
     return (
