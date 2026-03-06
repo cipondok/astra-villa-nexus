@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -4291,6 +4291,292 @@ Deno.serve(async (req) => {
           budget_range: budgetRange,
           matched_agents: matchedAgents,
           generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: knowledge_graph — Build & query property knowledge graph
+    // ═══════════════════════════════════════════
+    if (mode === 'knowledge_graph') {
+      const action = body.action || 'query'; // 'build' or 'query'
+
+      if (action === 'build') {
+        // ---- BUILD PHASE: Populate graph edges from existing data ----
+        let edgesCreated = 0;
+
+        // 1. property → located_in → city
+        const { data: props } = await supabase
+          .from('properties')
+          .select('id, city, property_type, developer_name, district')
+          .eq('status', 'active')
+          .not('city', 'is', null)
+          .limit(500);
+
+        const edgeBatch: Array<{
+          source_type: string; source_id: string; relation_type: string;
+          target_type: string; target_id: string; weight: number; metadata: any;
+        }> = [];
+
+        for (const p of (props || [])) {
+          if (p.city) {
+            edgeBatch.push({
+              source_type: 'property', source_id: p.id,
+              relation_type: 'located_in',
+              target_type: 'city', target_id: p.city.toLowerCase(),
+              weight: 1.0, metadata: { district: p.district },
+            });
+          }
+          if (p.property_type) {
+            edgeBatch.push({
+              source_type: 'property', source_id: p.id,
+              relation_type: 'is_type',
+              target_type: 'property_type', target_id: p.property_type.toLowerCase(),
+              weight: 1.0, metadata: {},
+            });
+          }
+          if (p.developer_name) {
+            edgeBatch.push({
+              source_type: 'property', source_id: p.id,
+              relation_type: 'built_by',
+              target_type: 'developer', target_id: p.developer_name.toLowerCase(),
+              weight: 1.0, metadata: {},
+            });
+          }
+        }
+
+        // 2. user → viewed → property (from ai_behavior_tracking)
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+        const { data: views } = await supabase
+          .from('ai_behavior_tracking')
+          .select('user_id, property_id, event_type')
+          .in('event_type', ['view', 'property_view', 'detail_view'])
+          .not('user_id', 'is', null)
+          .not('property_id', 'is', null)
+          .gte('created_at', thirtyDaysAgo)
+          .limit(1000);
+
+        // Aggregate view counts per user-property pair
+        const viewCounts: Record<string, number> = {};
+        for (const v of (views || [])) {
+          const key = `${v.user_id}__${v.property_id}`;
+          viewCounts[key] = (viewCounts[key] || 0) + 1;
+        }
+        for (const [key, count] of Object.entries(viewCounts)) {
+          const [uid, pid] = key.split('__');
+          edgeBatch.push({
+            source_type: 'user', source_id: uid,
+            relation_type: 'viewed',
+            target_type: 'property', target_id: pid,
+            weight: Math.min(count / 5, 3.0), // normalize weight
+            metadata: { view_count: count },
+          });
+        }
+
+        // 3. user → saved → property
+        const { data: saves } = await supabase
+          .from('saved_properties')
+          .select('user_id, property_id')
+          .limit(1000);
+
+        for (const s of (saves || [])) {
+          edgeBatch.push({
+            source_type: 'user', source_id: s.user_id,
+            relation_type: 'saved',
+            target_type: 'property', target_id: s.property_id,
+            weight: 2.0, // saves are higher intent
+            metadata: {},
+          });
+        }
+
+        // 4. property → has → amenity (from property features)
+        const { data: propsWithFeatures } = await supabase
+          .from('properties')
+          .select('id, has_pool, has_garden, has_garage, has_security, has_gym, has_rooftop')
+          .eq('status', 'active')
+          .limit(500);
+
+        const amenityFields = ['has_pool', 'has_garden', 'has_garage', 'has_security', 'has_gym', 'has_rooftop'];
+        for (const p of (propsWithFeatures || [])) {
+          for (const field of amenityFields) {
+            if ((p as any)[field]) {
+              edgeBatch.push({
+                source_type: 'property', source_id: p.id,
+                relation_type: 'has_amenity',
+                target_type: 'amenity', target_id: field.replace('has_', ''),
+                weight: 1.0, metadata: {},
+              });
+            }
+          }
+        }
+
+        // Upsert all edges (on conflict update weight)
+        if (edgeBatch.length > 0) {
+          // Process in chunks of 100
+          for (let i = 0; i < edgeBatch.length; i += 100) {
+            const chunk = edgeBatch.slice(i, i + 100);
+            const { error: upsertErr } = await supabase
+              .from('knowledge_graph_edges')
+              .upsert(chunk, { onConflict: 'source_type,source_id,relation_type,target_type,target_id' });
+            if (!upsertErr) edgesCreated += chunk.length;
+          }
+        }
+
+        return new Response(JSON.stringify({
+          data: {
+            edges_created: edgesCreated,
+            breakdown: {
+              location_edges: (props || []).filter(p => p.city).length,
+              type_edges: (props || []).filter(p => p.property_type).length,
+              developer_edges: (props || []).filter(p => p.developer_name).length,
+              view_edges: Object.keys(viewCounts).length,
+              save_edges: (saves || []).length,
+              amenity_edges: edgeBatch.filter(e => e.relation_type === 'has_amenity').length,
+            },
+            built_at: new Date().toISOString(),
+          },
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      // ---- QUERY PHASE: Extract insights from the graph ----
+
+      // Trending cities: most viewed/saved properties by city
+      const { data: cityEdges } = await supabase
+        .from('knowledge_graph_edges')
+        .select('target_id, weight')
+        .eq('relation_type', 'located_in')
+        .eq('target_type', 'city');
+
+      // Get view/save edges to weight cities by activity
+      const { data: activityEdges } = await supabase
+        .from('knowledge_graph_edges')
+        .select('target_id, weight, relation_type')
+        .in('relation_type', ['viewed', 'saved'])
+        .eq('target_type', 'property');
+
+      // Map property → city for cross-referencing
+      const propCityMap: Record<string, string> = {};
+      for (const e of (cityEdges || [])) {
+        // source_id is the property, target_id is the city — but we need source_id
+      }
+
+      // Direct aggregation: count properties per city + activity weight
+      const { data: locEdges } = await supabase
+        .from('knowledge_graph_edges')
+        .select('source_id, target_id')
+        .eq('relation_type', 'located_in');
+
+      const cityPropMap: Record<string, Set<string>> = {};
+      for (const e of (locEdges || [])) {
+        if (!cityPropMap[e.target_id]) cityPropMap[e.target_id] = new Set();
+        cityPropMap[e.target_id].add(e.source_id);
+        propCityMap[e.source_id] = e.target_id;
+      }
+
+      // Weight cities by user activity
+      const cityScores: Record<string, number> = {};
+      for (const city of Object.keys(cityPropMap)) {
+        cityScores[city] = cityPropMap[city].size; // base = property count
+      }
+      for (const e of (activityEdges || [])) {
+        const city = propCityMap[e.target_id];
+        if (city) {
+          cityScores[city] = (cityScores[city] || 0) + Number(e.weight) * (e.relation_type === 'saved' ? 2 : 1);
+        }
+      }
+
+      const trendingCities = Object.entries(cityScores)
+        .map(([city, score]) => ({
+          city,
+          score: Math.round(score * 10) / 10,
+          property_count: cityPropMap[city]?.size || 0,
+        }))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 10);
+
+      // Popular property types
+      const { data: typeEdges } = await supabase
+        .from('knowledge_graph_edges')
+        .select('target_id')
+        .eq('relation_type', 'is_type');
+
+      const typeCounts: Record<string, number> = {};
+      for (const e of (typeEdges || [])) {
+        typeCounts[e.target_id] = (typeCounts[e.target_id] || 0) + 1;
+      }
+      const popularTypes = Object.entries(typeCounts)
+        .map(([type, count]) => ({ type, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 8);
+
+      // Top amenities
+      const { data: amenityEdges } = await supabase
+        .from('knowledge_graph_edges')
+        .select('target_id')
+        .eq('relation_type', 'has_amenity');
+
+      const amenityCounts: Record<string, number> = {};
+      for (const e of (amenityEdges || [])) {
+        amenityCounts[e.target_id] = (amenityCounts[e.target_id] || 0) + 1;
+      }
+      const topAmenities = Object.entries(amenityCounts)
+        .map(([amenity, count]) => ({ amenity, count }))
+        .sort((a, b) => b.count - a.count);
+
+      // Top developers
+      const { data: devEdges } = await supabase
+        .from('knowledge_graph_edges')
+        .select('target_id')
+        .eq('relation_type', 'built_by');
+
+      const devCounts: Record<string, number> = {};
+      for (const e of (devEdges || [])) {
+        devCounts[e.target_id] = (devCounts[e.target_id] || 0) + 1;
+      }
+      const topDevelopers = Object.entries(devCounts)
+        .map(([developer, count]) => ({ developer, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10);
+
+      // Investor interest: cities with highest save-to-view ratio
+      const cityViews: Record<string, number> = {};
+      const citySaves: Record<string, number> = {};
+      for (const e of (activityEdges || [])) {
+        const city = propCityMap[e.target_id];
+        if (!city) continue;
+        if (e.relation_type === 'viewed') cityViews[city] = (cityViews[city] || 0) + Number(e.weight);
+        if (e.relation_type === 'saved') citySaves[city] = (citySaves[city] || 0) + Number(e.weight);
+      }
+
+      const investorInterest = Object.keys(cityScores)
+        .map(city => ({
+          city,
+          views: Math.round(cityViews[city] || 0),
+          saves: Math.round(citySaves[city] || 0),
+          interest_ratio: cityViews[city] ? Math.round(((citySaves[city] || 0) / cityViews[city]) * 100) : 0,
+        }))
+        .filter(c => c.views > 0)
+        .sort((a, b) => b.interest_ratio - a.interest_ratio)
+        .slice(0, 10);
+
+      // Graph stats
+      const { count: totalEdges } = await supabase
+        .from('knowledge_graph_edges')
+        .select('*', { count: 'exact', head: true });
+
+      return new Response(JSON.stringify({
+        data: {
+          trending_cities: trendingCities,
+          popular_property_types: popularTypes,
+          top_amenities: topAmenities,
+          top_developers: topDevelopers,
+          investor_interest_areas: investorInterest,
+          graph_stats: {
+            total_edges: totalEdges || 0,
+            entity_types: ['user', 'property', 'city', 'property_type', 'developer', 'amenity'],
+            relation_types: ['viewed', 'saved', 'located_in', 'is_type', 'built_by', 'has_amenity'],
+          },
+          queried_at: new Date().toISOString(),
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
