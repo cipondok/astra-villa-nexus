@@ -135,8 +135,8 @@ const MFASettings = () => {
 
   const generateOTP = async (purpose: string) => {
     try {
-      const { data, error } = await supabase.functions.invoke('generate-otp', {
-        body: { purpose }
+      const { data, error } = await supabase.functions.invoke('auth-engine', {
+        body: { action: 'generate_otp', purpose }
       });
 
       if (error) throw error;
@@ -159,8 +159,8 @@ const MFASettings = () => {
 
   const verifyOTP = async (code: string, purpose: string) => {
     try {
-      const { data, error } = await supabase.functions.invoke('verify-otp', {
-        body: { code, purpose }
+      const { data, error } = await supabase.functions.invoke('auth-engine', {
+        body: { action: 'verify_otp', code, purpose }
       });
 
       if (error) throw error;
