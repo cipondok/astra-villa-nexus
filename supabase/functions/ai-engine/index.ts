@@ -2295,6 +2295,101 @@ Provide realistic Indonesian market-specific analysis including PBB tax, mainten
   }
 }
 
+// ── Mortgage Advisor ────────────────────────────────────────────────
+
+async function handleMortgageAdvisor(payload: Record<string, unknown>) {
+  const { property_price, down_payment_percent, monthly_income, monthly_expenses, employment_type, employment_duration_years, age, property_type, property_location, existing_loans, preferred_tenor_years, is_first_home } = payload as {
+    property_price: number; down_payment_percent?: number; monthly_income: number; monthly_expenses?: number;
+    employment_type: string; employment_duration_years?: number; age: number; property_type: string;
+    property_location: string; existing_loans?: number; preferred_tenor_years?: number; is_first_home?: boolean;
+  };
+
+  if (!property_price || !monthly_income || !age) return json({ error: "property_price, monthly_income, and age are required" }, 400);
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  const dp = down_payment_percent || 20;
+  const loanAmount = property_price * (1 - dp / 100);
+  const dsr = monthly_income > 0 ? (((existing_loans || 0) / monthly_income) * 100) : 0;
+
+  const systemPrompt = `You are an expert Indonesian mortgage/KPR advisor AI. Analyze mortgage options for Indonesian banks (BCA, BNI, BTN, Mandiri, BRI, CIMB Niaga, etc.). All values in IDR.
+
+Applicant profile:
+- Age: ${age}, Employment: ${employment_type}${employment_duration_years ? `, ${employment_duration_years} years` : ""}
+- Monthly income: Rp ${monthly_income.toLocaleString("id-ID")}${monthly_expenses ? `, Expenses: Rp ${monthly_expenses.toLocaleString("id-ID")}` : ""}
+- Existing loans: Rp ${(existing_loans || 0).toLocaleString("id-ID")}/month
+- Current DSR (pre-mortgage): ${dsr.toFixed(1)}%
+- First home: ${is_first_home ? "Yes" : "No"}
+
+Property: ${property_type} in ${property_location}
+- Price: Rp ${property_price.toLocaleString("id-ID")}
+- DP: ${dp}% (Rp ${(property_price * dp / 100).toLocaleString("id-ID")})
+- Loan needed: Rp ${loanAmount.toLocaleString("id-ID")}
+- Preferred tenor: ${preferred_tenor_years || 20} years
+
+Use realistic 2024-2025 Indonesian bank KPR rates. Consider FLPP subsidy programs for first-time buyers under Rp 150jt income. Bank-specific rates: BTN typically 3-5% fixed (subsidized), BCA 3.75-6% fixed, Mandiri 3.88-5.5% fixed, BNI 3.65-5.5% fixed.`;
+
+  try {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        temperature: 0.4,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: `Analyze KPR options for this ${property_type} purchase in ${property_location}.` },
+        ],
+        tools: [{
+          type: "function",
+          function: {
+            name: "mortgage_advisor_result",
+            description: "Structured mortgage advisory result",
+            parameters: {
+              type: "object",
+              required: ["eligibility_score","max_loan_amount","recommended_down_payment_percent","recommended_tenor_years","debt_service_ratio","affordability_status","bank_comparisons","optimal_down_payment_analysis","subsidy_eligibility","risk_assessment","tips","documents_needed","timeline_estimate"],
+              properties: {
+                eligibility_score: { type: "number", description: "0-100" },
+                max_loan_amount: { type: "number" },
+                recommended_down_payment_percent: { type: "number" },
+                recommended_tenor_years: { type: "number" },
+                debt_service_ratio: { type: "number", description: "Including new mortgage, as percentage" },
+                affordability_status: { type: "string", enum: ["comfortable","moderate","stretched","not_recommended"] },
+                bank_comparisons: { type: "array", items: { type: "object", required: ["bank_name","interest_rate_fixed","interest_rate_floating","fixed_period_years","monthly_installment_fixed","monthly_installment_floating","max_tenor_years","processing_fee_percent","total_cost_over_tenor","eligibility_score","pros","cons"], properties: { bank_name: { type: "string" }, interest_rate_fixed: { type: "number" }, interest_rate_floating: { type: "number" }, fixed_period_years: { type: "number" }, monthly_installment_fixed: { type: "number" }, monthly_installment_floating: { type: "number" }, max_tenor_years: { type: "number" }, processing_fee_percent: { type: "number" }, total_cost_over_tenor: { type: "number" }, eligibility_score: { type: "number" }, pros: { type: "array", items: { type: "string" } }, cons: { type: "array", items: { type: "string" } }, special_offers: { type: "string" } } }, description: "4-6 banks" },
+                optimal_down_payment_analysis: { type: "array", items: { type: "object", required: ["down_payment_percent","monthly_installment","total_interest_paid","recommendation"], properties: { down_payment_percent: { type: "number" }, monthly_installment: { type: "number" }, total_interest_paid: { type: "number" }, recommendation: { type: "string" } } }, description: "3-4 DP scenarios" },
+                subsidy_eligibility: { type: "array", items: { type: "object", required: ["program_name","eligible","potential_benefit","requirements"], properties: { program_name: { type: "string" }, eligible: { type: "boolean" }, potential_benefit: { type: "string" }, requirements: { type: "array", items: { type: "string" } } } }, description: "2-3 programs" },
+                risk_assessment: { type: "array", items: { type: "object", required: ["factor","level","description"], properties: { factor: { type: "string" }, level: { type: "string", enum: ["low","medium","high"] }, description: { type: "string" } } }, description: "4-6 risk factors" },
+                tips: { type: "array", items: { type: "string" }, description: "5-7 actionable tips" },
+                documents_needed: { type: "array", items: { type: "string" }, description: "8-12 required documents" },
+                timeline_estimate: { type: "string", description: "Estimated approval timeline" },
+              }
+            }
+          }
+        }],
+        tool_choice: { type: "function", function: { name: "mortgage_advisor_result" } },
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      const status = aiResponse.status;
+      if (status === 402 || status === 429 || status === 503) {
+        return json({ status, error: status === 402 ? "AI credits required" : status === 429 ? "Rate limited" : "AI temporarily unavailable" }, 200);
+      }
+      throw new Error(`AI gateway returned ${status}`);
+    }
+
+    const aiData = await aiResponse.json();
+    const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall) throw new Error("No structured response from AI");
+
+    return json(JSON.parse(toolCall.function.arguments));
+  } catch (e) {
+    console.error("mortgage_advisor error:", e);
+    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
