@@ -2171,6 +2171,8 @@ serve(async (req) => {
         return await handleLeadScoring(payload);
       case "interior_design":
         return await handleInteriorDesign(payload);
+      case "social_media_copy":
+        return await handleSocialMediaCopy(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
