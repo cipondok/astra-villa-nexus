@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -5291,6 +5291,167 @@ Deno.serve(async (req) => {
           demand_multiplier: demandMultiplier,
           investment_multiplier: invMultiplier,
           comparables_count: comparablesCount,
+          top_comparables: topComps,
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // ██  RENTAL YIELD PREDICTOR MODE
+    // ═══════════════════════════════════════════════════════════
+    if (mode === 'rental_yield_predictor') {
+      if (!property_id) {
+        return new Response(JSON.stringify({ error: 'property_id required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const serviceClient = createClient(supabaseUrl, serviceKey);
+
+      // 1. Fetch target property
+      const { data: target, error: tErr } = await serviceClient
+        .from('properties')
+        .select('id, title, price, city, state, property_type, bedrooms, bathrooms, building_area_sqm, land_area_sqm, area_sqm, investment_score, demand_heat_score, thumbnail_url')
+        .eq('id', property_id)
+        .single();
+
+      if (tErr || !target) {
+        return new Response(JSON.stringify({ error: 'Property not found' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const propertyPrice = target.price || 0;
+      const bedrooms = target.bedrooms ?? 2;
+      const buildingArea = target.building_area_sqm || target.area_sqm || target.land_area_sqm || 0;
+      const heatScore = target.demand_heat_score ?? 50;
+      const invScore = target.investment_score ?? 50;
+
+      // 2. Fetch comparable rental listings (same city, similar type, bedrooms ±1)
+      let compQuery = serviceClient
+        .from('properties')
+        .select('id, title, price, bedrooms, building_area_sqm, area_sqm, land_area_sqm, city, property_type, demand_heat_score')
+        .eq('status', 'active')
+        .eq('approval_status', 'approved')
+        .eq('listing_type', 'rent')
+        .neq('id', property_id);
+
+      if (target.city) {
+        compQuery = compQuery.ilike('city', `%${target.city}%`);
+      }
+      if (target.property_type) {
+        compQuery = compQuery.eq('property_type', target.property_type);
+      }
+
+      const { data: rentComps } = await compQuery.limit(200);
+
+      // Filter by bedrooms ±1
+      const validComps = (rentComps || []).filter((c: any) => {
+        const cBeds = c.bedrooms ?? 2;
+        return Math.abs(cBeds - bedrooms) <= 1 && c.price > 0;
+      });
+
+      // 3. Calculate average monthly rent
+      let avgMonthlyRent = 0;
+      let rentSource = 'estimated';
+
+      if (validComps.length > 0) {
+        // Rental listings price = monthly rent
+        avgMonthlyRent = Math.round(
+          validComps.reduce((s: number, c: any) => s + c.price, 0) / validComps.length
+        );
+        rentSource = 'market_comparables';
+      } else {
+        // Fallback: estimate from property value using typical Indonesian yields
+        // Bali/tourist areas ~6-8%, Jakarta ~4-5%, other ~3-5%
+        const cityLower = (target.city || '').toLowerCase();
+        const isTourist = ['bali', 'denpasar', 'seminyak', 'canggu', 'ubud', 'kuta', 'nusa dua', 'lombok', 'yogyakarta'].some(c => cityLower.includes(c));
+        const isCapital = ['jakarta', 'surabaya', 'bandung', 'medan'].some(c => cityLower.includes(c));
+
+        let baseYieldPct = isTourist ? 7 : isCapital ? 4.5 : 3.5;
+        avgMonthlyRent = Math.round((propertyPrice * (baseYieldPct / 100)) / 12);
+        rentSource = 'ai_estimated';
+      }
+
+      const annualRent = avgMonthlyRent * 12;
+
+      // 4. Rental yield
+      const rentalYieldPercent = propertyPrice > 0
+        ? Math.round((annualRent / propertyPrice) * 100 * 100) / 100
+        : 0;
+
+      // 5. Occupancy rate estimation
+      // Base occupancy by market heat + tourism factor
+      const cityLower = (target.city || '').toLowerCase();
+      const isTouristCity = ['bali', 'denpasar', 'seminyak', 'canggu', 'ubud', 'kuta', 'nusa dua', 'lombok'].some(c => cityLower.includes(c));
+
+      let baseOccupancy: number;
+      if (heatScore > 75) baseOccupancy = 90;
+      else if (heatScore > 50) baseOccupancy = 80;
+      else if (heatScore > 30) baseOccupancy = 70;
+      else baseOccupancy = 60;
+
+      // Tourism bonus
+      if (isTouristCity) baseOccupancy = Math.min(baseOccupancy + 8, 98);
+      // Investment score adjustment
+      if (invScore > 80) baseOccupancy = Math.min(baseOccupancy + 5, 98);
+      else if (invScore < 40) baseOccupancy = Math.max(baseOccupancy - 5, 40);
+
+      const occupancyRate = baseOccupancy;
+
+      // 6. Effective annual income (adjusted for occupancy)
+      const effectiveAnnualRent = Math.round(annualRent * (occupancyRate / 100));
+      const effectiveYieldPercent = propertyPrice > 0
+        ? Math.round((effectiveAnnualRent / propertyPrice) * 100 * 100) / 100
+        : 0;
+
+      // 7. Net yield estimate (after typical expenses ~20-25%)
+      const expenseRatio = 0.22; // maintenance, management, taxes
+      const netAnnualRent = Math.round(effectiveAnnualRent * (1 - expenseRatio));
+      const netYieldPercent = propertyPrice > 0
+        ? Math.round((netAnnualRent / propertyPrice) * 100 * 100) / 100
+        : 0;
+
+      // Yield classification
+      let yieldRating: string;
+      if (rentalYieldPercent >= 7) yieldRating = 'excellent';
+      else if (rentalYieldPercent >= 5) yieldRating = 'good';
+      else if (rentalYieldPercent >= 3) yieldRating = 'average';
+      else yieldRating = 'below_average';
+
+      // Top comparables
+      const topComps = validComps.slice(0, 5).map((c: any) => ({
+        id: c.id,
+        title: c.title,
+        monthly_rent: c.price,
+        bedrooms: c.bedrooms,
+        city: c.city,
+      }));
+
+      return new Response(JSON.stringify({
+        data: {
+          property_id: target.id,
+          title: target.title,
+          city: target.city,
+          property_type: target.property_type,
+          bedrooms,
+          building_area: buildingArea,
+          property_price: propertyPrice,
+          monthly_rent_estimate: avgMonthlyRent,
+          annual_rent: annualRent,
+          rental_yield_percent: rentalYieldPercent,
+          occupancy_rate: occupancyRate,
+          effective_annual_rent: effectiveAnnualRent,
+          effective_yield_percent: effectiveYieldPercent,
+          net_annual_rent: netAnnualRent,
+          net_yield_percent: netYieldPercent,
+          yield_rating: yieldRating,
+          rent_source: rentSource,
+          demand_heat_score: heatScore,
+          investment_score: invScore,
+          is_tourist_city: isTouristCity,
+          comparables_count: validComps.length,
           top_comparables: topComps,
           generated_at: new Date().toISOString(),
         },
