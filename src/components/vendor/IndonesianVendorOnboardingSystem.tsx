@@ -89,8 +89,9 @@ const IndonesianVendorOnboardingSystem = () => {
   const { data: provinces } = useQuery({
     queryKey: ['indonesian-provinces'],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke('indonesian-vendor-validation/get-provinces');
-      if (error) throw error;
+      const { data, error } = await supabase.functions.invoke('vendor-engine', {
+        body: { action: 'indonesian_validation', sub_action: 'get_provinces' }
+      });
       return data.locations as IndonesianLocation[];
     }
   });
@@ -100,8 +101,8 @@ const IndonesianVendorOnboardingSystem = () => {
     queryKey: ['indonesian-cities', selectedProvince],
     queryFn: async () => {
       if (!selectedProvince) return [];
-      const { data, error } = await supabase.functions.invoke('indonesian-vendor-validation/get-provinces', {
-        body: { province_code: selectedProvince }
+      const { data, error } = await supabase.functions.invoke('vendor-engine', {
+        body: { action: 'indonesian_validation', sub_action: 'get_provinces', province_code: selectedProvince }
       });
       if (error) throw error;
       return data.locations as IndonesianLocation[];
@@ -114,8 +115,8 @@ const IndonesianVendorOnboardingSystem = () => {
     queryKey: ['indonesian-categories', vendorType, language],
     queryFn: async () => {
       if (!vendorType) return [];
-      const { data, error } = await supabase.functions.invoke('indonesian-vendor-validation/get-categories', {
-        body: { vendor_type: vendorType, language }
+      const { data, error } = await supabase.functions.invoke('vendor-engine', {
+        body: { action: 'indonesian_validation', sub_action: 'get_categories', vendor_type: vendorType, language }
       });
       if (error) throw error;
       return data.categories as IndonesianCategory[];
@@ -144,8 +145,10 @@ const IndonesianVendorOnboardingSystem = () => {
     if (!value || !vendorType) return null;
 
     try {
-      const { data, error } = await supabase.functions.invoke('indonesian-vendor-validation/validate-field', {
+      const { data, error } = await supabase.functions.invoke('vendor-engine', {
         body: {
+          action: 'indonesian_validation',
+          sub_action: 'validate_field',
           field: fieldName,
           value,
           vendor_type: vendorType,
@@ -182,8 +185,10 @@ const IndonesianVendorOnboardingSystem = () => {
       const user = (await supabase.auth.getUser()).data.user;
       if (!user) throw new Error('Not authenticated');
 
-      const { data, error } = await supabase.functions.invoke('indonesian-vendor-validation/verify-bpjs', {
+      const { data, error } = await supabase.functions.invoke('vendor-engine', {
         body: {
+          action: 'indonesian_validation',
+          sub_action: 'verify_bpjs',
           vendor_id: user.id,
           bpjs_type: type,
           verification_number: number

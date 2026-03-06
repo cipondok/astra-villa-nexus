@@ -20,8 +20,9 @@ export const useDeviceRegistration = () => {
         const deviceInfo = getDeviceInfo();
 
         // Call edge function to register device
-        const { data, error } = await supabase.functions.invoke('register-device', {
+        const { data, error } = await supabase.functions.invoke('auth-engine', {
           body: {
+            action: 'register_device',
             device_fingerprint: fingerprint,
             device_type: deviceInfo.deviceType,
             browser_name: deviceInfo.browserName,

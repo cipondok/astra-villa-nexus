@@ -138,10 +138,10 @@ const VendorServiceForm = ({ service, onSuccess, onCancel }: VendorServiceFormPr
 
   const createServiceMutation = useMutation({
     mutationFn: async (data: any) => {
-      const { error } = await supabase.functions.invoke('vendor-service-management', {
-        method: 'POST',
+      const { error } = await supabase.functions.invoke('vendor-engine', {
         body: {
-          action: 'create',
+          action: 'service_management',
+          sub_action: 'create',
           serviceData: data.serviceData,
           serviceItems: data.serviceItems,
           vendor_id: data.vendorId
@@ -161,10 +161,10 @@ const VendorServiceForm = ({ service, onSuccess, onCancel }: VendorServiceFormPr
 
   const updateServiceMutation = useMutation({
     mutationFn: async (data: any) => {
-      const { error } = await supabase.functions.invoke('vendor-service-management', {
-        method: 'PUT',
+      const { error } = await supabase.functions.invoke('vendor-engine', {
         body: {
-          action: 'update',
+          action: 'service_management',
+          sub_action: 'update',
           serviceData: data.serviceData,
           serviceItems: data.serviceItems
         }

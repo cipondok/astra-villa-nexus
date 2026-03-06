@@ -42,8 +42,8 @@ const BookingSuccessPage = () => {
       setLoading(true);
       
       // Verify payment with Stripe
-      const { data: verificationData, error: verificationError } = await supabase.functions.invoke('verify-payment', {
-        body: { sessionId, bookingId }
+      const { data: verificationData, error: verificationError } = await supabase.functions.invoke('payment-engine', {
+        body: { action: 'verify_payment', sessionId, bookingId }
       });
 
       if (verificationError) {

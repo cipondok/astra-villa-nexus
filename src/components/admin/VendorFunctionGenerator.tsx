@@ -80,8 +80,9 @@ const VendorFunctionGenerator = () => {
       customName?: string;
       customDescription?: string;
     }) => {
-      const { data, error } = await supabase.functions.invoke('vendor-function-generator', {
+      const { data, error } = await supabase.functions.invoke('vendor-engine', {
         body: {
+          action: 'generate_function',
           functionTemplate,
           customName,
           customDescription,
