@@ -330,6 +330,7 @@ const AppContent = () => {
                 <Route path="/market-report" element={<MarketReportPage />} />
                 <Route path="/fraud-detector" element={<FraudDetectorPage />} />
                 <Route path="/recommendations" element={<AIRecommendationsPage />} />
+                <Route path="/image-quality" element={<ImageQualityAnalyzerPage />} />
                 <Route path="*" element={<ErrorPage />} />
               </Routes>
             </Suspense>
