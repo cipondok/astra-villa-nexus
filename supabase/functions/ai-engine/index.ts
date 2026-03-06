@@ -1692,6 +1692,86 @@ async function handleContractAnalysis(payload: Record<string, unknown>) {
   }
 }
 
+// ── Property Chatbot (streaming) ─────────────────────────────────────
+
+async function handlePropertyChatbot(payload: Record<string, unknown>) {
+  const { property_id, messages: chatMessages, property_data } = payload as {
+    property_id?: string;
+    messages?: { role: string; content: string }[];
+    property_data?: Record<string, unknown>;
+  };
+
+  if (!chatMessages || chatMessages.length === 0) {
+    return json({ error: "messages array is required" }, 400);
+  }
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  // Fetch property data if ID provided and no inline data
+  let propertyContext = property_data || {};
+  if (property_id && !property_data) {
+    try {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+      const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+      const sb = createClient(supabaseUrl, supabaseKey);
+      const { data } = await sb.from("properties").select("*").eq("id", property_id).single();
+      if (data) propertyContext = data;
+    } catch { /* best effort */ }
+  }
+
+  const systemPrompt = `You are a friendly, knowledgeable real estate assistant for ASTRA Villa Realty. You are embedded on a specific property listing page and your job is to answer buyer/renter questions about THIS property.
+
+Property Details:
+${JSON.stringify(propertyContext, null, 2)}
+
+Guidelines:
+- Answer questions specifically about this property (price, size, features, location, neighborhood)
+- Be helpful, enthusiastic but honest about any unknowns
+- If asked about mortgage/financing, provide rough estimates using Indonesian bank rates (8-12% for KPR)
+- If asked about negotiation, suggest typical Indonesian real estate negotiation ranges (5-15% below listing)
+- For legal questions, give general guidance but recommend consulting a notaris/PPAT
+- Keep responses concise but thorough — use markdown formatting
+- If the question is unrelated to real estate, politely redirect
+- Respond in the same language the user writes in (Indonesian or English)`;
+
+  try {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-3-flash-preview",
+        messages: [
+          { role: "system", content: systemPrompt },
+          ...chatMessages.slice(-20), // Keep last 20 messages for context
+        ],
+        stream: true,
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      const status = aiResponse.status;
+      const text = await aiResponse.text();
+      console.error("AI gateway error:", status, text);
+      if (status === 402 || status === 429 || status === 503) {
+        return json({ status, error: status === 402 ? "AI credits required" : status === 429 ? "Rate limited" : "AI temporarily unavailable" }, 200);
+      }
+      throw new Error(`AI gateway returned ${status}`);
+    }
+
+    // Stream through directly
+    return new Response(aiResponse.body, {
+      headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
+    });
+  } catch (e) {
+    console.error("property_chatbot error:", e);
+    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+  }
+}
+
 // ── Main router ─────────────────────────────────────────────────────
 
 serve(async (req) => {
@@ -1741,6 +1821,8 @@ serve(async (req) => {
         return await handleNeighborhoodInsights(payload);
       case "contract_analysis":
         return await handleContractAnalysis(payload);
+      case "property_chatbot":
+        return await handlePropertyChatbot(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
