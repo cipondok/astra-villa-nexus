@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -3891,6 +3891,120 @@ Deno.serve(async (req) => {
             high: highCount,
             low: lowCount,
             flag_types: flagTypeCounts,
+          },
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: premium_insights — Tiered AI analytics
+    // ═══════════════════════════════════════════
+    if (mode === 'premium_insights') {
+      const pid = body.property_id;
+      if (!pid) {
+        return new Response(JSON.stringify({ error: 'property_id is required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const { data: prop, error: propErr } = await supabase
+        .from('properties')
+        .select('id, title, price, city, district, property_type, bedrooms, bathrooms, building_area_sqm, land_area_sqm, area_sqm, investment_score, listing_type, pool, is_featured, created_at')
+        .eq('id', pid)
+        .single();
+
+      if (propErr || !prop) {
+        return new Response(JSON.stringify({ error: 'Property not found' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const piPrice = Number(prop.price) || 0;
+      const piArea = Number(prop.building_area_sqm) || Number(prop.land_area_sqm) || Number(prop.area_sqm) || 1;
+      const piInvScore = Number(prop.investment_score) || 50;
+
+      // Free-tier: investment_score only
+      if (subscriptionType === 'free') {
+        return new Response(JSON.stringify({
+          data: {
+            access_level: 'free',
+            insights: { investment_score: piInvScore },
+            upgrade_hint: 'Upgrade to Pro to unlock deal rating, rental yield, 5-year forecast, and buyer demand analytics.',
+          },
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      // Pro/Enterprise: full analytics
+      const { count: piCityCount } = await supabase
+        .from('properties')
+        .select('*', { count: 'exact', head: true })
+        .eq('city', prop.city)
+        .eq('status', 'active');
+
+      const { data: piCityListings } = await supabase
+        .from('properties')
+        .select('price, building_area_sqm, land_area_sqm, area_sqm')
+        .eq('city', prop.city)
+        .eq('property_type', prop.property_type)
+        .eq('status', 'active')
+        .limit(200);
+
+      let piMedianPps = 0;
+      if (piCityListings && piCityListings.length > 0) {
+        const ppsArr = piCityListings
+          .map(l => {
+            const a = Number(l.building_area_sqm) || Number(l.land_area_sqm) || Number(l.area_sqm) || 1;
+            return Number(l.price) / a;
+          })
+          .sort((a, b) => a - b);
+        piMedianPps = ppsArr[Math.floor(ppsArr.length / 2)];
+      }
+
+      const piDemandMult = (piCityCount || 0) > 30 ? 1.10 : (piCityCount || 0) > 15 ? 1.05 : (piCityCount || 0) > 5 ? 1.0 : 0.95;
+      const piFmv = piMedianPps * piArea * piDemandMult * (1 + Math.min(piInvScore, 100) / 2000);
+      const piDealPct = piFmv > 0 ? ((piFmv - piPrice) / piFmv) * 100 : 0;
+
+      let piDealRating = 'Fair Value';
+      if (piDealPct >= 15) piDealRating = 'Strong Buy';
+      else if (piDealPct >= 10) piDealRating = 'Good Deal';
+      else if (piDealPct >= 5) piDealRating = 'Slightly Undervalued';
+      else if (piDealPct <= -15) piDealRating = 'Overpriced';
+      else if (piDealPct <= -5) piDealRating = 'Slightly Overpriced';
+
+      const piIsLuxury = piPrice > 5_000_000_000;
+      const piBaseYield = piIsLuxury ? 5.5 : prop.listing_type === 'rent' ? 7.0 : 6.0;
+      const piLocBonus = ['Bali', 'Jakarta'].includes(prop.city || '') ? 1.2 : 0;
+      const piPoolBonus = prop.pool ? 0.5 : 0;
+      const piYield = Math.round((piBaseYield + piLocBonus + piPoolBonus) * 100) / 100;
+
+      const piBaseAppr = (piCityCount || 0) > 30 ? 7 : (piCityCount || 0) > 15 ? 5 : 3;
+      const piInvBonus = piInvScore >= 75 ? 2 : piInvScore >= 50 ? 1 : 0;
+      const piGrowth = piBaseAppr + piInvBonus;
+      const piForecast = Math.round(piPrice * Math.pow(1 + piGrowth / 100, 5));
+
+      const { count: piViews } = await supabase
+        .from('property_analytics')
+        .select('*', { count: 'exact', head: true })
+        .eq('property_id', pid);
+      const { count: piSaves } = await supabase
+        .from('saved_properties')
+        .select('*', { count: 'exact', head: true })
+        .eq('property_id', pid);
+
+      const piBuyerDemand = Math.min(100, Math.round(((piViews || 0) * 1) + ((piSaves || 0) * 5)));
+
+      return new Response(JSON.stringify({
+        data: {
+          access_level: subscriptionType,
+          insights: {
+            investment_score: piInvScore,
+            deal_rating: piDealRating,
+            deal_score_percent: Math.round(piDealPct * 10) / 10,
+            fair_market_value: Math.round(piFmv),
+            rental_yield_estimate: piYield,
+            price_forecast_5y: { current_price: piPrice, forecast_price: piForecast, annual_growth_rate: piGrowth },
+            buyer_demand_score: piBuyerDemand,
+            market_density: piCityCount || 0,
           },
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
