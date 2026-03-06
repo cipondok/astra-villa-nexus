@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -4994,6 +4994,152 @@ Deno.serve(async (req) => {
           summary: classCounts,
           total_cities: hotspots.length,
           total_properties_analyzed: (props || []).length,
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // ██  PORTFOLIO MANAGER MODE
+    // ═══════════════════════════════════════════════════════════
+    if (mode === 'portfolio_manager') {
+      const targetUserId = body.user_id || userId;
+      const serviceClient = createClient(supabaseUrl, serviceKey);
+
+      // 1. Fetch owned properties
+      const { data: ownedProps } = await serviceClient
+        .from('properties')
+        .select('id, title, price, city, state, location, property_type, listing_type, bedrooms, bathrooms, area_sqm, thumbnail_url, investment_score, demand_heat_score, rental_yield_estimate, created_at')
+        .eq('owner_id', targetUserId)
+        .eq('status', 'active')
+        .limit(50);
+
+      // 2. Fetch saved/favorited properties
+      const { data: savedFavs } = await serviceClient
+        .from('favorites')
+        .select('property_id, properties(id, title, price, city, state, location, property_type, listing_type, bedrooms, bathrooms, area_sqm, thumbnail_url, investment_score, demand_heat_score, rental_yield_estimate, created_at)')
+        .eq('user_id', targetUserId)
+        .limit(50);
+
+      const savedProps = (savedFavs || [])
+        .map((f: any) => f.properties)
+        .filter(Boolean);
+
+      // Merge & deduplicate
+      const allMap = new Map<string, any>();
+      for (const p of [...(ownedProps || []), ...savedProps]) {
+        if (!allMap.has(p.id)) {
+          allMap.set(p.id, { ...p, is_owned: (ownedProps || []).some((o: any) => o.id === p.id) });
+        }
+      }
+      const properties = Array.from(allMap.values());
+
+      if (properties.length === 0) {
+        return new Response(JSON.stringify({
+          data: {
+            portfolio_value: 0,
+            projected_value_5y: 0,
+            average_roi: 0,
+            risk_level: 'unknown',
+            properties: [],
+            generated_at: new Date().toISOString(),
+          },
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      // 3. Enrich each property with forecast & analysis
+      const enriched = properties.map((p: any) => {
+        const invScore = p.investment_score ?? 50;
+        const heatScore = p.demand_heat_score ?? 40;
+        const rentalYield = p.rental_yield_estimate ?? 5.0;
+        const price = p.price || 0;
+
+        // Growth forecast (5-year compound)
+        const baseGrowthRate = heatScore > 75 ? 8 : heatScore > 50 ? 6 : heatScore > 30 ? 4 : 3;
+        const invBonus = invScore > 80 ? 2 : invScore > 60 ? 1 : 0;
+        const annualGrowth = (baseGrowthRate + invBonus) / 100;
+        const projectedValue5y = Math.round(price * Math.pow(1 + annualGrowth, 5));
+
+        // ROI = rental yield + capital appreciation
+        const annualRentalIncome = price * (rentalYield / 100);
+        const capitalGain5y = projectedValue5y - price;
+        const totalReturn5y = (annualRentalIncome * 5) + capitalGain5y;
+        const roi = price > 0 ? Math.round((totalReturn5y / price) * 100 * 10) / 10 : 0;
+
+        // Risk factor per property
+        const riskFactor = Math.round(100 - (invScore * 0.5 + heatScore * 0.3 + Math.min(rentalYield, 10) * 2));
+
+        return {
+          id: p.id,
+          title: p.title,
+          price,
+          city: p.city,
+          state: p.state,
+          location: p.location,
+          property_type: p.property_type,
+          listing_type: p.listing_type,
+          bedrooms: p.bedrooms,
+          bathrooms: p.bathrooms,
+          area_sqm: p.area_sqm,
+          thumbnail_url: p.thumbnail_url,
+          is_owned: p.is_owned,
+          investment_score: invScore,
+          demand_heat_score: heatScore,
+          rental_yield: rentalYield,
+          annual_growth_rate: Math.round(annualGrowth * 100 * 10) / 10,
+          projected_value_5y: projectedValue5y,
+          roi_5y: roi,
+          risk_factor: riskFactor,
+        };
+      });
+
+      // 4. Portfolio aggregates
+      const portfolioValue = enriched.reduce((s: number, p: any) => s + p.price, 0);
+      const projectedValue5y = enriched.reduce((s: number, p: any) => s + p.projected_value_5y, 0);
+      const avgInvScore = enriched.reduce((s: number, p: any) => s + p.investment_score, 0) / enriched.length;
+      const avgRoi = Math.round(enriched.reduce((s: number, p: any) => s + p.roi_5y, 0) / enriched.length * 10) / 10;
+
+      // Risk classification
+      let riskLevel: string;
+      if (avgInvScore > 75) riskLevel = 'low';
+      else if (avgInvScore >= 60) riskLevel = 'medium';
+      else riskLevel = 'high';
+
+      // Concentration penalties
+      const cities = enriched.map((p: any) => p.city).filter(Boolean);
+      const uniqueCities = new Set(cities);
+      const types = enriched.map((p: any) => p.property_type).filter(Boolean);
+      const uniqueTypes = new Set(types);
+      const geoConcentration = uniqueCities.size <= 1 && enriched.length > 1;
+      const typeConcentration = uniqueTypes.size <= 1 && enriched.length > 1;
+
+      if (geoConcentration || typeConcentration) {
+        if (riskLevel === 'low') riskLevel = 'medium';
+        else if (riskLevel === 'medium') riskLevel = 'high';
+      }
+
+      // Sort by ROI descending
+      enriched.sort((a: any, b: any) => b.roi_5y - a.roi_5y);
+
+      // Top & weakest performers
+      const topPerformer = enriched[0] || null;
+      const weakestPerformer = enriched[enriched.length - 1] || null;
+
+      return new Response(JSON.stringify({
+        data: {
+          portfolio_value: portfolioValue,
+          projected_value_5y: projectedValue5y,
+          average_roi: avgRoi,
+          risk_level: riskLevel,
+          avg_investment_score: Math.round(avgInvScore),
+          total_properties: enriched.length,
+          geo_concentration: geoConcentration,
+          type_concentration: typeConcentration,
+          unique_cities: Array.from(uniqueCities),
+          unique_types: Array.from(uniqueTypes),
+          top_performer: topPerformer ? { id: topPerformer.id, title: topPerformer.title, roi_5y: topPerformer.roi_5y } : null,
+          weakest_performer: weakestPerformer && weakestPerformer.id !== topPerformer?.id ? { id: weakestPerformer.id, title: weakestPerformer.title, roi_5y: weakestPerformer.roi_5y } : null,
+          properties: enriched,
           generated_at: new Date().toISOString(),
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
