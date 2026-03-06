@@ -506,6 +506,156 @@ Rules:
   });
 }
 
+// ── market_report: AI-generated market analysis PDF data ────────────
+async function handleMarketReport(payload: Record<string, unknown>) {
+  const city = String(payload.city || "").trim();
+  if (!city) return json({ error: "city is required" }, 400);
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const supabase = createClient(supabaseUrl, serviceKey);
+
+  // Aggregate market data
+  const thirtyAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+  const ninetyAgo = new Date(Date.now() - 90 * 86400000).toISOString();
+
+  const [totalRes, newRes, recentRes, pricesRes, typeRes] = await Promise.all([
+    supabase.from("properties").select("id", { count: "exact", head: true }).ilike("city", `%${city}%`).eq("status", "published"),
+    supabase.from("properties").select("id", { count: "exact", head: true }).ilike("city", `%${city}%`).gte("created_at", thirtyAgo),
+    supabase.from("properties").select("id", { count: "exact", head: true }).ilike("city", `%${city}%`).gte("created_at", ninetyAgo),
+    supabase.from("properties").select("price, property_type, kt, km, building_area_sqm, land_area_sqm, investment_score, listing_type").ilike("city", `%${city}%`).eq("status", "published").not("price", "is", null).gt("price", 0).limit(200),
+    supabase.from("properties").select("property_type").ilike("city", `%${city}%`).eq("status", "published"),
+  ]);
+
+  const listings = pricesRes.data || [];
+  const prices = listings.map((p: any) => Number(p.price)).filter((n: number) => n > 0).sort((a: number, b: number) => a - b);
+  const avg = prices.length > 0 ? prices.reduce((a: number, b: number) => a + b, 0) / prices.length : 0;
+  const median = prices.length > 0 ? prices[Math.floor(prices.length / 2)] : 0;
+  const min = prices.length > 0 ? prices[0] : 0;
+  const max = prices.length > 0 ? prices[prices.length - 1] : 0;
+
+  // Type distribution
+  const typeCounts: Record<string, number> = {};
+  (typeRes.data || []).forEach((p: any) => {
+    const t = p.property_type || "unknown";
+    typeCounts[t] = (typeCounts[t] || 0) + 1;
+  });
+
+  // Listing type split
+  const saleCount = listings.filter((p: any) => p.listing_type === "sale").length;
+  const rentCount = listings.filter((p: any) => p.listing_type === "rent").length;
+
+  // Investment scores
+  const investScores = listings.map((p: any) => p.investment_score).filter((s: any) => typeof s === "number" && s > 0);
+  const avgInvestScore = investScores.length > 0 ? Math.round(investScores.reduce((a: number, b: number) => a + b, 0) / investScores.length) : 0;
+
+  // Price per sqm
+  const pricePerSqm = listings
+    .filter((p: any) => p.building_area_sqm && p.building_area_sqm > 0)
+    .map((p: any) => Number(p.price) / Number(p.building_area_sqm));
+  const avgPricePerSqm = pricePerSqm.length > 0 ? Math.round(pricePerSqm.reduce((a: number, b: number) => a + b, 0) / pricePerSqm.length) : 0;
+
+  const marketData = {
+    city,
+    total_listings: totalRes.count || 0,
+    new_listings_30d: newRes.count || 0,
+    new_listings_90d: recentRes.count || 0,
+    price_stats: { avg: Math.round(avg), median: Math.round(median), min, max },
+    avg_price_per_sqm: avgPricePerSqm,
+    type_distribution: typeCounts,
+    listing_type_split: { sale: saleCount, rent: rentCount },
+    avg_investment_score: avgInvestScore,
+    report_date: new Date().toISOString().split("T")[0],
+  };
+
+  // AI narrative generation
+  const aiPrompt = `You are a senior real estate market analyst for Indonesian property markets.
+Generate a comprehensive market report for ${city} based on this data:
+${JSON.stringify(marketData, null, 2)}
+
+Structure your response as JSON with these fields:
+- executive_summary (2-3 sentences overview)
+- market_overview (paragraph about current state)
+- price_analysis (paragraph about pricing trends, include IDR figures)
+- investment_outlook (paragraph about investment potential, use the avg investment score)
+- property_type_analysis (paragraph about type distribution and what it means)
+- demand_indicators (paragraph about supply/demand based on new listings data)
+- recommendations (array of 3-5 bullet point strings for investors)
+- risk_factors (array of 2-3 risk items as strings)
+- forecast (paragraph about 6-12 month outlook)
+
+Use IDR currency formatting. Be specific with numbers from the data. Professional tone.`;
+
+  try {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-3-flash-preview",
+        messages: [{ role: "user", content: aiPrompt }],
+        tools: [{
+          type: "function",
+          function: {
+            name: "generate_report",
+            description: "Generate structured market report",
+            parameters: {
+              type: "object",
+              properties: {
+                executive_summary: { type: "string" },
+                market_overview: { type: "string" },
+                price_analysis: { type: "string" },
+                investment_outlook: { type: "string" },
+                property_type_analysis: { type: "string" },
+                demand_indicators: { type: "string" },
+                recommendations: { type: "array", items: { type: "string" } },
+                risk_factors: { type: "array", items: { type: "string" } },
+                forecast: { type: "string" },
+              },
+              required: ["executive_summary", "market_overview", "price_analysis", "investment_outlook", "property_type_analysis", "demand_indicators", "recommendations", "risk_factors", "forecast"],
+              additionalProperties: false,
+            },
+          },
+        }],
+        tool_choice: { type: "function", function: { name: "generate_report" } },
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      const status = aiResponse.status;
+      if (status === 429) return json({ error: "Rate limit exceeded. Please try again shortly." }, 429);
+      if (status === 402) return json({ error: "AI credits exhausted. Please top up." }, 402);
+      const t = await aiResponse.text();
+      console.error("AI report error:", status, t);
+      return json({ error: "AI report generation failed" }, 500);
+    }
+
+    const aiResult = await aiResponse.json();
+    const toolCall = aiResult.choices?.[0]?.message?.tool_calls?.[0];
+    let narrative: any = {};
+    try {
+      narrative = JSON.parse(toolCall?.function?.arguments || "{}");
+    } catch {
+      console.error("Failed to parse AI report response");
+      narrative = { executive_summary: "Report generation incomplete. Please try again." };
+    }
+
+    return json({
+      mode: "market_report",
+      market_data: marketData,
+      narrative,
+    });
+  } catch (err) {
+    console.error("Market report error:", err);
+    return json({ error: err instanceof Error ? err.message : "Unknown error" }, 500);
+  }
+}
+
 // ── Main router ─────────────────────────────────────────────────────
 
 serve(async (req) => {
@@ -539,6 +689,8 @@ serve(async (req) => {
         return await handlePropertyAssistant(payload);
       case "virtual_staging":
         return await handleVirtualStaging(payload);
+      case "market_report":
+        return await handleMarketReport(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
