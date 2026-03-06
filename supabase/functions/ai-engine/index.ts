@@ -1529,6 +1529,169 @@ Always provide specific, actionable information. If you're discussing Indonesian
   }
 }
 
+// ── Contract Analyzer ────────────────────────────────────────────────
+
+async function handleContractAnalysis(payload: Record<string, unknown>) {
+  const { contract_text, contract_type, language } = payload as {
+    contract_text?: string;
+    contract_type?: string;
+    language?: string;
+  };
+
+  if (!contract_text || contract_text.trim().length < 50) {
+    return json({ error: "contract_text is required (minimum 50 characters)" }, 400);
+  }
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  const contractLabel = contract_type || "real estate contract";
+  const lang = language || "Indonesian/English";
+
+  const systemPrompt = `You are an expert Indonesian real estate legal analyst. Analyze the provided ${contractLabel} thoroughly. The contract may be in ${lang}. Extract all critical information, identify risks, and provide actionable recommendations. Focus on Indonesian property law (UUPA, PP 24/1997, PP 18/2021) and common pitfalls in Indonesian real estate transactions. Be thorough but present findings clearly.`;
+
+  try {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-3-flash-preview",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: `Analyze this ${contractLabel}:\n\n${contract_text.slice(0, 15000)}` },
+        ],
+        tools: [
+          {
+            type: "function",
+            function: {
+              name: "contract_analysis",
+              description: "Return structured contract analysis",
+              parameters: {
+                type: "object",
+                properties: {
+                  summary: {
+                    type: "object",
+                    properties: {
+                      contract_type: { type: "string" },
+                      parties: { type: "array", items: { type: "object", properties: { role: { type: "string" }, name: { type: "string" }, details: { type: "string" } }, required: ["role", "name"] } },
+                      effective_date: { type: "string" },
+                      expiry_date: { type: "string" },
+                      property_description: { type: "string" },
+                      total_value: { type: "string" },
+                      language_detected: { type: "string" },
+                    },
+                    required: ["contract_type", "parties"],
+                  },
+                  key_terms: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        category: { type: "string", enum: ["payment", "duration", "termination", "maintenance", "insurance", "tax", "transfer", "penalty", "other"] },
+                        term: { type: "string" },
+                        details: { type: "string" },
+                        importance: { type: "string", enum: ["critical", "important", "standard"] },
+                        clause_reference: { type: "string" },
+                      },
+                      required: ["category", "term", "details", "importance"],
+                    },
+                  },
+                  risks: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        severity: { type: "string", enum: ["high", "medium", "low"] },
+                        title: { type: "string" },
+                        description: { type: "string" },
+                        affected_party: { type: "string" },
+                        recommendation: { type: "string" },
+                        legal_reference: { type: "string" },
+                      },
+                      required: ["severity", "title", "description", "recommendation"],
+                    },
+                  },
+                  obligations: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        party: { type: "string" },
+                        obligation: { type: "string" },
+                        deadline: { type: "string" },
+                        penalty_for_breach: { type: "string" },
+                        status: { type: "string", enum: ["active", "conditional", "one-time"] },
+                      },
+                      required: ["party", "obligation"],
+                    },
+                  },
+                  financial_breakdown: {
+                    type: "object",
+                    properties: {
+                      total_cost: { type: "string" },
+                      payment_schedule: { type: "array", items: { type: "object", properties: { description: { type: "string" }, amount: { type: "string" }, due_date: { type: "string" } }, required: ["description", "amount"] } },
+                      taxes_and_fees: { type: "array", items: { type: "object", properties: { type: { type: "string" }, amount: { type: "string" }, responsible_party: { type: "string" } }, required: ["type", "amount"] } },
+                      hidden_costs: { type: "array", items: { type: "string" } },
+                    },
+                  },
+                  legal_compliance: {
+                    type: "object",
+                    properties: {
+                      overall_score: { type: "number", description: "Compliance score 1-100" },
+                      compliant_areas: { type: "array", items: { type: "string" } },
+                      non_compliant_areas: { type: "array", items: { type: "string" } },
+                      missing_clauses: { type: "array", items: { type: "string" } },
+                      recommendations: { type: "array", items: { type: "string" } },
+                    },
+                    required: ["overall_score", "recommendations"],
+                  },
+                  overall_assessment: {
+                    type: "object",
+                    properties: {
+                      risk_level: { type: "string", enum: ["low", "moderate", "high", "critical"] },
+                      favorability: { type: "string", enum: ["buyer_favorable", "balanced", "seller_favorable", "landlord_favorable", "tenant_favorable"] },
+                      recommendation: { type: "string", enum: ["proceed", "proceed_with_caution", "negotiate", "seek_legal_counsel", "do_not_sign"] },
+                      reasoning: { type: "string" },
+                      negotiation_points: { type: "array", items: { type: "string" } },
+                    },
+                    required: ["risk_level", "favorability", "recommendation", "reasoning"],
+                  },
+                },
+                required: ["summary", "key_terms", "risks", "obligations", "legal_compliance", "overall_assessment"],
+                additionalProperties: false,
+              },
+            },
+          },
+        ],
+        tool_choice: { type: "function", function: { name: "contract_analysis" } },
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      const status = aiResponse.status;
+      const text = await aiResponse.text();
+      console.error("AI gateway error:", status, text);
+      if (status === 402 || status === 429 || status === 503) {
+        return json({ status, error: status === 402 ? "AI credits required" : status === 429 ? "Rate limited" : "AI temporarily unavailable" }, 200);
+      }
+      throw new Error(`AI gateway returned ${status}`);
+    }
+
+    const aiData = await aiResponse.json();
+    const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall) throw new Error("No structured response from AI");
+
+    const result = JSON.parse(toolCall.function.arguments);
+    return json(result);
+  } catch (e) {
+    console.error("contract_analysis error:", e);
+    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+  }
+}
+
 // ── Main router ─────────────────────────────────────────────────────
 
 serve(async (req) => {
@@ -1576,6 +1739,8 @@ serve(async (req) => {
         return await handleSmartNotifications(payload);
       case "neighborhood_insights":
         return await handleNeighborhoodInsights(payload);
+      case "contract_analysis":
+        return await handleContractAnalysis(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
