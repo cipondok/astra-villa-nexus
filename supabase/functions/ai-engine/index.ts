@@ -2988,6 +2988,8 @@ serve(async (req) => {
     }
 
     switch (mode) {
+      case "property_advisor":
+        return await handlePropertyAdvisor(payload);
       case "generate_description":
         return await handleGenerateDescription(payload);
       case "generate_image":
