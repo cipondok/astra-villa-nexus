@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -4182,6 +4182,115 @@ Deno.serve(async (req) => {
           notified_users: notifiedUserIds.size,
           deals_found: deals.length,
           top_deals: deals.sort((a, b) => b.deal_score_percent - a.deal_score_percent).slice(0, 5),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: lead_generation — Find high-intent buyers in a city for agent leads
+    // ═══════════════════════════════════════════
+    if (mode === 'lead_generation') {
+      const targetCity = (body.city || reqCity || '').trim();
+      if (!targetCity) {
+        return new Response(JSON.stringify({ error: 'city is required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Step 1: Fetch intent profiles for the target city
+      const { data: intents, error: intErr } = await supabase
+        .from('user_intent_profiles')
+        .select('user_id, buyer_type, intent_level, avg_budget, preferred_city, views_30d, saves_30d, inquiries_30d, property_type_preference, investment_affinity, last_active_at')
+        .ilike('preferred_city', `%${targetCity}%`);
+
+      if (intErr) throw intErr;
+
+      // Step 2: Score each user — weighted intent_score 0-100
+      const scored = (intents || []).map(u => {
+        const views = Number(u.views_30d) || 0;
+        const saves = Number(u.saves_30d) || 0;
+        const inquiries = Number(u.inquiries_30d) || 0;
+
+        // Weighted: views 20%, saves 25%, inquiries 30%, recency 15%, intent_level 10%
+        const viewScore = Math.min(views / 20, 1) * 20;
+        const saveScore = Math.min(saves / 10, 1) * 25;
+        const inquiryScore = Math.min(inquiries / 5, 1) * 30;
+
+        // Recency: active in last 7 days = full points
+        const daysSinceActive = u.last_active_at
+          ? (Date.now() - new Date(u.last_active_at).getTime()) / (1000 * 60 * 60 * 24)
+          : 30;
+        const recencyScore = daysSinceActive <= 7 ? 15 : daysSinceActive <= 14 ? 10 : daysSinceActive <= 30 ? 5 : 0;
+
+        // Intent level bonus
+        const intentBonus = u.intent_level === 'high' ? 10 : u.intent_level === 'medium' ? 5 : 0;
+
+        const intentScore = Math.round(viewScore + saveScore + inquiryScore + recencyScore + intentBonus);
+
+        return {
+          user_id: u.user_id,
+          intent_score: Math.min(intentScore, 100),
+          preferred_budget: u.avg_budget,
+          buyer_type: u.buyer_type,
+          intent_level: u.intent_level,
+          property_type_preference: u.property_type_preference,
+          investment_affinity: u.investment_affinity,
+          activity_30d: { views, saves, inquiries },
+          last_active_at: u.last_active_at,
+        };
+      });
+
+      // Step 3: Filter intent_score > 70 and sort descending
+      const highIntent = scored
+        .filter(u => u.intent_score > 70)
+        .sort((a, b) => b.intent_score - a.intent_score);
+
+      // Step 4: Fetch agent profiles in same city for matching context
+      const { data: cityAgents } = await supabase
+        .from('profiles')
+        .select('id, full_name, city')
+        .ilike('city', `%${targetCity}%`);
+
+      // Cross-reference with user_roles to confirm agent role
+      const agentIds: string[] = [];
+      if (cityAgents && cityAgents.length > 0) {
+        const { data: agentRoles } = await supabase
+          .from('user_roles')
+          .select('user_id')
+          .eq('role', 'agent')
+          .in('user_id', cityAgents.map(a => a.id));
+        if (agentRoles) {
+          agentRoles.forEach(r => agentIds.push(r.user_id));
+        }
+      }
+
+      const matchedAgents = (cityAgents || [])
+        .filter(a => agentIds.includes(a.id))
+        .map(a => ({ agent_id: a.id, name: a.full_name, city: a.city }));
+
+      // Summary stats
+      const avgIntent = highIntent.length > 0
+        ? Math.round(highIntent.reduce((s, l) => s + l.intent_score, 0) / highIntent.length)
+        : 0;
+
+      const budgetRange = highIntent.length > 0
+        ? {
+            min: Math.min(...highIntent.filter(l => l.preferred_budget).map(l => l.preferred_budget!)),
+            max: Math.max(...highIntent.filter(l => l.preferred_budget).map(l => l.preferred_budget!)),
+            avg: Math.round(highIntent.filter(l => l.preferred_budget).reduce((s, l) => s + (l.preferred_budget || 0), 0) / Math.max(highIntent.filter(l => l.preferred_budget).length, 1)),
+          }
+        : null;
+
+      return new Response(JSON.stringify({
+        data: {
+          city: targetCity,
+          buyer_leads: highIntent.slice(0, 50),
+          total_high_intent: highIntent.length,
+          total_scanned: scored.length,
+          avg_intent_score: avgIntent,
+          budget_range: budgetRange,
+          matched_agents: matchedAgents,
+          generated_at: new Date().toISOString(),
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
