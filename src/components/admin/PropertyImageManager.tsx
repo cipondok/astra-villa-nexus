@@ -140,7 +140,7 @@ const PropertyImageManager = () => {
                 propertyType: property.property_type,
                 location: property.location || property.city,
                 brokenImageUrl: url,
-              }
+              }}
             });
             if (error) throw error;
             if (data?.error) throw new Error(data.error);
@@ -357,7 +357,7 @@ const PropertyImageManager = () => {
           propertyType: property.property_type,
           location: property.location || property.city,
           brokenImageUrl: brokenUrl,
-        }
+        }}
       });
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
