@@ -65,8 +65,8 @@ const PropertyServiceBooking: React.FC<PropertyServiceBookingProps> = ({
   const { data: permissions } = useQuery({
     queryKey: ['vendor-permissions', vendorId],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke('property-services', {
-        body: { action: 'get_vendor_permissions', vendor_id: vendorId }
+      const { data, error } = await supabase.functions.invoke('vendor-engine', {
+        body: { action: 'property_services', sub_action: 'get_vendor_permissions', vendor_id: vendorId }
       });
       
       if (error) throw error;
@@ -79,12 +79,13 @@ const PropertyServiceBooking: React.FC<PropertyServiceBookingProps> = ({
     if (!serviceId || !formData.duration_hours) return;
 
     try {
-      const { data, error } = await supabase.functions.invoke('property-services', {
+      const { data, error } = await supabase.functions.invoke('vendor-engine', {
         body: {
-          action: 'calculate_service_price',
+          action: 'property_services',
+          sub_action: 'calculate_service_price',
           service_id: serviceId,
           duration_hours: formData.duration_hours,
-          property_area: 100 // Default area, could be dynamic
+          property_area: 100
         }
       });
 
@@ -98,9 +99,10 @@ const PropertyServiceBooking: React.FC<PropertyServiceBookingProps> = ({
   // Create booking mutation
   const createBookingMutation = useMutation({
     mutationFn: async (bookingData: any) => {
-      const { data, error } = await supabase.functions.invoke('property-services', {
+      const { data, error } = await supabase.functions.invoke('vendor-engine', {
         body: {
-          action: 'create_booking',
+          action: 'property_services',
+          sub_action: 'create_booking',
           ...bookingData
         }
       });

@@ -100,8 +100,8 @@ const PropertyImporter = ({ onImport }: PropertyImporterProps) => {
     setExtractedData(null);
 
     try {
-      const { data, error: fnError } = await supabase.functions.invoke('scrape-property-url', {
-        body: { url: url.trim() }
+      const { data, error: fnError } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'scrape_property_url', payload: { url: url.trim() } }
       });
 
       if (fnError) throw fnError;

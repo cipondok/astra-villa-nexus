@@ -31,8 +31,8 @@ const PropertyServiceManagement: React.FC = () => {
   const { data: bookings, isLoading: bookingsLoading } = useQuery({
     queryKey: ['vendor-property-bookings', user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke('property-services', {
-        body: { action: 'get_bookings', role: 'vendor' }
+      const { data, error } = await supabase.functions.invoke('vendor-engine', {
+        body: { action: 'property_services', sub_action: 'get_bookings', role: 'vendor' }
       });
       
       if (error) throw error;
@@ -45,8 +45,8 @@ const PropertyServiceManagement: React.FC = () => {
   const { data: permissions } = useQuery({
     queryKey: ['vendor-service-permissions', user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke('property-services', {
-        body: { action: 'get_vendor_permissions' }
+      const { data, error } = await supabase.functions.invoke('vendor-engine', {
+        body: { action: 'property_services', sub_action: 'get_vendor_permissions' }
       });
       
       if (error) throw error;
@@ -58,9 +58,10 @@ const PropertyServiceManagement: React.FC = () => {
   // Update booking status mutation
   const updateStatusMutation = useMutation({
     mutationFn: async ({ booking_id, status, completion_notes, vendor_response }: any) => {
-      const { data, error } = await supabase.functions.invoke('property-services', {
+      const { data, error } = await supabase.functions.invoke('vendor-engine', {
         body: {
-          action: 'update_booking_status',
+          action: 'property_services',
+          sub_action: 'update_booking_status',
           booking_id,
           status,
           completion_notes,
