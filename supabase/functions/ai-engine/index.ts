@@ -1169,6 +1169,184 @@ Be data-driven and realistic with estimates. ${compData.length} comparable prope
   }
 }
 
+// ── Smart Notifications ─────────────────────────────────────────────
+
+async function handleSmartNotifications(payload: Record<string, unknown>) {
+  const { user_id, user_behavior, notification_history, preferences } = payload as {
+    user_id?: string;
+    user_behavior?: {
+      avg_active_hours?: number[];
+      most_viewed_types?: string[];
+      most_viewed_cities?: string[];
+      search_frequency?: string;
+      price_range?: { min: number; max: number };
+      last_login?: string;
+      total_views_30d?: number;
+      saved_properties?: number;
+      inquiries_sent?: number;
+    };
+    notification_history?: {
+      total_sent_30d?: number;
+      open_rate?: number;
+      click_rate?: number;
+      unsubscribe_rate?: number;
+      most_engaged_types?: string[];
+    };
+    preferences?: {
+      channels?: string[];
+      frequency?: string;
+      quiet_hours?: { start: number; end: number };
+    };
+  };
+
+  if (!user_id) return json({ error: "user_id is required" }, 400);
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  // Fetch user's saved searches and recent activity from DB
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const sb = createClient(supabaseUrl, supabaseKey);
+
+  const [savedSearches, recentViews, priceAlerts] = await Promise.all([
+    sb.from("saved_search_alerts").select("*").eq("user_id", user_id).eq("is_active", true).limit(10),
+    sb.from("ai_behavior_tracking").select("*").eq("user_id", user_id).order("created_at", { ascending: false }).limit(50),
+    sb.from("property_price_history").select("*, properties(title, city, price)").limit(20),
+  ]);
+
+  try {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        temperature: 0.4,
+        messages: [
+          {
+            role: "system",
+            content: `You are an AI notification optimization engine for a real estate platform. Analyze user behavior patterns and generate a personalized notification strategy. Consider engagement patterns, optimal timing, content relevance, and notification fatigue prevention. All prices are in IDR (Indonesian Rupiah).`
+          },
+          {
+            role: "user",
+            content: JSON.stringify({
+              user_behavior: user_behavior || {},
+              notification_history: notification_history || {},
+              current_preferences: preferences || {},
+              saved_searches: savedSearches.data || [],
+              recent_activity: recentViews.data?.slice(0, 20) || [],
+              price_changes: priceAlerts.data || [],
+            })
+          }
+        ],
+        tools: [{
+          type: "function",
+          function: {
+            name: "smart_notification_strategy",
+            description: "Generate personalized notification strategy",
+            parameters: {
+              type: "object",
+              properties: {
+                optimal_send_times: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      hour: { type: "number" },
+                      day_of_week: { type: "string" },
+                      confidence: { type: "number" },
+                      reasoning: { type: "string" }
+                    },
+                    required: ["hour", "day_of_week", "confidence", "reasoning"]
+                  },
+                  description: "Top 5 optimal notification delivery times"
+                },
+                recommended_frequency: {
+                  type: "object",
+                  properties: {
+                    daily_max: { type: "number" },
+                    weekly_max: { type: "number" },
+                    reasoning: { type: "string" }
+                  },
+                  required: ["daily_max", "weekly_max", "reasoning"]
+                },
+                personalized_alerts: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      alert_type: { type: "string", enum: ["price_drop", "new_listing", "market_trend", "investment_opportunity", "viewing_reminder", "similar_property", "price_milestone"] },
+                      priority: { type: "string", enum: ["high", "medium", "low"] },
+                      title: { type: "string" },
+                      message: { type: "string" },
+                      recommended_channel: { type: "string", enum: ["push", "email", "sms", "in_app"] },
+                      trigger_condition: { type: "string" },
+                      estimated_relevance_score: { type: "number" }
+                    },
+                    required: ["alert_type", "priority", "title", "message", "recommended_channel", "trigger_condition", "estimated_relevance_score"]
+                  },
+                  description: "Personalized alert suggestions based on user behavior"
+                },
+                engagement_insights: {
+                  type: "object",
+                  properties: {
+                    engagement_level: { type: "string", enum: ["highly_engaged", "moderately_engaged", "at_risk", "dormant"] },
+                    churn_risk: { type: "number" },
+                    re_engagement_strategy: { type: "string" },
+                    content_preferences: { type: "array", items: { type: "string" } },
+                    fatigue_risk: { type: "string", enum: ["low", "medium", "high"] }
+                  },
+                  required: ["engagement_level", "churn_risk", "re_engagement_strategy", "content_preferences", "fatigue_risk"]
+                },
+                channel_optimization: {
+                  type: "object",
+                  properties: {
+                    primary_channel: { type: "string" },
+                    secondary_channel: { type: "string" },
+                    channel_scores: {
+                      type: "object",
+                      properties: {
+                        push: { type: "number" },
+                        email: { type: "number" },
+                        sms: { type: "number" },
+                        in_app: { type: "number" }
+                      }
+                    },
+                    reasoning: { type: "string" }
+                  },
+                  required: ["primary_channel", "secondary_channel", "channel_scores", "reasoning"]
+                },
+                summary: { type: "string" }
+              },
+              required: ["optimal_send_times", "recommended_frequency", "personalized_alerts", "engagement_insights", "channel_optimization", "summary"]
+            }
+          }
+        }],
+        tool_choice: { type: "function", function: { name: "smart_notification_strategy" } }
+      })
+    });
+
+    if (!aiResponse.ok) {
+      if (aiResponse.status === 429) return json({ error: "Rate limit exceeded." }, 429);
+      if (aiResponse.status === 402) return json({ error: "AI credits required." }, 402);
+      throw new Error(`AI failed: ${aiResponse.status}`);
+    }
+
+    const data = await aiResponse.json();
+    const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall) throw new Error("No structured response from AI");
+
+    const result = JSON.parse(toolCall.function.arguments);
+    return json(result);
+  } catch (e) {
+    console.error("smart_notifications error:", e);
+    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+  }
+}
+
 // ── Main router ─────────────────────────────────────────────────────
 
 serve(async (req) => {
@@ -1212,6 +1390,8 @@ serve(async (req) => {
         return await handleVirtualTourGenerate(payload);
       case "comparative_market_analysis":
         return await handleComparativeMarketAnalysis(payload);
+      case "smart_notifications":
+        return await handleSmartNotifications(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
