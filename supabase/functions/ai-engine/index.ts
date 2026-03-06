@@ -2211,6 +2211,90 @@ Analyze the document text for:
 
 // ── Main router ─────────────────────────────────────────────────────
 
+// ── Rental Yield Optimizer ──────────────────────────────────────────
+
+async function handleRentalYieldOptimizer(payload: Record<string, unknown>) {
+  const { property_type, location, purchase_price, current_monthly_rent, property_area, bedrooms, bathrooms, furnishing, building_age_years, rental_strategy } = payload as {
+    property_type: string; location: string; purchase_price: number; current_monthly_rent?: number;
+    property_area: number; bedrooms: number; bathrooms: number; furnishing: string;
+    building_age_years?: number; rental_strategy?: string;
+  };
+
+  if (!property_type || !location || !purchase_price) return json({ error: "property_type, location, and purchase_price are required" }, 400);
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  const systemPrompt = `You are an expert Indonesian rental property analyst AI. Analyze rental yield optimization for properties in Indonesia. All monetary values must be in IDR. Use realistic Indonesian market data for ${location}.
+
+Property: ${property_type}, ${property_area}m², ${bedrooms} BR / ${bathrooms} BA, ${furnishing}, ${building_age_years ? `${building_age_years} years old` : "age unknown"}
+Purchase price: Rp ${purchase_price.toLocaleString("id-ID")}
+${current_monthly_rent ? `Current rent: Rp ${current_monthly_rent.toLocaleString("id-ID")}/month` : "No current rent data"}
+Strategy: ${rental_strategy || "long_term"}
+
+Provide realistic Indonesian market-specific analysis including PBB tax, maintenance, insurance, management fees, and vacancy costs.`;
+
+  try {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        temperature: 0.5,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: `Optimize rental yield for this ${property_type} in ${location}.` },
+        ],
+        tools: [{
+          type: "function",
+          function: {
+            name: "rental_yield_result",
+            description: "Structured rental yield optimization result",
+            parameters: {
+              type: "object",
+              required: ["optimal_monthly_rent","rent_range","gross_yield_percent","net_yield_percent","annual_expenses_breakdown","occupancy_rate_estimate","annual_net_income","payback_period_years","pricing_strategy","improvement_suggestions","market_comparison","seasonal_trends","risk_factors","recommendations"],
+              properties: {
+                optimal_monthly_rent: { type: "number" },
+                rent_range: { type: "object", properties: { min: { type: "number" }, max: { type: "number" } }, required: ["min","max"] },
+                gross_yield_percent: { type: "number" },
+                net_yield_percent: { type: "number" },
+                annual_expenses_breakdown: { type: "array", items: { type: "object", required: ["category","amount","description"], properties: { category: { type: "string" }, amount: { type: "number" }, description: { type: "string" } } }, description: "5-7 expense categories" },
+                occupancy_rate_estimate: { type: "number", description: "0-100" },
+                annual_net_income: { type: "number" },
+                payback_period_years: { type: "number" },
+                pricing_strategy: { type: "array", items: { type: "object", required: ["strategy_name","description","recommended_price","expected_occupancy","expected_annual_income"], properties: { strategy_name: { type: "string" }, description: { type: "string" }, recommended_price: { type: "number" }, expected_occupancy: { type: "number" }, expected_annual_income: { type: "number" } } }, description: "2-3 pricing strategies" },
+                improvement_suggestions: { type: "array", items: { type: "object", required: ["improvement","estimated_cost","rent_increase_potential","roi_months"], properties: { improvement: { type: "string" }, estimated_cost: { type: "number" }, rent_increase_potential: { type: "number" }, roi_months: { type: "number" } } }, description: "3-5 improvements" },
+                market_comparison: { type: "array", items: { type: "object", required: ["metric","your_property","area_average","status"], properties: { metric: { type: "string" }, your_property: { type: "string" }, area_average: { type: "string" }, status: { type: "string", enum: ["above","below","average"] } } }, description: "4-6 comparison metrics" },
+                seasonal_trends: { type: "array", items: { type: "string" }, description: "3-5 seasonal insights" },
+                risk_factors: { type: "array", items: { type: "string" }, description: "3-5 risks" },
+                recommendations: { type: "array", items: { type: "string" }, description: "4-6 actionable recommendations" },
+              }
+            }
+          }
+        }],
+        tool_choice: { type: "function", function: { name: "rental_yield_result" } },
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      const status = aiResponse.status;
+      if (status === 402 || status === 429 || status === 503) {
+        return json({ status, error: status === 402 ? "AI credits required" : status === 429 ? "Rate limited" : "AI temporarily unavailable" }, 200);
+      }
+      throw new Error(`AI gateway returned ${status}`);
+    }
+
+    const aiData = await aiResponse.json();
+    const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall) throw new Error("No structured response from AI");
+
+    return json(JSON.parse(toolCall.function.arguments));
+  } catch (e) {
+    console.error("rental_yield_optimizer error:", e);
+    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -2268,6 +2352,8 @@ serve(async (req) => {
         return await handleSocialMediaCopy(payload);
       case "document_verify":
         return await handleDocumentVerify(payload);
+      case "rental_yield_optimizer":
+        return await handleRentalYieldOptimizer(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
