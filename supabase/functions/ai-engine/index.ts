@@ -2116,6 +2116,99 @@ ${key_features?.length ? `- Key features: ${key_features.join(", ")}` : ""}`;
   }
 }
 
+// ── Document Verifier ───────────────────────────────────────────────
+
+async function handleDocumentVerify(payload: Record<string, unknown>) {
+  const { document_type, document_text, property_address, owner_name, document_number } = payload as {
+    document_type: string; document_text: string; property_address?: string; owner_name?: string; document_number?: string;
+  };
+
+  if (!document_text) return json({ error: "document_text is required" }, 400);
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  const docTypeDescriptions: Record<string, string> = {
+    shm: "SHM (Sertifikat Hak Milik) - full ownership certificate issued by BPN Indonesia. Must contain: nomor hak, nama pemegang hak, NIB, luas tanah, gambar situasi/surat ukur, and BPN stamp.",
+    shgb: "SHGB (Sertifikat Hak Guna Bangunan) - building rights certificate with expiry date. Must contain: nomor hak, jangka waktu, nama pemegang, and BPN registration.",
+    ajb: "AJB (Akta Jual Beli) - notarized sale deed. Must contain: notary details, buyer/seller names, property description, transaction value, and notary stamp/signature.",
+    imb: "IMB/PBG (Izin Mendirikan Bangunan/Persetujuan Bangunan Gedung) - building permit. Must contain: permit number, building specifications, owner name, and government stamp.",
+    pbb: "PBB (Pajak Bumi dan Bangunan) - property tax receipt. Must contain: NOP, taxpayer name, property location, NJOP values, and tax amount.",
+    other: "General Indonesian property document.",
+  };
+
+  const systemPrompt = `You are an expert Indonesian property document verification AI specializing in detecting forged, tampered, or invalid property documents. You have deep knowledge of Indonesian property law (UUPA, PP 24/1997, PP 18/2021) and BPN (Badan Pertanahan Nasional) document standards.
+
+Document type: ${docTypeDescriptions[document_type] || docTypeDescriptions.other}
+${owner_name ? `Expected owner: ${owner_name}` : ""}
+${property_address ? `Expected address: ${property_address}` : ""}
+${document_number ? `Expected document number: ${document_number}` : ""}
+
+Analyze the document text for:
+1. Format consistency with official Indonesian ${document_type?.toUpperCase() || "property"} documents
+2. Required elements and stamps/signatures
+3. Legal terminology accuracy
+4. Cross-reference consistency (names, addresses, numbers match)
+5. Red flags: unusual formatting, missing required fields, inconsistent dates
+6. Expiry status for SHGB and IMB documents`;
+
+  try {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        temperature: 0.3,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: `Verify this ${document_type?.toUpperCase() || "property"} document:\n\n${document_text.substring(0, 6000)}` },
+        ],
+        tools: [{
+          type: "function",
+          function: {
+            name: "document_verify_result",
+            description: "Structured document verification result",
+            parameters: {
+              type: "object",
+              required: ["is_valid","confidence_score","document_type_detected","verification_status","findings","extracted_data","risk_factors","recommendations","legal_notes","authenticity_indicators"],
+              properties: {
+                is_valid: { type: "boolean" },
+                confidence_score: { type: "number", description: "0-100 confidence score" },
+                document_type_detected: { type: "string", description: "Detected document type label" },
+                verification_status: { type: "string", enum: ["verified","suspicious","invalid","needs_review"] },
+                findings: { type: "array", items: { type: "object", required: ["category","status","description"], properties: { category: { type: "string" }, status: { type: "string", enum: ["pass","warning","fail"] }, description: { type: "string" } } }, description: "5-8 verification checks" },
+                extracted_data: { type: "object", properties: { document_number: { type: "string" }, owner_name: { type: "string" }, property_address: { type: "string" }, issue_date: { type: "string" }, expiry_date: { type: "string" }, land_area: { type: "string" }, building_area: { type: "string" }, issuing_authority: { type: "string" }, registration_number: { type: "string" } } },
+                risk_factors: { type: "array", items: { type: "string" }, description: "Identified risks" },
+                recommendations: { type: "array", items: { type: "string" }, description: "Next steps" },
+                legal_notes: { type: "array", items: { type: "string" }, description: "Relevant legal context" },
+                authenticity_indicators: { type: "array", items: { type: "object", required: ["indicator","present","importance"], properties: { indicator: { type: "string" }, present: { type: "boolean" }, importance: { type: "string", enum: ["critical","important","minor"] } } }, description: "4-8 authenticity indicators" },
+              }
+            }
+          }
+        }],
+        tool_choice: { type: "function", function: { name: "document_verify_result" } },
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      const status = aiResponse.status;
+      if (status === 402 || status === 429 || status === 503) {
+        return json({ status, error: status === 402 ? "AI credits required" : status === 429 ? "Rate limited" : "AI temporarily unavailable" }, 200);
+      }
+      throw new Error(`AI gateway returned ${status}`);
+    }
+
+    const aiData = await aiResponse.json();
+    const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall) throw new Error("No structured response from AI");
+
+    return json(JSON.parse(toolCall.function.arguments));
+  } catch (e) {
+    console.error("document_verify error:", e);
+    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+  }
+}
+
 // ── Main router ─────────────────────────────────────────────────────
 
 serve(async (req) => {
