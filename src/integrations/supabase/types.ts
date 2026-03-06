@@ -9522,6 +9522,45 @@ export type Database = {
           },
         ]
       }
+      knowledge_graph_edges: {
+        Row: {
+          created_at: string
+          id: string
+          metadata: Json | null
+          relation_type: string
+          source_id: string
+          source_type: string
+          target_id: string
+          target_type: string
+          updated_at: string
+          weight: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          relation_type: string
+          source_id: string
+          source_type: string
+          target_id: string
+          target_type: string
+          updated_at?: string
+          weight?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          relation_type?: string
+          source_id?: string
+          source_type?: string
+          target_id?: string
+          target_type?: string
+          updated_at?: string
+          weight?: number | null
+        }
+        Relationships: []
+      }
       kyc_verifications: {
         Row: {
           created_at: string
