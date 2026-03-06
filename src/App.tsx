@@ -120,6 +120,7 @@ const FraudDetectorPage = lazy(() => import('@/pages/FraudDetectorPage'));
 const AIRecommendationsPage = lazy(() => import('@/pages/AIRecommendationsPage'));
 const ImageQualityAnalyzerPage = lazy(() => import('@/pages/ImageQualityAnalyzerPage'));
 const TenantScreeningPage = lazy(() => import('@/pages/TenantScreeningPage'));
+const VirtualTourGeneratorPage = lazy(() => import('@/pages/VirtualTourGeneratorPage'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const Help = lazy(() => import('@/pages/Help'));
 const About = lazy(() => import('@/pages/About'));
@@ -333,6 +334,7 @@ const AppContent = () => {
                 <Route path="/recommendations" element={<AIRecommendationsPage />} />
                 <Route path="/image-quality" element={<ImageQualityAnalyzerPage />} />
                 <Route path="/tenant-screening" element={<TenantScreeningPage />} />
+                <Route path="/virtual-tour-generator" element={<VirtualTourGeneratorPage />} />
                 <Route path="*" element={<ErrorPage />} />
               </Routes>
             </Suspense>
