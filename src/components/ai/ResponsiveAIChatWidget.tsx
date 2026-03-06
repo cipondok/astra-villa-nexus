@@ -1243,8 +1243,8 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
 
         try {
           // Send to transcription edge function
-          const { data, error } = await supabase.functions.invoke('transcribe-audio', {
-            body: { audio: base64Audio }
+          const { data, error } = await supabase.functions.invoke('ai-engine', {
+            body: { mode: 'transcribe_audio', payload: { audio: base64Audio } }
           });
 
           if (error) throw error;
