@@ -2008,6 +2008,114 @@ Budget context: ${budgetContext[budget_level] || budgetContext.medium}`;
   }
 }
 
+// ── Social Media Copy Generator ─────────────────────────────────────
+
+async function handleSocialMediaCopy(payload: Record<string, unknown>) {
+  const { platform, property_title, property_type, location, price, bedrooms, bathrooms, area, key_features, tone, language, target_audience } = payload as {
+    platform: string; property_title: string; property_type: string; location: string; price: number;
+    bedrooms?: number; bathrooms?: number; area?: number; key_features?: string[];
+    tone: string; language: string; target_audience?: string;
+  };
+
+  if (!property_title || !property_type || !location) return json({ error: "property_title, property_type, and location are required" }, 400);
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  const platformGuides: Record<string, string> = {
+    instagram: "Max 2200 chars. Use line breaks for readability. 20-30 hashtags. Carousel-friendly. Include call-to-action in bio link mention.",
+    tiktok: "Short punchy hooks. Use trending sounds reference. Include video script for 30-60s. Hashtags 3-5 only. FOMO language works well.",
+    facebook: "Longer form OK. Community-focused. Include neighborhood details. Shareable format. 3-5 hashtags max.",
+    twitter: "Max 280 chars per tweet. Thread-friendly. Concise and impactful. 2-3 hashtags. Link in reply strategy.",
+    linkedin: "Professional tone. Investment angle. Market insight hook. Network-focused CTA. 3-5 hashtags.",
+  };
+
+  const langInstruction = language === "id" ? "Write entirely in Bahasa Indonesia." : language === "en" ? "Write entirely in English." : "Write bilingual: main text in Bahasa Indonesia with English translation below.";
+
+  const systemPrompt = `You are an expert Indonesian real estate social media marketer. Generate high-converting property listing copy optimized for ${platform}.
+
+Platform guidelines: ${platformGuides[platform] || platformGuides.instagram}
+Tone: ${tone}
+${langInstruction}
+${target_audience ? `Target audience: ${target_audience}` : ""}
+
+Property details:
+- Title: ${property_title}
+- Type: ${property_type}
+- Location: ${location}
+- Price: Rp ${price?.toLocaleString("id-ID") || "N/A"}
+${bedrooms ? `- Bedrooms: ${bedrooms}` : ""}${bathrooms ? `- Bathrooms: ${bathrooms}` : ""}${area ? `- Area: ${area}m²` : ""}
+${key_features?.length ? `- Key features: ${key_features.join(", ")}` : ""}`;
+
+  try {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        temperature: 0.85,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: `Generate 3 caption variants for this ${property_type} listing on ${platform}.` },
+        ],
+        tools: [{
+          type: "function",
+          function: {
+            name: "social_copy_result",
+            description: "Structured social media copy result",
+            parameters: {
+              type: "object",
+              required: ["platform","variants","seo_keywords","competitor_differentiation"],
+              properties: {
+                platform: { type: "string" },
+                variants: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    required: ["caption","hashtags","cta","hook_line","estimated_engagement","best_posting_time","content_tips"],
+                    properties: {
+                      caption: { type: "string", description: "Full caption text" },
+                      hashtags: { type: "array", items: { type: "string" }, description: "Relevant hashtags without #" },
+                      cta: { type: "string", description: "Call to action text" },
+                      hook_line: { type: "string", description: "Attention-grabbing first line" },
+                      estimated_engagement: { type: "string", enum: ["low","medium","high"] },
+                      best_posting_time: { type: "string", description: "Best time to post, e.g. 'Selasa 11:00-13:00 WIB'" },
+                      content_tips: { type: "array", items: { type: "string" }, description: "2-3 tips for maximizing this post" },
+                    }
+                  }
+                },
+                carousel_ideas: { type: "array", items: { type: "string" }, description: "5-7 carousel slide ideas" },
+                video_script: { type: "string", description: "30-60 second video/reel script" },
+                story_sequence: { type: "array", items: { type: "string" }, description: "4-6 story sequence steps" },
+                seo_keywords: { type: "array", items: { type: "string" }, description: "8-12 SEO keywords" },
+                competitor_differentiation: { type: "string", description: "How this listing stands out from competitors" },
+              }
+            }
+          }
+        }],
+        tool_choice: { type: "function", function: { name: "social_copy_result" } },
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      const status = aiResponse.status;
+      if (status === 402 || status === 429 || status === 503) {
+        return json({ status, error: status === 402 ? "AI credits required" : status === 429 ? "Rate limited" : "AI temporarily unavailable" }, 200);
+      }
+      throw new Error(`AI gateway returned ${status}`);
+    }
+
+    const aiData = await aiResponse.json();
+    const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall) throw new Error("No structured response from AI");
+
+    return json(JSON.parse(toolCall.function.arguments));
+  } catch (e) {
+    console.error("social_media_copy error:", e);
+    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+  }
+}
+
 // ── Main router ─────────────────────────────────────────────────────
 
 serve(async (req) => {
