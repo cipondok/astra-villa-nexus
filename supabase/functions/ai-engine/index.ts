@@ -656,6 +656,106 @@ Use IDR currency formatting. Be specific with numbers from the data. Professiona
   }
 }
 
+// ── Image Quality Analyzer ──────────────────────────────────────────
+async function handleImageQualityAnalyze(payload: Record<string, unknown>) {
+  const { image_urls } = payload as { image_urls?: string[] };
+  if (!image_urls || !Array.isArray(image_urls) || image_urls.length === 0) {
+    return json({ error: "image_urls array is required" }, 400);
+  }
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  const results: Record<string, unknown>[] = [];
+
+  for (let i = 0; i < Math.min(image_urls.length, 10); i++) {
+    const url = image_urls[i];
+    try {
+      const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash",
+          messages: [{
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: `You are a professional real estate photography quality inspector. Analyze this property image thoroughly.
+
+Return ONLY a valid JSON object (no markdown, no code blocks):
+{
+  "quality_score": <number 0-100>,
+  "resolution_quality": "<low|medium|high>",
+  "lighting": { "score": <0-100>, "issues": ["..."], "suggestions": ["..."] },
+  "composition": { "score": <0-100>, "issues": ["..."], "suggestions": ["..."] },
+  "staging": { "score": <0-100>, "is_staged": <boolean>, "suggestions": ["..."] },
+  "room_type": "<living room|bedroom|bathroom|kitchen|exterior|pool|garden|other>",
+  "appeal_score": <0-100>,
+  "issues": ["list of detected problems"],
+  "improvements": ["actionable suggestions"],
+  "hero_potential": <boolean>,
+  "tags": ["relevant tags"]
+}`
+              },
+              { type: "image_url", image_url: { url } }
+            ]
+          }],
+          temperature: 0.3,
+        }),
+      });
+
+      if (!aiResp.ok) {
+        results.push({ index: i, url, error: `AI error: ${aiResp.status}`, quality_score: 0 });
+        continue;
+      }
+
+      const aiData = await aiResp.json();
+      let content = aiData.choices?.[0]?.message?.content || "";
+      content = content.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
+
+      try {
+        const analysis = JSON.parse(content);
+        results.push({ index: i, url, ...analysis });
+      } catch {
+        results.push({ index: i, url, error: "Failed to parse AI response", quality_score: 0 });
+      }
+    } catch (err) {
+      results.push({ index: i, url, error: err instanceof Error ? err.message : "Unknown", quality_score: 0 });
+    }
+  }
+
+  const valid = results.filter(r => !r.error && (r.quality_score as number) > 0);
+  const avgScore = valid.length > 0
+    ? Math.round(valid.reduce((s, r) => s + ((r.quality_score as number) || 0), 0) / valid.length)
+    : 0;
+
+  const ordered = [...results]
+    .filter(r => !r.error)
+    .sort((a, b) => {
+      if (a.hero_potential && !b.hero_potential) return -1;
+      if (!a.hero_potential && b.hero_potential) return 1;
+      return ((b.appeal_score as number) || 0) - ((a.appeal_score as number) || 0);
+    })
+    .map(r => r.index as number);
+
+  return json({
+    data: {
+      images: results,
+      summary: {
+        total_analyzed: results.length,
+        average_quality: avgScore,
+        hero_image_index: results.findIndex(r => r.hero_potential),
+        suggested_order: ordered,
+        needs_improvement: results.filter(r => ((r.quality_score as number) || 0) < 60).length,
+      }
+    }
+  });
+}
+
 // ── Main router ─────────────────────────────────────────────────────
 
 serve(async (req) => {
