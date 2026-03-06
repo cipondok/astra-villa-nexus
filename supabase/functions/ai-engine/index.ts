@@ -2543,6 +2543,8 @@ Provide realistic Indonesian market valuations with comparable sales data from t
     return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
   }
 }
+
+serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
