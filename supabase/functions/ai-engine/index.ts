@@ -2449,6 +2449,8 @@ serve(async (req) => {
         return await handleDocumentVerify(payload);
       case "rental_yield_optimizer":
         return await handleRentalYieldOptimizer(payload);
+      case "mortgage_advisor":
+        return await handleMortgageAdvisor(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
