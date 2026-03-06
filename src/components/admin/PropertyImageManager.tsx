@@ -183,7 +183,7 @@ const PropertyImageManager = () => {
             description: property.description,
             propertyType: property.property_type,
             location: property.location || property.city,
-          }
+          }}
         });
         if (!error && data) {
           setAiResults(prev => ({ ...prev, [url]: data }));
@@ -333,7 +333,7 @@ const PropertyImageManager = () => {
             description: property.description,
             propertyType: property.property_type,
             location: property.location || property.city,
-          }
+          }}
         });
         if (error) continue;
         setAiResults(prev => ({ ...prev, [img]: data }));
