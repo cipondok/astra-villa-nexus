@@ -161,8 +161,10 @@ const ChatButton = forwardRef<HTMLDivElement, ChatButtonProps>(({
       setIsLongPress(false);
     } else if (!isLongPress) {
       // Prevent event from propagating to Radix ContextMenuTrigger
+      e.preventDefault();
       e.stopPropagation();
-      onClick();
+      // Use setTimeout to decouple from the Radix event chain
+      setTimeout(() => onClick(), 0);
     }
     setIsLongPress(false);
   };
