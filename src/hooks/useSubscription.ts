@@ -225,9 +225,10 @@ export function useSubscription() {
       if (invoiceError) throw invoiceError;
 
       // Create payment via Midtrans
-      const { data: paymentData, error: paymentError } = await supabase.functions.invoke('midtrans-payment', {
+      const { data: paymentData, error: paymentError } = await supabase.functions.invoke('payment-engine', {
         body: {
-          action: 'create_transaction',
+          action: 'midtrans_payment',
+          sub_action: 'create_transaction',
           order_id: `SUB-${invoiceNumber}`,
           gross_amount: totalAmount,
           customer_details: {

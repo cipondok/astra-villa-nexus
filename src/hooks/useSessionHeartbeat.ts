@@ -32,9 +32,9 @@ export const useSessionHeartbeat = (isAuthenticated: boolean) => {
       };
 
       try {
-        const { data, error } = await supabase.functions.invoke('session-heartbeat', {
+        const { data, error } = await supabase.functions.invoke('auth-engine', {
           method: 'POST',
-          body: payload,
+          body: { action: 'session_heartbeat', ...payload },
         });
 
         if (error) {

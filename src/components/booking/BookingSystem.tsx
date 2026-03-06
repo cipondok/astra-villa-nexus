@@ -229,8 +229,8 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
       if (bookingError) throw bookingError;
 
       // Generate invoice
-      const { data: invoice, error: invoiceError } = await supabase.functions.invoke('generate-invoice', {
-        body: { bookingId: booking.id }
+      const { data: invoice, error: invoiceError } = await supabase.functions.invoke('payment-engine', {
+        body: { action: 'generate_invoice', bookingId: booking.id }
       });
 
       if (invoiceError) throw invoiceError;

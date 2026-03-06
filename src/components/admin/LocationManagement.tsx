@@ -423,8 +423,8 @@ const LocationManagement = () => {
     try {
       toast.info('Starting sync...', { description: 'This may take several minutes for full sync.' });
       
-      const { data, error } = await supabase.functions.invoke('sync-indonesia-locations', {
-        body: { mode: syncMode }
+      const { data, error } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'sync_indonesia_locations', payload: { mode: syncMode } }
       });
 
       if (error) throw error;
@@ -454,8 +454,8 @@ const LocationManagement = () => {
     
     try {
       setVillageSyncProgress(prev => [...prev, '📡 Mengambil daftar kota/kabupaten...']);
-      const { data: provinceData, error: provinceError } = await supabase.functions.invoke('sync-indonesia-locations', {
-        body: { mode: 'single-province', provinceId: provinceCode, includeVillages: true }
+      const { data: provinceData, error: provinceError } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'sync_indonesia_locations', payload: { mode: 'single-province', provinceId: provinceCode, includeVillages: true } }
       });
 
       if (provinceError) throw provinceError;
@@ -473,8 +473,8 @@ const LocationManagement = () => {
           setVillageSyncProgress(prev => [...prev, `⏳ [${i + 1}/${total}] ${city.name}...`]);
 
           try {
-            const { data: cityData, error: cityError } = await supabase.functions.invoke('sync-indonesia-locations', {
-              body: { mode: 'single-city', provinceId: provinceCode, cityId: city.id, includeVillages: true }
+            const { data: cityData, error: cityError } = await supabase.functions.invoke('core-engine', {
+              body: { mode: 'sync_indonesia_locations', payload: { mode: 'single-city', provinceId: provinceCode, cityId: city.id, includeVillages: true } }
             });
 
             if (cityError) throw cityError;
@@ -495,8 +495,8 @@ const LocationManagement = () => {
           setVillageSyncProgress(prev => [...prev, `🔄 Retry ${failedCities.length} kota yang gagal...`]);
           for (const city of failedCities) {
             try {
-              const { data: cityData, error: cityError } = await supabase.functions.invoke('sync-indonesia-locations', {
-                body: { mode: 'single-city', provinceId: provinceCode, cityId: city.id, includeVillages: true }
+              const { data: cityData, error: cityError } = await supabase.functions.invoke('core-engine', {
+                body: { mode: 'sync_indonesia_locations', payload: { mode: 'single-city', provinceId: provinceCode, cityId: city.id, includeVillages: true } }
               });
               if (cityError) throw cityError;
               if (!cityData?.success) throw new Error(cityData?.error || 'Failed');

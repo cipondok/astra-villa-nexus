@@ -24,9 +24,9 @@ export function useUpgradeCampaigns() {
     if (!user) return;
 
     try {
-      const { error } = await supabase.functions.invoke('upgrade-campaign-emails', {
+      const { error } = await supabase.functions.invoke('notification-engine', {
         body: {
-          action: 'send_campaign_email',
+          action: 'upgrade_campaign_email',
           campaign_type: campaignType,
           user_id: user.id,
           data,
