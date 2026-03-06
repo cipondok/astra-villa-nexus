@@ -38,8 +38,8 @@ const AIRecommendationsPage = () => {
   const { data, isLoading, refetch, isFetching } = useQuery({
     queryKey: ['ai-recommendations-page', user?.id, limit],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke('ai-match-engine-v2', {
-        body: { limit },
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'match_property', payload: { limit } },
       });
       if (error) throw error;
 

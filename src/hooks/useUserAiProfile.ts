@@ -21,8 +21,8 @@ export function useUserAiProfile() {
   return useQuery({
     queryKey: ['user-ai-profile', user?.id],
     queryFn: async (): Promise<UserAiProfile | null> => {
-      const { data, error } = await supabase.functions.invoke('ai-match-engine-v2', {
-        body: { limit: 1 },
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'match_property', payload: { limit: 1 } },
       });
       if (error) return null;
       return (data?.user_ai_profile as UserAiProfile) ?? null;
