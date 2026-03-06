@@ -1,24 +1,23 @@
 
-# Plan: Add `auto_tune_ai_weights` Mode to Core Engine
+# Plan: Edge Function Consolidation
 
-## Status: ✅ IMPLEMENTED
+## Status: ✅ COMPLETE
 
-All components have been built and deployed.
+Consolidated **82 standalone Edge Functions → 6 unified routers**.
 
-## What was done
+## Final Architecture
 
-### 1. Database (Migration)
-- Created `ai_model_weights` table with 6 factors seeded (location=25, price=22, feature=15, investment=13, popularity=15, collaborative=10, sum=100)
-- Created `ai_recommendation_events` table with indexes on created_at, event_type, user_id
-- RLS enabled on both tables
+| Router | Modes/Responsibilities |
+|--------|----------------------|
+| `ai-engine` | generate_description, generate_image, nlp_search, match_property, seo_generate, recommendations, transcribe_audio, virtual_staging, market_report, property_assistant, smart_pricing, lead_scoring, etc. (25+ modes) |
+| `auth-engine` | Auth, KYC, device registration, session heartbeat, verification requests, OTP, 2FA |
+| `core-engine` | Diagnostics, algorithms, location sync, Astra tokens, health checks, analytics, auto_tune_ai_weights, investment_score, ai_brain, deal_detector, etc. (25+ modes) |
+| `notification-engine` | Emails, inquiry notifications, campaign emails, push notifications |
+| `payment-engine` | Midtrans, PayPal, invoices, booking payments, mortgages, refunds, subscriptions |
+| `vendor-engine` | Vendor services, validation, function generation, Indonesian vendor onboarding |
 
-### 2. Core Engine (`auto_tune_ai_weights` mode)
-- Queries last 30 days of `ai_recommendation_events`
-- Calculates conversion correlations per factor (save/inquiry/contact vs impressions)
-- Applies guardrails: ±3 max change, minimum 5 per factor, normalize to 100
-- Only writes weights when data sufficiency ≥ moderate (100+ events)
-- Returns `{ old_weights, new_weights, adjustments, model_health }`
-
-### 3. Event Logging
-- `ai-match-engine-v2`: Logs impression events (top 20 results) with match_factors snapshots
-- `useBehaviorTracking`: Logs save/inquiry conversion events to `ai_recommendation_events`
+## AI Model Auto-Tuning
+- `ai_model_weights` table with 6 factors (location, price, feature, investment, popularity, collaborative)
+- `ai_recommendation_events` table for conversion tracking
+- Daily pg_cron job runs `auto_tune_ai_weights` mode
+- Guardrails: ±3 max change, minimum 5 per factor, sum=100
