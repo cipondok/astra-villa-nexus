@@ -126,6 +126,7 @@ const SmartNotificationsPage = lazy(() => import('@/pages/SmartNotificationsPage
 const NeighborhoodInsightsPage = lazy(() => import('@/pages/NeighborhoodInsightsPage'));
 const ContractAnalyzerPage = lazy(() => import('@/pages/ContractAnalyzerPage'));
 const AILeadScoringPage = lazy(() => import('@/pages/AILeadScoringPage'));
+const AIInteriorDesignPage = lazy(() => import('@/pages/AIInteriorDesignPage'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const Help = lazy(() => import('@/pages/Help'));
 const About = lazy(() => import('@/pages/About'));
@@ -345,6 +346,7 @@ const AppContent = () => {
                 <Route path="/neighborhood-insights" element={<NeighborhoodInsightsPage />} />
                 <Route path="/contract-analyzer" element={<ContractAnalyzerPage />} />
                 <Route path="/ai-lead-scoring" element={<AILeadScoringPage />} />
+                <Route path="/ai-interior-design" element={<AIInteriorDesignPage />} />
                 <Route path="*" element={<ErrorPage />} />
               </Routes>
             </Suspense>
