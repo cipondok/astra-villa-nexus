@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -4006,6 +4006,182 @@ Deno.serve(async (req) => {
             buyer_demand_score: piBuyerDemand,
             market_density: piCityCount || 0,
           },
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: deal_alerts — Scan for undervalued properties & notify matching users
+    // ═══════════════════════════════════════════
+    if (mode === 'deal_alerts') {
+      // Step 1: Fetch all active properties with prices
+      const { data: allProps, error: propsErr } = await supabase
+        .from('properties')
+        .select('id, title, price, city, district, property_type, building_area_sqm, land_area_sqm, area_sqm, investment_score, created_at')
+        .eq('status', 'active')
+        .not('price', 'is', null)
+        .gt('price', 0)
+        .limit(500);
+
+      if (propsErr || !allProps || allProps.length === 0) {
+        return new Response(JSON.stringify({
+          data: { alerts_created: 0, notified_users: 0, deals_found: 0, message: 'No active properties to scan' },
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      // Step 2: Group by city+type to compute median price/sqm
+      const cityTypeGroups: Record<string, number[]> = {};
+      for (const p of allProps) {
+        const key = `${p.city}__${p.property_type}`;
+        const a = Number(p.building_area_sqm) || Number(p.land_area_sqm) || Number(p.area_sqm) || 1;
+        const pps = Number(p.price) / a;
+        if (!cityTypeGroups[key]) cityTypeGroups[key] = [];
+        cityTypeGroups[key].push(pps);
+      }
+
+      const medians: Record<string, number> = {};
+      for (const [key, arr] of Object.entries(cityTypeGroups)) {
+        const sorted = arr.sort((a, b) => a - b);
+        medians[key] = sorted[Math.floor(sorted.length / 2)];
+      }
+
+      // Step 3: Identify deals (deal_score_percent >= 10)
+      interface DealProperty {
+        id: string;
+        title: string;
+        city: string;
+        property_type: string;
+        price: number;
+        deal_score_percent: number;
+        fair_market_value: number;
+      }
+
+      const deals: DealProperty[] = [];
+      for (const p of allProps) {
+        const key = `${p.city}__${p.property_type}`;
+        const medianPps = medians[key] || 0;
+        if (medianPps <= 0) continue;
+
+        const area = Number(p.building_area_sqm) || Number(p.land_area_sqm) || Number(p.area_sqm) || 1;
+        const invScore = Number(p.investment_score) || 50;
+        const fmv = medianPps * area * (1 + Math.min(invScore, 100) / 2000);
+        const dealPct = fmv > 0 ? ((fmv - Number(p.price)) / fmv) * 100 : 0;
+
+        if (dealPct >= 10) {
+          deals.push({
+            id: p.id,
+            title: p.title || 'Untitled',
+            city: p.city || '',
+            property_type: p.property_type || '',
+            price: Number(p.price),
+            deal_score_percent: Math.round(dealPct * 10) / 10,
+            fair_market_value: Math.round(fmv),
+          });
+        }
+      }
+
+      if (deals.length === 0) {
+        return new Response(JSON.stringify({
+          data: { alerts_created: 0, notified_users: 0, deals_found: 0, message: 'No undervalued properties found' },
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      // Step 4: Fetch active saved search alerts
+      const { data: alerts } = await supabase
+        .from('saved_search_alerts')
+        .select('id, user_id, search_criteria, name')
+        .eq('is_active', true);
+
+      // Step 5: Match deals to user preferences and create notifications
+      let alertsCreated = 0;
+      const notifiedUserIds = new Set<string>();
+
+      for (const deal of deals) {
+        const matchingAlerts = (alerts || []).filter(alert => {
+          const criteria = alert.search_criteria as any;
+          if (!criteria) return false;
+
+          // Match city
+          if (criteria.city && criteria.city.toLowerCase() !== deal.city.toLowerCase()) return false;
+
+          // Match property type
+          if (criteria.property_type && criteria.property_type.toLowerCase() !== deal.property_type.toLowerCase()) return false;
+
+          // Match price range
+          if (criteria.min_price && deal.price < Number(criteria.min_price)) return false;
+          if (criteria.max_price && deal.price > Number(criteria.max_price)) return false;
+
+          return true;
+        });
+
+        for (const alert of matchingAlerts) {
+          // Avoid duplicate notifications for same user + property
+          const { count: existingCount } = await supabase
+            .from('in_app_notifications')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', alert.user_id)
+            .eq('property_id', deal.id)
+            .eq('type', 'deal_alert')
+            .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+
+          if ((existingCount || 0) > 0) continue;
+
+          const dealLabel = deal.deal_score_percent >= 15 ? 'Strong Buy' : 'Good Deal';
+          const { error: insertErr } = await supabase
+            .from('in_app_notifications')
+            .insert({
+              user_id: alert.user_id,
+              property_id: deal.id,
+              type: 'deal_alert',
+              title: `🔥 ${dealLabel}: ${deal.title}`,
+              message: `This property in ${deal.city} is ${deal.deal_score_percent}% below fair market value (FMV: Rp ${(deal.fair_market_value / 1_000_000).toFixed(0)}M). Matches your "${alert.name}" alert.`,
+              metadata: {
+                deal_score_percent: deal.deal_score_percent,
+                fair_market_value: deal.fair_market_value,
+                alert_id: alert.id,
+                alert_name: alert.name,
+              },
+            });
+
+          if (!insertErr) {
+            alertsCreated++;
+            notifiedUserIds.add(alert.user_id);
+          }
+        }
+      }
+
+      // Update last_triggered_at for matched alerts
+      if (alerts && alerts.length > 0) {
+        const matchedAlertIds = [...new Set(
+          deals.flatMap(deal =>
+            (alerts || [])
+              .filter(a => {
+                const c = a.search_criteria as any;
+                if (!c) return false;
+                if (c.city && c.city.toLowerCase() !== deal.city.toLowerCase()) return false;
+                if (c.property_type && c.property_type.toLowerCase() !== deal.property_type.toLowerCase()) return false;
+                if (c.min_price && deal.price < Number(c.min_price)) return false;
+                if (c.max_price && deal.price > Number(c.max_price)) return false;
+                return true;
+              })
+              .map(a => a.id)
+          )
+        )];
+
+        for (const alertId of matchedAlertIds) {
+          await supabase
+            .from('saved_search_alerts')
+            .update({ last_triggered_at: new Date().toISOString(), match_count: alertsCreated })
+            .eq('id', alertId);
+        }
+      }
+
+      return new Response(JSON.stringify({
+        data: {
+          alerts_created: alertsCreated,
+          notified_users: notifiedUserIds.size,
+          deals_found: deals.length,
+          top_deals: deals.sort((a, b) => b.deal_score_percent - a.deal_score_percent).slice(0, 5),
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
