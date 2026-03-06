@@ -388,7 +388,7 @@ Deno.serve(async (req) => {
       // Fetch all properties
       const { data: properties, error: pErr } = await supabase
         .from('properties')
-        .select('id, price, city, area_sqm, land_area_sqm, building_area_sqm, has_pool, garage_count, floors, property_type, listing_type, investment_score, status, user_id, agent_id, description, kt, km')
+        .select('id, price, city, area_sqm, land_area_sqm, building_area_sqm, has_pool, garage_count, floors, property_type, listing_type, investment_score, status, owner_id, agent_id, description, kt, km')
         .in('id', property_ids);
 
       if (pErr || !properties || properties.length < 2) {
@@ -674,7 +674,7 @@ Deno.serve(async (req) => {
       // Fetch all properties
       const { data: properties, error: pErr } = await supabase
         .from('properties')
-        .select('id, title, price, city, area_sqm, land_area_sqm, building_area_sqm, has_pool, garage_count, floors, property_type, listing_type, investment_score, status, user_id, agent_id, description, kt, km')
+        .select('id, title, price, city, area_sqm, land_area_sqm, building_area_sqm, has_pool, garage_count, floors, property_type, listing_type, investment_score, status, owner_id, agent_id, description, kt, km')
         .in('id', property_ids);
 
       if (pErr || !properties || properties.length < 1) {
@@ -932,7 +932,7 @@ Deno.serve(async (req) => {
     // ── Fetch property (superset of fields needed by both modes) ──
     const { data: property, error: pErr } = await supabase
       .from('properties')
-      .select('id, price, city, area_sqm, land_area_sqm, building_area_sqm, has_pool, garage_count, floors, property_type, listing_type, investment_score, status, user_id, agent_id, description, kt, km')
+      .select('id, price, city, area_sqm, land_area_sqm, building_area_sqm, has_pool, garage_count, floors, property_type, listing_type, investment_score, status, owner_id, agent_id, description, kt, km')
       .eq('id', property_id)
       .maybeSingle();
 
@@ -944,7 +944,7 @@ Deno.serve(async (req) => {
 
     // ── Authorization: service_role, owner, agent, or admin ──
     if (!isServiceRole) {
-      const isOwner = property.user_id === userId;
+      const isOwner = property.owner_id === userId;
       const isAgent = property.agent_id === userId;
 
       let isAdmin = false;
@@ -1796,7 +1796,7 @@ Deno.serve(async (req) => {
       // Step 1-2: Fetch target property
       const { data: prop, error: pErr } = await supabase
         .from('properties')
-        .select('id, city, investment_score, created_at, status, property_type, user_id, agent_id')
+        .select('id, city, investment_score, created_at, status, property_type, owner_id, agent_id')
         .eq('id', property_id)
         .single();
 
@@ -1807,7 +1807,7 @@ Deno.serve(async (req) => {
       }
 
       // Fetch owner subscription
-      const ownerId = prop.user_id || prop.agent_id;
+      const ownerId = prop.owner_id || prop.agent_id;
       let ownerSubscription = 'free';
       if (ownerId) {
         const { data: ownerProfile } = await supabase
@@ -1824,7 +1824,7 @@ Deno.serve(async (req) => {
       // Step 3: Fetch all published listings in same city
       const { data: cityListings } = await supabase
         .from('properties')
-        .select('id, investment_score, created_at, status, property_type, user_id, agent_id')
+        .select('id, investment_score, created_at, status, property_type, owner_id, agent_id')
         .eq('city', prop.city)
         .eq('status', 'published');
 
@@ -1874,7 +1874,7 @@ Deno.serve(async (req) => {
       }
 
       // Fetch owner subscriptions for all listings
-      const ownerIds = [...new Set(allListings.map(l => l.user_id || l.agent_id).filter(Boolean))];
+      const ownerIds = [...new Set(allListings.map(l => l.owner_id || l.agent_id).filter(Boolean))];
       const ownerSubMap: Record<string, string> = {};
       if (ownerIds.length > 0) {
         const { data: ownerProfiles } = await supabase
@@ -1890,7 +1890,7 @@ Deno.serve(async (req) => {
       const rankedListings = allListings.map(l => {
         const engScore = Math.min(100, ((viewCounts[l.id] || 0) + (saveCounts[l.id] || 0) * 3));
         const healthScore = Number(l.investment_score) || 0;
-        const lid = l.user_id || l.agent_id || '';
+        const lid = l.owner_id || l.agent_id || '';
         const lSub = ownerSubMap[lid] || 'free';
         const score = calculateRankingScore(
           {
