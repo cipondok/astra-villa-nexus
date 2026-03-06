@@ -2390,6 +2390,160 @@ Use realistic 2024-2025 Indonesian bank KPR rates. Consider FLPP subsidy program
   }
 }
 
+async function handlePropertyValuationReport(payload: Record<string, unknown>) {
+  const { property_type, city, district, land_area_sqm, building_area_sqm, bedrooms, bathrooms, certificate_type, year_built, condition, current_asking_price, purpose } = payload as any;
+
+  if (!city || !land_area_sqm) return json({ error: "city and land_area_sqm are required" }, 400);
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  const buildingInfo = building_area_sqm ? `Building area: ${building_area_sqm} sqm.` : "";
+  const roomInfo = bedrooms || bathrooms ? `Bedrooms: ${bedrooms || "N/A"}, Bathrooms: ${bathrooms || "N/A"}.` : "";
+  const certInfo = certificate_type ? `Certificate: ${certificate_type}.` : "";
+  const yearInfo = year_built ? `Year built: ${year_built}.` : "";
+  const condInfo = condition ? `Condition: ${condition}.` : "";
+  const askingInfo = current_asking_price ? `Current asking price: IDR ${current_asking_price}.` : "";
+
+  const systemPrompt = `You are an expert Indonesian property appraiser (KJPP-level). Analyze properties using market comparison, income capitalization, and cost approaches. Use real Indonesian market data for ${city}${district ? `, ${district}` : ""}.
+
+Consider these Indonesian market factors:
+- Certificate type impacts value (SHM > HGB > Strata Title > AJB/Girik)
+- Location premium for Jakarta CBD, Bali tourist areas, BSD/Serpong new developments
+- Indonesian property appreciation averages 5-15% annually in prime areas
+- Rental yields: 3-8% for residential, 5-12% for commercial
+- PBB tax, notary fees (2.5%), and BPHTB (5%) should be factored
+- Current market conditions in ${city}`;
+
+  const userPrompt = `Generate a comprehensive property valuation report:
+
+Property Type: ${property_type || "Rumah"}
+Location: ${city}${district ? `, ${district}` : ""}
+Land Area: ${land_area_sqm} sqm
+${buildingInfo}
+${roomInfo}
+${certInfo}
+${yearInfo}
+${condInfo}
+${askingInfo}
+Purpose: ${purpose || "sale"}
+
+Provide realistic Indonesian market valuations with comparable sales data from the ${city} area.`;
+
+  try {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-3-flash-preview",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        tools: [{
+          type: "function",
+          function: {
+            name: "property_valuation_report",
+            description: "Generate comprehensive property valuation report with market data",
+            parameters: {
+              type: "object",
+              properties: {
+                estimated_market_value: { type: "number", description: "Estimated fair market value in IDR" },
+                value_range_low: { type: "number", description: "Lower bound of value range in IDR" },
+                value_range_high: { type: "number", description: "Upper bound of value range in IDR" },
+                confidence_level: { type: "number", description: "Confidence level 0-100" },
+                price_per_sqm_land: { type: "number", description: "Price per sqm of land in IDR" },
+                price_per_sqm_building: { type: "number", description: "Price per sqm of building in IDR" },
+                valuation_method: { type: "string", description: "Primary valuation method used" },
+                comparable_sales: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      address: { type: "string" },
+                      property_type: { type: "string" },
+                      land_area_sqm: { type: "number" },
+                      building_area_sqm: { type: "number" },
+                      sale_price: { type: "number" },
+                      price_per_sqm: { type: "number" },
+                      sale_date: { type: "string" },
+                      similarity_score: { type: "number" }
+                    },
+                    required: ["address", "property_type", "land_area_sqm", "building_area_sqm", "sale_price", "price_per_sqm", "sale_date", "similarity_score"]
+                  }
+                },
+                market_analysis: {
+                  type: "object",
+                  properties: {
+                    area_trend: { type: "string", enum: ["appreciating", "stable", "declining"] },
+                    annual_appreciation_rate: { type: "number" },
+                    avg_days_on_market: { type: "number" },
+                    supply_demand_ratio: { type: "string" },
+                    market_summary: { type: "string" }
+                  },
+                  required: ["area_trend", "annual_appreciation_rate", "avg_days_on_market", "supply_demand_ratio", "market_summary"]
+                },
+                investment_metrics: {
+                  type: "object",
+                  properties: {
+                    estimated_rental_yield: { type: "number" },
+                    estimated_monthly_rent: { type: "number" },
+                    cap_rate: { type: "number" },
+                    payback_period_years: { type: "number" },
+                    five_year_projection: { type: "number" },
+                    ten_year_projection: { type: "number" }
+                  },
+                  required: ["estimated_rental_yield", "estimated_monthly_rent", "cap_rate", "payback_period_years", "five_year_projection", "ten_year_projection"]
+                },
+                property_strengths: { type: "array", items: { type: "string" } },
+                property_weaknesses: { type: "array", items: { type: "string" } },
+                value_adjustments: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      factor: { type: "string" },
+                      adjustment_percent: { type: "number" },
+                      reason: { type: "string" }
+                    },
+                    required: ["factor", "adjustment_percent", "reason"]
+                  }
+                },
+                recommendations: { type: "array", items: { type: "string" } },
+                report_date: { type: "string" },
+                disclaimer: { type: "string" }
+              },
+              required: ["estimated_market_value", "value_range_low", "value_range_high", "confidence_level", "price_per_sqm_land", "price_per_sqm_building", "valuation_method", "comparable_sales", "market_analysis", "investment_metrics", "property_strengths", "property_weaknesses", "value_adjustments", "recommendations", "report_date", "disclaimer"]
+            }
+          }
+        }],
+        tool_choice: { type: "function", function: { name: "property_valuation_report" } },
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      const status = aiResponse.status;
+      if (status === 429) return json({ error: "Rate limited. Please try again shortly." }, 429);
+      if (status === 402) return json({ error: "AI credits required." }, 402);
+      const t = await aiResponse.text();
+      console.error("valuation error:", status, t);
+      return json({ error: "AI valuation failed" }, 500);
+    }
+
+    const aiData = await aiResponse.json();
+    const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall) throw new Error("No structured response from AI");
+
+    return json(JSON.parse(toolCall.function.arguments));
+  } catch (e) {
+    console.error("property_valuation_report error:", e);
+    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -2451,6 +2605,8 @@ serve(async (req) => {
         return await handleRentalYieldOptimizer(payload);
       case "mortgage_advisor":
         return await handleMortgageAdvisor(payload);
+      case "property_valuation_report":
+        return await handlePropertyValuationReport(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
