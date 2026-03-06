@@ -132,8 +132,8 @@ const PropertyImageManager = () => {
       await Promise.allSettled(
         batch.map(async ({ url, property }) => {
           try {
-            const { data, error } = await supabase.functions.invoke('regenerate-property-image', {
-              body: {
+            const { data, error } = await supabase.functions.invoke('ai-engine', {
+              body: { mode: 'generate_image', payload: {
                 propertyId: property.id,
                 title: property.title,
                 description: property.description,
@@ -349,8 +349,8 @@ const PropertyImageManager = () => {
   const handleRegenerateImage = async (brokenUrl: string, property: any) => {
     setRegenerating(brokenUrl);
     try {
-      const { data, error } = await supabase.functions.invoke('regenerate-property-image', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'generate_image', payload: {
           propertyId: property.id,
           title: property.title,
           description: property.description,
