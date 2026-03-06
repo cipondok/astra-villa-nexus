@@ -691,6 +691,8 @@ serve(async (req) => {
         return await handleVirtualStaging(payload);
       case "market_report":
         return await handleMarketReport(payload);
+      case "image_quality_analyze":
+        return await handleImageQualityAnalyze(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
