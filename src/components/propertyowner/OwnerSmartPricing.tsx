@@ -57,18 +57,19 @@ const OwnerSmartPricing: React.FC = () => {
     setAnalysis(null);
 
     try {
-      const { data, error } = await supabase.functions.invoke('smart-pricing', {
-        body: { property_id: selectedPropertyId },
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'smart_pricing', payload: { property_id: selectedPropertyId } },
       });
 
       if (error) throw error;
 
-      if (data?.analysis) {
-        setAnalysis(data.analysis);
-        setCurrentPrice(data.property?.current_price || 0);
+      // ai-engine returns flat analysis fields
+      if (data && !data.error) {
+        setAnalysis(data);
+        setCurrentPrice(data.optimal_price || data.fair_market_value || 0);
         toast.success('Analisis harga selesai!');
       } else {
-        toast.error('Gagal mendapatkan analisis');
+        toast.error(data?.error || 'Gagal mendapatkan analisis');
       }
     } catch (err: any) {
       console.error('Pricing error:', err);
