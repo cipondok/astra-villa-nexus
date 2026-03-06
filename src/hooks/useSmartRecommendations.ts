@@ -153,7 +153,7 @@ export function useBehaviorTracking() {
             sessionId: sessionStorage.getItem('user_session'),
             deviceType: /Mobile/.test(navigator.userAgent) ? 'mobile' : 'desktop',
           }
-        }
+        }}
       });
 
       if (error) throw error;
