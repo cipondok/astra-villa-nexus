@@ -130,11 +130,11 @@ class AIPropertyService {
     if (cached) return cached;
 
     try {
-      const { data, error } = await supabase.functions.invoke('ai-property-assistant', {
-        body: { 
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'property_assistant', payload: { 
           action: 'analyze_property',
           propertyId
-        }
+        }}
       });
 
       if (error) throw error;
@@ -162,11 +162,11 @@ class AIPropertyService {
     price: number;
   }): Promise<string> {
     try {
-      const { data, error } = await supabase.functions.invoke('ai-content-generator', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'generate_description', payload: {
           type: 'property_description',
           context: propertyData
-        }
+        }}
       });
 
       if (error) throw error;

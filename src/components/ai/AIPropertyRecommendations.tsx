@@ -95,12 +95,12 @@ const AIPropertyRecommendations = ({
     queryFn: async () => {
       if (!user?.id) return null;
 
-      const { data, error } = await supabase.functions.invoke('ai-property-recommendations', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'recommendations', payload: {
           action: 'get_ai_recommendations',
           userId: user.id,
           limit
-        }
+        }}
       });
 
       if (error) throw error;

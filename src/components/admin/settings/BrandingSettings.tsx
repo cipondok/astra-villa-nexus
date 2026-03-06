@@ -159,7 +159,7 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
         luxury: "luxurious premium design with gold accents",
       };
       const fullPrompt = `Create a professional company logo for: ${logoPrompt}. Style: ${stylePrompts[logoStyle]}. High quality vector-style logo.`;
-      const response = await supabase.functions.invoke('ai-image-generator', { body: { prompt: fullPrompt } });
+      const response = await supabase.functions.invoke('ai-engine', { body: { mode: 'generate_image', payload: { prompt: fullPrompt } } });
       if (response.error) throw new Error(response.error?.message || String(response.error));
       if (response.data?.error) throw new Error(response.data.error);
       const imageUrl = response.data?.imageUrl || response.data?.image;

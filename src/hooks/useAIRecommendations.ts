@@ -62,12 +62,12 @@ export function useAIRecommendations(limit = 10) {
     queryFn: async () => {
       if (!user?.id) return null;
 
-      const { data, error } = await supabase.functions.invoke('ai-property-recommendations', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'recommendations', payload: {
           action: 'get_ai_recommendations',
           userId: user.id,
           limit
-        }
+        }}
       });
 
       if (error) throw error;
@@ -87,11 +87,11 @@ export function useAIRecommendations(limit = 10) {
     queryFn: async () => {
       if (!user?.id) return null;
 
-      const { data, error } = await supabase.functions.invoke('ai-property-recommendations', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'recommendations', payload: {
           action: 'get_discovery_insights',
           userId: user.id
-        }
+        }}
       });
 
       if (error) throw error;
@@ -106,12 +106,12 @@ export function useAIRecommendations(limit = 10) {
     mutationFn: async (propertyId: string) => {
       if (!user?.id) throw new Error('User not authenticated');
 
-      const { data, error } = await supabase.functions.invoke('ai-property-recommendations', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'recommendations', payload: {
           action: 'explain_match',
           userId: user.id,
           propertyId
-        }
+        }}
       });
 
       if (error) throw error;
