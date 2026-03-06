@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -4760,6 +4760,240 @@ Deno.serve(async (req) => {
           input: { budget, location, risk_level: riskLevel, investment_goal: investmentGoal },
           candidates_scanned: candidates.length,
           eligible_after_risk_filter: eligible.length,
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: demand_intelligence — Detect fast-growing real estate markets
+    // ═══════════════════════════════════════════
+    if (mode === 'demand_intelligence') {
+      // Step 1: Aggregate property data by city
+      const { data: props, error: pErr } = await supabase
+        .from('properties')
+        .select('id, city, price, property_type, investment_score, demand_heat_score, created_at, status')
+        .not('city', 'is', null)
+        .not('price', 'is', null)
+        .gt('price', 0)
+        .limit(1000);
+
+      if (pErr) throw pErr;
+
+      interface CityBucket {
+        prices: number[];
+        heatScores: number[];
+        invScores: number[];
+        propertyCount: number;
+        activeCount: number;
+        recentListings: number; // last 30d
+        types: Set<string>;
+      }
+
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000);
+      const ninetyDaysAgo = new Date(Date.now() - 90 * 86400000);
+      const cities: Record<string, CityBucket> = {};
+
+      for (const p of (props || [])) {
+        const city = (p.city || '').toLowerCase().trim();
+        if (!city) continue;
+        if (!cities[city]) {
+          cities[city] = { prices: [], heatScores: [], invScores: [], propertyCount: 0, activeCount: 0, recentListings: 0, types: new Set() };
+        }
+        const b = cities[city];
+        b.prices.push(Number(p.price));
+        b.heatScores.push(Number(p.demand_heat_score) || 0);
+        b.invScores.push(Number(p.investment_score) || 0);
+        b.propertyCount++;
+        if (p.status === 'active') b.activeCount++;
+        if (p.property_type) b.types.add(p.property_type);
+        if (p.created_at && new Date(p.created_at) >= thirtyDaysAgo) b.recentListings++;
+      }
+
+      // Step 2: Get buyer activity from ai_behavior_tracking (30d)
+      const { data: activities } = await supabase
+        .from('ai_behavior_tracking')
+        .select('property_id, event_type, user_id')
+        .in('event_type', ['view', 'property_view', 'detail_view', 'save', 'contact', 'inquiry'])
+        .gte('created_at', thirtyDaysAgo.toISOString())
+        .not('property_id', 'is', null)
+        .limit(1000);
+
+      // Map property_id → city for activity attribution
+      const propCityMap: Record<string, string> = {};
+      for (const p of (props || [])) {
+        if (p.city) propCityMap[p.id] = (p.city || '').toLowerCase().trim();
+      }
+
+      const cityActivityCounts: Record<string, number> = {};
+      const cityUniqueUsers: Record<string, Set<string>> = {};
+      for (const a of (activities || [])) {
+        const city = propCityMap[a.property_id!];
+        if (!city) continue;
+        cityActivityCounts[city] = (cityActivityCounts[city] || 0) + 1;
+        if (!cityUniqueUsers[city]) cityUniqueUsers[city] = new Set();
+        if (a.user_id) cityUniqueUsers[city].add(a.user_id);
+      }
+
+      // Step 3: Get saved property counts by city
+      const { data: saves } = await supabase
+        .from('saved_properties')
+        .select('property_id')
+        .gte('created_at', thirtyDaysAgo.toISOString())
+        .limit(1000);
+
+      const citySaveCounts: Record<string, number> = {};
+      for (const s of (saves || [])) {
+        const city = propCityMap[s.property_id];
+        if (city) citySaveCounts[city] = (citySaveCounts[city] || 0) + 1;
+      }
+
+      // Step 4: Price growth from price history
+      const { data: priceHistory } = await supabase
+        .from('property_price_history')
+        .select('property_id, price, recorded_at')
+        .gte('recorded_at', ninetyDaysAgo.toISOString())
+        .order('recorded_at', { ascending: true })
+        .limit(1000);
+
+      const cityPriceGrowth: Record<string, number[]> = {};
+      // Group prices by city, compare oldest vs newest
+      const propPrices: Record<string, { oldest: number; newest: number; oldDate: string; newDate: string }> = {};
+      for (const ph of (priceHistory || [])) {
+        const pid = ph.property_id;
+        if (!propPrices[pid]) {
+          propPrices[pid] = { oldest: Number(ph.price), newest: Number(ph.price), oldDate: ph.recorded_at, newDate: ph.recorded_at };
+        } else {
+          if (ph.recorded_at < propPrices[pid].oldDate) {
+            propPrices[pid].oldest = Number(ph.price);
+            propPrices[pid].oldDate = ph.recorded_at;
+          }
+          if (ph.recorded_at > propPrices[pid].newDate) {
+            propPrices[pid].newest = Number(ph.price);
+            propPrices[pid].newDate = ph.recorded_at;
+          }
+        }
+      }
+
+      for (const [pid, pp] of Object.entries(propPrices)) {
+        const city = propCityMap[pid];
+        if (!city || pp.oldest <= 0) continue;
+        const growth = ((pp.newest - pp.oldest) / pp.oldest) * 100;
+        if (!cityPriceGrowth[city]) cityPriceGrowth[city] = [];
+        cityPriceGrowth[city].push(growth);
+      }
+
+      // Step 5: Score and classify each city
+      interface CityHotspot {
+        city: string;
+        growth_rate: number;
+        buyer_activity_score: number;
+        investor_interest_score: number;
+        composite_score: number;
+        investment_rating: string;
+        market_class: 'very_hot' | 'hot' | 'growing' | 'stable';
+        avg_price: number;
+        median_heat_score: number;
+        avg_investment_score: number;
+        property_count: number;
+        active_listings: number;
+        new_listings_30d: number;
+        unique_buyers_30d: number;
+        saves_30d: number;
+        property_types: string[];
+      }
+
+      const hotspots: CityHotspot[] = [];
+
+      for (const [city, bucket] of Object.entries(cities)) {
+        if (bucket.propertyCount < 2) continue; // skip tiny markets
+
+        const avgPrice = Math.round(bucket.prices.reduce((s, p) => s + p, 0) / bucket.prices.length);
+        const sortedHeat = [...bucket.heatScores].sort((a, b) => a - b);
+        const medianHeat = sortedHeat[Math.floor(sortedHeat.length / 2)] || 0;
+        const avgInv = Math.round(bucket.invScores.reduce((s, v) => s + v, 0) / bucket.invScores.length);
+
+        // Price growth rate (avg of individual property growths, or estimate from heat)
+        const growthRates = cityPriceGrowth[city] || [];
+        const priceGrowthRate = growthRates.length > 0
+          ? Math.round(growthRates.reduce((s, g) => s + g, 0) / growthRates.length * 10) / 10
+          : Math.round((2 + medianHeat / 25) * 10) / 10; // estimate
+
+        // Buyer activity score 0-100
+        const actCount = cityActivityCounts[city] || 0;
+        const uniqueUsers = cityUniqueUsers[city]?.size || 0;
+        const buyerActivityScore = Math.min(100, Math.round(
+          (Math.min(actCount / 50, 1) * 40) +
+          (Math.min(uniqueUsers / 20, 1) * 35) +
+          (Math.min(bucket.recentListings / 10, 1) * 25)
+        ));
+
+        // Investor interest score 0-100
+        const saveCount = citySaveCounts[city] || 0;
+        const investorInterestScore = Math.min(100, Math.round(
+          (Math.min(saveCount / 20, 1) * 40) +
+          (avgInv / 100 * 35) +
+          (medianHeat / 100 * 25)
+        ));
+
+        // Composite score
+        const compositeScore = Math.round(
+          priceGrowthRate * 3 +
+          buyerActivityScore * 0.3 +
+          investorInterestScore * 0.4 +
+          medianHeat * 0.2
+        );
+
+        // Classify market
+        let marketClass: 'very_hot' | 'hot' | 'growing' | 'stable';
+        if (compositeScore >= 80) marketClass = 'very_hot';
+        else if (compositeScore >= 55) marketClass = 'hot';
+        else if (compositeScore >= 35) marketClass = 'growing';
+        else marketClass = 'stable';
+
+        // Investment rating
+        let investmentRating: string;
+        if (compositeScore >= 80) investmentRating = 'Strong Buy';
+        else if (compositeScore >= 60) investmentRating = 'Buy';
+        else if (compositeScore >= 40) investmentRating = 'Hold';
+        else investmentRating = 'Watch';
+
+        hotspots.push({
+          city: city.charAt(0).toUpperCase() + city.slice(1),
+          growth_rate: priceGrowthRate,
+          buyer_activity_score: buyerActivityScore,
+          investor_interest_score: investorInterestScore,
+          composite_score: compositeScore,
+          investment_rating: investmentRating,
+          market_class: marketClass,
+          avg_price: avgPrice,
+          median_heat_score: medianHeat,
+          avg_investment_score: avgInv,
+          property_count: bucket.propertyCount,
+          active_listings: bucket.activeCount,
+          new_listings_30d: bucket.recentListings,
+          unique_buyers_30d: uniqueUsers,
+          saves_30d: saveCount,
+          property_types: Array.from(bucket.types),
+        });
+      }
+
+      hotspots.sort((a, b) => b.composite_score - a.composite_score);
+
+      // Summary
+      const classCounts = {
+        very_hot: hotspots.filter(h => h.market_class === 'very_hot').length,
+        hot: hotspots.filter(h => h.market_class === 'hot').length,
+        growing: hotspots.filter(h => h.market_class === 'growing').length,
+        stable: hotspots.filter(h => h.market_class === 'stable').length,
+      };
+
+      return new Response(JSON.stringify({
+        data: {
+          hotspots,
+          summary: classCounts,
+          total_cities: hotspots.length,
+          total_properties_analyzed: (props || []).length,
           generated_at: new Date().toISOString(),
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
