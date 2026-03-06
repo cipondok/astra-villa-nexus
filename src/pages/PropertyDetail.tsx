@@ -1059,10 +1059,13 @@ const PropertyDetail: React.FC = () => {
             <Card className="border border-gold-primary/10 bg-card backdrop-blur-xl rounded-xl overflow-hidden">
               <CardContent className="p-2 sm:p-4">
                 <Tabs defaultValue="description" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3 bg-gold-primary/5 rounded-lg h-8 p-0.5 border border-gold-primary/10">
+                  <TabsList className="grid w-full grid-cols-4 bg-gold-primary/5 rounded-lg h-8 p-0.5 border border-gold-primary/10">
                     <TabsTrigger value="description" className="data-[state=active]:bg-gold-primary data-[state=active]:text-background rounded-md text-[10px] sm:text-xs font-medium h-7">{t('propertyDetail.description')}</TabsTrigger>
                     <TabsTrigger value="features" className="data-[state=active]:bg-gold-primary data-[state=active]:text-background rounded-md text-[10px] sm:text-xs font-medium h-7">{t('propertyDetail.features')}</TabsTrigger>
                     <TabsTrigger value="details" className="data-[state=active]:bg-gold-primary data-[state=active]:text-background rounded-md text-[10px] sm:text-xs font-medium h-7">{t('propertyDetail.details')}</TabsTrigger>
+                    <TabsTrigger value="ask-ai" className="data-[state=active]:bg-gold-primary data-[state=active]:text-background rounded-md text-[10px] sm:text-xs font-medium h-7 flex items-center gap-1">
+                      <MessageCircle className="h-3 w-3" />Ask AI
+                    </TabsTrigger>
                   </TabsList>
                   
                   <TabsContent value="description" className="mt-2 sm:mt-3">
@@ -1109,6 +1112,12 @@ const PropertyDetail: React.FC = () => {
                         </span>
                       </div>
                     </div>
+                  </TabsContent>
+
+                  <TabsContent value="ask-ai" className="mt-2 sm:mt-3">
+                    <Suspense fallback={<div className="flex items-center justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>}>
+                      <PropertyChatbot propertyId={id!} propertyData={property as unknown as Record<string, unknown>} />
+                    </Suspense>
                   </TabsContent>
                 </Tabs>
               </CardContent>
