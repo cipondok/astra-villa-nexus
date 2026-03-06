@@ -15,7 +15,9 @@ type Action =
   | 'verify_document'
   | 'verify_owner'
   | 'verify_vendor'
-  | 'rate_limit_check';
+  | 'rate_limit_check'
+  | 'session_heartbeat'
+  | 'register_device';
 
 interface AuthRequest {
   action: Action;
