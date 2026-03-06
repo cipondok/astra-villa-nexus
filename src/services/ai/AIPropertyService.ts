@@ -99,15 +99,16 @@ class AIPropertyService {
 
       if (error) throw error;
       
-      const prediction = data?.prediction;
-      if (prediction) {
+      const ps = data?.data;
+      if (ps) {
+        const trendMap: Record<string, string> = { underpriced: 'up', overpriced: 'down', fair: 'stable' };
         const result: PropertyPrediction = {
-          predictedPrice: prediction.predictedPrice || 0,
-          confidenceScore: prediction.confidence || 0,
-          priceTrend: prediction.trend || 'stable',
-          priceChangePercent: parseFloat(prediction.next12Months?.replace(/[^0-9.-]/g, '') || '0'),
-          comparableProperties: prediction.comparables || [],
-          marketInsights: prediction.insights || []
+          predictedPrice: ps.fair_market_value || 0,
+          confidenceScore: ps.comparable_count >= 5 ? 85 : ps.comparable_count >= 3 ? 70 : 50,
+          priceTrend: (trendMap[ps.price_position] || 'stable') as 'up' | 'down' | 'stable',
+          priceChangePercent: ps.deviation_percent || 0,
+          comparableProperties: [],
+          marketInsights: ps.price_position ? [`Property is ${ps.price_position} relative to ${ps.comparable_count} comparable listings`] : []
         };
         this.setCache(cacheKey, result);
         return result;
