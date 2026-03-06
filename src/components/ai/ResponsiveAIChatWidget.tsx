@@ -938,38 +938,183 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
       }
 
       console.log('Invoking edge function:', functionName, 'with body:', body);
-      
-      const { data, error } = await supabase.functions.invoke(functionName, {
-        body
-      });
 
-      console.log('Edge function response:', { data, error });
+      // Use streaming for ai-assistant, non-streaming for others
+      if (functionName === 'ai-assistant') {
+        const STREAM_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-assistant`;
+        const resp = await fetch(STREAM_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify(body),
+        });
 
-       if (error) {
-        console.error('Edge function error:', error);
-        throw error;
+        // Handle non-streaming error responses (JSON)
+        const contentType = resp.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const errorData = await resp.json();
+          if (errorData.status === 429 || errorData.status === 402 || errorData.status === 503 || errorData.error) {
+            throw Object.assign(new Error(errorData.error || 'AI error'), { status: errorData.status || resp.status });
+          }
+        }
+
+        if (!resp.ok || !resp.body) {
+          throw new Error('Failed to start stream');
+        }
+
+        // Create assistant message placeholder for streaming
+        const aiMsgId = (Date.now() + 1).toString();
+        setMessages(prev => [...prev, {
+          id: aiMsgId,
+          role: 'assistant' as const,
+          content: '',
+          timestamp: new Date(),
+        }]);
+
+        // Parse SSE stream token-by-token
+        const reader = resp.body.getReader();
+        const decoder = new TextDecoder();
+        let textBuffer = '';
+        let fullContent = '';
+        let streamDone = false;
+        let functionCallData: any = null;
+
+        while (!streamDone) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          textBuffer += decoder.decode(value, { stream: true });
+
+          let newlineIndex: number;
+          while ((newlineIndex = textBuffer.indexOf('\n')) !== -1) {
+            let line = textBuffer.slice(0, newlineIndex);
+            textBuffer = textBuffer.slice(newlineIndex + 1);
+
+            if (line.endsWith('\r')) line = line.slice(0, -1);
+            if (line.startsWith(':') || line.trim() === '') continue;
+            if (!line.startsWith('data: ')) continue;
+
+            const jsonStr = line.slice(6).trim();
+            if (jsonStr === '[DONE]') {
+              streamDone = true;
+              break;
+            }
+
+            try {
+              const parsed = JSON.parse(jsonStr);
+              const delta = parsed.choices?.[0]?.delta;
+              const content = delta?.content as string | undefined;
+              if (content) {
+                fullContent += content;
+                setMessages(prev =>
+                  prev.map((m, i) =>
+                    i === prev.length - 1 && m.id === aiMsgId
+                      ? { ...m, content: fullContent }
+                      : m
+                  )
+                );
+              }
+              // Check for function calls in the stream
+              if (delta?.function_call) {
+                if (!functionCallData) functionCallData = { name: '', arguments: '' };
+                if (delta.function_call.name) functionCallData.name = delta.function_call.name;
+                if (delta.function_call.arguments) functionCallData.arguments += delta.function_call.arguments;
+              }
+            } catch {
+              // Incomplete JSON, put back and wait
+              textBuffer = line + '\n' + textBuffer;
+              break;
+            }
+          }
+        }
+
+        // Final flush
+        if (textBuffer.trim()) {
+          for (let raw of textBuffer.split('\n')) {
+            if (!raw) continue;
+            if (raw.endsWith('\r')) raw = raw.slice(0, -1);
+            if (raw.startsWith(':') || raw.trim() === '') continue;
+            if (!raw.startsWith('data: ')) continue;
+            const jsonStr = raw.slice(6).trim();
+            if (jsonStr === '[DONE]') continue;
+            try {
+              const parsed = JSON.parse(jsonStr);
+              const content = parsed.choices?.[0]?.delta?.content as string | undefined;
+              if (content) {
+                fullContent += content;
+                setMessages(prev =>
+                  prev.map((m, i) =>
+                    i === prev.length - 1 && m.id === aiMsgId
+                      ? { ...m, content: fullContent }
+                      : m
+                  )
+                );
+              }
+            } catch { /* ignore partial leftovers */ }
+          }
+        }
+
+        // Update final message with function call if present
+        if (functionCallData?.name) {
+          setMessages(prev =>
+            prev.map((m, i) =>
+              i === prev.length - 1 && m.id === aiMsgId
+                ? { ...m, functionCall: functionCallData }
+                : m
+            )
+          );
+
+          if (functionCallData.name === 'control_3d_tour' && onTourControl) {
+            try {
+              const args = JSON.parse(functionCallData.arguments);
+              onTourControl(args.action, args.target);
+            } catch { /* ignore parse errors */ }
+          }
+        }
+
+        // Generate smart replies based on streamed content
+        if (fullContent) {
+          setSmartReplies(generateSmartReplies(fullContent));
+        }
+      } else {
+        // Non-streaming path for other functions
+        const { data, error } = await supabase.functions.invoke(functionName, { body });
+
+        console.log('Edge function response:', { data, error });
+
+        if (error) {
+          console.error('Edge function error:', error);
+          throw error;
+        }
+
+        throwIfEdgeFunctionReturnedError(data);
+
+        if (!data || !data.message) {
+          console.error('Invalid response from edge function:', data);
+          throw new Error('Invalid response from AI assistant');
+        }
+
+        const aiMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: data.message,
+          timestamp: new Date(),
+          functionCall: data.functionCall
+        };
+
+        setMessages(prev => [...prev, aiMessage]);
+        setSmartReplies(generateSmartReplies(data.message));
+
+        if (!conversationId && data.conversationId) {
+          setConversationId(data.conversationId);
+        }
+
+        if (data.functionCall?.name === 'control_3d_tour' && onTourControl) {
+          const args = JSON.parse(data.functionCall.arguments);
+          onTourControl(args.action, args.target);
+        }
       }
-
-       // Some functions return HTTP 200 with {status, error} to avoid preview blank screens.
-       throwIfEdgeFunctionReturnedError(data);
-
-      if (!data || !data.message) {
-        console.error('Invalid response from edge function:', data);
-        throw new Error('Invalid response from AI assistant');
-      }
-
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: data.message,
-        timestamp: new Date(),
-        functionCall: data.functionCall
-      };
-
-      setMessages(prev => [...prev, aiMessage]);
-      
-      // Generate smart replies based on AI response
-      setSmartReplies(generateSmartReplies(data.message));
       
       // Haptic feedback for new AI message
       haptic.onNewMessage();
@@ -978,22 +1123,12 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
       if (hasCustomSound('newMessage')) {
         playCustomSound('newMessage');
       }
-      
-      if (!conversationId && data.conversationId) {
-        setConversationId(data.conversationId);
-      }
-
-      if (data.functionCall?.name === 'control_3d_tour' && onTourControl) {
-        const args = JSON.parse(data.functionCall.arguments);
-        onTourControl(args.action, args.target);
-      }
 
     } catch (error) {
       console.error('Error sending message:', error);
 
       markAiTemporarilyDisabledFromError(error);
       
-      // Check for specific AI service errors (402, 429, 503)
       const anyErr = error as any;
       const status = anyErr?.context?.status || anyErr?.status;
       
