@@ -1347,6 +1347,188 @@ async function handleSmartNotifications(payload: Record<string, unknown>) {
   }
 }
 
+// ── Neighborhood Insights Bot ───────────────────────────────────────
+
+async function handleNeighborhoodInsights(payload: Record<string, unknown>) {
+  const { location, question, coordinates } = payload as {
+    location?: string;
+    question?: string;
+    coordinates?: { lat: number; lng: number };
+  };
+
+  if (!location && !question) return json({ error: "location or question is required" }, 400);
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  // Fetch nearby properties for context
+  let nearbyContext = "";
+  try {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const sb = createClient(supabaseUrl, supabaseKey);
+
+    let query = sb.from("properties").select("title, city, district, price, property_type, bedrooms, bathrooms, building_size, land_size").eq("status", "active").limit(20);
+    if (location) {
+      query = query.or(`city.ilike.%${location}%,district.ilike.%${location}%,address.ilike.%${location}%`);
+    }
+    const { data: props } = await query;
+    if (props && props.length > 0) {
+      nearbyContext = `\n\nNearby property listings for context:\n${JSON.stringify(props.slice(0, 10))}`;
+    }
+  } catch { /* best effort */ }
+
+  const systemPrompt = `You are an expert neighborhood insights assistant for Indonesian real estate. You provide detailed, accurate, and helpful information about neighborhoods, districts, and cities in Indonesia.
+
+When answering questions, cover relevant topics such as:
+- Schools and education (international schools, universities)
+- Safety and security
+- Transportation and commute (toll roads, MRT, LRT, TransJakarta)
+- Amenities (shopping malls, hospitals, restaurants, parks)
+- Property market trends in the area
+- Lifestyle and community character
+- Infrastructure development plans
+- Cost of living estimates
+- Flood risk and environmental factors
+- Nearby landmarks and points of interest
+
+Always provide specific, actionable information. If you're discussing Indonesian locations, include local context like nearby toll gates, popular local establishments, and community characteristics. Use a friendly, informative tone.${nearbyContext}`;
+
+  const userMessage = question
+    ? `Question about ${location || "this area"}: ${question}`
+    : `Give me a comprehensive neighborhood overview of ${location}, Indonesia. Cover schools, safety, transportation, amenities, property trends, and lifestyle.`;
+
+  try {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-3-flash-preview",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userMessage },
+        ],
+        tools: [
+          {
+            type: "function",
+            function: {
+              name: "neighborhood_insights",
+              description: "Return structured neighborhood insights",
+              parameters: {
+                type: "object",
+                properties: {
+                  overview: {
+                    type: "object",
+                    properties: {
+                      summary: { type: "string", description: "2-3 sentence neighborhood summary" },
+                      livability_score: { type: "number", description: "Score 1-100" },
+                      property_type_fit: { type: "array", items: { type: "string" }, description: "Best property types for this area" },
+                      demographic: { type: "string", description: "Primary demographic/resident type" },
+                    },
+                    required: ["summary", "livability_score", "property_type_fit", "demographic"],
+                  },
+                  education: {
+                    type: "object",
+                    properties: {
+                      score: { type: "number", description: "Education score 1-10" },
+                      highlights: { type: "array", items: { type: "string" } },
+                      notable_schools: { type: "array", items: { type: "object", properties: { name: { type: "string" }, type: { type: "string" }, rating: { type: "string" } }, required: ["name", "type"] } },
+                    },
+                    required: ["score", "highlights"],
+                  },
+                  safety: {
+                    type: "object",
+                    properties: {
+                      score: { type: "number", description: "Safety score 1-10" },
+                      highlights: { type: "array", items: { type: "string" } },
+                      considerations: { type: "array", items: { type: "string" } },
+                    },
+                    required: ["score", "highlights"],
+                  },
+                  transportation: {
+                    type: "object",
+                    properties: {
+                      score: { type: "number", description: "Transport score 1-10" },
+                      highlights: { type: "array", items: { type: "string" } },
+                      commute_options: { type: "array", items: { type: "object", properties: { mode: { type: "string" }, description: { type: "string" } }, required: ["mode", "description"] } },
+                    },
+                    required: ["score", "highlights"],
+                  },
+                  amenities: {
+                    type: "object",
+                    properties: {
+                      score: { type: "number", description: "Amenities score 1-10" },
+                      highlights: { type: "array", items: { type: "string" } },
+                      categories: {
+                        type: "object",
+                        properties: {
+                          shopping: { type: "array", items: { type: "string" } },
+                          healthcare: { type: "array", items: { type: "string" } },
+                          dining: { type: "array", items: { type: "string" } },
+                          recreation: { type: "array", items: { type: "string" } },
+                        },
+                      },
+                    },
+                    required: ["score", "highlights"],
+                  },
+                  market_insights: {
+                    type: "object",
+                    properties: {
+                      avg_price_range: { type: "string", description: "Average property price range" },
+                      price_trend: { type: "string", enum: ["rising", "stable", "declining"] },
+                      rental_yield: { type: "string", description: "Estimated rental yield" },
+                      investment_outlook: { type: "string", enum: ["excellent", "good", "moderate", "cautious"] },
+                      key_developments: { type: "array", items: { type: "string" } },
+                    },
+                    required: ["avg_price_range", "price_trend", "investment_outlook"],
+                  },
+                  environment: {
+                    type: "object",
+                    properties: {
+                      flood_risk: { type: "string", enum: ["low", "moderate", "high"] },
+                      green_spaces: { type: "array", items: { type: "string" } },
+                      air_quality: { type: "string", enum: ["good", "moderate", "poor"] },
+                      noise_level: { type: "string", enum: ["quiet", "moderate", "noisy"] },
+                    },
+                    required: ["flood_risk", "noise_level"],
+                  },
+                  chat_response: { type: "string", description: "Natural language conversational response to the user's question" },
+                },
+                required: ["overview", "education", "safety", "transportation", "amenities", "market_insights", "environment", "chat_response"],
+                additionalProperties: false,
+              },
+            },
+          },
+        ],
+        tool_choice: { type: "function", function: { name: "neighborhood_insights" } },
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      const status = aiResponse.status;
+      const text = await aiResponse.text();
+      console.error("AI gateway error:", status, text);
+      if (status === 402 || status === 429 || status === 503) {
+        return json({ status, error: status === 402 ? "AI credits required" : status === 429 ? "Rate limited" : "AI temporarily unavailable" }, 200);
+      }
+      throw new Error(`AI gateway returned ${status}`);
+    }
+
+    const aiData = await aiResponse.json();
+    const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall) throw new Error("No structured response from AI");
+
+    const result = JSON.parse(toolCall.function.arguments);
+    return json(result);
+  } catch (e) {
+    console.error("neighborhood_insights error:", e);
+    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+  }
+}
+
 // ── Main router ─────────────────────────────────────────────────────
 
 serve(async (req) => {
@@ -1392,6 +1574,8 @@ serve(async (req) => {
         return await handleComparativeMarketAnalysis(payload);
       case "smart_notifications":
         return await handleSmartNotifications(payload);
+      case "neighborhood_insights":
+        return await handleNeighborhoodInsights(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
