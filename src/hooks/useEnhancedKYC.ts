@@ -62,9 +62,10 @@ export function useEnhancedKYC() {
     setIsLoading(true);
     
     try {
-      const { data, error } = await supabase.functions.invoke('enhanced-kyc', {
+      const { data, error } = await supabase.functions.invoke('auth-engine', {
         body: {
-          action: 'submit',
+          action: 'enhanced_kyc',
+          kyc_action: 'submit',
           verificationType: params.verificationType,
           documentType: params.documentType,
           documentImageBase64: params.documentImageBase64,
@@ -95,8 +96,8 @@ export function useEnhancedKYC() {
 
   const checkStatus = useCallback(async (): Promise<void> => {
     try {
-      const { data, error } = await supabase.functions.invoke('enhanced-kyc', {
-        body: { action: 'check_status' },
+      const { data, error } = await supabase.functions.invoke('auth-engine', {
+        body: { action: 'enhanced_kyc', kyc_action: 'check_status' },
       });
 
       if (error) throw new Error(error.message);
@@ -116,9 +117,10 @@ export function useEnhancedKYC() {
     setIsLoading(true);
     
     try {
-      const { data, error } = await supabase.functions.invoke('enhanced-kyc', {
+      const { data, error } = await supabase.functions.invoke('auth-engine', {
         body: {
-          action: 'verify_liveness',
+          action: 'enhanced_kyc',
+          kyc_action: 'verify_liveness',
           selfieImageBase64: selfieBase64,
         },
       });
@@ -146,9 +148,10 @@ export function useEnhancedKYC() {
     setIsLoading(true);
     
     try {
-      const { data, error } = await supabase.functions.invoke('enhanced-kyc', {
+      const { data, error } = await supabase.functions.invoke('auth-engine', {
         body: {
-          action: 'extract_document',
+          action: 'enhanced_kyc',
+          kyc_action: 'extract_document',
           documentImageBase64: documentBase64,
           documentType,
         },

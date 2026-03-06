@@ -176,8 +176,8 @@ const PropertyImageManager = () => {
     for (const { url, property } of allImgs) {
       setAiCheckingUrl(url);
       try {
-        const { data, error } = await supabase.functions.invoke('check-image-relevance', {
-          body: {
+        const { data, error } = await supabase.functions.invoke('ai-engine', {
+          body: { mode: 'image_quality_analyze', payload: {
             imageUrl: url,
             title: property.title,
             description: property.description,
@@ -300,14 +300,14 @@ const PropertyImageManager = () => {
     setAiChecking(true);
     setAiCheckingUrl(imageUrl);
     try {
-      const { data, error } = await supabase.functions.invoke('check-image-relevance', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'image_quality_analyze', payload: {
           imageUrl,
           title: property.title,
           description: property.description,
           propertyType: property.property_type,
           location: property.location || property.city,
-        }
+        }}
       });
       if (error) throw error;
       setAiResults(prev => ({ ...prev, [imageUrl]: data }));
@@ -326,8 +326,8 @@ const PropertyImageManager = () => {
     for (const img of imgs) {
       setAiCheckingUrl(img);
       try {
-        const { data, error } = await supabase.functions.invoke('check-image-relevance', {
-          body: {
+        const { data, error } = await supabase.functions.invoke('ai-engine', {
+          body: { mode: 'image_quality_analyze', payload: {
             imageUrl: img,
             title: property.title,
             description: property.description,

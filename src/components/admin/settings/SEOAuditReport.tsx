@@ -100,8 +100,8 @@ const SEOAuditReport = () => {
     setError(null);
     try {
       const baseUrl = window.location.origin;
-      const { data, error: fnError } = await supabase.functions.invoke('seo-audit', {
-        body: { baseUrl, pages: PAGES_TO_AUDIT },
+      const { data, error: fnError } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'seo_generate', payload: { action: 'audit', baseUrl, pages: PAGES_TO_AUDIT } },
       });
 
       if (fnError) throw new Error(fnError.message);
