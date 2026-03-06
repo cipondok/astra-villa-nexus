@@ -42,7 +42,7 @@ const CustomerServiceCenter = () => {
           description: newTicket.description,
           customer_email: newTicket.customer_email,
           priority: newTicket.priority
-        }
+        }}
       });
 
       if (error) throw error;
