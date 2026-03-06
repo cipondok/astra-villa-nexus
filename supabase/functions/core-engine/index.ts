@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -5140,6 +5140,158 @@ Deno.serve(async (req) => {
           top_performer: topPerformer ? { id: topPerformer.id, title: topPerformer.title, roi_5y: topPerformer.roi_5y } : null,
           weakest_performer: weakestPerformer && weakestPerformer.id !== topPerformer?.id ? { id: weakestPerformer.id, title: weakestPerformer.title, roi_5y: weakestPerformer.roi_5y } : null,
           properties: enriched,
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // ██  PROPERTY VALUATION MODE
+    // ═══════════════════════════════════════════════════════════
+    if (mode === 'property_valuation') {
+      if (!property_id) {
+        return new Response(JSON.stringify({ error: 'property_id required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const serviceClient = createClient(supabaseUrl, serviceKey);
+
+      // 1. Fetch target property
+      const { data: target, error: tErr } = await serviceClient
+        .from('properties')
+        .select('id, title, price, city, state, location, property_type, building_area_sqm, land_area_sqm, area_sqm, investment_score, demand_heat_score, bedrooms, bathrooms, thumbnail_url')
+        .eq('id', property_id)
+        .single();
+
+      if (tErr || !target) {
+        return new Response(JSON.stringify({ error: 'Property not found' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const buildingArea = target.building_area_sqm || target.area_sqm || 0;
+      const landArea = target.land_area_sqm || target.area_sqm || 0;
+      const refArea = buildingArea > 0 ? buildingArea : landArea;
+
+      if (refArea <= 0) {
+        return new Response(JSON.stringify({
+          data: {
+            property_id: target.id,
+            title: target.title,
+            listed_price: target.price,
+            estimated_value: target.price,
+            confidence: 0,
+            price_position: 'fair_price',
+            comparables_count: 0,
+            message: 'Insufficient area data for valuation',
+            generated_at: new Date().toISOString(),
+          },
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      // 2. Fetch comparables: same city, similar type, area ±20%
+      const areaMin = Math.round(refArea * 0.8);
+      const areaMax = Math.round(refArea * 1.2);
+
+      let compQuery = serviceClient
+        .from('properties')
+        .select('id, title, price, building_area_sqm, land_area_sqm, area_sqm, property_type, city, investment_score, demand_heat_score')
+        .eq('status', 'active')
+        .eq('approval_status', 'approved')
+        .neq('id', property_id);
+
+      if (target.city) {
+        compQuery = compQuery.ilike('city', `%${target.city}%`);
+      }
+      if (target.property_type) {
+        compQuery = compQuery.eq('property_type', target.property_type);
+      }
+
+      const { data: comps } = await compQuery.limit(200);
+
+      // Filter by area range in JS (handles building_area_sqm/land_area_sqm/area_sqm)
+      const validComps = (comps || []).filter((c: any) => {
+        const cArea = c.building_area_sqm || c.area_sqm || c.land_area_sqm || 0;
+        return cArea >= areaMin && cArea <= areaMax && c.price > 0;
+      });
+
+      // 3. Calculate avg price per m²
+      let avgPricePerSqm = 0;
+      let estimatedValue = target.price;
+      const comparablesCount = validComps.length;
+
+      if (comparablesCount > 0) {
+        const pricesPerSqm = validComps.map((c: any) => {
+          const cArea = c.building_area_sqm || c.area_sqm || c.land_area_sqm || 1;
+          return c.price / cArea;
+        });
+        avgPricePerSqm = pricesPerSqm.reduce((s: number, v: number) => s + v, 0) / pricesPerSqm.length;
+        estimatedValue = Math.round(avgPricePerSqm * refArea);
+      }
+
+      // 4. Adjust by demand_heat_score & investment_score
+      const heatScore = target.demand_heat_score ?? 50;
+      const invScore = target.investment_score ?? 50;
+
+      // Demand multiplier: hot markets push value up
+      const demandMultiplier = heatScore > 75 ? 1.08 : heatScore > 50 ? 1.03 : heatScore > 30 ? 1.0 : 0.97;
+      // Investment quality bonus
+      const invMultiplier = invScore > 80 ? 1.05 : invScore > 60 ? 1.02 : 1.0;
+
+      const adjustedValue = Math.round(estimatedValue * demandMultiplier * invMultiplier);
+
+      // 5. Confidence score based on comparables count
+      let confidence: number;
+      if (comparablesCount >= 10) confidence = 95;
+      else if (comparablesCount >= 5) confidence = 80;
+      else if (comparablesCount >= 3) confidence = 65;
+      else if (comparablesCount >= 1) confidence = 45;
+      else confidence = 15;
+
+      // 6. Price position
+      const ratio = target.price / (adjustedValue || target.price);
+      let pricePosition: string;
+      if (ratio < 0.85) pricePosition = 'undervalued';
+      else if (ratio > 1.15) pricePosition = 'overpriced';
+      else pricePosition = 'fair_price';
+
+      // Deviation percentage
+      const deviationPercent = Math.round((ratio - 1) * 100);
+
+      // Top comparables for transparency
+      const topComps = validComps.slice(0, 5).map((c: any) => {
+        const cArea = c.building_area_sqm || c.area_sqm || c.land_area_sqm || 1;
+        return {
+          id: c.id,
+          title: c.title,
+          price: c.price,
+          area: cArea,
+          price_per_sqm: Math.round(c.price / cArea),
+          city: c.city,
+        };
+      });
+
+      return new Response(JSON.stringify({
+        data: {
+          property_id: target.id,
+          title: target.title,
+          city: target.city,
+          property_type: target.property_type,
+          building_area: buildingArea,
+          land_area: landArea,
+          listed_price: target.price,
+          estimated_value: adjustedValue,
+          avg_price_per_sqm: Math.round(avgPricePerSqm),
+          confidence,
+          price_position: pricePosition,
+          deviation_percent: deviationPercent,
+          demand_heat_score: heatScore,
+          investment_score: invScore,
+          demand_multiplier: demandMultiplier,
+          investment_multiplier: invMultiplier,
+          comparables_count: comparablesCount,
+          top_comparables: topComps,
           generated_at: new Date().toISOString(),
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
