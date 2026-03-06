@@ -129,6 +129,7 @@ const AILeadScoringPage = lazy(() => import('@/pages/AILeadScoringPage'));
 const AIInteriorDesignPage = lazy(() => import('@/pages/AIInteriorDesignPage'));
 const AISocialCopyPage = lazy(() => import('@/pages/AISocialCopyPage'));
 const AIDocumentVerifierPage = lazy(() => import('@/pages/AIDocumentVerifierPage'));
+const AIRentalYieldPage = lazy(() => import('@/pages/AIRentalYieldPage'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const Help = lazy(() => import('@/pages/Help'));
 const About = lazy(() => import('@/pages/About'));
@@ -351,6 +352,7 @@ const AppContent = () => {
                 <Route path="/ai-interior-design" element={<AIInteriorDesignPage />} />
                 <Route path="/ai-social-copy" element={<AISocialCopyPage />} />
                 <Route path="/ai-document-verifier" element={<AIDocumentVerifierPage />} />
+                <Route path="/ai-rental-yield" element={<AIRentalYieldPage />} />
                 <Route path="*" element={<ErrorPage />} />
               </Routes>
             </Suspense>
