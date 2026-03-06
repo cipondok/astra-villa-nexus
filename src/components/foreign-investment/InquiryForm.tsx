@@ -74,7 +74,7 @@ export const InquiryForm = () => {
 
       // Send confirmation email via SMTP
       if (inquiry && profile?.email) {
-        await supabase.functions.invoke('send-inquiry-email', {
+        await supabase.functions.invoke('notification-engine', {
           body: {
             inquiry_id: inquiry.id,
             customer_email: profile.email,

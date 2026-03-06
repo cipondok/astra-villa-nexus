@@ -117,7 +117,7 @@ ${formData.twitter ? `Twitter: ${formData.twitter}` : ''}
 
       if (insertError) throw insertError;
 
-      await supabase.functions.invoke('send-inquiry-email', {
+      await supabase.functions.invoke('notification-engine', {
         body: {
           inquiry_id: inserted.id,
           customer_email: formData.email,
