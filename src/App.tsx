@@ -344,6 +344,7 @@ const AppContent = () => {
                 <Route path="/smart-notifications" element={<SmartNotificationsPage />} />
                 <Route path="/neighborhood-insights" element={<NeighborhoodInsightsPage />} />
                 <Route path="/contract-analyzer" element={<ContractAnalyzerPage />} />
+                <Route path="/ai-lead-scoring" element={<AILeadScoringPage />} />
                 <Route path="*" element={<ErrorPage />} />
               </Routes>
             </Suspense>
