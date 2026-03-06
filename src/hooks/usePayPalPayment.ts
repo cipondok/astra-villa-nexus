@@ -26,9 +26,10 @@ export function usePayPalPayment() {
     setIsLoading(true);
     
     try {
-      const { data, error } = await supabase.functions.invoke('paypal-payment', {
+      const { data, error } = await supabase.functions.invoke('payment-engine', {
         body: {
-          action: 'create_order',
+          action: 'paypal_payment',
+          sub_action: 'create_order',
           order_id: params.orderId,
           amount: params.amount,
           currency: params.currency || 'USD',
@@ -62,9 +63,10 @@ export function usePayPalPayment() {
     setIsLoading(true);
     
     try {
-      const { data, error } = await supabase.functions.invoke('paypal-payment', {
+      const { data, error } = await supabase.functions.invoke('payment-engine', {
         body: {
-          action: 'capture_order',
+          action: 'paypal_payment',
+          sub_action: 'capture_order',
           paypal_order_id: paypalOrderId,
         },
       });
@@ -85,9 +87,10 @@ export function usePayPalPayment() {
 
   // Check order status
   const checkStatus = useCallback(async (paypalOrderId: string) => {
-    const { data, error } = await supabase.functions.invoke('paypal-payment', {
+    const { data, error } = await supabase.functions.invoke('payment-engine', {
       body: {
-        action: 'check_status',
+        action: 'paypal_payment',
+        sub_action: 'check_status',
         paypal_order_id: paypalOrderId,
       },
     });
@@ -101,9 +104,10 @@ export function usePayPalPayment() {
     setIsLoading(true);
     
     try {
-      const { data, error } = await supabase.functions.invoke('paypal-payment', {
+      const { data, error } = await supabase.functions.invoke('payment-engine', {
         body: {
-          action: 'refund',
+          action: 'paypal_payment',
+          sub_action: 'refund',
           capture_id: captureId,
           amount,
           reason,

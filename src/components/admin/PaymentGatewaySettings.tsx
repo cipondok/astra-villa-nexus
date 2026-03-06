@@ -190,8 +190,8 @@ const PaymentGatewaySettings = () => {
     
     try {
       if (gateway === 'paypal') {
-        const { data, error } = await supabase.functions.invoke('paypal-payment', {
-          body: { action: 'test_connection' },
+        const { data, error } = await supabase.functions.invoke('payment-engine', {
+          body: { action: 'paypal_payment', sub_action: 'test_connection' },
         });
         
         if (error) throw error;
@@ -199,8 +199,8 @@ const PaymentGatewaySettings = () => {
         toast.success('PayPal connection successful');
       } else {
         // Test Midtrans
-        const { data, error } = await supabase.functions.invoke('midtrans-payment', {
-          body: { action: 'check_status', order_id: 'test-connection' },
+        const { data, error } = await supabase.functions.invoke('payment-engine', {
+          body: { action: 'midtrans_payment', sub_action: 'check_status', order_id: 'test-connection' },
         });
         
         setConnectionStatus(prev => ({ ...prev, midtrans: true }));
