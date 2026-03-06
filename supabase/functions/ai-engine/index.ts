@@ -1973,6 +1973,8 @@ serve(async (req) => {
         return await handlePropertyChatbot(payload);
       case "lead_scoring":
         return await handleLeadScoring(payload);
+      case "interior_design":
+        return await handleInteriorDesign(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
