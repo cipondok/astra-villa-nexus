@@ -1920,6 +1920,94 @@ ${behaviorContext}`;
   }
 }
 
+// ── Interior Design Advisor ─────────────────────────────────────────
+
+async function handleInteriorDesign(payload: Record<string, unknown>) {
+  const { room_type, style, budget_level, current_description, preferences, color_preferences } = payload as {
+    room_type: string; style: string; budget_level: string;
+    current_description?: string; preferences?: string[]; color_preferences?: string[];
+  };
+
+  if (!room_type || !style) return json({ error: "room_type and style are required" }, 400);
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  const budgetContext: Record<string, string> = {
+    low: "Budget-friendly under Rp 15 million IDR. Focus on affordable brands available in Indonesia like IKEA, Informa, Ace Hardware.",
+    medium: "Mid-range Rp 15-50 million IDR. Mix of local Indonesian brands and affordable imports.",
+    high: "Premium Rp 50-150 million IDR. High-quality brands, custom furniture options.",
+    luxury: "Luxury above Rp 150 million IDR. Designer pieces, imported luxury furniture, bespoke items.",
+  };
+
+  const systemPrompt = `You are an expert Indonesian interior designer AI. Given a room type, design style, and budget, provide comprehensive interior design recommendations for the Indonesian market. All prices must be in IDR (Indonesian Rupiah). Consider Indonesian climate (tropical), local furniture brands, and availability.
+
+${current_description ? `Current room description: ${current_description}` : ""}
+${preferences?.length ? `User preferences: ${preferences.join(", ")}` : ""}
+${color_preferences?.length ? `Color preferences: ${color_preferences.join(", ")}` : ""}
+
+Budget context: ${budgetContext[budget_level] || budgetContext.medium}`;
+
+  const userPrompt = `Design a ${style} ${room_type} interior. Budget level: ${budget_level}.`;
+
+  try {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        temperature: 0.8,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        tools: [{
+          type: "function",
+          function: {
+            name: "interior_design_result",
+            description: "Structured interior design recommendation",
+            parameters: {
+              type: "object",
+              required: ["design_concept","style_description","color_palette","furniture_recommendations","layout_tips","lighting_suggestions","accent_pieces","estimated_total_budget_idr","mood_keywords","dos","donts"],
+              properties: {
+                design_concept: { type: "string", description: "Creative concept name, e.g. 'Tropical Serenity'" },
+                style_description: { type: "string", description: "2-3 sentence overview of the design vision" },
+                color_palette: { type: "array", items: { type: "object", properties: { name: { type: "string" }, hex: { type: "string" }, usage: { type: "string" } }, required: ["name","hex","usage"] }, description: "5-7 colors" },
+                furniture_recommendations: { type: "array", items: { type: "object", properties: { name: { type: "string" }, category: { type: "string" }, estimated_price_idr: { type: "number" }, placement_tip: { type: "string" }, brand_suggestion: { type: "string" } }, required: ["name","category","estimated_price_idr","placement_tip"] }, description: "6-10 furniture items" },
+                layout_tips: { type: "array", items: { type: "string" }, description: "4-6 layout tips" },
+                lighting_suggestions: { type: "array", items: { type: "string" }, description: "3-5 lighting suggestions" },
+                accent_pieces: { type: "array", items: { type: "string" }, description: "3-5 accent/decorative pieces" },
+                estimated_total_budget_idr: { type: "number", description: "Total estimated budget in IDR" },
+                mood_keywords: { type: "array", items: { type: "string" }, description: "5-8 mood/atmosphere keywords" },
+                dos: { type: "array", items: { type: "string" }, description: "4-5 design do's" },
+                donts: { type: "array", items: { type: "string" }, description: "4-5 design don'ts" },
+              }
+            }
+          }
+        }],
+        tool_choice: { type: "function", function: { name: "interior_design_result" } },
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      const status = aiResponse.status;
+      if (status === 402 || status === 429 || status === 503) {
+        return json({ status, error: status === 402 ? "AI credits required" : status === 429 ? "Rate limited" : "AI temporarily unavailable" }, 200);
+      }
+      throw new Error(`AI gateway returned ${status}`);
+    }
+
+    const aiData = await aiResponse.json();
+    const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall) throw new Error("No structured response from AI");
+
+    return json(JSON.parse(toolCall.function.arguments));
+  } catch (e) {
+    console.error("interior_design error:", e);
+    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+  }
+}
+
 // ── Main router ─────────────────────────────────────────────────────
 
 serve(async (req) => {
