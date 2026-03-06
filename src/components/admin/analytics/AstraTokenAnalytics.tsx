@@ -12,8 +12,8 @@ const AstraTokenAnalytics: React.FC = () => {
   const { data: tokenStats } = useQuery({
     queryKey: ['astra-token-stats'],
     queryFn: async () => {
-      const { data } = await supabase.functions.invoke('astra-token-hub', {
-        body: { action: 'get_admin_stats' }
+      const { data } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'astra_token', payload: { action: 'get_admin_stats' } }
       });
       return data;
     },
@@ -24,8 +24,8 @@ const AstraTokenAnalytics: React.FC = () => {
   const { data: topUsers } = useQuery({
     queryKey: ['astra-top-users'],
     queryFn: async () => {
-      const { data } = await supabase.functions.invoke('astra-token-hub', {
-        body: { action: 'get_top_users' }
+      const { data } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'astra_token', payload: { action: 'get_top_users' } }
       });
       return data?.users || [];
     },
@@ -36,8 +36,8 @@ const AstraTokenAnalytics: React.FC = () => {
   const { data: recentCheckins } = useQuery({
     queryKey: ['astra-recent-checkins'],
     queryFn: async () => {
-      const { data } = await supabase.functions.invoke('astra-token-hub', {
-        body: { action: 'get_recent_checkins' }
+      const { data } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'astra_token', payload: { action: 'get_recent_checkins' } }
       });
       return data?.checkins || [];
     },

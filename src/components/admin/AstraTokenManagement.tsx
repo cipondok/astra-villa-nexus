@@ -145,14 +145,14 @@ const AstraTokenManagement = () => {
   // Manual token award
   const awardTokensMutation = useMutation({
     mutationFn: async ({ userId, amount, description }: { userId: string; amount: number; description: string }) => {
-      const { data, error } = await supabase.functions.invoke('astra-token-hub', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'astra_token', payload: {
           action: 'award_tokens',
           userId,
           amount,
           transactionType: 'admin_award',
           description
-        }
+        }}
       });
       
       if (error) throw error;
