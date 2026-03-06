@@ -2785,6 +2785,149 @@ Consider: seasonality (Bali high season Dec-Mar, Ramadan impact), local demand t
   }
 }
 
+// ── Document Generator ──────────────────────────────────────────────
+
+async function handleDocumentGenerate(payload: Record<string, unknown>) {
+  const {
+    document_type,
+    property_title,
+    property_address,
+    property_type,
+    property_price,
+    seller_name,
+    buyer_name,
+    tenant_name,
+    landlord_name,
+    lease_start_date,
+    lease_end_date,
+    monthly_rent,
+    deposit_amount,
+    payment_terms,
+    additional_clauses,
+    language,
+  } = payload as {
+    document_type?: string;
+    property_title?: string;
+    property_address?: string;
+    property_type?: string;
+    property_price?: number;
+    seller_name?: string;
+    buyer_name?: string;
+    tenant_name?: string;
+    landlord_name?: string;
+    lease_start_date?: string;
+    lease_end_date?: string;
+    monthly_rent?: number;
+    deposit_amount?: number;
+    payment_terms?: string;
+    additional_clauses?: string[];
+    language?: string;
+  };
+
+  if (!document_type) return json({ error: "document_type is required" }, 400);
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  const lang = language || "Indonesian";
+  const docTypeLabel = document_type.replace(/_/g, " ").toUpperCase();
+
+  const prompt = `You are an expert Indonesian property legal document drafting assistant. Generate a professional, legally-sound ${docTypeLabel} document in ${lang}.
+
+DOCUMENT TYPE: ${document_type}
+PROPERTY: ${property_title || "N/A"} at ${property_address || "N/A"} (${property_type || "Residential"})
+PRICE: ${property_price ? `Rp ${Number(property_price).toLocaleString("id-ID")}` : "N/A"}
+
+PARTIES:
+- Seller/Landlord: ${seller_name || landlord_name || "[NAMA PENJUAL/PEMILIK]"}
+- Buyer/Tenant: ${buyer_name || tenant_name || "[NAMA PEMBELI/PENYEWA]"}
+
+${document_type === "lease_agreement" ? `LEASE DETAILS:
+- Start: ${lease_start_date || "[TANGGAL MULAI]"}
+- End: ${lease_end_date || "[TANGGAL BERAKHIR]"}
+- Monthly Rent: ${monthly_rent ? `Rp ${Number(monthly_rent).toLocaleString("id-ID")}` : "[HARGA SEWA]"}
+- Deposit: ${deposit_amount ? `Rp ${Number(deposit_amount).toLocaleString("id-ID")}` : "[DEPOSIT]"}` : ""}
+
+${payment_terms ? `Payment Terms: ${payment_terms}` : ""}
+${additional_clauses?.length ? `Additional Clauses:\n${additional_clauses.map((c, i) => `${i + 1}. ${c}`).join("\n")}` : ""}
+
+Generate a complete, professional legal document with all standard clauses for Indonesian property law.`;
+
+  try {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-3-flash-preview",
+        messages: [
+          { role: "system", content: "You are a legal document generator for Indonesian property transactions. Generate professional, comprehensive documents." },
+          { role: "user", content: prompt },
+        ],
+        tools: [{
+          type: "function",
+          function: {
+            name: "document_result",
+            description: "Return the generated legal document",
+            parameters: {
+              type: "object",
+              properties: {
+                title: { type: "string", description: "Document title" },
+                document_number: { type: "string", description: "Generated document reference number" },
+                content: { type: "string", description: "Full document content in markdown format with proper headings, articles, and clauses" },
+                summary: { type: "string", description: "Brief 2-3 sentence summary of key terms" },
+                key_terms: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      term: { type: "string" },
+                      value: { type: "string" },
+                    },
+                    required: ["term", "value"],
+                  },
+                  description: "Key terms extracted from the document (price, dates, parties, etc.)",
+                },
+                warnings: {
+                  type: "array",
+                  items: { type: "string" },
+                  description: "Legal warnings or recommendations for the user",
+                },
+                applicable_laws: {
+                  type: "array",
+                  items: { type: "string" },
+                  description: "Relevant Indonesian laws referenced",
+                },
+              },
+              required: ["title", "document_number", "content", "summary", "key_terms", "warnings", "applicable_laws"],
+            },
+          },
+        }],
+        tool_choice: { type: "function", function: { name: "document_result" } },
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      const status = aiResponse.status;
+      if (status === 429) return json({ error: "Rate limited. Please try again shortly." }, 429);
+      if (status === 402) return json({ error: "AI credits required." }, 402);
+      console.error("document_generate error:", status, await aiResponse.text());
+      return json({ error: "AI document generation failed" }, 500);
+    }
+
+    const aiData = await aiResponse.json();
+    const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall) throw new Error("No structured response from AI");
+
+    return json(JSON.parse(toolCall.function.arguments));
+  } catch (e) {
+    console.error("document_generate error:", e);
+    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -2852,6 +2995,8 @@ serve(async (req) => {
         return await handleTenantMatching(payload);
       case "smart_pricing":
         return await handleSmartPricing(payload);
+      case "document_generate":
+        return await handleDocumentGenerate(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
