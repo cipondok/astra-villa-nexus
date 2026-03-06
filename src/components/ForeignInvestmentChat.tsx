@@ -82,15 +82,15 @@ Ask me anything about foreign property investment in Indonesia!`,
         throw Object.assign(new Error('AI temporarily disabled'), { status: 402 });
       }
 
-      const { data, error } = await supabase.functions.invoke('ai-assistant', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'property_chatbot', payload: {
           message: `Context: User is asking about foreign property investment in Indonesia. 
           
 Question: ${input}
 
 Please provide detailed, accurate information about Indonesian property investment regulations, requirements, and processes for foreign investors. Include relevant laws, requirements, and practical advice.`,
           conversationContext: messages.slice(-5).map(m => ({ role: m.role, content: m.content }))
-        }
+        }}
       });
 
        if (error) throw error;

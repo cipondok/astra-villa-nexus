@@ -37,8 +37,8 @@ export function useNLPSearch() {
     setError(null);
 
     try {
-      const { data, error: fnError } = await supabase.functions.invoke('ai-nlp-search', {
-        body: { query: query.trim() },
+      const { data, error: fnError } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'nlp_search', payload: { query: query.trim() } },
       });
 
       if (fnError) throw fnError;

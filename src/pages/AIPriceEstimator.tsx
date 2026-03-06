@@ -91,8 +91,8 @@ const AIPriceEstimator = () => {
     setResult(null);
 
     try {
-      const { data, error } = await supabase.functions.invoke('price-estimator', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'smart_pricing', payload: {
           land_area: Number(landArea),
           building_area: Number(buildingArea),
           bedrooms: bedrooms ? Number(bedrooms) : undefined,
@@ -100,7 +100,7 @@ const AIPriceEstimator = () => {
           province,
           city,
           property_type: propertyType,
-        },
+        }}
       });
 
       if (error) throw error;

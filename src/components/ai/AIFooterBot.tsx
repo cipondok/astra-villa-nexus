@@ -76,8 +76,8 @@ const AIFooterBot = () => {
       };
       if (user?.id) body.userId = user.id;
 
-       const { data, error } = await supabase.functions.invoke('ai-assistant', {
-        body
+       const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'property_chatbot', payload: body }
       });
 
       if (error) throw error;

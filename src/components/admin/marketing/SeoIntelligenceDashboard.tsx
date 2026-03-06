@@ -63,8 +63,8 @@ const SeoIntelligenceDashboard = () => {
     
     while (true) {
       try {
-        const { data, error } = await supabase.functions.invoke('seo-analyzer', {
-          body: { action: 'analyze-batch', limit: 50, offset: 0, filter: 'unanalyzed' },
+        const { data, error } = await supabase.functions.invoke('ai-engine', {
+          body: { mode: 'seo_generate', payload: { action: 'analyze-batch', limit: 50, offset: 0, filter: 'unanalyzed' } },
         });
         if (error) throw error;
         const count = data?.analyzed || 0;

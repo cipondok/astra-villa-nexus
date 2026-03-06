@@ -182,8 +182,8 @@ export function useAnalyzeProperty() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (propertyId: string) => {
-      const { data, error } = await supabase.functions.invoke('seo-analyzer', {
-        body: { action: 'analyze-property', propertyId },
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'seo_generate', payload: { action: 'analyze-property', propertyId } },
       });
       if (error) throw error;
       return data;
@@ -202,8 +202,8 @@ export function useAnalyzeBatch() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (params: { limit?: number; filter?: string }) => {
-      const { data, error } = await supabase.functions.invoke('seo-analyzer', {
-        body: { action: 'analyze-batch', ...params },
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'seo_generate', payload: { action: 'analyze-batch', ...params } },
       });
       if (error) throw error;
       return data;
@@ -221,8 +221,8 @@ export function useAutoOptimize() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (params?: { threshold?: number; limit?: number }) => {
-      const { data, error } = await supabase.functions.invoke('seo-analyzer', {
-        body: { action: 'auto-optimize', ...(params || {}) },
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'seo_generate', payload: { action: 'auto-optimize', ...(params || {}) } },
       });
       if (error) throw error;
       return data;
@@ -241,8 +241,8 @@ export function useApplySeo() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (propertyId: string) => {
-      const { data, error } = await supabase.functions.invoke('seo-analyzer', {
-        body: { action: 'apply-seo', propertyId },
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'seo_generate', payload: { action: 'apply-seo', propertyId } },
       });
       if (error) throw error;
       return data;
@@ -259,8 +259,8 @@ export function useApplySeo() {
 export function useContentOptimize() {
   return useMutation({
     mutationFn: async (propertyId: string) => {
-      const { data, error } = await supabase.functions.invoke('seo-analyzer', {
-        body: { action: 'content-optimize', propertyId },
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'seo_generate', payload: { action: 'content-optimize', propertyId } },
       });
       if (error) throw error;
       return data as ContentOptimization;
@@ -273,8 +273,8 @@ export function useContentOptimize() {
 export function useCompetitorAnalysis() {
   return useMutation({
     mutationFn: async (params: { location?: string; propertyType?: string }) => {
-      const { data, error } = await supabase.functions.invoke('seo-analyzer', {
-        body: { action: 'competitor-analysis', ...params },
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'seo_generate', payload: { action: 'competitor-analysis', ...params } },
       });
       if (error) throw error;
       return data as { competitors: CompetitorData[]; insights: CompetitorInsights | null };
@@ -287,8 +287,8 @@ export function useCompetitorAnalysis() {
 export function useSerpPreview() {
   return useMutation({
     mutationFn: async (propertyId: string) => {
-      const { data, error } = await supabase.functions.invoke('seo-analyzer', {
-        body: { action: 'generate-serp-preview', propertyId },
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'seo_generate', payload: { action: 'generate-serp-preview', propertyId } },
       });
       if (error) throw error;
       return data as { current: SerpPreview; optimized: SerpPreview; improvements: any };

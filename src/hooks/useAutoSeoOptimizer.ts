@@ -9,8 +9,8 @@ import { toast } from 'sonner';
 export function useAutoSeoOptimizer() {
   const triggerSeoAnalysis = useCallback(async (propertyId: string) => {
     try {
-      const { data, error } = await supabase.functions.invoke('seo-analyzer', {
-        body: { action: 'analyze-property', propertyId },
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'seo_generate', payload: { action: 'analyze-property', propertyId } },
       });
 
       if (error) {

@@ -190,13 +190,13 @@ const DeepSeekDiagnostics = () => {
         Include implementation details and best practices.
       `;
 
-      const { data, error } = await supabase.functions.invoke('deepseek-ai', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'property_chatbot', payload: {
           prompt: fixPrompt,
           type: 'auto-fix',
           model: 'deepseek-coder',
           temperature: 0.2
-        }
+        }}
       });
 
       if (error) throw error;
@@ -334,13 +334,13 @@ const DeepSeekDiagnostics = () => {
     setAnalysisResult(null);
 
     try {
-      const { data, error } = await supabase.functions.invoke('deepseek-ai', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'property_chatbot', payload: {
           prompt: prompt,
           type: type,
           model: type === 'code-analysis' ? 'deepseek-coder' : 'deepseek-chat',
           temperature: type === 'diagnostics' ? 0.3 : 0.4
-        }
+        }}
       });
 
       if (error) {

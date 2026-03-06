@@ -504,13 +504,14 @@ const StickySearchPanel = ({
         }
 
         // Fetch AI suggestions
-        const { data, error } = await supabase.functions.invoke('ai-search-suggestions', {
-          body: { 
+        const { data, error } = await supabase.functions.invoke('ai-engine', {
+          body: { mode: 'recommendations', payload: { 
+            action: 'search_suggestions',
             query, 
             recentSearches: recentSearches.slice(0, 5),
             savedSearches: savedSearches.slice(0, 5),
             filters: initialFilters 
-          }
+          }}
         });
 
         if (error) {
@@ -914,12 +915,13 @@ const StickySearchPanel = ({
   const fetchAIRecommendations = async () => {
     setIsLoadingAI(true);
     try {
-      const { data, error } = await supabase.functions.invoke('ai-search-recommendations', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'recommendations', payload: {
+          action: 'search_recommendations',
           recentSearches,
           savedSearches,
           filters: initialFilters
-        }
+        }}
       });
 
       if (error) throw error;

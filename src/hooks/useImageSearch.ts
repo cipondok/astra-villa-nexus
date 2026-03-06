@@ -66,11 +66,11 @@ export const useImageSearch = () => {
       setUploadProgress(40);
 
       // Step 2: Call the edge function
-      const { data, error: functionError } = await supabase.functions.invoke('search-by-image', {
-        body: {
+      const { data, error: functionError } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'image_quality_analyze', payload: {
           imageUrl: imageDataUrl,
           weights
-        }
+        }}
       });
 
       setUploadProgress(80);
