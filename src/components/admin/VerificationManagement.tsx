@@ -162,8 +162,9 @@ const VerificationManagement = () => {
       const token = sessionData.session?.access_token;
       if (!token) throw new Error('Unauthorized');
 
-      const { data, error } = await supabase.functions.invoke('verify-owner', {
+      const { data, error } = await supabase.functions.invoke('auth-engine', {
         body: {
+          action: 'verify_owner',
           userId,
           verificationType: type,
           status,
@@ -192,8 +193,9 @@ const VerificationManagement = () => {
       const token = sessionData.session?.access_token;
       if (!token) throw new Error('Unauthorized');
 
-      const { data, error } = await supabase.functions.invoke('verify-vendor', {
+      const { data, error } = await supabase.functions.invoke('auth-engine', {
         body: {
+          action: 'verify_vendor',
           vendorId,
           verificationType: type,
           status,

@@ -124,8 +124,8 @@ export const use2FA = (onNotification?: (action: 'enabled' | 'disabled' | 'modif
   const verifyCode = async (code: string, method: 'sms' | 'totp') => {
     try {
       // This would call an edge function to verify the code
-      const { data, error } = await supabase.functions.invoke('verify-2fa', {
-        body: { code, method, user_id: user?.id }
+      const { data, error } = await supabase.functions.invoke('auth-engine', {
+        body: { action: 'send_2fa', code, method, user_id: user?.id }
       });
 
       if (error) throw error;
