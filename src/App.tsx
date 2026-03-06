@@ -119,6 +119,7 @@ const MarketReportPage = lazy(() => import('@/pages/MarketReportPage'));
 const FraudDetectorPage = lazy(() => import('@/pages/FraudDetectorPage'));
 const AIRecommendationsPage = lazy(() => import('@/pages/AIRecommendationsPage'));
 const ImageQualityAnalyzerPage = lazy(() => import('@/pages/ImageQualityAnalyzerPage'));
+const TenantScreeningPage = lazy(() => import('@/pages/TenantScreeningPage'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const Help = lazy(() => import('@/pages/Help'));
 const About = lazy(() => import('@/pages/About'));
@@ -331,6 +332,7 @@ const AppContent = () => {
                 <Route path="/fraud-detector" element={<FraudDetectorPage />} />
                 <Route path="/recommendations" element={<AIRecommendationsPage />} />
                 <Route path="/image-quality" element={<ImageQualityAnalyzerPage />} />
+                <Route path="/tenant-screening" element={<TenantScreeningPage />} />
                 <Route path="*" element={<ErrorPage />} />
               </Routes>
             </Suspense>
