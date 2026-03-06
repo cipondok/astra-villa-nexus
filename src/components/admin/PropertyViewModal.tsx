@@ -82,19 +82,13 @@ const PropertyViewModal = ({ property, isOpen, onClose, onEdit }: PropertyViewMo
       
       console.log('Generating AI image with prompt:', prompt);
       
-      const response = await fetch('/api/generate-property-image', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ prompt }),
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'generate_image', payload: { prompt } },
       });
 
-      if (!response.ok) {
+      if (error) {
         throw new Error('Failed to generate image');
       }
-
-      const data = await response.json();
       
       if (data.image) {
         console.log('AI image generated successfully');

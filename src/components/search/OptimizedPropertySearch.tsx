@@ -488,11 +488,14 @@ const OptimizedPropertySearch = ({ onResultSelect, showAnalytics = false }: Opti
       })).filter(p => p.imageUrl);
 
       // Call edge function to analyze the uploaded image and compare with properties
-            const { data, error } = await supabase.functions.invoke('analyze-property-image', {
+            const { data, error } = await supabase.functions.invoke('ai-engine', {
               body: {
-                imageUrl: imageBase64,
-                propertyImages: propertiesToAnalyze,
-                weights: similarityWeights
+                mode: 'image_quality_analyze',
+                payload: {
+                  imageUrl: imageBase64,
+                  propertyImages: propertiesToAnalyze,
+                  weights: similarityWeights
+                }
               }
             });
 
