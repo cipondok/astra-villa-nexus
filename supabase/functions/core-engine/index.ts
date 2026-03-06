@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -6189,6 +6189,246 @@ Deno.serve(async (req) => {
           total_candidates: enriched.length,
           strategies,
           summary,
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // ██  KNOWLEDGE NETWORK MODE
+    // ═══════════════════════════════════════════════════════════
+    if (mode === 'knowledge_network') {
+      const serviceClient = createClient(supabaseUrl, serviceKey);
+
+      // ── Step 1: Hydrate graph from live data ──
+      // Fetch active properties with city/type/developer info
+      const { data: allProps } = await serviceClient
+        .from('properties')
+        .select('id, title, price, city, state, property_type, investment_score, demand_heat_score, developer_name, created_at')
+        .eq('status', 'active')
+        .eq('approval_status', 'approved')
+        .limit(500);
+
+      const props = allProps || [];
+
+      // Fetch recent behavior (30 days)
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+      const [behaviorRes, favoritesRes, existingEdgesRes] = await Promise.all([
+        serviceClient
+          .from('ai_behavior_tracking')
+          .select('user_id, property_id, event_type, created_at')
+          .gte('created_at', thirtyDaysAgo)
+          .limit(2000),
+        serviceClient
+          .from('favorites')
+          .select('user_id, property_id, created_at')
+          .gte('created_at', thirtyDaysAgo)
+          .limit(1000),
+        serviceClient
+          .from('knowledge_graph_edges')
+          .select('id, source_type, source_id, relation_type, target_type, target_id, weight')
+          .limit(5000),
+      ]);
+
+      const behaviors = behaviorRes.data || [];
+      const favorites = favoritesRes.data || [];
+
+      // ── Step 2: Build/update graph edges ──
+      const edgesToUpsert: any[] = [];
+
+      // Property → City edges
+      const cityMap = new Map<string, { count: number; avgInv: number; avgHeat: number; totalPrice: number; types: Set<string> }>();
+      for (const p of props) {
+        if (p.city) {
+          edgesToUpsert.push({
+            source_type: 'property', source_id: p.id,
+            relation_type: 'located_in',
+            target_type: 'city', target_id: p.city.toLowerCase(),
+            weight: 1, metadata: { property_type: p.property_type, price: p.price },
+          });
+
+          const existing = cityMap.get(p.city.toLowerCase()) || { count: 0, avgInv: 0, avgHeat: 0, totalPrice: 0, types: new Set() };
+          existing.count++;
+          existing.avgInv += (p.investment_score ?? 50);
+          existing.avgHeat += (p.demand_heat_score ?? 50);
+          existing.totalPrice += (p.price || 0);
+          if (p.property_type) existing.types.add(p.property_type);
+          cityMap.set(p.city.toLowerCase(), existing);
+        }
+
+        // Property → Developer
+        if (p.developer_name) {
+          edgesToUpsert.push({
+            source_type: 'property', source_id: p.id,
+            relation_type: 'built_by',
+            target_type: 'developer', target_id: p.developer_name.toLowerCase(),
+            weight: 1, metadata: {},
+          });
+        }
+      }
+
+      // User → Property (viewed)
+      const viewCounts = new Map<string, number>();
+      for (const b of behaviors) {
+        if (b.user_id && b.property_id && (b.event_type === 'view' || b.event_type === 'property_view')) {
+          const key = `${b.user_id}:${b.property_id}`;
+          viewCounts.set(key, (viewCounts.get(key) || 0) + 1);
+        }
+      }
+      for (const [key, count] of viewCounts) {
+        const [uid, pid] = key.split(':');
+        edgesToUpsert.push({
+          source_type: 'user', source_id: uid,
+          relation_type: 'viewed',
+          target_type: 'property', target_id: pid,
+          weight: Math.min(count, 10), metadata: { view_count: count },
+        });
+      }
+
+      // User → Property (saved)
+      for (const f of favorites) {
+        if (f.user_id && f.property_id) {
+          edgesToUpsert.push({
+            source_type: 'user', source_id: f.user_id,
+            relation_type: 'saved',
+            target_type: 'property', target_id: f.property_id,
+            weight: 3, metadata: {},
+          });
+        }
+      }
+
+      // User → Property (inquired)
+      for (const b of behaviors) {
+        if (b.user_id && b.property_id && (b.event_type === 'contact' || b.event_type === 'inquiry')) {
+          edgesToUpsert.push({
+            source_type: 'user', source_id: b.user_id,
+            relation_type: 'inquired',
+            target_type: 'property', target_id: b.property_id,
+            weight: 5, metadata: {},
+          });
+        }
+      }
+
+      // Batch upsert edges (in chunks to avoid payload limits)
+      const CHUNK_SIZE = 100;
+      let edgesWritten = 0;
+      for (let i = 0; i < edgesToUpsert.length; i += CHUNK_SIZE) {
+        const chunk = edgesToUpsert.slice(i, i + CHUNK_SIZE);
+        const { error: upsertErr } = await serviceClient
+          .from('knowledge_graph_edges')
+          .upsert(chunk, { onConflict: 'source_type,source_id,relation_type,target_type,target_id' });
+        if (!upsertErr) edgesWritten += chunk.length;
+      }
+
+      // ── Step 3: Analyze graph for insights ──
+
+      // Trending cities (by interaction weight)
+      const cityInteractions = new Map<string, number>();
+      for (const b of behaviors) {
+        if (b.property_id) {
+          const p = props.find((pr: any) => pr.id === b.property_id);
+          if (p?.city) {
+            const c = p.city.toLowerCase();
+            cityInteractions.set(c, (cityInteractions.get(c) || 0) + 1);
+          }
+        }
+      }
+      for (const f of favorites) {
+        if (f.property_id) {
+          const p = props.find((pr: any) => pr.id === f.property_id);
+          if (p?.city) {
+            const c = p.city.toLowerCase();
+            cityInteractions.set(c, (cityInteractions.get(c) || 0) + 3);
+          }
+        }
+      }
+
+      const trendingCities = Array.from(cityMap.entries())
+        .map(([city, data]) => {
+          const interactions = cityInteractions.get(city) || 0;
+          const avgInv = Math.round(data.avgInv / data.count);
+          const avgHeat = Math.round(data.avgHeat / data.count);
+          const avgPrice = Math.round(data.totalPrice / data.count);
+          const trendScore = Math.round(interactions * 2 + avgHeat * 0.5 + avgInv * 0.3);
+
+          return {
+            city: city.charAt(0).toUpperCase() + city.slice(1),
+            property_count: data.count,
+            avg_investment_score: avgInv,
+            avg_demand_heat: avgHeat,
+            avg_price: avgPrice,
+            interaction_count: interactions,
+            trend_score: trendScore,
+            property_types: Array.from(data.types),
+          };
+        })
+        .sort((a, b) => b.trend_score - a.trend_score)
+        .slice(0, 10);
+
+      // Investor hotspots (cities with high investment scores + activity)
+      const investorHotspots = trendingCities
+        .filter(c => c.avg_investment_score >= 60 || c.avg_demand_heat >= 60)
+        .map(c => ({
+          city: c.city,
+          investment_rating: c.avg_investment_score >= 80 ? 'strong_buy' : c.avg_investment_score >= 65 ? 'buy' : 'hold',
+          demand_level: c.avg_demand_heat >= 75 ? 'very_hot' : c.avg_demand_heat >= 50 ? 'hot' : 'warm',
+          avg_investment_score: c.avg_investment_score,
+          avg_demand_heat: c.avg_demand_heat,
+          property_count: c.property_count,
+        }))
+        .slice(0, 5);
+
+      // Popular property types
+      const typeCounts: Record<string, { count: number; views: number; saves: number; avgPrice: number }> = {};
+      for (const p of props) {
+        const t = p.property_type || 'unknown';
+        if (!typeCounts[t]) typeCounts[t] = { count: 0, views: 0, saves: 0, avgPrice: 0 };
+        typeCounts[t].count++;
+        typeCounts[t].avgPrice += (p.price || 0);
+      }
+      for (const b of behaviors) {
+        const p = props.find((pr: any) => pr.id === b.property_id);
+        if (p?.property_type) {
+          const t = p.property_type;
+          if (typeCounts[t]) {
+            if (b.event_type === 'view' || b.event_type === 'property_view') typeCounts[t].views++;
+          }
+        }
+      }
+      for (const f of favorites) {
+        const p = props.find((pr: any) => pr.id === f.property_id);
+        if (p?.property_type && typeCounts[p.property_type]) {
+          typeCounts[p.property_type].saves++;
+        }
+      }
+
+      const popularTypes = Object.entries(typeCounts)
+        .map(([type, data]) => ({
+          type,
+          listing_count: data.count,
+          view_count: data.views,
+          save_count: data.saves,
+          avg_price: data.count > 0 ? Math.round(data.avgPrice / data.count) : 0,
+          popularity_score: Math.round(data.views * 1 + data.saves * 3 + data.count * 0.5),
+        }))
+        .sort((a, b) => b.popularity_score - a.popularity_score);
+
+      // Graph stats
+      const totalEdges = (existingEdgesRes.data || []).length + edgesWritten;
+      const uniqueUsers = new Set([...behaviors.map(b => b.user_id), ...favorites.map(f => f.user_id)].filter(Boolean));
+
+      return new Response(JSON.stringify({
+        data: {
+          trending_cities: trendingCities,
+          investor_hotspots: investorHotspots,
+          popular_property_types: popularTypes,
+          graph_stats: {
+            total_edges: totalEdges,
+            edges_updated: edgesWritten,
+            total_properties: props.length,
+            active_users_30d: uniqueUsers.size,
+            unique_cities: cityMap.size,
+          },
           generated_at: new Date().toISOString(),
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
