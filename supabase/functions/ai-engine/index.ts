@@ -2656,6 +2656,135 @@ Analyze each property against this tenant's needs and return structured matches.
   }
 }
 
+// ── Smart Pricing Engine ─────────────────────────────────────────────
+async function handleSmartPricing(payload: Record<string, unknown>) {
+  const {
+    property_id, title, location, property_type, current_price,
+    land_area_sqm, building_area_sqm, bedrooms, bathrooms, amenities,
+    listing_type, occupancy_rate, nearby_properties
+  } = payload as any;
+
+  if (!location || !property_type || !current_price) {
+    return json({ error: "location, property_type, and current_price are required" }, 400);
+  }
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  const nearbyList = Array.isArray(nearby_properties) && nearby_properties.length > 0
+    ? `\n\nComparable properties in the area:\n${nearby_properties.map((p: any, i: number) => `${i+1}. ${p.title} - ${p.property_type}, ${p.location}, Price: ${p.price}, Area: ${p.land_area_sqm || 'N/A'}sqm land / ${p.building_area_sqm || 'N/A'}sqm building, ${p.bedrooms || '?'}BR/${p.bathrooms || '?'}BA`).join('\n')}`
+    : '';
+
+  const today = new Date();
+  const month = today.toLocaleString('en-US', { month: 'long' });
+  const quarter = `Q${Math.ceil((today.getMonth() + 1) / 3)}`;
+
+  const prompt = `You are an expert Indonesian real estate pricing analyst. Analyze this property and provide dynamic pricing recommendations.
+
+Property Details:
+- Title: ${title || 'N/A'}
+- Location: ${location}
+- Type: ${property_type}
+- Current Listed Price: IDR ${Number(current_price).toLocaleString()}
+- Listing Type: ${listing_type || 'sale'}
+- Land Area: ${land_area_sqm || 'N/A'} sqm
+- Building Area: ${building_area_sqm || 'N/A'} sqm
+- Bedrooms: ${bedrooms || 'N/A'}, Bathrooms: ${bathrooms || 'N/A'}
+- Amenities: ${Array.isArray(amenities) ? amenities.join(', ') : 'N/A'}
+- Current Occupancy: ${occupancy_rate || 'N/A'}%
+${nearbyList}
+
+Current Date: ${month} ${today.getFullYear()} (${quarter})
+
+Consider: seasonality (Bali high season Dec-Mar, Ramadan impact), local demand trends, property condition signals, competitor pricing, and area premium factors. Provide data-driven pricing with clear reasoning.`;
+
+  try {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-3-flash-preview",
+        messages: [{ role: "user", content: prompt }],
+        tools: [{
+          type: "function",
+          function: {
+            name: "smart_pricing_result",
+            description: "Return smart pricing analysis and recommendations",
+            parameters: {
+              type: "object",
+              properties: {
+                fair_market_value: { type: "number", description: "Estimated fair market value in IDR" },
+                optimal_price: { type: "number", description: "Recommended optimal listing price in IDR" },
+                quick_sale_price: { type: "number", description: "Price for faster sale/rental in IDR" },
+                premium_price: { type: "number", description: "Premium/aspirational price in IDR" },
+                price_positioning: { type: "string", enum: ["underpriced", "fair", "slightly_overpriced", "overpriced"], description: "Current price position relative to market" },
+                confidence_score: { type: "number", description: "0-100 confidence in the analysis" },
+                price_per_sqm: { type: "number", description: "Estimated price per sqm for the area" },
+                demand_level: { type: "string", enum: ["low", "moderate", "high", "very_high"], description: "Current demand in this area/segment" },
+                seasonality_impact: { type: "string", enum: ["negative", "neutral", "positive", "strong_positive"], description: "Current seasonal impact on pricing" },
+                estimated_days_on_market: { type: "number", description: "Estimated days to sell/rent at optimal price" },
+                price_trend: { type: "string", enum: ["declining", "stable", "rising", "rapidly_rising"], description: "Price trend in this area" },
+                pricing_factors: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      factor: { type: "string", description: "Factor name" },
+                      impact: { type: "string", enum: ["negative", "neutral", "positive"], description: "Impact direction" },
+                      weight: { type: "number", description: "Impact weight 1-10" },
+                      explanation: { type: "string", description: "Brief explanation" }
+                    },
+                    required: ["factor", "impact", "weight", "explanation"]
+                  }
+                },
+                strategies: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      name: { type: "string" },
+                      price: { type: "number" },
+                      timeline: { type: "string", description: "Expected timeline" },
+                      pros: { type: "array", items: { type: "string" } },
+                      cons: { type: "array", items: { type: "string" } }
+                    },
+                    required: ["name", "price", "timeline", "pros", "cons"]
+                  }
+                },
+                market_summary: { type: "string", description: "Brief market context summary" },
+                recommendation: { type: "string", description: "Primary pricing recommendation with reasoning" }
+              },
+              required: ["fair_market_value", "optimal_price", "quick_sale_price", "premium_price", "price_positioning", "confidence_score", "price_per_sqm", "demand_level", "seasonality_impact", "estimated_days_on_market", "price_trend", "pricing_factors", "strategies", "market_summary", "recommendation"]
+            }
+          }
+        }],
+        tool_choice: { type: "function", function: { name: "smart_pricing_result" } },
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      const status = aiResponse.status;
+      if (status === 429) return json({ error: "Rate limited. Please try again shortly." }, 429);
+      if (status === 402) return json({ error: "AI credits required." }, 402);
+      const t = await aiResponse.text();
+      console.error("smart_pricing error:", status, t);
+      return json({ error: "AI smart pricing failed" }, 500);
+    }
+
+    const aiData = await aiResponse.json();
+    const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall) throw new Error("No structured response from AI");
+
+    return json(JSON.parse(toolCall.function.arguments));
+  } catch (e) {
+    console.error("smart_pricing error:", e);
+    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -2721,6 +2850,8 @@ serve(async (req) => {
         return await handlePropertyValuationReport(payload);
       case "tenant_matching":
         return await handleTenantMatching(payload);
+      case "smart_pricing":
+        return await handleSmartPricing(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }

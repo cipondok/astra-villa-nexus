@@ -133,6 +133,7 @@ const AIRentalYieldPage = lazy(() => import('@/pages/AIRentalYieldPage'));
 const AIMortgageAdvisorPage = lazy(() => import('@/pages/AIMortgageAdvisorPage'));
 const AIPropertyValuationPage = lazy(() => import('@/pages/AIPropertyValuationPage'));
 const AITenantMatchingPage = lazy(() => import('@/pages/AITenantMatchingPage'));
+const AISmartPricingPage = lazy(() => import('@/pages/AISmartPricingPage'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const Help = lazy(() => import('@/pages/Help'));
 const About = lazy(() => import('@/pages/About'));
@@ -359,6 +360,7 @@ const AppContent = () => {
                 <Route path="/ai-mortgage-advisor" element={<AIMortgageAdvisorPage />} />
                 <Route path="/ai-property-valuation" element={<AIPropertyValuationPage />} />
                 <Route path="/ai-tenant-matching" element={<AITenantMatchingPage />} />
+                <Route path="/ai-smart-pricing" element={<AISmartPricingPage />} />
                 <Route path="*" element={<ErrorPage />} />
               </Routes>
             </Suspense>
