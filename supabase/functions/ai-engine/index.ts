@@ -2352,6 +2352,8 @@ serve(async (req) => {
         return await handleSocialMediaCopy(payload);
       case "document_verify":
         return await handleDocumentVerify(payload);
+      case "rental_yield_optimizer":
+        return await handleRentalYieldOptimizer(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
