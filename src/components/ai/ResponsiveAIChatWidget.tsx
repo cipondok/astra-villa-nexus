@@ -294,14 +294,17 @@ const ResponsiveAIChatWidget = ({
     }
   }, [isMobile, isAuthenticated, isSyncLoading]);
 
-  // Sync preferences to cloud when they change
+  // Sync preferences to cloud when they change (debounced 5s)
+  const saveToCloudRef = useRef(saveToCloud);
+  useEffect(() => { saveToCloudRef.current = saveToCloud; }, [saveToCloud]);
+
   useEffect(() => {
     if (!isAuthenticated || isSyncLoading) return;
     
-    const syncPreferences = async () => {
+    const timeoutId = setTimeout(async () => {
       const snapSensitivityValue = snapSensitivity === 'tight' ? 30 : snapSensitivity === 'loose' ? 70 : 50;
       
-      await saveToCloud({
+      await saveToCloudRef.current({
         position,
         size,
         snapSensitivity: snapSensitivityValue,
@@ -312,12 +315,10 @@ const ResponsiveAIChatWidget = ({
         soundMute: isMuted,
         customSounds: customSounds || [],
       });
-    };
-    
-    // Debounce sync to avoid excessive updates
-    const timeoutId = setTimeout(syncPreferences, 1000);
+    }, 5000);
     return () => clearTimeout(timeoutId);
-  }, [isAuthenticated, position, size, snapSensitivity, pinnedActions, viewMode, autoCollapseEnabled, autoCollapseDuration, isMuted, customSounds, isSyncLoading, saveToCloud]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, position, size, snapSensitivity, pinnedActions, viewMode, autoCollapseEnabled, autoCollapseDuration, isMuted, customSounds, isSyncLoading]);
 
   // Handle tooltip on first hover
   const handleFirstHover = () => {
