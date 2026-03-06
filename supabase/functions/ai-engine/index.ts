@@ -2975,6 +2975,183 @@ Generate a complete, professional legal document with all standard clauses for I
   }
 }
 
+// ── Property Advisor ────────────────────────────────────────────────
+async function handlePropertyAdvisor(payload: Record<string, unknown>) {
+  const { user_query } = payload as { user_query?: string };
+  if (!user_query) return json({ error: "user_query is required" }, 400);
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  try {
+    // Step 1: Use AI to parse user intent with structured tool calling
+    const parseResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "google/gemini-3-flash-preview",
+        messages: [
+          {
+            role: "system",
+            content: "You are a real estate investment advisor for the Indonesian property market. Extract structured search criteria from the user's query. Consider Indonesian cities (Jakarta, Bali, Surabaya, Bandung, Yogyakarta, Semarang, Medan, Makassar) and property types (villa, house, apartment, land, commercial). Convert budget mentions like 'miliar'=billion IDR, 'juta'=million IDR."
+          },
+          { role: "user", content: user_query }
+        ],
+        tools: [{
+          type: "function",
+          function: {
+            name: "extract_search_criteria",
+            description: "Extract property search criteria from user query",
+            parameters: {
+              type: "object",
+              properties: {
+                city: { type: "string", description: "Target city or empty if not specified" },
+                property_type: { type: "string", description: "Property type (villa, house, apartment, land, commercial) or empty" },
+                min_price: { type: "number", description: "Minimum budget in IDR, 0 if not specified" },
+                max_price: { type: "number", description: "Maximum budget in IDR, 0 if not specified" },
+                investment_goal: { type: "string", enum: ["capital_growth", "rental_yield", "both", "personal_use"], description: "Primary investment goal" },
+                min_bedrooms: { type: "number", description: "Minimum bedrooms, 0 if not specified" },
+                keywords: { type: "array", items: { type: "string" }, description: "Additional keywords like pool, beachfront, etc." }
+              },
+              required: ["city", "property_type", "min_price", "max_price", "investment_goal", "min_bedrooms", "keywords"],
+              additionalProperties: false
+            }
+          }
+        }],
+        tool_choice: { type: "function", function: { name: "extract_search_criteria" } }
+      })
+    });
+
+    if (!parseResponse.ok) {
+      const errText = await parseResponse.text();
+      console.error("AI parse error:", parseResponse.status, errText);
+      if (parseResponse.status === 429) return json({ error: "Rate limit exceeded, please try again later" }, 429);
+      if (parseResponse.status === 402) return json({ error: "AI credits exhausted" }, 402);
+      return json({ error: "Failed to parse query" }, 500);
+    }
+
+    const parseData = await parseResponse.json();
+    const toolCall = parseData.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall) return json({ error: "Could not parse search intent" }, 500);
+
+    const criteria = JSON.parse(toolCall.function.arguments);
+
+    // Step 2: Query matching properties from database
+    let query = supabase
+      .from("properties")
+      .select("id, title, city, district, price, property_type, bedrooms, building_area_sqm, land_area_sqm, area_sqm, investment_score, demand_heat_score, image_url, images, has_pool, has_garden, developer_name, status")
+      .eq("status", "active")
+      .not("price", "is", null)
+      .gt("price", 0);
+
+    if (criteria.city) query = query.ilike("city", `%${criteria.city}%`);
+    if (criteria.property_type) query = query.ilike("property_type", `%${criteria.property_type}%`);
+    if (criteria.min_price > 0) query = query.gte("price", criteria.min_price);
+    if (criteria.max_price > 0) query = query.lte("price", criteria.max_price);
+    if (criteria.min_bedrooms > 0) query = query.gte("bedrooms", criteria.min_bedrooms);
+
+    const { data: properties, error: propErr } = await query.order("investment_score", { ascending: false }).limit(50);
+
+    if (propErr) throw propErr;
+    if (!properties || properties.length === 0) {
+      return json({
+        parsed_criteria: criteria,
+        recommendations: [],
+        summary: `No properties found matching your criteria in ${criteria.city || "any city"}. Try broadening your search with a higher budget or different location.`,
+        total_found: 0,
+      });
+    }
+
+    // Step 3: Score and rank each property
+    const scored = properties.map(p => {
+      const invScore = Number(p.investment_score) || 50;
+      const heatScore = Number(p.demand_heat_score) || 50;
+      const area = Number(p.building_area_sqm) || Number(p.land_area_sqm) || Number(p.area_sqm) || 1;
+      const pricePerSqm = Number(p.price) / area;
+
+      // Forecast growth: base 4% + heat bonus + investment bonus
+      const baseGrowth = 4;
+      const heatBonus = heatScore > 70 ? 3 : heatScore > 50 ? 1.5 : 0;
+      const invBonus = invScore > 80 ? 2 : invScore > 60 ? 1 : 0;
+      const forecastGrowth = Math.round((baseGrowth + heatBonus + invBonus) * 10) / 10;
+
+      // Deal score: compare to median
+      const dealScore = Math.round(Math.max(0, 100 - (pricePerSqm / 15000000) * 50));
+
+      // Composite rank score
+      const compositeScore = (invScore * 0.35) + (heatScore * 0.25) + (forecastGrowth * 3) + (dealScore * 0.15);
+
+      // Keyword bonus
+      let keywordBonus = 0;
+      const keywords = criteria.keywords || [];
+      if (keywords.includes("pool") && p.has_pool) keywordBonus += 5;
+      if (keywords.includes("garden") && p.has_garden) keywordBonus += 3;
+
+      return {
+        property_id: p.id,
+        title: p.title,
+        city: p.city,
+        district: p.district,
+        price: Number(p.price),
+        property_type: p.property_type,
+        bedrooms: p.bedrooms,
+        area_sqm: area,
+        investment_score: invScore,
+        demand_heat_score: heatScore,
+        forecast_growth: forecastGrowth,
+        deal_score: dealScore,
+        composite_score: Math.round((compositeScore + keywordBonus) * 10) / 10,
+        image_url: p.image_url || (Array.isArray(p.images) ? p.images[0] : null),
+        developer: p.developer_name,
+      };
+    });
+
+    scored.sort((a, b) => b.composite_score - a.composite_score);
+    const topResults = scored.slice(0, 10);
+
+    // Step 4: Generate AI summary using top results
+    const summaryPrompt = `You are ASTRA, an elite Indonesian property investment advisor. Based on this search and results, write a concise investment recommendation summary (max 120 words).
+
+User query: "${user_query}"
+Parsed intent: ${JSON.stringify(criteria)}
+Top ${topResults.length} properties found (sorted by investment potential):
+${topResults.slice(0, 5).map((p, i) => `${i + 1}. ${p.title} in ${p.city} - Rp ${(p.price / 1e9).toFixed(1)}B, Investment Score: ${p.investment_score}, Growth Forecast: ${p.forecast_growth}%/yr, Heat: ${p.demand_heat_score}`).join("\n")}
+
+Be specific about WHY these are good investments. Mention city trends, growth potential, and any standout properties. Use a confident but professional tone. Format with markdown.`;
+
+    const summaryResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "google/gemini-3-flash-preview",
+        messages: [{ role: "user", content: summaryPrompt }],
+      })
+    });
+
+    let summary = "Investment analysis complete. Properties ranked by composite score including investment potential, market demand, and growth forecast.";
+    if (summaryResponse.ok) {
+      const summaryData = await summaryResponse.json();
+      const content = summaryData.choices?.[0]?.message?.content;
+      if (content) summary = content;
+    }
+
+    return json({
+      parsed_criteria: criteria,
+      recommendations: topResults,
+      summary,
+      total_found: properties.length,
+      total_ranked: scored.length,
+    });
+  } catch (e) {
+    console.error("property_advisor error:", e);
+    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
