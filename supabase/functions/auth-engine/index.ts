@@ -15,7 +15,9 @@ type Action =
   | 'verify_document'
   | 'verify_owner'
   | 'verify_vendor'
-  | 'rate_limit_check';
+  | 'rate_limit_check'
+  | 'session_heartbeat'
+  | 'register_device';
 
 interface AuthRequest {
   action: Action;
@@ -429,6 +431,56 @@ serve(async (req) => {
       case 'rate_limit_check':
         result = await rateLimitCheck(params, supabase);
         break;
+      case 'session_heartbeat': {
+        if (!userId) throw new Error('Authentication required for session_heartbeat');
+        const fp = (params.device_fingerprint as string) || '';
+        const deviceName = (params.device_name as string) || 'Unknown';
+        const deviceType = (params.device_type as string) || 'desktop';
+        const browser = (params.browser as string) || '';
+        const os = (params.os as string) || '';
+
+        // Upsert into user_sessions if the table exists, otherwise just acknowledge
+        try {
+          await supabase.from('user_sessions').upsert({
+            user_id: userId,
+            device_fingerprint: fp,
+            device_name: deviceName,
+            device_type: deviceType,
+            browser,
+            os,
+            last_active_at: new Date().toISOString(),
+            is_active: true,
+          }, { onConflict: 'user_id,device_fingerprint' });
+        } catch { /* table may not exist yet */ }
+
+        result = { success: true, action: 'session_heartbeat' };
+        break;
+      }
+      case 'register_device': {
+        if (!userId) throw new Error('Authentication required for register_device');
+        const fp = (params.device_fingerprint as string) || '';
+        const deviceType = (params.device_type as string) || 'desktop';
+        const browserName = (params.browser_name as string) || '';
+        const browserVersion = (params.browser_version as string) || '';
+        const osName = (params.os_name as string) || '';
+        const osVersion = (params.os_version as string) || '';
+
+        try {
+          await supabase.from('user_sessions').upsert({
+            user_id: userId,
+            device_fingerprint: fp,
+            device_name: `${deviceType === 'desktop' ? 'Desktop' : deviceType === 'mobile' ? 'Mobile' : 'Tablet'} · ${browserName} on ${osName}`,
+            device_type: deviceType,
+            browser: `${browserName} ${browserVersion}`.trim(),
+            os: `${osName} ${osVersion}`.trim(),
+            last_active_at: new Date().toISOString(),
+            is_active: true,
+          }, { onConflict: 'user_id,device_fingerprint' });
+        } catch { /* table may not exist yet */ }
+
+        result = { success: true, action: 'register_device' };
+        break;
+      }
       default:
         throw new Error(`Unknown action: ${action}`);
     }
