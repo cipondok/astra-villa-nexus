@@ -52,8 +52,8 @@ const AstraTokenWidget: React.FC<AstraTokenWidgetProps> = ({
     queryFn: async () => {
       if (!user?.id) return null;
       
-      const { data } = await supabase.functions.invoke('astra-token-hub', {
-        body: { action: 'get_balance', userId: user.id }
+      const { data } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'astra_token', payload: { action: 'get_balance', userId: user.id } }
       });
       
       return data?.balance as TokenBalance;
@@ -68,8 +68,8 @@ const AstraTokenWidget: React.FC<AstraTokenWidgetProps> = ({
     queryFn: async () => {
       if (!user?.id) return null;
       
-      const { data } = await supabase.functions.invoke('astra-token-hub', {
-        body: { action: 'get_checkin_status', userId: user.id }
+      const { data } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'astra_token', payload: { action: 'get_checkin_status', userId: user.id } }
       });
       
       return data as CheckinStatus;
@@ -83,8 +83,8 @@ const AstraTokenWidget: React.FC<AstraTokenWidgetProps> = ({
     mutationFn: async () => {
       if (!user?.id) throw new Error('User not authenticated');
       
-      const { data, error } = await supabase.functions.invoke('astra-token-hub', {
-        body: { action: 'daily_checkin', userId: user.id }
+      const { data, error } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'astra_token', payload: { action: 'daily_checkin', userId: user.id } }
       });
       
       if (error) throw error;
@@ -110,13 +110,13 @@ const AstraTokenWidget: React.FC<AstraTokenWidgetProps> = ({
     if (!user?.id || !showTransactionBonus) return;
     
     try {
-      const { data } = await supabase.functions.invoke('astra-token-hub', {
-        body: { 
+      const { data } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'astra_token', payload: {
           action: 'transaction_reward', 
           userId: user.id, 
           amount,
           referenceType: transactionType 
-        }
+        }}
       });
       
       if (data?.success) {
@@ -310,13 +310,13 @@ export const useTransactionBonus = () => {
     if (!user?.id) return;
     
     try {
-      const { data } = await supabase.functions.invoke('astra-token-hub', {
-        body: { 
+      const { data } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'astra_token', payload: {
           action: 'transaction_reward', 
           userId: user.id, 
           amount,
           referenceType: transactionType 
-        }
+        }}
       });
       
       if (data?.success) {

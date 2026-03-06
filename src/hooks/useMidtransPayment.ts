@@ -110,9 +110,10 @@ export function useMidtransPayment() {
       await loadSnapScript();
 
       // Create transaction via edge function
-      const { data, error } = await supabase.functions.invoke('midtrans-payment', {
+      const { data, error } = await supabase.functions.invoke('payment-engine', {
         body: {
-          action: 'create_transaction',
+          action: 'midtrans_payment',
+          sub_action: 'create_transaction',
           order_id: params.orderId,
           gross_amount: params.amount,
           booking_id: params.bookingId,
@@ -162,9 +163,10 @@ export function useMidtransPayment() {
 
   // Check transaction status
   const checkStatus = useCallback(async (orderId: string) => {
-    const { data, error } = await supabase.functions.invoke('midtrans-payment', {
+    const { data, error } = await supabase.functions.invoke('payment-engine', {
       body: {
-        action: 'check_status',
+        action: 'midtrans_payment',
+        sub_action: 'check_status',
         order_id: orderId,
       },
     });
@@ -175,9 +177,10 @@ export function useMidtransPayment() {
 
   // Process refund
   const refund = useCallback(async (orderId: string, amount?: number, reason?: string) => {
-    const { data, error } = await supabase.functions.invoke('midtrans-payment', {
+    const { data, error } = await supabase.functions.invoke('payment-engine', {
       body: {
-        action: 'refund',
+        action: 'midtrans_payment',
+        sub_action: 'refund',
         order_id: orderId,
         amount,
         reason,
@@ -193,9 +196,10 @@ export function useMidtransPayment() {
 
   // Cancel transaction
   const cancel = useCallback(async (orderId: string) => {
-    const { data, error } = await supabase.functions.invoke('midtrans-payment', {
+    const { data, error } = await supabase.functions.invoke('payment-engine', {
       body: {
-        action: 'cancel',
+        action: 'midtrans_payment',
+        sub_action: 'cancel',
         order_id: orderId,
       },
     });

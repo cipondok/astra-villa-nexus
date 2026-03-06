@@ -71,8 +71,8 @@ const AstraTokenHub = () => {
     queryFn: async () => {
       if (!user?.id) return null;
       
-      const { data } = await supabase.functions.invoke('astra-token-hub', {
-        body: { action: 'get_balance', userId: user.id }
+      const { data } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'astra_token', payload: { action: 'get_balance', userId: user.id } }
       });
       
       return data?.balance as TokenBalance;
@@ -86,8 +86,8 @@ const AstraTokenHub = () => {
     queryFn: async () => {
       if (!user?.id) return [];
       
-      const { data } = await supabase.functions.invoke('astra-token-hub', {
-        body: { action: 'get_transactions', userId: user.id }
+      const { data } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'astra_token', payload: { action: 'get_transactions', userId: user.id } }
       });
       
       return data?.transactions as TokenTransaction[];
@@ -101,8 +101,8 @@ const AstraTokenHub = () => {
     queryFn: async () => {
       if (!user?.id) return null;
       
-      const { data } = await supabase.functions.invoke('astra-token-hub', {
-        body: { action: 'get_checkin_status', userId: user.id }
+      const { data } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'astra_token', payload: { action: 'get_checkin_status', userId: user.id } }
       });
       
       return data as CheckinStatus;
@@ -115,8 +115,8 @@ const AstraTokenHub = () => {
     mutationFn: async () => {
       if (!user?.id) throw new Error('User not authenticated');
       
-      const { data, error } = await supabase.functions.invoke('astra-token-hub', {
-        body: { action: 'daily_checkin', userId: user.id }
+      const { data, error } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'astra_token', payload: { action: 'daily_checkin', userId: user.id } }
       });
       
       if (error) throw error;
@@ -143,8 +143,8 @@ const AstraTokenHub = () => {
     mutationFn: async () => {
       if (!user?.id) throw new Error('User not authenticated');
       
-      const { data, error } = await supabase.functions.invoke('astra-token-hub', {
-        body: { action: 'welcome_bonus', userId: user.id }
+      const { data, error } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'astra_token', payload: { action: 'welcome_bonus', userId: user.id } }
       });
       
       if (error) throw error;

@@ -164,9 +164,10 @@ export const useRefundDispute = () => {
 
       if (action === 'approve') {
         // Call Midtrans refund API
-        const { error: refundError } = await supabase.functions.invoke('midtrans-payment', {
+        const { error: refundError } = await supabase.functions.invoke('payment-engine', {
           body: {
-            action: 'refund',
+            action: 'midtrans_payment',
+            sub_action: 'refund',
             refund_id: refundId
           }
         });

@@ -45,8 +45,8 @@ export default function SmartAIFeed({ onPropertyClick, className }: SmartAIFeedP
   } = useQuery({
     queryKey: ['ai-feed-ranking', user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke('ai-match-engine-v2', {
-        body: { limit: 24 },
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'match_property', payload: { limit: 24 } },
       });
       if (error) throw error;
       return (data?.ranked_properties ?? []) as { id: string; ai_match_score_v2: number }[];
