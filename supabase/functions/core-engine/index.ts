@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -5907,6 +5907,288 @@ Deno.serve(async (req) => {
           deal_rating: deal,
           market_trend: marketTrend,
           recommendations,
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // ██  AUTONOMOUS REAL ESTATE AGENT
+    // ═══════════════════════════════════════════════════════════
+    if (mode === 'autonomous_agent') {
+      const userQuery = body.user_query || '';
+      const userBudget = body.user_budget || 0;
+      const preferredLocation = body.preferred_location || '';
+      const riskTolerance = body.risk_tolerance || 'medium';
+
+      const serviceClient = createClient(supabaseUrl, serviceKey);
+
+      // ── Phase 1: Intent Parsing via Gemini ──
+      const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+      let parsedIntent = {
+        investment_goal: 'capital_growth',
+        budget_min: 0,
+        budget_max: userBudget || 50_000_000_000,
+        location: preferredLocation,
+        risk_tolerance: riskTolerance,
+        property_types: [] as string[],
+        bedrooms_min: 0,
+        strategy_preference: 'balanced',
+      };
+
+      if (userQuery && LOVABLE_API_KEY) {
+        try {
+          const intentRes = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${LOVABLE_API_KEY}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: 'google/gemini-3-flash-preview',
+              messages: [
+                { role: 'system', content: 'You are an Indonesian real estate investment intent parser. Extract structured criteria from user queries. Budget in IDR (miliar=billion, juta=million). Default risk: medium.' },
+                { role: 'user', content: userQuery },
+              ],
+              tools: [{
+                type: 'function',
+                function: {
+                  name: 'parse_investment_intent',
+                  description: 'Extract investment intent from user query',
+                  parameters: {
+                    type: 'object',
+                    properties: {
+                      investment_goal: { type: 'string', enum: ['capital_growth', 'rental_income', 'flip', 'retirement', 'diversification'] },
+                      budget_min: { type: 'number', description: 'Min budget in IDR' },
+                      budget_max: { type: 'number', description: 'Max budget in IDR' },
+                      location: { type: 'string' },
+                      risk_tolerance: { type: 'string', enum: ['low', 'medium', 'high'] },
+                      property_types: { type: 'array', items: { type: 'string' } },
+                      bedrooms_min: { type: 'number' },
+                      strategy_preference: { type: 'string', enum: ['max_roi', 'balanced', 'conservative', 'diversified'] },
+                    },
+                    required: ['investment_goal', 'budget_max', 'location'],
+                    additionalProperties: false,
+                  },
+                },
+              }],
+              tool_choice: { type: 'function', function: { name: 'parse_investment_intent' } },
+            }),
+          });
+
+          if (intentRes.ok) {
+            const intentData = await intentRes.json();
+            const toolCall = intentData.choices?.[0]?.message?.tool_calls?.[0];
+            if (toolCall?.function?.arguments) {
+              const parsed = JSON.parse(toolCall.function.arguments);
+              parsedIntent = { ...parsedIntent, ...parsed };
+            }
+          } else {
+            await intentRes.text();
+          }
+        } catch (e) {
+          console.error('Intent parsing error:', e);
+        }
+      }
+
+      // Apply overrides from explicit params
+      if (userBudget > 0) parsedIntent.budget_max = userBudget;
+      if (preferredLocation) parsedIntent.location = preferredLocation;
+      if (riskTolerance) parsedIntent.risk_tolerance = riskTolerance;
+
+      // ── Phase 2: Fetch candidate properties ──
+      let propQuery = serviceClient
+        .from('properties')
+        .select('id, title, price, city, state, location, property_type, listing_type, bedrooms, bathrooms, building_area_sqm, land_area_sqm, area_sqm, investment_score, demand_heat_score, rental_yield_estimate, thumbnail_url, created_at')
+        .eq('status', 'active')
+        .eq('approval_status', 'approved')
+        .lte('price', parsedIntent.budget_max);
+
+      if (parsedIntent.budget_min > 0) {
+        propQuery = propQuery.gte('price', parsedIntent.budget_min);
+      }
+      if (parsedIntent.location) {
+        propQuery = propQuery.or(`city.ilike.%${parsedIntent.location}%,state.ilike.%${parsedIntent.location}%,location.ilike.%${parsedIntent.location}%`);
+      }
+      if (parsedIntent.property_types.length > 0) {
+        propQuery = propQuery.in('property_type', parsedIntent.property_types);
+      }
+
+      const { data: candidates } = await propQuery
+        .order('investment_score', { ascending: false })
+        .limit(100);
+
+      const props = (candidates || []) as any[];
+
+      if (props.length === 0) {
+        return new Response(JSON.stringify({
+          data: {
+            intent: parsedIntent,
+            strategies: [],
+            summary: 'No properties found matching your criteria. Try adjusting your budget or location.',
+            generated_at: new Date().toISOString(),
+          },
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      // ── Phase 3: Score & enrich each property ──
+      const riskThreshold = parsedIntent.risk_tolerance === 'low' ? 40 : parsedIntent.risk_tolerance === 'high' ? 100 : 65;
+
+      const enriched = props.map((p: any) => {
+        const invScore = p.investment_score ?? 50;
+        const heatScore = p.demand_heat_score ?? 50;
+        const rentalYield = p.rental_yield_estimate ?? 5.0;
+        const price = p.price || 0;
+        const buildingArea = p.building_area_sqm || p.area_sqm || p.land_area_sqm || 0;
+
+        // Risk factor
+        const riskFactor = Math.round(100 - (invScore * 0.5 + heatScore * 0.3 + Math.min(rentalYield, 10) * 2));
+
+        // Growth forecast
+        const baseGrowth = heatScore > 75 ? 8 : heatScore > 50 ? 6 : heatScore > 30 ? 4 : 3;
+        const invBonus = invScore > 80 ? 2 : invScore > 60 ? 1 : 0;
+        const annualGrowth = (baseGrowth + invBonus) / 100;
+        const projectedValue5y = Math.round(price * Math.pow(1 + annualGrowth, 5));
+
+        // ROI
+        const annualRental = price * (rentalYield / 100);
+        const totalReturn5y = (annualRental * 5) + (projectedValue5y - price);
+        const roi5y = price > 0 ? Math.round((totalReturn5y / price) * 100 * 10) / 10 : 0;
+
+        // Deal score
+        const dealScore = invScore > 70 && heatScore > 60 ? 'strong' : invScore > 50 ? 'fair' : 'weak';
+
+        return {
+          id: p.id, title: p.title, price, city: p.city, state: p.state,
+          property_type: p.property_type, bedrooms: p.bedrooms, bathrooms: p.bathrooms,
+          building_area: buildingArea, thumbnail_url: p.thumbnail_url,
+          investment_score: invScore, demand_heat_score: heatScore,
+          rental_yield: rentalYield, risk_factor: riskFactor,
+          annual_growth_rate: Math.round(annualGrowth * 100 * 10) / 10,
+          projected_value_5y: projectedValue5y, roi_5y: roi5y,
+          deal_quality: dealScore,
+        };
+      }).filter((p: any) => p.risk_factor <= riskThreshold);
+
+      // ── Phase 4: Build strategies ──
+      const buildStrategy = (
+        pool: any[], name: string, desc: string, maxProps: number
+      ) => {
+        const selected: any[] = [];
+        let totalInvestment = 0;
+        const sorted = [...pool];
+        for (const p of sorted) {
+          if (selected.length >= maxProps) break;
+          if (totalInvestment + p.price <= parsedIntent.budget_max) {
+            selected.push(p);
+            totalInvestment += p.price;
+          }
+        }
+        if (selected.length === 0) return null;
+
+        const projectedValue5y = selected.reduce((s: number, p: any) => s + p.projected_value_5y, 0);
+        const avgRoi = Math.round(selected.reduce((s: number, p: any) => s + p.roi_5y, 0) / selected.length * 10) / 10;
+        const avgRisk = Math.round(selected.reduce((s: number, p: any) => s + p.risk_factor, 0) / selected.length);
+        const cities = [...new Set(selected.map((p: any) => p.city).filter(Boolean))];
+
+        return {
+          name, description: desc,
+          properties: selected,
+          total_investment: totalInvestment,
+          projected_roi: avgRoi,
+          projected_value_5y: projectedValue5y,
+          avg_risk_factor: avgRisk,
+          diversification: { cities, property_count: selected.length },
+        };
+      };
+
+      // Sort pools
+      const roiPool = [...enriched].sort((a, b) => b.roi_5y - a.roi_5y);
+      const balancedPool = [...enriched].sort((a, b) => {
+        const aScore = a.roi_5y * 0.4 + (100 - a.risk_factor) * 0.3 + a.investment_score * 0.3;
+        const bScore = b.roi_5y * 0.4 + (100 - b.risk_factor) * 0.3 + b.investment_score * 0.3;
+        return bScore - aScore;
+      });
+      const safePool = [...enriched].sort((a, b) => a.risk_factor - b.risk_factor);
+      const yieldPool = [...enriched].sort((a, b) => b.rental_yield - a.rental_yield);
+
+      // Diversified pool (spread across cities)
+      const cityGroups: Record<string, any[]> = {};
+      enriched.forEach((p: any) => {
+        const c = p.city || 'other';
+        if (!cityGroups[c]) cityGroups[c] = [];
+        cityGroups[c].push(p);
+      });
+      const diversePool: any[] = [];
+      const cityKeys = Object.keys(cityGroups);
+      let idx = 0;
+      while (diversePool.length < enriched.length) {
+        const cityKey = cityKeys[idx % cityKeys.length];
+        const cityArr = cityGroups[cityKey];
+        if (cityArr.length > 0) diversePool.push(cityArr.shift()!);
+        idx++;
+        if (Object.values(cityGroups).every(arr => arr.length === 0)) break;
+      }
+
+      const strategies = [
+        buildStrategy(roiPool, 'Maximum ROI', 'Aggressive growth strategy targeting highest returns', 5),
+        buildStrategy(balancedPool, 'Balanced Growth', 'Risk-adjusted portfolio balancing ROI and stability', 5),
+        buildStrategy(safePool, 'Conservative', 'Low-risk defensive strategy prioritizing capital preservation', 4),
+        buildStrategy(yieldPool, 'Rental Income', 'Cashflow-focused strategy maximizing rental yields', 4),
+        buildStrategy(diversePool, 'Diversified Portfolio', 'Geographic and asset diversification for risk spread', 6),
+      ].filter(Boolean);
+
+      // Rank strategies by composite score
+      strategies.sort((a: any, b: any) => {
+        const aComposite = a.projected_roi * 0.5 + (100 - a.avg_risk_factor) * 0.3 + a.properties.length * 2;
+        const bComposite = b.projected_roi * 0.5 + (100 - b.avg_risk_factor) * 0.3 + b.properties.length * 2;
+        return bComposite - aComposite;
+      });
+
+      // ── Phase 5: AI Summary ──
+      let summary = `Found ${enriched.length} properties in ${parsedIntent.location || 'all locations'} within your budget. Generated ${strategies.length} investment strategies ranked by ROI and risk profile.`;
+
+      if (LOVABLE_API_KEY && strategies.length > 0) {
+        try {
+          const summaryRes = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${LOVABLE_API_KEY}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: 'google/gemini-3-flash-preview',
+              messages: [
+                { role: 'system', content: 'You are ASTRA, an expert Indonesian real estate investment advisor. Write a concise 3-4 sentence investment summary in English. Be specific about numbers. No markdown.' },
+                { role: 'user', content: JSON.stringify({
+                  query: userQuery,
+                  intent: parsedIntent,
+                  top_strategy: strategies[0],
+                  total_candidates: enriched.length,
+                  market_heat: enriched.length > 0 ? Math.round(enriched.reduce((s: number, p: any) => s + p.demand_heat_score, 0) / enriched.length) : 0,
+                }) },
+              ],
+            }),
+          });
+
+          if (summaryRes.ok) {
+            const summaryData = await summaryRes.json();
+            const content = summaryData.choices?.[0]?.message?.content;
+            if (content) summary = content;
+          } else {
+            await summaryRes.text();
+          }
+        } catch (e) {
+          console.error('Summary generation error:', e);
+        }
+      }
+
+      return new Response(JSON.stringify({
+        data: {
+          intent: parsedIntent,
+          total_candidates: enriched.length,
+          strategies,
+          summary,
           generated_at: new Date().toISOString(),
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
