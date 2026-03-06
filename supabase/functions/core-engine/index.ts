@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -5453,6 +5453,171 @@ Deno.serve(async (req) => {
           is_tourist_city: isTouristCity,
           comparables_count: validComps.length,
           top_comparables: topComps,
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // ██  MARKET TREND PREDICTOR MODE
+    // ═══════════════════════════════════════════════════════════
+    if (mode === 'market_trend_predictor') {
+      const city = body.city || reqCity;
+      if (!city) {
+        return new Response(JSON.stringify({ error: 'city required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const serviceClient = createClient(supabaseUrl, serviceKey);
+
+      // 1. Current market snapshot — active properties in city
+      const { data: cityProps } = await serviceClient
+        .from('properties')
+        .select('id, price, property_type, investment_score, demand_heat_score, created_at')
+        .eq('status', 'active')
+        .eq('approval_status', 'approved')
+        .ilike('city', `%${city}%`)
+        .limit(500);
+
+      const props = cityProps || [];
+
+      if (props.length === 0) {
+        return new Response(JSON.stringify({
+          data: {
+            city,
+            total_properties: 0,
+            market_status: 'insufficient_data',
+            message: 'No active properties found for this city',
+            generated_at: new Date().toISOString(),
+          },
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      // 2. Price history (90 days) for trend analysis
+      const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+      const { data: priceHistory } = await serviceClient
+        .from('property_price_history')
+        .select('property_id, old_price, new_price, changed_at')
+        .in('property_id', props.map((p: any) => p.id))
+        .gte('changed_at', ninetyDaysAgo)
+        .order('changed_at', { ascending: true })
+        .limit(500);
+
+      // 3. Behavioral signals (30 days)
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+      const { data: behaviors } = await serviceClient
+        .from('ai_behavior_tracking')
+        .select('event_type, property_id, created_at')
+        .in('property_id', props.map((p: any) => p.id))
+        .gte('created_at', thirtyDaysAgo)
+        .limit(1000);
+
+      // 4. Saved/favorites count as investor interest
+      const { count: savedCount } = await serviceClient
+        .from('favorites')
+        .select('id', { count: 'exact', head: true })
+        .in('property_id', props.map((p: any) => p.id));
+
+      // ── Calculations ──
+
+      // Price growth rate from history
+      let priceGrowthRate = 0;
+      const history = priceHistory || [];
+      if (history.length > 0) {
+        const increases = history.filter((h: any) => h.new_price > h.old_price).length;
+        const decreases = history.filter((h: any) => h.new_price < h.old_price).length;
+        const avgChange = history.reduce((s: number, h: any) => {
+          return s + ((h.new_price - h.old_price) / (h.old_price || 1)) * 100;
+        }, 0) / history.length;
+        priceGrowthRate = Math.round(avgChange * 10) / 10;
+      } else {
+        // Estimate from demand heat
+        const avgHeat = props.reduce((s: number, p: any) => s + (p.demand_heat_score ?? 50), 0) / props.length;
+        priceGrowthRate = avgHeat > 75 ? 8 : avgHeat > 50 ? 5 : avgHeat > 30 ? 2 : 0;
+      }
+
+      // Buyer activity
+      const behaviorList = behaviors || [];
+      const views = behaviorList.filter((b: any) => b.event_type === 'view' || b.event_type === 'property_view').length;
+      const contacts = behaviorList.filter((b: any) => b.event_type === 'contact' || b.event_type === 'inquiry').length;
+      const saves = behaviorList.filter((b: any) => b.event_type === 'save' || b.event_type === 'favorite').length;
+      const buyerActivityScore = Math.min(100, Math.round((views * 1 + contacts * 5 + saves * 3) / Math.max(props.length, 1)));
+
+      // Buyer activity growth (proxy: activity per property)
+      const buyerActivityGrowth = buyerActivityScore > 60 ? 'increasing' : buyerActivityScore > 30 ? 'stable' : 'decreasing';
+
+      // Investor interest
+      const investorInterest = Math.min(100, Math.round(((savedCount || 0) / Math.max(props.length, 1)) * 50));
+
+      // Avg scores
+      const avgInvScore = Math.round(props.reduce((s: number, p: any) => s + (p.investment_score ?? 50), 0) / props.length);
+      const avgHeatScore = Math.round(props.reduce((s: number, p: any) => s + (p.demand_heat_score ?? 50), 0) / props.length);
+      const medianPrice = props.map((p: any) => p.price).sort((a: number, b: number) => a - b)[Math.floor(props.length / 2)] || 0;
+
+      // 12-month forecast (simple moving average extrapolation)
+      const monthlyForecasts: { month: number; price_index: number; demand_index: number }[] = [];
+      for (let m = 1; m <= 12; m++) {
+        const monthlyGrowth = priceGrowthRate / 12;
+        const compoundedPrice = Math.round(100 * Math.pow(1 + monthlyGrowth / 100, m) * 10) / 10;
+        const demandDecay = avgHeatScore > 70 ? 0.2 : avgHeatScore > 40 ? 0 : -0.3;
+        const demandIndex = Math.round((avgHeatScore + demandDecay * m) * 10) / 10;
+        monthlyForecasts.push({
+          month: m,
+          price_index: compoundedPrice,
+          demand_index: Math.max(0, Math.min(100, demandIndex)),
+        });
+      }
+
+      // Demand growth forecast
+      const demandGrowthForecast = avgHeatScore > 70
+        ? Math.round((avgHeatScore - 50) * 0.4 * 10) / 10
+        : avgHeatScore > 40
+        ? Math.round((avgHeatScore - 40) * 0.2 * 10) / 10
+        : -Math.round((40 - avgHeatScore) * 0.3 * 10) / 10;
+
+      // Market classification
+      let marketStatus: string;
+      if (priceGrowthRate > 8 && avgHeatScore > 70) marketStatus = 'booming';
+      else if (priceGrowthRate > 3 || avgHeatScore > 55) marketStatus = 'growing';
+      else if (priceGrowthRate >= 0 && avgHeatScore >= 30) marketStatus = 'stable';
+      else marketStatus = 'declining';
+
+      // Property type distribution
+      const typeCounts: Record<string, number> = {};
+      props.forEach((p: any) => {
+        const t = p.property_type || 'unknown';
+        typeCounts[t] = (typeCounts[t] || 0) + 1;
+      });
+
+      // New listings trend (last 30 vs previous 30 days)
+      const thirtyAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+      const sixtyAgo = Date.now() - 60 * 24 * 60 * 60 * 1000;
+      const recentListings = props.filter((p: any) => new Date(p.created_at).getTime() > thirtyAgo).length;
+      const olderListings = props.filter((p: any) => {
+        const t = new Date(p.created_at).getTime();
+        return t > sixtyAgo && t <= thirtyAgo;
+      }).length;
+      const supplyTrend = recentListings > olderListings * 1.2 ? 'increasing' : recentListings < olderListings * 0.8 ? 'decreasing' : 'stable';
+
+      return new Response(JSON.stringify({
+        data: {
+          city,
+          total_properties: props.length,
+          median_price: medianPrice,
+          avg_investment_score: avgInvScore,
+          avg_demand_heat: avgHeatScore,
+          price_growth_forecast: priceGrowthRate,
+          demand_growth_forecast: demandGrowthForecast,
+          market_status: marketStatus,
+          buyer_activity_score: buyerActivityScore,
+          buyer_activity_trend: buyerActivityGrowth,
+          investor_interest_score: investorInterest,
+          supply_trend: supplyTrend,
+          recent_listings_30d: recentListings,
+          property_type_distribution: typeCounts,
+          monthly_forecasts: monthlyForecasts,
+          price_changes_90d: history.length,
           generated_at: new Date().toISOString(),
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
