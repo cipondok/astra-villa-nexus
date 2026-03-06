@@ -4759,6 +4759,126 @@ export type Database = {
         }
         Relationships: []
       }
+      chatbot_response_templates: {
+        Row: {
+          category: string
+          created_at: string | null
+          created_by: string | null
+          id: string
+          is_active: boolean | null
+          language: string | null
+          template_content: string
+          template_name: string
+          tone: string | null
+          updated_at: string | null
+          usage_count: number | null
+          variables: string[] | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          language?: string | null
+          template_content: string
+          template_name: string
+          tone?: string | null
+          updated_at?: string | null
+          usage_count?: number | null
+          variables?: string[] | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          language?: string | null
+          template_content?: string
+          template_name?: string
+          tone?: string | null
+          updated_at?: string | null
+          usage_count?: number | null
+          variables?: string[] | null
+        }
+        Relationships: []
+      }
+      chatbot_settings: {
+        Row: {
+          id: string
+          setting_key: string
+          setting_value: Json
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          id?: string
+          setting_key: string
+          setting_value?: Json
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          id?: string
+          setting_key?: string
+          setting_value?: Json
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      chatbot_training_pairs: {
+        Row: {
+          answer: string
+          created_at: string | null
+          created_by: string | null
+          id: string
+          intent_category: string
+          is_active: boolean | null
+          language: string | null
+          last_matched_at: string | null
+          priority: number | null
+          question: string
+          tags: string[] | null
+          updated_at: string | null
+          usage_count: number | null
+          variations: string[] | null
+        }
+        Insert: {
+          answer: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          intent_category?: string
+          is_active?: boolean | null
+          language?: string | null
+          last_matched_at?: string | null
+          priority?: number | null
+          question: string
+          tags?: string[] | null
+          updated_at?: string | null
+          usage_count?: number | null
+          variations?: string[] | null
+        }
+        Update: {
+          answer?: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          intent_category?: string
+          is_active?: boolean | null
+          language?: string | null
+          last_matched_at?: string | null
+          priority?: number | null
+          question?: string
+          tags?: string[] | null
+          updated_at?: string | null
+          usage_count?: number | null
+          variations?: string[] | null
+        }
+        Relationships: []
+      }
       checkin_checkout_records: {
         Row: {
           booking_id: string
