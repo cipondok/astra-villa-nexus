@@ -2544,6 +2544,118 @@ Provide realistic Indonesian market valuations with comparable sales data from t
   }
 }
 
+// ── Tenant Matching ─────────────────────────────────────────────────
+async function handleTenantMatching(payload: Record<string, unknown>) {
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  const {
+    tenant_name, budget_min, budget_max, preferred_locations, property_type_preferences,
+    bedrooms_min, bathrooms_min, must_have_amenities, lifestyle_tags, move_in_date,
+    lease_duration_months, pets, family_size, work_location, commute_preference,
+    available_properties,
+  } = payload as any;
+
+  const systemPrompt = `You are an expert Indonesian property matching AI. Analyze tenant preferences and available properties to find the best matches. Consider:
+- Budget fit (monthly rent within range)
+- Location preference and commute distance
+- Property features vs. requirements (bedrooms, bathrooms, amenities)
+- Lifestyle compatibility (pet-friendly, family-friendly, near schools/malls)
+- Lease terms alignment
+Score each match 0-100 and provide specific reasons. Return top matches sorted by compatibility.`;
+
+  const userPrompt = `Tenant Profile:
+- Name: ${tenant_name || "Anonymous"}
+- Budget: Rp ${(budget_min || 0).toLocaleString()} - Rp ${(budget_max || 0).toLocaleString()}/month
+- Preferred Locations: ${(preferred_locations || []).join(", ") || "Any"}
+- Property Types: ${(property_type_preferences || []).join(", ") || "Any"}
+- Min Bedrooms: ${bedrooms_min || "Any"}, Min Bathrooms: ${bathrooms_min || "Any"}
+- Must-have Amenities: ${(must_have_amenities || []).join(", ") || "None specified"}
+- Lifestyle: ${(lifestyle_tags || []).join(", ") || "Not specified"}
+- Move-in Date: ${move_in_date || "Flexible"}
+- Lease Duration: ${lease_duration_months || "Flexible"} months
+- Pets: ${pets || "No"}
+- Family Size: ${family_size || "Not specified"}
+- Work Location: ${work_location || "Not specified"}
+- Commute Preference: ${commute_preference || "Not specified"}
+
+Available Properties:
+${JSON.stringify(available_properties || [], null, 2)}
+
+Analyze each property against this tenant's needs and return structured matches.`;
+
+  try {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "google/gemini-3-flash-preview",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        tools: [{
+          type: "function",
+          function: {
+            name: "tenant_match_results",
+            description: "Return tenant-property matching results",
+            parameters: {
+              type: "object",
+              properties: {
+                matches: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      property_id: { type: "string" },
+                      property_title: { type: "string" },
+                      compatibility_score: { type: "number", description: "0-100 overall match score" },
+                      budget_fit: { type: "number", description: "0-100 budget alignment" },
+                      location_fit: { type: "number", description: "0-100 location match" },
+                      feature_fit: { type: "number", description: "0-100 feature match" },
+                      lifestyle_fit: { type: "number", description: "0-100 lifestyle compatibility" },
+                      match_highlights: { type: "array", items: { type: "string" }, description: "Top reasons this is a good match" },
+                      concerns: { type: "array", items: { type: "string" }, description: "Potential issues or trade-offs" },
+                      monthly_rent: { type: "number" },
+                      commute_estimate: { type: "string", description: "Estimated commute time" }
+                    },
+                    required: ["property_id", "property_title", "compatibility_score", "budget_fit", "location_fit", "feature_fit", "lifestyle_fit", "match_highlights", "concerns", "monthly_rent", "commute_estimate"]
+                  }
+                },
+                tenant_summary: { type: "string", description: "Brief summary of tenant's ideal property profile" },
+                market_advice: { type: "string", description: "Advice about current market conditions for this tenant's requirements" },
+                total_properties_analyzed: { type: "number" },
+                strong_matches: { type: "number", description: "Count of matches scoring 75+" },
+                average_compatibility: { type: "number" }
+              },
+              required: ["matches", "tenant_summary", "market_advice", "total_properties_analyzed", "strong_matches", "average_compatibility"]
+            }
+          }
+        }],
+        tool_choice: { type: "function", function: { name: "tenant_match_results" } },
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      const status = aiResponse.status;
+      if (status === 429) return json({ error: "Rate limited. Please try again shortly." }, 429);
+      if (status === 402) return json({ error: "AI credits required." }, 402);
+      const t = await aiResponse.text();
+      console.error("tenant matching error:", status, t);
+      return json({ error: "AI tenant matching failed" }, 500);
+    }
+
+    const aiData = await aiResponse.json();
+    const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall) throw new Error("No structured response from AI");
+
+    return json(JSON.parse(toolCall.function.arguments));
+  } catch (e) {
+    console.error("tenant_matching error:", e);
+    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -2607,6 +2719,8 @@ serve(async (req) => {
         return await handleMortgageAdvisor(payload);
       case "property_valuation_report":
         return await handlePropertyValuationReport(payload);
+      case "tenant_matching":
+        return await handleTenantMatching(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
