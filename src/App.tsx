@@ -125,6 +125,7 @@ const ComparativeMarketAnalysisPage = lazy(() => import('@/pages/ComparativeMark
 const SmartNotificationsPage = lazy(() => import('@/pages/SmartNotificationsPage'));
 const NeighborhoodInsightsPage = lazy(() => import('@/pages/NeighborhoodInsightsPage'));
 const ContractAnalyzerPage = lazy(() => import('@/pages/ContractAnalyzerPage'));
+const AILeadScoringPage = lazy(() => import('@/pages/AILeadScoringPage'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const Help = lazy(() => import('@/pages/Help'));
 const About = lazy(() => import('@/pages/About'));
