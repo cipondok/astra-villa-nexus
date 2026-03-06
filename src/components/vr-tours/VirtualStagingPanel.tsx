@@ -69,12 +69,15 @@ const VirtualStagingPanel: React.FC<VirtualStagingPanelProps> = ({
     setStagedImageUrl(null);
 
     try {
-      const { data, error } = await supabase.functions.invoke('virtual-staging', {
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
         body: {
-          imageUrl: scene.imageUrl,
-          roomType,
-          style,
-          removeExisting,
+          mode: 'virtual_staging',
+          payload: {
+            imageUrl: scene.imageUrl,
+            roomType,
+            style,
+            removeExisting,
+          },
         },
       });
 
@@ -85,8 +88,9 @@ const VirtualStagingPanel: React.FC<VirtualStagingPanelProps> = ({
         return;
       }
 
-      if (data.stagedImageUrl) {
-        setStagedImageUrl(data.stagedImageUrl);
+      // ai-engine returns staged_image_url (snake_case)
+      if (data.staged_image_url) {
+        setStagedImageUrl(data.staged_image_url);
         toast.success('Room staged successfully!');
       }
     } catch (error) {
