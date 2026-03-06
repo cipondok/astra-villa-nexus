@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -3670,6 +3670,228 @@ Deno.serve(async (req) => {
           property_insights: propertyInsights,
           room_insights: enrichedRooms,
           investment_analysis: investmentAnalysis,
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: anomaly_detector
+    // ═══════════════════════════════════════════
+    if (mode === 'anomaly_detector') {
+      const { city: adCity, limit: adLimit } = body;
+      const scanLimit = Math.min(Number(adLimit) || 100, 500);
+
+      // Build query
+      let query = supabase
+        .from('properties')
+        .select('id, title, price, city, property_type, land_area_sqm, building_area_sqm, bedrooms, bathrooms, description, images, created_at, status, owner_id, investment_score')
+        .eq('status', 'published')
+        .not('price', 'is', null)
+        .gt('price', 0)
+        .order('created_at', { ascending: false })
+        .limit(scanLimit);
+
+      if (adCity) query = query.eq('city', adCity);
+
+      const { data: listings, error: listErr } = await query;
+      if (listErr || !listings || listings.length === 0) {
+        return new Response(JSON.stringify({ mode: 'anomaly_detector', data: { flagged: [], total_scanned: 0, summary: {} } }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Compute city-level price stats for comparison
+      const cityStats: Record<string, { prices: number[]; ppm2: number[] }> = {};
+      for (const l of listings) {
+        const c = l.city || 'unknown';
+        if (!cityStats[c]) cityStats[c] = { prices: [], ppm2: [] };
+        const price = Number(l.price);
+        const area = Number(l.building_area_sqm) || Number(l.land_area_sqm) || 0;
+        cityStats[c].prices.push(price);
+        if (area > 0) cityStats[c].ppm2.push(price / area);
+      }
+
+      const cityMedians: Record<string, { medianPrice: number; medianPpm2: number; stdPrice: number }> = {};
+      for (const [c, stats] of Object.entries(cityStats)) {
+        const sorted = [...stats.prices].sort((a, b) => a - b);
+        const mid = Math.floor(sorted.length / 2);
+        const median = sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+        const mean = sorted.reduce((s, v) => s + v, 0) / sorted.length;
+        const std = Math.sqrt(sorted.reduce((s, v) => s + (v - mean) ** 2, 0) / sorted.length);
+
+        const sortedPpm2 = [...stats.ppm2].sort((a, b) => a - b);
+        const midP = Math.floor(sortedPpm2.length / 2);
+        const medianPpm2 = sortedPpm2.length > 0
+          ? (sortedPpm2.length % 2 !== 0 ? sortedPpm2[midP] : (sortedPpm2[midP - 1] + sortedPpm2[midP]) / 2)
+          : 0;
+
+        cityMedians[c] = { medianPrice: median, medianPpm2: medianPpm2, stdPrice: std };
+      }
+
+      // Check for duplicate titles
+      const titleMap: Record<string, string[]> = {};
+      for (const l of listings) {
+        const normalized = (l.title || '').toLowerCase().trim().replace(/\s+/g, ' ');
+        if (normalized.length > 5) {
+          if (!titleMap[normalized]) titleMap[normalized] = [];
+          titleMap[normalized].push(l.id);
+        }
+      }
+      const duplicateTitles = new Set<string>();
+      for (const ids of Object.values(titleMap)) {
+        if (ids.length > 1) ids.forEach(id => duplicateTitles.add(id));
+      }
+
+      // Score each listing
+      interface AnomalyFlag {
+        id: string;
+        title: string;
+        city: string;
+        price: number;
+        fraud_score: number; // 0-100
+        flags: { type: string; severity: 'low' | 'medium' | 'high' | 'critical'; detail: string }[];
+      }
+
+      const flagged: AnomalyFlag[] = [];
+
+      for (const l of listings) {
+        const flags: AnomalyFlag['flags'] = [];
+        const price = Number(l.price);
+        const area = Number(l.building_area_sqm) || Number(l.land_area_sqm) || 0;
+        const city = l.city || 'unknown';
+        const stats = cityMedians[city];
+
+        // 1. Unrealistic pricing (too low or too high vs median)
+        if (stats && stats.medianPrice > 0) {
+          const ratio = price / stats.medianPrice;
+          if (ratio < 0.15) {
+            flags.push({ type: 'unrealistic_price', severity: 'critical', detail: `Price is ${Math.round((1 - ratio) * 100)}% below city median — suspiciously low` });
+          } else if (ratio < 0.35) {
+            flags.push({ type: 'unrealistic_price', severity: 'high', detail: `Price is ${Math.round((1 - ratio) * 100)}% below city median` });
+          } else if (ratio > 5) {
+            flags.push({ type: 'unrealistic_price', severity: 'high', detail: `Price is ${Math.round(ratio * 100)}% of city median — extremely overpriced` });
+          } else if (ratio > 3) {
+            flags.push({ type: 'unrealistic_price', severity: 'medium', detail: `Price is ${Math.round(ratio * 100)}% of city median` });
+          }
+        }
+
+        // 2. Price per sqm outlier
+        if (area > 0 && stats && stats.medianPpm2 > 0) {
+          const ppm2 = price / area;
+          const ppm2Ratio = ppm2 / stats.medianPpm2;
+          if (ppm2Ratio < 0.1 || ppm2Ratio > 10) {
+            flags.push({ type: 'price_per_sqm_outlier', severity: 'high', detail: `Price/sqm (${Math.round(ppm2).toLocaleString()}) is ${ppm2Ratio < 1 ? 'far below' : 'far above'} city median (${Math.round(stats.medianPpm2).toLocaleString()})` });
+          } else if (ppm2Ratio < 0.25 || ppm2Ratio > 4) {
+            flags.push({ type: 'price_per_sqm_outlier', severity: 'medium', detail: `Price/sqm deviates significantly from city median` });
+          }
+        }
+
+        // 3. Missing or very short description
+        const desc = (l.description || '').trim();
+        if (desc.length === 0) {
+          flags.push({ type: 'missing_description', severity: 'medium', detail: 'No description provided' });
+        } else if (desc.length < 30) {
+          flags.push({ type: 'short_description', severity: 'low', detail: `Description is only ${desc.length} characters` });
+        }
+
+        // 4. Suspicious description patterns
+        if (desc.length > 0) {
+          const lowerDesc = desc.toLowerCase();
+          const suspiciousPatterns = ['whatsapp', 'wa:', 'hubungi', 'transfer', 'wire', 'bitcoin', 'crypto', 'guaranteed return', 'no risk'];
+          const found = suspiciousPatterns.filter(p => lowerDesc.includes(p));
+          if (found.length > 0) {
+            flags.push({ type: 'suspicious_content', severity: 'medium', detail: `Description contains suspicious terms: ${found.join(', ')}` });
+          }
+
+          // Check for excessive caps
+          const capsRatio = (desc.match(/[A-Z]/g) || []).length / desc.length;
+          if (capsRatio > 0.6 && desc.length > 20) {
+            flags.push({ type: 'excessive_caps', severity: 'low', detail: 'Description has excessive capitalization (potential spam)' });
+          }
+        }
+
+        // 5. No images or too few
+        const images = Array.isArray(l.images) ? l.images : [];
+        if (images.length === 0) {
+          flags.push({ type: 'no_images', severity: 'high', detail: 'No images uploaded — common in fake listings' });
+        } else if (images.length === 1) {
+          flags.push({ type: 'few_images', severity: 'low', detail: 'Only 1 image — low-effort listing' });
+        }
+
+        // 6. Duplicate title
+        if (duplicateTitles.has(l.id)) {
+          flags.push({ type: 'duplicate_title', severity: 'high', detail: 'Title matches another listing — possible duplicate' });
+        }
+
+        // 7. Unrealistic area
+        if (area > 0) {
+          if (area < 5) {
+            flags.push({ type: 'unrealistic_area', severity: 'medium', detail: `Area of ${area} sqm is unrealistically small` });
+          } else if (area > 50000) {
+            flags.push({ type: 'unrealistic_area', severity: 'medium', detail: `Area of ${area.toLocaleString()} sqm is unusually large for a listing` });
+          }
+        }
+
+        // 8. Missing bedrooms/bathrooms for residential
+        const residentialTypes = ['house', 'villa', 'apartment', 'townhouse', 'rumah', 'apartemen'];
+        if (residentialTypes.includes((l.property_type || '').toLowerCase())) {
+          if (!l.bedrooms || l.bedrooms === 0) {
+            flags.push({ type: 'missing_bedrooms', severity: 'low', detail: 'Residential property with no bedrooms specified' });
+          }
+          if (l.bedrooms && l.bedrooms > 20) {
+            flags.push({ type: 'unrealistic_bedrooms', severity: 'medium', detail: `${l.bedrooms} bedrooms is unrealistic` });
+          }
+        }
+
+        // Calculate fraud score
+        const severityWeights = { critical: 35, high: 25, medium: 15, low: 5 };
+        let fraudScore = 0;
+        for (const f of flags) {
+          fraudScore += severityWeights[f.severity];
+        }
+        fraudScore = Math.min(100, fraudScore);
+
+        if (flags.length > 0) {
+          flagged.push({
+            id: l.id,
+            title: l.title || 'Untitled',
+            city: city,
+            price: price,
+            fraud_score: fraudScore,
+            flags,
+          });
+        }
+      }
+
+      // Sort by fraud score descending
+      flagged.sort((a, b) => b.fraud_score - a.fraud_score);
+
+      // Summary
+      const criticalCount = flagged.filter(f => f.fraud_score >= 70).length;
+      const highCount = flagged.filter(f => f.fraud_score >= 40 && f.fraud_score < 70).length;
+      const lowCount = flagged.filter(f => f.fraud_score < 40).length;
+
+      const flagTypeCounts: Record<string, number> = {};
+      for (const f of flagged) {
+        for (const flag of f.flags) {
+          flagTypeCounts[flag.type] = (flagTypeCounts[flag.type] || 0) + 1;
+        }
+      }
+
+      console.log(`Anomaly scan: ${listings.length} scanned, ${flagged.length} flagged (${criticalCount} critical)`);
+
+      return new Response(JSON.stringify({
+        mode: 'anomaly_detector',
+        data: {
+          flagged: flagged.slice(0, 50), // top 50
+          total_scanned: listings.length,
+          total_flagged: flagged.length,
+          summary: {
+            critical: criticalCount,
+            high: highCount,
+            low: lowCount,
+            flag_types: flagTypeCounts,
+          },
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }

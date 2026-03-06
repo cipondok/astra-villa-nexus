@@ -116,6 +116,7 @@ const AIMapSearchPage = lazy(() => import('@/pages/AIMapSearchPage'));
 const DigitalTwinPage = lazy(() => import('@/pages/DigitalTwinPage'));
 const VirtualStagingPage = lazy(() => import('@/pages/VirtualStagingPage'));
 const MarketReportPage = lazy(() => import('@/pages/MarketReportPage'));
+const FraudDetectorPage = lazy(() => import('@/pages/FraudDetectorPage'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const Help = lazy(() => import('@/pages/Help'));
 const About = lazy(() => import('@/pages/About'));
@@ -325,6 +326,7 @@ const AppContent = () => {
                 <Route path="/digital-twin/:id" element={<DigitalTwinPage />} />
                 <Route path="/virtual-staging" element={<VirtualStagingPage />} />
                 <Route path="/market-report" element={<MarketReportPage />} />
+                <Route path="/fraud-detector" element={<FraudDetectorPage />} />
                 <Route path="*" element={<ErrorPage />} />
               </Routes>
             </Suspense>
