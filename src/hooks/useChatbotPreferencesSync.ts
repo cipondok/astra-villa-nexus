@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { isSessionCheckSuppressed } from '@/hooks/useSessionMonitor';
@@ -27,6 +27,10 @@ export const useChatbotPreferencesSync = () => {
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'synced' | 'error'>('idle');
   const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null);
   const { toast } = useToast();
+  const userIdRef = useRef<string | null>(null);
+
+  // Keep ref in sync
+  useEffect(() => { userIdRef.current = userId; }, [userId]);
 
   // Check auth state
   useEffect(() => {
@@ -43,17 +47,17 @@ export const useChatbotPreferencesSync = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const loadFromCloud = async (): Promise<ChatbotPreferences | null> => {
-    if (!userId) return null;
+  const loadFromCloud = useCallback(async (): Promise<ChatbotPreferences | null> => {
+    if (!userIdRef.current) return null;
 
     try {
       const { data, error } = await supabase
         .from('chatbot_preferences')
         .select('*')
-        .eq('user_id', userId)
+        .eq('user_id', userIdRef.current)
         .single();
 
-      if (error && error.code !== 'PGRST116') { // Ignore "not found" error
+      if (error && error.code !== 'PGRST116') {
         console.error('Error loading chatbot preferences:', error);
         return null;
       }
@@ -75,10 +79,11 @@ export const useChatbotPreferencesSync = () => {
       console.error('Error loading chatbot preferences:', error);
       return null;
     }
-  };
+  }, []);
 
-  const saveToCloud = async (preferences: ChatbotPreferences) => {
-    if (!userId) return;
+  const saveToCloud = useCallback(async (preferences: ChatbotPreferences) => {
+    const uid = userIdRef.current;
+    if (!uid) return;
 
     setSyncStatus('syncing');
 
@@ -87,7 +92,7 @@ export const useChatbotPreferencesSync = () => {
         .from('chatbot_preferences')
         .upsert(
           {
-            user_id: userId,
+            user_id: uid,
             position: preferences.position as any,
             size: preferences.size as any,
             snap_sensitivity: preferences.snapSensitivity,
@@ -112,23 +117,23 @@ export const useChatbotPreferencesSync = () => {
       } else {
         setSyncStatus('synced');
         setLastSyncTime(new Date());
-        // Reset to idle after 2 seconds
         setTimeout(() => setSyncStatus('idle'), 2000);
       }
     } catch (error) {
       console.error('Error saving chatbot preferences:', error);
       setSyncStatus('error');
     }
-  };
+  }, [toast]);
 
-  const deleteFromCloud = async () => {
-    if (!userId) return;
+  const deleteFromCloud = useCallback(async () => {
+    const uid = userIdRef.current;
+    if (!uid) return;
 
     try {
       const { error } = await supabase
         .from('chatbot_preferences')
         .delete()
-        .eq('user_id', userId);
+        .eq('user_id', uid);
 
       if (error) {
         console.error('Error deleting chatbot preferences:', error);
@@ -136,7 +141,7 @@ export const useChatbotPreferencesSync = () => {
     } catch (error) {
       console.error('Error deleting chatbot preferences:', error);
     }
-  };
+  }, []);
 
   return {
     isAuthenticated: !!userId,
