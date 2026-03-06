@@ -1772,6 +1772,154 @@ Guidelines:
   }
 }
 
+// ── AI Lead Scoring ─────────────────────────────────────────────────
+
+async function handleLeadScoring(payload: Record<string, unknown>) {
+  const { leads, agent_id } = payload as {
+    leads?: Array<Record<string, unknown>>;
+    agent_id?: string;
+  };
+
+  if (!leads || leads.length === 0) return json({ error: "leads array is required" }, 400);
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  // Fetch behavioral data for leads if agent_id provided
+  let behaviorContext = "";
+  if (agent_id) {
+    try {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+      const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+      const sb = createClient(supabaseUrl, supabaseKey);
+
+      // Get recent behavior tracking for these leads' properties
+      const propertyIds = leads.map(l => l.property_id).filter(Boolean);
+      if (propertyIds.length > 0) {
+        const { data: behaviors } = await sb
+          .from("ai_behavior_tracking")
+          .select("user_id, event_type, property_id, created_at, duration_ms")
+          .in("property_id", propertyIds as string[])
+          .order("created_at", { ascending: false })
+          .limit(100);
+        if (behaviors && behaviors.length > 0) {
+          behaviorContext = `\n\nRecent user behavior on these properties:\n${JSON.stringify(behaviors.slice(0, 50))}`;
+        }
+      }
+    } catch { /* best effort */ }
+  }
+
+  const systemPrompt = `You are an expert lead scoring AI for Indonesian real estate. Analyze each lead and provide a detailed AI-enhanced score with conversion predictions.
+
+Scoring methodology:
+- Contact completeness (name, email, phone): 0-20 points
+- Source quality (referral > whatsapp > website > social > cold): 0-15 points
+- Engagement signals (specific property interest, multiple contacts, notes quality): 0-25 points
+- Behavioral signals (property views, saves, time spent, repeat visits): 0-20 points
+- Timing signals (recency of contact, response speed, market conditions): 0-10 points
+- Intent signals (asking about financing, legal docs, scheduling visits): 0-10 points
+
+Lead temperature: Hot (>=70), Warm (50-69), Cold (<50)
+${behaviorContext}`;
+
+  try {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-3-flash-preview",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: `Score these leads:\n${JSON.stringify(leads.slice(0, 20))}` },
+        ],
+        tools: [
+          {
+            type: "function",
+            function: {
+              name: "score_leads",
+              description: "Return AI-enhanced lead scores",
+              parameters: {
+                type: "object",
+                properties: {
+                  scored_leads: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        lead_id: { type: "string" },
+                        ai_score: { type: "number", description: "AI score 0-100" },
+                        temperature: { type: "string", enum: ["hot", "warm", "cold"] },
+                        conversion_probability: { type: "number", description: "Estimated conversion probability 0-100%" },
+                        score_breakdown: {
+                          type: "object",
+                          properties: {
+                            contact_completeness: { type: "number" },
+                            source_quality: { type: "number" },
+                            engagement: { type: "number" },
+                            behavioral: { type: "number" },
+                            timing: { type: "number" },
+                            intent: { type: "number" },
+                          },
+                        },
+                        insights: { type: "array", items: { type: "string" } },
+                        recommended_action: { type: "string" },
+                        best_contact_time: { type: "string" },
+                        risk_factors: { type: "array", items: { type: "string" } },
+                        buyer_type: { type: "string", enum: ["investor", "end_user", "first_time_buyer", "upgrader", "relocator", "unknown"] },
+                      },
+                      required: ["lead_id", "ai_score", "temperature", "conversion_probability", "insights", "recommended_action"],
+                    },
+                  },
+                  summary: {
+                    type: "object",
+                    properties: {
+                      total_leads: { type: "number" },
+                      hot_count: { type: "number" },
+                      warm_count: { type: "number" },
+                      cold_count: { type: "number" },
+                      avg_score: { type: "number" },
+                      avg_conversion_probability: { type: "number" },
+                      top_recommendations: { type: "array", items: { type: "string" } },
+                      pipeline_health: { type: "string", enum: ["excellent", "good", "needs_attention", "critical"] },
+                    },
+                    required: ["total_leads", "hot_count", "warm_count", "cold_count", "avg_score", "pipeline_health", "top_recommendations"],
+                  },
+                },
+                required: ["scored_leads", "summary"],
+                additionalProperties: false,
+              },
+            },
+          },
+        ],
+        tool_choice: { type: "function", function: { name: "score_leads" } },
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      const status = aiResponse.status;
+      const text = await aiResponse.text();
+      console.error("AI gateway error:", status, text);
+      if (status === 402 || status === 429 || status === 503) {
+        return json({ status, error: status === 402 ? "AI credits required" : status === 429 ? "Rate limited" : "AI temporarily unavailable" }, 200);
+      }
+      throw new Error(`AI gateway returned ${status}`);
+    }
+
+    const aiData = await aiResponse.json();
+    const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall) throw new Error("No structured response from AI");
+
+    const result = JSON.parse(toolCall.function.arguments);
+    return json(result);
+  } catch (e) {
+    console.error("lead_scoring error:", e);
+    return json({ error: e instanceof Error ? e.message : "Unknown error" }, 500);
+  }
+}
+
 // ── Main router ─────────────────────────────────────────────────────
 
 serve(async (req) => {
@@ -1823,6 +1971,8 @@ serve(async (req) => {
         return await handleContractAnalysis(payload);
       case "property_chatbot":
         return await handlePropertyChatbot(payload);
+      case "lead_scoring":
+        return await handleLeadScoring(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
