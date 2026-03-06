@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -5618,6 +5618,295 @@ Deno.serve(async (req) => {
           property_type_distribution: typeCounts,
           monthly_forecasts: monthlyForecasts,
           price_changes_90d: history.length,
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // ██  SUPER ENGINE MODE — Unified Intelligence Pipeline
+    // ═══════════════════════════════════════════════════════════
+    if (mode === 'super_engine') {
+      if (!property_id) {
+        return new Response(JSON.stringify({ error: 'property_id required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const serviceClient = createClient(supabaseUrl, serviceKey);
+
+      // 1. Fetch property (single query — shared by all sub-models)
+      const { data: prop, error: pErr } = await serviceClient
+        .from('properties')
+        .select('id, title, price, city, state, location, property_type, listing_type, bedrooms, bathrooms, building_area_sqm, land_area_sqm, area_sqm, investment_score, demand_heat_score, rental_yield_estimate, thumbnail_url, created_at')
+        .eq('id', property_id)
+        .single();
+
+      if (pErr || !prop) {
+        return new Response(JSON.stringify({ error: 'Property not found' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const price = prop.price || 0;
+      const buildingArea = prop.building_area_sqm || prop.area_sqm || prop.land_area_sqm || 0;
+      const landArea = prop.land_area_sqm || prop.area_sqm || 0;
+      const refArea = buildingArea > 0 ? buildingArea : landArea;
+      const bedrooms = prop.bedrooms ?? 2;
+      const heatScore = prop.demand_heat_score ?? 50;
+      const invScore = prop.investment_score ?? 50;
+      const rentalYieldEst = prop.rental_yield_estimate ?? 5.0;
+      const city = prop.city || '';
+
+      // 2. Parallel data fetches
+      const areaMin = Math.round(refArea * 0.8);
+      const areaMax = Math.round(refArea * 1.2);
+
+      const [valuationCompsRes, rentalCompsRes, similarRes, priceHistRes, behaviorRes] = await Promise.all([
+        // Valuation comparables (same city, type, area ±20%)
+        serviceClient
+          .from('properties')
+          .select('id, title, price, building_area_sqm, land_area_sqm, area_sqm, property_type, city, investment_score, demand_heat_score')
+          .eq('status', 'active').eq('approval_status', 'approved')
+          .neq('id', property_id)
+          .ilike('city', `%${city}%`)
+          .eq('property_type', prop.property_type || '')
+          .limit(200),
+
+        // Rental comparables (rent listings, same city, type, beds ±1)
+        serviceClient
+          .from('properties')
+          .select('id, title, price, bedrooms, city, property_type')
+          .eq('status', 'active').eq('approval_status', 'approved')
+          .eq('listing_type', 'rent')
+          .neq('id', property_id)
+          .ilike('city', `%${city}%`)
+          .eq('property_type', prop.property_type || '')
+          .limit(100),
+
+        // Similar properties for recommendations
+        serviceClient
+          .from('properties')
+          .select('id, title, price, city, property_type, bedrooms, investment_score, demand_heat_score, thumbnail_url')
+          .eq('status', 'active').eq('approval_status', 'approved')
+          .neq('id', property_id)
+          .ilike('city', `%${city}%`)
+          .limit(50),
+
+        // Price history (90d)
+        serviceClient
+          .from('property_price_history')
+          .select('old_price, new_price, changed_at')
+          .eq('property_id', property_id)
+          .gte('changed_at', new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString())
+          .order('changed_at', { ascending: true })
+          .limit(100),
+
+        // Market behavior (30d)
+        serviceClient
+          .from('ai_behavior_tracking')
+          .select('event_type')
+          .eq('property_id', property_id)
+          .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
+          .limit(500),
+      ]);
+
+      // ═══ VALUATION MODEL ═══
+      const valComps = (valuationCompsRes.data || []).filter((c: any) => {
+        const cArea = c.building_area_sqm || c.area_sqm || c.land_area_sqm || 0;
+        return cArea >= areaMin && cArea <= areaMax && c.price > 0;
+      });
+
+      let avgPricePerSqm = 0;
+      let estimatedValue = price;
+      if (valComps.length > 0 && refArea > 0) {
+        avgPricePerSqm = valComps.reduce((s: number, c: any) => {
+          const cA = c.building_area_sqm || c.area_sqm || c.land_area_sqm || 1;
+          return s + c.price / cA;
+        }, 0) / valComps.length;
+        estimatedValue = Math.round(avgPricePerSqm * refArea);
+      }
+
+      const demandMul = heatScore > 75 ? 1.08 : heatScore > 50 ? 1.03 : heatScore > 30 ? 1.0 : 0.97;
+      const invMul = invScore > 80 ? 1.05 : invScore > 60 ? 1.02 : 1.0;
+      const adjustedValue = Math.round(estimatedValue * demandMul * invMul);
+
+      let valConfidence: number;
+      if (valComps.length >= 10) valConfidence = 95;
+      else if (valComps.length >= 5) valConfidence = 80;
+      else if (valComps.length >= 3) valConfidence = 65;
+      else if (valComps.length >= 1) valConfidence = 45;
+      else valConfidence = 15;
+
+      const priceRatio = price / (adjustedValue || price);
+      const pricePosition = priceRatio < 0.85 ? 'undervalued' : priceRatio > 1.15 ? 'overpriced' : 'fair_price';
+
+      const valuation = {
+        estimated_value: adjustedValue,
+        listed_price: price,
+        avg_price_per_sqm: Math.round(avgPricePerSqm),
+        confidence: valConfidence,
+        price_position: pricePosition,
+        deviation_percent: Math.round((priceRatio - 1) * 100),
+        comparables_count: valComps.length,
+      };
+
+      // ═══ RENTAL YIELD ═══
+      const rentComps = (rentalCompsRes.data || []).filter((c: any) => {
+        const cBeds = c.bedrooms ?? 2;
+        return Math.abs(cBeds - bedrooms) <= 1 && c.price > 0;
+      });
+
+      let monthlyRent = 0;
+      let rentSource = 'ai_estimated';
+      if (rentComps.length > 0) {
+        monthlyRent = Math.round(rentComps.reduce((s: number, c: any) => s + c.price, 0) / rentComps.length);
+        rentSource = 'market_comparables';
+      } else {
+        const cl = city.toLowerCase();
+        const isTourist = ['bali', 'denpasar', 'seminyak', 'canggu', 'ubud', 'kuta', 'lombok'].some(c => cl.includes(c));
+        const isCapital = ['jakarta', 'surabaya', 'bandung', 'medan'].some(c => cl.includes(c));
+        const baseYield = isTourist ? 7 : isCapital ? 4.5 : 3.5;
+        monthlyRent = Math.round((price * (baseYield / 100)) / 12);
+      }
+
+      const annualRent = monthlyRent * 12;
+      const grossYield = price > 0 ? Math.round((annualRent / price) * 100 * 100) / 100 : 0;
+
+      const cl = city.toLowerCase();
+      const isTouristCity = ['bali', 'denpasar', 'seminyak', 'canggu', 'ubud', 'kuta', 'lombok'].some(c => cl.includes(c));
+      let occupancy = heatScore > 75 ? 90 : heatScore > 50 ? 80 : heatScore > 30 ? 70 : 60;
+      if (isTouristCity) occupancy = Math.min(occupancy + 8, 98);
+      if (invScore > 80) occupancy = Math.min(occupancy + 5, 98);
+
+      const effectiveAnnual = Math.round(annualRent * (occupancy / 100));
+      const netAnnual = Math.round(effectiveAnnual * 0.78);
+      const netYield = price > 0 ? Math.round((netAnnual / price) * 100 * 100) / 100 : 0;
+
+      const rentalYield = {
+        monthly_rent_estimate: monthlyRent,
+        annual_rent: annualRent,
+        rental_yield_percent: grossYield,
+        occupancy_rate: occupancy,
+        effective_annual_rent: effectiveAnnual,
+        net_yield_percent: netYield,
+        yield_rating: grossYield >= 7 ? 'excellent' : grossYield >= 5 ? 'good' : grossYield >= 3 ? 'average' : 'below_average',
+        rent_source: rentSource,
+        comparables_count: rentComps.length,
+      };
+
+      // ═══ DEAL DETECTOR ═══
+      const dealScorePercent = adjustedValue > 0
+        ? Math.round(((adjustedValue - price) / adjustedValue) * 100 * 10) / 10
+        : 0;
+
+      let dealRating: string;
+      if (dealScorePercent >= 15) dealRating = 'exceptional_deal';
+      else if (dealScorePercent >= 10) dealRating = 'strong_deal';
+      else if (dealScorePercent >= 5) dealRating = 'good_deal';
+      else if (dealScorePercent >= -5) dealRating = 'fair';
+      else if (dealScorePercent >= -15) dealRating = 'slightly_overpriced';
+      else dealRating = 'overpriced';
+
+      const deal = {
+        deal_score_percent: dealScorePercent,
+        deal_rating: dealRating,
+        estimated_value: adjustedValue,
+        listed_price: price,
+        potential_savings: Math.max(0, adjustedValue - price),
+      };
+
+      // ═══ MARKET TREND ═══
+      const history = priceHistRes.data || [];
+      let priceGrowthRate = 0;
+      if (history.length > 0) {
+        priceGrowthRate = Math.round(
+          (history.reduce((s: number, h: any) => s + ((h.new_price - h.old_price) / (h.old_price || 1)) * 100, 0) / history.length) * 10
+        ) / 10;
+      } else {
+        priceGrowthRate = heatScore > 75 ? 8 : heatScore > 50 ? 5 : heatScore > 30 ? 2 : 0;
+      }
+
+      const bList = behaviorRes.data || [];
+      const buyerActivity = Math.min(100, Math.round(
+        (bList.filter((b: any) => b.event_type === 'view' || b.event_type === 'property_view').length * 1 +
+         bList.filter((b: any) => b.event_type === 'contact' || b.event_type === 'inquiry').length * 5 +
+         bList.filter((b: any) => b.event_type === 'save' || b.event_type === 'favorite').length * 3)
+      ));
+
+      let marketStatus: string;
+      if (priceGrowthRate > 8 && heatScore > 70) marketStatus = 'booming';
+      else if (priceGrowthRate > 3 || heatScore > 55) marketStatus = 'growing';
+      else if (priceGrowthRate >= 0 && heatScore >= 30) marketStatus = 'stable';
+      else marketStatus = 'declining';
+
+      const marketTrend = {
+        city,
+        price_growth_forecast: priceGrowthRate,
+        demand_heat_score: heatScore,
+        buyer_activity_score: buyerActivity,
+        market_status: marketStatus,
+        price_changes_90d: history.length,
+      };
+
+      // ═══ RECOMMENDATIONS ═══
+      const simProps = (similarRes.data || []) as any[];
+      const scored = simProps.map((s: any) => {
+        let score = 0;
+        if (s.city?.toLowerCase() === city.toLowerCase()) score += 25;
+        if (s.property_type === prop.property_type) score += 20;
+        if (s.price > 0 && price > 0 && Math.abs(s.price - price) / price <= 0.25) score += 20;
+        if (s.bedrooms != null && Math.abs((s.bedrooms ?? 0) - bedrooms) <= 1) score += 10;
+        score += Math.min(25, ((s.investment_score ?? 0) / 4));
+        return { ...s, similarity_score: Math.round(score) };
+      });
+      scored.sort((a: any, b: any) => b.similarity_score - a.similarity_score);
+
+      const recommendations = scored.slice(0, 5).map((s: any) => ({
+        id: s.id,
+        title: s.title,
+        price: s.price,
+        city: s.city,
+        property_type: s.property_type,
+        bedrooms: s.bedrooms,
+        investment_score: s.investment_score,
+        demand_heat_score: s.demand_heat_score,
+        thumbnail_url: s.thumbnail_url,
+        similarity_score: s.similarity_score,
+      }));
+
+      // ═══ COMBINED RESPONSE ═══
+      // Overall investment grade
+      const overallScore = Math.round(
+        invScore * 0.25 +
+        (grossYield / 10) * 100 * 0.2 +
+        Math.max(0, dealScorePercent + 20) * 0.2 +
+        heatScore * 0.2 +
+        valConfidence * 0.15
+      );
+
+      let investmentGrade: string;
+      if (overallScore >= 80) investmentGrade = 'A+';
+      else if (overallScore >= 70) investmentGrade = 'A';
+      else if (overallScore >= 60) investmentGrade = 'B+';
+      else if (overallScore >= 50) investmentGrade = 'B';
+      else if (overallScore >= 40) investmentGrade = 'C';
+      else investmentGrade = 'D';
+
+      return new Response(JSON.stringify({
+        data: {
+          property_id: prop.id,
+          title: prop.title,
+          city,
+          property_type: prop.property_type,
+          thumbnail_url: prop.thumbnail_url,
+          overall_score: overallScore,
+          investment_grade: investmentGrade,
+          valuation,
+          rental_yield: rentalYield,
+          deal_rating: deal,
+          market_trend: marketTrend,
+          recommendations,
           generated_at: new Date().toISOString(),
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
