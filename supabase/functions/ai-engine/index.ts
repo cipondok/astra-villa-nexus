@@ -234,7 +234,54 @@ async function handleRecommendations(payload: Record<string, unknown>) {
 }
 
 async function handleTranscription(payload: Record<string, unknown>) {
-  return json({ mode: "transcribe_audio", status: "not_implemented", payload });
+  const audio = payload.audio as string;
+  if (!audio) return json({ error: "No audio data provided" }, 400);
+
+  function processBase64Chunks(base64String: string, chunkSize = 32768) {
+    const chunks: Uint8Array[] = [];
+    let position = 0;
+    while (position < base64String.length) {
+      const chunk = base64String.slice(position, position + chunkSize);
+      const binaryChunk = atob(chunk);
+      const bytes = new Uint8Array(binaryChunk.length);
+      for (let i = 0; i < binaryChunk.length; i++) bytes[i] = binaryChunk.charCodeAt(i);
+      chunks.push(bytes);
+      position += chunkSize;
+    }
+    const totalLength = chunks.reduce((acc, c) => acc + c.length, 0);
+    const result = new Uint8Array(totalLength);
+    let offset = 0;
+    for (const c of chunks) { result.set(c, offset); offset += c.length; }
+    return result;
+  }
+
+  try {
+    const binaryAudio = processBase64Chunks(audio);
+    const formData = new FormData();
+    formData.append("file", new Blob([binaryAudio], { type: "audio/webm" }), "audio.webm");
+    formData.append("model", "whisper-1");
+
+    const openaiKey = Deno.env.get("OPENAI_API_KEY");
+    if (!openaiKey) return json({ error: "OPENAI_API_KEY not configured" }, 500);
+
+    const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${openaiKey}` },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error("OpenAI transcription error:", errText);
+      return json({ error: `Transcription failed: ${response.status}` }, 500);
+    }
+
+    const result = await response.json();
+    return json({ text: result.text });
+  } catch (err) {
+    console.error("Transcription error:", err);
+    return json({ error: err instanceof Error ? err.message : "Unknown error" }, 500);
+  }
 }
 
 // ── property_assistant: conversational AI with tool-calling ──────────

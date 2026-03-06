@@ -115,8 +115,8 @@ const SMTPSettings = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      const { error } = await supabase.functions.invoke('generate-otp', {
-        body: { purpose: 'email_verification', email: user.email }
+      const { error } = await supabase.functions.invoke('auth-engine', {
+        body: { action: 'generate_otp', purpose: 'email_verification', email: user.email }
       });
 
       if (error) throw error;
