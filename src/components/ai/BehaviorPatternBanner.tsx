@@ -13,8 +13,8 @@ const BehaviorPatternBanner = () => {
     queryFn: async () => {
       if (!user?.id) return null;
 
-      const { data, error } = await supabase.functions.invoke('smart-recommendation-engine', {
-        body: { action: 'get_user_profile', userId: user.id }
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'recommendations', payload: { action: 'get_user_profile', userId: user.id } }
       });
 
       if (error) throw error;

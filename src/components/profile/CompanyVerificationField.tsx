@@ -139,8 +139,8 @@ const CompanyVerificationField: React.FC<CompanyVerificationFieldProps> = ({
     }
 
     // Log the attempt via edge function (background, non-blocking)
-    supabase.functions.invoke('verify-ahu-company', {
-      body: { company_name: companyName.trim(), user_id: user.id },
+    supabase.functions.invoke('auth-engine', {
+      body: { action: 'verify_ahu_company', company_name: companyName.trim(), user_id: user.id },
     }).catch(() => {});
 
     // Open AHU directly

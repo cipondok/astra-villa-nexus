@@ -35,14 +35,14 @@ const CustomerServiceCenter = () => {
     }
 
     try {
-      const { data, error } = await supabase.functions.invoke('customer-service', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'customer_service', payload: {
           action: 'create',
           subject: newTicket.subject,
           description: newTicket.description,
           customer_email: newTicket.customer_email,
           priority: newTicket.priority
-        }
+        }}
       });
 
       if (error) throw error;
@@ -74,12 +74,12 @@ const CustomerServiceCenter = () => {
 
   const handleUpdateTicketStatus = async (ticketId: string, newStatus: string) => {
     try {
-      const { error } = await supabase.functions.invoke('customer-service', {
-        body: {
+      const { error } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'customer_service', payload: {
           action: 'update',
           ticket_id: ticketId,
           status: newStatus
-        }
+        }}
       });
 
       if (error) throw error;

@@ -53,8 +53,9 @@ const PaymentProcessor: React.FC<PaymentProcessorProps> = ({
 
     try {
       // Create payment session
-      const { data, error } = await supabase.functions.invoke('create-payment-session', {
+      const { data, error } = await supabase.functions.invoke('payment-engine', {
         body: {
+          action: 'create_payment_session',
           bookingId,
           amount,
           currency: currency.toLowerCase(),

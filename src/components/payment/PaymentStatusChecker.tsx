@@ -36,8 +36,8 @@ const PaymentStatusChecker: React.FC = () => {
     try {
       setIsVerifying(true);
 
-      const { data, error } = await supabase.functions.invoke('verify-payment', {
-        body: { sessionId }
+      const { data, error } = await supabase.functions.invoke('payment-engine', {
+        body: { action: 'verify_payment', sessionId }
       });
 
       if (error) {

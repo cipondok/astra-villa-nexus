@@ -84,8 +84,8 @@ export const useMortgageApplication = () => {
       const token = sessionData?.session?.access_token;
       if (!token) throw new Error('No session');
 
-      const { data, error } = await supabase.functions.invoke('submit-mortgage-application', {
-        body: { application_id: applicationId, bank_id: bankId },
+      const { data, error } = await supabase.functions.invoke('payment-engine', {
+        body: { action: 'submit_mortgage', application_id: applicationId, bank_id: bankId },
       });
 
       if (error) throw error;

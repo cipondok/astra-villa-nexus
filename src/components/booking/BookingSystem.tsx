@@ -238,8 +238,9 @@ const BookingSystem = ({ property, onBookingComplete }: BookingSystemProps) => {
       // Process payment based on method
       // Process payment for all supported methods via single edge function
       if (paymentMethod) {
-        const { data: paymentResult, error: paymentError } = await supabase.functions.invoke('create-booking-payment', {
+        const { data: paymentResult, error: paymentError } = await supabase.functions.invoke('payment-engine', {
           body: {
+            action: 'create_booking_payment',
             bookingId: booking.id,
             amount: totalAmount,
             paymentMethod: paymentMethod,

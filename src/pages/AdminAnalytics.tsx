@@ -33,8 +33,8 @@ export const AdminAnalytics = () => {
   const fetchAnalytics = async () => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('get-filter-analytics', {
-        body: { days },
+      const { data, error } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'filter_analytics', payload: { days } },
       });
       if (error) throw error;
       setAnalytics(data);

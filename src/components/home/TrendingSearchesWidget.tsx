@@ -29,7 +29,9 @@ export const TrendingSearchesWidget = ({ onSearchClick }: TrendingSearchesWidget
   useEffect(() => {
     const fetchTrends = async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('get-trending-searches');
+        const { data, error } = await supabase.functions.invoke('core-engine', {
+          body: { mode: 'trending_searches' }
+        });
         if (error) throw error;
         setTrends(data?.trends || []);
       } catch (error) {

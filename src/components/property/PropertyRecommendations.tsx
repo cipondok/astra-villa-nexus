@@ -156,8 +156,8 @@ const PropertyRecommendations = ({ propertyId, propertyType }: PropertyRecommend
     const fetchRecommendations = async () => {
       setLoading(true);
       try {
-        const { data, error } = await supabase.functions.invoke('property-recommendations', {
-          body: { propertyId, userId: user?.id || null, limit: 6 },
+        const { data, error } = await supabase.functions.invoke('core-engine', {
+          body: { mode: 'similar_properties', payload: { propertyId, userId: user?.id || null, limit: 6 } },
         });
         if (!error && data?.recommendations) {
           setRecommendations(data.recommendations);

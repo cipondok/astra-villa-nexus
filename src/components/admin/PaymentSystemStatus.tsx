@@ -23,8 +23,9 @@ const PaymentSystemStatus = () => {
 
     try {
       // Check Stripe configuration
-      const { data: stripeTest, error: stripeError } = await supabase.functions.invoke('create-payment-session', {
+      const { data: stripeTest, error: stripeError } = await supabase.functions.invoke('payment-engine', {
         body: {
+          action: 'create_payment_session',
           bookingId: 'test-booking',
           amount: 1000,
           currency: 'idr',

@@ -209,10 +209,10 @@ const CreateServiceForm = () => {
         admin_approval_status: 'approved' // Admin created services are auto-approved
       };
 
-      const response = await supabase.functions.invoke('vendor-service-management', {
-        method: 'POST',
+      const response = await supabase.functions.invoke('vendor-engine', {
         body: {
-          action: 'create',
+          action: 'service_management',
+          sub_action: 'create',
           vendor_id: selectedVendor,
           serviceData: finalServiceData,
           serviceItems: serviceItems.filter(item => item.item_name.trim())

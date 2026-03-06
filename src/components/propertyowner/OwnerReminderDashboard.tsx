@@ -26,7 +26,9 @@ const OwnerReminderDashboard = () => {
   const triggerPaymentReminders = async () => {
     setIsTesting(true);
     try {
-      const { data, error } = await supabase.functions.invoke('payment-reminders');
+      const { data, error } = await supabase.functions.invoke('notification-engine', {
+        body: { action: 'payment_reminders' }
+      });
       if (error) throw error;
       toast.success(`Reminder dijalankan: ${data?.alerts_created || 0} alert baru`);
     } catch (e: any) {

@@ -72,12 +72,12 @@ const AIRecommendedProperties = ({ onPropertyClick, className }: AIRecommendedPr
     
     try {
       // Call the smart recommendation engine
-      const { data: engineResponse, error } = await supabase.functions.invoke('smart-recommendation-engine', {
-        body: {
+      const { data: engineResponse, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'recommendations', payload: {
           action: 'get_recommendations',
           userId: user?.id || null,
           limit: 12,
-        }
+        }}
       });
 
       if (error) throw error;

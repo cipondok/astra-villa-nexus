@@ -132,12 +132,12 @@ export function useUserBehaviorAnalytics() {
     options: BehaviorAnalysisOptions = {}
   ): Promise<UserBehaviorMetrics | null> => {
     try {
-      const { data, error } = await supabase.functions.invoke('user-behavior-analyzer', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'buyer_profile', payload: {
           userId,
           sessionId: !userId ? currentSession : undefined,
           options
-        }
+        }}
       });
 
       if (error) throw error;
@@ -151,12 +151,12 @@ export function useUserBehaviorAnalytics() {
   // Step 5: Get personalized insights
   const getPersonalizedInsights = useCallback(async (userId?: string) => {
     try {
-      const { data, error } = await supabase.functions.invoke('user-behavior-analyzer', {
-        body: {
+      const { data, error } = await supabase.functions.invoke('core-engine', {
+        body: { mode: 'buyer_profile', payload: {
           userId,
           sessionId: !userId ? currentSession : undefined,
           requestType: 'insights'
-        }
+        }}
       });
 
       if (error) throw error;

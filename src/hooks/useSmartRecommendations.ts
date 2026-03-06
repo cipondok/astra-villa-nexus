@@ -61,8 +61,8 @@ export function useSmartRecommendations(limit = 10) {
     queryFn: async () => {
       if (!user?.id) return null;
 
-      const { data, error } = await supabase.functions.invoke('smart-recommendation-engine', {
-        body: { action: 'get_recommendations', userId: user.id, limit }
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'recommendations', payload: { action: 'get_recommendations', userId: user.id, limit } }
       });
 
       if (error) throw error;
@@ -91,8 +91,8 @@ export function useUserProfile() {
     queryFn: async () => {
       if (!user?.id) return null;
 
-      const { data, error } = await supabase.functions.invoke('smart-recommendation-engine', {
-        body: { action: 'get_user_profile', userId: user.id }
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'recommendations', payload: { action: 'get_user_profile', userId: user.id } }
       });
 
       if (error) throw error;
@@ -111,8 +111,8 @@ export function usePropertyMatchReport(propertyId: string | undefined) {
     queryFn: async () => {
       if (!user?.id || !propertyId) return null;
 
-      const { data, error } = await supabase.functions.invoke('smart-recommendation-engine', {
-        body: { action: 'get_match_report', userId: user.id, propertyId }
+      const { data, error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'recommendations', payload: { action: 'get_match_report', userId: user.id, propertyId } }
       });
 
       if (error) throw error;
@@ -142,8 +142,8 @@ export function useBehaviorTracking() {
     }) => {
       if (!user?.id) return;
 
-      const { error } = await supabase.functions.invoke('smart-recommendation-engine', {
-        body: {
+      const { error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'recommendations', payload: {
           action: 'record_signal',
           userId: user.id,
           propertyId,
@@ -153,7 +153,7 @@ export function useBehaviorTracking() {
             sessionId: sessionStorage.getItem('user_session'),
             deviceType: /Mobile/.test(navigator.userAgent) ? 'mobile' : 'desktop',
           }
-        }
+        }}
       });
 
       if (error) throw error;
@@ -261,12 +261,12 @@ export function usePreferencesUpdate() {
         discovery_openness: preferences.discoveryOpenness,
       };
 
-      const { error } = await supabase.functions.invoke('smart-recommendation-engine', {
-        body: {
+      const { error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'recommendations', payload: {
           action: 'update_preferences',
           userId: user.id,
           preferences: dbPreferences
-        }
+        }}
       });
 
       if (error) throw error;
@@ -283,12 +283,12 @@ export function useRecommendationFeedback() {
 
   return useMutation({
     mutationFn: async ({ recommendationId, feedback }: { recommendationId: string; feedback: string }) => {
-      const { error } = await supabase.functions.invoke('smart-recommendation-engine', {
-        body: {
+      const { error } = await supabase.functions.invoke('ai-engine', {
+        body: { mode: 'recommendations', payload: {
           action: 'provide_feedback',
           recommendationId,
           feedback
-        }
+        }}
       });
 
       if (error) throw error;

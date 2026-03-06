@@ -162,9 +162,10 @@ const VendorServiceManagement = () => {
   // Create service mutation
   const createServiceMutation = useMutation({
     mutationFn: async ({ serviceData, serviceItems }: { serviceData: ServiceFormData; serviceItems: ServiceItem[] }) => {
-      const response = await supabase.functions.invoke('vendor-service-management', {
+      const response = await supabase.functions.invoke('vendor-engine', {
         body: {
-          action: 'create',
+          action: 'service_management',
+          sub_action: 'create',
           vendor_id: user?.id,
           serviceData,
           serviceItems
@@ -187,9 +188,10 @@ const VendorServiceManagement = () => {
   // Update service mutation
   const updateServiceMutation = useMutation({
     mutationFn: async ({ serviceId, serviceData, serviceItems }: { serviceId: string; serviceData: ServiceFormData; serviceItems: ServiceItem[] }) => {
-      const response = await supabase.functions.invoke('vendor-service-management', {
+      const response = await supabase.functions.invoke('vendor-engine', {
         body: {
-          action: 'update',
+          action: 'service_management',
+          sub_action: 'update',
           serviceId,
           serviceData,
           serviceItems
@@ -213,9 +215,10 @@ const VendorServiceManagement = () => {
   // Delete service mutation
   const deleteServiceMutation = useMutation({
     mutationFn: async (serviceId: string) => {
-      const response = await supabase.functions.invoke('vendor-service-management', {
+      const response = await supabase.functions.invoke('vendor-engine', {
         body: {
-          action: 'delete',
+          action: 'service_management',
+          sub_action: 'delete',
           serviceId
         }
       });

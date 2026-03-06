@@ -171,8 +171,10 @@ const VendorKYCDashboard = () => {
     mutationFn: async ({ bpjsType, bpjsNumber }: { bpjsType: string; bpjsNumber: string }) => {
       if (!user?.id) throw new Error('User not authenticated');
 
-      const { data, error } = await supabase.functions.invoke('verify-bpjs', {
+      const { data, error } = await supabase.functions.invoke('vendor-engine', {
         body: {
+          action: 'indonesian_validation',
+          sub_action: 'verify_bpjs',
           vendorId: user.id,
           bpjsType,
           bpjsNumber
