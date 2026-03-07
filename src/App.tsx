@@ -176,6 +176,7 @@ const InvestmentAssistantPage = lazy(() => import('@/pages/InvestmentAssistantPa
 const InvestmentAdvisorPage = lazy(() => import('@/pages/InvestmentAdvisorPage'));
 const VisualSearchPage = lazy(() => import('@/pages/VisualSearchPage'));
 const ListingPredictorPage = lazy(() => import('@/pages/ListingPredictorPage'));
+const MarketTrendsPage = lazy(() => import('@/pages/MarketTrendsPage'));
 const AutonomousAgentPage = lazy(() => import('@/pages/AutonomousAgentPage'));
 const MobileHomeFeed = lazy(() => import('@/pages/mobile/MobileHomeFeed'));
 const MobilePropertyDetail = lazy(() => import('@/pages/mobile/MobilePropertyDetail'));
@@ -337,6 +338,7 @@ const AppContent = () => {
                 <Route path="/listing-predictor" element={<ProtectedRoute />}>
                   <Route index element={<ListingPredictorPage />} />
                 </Route>
+                <Route path="/market-trends" element={<MarketTrendsPage />} />
                 <Route path="/autonomous-agent" element={<ProtectedRoute />}>
                   <Route index element={<AutonomousAgentPage />} />
                 </Route>
