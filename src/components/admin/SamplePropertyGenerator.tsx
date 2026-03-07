@@ -124,6 +124,14 @@ const formatTime = (iso: string): string => {
 
 const SamplePropertyGenerator = () => {
   const queryClient = useQueryClient();
+  const {
+    saveAutoRunCheckpoint,
+    loadAutoRunCheckpoint,
+    clearAutoRunCheckpoint,
+    saveDoneProvinceCheckpoint,
+    loadDoneProvinceCheckpoints,
+    clearAllCheckpoints,
+  } = useSpgCheckpoints();
   const [selectedProvince, setSelectedProvince] = useState(() => localStorage.getItem('spg_last_province') || "");
   const [provinceOpen, setProvinceOpen] = useState(false);
   const [skipExisting, setSkipExisting] = useState(true);
@@ -131,6 +139,7 @@ const SamplePropertyGenerator = () => {
   const [progress, setProgress] = useState({ created: 0, skipped: 0, errors: 0, processed: 0, total: 0, existingCount: 0 });
   const [result, setResult] = useState<any>(null);
   const cancelRef = useRef(false);
+  const [cloudSyncStatus, setCloudSyncStatus] = useState<'synced' | 'syncing' | 'error' | 'idle'>('idle');
 
   // Live location tracking
   const [liveCity, setLiveCity] = useState("");
@@ -154,6 +163,47 @@ const SamplePropertyGenerator = () => {
   const [showProvinceList, setShowProvinceList] = useState(false);
   const [smartSelectedProvinces, setSmartSelectedProvinces] = useState<string[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+
+  // Load checkpoints from Supabase on mount (merge with localStorage)
+  useEffect(() => {
+    const syncFromCloud = async () => {
+      try {
+        setCloudSyncStatus('syncing');
+        // Load done provinces from cloud and merge with localStorage
+        const cloudDone = await loadDoneProvinceCheckpoints();
+        if (cloudDone.length > 0) {
+          const localDone = loadDoneProvinces();
+          const merged = new Map<string, DoneProvinceRecord>();
+          localDone.forEach(r => merged.set(r.province, r));
+          cloudDone.forEach(r => {
+            const existing = merged.get(r.province);
+            if (!existing || new Date(r.completedAt) > new Date(existing.completedAt)) {
+              merged.set(r.province, r);
+            }
+          });
+          const mergedList = Array.from(merged.values());
+          localStorage.setItem(DONE_PROVINCES_KEY, JSON.stringify(mergedList));
+          setPersistedDoneRecords(mergedList);
+        }
+
+        // Load auto-run checkpoint from cloud if no local state
+        const localState = loadAutoRunState();
+        if (!localState) {
+          const cloudState = await loadAutoRunCheckpoint();
+          if (cloudState && cloudState.provincesQueue.length > 0) {
+            const asLocal: AutoRunState = { ...cloudState, recentLocations: [] };
+            saveAutoRunState(asLocal);
+            setAutoRunState(asLocal);
+          }
+        }
+        setCloudSyncStatus('synced');
+      } catch {
+        setCloudSyncStatus('error');
+      }
+    };
+    syncFromCloud();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Auth status monitor
   useEffect(() => {
