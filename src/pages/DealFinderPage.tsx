@@ -105,7 +105,7 @@ const DealCard = ({ deal, index }: { deal: DealFinderResult; index: number }) =>
                   size="sm"
                   variant="ghost"
                   className="text-primary hover:text-primary-foreground hover:bg-primary text-xs gap-1"
-                  onClick={() => navigate(`/property/${deal.property_id}`)}
+                  onClick={() => navigate(`/properties/${deal.property_id}`)}
                 >
                   View <ArrowRight className="w-3 h-3" />
                 </Button>
