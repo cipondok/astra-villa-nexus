@@ -167,6 +167,7 @@ const SellerIntelligencePage = lazy(() => import('@/pages/SellerIntelligencePage
 const ListingOptimizerPage = lazy(() => import('@/pages/ListingOptimizerPage'));
 const PropertyMarketDashboard = lazy(() => import('@/pages/PropertyMarketDashboard'));
 const LocationIntelligencePage = lazy(() => import('@/pages/LocationIntelligencePage'));
+const InvestorAlertsPage = lazy(() => import('@/pages/InvestorAlertsPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -367,6 +368,9 @@ const AppContent = () => {
                 <Route path="/market-data" element={<MarketIntelligence />} />
                 <Route path="/property-market-dashboard" element={<PropertyMarketDashboard />} />
                 <Route path="/location-intelligence" element={<LocationIntelligencePage />} />
+                <Route path="/investor-alerts" element={<ProtectedRoute />}>
+                  <Route index element={<InvestorAlertsPage />} />
+                </Route>
                 <Route path="/ai-map" element={<AIMapSearchPage />} />
                 <Route path="/map-search" element={<AIMapSearchPage />} />
                 <Route path="/digital-twin/:id" element={<DigitalTwinPage />} />
