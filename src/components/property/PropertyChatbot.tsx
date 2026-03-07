@@ -25,7 +25,7 @@ interface PropertyChatbotProps {
   propertyData?: Record<string, unknown>;
 }
 
-const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-engine`;
+const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-assistant`;
 
 export default function PropertyChatbot({ propertyId, propertyData }: PropertyChatbotProps) {
   const [messages, setMessages] = useState<Msg[]>([]);
