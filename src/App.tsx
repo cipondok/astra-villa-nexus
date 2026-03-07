@@ -135,6 +135,7 @@ const AIPropertyValuationPage = lazy(() => import('@/pages/AIPropertyValuationPa
 const AITenantMatchingPage = lazy(() => import('@/pages/AITenantMatchingPage'));
 const AISmartPricingPage = lazy(() => import('@/pages/AISmartPricingPage'));
 const AIDocumentGeneratorPage = lazy(() => import('@/pages/AIDocumentGeneratorPage'));
+const RentalYieldOptimizerPage = lazy(() => import('@/pages/RentalYieldOptimizerPage'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const Help = lazy(() => import('@/pages/Help'));
 const About = lazy(() => import('@/pages/About'));
