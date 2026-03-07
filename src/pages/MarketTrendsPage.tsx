@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   TrendingUp, TrendingDown, Minus, MapPin, BarChart3, Clock, Sparkles,
   Flame, Building2, ChevronDown, ArrowUpRight, ArrowDownRight, Activity,
-  Layers, Target, Zap,
+  Layers, Target, Zap, PieChartIcon,
 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { useMarketTrendsAnalyzer, TimeRange, HotZone } from '@/hooks/useMarketTrendsAnalyzer';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
-  PieChart, Pie,
+  PieChart, Pie, Legend,
 } from 'recharts';
 
 const CITIES = ['', 'Jakarta', 'Bali', 'Bandung', 'Surabaya', 'Yogyakarta', 'Tangerang', 'Bekasi', 'Depok', 'Bogor', 'Semarang', 'Makassar', 'Medan', 'Lombok', 'Denpasar'];
@@ -39,12 +41,46 @@ const HEAT_CONFIG: Record<string, { color: string; bg: string; icon: React.Eleme
 const TREND_ICON = { rising: TrendingUp, declining: TrendingDown, stable: Minus, insufficient_data: Minus };
 const TREND_COLOR = { rising: 'text-green-600', declining: 'text-red-500', stable: 'text-gold-primary', insufficient_data: 'text-muted-foreground' };
 
+const TYPE_COLORS: Record<string, string> = {
+  villa: 'hsl(var(--chart-3))',
+  apartment: 'hsl(var(--chart-1))',
+  house: 'hsl(var(--primary))',
+  land: 'hsl(var(--chart-5))',
+  commercial: 'hsl(var(--chart-2))',
+  warehouse: 'hsl(var(--gold-primary))',
+  kost: 'hsl(var(--chart-4))',
+  townhouse: 'hsl(var(--accent-foreground))',
+};
+
 export default function MarketTrendsPage() {
   const [city, setCity] = useState('');
   const [propertyType, setPropertyType] = useState('');
   const [timeRange, setTimeRange] = useState<TimeRange>('6m');
 
   const { data, isLoading } = useMarketTrendsAnalyzer({ city, property_type: propertyType, time_range: timeRange });
+
+  // Property type breakdown query
+  const { data: typeBreakdown } = useQuery({
+    queryKey: ['market-trends-type-breakdown', city],
+    queryFn: async () => {
+      let query = supabase
+        .from('properties')
+        .select('property_type')
+        .eq('status', 'active')
+        .eq('approval_status', 'approved');
+      if (city) query = query.eq('city', city);
+      const { data: rows, error } = await query;
+      if (error) throw error;
+      const counts: Record<string, number> = {};
+      (rows || []).forEach((r: any) => {
+        const t = r.property_type || 'other';
+        counts[t] = (counts[t] || 0) + 1;
+      });
+      return Object.entries(counts)
+        .map(([name, value]) => ({ name, value }))
+        .sort((a, b) => b.value - a.value);
+    },
+  });
 
   const TrendIcon = data ? TREND_ICON[data.trend_direction] : Minus;
   const trendColor = data ? TREND_COLOR[data.trend_direction] : '';
@@ -256,6 +292,60 @@ export default function MarketTrendsPage() {
                 </div>
               </div>
             </div>
+
+            {/* Property Type Breakdown */}
+            {typeBreakdown && typeBreakdown.length > 0 && (
+              <div className="rounded-2xl border border-border/50 bg-card p-5 space-y-3">
+                <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                  <PieChartIcon className="h-4 w-4 text-primary" /> Property Type Breakdown
+                  {city && <Badge variant="secondary" className="text-[10px] h-5">{city}</Badge>}
+                </h3>
+                <div className="flex flex-col md:flex-row items-center gap-6">
+                  <div className="h-56 w-56 shrink-0">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={typeBreakdown}
+                          cx="50%" cy="50%"
+                          innerRadius={50} outerRadius={85}
+                          paddingAngle={3}
+                          dataKey="value"
+                          nameKey="name"
+                        >
+                          {typeBreakdown.map((entry, i) => (
+                            <Cell key={entry.name} fill={TYPE_COLORS[entry.name] || `hsl(${(i * 55) % 360}, 60%, 55%)`} />
+                          ))}
+                        </Pie>
+                        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 12, border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} />
+                        <Legend
+                          layout="vertical"
+                          align="right"
+                          verticalAlign="middle"
+                          wrapperStyle={{ fontSize: 11 }}
+                          formatter={(value: string) => <span className="capitalize text-foreground">{value}</span>}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 flex-1 w-full">
+                    {typeBreakdown.slice(0, 6).map((entry, i) => {
+                      const total = typeBreakdown.reduce((s, e) => s + e.value, 0);
+                      const pct = total > 0 ? ((entry.value / total) * 100).toFixed(1) : '0';
+                      return (
+                        <div key={entry.name} className="rounded-xl border border-border/30 bg-muted/10 p-3 space-y-1">
+                          <div className="flex items-center gap-2">
+                            <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: TYPE_COLORS[entry.name] || `hsl(${(i * 55) % 360}, 60%, 55%)` }} />
+                            <span className="text-xs font-medium text-foreground capitalize truncate">{entry.name}</span>
+                          </div>
+                          <p className="text-lg font-bold text-foreground">{entry.value}</p>
+                          <p className="text-[10px] text-muted-foreground">{pct}% of total</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Hot Zones */}
             {data.hot_zones.length > 0 && (
