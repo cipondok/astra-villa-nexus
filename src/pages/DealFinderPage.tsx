@@ -9,8 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { Loader2, Flame, TrendingUp, Eye, Bookmark, Building2, MapPin, ArrowRight, Sparkles, BarChart3, Search, Target } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import EnhancedNavigation from '@/components/navigation/EnhancedNavigation';
+import ProfessionalFooter from '@/components/ProfessionalFooter';
 
 const ratingConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   hot_deal: { label: 'Hot Deal', color: 'bg-red-500/20 text-red-400 border-red-500/30', icon: <Flame className="w-3 h-3" /> },
