@@ -322,6 +322,9 @@ const AppContent = () => {
                 <Route path="/investment-assistant" element={<ProtectedRoute />}>
                   <Route index element={<InvestmentAssistantPage />} />
                 </Route>
+                <Route path="/autonomous-agent" element={<ProtectedRoute />}>
+                  <Route index element={<AutonomousAgentPage />} />
+                </Route>
                 <Route path="/deal-finder" element={<ProtectedRoute />}>
                   <Route index element={<DealFinderPage />} />
                 </Route>
