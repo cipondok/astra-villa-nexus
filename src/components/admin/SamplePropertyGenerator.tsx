@@ -127,7 +127,7 @@ const SamplePropertyGenerator = () => {
   const [provinceOpen, setProvinceOpen] = useState(false);
   const [skipExisting, setSkipExisting] = useState(true);
   const [isRunning, setIsRunning] = useState(false);
-  const [progress, setProgress] = useState({ created: 0, skipped: 0, errors: 0, processed: 0, total: 0 });
+  const [progress, setProgress] = useState({ created: 0, skipped: 0, errors: 0, processed: 0, total: 0, existingCount: 0 });
   const [result, setResult] = useState<any>(null);
   const cancelRef = useRef(false);
 
