@@ -216,7 +216,7 @@ export function useUpdateChatbotSetting() {
 export function useTestChatbotResponse() {
   return useMutation({
     mutationFn: async (testMessage: string) => {
-      const { data, error } = await supabase.functions.invoke("ai-engine", {
+      const { data, error } = await supabase.functions.invoke("ai-assistant", {
         body: { mode: "property_chatbot", payload: { property_id: null, message: testMessage, conversation_history: [] } },
       });
       if (error) throw error;
