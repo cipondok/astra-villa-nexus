@@ -135,9 +135,11 @@ const DealFinderPage = () => {
     limit: 30,
   });
 
+  const { language, toggleLanguage } = useLanguage();
+
   return (
     <div className="min-h-screen bg-background">
-      <EnhancedNavigation />
+      <EnhancedNavigation language={language} onLanguageToggle={toggleLanguage} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 pt-24">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
@@ -249,7 +251,7 @@ const DealFinderPage = () => {
           </div>
         )}
       </div>
-      <ProfessionalFooter />
+      <ProfessionalFooter language={language} />
     </div>
   );
 };
