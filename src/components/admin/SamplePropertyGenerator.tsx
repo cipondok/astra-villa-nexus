@@ -269,23 +269,54 @@ const SamplePropertyGenerator = () => {
     let offset = startOffset;
     let hasMore = true;
     let consecutiveErrors = 0;
+    let accessToken: string | null = null;
     const citiesSet = new Set<string>();
     const areasSet = new Set<string>();
 
     while (hasMore && !cancelRef.current) {
       try {
-        if (offset % 10 === 0 || consecutiveErrors > 0) {
+        if (!accessToken || offset % 10 === 0 || consecutiveErrors > 0) {
           const { data: { session: currentSession } } = await supabase.auth.getSession();
           if (!currentSession?.access_token) {
             toast.error("Session lost. Please log in again and retry.");
             cancelRef.current = true;
             break;
           }
+          accessToken = currentSession.access_token;
         }
 
-        const { data, error } = await supabase.functions.invoke("seed-sample-properties", {
-          body: { province, skipExisting: true, offset },
-        });
+        const invokeBatch = async (token: string) =>
+          supabase.functions.invoke("seed-sample-properties", {
+            body: { province, skipExisting: true, offset },
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+        if (!accessToken) {
+          toast.error("Session lost. Please log in again and retry.");
+          cancelRef.current = true;
+          break;
+        }
+
+        let { data, error } = await invokeBatch(accessToken);
+
+        if (error) {
+          const errorMsg = error.message || '';
+          if (errorMsg.includes('401') || errorMsg.includes('Unauthorized') || errorMsg.includes('Invalid token')) {
+            const { data: refreshed, error: refreshErr } = await supabase.auth.refreshSession();
+            const refreshedToken = refreshed.session?.access_token;
+
+            if (refreshErr || !refreshedToken) {
+              toast.error("Session expired. Please log in again.");
+              cancelRef.current = true;
+              break;
+            }
+
+            accessToken = refreshedToken;
+            const retry = await invokeBatch(refreshedToken);
+            data = retry.data;
+            error = retry.error;
+          }
+        }
 
         if (error) {
           const errorMsg = error.message || '';

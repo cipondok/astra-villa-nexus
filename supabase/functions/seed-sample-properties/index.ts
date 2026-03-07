@@ -98,8 +98,18 @@ Deno.serve(async (req) => {
 
   try {
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
+    const bearerPrefix = "Bearer ";
+
+    if (!authHeader?.startsWith(bearerPrefix)) {
       return new Response(JSON.stringify({ error: "Authentication required" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const accessToken = authHeader.slice(bearerPrefix.length).trim();
+    if (!accessToken) {
+      return new Response(JSON.stringify({ error: "Invalid token" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -109,15 +119,23 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const anonClient = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!, {
-      global: { headers: { Authorization: authHeader } },
-    });
-    const { data: userData, error: userErr } = await anonClient.auth.getUser();
+    const anonClient = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!);
+    const { data: userData, error: userErr } = await anonClient.auth.getUser(accessToken);
+
     if (userErr || !userData?.user) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      const status = (userErr as any)?.status;
+      const message = (userErr as any)?.message || "";
+      const isTransientAuthError =
+        (typeof status === "number" && status >= 500) ||
+        /context canceled|timeout|network|unexpected_failure/i.test(message);
+
+      return new Response(
+        JSON.stringify({ error: isTransientAuthError ? "Auth service temporarily unavailable" : "Invalid token" }),
+        {
+          status: isTransientAuthError ? 503 : 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
     }
 
     const userId = userData.user.id;
