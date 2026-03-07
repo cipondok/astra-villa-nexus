@@ -63,7 +63,7 @@ export default function TourPlannerPanel() {
     });
   };
 
-  const saved = (savedProps.data || []) as any[];
+  const searchHits = (searchResults.data || []) as any[];
 
   return (
     <div className="space-y-6">
@@ -74,66 +74,63 @@ export default function TourPlannerPanel() {
             <Route className="h-5 w-5 text-primary" />
             Smart Property Tour Planner
           </CardTitle>
-          <CardDescription>Pilih properti dan AI akan merencanakan rute kunjungan optimal</CardDescription>
+          <CardDescription>Cari & pilih properti, AI akan merencanakan rute kunjungan optimal</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Saved properties */}
-          {saved.length > 0 && (
-            <div className="space-y-2">
-              <label className="text-xs font-medium text-muted-foreground">Properti Tersimpan</label>
-              <div className="grid sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto">
-                {saved.map((p: any) => (
-                  <button
-                    key={p.id}
-                    onClick={() => toggleProperty(p.id)}
-                    className={`flex items-center gap-2 p-2 rounded-lg border text-left transition-all text-sm ${
-                      selectedIds.includes(p.id)
-                        ? 'border-primary bg-primary/10 ring-1 ring-primary/30'
-                        : 'border-border bg-card hover:border-primary/40'
-                    }`}
-                  >
-                    <div className="w-8 h-8 rounded bg-muted overflow-hidden shrink-0">
-                      {p.thumbnail_url ? (
-                        <img src={p.thumbnail_url} alt="" className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center"><Building2 className="h-3 w-3 text-muted-foreground" /></div>
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-xs font-medium text-foreground truncate">{p.title}</p>
-                      <p className="text-[10px] text-muted-foreground">{p.city}</p>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Manual ID input */}
+          {/* Search */}
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-muted-foreground">Tambah Property ID Manual</label>
-            <div className="flex gap-2">
+            <label className="text-xs font-medium text-muted-foreground">Cari Properti</label>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
               <Input
-                placeholder="Property ID"
-                value={manualId}
-                onChange={e => setManualId(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && addManualId()}
+                placeholder="Ketik nama properti..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="pl-9"
               />
-              <Button variant="outline" size="sm" onClick={addManualId}>Tambah</Button>
             </div>
           </div>
 
-          {/* Selected count */}
+          {/* Search Results */}
+          {searchHits.length > 0 && (
+            <div className="grid sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+              {searchHits.map((p: any) => (
+                <button
+                  key={p.id}
+                  onClick={() => toggleProperty(p)}
+                  className={`flex items-center gap-2 p-2 rounded-lg border text-left transition-all text-sm ${
+                    selectedIds.includes(p.id)
+                      ? 'border-primary bg-primary/10 ring-1 ring-primary/30'
+                      : 'border-border bg-card hover:border-primary/40'
+                  }`}
+                >
+                  <div className="w-8 h-8 rounded bg-muted overflow-hidden shrink-0">
+                    {p.thumbnail_url ? (
+                      <img src={p.thumbnail_url} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center"><Building2 className="h-3 w-3 text-muted-foreground" /></div>
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs font-medium text-foreground truncate">{p.title}</p>
+                    <p className="text-[10px] text-muted-foreground">{p.city} • {p.property_type}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Selected */}
           {selectedIds.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {selectedIds.map((id, i) => {
-                const p = saved.find((s: any) => s.id === id);
+                const p = selectedProps[id];
                 return (
                   <Badge
                     key={id}
                     variant="secondary"
                     className="text-xs cursor-pointer hover:bg-destructive/20"
-                    onClick={() => toggleProperty(id)}
+                    onClick={() => toggleProperty({ id })}
                   >
                     {i + 1}. {p?.title?.slice(0, 20) || id.slice(0, 8)} ✕
                   </Badge>
