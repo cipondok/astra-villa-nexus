@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDealFinder, DealFinderResult } from '@/hooks/useDealFinder';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Progress } from '@/components/ui/progress';
 import { Loader2, Flame, TrendingUp, Eye, Bookmark, Building2, MapPin, ArrowRight, Sparkles, BarChart3, Search, Target } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
-import EnhancedNavigation from '@/components/navigation/EnhancedNavigation';
-import ProfessionalFooter from '@/components/ProfessionalFooter';
 
 const ratingConfig: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   hot_deal: { label: 'Hot Deal', color: 'bg-red-500/20 text-red-400 border-red-500/30', icon: <Flame className="w-3 h-3" /> },
@@ -110,7 +105,7 @@ const DealCard = ({ deal, index }: { deal: DealFinderResult; index: number }) =>
                   size="sm"
                   variant="ghost"
                   className="text-primary hover:text-primary-foreground hover:bg-primary text-xs gap-1"
-                  onClick={() => navigate(`/property/${deal.property_id}`)}
+                  onClick={() => navigate(`/properties/${deal.property_id}`)}
                 >
                   View <ArrowRight className="w-3 h-3" />
                 </Button>
@@ -135,13 +130,9 @@ const DealFinderPage = () => {
     limit: 30,
   });
 
-  const { language, setLanguage } = useLanguage();
-  const toggleLanguage = () => setLanguage(language === 'en' ? 'id' : 'en');
-
   return (
     <div className="min-h-screen bg-background">
-      <EnhancedNavigation language={language} onLanguageToggle={toggleLanguage} />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 pt-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <div className="flex items-center gap-3 mb-2">
@@ -252,7 +243,7 @@ const DealFinderPage = () => {
           </div>
         )}
       </div>
-      <ProfessionalFooter language={language} />
+      
     </div>
   );
 };

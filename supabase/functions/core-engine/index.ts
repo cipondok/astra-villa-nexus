@@ -1027,39 +1027,44 @@ Deno.serve(async (req) => {
       });
     }
 
-    // ── Fetch property (superset of fields needed by both modes) ──
-    const { data: property, error: pErr } = await supabase
-      .from('properties')
-      .select('id, price, city, area_sqm, land_area_sqm, building_area_sqm, has_pool, garage_count, floors, property_type, listing_type, investment_score, status, owner_id, agent_id, description, kt, km')
-      .eq('id', property_id)
-      .maybeSingle();
+    // ── Fetch property + ownership auth only for property-scoped modes ──
+    let property: any = null;
+    if (!NO_PROPERTY_ID_MODES.has(mode)) {
+      const { data: propertyRow, error: pErr } = await supabase
+        .from('properties')
+        .select('id, price, city, area_sqm, land_area_sqm, building_area_sqm, has_pool, garage_count, floors, property_type, listing_type, investment_score, status, owner_id, agent_id, description, kt, km')
+        .eq('id', property_id)
+        .maybeSingle();
 
-    if (pErr || !property) {
-      return new Response(JSON.stringify({ error: 'Property not found' }), {
-        status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    // ── Authorization: service_role, owner, agent, or admin ──
-    if (!isServiceRole) {
-      const isOwner = property.owner_id === userId;
-      const isAgent = property.agent_id === userId;
-
-      let isAdmin = false;
-      if (!isOwner && !isAgent) {
-        const { data: roleRow } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', userId)
-          .eq('role', 'admin')
-          .maybeSingle();
-        isAdmin = !!roleRow;
+      if (pErr || !propertyRow) {
+        return new Response(JSON.stringify({ error: 'Property not found' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
       }
 
-      if (!isOwner && !isAgent && !isAdmin) {
-        return new Response(JSON.stringify({ error: 'Forbidden – only property owner, agent, or admin allowed' }), {
-          status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
+      property = propertyRow;
+
+      // ── Authorization: service_role, owner, agent, or admin ──
+      if (!isServiceRole) {
+        const isOwner = property.owner_id === userId;
+        const isAgent = property.agent_id === userId;
+
+        let isAdmin = false;
+        if (!isOwner && !isAgent) {
+          const { data: roleRow } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', userId)
+            .eq('role', 'admin')
+            .maybeSingle();
+          isAdmin = !!roleRow;
+        }
+
+        if (!isOwner && !isAgent && !isAdmin) {
+          return new Response(JSON.stringify({ error: 'Forbidden – only property owner, agent, or admin allowed' }), {
+            status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
       }
     }
 

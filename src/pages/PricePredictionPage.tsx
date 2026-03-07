@@ -3,14 +3,10 @@ import { motion } from 'framer-motion';
 import { usePricePrediction } from '@/hooks/usePricePrediction';
 import { useSecureProperties } from '@/hooks/useSecureProperties';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
 import { Loader2, TrendingUp, Calendar, Flame, BarChart3, Sparkles, ArrowUpRight, Target, Building2 } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import EnhancedNavigation from '@/components/navigation/EnhancedNavigation';
-import ProfessionalFooter from '@/components/ProfessionalFooter';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart, CartesianGrid } from 'recharts';
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 const formatPrice = (price: number) => {
   if (price >= 1e9) return `Rp ${(price / 1e9).toFixed(2)}B`;
@@ -21,8 +17,6 @@ const formatPrice = (price: number) => {
 const PricePredictionPage = () => {
   const [selectedPropertyId, setSelectedPropertyId] = useState<string>('');
   const [forecastYears, setForecastYears] = useState(5);
-  const { language, setLanguage } = useLanguage();
-  const toggleLanguage = () => setLanguage(language === 'en' ? 'id' : 'en');
 
   const { data: properties, isLoading: propertiesLoading } = useSecureProperties({ limit: 50 });
   const { data: prediction, isLoading: predictionLoading, error } = usePricePrediction(
@@ -30,12 +24,9 @@ const PricePredictionPage = () => {
     forecastYears
   );
 
-  const selectedProperty = properties?.find(p => p.id === selectedPropertyId);
-
   return (
     <div className="min-h-screen bg-background">
-      <EnhancedNavigation language={language} onLanguageToggle={toggleLanguage} />
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 pt-24">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <div className="flex items-center gap-3 mb-2">
@@ -230,7 +221,7 @@ const PricePredictionPage = () => {
           </motion.div>
         )}
       </div>
-      <ProfessionalFooter language={language} />
+      
     </div>
   );
 };

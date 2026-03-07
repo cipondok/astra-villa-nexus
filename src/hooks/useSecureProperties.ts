@@ -56,7 +56,7 @@ export const useSecureProperties = (filters: PropertySearchFilters = {}) => {
   return useQuery({
     queryKey: ['secure-properties', filters],
     queryFn: async (): Promise<SecureProperty[]> => {
-      const { data, error } = await supabase.rpc('get_public_property_listings_secure', {
+      const rpcParams = {
         p_limit: filters.limit || 20,
         p_offset: filters.offset || 0,
         p_search: filters.search || null,
@@ -65,15 +65,83 @@ export const useSecureProperties = (filters: PropertySearchFilters = {}) => {
         p_city: filters.city || null,
         p_min_price: filters.min_price || null,
         p_max_price: filters.max_price || null,
-        p_require_auth: true
-      });
+        p_require_auth: true,
+      };
 
-      if (error) {
+      const { data, error } = await supabase.rpc('get_public_property_listings_secure', rpcParams);
+
+      if (!error) {
+        return data || [];
+      }
+
+      const isRoleColumnIssue =
+        error.code === '42703' ||
+        /column\s+"?role"?\s+does not exist/i.test(error.message || '');
+
+      if (!isRoleColumnIssue) {
         console.error('Error fetching secure properties:', error);
         throw new Error(error.message);
       }
 
-      return data || [];
+      console.warn('Fallback to direct properties query due to RPC schema mismatch:', error.message);
+
+      let fallbackQuery = supabase
+        .from('properties')
+        .select(
+          'id, title, description, price, property_type, listing_type, location, city, area, state, bedrooms, bathrooms, area_sqm, building_area_sqm, images, image_urls, status, created_at, development_status, thumbnail_url, virtual_tour_url',
+          { count: 'exact' }
+        )
+        .order('created_at', { ascending: false });
+
+      if (filters.search?.trim()) {
+        const term = `%${filters.search.trim()}%`;
+        fallbackQuery = fallbackQuery.or(`title.ilike.${term},location.ilike.${term},city.ilike.${term}`);
+      }
+
+      if (filters.property_type) fallbackQuery = fallbackQuery.eq('property_type', filters.property_type);
+      if (filters.listing_type) fallbackQuery = fallbackQuery.eq('listing_type', filters.listing_type);
+      if (filters.city) fallbackQuery = fallbackQuery.eq('city', filters.city);
+      if (typeof filters.min_price === 'number') fallbackQuery = fallbackQuery.gte('price', filters.min_price);
+      if (typeof filters.max_price === 'number') fallbackQuery = fallbackQuery.lte('price', filters.max_price);
+
+      const limit = filters.limit || 20;
+      const offset = filters.offset || 0;
+      fallbackQuery = fallbackQuery.range(offset, offset + limit - 1);
+
+      const { data: fallbackData, error: fallbackError, count } = await fallbackQuery;
+
+      if (fallbackError) {
+        console.error('Fallback secure properties query failed:', fallbackError);
+        throw new Error(fallbackError.message);
+      }
+
+      const totalCount = count ?? fallbackData?.length ?? 0;
+
+      return (fallbackData || []).map((property: any) => ({
+        id: property.id,
+        title: property.title || 'Untitled Property',
+        description: property.description || '',
+        price: Number(property.price) || 0,
+        property_type: property.property_type || '',
+        listing_type: property.listing_type || '',
+        location: property.location || '',
+        city: property.city || '',
+        area: property.area || '',
+        state: property.state || '',
+        bedrooms: Number(property.bedrooms) || 0,
+        bathrooms: Number(property.bathrooms) || 0,
+        area_sqm: Number(property.area_sqm ?? property.building_area_sqm) || 0,
+        images: Array.isArray(property.images) ? property.images : [],
+        image_urls: Array.isArray(property.image_urls) ? property.image_urls : [],
+        status: property.status || 'unknown',
+        created_at: property.created_at,
+        development_status: property.development_status || 'unknown',
+        thumbnail_url: property.thumbnail_url || '',
+        virtual_tour_url: property.virtual_tour_url || '',
+        total_count: totalCount,
+        can_view_contact_info: false,
+        can_view_owner_info: false,
+      }));
     },
     enabled: true, // Always enabled since the function handles authentication
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
