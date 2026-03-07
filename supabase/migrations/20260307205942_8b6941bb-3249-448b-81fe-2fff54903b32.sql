@@ -1,0 +1,1 @@
+ALTER FUNCTION match_property_to_searches() SET search_path = public;
