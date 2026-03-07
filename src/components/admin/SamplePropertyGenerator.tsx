@@ -704,7 +704,7 @@ const SamplePropertyGenerator = () => {
       toast.success(`🎉 Auto-run complete! ${globalTotals.created} total properties across ${completedList.length} provinces.`);
       refetchCounts();
     }
-  }, [provinces, doneProvinces, refetchCounts, liveCity, liveArea]);
+  }, [provinces, doneProvinces, refetchCounts, liveCity, liveArea, saveAutoRunCheckpoint, saveDoneProvinceCheckpoint, clearAutoRunCheckpoint]);
 
   const handleAutoRun = () => {
     const saved = loadAutoRunState();
