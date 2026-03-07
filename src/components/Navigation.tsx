@@ -284,6 +284,9 @@ const Navigation = () => {
               {user && !isAdmin && !isAgent && isPropertyOwner && (
                 <NavIconButton icon={BarChart3} label={t('nav.dashboard')} isActive={isActive('/dashboard/property-owner')} onClick={() => navigate('/dashboard/property-owner')} showLabel />
               )}
+              {user && !isAdmin && isPropertyOwner && (
+                <NavIconButton icon={TrendingUp} label="Seller Intelligence" isActive={isActive('/seller-intelligence')} onClick={() => navigate('/seller-intelligence')} />
+              )}
               {user && !isAdmin && !isAgent && !isPropertyOwner && (
                 <NavIconButton icon={BarChart3} label={t('nav.dashboard')} isActive={isActive('/dashboard/user')} onClick={() => navigate('/dashboard/user')} showLabel />
               )}
@@ -390,6 +393,9 @@ const Navigation = () => {
                       <MobileSectionLabel>Account</MobileSectionLabel>
                       {user && !isAdmin && !isAgent && isPropertyOwner && (
                         <MobileNavButton icon={BarChart3} label={t('nav.dashboard')} active={isActive('/dashboard/property-owner')} onClick={() => { navigate('/dashboard/property-owner'); toggleMenu(); }} indent />
+                      )}
+                      {user && !isAdmin && isPropertyOwner && (
+                        <MobileNavButton icon={TrendingUp} label="Seller Intelligence" active={isActive('/seller-intelligence')} onClick={() => { navigate('/seller-intelligence'); toggleMenu(); }} indent />
                       )}
                       {user && !isAdmin && !isAgent && !isPropertyOwner && (
                         <MobileNavButton icon={BarChart3} label={t('nav.dashboard')} active={isActive('/dashboard/user')} onClick={() => { navigate('/dashboard/user'); toggleMenu(); }} indent />
