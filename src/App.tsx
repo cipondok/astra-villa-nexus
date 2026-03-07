@@ -159,6 +159,7 @@ const KprCalculatorPage = lazy(() => import('@/pages/KprCalculatorPage'));
 const MarketIntelligence = lazy(() => import('@/pages/MarketIntelligence'));
 const EarlyInvestment = lazy(() => import('@/pages/EarlyInvestment'));
 const PortfolioDashboard = lazy(() => import('@/pages/PortfolioDashboard'));
+const InvestorDashboard = lazy(() => import('@/pages/InvestorDashboard'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -288,6 +289,9 @@ const AppContent = () => {
                 <Route path="/early-investment" element={<EarlyInvestment />} />
                 <Route path="/portfolio-dashboard" element={<ProtectedRoute />}>
                   <Route index element={<PortfolioDashboard />} />
+                </Route>
+                <Route path="/investor-dashboard" element={<ProtectedRoute />}>
+                  <Route index element={<InvestorDashboard />} />
                 </Route>
                 <Route path="/foreign-investment" element={<Navigate to="/investment" replace />} />
                 <Route path="/kpr-calculator" element={<KprCalculatorPage />} />
