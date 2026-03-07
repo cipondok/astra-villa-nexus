@@ -136,7 +136,7 @@ const DealFinderPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+      <EnhancedNavigation />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 pt-24">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
@@ -248,7 +248,7 @@ const DealFinderPage = () => {
           </div>
         )}
       </div>
-      <Footer />
+      <ProfessionalFooter />
     </div>
   );
 };
