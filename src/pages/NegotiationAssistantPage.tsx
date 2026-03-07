@@ -5,10 +5,7 @@ import { useSecureProperties } from '@/hooks/useSecureProperties';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
-import { Loader2, Handshake, TrendingDown, Building2, Flame, Target, BarChart3, Clock, ShieldCheck, MessageSquare, ArrowDown, ArrowUp } from 'lucide-react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import EnhancedNavigation from '@/components/navigation/EnhancedNavigation';
-import ProfessionalFooter from '@/components/ProfessionalFooter';
+import { Loader2, Handshake, Building2, Flame, Target, BarChart3, Clock, ShieldCheck, MessageSquare, ArrowDown } from 'lucide-react';
 
 const formatPrice = (price: number) => {
   if (price >= 1e9) return `Rp ${(price / 1e9).toFixed(2)}B`;
@@ -18,8 +15,6 @@ const formatPrice = (price: number) => {
 
 const NegotiationAssistantPage = () => {
   const [selectedPropertyId, setSelectedPropertyId] = useState('');
-  const { language, setLanguage } = useLanguage();
-  const toggleLanguage = () => setLanguage(language === 'en' ? 'id' : 'en');
 
   const { data: properties, isLoading: propertiesLoading } = useSecureProperties({ limit: 50 });
   const { data, isLoading, error } = useNegotiationAssistant(selectedPropertyId || undefined);
@@ -30,8 +25,7 @@ const NegotiationAssistantPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <EnhancedNavigation language={language} onLanguageToggle={toggleLanguage} />
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 pt-24">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <div className="flex items-center gap-3 mb-2">
@@ -246,7 +240,7 @@ const NegotiationAssistantPage = () => {
           </motion.div>
         )}
       </div>
-      <ProfessionalFooter language={language} />
+      
     </div>
   );
 };
