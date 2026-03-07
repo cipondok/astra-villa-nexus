@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'price_fairness', 'listing_performance_predictor', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence', 'investor_alerts', 'portfolio_builder', 'off_market_deals', 'developer_project_launch', 'smart_tour_planner'];
+    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'price_fairness', 'listing_performance_predictor', 'investment_advisor', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence', 'investor_alerts', 'portfolio_builder', 'off_market_deals', 'developer_project_launch', 'smart_tour_planner'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -5367,6 +5367,173 @@ Deno.serve(async (req) => {
           input: { budget, location, risk_level: riskLevel, investment_goal: investmentGoal },
           candidates_scanned: candidates.length,
           eligible_after_risk_filter: eligible.length,
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: investment_advisor — Per-property investment recommendations with AI explanation
+    // ═══════════════════════════════════════════
+    if (mode === 'investment_advisor') {
+      const budget = Number(body.budget) || 0;
+      const preferredLocation = (body.preferred_location || body.location || '').trim();
+      const investmentGoal = (body.investment_goal || 'long_term') as 'rental' | 'flip' | 'long_term';
+      const resultLimit = Math.min(Number(body.limit) || 10, 20);
+
+      if (budget <= 0) {
+        return new Response(JSON.stringify({ error: 'budget is required and must be > 0' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // 1. Fetch candidates within budget
+      let q = supabase
+        .from('properties')
+        .select('id, title, city, district, price, property_type, bedrooms, bathrooms, building_area_sqm, land_area_sqm, area_sqm, investment_score, demand_heat_score, rental_yield, predicted_days_to_sell, thumbnail_url, listing_type, description')
+        .eq('status', 'active')
+        .not('price', 'is', null)
+        .gt('price', 0)
+        .lte('price', budget);
+
+      if (preferredLocation) q = q.ilike('city', `%${preferredLocation}%`);
+
+      const { data: candidates, error: qErr } = await q
+        .order('investment_score', { ascending: false })
+        .limit(100);
+
+      if (qErr) throw qErr;
+      if (!candidates || candidates.length === 0) {
+        return new Response(JSON.stringify({
+          mode: 'investment_advisor',
+          data: { recommendations: [], message: 'No properties found within budget and location' },
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      // 2. Score each candidate with the investment_rating formula
+      const scored = candidates.map(p => {
+        const price = Number(p.price);
+        const invScore = Number(p.investment_score) || 0;
+        const heatScore = Number(p.demand_heat_score) || 0;
+        const rentalYield = Number(p.rental_yield) || 0;
+        const area = Number(p.building_area_sqm) || Number(p.land_area_sqm) || Number(p.area_sqm) || 1;
+        const dom = Number(p.predicted_days_to_sell) || 90;
+
+        // ROI estimate (normalized 0-100): rental yield + capital appreciation estimate
+        const baseGrowth = heatScore > 70 ? 8 : heatScore > 50 ? 5 : 3;
+        const totalRoi = rentalYield + baseGrowth;
+        const roiNormalized = Math.min(100, totalRoi * 5); // 20% ROI = 100
+
+        // Price fairness score (0-100): compare price/sqm to city median
+        // Simplified: lower price/sqm relative to investment score = better value
+        const ppsqm = price / area;
+        let priceFairness = 50;
+        if (invScore >= 70 && ppsqm < 30000000) priceFairness = 85;
+        else if (invScore >= 60 && ppsqm < 50000000) priceFairness = 70;
+        else if (invScore >= 50) priceFairness = 55;
+        else priceFairness = 35;
+
+        // Liquidity score (0-100): based on predicted days to sell
+        let liquidityScore: number;
+        if (dom <= 30) liquidityScore = 95;
+        else if (dom <= 60) liquidityScore = 75;
+        else if (dom <= 90) liquidityScore = 55;
+        else if (dom <= 120) liquidityScore = 35;
+        else liquidityScore = 15;
+
+        // Investment rating formula
+        const investmentRating = Math.round(
+          (roiNormalized * 0.40) +
+          (invScore * 0.25) +
+          (heatScore * 0.20) +
+          (priceFairness * 0.10) +
+          (liquidityScore * 0.05)
+        );
+
+        // Goal-specific boost
+        let goalBoost = 0;
+        if (investmentGoal === 'rental' && rentalYield >= 6) goalBoost = 5;
+        else if (investmentGoal === 'flip' && dom <= 45) goalBoost = 5;
+        else if (investmentGoal === 'long_term' && invScore >= 75) goalBoost = 5;
+
+        return {
+          property_id: p.id,
+          title: p.title,
+          city: p.city,
+          district: p.district,
+          price,
+          property_type: p.property_type,
+          bedrooms: p.bedrooms,
+          bathrooms: p.bathrooms,
+          thumbnail_url: p.thumbnail_url,
+          listing_type: p.listing_type,
+          investment_rating: Math.min(100, investmentRating + goalBoost),
+          roi: Math.round(totalRoi * 10) / 10,
+          rental_yield: Math.round(rentalYield * 10) / 10,
+          investment_score: invScore,
+          demand_heat_score: heatScore,
+          price_fairness: priceFairness,
+          liquidity_score: liquidityScore,
+          predicted_days_to_sell: dom,
+          area_sqm: area,
+        };
+      });
+
+      // 3. Rank by investment_rating
+      scored.sort((a, b) => b.investment_rating - a.investment_rating);
+      const top = scored.slice(0, resultLimit);
+
+      // 4. Generate AI explanations via Lovable AI
+      const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+      let recommendations = top.map(p => ({ ...p, explanation: '' }));
+
+      if (LOVABLE_API_KEY && top.length > 0) {
+        try {
+          const goalLabel = investmentGoal === 'rental' ? 'rental income' : investmentGoal === 'flip' ? 'quick flip' : 'long-term appreciation';
+          const prompt = `You are an Indonesian property investment advisor. For each property below, write a 1-2 sentence investment explanation in English explaining WHY it's a good investment for a "${goalLabel}" strategy. Be specific about the numbers.
+
+Properties:
+${top.map((p, i) => `${i + 1}. "${p.title}" in ${p.city} — Rp ${(p.price / 1e9).toFixed(1)}B, ROI ${p.roi}%, investment score ${p.investment_score}/100, demand heat ${p.demand_heat_score}/100, ~${p.predicted_days_to_sell} days to sell`).join('\n')}
+
+Respond ONLY with a JSON array of strings, one explanation per property in same order:
+["explanation1", "explanation2", ...]`;
+
+          const aiResp = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model: 'google/gemini-2.5-flash',
+              messages: [{ role: 'user', content: prompt }],
+            }),
+          });
+
+          if (aiResp.ok) {
+            const aiData = await aiResp.json();
+            let content = aiData.choices?.[0]?.message?.content || '';
+            const codeMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
+            if (codeMatch) content = codeMatch[1];
+            const explanations = JSON.parse(content.trim());
+            if (Array.isArray(explanations)) {
+              recommendations = top.map((p, i) => ({
+                ...p,
+                explanation: explanations[i] || '',
+              }));
+            }
+          }
+        } catch (aiErr) {
+          console.error('AI explanation generation failed:', aiErr);
+          // Continue without explanations
+        }
+      }
+
+      console.log(`Investment advisor: ${recommendations.length} recommendations for budget=${budget} location=${preferredLocation} goal=${investmentGoal}`);
+
+      return new Response(JSON.stringify({
+        mode: 'investment_advisor',
+        data: {
+          recommendations,
+          input: { budget, preferred_location: preferredLocation, investment_goal: investmentGoal },
+          candidates_scanned: candidates.length,
           generated_at: new Date().toISOString(),
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
