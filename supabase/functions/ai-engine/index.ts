@@ -3152,7 +3152,184 @@ Be specific about WHY these are good investments. Mention city trends, growth po
   }
 }
 
-serve(async (req) => {
+async function handleInvestmentAssistant(payload: Record<string, unknown>) {
+  const query = String(payload.query || "").trim();
+  const history = (payload.conversation_history || []) as { role: string; content: string }[];
+  if (!query) return json({ error: "query is required" }, 400);
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const sb = createClient(supabaseUrl, serviceKey);
+
+  // Step 1: Use AI to detect intent and extract parameters
+  const intentResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "google/gemini-3-flash-preview",
+      messages: [
+        { role: "system", content: `You are an intent classifier for a property investment platform. Classify the user query and extract parameters. Always call the classify_intent function.` },
+        { role: "user", content: query },
+      ],
+      tools: [{
+        type: "function",
+        function: {
+          name: "classify_intent",
+          description: "Classify user investment query intent and extract search parameters",
+          parameters: {
+            type: "object",
+            properties: {
+              intent: { type: "string", enum: ["property_search", "investment_analysis", "deal_finder", "market_analysis", "general_advice"] },
+              city: { type: "string", description: "Target city if mentioned" },
+              property_type: { type: "string", description: "villa, apartment, house, land, commercial" },
+              min_price: { type: "number", description: "Minimum price in IDR" },
+              max_price: { type: "number", description: "Maximum price in IDR" },
+              bedrooms: { type: "number" },
+              keywords: { type: "array", items: { type: "string" } },
+              analysis_focus: { type: "string", description: "roi, yield, growth, risk, comparison" },
+            },
+            required: ["intent"],
+            additionalProperties: false,
+          },
+        },
+      }],
+      tool_choice: { type: "function", function: { name: "classify_intent" } },
+    }),
+  });
+
+  if (!intentResponse.ok) {
+    const status = intentResponse.status;
+    if (status === 429) return json({ error: "Rate limited. Please try again." }, 429);
+    if (status === 402) return json({ error: "AI credits required." }, 402);
+    return json({ error: "Intent classification failed" }, 500);
+  }
+
+  const intentData = await intentResponse.json();
+  const toolCall = intentData.choices?.[0]?.message?.tool_calls?.[0];
+  let intent = { intent: "general_advice" } as Record<string, any>;
+  try {
+    intent = JSON.parse(toolCall?.function?.arguments || "{}");
+  } catch { /* use default */ }
+
+  // Step 2: Fetch data based on intent
+  let properties: any[] = [];
+  let marketStats: any = null;
+  const insights: string[] = [];
+
+  if (["property_search", "deal_finder", "investment_analysis"].includes(intent.intent)) {
+    let q = sb.from("properties")
+      .select("id, title, city, state, price, property_type, bedrooms, bathrooms, building_area_sqm, land_area_sqm, thumbnail_url, investment_score, demand_heat_score, rental_yield_estimate, annual_growth_rate")
+      .eq("status", "active")
+      .order("investment_score", { ascending: false })
+      .limit(20);
+
+    if (intent.city) q = q.ilike("city", `%${intent.city}%`);
+    if (intent.property_type) q = q.ilike("property_type", `%${intent.property_type}%`);
+    if (intent.min_price) q = q.gte("price", intent.min_price);
+    if (intent.max_price) q = q.lte("price", intent.max_price);
+    if (intent.bedrooms) q = q.gte("bedrooms", intent.bedrooms);
+
+    const { data } = await q;
+    properties = data || [];
+
+    if (intent.intent === "deal_finder") {
+      // Sort by undervaluation potential
+      properties.sort((a: any, b: any) => (b.investment_score || 0) - (a.investment_score || 0));
+      properties = properties.slice(0, 10);
+      if (properties.length > 0) insights.push(`Found ${properties.length} potential deals with high investment scores.`);
+    }
+  }
+
+  if (["market_analysis", "investment_analysis"].includes(intent.intent)) {
+    const cityFilter = intent.city || null;
+    let mq = sb.from("properties")
+      .select("price, city, property_type, investment_score, demand_heat_score, rental_yield_estimate, annual_growth_rate")
+      .eq("status", "active");
+    if (cityFilter) mq = mq.ilike("city", `%${cityFilter}%`);
+    const { data: mData } = await mq.limit(500);
+    const mProps = mData || [];
+
+    if (mProps.length > 0) {
+      const avgPrice = mProps.reduce((s: number, p: any) => s + (p.price || 0), 0) / mProps.length;
+      const avgScore = mProps.reduce((s: number, p: any) => s + (p.investment_score || 0), 0) / mProps.length;
+      const avgYield = mProps.filter((p: any) => p.rental_yield_estimate).reduce((s: number, p: any) => s + p.rental_yield_estimate, 0) / (mProps.filter((p: any) => p.rental_yield_estimate).length || 1);
+      const avgGrowth = mProps.filter((p: any) => p.annual_growth_rate).reduce((s: number, p: any) => s + p.annual_growth_rate, 0) / (mProps.filter((p: any) => p.annual_growth_rate).length || 1);
+
+      marketStats = {
+        total_listings: mProps.length,
+        avg_price: Math.round(avgPrice),
+        avg_investment_score: Math.round(avgScore),
+        avg_rental_yield: Math.round(avgYield * 100) / 100,
+        avg_growth_rate: Math.round(avgGrowth * 100) / 100,
+        city: cityFilter || "All Indonesia",
+      };
+
+      insights.push(`Market has ${mProps.length} active listings with avg investment score ${marketStats.avg_investment_score}/100.`);
+      if (marketStats.avg_rental_yield > 0) insights.push(`Average rental yield: ${marketStats.avg_rental_yield}%.`);
+      if (marketStats.avg_growth_rate > 0) insights.push(`Average annual growth: ${marketStats.avg_growth_rate}%.`);
+    }
+  }
+
+  // Step 3: Generate natural language response using AI
+  const contextParts: string[] = [];
+  if (properties.length > 0) {
+    contextParts.push(`PROPERTIES FOUND (${properties.length}):\n${properties.slice(0, 10).map((p: any, i: number) =>
+      `${i + 1}. ${p.title} - ${p.city} - IDR ${(p.price || 0).toLocaleString()} - Score: ${p.investment_score || 'N/A'}/100 - Yield: ${p.rental_yield_estimate || 'N/A'}% - Growth: ${p.annual_growth_rate || 'N/A'}%`
+    ).join('\n')}`);
+  }
+  if (marketStats) {
+    contextParts.push(`MARKET STATS:\n- City: ${marketStats.city}\n- Listings: ${marketStats.total_listings}\n- Avg Price: IDR ${marketStats.avg_price.toLocaleString()}\n- Avg Investment Score: ${marketStats.avg_investment_score}/100\n- Avg Yield: ${marketStats.avg_rental_yield}%\n- Avg Growth: ${marketStats.avg_growth_rate}%`);
+  }
+
+  const systemPrompt = `You are ASTRA, an expert AI property investment assistant for Indonesia.
+You help investors find deals, analyze markets, and make informed decisions.
+Keep responses concise (under 200 words), use markdown formatting, and provide actionable advice.
+When presenting properties, highlight their investment potential.
+If market data is provided, analyze trends and give strategic recommendations.
+Always respond in the same language as the user query.
+Intent detected: ${intent.intent}
+${contextParts.length > 0 ? '\nDATA CONTEXT:\n' + contextParts.join('\n\n') : '\nNo specific data found for this query. Provide general investment guidance.'}`;
+
+  const chatMessages = [
+    { role: "system", content: systemPrompt },
+    ...history.slice(-8),
+    { role: "user", content: query },
+  ];
+
+  const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ model: "google/gemini-3-flash-preview", messages: chatMessages }),
+  });
+
+  if (!aiResponse.ok) {
+    const status = aiResponse.status;
+    if (status === 429) return json({ error: "Rate limited. Please try again." }, 429);
+    if (status === 402) return json({ error: "AI credits required." }, 402);
+    return json({ error: "AI response generation failed" }, 500);
+  }
+
+  const aiData = await aiResponse.json();
+  const response = aiData.choices?.[0]?.message?.content || "Maaf, saya tidak bisa merespons saat ini.";
+
+  return json({
+    response,
+    recommended_properties: properties.slice(0, 5).map((p: any) => ({
+      id: p.id, title: p.title, city: p.city, price: p.price,
+      property_type: p.property_type, thumbnail_url: p.thumbnail_url,
+      investment_score: p.investment_score, rental_yield: p.rental_yield_estimate,
+      growth_rate: p.annual_growth_rate,
+    })),
+    insights,
+    intent: intent.intent,
+    market_stats: marketStats,
+  });
+}
+
+
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
