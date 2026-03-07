@@ -259,11 +259,11 @@ const SamplePropertyGenerator = () => {
   const runProvinceGeneration = async (
     province: string,
     startOffset: number = 0,
-    onProgress: (p: { created: number; skipped: number; errors: number; processed: number; total: number }) => void,
+    onProgress: (p: { created: number; skipped: number; errors: number; processed: number; total: number; existingCount: number }) => void,
     onSaveState?: (offset: number, totals: { created: number; skipped: number; errors: number }, locInfo?: { city: string; area: string }) => void
   ): Promise<{ created: number; skipped: number; errors: number; cancelled: boolean; cities: string[]; areas: string[] }> => {
     const provKelurahanCount = await getKelurahanCount(province);
-    const totals = { created: 0, skipped: 0, errors: 0, processed: startOffset * 5, total: provKelurahanCount };
+    const totals = { created: 0, skipped: 0, errors: 0, processed: startOffset * 5, total: provKelurahanCount, existingCount: 0 };
     onProgress({ ...totals });
 
     let offset = startOffset;
