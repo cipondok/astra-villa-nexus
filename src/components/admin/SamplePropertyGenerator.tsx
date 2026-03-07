@@ -291,6 +291,12 @@ const SamplePropertyGenerator = () => {
             headers: { Authorization: `Bearer ${token}` },
           });
 
+        if (!accessToken) {
+          toast.error("Session lost. Please log in again and retry.");
+          cancelRef.current = true;
+          break;
+        }
+
         let { data, error } = await invokeBatch(accessToken);
 
         if (error) {
