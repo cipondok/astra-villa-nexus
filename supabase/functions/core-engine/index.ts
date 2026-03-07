@@ -10339,7 +10339,179 @@ Project Details:
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-  } catch (err) {
+    // ═══════════════════════════════════════════════════════════
+    // MODE: market_trends_analyzer
+    // ═══════════════════════════════════════════════════════════
+    if (mode === 'market_trends_analyzer') {
+      const city = body.city || '';
+      const propertyType = body.property_type || '';
+      const timeRange = body.time_range || '6m'; // 1m, 3m, 6m, 12m
+
+      const monthsMap: Record<string, number> = { '1m': 1, '3m': 3, '6m': 6, '12m': 12 };
+      const months = monthsMap[timeRange] || 6;
+      const cutoffDate = new Date();
+      cutoffDate.setMonth(cutoffDate.getMonth() - months);
+      const cutoffISO = cutoffDate.toISOString();
+
+      const serviceClient = createClient(supabaseUrl, serviceKey);
+
+      // Build query for current active listings
+      let currentQuery = serviceClient
+        .from('properties')
+        .select('id, title, price, city, district, property_type, investment_score, demand_heat_score, days_on_market, area_sqm, created_at, listing_type')
+        .eq('status', 'active');
+
+      if (city) currentQuery = currentQuery.ilike('city', `%${city}%`);
+      if (propertyType) currentQuery = currentQuery.ilike('property_type', `%${propertyType}%`);
+
+      // Build query for historical price data
+      let historyQuery = serviceClient
+        .from('property_price_history')
+        .select('property_id, old_price, new_price, changed_at')
+        .gte('changed_at', cutoffISO)
+        .order('changed_at', { ascending: true });
+
+      // Fetch in parallel
+      const [currentRes, historyRes] = await Promise.all([
+        currentQuery.limit(500),
+        historyQuery.limit(1000),
+      ]);
+
+      const properties = currentRes.data || [];
+      const priceHistory = historyRes.data || [];
+
+      if (properties.length === 0) {
+        return new Response(JSON.stringify({
+          data: {
+            avg_price: 0,
+            price_change_pct: 0,
+            trend_direction: 'insufficient_data',
+            avg_days_on_market: 0,
+            hot_zones: [],
+            forecast_next_quarter: null,
+            total_listings: 0,
+            analysis_period: timeRange,
+            city: city || 'all',
+            property_type: propertyType || 'all',
+          },
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      // ── Compute current metrics ──
+      const prices = properties.map(p => p.price).filter(Boolean) as number[];
+      const avgPrice = Math.round(prices.reduce((a, b) => a + b, 0) / prices.length);
+      const medianPrice = prices.sort((a, b) => a - b)[Math.floor(prices.length / 2)] || 0;
+
+      const domValues = properties.map(p => p.days_on_market).filter(v => v != null) as number[];
+      const avgDaysOnMarket = domValues.length > 0
+        ? Math.round(domValues.reduce((a, b) => a + b, 0) / domValues.length)
+        : 0;
+
+      // ── Price change analysis ──
+      let priceChangePct = 0;
+      let trendDirection: 'rising' | 'stable' | 'declining' = 'stable';
+
+      if (priceHistory.length >= 2) {
+        // Group by month and compute avg price
+        const monthlyPrices: Record<string, number[]> = {};
+        for (const h of priceHistory) {
+          const monthKey = h.changed_at.substring(0, 7); // YYYY-MM
+          if (!monthlyPrices[monthKey]) monthlyPrices[monthKey] = [];
+          monthlyPrices[monthKey].push(h.new_price);
+        }
+        const sortedMonths = Object.keys(monthlyPrices).sort();
+        if (sortedMonths.length >= 2) {
+          const firstMonth = monthlyPrices[sortedMonths[0]];
+          const lastMonth = monthlyPrices[sortedMonths[sortedMonths.length - 1]];
+          const firstAvg = firstMonth.reduce((a, b) => a + b, 0) / firstMonth.length;
+          const lastAvg = lastMonth.reduce((a, b) => a + b, 0) / lastMonth.length;
+          priceChangePct = firstAvg > 0 ? Math.round(((lastAvg - firstAvg) / firstAvg) * 10000) / 100 : 0;
+        }
+      } else {
+        // Fallback: compare older vs newer listings by created_at
+        const sorted = [...properties].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+        const half = Math.floor(sorted.length / 2);
+        if (half > 0) {
+          const olderAvg = sorted.slice(0, half).reduce((s, p) => s + (p.price || 0), 0) / half;
+          const newerAvg = sorted.slice(half).reduce((s, p) => s + (p.price || 0), 0) / (sorted.length - half);
+          priceChangePct = olderAvg > 0 ? Math.round(((newerAvg - olderAvg) / olderAvg) * 10000) / 100 : 0;
+        }
+      }
+
+      if (priceChangePct > 3) trendDirection = 'rising';
+      else if (priceChangePct < -3) trendDirection = 'declining';
+      else trendDirection = 'stable';
+
+      // ── Hot zones (districts with highest demand) ──
+      const districtMap: Record<string, { count: number; totalHeat: number; totalInv: number; totalPrice: number }> = {};
+      for (const p of properties) {
+        const zone = p.district || p.city || 'Unknown';
+        if (!districtMap[zone]) districtMap[zone] = { count: 0, totalHeat: 0, totalInv: 0, totalPrice: 0 };
+        districtMap[zone].count++;
+        districtMap[zone].totalHeat += (p.demand_heat_score || 0);
+        districtMap[zone].totalInv += (p.investment_score || 0);
+        districtMap[zone].totalPrice += (p.price || 0);
+      }
+
+      const hotZones = Object.entries(districtMap)
+        .map(([zone, d]) => ({
+          zone,
+          listing_count: d.count,
+          avg_demand_heat: Math.round(d.totalHeat / d.count),
+          avg_investment_score: Math.round(d.totalInv / d.count),
+          avg_price: Math.round(d.totalPrice / d.count),
+          heat_level: (d.totalHeat / d.count) >= 80 ? 'hot' as const
+            : (d.totalHeat / d.count) >= 60 ? 'warm' as const
+            : (d.totalHeat / d.count) >= 40 ? 'moderate' as const
+            : 'cool' as const,
+        }))
+        .sort((a, b) => b.avg_demand_heat - a.avg_demand_heat)
+        .slice(0, 10);
+
+      // ── Forecast next quarter ──
+      const quarterlyGrowthRate = priceChangePct / (months / 3);
+      const forecastNextQuarter = {
+        predicted_avg_price: Math.round(avgPrice * (1 + quarterlyGrowthRate / 100)),
+        predicted_change_pct: Math.round(quarterlyGrowthRate * 100) / 100,
+        confidence: priceHistory.length >= 10 ? 'high' : priceHistory.length >= 3 ? 'medium' : 'low',
+        predicted_demand: trendDirection === 'rising' ? 'increasing' : trendDirection === 'declining' ? 'decreasing' : 'steady',
+      };
+
+      // ── Price distribution ──
+      const priceRanges = [
+        { label: 'Under 500M', min: 0, max: 500_000_000 },
+        { label: '500M - 1B', min: 500_000_000, max: 1_000_000_000 },
+        { label: '1B - 3B', min: 1_000_000_000, max: 3_000_000_000 },
+        { label: '3B - 5B', min: 3_000_000_000, max: 5_000_000_000 },
+        { label: 'Above 5B', min: 5_000_000_000, max: Infinity },
+      ];
+      const priceDistribution = priceRanges.map(r => ({
+        range: r.label,
+        count: prices.filter(p => p >= r.min && p < r.max).length,
+      }));
+
+      // ── Supply metrics ──
+      const newListings = properties.filter(p => new Date(p.created_at) >= cutoffDate).length;
+
+      return new Response(JSON.stringify({
+        data: {
+          avg_price: avgPrice,
+          median_price: medianPrice,
+          price_change_pct: priceChangePct,
+          trend_direction: trendDirection,
+          avg_days_on_market: avgDaysOnMarket,
+          hot_zones: hotZones,
+          forecast_next_quarter: forecastNextQuarter,
+          price_distribution: priceDistribution,
+          total_listings: properties.length,
+          new_listings_in_period: newListings,
+          analysis_period: timeRange,
+          city: city || 'all',
+          property_type: propertyType || 'all',
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
     return new Response(JSON.stringify({ error: err instanceof Error ? err.message : 'Unknown error' }), {
       status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
