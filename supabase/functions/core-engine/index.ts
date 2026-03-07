@@ -390,7 +390,7 @@ Deno.serve(async (req) => {
       // Fetch all properties
       const { data: properties, error: pErr } = await supabase
         .from('properties')
-        .select('id, price, city, area_sqm, land_area_sqm, building_area_sqm, has_pool, garage_count, floors, property_type, listing_type, investment_score, status, owner_id, agent_id, description, kt, km')
+.select('id, price, city, area_sqm, land_area_sqm, building_area_sqm, has_pool, garage_count, floors, property_type, listing_type, investment_score, status, owner_id, agent_id, description, kt:bedrooms, km:bathrooms')
         .in('id', property_ids);
 
       if (pErr || !properties || properties.length < 2) {
@@ -754,7 +754,7 @@ Deno.serve(async (req) => {
       // Fetch all properties
       const { data: properties, error: pErr } = await supabase
         .from('properties')
-        .select('id, title, price, city, area_sqm, land_area_sqm, building_area_sqm, has_pool, garage_count, floors, property_type, listing_type, investment_score, status, owner_id, agent_id, description, kt, km')
+        .select('id, title, price, city, area_sqm, land_area_sqm, building_area_sqm, has_pool, garage_count, floors, property_type, listing_type, investment_score, status, owner_id, agent_id, description, kt:bedrooms, km:bathrooms')
         .in('id', property_ids);
 
       if (pErr || !properties || properties.length < 1) {
@@ -1044,7 +1044,7 @@ Deno.serve(async (req) => {
     if (!NO_PROPERTY_ID_MODES.has(mode)) {
       const { data: propertyRow, error: pErr } = await supabase
         .from('properties')
-        .select('id, price, city, area_sqm, land_area_sqm, building_area_sqm, has_pool, garage_count, floors, property_type, listing_type, investment_score, status, owner_id, agent_id, description, kt, km')
+        .select('id, price, city, area_sqm, land_area_sqm, building_area_sqm, has_pool, garage_count, floors, property_type, listing_type, investment_score, status, owner_id, agent_id, description, kt:bedrooms, km:bathrooms')
         .eq('id', property_id)
         .maybeSingle();
 
@@ -3278,7 +3278,7 @@ Deno.serve(async (req) => {
       // Fetch reference property
       const { data: ref, error: refErr } = await supabase
         .from('properties')
-        .select('id, city, property_type, price, kt, km, land_area_sqm, building_area_sqm, has_pool, investment_score')
+        .select('id, city, property_type, price, kt:bedrooms, km:bathrooms, land_area_sqm, building_area_sqm, has_pool, investment_score')
         .eq('id', property_id)
         .single();
 
@@ -3296,7 +3296,7 @@ Deno.serve(async (req) => {
       // Broaden to get enough candidates, then score in-memory
       const { data: candidates } = await supabase
         .from('properties')
-        .select('id, city, property_type, price, kt, km, land_area_sqm, building_area_sqm, has_pool, investment_score, title, cover_image')
+        .select('id, city, property_type, price, kt:bedrooms, km:bathrooms, land_area_sqm, building_area_sqm, has_pool, investment_score, title, cover_image')
         .eq('status', 'published')
         .neq('id', property_id)
         .or(`city.eq.${ref.city},property_type.eq.${ref.property_type}`)
