@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'price_fairness', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence', 'investor_alerts', 'portfolio_builder', 'off_market_deals', 'developer_project_launch', 'smart_tour_planner'];
+    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'price_fairness', 'listing_performance_predictor', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence', 'investor_alerts', 'portfolio_builder', 'off_market_deals', 'developer_project_launch', 'smart_tour_planner'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -1607,7 +1607,115 @@ Deno.serve(async (req) => {
     }
 
     // ═══════════════════════════════════════════
-    // MODE: price_adjustment_strategy
+    // MODE: listing_performance_predictor
+    // ═══════════════════════════════════════════
+    if (mode === 'listing_performance_predictor') {
+      const currentPrice = Number(property.price) || 0;
+      if (currentPrice <= 0) {
+        return new Response(JSON.stringify({ error: 'Property must have a price set' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Run price position + days-on-market + demand in parallel
+      const [priceResult, domResult, demandRes] = await Promise.all([
+        computePricePosition(property, property_id),
+        computeDaysOnMarket(property, property_id),
+        supabase.from('properties').select('id', { count: 'exact', head: true })
+          .eq('city', property.city).eq('property_type', property.property_type).eq('status', 'published'),
+      ]);
+
+      const competitionCount = demandRes.count || 0;
+      const investmentScore = Number(property.investment_score) || 0;
+
+      // --- Price competitiveness (0-100) ---
+      let priceCompetitiveness = 50;
+      if (priceResult.price_position === 'underpriced') priceCompetitiveness = 85;
+      else if (priceResult.price_position === 'market-aligned') priceCompetitiveness = 65;
+      else priceCompetitiveness = 30;
+      // Adjust by confidence
+      if (priceResult.confidence_score < 50) priceCompetitiveness = Math.round(priceCompetitiveness * 0.8);
+
+      // --- Location demand (0-100) ---
+      let locationDemand = 50;
+      if (competitionCount >= 100) locationDemand = 90;
+      else if (competitionCount >= 50) locationDemand = 75;
+      else if (competitionCount >= 20) locationDemand = 60;
+      else if (competitionCount >= 5) locationDemand = 40;
+      else locationDemand = 20;
+
+      // --- Competition level ---
+      const directComps = priceResult.comparable_count || 0;
+      let competitionLevel: string;
+      let competitionScore: number;
+      if (directComps <= 3) { competitionLevel = 'low'; competitionScore = 85; }
+      else if (directComps <= 10) { competitionLevel = 'moderate'; competitionScore = 60; }
+      else if (directComps <= 25) { competitionLevel = 'high'; competitionScore = 40; }
+      else { competitionLevel = 'very_high'; competitionScore = 20; }
+
+      // --- Predicted monthly views ---
+      // Base views from location demand, adjusted by price competitiveness and competition
+      let baseViews = locationDemand * 3; // hot areas get ~270 base views
+      if (priceResult.price_position === 'underpriced') baseViews *= 1.4;
+      else if (priceResult.price_position === 'overpriced') baseViews *= 0.6;
+      if (competitionLevel === 'low') baseViews *= 1.3;
+      else if (competitionLevel === 'very_high') baseViews *= 0.7;
+      if (investmentScore >= 80) baseViews *= 1.2;
+      const predictedMonthlyViews = Math.max(10, Math.round(baseViews));
+
+      // --- Buyer interest level ---
+      const interestRaw = (priceCompetitiveness * 0.35) + (locationDemand * 0.25) + (competitionScore * 0.2) + (investmentScore * 0.2);
+      let buyerInterest: string;
+      if (interestRaw >= 75) buyerInterest = 'very_high';
+      else if (interestRaw >= 55) buyerInterest = 'high';
+      else if (interestRaw >= 40) buyerInterest = 'moderate';
+      else buyerInterest = 'low';
+
+      // --- Overall performance score ---
+      const performanceScore = Math.max(0, Math.min(100, Math.round(
+        (priceCompetitiveness * 0.30) + (locationDemand * 0.25) + (competitionScore * 0.20) + (investmentScore * 0.25)
+      )));
+
+      let performanceGrade: string;
+      if (performanceScore >= 80) performanceGrade = 'A';
+      else if (performanceScore >= 65) performanceGrade = 'B';
+      else if (performanceScore >= 50) performanceGrade = 'C';
+      else performanceGrade = 'D';
+
+      // Tips
+      const tips: string[] = [];
+      if (priceResult.price_position === 'overpriced') tips.push('Consider reducing price to market range for faster results');
+      if (competitionLevel === 'very_high') tips.push('High competition — invest in professional photos and 3D tour to stand out');
+      if (locationDemand < 40) tips.push('Low area demand — highlight unique features and investment potential');
+      if (investmentScore < 50) tips.push('Low investment score may deter investor buyers');
+      if (predictedMonthlyViews < 50) tips.push('Expected low visibility — consider promoted listing');
+
+      console.log(`Listing performance for ${property_id}: score=${performanceScore} grade=${performanceGrade} views=${predictedMonthlyViews} dom=${domResult.estimated_days_on_market} interest=${buyerInterest}`);
+
+      return new Response(JSON.stringify({
+        mode: 'listing_performance_predictor',
+        data: {
+          property_id,
+          predicted_days_to_sell: domResult.estimated_days_on_market,
+          predicted_monthly_views: predictedMonthlyViews,
+          buyer_interest: buyerInterest,
+          performance_score: performanceScore,
+          performance_grade: performanceGrade,
+          factors: {
+            price_competitiveness: priceCompetitiveness,
+            price_position: priceResult.price_position,
+            location_demand: locationDemand,
+            competition_level: competitionLevel,
+            competition_count: directComps,
+            investment_score: investmentScore,
+          },
+          speed_category: domResult.speed_category,
+          confidence_score: priceResult.confidence_score,
+          tips,
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
     // ═══════════════════════════════════════════
     {
       const adjPriceResult = await computePricePosition(property, property_id);
