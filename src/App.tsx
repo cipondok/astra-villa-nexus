@@ -296,6 +296,7 @@ const AppContent = () => {
                 </Route>
                 <Route path="/deal-finder" element={<ProtectedRoute />}>
                   <Route index element={<DealFinderPage />} />
+                </Route>
                 <Route path="/foreign-investment" element={<Navigate to="/investment" replace />} />
                 <Route path="/kpr-calculator" element={<KprCalculatorPage />} />
                 <Route path="/simulasi-kpr" element={<Navigate to="/kpr-calculator" replace />} />
