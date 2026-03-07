@@ -512,6 +512,7 @@ const SamplePropertyGenerator = () => {
         areas: provResult.areas,
       };
       saveDoneProvince(record);
+      saveDoneProvinceCheckpoint(record); // Cloud sync
       setPersistedDoneRecords(prev => {
         const filtered = prev.filter(r => r.province !== selectedProvince);
         return [...filtered, record];
@@ -615,6 +616,7 @@ const SamplePropertyGenerator = () => {
       };
       setAutoRunState(state);
       saveAutoRunState(state);
+      saveAutoRunCheckpoint(state); // Cloud sync
 
       const provResult = await runProvinceGeneration(
         province,
@@ -632,7 +634,8 @@ const SamplePropertyGenerator = () => {
             currentArea: locInfo?.area,
           };
           saveAutoRunState(updatedState);
-        }
+          // Cloud sync every 5th offset to avoid excessive writes
+          if (offset % 5 === 0) saveAutoRunCheckpoint(updatedState);
       );
 
       if (provResult.cancelled) {
