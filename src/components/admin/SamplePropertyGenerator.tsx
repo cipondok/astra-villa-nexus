@@ -336,6 +336,7 @@ const SamplePropertyGenerator = () => {
           setProvinceAreasDone(Array.from(areasSet));
         }
 
+        totals.existingCount = data.existing_count || 0;
         onProgress({ ...totals, total: data.total_kelurahan || provKelurahanCount });
 
         if (onSaveState) {
