@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence', 'investor_alerts', 'portfolio_builder'];
+    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence', 'investor_alerts', 'portfolio_builder', 'off_market_deals'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -9132,6 +9132,193 @@ Deno.serve(async (req) => {
           },
           candidates_scanned: props.length,
           investment_horizon: horizonYears,
+          recommendation,
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: off_market_deals — Discover pre-launch & off-market property deals
+    // ═══════════════════════════════════════════
+    if (mode === 'off_market_deals') {
+      const filterCity = (body.city || '').trim();
+      const maxBudget = Number(body.max_budget) || 0;
+      const minDiscount = Number(body.min_discount) || 5;
+
+      const serviceClient = createClient(supabaseUrl, serviceKey);
+
+      // Fetch pre-launch / off-plan / under-construction properties
+      let query = serviceClient
+        .from('properties')
+        .select('id, title, price, city, state, area, property_type, building_area_sqm, land_area_sqm, investment_score, demand_heat_score, thumbnail_url, developer_id, construction_phase, completion_percentage, development_status, estimated_completion_date, estimated_completion_value, discount_percentage, is_pre_launch, is_early_bird, total_units, units_sold, listing_type, created_at')
+        .or('is_pre_launch.eq.true,development_status.neq.completed,construction_phase.neq.Handover')
+        .gt('price', 0);
+
+      if (filterCity) query = query.ilike('city', `%${filterCity}%`);
+      if (maxBudget > 0) query = query.lte('price', maxBudget);
+
+      const { data: offMarketProps, error: omErr } = await query.order('investment_score', { ascending: false }).limit(300);
+      if (omErr) throw omErr;
+      const props = offMarketProps || [];
+
+      if (props.length === 0) {
+        return new Response(JSON.stringify({
+          data: {
+            deals: [],
+            total_scanned: 0,
+            recommendation: 'Tidak ditemukan properti off-market yang sesuai kriteria.',
+            generated_at: new Date().toISOString(),
+          },
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      // Get city-level market averages for comparison
+      const { data: allActive } = await serviceClient
+        .from('properties')
+        .select('city, price, building_area_sqm, land_area_sqm')
+        .eq('status', 'active')
+        .gt('price', 0);
+
+      const cityAvgPrice: Record<string, { totalPsm: number; count: number }> = {};
+      for (const p of (allActive || [])) {
+        const c = (p.city || '').toLowerCase();
+        if (!c) continue;
+        const area = p.building_area_sqm || p.land_area_sqm || 0;
+        if (area <= 0) continue;
+        const psm = p.price / area;
+        if (!cityAvgPrice[c]) cityAvgPrice[c] = { totalPsm: 0, count: 0 };
+        cityAvgPrice[c].totalPsm += psm;
+        cityAvgPrice[c].count += 1;
+      }
+
+      const cityMedianPsm: Record<string, number> = {};
+      for (const [c, v] of Object.entries(cityAvgPrice)) {
+        cityMedianPsm[c] = v.count > 0 ? v.totalPsm / v.count : 0;
+      }
+
+      // Score each off-market deal
+      interface OffMarketDeal {
+        property_id: string;
+        project_name: string;
+        city: string;
+        state: string | null;
+        property_type: string;
+        price: number;
+        area_sqm: number;
+        price_per_sqm: number;
+        estimated_market_price: number;
+        undervalue_percent: number;
+        investment_score: number;
+        demand_heat_score: number;
+        deal_score: number;
+        construction_phase: string | null;
+        completion_percentage: number;
+        estimated_completion_date: string | null;
+        estimated_completion_value: number | null;
+        discount_percentage: number;
+        is_pre_launch: boolean;
+        is_early_bird: boolean;
+        total_units: number | null;
+        units_sold: number | null;
+        thumbnail_url: string | null;
+        deal_quality: string;
+      }
+
+      const deals: OffMarketDeal[] = [];
+
+      for (const p of props) {
+        const city = (p.city || 'Unknown').toLowerCase();
+        const areaSqm = p.building_area_sqm || p.land_area_sqm || 0;
+        if (areaSqm <= 0) continue;
+
+        const pricePsm = p.price / areaSqm;
+        const marketPsm = cityMedianPsm[city] || pricePsm;
+        const estimatedMarketPrice = Math.round(marketPsm * areaSqm);
+
+        // Undervaluation calculation
+        const undervaluePercent = estimatedMarketPrice > 0
+          ? Math.round(((estimatedMarketPrice - p.price) / estimatedMarketPrice) * 10000) / 100
+          : 0;
+
+        // Skip if overpriced and no developer discount
+        const effectiveDiscount = Math.max(undervaluePercent, p.discount_percentage || 0);
+        if (effectiveDiscount < minDiscount) continue;
+
+        // Deal score: weighted composite
+        const invScore = (p.investment_score || 0) / 100;
+        const heatScore = (p.demand_heat_score || 0) / 100;
+        const undervalScore = Math.min(undervaluePercent / 30, 1); // cap at 30%
+        const earlyBirdBonus = p.is_early_bird ? 0.1 : 0;
+        const preLaunchBonus = p.is_pre_launch ? 0.1 : 0;
+        const completionBonus = (p.completion_percentage || 0) < 50 ? 0.05 : 0; // early stage = more upside
+
+        const dealScore = Math.round(
+          (undervalScore * 35 + invScore * 25 + heatScore * 20 + earlyBirdBonus * 100 + preLaunchBonus * 100 + completionBonus * 100) * 100
+        ) / 100;
+
+        const dealQuality = dealScore >= 75 ? 'exceptional' : dealScore >= 55 ? 'strong' : dealScore >= 35 ? 'good' : 'fair';
+
+        deals.push({
+          property_id: p.id,
+          project_name: p.title,
+          city: p.city || 'Unknown',
+          state: p.state,
+          property_type: p.property_type,
+          price: p.price,
+          area_sqm: areaSqm,
+          price_per_sqm: Math.round(pricePsm),
+          estimated_market_price: estimatedMarketPrice,
+          undervalue_percent: undervaluePercent,
+          investment_score: p.investment_score || 0,
+          demand_heat_score: p.demand_heat_score || 0,
+          deal_score: dealScore,
+          construction_phase: p.construction_phase,
+          completion_percentage: p.completion_percentage || 0,
+          estimated_completion_date: p.estimated_completion_date,
+          estimated_completion_value: p.estimated_completion_value,
+          discount_percentage: p.discount_percentage || 0,
+          is_pre_launch: p.is_pre_launch || false,
+          is_early_bird: p.is_early_bird || false,
+          total_units: p.total_units,
+          units_sold: p.units_sold,
+          thumbnail_url: p.thumbnail_url,
+          deal_quality: dealQuality,
+        });
+      }
+
+      // Sort by deal_score descending
+      deals.sort((a, b) => b.deal_score - a.deal_score);
+      const topDeals = deals.slice(0, 20);
+
+      // Summary stats
+      const avgUndervalue = topDeals.length > 0
+        ? Math.round(topDeals.reduce((s, d) => s + d.undervalue_percent, 0) / topDeals.length * 100) / 100
+        : 0;
+      const uniqueCities = [...new Set(topDeals.map(d => d.city))];
+      const exceptionalCount = topDeals.filter(d => d.deal_quality === 'exceptional').length;
+
+      let recommendation = '';
+      if (topDeals.length === 0) {
+        recommendation = 'Tidak ditemukan deal off-market yang signifikan saat ini. Coba kurangi minimum diskon atau perluas area pencarian.';
+      } else {
+        recommendation = `Ditemukan ${topDeals.length} peluang off-market di ${uniqueCities.length} kota. `;
+        recommendation += `Rata-rata undervaluation: ${avgUndervalue}%. `;
+        if (exceptionalCount > 0) {
+          recommendation += `${exceptionalCount} deal berkategori exceptional — pertimbangkan untuk segera ditindaklanjuti. `;
+        }
+        if (topDeals[0]) {
+          recommendation += `Deal terbaik: "${topDeals[0].project_name}" di ${topDeals[0].city} dengan diskon ${topDeals[0].undervalue_percent}% dari harga pasar.`;
+        }
+      }
+
+      return new Response(JSON.stringify({
+        data: {
+          deals: topDeals,
+          total_scanned: props.length,
+          total_qualified: deals.length,
+          avg_undervalue: avgUndervalue,
+          cities_covered: uniqueCities,
           recommendation,
           generated_at: new Date().toISOString(),
         },
