@@ -1899,6 +1899,57 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_feedback_signals: {
+        Row: {
+          action_weight: number | null
+          ai_match_score: number | null
+          created_at: string
+          id: string
+          property_id: string | null
+          recommendation_source: string | null
+          session_id: string | null
+          user_action: string
+          user_id: string
+        }
+        Insert: {
+          action_weight?: number | null
+          ai_match_score?: number | null
+          created_at?: string
+          id?: string
+          property_id?: string | null
+          recommendation_source?: string | null
+          session_id?: string | null
+          user_action: string
+          user_id: string
+        }
+        Update: {
+          action_weight?: number | null
+          ai_match_score?: number | null
+          created_at?: string
+          id?: string
+          property_id?: string | null
+          recommendation_source?: string | null
+          session_id?: string | null
+          user_action?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_feedback_signals_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_feedback_signals_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_generated_content: {
         Row: {
           content: string | null
@@ -1937,6 +1988,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      ai_learning_snapshots: {
+        Row: {
+          adjustments: Json | null
+          confidence_score: number | null
+          created_at: string
+          id: string
+          learning_rate: number | null
+          metadata: Json | null
+          model_accuracy: number | null
+          negative_signals: number | null
+          positive_signals: number | null
+          snapshot_type: string
+          total_signals_processed: number | null
+          weights_after: Json | null
+          weights_before: Json | null
+        }
+        Insert: {
+          adjustments?: Json | null
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          learning_rate?: number | null
+          metadata?: Json | null
+          model_accuracy?: number | null
+          negative_signals?: number | null
+          positive_signals?: number | null
+          snapshot_type?: string
+          total_signals_processed?: number | null
+          weights_after?: Json | null
+          weights_before?: Json | null
+        }
+        Update: {
+          adjustments?: Json | null
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          learning_rate?: number | null
+          metadata?: Json | null
+          model_accuracy?: number | null
+          negative_signals?: number | null
+          positive_signals?: number | null
+          snapshot_type?: string
+          total_signals_processed?: number | null
+          weights_after?: Json | null
+          weights_before?: Json | null
+        }
+        Relationships: []
       }
       ai_message_reactions: {
         Row: {
