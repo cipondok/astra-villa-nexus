@@ -3427,6 +3427,163 @@ Deno.serve(async (req) => {
       });
     }
 
+    // ═══════════════════════════════════════════
+    // MODE: seller_intelligence — Help owners price listings correctly
+    // ═══════════════════════════════════════════
+    if (mode === 'seller_intelligence') {
+      if (!property_id) {
+        return new Response(JSON.stringify({ error: 'property_id is required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const { data: prop, error: propErr } = await supabase
+        .from('properties')
+        .select('price, city, property_type, building_area_sqm, land_area_sqm, investment_score, created_at, listed_at')
+        .eq('id', property_id)
+        .single();
+
+      if (propErr || !prop) {
+        return new Response(JSON.stringify({ error: 'Property not found' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const listingPrice = Number(prop.price) || 0;
+      if (listingPrice <= 0) {
+        return new Response(JSON.stringify({ error: 'Property has no valid price' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const ba = Number(prop.building_area_sqm) || 0;
+      const la = Number(prop.land_area_sqm) || 0;
+      const primaryArea = ba > 0 ? ba : la;
+      const areaCol = ba > 0 ? 'building_area_sqm' : 'land_area_sqm';
+      const propertyPPSQM = primaryArea > 0 ? listingPrice / primaryArea : 0;
+      const thirtyAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+
+      // Parallel queries
+      const pQueries: Promise<any>[] = [
+        // [0] total listings in city
+        supabase.from('properties').select('id', { count: 'exact', head: true })
+          .eq('city', prop.city).eq('status', 'published'),
+        // [1] new listings 30d
+        supabase.from('properties').select('id', { count: 'exact', head: true })
+          .eq('city', prop.city).gte('created_at', thirtyAgo),
+      ];
+
+      // [2] comparables
+      if (primaryArea > 0 && prop.city) {
+        pQueries.push(
+          supabase.from('properties')
+            .select('price, building_area_sqm, land_area_sqm')
+            .eq('city', prop.city).eq('property_type', prop.property_type)
+            .eq('status', 'published').not('price', 'is', null).gt('price', 0)
+            .gte(areaCol, primaryArea * 0.6).lte(areaCol, primaryArea * 1.4)
+            .neq('id', property_id).limit(80)
+        );
+      }
+
+      const pResults = await Promise.all(pQueries);
+      const totalListings = pResults[0].count || 1;
+      const newListings30d = pResults[1].count || 0;
+
+      // Demand heat
+      const demandHeat = Math.min(100, Math.max(0,
+        (newListings30d >= 20 ? 40 : newListings30d >= 10 ? 25 : 10) +
+        (totalListings >= 50 ? 30 : totalListings >= 20 ? 20 : 10)
+      ));
+      const demandLevel = demandHeat >= 75 ? 'very_high' : demandHeat >= 55 ? 'high' : demandHeat >= 35 ? 'moderate' : 'low';
+
+      // Comparables & median price per sqm
+      let medianPPSQM = propertyPPSQM;
+      let compCount = 0;
+      const compPrices: number[] = [];
+      if (pResults[2]?.data) {
+        const valid = (pResults[2].data || []).filter((c: any) => Number(c.price) > 0 && Number(c[areaCol]) > 0);
+        compCount = valid.length;
+        if (compCount >= 2) {
+          const ppm = valid.map((c: any) => Number(c.price) / Number(c[areaCol])).sort((a: number, b: number) => a - b);
+          const mid = Math.floor(ppm.length / 2);
+          medianPPSQM = ppm.length % 2 !== 0 ? ppm[mid] : (ppm[mid - 1] + ppm[mid]) / 2;
+          valid.forEach((c: any) => compPrices.push(Number(c.price)));
+        }
+      }
+
+      // Recommended price = median price/sqm * area, adjusted by demand
+      const demandMultiplier = demandHeat >= 75 ? 1.05 : demandHeat >= 55 ? 1.02 : demandHeat >= 35 ? 1.0 : 0.97;
+      const recommendedPrice = primaryArea > 0 ? Math.round(medianPPSQM * primaryArea * demandMultiplier) : listingPrice;
+
+      // Market price range
+      let rangeLow = Math.round(recommendedPrice * 0.88);
+      let rangeHigh = Math.round(recommendedPrice * 1.12);
+      if (compPrices.length >= 3) {
+        compPrices.sort((a, b) => a - b);
+        rangeLow = Math.round(compPrices[Math.floor(compPrices.length * 0.15)]);
+        rangeHigh = Math.round(compPrices[Math.floor(compPrices.length * 0.85)]);
+      }
+
+      // Price competitiveness
+      const priceRatio = recommendedPrice > 0 ? listingPrice / recommendedPrice : 1;
+      const priceCompetitiveness = priceRatio < 0.9 ? 'underpriced' : priceRatio <= 1.05 ? 'competitive' : priceRatio <= 1.15 ? 'slightly overpriced' : 'overpriced';
+
+      // Competition level
+      const competitionLevel = totalListings >= 50 ? 'high' : totalListings >= 20 ? 'moderate' : 'low';
+
+      // Predicted days to sell
+      let baseDays = 60;
+      if (priceCompetitiveness === 'underpriced') baseDays = 15;
+      else if (priceCompetitiveness === 'competitive') baseDays = 35;
+      else if (priceCompetitiveness === 'slightly overpriced') baseDays = 75;
+      else baseDays = 120;
+
+      if (demandHeat >= 70) baseDays = Math.round(baseDays * 0.7);
+      else if (demandHeat < 35) baseDays = Math.round(baseDays * 1.3);
+
+      if (competitionLevel === 'high') baseDays = Math.round(baseDays * 1.15);
+      else if (competitionLevel === 'low') baseDays = Math.round(baseDays * 0.85);
+
+      const predictedDays = Math.max(5, Math.min(365, baseDays));
+
+      // Confidence
+      let confidence: number;
+      if (compCount >= 15) confidence = 92;
+      else if (compCount >= 8) confidence = 80;
+      else if (compCount >= 3) confidence = 65;
+      else confidence = 40;
+
+      // Insights
+      const insights: string[] = [];
+      if (priceCompetitiveness === 'overpriced') insights.push(`Your listing is ${Math.round((priceRatio - 1) * 100)}% above market median. Consider reducing to attract more buyers.`);
+      else if (priceCompetitiveness === 'underpriced') insights.push(`Your property is priced below market — expect fast interest but you may be leaving value on the table.`);
+      else insights.push(`Your pricing is competitive with the current market.`);
+
+      if (demandLevel === 'very_high' || demandLevel === 'high') insights.push(`Strong buyer demand in ${prop.city} — good time to list.`);
+      else if (demandLevel === 'low') insights.push(`Demand is low in ${prop.city}. Consider competitive pricing or enhanced marketing.`);
+
+      if (competitionLevel === 'high') insights.push(`High competition with ${totalListings} active listings in your area.`);
+      if (compCount < 3) insights.push(`Limited comparable data available — confidence is lower. Consider expanding search criteria.`);
+
+      return new Response(JSON.stringify({
+        mode: 'seller_intelligence',
+        data: {
+          recommended_price: recommendedPrice,
+          market_price_range: { low: rangeLow, high: rangeHigh },
+          predicted_days_to_sell: predictedDays,
+          demand_level: demandLevel,
+          price_per_sqm: Math.round(propertyPPSQM),
+          market_median_price_per_sqm: Math.round(medianPPSQM),
+          price_competitiveness: priceCompetitiveness,
+          competition_level: competitionLevel,
+          comparables_count: compCount,
+          listing_price: listingPrice,
+          confidence,
+          insights,
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
     // ── map_search: properties in bounds with investment heatmap ──
     if (mode === 'map_search') {
       const { map_bounds, limit: mapLimit } = body;
