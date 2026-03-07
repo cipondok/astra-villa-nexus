@@ -3889,7 +3889,7 @@ Deno.serve(async (req) => {
 
       const { data: prop, error: propErr } = await supabase
         .from('properties')
-        .select('title, description, price, city, property_type, building_area_sqm, land_area_sqm, bedrooms, bathrooms, image_urls, images, listing_type, property_features, investment_score, listing_health_score, engagement_score, created_at, listed_at')
+        .select('title, description, price, city, property_type, building_area_sqm, land_area_sqm, bedrooms, bathrooms, image_urls, images, listing_type, property_features, investment_score, created_at, listed_at')
         .eq('id', property_id)
         .single();
 
