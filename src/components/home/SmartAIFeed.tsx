@@ -210,10 +210,10 @@ export default function SmartAIFeed({ onPropertyClick, className }: SmartAIFeedP
           )}
           <div>
             <h2 className="text-sm sm:text-base font-bold text-foreground leading-tight">
-              {isLoggedIn ? 'Recommended For You' : 'Trending Properties'}
+              {isLoggedIn ? 'Rekomendasi Untuk Anda' : 'Properti Tren'}
             </h2>
             <p className="text-[9px] sm:text-[10px] text-muted-foreground font-medium">
-              {isLoggedIn ? 'Powered by ASTRA AI Intelligence' : 'Popular picks this week'}
+              {isLoggedIn ? 'Didukung oleh ASTRA AI Intelligence' : 'Pilihan populer minggu ini'}
             </p>
           </div>
         </div>

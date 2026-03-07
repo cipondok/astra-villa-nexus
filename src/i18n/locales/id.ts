@@ -1802,14 +1802,6 @@ const id: TranslationMap = {
     totalListings: 'Total Listing',
     newListings30d: 'Listing Baru (30 hari)',
   },
-  propertyCard: {
-    harga: 'Harga',
-    luasBangunan: 'Luas Bangunan',
-    kamarTidur: 'Kamar Tidur',
-    kolamRenang: 'Kolam Renang',
-    ya: 'Ya',
-    tidak: 'Tidak',
-  },
   homepage: {
     title: 'Platform Properti AI Indonesia',
     subtitle: 'Temukan investasi properti terbaik dengan ASTRA AI',
