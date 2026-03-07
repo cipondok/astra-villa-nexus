@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence', 'investor_alerts', 'portfolio_builder', 'off_market_deals'];
+    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence', 'investor_alerts', 'portfolio_builder', 'off_market_deals', 'developer_project_launch'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -9320,6 +9320,220 @@ Deno.serve(async (req) => {
           avg_undervalue: avgUndervalue,
           cities_covered: uniqueCities,
           recommendation,
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: developer_project_launch — AI-powered project launch for developers
+    // ═══════════════════════════════════════════
+    if (mode === 'developer_project_launch') {
+      const {
+        project_name,
+        city: projectCity,
+        district,
+        property_type: projType,
+        total_units,
+        price_per_unit,
+        building_area_avg,
+        land_area_avg,
+        amenities,
+        completion_date,
+        developer_name,
+      } = body;
+
+      if (!project_name || !projectCity || !price_per_unit) {
+        return new Response(JSON.stringify({ error: 'project_name, city, and price_per_unit are required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const serviceClient = createClient(supabaseUrl, serviceKey);
+      const priceNum = Number(price_per_unit) || 0;
+      const unitsNum = Number(total_units) || 1;
+      const buildArea = Number(building_area_avg) || 0;
+      const landArea = Number(land_area_avg) || 0;
+      const areaSqm = buildArea || landArea || 100;
+
+      // 1. Market comparison — fetch comparable active listings in the same city
+      const { data: comparables } = await serviceClient
+        .from('properties')
+        .select('price, building_area_sqm, land_area_sqm, investment_score, demand_heat_score, property_type, rental_yield_percentage')
+        .eq('status', 'active')
+        .ilike('city', `%${projectCity}%`)
+        .gt('price', 0)
+        .limit(200);
+
+      const comps = comparables || [];
+      const cityPrices = comps.filter(c => {
+        const a = c.building_area_sqm || c.land_area_sqm || 0;
+        return a > 0;
+      });
+
+      const avgPricePsm = cityPrices.length > 0
+        ? cityPrices.reduce((s, c) => s + c.price / (c.building_area_sqm || c.land_area_sqm || 1), 0) / cityPrices.length
+        : priceNum / areaSqm;
+
+      const marketPrice = Math.round(avgPricePsm * areaSqm);
+      const pricePsm = priceNum / areaSqm;
+
+      // 2. Demand heat score for location
+      const avgHeat = comps.length > 0
+        ? Math.round(comps.reduce((s, c) => s + (c.demand_heat_score || 50), 0) / comps.length)
+        : 50;
+      const demandLevel = avgHeat >= 80 ? 'Very Hot' : avgHeat >= 65 ? 'Hot' : avgHeat >= 50 ? 'Warm' : avgHeat >= 35 ? 'Stable' : 'Cool';
+
+      // 3. Price competitiveness
+      const priceRatio = avgPricePsm > 0 ? pricePsm / avgPricePsm : 1;
+      const undervaluePct = Math.round((1 - priceRatio) * 10000) / 100;
+
+      // 4. Estimated rental yield
+      const avgYield = comps.length > 0
+        ? comps.reduce((s, c) => s + (c.rental_yield_percentage || 5), 0) / comps.length
+        : 5;
+      const estMonthlyRent = Math.round((priceNum * (avgYield / 100)) / 12);
+      const estAnnualRent = estMonthlyRent * 12;
+
+      // 5. Price growth forecast (based on demand heat)
+      const baseGrowth = avgHeat >= 70 ? 7 : avgHeat >= 50 ? 5 : 3;
+      const growthRate = baseGrowth + (undervaluePct > 0 ? Math.min(undervaluePct / 10, 2) : 0);
+      const projectedPrice3y = Math.round(priceNum * Math.pow(1 + growthRate / 100, 3));
+      const projectedPrice5y = Math.round(priceNum * Math.pow(1 + growthRate / 100, 5));
+
+      // 6. ROI estimate (5 year)
+      const totalRent5y = estAnnualRent * 5;
+      const capitalGain5y = projectedPrice5y - priceNum;
+      const totalReturn5y = totalRent5y + capitalGain5y;
+      const roiEstimate = Math.round((totalReturn5y / priceNum) * 10000) / 100;
+      const annualizedROI = Math.round((Math.pow(1 + totalReturn5y / priceNum, 1 / 5) - 1) * 10000) / 100;
+
+      // 7. Project investment score (0-100)
+      const locationScore = Math.min(avgHeat, 100) * 0.25;
+      const priceScore = Math.min(Math.max(undervaluePct + 15, 0), 30) * (20 / 30);
+      const yieldScore = Math.min(avgYield / 10, 1) * 25;
+      const growthScore = Math.min(growthRate / 10, 1) * 15;
+      const demandScore = Math.min(avgHeat / 100, 1) * 15;
+      const projectScore = Math.round(Math.min(locationScore + priceScore + yieldScore + growthScore + demandScore, 100));
+      const grade = projectScore >= 85 ? 'A+' : projectScore >= 75 ? 'A' : projectScore >= 65 ? 'B+' : projectScore >= 55 ? 'B' : projectScore >= 45 ? 'C' : 'D';
+
+      // 8. AI-generated descriptions via Lovable AI Gateway
+      const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+      let aiDescription = '';
+      let aiInvestmentSummary = '';
+
+      if (LOVABLE_API_KEY) {
+        try {
+          const aiPrompt = `You are a professional Indonesian real estate copywriter. Generate content in Bahasa Indonesia for a new developer project launch.
+
+Project Details:
+- Name: ${project_name}
+- Developer: ${developer_name || 'Premium Developer'}
+- City: ${projectCity}${district ? `, ${district}` : ''}
+- Type: ${projType || 'Residential'}
+- Units: ${unitsNum}
+- Price/unit: Rp ${priceNum.toLocaleString('id-ID')}
+- Building area: ${buildArea}m²
+- Land area: ${landArea}m²
+- Amenities: ${amenities || 'Standard amenities'}
+- Completion: ${completion_date || 'TBA'}
+- Market avg price/sqm: Rp ${Math.round(avgPricePsm).toLocaleString('id-ID')}
+- Demand level: ${demandLevel} (heat score: ${avgHeat})
+- Est. ROI 5Y: ${roiEstimate}%
+- Investment score: ${projectScore}/100 (Grade ${grade})`;
+
+          const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: 'google/gemini-3-flash-preview',
+              messages: [
+                { role: 'system', content: 'You are a professional real estate project launch copywriter. Always respond in Bahasa Indonesia.' },
+                { role: 'user', content: aiPrompt },
+              ],
+              tools: [{
+                type: 'function',
+                function: {
+                  name: 'generate_project_launch',
+                  description: 'Generate project description and investment summary for a developer project launch.',
+                  parameters: {
+                    type: 'object',
+                    properties: {
+                      project_description: {
+                        type: 'string',
+                        description: 'A compelling 3-4 paragraph marketing description of the project in Bahasa Indonesia. Highlight location advantages, amenities, and lifestyle appeal.',
+                      },
+                      investment_summary: {
+                        type: 'string',
+                        description: 'A 2-3 paragraph investment analysis summary in Bahasa Indonesia. Cover ROI potential, market positioning, price competitiveness, and growth outlook.',
+                      },
+                    },
+                    required: ['project_description', 'investment_summary'],
+                    additionalProperties: false,
+                  },
+                },
+              }],
+              tool_choice: { type: 'function', function: { name: 'generate_project_launch' } },
+            }),
+          });
+
+          if (aiResponse.ok) {
+            const aiData = await aiResponse.json();
+            const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+            if (toolCall?.function?.arguments) {
+              const parsed = JSON.parse(toolCall.function.arguments);
+              aiDescription = parsed.project_description || '';
+              aiInvestmentSummary = parsed.investment_summary || '';
+            }
+          }
+        } catch (aiErr) {
+          console.error('AI generation error:', aiErr);
+        }
+      }
+
+      // Fallback descriptions
+      if (!aiDescription) {
+        aiDescription = `${project_name} adalah proyek properti terbaru di ${projectCity}${district ? `, ${district}` : ''} yang menawarkan ${unitsNum} unit ${projType || 'residensial'} berkualitas tinggi. Dengan harga mulai dari ${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(priceNum)} per unit, proyek ini menawarkan nilai investasi yang kompetitif di lokasi dengan permintaan ${demandLevel.toLowerCase()}.`;
+      }
+      if (!aiInvestmentSummary) {
+        aiInvestmentSummary = `Dengan skor investasi ${projectScore}/100 (Grade ${grade}), proyek ini menunjukkan potensi yang ${projectScore >= 70 ? 'sangat baik' : projectScore >= 50 ? 'baik' : 'moderat'}. Estimasi ROI 5 tahun sebesar ${roiEstimate}% dengan tingkat pertumbuhan harga ${growthRate}% per tahun. Tingkat permintaan di area ini: ${demandLevel}.`;
+      }
+
+      return new Response(JSON.stringify({
+        data: {
+          project_name,
+          developer_name: developer_name || null,
+          city: projectCity,
+          district: district || null,
+          property_type: projType || 'Residential',
+          total_units: unitsNum,
+          price_per_unit: priceNum,
+          total_project_value: priceNum * unitsNum,
+          area_sqm: areaSqm,
+          price_per_sqm: Math.round(pricePsm),
+          market_avg_price_per_sqm: Math.round(avgPricePsm),
+          market_price_estimate: marketPrice,
+          undervalue_percent: undervaluePct,
+          project_score: projectScore,
+          grade,
+          demand_heat_score: avgHeat,
+          demand_level: demandLevel,
+          rental_yield: Math.round(avgYield * 100) / 100,
+          est_monthly_rent: estMonthlyRent,
+          est_annual_rent: estAnnualRent,
+          price_growth_rate: Math.round(growthRate * 100) / 100,
+          projected_price_3y: projectedPrice3y,
+          projected_price_5y: projectedPrice5y,
+          roi_estimate: roiEstimate,
+          annualized_roi: annualizedROI,
+          capital_gain_5y: capitalGain5y,
+          total_rental_income_5y: totalRent5y,
+          comparables_count: comps.length,
+          project_description: aiDescription,
+          investment_summary: aiInvestmentSummary,
           generated_at: new Date().toISOString(),
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
