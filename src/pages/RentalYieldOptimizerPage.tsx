@@ -47,7 +47,7 @@ interface PropertyRow {
   bedrooms: number | null;
   bathrooms: number | null;
   area_sqm: number | null;
-  image_url: string | null;
+  images: string[] | null;
 }
 
 interface RankedProperty extends PropertyRow {
@@ -89,7 +89,7 @@ export default function RentalYieldOptimizerPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('properties')
-        .select('id, title, price, city, property_type, bedrooms, bathrooms, area_sqm, image_url')
+        .select('id, title, price, city, property_type, bedrooms, bathrooms, area_sqm, images')
         .eq('status', 'active')
         .eq('approval_status', 'approved')
         .gt('price', 0)
@@ -364,8 +364,8 @@ function PropertyYieldCard({ property, rank }: { property: RankedProperty; rank:
         <div className="w-7 h-7 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
           <span className="text-xs font-bold text-primary">#{rank}</span>
         </div>
-        {property.image_url ? (
-          <img src={property.image_url} alt="" className="w-16 h-12 rounded-lg object-cover border border-border/30" />
+        {property.images?.[0] ? (
+          <img src={property.images[0]} alt="" className="w-16 h-12 rounded-lg object-cover border border-border/30" />
         ) : (
           <div className="w-16 h-12 rounded-lg bg-muted/30 border border-border/30 flex items-center justify-center">
             <Home className="h-4 w-4 text-muted-foreground" />
