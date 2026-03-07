@@ -636,6 +636,7 @@ const SamplePropertyGenerator = () => {
           saveAutoRunState(updatedState);
           // Cloud sync every 5th offset to avoid excessive writes
           if (offset % 5 === 0) saveAutoRunCheckpoint(updatedState);
+        }
       );
 
       if (provResult.cancelled) {
