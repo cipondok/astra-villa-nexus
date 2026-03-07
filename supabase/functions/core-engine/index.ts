@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence', 'investor_alerts', 'portfolio_builder', 'off_market_deals', 'developer_project_launch'];
+    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence', 'investor_alerts', 'portfolio_builder', 'off_market_deals', 'developer_project_launch', 'smart_tour_planner'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -9534,6 +9534,231 @@ Project Details:
           comparables_count: comps.length,
           project_description: aiDescription,
           investment_summary: aiInvestmentSummary,
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: smart_tour_planner — Optimal property visit route planning
+    // ═══════════════════════════════════════════
+    if (mode === 'smart_tour_planner') {
+      const propIds = body.property_ids as string[];
+      const startHour = Number(body.start_hour) || 9;  // default 09:00
+      const visitDuration = Number(body.visit_duration) || 30; // minutes per property
+
+      if (!propIds || !Array.isArray(propIds) || propIds.length < 2) {
+        return new Response(JSON.stringify({ error: 'At least 2 property_ids required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      if (propIds.length > 10) {
+        return new Response(JSON.stringify({ error: 'Maximum 10 properties per tour' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const serviceClient = createClient(supabaseUrl, serviceKey);
+      const { data: propsData, error: propsErr } = await serviceClient
+        .from('properties')
+        .select('id, title, city, state, area, location, latitude, longitude, price, property_type, thumbnail_url, bedrooms, bathrooms, building_area_sqm')
+        .in('id', propIds);
+
+      if (propsErr) throw propsErr;
+      const props = propsData || [];
+
+      if (props.length < 2) {
+        return new Response(JSON.stringify({ error: 'Could not find enough properties with coordinates' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Haversine distance (km)
+      function haversine(lat1: number, lon1: number, lat2: number, lon2: number): number {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      }
+
+      // Estimate travel time: avg 30 km/h in Indonesian urban traffic
+      function travelMinutes(distKm: number): number {
+        return Math.round((distKm / 30) * 60);
+      }
+
+      // Assign default coordinates for properties without them (cluster by city)
+      const cityCoords: Record<string, { lat: number; lng: number }> = {
+        'jakarta': { lat: -6.2088, lng: 106.8456 },
+        'bali': { lat: -8.4095, lng: 115.1889 },
+        'denpasar': { lat: -8.6705, lng: 115.2126 },
+        'surabaya': { lat: -7.2575, lng: 112.7521 },
+        'bandung': { lat: -6.9175, lng: 107.6191 },
+        'yogyakarta': { lat: -7.7956, lng: 110.3695 },
+        'medan': { lat: 3.5952, lng: 98.6722 },
+        'semarang': { lat: -6.9666, lng: 110.4196 },
+        'makassar': { lat: -5.1477, lng: 119.4327 },
+        'tangerang': { lat: -6.1702, lng: 106.6403 },
+        'bogor': { lat: -6.5971, lng: 106.8060 },
+        'depok': { lat: -6.4025, lng: 106.7942 },
+        'bekasi': { lat: -6.2383, lng: 106.9756 },
+      };
+
+      interface TourProp {
+        id: string;
+        title: string;
+        city: string;
+        state: string | null;
+        area: string | null;
+        location: string;
+        lat: number;
+        lng: number;
+        price: number;
+        property_type: string;
+        thumbnail_url: string | null;
+        bedrooms: number | null;
+        bathrooms: number | null;
+        building_area_sqm: number | null;
+        has_coordinates: boolean;
+      }
+
+      const tourProps: TourProp[] = props.map((p, idx) => {
+        let lat = p.latitude;
+        let lng = p.longitude;
+        let hasCoords = !!(lat && lng);
+
+        if (!hasCoords) {
+          const cityKey = (p.city || '').toLowerCase().trim();
+          const fallback = cityCoords[cityKey] || { lat: -6.2088 + idx * 0.01, lng: 106.8456 + idx * 0.01 };
+          lat = fallback.lat + (Math.random() - 0.5) * 0.02;
+          lng = fallback.lng + (Math.random() - 0.5) * 0.02;
+        }
+
+        return {
+          id: p.id,
+          title: p.title,
+          city: p.city || 'Unknown',
+          state: p.state,
+          area: p.area,
+          location: p.location || '',
+          lat: lat!,
+          lng: lng!,
+          price: p.price || 0,
+          property_type: p.property_type,
+          thumbnail_url: p.thumbnail_url,
+          bedrooms: p.bedrooms,
+          bathrooms: p.bathrooms,
+          building_area_sqm: p.building_area_sqm,
+          has_coordinates: hasCoords,
+        };
+      });
+
+      // Nearest-neighbor TSP approximation for optimal route
+      const visited = new Set<number>();
+      const route: number[] = [0];
+      visited.add(0);
+
+      while (visited.size < tourProps.length) {
+        const current = route[route.length - 1];
+        let bestIdx = -1;
+        let bestDist = Infinity;
+
+        for (let i = 0; i < tourProps.length; i++) {
+          if (visited.has(i)) continue;
+          const d = haversine(tourProps[current].lat, tourProps[current].lng, tourProps[i].lat, tourProps[i].lng);
+          if (d < bestDist) {
+            bestDist = d;
+            bestIdx = i;
+          }
+        }
+
+        if (bestIdx >= 0) {
+          route.push(bestIdx);
+          visited.add(bestIdx);
+        }
+      }
+
+      // Build tour plan with times
+      let currentMinutes = startHour * 60; // minutes from midnight
+      let totalTravelMinutes = 0;
+      let totalDistanceKm = 0;
+
+      const tourPlan = route.map((propIdx, orderIdx) => {
+        const prop = tourProps[propIdx];
+        const visitStartMinutes = currentMinutes;
+        const visitEndMinutes = visitStartMinutes + visitDuration;
+
+        // Travel to next
+        let travelToNext = 0;
+        let distToNext = 0;
+        if (orderIdx < route.length - 1) {
+          const nextProp = tourProps[route[orderIdx + 1]];
+          distToNext = haversine(prop.lat, prop.lng, nextProp.lat, nextProp.lng);
+          travelToNext = travelMinutes(distToNext);
+          totalTravelMinutes += travelToNext;
+          totalDistanceKm += distToNext;
+        }
+
+        currentMinutes = visitEndMinutes + travelToNext;
+
+        const formatTime = (mins: number) => {
+          const h = Math.floor(mins / 60) % 24;
+          const m = mins % 60;
+          return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+        };
+
+        return {
+          order: orderIdx + 1,
+          property_id: prop.id,
+          title: prop.title,
+          city: prop.city,
+          state: prop.state,
+          area: prop.area,
+          location: prop.location,
+          latitude: prop.lat,
+          longitude: prop.lng,
+          has_coordinates: prop.has_coordinates,
+          price: prop.price,
+          property_type: prop.property_type,
+          thumbnail_url: prop.thumbnail_url,
+          bedrooms: prop.bedrooms,
+          bathrooms: prop.bathrooms,
+          building_area_sqm: prop.building_area_sqm,
+          visit_time: formatTime(visitStartMinutes),
+          visit_end: formatTime(visitEndMinutes),
+          visit_duration_min: visitDuration,
+          travel_to_next_min: travelToNext,
+          distance_to_next_km: Math.round(distToNext * 10) / 10,
+        };
+      });
+
+      const totalTourMinutes = currentMinutes - startHour * 60;
+      const endTime = `${Math.floor(currentMinutes / 60).toString().padStart(2, '0')}:${(currentMinutes % 60).toString().padStart(2, '0')}`;
+
+      // Tips
+      const tips: string[] = [];
+      if (totalDistanceKm > 50) tips.push('Jarak total cukup jauh. Pertimbangkan untuk membagi kunjungan menjadi 2 hari.');
+      if (tourPlan.length >= 5) tips.push('Dengan 5+ properti, siapkan daftar pertanyaan prioritas agar kunjungan lebih efisien.');
+      const crossCity = new Set(tourProps.map(p => p.city)).size > 1;
+      if (crossCity) tips.push('Properti tersebar di beberapa kota. Perhatikan waktu tempuh antar kota.');
+      if (startHour < 8) tips.push('Mulai lebih siang (09:00+) agar agen properti sudah tersedia.');
+      tips.push('Bawa dokumen identitas dan catatan budget untuk setiap properti.');
+
+      return new Response(JSON.stringify({
+        data: {
+          tour_plan: tourPlan,
+          summary: {
+            total_properties: tourPlan.length,
+            start_time: `${startHour.toString().padStart(2, '0')}:00`,
+            end_time: endTime,
+            total_tour_minutes: totalTourMinutes,
+            total_travel_minutes: totalTravelMinutes,
+            total_visit_minutes: visitDuration * tourPlan.length,
+            total_distance_km: Math.round(totalDistanceKm * 10) / 10,
+            visit_duration_per_property: visitDuration,
+            cross_city: crossCity,
+          },
+          tips,
           generated_at: new Date().toISOString(),
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });

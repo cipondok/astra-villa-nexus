@@ -171,6 +171,7 @@ const InvestorAlertsPage = lazy(() => import('@/pages/InvestorAlertsPage'));
 const PortfolioBuilderPage = lazy(() => import('@/pages/PortfolioBuilderPage'));
 const OffMarketDealsPage = lazy(() => import('@/pages/OffMarketDealsPage'));
 const ProjectLaunchPage = lazy(() => import('@/pages/ProjectLaunchPage'));
+const TourPlannerPage = lazy(() => import('@/pages/TourPlannerPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -312,6 +313,9 @@ const AppContent = () => {
                 </Route>
                 <Route path="/project-launch" element={<ProtectedRoute />}>
                   <Route index element={<ProjectLaunchPage />} />
+                </Route>
+                <Route path="/tour-planner" element={<ProtectedRoute />}>
+                  <Route index element={<TourPlannerPage />} />
                 </Route>
                 <Route path="/deal-finder" element={<ProtectedRoute />}>
                   <Route index element={<DealFinderPage />} />
