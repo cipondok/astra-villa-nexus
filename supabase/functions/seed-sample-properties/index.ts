@@ -124,6 +124,8 @@ Deno.serve(async (req) => {
       });
     }
 
+    const userId = userData.user.id;
+
     const body = await req.json();
     const { province, offset = 0, skipExisting = true } = body;
 
