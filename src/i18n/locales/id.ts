@@ -773,6 +773,12 @@ const id: TranslationMap = {
     forRent: 'Disewa',
     bed: 'kmr',
     bath: 'kmdi',
+    harga: 'Harga',
+    luasBangunan: 'Luas Bangunan',
+    kamarTidur: 'Kamar Tidur',
+    kolamRenang: 'Kolam Renang',
+    ya: 'Ya',
+    tidak: 'Tidak',
   },
   themeToggle: {
     light: 'Terang',
