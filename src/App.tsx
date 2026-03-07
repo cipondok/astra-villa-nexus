@@ -174,6 +174,11 @@ const ProjectLaunchPage = lazy(() => import('@/pages/ProjectLaunchPage'));
 const TourPlannerPage = lazy(() => import('@/pages/TourPlannerPage'));
 const InvestmentAssistantPage = lazy(() => import('@/pages/InvestmentAssistantPage'));
 const AutonomousAgentPage = lazy(() => import('@/pages/AutonomousAgentPage'));
+const MobileHomeFeed = lazy(() => import('@/pages/mobile/MobileHomeFeed'));
+const MobilePropertyDetail = lazy(() => import('@/pages/mobile/MobilePropertyDetail'));
+const MobileInvestorDashboard = lazy(() => import('@/pages/mobile/MobileInvestorDashboard'));
+const MobileAIChat = lazy(() => import('@/pages/mobile/MobileAIChat'));
+const MobileAlerts = lazy(() => import('@/pages/mobile/MobileAlerts'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -419,6 +424,16 @@ const AppContent = () => {
                 <Route path="/ai-tenant-matching" element={<AITenantMatchingPage />} />
                 <Route path="/ai-smart-pricing" element={<AISmartPricingPage />} />
                 <Route path="/ai-document-generator" element={<AIDocumentGeneratorPage />} />
+                {/* Mobile investor screens */}
+                <Route path="/mobile/feed" element={<MobileHomeFeed />} />
+                <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
+                <Route path="/mobile/investor" element={<ProtectedRoute />}>
+                  <Route index element={<MobileInvestorDashboard />} />
+                </Route>
+                <Route path="/mobile/ai-chat" element={<MobileAIChat />} />
+                <Route path="/mobile/alerts" element={<ProtectedRoute />}>
+                  <Route index element={<MobileAlerts />} />
+                </Route>
                 <Route path="*" element={<ErrorPage />} />
               </Routes>
             </Suspense>
