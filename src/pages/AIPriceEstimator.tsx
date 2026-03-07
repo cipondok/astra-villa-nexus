@@ -91,7 +91,7 @@ const AIPriceEstimator = () => {
     setResult(null);
 
     try {
-      const { data, error } = await supabase.functions.invoke('ai-engine', {
+      const { data, error } = await supabase.functions.invoke('deal-engine', {
         body: { mode: 'smart_pricing', payload: {
           land_area: Number(landArea),
           building_area: Number(buildingArea),
