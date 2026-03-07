@@ -45,7 +45,7 @@ export function useInvestorAlertNotifications() {
         .from('in_app_notifications')
         .select('*')
         .eq('user_id', user.id)
-        .in('type', ['investor_price_drop', 'investor_high_rental_yield', 'investor_undervalued_property', 'investor_high_market_growth'])
+        .in('type', ['investor_price_drop', 'investor_high_rental_yield', 'investor_undervalued_property', 'investor_high_market_growth', 'investor_high_deal_score', 'investor_high_investment_score'])
         .order('created_at', { ascending: false })
         .limit(100);
       if (error) throw error;

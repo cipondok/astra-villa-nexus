@@ -12,8 +12,10 @@ import { useNavigate } from 'react-router-dom';
 const alertTypeConfig = {
   investor_price_drop: { icon: TrendingDown, label: 'Harga Turun', color: 'text-chart-4', bg: 'bg-chart-4/10', badge: 'bg-chart-4/15 text-chart-4 border-chart-4/30' },
   investor_high_rental_yield: { icon: DollarSign, label: 'Yield Tinggi', color: 'text-chart-1', bg: 'bg-chart-1/10', badge: 'bg-chart-1/15 text-chart-1 border-chart-1/30' },
+  investor_high_deal_score: { icon: Flame, label: 'Deal Score', color: 'text-destructive', bg: 'bg-destructive/10', badge: 'bg-destructive/15 text-destructive border-destructive/30' },
   investor_undervalued_property: { icon: Flame, label: 'Di Bawah Pasar', color: 'text-destructive', bg: 'bg-destructive/10', badge: 'bg-destructive/15 text-destructive border-destructive/30' },
   investor_high_market_growth: { icon: TrendingUp, label: 'Pertumbuhan', color: 'text-primary', bg: 'bg-primary/10', badge: 'bg-primary/15 text-primary border-primary/30' },
+  investor_high_investment_score: { icon: TrendingUp, label: 'Skor Investasi', color: 'text-chart-2', bg: 'bg-chart-2/10', badge: 'bg-chart-2/15 text-chart-2 border-chart-2/30' },
 };
 
 type AlertType = keyof typeof alertTypeConfig;
