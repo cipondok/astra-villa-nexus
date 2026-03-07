@@ -139,6 +139,7 @@ const SamplePropertyGenerator = () => {
   const [provinceAreasDone, setProvinceAreasDone] = useState<string[]>([]);
   const [runStartTime, setRunStartTime] = useState<number>(0);
   const [elapsedTime, setElapsedTime] = useState<number>(0);
+  const [authStatus, setAuthStatus] = useState<'valid' | 'refreshing' | 'expired' | 'checking'>('checking');
 
   // Auto-run state
   const [isAutoMode, setIsAutoMode] = useState(false);
@@ -152,6 +153,22 @@ const SamplePropertyGenerator = () => {
   const [showProvinceList, setShowProvinceList] = useState(false);
   const [smartSelectedProvinces, setSmartSelectedProvinces] = useState<string[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+
+  // Auth status monitor
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setAuthStatus(session?.access_token ? 'valid' : 'expired');
+    };
+    checkAuth();
+    const interval = setInterval(checkAuth, 30000);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
+        setAuthStatus(event === 'SIGNED_OUT' ? 'expired' : 'valid');
+      }
+    });
+    return () => { clearInterval(interval); subscription.unsubscribe(); };
+  }, []);
 
   // Timer
   useEffect(() => {
@@ -276,12 +293,15 @@ const SamplePropertyGenerator = () => {
     while (hasMore && !cancelRef.current) {
       try {
         if (!accessToken || offset % 10 === 0 || consecutiveErrors > 0) {
+          setAuthStatus('checking');
           const { data: { session: currentSession } } = await supabase.auth.getSession();
           if (!currentSession?.access_token) {
+            setAuthStatus('expired');
             toast.error("Session lost. Please log in again and retry.");
             cancelRef.current = true;
             break;
           }
+          setAuthStatus('valid');
           accessToken = currentSession.access_token;
         }
 
@@ -302,15 +322,18 @@ const SamplePropertyGenerator = () => {
         if (error) {
           const errorMsg = error.message || '';
           if (errorMsg.includes('401') || errorMsg.includes('Unauthorized') || errorMsg.includes('Invalid token')) {
+            setAuthStatus('refreshing');
             const { data: refreshed, error: refreshErr } = await supabase.auth.refreshSession();
             const refreshedToken = refreshed.session?.access_token;
 
             if (refreshErr || !refreshedToken) {
+              setAuthStatus('expired');
               toast.error("Session expired. Please log in again.");
               cancelRef.current = true;
               break;
             }
 
+            setAuthStatus('valid');
             accessToken = refreshedToken;
             const retry = await invokeBatch(refreshedToken);
             data = retry.data;
@@ -671,14 +694,31 @@ const SamplePropertyGenerator = () => {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="p-2 rounded-xl bg-primary/10">
-          <Sparkles className="h-5 w-5 text-primary" />
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-primary/10">
+            <Sparkles className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-base font-bold">Sample Property Generator</h2>
+            <p className="text-xs text-muted-foreground">Generate sample properties for each kelurahan/desa per province</p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-base font-bold">Sample Property Generator</h2>
-          <p className="text-xs text-muted-foreground">Generate sample properties for each kelurahan/desa per province</p>
-        </div>
+        <Badge
+          variant="outline"
+          className={cn(
+            "gap-1.5 text-[10px] font-medium px-2 py-0.5 border",
+            authStatus === 'valid' && "border-chart-1/30 bg-chart-1/10 text-chart-1",
+            authStatus === 'refreshing' && "border-chart-3/30 bg-chart-3/10 text-chart-3 animate-pulse",
+            authStatus === 'expired' && "border-destructive/30 bg-destructive/10 text-destructive",
+            authStatus === 'checking' && "border-muted-foreground/30 bg-muted/50 text-muted-foreground"
+          )}
+        >
+          {authStatus === 'valid' && <><CheckCircle className="h-3 w-3" /> Session Valid</>}
+          {authStatus === 'refreshing' && <><Loader2 className="h-3 w-3 animate-spin" /> Refreshing</>}
+          {authStatus === 'expired' && <><AlertTriangle className="h-3 w-3" /> Expired</>}
+          {authStatus === 'checking' && <><Loader2 className="h-3 w-3 animate-spin" /> Checking</>}
+        </Badge>
       </div>
 
       {/* Progress Overview */}
