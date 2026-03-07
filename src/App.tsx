@@ -135,6 +135,7 @@ const AIPropertyValuationPage = lazy(() => import('@/pages/AIPropertyValuationPa
 const AITenantMatchingPage = lazy(() => import('@/pages/AITenantMatchingPage'));
 const AISmartPricingPage = lazy(() => import('@/pages/AISmartPricingPage'));
 const AIDocumentGeneratorPage = lazy(() => import('@/pages/AIDocumentGeneratorPage'));
+const RentalYieldOptimizerPage = lazy(() => import('@/pages/RentalYieldOptimizerPage'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const Help = lazy(() => import('@/pages/Help'));
 const About = lazy(() => import('@/pages/About'));
@@ -436,6 +437,9 @@ const AppContent = () => {
                 <Route path="/ai-tenant-matching" element={<AITenantMatchingPage />} />
                 <Route path="/ai-smart-pricing" element={<AISmartPricingPage />} />
                 <Route path="/ai-document-generator" element={<AIDocumentGeneratorPage />} />
+                <Route path="/rental-yield-optimizer" element={<ProtectedRoute />}>
+                  <Route index element={<RentalYieldOptimizerPage />} />
+                </Route>
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
