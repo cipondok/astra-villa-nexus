@@ -9764,6 +9764,242 @@ Project Details:
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
+    // ═══════════════════════════════════════════
+    // MODE: investor_alerts — Autonomous property agent scan
+    // ═══════════════════════════════════════════
+    if (mode === 'investor_alerts') {
+      const scanStart = Date.now();
+      const scanType = body.scan_type || 'manual';
+      const serviceClient = createClient(supabaseUrl, serviceKey);
+
+      // 1. Fetch all active saved search alerts with user preferences
+      const { data: alerts } = await serviceClient
+        .from('saved_search_alerts')
+        .select('*')
+        .eq('is_active', true);
+
+      const userAlerts = alerts || [];
+
+      // 2. Fetch active properties with investment data
+      const { data: allProps } = await serviceClient
+        .from('properties')
+        .select('id, title, city, state, price, property_type, bedrooms, building_area_sqm, land_area_sqm, thumbnail_url, investment_score, demand_heat_score, rental_yield_estimate, annual_growth_rate, created_at, updated_at, status')
+        .eq('status', 'active')
+        .limit(1000);
+
+      const properties = allProps || [];
+
+      // 3. Compute city median prices for deal scoring
+      const cityPrices: Record<string, number[]> = {};
+      for (const p of properties) {
+        const area = p.building_area_sqm || p.land_area_sqm || 1;
+        const psm = (p.price || 0) / area;
+        const city = (p.city || 'unknown').toLowerCase();
+        if (!cityPrices[city]) cityPrices[city] = [];
+        cityPrices[city].push(psm);
+      }
+      const cityMedian: Record<string, number> = {};
+      for (const [city, prices] of Object.entries(cityPrices)) {
+        const sorted = prices.sort((a, b) => a - b);
+        cityMedian[city] = sorted[Math.floor(sorted.length / 2)] || 0;
+      }
+
+      // 4. Check price history for price drops
+      const recentDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      const { data: priceHistory } = await serviceClient
+        .from('property_price_history')
+        .select('property_id, old_price, new_price, changed_at')
+        .gte('changed_at', recentDate);
+
+      const priceDrops: Record<string, { old_price: number; new_price: number; drop_pct: number }> = {};
+      for (const ph of (priceHistory || [])) {
+        if (ph.old_price && ph.new_price && ph.new_price < ph.old_price) {
+          const dropPct = ((ph.old_price - ph.new_price) / ph.old_price) * 100;
+          if (dropPct >= 5) {
+            priceDrops[ph.property_id] = { old_price: ph.old_price, new_price: ph.new_price, drop_pct: Math.round(dropPct * 10) / 10 };
+          }
+        }
+      }
+
+      // 5. Detect signals for each property
+      interface Opportunity {
+        property_id: string;
+        title: string;
+        city: string;
+        price: number;
+        property_type: string;
+        thumbnail_url: string | null;
+        signals: string[];
+        deal_score: number;
+        message: string;
+        metadata: Record<string, any>;
+      }
+
+      const allOpportunities: Opportunity[] = [];
+
+      for (const prop of properties) {
+        const signals: string[] = [];
+        const metadata: Record<string, any> = {};
+        const area = prop.building_area_sqm || prop.land_area_sqm || 1;
+        const pricePsm = (prop.price || 0) / area;
+        const cityKey = (prop.city || '').toLowerCase();
+        const median = cityMedian[cityKey] || 0;
+
+        // Signal: price_drop
+        if (priceDrops[prop.id]) {
+          signals.push('price_drop');
+          metadata.price_drop = priceDrops[prop.id];
+        }
+
+        // Signal: high_rental_yield
+        if (prop.rental_yield_estimate && prop.rental_yield_estimate >= 6) {
+          signals.push('high_rental_yield');
+          metadata.rental_yield = prop.rental_yield_estimate;
+        }
+
+        // Signal: high_deal_score (undervalued)
+        if (median > 0 && pricePsm < median * 0.85) {
+          const undervalPct = Math.round(((median - pricePsm) / median) * 100);
+          signals.push('high_deal_score');
+          metadata.undervalue_percent = undervalPct;
+          metadata.market_median_psm = Math.round(median);
+          metadata.property_psm = Math.round(pricePsm);
+        }
+
+        // Signal: market_growth
+        if (prop.annual_growth_rate && prop.annual_growth_rate >= 5) {
+          signals.push('market_growth');
+          metadata.growth_rate = prop.annual_growth_rate;
+        }
+
+        // Signal: high_investment_score
+        if (prop.investment_score && prop.investment_score >= 75) {
+          signals.push('high_investment_score');
+          metadata.investment_score = prop.investment_score;
+        }
+
+        if (signals.length === 0) continue;
+
+        // Composite deal score
+        let dealScore = 0;
+        if (signals.includes('price_drop')) dealScore += 20;
+        if (signals.includes('high_rental_yield')) dealScore += 25;
+        if (signals.includes('high_deal_score')) dealScore += 30;
+        if (signals.includes('market_growth')) dealScore += 15;
+        if (signals.includes('high_investment_score')) dealScore += 10;
+        dealScore = Math.min(dealScore, 100);
+
+        const messageParts: string[] = [];
+        if (signals.includes('price_drop')) messageParts.push(`Harga turun ${metadata.price_drop?.drop_pct}%`);
+        if (signals.includes('high_rental_yield')) messageParts.push(`Yield sewa ${metadata.rental_yield}%`);
+        if (signals.includes('high_deal_score')) messageParts.push(`${metadata.undervalue_percent}% di bawah harga pasar`);
+        if (signals.includes('market_growth')) messageParts.push(`Pertumbuhan ${metadata.growth_rate}%/thn`);
+        if (signals.includes('high_investment_score')) messageParts.push(`Skor investasi ${metadata.investment_score}/100`);
+
+        allOpportunities.push({
+          property_id: prop.id,
+          title: prop.title,
+          city: prop.city || '',
+          price: prop.price || 0,
+          property_type: prop.property_type || '',
+          thumbnail_url: prop.thumbnail_url,
+          signals,
+          deal_score: dealScore,
+          message: messageParts.join(' • '),
+          metadata,
+        });
+      }
+
+      // Sort by deal score
+      allOpportunities.sort((a, b) => b.deal_score - a.deal_score);
+
+      // 6. Match with user preferences and create notifications
+      let alertsCreated = 0;
+      const notifiedUsers = new Set<string>();
+      const summary: Record<string, number> = {
+        price_drop: 0,
+        high_rental_yield: 0,
+        high_deal_score: 0,
+        market_growth: 0,
+        high_investment_score: 0,
+      };
+
+      for (const opp of allOpportunities) {
+        for (const s of opp.signals) {
+          summary[s] = (summary[s] || 0) + 1;
+        }
+      }
+
+      for (const alert of userAlerts) {
+        const criteria = (alert.search_criteria || {}) as Record<string, any>;
+        const prefCity = criteria.city || criteria.preferred_city || '';
+        const prefType = criteria.property_type || '';
+        const minBudget = criteria.min_price || criteria.budget_min || 0;
+        const maxBudget = criteria.max_price || criteria.budget_max || Infinity;
+
+        for (const opp of allOpportunities.slice(0, 50)) {
+          // Match preferences
+          if (prefCity && !opp.city.toLowerCase().includes(prefCity.toLowerCase())) continue;
+          if (prefType && !opp.property_type.toLowerCase().includes(prefType.toLowerCase())) continue;
+          if (opp.price < minBudget || opp.price > maxBudget) continue;
+
+          // Create notification for each signal
+          for (const signal of opp.signals) {
+            const notifType = `investor_${signal}`;
+            const title = signal === 'price_drop' ? `📉 Harga Turun: ${opp.title}`
+              : signal === 'high_rental_yield' ? `💰 Yield Tinggi: ${opp.title}`
+              : signal === 'high_deal_score' ? `🔥 Deal Score Tinggi: ${opp.title}`
+              : signal === 'market_growth' ? `📈 Pertumbuhan Pasar: ${opp.title}`
+              : `⭐ Skor Investasi: ${opp.title}`;
+
+            await serviceClient.from('in_app_notifications').insert({
+              user_id: alert.user_id,
+              property_id: opp.property_id,
+              type: notifType,
+              title,
+              message: opp.message,
+              metadata: { score: opp.deal_score, signal, ...opp.metadata },
+            });
+
+            alertsCreated++;
+            notifiedUsers.add(alert.user_id);
+          }
+        }
+
+        // Update last_triggered_at
+        await serviceClient
+          .from('saved_search_alerts')
+          .update({ last_triggered_at: new Date().toISOString(), match_count: (alert.match_count || 0) + 1 })
+          .eq('id', alert.id);
+      }
+
+      const durationMs = Date.now() - scanStart;
+
+      // 7. Log scan to autonomous_agent_scans
+      await serviceClient.from('autonomous_agent_scans').insert({
+        scan_type: scanType,
+        status: 'completed',
+        total_properties_scanned: properties.length,
+        total_alerts_created: alertsCreated,
+        total_users_notified: notifiedUsers.size,
+        summary,
+        duration_ms: durationMs,
+      });
+
+      return new Response(JSON.stringify({
+        data: {
+          alerts: allOpportunities.slice(0, 20),
+          summary,
+          alerts_created: alertsCreated,
+          notified_users: notifiedUsers.size,
+          total_properties_scanned: properties.length,
+          total_opportunities: allOpportunities.length,
+          duration_ms: durationMs,
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
   } catch (err) {
     return new Response(JSON.stringify({ error: err instanceof Error ? err.message : 'Unknown error' }), {
       status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
