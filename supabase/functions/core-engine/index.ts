@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -7143,6 +7143,129 @@ Deno.serve(async (req) => {
             negative_signals: negCount,
             pos_ratio: posRatio,
             data_sufficiency: dataConfidence > 0.5 ? 'Sufficient' : 'Insufficient',
+          },
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // ██  MODE: global_market_intelligence — Compare markets globally
+    // ══════════════════════════════════════════════════════════════
+    if (mode === 'global_market_intelligence') {
+      const investmentBudget = body.investment_budget || 0;
+      const regionFilter = body.region || 'all';
+
+      // Comprehensive global market dataset with city-level granularity
+      const globalMarkets = [
+        // Southeast Asia
+        { country: 'Indonesia', flag: '🇮🇩', region: 'Southeast Asia', city: 'Bali (Seminyak)', rental_yield: 8.2, price_growth: 7.5, avg_price_usd: 250000, entry_price_usd: 120000, tourism_score: 95, fdi_score: 72, ease_of_entry: 60, currency: 'IDR', risk_level: 'Medium' },
+        { country: 'Indonesia', flag: '🇮🇩', region: 'Southeast Asia', city: 'Bali (Canggu)', rental_yield: 9.1, price_growth: 9.2, avg_price_usd: 200000, entry_price_usd: 95000, tourism_score: 90, fdi_score: 72, ease_of_entry: 60, currency: 'IDR', risk_level: 'Medium' },
+        { country: 'Indonesia', flag: '🇮🇩', region: 'Southeast Asia', city: 'Jakarta', rental_yield: 5.8, price_growth: 4.2, avg_price_usd: 180000, entry_price_usd: 80000, tourism_score: 45, fdi_score: 78, ease_of_entry: 65, currency: 'IDR', risk_level: 'Medium' },
+        { country: 'Indonesia', flag: '🇮🇩', region: 'Southeast Asia', city: 'Lombok', rental_yield: 7.5, price_growth: 11.0, avg_price_usd: 150000, entry_price_usd: 60000, tourism_score: 75, fdi_score: 65, ease_of_entry: 55, currency: 'IDR', risk_level: 'Medium-High' },
+        { country: 'Thailand', flag: '🇹🇭', region: 'Southeast Asia', city: 'Bangkok', rental_yield: 5.0, price_growth: 3.8, avg_price_usd: 210000, entry_price_usd: 90000, tourism_score: 88, fdi_score: 75, ease_of_entry: 70, currency: 'THB', risk_level: 'Low-Medium' },
+        { country: 'Thailand', flag: '🇹🇭', region: 'Southeast Asia', city: 'Phuket', rental_yield: 6.8, price_growth: 5.5, avg_price_usd: 280000, entry_price_usd: 130000, tourism_score: 92, fdi_score: 70, ease_of_entry: 72, currency: 'THB', risk_level: 'Low-Medium' },
+        { country: 'Vietnam', flag: '🇻🇳', region: 'Southeast Asia', city: 'Ho Chi Minh City', rental_yield: 5.5, price_growth: 8.0, avg_price_usd: 160000, entry_price_usd: 70000, tourism_score: 70, fdi_score: 80, ease_of_entry: 55, currency: 'VND', risk_level: 'Medium' },
+        { country: 'Vietnam', flag: '🇻🇳', region: 'Southeast Asia', city: 'Da Nang', rental_yield: 6.2, price_growth: 9.5, avg_price_usd: 120000, entry_price_usd: 50000, tourism_score: 78, fdi_score: 75, ease_of_entry: 55, currency: 'VND', risk_level: 'Medium' },
+        { country: 'Philippines', flag: '🇵🇭', region: 'Southeast Asia', city: 'Manila (BGC)', rental_yield: 6.5, price_growth: 5.2, avg_price_usd: 195000, entry_price_usd: 85000, tourism_score: 60, fdi_score: 68, ease_of_entry: 58, currency: 'PHP', risk_level: 'Medium' },
+        { country: 'Malaysia', flag: '🇲🇾', region: 'Southeast Asia', city: 'Kuala Lumpur', rental_yield: 4.8, price_growth: 3.5, avg_price_usd: 175000, entry_price_usd: 75000, tourism_score: 78, fdi_score: 72, ease_of_entry: 75, currency: 'MYR', risk_level: 'Low-Medium' },
+        { country: 'Cambodia', flag: '🇰🇭', region: 'Southeast Asia', city: 'Phnom Penh', rental_yield: 7.8, price_growth: 6.0, avg_price_usd: 95000, entry_price_usd: 40000, tourism_score: 55, fdi_score: 60, ease_of_entry: 65, currency: 'USD', risk_level: 'High' },
+        // Middle East
+        { country: 'UAE', flag: '🇦🇪', region: 'Middle East', city: 'Dubai Marina', rental_yield: 7.2, price_growth: 10.5, avg_price_usd: 450000, entry_price_usd: 200000, tourism_score: 95, fdi_score: 90, ease_of_entry: 88, currency: 'AED', risk_level: 'Low' },
+        { country: 'UAE', flag: '🇦🇪', region: 'Middle East', city: 'Abu Dhabi', rental_yield: 6.0, price_growth: 6.8, avg_price_usd: 380000, entry_price_usd: 170000, tourism_score: 72, fdi_score: 88, ease_of_entry: 85, currency: 'AED', risk_level: 'Low' },
+        // Europe
+        { country: 'Portugal', flag: '🇵🇹', region: 'Europe', city: 'Lisbon', rental_yield: 4.5, price_growth: 6.2, avg_price_usd: 420000, entry_price_usd: 200000, tourism_score: 90, fdi_score: 75, ease_of_entry: 78, currency: 'EUR', risk_level: 'Low' },
+        { country: 'Portugal', flag: '🇵🇹', region: 'Europe', city: 'Algarve', rental_yield: 5.2, price_growth: 5.8, avg_price_usd: 350000, entry_price_usd: 180000, tourism_score: 88, fdi_score: 70, ease_of_entry: 78, currency: 'EUR', risk_level: 'Low' },
+        { country: 'Turkey', flag: '🇹🇷', region: 'Europe', city: 'Istanbul', rental_yield: 5.8, price_growth: 12.0, avg_price_usd: 180000, entry_price_usd: 75000, tourism_score: 85, fdi_score: 65, ease_of_entry: 80, currency: 'TRY', risk_level: 'Medium-High' },
+        { country: 'Turkey', flag: '🇹🇷', region: 'Europe', city: 'Antalya', rental_yield: 6.5, price_growth: 14.0, avg_price_usd: 130000, entry_price_usd: 55000, tourism_score: 88, fdi_score: 60, ease_of_entry: 82, currency: 'TRY', risk_level: 'Medium-High' },
+        { country: 'Spain', flag: '🇪🇸', region: 'Europe', city: 'Barcelona', rental_yield: 4.0, price_growth: 4.5, avg_price_usd: 380000, entry_price_usd: 190000, tourism_score: 92, fdi_score: 78, ease_of_entry: 75, currency: 'EUR', risk_level: 'Low' },
+        { country: 'Greece', flag: '🇬🇷', region: 'Europe', city: 'Athens', rental_yield: 5.5, price_growth: 7.8, avg_price_usd: 220000, entry_price_usd: 100000, tourism_score: 85, fdi_score: 65, ease_of_entry: 72, currency: 'EUR', risk_level: 'Low-Medium' },
+        // Americas
+        { country: 'Mexico', flag: '🇲🇽', region: 'Americas', city: 'Tulum', rental_yield: 8.5, price_growth: 8.0, avg_price_usd: 280000, entry_price_usd: 120000, tourism_score: 88, fdi_score: 70, ease_of_entry: 68, currency: 'MXN', risk_level: 'Medium' },
+        { country: 'Mexico', flag: '🇲🇽', region: 'Americas', city: 'Mexico City (Roma)', rental_yield: 5.8, price_growth: 5.5, avg_price_usd: 200000, entry_price_usd: 90000, tourism_score: 75, fdi_score: 72, ease_of_entry: 70, currency: 'MXN', risk_level: 'Medium' },
+        { country: 'Colombia', flag: '🇨🇴', region: 'Americas', city: 'Medellin', rental_yield: 7.0, price_growth: 6.5, avg_price_usd: 150000, entry_price_usd: 60000, tourism_score: 72, fdi_score: 60, ease_of_entry: 70, currency: 'COP', risk_level: 'Medium' },
+        // East Asia
+        { country: 'Japan', flag: '🇯🇵', region: 'East Asia', city: 'Tokyo (Minato)', rental_yield: 3.5, price_growth: 4.8, avg_price_usd: 550000, entry_price_usd: 250000, tourism_score: 92, fdi_score: 80, ease_of_entry: 85, currency: 'JPY', risk_level: 'Low' },
+        { country: 'Japan', flag: '🇯🇵', region: 'East Asia', city: 'Osaka', rental_yield: 4.2, price_growth: 5.5, avg_price_usd: 320000, entry_price_usd: 150000, tourism_score: 85, fdi_score: 78, ease_of_entry: 85, currency: 'JPY', risk_level: 'Low' },
+      ];
+
+      // Filter by region
+      let filtered = regionFilter === 'all'
+        ? globalMarkets
+        : globalMarkets.filter(m => m.region.toLowerCase().includes(regionFilter.toLowerCase()));
+
+      // Filter by budget if provided
+      if (investmentBudget > 0) {
+        filtered = filtered.filter(m => m.entry_price_usd <= investmentBudget);
+      }
+
+      // Score each market
+      const scored = filtered.map((m) => {
+        // Yield score (0-30): higher yield = better
+        const yieldScore = Math.min(30, Math.round(m.rental_yield * 3.2));
+
+        // Growth score (0-25): higher growth = better
+        const growthScore = Math.min(25, Math.round(m.price_growth * 2.0));
+
+        // Accessibility score (0-20): ease of entry + FDI friendliness
+        const accessScore = Math.min(20, Math.round((m.ease_of_entry * 0.5 + m.fdi_score * 0.5) / 100 * 20));
+
+        // Tourism/demand score (0-15)
+        const demandScore = Math.min(15, Math.round(m.tourism_score / 100 * 15));
+
+        // Value score (0-10): lower entry price relative to yield = better value
+        const valueRatio = m.rental_yield / (m.entry_price_usd / 100000);
+        const valueScore = Math.min(10, Math.round(valueRatio * 2.5));
+
+        const investmentScore = yieldScore + growthScore + accessScore + demandScore + valueScore;
+
+        // Grade
+        const grade = investmentScore >= 80 ? 'A+' : investmentScore >= 70 ? 'A' : investmentScore >= 60 ? 'B+' : investmentScore >= 50 ? 'B' : investmentScore >= 40 ? 'C' : 'D';
+
+        return {
+          ...m,
+          investment_score: investmentScore,
+          grade,
+          score_breakdown: {
+            yield: yieldScore,
+            growth: growthScore,
+            accessibility: accessScore,
+            demand: demandScore,
+            value: valueScore,
+          },
+        };
+      }).sort((a, b) => b.investment_score - a.investment_score);
+
+      // Region summary
+      const regionSummary: Record<string, { count: number; avgYield: number; avgGrowth: number; avgScore: number; totalYield: number; totalGrowth: number; totalScore: number }> = {};
+      for (const m of scored) {
+        if (!regionSummary[m.region]) regionSummary[m.region] = { count: 0, avgYield: 0, avgGrowth: 0, avgScore: 0, totalYield: 0, totalGrowth: 0, totalScore: 0 };
+        const r = regionSummary[m.region];
+        r.count++;
+        r.totalYield += m.rental_yield;
+        r.totalGrowth += m.price_growth;
+        r.totalScore += m.investment_score;
+      }
+      const regions = Object.entries(regionSummary).map(([region, r]) => ({
+        region,
+        markets: r.count,
+        avg_yield: Math.round(r.totalYield / r.count * 10) / 10,
+        avg_growth: Math.round(r.totalGrowth / r.count * 10) / 10,
+        avg_score: Math.round(r.totalScore / r.count),
+      })).sort((a, b) => b.avg_score - a.avg_score);
+
+      return new Response(JSON.stringify({
+        data: {
+          markets: scored,
+          regions,
+          summary: {
+            total_markets: scored.length,
+            top_market: scored[0] ? `${scored[0].flag} ${scored[0].city}` : 'N/A',
+            top_score: scored[0]?.investment_score || 0,
+            avg_yield: scored.length > 0 ? Math.round(scored.reduce((s, m) => s + m.rental_yield, 0) / scored.length * 10) / 10 : 0,
+            avg_growth: scored.length > 0 ? Math.round(scored.reduce((s, m) => s + m.price_growth, 0) / scored.length * 10) / 10 : 0,
+            budget_filter: investmentBudget > 0 ? `$${(investmentBudget / 1000).toFixed(0)}K` : 'None',
+            region_filter: regionFilter,
           },
           generated_at: new Date().toISOString(),
         },
