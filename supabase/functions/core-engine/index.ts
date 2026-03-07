@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard'];
+    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -8339,6 +8339,201 @@ Deno.serve(async (req) => {
         data: {
           markets,
           total_cities: markets.length,
+          total_properties: properties.length,
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: location_intelligence
+    // Area-level investment analysis within cities
+    // ═══════════════════════════════════════════
+    if (mode === 'location_intelligence') {
+      const serviceClient = createClient(supabaseUrl, serviceKey);
+      const now = Date.now();
+      const thirtyDaysAgo = new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString();
+      const twelveMonthsAgo = new Date(now - 365 * 24 * 60 * 60 * 1000).toISOString();
+
+      // Fetch active properties with pricing and area data
+      const { data: properties, error: propErr } = await serviceClient
+        .from('properties')
+        .select('id, city, location, price, area_sqm, building_area_sqm, land_area_sqm, listing_type, investment_score, demand_heat_score, created_at, status')
+        .eq('status', 'active')
+        .not('price', 'is', null)
+        .gt('price', 0);
+
+      if (propErr) throw propErr;
+      if (!properties || properties.length === 0) {
+        return new Response(JSON.stringify({
+          mode: 'location_intelligence',
+          data: { areas: [], total_areas: 0, total_properties: 0, generated_at: new Date().toISOString() },
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      // Fetch analytics for demand signals
+      const { data: analyticsData } = await serviceClient
+        .from('property_analytics')
+        .select('property_id, views, saves')
+        .in('property_id', properties.map(p => p.id));
+
+      const analyticsMap: Record<string, { views: number; saves: number }> = {};
+      (analyticsData || []).forEach(a => {
+        analyticsMap[a.property_id] = { views: a.views || 0, saves: a.saves || 0 };
+      });
+
+      // Fetch price history for growth calculation
+      const { data: priceHistory } = await serviceClient
+        .from('property_price_history')
+        .select('property_id, price, recorded_at')
+        .gte('recorded_at', twelveMonthsAgo)
+        .order('recorded_at', { ascending: true });
+
+      const priceHistoryMap: Record<string, { price: number; recorded_at: string }[]> = {};
+      (priceHistory || []).forEach(ph => {
+        if (!priceHistoryMap[ph.property_id]) priceHistoryMap[ph.property_id] = [];
+        priceHistoryMap[ph.property_id].push({ price: ph.price, recorded_at: ph.recorded_at });
+      });
+
+      // Group properties by city + area (location field)
+      const areaGroups: Record<string, typeof properties> = {};
+      for (const p of properties) {
+        const city = p.city || 'Unknown';
+        const area = p.location || city;
+        const key = `${city}|||${area}`;
+        if (!areaGroups[key]) areaGroups[key] = [];
+        areaGroups[key].push(p);
+      }
+
+      // Calculate metrics for each area
+      const areas = Object.entries(areaGroups).map(([key, props]) => {
+        const [city, area] = key.split('|||');
+
+        // Average price per m²
+        const pricesPerM2: number[] = [];
+        for (const p of props) {
+          const sqm = p.building_area_sqm || p.land_area_sqm || p.area_sqm;
+          if (sqm && sqm > 0) {
+            pricesPerM2.push(p.price / sqm);
+          }
+        }
+        const avg_price_per_m2 = pricesPerM2.length > 0
+          ? Math.round(pricesPerM2.reduce((a, b) => a + b, 0) / pricesPerM2.length)
+          : 0;
+
+        // Rental yield estimate
+        // For rent listings, use actual rent; for sale, estimate ~4-6% yield
+        const rentListings = props.filter(p => p.listing_type === 'rent');
+        const saleListings = props.filter(p => p.listing_type === 'sale');
+        let rental_yield = 0;
+        if (rentListings.length > 0 && saleListings.length > 0) {
+          const avgRent = rentListings.reduce((s, p) => s + p.price, 0) / rentListings.length;
+          const avgSalePrice = saleListings.reduce((s, p) => s + p.price, 0) / saleListings.length;
+          if (avgSalePrice > 0) {
+            rental_yield = Math.round(((avgRent * 12) / avgSalePrice) * 10000) / 100; // percentage with 2 decimals
+          }
+        } else {
+          // Estimate based on investment score
+          const avgInvScore = props.reduce((s, p) => s + (p.investment_score || 50), 0) / props.length;
+          rental_yield = Math.round((3 + (avgInvScore / 100) * 4) * 100) / 100; // 3-7% range
+        }
+
+        // Price growth (compare current avg vs oldest recorded prices)
+        let price_growth = 0;
+        const propIds = props.map(p => p.id);
+        const relevantHistory = propIds.flatMap(id => priceHistoryMap[id] || []);
+        if (relevantHistory.length >= 2) {
+          relevantHistory.sort((a, b) => new Date(a.recorded_at).getTime() - new Date(b.recorded_at).getTime());
+          const oldestQuarter = relevantHistory.slice(0, Math.max(1, Math.floor(relevantHistory.length * 0.25)));
+          const newestQuarter = relevantHistory.slice(Math.floor(relevantHistory.length * 0.75));
+          const oldAvg = oldestQuarter.reduce((s, h) => s + h.price, 0) / oldestQuarter.length;
+          const newAvg = newestQuarter.reduce((s, h) => s + h.price, 0) / newestQuarter.length;
+          if (oldAvg > 0) {
+            price_growth = Math.round(((newAvg - oldAvg) / oldAvg) * 10000) / 100;
+          }
+        } else {
+          // Estimate from demand signals
+          const avgDemand = props.reduce((s, p) => s + (p.demand_heat_score || 30), 0) / props.length;
+          price_growth = Math.round((avgDemand / 100) * 8 * 100) / 100; // 0-8% range
+        }
+
+        // Demand signals
+        let totalViews30d = 0;
+        let totalSaves30d = 0;
+        for (const p of props) {
+          const analytics = analyticsMap[p.id];
+          if (analytics) {
+            totalViews30d += analytics.views;
+            totalSaves30d += analytics.saves;
+          }
+        }
+
+        // Demand heat score (0-100)
+        let demandHeatScore = 0;
+        const viewsPerListing = props.length > 0 ? totalViews30d / props.length : 0;
+        const savesPerListing = props.length > 0 ? totalSaves30d / props.length : 0;
+
+        // Views component (0-30)
+        if (viewsPerListing >= 50) demandHeatScore += 30;
+        else if (viewsPerListing >= 20) demandHeatScore += 22;
+        else if (viewsPerListing >= 10) demandHeatScore += 15;
+        else demandHeatScore += 5;
+
+        // Saves component (0-25)
+        if (savesPerListing >= 5) demandHeatScore += 25;
+        else if (savesPerListing >= 2) demandHeatScore += 18;
+        else if (savesPerListing >= 1) demandHeatScore += 10;
+        else demandHeatScore += 3;
+
+        // Listing density (0-20)
+        if (props.length >= 30) demandHeatScore += 20;
+        else if (props.length >= 15) demandHeatScore += 15;
+        else if (props.length >= 5) demandHeatScore += 10;
+        else demandHeatScore += 5;
+
+        // Price growth component (0-25)
+        if (price_growth >= 5) demandHeatScore += 25;
+        else if (price_growth >= 2) demandHeatScore += 18;
+        else if (price_growth >= 0) demandHeatScore += 10;
+        else demandHeatScore += 3;
+
+        const clampedHeat = Math.max(0, Math.min(100, demandHeatScore));
+        let demand_heat_level: string;
+        if (clampedHeat >= 75) demand_heat_level = 'very_hot';
+        else if (clampedHeat >= 55) demand_heat_level = 'hot';
+        else if (clampedHeat >= 35) demand_heat_level = 'warm';
+        else demand_heat_level = 'cool';
+
+        // Investment score (composite 0-100)
+        const yieldScore = Math.min(25, (rental_yield / 8) * 25);
+        const growthScore = Math.min(25, Math.max(0, (price_growth / 10) * 25));
+        const demandScore = (clampedHeat / 100) * 25;
+        const liquidityScore = Math.min(25, (props.length / 30) * 25);
+        const investment_score = Math.round(yieldScore + growthScore + demandScore + liquidityScore);
+
+        return {
+          city,
+          area,
+          avg_price_per_m2,
+          rental_yield,
+          price_growth,
+          demand_heat_score: clampedHeat,
+          demand_heat_level,
+          investment_score: Math.max(0, Math.min(100, investment_score)),
+          total_listings: props.length,
+          views_30d: totalViews30d,
+          saves_30d: totalSaves30d,
+        };
+      });
+
+      // Sort by investment score descending
+      areas.sort((a, b) => b.investment_score - a.investment_score);
+
+      return new Response(JSON.stringify({
+        mode: 'location_intelligence',
+        data: {
+          areas,
+          total_areas: areas.length,
           total_properties: properties.length,
           generated_at: new Date().toISOString(),
         },
