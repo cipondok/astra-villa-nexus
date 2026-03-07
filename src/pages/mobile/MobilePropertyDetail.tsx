@@ -9,7 +9,6 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
-import { shareProperty } from '@/utils/shareUtils';
 
 const MobilePropertyDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -108,7 +107,11 @@ const MobilePropertyDetail: React.FC = () => {
               <Heart className="h-4.5 w-4.5 text-white" />
             </button>
             <button
-              onClick={() => shareProperty(property.id, property.title)}
+              onClick={() => {
+                if (navigator.share) {
+                  navigator.share({ title: property.title, url: `${window.location.origin}/properties/${property.id}` });
+                }
+              }}
               className="w-9 h-9 rounded-full bg-black/40 backdrop-blur flex items-center justify-center active:scale-95"
             >
               <Share2 className="h-4.5 w-4.5 text-white" />
