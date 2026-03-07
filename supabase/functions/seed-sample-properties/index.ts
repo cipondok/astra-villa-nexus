@@ -5,9 +5,8 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const BATCH_SIZE = 5; // kelurahan per batch
+const BATCH_SIZE = 5;
 const PROPERTY_TYPES = ["house", "apartment", "villa", "land", "commercial", "townhouse", "warehouse", "kost"];
-
 const LISTING_TYPES = ["sale", "rent"];
 const FURNISHING = ["unfurnished", "semi-furnished", "fully-furnished"];
 const LEGAL = ["SHM", "HGB", "SHGB", "Girik", "AJB"];
@@ -33,10 +32,8 @@ function generatePrice(type: string, listing: string): number {
   };
   const [min, max] = bases[type] || [500_000_000, 5_000_000_000];
   let price = rand(min, max);
-  // Round to millions
   price = Math.round(price / 1_000_000) * 1_000_000;
   if (listing === "rent") {
-    // Monthly rent = roughly price / 120..200
     price = Math.round(price / rand(120, 200) / 100_000) * 100_000;
   }
   return price;
@@ -112,7 +109,6 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-     // Verify user via getUser
     const anonClient = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!, {
       global: { headers: { Authorization: authHeader } },
     });
@@ -125,7 +121,6 @@ Deno.serve(async (req) => {
     }
 
     const userId = userData.user.id;
-
     const body = await req.json();
     const { province, offset = 0, skipExisting = true } = body;
 
@@ -136,7 +131,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Get distinct kelurahan/desa for this province, paginated
+    // Get batch of locations
     const { data: locations, error: locErr } = await supabase
       .from("locations")
       .select("province_name, city_name, city_type, district_name, subdistrict_name, postal_code")
@@ -146,7 +141,6 @@ Deno.serve(async (req) => {
       .order("subdistrict_name")
       .range(offset * BATCH_SIZE, (offset + 1) * BATCH_SIZE - 1);
 
-    // Deduplicate by subdistrict_name
     const seen = new Set<string>();
     const uniqueLocations = (locations || []).filter((l) => {
       if (seen.has(l.subdistrict_name)) return false;
@@ -156,17 +150,28 @@ Deno.serve(async (req) => {
 
     if (locErr || uniqueLocations.length === 0) {
       return new Response(
-        JSON.stringify({
-          created: 0,
-          skipped: 0,
-          errors: 0,
-          batchProcessed: 0,
-          hasMore: false,
-          nextOffset: null,
-          locations_processed: [],
-        }),
+        JSON.stringify({ created: 0, skipped: 0, errors: 0, batchProcessed: 0, hasMore: false, nextOffset: null, locations_processed: [] }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
+    }
+
+    // FAST BATCH CHECK: Get all existing property types for these areas in one query
+    const areaNames = uniqueLocations.map(l => l.subdistrict_name || l.district_name);
+    const cityNames = uniqueLocations.map(l => l.city_type ? `${l.city_type} ${l.city_name}` : l.city_name);
+    
+    let existingSet = new Set<string>();
+    if (skipExisting) {
+      const { data: existingProps } = await supabase
+        .from("properties")
+        .select("city, area, property_type")
+        .eq("state", province)
+        .in("area", areaNames);
+      
+      if (existingProps) {
+        existingProps.forEach((p: any) => {
+          existingSet.add(`${p.city}|${p.area}|${p.property_type}`);
+        });
+      }
     }
 
     let created = 0;
@@ -174,54 +179,65 @@ Deno.serve(async (req) => {
     let errors = 0;
     const locationsProcessed: Array<{ city: string; area: string; types_created: number }> = [];
 
+    // Collect all properties to insert in bulk
+    const toInsert: any[] = [];
+
     for (const loc of uniqueLocations) {
       const cityFull = loc.city_type ? `${loc.city_type} ${loc.city_name}` : loc.city_name;
       const area = loc.subdistrict_name || loc.district_name;
       let typesCreated = 0;
 
       for (const type of PROPERTY_TYPES) {
-        try {
-          if (skipExisting) {
-            const { count } = await supabase
-              .from("properties")
-              .select("id", { count: "exact", head: true })
-              .eq("state", province)
-              .eq("city", cityFull)
-              .eq("area", area)
-              .eq("property_type", type);
-
-            if (count && count > 0) {
-              skipped++;
-              continue;
-            }
-          }
-
-          const property = generateProperty(type, loc);
-          const { error: insertErr } = await supabase.from("properties").insert({ ...property, owner_id: userId });
-
-          if (insertErr) {
-            console.error(`Insert error for ${type} in ${area}:`, insertErr.message);
-            errors++;
-          } else {
-            created++;
-            typesCreated++;
-          }
-        } catch (e) {
-          console.error(`Error for ${type} in ${area}:`, e);
-          errors++;
+        if (skipExisting && existingSet.has(`${cityFull}|${area}|${type}`)) {
+          skipped++;
+          continue;
         }
+
+        const property = generateProperty(type, loc);
+        toInsert.push({ ...property, owner_id: userId });
+        typesCreated++;
       }
 
       locationsProcessed.push({ city: cityFull, area, types_created: typesCreated });
     }
 
-    // Count total kelurahan to determine hasMore
+    // Bulk insert all at once
+    if (toInsert.length > 0) {
+      const { error: insertErr, data: insertData } = await supabase
+        .from("properties")
+        .insert(toInsert)
+        .select("id");
+
+      if (insertErr) {
+        console.error(`Bulk insert error:`, insertErr.message);
+        // Fallback: try one-by-one
+        for (const prop of toInsert) {
+          const { error: singleErr } = await supabase.from("properties").insert(prop);
+          if (singleErr) {
+            console.error(`Insert error for ${prop.property_type} in ${prop.area}:`, singleErr.message);
+            errors++;
+          } else {
+            created++;
+          }
+        }
+      } else {
+        created = insertData?.length || toInsert.length;
+      }
+    }
+
+    // Count total kelurahan
     const { count: totalKelurahan } = await supabase
       .from("locations")
       .select("subdistrict_name", { count: "exact", head: true })
       .eq("province_name", province)
       .eq("is_active", true)
       .not("subdistrict_name", "is", null);
+
+    // Count existing properties for this province
+    const { count: existingCount } = await supabase
+      .from("properties")
+      .select("id", { count: "exact", head: true })
+      .eq("state", province);
 
     const nextOffset = offset + 1;
     const hasMore = nextOffset * BATCH_SIZE < (totalKelurahan || 0);
@@ -235,6 +251,7 @@ Deno.serve(async (req) => {
         hasMore,
         nextOffset: hasMore ? nextOffset : null,
         total_kelurahan: totalKelurahan,
+        existing_count: existingCount || 0,
         locations_processed: locationsProcessed,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
