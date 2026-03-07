@@ -297,6 +297,12 @@ const Navigation = () => {
               {user && !isAdmin && isPropertyOwner && (
                 <NavIconButton icon={TrendingUp} label="Seller Intelligence" isActive={isActive('/seller-intelligence')} onClick={() => navigate('/seller-intelligence')} />
               )}
+              {user && !isAdmin && isPropertyOwner && (
+                <NavIconButton icon={Sparkles} label="Listing Optimizer" isActive={isActive('/listing-optimizer')} onClick={() => navigate('/listing-optimizer')} />
+              )}
+              {user && !isAdmin && isPropertyOwner && (
+                <NavIconButton icon={Scale} label="Negotiation Assistant" isActive={isActive('/negotiation-assistant')} onClick={() => navigate('/negotiation-assistant')} />
+              )}
               {user && !isAdmin && !isAgent && !isPropertyOwner && (
                 <NavIconButton icon={BarChart3} label={t('nav.dashboard')} isActive={isActive('/dashboard/user')} onClick={() => navigate('/dashboard/user')} showLabel />
               )}
@@ -406,6 +412,12 @@ const Navigation = () => {
                       )}
                       {user && !isAdmin && isPropertyOwner && (
                         <MobileNavButton icon={TrendingUp} label="Seller Intelligence" active={isActive('/seller-intelligence')} onClick={() => { navigate('/seller-intelligence'); toggleMenu(); }} indent />
+                      )}
+                      {user && !isAdmin && isPropertyOwner && (
+                        <MobileNavButton icon={Sparkles} label="Listing Optimizer" active={isActive('/listing-optimizer')} onClick={() => { navigate('/listing-optimizer'); toggleMenu(); }} indent />
+                      )}
+                      {user && !isAdmin && isPropertyOwner && (
+                        <MobileNavButton icon={Scale} label="Negotiation Assistant" active={isActive('/negotiation-assistant')} onClick={() => { navigate('/negotiation-assistant'); toggleMenu(); }} indent />
                       )}
                       {user && !isAdmin && !isAgent && !isPropertyOwner && (
                         <MobileNavButton icon={BarChart3} label={t('nav.dashboard')} active={isActive('/dashboard/user')} onClick={() => { navigate('/dashboard/user'); toggleMenu(); }} indent />
