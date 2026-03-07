@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence', 'investor_alerts', 'portfolio_builder', 'off_market_deals', 'developer_project_launch', 'smart_tour_planner'];
+    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'price_fairness', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence', 'investor_alerts', 'portfolio_builder', 'off_market_deals', 'developer_project_launch', 'smart_tour_planner'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -1311,6 +1311,70 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ mode: 'price_suggestion', data: result }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: price_fairness
+    // ═══════════════════════════════════════════
+    if (mode === 'price_fairness') {
+      const buildingArea = Number(property.building_area_sqm) || 0;
+      const landArea = Number(property.land_area_sqm) || 0;
+      const currentPrice = Number(property.price) || 0;
+
+      if (buildingArea <= 0 && landArea <= 0) {
+        return new Response(JSON.stringify({ error: 'Property must have area data' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      if (currentPrice <= 0) {
+        return new Response(JSON.stringify({ error: 'Property must have a price set' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const result = await computePricePosition(property, property_id);
+      if (result.comparable_count === 0) {
+        return new Response(JSON.stringify({
+          mode: 'price_fairness',
+          data: { error: 'Not enough comparable listings in this market', comparable_count: 0 },
+        }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      const marketPrice = result.fair_market_value;
+      const priceDiffPercent = marketPrice > 0
+        ? Math.round(((currentPrice - marketPrice) / marketPrice) * 10000) / 100
+        : 0;
+
+      // Determine status with 4 tiers
+      let priceStatus: string;
+      if (priceDiffPercent <= -15) priceStatus = 'undervalued';
+      else if (priceDiffPercent <= 10) priceStatus = 'fair_price';
+      else if (priceDiffPercent <= 25) priceStatus = 'slightly_expensive';
+      else priceStatus = 'overpriced';
+
+      const primaryArea = buildingArea > 0 ? buildingArea : landArea;
+      const propertyPricePerSqm = Math.round(currentPrice / primaryArea);
+      const marketPricePerSqm = result.price_per_sqm;
+
+      console.log(`Price fairness for ${property_id}: status=${priceStatus} diff=${priceDiffPercent}% market=${marketPrice} current=${currentPrice} comps=${result.comparable_count}`);
+
+      return new Response(JSON.stringify({
+        mode: 'price_fairness',
+        data: {
+          property_id,
+          current_price: currentPrice,
+          market_price: marketPrice,
+          price_difference_percent: priceDiffPercent,
+          price_status: priceStatus,
+          property_price_per_sqm: propertyPricePerSqm,
+          market_price_per_sqm: marketPricePerSqm,
+          comparable_count: result.comparable_count,
+          confidence_score: result.confidence_score,
+          demand_multiplier: result.demand_multiplier,
+          expected_days_on_market: result.expected_days_on_market,
+          reasoning: result.reasoning,
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
     // ═══════════════════════════════════════════
