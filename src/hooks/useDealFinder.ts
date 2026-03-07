@@ -44,7 +44,7 @@ export const useDealFinder = (filters: DealFinderFilters = {}) => {
   return useQuery({
     queryKey: ['deal-finder', filters],
     queryFn: async (): Promise<DealFinderResponse> => {
-      const { data, error } = await supabase.functions.invoke('core-engine', {
+      const { data, error } = await supabase.functions.invoke('deal-engine', {
         body: {
           mode: 'deal_finder',
           city: filters.city || null,

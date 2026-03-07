@@ -48,7 +48,7 @@ export interface OffMarketDealsInput {
 export function useOffMarketDeals() {
   return useMutation({
     mutationFn: async (input: OffMarketDealsInput): Promise<OffMarketDealsResult> => {
-      const { data, error } = await supabase.functions.invoke('core-engine', {
+      const { data, error } = await supabase.functions.invoke('deal-engine', {
         body: { mode: 'off_market_deals', ...input },
       });
       if (error) throw error;
