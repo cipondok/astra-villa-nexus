@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -7267,6 +7267,197 @@ Deno.serve(async (req) => {
             budget_filter: investmentBudget > 0 ? `$${(investmentBudget / 1000).toFixed(0)}K` : 'None',
             region_filter: regionFilter,
           },
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // ██  MODE: mortgage_investment_simulator
+    // ══════════════════════════════════════════════════════════════
+    if (mode === 'mortgage_investment_simulator') {
+      const propertyPrice = body.property_price || 0;
+      const downPaymentPercent = body.down_payment_percent || 20;
+      const interestRate = body.interest_rate || 8;
+      const loanTermYears = body.loan_term_years || 20;
+      const propertyId = body.property_id;
+
+      const downPayment = propertyPrice * (downPaymentPercent / 100);
+      const loanAmount = propertyPrice - downPayment;
+      const monthlyRate = interestRate / 100 / 12;
+      const totalMonths = loanTermYears * 12;
+
+      // PMT formula
+      let monthlyPayment: number;
+      if (monthlyRate === 0) {
+        monthlyPayment = loanAmount / totalMonths;
+      } else {
+        monthlyPayment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / (Math.pow(1 + monthlyRate, totalMonths) - 1);
+      }
+
+      const totalPayment = monthlyPayment * totalMonths;
+      const totalInterest = totalPayment - loanAmount;
+
+      // Rental yield estimation — use property data if available
+      let rentalYieldPercent = 5.5; // default
+      let monthlyRent = 0;
+      let rentSource = 'market_average';
+      let propertyCity = '';
+      let propertyType = '';
+      let bedrooms = 0;
+
+      if (propertyId) {
+        const { data: prop } = await supabaseClient
+          .from('properties')
+          .select('city, property_type, bedrooms, building_area, monthly_rent_estimate')
+          .eq('id', propertyId)
+          .maybeSingle();
+
+        if (prop) {
+          propertyCity = prop.city || '';
+          propertyType = prop.property_type || '';
+          bedrooms = prop.bedrooms || 0;
+
+          if (prop.monthly_rent_estimate && prop.monthly_rent_estimate > 0) {
+            monthlyRent = prop.monthly_rent_estimate;
+            rentSource = 'property_data';
+          } else {
+            // Estimate from comparables
+            const { data: comps } = await supabaseClient
+              .from('properties')
+              .select('monthly_rent_estimate')
+              .eq('listing_type', 'rent')
+              .eq('city', prop.city)
+              .eq('property_type', prop.property_type)
+              .not('monthly_rent_estimate', 'is', null)
+              .gt('monthly_rent_estimate', 0)
+              .limit(20);
+
+            if (comps && comps.length > 0) {
+              const avgRent = comps.reduce((s, c) => s + (c.monthly_rent_estimate || 0), 0) / comps.length;
+              monthlyRent = Math.round(avgRent);
+              rentSource = `comparable_avg_${comps.length}`;
+            }
+          }
+        }
+      }
+
+      // Fallback: estimate from yield
+      if (monthlyRent <= 0) {
+        // City-based yield adjustments
+        const cityYields: Record<string, number> = {
+          'bali': 7.5, 'jakarta': 5.0, 'bandung': 5.5, 'surabaya': 5.2,
+          'yogyakarta': 6.0, 'lombok': 7.0, 'malang': 5.8, 'semarang': 5.3
+        };
+        const cityKey = propertyCity.toLowerCase();
+        rentalYieldPercent = cityYields[cityKey] || 5.5;
+        monthlyRent = Math.round((propertyPrice * rentalYieldPercent / 100) / 12);
+        rentSource = 'yield_estimate';
+      } else {
+        rentalYieldPercent = Math.round((monthlyRent * 12 / propertyPrice) * 1000) / 10;
+      }
+
+      // Cashflow analysis
+      const netMonthlyCashflow = monthlyRent - monthlyPayment;
+      const annualCashflow = netMonthlyCashflow * 12;
+      const cashOnCashReturn = downPayment > 0 ? Math.round((annualCashflow / downPayment) * 1000) / 10 : 0;
+      const breakEvenRent = monthlyPayment;
+      const dscr = monthlyRent > 0 ? Math.round((monthlyRent / monthlyPayment) * 100) / 100 : 0;
+      const cashflowStatus = netMonthlyCashflow > 0 ? 'positive' : netMonthlyCashflow === 0 ? 'breakeven' : 'negative';
+
+      // 5-year projection (assume 5% annual appreciation + 3% rent growth)
+      const appreciationRate = 0.05;
+      const rentGrowthRate = 0.03;
+      const yearlyProjection = [];
+      let projectedValue = propertyPrice;
+      let projectedRent = monthlyRent;
+      let balance = loanAmount;
+      let cumulativeCashflow = 0;
+
+      for (let y = 1; y <= 10; y++) {
+        projectedValue *= (1 + appreciationRate);
+        projectedRent *= (1 + rentGrowthRate);
+        const annualMortgage = monthlyPayment * 12;
+        const yearCashflow = (projectedRent * 12) - annualMortgage;
+        cumulativeCashflow += yearCashflow;
+
+        // Approximate remaining balance
+        const monthsElapsed = y * 12;
+        if (monthlyRate > 0) {
+          balance = loanAmount * (Math.pow(1 + monthlyRate, totalMonths) - Math.pow(1 + monthlyRate, monthsElapsed)) / (Math.pow(1 + monthlyRate, totalMonths) - 1);
+        } else {
+          balance = loanAmount - (monthlyPayment * monthsElapsed);
+        }
+        const equity = projectedValue - Math.max(0, balance);
+        const totalROI = downPayment > 0 ? Math.round(((equity - downPayment + cumulativeCashflow) / downPayment) * 1000) / 10 : 0;
+
+        yearlyProjection.push({
+          year: y,
+          property_value: Math.round(projectedValue),
+          monthly_rent: Math.round(projectedRent),
+          annual_cashflow: Math.round(yearCashflow),
+          cumulative_cashflow: Math.round(cumulativeCashflow),
+          remaining_balance: Math.round(Math.max(0, balance)),
+          equity: Math.round(equity),
+          total_roi: totalROI,
+        });
+      }
+
+      // Sensitivity analysis: different interest rate scenarios
+      const scenarios = [interestRate - 2, interestRate - 1, interestRate, interestRate + 1, interestRate + 2].filter(r => r > 0).map(rate => {
+        const mr = rate / 100 / 12;
+        let mp;
+        if (mr === 0) { mp = loanAmount / totalMonths; }
+        else { mp = loanAmount * (mr * Math.pow(1 + mr, totalMonths)) / (Math.pow(1 + mr, totalMonths) - 1); }
+        return {
+          interest_rate: rate,
+          monthly_payment: Math.round(mp),
+          net_cashflow: Math.round(monthlyRent - mp),
+          cashflow_status: monthlyRent - mp > 0 ? 'positive' : 'negative',
+        };
+      });
+
+      // Investment verdict
+      let verdict = 'neutral';
+      let verdictLabel = 'Moderate Investment';
+      if (dscr >= 1.25 && cashOnCashReturn > 5) { verdict = 'excellent'; verdictLabel = 'Excellent Investment'; }
+      else if (dscr >= 1.0 && cashOnCashReturn > 0) { verdict = 'good'; verdictLabel = 'Good Investment'; }
+      else if (dscr >= 0.8) { verdict = 'fair'; verdictLabel = 'Fair — Needs Subsidy'; }
+      else { verdict = 'poor'; verdictLabel = 'Poor — Cash Drain'; }
+
+      return new Response(JSON.stringify({
+        data: {
+          // Core mortgage
+          property_price: propertyPrice,
+          down_payment: Math.round(downPayment),
+          down_payment_percent: downPaymentPercent,
+          loan_amount: Math.round(loanAmount),
+          interest_rate: interestRate,
+          loan_term_years: loanTermYears,
+          monthly_payment: Math.round(monthlyPayment),
+          total_payment: Math.round(totalPayment),
+          total_interest: Math.round(totalInterest),
+          // Rental
+          rental_yield_percent: rentalYieldPercent,
+          monthly_rent: monthlyRent,
+          rent_source: rentSource,
+          // Cashflow
+          net_monthly_cashflow: Math.round(netMonthlyCashflow),
+          annual_cashflow: Math.round(annualCashflow),
+          cash_on_cash_return: cashOnCashReturn,
+          break_even_rent: Math.round(breakEvenRent),
+          dscr,
+          cashflow_status: cashflowStatus,
+          // Verdict
+          verdict,
+          verdict_label: verdictLabel,
+          // Projections
+          yearly_projection: yearlyProjection,
+          rate_scenarios: scenarios,
+          // Meta
+          property_city: propertyCity,
+          property_type: propertyType,
+          bedrooms,
           generated_at: new Date().toISOString(),
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
