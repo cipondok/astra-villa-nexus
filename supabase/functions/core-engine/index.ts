@@ -8540,6 +8540,293 @@ Deno.serve(async (req) => {
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
+    // ═══════════════════════════════════════════
+    // MODE: investor_alerts — Multi-signal investor opportunity scanner
+    // Detects: price_drop, high_rental_yield, undervalued_property, high_market_growth
+    // ═══════════════════════════════════════════
+    if (mode === 'investor_alerts') {
+      const serviceClient = createClient(supabaseUrl, serviceKey);
+      const now = Date.now();
+      const thirtyDaysAgo = new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString();
+      const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString();
+      const twelveMonthsAgo = new Date(now - 365 * 24 * 60 * 60 * 1000).toISOString();
+
+      // Step 1: Fetch active properties
+      const { data: allProps, error: propsErr } = await serviceClient
+        .from('properties')
+        .select('id, title, price, city, district, location, property_type, listing_type, building_area_sqm, land_area_sqm, area_sqm, investment_score, demand_heat_score, created_at')
+        .eq('status', 'active')
+        .not('price', 'is', null)
+        .gt('price', 0)
+        .limit(1000);
+
+      if (propsErr || !allProps || allProps.length === 0) {
+        return new Response(JSON.stringify({
+          mode: 'investor_alerts',
+          data: { alerts: [], summary: { price_drop: 0, high_rental_yield: 0, undervalued_property: 0, high_market_growth: 0 }, generated_at: new Date().toISOString() },
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      // Step 2: Fetch price history for price drop detection
+      const { data: priceHistory } = await serviceClient
+        .from('property_price_history')
+        .select('property_id, price, previous_price, change_percentage, recorded_at')
+        .gte('recorded_at', thirtyDaysAgo)
+        .order('recorded_at', { ascending: false });
+
+      const priceDropMap: Record<string, { drop_pct: number; old_price: number; new_price: number }> = {};
+      for (const ph of (priceHistory || [])) {
+        if (priceDropMap[ph.property_id]) continue; // only most recent change
+        const changePct = ph.change_percentage ?? (ph.previous_price && ph.previous_price > 0
+          ? ((ph.price - ph.previous_price) / ph.previous_price) * 100 : 0);
+        if (changePct < -5) { // 5%+ price drop
+          priceDropMap[ph.property_id] = {
+            drop_pct: Math.round(Math.abs(changePct) * 10) / 10,
+            old_price: ph.previous_price || ph.price,
+            new_price: ph.price,
+          };
+        }
+      }
+
+      // Step 3: Fetch analytics for demand signals
+      const { data: analyticsData } = await serviceClient
+        .from('property_analytics')
+        .select('property_id, views, saves')
+        .in('property_id', allProps.map(p => p.id));
+
+      const analyticsMap: Record<string, { views: number; saves: number }> = {};
+      for (const a of (analyticsData || [])) {
+        analyticsMap[a.property_id] = { views: a.views || 0, saves: a.saves || 0 };
+      }
+
+      // Step 4: Compute city medians for undervaluation detection
+      const cityTypeGroups: Record<string, number[]> = {};
+      for (const p of allProps) {
+        const key = `${p.city}__${p.property_type}`;
+        const sqm = Number(p.building_area_sqm) || Number(p.land_area_sqm) || Number(p.area_sqm) || 1;
+        const pps = Number(p.price) / sqm;
+        if (!cityTypeGroups[key]) cityTypeGroups[key] = [];
+        cityTypeGroups[key].push(pps);
+      }
+      const medians: Record<string, number> = {};
+      for (const [key, arr] of Object.entries(cityTypeGroups)) {
+        const sorted = arr.sort((a, b) => a - b);
+        medians[key] = sorted[Math.floor(sorted.length / 2)];
+      }
+
+      // Step 5: Fetch all-time price history for market growth
+      const { data: yearHistory } = await serviceClient
+        .from('property_price_history')
+        .select('property_id, price, recorded_at')
+        .gte('recorded_at', twelveMonthsAgo)
+        .order('recorded_at', { ascending: true });
+
+      // City-level growth
+      const cityPriceTimeline: Record<string, { old: number[]; recent: number[] }> = {};
+      const sixMonthsAgo = new Date(now - 182 * 24 * 60 * 60 * 1000).toISOString();
+      for (const ph of (yearHistory || [])) {
+        const prop = allProps.find(p => p.id === ph.property_id);
+        if (!prop?.city) continue;
+        if (!cityPriceTimeline[prop.city]) cityPriceTimeline[prop.city] = { old: [], recent: [] };
+        if (ph.recorded_at < sixMonthsAgo) {
+          cityPriceTimeline[prop.city].old.push(ph.price);
+        } else {
+          cityPriceTimeline[prop.city].recent.push(ph.price);
+        }
+      }
+      const cityGrowth: Record<string, number> = {};
+      for (const [city, timeline] of Object.entries(cityPriceTimeline)) {
+        if (timeline.old.length > 0 && timeline.recent.length > 0) {
+          const oldAvg = timeline.old.reduce((s, v) => s + v, 0) / timeline.old.length;
+          const newAvg = timeline.recent.reduce((s, v) => s + v, 0) / timeline.recent.length;
+          if (oldAvg > 0) cityGrowth[city] = Math.round(((newAvg - oldAvg) / oldAvg) * 10000) / 100;
+        }
+      }
+
+      // Step 6: Fetch user preferences from saved_search_alerts
+      const { data: userAlerts } = await serviceClient
+        .from('saved_search_alerts')
+        .select('id, user_id, search_criteria, name')
+        .eq('is_active', true);
+
+      // Step 7: Detect events and generate alerts
+      interface InvestorAlert {
+        user_id: string;
+        property_id: string;
+        alert_type: 'price_drop' | 'high_rental_yield' | 'undervalued_property' | 'high_market_growth';
+        message: string;
+        property_title: string;
+        city: string;
+        score: number;
+        metadata: Record<string, any>;
+      }
+
+      const generatedAlerts: InvestorAlert[] = [];
+      const summary = { price_drop: 0, high_rental_yield: 0, undervalued_property: 0, high_market_growth: 0 };
+
+      function matchesUserPrefs(prop: typeof allProps[0], criteria: any): boolean {
+        if (!criteria) return false;
+        if (criteria.city && criteria.city.toLowerCase() !== (prop.city || '').toLowerCase()) return false;
+        if (criteria.property_type && criteria.property_type.toLowerCase() !== (prop.property_type || '').toLowerCase()) return false;
+        if (criteria.min_price && prop.price < Number(criteria.min_price)) return false;
+        if (criteria.max_price && prop.price > Number(criteria.max_price)) return false;
+        return true;
+      }
+
+      for (const prop of allProps) {
+        const matchingUsers = (userAlerts || []).filter(a => matchesUserPrefs(prop, a.search_criteria));
+        if (matchingUsers.length === 0) continue;
+
+        const sqm = Number(prop.building_area_sqm) || Number(prop.land_area_sqm) || Number(prop.area_sqm) || 1;
+        const priceDrop = priceDropMap[prop.id];
+        const analytics = analyticsMap[prop.id] || { views: 0, saves: 0 };
+
+        // EVENT 1: Price Drop
+        if (priceDrop) {
+          summary.price_drop++;
+          for (const ua of matchingUsers) {
+            generatedAlerts.push({
+              user_id: ua.user_id,
+              property_id: prop.id,
+              alert_type: 'price_drop',
+              message: `Harga turun ${priceDrop.drop_pct}% — ${prop.title || 'Properti'} di ${prop.city}. Dari Rp ${(priceDrop.old_price / 1e6).toFixed(0)}Jt → Rp ${(priceDrop.new_price / 1e6).toFixed(0)}Jt.`,
+              property_title: prop.title || '',
+              city: prop.city || '',
+              score: Math.min(100, Math.round(priceDrop.drop_pct * 5)),
+              metadata: { ...priceDrop, alert_name: ua.name },
+            });
+          }
+        }
+
+        // EVENT 2: High Rental Yield
+        // Estimate yield from rent listings in same city vs sale price
+        const rentProps = allProps.filter(p => p.listing_type === 'rent' && p.city === prop.city);
+        if (prop.listing_type === 'sale' && rentProps.length > 0) {
+          const avgRent = rentProps.reduce((s, p) => s + p.price, 0) / rentProps.length;
+          const annualYield = (avgRent * 12) / prop.price * 100;
+          if (annualYield >= 6) { // 6%+ yield is attractive
+            summary.high_rental_yield++;
+            for (const ua of matchingUsers) {
+              generatedAlerts.push({
+                user_id: ua.user_id,
+                property_id: prop.id,
+                alert_type: 'high_rental_yield',
+                message: `Rental yield tinggi ${annualYield.toFixed(1)}% — ${prop.title || 'Properti'} di ${prop.city}. Estimasi sewa Rp ${(avgRent / 1e6).toFixed(0)}Jt/bulan.`,
+                property_title: prop.title || '',
+                city: prop.city || '',
+                score: Math.min(100, Math.round(annualYield * 10)),
+                metadata: { annual_yield: Math.round(annualYield * 100) / 100, avg_rent: avgRent, alert_name: ua.name },
+              });
+            }
+          }
+        }
+
+        // EVENT 3: Undervalued Property
+        const key = `${prop.city}__${prop.property_type}`;
+        const medianPps = medians[key] || 0;
+        if (medianPps > 0) {
+          const invScore = Number(prop.investment_score) || 50;
+          const fmv = medianPps * sqm * (1 + Math.min(invScore, 100) / 2000);
+          const undervaluePct = fmv > 0 ? ((fmv - prop.price) / fmv) * 100 : 0;
+          if (undervaluePct >= 10) {
+            summary.undervalued_property++;
+            for (const ua of matchingUsers) {
+              generatedAlerts.push({
+                user_id: ua.user_id,
+                property_id: prop.id,
+                alert_type: 'undervalued_property',
+                message: `Di bawah nilai pasar ${undervaluePct.toFixed(1)}% — ${prop.title || 'Properti'} di ${prop.city}. FMV: Rp ${(fmv / 1e6).toFixed(0)}Jt vs Harga: Rp ${(prop.price / 1e6).toFixed(0)}Jt.`,
+                property_title: prop.title || '',
+                city: prop.city || '',
+                score: Math.min(100, Math.round(undervaluePct * 4)),
+                metadata: { undervalue_pct: Math.round(undervaluePct * 10) / 10, fmv: Math.round(fmv), alert_name: ua.name },
+              });
+            }
+          }
+        }
+
+        // EVENT 4: High Market Growth (city-level)
+        const growth = cityGrowth[prop.city || ''] || 0;
+        if (growth >= 5 && prop.investment_score && prop.investment_score >= 60) {
+          summary.high_market_growth++;
+          for (const ua of matchingUsers) {
+            generatedAlerts.push({
+              user_id: ua.user_id,
+              property_id: prop.id,
+              alert_type: 'high_market_growth',
+              message: `Pasar ${prop.city} tumbuh ${growth.toFixed(1)}% — ${prop.title || 'Properti'} dengan skor investasi ${prop.investment_score}. Peluang pertumbuhan tinggi.`,
+              property_title: prop.title || '',
+              city: prop.city || '',
+              score: Math.min(100, Math.round(growth * 8 + (prop.investment_score || 0) * 0.3)),
+              metadata: { market_growth_pct: growth, investment_score: prop.investment_score, alert_name: ua.name },
+            });
+          }
+        }
+      }
+
+      // Step 8: Deduplicate (one alert per user+property+type per 24h) and insert
+      let alertsCreated = 0;
+      const notifiedUsers = new Set<string>();
+
+      // Group by user+property+type to batch dedup
+      const uniqueAlerts = new Map<string, InvestorAlert>();
+      for (const alert of generatedAlerts) {
+        const key = `${alert.user_id}__${alert.property_id}__${alert.alert_type}`;
+        if (!uniqueAlerts.has(key) || alert.score > (uniqueAlerts.get(key)?.score || 0)) {
+          uniqueAlerts.set(key, alert);
+        }
+      }
+
+      const alertTypeEmojis = {
+        price_drop: '📉',
+        high_rental_yield: '💰',
+        undervalued_property: '🔥',
+        high_market_growth: '📈',
+      };
+
+      for (const alert of uniqueAlerts.values()) {
+        // Check for duplicate in last 24h
+        const { count } = await serviceClient
+          .from('in_app_notifications')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', alert.user_id)
+          .eq('property_id', alert.property_id)
+          .eq('type', `investor_${alert.alert_type}`)
+          .gte('created_at', new Date(now - 24 * 60 * 60 * 1000).toISOString());
+
+        if ((count || 0) > 0) continue;
+
+        const emoji = alertTypeEmojis[alert.alert_type];
+        const { error: insertErr } = await serviceClient
+          .from('in_app_notifications')
+          .insert({
+            user_id: alert.user_id,
+            property_id: alert.property_id,
+            type: `investor_${alert.alert_type}`,
+            title: `${emoji} ${alert.alert_type === 'price_drop' ? 'Harga Turun' : alert.alert_type === 'high_rental_yield' ? 'Yield Tinggi' : alert.alert_type === 'undervalued_property' ? 'Di Bawah Nilai Pasar' : 'Pertumbuhan Pasar'}: ${alert.property_title}`,
+            message: alert.message,
+            metadata: { ...alert.metadata, alert_type: alert.alert_type, score: alert.score },
+          });
+
+        if (!insertErr) {
+          alertsCreated++;
+          notifiedUsers.add(alert.user_id);
+        }
+      }
+
+      return new Response(JSON.stringify({
+        mode: 'investor_alerts',
+        data: {
+          alerts: [...uniqueAlerts.values()].sort((a, b) => b.score - a.score).slice(0, 50),
+          summary,
+          alerts_created: alertsCreated,
+          notified_users: notifiedUsers.size,
+          total_properties_scanned: allProps.length,
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
   } catch (err) {
     return new Response(JSON.stringify({ error: err instanceof Error ? err.message : 'Unknown error' }), {
       status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
