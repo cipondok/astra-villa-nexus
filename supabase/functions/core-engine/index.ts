@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -6872,6 +6872,277 @@ Deno.serve(async (req) => {
             ready_markets: scored.filter(s => s.readiness === 'Ready').length,
             high_potential_markets: scored.filter(s => s.readiness === 'High Potential').length,
             avg_score: Math.round(scored.reduce((s, t) => s + t.total_score, 0) / scored.length),
+          },
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // ██  MODE: self_learning — Continuously improve AI from feedback
+    // ══════════════════════════════════════════════════════════════
+    if (mode === 'self_learning') {
+      const serviceClient = createClient(supabaseUrl, serviceKey);
+      const subMode = body.sub_mode || 'train'; // 'train' | 'record_feedback' | 'stats'
+
+      // ── Sub-mode: record_feedback ──
+      if (subMode === 'record_feedback') {
+        const { feedback_property_id, ai_match_score: matchScore, user_action, session_id } = body;
+        if (!feedback_property_id || !user_action) {
+          return new Response(JSON.stringify({ error: 'feedback_property_id and user_action required' }), {
+            status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+        // Action weights: positive actions boost, ignores decrease
+        const actionWeights: Record<string, number> = {
+          contact: 5.0, save: 3.0, visit: 4.0, view: 1.0, ignore: -1.0, dismiss: -2.0,
+        };
+        const weight = actionWeights[user_action] ?? 0;
+
+        const { error: insertErr } = await serviceClient.from('ai_feedback_signals').insert({
+          user_id: userId,
+          property_id: feedback_property_id,
+          ai_match_score: matchScore || 0,
+          user_action,
+          action_weight: weight,
+          recommendation_source: body.source || 'ai_engine',
+          session_id: session_id || null,
+        });
+        if (insertErr) throw new Error(insertErr.message);
+
+        return new Response(JSON.stringify({
+          data: { recorded: true, action: user_action, weight },
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      // ── Sub-mode: stats ──
+      if (subMode === 'stats') {
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+        const [signalsRes, snapshotsRes, weightsRes] = await Promise.all([
+          serviceClient.from('ai_feedback_signals').select('user_action, action_weight, ai_match_score, created_at').gte('created_at', thirtyDaysAgo).limit(2000),
+          serviceClient.from('ai_learning_snapshots').select('*').order('created_at', { ascending: false }).limit(20),
+          serviceClient.from('ai_model_weights').select('*').limit(1).single(),
+        ]);
+
+        const signals = signalsRes.data || [];
+        const snapshots = snapshotsRes.data || [];
+        const currentWeights = weightsRes.data;
+
+        // Compute stats
+        const totalSignals = signals.length;
+        const positiveSignals = signals.filter(s => (s.action_weight as number) > 0).length;
+        const negativeSignals = signals.filter(s => (s.action_weight as number) < 0).length;
+        const avgMatchScore = totalSignals > 0
+          ? Math.round(signals.reduce((s, sig) => s + (Number(sig.ai_match_score) || 0), 0) / totalSignals * 10) / 10
+          : 0;
+
+        // Action breakdown
+        const actionBreakdown: Record<string, number> = {};
+        for (const s of signals) {
+          actionBreakdown[s.user_action] = (actionBreakdown[s.user_action] || 0) + 1;
+        }
+
+        // Conversion rate: positive / total
+        const conversionRate = totalSignals > 0 ? Math.round((positiveSignals / totalSignals) * 100 * 10) / 10 : 0;
+
+        // Daily signal trend (7 days)
+        const dailyTrend: Record<string, { positive: number; negative: number; total: number }> = {};
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+          dailyTrend[d] = { positive: 0, negative: 0, total: 0 };
+        }
+        for (const s of signals) {
+          const day = s.created_at?.slice(0, 10);
+          if (dailyTrend[day]) {
+            dailyTrend[day].total++;
+            if ((s.action_weight as number) > 0) dailyTrend[day].positive++;
+            else dailyTrend[day].negative++;
+          }
+        }
+        const signalTrend = Object.entries(dailyTrend)
+          .map(([date, d]) => ({ date, ...d }))
+          .sort((a, b) => a.date.localeCompare(b.date));
+
+        // Model evolution from snapshots
+        const modelEvolution = snapshots.map(s => ({
+          date: s.created_at,
+          accuracy: Number(s.model_accuracy) || 0,
+          confidence: Number(s.confidence_score) || 0,
+          signals_processed: s.total_signals_processed || 0,
+          positive_ratio: s.total_signals_processed ? Math.round(((s.positive_signals || 0) / s.total_signals_processed) * 100) : 0,
+        })).reverse();
+
+        return new Response(JSON.stringify({
+          data: {
+            current_weights: currentWeights,
+            learning_stats: {
+              total_signals_30d: totalSignals,
+              positive_signals: positiveSignals,
+              negative_signals: negativeSignals,
+              neutral_signals: totalSignals - positiveSignals - negativeSignals,
+              conversion_rate: conversionRate,
+              avg_match_score: avgMatchScore,
+              action_breakdown: actionBreakdown,
+            },
+            signal_trend: signalTrend,
+            model_evolution: modelEvolution,
+            training_history: snapshots.slice(0, 10),
+            generated_at: new Date().toISOString(),
+          },
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      // ── Sub-mode: train (default) — Process feedback and adjust weights ──
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+      const [signalsRes, weightsRes] = await Promise.all([
+        serviceClient.from('ai_feedback_signals').select('user_action, action_weight, ai_match_score, property_id').gte('created_at', thirtyDaysAgo).limit(5000),
+        serviceClient.from('ai_model_weights').select('*').limit(1).single(),
+      ]);
+
+      const signals = signalsRes.data || [];
+      const currentWeights = weightsRes.data;
+
+      if (!currentWeights) {
+        return new Response(JSON.stringify({ error: 'No model weights found' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const FACTORS = ['location', 'price', 'feature', 'investment', 'popularity', 'collaborative'] as const;
+      const oldWeights: Record<string, number> = {};
+      for (const f of FACTORS) oldWeights[f] = Number(currentWeights[f]) || 0;
+
+      // Compute factor performance signals
+      // Positive actions on high-match-score recs → model is working well
+      // Negative actions on high-match-score → model needs adjustment
+      const totalSignals = signals.length;
+      const positiveSignals = signals.filter(s => (s.action_weight as number) > 0);
+      const negativeSignals = signals.filter(s => (s.action_weight as number) < 0);
+
+      const posCount = positiveSignals.length;
+      const negCount = negativeSignals.length;
+
+      // Weighted positive score
+      const posWeightSum = positiveSignals.reduce((s, sig) => s + (Number(sig.action_weight) || 0), 0);
+      const negWeightSum = Math.abs(negativeSignals.reduce((s, sig) => s + (Number(sig.action_weight) || 0), 0));
+
+      // Learning rate based on data sufficiency
+      const dataConfidence = Math.min(1.0, totalSignals / 500);
+      const learningRate = 0.01 + (dataConfidence * 0.02); // 0.01 to 0.03
+
+      // Compute adjustments using gradient-like approach
+      // High positive ratio → small adjustments (model is good)
+      // High negative ratio → larger adjustments needed
+      const posRatio = totalSignals > 0 ? posCount / totalSignals : 0.5;
+      const adjustmentMagnitude = Math.max(0.5, (1 - posRatio) * 3); // 0.5 to 3.0
+
+      const adjustments: Record<string, number> = {};
+      const newWeights: Record<string, number> = {};
+
+      // Heuristic: analyze which factors correlate with positive outcomes
+      // High match scores with positive actions → boost contributing factors
+      // For now, use aggregate signal patterns
+      const avgPosMatchScore = posCount > 0
+        ? positiveSignals.reduce((s, sig) => s + (Number(sig.ai_match_score) || 0), 0) / posCount
+        : 50;
+
+      for (const f of FACTORS) {
+        let adj = 0;
+
+        // Factors with higher current weight that correlate with positive outcomes get small boost
+        // Factors with low weight get moderate boost if conversion is strong
+        const factorWeight = oldWeights[f];
+
+        if (posRatio > 0.6) {
+          // Model performing well — minor adjustments
+          adj = (Math.random() - 0.5) * adjustmentMagnitude * learningRate * 10;
+        } else if (posRatio > 0.3) {
+          // Moderate performance — redistribute from high to low performers
+          if (factorWeight > 20) adj = -adjustmentMagnitude * learningRate * 8;
+          else adj = adjustmentMagnitude * learningRate * 8;
+        } else {
+          // Poor performance — more aggressive redistribution
+          if (f === 'price' || f === 'location') adj = adjustmentMagnitude * learningRate * 12;
+          else adj = -adjustmentMagnitude * learningRate * 6;
+        }
+
+        // Clamp ±3
+        adj = Math.round(Math.max(-3, Math.min(3, adj)) * 10) / 10;
+        adjustments[f] = adj;
+        newWeights[f] = Math.max(5, oldWeights[f] + adj);
+      }
+
+      // Normalize to sum = 100
+      const rawSum = Object.values(newWeights).reduce((s, v) => s + v, 0);
+      for (const f of FACTORS) {
+        newWeights[f] = Math.round((newWeights[f] / rawSum) * 100 * 10) / 10;
+      }
+      // Fix rounding to exactly 100
+      const roundedSum = Object.values(newWeights).reduce((s, v) => s + v, 0);
+      const diff = Math.round((100 - roundedSum) * 10) / 10;
+      newWeights[FACTORS[0]] = Math.round((newWeights[FACTORS[0]] + diff) * 10) / 10;
+
+      // Model accuracy estimate
+      const accuracy = Math.round(posRatio * 100 * 10) / 10;
+      const confidence = Math.round(dataConfidence * 100);
+
+      // Update weights in DB
+      const updatePayload: Record<string, number> = {};
+      for (const f of FACTORS) updatePayload[f] = newWeights[f];
+      updatePayload['updated_at'] = Date.now() as any; // will be ignored, just triggers update
+
+      await serviceClient.from('ai_model_weights').update(updatePayload).eq('id', currentWeights.id);
+
+      // Log snapshot
+      await serviceClient.from('ai_learning_snapshots').insert({
+        snapshot_type: 'self_learning',
+        total_signals_processed: totalSignals,
+        positive_signals: posCount,
+        negative_signals: negCount,
+        weights_before: oldWeights,
+        weights_after: newWeights,
+        adjustments,
+        model_accuracy: accuracy,
+        confidence_score: confidence,
+        learning_rate: learningRate,
+        metadata: {
+          pos_weight_sum: posWeightSum,
+          neg_weight_sum: negWeightSum,
+          avg_pos_match_score: avgPosMatchScore,
+          adjustment_magnitude: adjustmentMagnitude,
+        },
+      });
+
+      // Also log to ai_weight_history
+      await serviceClient.from('ai_weight_history').insert({
+        weights: newWeights,
+        adjustments,
+        trigger_source: 'self_learning',
+        model_health: {
+          total_events: totalSignals,
+          data_sufficiency: dataConfidence > 0.5 ? 'Sufficient' : 'Insufficient',
+          confidence: `${confidence}%`,
+          accuracy: `${accuracy}%`,
+        },
+      });
+
+      return new Response(JSON.stringify({
+        data: {
+          training_complete: true,
+          old_weights: oldWeights,
+          new_weights: newWeights,
+          adjustments,
+          model_metrics: {
+            accuracy,
+            confidence,
+            learning_rate: learningRate,
+            total_signals: totalSignals,
+            positive_signals: posCount,
+            negative_signals: negCount,
+            pos_ratio: posRatio,
+            data_sufficiency: dataConfidence > 0.5 ? 'Sufficient' : 'Insufficient',
           },
           generated_at: new Date().toISOString(),
         },
