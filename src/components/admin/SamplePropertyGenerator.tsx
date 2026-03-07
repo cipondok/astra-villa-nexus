@@ -649,6 +649,128 @@ const SamplePropertyGenerator = () => {
         </div>
       </div>
 
+      {/* Progress Overview */}
+      {provinces.length > 0 && (
+        <Card className="border-border">
+          <CardHeader className="px-4 py-3 pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-chart-1" />
+                Progress Overview
+              </CardTitle>
+              <span className="text-xs text-muted-foreground font-medium">
+                {allCompletedProvinces.length}/{provinces.length} provinces
+              </span>
+            </div>
+          </CardHeader>
+          <CardContent className="px-4 pb-4 pt-0 space-y-3">
+            <div className="space-y-1.5">
+              <Progress
+                value={provinces.length > 0 ? (allCompletedProvinces.length / provinces.length) * 100 : 0}
+                multiColor
+                className="h-2.5"
+              />
+              <div className="flex justify-between text-[10px] text-muted-foreground">
+                <span>{Math.round((allCompletedProvinces.length / provinces.length) * 100)}% complete</span>
+                <span>
+                  {Object.values(provincePropertyCounts).reduce((a, b) => a + b, 0).toLocaleString()} total properties
+                </span>
+              </div>
+            </div>
+
+            {/* Summary stats */}
+            <div className="grid grid-cols-3 gap-2">
+              <div className="text-center p-2 rounded-lg bg-chart-1/10 border border-chart-1/20">
+                <p className="text-lg font-bold text-chart-1">{allCompletedProvinces.length}</p>
+                <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Completed</p>
+              </div>
+              <div className="text-center p-2 rounded-lg bg-chart-3/10 border border-chart-3/20">
+                <p className="text-lg font-bold text-chart-3">{actualRemainingProvinces.length}</p>
+                <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Remaining</p>
+              </div>
+              <div className="text-center p-2 rounded-lg bg-primary/10 border border-primary/20">
+                <p className="text-lg font-bold text-primary">{provinces.length}</p>
+                <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Total</p>
+              </div>
+            </div>
+
+            {/* Completed provinces collapsible */}
+            {allCompletedProvinces.length > 0 && (
+              <details className="group">
+                <summary className="flex items-center gap-2 cursor-pointer text-[11px] font-semibold text-chart-1 hover:text-chart-1/80 transition-colors list-none">
+                  <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" />
+                  Completed Provinces ({allCompletedProvinces.length})
+                </summary>
+                <ScrollArea className="max-h-52 mt-2">
+                  <div className="space-y-1">
+                    {allCompletedProvinces.map(p => {
+                      const rec = getDoneRecord(p);
+                      const count = provincePropertyCounts[p] || rec?.created || 0;
+                      return (
+                        <div key={p} className="rounded-md border border-chart-1/20 bg-chart-1/5 px-2.5 py-1.5">
+                          <div className="flex items-center gap-1.5 text-[11px]">
+                            <CheckCircle className="h-3 w-3 text-chart-1 shrink-0" />
+                            <span className="font-medium text-foreground truncate">{p}</span>
+                            <span className="ml-auto text-[9px] text-chart-1 shrink-0 font-medium">
+                              {count} props
+                            </span>
+                          </div>
+                          {rec && (
+                            <div className="mt-1 pl-[18px] space-y-0.5 text-[9px] text-muted-foreground">
+                              <div className="flex items-center gap-1">
+                                <Clock className="h-2.5 w-2.5" />
+                                {formatTime(rec.completedAt)}
+                                <span className="mx-1">•</span>
+                                +{rec.created} created, {rec.skipped} skipped
+                              </div>
+                              {rec.cities.length > 0 && (
+                                <div className="truncate">
+                                  <span className="font-medium">Cities:</span> {rec.cities.slice(0, 4).join(", ")}
+                                  {rec.cities.length > 4 && ` +${rec.cities.length - 4}`}
+                                </div>
+                              )}
+                              {rec.areas.length > 0 && (
+                                <div className="truncate">
+                                  <span className="font-medium">Areas:</span> {rec.areas.slice(0, 6).join(", ")}
+                                  {rec.areas.length > 6 && ` +${rec.areas.length - 6}`}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </ScrollArea>
+              </details>
+            )}
+
+            {/* Uncompleted provinces collapsible */}
+            {actualRemainingProvinces.length > 0 && (
+              <details className="group">
+                <summary className="flex items-center gap-2 cursor-pointer text-[11px] font-semibold text-chart-3 hover:text-chart-3/80 transition-colors list-none">
+                  <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" />
+                  Uncompleted Provinces ({actualRemainingProvinces.length})
+                </summary>
+                <ScrollArea className="max-h-40 mt-2">
+                  <div className="grid grid-cols-2 gap-1">
+                    {actualRemainingProvinces.map(p => (
+                      <div key={p} className="flex items-center gap-1.5 text-[11px] px-2.5 py-1.5 rounded-md border border-chart-3/20 bg-chart-3/5">
+                        <AlertTriangle className="h-3 w-3 text-chart-3 shrink-0" />
+                        <span className="text-foreground/80 truncate">{p}</span>
+                        <Badge variant="outline" className="ml-auto text-[8px] px-1 py-0 h-3.5 border-chart-3/30 text-chart-3 shrink-0">
+                          pending
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </details>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
       {/* Auto-Run Card */}
       <Card className="border-primary/20 bg-primary/5">
         <CardHeader className="px-4 py-3">
