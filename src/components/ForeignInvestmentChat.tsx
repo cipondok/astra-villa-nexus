@@ -82,7 +82,7 @@ Ask me anything about foreign property investment in Indonesia!`,
         throw Object.assign(new Error('AI temporarily disabled'), { status: 402 });
       }
 
-      const { data, error } = await supabase.functions.invoke('ai-engine', {
+      const { data, error } = await supabase.functions.invoke('ai-assistant', {
         body: { mode: 'property_chatbot', payload: {
           message: `Context: User is asking about foreign property investment in Indonesia. 
           

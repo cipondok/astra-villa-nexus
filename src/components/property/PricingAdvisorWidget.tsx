@@ -49,7 +49,7 @@ const PricingAdvisorWidget = ({ price, city, property_type, land_area_sqm, build
       const token = sessionData?.session?.access_token;
 
       const response = await fetch(
-        `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/core-engine`,
+        `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/deal-engine`,
         {
           method: 'POST',
           headers: {

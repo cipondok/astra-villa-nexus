@@ -40,7 +40,7 @@ export function useAdvancedPropertySearch() {
   const performAISearch = useCallback(async (query: string, filters: SearchFilters) => {
     setIsSearching(true);
     try {
-      const { data: aiResults } = await supabase.functions.invoke('ai-engine', {
+      const { data: aiResults } = await supabase.functions.invoke('ai-assistant', {
         body: { mode: 'property_assistant', payload: {
           message: `Find properties: ${query}`,
           searchFilters: filters,

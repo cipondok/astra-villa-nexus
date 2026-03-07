@@ -39,7 +39,7 @@ export interface AdvisorResult {
 export function usePropertyAdvisor() {
   return useMutation({
     mutationFn: async (userQuery: string): Promise<AdvisorResult> => {
-      const { data, error } = await supabase.functions.invoke('ai-engine', {
+      const { data, error } = await supabase.functions.invoke('ai-assistant', {
         body: { mode: 'property_advisor', payload: { user_query: userQuery } },
       });
       if (error) throw error;

@@ -190,7 +190,7 @@ const DeepSeekDiagnostics = () => {
         Include implementation details and best practices.
       `;
 
-      const { data, error } = await supabase.functions.invoke('ai-engine', {
+      const { data, error } = await supabase.functions.invoke('ai-assistant', {
         body: { mode: 'property_chatbot', payload: {
           prompt: fixPrompt,
           type: 'auto-fix',
@@ -334,7 +334,7 @@ const DeepSeekDiagnostics = () => {
     setAnalysisResult(null);
 
     try {
-      const { data, error } = await supabase.functions.invoke('ai-engine', {
+      const { data, error } = await supabase.functions.invoke('ai-assistant', {
         body: { mode: 'property_chatbot', payload: {
           prompt: prompt,
           type: type,

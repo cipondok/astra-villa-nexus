@@ -20,7 +20,7 @@ export const useNegotiationAssistant = (propertyId: string | undefined) => {
   return useQuery({
     queryKey: ['negotiation-assist', propertyId],
     queryFn: async (): Promise<NegotiationResult> => {
-      const { data, error } = await supabase.functions.invoke('core-engine', {
+      const { data, error } = await supabase.functions.invoke('deal-engine', {
         body: { mode: 'negotiation_assist', property_id: propertyId },
       });
       if (error) throw new Error(error.message);

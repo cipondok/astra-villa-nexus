@@ -65,7 +65,7 @@ export function useMarkDealAlertRead() {
 export function useRunDealAlertsScan() {
   return useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke('core-engine', {
+      const { data, error } = await supabase.functions.invoke('deal-engine', {
         body: { mode: 'deal_alerts' },
       });
       if (error) throw error;

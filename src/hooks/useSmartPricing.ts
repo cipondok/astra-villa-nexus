@@ -62,7 +62,7 @@ export interface SmartPricingResult {
 export function useSmartPricing() {
   return useMutation({
     mutationFn: async (input: SmartPricingInput): Promise<SmartPricingResult> => {
-      const { data, error } = await supabase.functions.invoke("ai-engine", {
+      const { data, error } = await supabase.functions.invoke("deal-engine", {
         body: { mode: "smart_pricing", payload: input },
       });
       if (error) throw error;

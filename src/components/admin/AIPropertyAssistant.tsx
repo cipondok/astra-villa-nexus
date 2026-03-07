@@ -68,7 +68,7 @@ const AIPropertyAssistant = () => {
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('ai-engine', {
+      const { data, error } = await supabase.functions.invoke('ai-assistant', {
         body: {
           mode: 'property_assistant',
           payload: {

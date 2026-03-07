@@ -57,7 +57,7 @@ const OwnerSmartPricing: React.FC = () => {
     setAnalysis(null);
 
     try {
-      const { data, error } = await supabase.functions.invoke('ai-engine', {
+      const { data, error } = await supabase.functions.invoke('deal-engine', {
         body: { mode: 'smart_pricing', payload: { property_id: selectedPropertyId } },
       });
 

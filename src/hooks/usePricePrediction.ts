@@ -22,7 +22,7 @@ export const usePricePrediction = (propertyId: string | undefined, forecastYears
   return useQuery({
     queryKey: ['price-prediction', propertyId, forecastYears],
     queryFn: async (): Promise<PricePredictionResult> => {
-      const { data, error } = await supabase.functions.invoke('core-engine', {
+      const { data, error } = await supabase.functions.invoke('deal-engine', {
         body: { mode: 'price_forecast', property_id: propertyId, forecast_years: forecastYears },
       });
       if (error) throw new Error(error.message);

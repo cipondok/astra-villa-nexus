@@ -29,7 +29,7 @@ export function useInvestmentAssistant() {
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('ai-engine', {
+      const { data, error } = await supabase.functions.invoke('ai-assistant', {
         body: {
           mode: 'investment_assistant',
           payload: {

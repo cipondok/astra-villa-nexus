@@ -410,7 +410,7 @@ const RoleBasedPropertyForm = () => {
       }
 
       const res = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/core-engine`,
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/deal-engine`,
         {
           method: 'POST',
           headers: {
@@ -563,7 +563,7 @@ const RoleBasedPropertyForm = () => {
       }
 
       const res = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/core-engine`,
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/deal-engine`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
