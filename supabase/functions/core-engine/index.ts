@@ -61,13 +61,14 @@ Deno.serve(async (req) => {
 
     let userId = '';
     if (!isServiceRole) {
-      const { data: claimsData, error: claimsError } = await authClient.auth.getClaims(token);
-      if (claimsError || !claimsData?.claims) {
+      const { data: userData, error: userError } = await authClient.auth.getUser(token);
+      if (userError || !userData?.user) {
+        console.log('[CORE-ENGINE] Auth failed:', userError?.message);
         return new Response(JSON.stringify({ error: 'Unauthorized' }), {
           status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
-      userId = claimsData.claims.sub as string;
+      userId = userData.user.id;
     }
 
     // ── Parse request ──
