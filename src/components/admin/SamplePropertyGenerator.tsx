@@ -697,6 +697,7 @@ const SamplePropertyGenerator = () => {
 
     if (!cancelRef.current) {
       clearAutoRunState();
+      clearAutoRunCheckpoint(); // Cloud sync
       setAutoRunState(null);
       setSmartSelectedProvinces([]);
       setResult({ ...globalTotals, allDone: true });
@@ -725,6 +726,7 @@ const SamplePropertyGenerator = () => {
   const handleClearAutoState = () => {
     clearAutoRunState();
     clearDoneProvinces();
+    clearAllCheckpoints(); // Cloud sync
     setAutoRunState(null);
     setPersistedDoneRecords([]);
     setIsAutoMode(false);
