@@ -424,6 +424,16 @@ const AppContent = () => {
                 <Route path="/ai-tenant-matching" element={<AITenantMatchingPage />} />
                 <Route path="/ai-smart-pricing" element={<AISmartPricingPage />} />
                 <Route path="/ai-document-generator" element={<AIDocumentGeneratorPage />} />
+                {/* Mobile investor screens */}
+                <Route path="/mobile/feed" element={<MobileHomeFeed />} />
+                <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
+                <Route path="/mobile/investor" element={<ProtectedRoute />}>
+                  <Route index element={<MobileInvestorDashboard />} />
+                </Route>
+                <Route path="/mobile/ai-chat" element={<MobileAIChat />} />
+                <Route path="/mobile/alerts" element={<ProtectedRoute />}>
+                  <Route index element={<MobileAlerts />} />
+                </Route>
                 <Route path="*" element={<ErrorPage />} />
               </Routes>
             </Suspense>
