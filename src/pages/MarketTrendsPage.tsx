@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   TrendingUp, TrendingDown, Minus, MapPin, BarChart3, Clock, Sparkles,
   Flame, Building2, ChevronDown, ArrowUpRight, ArrowDownRight, Activity,
-  Layers, Target, Zap,
+  Layers, Target, Zap, PieChartIcon,
 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { useMarketTrendsAnalyzer, TimeRange, HotZone } from '@/hooks/useMarketTrendsAnalyzer';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
-  PieChart, Pie,
+  PieChart, Pie, Legend,
 } from 'recharts';
 
 const CITIES = ['', 'Jakarta', 'Bali', 'Bandung', 'Surabaya', 'Yogyakarta', 'Tangerang', 'Bekasi', 'Depok', 'Bogor', 'Semarang', 'Makassar', 'Medan', 'Lombok', 'Denpasar'];
