@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence', 'investor_alerts'];
+    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence', 'investor_alerts', 'portfolio_builder'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -8900,6 +8900,239 @@ Deno.serve(async (req) => {
           alerts_created: alertsCreated,
           notified_users: notifiedUsers.size,
           total_properties_scanned: allProps.length,
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: portfolio_builder — Auto-generate diversified investment portfolio
+    // ═══════════════════════════════════════════
+    if (mode === 'portfolio_builder') {
+      const budget = Number(body.budget) || 0;
+      const riskLevel = (body.risk_level || 'medium').toLowerCase();
+      const investmentHorizon = Number(body.investment_horizon) || 5;
+
+      if (budget <= 0) {
+        return new Response(JSON.stringify({ error: 'Budget must be greater than 0' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const serviceClient = createClient(supabaseUrl, serviceKey);
+
+      // Risk-based filters
+      const minInvestmentScore = riskLevel === 'low' ? 75 : riskLevel === 'high' ? 60 : 70;
+      const minHeatScore = riskLevel === 'low' ? 60 : riskLevel === 'high' ? 40 : 50;
+
+      // Fetch candidate properties within budget
+      const { data: candidates, error: candErr } = await serviceClient
+        .from('properties')
+        .select('id, title, price, city, state, property_type, bedrooms, bathrooms, building_area, thumbnail_url, investment_score, demand_heat_score, listing_type')
+        .eq('status', 'active')
+        .gte('investment_score', minInvestmentScore)
+        .gte('demand_heat_score', minHeatScore)
+        .lte('price', budget * 0.7) // single property shouldn't exceed 70% of budget
+        .gt('price', 0)
+        .order('investment_score', { ascending: false })
+        .limit(200);
+
+      if (candErr) throw candErr;
+      const props = candidates || [];
+
+      if (props.length === 0) {
+        return new Response(JSON.stringify({
+          data: {
+            portfolio: [],
+            total_allocated: 0,
+            remaining_budget: budget,
+            projected_roi: 0,
+            risk_level: riskLevel,
+            diversification: { cities: [], types: [], count: 0 },
+            recommendation: 'Tidak ditemukan properti yang cocok dengan kriteria Anda. Coba tingkatkan budget atau sesuaikan toleransi risiko.',
+            generated_at: new Date().toISOString(),
+          },
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      // City-level yield & growth data
+      const cityStats: Record<string, { avgYield: number; avgGrowth: number }> = {};
+      const cityGroups: Record<string, typeof props> = {};
+      for (const p of props) {
+        const c = p.city || 'Unknown';
+        if (!cityGroups[c]) cityGroups[c] = [];
+        cityGroups[c].push(p);
+      }
+
+      // Compute city-level stats from candidates
+      for (const [city, group] of Object.entries(cityGroups)) {
+        const avgScore = group.reduce((s, g) => s + (g.investment_score || 0), 0) / group.length;
+        // Estimate yield based on investment score
+        const estYield = 4 + (avgScore / 100) * 5; // 4-9% range
+        const estGrowth = 2 + (avgScore / 100) * 6; // 2-8% range
+        cityStats[city] = { avgYield: estYield, avgGrowth: estGrowth };
+      }
+
+      // Score each property for portfolio suitability
+      interface ScoredProp {
+        id: string;
+        title: string;
+        price: number;
+        city: string;
+        state: string | null;
+        property_type: string | null;
+        bedrooms: number | null;
+        bathrooms: number | null;
+        building_area: number | null;
+        thumbnail_url: string | null;
+        investment_score: number;
+        demand_heat_score: number;
+        composite_score: number;
+        estimated_yield: number;
+        estimated_growth: number;
+      }
+
+      const scored: ScoredProp[] = props.map(p => {
+        const city = p.city || 'Unknown';
+        const cs = cityStats[city] || { avgYield: 5, avgGrowth: 4 };
+        const dealScore = (p.investment_score / 100) * 40 + (p.demand_heat_score / 100) * 30 + (cs.avgGrowth / 10) * 30;
+        return {
+          ...p,
+          city,
+          composite_score: Math.round(dealScore * 100) / 100,
+          estimated_yield: Math.round(cs.avgYield * 100) / 100,
+          estimated_growth: Math.round(cs.avgGrowth * 100) / 100,
+        };
+      });
+
+      scored.sort((a, b) => b.composite_score - a.composite_score);
+
+      // Greedy diversified allocation
+      const selected: (ScoredProp & { allocation_amount: number; allocation_percent: number })[] = [];
+      let remaining = budget;
+      const usedCities = new Set<string>();
+      const usedTypes = new Set<string>();
+      const maxPerProperty = budget * 0.4; // Max 40% in single property
+      const targetCount = riskLevel === 'low' ? 5 : riskLevel === 'high' ? 3 : 4;
+
+      // Pass 1: Diversify across cities & types
+      for (const prop of scored) {
+        if (selected.length >= targetCount) break;
+        if (prop.price > remaining || prop.price > maxPerProperty) continue;
+
+        // Prefer diversification: skip if city & type both already used
+        if (usedCities.has(prop.city) && usedTypes.has(prop.property_type || '')) continue;
+
+        selected.push({ ...prop, allocation_amount: prop.price, allocation_percent: 0 });
+        remaining -= prop.price;
+        usedCities.add(prop.city);
+        usedTypes.add(prop.property_type || '');
+      }
+
+      // Pass 2: Fill remaining budget if under target
+      if (selected.length < 2) {
+        for (const prop of scored) {
+          if (selected.length >= targetCount) break;
+          if (selected.some(s => s.id === prop.id)) continue;
+          if (prop.price > remaining || prop.price > maxPerProperty) continue;
+          selected.push({ ...prop, allocation_amount: prop.price, allocation_percent: 0 });
+          remaining -= prop.price;
+        }
+      }
+
+      // Calculate allocation percentages
+      const totalAllocated = selected.reduce((s, p) => s + p.allocation_amount, 0);
+      for (const s of selected) {
+        s.allocation_percent = totalAllocated > 0 ? Math.round((s.allocation_amount / totalAllocated) * 10000) / 100 : 0;
+      }
+
+      // Portfolio-level projections
+      const horizonYears = investmentHorizon;
+      let portfolioFutureValue = 0;
+      let weightedYield = 0;
+      let weightedRisk = 0;
+
+      const portfolioItems = selected.map(s => {
+        const futurePrice = s.price * Math.pow(1 + s.estimated_growth / 100, horizonYears);
+        const totalRent = s.price * (s.estimated_yield / 100) * horizonYears;
+        const totalReturn = (futurePrice - s.price) + totalRent;
+        const roi = (totalReturn / s.price) * 100;
+        const annualizedReturn = (Math.pow(1 + totalReturn / s.price, 1 / horizonYears) - 1) * 100;
+        const riskFactor = 100 - s.investment_score; // inverse
+
+        portfolioFutureValue += futurePrice;
+        weightedYield += s.estimated_yield * (s.allocation_amount / (totalAllocated || 1));
+        weightedRisk += riskFactor * (s.allocation_amount / (totalAllocated || 1));
+
+        return {
+          property_id: s.id,
+          title: s.title,
+          price: s.price,
+          city: s.city,
+          state: s.state,
+          property_type: s.property_type,
+          bedrooms: s.bedrooms,
+          bathrooms: s.bathrooms,
+          building_area: s.building_area,
+          thumbnail_url: s.thumbnail_url,
+          investment_score: s.investment_score,
+          demand_heat_score: s.demand_heat_score,
+          composite_score: s.composite_score,
+          allocation_amount: s.allocation_amount,
+          allocation_percent: s.allocation_percent,
+          estimated_yield: s.estimated_yield,
+          estimated_growth: s.estimated_growth,
+          projected_value: Math.round(futurePrice),
+          total_rental_income: Math.round(totalRent),
+          total_roi: Math.round(roi * 100) / 100,
+          annualized_return: Math.round(annualizedReturn * 100) / 100,
+        };
+      });
+
+      const projectedROI = totalAllocated > 0
+        ? Math.round(((portfolioFutureValue - totalAllocated) / totalAllocated) * 10000) / 100
+        : 0;
+
+      // Diversification assessment
+      const uniqueCities = [...new Set(selected.map(s => s.city))];
+      const uniqueTypes = [...new Set(selected.map(s => s.property_type || 'Unknown'))];
+      const diversificationScore = Math.min(100, uniqueCities.length * 25 + uniqueTypes.length * 20 + selected.length * 10);
+
+      // Risk assessment
+      const portfolioRisk = weightedRisk <= 30 ? 'low' : weightedRisk <= 55 ? 'medium' : 'high';
+
+      // AI Recommendation
+      const bestProp = portfolioItems.length > 0 ? portfolioItems.reduce((a, b) => a.total_roi > b.total_roi ? a : b) : null;
+      let recommendation = '';
+      if (portfolioItems.length === 0) {
+        recommendation = 'Tidak ditemukan properti yang cocok. Pertimbangkan untuk meningkatkan budget atau menyesuaikan preferensi risiko.';
+      } else {
+        recommendation = `Portfolio optimal terdiri dari ${portfolioItems.length} properti di ${uniqueCities.length} kota dengan diversifikasi ${diversificationScore >= 70 ? 'sangat baik' : diversificationScore >= 50 ? 'baik' : 'moderat'}. `;
+        recommendation += `Proyeksi ROI ${horizonYears} tahun: ${projectedROI}% dengan tingkat risiko ${portfolioRisk}. `;
+        recommendation += `Yield rata-rata: ${Math.round(weightedYield * 100) / 100}%. `;
+        if (bestProp) {
+          recommendation += `Properti unggulan: "${bestProp.title}" di ${bestProp.city} dengan ROI ${bestProp.total_roi}%.`;
+        }
+      }
+
+      return new Response(JSON.stringify({
+        data: {
+          portfolio: portfolioItems,
+          total_allocated: totalAllocated,
+          remaining_budget: remaining,
+          projected_roi: projectedROI,
+          projected_value: Math.round(portfolioFutureValue),
+          weighted_yield: Math.round(weightedYield * 100) / 100,
+          risk_level: portfolioRisk,
+          diversification: {
+            cities: uniqueCities,
+            types: uniqueTypes,
+            count: selected.length,
+            score: diversificationScore,
+          },
+          candidates_scanned: props.length,
+          investment_horizon: horizonYears,
+          recommendation,
           generated_at: new Date().toISOString(),
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
