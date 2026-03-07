@@ -763,21 +763,38 @@ const SamplePropertyGenerator = () => {
             <p className="text-xs text-muted-foreground">Generate sample properties for each kelurahan/desa per province</p>
           </div>
         </div>
-        <Badge
-          variant="outline"
-          className={cn(
-            "gap-1.5 text-[10px] font-medium px-2 py-0.5 border",
-            authStatus === 'valid' && "border-chart-1/30 bg-chart-1/10 text-chart-1",
-            authStatus === 'refreshing' && "border-chart-3/30 bg-chart-3/10 text-chart-3 animate-pulse",
-            authStatus === 'expired' && "border-destructive/30 bg-destructive/10 text-destructive",
-            authStatus === 'checking' && "border-muted-foreground/30 bg-muted/50 text-muted-foreground"
-          )}
-        >
-          {authStatus === 'valid' && <><CheckCircle className="h-3 w-3" /> Session Valid</>}
-          {authStatus === 'refreshing' && <><Loader2 className="h-3 w-3 animate-spin" /> Refreshing</>}
-          {authStatus === 'expired' && <><AlertTriangle className="h-3 w-3" /> Expired</>}
-          {authStatus === 'checking' && <><Loader2 className="h-3 w-3 animate-spin" /> Checking</>}
-        </Badge>
+        <div className="flex items-center gap-1.5">
+          <Badge
+            variant="outline"
+            className={cn(
+              "gap-1.5 text-[10px] font-medium px-2 py-0.5 border",
+              cloudSyncStatus === 'synced' && "border-chart-4/30 bg-chart-4/10 text-chart-4",
+              cloudSyncStatus === 'syncing' && "border-chart-3/30 bg-chart-3/10 text-chart-3 animate-pulse",
+              cloudSyncStatus === 'error' && "border-destructive/30 bg-destructive/10 text-destructive",
+              cloudSyncStatus === 'idle' && "border-muted-foreground/30 bg-muted/50 text-muted-foreground"
+            )}
+          >
+            {cloudSyncStatus === 'synced' && <><Cloud className="h-3 w-3" /> Synced</>}
+            {cloudSyncStatus === 'syncing' && <><Loader2 className="h-3 w-3 animate-spin" /> Syncing</>}
+            {cloudSyncStatus === 'error' && <><AlertTriangle className="h-3 w-3" /> Sync Error</>}
+            {cloudSyncStatus === 'idle' && <><Cloud className="h-3 w-3" /> Cloud</>}
+          </Badge>
+          <Badge
+            variant="outline"
+            className={cn(
+              "gap-1.5 text-[10px] font-medium px-2 py-0.5 border",
+              authStatus === 'valid' && "border-chart-1/30 bg-chart-1/10 text-chart-1",
+              authStatus === 'refreshing' && "border-chart-3/30 bg-chart-3/10 text-chart-3 animate-pulse",
+              authStatus === 'expired' && "border-destructive/30 bg-destructive/10 text-destructive",
+              authStatus === 'checking' && "border-muted-foreground/30 bg-muted/50 text-muted-foreground"
+            )}
+          >
+            {authStatus === 'valid' && <><CheckCircle className="h-3 w-3" /> Session Valid</>}
+            {authStatus === 'refreshing' && <><Loader2 className="h-3 w-3 animate-spin" /> Refreshing</>}
+            {authStatus === 'expired' && <><AlertTriangle className="h-3 w-3" /> Expired</>}
+            {authStatus === 'checking' && <><Loader2 className="h-3 w-3 animate-spin" /> Checking</>}
+          </Badge>
+        </div>
       </div>
 
       {/* Progress Overview */}
