@@ -3505,6 +3505,45 @@ export type Database = {
           },
         ]
       }
+      autonomous_agent_scans: {
+        Row: {
+          created_at: string
+          duration_ms: number | null
+          error_message: string | null
+          id: string
+          scan_type: string
+          status: string
+          summary: Json | null
+          total_alerts_created: number | null
+          total_properties_scanned: number | null
+          total_users_notified: number | null
+        }
+        Insert: {
+          created_at?: string
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          scan_type?: string
+          status?: string
+          summary?: Json | null
+          total_alerts_created?: number | null
+          total_properties_scanned?: number | null
+          total_users_notified?: number | null
+        }
+        Update: {
+          created_at?: string
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          scan_type?: string
+          status?: string
+          summary?: Json | null
+          total_alerts_created?: number | null
+          total_properties_scanned?: number | null
+          total_users_notified?: number | null
+        }
+        Relationships: []
+      }
       b2b_api_keys: {
         Row: {
           allowed_endpoints: string[] | null
