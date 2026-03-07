@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import { Menu, X, User, Settings, LogOut, Moon, Sun, Home as HomeIcon, Building, Key, Rocket, Hammer, BarChart3, Box, Settings2, Bell, TrendingUp, Plus, MapPin, Search, Calculator, Heart, MessageSquare, Layers, Users, BookOpen, Shield, ChevronDown, Compass, Scale } from "lucide-react";
+import { Menu, X, User, Settings, LogOut, Moon, Sun, Home as HomeIcon, Building, Key, Rocket, Hammer, BarChart3, Box, Settings2, Bell, TrendingUp, Plus, MapPin, Search, Calculator, Heart, MessageSquare, Layers, Users, BookOpen, Shield, ChevronDown, Compass, Scale, Sparkles } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useHasRole } from "@/hooks/useUserRoles";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
@@ -226,6 +226,16 @@ const Navigation = () => {
                   <DropdownMenuItem className="text-xs cursor-pointer gap-2 hover:bg-gold-primary/10" onClick={() => navigate('/pre-qualification')}>
                     <Shield className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
                     Mortgage Pre-Qualification
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel className="text-[10px] text-muted-foreground uppercase tracking-wider">Seller Tools</DropdownMenuLabel>
+                  <DropdownMenuItem className="text-xs cursor-pointer gap-2 hover:bg-gold-primary/10" onClick={() => navigate('/listing-optimizer')}>
+                    <Sparkles className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+                    Listing Optimizer
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="text-xs cursor-pointer gap-2 hover:bg-gold-primary/10" onClick={() => navigate('/seller-intelligence')}>
+                    <TrendingUp className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+                    Seller Intelligence
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
