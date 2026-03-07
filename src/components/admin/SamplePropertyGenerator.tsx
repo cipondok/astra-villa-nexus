@@ -12,13 +12,23 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
-import { Sparkles, MapPin, Loader2, CheckCircle, AlertTriangle, ImageIcon, StopCircle, ChevronsUpDown, Check, Play, Pause, RotateCcw, Zap, ChevronDown, ChevronUp, MousePointerClick } from "lucide-react";
+import { Sparkles, MapPin, Loader2, CheckCircle, AlertTriangle, ImageIcon, StopCircle, ChevronsUpDown, Check, Play, Pause, RotateCcw, Zap, ChevronDown, ChevronUp, MousePointerClick, Clock, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const PROPERTY_TYPES = ['house', 'apartment', 'villa', 'land', 'commercial', 'townhouse', 'warehouse', 'kost'];
 
 const AUTO_RUN_STORAGE_KEY = 'spg_auto_run_state';
-const DONE_PROVINCES_KEY = 'spg_done_provinces';
+const DONE_PROVINCES_KEY = 'spg_done_provinces_v2'; // v2 with timestamps + details
+
+interface DoneProvinceRecord {
+  province: string;
+  completedAt: string; // ISO timestamp
+  created: number;
+  skipped: number;
+  errors: number;
+  cities: string[];
+  areas: string[];
+}
 
 interface AutoRunState {
   isAutoMode: boolean;
@@ -31,6 +41,9 @@ interface AutoRunState {
   provincesQueue: string[];
   startedAt: number;
   lastUpdated: number;
+  currentCity?: string;
+  currentArea?: string;
+  recentLocations?: Array<{ city: string; area: string; types_created: number }>;
 }
 
 const loadAutoRunState = (): AutoRunState | null => {
@@ -48,26 +61,64 @@ const clearAutoRunState = () => {
   try { localStorage.removeItem(AUTO_RUN_STORAGE_KEY); } catch {}
 };
 
-// Persistent record of fully-processed provinces (survives auto-run reset)
-const loadDoneProvinces = (): string[] => {
+// Persistent done provinces with details
+const loadDoneProvinces = (): DoneProvinceRecord[] => {
   try {
     const stored = localStorage.getItem(DONE_PROVINCES_KEY);
-    return stored ? JSON.parse(stored) : [];
+    if (!stored) return [];
+    const parsed = JSON.parse(stored);
+    // Migration: if old format (string[]), convert
+    if (Array.isArray(parsed) && typeof parsed[0] === 'string') {
+      return parsed.map((p: string) => ({
+        province: p,
+        completedAt: new Date().toISOString(),
+        created: 0, skipped: 0, errors: 0,
+        cities: [], areas: [],
+      }));
+    }
+    return parsed;
   } catch { return []; }
 };
 
-const saveDoneProvince = (province: string) => {
+const saveDoneProvince = (record: DoneProvinceRecord) => {
   try {
     const list = loadDoneProvinces();
-    if (!list.includes(province)) {
-      list.push(province);
-      localStorage.setItem(DONE_PROVINCES_KEY, JSON.stringify(list));
+    const idx = list.findIndex(r => r.province === record.province);
+    if (idx >= 0) {
+      list[idx] = record;
+    } else {
+      list.push(record);
     }
+    localStorage.setItem(DONE_PROVINCES_KEY, JSON.stringify(list));
   } catch {}
 };
 
 const clearDoneProvinces = () => {
   try { localStorage.removeItem(DONE_PROVINCES_KEY); } catch {}
+};
+
+const getDoneProvinceNames = (): Set<string> => {
+  return new Set(loadDoneProvinces().map(r => r.province));
+};
+
+const formatDuration = (ms: number): string => {
+  const secs = Math.floor(ms / 1000);
+  if (secs < 60) return `${secs}s`;
+  const mins = Math.floor(secs / 60);
+  const remSecs = secs % 60;
+  if (mins < 60) return `${mins}m ${remSecs}s`;
+  const hrs = Math.floor(mins / 60);
+  const remMins = mins % 60;
+  return `${hrs}h ${remMins}m`;
+};
+
+const formatTime = (iso: string): string => {
+  try {
+    return new Date(iso).toLocaleString('id-ID', {
+      day: '2-digit', month: 'short', year: 'numeric',
+      hour: '2-digit', minute: '2-digit',
+    });
+  } catch { return iso; }
 };
 
 const SamplePropertyGenerator = () => {
@@ -80,6 +131,15 @@ const SamplePropertyGenerator = () => {
   const [result, setResult] = useState<any>(null);
   const cancelRef = useRef(false);
 
+  // Live location tracking
+  const [liveCity, setLiveCity] = useState("");
+  const [liveArea, setLiveArea] = useState("");
+  const [recentLocations, setRecentLocations] = useState<Array<{ city: string; area: string; types_created: number }>>([]);
+  const [provinceCitiesDone, setProvinceCitiesDone] = useState<string[]>([]);
+  const [provinceAreasDone, setProvinceAreasDone] = useState<string[]>([]);
+  const [runStartTime, setRunStartTime] = useState<number>(0);
+  const [elapsedTime, setElapsedTime] = useState<number>(0);
+
   // Auto-run state
   const [isAutoMode, setIsAutoMode] = useState(false);
   const [autoRunState, setAutoRunState] = useState<AutoRunState | null>(() => loadAutoRunState());
@@ -91,6 +151,16 @@ const SamplePropertyGenerator = () => {
   // Smart selection
   const [showProvinceList, setShowProvinceList] = useState(false);
   const [smartSelectedProvinces, setSmartSelectedProvinces] = useState<string[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
+
+  // Timer
+  useEffect(() => {
+    if (!isRunning || !runStartTime) return;
+    const interval = setInterval(() => {
+      setElapsedTime(Date.now() - runStartTime);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [isRunning, runStartTime]);
 
   const handleProvinceSelect = (province: string) => {
     setSelectedProvince(province);
@@ -125,18 +195,17 @@ const SamplePropertyGenerator = () => {
   const doneProvinces = useMemo(() => provinces.filter(p => (provincePropertyCounts[p] || 0) > 0), [provinces, provincePropertyCounts]);
   const remainingProvinces = useMemo(() => provinces.filter(p => !(provincePropertyCounts[p] || 0)), [provinces, provincePropertyCounts]);
 
-  // Merge saved completed provinces with DB-detected ones for accurate status
-  // Persistent done provinces (survives reset)
-  const [persistedDoneProvinces, setPersistedDoneProvinces] = useState<string[]>(() => loadDoneProvinces());
+  const [persistedDoneRecords, setPersistedDoneRecords] = useState<DoneProvinceRecord[]>(() => loadDoneProvinces());
+  const persistedDoneNames = useMemo(() => new Set(persistedDoneRecords.map(r => r.province)), [persistedDoneRecords]);
 
   const allCompletedProvinces = useMemo(() => {
     const set = new Set(doneProvinces);
-    persistedDoneProvinces.forEach(p => set.add(p));
+    persistedDoneNames.forEach(p => set.add(p));
     if (autoRunState?.completedProvinces) {
       autoRunState.completedProvinces.forEach(p => set.add(p));
     }
     return Array.from(set).sort();
-  }, [doneProvinces, autoRunState, persistedDoneProvinces]);
+  }, [doneProvinces, autoRunState, persistedDoneNames]);
 
   const actualRemainingProvinces = useMemo(() => {
     const completedSet = new Set(allCompletedProvinces);
@@ -186,30 +255,26 @@ const SamplePropertyGenerator = () => {
     return new Set((data || []).map(d => d.subdistrict_name)).size;
   };
 
-  // Re-read persisted done provinces from localStorage (avoids stale state)
-  const getPersistedDone = (): Set<string> => {
-    const list = loadDoneProvinces();
-    return new Set(list);
-  };
-
-  // Core batch runner for a single province
+  // Core batch runner
   const runProvinceGeneration = async (
     province: string,
     startOffset: number = 0,
     onProgress: (p: { created: number; skipped: number; errors: number; processed: number; total: number }) => void,
-    onSaveState?: (offset: number, totals: { created: number; skipped: number; errors: number }) => void
-  ): Promise<{ created: number; skipped: number; errors: number; cancelled: boolean }> => {
+    onSaveState?: (offset: number, totals: { created: number; skipped: number; errors: number }, locInfo?: { city: string; area: string }) => void
+  ): Promise<{ created: number; skipped: number; errors: number; cancelled: boolean; cities: string[]; areas: string[] }> => {
     const provKelurahanCount = await getKelurahanCount(province);
-    const totals = { created: 0, skipped: 0, errors: 0, processed: startOffset, total: provKelurahanCount };
+    const totals = { created: 0, skipped: 0, errors: 0, processed: startOffset * 5, total: provKelurahanCount };
     onProgress({ ...totals });
 
     let offset = startOffset;
-    let hasMore = offset < provKelurahanCount;
+    let hasMore = true;
     let consecutiveErrors = 0;
+    const citiesSet = new Set<string>();
+    const areasSet = new Set<string>();
 
     while (hasMore && !cancelRef.current) {
       try {
-        if (offset % 30 === 0 || consecutiveErrors > 0) {
+        if (offset % 10 === 0 || consecutiveErrors > 0) {
           const { data: { session: currentSession } } = await supabase.auth.getSession();
           if (!currentSession?.access_token) {
             toast.error("Session lost. Please log in again and retry.");
@@ -224,7 +289,7 @@ const SamplePropertyGenerator = () => {
 
         if (error) {
           const errorMsg = error.message || '';
-          if (errorMsg.includes('401') || errorMsg.includes('Unauthorized') || errorMsg.includes('Invalid token') || errorMsg.includes('Authentication required')) {
+          if (errorMsg.includes('401') || errorMsg.includes('Unauthorized') || errorMsg.includes('Invalid token')) {
             toast.error("Session expired. Please log in again.");
             cancelRef.current = true;
             break;
@@ -232,7 +297,7 @@ const SamplePropertyGenerator = () => {
           if (errorMsg.includes('Load failed') || errorMsg.includes('Failed to fetch') || errorMsg.includes('NetworkError')) {
             consecutiveErrors++;
             if (consecutiveErrors >= 3) {
-              toast.error("Connection lost. Pausing auto-run.");
+              toast.error("Connection lost. Pausing.");
               cancelRef.current = true;
               break;
             }
@@ -242,12 +307,11 @@ const SamplePropertyGenerator = () => {
           totals.errors += 1;
           consecutiveErrors++;
           if (consecutiveErrors >= 5) {
-            toast.error("Too many errors. Pausing auto-run.");
+            toast.error("Too many errors. Pausing.");
             cancelRef.current = true;
             break;
           }
-          offset += 5;
-          hasMore = offset < provKelurahanCount;
+          offset += 1;
           continue;
         }
 
@@ -256,9 +320,28 @@ const SamplePropertyGenerator = () => {
         totals.skipped += data.skipped || 0;
         totals.errors += data.errors || 0;
         totals.processed += data.batchProcessed || 0;
-        onProgress({ ...totals });
 
-        if (onSaveState) onSaveState(data.nextOffset ?? offset + 5, totals);
+        // Track locations
+        const locs = data.locations_processed || [];
+        locs.forEach((l: any) => {
+          if (l.city) citiesSet.add(l.city);
+          if (l.area) areasSet.add(l.area);
+        });
+        if (locs.length > 0) {
+          const lastLoc = locs[locs.length - 1];
+          setLiveCity(lastLoc.city || "");
+          setLiveArea(lastLoc.area || "");
+          setRecentLocations(prev => [...locs, ...prev].slice(0, 20));
+          setProvinceCitiesDone(Array.from(citiesSet));
+          setProvinceAreasDone(Array.from(areasSet));
+        }
+
+        onProgress({ ...totals, total: data.total_kelurahan || provKelurahanCount });
+
+        if (onSaveState) {
+          const lastLoc = locs.length > 0 ? locs[locs.length - 1] : null;
+          onSaveState(data.nextOffset ?? offset + 1, totals, lastLoc ? { city: lastLoc.city, area: lastLoc.area } : undefined);
+        }
 
         hasMore = data.hasMore;
         if (data.nextOffset != null) {
@@ -273,15 +356,14 @@ const SamplePropertyGenerator = () => {
           break;
         }
         await new Promise(r => setTimeout(r, 2000));
-        offset += 5;
-        hasMore = offset < provKelurahanCount;
+        offset += 1;
       }
     }
 
-    return { ...totals, cancelled: cancelRef.current };
+    return { ...totals, cancelled: cancelRef.current, cities: Array.from(citiesSet), areas: Array.from(areasSet) };
   };
 
-  // Single province generation (manual mode)
+  // Single province generation
   const handleGenerate = async () => {
     if (!selectedProvince) {
       toast.error("Please select a province first.");
@@ -290,7 +372,7 @@ const SamplePropertyGenerator = () => {
 
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.access_token) {
-      toast.error("You must be logged in to generate properties.");
+      toast.error("You must be logged in.");
       return;
     }
 
@@ -299,25 +381,43 @@ const SamplePropertyGenerator = () => {
     setIsAutoMode(false);
     setIsRunning(true);
     setResult(null);
+    setRecentLocations([]);
+    setProvinceCitiesDone([]);
+    setProvinceAreasDone([]);
+    setLiveCity("");
+    setLiveArea("");
+    setRunStartTime(Date.now());
+    setElapsedTime(0);
 
     const provResult = await runProvinceGeneration(selectedProvince, 0, (p) => setProgress(p));
 
     suppressSessionCheck(false);
     setIsRunning(false);
-    setResult(provResult);
+    setResult({ ...provResult, province: selectedProvince });
 
-    // Mark as done in persistent storage
     if (!provResult.cancelled) {
-      saveDoneProvince(selectedProvince);
-      setPersistedDoneProvinces(prev => prev.includes(selectedProvince) ? prev : [...prev, selectedProvince]);
-      toast.success(`Done! Created ${provResult.created} properties for ${selectedProvince}`);
+      const record: DoneProvinceRecord = {
+        province: selectedProvince,
+        completedAt: new Date().toISOString(),
+        created: provResult.created,
+        skipped: provResult.skipped,
+        errors: provResult.errors,
+        cities: provResult.cities,
+        areas: provResult.areas,
+      };
+      saveDoneProvince(record);
+      setPersistedDoneRecords(prev => {
+        const filtered = prev.filter(r => r.province !== selectedProvince);
+        return [...filtered, record];
+      });
+      toast.success(`Done! Created ${provResult.created} properties for ${selectedProvince} (${provResult.cities.length} cities, ${provResult.areas.length} areas)`);
     } else {
       toast.info("Generation paused/cancelled");
     }
     refetchCounts();
   };
 
-  // Auto-run: process provinces (with smart selection support)
+  // Auto-run
   const startAutoRun = useCallback(async (resumeState?: AutoRunState | null, smartQueue?: string[]) => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.access_token) {
@@ -331,10 +431,15 @@ const SamplePropertyGenerator = () => {
     setIsRunning(true);
     setIsAutoMode(true);
     setResult(null);
+    setRecentLocations([]);
+    setProvinceCitiesDone([]);
+    setProvinceAreasDone([]);
+    setLiveCity("");
+    setLiveArea("");
+    setRunStartTime(Date.now());
+    setElapsedTime(0);
 
-    // Always re-read persisted done provinces from localStorage at call-time
-    // to avoid stale React state after page reload / logout
-    const doneLive = getPersistedDone();
+    const doneLive = getDoneProvinceNames();
 
     let queue: string[];
     let completedList: string[];
@@ -343,7 +448,6 @@ const SamplePropertyGenerator = () => {
     let currentProv = "";
 
     if (resumeState) {
-      // Resume from saved state — skip already completed, start from where we left off
       queue = resumeState.provincesQueue.filter(p => !doneLive.has(p) || p === resumeState.currentProvince);
       completedList = resumeState.completedProvinces;
       globalTotals = { created: resumeState.totalCreated, skipped: resumeState.totalSkipped, errors: resumeState.totalErrors };
@@ -351,7 +455,6 @@ const SamplePropertyGenerator = () => {
       startOffset = resumeState.currentOffset;
       toast.info(`Resuming from ${currentProv} (offset ${startOffset}), ${queue.length} provinces left`);
     } else if (smartQueue && smartQueue.length > 0) {
-      // Smart selection — use user-picked provinces
       queue = smartQueue.filter(p => !doneLive.has(p));
       completedList = [];
       if (queue.length === 0) {
@@ -364,7 +467,6 @@ const SamplePropertyGenerator = () => {
       currentProv = queue[0];
       toast.info(`Smart run: ${queue.length} selected provinces`);
     } else {
-      // Fresh start — filter using LIVE localStorage + DB data
       const allDoneNow = new Set([...doneLive, ...doneProvinces]);
       queue = provinces.filter(p => !allDoneNow.has(p));
       completedList = [];
@@ -387,6 +489,11 @@ const SamplePropertyGenerator = () => {
       const province = currentProv || queue[0];
       setAutoCurrentProvince(province);
       setAutoProvinceIndex(idx + 1);
+      setRecentLocations([]);
+      setProvinceCitiesDone([]);
+      setProvinceAreasDone([]);
+      setLiveCity("");
+      setLiveArea("");
 
       const state: AutoRunState = {
         isAutoMode: true,
@@ -407,7 +514,7 @@ const SamplePropertyGenerator = () => {
         province,
         startOffset,
         (p) => setProgress(p),
-        (offset, totals) => {
+        (offset, totals, locInfo) => {
           const updatedState: AutoRunState = {
             ...state,
             currentOffset: offset,
@@ -415,6 +522,8 @@ const SamplePropertyGenerator = () => {
             totalSkipped: globalTotals.skipped + totals.skipped,
             totalErrors: globalTotals.errors + totals.errors,
             lastUpdated: Date.now(),
+            currentCity: locInfo?.city,
+            currentArea: locInfo?.area,
           };
           saveAutoRunState(updatedState);
         }
@@ -432,6 +541,8 @@ const SamplePropertyGenerator = () => {
           provincesQueue: queue,
           startedAt: resumeState?.startedAt || Date.now(),
           lastUpdated: Date.now(),
+          currentCity: liveCity,
+          currentArea: liveArea,
         };
         setAutoRunState(pausedState);
         saveAutoRunState(pausedState);
@@ -444,15 +555,28 @@ const SamplePropertyGenerator = () => {
       globalTotals.errors += provResult.errors;
 
       completedList.push(province);
-      saveDoneProvince(province); // Persist even after reset
-      setPersistedDoneProvinces(prev => prev.includes(province) ? prev : [...prev, province]);
+      const record: DoneProvinceRecord = {
+        province,
+        completedAt: new Date().toISOString(),
+        created: provResult.created,
+        skipped: provResult.skipped,
+        errors: provResult.errors,
+        cities: provResult.cities,
+        areas: provResult.areas,
+      };
+      saveDoneProvince(record);
+      setPersistedDoneRecords(prev => {
+        const filtered = prev.filter(r => r.province !== province);
+        return [...filtered, record];
+      });
+
       queue.shift();
       startOffset = 0;
       currentProv = queue[0] || "";
       idx++;
 
       refetchCounts();
-      toast.success(`✓ ${province} done (${provResult.created} created). ${queue.length} provinces left.`);
+      toast.success(`✓ ${province} done (${provResult.created} created, ${provResult.cities.length} cities). ${queue.length} left.`);
     }
 
     suppressSessionCheck(false);
@@ -464,13 +588,12 @@ const SamplePropertyGenerator = () => {
       setAutoRunState(null);
       setSmartSelectedProvinces([]);
       setResult({ ...globalTotals, allDone: true });
-      toast.success(`🎉 Auto-run complete! ${globalTotals.created} total properties created across ${completedList.length} provinces.`);
+      toast.success(`🎉 Auto-run complete! ${globalTotals.created} total properties across ${completedList.length} provinces.`);
       refetchCounts();
     }
-  }, [provinces, doneProvinces, refetchCounts]);
+  }, [provinces, doneProvinces, refetchCounts, liveCity, liveArea]);
 
   const handleAutoRun = () => {
-    // Always resume from saved state if available — never restart from scratch
     const saved = loadAutoRunState();
     if (saved && saved.provincesQueue.length > 0) {
       toast.info("Resuming from saved progress...");
@@ -482,7 +605,7 @@ const SamplePropertyGenerator = () => {
   const handleResumeAutoRun = () => startAutoRun(autoRunState);
   const handleSmartRun = () => {
     if (smartSelectedProvinces.length === 0) {
-      toast.error("Select at least one province for smart run.");
+      toast.error("Select at least one province.");
       return;
     }
     startAutoRun(null, smartSelectedProvinces);
@@ -491,7 +614,7 @@ const SamplePropertyGenerator = () => {
     clearAutoRunState();
     clearDoneProvinces();
     setAutoRunState(null);
-    setPersistedDoneProvinces([]);
+    setPersistedDoneRecords([]);
     setIsAutoMode(false);
     setSmartSelectedProvinces([]);
     toast.info("Auto-run state and history cleared.");
@@ -499,9 +622,7 @@ const SamplePropertyGenerator = () => {
 
   const toggleSmartProvince = (province: string) => {
     setSmartSelectedProvinces(prev =>
-      prev.includes(province)
-        ? prev.filter(p => p !== province)
-        : [...prev, province]
+      prev.includes(province) ? prev.filter(p => p !== province) : [...prev, province]
     );
   };
 
@@ -510,6 +631,10 @@ const SamplePropertyGenerator = () => {
 
   const progressPercent = progress.total > 0 ? Math.round((progress.processed / progress.total) * 100) : 0;
   const hasSavedState = !!autoRunState && autoRunState.provincesQueue.length > 0;
+
+  // Get done record for a province
+  const getDoneRecord = (prov: string): DoneProvinceRecord | undefined =>
+    persistedDoneRecords.find(r => r.province === prov);
 
   return (
     <div className="space-y-4">
@@ -543,7 +668,7 @@ const SamplePropertyGenerator = () => {
             </div>
           </div>
           <CardDescription className="text-xs">
-            Progress is saved — auto-run resumes from where you left off. Use Smart Selection to pick specific provinces.
+            Progress is saved real-time — auto-run resumes from exact offset. Use Smart Selection to pick specific provinces.
           </CardDescription>
         </CardHeader>
         <CardContent className="px-4 pb-4 pt-0 space-y-3">
@@ -553,10 +678,19 @@ const SamplePropertyGenerator = () => {
               <div className="flex items-center gap-2">
                 <Pause className="h-4 w-4 text-primary" />
                 <span className="text-xs font-semibold">Paused Auto-Run</span>
+                <span className="text-[9px] text-muted-foreground ml-auto">
+                  Last: {formatTime(new Date(autoRunState!.lastUpdated).toISOString())}
+                </span>
               </div>
               <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
-                <div>Current: <span className="font-medium text-foreground">{autoRunState!.currentProvince}</span></div>
+                <div>Province: <span className="font-medium text-foreground">{autoRunState!.currentProvince}</span></div>
                 <div>Offset: <span className="font-medium text-foreground">{autoRunState!.currentOffset}</span></div>
+                {autoRunState!.currentCity && (
+                  <div>Last City: <span className="font-medium text-foreground">{autoRunState!.currentCity}</span></div>
+                )}
+                {autoRunState!.currentArea && (
+                  <div>Last Area: <span className="font-medium text-foreground">{autoRunState!.currentArea}</span></div>
+                )}
                 <div>Completed: <span className="font-medium text-chart-1">{autoRunState!.completedProvinces.length} provinces</span></div>
                 <div>Remaining: <span className="font-medium text-chart-3">{autoRunState!.provincesQueue.length} provinces</span></div>
               </div>
@@ -593,7 +727,7 @@ const SamplePropertyGenerator = () => {
             </div>
           )}
 
-          {/* Auto-run progress */}
+          {/* Auto-run live progress */}
           {isRunning && isAutoMode && (
             <div className="space-y-2">
               <div className="flex items-center justify-between">
@@ -603,16 +737,37 @@ const SamplePropertyGenerator = () => {
                     Province {autoProvinceIndex}/{autoTotalProvinces}: {autoCurrentProvince}
                   </span>
                 </div>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => { cancelRef.current = true; }}
-                  className="gap-1 h-7 text-xs"
-                >
-                  <StopCircle className="h-3.5 w-3.5" />
-                  Pause
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-[9px] gap-1 h-5">
+                    <Clock className="h-3 w-3" />
+                    {formatDuration(elapsedTime)}
+                  </Badge>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => { cancelRef.current = true; }}
+                    className="gap-1 h-7 text-xs"
+                  >
+                    <StopCircle className="h-3.5 w-3.5" />
+                    Pause
+                  </Button>
+                </div>
               </div>
+
+              {/* Live city/area info */}
+              {(liveCity || liveArea) && (
+                <div className="flex items-center gap-2 text-[11px] text-muted-foreground bg-muted/30 rounded px-2 py-1.5">
+                  <Building2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                  <span>
+                    {liveCity && <span className="font-medium text-foreground">{liveCity}</span>}
+                    {liveArea && <span> → <span className="font-medium text-foreground">{liveArea}</span></span>}
+                  </span>
+                  {provinceCitiesDone.length > 0 && (
+                    <span className="ml-auto text-[9px]">{provinceCitiesDone.length} cities, {provinceAreasDone.length} areas</span>
+                  )}
+                </div>
+              )}
+
               <div className="space-y-1">
                 <div className="flex justify-between text-[10px] text-muted-foreground">
                   <span>Overall provinces</span>
@@ -622,8 +777,8 @@ const SamplePropertyGenerator = () => {
               </div>
               <div className="space-y-1">
                 <div className="flex justify-between text-[10px] text-muted-foreground">
-                  <span>Current province batches</span>
-                  <span>{progressPercent}%</span>
+                  <span>Current province kelurahan</span>
+                  <span>{progress.processed}/{progress.total} ({progressPercent}%)</span>
                 </div>
                 <Progress value={progressPercent} className="h-1.5" />
               </div>
@@ -632,6 +787,21 @@ const SamplePropertyGenerator = () => {
                 <span className="text-chart-3">⊘ {progress.skipped} skipped</span>
                 <span className="text-destructive">✗ {progress.errors} errors</span>
               </div>
+
+              {/* Recent locations feed */}
+              {recentLocations.length > 0 && (
+                <ScrollArea className="max-h-24 rounded border bg-muted/20 p-2">
+                  <div className="space-y-0.5">
+                    {recentLocations.slice(0, 10).map((loc, i) => (
+                      <div key={i} className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                        <CheckCircle className="h-2.5 w-2.5 text-chart-1 shrink-0" />
+                        <span className="truncate">{loc.city} → {loc.area}</span>
+                        <span className="ml-auto text-chart-1 shrink-0">+{loc.types_created}</span>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              )}
             </div>
           )}
 
@@ -652,7 +822,6 @@ const SamplePropertyGenerator = () => {
 
               {showProvinceList && (
                 <div className="space-y-2 border rounded-lg p-3 bg-background/50">
-                  {/* Quick actions */}
                   <div className="flex items-center gap-2 pb-2 border-b">
                     <Button size="sm" variant="outline" className="h-6 text-[10px] px-2" onClick={selectAllRemaining} disabled={actualRemainingProvinces.length === 0}>
                       Select All Remaining
@@ -665,7 +834,6 @@ const SamplePropertyGenerator = () => {
                     </span>
                   </div>
 
-                  {/* Remaining provinces */}
                   {actualRemainingProvinces.length > 0 && (
                     <div>
                       <p className="text-[10px] font-semibold text-chart-3 mb-1.5 uppercase tracking-wider">
@@ -700,26 +868,58 @@ const SamplePropertyGenerator = () => {
                     </div>
                   )}
 
-                  {/* Completed provinces */}
                   {allCompletedProvinces.length > 0 && (
                     <div>
-                      <p className="text-[10px] font-semibold text-chart-1 mb-1.5 uppercase tracking-wider">
-                        Completed ({allCompletedProvinces.length})
-                      </p>
-                      <ScrollArea className="max-h-32">
-                        <div className="grid grid-cols-2 gap-1">
-                          {allCompletedProvinces.map(p => (
-                            <div
-                              key={p}
-                            className="flex items-center gap-1.5 text-[11px] px-2 py-1.5 rounded-md border border-chart-1/20 bg-chart-1/5 text-chart-1"
-                            >
-                              <CheckCircle className="h-3 w-3 shrink-0" />
-                              <span className="truncate">{p}</span>
-                              <span className="ml-auto text-[9px] text-chart-1/60 shrink-0">
-                                {provincePropertyCounts[p] || "✓"}
-                              </span>
-                            </div>
-                          ))}
+                      <div className="flex items-center justify-between mb-1.5">
+                        <p className="text-[10px] font-semibold text-chart-1 uppercase tracking-wider">
+                          Completed ({allCompletedProvinces.length})
+                        </p>
+                        <button
+                          onClick={() => setShowHistory(!showHistory)}
+                          className="text-[9px] text-primary hover:underline"
+                        >
+                          {showHistory ? "Hide details" : "Show details"}
+                        </button>
+                      </div>
+                      <ScrollArea className="max-h-48">
+                        <div className="grid grid-cols-1 gap-1">
+                          {allCompletedProvinces.map(p => {
+                            const rec = getDoneRecord(p);
+                            return (
+                              <div key={p} className="rounded-md border border-chart-1/20 bg-chart-1/5 px-2 py-1.5">
+                                <div className="flex items-center gap-1.5 text-[11px] text-chart-1">
+                                  <CheckCircle className="h-3 w-3 shrink-0" />
+                                  <span className="font-medium truncate">{p}</span>
+                                  <span className="ml-auto text-[9px] text-chart-1/60 shrink-0">
+                                    {provincePropertyCounts[p] || rec?.created || "✓"} props
+                                  </span>
+                                </div>
+                                {showHistory && rec && (
+                                  <div className="mt-1 pl-4.5 space-y-0.5">
+                                    <div className="flex items-center gap-1.5 text-[9px] text-muted-foreground">
+                                      <Clock className="h-2.5 w-2.5" />
+                                      <span>{formatTime(rec.completedAt)}</span>
+                                    </div>
+                                    <div className="text-[9px] text-muted-foreground">
+                                      +{rec.created} created, {rec.skipped} skipped, {rec.errors} errors
+                                    </div>
+                                    {rec.cities.length > 0 && (
+                                      <div className="text-[9px] text-muted-foreground">
+                                        <span className="font-medium">Cities:</span> {rec.cities.slice(0, 5).join(", ")}
+                                        {rec.cities.length > 5 && ` +${rec.cities.length - 5} more`}
+                                      </div>
+                                    )}
+                                    {rec.areas.length > 0 && (
+                                      <div className="text-[9px] text-muted-foreground">
+                                        <span className="font-medium">Areas:</span> {rec.areas.slice(0, 8).join(", ")}
+                                        {rec.areas.length > 8 && ` +${rec.areas.length - 8} more`}
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
                         </div>
                       </ScrollArea>
                     </div>
@@ -733,10 +933,7 @@ const SamplePropertyGenerator = () => {
           {!isRunning && !hasSavedState && (
             <div className="flex gap-2">
               {smartSelectedProvinces.length > 0 ? (
-                <Button
-                  className="flex-1 gap-2 h-9 text-sm"
-                  onClick={handleSmartRun}
-                >
+                <Button className="flex-1 gap-2 h-9 text-sm" onClick={handleSmartRun}>
                   <MousePointerClick className="h-4 w-4" />
                   Smart Run {smartSelectedProvinces.length} Selected
                 </Button>
@@ -765,7 +962,7 @@ const SamplePropertyGenerator = () => {
             Single Province (Manual)
           </CardTitle>
           <CardDescription className="text-xs">
-            Or pick a specific province to generate individually.
+            Pick a specific province to generate individually.
           </CardDescription>
         </CardHeader>
         <CardContent className="px-4 pb-4 pt-0 space-y-3">
@@ -882,35 +1079,80 @@ const SamplePropertyGenerator = () => {
         </CardContent>
       </Card>
 
-      {/* Single province progress */}
+      {/* Single province live progress */}
       {isRunning && !isAutoMode && (
         <Card>
           <CardContent className="p-4 space-y-2.5">
-            <div className="flex items-center gap-2">
-              <Loader2 className="h-4 w-4 animate-spin text-primary" />
-              <span className="text-xs font-medium">
-                Processing batch {Math.ceil(progress.processed / 5)} of {Math.ceil(progress.total / 5)}...
-              </span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                <span className="text-xs font-medium">
+                  Processing kelurahan {progress.processed}/{progress.total}...
+                </span>
+              </div>
+              <Badge variant="outline" className="text-[9px] gap-1 h-5">
+                <Clock className="h-3 w-3" />
+                {formatDuration(elapsedTime)}
+              </Badge>
             </div>
+
+            {/* Live city/area */}
+            {(liveCity || liveArea) && (
+              <div className="flex items-center gap-2 text-[11px] text-muted-foreground bg-muted/30 rounded px-2 py-1.5">
+                <Building2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                <span>
+                  {liveCity && <span className="font-medium text-foreground">{liveCity}</span>}
+                  {liveArea && <span> → <span className="font-medium text-foreground">{liveArea}</span></span>}
+                </span>
+                {provinceCitiesDone.length > 0 && (
+                  <span className="ml-auto text-[9px]">{provinceCitiesDone.length} cities, {provinceAreasDone.length} areas</span>
+                )}
+              </div>
+            )}
+
             <Progress value={progressPercent} className="h-2" />
             <div className="flex gap-4 text-xs text-muted-foreground">
               <span className="text-chart-1">✓ {progress.created} created</span>
               <span className="text-chart-3">⊘ {progress.skipped} skipped</span>
               <span className="text-destructive">✗ {progress.errors} errors</span>
             </div>
+
+            {/* Recent locations */}
+            {recentLocations.length > 0 && (
+              <ScrollArea className="max-h-20 rounded border bg-muted/20 p-2">
+                <div className="space-y-0.5">
+                  {recentLocations.slice(0, 8).map((loc, i) => (
+                    <div key={i} className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                      <CheckCircle className="h-2.5 w-2.5 text-chart-1 shrink-0" />
+                      <span className="truncate">{loc.city} → {loc.area}</span>
+                      <span className="ml-auto text-chart-1 shrink-0">+{loc.types_created}</span>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
+            )}
           </CardContent>
         </Card>
       )}
 
+      {/* Result */}
       {result && !isRunning && (
         <Card className="border-chart-1/30 bg-chart-1/5">
           <CardContent className="p-4">
             <div className="flex items-start gap-2.5">
               <CheckCircle className="h-5 w-5 text-chart-1 mt-0.5" />
               <div className="space-y-2 flex-1">
-                <h3 className="text-sm font-semibold text-chart-1">
-                  {result.allDone ? "🎉 All Provinces Complete!" : "Generation Complete!"}
-                </h3>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-semibold text-chart-1">
+                    {result.allDone ? "🎉 All Provinces Complete!" : `Generation Complete${result.province ? ` — ${result.province}` : ""}!`}
+                  </h3>
+                  {elapsedTime > 0 && (
+                    <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      {formatDuration(elapsedTime)}
+                    </span>
+                  )}
+                </div>
                 <div className="grid grid-cols-3 gap-2">
                   <div className="text-center p-2 rounded-md bg-background/50">
                     <p className="text-base font-bold text-chart-1">{result.created}</p>
@@ -925,6 +1167,18 @@ const SamplePropertyGenerator = () => {
                     <p className="text-[10px] text-muted-foreground">Errors</p>
                   </div>
                 </div>
+                {result.cities && result.cities.length > 0 && (
+                  <div className="text-[10px] text-muted-foreground">
+                    <span className="font-medium">Cities covered:</span> {result.cities.slice(0, 6).join(", ")}
+                    {result.cities.length > 6 && ` +${result.cities.length - 6} more`}
+                  </div>
+                )}
+                {result.areas && result.areas.length > 0 && (
+                  <div className="text-[10px] text-muted-foreground">
+                    <span className="font-medium">Areas:</span> {result.areas.slice(0, 10).join(", ")}
+                    {result.areas.length > 10 && ` +${result.areas.length - 10} more`}
+                  </div>
+                )}
               </div>
             </div>
           </CardContent>
