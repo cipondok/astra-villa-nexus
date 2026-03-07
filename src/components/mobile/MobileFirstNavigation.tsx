@@ -38,16 +38,16 @@ const MobileFirstNavigation: React.FC = () => {
     { icon: Home, label: 'Home', path: '/' },
     { icon: Search, label: 'Search', path: '/search' },
     { icon: Heart, label: 'Saved', path: '/saved' },
-    { icon: Bell, label: 'Alerts', path: '/notifications', badge: unreadCount },
+    { icon: Bell, label: 'Alerts', path: '/mobile/alerts', badge: unreadCount },
     { icon: User, label: 'Profile', path: user ? '/profile' : '/auth' },
   ];
 
   // Quick actions - 1 tap from FAB
   const quickActions = [
     { icon: Plus, label: 'List Property', path: '/add-property', color: 'bg-primary' },
-    { icon: Camera, label: 'AR Preview', path: '/mobile/ar-preview', color: 'bg-accent' },
-    { icon: MessageCircle, label: 'Community', path: '/mobile/community', color: 'bg-secondary' },
-    { icon: Gavel, label: 'Auctions', path: '/mobile/auctions', color: 'bg-muted-foreground' },
+    { icon: MessageCircle, label: 'AI Chat', path: '/mobile/ai-chat', color: 'bg-accent' },
+    { icon: Calculator, label: 'Investor', path: '/mobile/investor', color: 'bg-secondary' },
+    { icon: Gavel, label: 'Deals', path: '/deal-finder', color: 'bg-muted-foreground' },
   ];
 
   // Secondary navigation - accessible via menu expansion
