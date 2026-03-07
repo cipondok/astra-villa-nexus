@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator'];
+    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -3580,6 +3580,186 @@ Deno.serve(async (req) => {
           listing_price: listingPrice,
           confidence,
           insights,
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: listing_optimizer — Suggest title, description & photo improvements
+    // ═══════════════════════════════════════════
+    if (mode === 'listing_optimizer') {
+      if (!property_id) {
+        return new Response(JSON.stringify({ error: 'property_id is required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const { data: prop, error: propErr } = await supabase
+        .from('properties')
+        .select('title, description, price, city, property_type, building_area_sqm, land_area_sqm, bedrooms, bathrooms, image_urls, images, listing_type, property_features, investment_score, listing_health_score, engagement_score, created_at, listed_at')
+        .eq('id', property_id)
+        .single();
+
+      if (propErr || !prop) {
+        return new Response(JSON.stringify({ error: 'Property not found' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const title = prop.title || '';
+      const description = prop.description || '';
+      const photoUrls: string[] = [...(prop.image_urls || []), ...(prop.images || [])].filter(Boolean);
+      const photoCount = photoUrls.length;
+      const descLen = description.length;
+      const ba = Number(prop.building_area_sqm) || 0;
+      const la = Number(prop.land_area_sqm) || 0;
+      const beds = Number(prop.bedrooms) || 0;
+      const baths = Number(prop.bathrooms) || 0;
+      const features = prop.property_features || {};
+      const featureKeys = Object.keys(features).filter(k => features[k] === true || features[k] > 0);
+
+      // ── Overall listing score (0-100) ──
+      let overallScore = 0;
+
+      // === TITLE ANALYSIS ===
+      let titleScore = 0;
+      const titleSuggestions: string[] = [];
+      const titleLen = title.length;
+
+      if (titleLen >= 30 && titleLen <= 80) { titleScore += 25; }
+      else if (titleLen >= 15 && titleLen < 30) { titleScore += 15; titleSuggestions.push('Expand your title to 30-80 characters for better search visibility.'); }
+      else if (titleLen > 80) { titleScore += 10; titleSuggestions.push('Shorten your title to under 80 characters — concise titles perform better.'); }
+      else { titleScore += 5; titleSuggestions.push('Your title is too short. Include property type, location, and a key feature.'); }
+
+      // Check for key info in title
+      const titleLower = title.toLowerCase();
+      const hasLocation = prop.city && titleLower.includes(prop.city.toLowerCase());
+      const hasType = prop.property_type && titleLower.includes(prop.property_type.toLowerCase());
+      if (!hasLocation) titleSuggestions.push(`Include the city name "${prop.city}" in your title for local search.`);
+      if (!hasType) titleSuggestions.push(`Include the property type "${prop.property_type}" in your title.`);
+      if (hasLocation) titleScore += 10;
+      if (hasType) titleScore += 10;
+
+      // Check for selling words
+      const powerWords = ['luxury', 'premium', 'exclusive', 'modern', 'spacious', 'stunning', 'ocean view', 'beachfront', 'private', 'investment', 'mewah', 'eksklusif'];
+      const hasPowerWord = powerWords.some(w => titleLower.includes(w));
+      if (hasPowerWord) titleScore += 5;
+      else titleSuggestions.push('Add a compelling adjective (e.g., "Modern", "Luxury", "Spacious") to attract attention.');
+
+      titleScore = Math.min(50, titleScore);
+      const titleGrade = titleScore >= 40 ? 'excellent' : titleScore >= 25 ? 'good' : titleScore >= 15 ? 'needs_improvement' : 'poor';
+
+      // === DESCRIPTION ANALYSIS ===
+      let descScore = 0;
+      const descSuggestions: string[] = [];
+
+      if (descLen >= 300 && descLen <= 1500) { descScore += 20; }
+      else if (descLen >= 100 && descLen < 300) { descScore += 12; descSuggestions.push('Expand your description to 300-1500 characters for better engagement.'); }
+      else if (descLen > 1500) { descScore += 15; descSuggestions.push('Consider trimming your description slightly — 300-1500 chars is the sweet spot.'); }
+      else { descScore += 5; descSuggestions.push('Your description is too short. Describe the property features, location benefits, and lifestyle.'); }
+
+      // Check for key details
+      const descLower = description.toLowerCase();
+      const mentionsBeds = descLower.includes('bedroom') || descLower.includes('kamar tidur') || descLower.includes('kt');
+      const mentionsBaths = descLower.includes('bathroom') || descLower.includes('kamar mandi') || descLower.includes('km');
+      const mentionsArea = descLower.includes('m²') || descLower.includes('sqm') || descLower.includes('meter');
+      const mentionsPrice = descLower.includes('price') || descLower.includes('harga') || descLower.includes('idr');
+
+      if (!mentionsBeds && beds > 0) descSuggestions.push(`Mention the ${beds} bedrooms in your description.`);
+      if (!mentionsBaths && baths > 0) descSuggestions.push(`Mention the ${baths} bathrooms in your description.`);
+      if (!mentionsArea && (ba > 0 || la > 0)) descSuggestions.push('Include the exact building/land area measurements.');
+
+      if (mentionsBeds) descScore += 3;
+      if (mentionsBaths) descScore += 3;
+      if (mentionsArea) descScore += 4;
+
+      // Feature highlights
+      if (featureKeys.length > 0) {
+        const unmentioned = featureKeys.filter(f => !descLower.includes(f.toLowerCase().replace(/_/g, ' '))).slice(0, 3);
+        if (unmentioned.length > 0) {
+          descSuggestions.push(`Highlight these features in your description: ${unmentioned.join(', ').replace(/_/g, ' ')}.`);
+        }
+        descScore += Math.min(5, featureKeys.length);
+      } else {
+        descSuggestions.push('Add property features (pool, garden, parking, etc.) to make your listing stand out.');
+      }
+
+      // CTA check
+      const hasCTA = descLower.includes('contact') || descLower.includes('schedule') || descLower.includes('hubungi') || descLower.includes('visit') || descLower.includes('viewing');
+      if (!hasCTA) descSuggestions.push('Add a call-to-action like "Schedule a viewing today" at the end.');
+      if (hasCTA) descScore += 5;
+
+      descScore = Math.min(40, descScore);
+      const descGrade = descScore >= 30 ? 'excellent' : descScore >= 20 ? 'good' : descScore >= 12 ? 'needs_improvement' : 'poor';
+
+      // === PHOTO ANALYSIS ===
+      let photoScore = 0;
+      const photoSuggestions: string[] = [];
+
+      if (photoCount >= 10) { photoScore += 8; }
+      else if (photoCount >= 5) { photoScore += 5; photoSuggestions.push(`Add ${10 - photoCount} more photos — listings with 10+ photos get 2x more views.`); }
+      else if (photoCount >= 1) { photoScore += 2; photoSuggestions.push(`You only have ${photoCount} photo(s). Aim for at least 10 high-quality photos.`); }
+      else { photoSuggestions.push('Add property photos — listings without photos get 90% fewer views.'); }
+
+      // Room coverage hints
+      if (photoCount > 0 && photoCount < 8) {
+        photoSuggestions.push('Ensure you include: exterior/facade, living room, kitchen, master bedroom, bathroom, and any unique features (pool, garden, view).');
+      }
+      if (photoCount > 0) {
+        photoSuggestions.push('Use landscape orientation and natural lighting for best results.');
+        if (photoCount < 15) photoSuggestions.push('Consider adding a floor plan image for higher conversion rates.');
+      }
+
+      photoScore = Math.min(10, photoScore);
+      const photoGrade = photoScore >= 8 ? 'excellent' : photoScore >= 5 ? 'good' : photoScore >= 2 ? 'needs_improvement' : 'poor';
+
+      // === OVERALL SCORE ===
+      overallScore = Math.min(100, titleScore + descScore + photoScore);
+      const overallGrade = overallScore >= 75 ? 'excellent' : overallScore >= 50 ? 'good' : overallScore >= 30 ? 'needs_improvement' : 'poor';
+
+      // Predicted improvement
+      const currentEngagement = Number(prop.engagement_score) || 20;
+      const potentialBoost = Math.max(0, Math.min(80, (100 - overallScore) * 0.6));
+
+      return new Response(JSON.stringify({
+        mode: 'listing_optimizer',
+        data: {
+          overall_score: overallScore,
+          overall_grade: overallGrade,
+          potential_boost_percent: Math.round(potentialBoost),
+          title_analysis: {
+            score: titleScore,
+            max_score: 50,
+            grade: titleGrade,
+            current_title: title,
+            suggestions: titleSuggestions,
+          },
+          description_analysis: {
+            score: descScore,
+            max_score: 40,
+            grade: descGrade,
+            length: descLen,
+            optimal_range: '300-1500 characters',
+            suggestions: descSuggestions,
+          },
+          photo_analysis: {
+            score: photoScore,
+            max_score: 10,
+            grade: photoGrade,
+            photo_count: photoCount,
+            recommended_minimum: 10,
+            suggestions: photoSuggestions,
+          },
+          property_summary: {
+            city: prop.city,
+            property_type: prop.property_type,
+            listing_type: prop.listing_type,
+            bedrooms: beds,
+            bathrooms: baths,
+            building_area: ba,
+            land_area: la,
+            features_count: featureKeys.length,
+          },
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
