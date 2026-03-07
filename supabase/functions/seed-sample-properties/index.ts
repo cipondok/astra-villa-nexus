@@ -197,7 +197,7 @@ Deno.serve(async (req) => {
           }
 
           const property = generateProperty(type, loc);
-          const { error: insertErr } = await supabase.from("properties").insert(property);
+          const { error: insertErr } = await supabase.from("properties").insert({ ...property, owner_id: userId });
 
           if (insertErr) {
             console.error(`Insert error for ${type} in ${area}:`, insertErr.message);
