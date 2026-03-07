@@ -577,10 +577,70 @@ Deno.serve(async (req) => {
         return Math.max(0, Math.min(100, dS + svS + pgS + velS));
       };
 
+      // Helper: compute ROI for a specific hold period
+      const computeRoiForYears = async (prop: typeof properties[0], years: number) => {
+        const price = Number(prop.price) || 0;
+        if (price <= 0) return { roi_percent: 0, annualized_return: 0, future_price: 0, net_profit: 0, rental_income: 0 };
+
+        const now = Date.now();
+        const thirtyAgo = new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString();
+        const sixtyAgo = new Date(now - 60 * 24 * 60 * 60 * 1000).toISOString();
+
+        const [priceRecentRes2, pricePrevRes2, publishedRes2] = await Promise.all([
+          supabase.from('properties').select('price')
+            .eq('city', prop.city).eq('status', 'published').not('price', 'is', null).gt('price', 0)
+            .gte('created_at', thirtyAgo),
+          supabase.from('properties').select('price')
+            .eq('city', prop.city).eq('status', 'published').not('price', 'is', null).gt('price', 0)
+            .gte('created_at', sixtyAgo).lt('created_at', thirtyAgo),
+          supabase.from('properties').select('id', { count: 'exact', head: true })
+            .eq('city', prop.city).eq('status', 'published'),
+        ]);
+
+        const recentPrices2 = (priceRecentRes2.data || []).map(p => Number(p.price)).filter(p => p > 0);
+        const prevPrices2 = (pricePrevRes2.data || []).map(p => Number(p.price)).filter(p => p > 0);
+        const avgRecent2 = recentPrices2.length > 0 ? recentPrices2.reduce((a, b) => a + b, 0) / recentPrices2.length : 0;
+        const avgPrev2 = prevPrices2.length > 0 ? prevPrices2.reduce((a, b) => a + b, 0) / prevPrices2.length : 0;
+        const priceTrendPct2 = avgPrev2 > 0 ? ((avgRecent2 - avgPrev2) / avgPrev2) * 100 : 3;
+
+        let annualAppreciation2 = Math.abs(priceTrendPct2) > 0 ? priceTrendPct2 : 3;
+        const investScore2 = Number(prop.investment_score) || 0;
+        if (investScore2 >= 80) annualAppreciation2 += 0.5;
+        annualAppreciation2 = Math.max(2, Math.min(10, annualAppreciation2));
+
+        const futureValue = price * Math.pow(1 + annualAppreciation2 / 100, years);
+        const typeYields2: Record<string, number> = {
+          villa: 0.055, apartment: 0.065, house: 0.045, land: 0.02,
+          commercial: 0.07, townhouse: 0.05, warehouse: 0.06, office: 0.065,
+        };
+        const baseYield2 = typeYields2[(prop.property_type || 'house').toLowerCase()] || 0.045;
+        const annualRent = price * baseYield2;
+        const totalRentalIncome = annualRent * years;
+        const maintenance = price * 0.01 * years;
+        const management = totalRentalIncome * 0.10;
+        const exitCost = futureValue * 0.05;
+        const totalExpenses = maintenance + management + exitCost;
+        const capitalGain = futureValue - price;
+        const netProfit = capitalGain + totalRentalIncome - totalExpenses;
+        const roiPercent = (netProfit / price) * 100;
+        const totalReturn = futureValue + totalRentalIncome - totalExpenses;
+        const annualizedReturn = (Math.pow(totalReturn / price, 1 / years) - 1) * 100;
+
+        return {
+          roi_percent: Math.round(roiPercent * 100) / 100,
+          annualized_return: Math.round(annualizedReturn * 100) / 100,
+          future_price: Math.round(futureValue),
+          net_profit: Math.round(netProfit),
+          rental_income: Math.round(totalRentalIncome),
+        };
+      };
+
       // Run all analyses in parallel per property
       const results = await Promise.all(properties.map(async (prop) => {
-        const [roiResult, daysToSell, heatScore] = await Promise.all([
+        const [roiResult, roi3y, roi5y, daysToSell, heatScore] = await Promise.all([
           computeRoi(prop),
+          computeRoiForYears(prop, 3),
+          computeRoiForYears(prop, 5),
           computeDaysToSellInline(prop),
           computeHeatForCity(prop.city),
         ]);
@@ -606,6 +666,17 @@ Deno.serve(async (req) => {
           heat_score: heatScore,
           days_to_sell: daysToSell,
           comparison_score: Math.round(comparisonScore * 100) / 100,
+          // Investment scenario projections
+          roi_3y: roi3y.roi_percent,
+          roi_5y: roi5y.roi_percent,
+          predicted_price_3y: roi3y.future_price,
+          predicted_price_5y: roi5y.future_price,
+          net_profit_3y: roi3y.net_profit,
+          net_profit_5y: roi5y.net_profit,
+          rental_income_3y: roi3y.rental_income,
+          rental_income_5y: roi5y.rental_income,
+          annualized_return_3y: roi3y.annualized_return,
+          annualized_return_5y: roi5y.annualized_return,
         };
       }));
 
@@ -627,6 +698,13 @@ Deno.serve(async (req) => {
       }
       if (winner.days_to_sell === Math.min(...results.map(r => r.days_to_sell))) {
         reasoning.push(`Fastest estimated time to sell (~${winner.days_to_sell} days)`);
+      }
+      // 3-year and 5-year scenario insights
+      if (winner.roi_5y === Math.max(...results.map(r => r.roi_5y))) {
+        reasoning.push(`Best 5-year ROI projection at ${winner.roi_5y}%`);
+      }
+      if (winner.predicted_price_5y === Math.max(...results.map(r => r.predicted_price_5y))) {
+        reasoning.push(`Highest predicted value in 5 years`);
       }
       // Add runner-up insight
       if (results.length >= 2) {
