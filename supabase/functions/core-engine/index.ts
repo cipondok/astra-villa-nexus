@@ -3123,7 +3123,7 @@ Deno.serve(async (req) => {
         demandHeat = Math.min(100, Math.max(0, (newListings >= 20 ? 40 : newListings >= 10 ? 25 : 10) + (listings >= 50 ? 30 : listings >= 20 ? 20 : 10)));
       }
 
-      // Base appreciation by demand
+      // Base appreciation by city growth rate (demand-driven)
       let baseRate: number;
       if (demandHeat >= 70) baseRate = 0.08;
       else if (demandHeat >= 40) baseRate = 0.05;
@@ -3133,25 +3133,45 @@ Deno.serve(async (req) => {
       if (invScore > 80) baseRate += 0.02;
       else if (invScore >= 60) baseRate += 0.01;
 
+      // Demand heat bonus
+      if (demandHeat > 70) baseRate += 0.015;
+
       const growthRate = Math.round(baseRate * 10000) / 100; // as percentage
+
+      // Specific year predictions
+      const price1y = Math.round(currentPrice * Math.pow(1 + baseRate, 1));
+      const price3y = Math.round(currentPrice * Math.pow(1 + baseRate, 3));
+      const price5y = Math.round(currentPrice * Math.pow(1 + baseRate, 5));
+
       const forecastPrice = Math.round(currentPrice * Math.pow(1 + baseRate, forecastYears));
 
       // Year-by-year breakdown
       const yearly = Array.from({ length: forecastYears }, (_, i) => ({
         year: i + 1,
         price: Math.round(currentPrice * Math.pow(1 + baseRate, i + 1)),
+        appreciation: Math.round(currentPrice * Math.pow(1 + baseRate, i + 1) - currentPrice),
       }));
+
+      // Confidence based on data quality
+      const confidence = Math.min(100, 40 + (demandHeat > 0 ? 20 : 0) + (invScore > 0 ? 20 : 0) + Math.min(20, (yearly.length / forecastYears) * 20));
 
       return new Response(JSON.stringify({
         mode: 'price_forecast',
         data: {
+          property_id,
+          city: prop.city,
           current_price: currentPrice,
+          price_1y: price1y,
+          price_3y: price3y,
+          price_5y: price5y,
           forecast_price: forecastPrice,
           growth_rate: growthRate,
           forecast_years: forecastYears,
           demand_heat_score: demandHeat,
           investment_score: invScore,
+          confidence,
           yearly_projection: yearly,
+          generated_at: new Date().toISOString(),
         },
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
