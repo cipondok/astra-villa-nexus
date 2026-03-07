@@ -41,12 +41,46 @@ const HEAT_CONFIG: Record<string, { color: string; bg: string; icon: React.Eleme
 const TREND_ICON = { rising: TrendingUp, declining: TrendingDown, stable: Minus, insufficient_data: Minus };
 const TREND_COLOR = { rising: 'text-green-600', declining: 'text-red-500', stable: 'text-gold-primary', insufficient_data: 'text-muted-foreground' };
 
+const TYPE_COLORS: Record<string, string> = {
+  villa: 'hsl(var(--chart-3))',
+  apartment: 'hsl(var(--chart-1))',
+  house: 'hsl(var(--primary))',
+  land: 'hsl(var(--chart-5))',
+  commercial: 'hsl(var(--chart-2))',
+  warehouse: 'hsl(var(--gold-primary))',
+  kost: 'hsl(var(--chart-4))',
+  townhouse: 'hsl(var(--accent-foreground))',
+};
+
 export default function MarketTrendsPage() {
   const [city, setCity] = useState('');
   const [propertyType, setPropertyType] = useState('');
   const [timeRange, setTimeRange] = useState<TimeRange>('6m');
 
   const { data, isLoading } = useMarketTrendsAnalyzer({ city, property_type: propertyType, time_range: timeRange });
+
+  // Property type breakdown query
+  const { data: typeBreakdown } = useQuery({
+    queryKey: ['market-trends-type-breakdown', city],
+    queryFn: async () => {
+      let query = supabase
+        .from('properties')
+        .select('property_type')
+        .eq('status', 'active')
+        .eq('approval_status', 'approved');
+      if (city) query = query.eq('city', city);
+      const { data: rows, error } = await query;
+      if (error) throw error;
+      const counts: Record<string, number> = {};
+      (rows || []).forEach((r: any) => {
+        const t = r.property_type || 'other';
+        counts[t] = (counts[t] || 0) + 1;
+      });
+      return Object.entries(counts)
+        .map(([name, value]) => ({ name, value }))
+        .sort((a, b) => b.value - a.value);
+    },
+  });
 
   const TrendIcon = data ? TREND_ICON[data.trend_direction] : Minus;
   const trendColor = data ? TREND_COLOR[data.trend_direction] : '';
