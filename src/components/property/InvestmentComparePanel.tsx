@@ -365,10 +365,67 @@ const InvestmentComparePanel = () => {
                         })}
                       </TableRow>
 
+                      {/* ─── Investment Scenario Section ─── */}
+                      <TableRow className="bg-gradient-to-r from-primary/5 to-transparent border-t-2 border-primary/20">
+                        <TableCell colSpan={result.comparison.length + 1} className="font-bold text-foreground text-sm sticky left-0 bg-card z-10">
+                          <span className="flex items-center gap-1.5"><TrendingUp className="h-3.5 w-3.5 text-primary" />Skenario Investasi</span>
+                        </TableCell>
+                      </TableRow>
+
+                      {/* ROI 3 Year */}
+                      {renderMetricRow('ROI 3 Tahun', result.comparison, winnerId, c => c.roi_3y, v => `${v.toFixed(2)}%`, true)}
+
+                      {/* ROI 5 Year */}
+                      {renderMetricRow('ROI 5 Tahun', result.comparison, winnerId, c => c.roi_5y, v => `${v.toFixed(2)}%`, true)}
+
+                      {/* Predicted Price 3y */}
+                      <TableRow>
+                        <TableCell className="font-medium text-muted-foreground sticky left-0 bg-card z-10">Harga Prediksi 3 Tahun</TableCell>
+                        {result.comparison.map(c => {
+                          const best = Math.max(...result.comparison.map(x => x.predicted_price_3y));
+                          const isBest = c.predicted_price_3y === best && result.comparison.length > 1;
+                          return (
+                            <TableCell key={c.property_id} className={`text-center ${c.property_id === winnerId ? 'bg-emerald-500/5' : ''}`}>
+                              <div className="flex flex-col items-center gap-0.5">
+                                <span className={`font-bold ${isBest ? 'text-emerald-600 dark:text-emerald-400' : ''}`}>
+                                  <Price amount={c.predicted_price_3y} short />
+                                </span>
+                                {isBest && <WinnerBadge />}
+                              </div>
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+
+                      {/* Predicted Price 5y */}
+                      <TableRow>
+                        <TableCell className="font-medium text-muted-foreground sticky left-0 bg-card z-10">Harga Prediksi 5 Tahun</TableCell>
+                        {result.comparison.map(c => {
+                          const best = Math.max(...result.comparison.map(x => x.predicted_price_5y));
+                          const isBest = c.predicted_price_5y === best && result.comparison.length > 1;
+                          return (
+                            <TableCell key={c.property_id} className={`text-center ${c.property_id === winnerId ? 'bg-emerald-500/5' : ''}`}>
+                              <div className="flex flex-col items-center gap-0.5">
+                                <span className={`font-bold ${isBest ? 'text-emerald-600 dark:text-emerald-400' : ''}`}>
+                                  <Price amount={c.predicted_price_5y} short />
+                                </span>
+                                {isBest && <WinnerBadge />}
+                              </div>
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+
+                      {/* Net Profit 5y */}
+                      {renderMetricRow('Keuntungan Bersih 5 Tahun', result.comparison, winnerId, c => c.net_profit_5y, v => <Price amount={v} short />, true)}
+
+                      {/* Annualized Return 5y */}
+                      {renderMetricRow('Return Tahunan (5 Tahun)', result.comparison, winnerId, c => c.annualized_return_5y, v => `${v.toFixed(2)}%`, true)}
+
                       {/* Composite Score */}
                       <TableRow className="bg-gradient-to-r from-amber-500/5 to-transparent border-t-2 border-amber-500/20">
                         <TableCell className="font-bold text-foreground sticky left-0 bg-card z-10">
-                          <span className="flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 text-amber-500" />Composite Score</span>
+                          <span className="flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 text-amber-500" />Skor Komposit</span>
                         </TableCell>
                         {result.comparison.map(c => (
                           <TableCell key={c.property_id} className={`text-center ${c.property_id === winnerId ? 'bg-emerald-500/5' : ''}`}>
