@@ -306,6 +306,9 @@ const AppContent = () => {
                 <Route path="/negotiation-assistant" element={<ProtectedRoute />}>
                   <Route index element={<NegotiationAssistantPage />} />
                 </Route>
+                <Route path="/seller-intelligence" element={<ProtectedRoute />}>
+                  <Route index element={<SellerIntelligencePage />} />
+                </Route>
                 <Route path="/foreign-investment" element={<Navigate to="/investment" replace />} />
                 <Route path="/kpr-calculator" element={<KprCalculatorPage />} />
                 <Route path="/simulasi-kpr" element={<Navigate to="/kpr-calculator" replace />} />
