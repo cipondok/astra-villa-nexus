@@ -31,9 +31,9 @@ export const useTranslation = () => {
     const current = getTranslations(language);
     const value = resolve(current, keys);
     if (value !== undefined) return value;
-    // Fallback to English
-    const en = getTranslations('en');
-    return resolve(en, keys) ?? fallback ?? key;
+    // Fallback to Indonesian (default language)
+    const id = getTranslations('id');
+    return resolve(id, keys) ?? fallback ?? key;
   };
 
   const tArray = (key: string): string[] => {
