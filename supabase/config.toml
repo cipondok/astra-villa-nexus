@@ -211,5 +211,3 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.batch-dom-predictor]
     verify_jwt = false
 
-  [functions.seed-sample-properties]
-    verify_jwt = false
