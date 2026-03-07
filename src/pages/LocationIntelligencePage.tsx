@@ -118,7 +118,7 @@ export default function LocationIntelligencePage() {
           <Card>
             <CardContent className="pt-4 pb-3 px-4">
               <p className="text-xs text-muted-foreground">Pertumbuhan Harga</p>
-              <p className={cn('text-2xl font-bold', summary.avgGrowth >= 0 ? 'text-emerald-500' : 'text-destructive')}>
+              <p className={cn('text-2xl font-bold', summary.avgGrowth >= 0 ? 'text-chart-1' : 'text-destructive')}>
                 {summary.avgGrowth >= 0 ? '+' : ''}{summary.avgGrowth.toFixed(1)}%
               </p>
               <p className="text-[10px] text-muted-foreground">12 bulan terakhir</p>
@@ -219,7 +219,7 @@ export default function LocationIntelligencePage() {
                     <Flame className="h-3.5 w-3.5 text-muted-foreground" />
                     <div>
                       <p className="text-muted-foreground">Pertumbuhan</p>
-                      <p className={cn('font-semibold', area.price_growth >= 0 ? 'text-emerald-500' : 'text-destructive')}>
+                      <p className={cn('font-semibold', area.price_growth >= 0 ? 'text-chart-1' : 'text-destructive')}>
                         {area.price_growth >= 0 ? '+' : ''}{area.price_growth.toFixed(1)}%
                       </p>
                     </div>
