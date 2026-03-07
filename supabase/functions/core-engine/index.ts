@@ -10528,6 +10528,12 @@ Project Details:
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
+
+    return new Response(JSON.stringify({ error: 'Unknown mode or unhandled request' }), {
+      status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  } catch (err) {
+    console.error('core-engine error:', err);
     return new Response(JSON.stringify({ error: err instanceof Error ? err.message : 'Unknown error' }), {
       status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
