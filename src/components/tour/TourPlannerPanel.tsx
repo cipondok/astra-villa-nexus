@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,51 +9,48 @@ import { Separator } from '@/components/ui/separator';
 import { useTourPlanner, TourStop } from '@/hooks/useTourPlanner';
 import {
   MapPin, Clock, Navigation, Building2, Loader2, Route,
-  Car, ChevronRight, Lightbulb, CalendarClock, Ruler,
+  Car, ChevronRight, Lightbulb, CalendarClock, Ruler, Search,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const formatIDR = (v: number) =>
   new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v);
 
-function useUserSavedProperties() {
-  const { user } = useAuth();
+function usePropertySearch(query: string) {
   return useQuery({
-    queryKey: ['saved-properties-for-tour', user?.id],
+    queryKey: ['tour-property-search', query],
     queryFn: async () => {
       const { data } = await supabase
-        .from('saved_properties')
-        .select('property_id, properties(id, title, city, thumbnail_url, price, property_type)')
-        .eq('user_id', user!.id)
-        .limit(20);
-      return (data || []).map((s: any) => s.properties).filter(Boolean);
+        .from('public_properties')
+        .select('id, title, city, thumbnail_url, price, property_type')
+        .ilike('title', `%${query}%`)
+        .eq('status', 'active')
+        .limit(10);
+      return data || [];
     },
-    enabled: !!user?.id,
-    staleTime: 5 * 60 * 1000,
+    enabled: query.length >= 2,
+    staleTime: 30 * 1000,
   });
 }
 
 export default function TourPlannerPanel() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedProps, setSelectedProps] = useState<Record<string, any>>({});
   const [startHour, setStartHour] = useState('9');
   const [visitDuration, setVisitDuration] = useState('30');
-  const [manualId, setManualId] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const savedProps = useUserSavedProperties();
+  const searchResults = usePropertySearch(searchQuery);
   const mutation = useTourPlanner();
   const result = mutation.data;
 
-  const toggleProperty = (id: string) => {
-    setSelectedIds(prev =>
-      prev.includes(id) ? prev.filter(x => x !== id) : prev.length < 10 ? [...prev, id] : prev
-    );
-  };
-
-  const addManualId = () => {
-    const trimmed = manualId.trim();
-    if (trimmed && !selectedIds.includes(trimmed) && selectedIds.length < 10) {
-      setSelectedIds(prev => [...prev, trimmed]);
-      setManualId('');
+  const toggleProperty = (p: any) => {
+    if (selectedIds.includes(p.id)) {
+      setSelectedIds(prev => prev.filter(x => x !== p.id));
+      setSelectedProps(prev => { const n = { ...prev }; delete n[p.id]; return n; });
+    } else if (selectedIds.length < 10) {
+      setSelectedIds(prev => [...prev, p.id]);
+      setSelectedProps(prev => ({ ...prev, [p.id]: p }));
     }
   };
 
