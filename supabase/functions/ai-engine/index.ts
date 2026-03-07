@@ -3223,6 +3223,8 @@ serve(async (req) => {
         return await handleSmartPricing(payload);
       case "document_generate":
         return await handleDocumentGenerate(payload);
+      case "investment_assistant":
+        return await handleInvestmentAssistant(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
