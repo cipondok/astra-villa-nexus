@@ -1241,6 +1241,13 @@ const SamplePropertyGenerator = () => {
             )}
 
             <Progress value={progressPercent} className="h-2" />
+            {progress.existingCount > 0 && (
+              <div className="flex items-center gap-2 text-[10px] text-muted-foreground bg-chart-3/5 rounded px-2 py-1 border border-chart-3/10">
+                <Building2 className="h-3 w-3 text-chart-3 shrink-0" />
+                <span>Existing: <span className="font-bold text-chart-3">{progress.existingCount.toLocaleString()}</span></span>
+                <span className="ml-auto">Target remaining: <span className="font-bold text-primary">{Math.max(0, (progress.total * PROPERTY_TYPES.length) - progress.existingCount - progress.created).toLocaleString()}</span></span>
+              </div>
+            )}
             <div className="flex gap-4 text-xs text-muted-foreground">
               <span className="text-chart-1">✓ {progress.created} created</span>
               <span className="text-chart-3">⊘ {progress.skipped} skipped</span>
