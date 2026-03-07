@@ -1027,6 +1027,18 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Read-only analysis modes: any authenticated user can analyze any published property
+    const PUBLIC_READ_MODES = new Set([
+      'price_forecast', 'similar_properties', 'negotiation_assist',
+      'investment_score', 'investment_score_v2', 'price_suggestion',
+      'listing_health', 'days_to_sell_prediction', 'price_adjustment_strategy',
+      'roi_simulation', 'ranking_score', 'listing_visibility_analytics',
+      'ai_performance_summary', 'property_intelligence', 'buyer_profile',
+      'investment_projection', 'lead_score', 'buyer_intent',
+      'seller_intelligence', 'listing_optimizer', 'digital_twin',
+      'rental_yield_predictor', 'property_valuation',
+    ]);
+
     // ── Fetch property + ownership auth only for property-scoped modes ──
     let property: any = null;
     if (!NO_PROPERTY_ID_MODES.has(mode)) {
@@ -1044,8 +1056,12 @@ Deno.serve(async (req) => {
 
       property = propertyRow;
 
-      // ── Authorization: service_role, owner, agent, or admin ──
-      if (!isServiceRole) {
+      // ── Authorization ──
+      // Public read modes: any authenticated user can access (for published properties)
+      if (PUBLIC_READ_MODES.has(mode)) {
+        // No ownership check needed — any logged-in user can analyze properties
+      } else if (!isServiceRole) {
+        // Write/sensitive modes: require owner, agent, or admin
         const isOwner = property.owner_id === userId;
         const isAgent = property.agent_id === userId;
 
