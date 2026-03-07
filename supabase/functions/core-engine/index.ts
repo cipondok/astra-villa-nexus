@@ -1314,6 +1314,70 @@ Deno.serve(async (req) => {
     }
 
     // ═══════════════════════════════════════════
+    // MODE: price_fairness
+    // ═══════════════════════════════════════════
+    if (mode === 'price_fairness') {
+      const buildingArea = Number(property.building_area_sqm) || 0;
+      const landArea = Number(property.land_area_sqm) || 0;
+      const currentPrice = Number(property.price) || 0;
+
+      if (buildingArea <= 0 && landArea <= 0) {
+        return new Response(JSON.stringify({ error: 'Property must have area data' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      if (currentPrice <= 0) {
+        return new Response(JSON.stringify({ error: 'Property must have a price set' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const result = await computePricePosition(property, property_id);
+      if (result.comparable_count === 0) {
+        return new Response(JSON.stringify({
+          mode: 'price_fairness',
+          data: { error: 'Not enough comparable listings in this market', comparable_count: 0 },
+        }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      const marketPrice = result.fair_market_value;
+      const priceDiffPercent = marketPrice > 0
+        ? Math.round(((currentPrice - marketPrice) / marketPrice) * 10000) / 100
+        : 0;
+
+      // Determine status with 4 tiers
+      let priceStatus: string;
+      if (priceDiffPercent <= -15) priceStatus = 'undervalued';
+      else if (priceDiffPercent <= 10) priceStatus = 'fair_price';
+      else if (priceDiffPercent <= 25) priceStatus = 'slightly_expensive';
+      else priceStatus = 'overpriced';
+
+      const primaryArea = buildingArea > 0 ? buildingArea : landArea;
+      const propertyPricePerSqm = Math.round(currentPrice / primaryArea);
+      const marketPricePerSqm = result.price_per_sqm;
+
+      console.log(`Price fairness for ${property_id}: status=${priceStatus} diff=${priceDiffPercent}% market=${marketPrice} current=${currentPrice} comps=${result.comparable_count}`);
+
+      return new Response(JSON.stringify({
+        mode: 'price_fairness',
+        data: {
+          property_id,
+          current_price: currentPrice,
+          market_price: marketPrice,
+          price_difference_percent: priceDiffPercent,
+          price_status: priceStatus,
+          property_price_per_sqm: propertyPricePerSqm,
+          market_price_per_sqm: marketPricePerSqm,
+          comparable_count: result.comparable_count,
+          confidence_score: result.confidence_score,
+          demand_multiplier: result.demand_multiplier,
+          expected_days_on_market: result.expected_days_on_market,
+          reasoning: result.reasoning,
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════
     // Shared: computeDaysOnMarket helper
     // ═══════════════════════════════════════════
     const computeDaysOnMarket = async (prop: typeof property, propId: string, overridePrice?: number) => {
