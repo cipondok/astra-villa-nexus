@@ -1017,7 +1017,10 @@ Deno.serve(async (req) => {
       'anomaly_detector', 'premium_insights',
     ]);
 
+    console.log('[CORE-ENGINE] mode:', mode, 'property_id:', property_id, 'NO_PID:', NO_PROPERTY_ID_MODES.has(mode));
+
     if (!property_id && !NO_PROPERTY_ID_MODES.has(mode)) {
+      console.log('[CORE-ENGINE] BLOCKED: property_id required for mode:', mode);
       return new Response(JSON.stringify({ error: 'property_id is required' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
