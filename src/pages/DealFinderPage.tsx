@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { Loader2, Flame, TrendingUp, Eye, Bookmark, Building2, MapPin, ArrowRight, Sparkles, BarChart3, Search, Target } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '@/contexts/LanguageContext';
 import EnhancedNavigation from '@/components/navigation/EnhancedNavigation';
 import ProfessionalFooter from '@/components/ProfessionalFooter';
 
