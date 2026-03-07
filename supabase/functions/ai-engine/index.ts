@@ -3330,7 +3330,7 @@ ${contextParts.length > 0 ? '\nDATA CONTEXT:\n' + contextParts.join('\n\n') : '\
 }
 
 
-  if (req.method === "OPTIONS") {
+  serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
