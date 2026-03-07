@@ -1758,7 +1758,9 @@ Deno.serve(async (req) => {
     }
 
     // ═══════════════════════════════════════════
-    {
+    // MODE: price_adjustment_strategy
+    // ═══════════════════════════════════════════
+    if (mode === 'price_adjustment_strategy') {
       const adjPriceResult = await computePricePosition(property, property_id);
       const curPrice = Number(property.price) || 0;
 
