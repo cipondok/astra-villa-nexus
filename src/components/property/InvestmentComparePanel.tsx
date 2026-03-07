@@ -33,6 +33,16 @@ interface ComparisonResult {
   heat_score: number;
   days_to_sell: number;
   comparison_score: number;
+  roi_3y: number;
+  roi_5y: number;
+  predicted_price_3y: number;
+  predicted_price_5y: number;
+  net_profit_3y: number;
+  net_profit_5y: number;
+  rental_income_3y: number;
+  rental_income_5y: number;
+  annualized_return_3y: number;
+  annualized_return_5y: number;
 }
 
 interface CompareResponse {
