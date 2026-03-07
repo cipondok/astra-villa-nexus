@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -6593,6 +6593,194 @@ Deno.serve(async (req) => {
           price_by_type: priceByType,
           activity_trend: activityTrend,
           top_momentum_cities: cityPulseArray.slice(0, 5).map(c => c.city),
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // ██  MODE: predictive_development — Detect new dev opportunities
+    // ══════════════════════════════════════════════════════════════
+    if (mode === 'predictive_development') {
+      const serviceClient = createClient(supabaseUrl, serviceKey);
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+      const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+
+      // Parallel data fetch
+      const [propsRes, behaviorRes, priceHistRes] = await Promise.all([
+        serviceClient.from('properties').select('id, city, state, price, property_type, land_area, building_area, investment_score, demand_heat_score, rental_yield, status, created_at').limit(1000),
+        serviceClient.from('ai_behavior_tracking').select('event_type, property_id, user_id, created_at').gte('created_at', thirtyDaysAgo).limit(2000),
+        serviceClient.from('property_price_history').select('property_id, old_price, new_price, changed_at').gte('changed_at', ninetyDaysAgo).limit(1000),
+      ]);
+
+      const props = propsRes.data || [];
+      const behaviors = behaviorRes.data || [];
+      const priceHistory = priceHistRes.data || [];
+
+      // Map property → city for behavior lookups
+      const propCityMap: Record<string, string> = {};
+      const propTypeMap: Record<string, string> = {};
+      for (const p of props) {
+        if (p.id && p.city) propCityMap[p.id] = p.city;
+        if (p.id && p.property_type) propTypeMap[p.id] = p.property_type;
+      }
+
+      // ── Aggregate by city ──
+      interface CityAgg {
+        listings: number;
+        totalPrice: number;
+        totalLandPrice: number;
+        landCount: number;
+        totalInvestment: number;
+        totalDemand: number;
+        totalYield: number;
+        yieldCount: number;
+        views30d: number;
+        inquiries30d: number;
+        newListings30d: number;
+        priceChanges: { old: number; new_: number }[];
+        types: Record<string, number>;
+      }
+
+      const cityAgg: Record<string, CityAgg> = {};
+      const ensureCity = (city: string) => {
+        if (!cityAgg[city]) {
+          cityAgg[city] = {
+            listings: 0, totalPrice: 0, totalLandPrice: 0, landCount: 0,
+            totalInvestment: 0, totalDemand: 0, totalYield: 0, yieldCount: 0,
+            views30d: 0, inquiries30d: 0, newListings30d: 0,
+            priceChanges: [], types: {},
+          };
+        }
+      };
+
+      for (const p of props) {
+        const city = p.city || 'Unknown';
+        ensureCity(city);
+        const c = cityAgg[city];
+        c.listings++;
+        c.totalPrice += p.price || 0;
+        c.totalInvestment += p.investment_score || 0;
+        c.totalDemand += p.demand_heat_score || 0;
+        if (p.rental_yield && p.rental_yield > 0) { c.totalYield += p.rental_yield; c.yieldCount++; }
+        if (p.land_area && p.land_area > 0 && p.price) {
+          c.totalLandPrice += p.price / p.land_area;
+          c.landCount++;
+        }
+        const pt = p.property_type || 'other';
+        c.types[pt] = (c.types[pt] || 0) + 1;
+        // Check if created in last 30d
+        if (new Date(p.created_at) >= new Date(thirtyDaysAgo)) c.newListings30d++;
+      }
+
+      // Behavior counts per city
+      for (const b of behaviors) {
+        const city = b.property_id ? propCityMap[b.property_id] : null;
+        if (!city) continue;
+        ensureCity(city);
+        if (b.event_type === 'view' || b.event_type === 'property_view') cityAgg[city].views30d++;
+        if (b.event_type === 'inquiry' || b.event_type === 'contact') cityAgg[city].inquiries30d++;
+      }
+
+      // Price trend per city
+      for (const ph of priceHistory) {
+        const city = ph.property_id ? propCityMap[ph.property_id] : null;
+        if (!city) continue;
+        ensureCity(city);
+        cityAgg[city].priceChanges.push({ old: ph.old_price, new_: ph.new_price });
+      }
+
+      // ── Score & classify each city ──
+      const opportunities = Object.entries(cityAgg).map(([city, d]) => {
+        const avgDemand = d.listings > 0 ? d.totalDemand / d.listings : 0;
+        const avgInvestment = d.listings > 0 ? d.totalInvestment / d.listings : 0;
+        const avgYield = d.yieldCount > 0 ? d.totalYield / d.yieldCount : 0;
+        const avgLandPricePerSqm = d.landCount > 0 ? d.totalLandPrice / d.landCount : 0;
+        const avgPrice = d.listings > 0 ? d.totalPrice / d.listings : 0;
+
+        // Buyer activity score (0-25)
+        const buyerActivity = Math.min(25, Math.round((d.views30d * 0.5 + d.inquiries30d * 3) / Math.max(1, d.listings) * 5));
+
+        // Demand heat contribution (0-25)
+        const demandScore = Math.min(25, Math.round(avgDemand * 0.3));
+
+        // Supply gap: high demand + low listings = opportunity (0-25)
+        const supplyGap = avgDemand > 50 && d.listings < 30 ? 25 : avgDemand > 30 && d.listings < 60 ? 15 : 5;
+
+        // Price trend: rising prices indicate growth (0-25)
+        let priceTrendScore = 10;
+        if (d.priceChanges.length > 0) {
+          const avgChange = d.priceChanges.reduce((s, pc) => s + ((pc.new_ - pc.old) / Math.max(1, pc.old)), 0) / d.priceChanges.length;
+          priceTrendScore = Math.min(25, Math.max(0, Math.round((avgChange + 0.1) * 100)));
+        }
+
+        const growthScore = Math.min(100, buyerActivity + demandScore + supplyGap + priceTrendScore);
+
+        // Classify development type
+        let developmentType: string;
+        let reason: string;
+        const dominantType = Object.entries(d.types).sort((a, b) => b[1] - a[1])[0];
+
+        if (avgYield > 8 && avgPrice < 3_000_000_000) {
+          developmentType = 'villa_project';
+          reason = `High rental yield (${avgYield.toFixed(1)}%) with affordable land prices — ideal for villa developments targeting vacation rentals.`;
+        } else if (d.listings > 50 && avgDemand > 60) {
+          developmentType = 'apartment_project';
+          reason = `High listing density (${d.listings}) and strong demand (${avgDemand.toFixed(0)}) indicate urban growth — apartment developments can capture rising population demand.`;
+        } else if (avgPrice > 5_000_000_000 && buyerActivity > 15) {
+          developmentType = 'commercial_project';
+          reason = `Premium price segment (avg ${(avgPrice / 1e9).toFixed(1)}B IDR) with active buyer interest suggests commercial viability for mixed-use or retail developments.`;
+        } else if (dominantType && dominantType[0] === 'villa') {
+          developmentType = 'villa_project';
+          reason = `${city} is dominated by villa properties (${dominantType[1]} listings) with ${avgDemand.toFixed(0)} avg demand — expanding villa supply meets market preference.`;
+        } else if (avgDemand > 40) {
+          developmentType = 'apartment_project';
+          reason = `Moderate-to-high demand (${avgDemand.toFixed(0)}) with growth potential — apartment projects can serve emerging residential needs.`;
+        } else {
+          developmentType = 'villa_project';
+          reason = `Emerging market with ${d.newListings30d} new listings in 30 days — early-mover villa developments can establish market presence.`;
+        }
+
+        return {
+          city,
+          development_type: developmentType,
+          growth_score: growthScore,
+          reason,
+          metrics: {
+            total_listings: d.listings,
+            avg_price: Math.round(avgPrice),
+            avg_land_price_sqm: Math.round(avgLandPricePerSqm),
+            avg_demand_score: Math.round(avgDemand * 10) / 10,
+            avg_investment_score: Math.round(avgInvestment * 10) / 10,
+            avg_rental_yield: Math.round(avgYield * 10) / 10,
+            buyer_activity_30d: d.views30d + d.inquiries30d,
+            new_listings_30d: d.newListings30d,
+            price_changes_90d: d.priceChanges.length,
+          },
+          score_breakdown: {
+            buyer_activity: buyerActivity,
+            demand_heat: demandScore,
+            supply_gap: supplyGap,
+            price_trend: priceTrendScore,
+          },
+        };
+      }).sort((a, b) => b.growth_score - a.growth_score);
+
+      return new Response(JSON.stringify({
+        data: {
+          development_opportunities: opportunities,
+          summary: {
+            total_cities_analyzed: opportunities.length,
+            top_opportunity: opportunities[0]?.city || 'N/A',
+            avg_growth_score: opportunities.length > 0
+              ? Math.round(opportunities.reduce((s, o) => s + o.growth_score, 0) / opportunities.length)
+              : 0,
+            type_distribution: {
+              villa_project: opportunities.filter(o => o.development_type === 'villa_project').length,
+              apartment_project: opportunities.filter(o => o.development_type === 'apartment_project').length,
+              commercial_project: opportunities.filter(o => o.development_type === 'commercial_project').length,
+            },
+          },
           generated_at: new Date().toISOString(),
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
