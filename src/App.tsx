@@ -174,6 +174,7 @@ const ProjectLaunchPage = lazy(() => import('@/pages/ProjectLaunchPage'));
 const TourPlannerPage = lazy(() => import('@/pages/TourPlannerPage'));
 const InvestmentAssistantPage = lazy(() => import('@/pages/InvestmentAssistantPage'));
 const InvestmentAdvisorPage = lazy(() => import('@/pages/InvestmentAdvisorPage'));
+const VisualSearchPage = lazy(() => import('@/pages/VisualSearchPage'));
 const AutonomousAgentPage = lazy(() => import('@/pages/AutonomousAgentPage'));
 const MobileHomeFeed = lazy(() => import('@/pages/mobile/MobileHomeFeed'));
 const MobilePropertyDetail = lazy(() => import('@/pages/mobile/MobilePropertyDetail'));
