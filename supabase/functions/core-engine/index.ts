@@ -6434,7 +6434,171 @@ Deno.serve(async (req) => {
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-  } catch (err) {
+    // ══════════════════════════════════════════════════════════════
+    // ██  MODE: market_pulse — Real-time market trends dashboard
+    // ══════════════════════════════════════════════════════════════
+    if (mode === 'market_pulse') {
+      const serviceClient = createClient(supabaseUrl, serviceKey);
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+      // Parallel data fetch
+      const [propsRes, behaviorRes, recentPropsRes] = await Promise.all([
+        serviceClient.from('properties').select('id, title, city, state, price, property_type, bedrooms, building_area, investment_score, demand_heat_score, created_at, status').limit(1000),
+        serviceClient.from('ai_behavior_tracking').select('event_type, property_id, user_id, created_at').gte('created_at', thirtyDaysAgo).limit(2000),
+        serviceClient.from('properties').select('id, city, price, property_type, created_at').gte('created_at', sevenDaysAgo).order('created_at', { ascending: false }).limit(200),
+      ]);
+
+      const props = propsRes.data || [];
+      const behaviors = behaviorRes.data || [];
+      const recentProps = recentPropsRes.data || [];
+
+      // ── City-level pulse ──
+      const cityPulse: Record<string, {
+        listings: number; avgPrice: number; totalPrice: number;
+        avgInvestment: number; totalInvestment: number;
+        avgDemand: number; totalDemand: number;
+        views7d: number; views30d: number; inquiries30d: number;
+        newListings7d: number; types: Record<string, number>;
+      }> = {};
+
+      for (const p of props) {
+        const city = p.city || 'Unknown';
+        if (!cityPulse[city]) {
+          cityPulse[city] = { listings: 0, avgPrice: 0, totalPrice: 0, avgInvestment: 0, totalInvestment: 0, avgDemand: 0, totalDemand: 0, views7d: 0, views30d: 0, inquiries30d: 0, newListings7d: 0, types: {} };
+        }
+        const cp = cityPulse[city];
+        cp.listings++;
+        cp.totalPrice += p.price || 0;
+        cp.totalInvestment += p.investment_score || 0;
+        cp.totalDemand += p.demand_heat_score || 0;
+        const pt = p.property_type || 'other';
+        cp.types[pt] = (cp.types[pt] || 0) + 1;
+      }
+
+      // Count new listings per city (7d)
+      for (const rp of recentProps) {
+        const city = rp.city || 'Unknown';
+        if (cityPulse[city]) cityPulse[city].newListings7d++;
+      }
+
+      // Count views & inquiries per city
+      const propCityMap: Record<string, string> = {};
+      for (const p of props) { if (p.id && p.city) propCityMap[p.id] = p.city; }
+
+      for (const b of behaviors) {
+        const city = b.property_id ? propCityMap[b.property_id] : null;
+        if (!city || !cityPulse[city]) continue;
+        if (b.event_type === 'view' || b.event_type === 'property_view') {
+          cityPulse[city].views30d++;
+          if (new Date(b.created_at) >= new Date(sevenDaysAgo)) cityPulse[city].views7d++;
+        }
+        if (b.event_type === 'inquiry' || b.event_type === 'contact') {
+          cityPulse[city].inquiries30d++;
+        }
+      }
+
+      // Compute averages & build city pulse array
+      const cityPulseArray = Object.entries(cityPulse)
+        .map(([city, d]) => {
+          const avgPrice = d.listings > 0 ? Math.round(d.totalPrice / d.listings) : 0;
+          const avgInvestment = d.listings > 0 ? Math.round((d.totalInvestment / d.listings) * 10) / 10 : 0;
+          const avgDemand = d.listings > 0 ? Math.round((d.totalDemand / d.listings) * 10) / 10 : 0;
+          const momentum = Math.round(d.views7d * 2 + d.inquiries30d * 5 + d.newListings7d * 3);
+          const topType = Object.entries(d.types).sort((a, b) => b[1] - a[1])[0];
+          const signal: string = momentum > 50 ? 'hot' : momentum > 20 ? 'warming' : momentum > 5 ? 'stable' : 'cooling';
+          return {
+            city,
+            total_listings: d.listings,
+            avg_price: avgPrice,
+            avg_investment_score: avgInvestment,
+            avg_demand_score: avgDemand,
+            views_7d: d.views7d,
+            views_30d: d.views30d,
+            inquiries_30d: d.inquiries30d,
+            new_listings_7d: d.newListings7d,
+            momentum_score: momentum,
+            signal,
+            dominant_type: topType ? topType[0] : 'unknown',
+          };
+        })
+        .sort((a, b) => b.momentum_score - a.momentum_score);
+
+      // ── Market-wide signals ──
+      const totalListings = props.length;
+      const totalViews30d = behaviors.filter(b => b.event_type === 'view' || b.event_type === 'property_view').length;
+      const totalInquiries30d = behaviors.filter(b => b.event_type === 'inquiry' || b.event_type === 'contact').length;
+      const newListings7d = recentProps.length;
+      const avgPriceAll = totalListings > 0 ? Math.round(props.reduce((s, p) => s + (p.price || 0), 0) / totalListings) : 0;
+
+      // Price distribution by type
+      const typeDistribution: Record<string, { count: number; totalPrice: number; avgPrice: number }> = {};
+      for (const p of props) {
+        const pt = p.property_type || 'other';
+        if (!typeDistribution[pt]) typeDistribution[pt] = { count: 0, totalPrice: 0, avgPrice: 0 };
+        typeDistribution[pt].count++;
+        typeDistribution[pt].totalPrice += p.price || 0;
+      }
+      const priceByType = Object.entries(typeDistribution).map(([type, d]) => ({
+        type,
+        count: d.count,
+        avg_price: d.count > 0 ? Math.round(d.totalPrice / d.count) : 0,
+        market_share: totalListings > 0 ? Math.round((d.count / totalListings) * 100) : 0,
+      })).sort((a, b) => b.count - a.count);
+
+      // Daily activity trend (last 7 days)
+      const dailyActivity: Record<string, { views: number; inquiries: number; new_listings: number }> = {};
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+        const key = d.toISOString().slice(0, 10);
+        dailyActivity[key] = { views: 0, inquiries: 0, new_listings: 0 };
+      }
+      for (const b of behaviors) {
+        const day = b.created_at?.slice(0, 10);
+        if (dailyActivity[day]) {
+          if (b.event_type === 'view' || b.event_type === 'property_view') dailyActivity[day].views++;
+          if (b.event_type === 'inquiry' || b.event_type === 'contact') dailyActivity[day].inquiries++;
+        }
+      }
+      for (const rp of recentProps) {
+        const day = rp.created_at?.slice(0, 10);
+        if (dailyActivity[day]) dailyActivity[day].new_listings++;
+      }
+      const activityTrend = Object.entries(dailyActivity)
+        .map(([date, d]) => ({ date, ...d }))
+        .sort((a, b) => a.date.localeCompare(b.date));
+
+      // Market health indicator
+      const healthScore = Math.min(100, Math.round(
+        (totalViews30d > 100 ? 25 : (totalViews30d / 100) * 25) +
+        (totalInquiries30d > 30 ? 25 : (totalInquiries30d / 30) * 25) +
+        (newListings7d > 20 ? 25 : (newListings7d / 20) * 25) +
+        (totalListings > 50 ? 25 : (totalListings / 50) * 25)
+      ));
+
+      const healthLabel = healthScore >= 80 ? 'Thriving' : healthScore >= 60 ? 'Healthy' : healthScore >= 40 ? 'Moderate' : 'Slow';
+
+      return new Response(JSON.stringify({
+        data: {
+          market_overview: {
+            total_listings: totalListings,
+            avg_price: avgPriceAll,
+            views_30d: totalViews30d,
+            inquiries_30d: totalInquiries30d,
+            new_listings_7d: newListings7d,
+            health_score: healthScore,
+            health_label: healthLabel,
+          },
+          city_pulse: cityPulseArray,
+          price_by_type: priceByType,
+          activity_trend: activityTrend,
+          top_momentum_cities: cityPulseArray.slice(0, 5).map(c => c.city),
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+
     console.error('core-engine error:', err);
     return new Response(JSON.stringify({ error: err instanceof Error ? err.message : 'Unknown error' }), {
       status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
