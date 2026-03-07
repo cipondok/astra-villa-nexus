@@ -135,7 +135,8 @@ const DealFinderPage = () => {
     limit: 30,
   });
 
-  const { language, toggleLanguage } = useLanguage();
+  const { language, setLanguage } = useLanguage();
+  const toggleLanguage = () => setLanguage(language === 'en' ? 'id' : 'en');
 
   return (
     <div className="min-h-screen bg-background">
