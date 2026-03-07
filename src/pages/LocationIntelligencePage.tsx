@@ -23,8 +23,8 @@ const heatLabels: Record<string, string> = {
 
 function InvestmentGrade({ score }: { score: number }) {
   let grade: string, color: string;
-  if (score >= 80) { grade = 'A+'; color = 'text-emerald-500'; }
-  else if (score >= 65) { grade = 'A'; color = 'text-emerald-400'; }
+  if (score >= 80) { grade = 'A+'; color = 'text-chart-1'; }
+  else if (score >= 65) { grade = 'A'; color = 'text-chart-1'; }
   else if (score >= 50) { grade = 'B'; color = 'text-chart-1'; }
   else if (score >= 35) { grade = 'C'; color = 'text-chart-4'; }
   else { grade = 'D'; color = 'text-destructive'; }
