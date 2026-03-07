@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development'];
+    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -6780,6 +6780,98 @@ Deno.serve(async (req) => {
               apartment_project: opportunities.filter(o => o.development_type === 'apartment_project').length,
               commercial_project: opportunities.filter(o => o.development_type === 'commercial_project').length,
             },
+          },
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // ██  MODE: expansion_intelligence — Global expansion targets
+    // ══════════════════════════════════════════════════════════════
+    if (mode === 'expansion_intelligence') {
+      // Southeast Asia + key global markets with real economic indicators
+      const markets = [
+        { country: 'Indonesia', region: 'Southeast Asia', flag: '🇮🇩', gdp_growth: 5.1, tourism_arrivals_m: 16.3, fdi_inflow_b: 47.3, property_growth: 7.2, rental_yield_avg: 6.8, population_m: 278, urbanization: 57, ease_of_business: 73, foreign_ownership: 'Limited (HGB/Nominee)', currency_stability: 72, digital_adoption: 68 },
+        { country: 'Thailand', region: 'Southeast Asia', flag: '🇹🇭', gdp_growth: 3.2, tourism_arrivals_m: 28.1, fdi_inflow_b: 10.8, property_growth: 4.5, rental_yield_avg: 5.2, population_m: 72, urbanization: 52, ease_of_business: 80, foreign_ownership: 'Condo freehold / Land restricted', currency_stability: 75, digital_adoption: 72 },
+        { country: 'Vietnam', region: 'Southeast Asia', flag: '🇻🇳', gdp_growth: 6.5, tourism_arrivals_m: 12.6, fdi_inflow_b: 18.5, property_growth: 8.1, rental_yield_avg: 5.8, population_m: 100, urbanization: 39, ease_of_business: 70, foreign_ownership: '50-year leasehold', currency_stability: 65, digital_adoption: 60 },
+        { country: 'Philippines', region: 'Southeast Asia', flag: '🇵🇭', gdp_growth: 5.6, tourism_arrivals_m: 5.4, fdi_inflow_b: 9.4, property_growth: 5.9, rental_yield_avg: 6.1, population_m: 115, urbanization: 48, ease_of_business: 68, foreign_ownership: 'Condo up to 40%', currency_stability: 68, digital_adoption: 58 },
+        { country: 'Malaysia', region: 'Southeast Asia', flag: '🇲🇾', gdp_growth: 4.2, tourism_arrivals_m: 20.1, fdi_inflow_b: 12.1, property_growth: 3.8, rental_yield_avg: 4.5, population_m: 33, urbanization: 78, ease_of_business: 81, foreign_ownership: 'Above MM2H threshold', currency_stability: 70, digital_adoption: 80 },
+        { country: 'Singapore', region: 'Southeast Asia', flag: '🇸🇬', gdp_growth: 2.8, tourism_arrivals_m: 13.6, fdi_inflow_b: 92.0, property_growth: 3.2, rental_yield_avg: 3.1, population_m: 6, urbanization: 100, ease_of_business: 95, foreign_ownership: 'Full (with ABSD stamp duty)', currency_stability: 95, digital_adoption: 95 },
+        { country: 'Cambodia', region: 'Southeast Asia', flag: '🇰🇭', gdp_growth: 5.8, tourism_arrivals_m: 5.6, fdi_inflow_b: 3.8, property_growth: 6.5, rental_yield_avg: 7.2, population_m: 17, urbanization: 25, ease_of_business: 55, foreign_ownership: 'Condo above ground floor', currency_stability: 60, digital_adoption: 42 },
+        { country: 'Dubai (UAE)', region: 'Middle East', flag: '🇦🇪', gdp_growth: 4.0, tourism_arrivals_m: 17.2, fdi_inflow_b: 22.7, property_growth: 9.5, rental_yield_avg: 7.0, population_m: 10, urbanization: 87, ease_of_business: 88, foreign_ownership: 'Freehold in designated zones', currency_stability: 92, digital_adoption: 90 },
+        { country: 'Portugal', region: 'Europe', flag: '🇵🇹', gdp_growth: 2.3, tourism_arrivals_m: 26.5, fdi_inflow_b: 8.2, property_growth: 6.8, rental_yield_avg: 4.8, population_m: 10, urbanization: 67, ease_of_business: 78, foreign_ownership: 'Full (Golden Visa revised)', currency_stability: 85, digital_adoption: 75 },
+        { country: 'Turkey', region: 'Europe', flag: '🇹🇷', gdp_growth: 4.5, tourism_arrivals_m: 49.2, fdi_inflow_b: 10.6, property_growth: 11.2, rental_yield_avg: 5.5, population_m: 85, urbanization: 77, ease_of_business: 70, foreign_ownership: 'Full (citizenship by investment)', currency_stability: 35, digital_adoption: 70 },
+        { country: 'Mexico', region: 'Americas', flag: '🇲🇽', gdp_growth: 3.2, tourism_arrivals_m: 42.0, fdi_inflow_b: 35.3, property_growth: 5.4, rental_yield_avg: 5.9, population_m: 130, urbanization: 81, ease_of_business: 72, foreign_ownership: 'Via fideicomiso trust in restricted zone', currency_stability: 60, digital_adoption: 65 },
+        { country: 'Japan', region: 'East Asia', flag: '🇯🇵', gdp_growth: 1.9, tourism_arrivals_m: 31.9, fdi_inflow_b: 14.7, property_growth: 4.2, rental_yield_avg: 3.8, population_m: 125, urbanization: 92, ease_of_business: 86, foreign_ownership: 'Full ownership allowed', currency_stability: 78, digital_adoption: 88 },
+      ];
+
+      // Scoring formula
+      const scored = markets.map((m) => {
+        // Market growth (0-25): property growth + GDP growth
+        const marketGrowth = Math.min(25, Math.round((m.property_growth * 1.5 + m.gdp_growth * 1.2)));
+
+        // Investor interest (0-25): FDI + foreign ownership ease + ease of business
+        const ownershipScore = m.foreign_ownership.toLowerCase().includes('full') ? 10 : m.foreign_ownership.toLowerCase().includes('freehold') ? 8 : 4;
+        const investorInterest = Math.min(25, Math.round((Math.min(m.fdi_inflow_b, 50) / 50) * 8 + ownershipScore + (m.ease_of_business / 100) * 7));
+
+        // Tourism demand (0-25)
+        const tourismDemand = Math.min(25, Math.round((Math.min(m.tourism_arrivals_m, 50) / 50) * 15 + m.rental_yield_avg * 1.2));
+
+        // Economic stability (0-25): currency + digital + urbanization
+        const economicStability = Math.min(25, Math.round((m.currency_stability / 100) * 10 + (m.digital_adoption / 100) * 8 + (m.urbanization / 100) * 7));
+
+        const totalScore = marketGrowth + investorInterest + tourismDemand + economicStability;
+
+        // Classify readiness
+        const readiness = totalScore >= 75 ? 'Ready' : totalScore >= 55 ? 'High Potential' : totalScore >= 40 ? 'Emerging' : 'Watch';
+
+        // Key reasons
+        const reasons: string[] = [];
+        if (m.property_growth > 6) reasons.push(`Strong property growth (${m.property_growth}%)`);
+        if (m.tourism_arrivals_m > 15) reasons.push(`Major tourism hub (${m.tourism_arrivals_m}M visitors)`);
+        if (m.fdi_inflow_b > 15) reasons.push(`High FDI inflows ($${m.fdi_inflow_b}B)`);
+        if (m.rental_yield_avg > 6) reasons.push(`Attractive yields (${m.rental_yield_avg}%)`);
+        if (m.digital_adoption > 80) reasons.push(`High digital readiness (${m.digital_adoption}%)`);
+        if (m.gdp_growth > 5) reasons.push(`Rapid GDP growth (${m.gdp_growth}%)`);
+        if (reasons.length === 0) reasons.push('Stable market with moderate growth potential');
+
+        return {
+          country: m.country,
+          region: m.region,
+          flag: m.flag,
+          total_score: totalScore,
+          readiness,
+          market_growth: marketGrowth,
+          investor_interest: investorInterest,
+          tourism_demand: tourismDemand,
+          economic_stability: economicStability,
+          metrics: {
+            gdp_growth: m.gdp_growth,
+            property_growth: m.property_growth,
+            tourism_arrivals_m: m.tourism_arrivals_m,
+            fdi_inflow_b: m.fdi_inflow_b,
+            rental_yield_avg: m.rental_yield_avg,
+            population_m: m.population_m,
+            urbanization: m.urbanization,
+            ease_of_business: m.ease_of_business,
+            currency_stability: m.currency_stability,
+            digital_adoption: m.digital_adoption,
+            foreign_ownership: m.foreign_ownership,
+          },
+          reasons,
+        };
+      }).sort((a, b) => b.total_score - a.total_score);
+
+      return new Response(JSON.stringify({
+        data: {
+          expansion_targets: scored,
+          summary: {
+            total_markets_analyzed: scored.length,
+            top_target: scored[0]?.country || 'N/A',
+            ready_markets: scored.filter(s => s.readiness === 'Ready').length,
+            high_potential_markets: scored.filter(s => s.readiness === 'High Potential').length,
+            avg_score: Math.round(scored.reduce((s, t) => s + t.total_score, 0) / scored.length),
           },
           generated_at: new Date().toISOString(),
         },
