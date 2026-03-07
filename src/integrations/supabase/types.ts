@@ -21094,6 +21094,84 @@ export type Database = {
         }
         Relationships: []
       }
+      spg_checkpoints: {
+        Row: {
+          checkpoint_type: string
+          completed_provinces: string[] | null
+          created_at: string | null
+          current_area: string | null
+          current_city: string | null
+          current_offset: number | null
+          current_province: string | null
+          id: string
+          is_auto_mode: boolean | null
+          province_areas: string[] | null
+          province_cities: string[] | null
+          province_completed_at: string | null
+          province_created: number | null
+          province_errors: number | null
+          province_name: string | null
+          province_skipped: number | null
+          provinces_queue: string[] | null
+          started_at: string | null
+          total_created: number | null
+          total_errors: number | null
+          total_skipped: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          checkpoint_type?: string
+          completed_provinces?: string[] | null
+          created_at?: string | null
+          current_area?: string | null
+          current_city?: string | null
+          current_offset?: number | null
+          current_province?: string | null
+          id?: string
+          is_auto_mode?: boolean | null
+          province_areas?: string[] | null
+          province_cities?: string[] | null
+          province_completed_at?: string | null
+          province_created?: number | null
+          province_errors?: number | null
+          province_name?: string | null
+          province_skipped?: number | null
+          provinces_queue?: string[] | null
+          started_at?: string | null
+          total_created?: number | null
+          total_errors?: number | null
+          total_skipped?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          checkpoint_type?: string
+          completed_provinces?: string[] | null
+          created_at?: string | null
+          current_area?: string | null
+          current_city?: string | null
+          current_offset?: number | null
+          current_province?: string | null
+          id?: string
+          is_auto_mode?: boolean | null
+          province_areas?: string[] | null
+          province_cities?: string[] | null
+          province_completed_at?: string | null
+          province_created?: number | null
+          province_errors?: number | null
+          province_name?: string | null
+          province_skipped?: number | null
+          provinces_queue?: string[] | null
+          started_at?: string | null
+          total_created?: number | null
+          total_errors?: number | null
+          total_skipped?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscription_invoices: {
         Row: {
           amount: number

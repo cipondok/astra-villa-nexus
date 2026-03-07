@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { suppressSessionCheck } from "@/hooks/useSessionMonitor";
+import { useSpgCheckpoints } from "@/hooks/useSpgCheckpoints";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -12,7 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
-import { Sparkles, MapPin, Loader2, CheckCircle, AlertTriangle, ImageIcon, StopCircle, ChevronsUpDown, Check, Play, Pause, RotateCcw, Zap, ChevronDown, ChevronUp, MousePointerClick, Clock, Building2 } from "lucide-react";
+import { Sparkles, MapPin, Loader2, CheckCircle, AlertTriangle, ImageIcon, StopCircle, ChevronsUpDown, Check, Play, Pause, RotateCcw, Zap, ChevronDown, ChevronUp, MousePointerClick, Clock, Building2, Cloud } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const PROPERTY_TYPES = ['house', 'apartment', 'villa', 'land', 'commercial', 'townhouse', 'warehouse', 'kost'];
@@ -123,6 +124,14 @@ const formatTime = (iso: string): string => {
 
 const SamplePropertyGenerator = () => {
   const queryClient = useQueryClient();
+  const {
+    saveAutoRunCheckpoint,
+    loadAutoRunCheckpoint,
+    clearAutoRunCheckpoint,
+    saveDoneProvinceCheckpoint,
+    loadDoneProvinceCheckpoints,
+    clearAllCheckpoints,
+  } = useSpgCheckpoints();
   const [selectedProvince, setSelectedProvince] = useState(() => localStorage.getItem('spg_last_province') || "");
   const [provinceOpen, setProvinceOpen] = useState(false);
   const [skipExisting, setSkipExisting] = useState(true);
@@ -130,6 +139,7 @@ const SamplePropertyGenerator = () => {
   const [progress, setProgress] = useState({ created: 0, skipped: 0, errors: 0, processed: 0, total: 0, existingCount: 0 });
   const [result, setResult] = useState<any>(null);
   const cancelRef = useRef(false);
+  const [cloudSyncStatus, setCloudSyncStatus] = useState<'synced' | 'syncing' | 'error' | 'idle'>('idle');
 
   // Live location tracking
   const [liveCity, setLiveCity] = useState("");
@@ -153,6 +163,47 @@ const SamplePropertyGenerator = () => {
   const [showProvinceList, setShowProvinceList] = useState(false);
   const [smartSelectedProvinces, setSmartSelectedProvinces] = useState<string[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+
+  // Load checkpoints from Supabase on mount (merge with localStorage)
+  useEffect(() => {
+    const syncFromCloud = async () => {
+      try {
+        setCloudSyncStatus('syncing');
+        // Load done provinces from cloud and merge with localStorage
+        const cloudDone = await loadDoneProvinceCheckpoints();
+        if (cloudDone.length > 0) {
+          const localDone = loadDoneProvinces();
+          const merged = new Map<string, DoneProvinceRecord>();
+          localDone.forEach(r => merged.set(r.province, r));
+          cloudDone.forEach(r => {
+            const existing = merged.get(r.province);
+            if (!existing || new Date(r.completedAt) > new Date(existing.completedAt)) {
+              merged.set(r.province, r);
+            }
+          });
+          const mergedList = Array.from(merged.values());
+          localStorage.setItem(DONE_PROVINCES_KEY, JSON.stringify(mergedList));
+          setPersistedDoneRecords(mergedList);
+        }
+
+        // Load auto-run checkpoint from cloud if no local state
+        const localState = loadAutoRunState();
+        if (!localState) {
+          const cloudState = await loadAutoRunCheckpoint();
+          if (cloudState && cloudState.provincesQueue.length > 0) {
+            const asLocal: AutoRunState = { ...cloudState, recentLocations: [] };
+            saveAutoRunState(asLocal);
+            setAutoRunState(asLocal);
+          }
+        }
+        setCloudSyncStatus('synced');
+      } catch {
+        setCloudSyncStatus('error');
+      }
+    };
+    syncFromCloud();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Auth status monitor
   useEffect(() => {
@@ -461,6 +512,7 @@ const SamplePropertyGenerator = () => {
         areas: provResult.areas,
       };
       saveDoneProvince(record);
+      saveDoneProvinceCheckpoint(record); // Cloud sync
       setPersistedDoneRecords(prev => {
         const filtered = prev.filter(r => r.province !== selectedProvince);
         return [...filtered, record];
@@ -564,6 +616,7 @@ const SamplePropertyGenerator = () => {
       };
       setAutoRunState(state);
       saveAutoRunState(state);
+      saveAutoRunCheckpoint(state); // Cloud sync
 
       const provResult = await runProvinceGeneration(
         province,
@@ -581,6 +634,8 @@ const SamplePropertyGenerator = () => {
             currentArea: locInfo?.area,
           };
           saveAutoRunState(updatedState);
+          // Cloud sync every 5th offset to avoid excessive writes
+          if (offset % 5 === 0) saveAutoRunCheckpoint(updatedState);
         }
       );
 
@@ -601,6 +656,7 @@ const SamplePropertyGenerator = () => {
         };
         setAutoRunState(pausedState);
         saveAutoRunState(pausedState);
+        saveAutoRunCheckpoint(pausedState); // Cloud sync
         toast.info(`Auto-run paused at ${province}. You can resume anytime.`);
         break;
       }
@@ -620,6 +676,7 @@ const SamplePropertyGenerator = () => {
         areas: provResult.areas,
       };
       saveDoneProvince(record);
+      saveDoneProvinceCheckpoint(record); // Cloud sync
       setPersistedDoneRecords(prev => {
         const filtered = prev.filter(r => r.province !== province);
         return [...filtered, record];
@@ -640,13 +697,14 @@ const SamplePropertyGenerator = () => {
 
     if (!cancelRef.current) {
       clearAutoRunState();
+      clearAutoRunCheckpoint(); // Cloud sync
       setAutoRunState(null);
       setSmartSelectedProvinces([]);
       setResult({ ...globalTotals, allDone: true });
       toast.success(`🎉 Auto-run complete! ${globalTotals.created} total properties across ${completedList.length} provinces.`);
       refetchCounts();
     }
-  }, [provinces, doneProvinces, refetchCounts, liveCity, liveArea]);
+  }, [provinces, doneProvinces, refetchCounts, liveCity, liveArea, saveAutoRunCheckpoint, saveDoneProvinceCheckpoint, clearAutoRunCheckpoint]);
 
   const handleAutoRun = () => {
     const saved = loadAutoRunState();
@@ -668,6 +726,7 @@ const SamplePropertyGenerator = () => {
   const handleClearAutoState = () => {
     clearAutoRunState();
     clearDoneProvinces();
+    clearAllCheckpoints(); // Cloud sync
     setAutoRunState(null);
     setPersistedDoneRecords([]);
     setIsAutoMode(false);
@@ -704,21 +763,38 @@ const SamplePropertyGenerator = () => {
             <p className="text-xs text-muted-foreground">Generate sample properties for each kelurahan/desa per province</p>
           </div>
         </div>
-        <Badge
-          variant="outline"
-          className={cn(
-            "gap-1.5 text-[10px] font-medium px-2 py-0.5 border",
-            authStatus === 'valid' && "border-chart-1/30 bg-chart-1/10 text-chart-1",
-            authStatus === 'refreshing' && "border-chart-3/30 bg-chart-3/10 text-chart-3 animate-pulse",
-            authStatus === 'expired' && "border-destructive/30 bg-destructive/10 text-destructive",
-            authStatus === 'checking' && "border-muted-foreground/30 bg-muted/50 text-muted-foreground"
-          )}
-        >
-          {authStatus === 'valid' && <><CheckCircle className="h-3 w-3" /> Session Valid</>}
-          {authStatus === 'refreshing' && <><Loader2 className="h-3 w-3 animate-spin" /> Refreshing</>}
-          {authStatus === 'expired' && <><AlertTriangle className="h-3 w-3" /> Expired</>}
-          {authStatus === 'checking' && <><Loader2 className="h-3 w-3 animate-spin" /> Checking</>}
-        </Badge>
+        <div className="flex items-center gap-1.5">
+          <Badge
+            variant="outline"
+            className={cn(
+              "gap-1.5 text-[10px] font-medium px-2 py-0.5 border",
+              cloudSyncStatus === 'synced' && "border-chart-4/30 bg-chart-4/10 text-chart-4",
+              cloudSyncStatus === 'syncing' && "border-chart-3/30 bg-chart-3/10 text-chart-3 animate-pulse",
+              cloudSyncStatus === 'error' && "border-destructive/30 bg-destructive/10 text-destructive",
+              cloudSyncStatus === 'idle' && "border-muted-foreground/30 bg-muted/50 text-muted-foreground"
+            )}
+          >
+            {cloudSyncStatus === 'synced' && <><Cloud className="h-3 w-3" /> Synced</>}
+            {cloudSyncStatus === 'syncing' && <><Loader2 className="h-3 w-3 animate-spin" /> Syncing</>}
+            {cloudSyncStatus === 'error' && <><AlertTriangle className="h-3 w-3" /> Sync Error</>}
+            {cloudSyncStatus === 'idle' && <><Cloud className="h-3 w-3" /> Cloud</>}
+          </Badge>
+          <Badge
+            variant="outline"
+            className={cn(
+              "gap-1.5 text-[10px] font-medium px-2 py-0.5 border",
+              authStatus === 'valid' && "border-chart-1/30 bg-chart-1/10 text-chart-1",
+              authStatus === 'refreshing' && "border-chart-3/30 bg-chart-3/10 text-chart-3 animate-pulse",
+              authStatus === 'expired' && "border-destructive/30 bg-destructive/10 text-destructive",
+              authStatus === 'checking' && "border-muted-foreground/30 bg-muted/50 text-muted-foreground"
+            )}
+          >
+            {authStatus === 'valid' && <><CheckCircle className="h-3 w-3" /> Session Valid</>}
+            {authStatus === 'refreshing' && <><Loader2 className="h-3 w-3 animate-spin" /> Refreshing</>}
+            {authStatus === 'expired' && <><AlertTriangle className="h-3 w-3" /> Expired</>}
+            {authStatus === 'checking' && <><Loader2 className="h-3 w-3 animate-spin" /> Checking</>}
+          </Badge>
+        </div>
       </div>
 
       {/* Progress Overview */}
