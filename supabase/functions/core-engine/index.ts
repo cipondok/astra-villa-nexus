@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator'];
+    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -7458,6 +7458,219 @@ Deno.serve(async (req) => {
           property_city: propertyCity,
           property_type: propertyType,
           bedrooms,
+          generated_at: new Date().toISOString(),
+        },
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // ██  MODE: investment_score_v2 — 5-factor data-driven score
+    // ══════════════════════════════════════════════════════════════
+    if (mode === 'investment_score_v2') {
+      const propertyId = body.property_id;
+      if (!propertyId) {
+        return new Response(JSON.stringify({ error: 'property_id required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // 1. Fetch property
+      const { data: prop, error: propErr } = await supabaseClient
+        .from('properties')
+        .select('id, title, price, city, district, property_type, building_area_sqm, land_area_sqm, bedrooms, bathrooms, monthly_rent_estimate, listing_type, status, created_at, investment_score, demand_heat_score')
+        .eq('id', propertyId)
+        .maybeSingle();
+
+      if (propErr || !prop) {
+        return new Response(JSON.stringify({ error: 'Property not found' }), {
+          status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const price = prop.price || 0;
+      const area = prop.building_area_sqm || prop.land_area_sqm || 100;
+      const pricePerSqm = area > 0 ? price / area : 0;
+      const city = prop.city || '';
+      const propType = prop.property_type || '';
+
+      // 2. City comparables for price fairness
+      const { data: cityComps } = await supabaseClient
+        .from('properties')
+        .select('price, building_area_sqm, land_area_sqm')
+        .eq('city', city)
+        .eq('status', 'active')
+        .not('price', 'is', null)
+        .gt('price', 0)
+        .limit(200);
+
+      const compPrices = (cityComps || []).map(c => {
+        const a = c.building_area_sqm || c.land_area_sqm || 100;
+        return a > 0 ? (c.price || 0) / a : 0;
+      }).filter(p => p > 0);
+
+      const cityAvgPricePerSqm = compPrices.length > 0
+        ? compPrices.reduce((s, v) => s + v, 0) / compPrices.length
+        : pricePerSqm;
+
+      // Sort for median
+      const sorted = [...compPrices].sort((a, b) => a - b);
+      const cityMedianPricePerSqm = sorted.length > 0
+        ? sorted[Math.floor(sorted.length / 2)]
+        : pricePerSqm;
+
+      // Price fairness: how far below median (positive = cheaper = good)
+      const priceRatio = cityMedianPricePerSqm > 0 ? pricePerSqm / cityMedianPricePerSqm : 1;
+      // Score: 1.0 = fair, <1 = undervalued (good), >1 = overpriced
+      // Map to 0-20: ratio 0.7 → 20, 1.0 → 12, 1.3 → 4
+      const priceFairnessScore = Math.max(0, Math.min(20, Math.round(20 - (priceRatio - 0.7) * (16 / 0.6))));
+
+      // 3. Rental yield estimation
+      let monthlyRent = prop.monthly_rent_estimate || 0;
+      if (monthlyRent <= 0) {
+        // Get from rental comparables
+        const { data: rentComps } = await supabaseClient
+          .from('properties')
+          .select('monthly_rent_estimate')
+          .eq('city', city)
+          .eq('listing_type', 'rent')
+          .eq('property_type', propType)
+          .not('monthly_rent_estimate', 'is', null)
+          .gt('monthly_rent_estimate', 0)
+          .limit(30);
+
+        if (rentComps && rentComps.length > 0) {
+          monthlyRent = Math.round(
+            rentComps.reduce((s, c) => s + (c.monthly_rent_estimate || 0), 0) / rentComps.length
+          );
+        } else {
+          // Fallback: city-based yield
+          const yields: Record<string, number> = {
+            'bali': 7.5, 'jakarta': 5.0, 'bandung': 5.5, 'surabaya': 5.2,
+            'yogyakarta': 6.0, 'lombok': 7.0, 'seminyak': 8.0, 'canggu': 9.0,
+            'ubud': 7.0, 'denpasar': 6.0
+          };
+          const yieldPct = yields[city.toLowerCase()] || 5.5;
+          monthlyRent = Math.round((price * yieldPct / 100) / 12);
+        }
+      }
+
+      const annualRent = monthlyRent * 12;
+      const grossYield = price > 0 ? (annualRent / price) * 100 : 0;
+      // Score: yield 10%+ → 25, 5% → 15, 2% → 5
+      const rentalYieldScore = Math.max(0, Math.min(25, Math.round(grossYield * 2.5)));
+
+      // 4. Demand signals (views + saves last 30 days)
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+
+      const [viewsResult, savesResult] = await Promise.all([
+        supabaseClient
+          .from('property_analytics')
+          .select('view_count')
+          .eq('property_id', propertyId)
+          .maybeSingle(),
+        supabaseClient
+          .from('saved_properties')
+          .select('id', { count: 'exact', head: true })
+          .eq('property_id', propertyId)
+          .gte('created_at', thirtyDaysAgo),
+      ]);
+
+      const views30d = viewsResult.data?.view_count || 0;
+      const saves30d = savesResult.count || 0;
+
+      // Demand score (0-25): views give up to 15, saves give up to 10
+      const viewScore = Math.min(15, Math.round(Math.log2(views30d + 1) * 3));
+      const saveScore = Math.min(10, saves30d * 2);
+      const locationDemandScore = Math.min(25, viewScore + saveScore);
+
+      // 5. Market growth — compare recent vs older listings in city
+      const sixMonthsAgo = new Date(Date.now() - 180 * 86400000).toISOString();
+      const oneYearAgo = new Date(Date.now() - 365 * 86400000).toISOString();
+
+      const [recentListings, olderListings] = await Promise.all([
+        supabaseClient
+          .from('properties')
+          .select('price, building_area_sqm, land_area_sqm')
+          .eq('city', city)
+          .eq('status', 'active')
+          .gte('created_at', sixMonthsAgo)
+          .not('price', 'is', null)
+          .gt('price', 0)
+          .limit(100),
+        supabaseClient
+          .from('properties')
+          .select('price, building_area_sqm, land_area_sqm')
+          .eq('city', city)
+          .lt('created_at', sixMonthsAgo)
+          .gte('created_at', oneYearAgo)
+          .not('price', 'is', null)
+          .gt('price', 0)
+          .limit(100),
+      ]);
+
+      const avgPsm = (list: any[]) => {
+        const vals = list.map(p => {
+          const a = p.building_area_sqm || p.land_area_sqm || 100;
+          return a > 0 ? (p.price || 0) / a : 0;
+        }).filter(v => v > 0);
+        return vals.length > 0 ? vals.reduce((s, v) => s + v, 0) / vals.length : 0;
+      };
+
+      const recentAvg = avgPsm(recentListings.data || []);
+      const olderAvg = avgPsm(olderListings.data || []);
+      const growthRate = olderAvg > 0 ? ((recentAvg - olderAvg) / olderAvg) * 100 : 0;
+      // Score (0-15): +15% growth → 15, 0% → 7, -10% → 2
+      const marketGrowthScore = Math.max(0, Math.min(15, Math.round(7 + growthRate * 0.53)));
+
+      // 6. Liquidity — active similar listings vs total demand signals
+      const { count: similarActive } = await supabaseClient
+        .from('properties')
+        .select('id', { count: 'exact', head: true })
+        .eq('city', city)
+        .eq('property_type', propType)
+        .eq('status', 'active');
+
+      const activeCount = similarActive || 1;
+      // High supply with low demand = illiquid → low score
+      // Low supply = more liquid → higher score
+      const supplyDemandRatio = (views30d + saves30d * 3) / activeCount;
+      const liquidityScore = Math.max(0, Math.min(15, Math.round(Math.min(15, supplyDemandRatio * 3 + 5))));
+
+      // ═══ COMPOSITE SCORE ═══
+      const investmentScore = Math.max(0, Math.min(100,
+        locationDemandScore + priceFairnessScore + rentalYieldScore + marketGrowthScore + liquidityScore
+      ));
+
+      // Grade
+      const grade = investmentScore >= 85 ? 'A+' : investmentScore >= 75 ? 'A' : investmentScore >= 65 ? 'B+' : investmentScore >= 55 ? 'B' : investmentScore >= 40 ? 'C' : 'D';
+
+      // Recommendation
+      let recommendation = '';
+      if (investmentScore >= 80) recommendation = 'Strong Buy — Excellent fundamentals across all dimensions.';
+      else if (investmentScore >= 65) recommendation = 'Buy — Good investment with solid fundamentals.';
+      else if (investmentScore >= 50) recommendation = 'Hold — Average investment, monitor market conditions.';
+      else if (investmentScore >= 35) recommendation = 'Cautious — Below-average metrics, proceed with due diligence.';
+      else recommendation = 'Avoid — Weak fundamentals, high risk relative to return.';
+
+      return new Response(JSON.stringify({
+        data: {
+          property_id: propertyId,
+          title: prop.title,
+          city,
+          property_type: propType,
+          price,
+          area_sqm: area,
+          price_per_sqm: Math.round(pricePerSqm),
+          investment_score: investmentScore,
+          grade,
+          recommendation,
+          breakdown: {
+            location_demand: { score: locationDemandScore, max: 25, views_30d: views30d, saves_30d: saves30d },
+            price_fairness: { score: priceFairnessScore, max: 20, price_per_sqm: Math.round(pricePerSqm), city_avg_per_sqm: Math.round(cityAvgPricePerSqm), city_median_per_sqm: Math.round(cityMedianPricePerSqm), price_ratio: Math.round(priceRatio * 100) / 100, comparables_count: compPrices.length },
+            rental_yield: { score: rentalYieldScore, max: 25, monthly_rent: monthlyRent, annual_rent: annualRent, gross_yield_percent: Math.round(grossYield * 10) / 10 },
+            market_growth: { score: marketGrowthScore, max: 15, growth_rate_percent: Math.round(growthRate * 10) / 10, recent_avg_psm: Math.round(recentAvg), older_avg_psm: Math.round(olderAvg) },
+            liquidity: { score: liquidityScore, max: 15, similar_active_listings: activeCount, supply_demand_ratio: Math.round(supplyDemandRatio * 100) / 100 },
+          },
           generated_at: new Date().toISOString(),
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
