@@ -1,6 +1,9 @@
 project_id = "zymrajuuyyfkzdmptebl"
 
 [functions]
+  [functions.image-intelligence]
+    verify_jwt = false
+
   [functions.ai-assistant]
     verify_jwt = false
 

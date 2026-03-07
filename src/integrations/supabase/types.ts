@@ -16996,6 +16996,54 @@ export type Database = {
         }
         Relationships: []
       }
+      property_image_features: {
+        Row: {
+          analysis_metadata: Json | null
+          analyzed_at: string
+          confidence_scores: Json | null
+          created_at: string
+          detected_features: string[]
+          id: string
+          image_url: string
+          property_id: string
+        }
+        Insert: {
+          analysis_metadata?: Json | null
+          analyzed_at?: string
+          confidence_scores?: Json | null
+          created_at?: string
+          detected_features?: string[]
+          id?: string
+          image_url: string
+          property_id: string
+        }
+        Update: {
+          analysis_metadata?: Json | null
+          analyzed_at?: string
+          confidence_scores?: Json | null
+          created_at?: string
+          detected_features?: string[]
+          id?: string
+          image_url?: string
+          property_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_image_features_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_image_features_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_images: {
         Row: {
           alt_text: string | null
