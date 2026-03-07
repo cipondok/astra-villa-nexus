@@ -656,6 +656,7 @@ const SamplePropertyGenerator = () => {
         };
         setAutoRunState(pausedState);
         saveAutoRunState(pausedState);
+        saveAutoRunCheckpoint(pausedState); // Cloud sync
         toast.info(`Auto-run paused at ${province}. You can resume anytime.`);
         break;
       }
@@ -675,6 +676,7 @@ const SamplePropertyGenerator = () => {
         areas: provResult.areas,
       };
       saveDoneProvince(record);
+      saveDoneProvinceCheckpoint(record); // Cloud sync
       setPersistedDoneRecords(prev => {
         const filtered = prev.filter(r => r.province !== province);
         return [...filtered, record];
