@@ -759,80 +759,116 @@ Generate optimized SEO content. Call the seo_optimize function with your results
 
     // ── competitor-analysis: Compare with similar properties ──
     if (action === "competitor-analysis") {
+      // Support both propertyId-based and location/propertyType-based queries
       const propertyId = normalizeText(payload.propertyId);
-      if (!propertyId) return json({ error: "propertyId is required" }, 400);
+      const locationParam = normalizeText(payload.location);
+      const propertyTypeParam = normalizeText(payload.propertyType);
 
-      const { data: property, error: propErr } = await supabase
-        .from("properties")
-        .select("id, title, description, property_type, city, state, price")
-        .eq("id", propertyId)
-        .maybeSingle();
+      let targetCity = locationParam;
+      let targetType = propertyTypeParam;
+      let myScore: number | null = null;
 
-      if (propErr) return json({ error: propErr.message }, 500);
-      if (!property) return json({ error: "Property not found" }, 404);
+      // If propertyId provided, use it to get location/type
+      if (propertyId) {
+        const { data: property, error: propErr } = await supabase
+          .from("properties")
+          .select("id, title, description, property_type, city, state, price")
+          .eq("id", propertyId)
+          .maybeSingle();
 
-      // Find similar properties (same city & type)
+        if (propErr) return json({ error: propErr.message }, 500);
+        if (!property) return json({ error: "Property not found" }, 404);
+
+        targetCity = targetCity || property.city || "";
+        targetType = targetType || property.property_type || "";
+
+        const { data: mySeo } = await supabase
+          .from("property_seo_analysis")
+          .select("seo_score")
+          .eq("property_id", propertyId)
+          .maybeSingle();
+        myScore = mySeo?.seo_score || null;
+      }
+
+      if (!targetCity && !targetType) {
+        return json({ error: "Provide propertyId, or location/propertyType" }, 400);
+      }
+
+      // Find competitor properties
       let competitorQuery = supabase
         .from("properties")
-        .select("id, title, description, property_type, city, state, price")
-        .neq("id", propertyId)
-        .limit(20);
+        .select("id, title, property_type, city, state, price, location")
+        .limit(30);
 
-      if (property.city) competitorQuery = competitorQuery.eq("city", property.city);
-      if (property.property_type) competitorQuery = competitorQuery.eq("property_type", property.property_type);
+      if (propertyId) competitorQuery = competitorQuery.neq("id", propertyId);
+      if (targetCity) competitorQuery = competitorQuery.eq("city", targetCity);
+      if (targetType) competitorQuery = competitorQuery.eq("property_type", targetType);
 
       const { data: competitors } = await competitorQuery;
-
-      // Get SEO scores for competitors
       const competitorIds = (competitors || []).map((c: any) => c.id);
-      const allIds = [propertyId, ...competitorIds];
 
-      const { data: seoScores } = await supabase
-        .from("property_seo_analysis")
-        .select("property_id, seo_score, seo_title, title_score, description_score")
-        .in("property_id", allIds);
+      // Get SEO scores
+      let seoScores: any[] = [];
+      if (competitorIds.length > 0) {
+        const { data } = await supabase
+          .from("property_seo_analysis")
+          .select("property_id, seo_score, seo_rating, seo_keywords")
+          .in("property_id", competitorIds.slice(0, 50));
+        seoScores = data || [];
+      }
 
-      const scoreMap = new Map((seoScores || []).map((s: any) => [s.property_id, s]));
-      const mySeo = scoreMap.get(propertyId);
+      const scoreMap = new Map(seoScores.map((s: any) => [s.property_id, s]));
 
-      const competitorAnalysis = (competitors || []).slice(0, 10).map((c: any) => {
+      // Build CompetitorData[] matching the interface
+      const competitorData = (competitors || []).slice(0, 15).map((c: any) => {
         const cSeo = scoreMap.get(c.id);
         return {
           id: c.id,
-          title: c.title,
-          city: c.city,
-          price: c.price,
+          title: c.title || "Untitled",
+          location: [c.location, c.city, c.state].filter(Boolean).join(", ") || "Unknown",
+          price: c.price || 0,
+          property_type: c.property_type || "unknown",
           seo_score: cSeo?.seo_score || null,
-          has_analysis: !!cSeo,
+          seo_rating: cSeo?.seo_rating || "unanalyzed",
+          keywords: cSeo?.seo_keywords || [],
         };
       });
 
-      const analyzedCompetitors = competitorAnalysis.filter((c) => c.seo_score !== null);
-      const avgCompetitorScore = analyzedCompetitors.length > 0
-        ? Math.round(analyzedCompetitors.reduce((sum, c) => sum + (c.seo_score || 0), 0) / analyzedCompetitors.length)
-        : null;
+      const analyzed = competitorData.filter((c) => c.seo_score !== null);
+      const avgScore = analyzed.length > 0
+        ? Math.round(analyzed.reduce((sum, c) => sum + (c.seo_score || 0), 0) / analyzed.length)
+        : 0;
 
-      const insights: string[] = [];
-      if (mySeo && avgCompetitorScore !== null) {
-        if (mySeo.seo_score > avgCompetitorScore + 10) insights.push("Your SEO score is above average for this area. Great job!");
-        else if (mySeo.seo_score < avgCompetitorScore - 10) insights.push("Your SEO score is below competitors. Consider optimizing title and description.");
-        else insights.push("Your SEO score is on par with competitors in this area.");
-      }
-      if (!property.description || property.description.length < 100) {
-        insights.push("Your description is shorter than recommended. Aim for 150+ characters.");
-      }
-      if (competitorAnalysis.length === 0) {
-        insights.push("No direct competitors found in the same city and property type.");
-      }
+      // Build CompetitorInsights matching the interface
+      const allKeywords = analyzed.flatMap((c) => c.keywords || []);
+      const keywordFreq = new Map<string, number>();
+      allKeywords.forEach((k) => keywordFreq.set(k, (keywordFreq.get(k) || 0) + 1));
+      const topKeywords = [...keywordFreq.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10)
+        .map(([k]) => k);
+
+      const insights: Record<string, unknown> = {
+        market_saturation: competitorData.length > 10 ? "high" : competitorData.length > 5 ? "medium" : "low",
+        avg_keyword_density: topKeywords.length > 0 ? +(allKeywords.length / Math.max(analyzed.length, 1)).toFixed(1) : 0,
+        top_performing_keywords: topKeywords,
+        keyword_gaps: [],
+        price_positioning: avgScore > 60 ? "competitive" : "underoptimized",
+        recommendations: [
+          analyzed.length < 5 ? "Few competitors analyzed — run batch analysis first" : `${analyzed.length} competitors analyzed in this segment`,
+          myScore !== null && avgScore > 0 && myScore < avgScore ? "Your SEO score is below the area average — optimize title and description" : "Your SEO positioning looks solid",
+          topKeywords.length > 0 ? `Top keywords in area: ${topKeywords.slice(0, 3).join(", ")}` : "No keyword data available yet",
+        ],
+        difficulty_score: clamp(Math.round(competitorData.length * 3 + avgScore * 0.5), 0, 100),
+      };
 
       return json({
         action,
-        propertyId,
-        my_score: mySeo?.seo_score || null,
-        avg_competitor_score: avgCompetitorScore,
-        total_competitors: competitorAnalysis.length,
-        competitors: competitorAnalysis,
+        competitors: competitorData,
         insights,
+        my_score: myScore,
+        avg_competitor_score: avgScore,
+        total_competitors: competitorData.length,
       });
     }
 
