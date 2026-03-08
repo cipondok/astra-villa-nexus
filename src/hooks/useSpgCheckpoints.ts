@@ -28,15 +28,20 @@ export interface DoneProvinceCheckpoint {
 
 export const useSpgCheckpoints = () => {
   const getUser = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user?.id) return session.user.id;
     const { data: { user } } = await supabase.auth.getUser();
-    return user?.id;
+    return user?.id ?? null;
   };
 
-  /** Save or update the auto-run checkpoint */
   const saveAutoRunCheckpoint = useCallback(async (state: AutoRunCheckpoint) => {
     const userId = await getUser();
-    if (!userId) return;
-    await (supabase as any).from('spg_checkpoints').upsert({
+    if (!userId) {
+      console.warn('[SPG] Cannot save auto-run checkpoint: no authenticated user session');
+      return;
+    }
+
+    const payload = {
       user_id: userId,
       checkpoint_type: 'auto_run',
       is_auto_mode: state.isAutoMode,
@@ -51,7 +56,33 @@ export const useSpgCheckpoints = () => {
       current_area: state.currentArea || null,
       started_at: new Date(state.startedAt).toISOString(),
       updated_at: new Date().toISOString(),
-    }, { onConflict: 'user_id', ignoreDuplicates: false });
+    };
+
+    const { data: existing, error: findError } = await (supabase as any)
+      .from('spg_checkpoints')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('checkpoint_type', 'auto_run')
+      .maybeSingle();
+
+    if (findError) {
+      console.error('[SPG] Failed to find auto-run checkpoint', findError);
+      return;
+    }
+
+    if (existing?.id) {
+      const { error: updateError } = await (supabase as any)
+        .from('spg_checkpoints')
+        .update(payload)
+        .eq('id', existing.id);
+      if (updateError) console.error('[SPG] Failed to update auto-run checkpoint', updateError);
+      return;
+    }
+
+    const { error: insertError } = await (supabase as any)
+      .from('spg_checkpoints')
+      .insert(payload);
+    if (insertError) console.error('[SPG] Failed to insert auto-run checkpoint', insertError);
   }, []);
 
   /** Load auto-run checkpoint */
@@ -92,11 +123,14 @@ export const useSpgCheckpoints = () => {
       .eq('checkpoint_type', 'auto_run');
   }, []);
 
-  /** Save a done-province record */
   const saveDoneProvinceCheckpoint = useCallback(async (record: DoneProvinceCheckpoint) => {
     const userId = await getUser();
-    if (!userId) return;
-    await (supabase as any).from('spg_checkpoints').upsert({
+    if (!userId) {
+      console.warn('[SPG] Cannot save done-province checkpoint: no authenticated user session');
+      return;
+    }
+
+    const payload = {
       user_id: userId,
       checkpoint_type: 'done_province',
       province_name: record.province,
@@ -107,7 +141,34 @@ export const useSpgCheckpoints = () => {
       province_areas: record.areas,
       province_completed_at: record.completedAt,
       updated_at: new Date().toISOString(),
-    }, { onConflict: 'user_id,province_name', ignoreDuplicates: false });
+    };
+
+    const { data: existing, error: findError } = await (supabase as any)
+      .from('spg_checkpoints')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('checkpoint_type', 'done_province')
+      .eq('province_name', record.province)
+      .maybeSingle();
+
+    if (findError) {
+      console.error('[SPG] Failed to find done-province checkpoint', findError);
+      return;
+    }
+
+    if (existing?.id) {
+      const { error: updateError } = await (supabase as any)
+        .from('spg_checkpoints')
+        .update(payload)
+        .eq('id', existing.id);
+      if (updateError) console.error('[SPG] Failed to update done-province checkpoint', updateError);
+      return;
+    }
+
+    const { error: insertError } = await (supabase as any)
+      .from('spg_checkpoints')
+      .insert(payload);
+    if (insertError) console.error('[SPG] Failed to insert done-province checkpoint', insertError);
   }, []);
 
   /** Load all done-province records */
