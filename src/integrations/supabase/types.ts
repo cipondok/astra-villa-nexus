@@ -1989,6 +1989,48 @@ export type Database = {
           },
         ]
       }
+      ai_job_logs: {
+        Row: {
+          created_at: string
+          id: string
+          job_id: string
+          level: string
+          message: string
+          task_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          job_id: string
+          level?: string
+          message: string
+          task_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          job_id?: string
+          level?: string
+          message?: string
+          task_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_job_logs_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "ai_jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_job_logs_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "ai_job_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_job_tasks: {
         Row: {
           completed_at: string | null
@@ -1997,6 +2039,7 @@ export type Database = {
           job_id: string
           payload: Json | null
           result: Json | null
+          retry_count: number
           status: string
           task_type: string
         }
@@ -2007,6 +2050,7 @@ export type Database = {
           job_id: string
           payload?: Json | null
           result?: Json | null
+          retry_count?: number
           status?: string
           task_type: string
         }
@@ -2017,6 +2061,7 @@ export type Database = {
           job_id?: string
           payload?: Json | null
           result?: Json | null
+          retry_count?: number
           status?: string
           task_type?: string
         }
@@ -2040,6 +2085,7 @@ export type Database = {
           id: string
           job_type: string
           payload: Json | null
+          priority: number
           progress: number
           started_at: string | null
           status: string
@@ -2054,6 +2100,7 @@ export type Database = {
           id?: string
           job_type: string
           payload?: Json | null
+          priority?: number
           progress?: number
           started_at?: string | null
           status?: string
@@ -2068,6 +2115,7 @@ export type Database = {
           id?: string
           job_type?: string
           payload?: Json | null
+          priority?: number
           progress?: number
           started_at?: string | null
           status?: string
@@ -28998,6 +29046,7 @@ export type Database = {
           valid_until: string
         }[]
       }
+      claim_next_job: { Args: never; Returns: string }
       clean_expired_otp_codes: { Args: never; Returns: undefined }
       cleanup_expired_sessions: { Args: never; Returns: undefined }
       cleanup_old_bpjs_responses: { Args: never; Returns: undefined }
@@ -30013,6 +30062,7 @@ export type Database = {
         Args: { changed_fields: string[]; user_id: string }
         Returns: Json
       }
+      recover_stalled_jobs: { Args: never; Returns: number }
       reset_admin_password: { Args: { new_password: string }; Returns: string }
       resolve_database_error: {
         Args: {
