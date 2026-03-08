@@ -6,17 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
 import { 
   Search, RefreshCw, Zap, CheckCircle2, XCircle, AlertTriangle, 
   Loader2, Target, TrendingUp, Globe, BarChart3, FileText, 
   Hash, Eye, Lightbulb, ArrowUpRight, ArrowDownRight, Minus,
-  Sparkles, X, Plus, Tag, Flame, Shield, ChevronDown, MapPin,
-  Lock, ShieldCheck, Play
+  Sparkles, X, Plus, Tag, Flame, MapPin
 } from 'lucide-react';
 import {
   usePropertySeoAnalyses,
@@ -38,6 +32,7 @@ import SearchPagination from '@/components/search/SearchPagination';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
+import StateSeoOverviewTab from './seo/StateSeoOverviewTab';
 
 // ─── Helpers ────────────────────────────────────────────────
 const ScoreBadge = ({ score }: { score: number }) => {
@@ -190,12 +185,20 @@ function useStateSeoStats() {
       const seoPropertyIds = new Set((seoData || []).map((s: any) => s.property_id));
 
       // We need to get property states for SEO-analyzed properties
+      // Fetch in 50-ID chunks to prevent URL length overflow
       if (seoPropertyIds.size > 0) {
-        const { data: analyzedProps } = await (supabase.from('properties') as any)
-          .select('id, state')
-          .in('id', Array.from(seoPropertyIds).slice(0, 500));
+        const allIds = Array.from(seoPropertyIds);
+        const CHUNK_SIZE = 50;
+        const analyzedProps: any[] = [];
+        for (let i = 0; i < allIds.length; i += CHUNK_SIZE) {
+          const chunk = allIds.slice(i, i + CHUNK_SIZE);
+          const { data } = await (supabase.from('properties') as any)
+            .select('id, state')
+            .in('id', chunk);
+          if (data) analyzedProps.push(...data);
+        }
 
-        (analyzedProps || []).forEach((p: any) => {
+        analyzedProps.forEach((p: any) => {
           const raw = (p.state || '').trim();
           const norm = stateNormMap[raw.toLowerCase()] || aliases[raw.toLowerCase()] || raw;
           if (!stateMap[norm]) return;
@@ -740,278 +743,20 @@ const PropertySEOChecker = () => {
 
         {/* ─── State SEO Overview Tab ─── */}
         <TabsContent value="states" className="space-y-3">
-          {/* AI Auto-Fix Controls */}
-          <Card className="bg-primary/5 border-primary/20">
-            <CardContent className="p-3">
-              <div className="flex items-center justify-between flex-wrap gap-2">
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="h-4 w-4 text-primary" />
-                  <span className="text-xs font-semibold text-primary">AI Auto-Fix SEO</span>
-                  <Badge variant="outline" className="text-[9px] px-1.5 py-0">
-                    {selectedStates.size} states selected
-                  </Badge>
-                </div>
-                <div className="flex items-center gap-2">
-                  <select
-                    className="h-7 rounded-md border border-input bg-background px-2 text-xs"
-                    value={autoFixThreshold}
-                    onChange={(e) => setAutoFixThreshold(Number(e.target.value))}
-                  >
-                    <option value={50}>Score &lt; 50 (Poor)</option>
-                    <option value={60}>Score &lt; 60</option>
-                    <option value={70}>Score &lt; 70 (Recommended)</option>
-                    <option value={80}>Score &lt; 80</option>
-                  </select>
-                  <Button
-                    size="sm"
-                    className="h-7 text-xs gap-1.5"
-                    disabled={selectedStates.size === 0 || autoOptimize.isPending}
-                    onClick={() => setShowAutoFixConfirm(true)}
-                  >
-                    <Lock className="h-3 w-3" />
-                    AI Auto-Fix Selected
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-7 text-xs"
-                    onClick={() => {
-                      const weakStates = stateSeoOverview
-                        .filter(s => s.status === 'poor' || s.status === 'needs-work')
-                        .map(s => s.state);
-                      setSelectedStates(new Set(weakStates));
-                    }}
-                  >
-                    Select All Weak
-                  </Button>
-                  {selectedStates.size > 0 && (
-                    <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => setSelectedStates(new Set())}>
-                      Clear
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Summary Cards */}
-          {!stateOverviewLoading && stateSeoOverview.length > 0 && (() => {
-            const withData = stateSeoOverview.filter(s => s.analyzedCount > 0);
-            const goodCount = stateSeoOverview.filter(s => s.status === 'good').length;
-            const needsWorkCount = stateSeoOverview.filter(s => s.status === 'needs-work').length;
-            const poorCount = stateSeoOverview.filter(s => s.status === 'poor').length;
-            const unanalyzedCount = stateSeoOverview.filter(s => s.status === 'unanalyzed' || s.status === 'no-data').length;
-            const globalAvg = withData.length > 0 ? Math.round(withData.reduce((s, x) => s + x.avgSeoScore, 0) / withData.length) : 0;
-            return (
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
-                <Card className="bg-card/60 border-border/40">
-                  <CardContent className="p-3 text-center">
-                    <p className={cn("text-2xl font-bold", globalAvg >= 70 ? "text-chart-1" : globalAvg >= 40 ? "text-chart-4" : "text-destructive")}>{globalAvg}</p>
-                    <p className="text-[9px] text-muted-foreground">Avg Score</p>
-                  </CardContent>
-                </Card>
-                <Card className="bg-chart-1/5 border-chart-1/20">
-                  <CardContent className="p-3 text-center">
-                    <p className="text-2xl font-bold text-chart-1">{goodCount}</p>
-                    <p className="text-[9px] text-muted-foreground">✅ Good States</p>
-                  </CardContent>
-                </Card>
-                <Card className="bg-chart-4/5 border-chart-4/20">
-                  <CardContent className="p-3 text-center">
-                    <p className="text-2xl font-bold text-chart-4">{needsWorkCount}</p>
-                    <p className="text-[9px] text-muted-foreground">⚠️ Needs Work</p>
-                  </CardContent>
-                </Card>
-                <Card className="bg-destructive/5 border-destructive/20">
-                  <CardContent className="p-3 text-center">
-                    <p className="text-2xl font-bold text-destructive">{poorCount}</p>
-                    <p className="text-[9px] text-muted-foreground">❌ Poor</p>
-                  </CardContent>
-                </Card>
-                <Card className="bg-muted/30 border-border/40">
-                  <CardContent className="p-3 text-center">
-                    <p className="text-2xl font-bold text-muted-foreground">{unanalyzedCount}</p>
-                    <p className="text-[9px] text-muted-foreground">🔍 Unanalyzed</p>
-                  </CardContent>
-                </Card>
-              </div>
-            );
-          })()}
-
-          {/* State Table */}
-          <Card className="bg-card/60 border-border/40">
-            <CardHeader className="p-3 pb-2">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-primary" />
-                All 38 Provinces — SEO Progress & Rankings
-              </CardTitle>
-              <CardDescription className="text-[10px]">Select states for AI auto-fix · Click province to filter</CardDescription>
-            </CardHeader>
-            <CardContent className="p-3 pt-0">
-              {stateOverviewLoading ? (
-                <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>
-              ) : (
-                <div className="space-y-1.5">
-                  {stateSeoOverview.map((s, idx) => {
-                    const isSelected = selectedStates.has(s.state);
-                    const progressPct = s.totalProperties > 0 ? Math.round((s.analyzedCount / s.totalProperties) * 100) : 0;
-                    const scoreColor = s.avgSeoScore >= 70 ? 'text-chart-1' : s.avgSeoScore >= 40 ? 'text-chart-4' : s.avgSeoScore > 0 ? 'text-destructive' : 'text-muted-foreground';
-                    const barColor = s.avgSeoScore >= 70 ? 'bg-chart-1' : s.avgSeoScore >= 40 ? 'bg-chart-4' : s.avgSeoScore > 0 ? 'bg-destructive' : 'bg-muted';
-                    const statusIcon = s.status === 'good' ? '✅' : s.status === 'needs-work' ? '⚠️' : s.status === 'poor' ? '❌' : s.status === 'unanalyzed' ? '🔍' : '—';
-                    
-                    return (
-                      <div
-                        key={s.state}
-                        className={cn(
-                          "flex items-center gap-3 p-2.5 rounded-lg border transition-all cursor-pointer group",
-                          isSelected ? "border-primary/40 bg-primary/5" : "border-border/30 hover:border-border/60 hover:bg-accent/20",
-                          filterState === s.state && "ring-1 ring-primary/30"
-                        )}
-                      >
-                        {/* Checkbox */}
-                        <Checkbox
-                          checked={isSelected}
-                          onCheckedChange={(checked) => {
-                            const next = new Set(selectedStates);
-                            checked ? next.add(s.state) : next.delete(s.state);
-                            setSelectedStates(next);
-                          }}
-                          className="shrink-0"
-                          onClick={(e) => e.stopPropagation()}
-                        />
-
-                        {/* Rank */}
-                        <span className="text-[10px] text-muted-foreground w-5 text-right shrink-0">#{idx + 1}</span>
-
-                        {/* Province name + status */}
-                        <div className="w-40 shrink-0" onClick={() => { setFilterState(s.state); setActiveTab('dashboard'); }}>
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-xs font-medium truncate">{s.state}</span>
-                            <span className="text-[10px]">{statusIcon}</span>
-                          </div>
-                          <p className="text-[9px] text-muted-foreground">
-                            {s.totalProperties} properties · {s.analyzedCount} analyzed
-                          </p>
-                        </div>
-
-                        {/* SEO Score Bar */}
-                        <div className="flex-1 min-w-0" onClick={() => { setFilterState(s.state); setActiveTab('dashboard'); }}>
-                          <div className="flex items-center gap-2">
-                            <div className="flex-1 h-4 rounded-full bg-muted/30 overflow-hidden relative">
-                              <div
-                                className={cn("h-full rounded-full transition-all duration-700 ease-out", barColor)}
-                                style={{ width: `${s.avgSeoScore}%` }}
-                              />
-                              {s.avgSeoScore > 0 && (
-                                <span className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-foreground/80">
-                                  {s.avgSeoScore}/100
-                                </span>
-                              )}
-                            </div>
-                            <span className={cn("text-sm font-bold w-8 text-right tabular-nums", scoreColor)}>
-                              {s.avgSeoScore || '—'}
-                            </span>
-                          </div>
-                          {/* Analysis progress */}
-                          {s.totalProperties > 0 && (
-                            <div className="flex items-center gap-1.5 mt-1">
-                              <div className="flex-1 h-1 rounded-full bg-muted/20 overflow-hidden">
-                                <div className="h-full rounded-full bg-chart-2/60 transition-all" style={{ width: `${progressPct}%` }} />
-                              </div>
-                              <span className="text-[8px] text-muted-foreground">{progressPct}% analyzed</span>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Keyword Score */}
-                        <div className="w-16 text-center shrink-0">
-                          {s.analyzedCount > 0 ? (
-                            <div>
-                              <p className="text-xs font-bold">{s.avgKeywordScore}</p>
-                              <p className="text-[8px] text-muted-foreground">Keywords</p>
-                            </div>
-                          ) : (
-                            <span className="text-[10px] text-muted-foreground">—</span>
-                          )}
-                        </div>
-
-                        {/* Top Keywords */}
-                        <div className="w-32 shrink-0 hidden md:block">
-                          <div className="flex flex-wrap gap-0.5">
-                            {s.topKeywords.length > 0 ? s.topKeywords.slice(0, 3).map(kw => (
-                              <Badge key={kw} variant="outline" className="text-[7px] px-1 py-0">{kw}</Badge>
-                            )) : <span className="text-[9px] text-muted-foreground">No keywords</span>}
-                          </div>
-                        </div>
-
-                        {/* Quick Actions */}
-                        <div className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-6 px-2 text-[9px]"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              autoOptimize.mutate({ threshold: autoFixThreshold, limit: 20, state: s.state });
-                            }}
-                            disabled={autoOptimize.isPending || s.totalProperties === 0}
-                          >
-                            <Zap className="h-2.5 w-2.5 mr-0.5" /> Fix
-                          </Button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                  <p className="text-[10px] text-muted-foreground mt-2">
-                    Total: {stateSeoOverview.length} provinces · {selectedStates.size} selected for auto-fix
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Security Confirmation Dialog */}
-          <AlertDialog open={showAutoFixConfirm} onOpenChange={setShowAutoFixConfirm}>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-primary" />
-                  Confirm AI Auto-Fix SEO
-                </AlertDialogTitle>
-                <AlertDialogDescription className="space-y-3">
-                  <p>This will run AI-powered SEO optimization on properties in <strong>{selectedStates.size} selected state(s)</strong> with scores below <strong>{autoFixThreshold}</strong>.</p>
-                  <div className="bg-muted/30 rounded-lg p-3 space-y-1">
-                    <p className="text-xs font-medium text-foreground">Selected States:</p>
-                    <div className="flex flex-wrap gap-1">
-                      {Array.from(selectedStates).map(s => (
-                        <Badge key={s} variant="secondary" className="text-[10px]">{s}</Badge>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2 text-xs text-chart-4">
-                    <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
-                    <span>AI will modify SEO titles, descriptions, and keywords for properties below the threshold. Changes are applied directly.</span>
-                  </div>
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  className="gap-1.5"
-                  onClick={() => {
-                    // Run auto-optimize for each selected state
-                    Array.from(selectedStates).forEach(state => {
-                      autoOptimize.mutate({ threshold: autoFixThreshold, limit: 20, state });
-                    });
-                    setShowAutoFixConfirm(false);
-                  }}
-                >
-                  <ShieldCheck className="h-4 w-4" />
-                  Confirm & Run AI Fix
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <StateSeoOverviewTab
+            stateSeoOverview={stateSeoOverview}
+            stateOverviewLoading={stateOverviewLoading}
+            selectedStates={selectedStates}
+            setSelectedStates={setSelectedStates}
+            autoFixThreshold={autoFixThreshold}
+            setAutoFixThreshold={setAutoFixThreshold}
+            showAutoFixConfirm={showAutoFixConfirm}
+            setShowAutoFixConfirm={setShowAutoFixConfirm}
+            autoOptimize={autoOptimize}
+            filterState={filterState}
+            setFilterState={setFilterState}
+            setActiveTab={setActiveTab}
+          />
         </TabsContent>
 
         {/* ─── All Properties Tab ─── */}
