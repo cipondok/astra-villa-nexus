@@ -1,18 +1,23 @@
-import { useState } from 'react';
+import { useState, Suspense, lazy } from 'react';
 import { SEOHead } from '@/components/SEOHead';
 import { useTranslation } from "@/i18n/useTranslation";
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Building2, Home, TrendingUp, Search, Filter, ChevronRight, ArrowLeft, Loader2, Navigation2, Globe2, Star, Layers } from 'lucide-react';
-import { IndonesiaMap, Province } from '@/components/location/IndonesiaMap';
+import { Province } from '@/components/location/IndonesiaMap';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Progress } from '@/components/ui/progress';
 import { useProvincePropertyCounts, useTotalPropertyCount } from '@/hooks/useProvincePropertyCounts';
 import ProvincePropertiesModal from '@/components/location/ProvincePropertiesModal';
 import { useLastSelectedProvince } from '@/hooks/useLastSelectedProvince';
+
+// Lazy-load the heavy map component
+const IndonesiaMap = lazy(() => import('@/components/location/IndonesiaMap').then(mod => ({ default: mod.IndonesiaMap })));
 
 const provinceNameToId: Record<string, string> = {
   'Aceh': 'aceh', 'Sumatera Utara': 'sumut', 'Sumatera Barat': 'sumbar', 'Riau': 'riau',
