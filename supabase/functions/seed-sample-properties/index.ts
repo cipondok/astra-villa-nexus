@@ -1,4 +1,4 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import { createClient } from "npm:@supabase/supabase-js@2.49.1";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -119,22 +119,16 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const anonClient = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!);
-    const { data: userData, error: userErr } = await anonClient.auth.getUser(accessToken);
+    // Verify user with the service role client instead of creating a second client
+    const { data: userData, error: userErr } = await supabase.auth.admin.getUserById(
+      // First decode the JWT to get user id without a second client
+      JSON.parse(atob(accessToken.split('.')[1])).sub
+    );
 
     if (userErr || !userData?.user) {
-      const status = (userErr as any)?.status;
-      const message = (userErr as any)?.message || "";
-      const isTransientAuthError =
-        (typeof status === "number" && status >= 500) ||
-        /context canceled|timeout|network|unexpected_failure/i.test(message);
-
       return new Response(
-        JSON.stringify({ error: isTransientAuthError ? "Auth service temporarily unavailable" : "Invalid token" }),
-        {
-          status: isTransientAuthError ? 503 : 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
+        JSON.stringify({ error: "Invalid token" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
@@ -173,10 +167,9 @@ Deno.serve(async (req) => {
       );
     }
 
-    // FAST BATCH CHECK: Get all existing property types for these areas in one query
+    // FAST BATCH CHECK
     const areaNames = uniqueLocations.map(l => l.subdistrict_name || l.district_name);
-    const cityNames = uniqueLocations.map(l => l.city_type ? `${l.city_type} ${l.city_name}` : l.city_name);
-    
+
     let existingSet = new Set<string>();
     if (skipExisting) {
       const { data: existingProps } = await supabase
@@ -184,7 +177,7 @@ Deno.serve(async (req) => {
         .select("city, area, property_type")
         .eq("state", province)
         .in("area", areaNames);
-      
+
       if (existingProps) {
         existingProps.forEach((p: any) => {
           existingSet.add(`${p.city}|${p.area}|${p.property_type}`);
@@ -196,8 +189,6 @@ Deno.serve(async (req) => {
     let skipped = 0;
     let errors = 0;
     const locationsProcessed: Array<{ city: string; area: string; types_created: number }> = [];
-
-    // Collect all properties to insert in bulk
     const toInsert: any[] = [];
 
     for (const loc of uniqueLocations) {
@@ -210,16 +201,14 @@ Deno.serve(async (req) => {
           skipped++;
           continue;
         }
-
-        const property = generateProperty(type, loc);
-        toInsert.push({ ...property, owner_id: userId });
+        toInsert.push({ ...generateProperty(type, loc), owner_id: userId });
         typesCreated++;
       }
 
       locationsProcessed.push({ city: cityFull, area, types_created: typesCreated });
     }
 
-    // Bulk insert all at once
+    // Bulk insert
     if (toInsert.length > 0) {
       const { error: insertErr, data: insertData } = await supabase
         .from("properties")
@@ -227,12 +216,10 @@ Deno.serve(async (req) => {
         .select("id");
 
       if (insertErr) {
-        console.error(`Bulk insert error:`, insertErr.message);
-        // Fallback: try one-by-one
+        console.error("Bulk insert error:", insertErr.message);
         for (const prop of toInsert) {
           const { error: singleErr } = await supabase.from("properties").insert(prop);
           if (singleErr) {
-            console.error(`Insert error for ${prop.property_type} in ${prop.area}:`, singleErr.message);
             errors++;
           } else {
             created++;
@@ -251,7 +238,7 @@ Deno.serve(async (req) => {
       .eq("is_active", true)
       .not("subdistrict_name", "is", null);
 
-    // Count existing properties for this province
+    // Count existing properties
     const { count: existingCount } = await supabase
       .from("properties")
       .select("id", { count: "exact", head: true })
