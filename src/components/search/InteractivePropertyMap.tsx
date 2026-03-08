@@ -282,12 +282,36 @@ export default function InteractivePropertyMap() {
   const [selectedProperty, setSelectedProperty] = useState<MapProperty | null>(null);
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [drawMode, setDrawMode] = useState<'none' | 'polygon'>('none');
-  const [filterOpen, setFilterOpen] = useState(true);
+  const [filterOpen, setFilterOpen] = useState(false);
   const [mapReady, setMapReady] = useState(false);
+  const [nlpActive, setNlpActive] = useState(false);
 
   const navigate = useNavigate();
 
   const { data: properties = [], isLoading } = useMapProperties(bounds, filters, mapReady);
+
+  // Handle NLP search result
+  const handleNLPResult = useCallback((result: MapNLPResult) => {
+    const m = mapRef.current;
+    // Apply filters
+    setFilters(result.filters);
+
+    if (Object.keys(result.filters).length > 0) {
+      setNlpActive(true);
+    } else {
+      setNlpActive(false);
+    }
+
+    // Fly to location if detected
+    if (result.flyTo && m) {
+      m.flyTo({
+        center: [result.flyTo.lng, result.flyTo.lat],
+        zoom: result.flyTo.zoom,
+        duration: 2000,
+        essential: true,
+      });
+    }
+  }, []);
 
   // Initialize map
   useEffect(() => {
