@@ -154,7 +154,37 @@ const StateSeoOverviewTab = ({
         </CardContent>
       </Card>
 
-      {/* Summary Cards */}
+      {/* Batch Progress Indicator */}
+      {batchRunning && (
+        <Card className="bg-chart-2/5 border-chart-2/20 animate-in fade-in">
+          <CardContent className="p-3">
+            <div className="flex items-center gap-3">
+              <Loader2 className="h-4 w-4 animate-spin text-chart-2 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-medium text-foreground">
+                    {batchCompleted >= batchTotal ? 'AI Auto-Fix Complete!' : 'Running AI Auto-Fix...'}
+                  </span>
+                  <span className="text-xs font-bold text-chart-2 tabular-nums">
+                    {batchCompleted}/{batchTotal} states
+                  </span>
+                </div>
+                <Progress value={batchTotal > 0 ? (batchCompleted / batchTotal) * 100 : 0} className="h-2" />
+                {completedStates.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {completedStates.map(s => (
+                      <Badge key={s} variant="secondary" className="text-[9px] px-1.5 py-0 bg-chart-2/10 text-chart-2">
+                        ✓ {s}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {!stateOverviewLoading && stateSeoOverview.length > 0 && (
         <SeoStateSummaryCards overview={stateSeoOverview} />
       )}
