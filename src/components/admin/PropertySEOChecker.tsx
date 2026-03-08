@@ -121,23 +121,110 @@ const AnalysisProgress = ({ label, isPending }: { label: string; isPending: bool
   );
 };
 
-// ─── Location Filters Hook ──────────────────────────────────
-function useLocationFilters() {
-  const { data: states = [] } = useQuery({
-    queryKey: ['seo-filter-states'],
+// ─── All 38 Indonesian Provinces ────────────────────────────
+const INDONESIA_PROVINCES = [
+  'Aceh', 'Sumatera Utara', 'Sumatera Barat', 'Riau', 'Jambi', 'Sumatera Selatan',
+  'Bengkulu', 'Lampung', 'Kepulauan Bangka Belitung', 'Kepulauan Riau',
+  'DKI Jakarta', 'Jawa Barat', 'Jawa Tengah', 'DI Yogyakarta', 'Jawa Timur',
+  'Banten', 'Bali', 'Nusa Tenggara Barat', 'Nusa Tenggara Timur',
+  'Kalimantan Barat', 'Kalimantan Tengah', 'Kalimantan Selatan', 'Kalimantan Timur', 'Kalimantan Utara',
+  'Sulawesi Utara', 'Sulawesi Tengah', 'Sulawesi Selatan', 'Sulawesi Tenggara', 'Gorontalo', 'Sulawesi Barat',
+  'Maluku', 'Maluku Utara', 'Papua', 'Papua Barat', 'Papua Selatan', 'Papua Tengah', 'Papua Pegunungan', 'Papua Barat Daya',
+].sort();
+
+// ─── State SEO Stats Hook ───────────────────────────────────
+function useStateSeoStats() {
+  return useQuery({
+    queryKey: ['state-seo-overview'],
     queryFn: async () => {
-      const { data, error } = await (supabase.from('properties') as any)
+      // Get property counts per state
+      const { data: propData } = await (supabase.from('properties') as any)
         .select('state')
         .not('state', 'is', null)
         .limit(1000);
-      if (error) throw error;
-      const unique = [...new Set((data || []).map((d: any) => d.state).filter(Boolean))].sort() as string[];
-      return unique;
-    },
-    staleTime: 10 * 60 * 1000,
-  });
 
-  return { states };
+      // Get SEO analyses with property state info
+      const { data: seoData } = await (supabase.from('property_seo_analysis') as any)
+        .select('property_id, seo_score, keyword_score, seo_keywords')
+        .limit(1000);
+
+      // Build state map
+      const stateMap: Record<string, { total: number; analyzed: number; totalScore: number; totalKeywordScore: number; topKeywords: Record<string, number> }> = {};
+      INDONESIA_PROVINCES.forEach(s => {
+        stateMap[s] = { total: 0, analyzed: 0, totalScore: 0, totalKeywordScore: 0, topKeywords: {} };
+      });
+
+      // Count properties per state (normalize names)
+      const stateNormMap: Record<string, string> = {};
+      INDONESIA_PROVINCES.forEach(p => { stateNormMap[p.toLowerCase()] = p; });
+      // Add common aliases
+      const aliases: Record<string, string> = {
+        'di yogyakarta': 'DI Yogyakarta', 'diy yogyakarta': 'DI Yogyakarta',
+        'dki jakarta': 'DKI Jakarta', 'central java': 'Jawa Tengah',
+        'east java': 'Jawa Timur', 'west java': 'Jawa Barat',
+        'north sulawesi': 'Sulawesi Utara', 'south sulawesi': 'Sulawesi Selatan',
+        'north sumatra': 'Sumatera Utara', 'west kalimantan': 'Kalimantan Barat',
+        'west nusa tenggara': 'Nusa Tenggara Barat',
+      };
+
+      const propStateMap: Record<string, string> = {}; // property_id -> normalized state
+      (propData || []).forEach((p: any) => {
+        const raw = (p.state || '').trim();
+        const norm = stateNormMap[raw.toLowerCase()] || aliases[raw.toLowerCase()] || raw;
+        if (stateMap[norm]) {
+          stateMap[norm].total++;
+        }
+      });
+
+      // Map SEO data (we need property->state mapping)
+      // For now, just use counts from seoData length
+      const seoPropertyIds = new Set((seoData || []).map((s: any) => s.property_id));
+
+      // We need to get property states for SEO-analyzed properties
+      if (seoPropertyIds.size > 0) {
+        const { data: analyzedProps } = await (supabase.from('properties') as any)
+          .select('id, state')
+          .in('id', Array.from(seoPropertyIds).slice(0, 500));
+
+        (analyzedProps || []).forEach((p: any) => {
+          const raw = (p.state || '').trim();
+          const norm = stateNormMap[raw.toLowerCase()] || aliases[raw.toLowerCase()] || raw;
+          if (!stateMap[norm]) return;
+          const seo = (seoData || []).find((s: any) => s.property_id === p.id);
+          if (seo) {
+            stateMap[norm].analyzed++;
+            stateMap[norm].totalScore += seo.seo_score || 0;
+            stateMap[norm].totalKeywordScore += seo.keyword_score || 0;
+            (seo.seo_keywords || []).forEach((kw: string) => {
+              stateMap[norm].topKeywords[kw] = (stateMap[norm].topKeywords[kw] || 0) + 1;
+            });
+          }
+        });
+      }
+
+      return INDONESIA_PROVINCES.map(state => {
+        const d = stateMap[state];
+        const avgScore = d.analyzed > 0 ? Math.round(d.totalScore / d.analyzed) : 0;
+        const avgKwScore = d.analyzed > 0 ? Math.round(d.totalKeywordScore / d.analyzed) : 0;
+        const topKws = Object.entries(d.topKeywords).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([kw]) => kw);
+        return {
+          state,
+          totalProperties: d.total,
+          analyzedCount: d.analyzed,
+          avgSeoScore: avgScore,
+          avgKeywordScore: avgKwScore,
+          topKeywords: topKws,
+          status: d.total === 0 ? 'no-data' : d.analyzed === 0 ? 'unanalyzed' : avgScore >= 70 ? 'good' : avgScore >= 40 ? 'needs-work' : 'poor',
+        };
+      });
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+// ─── Location Filters Hook ──────────────────────────────────
+function useLocationFilters() {
+  return { states: INDONESIA_PROVINCES };
 }
 
 function useCitiesByState(state: string) {
@@ -233,6 +320,7 @@ const PropertySEOChecker = () => {
 
   // Hooks
   const { data: stats, isLoading: statsLoading } = useSeoStats();
+  const { data: stateSeoOverview = [], isLoading: stateOverviewLoading } = useStateSeoStats();
   const { data: allAnalyses = [], isLoading: analysesLoading } = usePropertySeoAnalyses({ limit: 100 });
   const { data: weakListings = [] } = usePropertySeoAnalyses({ limit: 25, filter: 'weak' });
   const { data: topListings = [] } = usePropertySeoAnalyses({ limit: 25, filter: 'excellent' });
@@ -527,11 +615,106 @@ const PropertySEOChecker = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
         <TabsList className="bg-muted/40 border border-border/30 flex-wrap">
           <TabsTrigger value="dashboard" className="text-xs gap-1"><BarChart3 className="h-3 w-3" />All Properties</TabsTrigger>
+          <TabsTrigger value="states" className="text-xs gap-1"><MapPin className="h-3 w-3" />State Overview</TabsTrigger>
           <TabsTrigger value="weak" className="text-xs gap-1"><AlertTriangle className="h-3 w-3" />Weak ({weakListings.length})</TabsTrigger>
           <TabsTrigger value="top" className="text-xs gap-1"><CheckCircle2 className="h-3 w-3" />Top ({topListings.length})</TabsTrigger>
           <TabsTrigger value="keywords" className="text-xs gap-1"><Flame className="h-3 w-3" />Keywords</TabsTrigger>
           {currentAnalysis && <TabsTrigger value="detail" className="text-xs gap-1"><Eye className="h-3 w-3" />Detail</TabsTrigger>}
         </TabsList>
+
+        {/* ─── State SEO Overview Tab ─── */}
+        <TabsContent value="states" className="space-y-3">
+          <Card className="bg-card/60 border-border/40">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-primary" />
+                All 38 Provinces — SEO Status & Rankings
+              </CardTitle>
+              <CardDescription className="text-[10px]">SEO health across all Indonesian provinces with keyword scores</CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0">
+              {stateOverviewLoading ? (
+                <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-border/40 text-[9px] font-medium text-muted-foreground uppercase tracking-wider">
+                        <th className="text-left py-2 px-2">#</th>
+                        <th className="text-left py-2 px-2">Province</th>
+                        <th className="text-center py-2 px-2">Properties</th>
+                        <th className="text-center py-2 px-2">Analyzed</th>
+                        <th className="text-center py-2 px-2">Avg SEO</th>
+                        <th className="text-center py-2 px-2">Keyword Score</th>
+                        <th className="text-center py-2 px-2">Status</th>
+                        <th className="text-left py-2 px-2">Top Keywords</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {stateSeoOverview.map((s, idx) => (
+                        <tr
+                          key={s.state}
+                          className={cn(
+                            "border-b border-border/20 hover:bg-accent/30 transition-colors cursor-pointer",
+                            filterState === s.state && "bg-primary/10"
+                          )}
+                          onClick={() => { setFilterState(s.state); setActiveTab('dashboard'); }}
+                        >
+                          <td className="py-2 px-2 text-muted-foreground">{idx + 1}</td>
+                          <td className="py-2 px-2 font-medium">{s.state}</td>
+                          <td className="py-2 px-2 text-center">{s.totalProperties.toLocaleString()}</td>
+                          <td className="py-2 px-2 text-center">
+                            <span className={s.analyzedCount > 0 ? 'text-chart-1' : 'text-muted-foreground'}>
+                              {s.analyzedCount}
+                            </span>
+                          </td>
+                          <td className="py-2 px-2 text-center">
+                            {s.analyzedCount > 0 ? (
+                              <span className={cn("font-bold",
+                                s.avgSeoScore >= 70 ? "text-chart-1" : s.avgSeoScore >= 40 ? "text-chart-4" : "text-destructive"
+                              )}>{s.avgSeoScore}</span>
+                            ) : <span className="text-muted-foreground">—</span>}
+                          </td>
+                          <td className="py-2 px-2 text-center">
+                            {s.analyzedCount > 0 ? (
+                              <div className="flex items-center justify-center gap-1">
+                                <Progress value={s.avgKeywordScore} className="h-1 w-10" />
+                                <span className="text-[10px] font-medium">{s.avgKeywordScore}</span>
+                              </div>
+                            ) : <span className="text-muted-foreground">—</span>}
+                          </td>
+                          <td className="py-2 px-2 text-center">
+                            <Badge variant={
+                              s.status === 'good' ? 'default' :
+                              s.status === 'needs-work' ? 'secondary' :
+                              s.status === 'poor' ? 'destructive' :
+                              'outline'
+                            } className="text-[8px] px-1.5 py-0">
+                              {s.status === 'good' ? '✅ Good' :
+                               s.status === 'needs-work' ? '⚠️ Needs Work' :
+                               s.status === 'poor' ? '❌ Poor' :
+                               s.status === 'unanalyzed' ? '🔍 Unanalyzed' : '—'}
+                            </Badge>
+                          </td>
+                          <td className="py-2 px-2">
+                            <div className="flex flex-wrap gap-0.5">
+                              {s.topKeywords.length > 0 ? s.topKeywords.map(kw => (
+                                <Badge key={kw} variant="outline" className="text-[7px] px-1 py-0">{kw}</Badge>
+                              )) : <span className="text-[10px] text-muted-foreground">—</span>}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <p className="text-[10px] text-muted-foreground mt-2">
+                    Total: {stateSeoOverview.length} provinces · Click a province to filter properties
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         {/* ─── All Properties Tab ─── */}
         <TabsContent value="dashboard" className="space-y-3">
