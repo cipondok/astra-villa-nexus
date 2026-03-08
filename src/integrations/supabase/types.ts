@@ -20188,6 +20188,60 @@ export type Database = {
         }
         Relationships: []
       }
+      seo_ai_actions: {
+        Row: {
+          action_type: string
+          ai_model: string | null
+          created_at: string
+          id: string
+          keywords_added: string[] | null
+          metadata: Json | null
+          new_description: string | null
+          new_score: number | null
+          new_title: string | null
+          old_description: string | null
+          old_score: number | null
+          old_title: string | null
+          property_id: string
+          threshold_used: number | null
+          triggered_by: string | null
+        }
+        Insert: {
+          action_type?: string
+          ai_model?: string | null
+          created_at?: string
+          id?: string
+          keywords_added?: string[] | null
+          metadata?: Json | null
+          new_description?: string | null
+          new_score?: number | null
+          new_title?: string | null
+          old_description?: string | null
+          old_score?: number | null
+          old_title?: string | null
+          property_id: string
+          threshold_used?: number | null
+          triggered_by?: string | null
+        }
+        Update: {
+          action_type?: string
+          ai_model?: string | null
+          created_at?: string
+          id?: string
+          keywords_added?: string[] | null
+          metadata?: Json | null
+          new_description?: string | null
+          new_score?: number | null
+          new_title?: string | null
+          old_description?: string | null
+          old_score?: number | null
+          old_title?: string | null
+          property_id?: string
+          threshold_used?: number | null
+          triggered_by?: string | null
+        }
+        Relationships: []
+      }
       seo_competitor_keywords: {
         Row: {
           competitor_domain: string
