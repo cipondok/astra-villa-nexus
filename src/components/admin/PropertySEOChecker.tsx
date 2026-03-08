@@ -328,6 +328,11 @@ const PropertySEOChecker = () => {
   // AI optimization state
   const [aiResult, setAiResult] = useState<ContentOptimization | null>(null);
   const [autoOptThreshold, setAutoOptThreshold] = useState(70);
+  
+  // AI Auto-Fix state selection
+  const [selectedStates, setSelectedStates] = useState<Set<string>>(new Set());
+  const [showAutoFixConfirm, setShowAutoFixConfirm] = useState(false);
+  const [autoFixThreshold, setAutoFixThreshold] = useState(70);
 
   // Location filter object
   const locationFilters: SeoLocationFilters = useMemo(() => ({
