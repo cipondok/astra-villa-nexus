@@ -214,3 +214,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.seo-scheduler]
     verify_jwt = false
 
+  [functions.job-worker]
+    verify_jwt = false
+
