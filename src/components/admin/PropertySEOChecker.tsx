@@ -860,7 +860,7 @@ const PropertySEOChecker = () => {
               <CardContent className="p-8 text-center">
                 <Search className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
                 <p className="text-sm text-muted-foreground">No analyzed properties found</p>
-                <Button size="sm" className="mt-3" onClick={() => analyzeBatch.mutate({ limit: 20, filter: 'unanalyzed' })}>Start Analyzing</Button>
+                <Button size="sm" className="mt-3" onClick={() => analyzeBatch.mutate({ limit: 20, filter: 'unanalyzed', ...locationFilters })}>Start Analyzing</Button>
               </CardContent>
             </Card>
           )}
