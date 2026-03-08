@@ -391,10 +391,29 @@ function computeSeoDraft(property: Record<string, unknown>, boost = 0) {
 async function upsertSeoAnalysis(
   supabase: ReturnType<typeof createClient>,
   property: Record<string, unknown>,
-  boost = 0
+  boost = 0,
+  triggeredBy = "manual",
+  thresholdUsed?: number
 ) {
   const draft = computeSeoDraft(property, boost);
   const propertyId = normalizeText(property.id);
+
+  // Get old score for history tracking
+  let oldScore = 0;
+  let oldTitle = "";
+  let oldDescription = "";
+  try {
+    const { data: existing } = await supabase
+      .from("property_seo_analysis")
+      .select("seo_score, seo_title, seo_description")
+      .eq("property_id", propertyId)
+      .maybeSingle();
+    if (existing) {
+      oldScore = existing.seo_score || 0;
+      oldTitle = existing.seo_title || "";
+      oldDescription = existing.seo_description || "";
+    }
+  } catch { /* first analysis */ }
 
   const payload = {
     property_id: propertyId,
@@ -410,6 +429,28 @@ async function upsertSeoAnalysis(
     .upsert(payload, { onConflict: "property_id" });
 
   if (error) throw error;
+
+  // Log action history (non-blocking)
+  const actionType = boost > 0 ? "auto_optimize" : "analyze";
+  try {
+    await supabase.from("seo_ai_actions").insert({
+      property_id: propertyId,
+      action_type: actionType,
+      old_score: oldScore,
+      new_score: draft.seo_score,
+      old_title: oldTitle || null,
+      new_title: draft.seo_title,
+      old_description: oldDescription || null,
+      new_description: draft.seo_description,
+      keywords_added: draft.seo_keywords,
+      threshold_used: thresholdUsed || null,
+      ai_model: payload.ai_model_used,
+      triggered_by: triggeredBy,
+      metadata: { boost, rating: draft.seo_rating },
+    });
+  } catch (e) {
+    console.warn("Failed to log SEO action:", e);
+  }
 
   return { propertyId, ...payload };
 }
