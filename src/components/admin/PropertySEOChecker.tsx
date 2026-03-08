@@ -586,7 +586,75 @@ const PropertySEOChecker = () => {
         </CardContent>
       </Card>
 
-      {/* Stats Overview */}
+      {/* Filtered Location SEO Status */}
+      {filteredStats && (
+        <Card className="bg-primary/5 border-primary/20">
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2 mb-2">
+              <MapPin className="h-3.5 w-3.5 text-primary" />
+              <span className="text-xs font-semibold text-primary">
+                SEO Status: {locationFilters.state}{locationFilters.city ? ` › ${locationFilters.city}` : ''}{locationFilters.area ? ` › ${locationFilters.area}` : ''}
+              </span>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+              <div className="text-center p-2 rounded-lg border border-border/50 bg-background/50">
+                <p className="text-lg font-bold">{filteredStats.totalProperties}</p>
+                <p className="text-[9px] text-muted-foreground">Total Properties</p>
+              </div>
+              <div className="text-center p-2 rounded-lg border border-border/50 bg-background/50">
+                <p className="text-lg font-bold text-chart-2">{filteredStats.analyzedCount}<span className="text-[10px] text-muted-foreground font-normal">/{filteredStats.totalProperties}</span></p>
+                <p className="text-[9px] text-muted-foreground">Analyzed</p>
+              </div>
+              <div className="text-center p-2 rounded-lg border border-border/50 bg-background/50">
+                <p className={cn("text-lg font-bold", filteredStats.avgScore >= 70 ? "text-chart-1" : filteredStats.avgScore >= 40 ? "text-chart-4" : "text-destructive")}>{filteredStats.avgScore}</p>
+                <p className="text-[9px] text-muted-foreground">Avg SEO Score</p>
+                {stats && filteredStats.avgScore > 0 && (
+                  <div className="flex items-center justify-center gap-0.5 mt-0.5">
+                    {filteredStats.avgScore >= stats.avgScore ? (
+                      <ArrowUpRight className="h-2.5 w-2.5 text-chart-1" />
+                    ) : (
+                      <ArrowDownRight className="h-2.5 w-2.5 text-destructive" />
+                    )}
+                    <span className="text-[8px] text-muted-foreground">vs {stats.avgScore} global</span>
+                  </div>
+                )}
+              </div>
+              <div className="text-center p-2 rounded-lg border border-border/50 bg-background/50">
+                <div className="flex justify-center gap-2 text-[10px]">
+                  <span className="text-chart-1 font-bold">{filteredStats.excellent}✓</span>
+                  <span className="text-primary font-bold">{filteredStats.good}</span>
+                  <span className="text-chart-4 font-bold">{filteredStats.needsImprovement}</span>
+                  <span className="text-destructive font-bold">{filteredStats.poor}✗</span>
+                </div>
+                <p className="text-[9px] text-muted-foreground mt-0.5">Score Breakdown</p>
+              </div>
+            </div>
+            {/* Score distribution bar for filtered */}
+            {filteredStats.analyzedCount > 0 && (
+              <div className="space-y-1">
+                <div className="flex h-2 rounded-full overflow-hidden bg-muted/30">
+                  <div className="bg-chart-1 transition-all" style={{ width: `${(filteredStats.excellent / filteredStats.analyzedCount) * 100}%` }} />
+                  <div className="bg-primary transition-all" style={{ width: `${(filteredStats.good / filteredStats.analyzedCount) * 100}%` }} />
+                  <div className="bg-chart-4 transition-all" style={{ width: `${(filteredStats.needsImprovement / filteredStats.analyzedCount) * 100}%` }} />
+                  <div className="bg-destructive transition-all" style={{ width: `${(filteredStats.poor / filteredStats.analyzedCount) * 100}%` }} />
+                </div>
+              </div>
+            )}
+            {/* Top keywords for location */}
+            {filteredStats.topKeywords.length > 0 && (
+              <div className="mt-2">
+                <p className="text-[9px] text-muted-foreground mb-1">Top Keywords in Region</p>
+                <div className="flex flex-wrap gap-1">
+                  {filteredStats.topKeywords.map(kw => (
+                    <Badge key={kw} variant="outline" className="text-[8px] px-1.5 py-0 border-primary/30 text-primary">{kw}</Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {[
           { label: 'Avg Score', value: stats?.avgScore ?? 0, icon: BarChart3, color: 'text-primary' },
