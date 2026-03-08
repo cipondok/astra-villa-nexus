@@ -130,6 +130,17 @@ const StateSeoOverviewTab = ({
                 <option value={70}>Score &lt; 70 (Recommended)</option>
                 <option value={80}>Score &lt; 80</option>
               </select>
+              <select
+                className="h-7 rounded-md border border-input bg-background px-2 text-xs"
+                value={fixLimit}
+                onChange={(e) => setFixLimit(Number(e.target.value))}
+              >
+                <option value={10}>10 listings</option>
+                <option value={20}>20 listings</option>
+                <option value={50}>50 listings</option>
+                <option value={100}>100 listings</option>
+                <option value={500}>500 listings</option>
+              </select>
               <Button
                 size="sm"
                 className="h-7 text-xs gap-1.5"
