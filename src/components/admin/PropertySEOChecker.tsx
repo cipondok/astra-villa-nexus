@@ -615,11 +615,106 @@ const PropertySEOChecker = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
         <TabsList className="bg-muted/40 border border-border/30 flex-wrap">
           <TabsTrigger value="dashboard" className="text-xs gap-1"><BarChart3 className="h-3 w-3" />All Properties</TabsTrigger>
+          <TabsTrigger value="states" className="text-xs gap-1"><MapPin className="h-3 w-3" />State Overview</TabsTrigger>
           <TabsTrigger value="weak" className="text-xs gap-1"><AlertTriangle className="h-3 w-3" />Weak ({weakListings.length})</TabsTrigger>
           <TabsTrigger value="top" className="text-xs gap-1"><CheckCircle2 className="h-3 w-3" />Top ({topListings.length})</TabsTrigger>
           <TabsTrigger value="keywords" className="text-xs gap-1"><Flame className="h-3 w-3" />Keywords</TabsTrigger>
           {currentAnalysis && <TabsTrigger value="detail" className="text-xs gap-1"><Eye className="h-3 w-3" />Detail</TabsTrigger>}
         </TabsList>
+
+        {/* ─── State SEO Overview Tab ─── */}
+        <TabsContent value="states" className="space-y-3">
+          <Card className="bg-card/60 border-border/40">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-primary" />
+                All 38 Provinces — SEO Status & Rankings
+              </CardTitle>
+              <CardDescription className="text-[10px]">SEO health across all Indonesian provinces with keyword scores</CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0">
+              {stateOverviewLoading ? (
+                <div className="flex justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead>
+                      <tr className="border-b border-border/40 text-[9px] font-medium text-muted-foreground uppercase tracking-wider">
+                        <th className="text-left py-2 px-2">#</th>
+                        <th className="text-left py-2 px-2">Province</th>
+                        <th className="text-center py-2 px-2">Properties</th>
+                        <th className="text-center py-2 px-2">Analyzed</th>
+                        <th className="text-center py-2 px-2">Avg SEO</th>
+                        <th className="text-center py-2 px-2">Keyword Score</th>
+                        <th className="text-center py-2 px-2">Status</th>
+                        <th className="text-left py-2 px-2">Top Keywords</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {stateSeoOverview.map((s, idx) => (
+                        <tr
+                          key={s.state}
+                          className={cn(
+                            "border-b border-border/20 hover:bg-accent/30 transition-colors cursor-pointer",
+                            filterState === s.state && "bg-primary/10"
+                          )}
+                          onClick={() => { setFilterState(s.state); setActiveTab('dashboard'); }}
+                        >
+                          <td className="py-2 px-2 text-muted-foreground">{idx + 1}</td>
+                          <td className="py-2 px-2 font-medium">{s.state}</td>
+                          <td className="py-2 px-2 text-center">{s.totalProperties.toLocaleString()}</td>
+                          <td className="py-2 px-2 text-center">
+                            <span className={s.analyzedCount > 0 ? 'text-chart-1' : 'text-muted-foreground'}>
+                              {s.analyzedCount}
+                            </span>
+                          </td>
+                          <td className="py-2 px-2 text-center">
+                            {s.analyzedCount > 0 ? (
+                              <span className={cn("font-bold",
+                                s.avgSeoScore >= 70 ? "text-chart-1" : s.avgSeoScore >= 40 ? "text-chart-4" : "text-destructive"
+                              )}>{s.avgSeoScore}</span>
+                            ) : <span className="text-muted-foreground">—</span>}
+                          </td>
+                          <td className="py-2 px-2 text-center">
+                            {s.analyzedCount > 0 ? (
+                              <div className="flex items-center justify-center gap-1">
+                                <Progress value={s.avgKeywordScore} className="h-1 w-10" />
+                                <span className="text-[10px] font-medium">{s.avgKeywordScore}</span>
+                              </div>
+                            ) : <span className="text-muted-foreground">—</span>}
+                          </td>
+                          <td className="py-2 px-2 text-center">
+                            <Badge variant={
+                              s.status === 'good' ? 'default' :
+                              s.status === 'needs-work' ? 'secondary' :
+                              s.status === 'poor' ? 'destructive' :
+                              'outline'
+                            } className="text-[8px] px-1.5 py-0">
+                              {s.status === 'good' ? '✅ Good' :
+                               s.status === 'needs-work' ? '⚠️ Needs Work' :
+                               s.status === 'poor' ? '❌ Poor' :
+                               s.status === 'unanalyzed' ? '🔍 Unanalyzed' : '—'}
+                            </Badge>
+                          </td>
+                          <td className="py-2 px-2">
+                            <div className="flex flex-wrap gap-0.5">
+                              {s.topKeywords.length > 0 ? s.topKeywords.map(kw => (
+                                <Badge key={kw} variant="outline" className="text-[7px] px-1 py-0">{kw}</Badge>
+                              )) : <span className="text-[10px] text-muted-foreground">—</span>}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <p className="text-[10px] text-muted-foreground mt-2">
+                    Total: {stateSeoOverview.length} provinces · Click a province to filter properties
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         {/* ─── All Properties Tab ─── */}
         <TabsContent value="dashboard" className="space-y-3">
