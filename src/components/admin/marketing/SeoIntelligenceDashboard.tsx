@@ -163,7 +163,7 @@ const SeoIntelligenceDashboard = () => {
           <Button
             size="sm"
             variant="outline"
-            onClick={() => autoOptimize.mutate({ threshold: 50, limit: 20 })}
+            onClick={() => autoOptimize.mutate({ threshold: 70, limit: 20 })}
             disabled={autoOptimize.isPending}
           >
             {autoOptimize.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Zap className="h-4 w-4 mr-2" />}
