@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   MapPin, Search, SlidersHorizontal, X, Bed, Bath, Maximize2,
   Home, Building2, Layers, Flame, Pentagon, ChevronUp, ChevronDown,
-  Loader2, TrendingUp, DollarSign, Eye,
+  Loader2, TrendingUp, DollarSign, Eye, Sparkles,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
