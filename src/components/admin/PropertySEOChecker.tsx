@@ -35,6 +35,7 @@ import { cn } from '@/lib/utils';
 import StateSeoOverviewTab from './seo/StateSeoOverviewTab';
 import SeoHistoryTab from './seo/SeoHistoryTab';
 import SeoDashboardCharts from './seo/SeoDashboardCharts';
+import AiJobsTab from './seo/AiJobsTab';
 
 // ─── Helpers ────────────────────────────────────────────────
 const ScoreBadge = ({ score }: { score: number }) => {
