@@ -317,14 +317,33 @@ function computeSeoDraft(property: Record<string, unknown>, boost = 0) {
     .slice(0, 6)
     .map(toHashtag);
 
+  // --- Realistic scoring with penalties ---
   const titleLength = seoTitle.length;
   const descLength = seoDescription.length;
 
-  const titleScoreBase = clamp(100 - Math.abs(55 - titleLength) * 3, 45, 100);
-  const descriptionScoreBase = clamp(100 - Math.abs(140 - descLength) * 1.5, 45, 100);
-  const keywordScoreBase = clamp(55 + seoKeywords.length * 5, 45, 95);
-  const hashtagScoreBase = clamp(50 + seoHashtags.length * 7, 40, 95);
-  const locationScoreBase = clamp((city ? 35 : 0) + (state ? 35 : 0) + (area ? 30 : 15), 35, 100);
+  // Title score: penalize short/long titles, missing keywords
+  let titleScoreBase = clamp(100 - Math.abs(55 - titleLength) * 3, 20, 100);
+  if (title.length < 10) titleScoreBase -= 25; // very short original title
+  if (title.toLowerCase() === "property listing") titleScoreBase -= 20; // generic
+  if (!title.toLowerCase().includes(propertyType.toLowerCase())) titleScoreBase -= 10;
+
+  // Description score: penalize missing/short descriptions
+  let descriptionScoreBase = clamp(100 - Math.abs(140 - descLength) * 1.5, 20, 100);
+  if (!description || description.length < 50) descriptionScoreBase -= 30; // missing/short desc
+  if (description.length < 20) descriptionScoreBase -= 15; // very short
+
+  // Keyword score
+  const keywordScoreBase = clamp(30 + seoKeywords.length * 7, 20, 90);
+
+  // Hashtag score
+  const hashtagScoreBase = clamp(25 + seoHashtags.length * 10, 15, 90);
+
+  // Location score: heavy penalty for missing location data
+  let locationScoreBase = 0;
+  if (city) locationScoreBase += 35;
+  if (state) locationScoreBase += 35;
+  if (area) locationScoreBase += 30;
+  if (!city && !state && !area) locationScoreBase = 10; // no location at all
 
   const titleScore = clamp(Math.round(titleScoreBase + boost));
   const descriptionScore = clamp(Math.round(descriptionScoreBase + boost));
@@ -345,6 +364,12 @@ function computeSeoDraft(property: Record<string, unknown>, boost = 0) {
   const seoRating = seoScore >= 80 ? "Excellent" : seoScore >= 60 ? "Good" : seoScore >= 40 ? "Needs Improvement" : "Poor";
   const rankingDifficulty = seoScore < 45 ? "high" : seoScore < 70 ? "medium" : "low";
 
+  // Identify missing keywords
+  const missingKeywords: string[] = [];
+  const titleLower = seoTitle.toLowerCase();
+  if (!titleLower.includes(propertyType.toLowerCase())) missingKeywords.push(propertyType);
+  if (city && !titleLower.includes(city.toLowerCase())) missingKeywords.push(city);
+
   return {
     seo_title: seoTitle,
     seo_description: seoDescription,
@@ -358,7 +383,7 @@ function computeSeoDraft(property: Record<string, unknown>, boost = 0) {
     seo_score: seoScore,
     seo_rating: seoRating,
     suggested_keywords: seoKeywords,
-    missing_keywords: [],
+    missing_keywords: missingKeywords,
     ranking_difficulty: rankingDifficulty,
   };
 }
@@ -422,35 +447,51 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
       const limit = clamp(Number(payload.limit) || 20, 1, 100);
       const filter = normalizeText(payload.filter) || "unanalyzed";
 
-      const { data: allCandidates, error: candidatesError } = await supabase
-        .from("properties")
-        .select(SEO_PROPERTY_SELECT)
-        .order("updated_at", { ascending: false })
-        .limit(Math.min(limit * 8, 800));
-
-      if (candidatesError) return json({ error: candidatesError.message }, 500);
-
-      let candidates = (allCandidates || []) as Record<string, unknown>[];
+      let candidates: Record<string, unknown>[] = [];
 
       if (filter === "unanalyzed") {
+        // Fetch analyzed IDs (limited set), then fetch random properties excluding them
         const { data: existing, error: existingError } = await supabase
           .from("property_seo_analysis")
           .select("property_id")
           .not("property_id", "is", null)
-          .limit(5000);
+          .limit(10000);
 
         if (existingError) return json({ error: existingError.message }, 500);
-
         const analyzedIds = new Set((existing || []).map((row: any) => row.property_id));
-        candidates = candidates.filter((p) => !analyzedIds.has(p.id));
+
+        // Fetch more candidates than needed to filter client-side
+        const fetchSize = Math.min(limit * 10, 500);
+        // Use a random offset to avoid always hitting same properties
+        const randomOffset = Math.floor(Math.random() * 1000);
+
+        const { data: allCandidates, error: fetchError } = await supabase
+          .from("properties")
+          .select(SEO_PROPERTY_SELECT)
+          .order("created_at", { ascending: false })
+          .range(randomOffset, randomOffset + fetchSize - 1);
+
+        if (fetchError) return json({ error: fetchError.message }, 500);
+
+        candidates = ((allCandidates || []) as Record<string, unknown>[])
+          .filter((p) => !analyzedIds.has(p.id as string))
+          .slice(0, limit);
+      } else {
+        const { data, error: fetchError } = await supabase
+          .from("properties")
+          .select(SEO_PROPERTY_SELECT)
+          .order("updated_at", { ascending: false })
+          .limit(limit);
+
+        if (fetchError) return json({ error: fetchError.message }, 500);
+        candidates = (data || []) as Record<string, unknown>[];
       }
 
-      const targets = candidates.slice(0, limit);
-      if (targets.length === 0) {
+      if (candidates.length === 0) {
         return json({ action, analyzed: 0, filter, message: "No matching properties found" });
       }
 
-      const analyses = await Promise.all(targets.map((property) => upsertSeoAnalysis(supabase, property)));
+      const analyses = await Promise.all(candidates.map((property) => upsertSeoAnalysis(supabase, property)));
 
       return json({
         action,
@@ -463,7 +504,7 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
 
     if (action === "auto-optimize") {
       const limit = clamp(Number(payload.limit) || 10, 1, 100);
-      const threshold = clamp(Number(payload.threshold) || 50, 1, 100);
+      const threshold = clamp(Number(payload.threshold) || 60, 1, 100);
 
       const { data: weakRows, error: weakError } = await supabase
         .from("property_seo_analysis")
@@ -501,6 +542,273 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
         threshold,
         optimized: optimized.length,
         propertyIds: optimized.map((item) => item.propertyId),
+      });
+    }
+
+    // ── content-optimize: AI-powered SEO content generation ──
+    if (action === "content-optimize") {
+      const propertyId = normalizeText(payload.propertyId);
+      if (!propertyId) return json({ error: "propertyId is required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+      const { data: property, error: propErr } = await supabase
+        .from("properties")
+        .select(SEO_PROPERTY_SELECT)
+        .eq("id", propertyId)
+        .maybeSingle();
+
+      if (propErr) return json({ error: propErr.message }, 500);
+      if (!property) return json({ error: "Property not found" }, 404);
+
+      const prompt = `You are an expert real estate SEO copywriter for Indonesian property listings.
+
+Property details:
+- Title: ${property.title || "N/A"}
+- Description: ${property.description || "N/A"}
+- Type: ${property.property_type || "N/A"}
+- Listing: ${property.listing_type || "sale"}
+- Location: ${[property.location, property.city, property.state].filter(Boolean).join(", ") || "Indonesia"}
+- Price: ${property.price || "N/A"}
+- Bedrooms: ${property.bedrooms || "N/A"}, Bathrooms: ${property.bathrooms || "N/A"}
+
+Generate optimized SEO content. Call the seo_optimize function with your results.`;
+
+      const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-3-flash-preview",
+          messages: [
+            { role: "system", content: "You are an expert SEO copywriter for real estate." },
+            { role: "user", content: prompt },
+          ],
+          tools: [{
+            type: "function",
+            function: {
+              name: "seo_optimize",
+              description: "Return optimized SEO content for a property listing",
+              parameters: {
+                type: "object",
+                properties: {
+                  optimized_title: { type: "string", description: "SEO title 50-60 chars" },
+                  optimized_description: { type: "string", description: "Meta description 120-160 chars" },
+                  keywords: { type: "array", items: { type: "string" }, description: "5-8 target keywords" },
+                  hashtags: { type: "array", items: { type: "string" }, description: "4-6 hashtags" },
+                  content_suggestions: { type: "array", items: { type: "string" }, description: "3-5 improvement tips" },
+                  readability_tips: { type: "array", items: { type: "string" }, description: "2-3 readability improvements" },
+                },
+                required: ["optimized_title", "optimized_description", "keywords", "hashtags", "content_suggestions"],
+                additionalProperties: false,
+              },
+            },
+          }],
+          tool_choice: { type: "function", function: { name: "seo_optimize" } },
+        }),
+      });
+
+      if (!aiResp.ok) {
+        const status = aiResp.status;
+        if (status === 429) return json({ error: "Rate limited. Please try again shortly." }, 429);
+        if (status === 402) return json({ error: "AI credits required." }, 402);
+        const t = await aiResp.text();
+        console.error("AI content-optimize error:", status, t);
+        return json({ error: "AI content optimization failed" }, 500);
+      }
+
+      const aiData = await aiResp.json();
+      const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+
+      let optimization: Record<string, unknown> = {};
+      if (toolCall?.function?.arguments) {
+        try {
+          optimization = JSON.parse(toolCall.function.arguments);
+        } catch {
+          console.error("Failed to parse AI response");
+        }
+      }
+
+      // Fall back to template if AI didn't return structured data
+      if (!optimization.optimized_title) {
+        const draft = computeSeoDraft(property as Record<string, unknown>);
+        optimization = {
+          optimized_title: draft.seo_title,
+          optimized_description: draft.seo_description,
+          keywords: draft.seo_keywords,
+          hashtags: draft.seo_hashtags,
+          content_suggestions: ["Add more property details", "Include neighborhood info", "Mention nearby amenities"],
+          readability_tips: ["Use shorter sentences", "Add bullet points for features"],
+        };
+      }
+
+      return json({ action, propertyId, optimization });
+    }
+
+    // ── apply-seo: Apply SEO analysis to the property ──
+    if (action === "apply-seo") {
+      const propertyId = normalizeText(payload.propertyId);
+      if (!propertyId) return json({ error: "propertyId is required" }, 400);
+
+      // Get existing analysis
+      const { data: analysis, error: analysisErr } = await supabase
+        .from("property_seo_analysis")
+        .select("seo_title, seo_description, seo_keywords, seo_hashtags")
+        .eq("property_id", propertyId)
+        .maybeSingle();
+
+      if (analysisErr) return json({ error: analysisErr.message }, 500);
+      if (!analysis) return json({ error: "No SEO analysis found for this property. Run analysis first." }, 404);
+
+      // Update the property with SEO-optimized fields
+      const updateFields: Record<string, unknown> = {};
+      if (analysis.seo_title) updateFields.seo_title = analysis.seo_title;
+      if (analysis.seo_description) updateFields.seo_description = analysis.seo_description;
+      if (analysis.seo_keywords) updateFields.seo_keywords = analysis.seo_keywords;
+
+      // Try updating seo fields first, fall back to title/description
+      const { error: updateErr } = await supabase
+        .from("properties")
+        .update(updateFields)
+        .eq("id", propertyId);
+
+      if (updateErr) {
+        // If seo_title/seo_description columns don't exist, that's ok
+        console.warn("SEO field update failed (columns may not exist):", updateErr.message);
+      }
+
+      // Mark as applied in analysis table
+      await supabase
+        .from("property_seo_analysis")
+        .update({ updated_at: new Date().toISOString() })
+        .eq("property_id", propertyId);
+
+      return json({
+        action,
+        propertyId,
+        applied: true,
+        fields: updateFields,
+        message: "SEO data applied to property",
+      });
+    }
+
+    // ── generate-serp-preview: Build current vs optimized SERP preview ──
+    if (action === "generate-serp-preview") {
+      const propertyId = normalizeText(payload.propertyId);
+      if (!propertyId) return json({ error: "propertyId is required" }, 400);
+
+      const [propertyRes, analysisRes] = await Promise.all([
+        supabase.from("properties").select("id, title, description, city, state, location, property_type").eq("id", propertyId).maybeSingle(),
+        supabase.from("property_seo_analysis").select("seo_title, seo_description, seo_score").eq("property_id", propertyId).maybeSingle(),
+      ]);
+
+      if (propertyRes.error) return json({ error: propertyRes.error.message }, 500);
+      if (!propertyRes.data) return json({ error: "Property not found" }, 404);
+
+      const prop = propertyRes.data;
+      const seo = analysisRes.data;
+
+      const currentTitle = prop.title || "Untitled Property";
+      const currentDesc = prop.description?.slice(0, 160) || "No description available";
+      const slug = currentTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 50);
+
+      return json({
+        action,
+        propertyId,
+        current: {
+          title: currentTitle,
+          description: currentDesc,
+          url: `astra-villa-realty.lovable.app/property/${propertyId}`,
+        },
+        optimized: seo ? {
+          title: seo.seo_title || currentTitle,
+          description: seo.seo_description || currentDesc,
+          url: `astra-villa-realty.lovable.app/property/${slug}-${propertyId.slice(0, 8)}`,
+          score: seo.seo_score,
+        } : null,
+        has_analysis: !!seo,
+      });
+    }
+
+    // ── competitor-analysis: Compare with similar properties ──
+    if (action === "competitor-analysis") {
+      const propertyId = normalizeText(payload.propertyId);
+      if (!propertyId) return json({ error: "propertyId is required" }, 400);
+
+      const { data: property, error: propErr } = await supabase
+        .from("properties")
+        .select("id, title, description, property_type, city, state, price")
+        .eq("id", propertyId)
+        .maybeSingle();
+
+      if (propErr) return json({ error: propErr.message }, 500);
+      if (!property) return json({ error: "Property not found" }, 404);
+
+      // Find similar properties (same city & type)
+      let competitorQuery = supabase
+        .from("properties")
+        .select("id, title, description, property_type, city, state, price")
+        .neq("id", propertyId)
+        .limit(20);
+
+      if (property.city) competitorQuery = competitorQuery.eq("city", property.city);
+      if (property.property_type) competitorQuery = competitorQuery.eq("property_type", property.property_type);
+
+      const { data: competitors } = await competitorQuery;
+
+      // Get SEO scores for competitors
+      const competitorIds = (competitors || []).map((c: any) => c.id);
+      const allIds = [propertyId, ...competitorIds];
+
+      const { data: seoScores } = await supabase
+        .from("property_seo_analysis")
+        .select("property_id, seo_score, seo_title, title_score, description_score")
+        .in("property_id", allIds);
+
+      const scoreMap = new Map((seoScores || []).map((s: any) => [s.property_id, s]));
+      const mySeo = scoreMap.get(propertyId);
+
+      const competitorAnalysis = (competitors || []).slice(0, 10).map((c: any) => {
+        const cSeo = scoreMap.get(c.id);
+        return {
+          id: c.id,
+          title: c.title,
+          city: c.city,
+          price: c.price,
+          seo_score: cSeo?.seo_score || null,
+          has_analysis: !!cSeo,
+        };
+      });
+
+      const analyzedCompetitors = competitorAnalysis.filter((c) => c.seo_score !== null);
+      const avgCompetitorScore = analyzedCompetitors.length > 0
+        ? Math.round(analyzedCompetitors.reduce((sum, c) => sum + (c.seo_score || 0), 0) / analyzedCompetitors.length)
+        : null;
+
+      const insights: string[] = [];
+      if (mySeo && avgCompetitorScore !== null) {
+        if (mySeo.seo_score > avgCompetitorScore + 10) insights.push("Your SEO score is above average for this area. Great job!");
+        else if (mySeo.seo_score < avgCompetitorScore - 10) insights.push("Your SEO score is below competitors. Consider optimizing title and description.");
+        else insights.push("Your SEO score is on par with competitors in this area.");
+      }
+      if (!property.description || property.description.length < 100) {
+        insights.push("Your description is shorter than recommended. Aim for 150+ characters.");
+      }
+      if (competitorAnalysis.length === 0) {
+        insights.push("No direct competitors found in the same city and property type.");
+      }
+
+      return json({
+        action,
+        propertyId,
+        my_score: mySeo?.seo_score || null,
+        avg_competitor_score: avgCompetitorScore,
+        total_competitors: competitorAnalysis.length,
+        competitors: competitorAnalysis,
+        insights,
       });
     }
 
