@@ -479,6 +479,7 @@ const PropertySEOChecker = () => {
     { label: 'Title Optimization', passed: analysis.title_score >= 70, suggestion: analysis.title_score >= 70 ? 'Title is well-optimized' : 'Improve title with target keywords and proper length (50-60 chars)' },
     { label: 'Meta Description', passed: analysis.description_score >= 70, suggestion: analysis.description_score >= 70 ? 'Description is compelling' : 'Write a compelling description (120-160 chars) with keywords' },
     { label: 'Keyword Coverage', passed: analysis.keyword_score >= 70, suggestion: analysis.keyword_score >= 70 ? 'Good keyword coverage' : `Missing keywords: ${analysis.missing_keywords?.slice(0, 3).join(', ') || 'N/A'}` },
+    { label: 'Image Alt Tags', passed: (analysis.image_score || 0) >= 70, suggestion: (analysis.image_score || 0) >= 70 ? 'Images have good alt text coverage' : 'Add descriptive alt text to all property images for better SEO' },
     { label: 'Hashtag Strategy', passed: analysis.hashtag_score >= 70, suggestion: analysis.hashtag_score >= 70 ? 'Hashtags are effective' : 'Add relevant hashtags for social discovery' },
     { label: 'Location SEO', passed: analysis.location_score >= 70, suggestion: analysis.location_score >= 70 ? 'Location signals are strong' : 'Include location-specific keywords (city, area, neighborhood)' },
   ];
