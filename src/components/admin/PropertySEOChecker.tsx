@@ -746,7 +746,6 @@ const PropertySEOChecker = () => {
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Search by title or keyword..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 h-9" />
           </div>
-          <p className="text-[10px] text-muted-foreground">Showing {filteredAnalyses.length} of {allAnalyses.length} records (max 25)</p>
           {analysesLoading ? (
             <div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
           ) : filteredAnalyses.length > 0 ? (
@@ -779,6 +778,14 @@ const PropertySEOChecker = () => {
                   </CardContent>
                 </Card>
               ))}
+              <SearchPagination
+                currentPage={allPage}
+                totalPages={Math.ceil(allTotalCount / PAGE_SIZE)}
+                totalCount={allTotalCount}
+                pageSize={PAGE_SIZE}
+                onPageChange={setAllPage}
+                disabled={analysesLoading}
+              />
             </div>
           ) : (
             <Card className="bg-card/60 border-border/40">
