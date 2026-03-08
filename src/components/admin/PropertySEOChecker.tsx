@@ -191,10 +191,18 @@ function useStateSeoStats() {
       const seoPropertyIds = new Set((seoData || []).map((s: any) => s.property_id));
 
       // We need to get property states for SEO-analyzed properties
+      // Fetch in 50-ID chunks to prevent URL length overflow
       if (seoPropertyIds.size > 0) {
-        const { data: analyzedProps } = await (supabase.from('properties') as any)
-          .select('id, state')
-          .in('id', Array.from(seoPropertyIds).slice(0, 500));
+        const allIds = Array.from(seoPropertyIds);
+        const CHUNK_SIZE = 50;
+        const analyzedProps: any[] = [];
+        for (let i = 0; i < allIds.length; i += CHUNK_SIZE) {
+          const chunk = allIds.slice(i, i + CHUNK_SIZE);
+          const { data } = await (supabase.from('properties') as any)
+            .select('id, state')
+            .in('id', chunk);
+          if (data) analyzedProps.push(...data);
+        }
 
         (analyzedProps || []).forEach((p: any) => {
           const raw = (p.state || '').trim();
