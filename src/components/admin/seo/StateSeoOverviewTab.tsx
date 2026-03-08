@@ -248,7 +248,7 @@ const StateSeoOverviewTab = ({
             </AlertDialogTitle>
             <AlertDialogDescription asChild>
               <div className="space-y-3">
-                <p>This will run AI-powered SEO optimization on properties in <strong>{selectedStates.size} selected state(s)</strong> with scores below <strong>{autoFixThreshold}</strong>.</p>
+                <p>This will run AI-powered SEO optimization on properties in <strong>{selectedStates.size} selected state(s)</strong> with scores below <strong>{autoFixThreshold}</strong> (up to <strong>{fixLimit}</strong> listings per state).</p>
                 <div className="bg-muted/30 rounded-lg p-3 space-y-1">
                   <p className="text-xs font-medium text-foreground">Selected States:</p>
                   <div className="flex flex-wrap gap-1">
