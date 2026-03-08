@@ -88,21 +88,131 @@ export interface SerpPreview {
   score?: number;
 }
 
-export function usePropertySeoAnalyses(options?: { limit?: number; filter?: string }) {
-  const { limit = 50, filter } = options || {};
+export interface SeoLocationFilters {
+  state?: string;
+  city?: string;
+  area?: string;
+}
+
+export function usePropertySeoAnalyses(options?: { 
+  limit?: number; 
+  filter?: string; 
+  location?: SeoLocationFilters;
+  page?: number;
+  pageSize?: number;
+}) {
+  const { limit, filter, location, page = 1, pageSize = 25 } = options || {};
+  const hasLocationFilter = location?.state && location.state !== '__all__';
+
   return useQuery({
-    queryKey: ['property-seo-analyses', limit, filter],
+    queryKey: ['property-seo-analyses', filter, location?.state, location?.city, location?.area, page, pageSize],
     queryFn: async () => {
+      // If location filters are active, first get matching property IDs
+      let propertyIds: string[] | null = null;
+      
+      if (hasLocationFilter) {
+        let propQuery = (supabase.from('properties') as any)
+          .select('id')
+          .limit(1000);
+        
+        if (location?.state && location.state !== '__all__') {
+          propQuery = propQuery.eq('state', location.state);
+        }
+        if (location?.city && location.city !== '__all__') {
+          propQuery = propQuery.eq('city', location.city);
+        }
+        if (location?.area && location.area !== '__all__') {
+          propQuery = propQuery.ilike('location', `%${location.area}%`);
+        }
+        
+        const { data: propData } = await propQuery;
+        propertyIds = (propData || []).map((p: any) => p.id);
+        
+        if (propertyIds.length === 0) {
+          return { data: [] as PropertySeoAnalysis[], totalCount: 0 };
+        }
+      }
+
+      // Build SEO query with count
       let query = (supabase.from('property_seo_analysis') as any)
-        .select('*')
-        .order('seo_score', { ascending: true })
-        .limit(limit);
+        .select('*', { count: 'exact' })
+        .order('seo_score', { ascending: true });
+
       if (filter === 'weak') query = query.lt('seo_score', 50);
       if (filter === 'excellent') query = query.gte('seo_score', 80);
-      const { data, error } = await query;
+      
+      // Filter by property IDs if location filter is active
+      if (propertyIds) {
+        // Supabase .in() has a limit, chunk if needed
+        const ids = propertyIds.slice(0, 500);
+        query = query.in('property_id', ids);
+      }
+
+      // Apply pagination
+      const from = (page - 1) * pageSize;
+      const to = from + pageSize - 1;
+      query = query.range(from, to);
+
+      const { data, error, count } = await query;
       if (error) throw error;
-      return (data || []) as PropertySeoAnalysis[];
+      return { 
+        data: (data || []) as PropertySeoAnalysis[], 
+        totalCount: count || 0 
+      };
     },
+    staleTime: 2 * 60 * 1000,
+  });
+}
+
+// Hook for filtered location SEO summary stats
+export function useFilteredSeoStats(location?: SeoLocationFilters) {
+  const hasFilter = location?.state && location.state !== '__all__';
+  
+  return useQuery({
+    queryKey: ['filtered-seo-stats', location?.state, location?.city, location?.area],
+    queryFn: async () => {
+      if (!hasFilter) return null;
+
+      // Get property IDs matching location
+      let propQuery = (supabase.from('properties') as any)
+        .select('id')
+        .limit(1000);
+      
+      if (location?.state && location.state !== '__all__') propQuery = propQuery.eq('state', location.state);
+      if (location?.city && location.city !== '__all__') propQuery = propQuery.eq('city', location.city);
+      if (location?.area && location.area !== '__all__') propQuery = propQuery.ilike('location', `%${location.area}%`);
+
+      const { data: propData } = await propQuery;
+      const propertyIds = (propData || []).map((p: any) => p.id);
+      const totalProperties = propertyIds.length;
+
+      if (totalProperties === 0) {
+        return { totalProperties: 0, analyzedCount: 0, avgScore: 0, excellent: 0, good: 0, needsImprovement: 0, poor: 0, topKeywords: [] as string[] };
+      }
+
+      // Get SEO analyses for those properties
+      const { data: seoData } = await (supabase.from('property_seo_analysis') as any)
+        .select('seo_score, seo_keywords, keyword_score')
+        .in('property_id', propertyIds.slice(0, 500));
+
+      const analyses = seoData || [];
+      const analyzedCount = analyses.length;
+      const avgScore = analyzedCount > 0 ? Math.round(analyses.reduce((a: number, b: any) => a + (b.seo_score || 0), 0) / analyzedCount) : 0;
+      const excellent = analyses.filter((a: any) => a.seo_score >= 80).length;
+      const good = analyses.filter((a: any) => a.seo_score >= 60 && a.seo_score < 80).length;
+      const needsImprovement = analyses.filter((a: any) => a.seo_score >= 40 && a.seo_score < 60).length;
+      const poor = analyses.filter((a: any) => a.seo_score < 40).length;
+
+      // Top keywords
+      const kwCount: Record<string, number> = {};
+      analyses.forEach((a: any) => {
+        (a.seo_keywords || []).forEach((kw: string) => { kwCount[kw] = (kwCount[kw] || 0) + 1; });
+      });
+      const topKeywords = Object.entries(kwCount).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([kw]) => kw);
+
+      return { totalProperties, analyzedCount, avgScore, excellent, good, needsImprovement, poor, topKeywords };
+    },
+    enabled: !!hasFilter,
     staleTime: 2 * 60 * 1000,
   });
 }
@@ -192,6 +302,7 @@ export function useAnalyzeProperty() {
       qc.invalidateQueries({ queryKey: ['property-seo-analyses'] });
       qc.invalidateQueries({ queryKey: ['property-seo-analysis'] });
       qc.invalidateQueries({ queryKey: ['seo-intelligence-stats'] });
+      qc.invalidateQueries({ queryKey: ['filtered-seo-stats'] });
       toast.success('Property SEO analysis complete');
     },
     onError: (e) => toast.error('Analysis failed: ' + e.message),
@@ -211,6 +322,7 @@ export function useAnalyzeBatch() {
     onSuccess: (data) => {
       qc.invalidateQueries({ queryKey: ['property-seo-analyses'] });
       qc.invalidateQueries({ queryKey: ['seo-intelligence-stats'] });
+      qc.invalidateQueries({ queryKey: ['filtered-seo-stats'] });
       toast.success(`Analyzed ${data.analyzed} properties`);
     },
     onError: (e) => toast.error('Batch analysis failed: ' + e.message),
@@ -230,13 +342,13 @@ export function useAutoOptimize() {
     onSuccess: (data) => {
       qc.invalidateQueries({ queryKey: ['property-seo-analyses'] });
       qc.invalidateQueries({ queryKey: ['seo-intelligence-stats'] });
+      qc.invalidateQueries({ queryKey: ['filtered-seo-stats'] });
       toast.success(`Auto-optimized ${data.optimized} weak listings`);
     },
     onError: (e) => toast.error('Auto-optimize failed: ' + e.message),
   });
 }
 
-// NEW: Apply SEO-optimized title/description to a property
 export function useApplySeo() {
   const qc = useQueryClient();
   return useMutation({
@@ -255,7 +367,6 @@ export function useApplySeo() {
   });
 }
 
-// NEW: AI content optimization for a property
 export function useContentOptimize() {
   return useMutation({
     mutationFn: async (propertyId: string) => {
@@ -269,7 +380,6 @@ export function useContentOptimize() {
   });
 }
 
-// NEW: Competitor analysis
 export function useCompetitorAnalysis() {
   return useMutation({
     mutationFn: async (params: { location?: string; propertyType?: string }) => {
@@ -283,7 +393,6 @@ export function useCompetitorAnalysis() {
   });
 }
 
-// NEW: SERP preview
 export function useSerpPreview() {
   return useMutation({
     mutationFn: async (propertyId: string) => {

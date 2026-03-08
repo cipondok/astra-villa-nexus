@@ -16,6 +16,7 @@ import {
   usePropertySeoAnalyses,
   usePropertySeoAnalysis,
   useSeoStats,
+  useFilteredSeoStats,
   useAnalyzeBatch,
   useAutoOptimize,
   useAnalyzeProperty,
@@ -25,7 +26,9 @@ import {
   type PropertySeoAnalysis,
   type ContentOptimization,
   type SeoTrendKeyword,
+  type SeoLocationFilters,
 } from '@/hooks/useSeoIntelligence';
+import SearchPagination from '@/components/search/SearchPagination';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
@@ -298,6 +301,12 @@ const PropertySEOChecker = () => {
   const [filterCity, setFilterCity] = useState('');
   const [filterArea, setFilterArea] = useState('');
   
+  // Pagination
+  const [allPage, setAllPage] = useState(1);
+  const [weakPage, setWeakPage] = useState(1);
+  const [topPage, setTopPage] = useState(1);
+  const PAGE_SIZE = 25;
+  
   // Manual property search
   const [propertySearch, setPropertySearch] = useState('');
   const [showPropertyDropdown, setShowPropertyDropdown] = useState(false);
@@ -313,6 +322,13 @@ const PropertySEOChecker = () => {
   // AI optimization state
   const [aiResult, setAiResult] = useState<ContentOptimization | null>(null);
 
+  // Location filter object
+  const locationFilters: SeoLocationFilters = useMemo(() => ({
+    state: filterState && filterState !== '__all__' ? filterState : undefined,
+    city: filterCity && filterCity !== '__all__' ? filterCity : undefined,
+    area: filterArea && filterArea !== '__all__' ? filterArea : undefined,
+  }), [filterState, filterCity, filterArea]);
+
   // Location data
   const { states } = useLocationFilters();
   const { data: cities = [] } = useCitiesByState(filterState);
@@ -320,10 +336,17 @@ const PropertySEOChecker = () => {
 
   // Hooks
   const { data: stats, isLoading: statsLoading } = useSeoStats();
+  const { data: filteredStats } = useFilteredSeoStats(locationFilters);
   const { data: stateSeoOverview = [], isLoading: stateOverviewLoading } = useStateSeoStats();
-  const { data: allAnalyses = [], isLoading: analysesLoading } = usePropertySeoAnalyses({ limit: 100 });
-  const { data: weakListings = [] } = usePropertySeoAnalyses({ limit: 25, filter: 'weak' });
-  const { data: topListings = [] } = usePropertySeoAnalyses({ limit: 25, filter: 'excellent' });
+  const { data: allResult, isLoading: analysesLoading } = usePropertySeoAnalyses({ location: locationFilters, page: allPage, pageSize: PAGE_SIZE });
+  const { data: weakResult } = usePropertySeoAnalyses({ filter: 'weak', location: locationFilters, page: weakPage, pageSize: PAGE_SIZE });
+  const { data: topResult } = usePropertySeoAnalyses({ filter: 'excellent', location: locationFilters, page: topPage, pageSize: PAGE_SIZE });
+  const allAnalyses = allResult?.data || [];
+  const allTotalCount = allResult?.totalCount || 0;
+  const weakListings = weakResult?.data || [];
+  const weakTotalCount = weakResult?.totalCount || 0;
+  const topListings = topResult?.data || [];
+  const topTotalCount = topResult?.totalCount || 0;
   const { data: searchResults = [] } = usePropertySearch(propertySearch, { state: filterState, city: filterCity, area: filterArea });
   const { data: trendKeywords = [], isLoading: trendsLoading } = useSeoTrendKeywords({ 
     category: trendCategory || undefined, 
@@ -337,9 +360,10 @@ const PropertySEOChecker = () => {
   const applySeo = useApplySeo();
   const contentOptimize = useContentOptimize();
 
-  // Reset city/area on state change
-  useEffect(() => { setFilterCity(''); setFilterArea(''); }, [filterState]);
-  useEffect(() => { setFilterArea(''); }, [filterCity]);
+  // Reset city/area on state change, reset pages on any filter change
+  useEffect(() => { setFilterCity(''); setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterState]);
+  useEffect(() => { setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterCity]);
+  useEffect(() => { setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterArea]);
 
   // Auto-analyze on property click if stale (>1hr)
   const handlePropertyClick = useCallback((analysis: PropertySeoAnalysis) => {
@@ -427,11 +451,11 @@ const PropertySEOChecker = () => {
   };
 
   const filteredAnalyses = useMemo(() => {
+    if (!searchQuery) return allAnalyses;
     return allAnalyses.filter(item =>
-      (!searchQuery || 
-        item.seo_title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.seo_keywords?.some(k => k.toLowerCase().includes(searchQuery.toLowerCase())))
-    ).slice(0, 25);
+      item.seo_title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.seo_keywords?.some(k => k.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
   }, [allAnalyses, searchQuery]);
 
   const getScoreBreakdown = (analysis: PropertySeoAnalysis) => [
@@ -562,7 +586,75 @@ const PropertySEOChecker = () => {
         </CardContent>
       </Card>
 
-      {/* Stats Overview */}
+      {/* Filtered Location SEO Status */}
+      {filteredStats && (
+        <Card className="bg-primary/5 border-primary/20">
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2 mb-2">
+              <MapPin className="h-3.5 w-3.5 text-primary" />
+              <span className="text-xs font-semibold text-primary">
+                SEO Status: {locationFilters.state}{locationFilters.city ? ` › ${locationFilters.city}` : ''}{locationFilters.area ? ` › ${locationFilters.area}` : ''}
+              </span>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+              <div className="text-center p-2 rounded-lg border border-border/50 bg-background/50">
+                <p className="text-lg font-bold">{filteredStats.totalProperties}</p>
+                <p className="text-[9px] text-muted-foreground">Total Properties</p>
+              </div>
+              <div className="text-center p-2 rounded-lg border border-border/50 bg-background/50">
+                <p className="text-lg font-bold text-chart-2">{filteredStats.analyzedCount}<span className="text-[10px] text-muted-foreground font-normal">/{filteredStats.totalProperties}</span></p>
+                <p className="text-[9px] text-muted-foreground">Analyzed</p>
+              </div>
+              <div className="text-center p-2 rounded-lg border border-border/50 bg-background/50">
+                <p className={cn("text-lg font-bold", filteredStats.avgScore >= 70 ? "text-chart-1" : filteredStats.avgScore >= 40 ? "text-chart-4" : "text-destructive")}>{filteredStats.avgScore}</p>
+                <p className="text-[9px] text-muted-foreground">Avg SEO Score</p>
+                {stats && filteredStats.avgScore > 0 && (
+                  <div className="flex items-center justify-center gap-0.5 mt-0.5">
+                    {filteredStats.avgScore >= stats.avgScore ? (
+                      <ArrowUpRight className="h-2.5 w-2.5 text-chart-1" />
+                    ) : (
+                      <ArrowDownRight className="h-2.5 w-2.5 text-destructive" />
+                    )}
+                    <span className="text-[8px] text-muted-foreground">vs {stats.avgScore} global</span>
+                  </div>
+                )}
+              </div>
+              <div className="text-center p-2 rounded-lg border border-border/50 bg-background/50">
+                <div className="flex justify-center gap-2 text-[10px]">
+                  <span className="text-chart-1 font-bold">{filteredStats.excellent}✓</span>
+                  <span className="text-primary font-bold">{filteredStats.good}</span>
+                  <span className="text-chart-4 font-bold">{filteredStats.needsImprovement}</span>
+                  <span className="text-destructive font-bold">{filteredStats.poor}✗</span>
+                </div>
+                <p className="text-[9px] text-muted-foreground mt-0.5">Score Breakdown</p>
+              </div>
+            </div>
+            {/* Score distribution bar for filtered */}
+            {filteredStats.analyzedCount > 0 && (
+              <div className="space-y-1">
+                <div className="flex h-2 rounded-full overflow-hidden bg-muted/30">
+                  <div className="bg-chart-1 transition-all" style={{ width: `${(filteredStats.excellent / filteredStats.analyzedCount) * 100}%` }} />
+                  <div className="bg-primary transition-all" style={{ width: `${(filteredStats.good / filteredStats.analyzedCount) * 100}%` }} />
+                  <div className="bg-chart-4 transition-all" style={{ width: `${(filteredStats.needsImprovement / filteredStats.analyzedCount) * 100}%` }} />
+                  <div className="bg-destructive transition-all" style={{ width: `${(filteredStats.poor / filteredStats.analyzedCount) * 100}%` }} />
+                </div>
+              </div>
+            )}
+            {/* Top keywords for location */}
+            {filteredStats.topKeywords.length > 0 && (
+              <div className="mt-2">
+                <p className="text-[9px] text-muted-foreground mb-1">Top Keywords in Region</p>
+                <div className="flex flex-wrap gap-1">
+                  {filteredStats.topKeywords.map(kw => (
+                    <Badge key={kw} variant="outline" className="text-[8px] px-1.5 py-0 border-primary/30 text-primary">{kw}</Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {[
           { label: 'Avg Score', value: stats?.avgScore ?? 0, icon: BarChart3, color: 'text-primary' },
@@ -616,8 +708,8 @@ const PropertySEOChecker = () => {
         <TabsList className="bg-muted/40 border border-border/30 flex-wrap">
           <TabsTrigger value="dashboard" className="text-xs gap-1"><BarChart3 className="h-3 w-3" />All Properties</TabsTrigger>
           <TabsTrigger value="states" className="text-xs gap-1"><MapPin className="h-3 w-3" />State Overview</TabsTrigger>
-          <TabsTrigger value="weak" className="text-xs gap-1"><AlertTriangle className="h-3 w-3" />Weak ({weakListings.length})</TabsTrigger>
-          <TabsTrigger value="top" className="text-xs gap-1"><CheckCircle2 className="h-3 w-3" />Top ({topListings.length})</TabsTrigger>
+          <TabsTrigger value="weak" className="text-xs gap-1"><AlertTriangle className="h-3 w-3" />Weak ({weakTotalCount})</TabsTrigger>
+          <TabsTrigger value="top" className="text-xs gap-1"><CheckCircle2 className="h-3 w-3" />Top ({topTotalCount})</TabsTrigger>
           <TabsTrigger value="keywords" className="text-xs gap-1"><Flame className="h-3 w-3" />Keywords</TabsTrigger>
           {currentAnalysis && <TabsTrigger value="detail" className="text-xs gap-1"><Eye className="h-3 w-3" />Detail</TabsTrigger>}
         </TabsList>
@@ -722,7 +814,6 @@ const PropertySEOChecker = () => {
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Search by title or keyword..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 h-9" />
           </div>
-          <p className="text-[10px] text-muted-foreground">Showing {filteredAnalyses.length} of {allAnalyses.length} records (max 25)</p>
           {analysesLoading ? (
             <div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
           ) : filteredAnalyses.length > 0 ? (
@@ -755,6 +846,14 @@ const PropertySEOChecker = () => {
                   </CardContent>
                 </Card>
               ))}
+              <SearchPagination
+                currentPage={allPage}
+                totalPages={Math.ceil(allTotalCount / PAGE_SIZE)}
+                totalCount={allTotalCount}
+                pageSize={PAGE_SIZE}
+                onPageChange={setAllPage}
+                disabled={analysesLoading}
+              />
             </div>
           ) : (
             <Card className="bg-card/60 border-border/40">
@@ -769,53 +868,73 @@ const PropertySEOChecker = () => {
 
         {/* ─── Weak Tab ─── */}
         <TabsContent value="weak" className="space-y-2">
-          <p className="text-[10px] text-muted-foreground">Showing up to 25 weak listings</p>
-          {weakListings.length > 0 ? weakListings.map(item => (
-            <Card key={item.id} className="bg-card/60 border-border/40 border-l-2 border-l-destructive hover:border-primary/30 cursor-pointer transition-all" onClick={() => handlePropertyClick(item)}>
-              <CardContent className="p-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{item.seo_title || 'Untitled'}</p>
-                    <div className="flex gap-1 mt-1 flex-wrap">
-                      {item.missing_keywords?.slice(0, 3).map(kw => (
-                        <Badge key={kw} variant="destructive" className="text-[8px] px-1 py-0">Missing: {kw}</Badge>
-                      ))}
+          {weakListings.length > 0 ? (
+            <>
+              {weakListings.map(item => (
+                <Card key={item.id} className="bg-card/60 border-border/40 border-l-2 border-l-destructive hover:border-primary/30 cursor-pointer transition-all" onClick={() => handlePropertyClick(item)}>
+                  <CardContent className="p-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{item.seo_title || 'Untitled'}</p>
+                        <div className="flex gap-1 mt-1 flex-wrap">
+                          {item.missing_keywords?.slice(0, 3).map(kw => (
+                            <Badge key={kw} variant="destructive" className="text-[8px] px-1 py-0">Missing: {kw}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <ScoreBadge score={item.seo_score} />
+                        <Button size="sm" variant="outline" className="h-6 text-[10px]" onClick={(e) => { e.stopPropagation(); applySeo.mutate(item.property_id); }}>
+                          <Zap className="h-3 w-3 mr-1" /> Fix
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <ScoreBadge score={item.seo_score} />
-                    <Button size="sm" variant="outline" className="h-6 text-[10px]" onClick={(e) => { e.stopPropagation(); applySeo.mutate(item.property_id); }}>
-                      <Zap className="h-3 w-3 mr-1" /> Fix
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )) : (
+                  </CardContent>
+                </Card>
+              ))}
+              <SearchPagination
+                currentPage={weakPage}
+                totalPages={Math.ceil(weakTotalCount / PAGE_SIZE)}
+                totalCount={weakTotalCount}
+                pageSize={PAGE_SIZE}
+                onPageChange={setWeakPage}
+              />
+            </>
+          ) : (
             <Card className="bg-card/60"><CardContent className="p-8 text-center text-sm text-muted-foreground">No weak listings — great job! 🎉</CardContent></Card>
           )}
         </TabsContent>
 
         {/* ─── Top Tab ─── */}
         <TabsContent value="top" className="space-y-2">
-          <p className="text-[10px] text-muted-foreground">Showing up to 25 top listings</p>
-          {topListings.length > 0 ? topListings.map(item => (
-            <Card key={item.id} className="bg-card/60 border-border/40 border-l-2 border-l-chart-1 hover:border-primary/30 cursor-pointer transition-all" onClick={() => handlePropertyClick(item)}>
-              <CardContent className="p-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{item.seo_title || 'Untitled'}</p>
-                    <div className="flex gap-1 mt-1 flex-wrap">
-                      {item.seo_keywords?.slice(0, 5).map(kw => (
-                        <Badge key={kw} variant="secondary" className="text-[8px] px-1 py-0">{kw}</Badge>
-                      ))}
+          {topListings.length > 0 ? (
+            <>
+              {topListings.map(item => (
+                <Card key={item.id} className="bg-card/60 border-border/40 border-l-2 border-l-chart-1 hover:border-primary/30 cursor-pointer transition-all" onClick={() => handlePropertyClick(item)}>
+                  <CardContent className="p-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{item.seo_title || 'Untitled'}</p>
+                        <div className="flex gap-1 mt-1 flex-wrap">
+                          {item.seo_keywords?.slice(0, 5).map(kw => (
+                            <Badge key={kw} variant="secondary" className="text-[8px] px-1 py-0">{kw}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <ScoreBadge score={item.seo_score} />
                     </div>
-                  </div>
-                  <ScoreBadge score={item.seo_score} />
-                </div>
-              </CardContent>
-            </Card>
-          )) : (
+                  </CardContent>
+                </Card>
+              ))}
+              <SearchPagination
+                currentPage={topPage}
+                totalPages={Math.ceil(topTotalCount / PAGE_SIZE)}
+                totalCount={topTotalCount}
+                pageSize={PAGE_SIZE}
+                onPageChange={setTopPage}
+              />
+            </>
+          ) : (
             <Card className="bg-card/60"><CardContent className="p-8 text-center text-sm text-muted-foreground">No excellent listings yet. Run Auto-Optimize!</CardContent></Card>
           )}
         </TabsContent>
