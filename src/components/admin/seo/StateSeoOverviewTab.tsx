@@ -98,7 +98,7 @@ const StateSeoOverviewTab = ({
     states.forEach((state, idx) => {
       // Stagger mutations slightly to avoid overwhelming the backend
       setTimeout(() => {
-        autoOptimize.mutate({ threshold: autoFixThreshold, limit: 20, state });
+        autoOptimize.mutate({ threshold: autoFixThreshold, limit: fixLimit, state });
         setBatchCompleted(prev => prev + 1);
         setCompletedStates(prev => [...prev, state]);
       }, idx * 500);
