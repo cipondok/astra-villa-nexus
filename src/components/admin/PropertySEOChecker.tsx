@@ -800,53 +800,73 @@ const PropertySEOChecker = () => {
 
         {/* ─── Weak Tab ─── */}
         <TabsContent value="weak" className="space-y-2">
-          <p className="text-[10px] text-muted-foreground">Showing up to 25 weak listings</p>
-          {weakListings.length > 0 ? weakListings.map(item => (
-            <Card key={item.id} className="bg-card/60 border-border/40 border-l-2 border-l-destructive hover:border-primary/30 cursor-pointer transition-all" onClick={() => handlePropertyClick(item)}>
-              <CardContent className="p-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{item.seo_title || 'Untitled'}</p>
-                    <div className="flex gap-1 mt-1 flex-wrap">
-                      {item.missing_keywords?.slice(0, 3).map(kw => (
-                        <Badge key={kw} variant="destructive" className="text-[8px] px-1 py-0">Missing: {kw}</Badge>
-                      ))}
+          {weakListings.length > 0 ? (
+            <>
+              {weakListings.map(item => (
+                <Card key={item.id} className="bg-card/60 border-border/40 border-l-2 border-l-destructive hover:border-primary/30 cursor-pointer transition-all" onClick={() => handlePropertyClick(item)}>
+                  <CardContent className="p-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{item.seo_title || 'Untitled'}</p>
+                        <div className="flex gap-1 mt-1 flex-wrap">
+                          {item.missing_keywords?.slice(0, 3).map(kw => (
+                            <Badge key={kw} variant="destructive" className="text-[8px] px-1 py-0">Missing: {kw}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <ScoreBadge score={item.seo_score} />
+                        <Button size="sm" variant="outline" className="h-6 text-[10px]" onClick={(e) => { e.stopPropagation(); applySeo.mutate(item.property_id); }}>
+                          <Zap className="h-3 w-3 mr-1" /> Fix
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <ScoreBadge score={item.seo_score} />
-                    <Button size="sm" variant="outline" className="h-6 text-[10px]" onClick={(e) => { e.stopPropagation(); applySeo.mutate(item.property_id); }}>
-                      <Zap className="h-3 w-3 mr-1" /> Fix
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )) : (
+                  </CardContent>
+                </Card>
+              ))}
+              <SearchPagination
+                currentPage={weakPage}
+                totalPages={Math.ceil(weakTotalCount / PAGE_SIZE)}
+                totalCount={weakTotalCount}
+                pageSize={PAGE_SIZE}
+                onPageChange={setWeakPage}
+              />
+            </>
+          ) : (
             <Card className="bg-card/60"><CardContent className="p-8 text-center text-sm text-muted-foreground">No weak listings — great job! 🎉</CardContent></Card>
           )}
         </TabsContent>
 
         {/* ─── Top Tab ─── */}
         <TabsContent value="top" className="space-y-2">
-          <p className="text-[10px] text-muted-foreground">Showing up to 25 top listings</p>
-          {topListings.length > 0 ? topListings.map(item => (
-            <Card key={item.id} className="bg-card/60 border-border/40 border-l-2 border-l-chart-1 hover:border-primary/30 cursor-pointer transition-all" onClick={() => handlePropertyClick(item)}>
-              <CardContent className="p-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{item.seo_title || 'Untitled'}</p>
-                    <div className="flex gap-1 mt-1 flex-wrap">
-                      {item.seo_keywords?.slice(0, 5).map(kw => (
-                        <Badge key={kw} variant="secondary" className="text-[8px] px-1 py-0">{kw}</Badge>
-                      ))}
+          {topListings.length > 0 ? (
+            <>
+              {topListings.map(item => (
+                <Card key={item.id} className="bg-card/60 border-border/40 border-l-2 border-l-chart-1 hover:border-primary/30 cursor-pointer transition-all" onClick={() => handlePropertyClick(item)}>
+                  <CardContent className="p-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{item.seo_title || 'Untitled'}</p>
+                        <div className="flex gap-1 mt-1 flex-wrap">
+                          {item.seo_keywords?.slice(0, 5).map(kw => (
+                            <Badge key={kw} variant="secondary" className="text-[8px] px-1 py-0">{kw}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <ScoreBadge score={item.seo_score} />
                     </div>
-                  </div>
-                  <ScoreBadge score={item.seo_score} />
-                </div>
-              </CardContent>
-            </Card>
-          )) : (
+                  </CardContent>
+                </Card>
+              ))}
+              <SearchPagination
+                currentPage={topPage}
+                totalPages={Math.ceil(topTotalCount / PAGE_SIZE)}
+                totalCount={topTotalCount}
+                pageSize={PAGE_SIZE}
+                onPageChange={setTopPage}
+              />
+            </>
+          ) : (
             <Card className="bg-card/60"><CardContent className="p-8 text-center text-sm text-muted-foreground">No excellent listings yet. Run Auto-Optimize!</CardContent></Card>
           )}
         </TabsContent>
