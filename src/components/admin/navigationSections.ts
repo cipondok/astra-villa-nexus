@@ -265,6 +265,13 @@ export const navigationSections = {
       description: "Centralized property management dashboard"
     },
     {
+      key: "property-seo-checker",
+      label: "Property SEO Checker",
+      icon: Search,
+      description: "Analyze and optimize property listing SEO scores with AI-powered suggestions",
+      badge: "New"
+    },
+    {
       key: "video-tours",
       label: "Video Tours (360°)",
       icon: Video,

@@ -35,6 +35,7 @@ import {
   ASTRATokenHub,
   ToolsManagementDashboard,
   SEOManagement,
+  PropertySEOChecker,
   ProjectDiagnosticSystem,
   IndonesianPaymentMerchantConfig,
   VendorsHubContent,
@@ -272,6 +273,7 @@ const renderSection = (
     case "customer-service-control": return <CustomerServiceControlPanel />;
     case "seo-settings":        return <SystemSettings defaultTab="seo-hub" />;
     case "seo-management":      return <SEOManagement />;
+    case "property-seo-checker": return <PropertySEOChecker />;
     case "vendor-agent-control": return <EnhancedVendorAgentControl />;
     case "authorization-monitoring": return <AuthorizationMonitoringSystem />;
     case "admin-alerts":        return <AdminAlertSystem />;
