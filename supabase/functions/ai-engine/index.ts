@@ -317,14 +317,33 @@ function computeSeoDraft(property: Record<string, unknown>, boost = 0) {
     .slice(0, 6)
     .map(toHashtag);
 
+  // --- Realistic scoring with penalties ---
   const titleLength = seoTitle.length;
   const descLength = seoDescription.length;
 
-  const titleScoreBase = clamp(100 - Math.abs(55 - titleLength) * 3, 45, 100);
-  const descriptionScoreBase = clamp(100 - Math.abs(140 - descLength) * 1.5, 45, 100);
-  const keywordScoreBase = clamp(55 + seoKeywords.length * 5, 45, 95);
-  const hashtagScoreBase = clamp(50 + seoHashtags.length * 7, 40, 95);
-  const locationScoreBase = clamp((city ? 35 : 0) + (state ? 35 : 0) + (area ? 30 : 15), 35, 100);
+  // Title score: penalize short/long titles, missing keywords
+  let titleScoreBase = clamp(100 - Math.abs(55 - titleLength) * 3, 20, 100);
+  if (title.length < 10) titleScoreBase -= 25; // very short original title
+  if (title.toLowerCase() === "property listing") titleScoreBase -= 20; // generic
+  if (!title.toLowerCase().includes(propertyType.toLowerCase())) titleScoreBase -= 10;
+
+  // Description score: penalize missing/short descriptions
+  let descriptionScoreBase = clamp(100 - Math.abs(140 - descLength) * 1.5, 20, 100);
+  if (!description || description.length < 50) descriptionScoreBase -= 30; // missing/short desc
+  if (description.length < 20) descriptionScoreBase -= 15; // very short
+
+  // Keyword score
+  const keywordScoreBase = clamp(30 + seoKeywords.length * 7, 20, 90);
+
+  // Hashtag score
+  const hashtagScoreBase = clamp(25 + seoHashtags.length * 10, 15, 90);
+
+  // Location score: heavy penalty for missing location data
+  let locationScoreBase = 0;
+  if (city) locationScoreBase += 35;
+  if (state) locationScoreBase += 35;
+  if (area) locationScoreBase += 30;
+  if (!city && !state && !area) locationScoreBase = 10; // no location at all
 
   const titleScore = clamp(Math.round(titleScoreBase + boost));
   const descriptionScore = clamp(Math.round(descriptionScoreBase + boost));
@@ -345,6 +364,12 @@ function computeSeoDraft(property: Record<string, unknown>, boost = 0) {
   const seoRating = seoScore >= 80 ? "Excellent" : seoScore >= 60 ? "Good" : seoScore >= 40 ? "Needs Improvement" : "Poor";
   const rankingDifficulty = seoScore < 45 ? "high" : seoScore < 70 ? "medium" : "low";
 
+  // Identify missing keywords
+  const missingKeywords: string[] = [];
+  const titleLower = seoTitle.toLowerCase();
+  if (!titleLower.includes(propertyType.toLowerCase())) missingKeywords.push(propertyType);
+  if (city && !titleLower.includes(city.toLowerCase())) missingKeywords.push(city);
+
   return {
     seo_title: seoTitle,
     seo_description: seoDescription,
@@ -358,7 +383,7 @@ function computeSeoDraft(property: Record<string, unknown>, boost = 0) {
     seo_score: seoScore,
     seo_rating: seoRating,
     suggested_keywords: seoKeywords,
-    missing_keywords: [],
+    missing_keywords: missingKeywords,
     ranking_difficulty: rankingDifficulty,
   };
 }
