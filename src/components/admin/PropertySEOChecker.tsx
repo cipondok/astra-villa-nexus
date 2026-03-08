@@ -732,6 +732,9 @@ const PropertySEOChecker = () => {
         </Card>
       )}
 
+      {/* Dashboard Charts */}
+      <SeoDashboardCharts stats={stats} stateSeoOverview={stateSeoOverview} />
+
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
         <TabsList className="bg-muted/40 border border-border/30 flex-wrap">
