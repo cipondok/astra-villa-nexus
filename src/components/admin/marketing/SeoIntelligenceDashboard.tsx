@@ -44,7 +44,8 @@ const SeoIntelligenceDashboard = () => {
   const [competitorType, setCompetitorType] = useState('');
 
   const { data: stats, isLoading: loadingStats, refetch: refetchStats } = useSeoStats();
-  const { data: analyses = [], isLoading: loadingAnalyses } = usePropertySeoAnalyses({ limit: 100, filter: analysisFilter });
+  const { data: analysesResult, isLoading: loadingAnalyses } = usePropertySeoAnalyses({ limit: 100, filter: analysisFilter });
+  const analyses = analysesResult?.data || [];
   const { data: trendingId = [] } = useSeoTrendKeywords({ language: 'id', limit: 15 });
   const { data: trendingEn = [] } = useSeoTrendKeywords({ language: 'en', limit: 10 });
   const analyzeBatch = useAnalyzeBatch();

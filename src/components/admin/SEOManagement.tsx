@@ -37,8 +37,10 @@ const SEOManagement = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
   const { data: stats, isLoading: statsLoading } = useSeoStats();
-  const { data: weakListings, isLoading: weakLoading } = usePropertySeoAnalyses({ limit: 10, filter: 'weak' });
-  const { data: topListings } = usePropertySeoAnalyses({ limit: 5, filter: 'excellent' });
+  const { data: weakResult, isLoading: weakLoading } = usePropertySeoAnalyses({ limit: 10, filter: 'weak' });
+  const { data: topResult } = usePropertySeoAnalyses({ limit: 5, filter: 'excellent' });
+  const weakListings = weakResult?.data || [];
+  const topListings = topResult?.data || [];
   const { data: trendKeywords, isLoading: trendsLoading } = useSeoTrendKeywords({ limit: 15 });
   const analyzeBatch = useAnalyzeBatch();
   const autoOptimize = useAutoOptimize();

@@ -16,6 +16,7 @@ import {
   usePropertySeoAnalyses,
   usePropertySeoAnalysis,
   useSeoStats,
+  useFilteredSeoStats,
   useAnalyzeBatch,
   useAutoOptimize,
   useAnalyzeProperty,
@@ -25,7 +26,9 @@ import {
   type PropertySeoAnalysis,
   type ContentOptimization,
   type SeoTrendKeyword,
+  type SeoLocationFilters,
 } from '@/hooks/useSeoIntelligence';
+import SearchPagination from '@/components/search/SearchPagination';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
