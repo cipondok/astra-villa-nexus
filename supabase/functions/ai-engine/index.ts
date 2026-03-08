@@ -528,6 +528,8 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
       const locArea = normalizeText(payload.area);
       const hasLocationFilter = !!(locState || locCity || locArea);
 
+      let weakRows: any[] = [];
+
       // If location filter, get matching property IDs then find weak ones among them
       if (hasLocationFilter) {
         let locQuery = supabase.from("properties").select("id");
@@ -544,8 +546,7 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
 
         // Batch into chunks of 50 to avoid URL length limits
         const CHUNK_SIZE = 50;
-        let allWeakRows: any[] = [];
-        for (let i = 0; i < locationPropertyIds.length && allWeakRows.length < limit; i += CHUNK_SIZE) {
+        for (let i = 0; i < locationPropertyIds.length && weakRows.length < limit; i += CHUNK_SIZE) {
           const chunk = locationPropertyIds.slice(i, i + CHUNK_SIZE);
           const { data: chunkRows } = await supabase
             .from("property_seo_analysis")
@@ -553,10 +554,10 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
             .lt("seo_score", threshold)
             .in("property_id", chunk)
             .order("seo_score", { ascending: true })
-            .limit(limit - allWeakRows.length);
-          if (chunkRows) allWeakRows = allWeakRows.concat(chunkRows);
+            .limit(limit - weakRows.length);
+          if (chunkRows) weakRows = weakRows.concat(chunkRows);
         }
-        weakRows = allWeakRows.slice(0, limit);
+        weakRows = weakRows.slice(0, limit);
       } else {
         const { data, error: weakError } = await supabase
           .from("property_seo_analysis")
@@ -568,16 +569,11 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
         weakRows = data || [];
       }
 
-      const { data: weakRows, error: weakError } = await weakQuery;
-
-      if (weakError) return json({ error: weakError.message }, 500);
-      if (!weakRows || weakRows.length === 0) {
+      if (weakRows.length === 0) {
         return json({ action, optimized: 0, threshold, message: "No weak listings found" });
       }
 
-      // Apply limit after location filtering
-      const limitedWeakRows = weakRows.slice(0, limit);
-      const ids = limitedWeakRows.map((r) => r.property_id).filter(Boolean);
+      const ids = weakRows.map((r: any) => r.property_id).filter(Boolean);
       const { data: properties, error: propError } = await supabase
         .from("properties")
         .select(SEO_PROPERTY_SELECT)
