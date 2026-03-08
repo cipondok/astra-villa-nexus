@@ -227,6 +227,35 @@ async function handleMatchProperty(payload: Record<string, unknown>) {
 
 const SEO_PROPERTY_SELECT = "id,title,description,property_type,listing_type,location,city,state,bedrooms,bathrooms,price";
 
+// Compute image alt score by checking property_images alt_text coverage
+async function computeImageScore(
+  supabase: ReturnType<typeof createClient>,
+  propertyId: string
+): Promise<number> {
+  try {
+    const { data: images } = await supabase
+      .from("property_images")
+      .select("alt_text")
+      .eq("property_id", propertyId)
+      .limit(20);
+
+    if (!images || images.length === 0) return 15; // no images = low score
+
+    const withAlt = images.filter(
+      (img: any) => img.alt_text && img.alt_text.trim().length > 5
+    ).length;
+    const ratio = withAlt / images.length;
+
+    // Score: base 20 for having images, up to 100 based on alt text coverage
+    let score = 20 + Math.round(ratio * 70);
+    if (images.length >= 5) score += 5; // bonus for having many images
+    if (images.length >= 10) score += 5;
+    return clamp(score);
+  } catch {
+    return 20; // fallback on error
+  }
+}
+
 function clamp(value: number, min = 0, max = 100) {
   return Math.max(min, Math.min(max, value));
 }
