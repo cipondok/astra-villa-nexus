@@ -640,8 +640,8 @@ const PropertySEOChecker = () => {
         <TabsList className="bg-muted/40 border border-border/30 flex-wrap">
           <TabsTrigger value="dashboard" className="text-xs gap-1"><BarChart3 className="h-3 w-3" />All Properties</TabsTrigger>
           <TabsTrigger value="states" className="text-xs gap-1"><MapPin className="h-3 w-3" />State Overview</TabsTrigger>
-          <TabsTrigger value="weak" className="text-xs gap-1"><AlertTriangle className="h-3 w-3" />Weak ({weakListings.length})</TabsTrigger>
-          <TabsTrigger value="top" className="text-xs gap-1"><CheckCircle2 className="h-3 w-3" />Top ({topListings.length})</TabsTrigger>
+          <TabsTrigger value="weak" className="text-xs gap-1"><AlertTriangle className="h-3 w-3" />Weak ({weakTotalCount})</TabsTrigger>
+          <TabsTrigger value="top" className="text-xs gap-1"><CheckCircle2 className="h-3 w-3" />Top ({topTotalCount})</TabsTrigger>
           <TabsTrigger value="keywords" className="text-xs gap-1"><Flame className="h-3 w-3" />Keywords</TabsTrigger>
           {currentAnalysis && <TabsTrigger value="detail" className="text-xs gap-1"><Eye className="h-3 w-3" />Detail</TabsTrigger>}
         </TabsList>
