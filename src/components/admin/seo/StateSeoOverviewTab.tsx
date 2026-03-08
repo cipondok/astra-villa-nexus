@@ -20,7 +20,7 @@ interface StateSeoOverviewTabProps {
   setAutoFixThreshold: React.Dispatch<React.SetStateAction<number>>;
   showAutoFixConfirm: boolean;
   setShowAutoFixConfirm: React.Dispatch<React.SetStateAction<boolean>>;
-  autoOptimize: { mutate: (args: { threshold: number; limit: number; state?: string }) => void; isPending: boolean };
+  autoOptimize: { mutate: (args: { threshold: number; limit: number; state?: string }) => void; mutateAsync: (args: { threshold: number; limit: number; state?: string }) => Promise<any>; isPending: boolean };
   filterState: string;
   setFilterState: (state: string) => void;
   setActiveTab: (tab: string) => void;
@@ -88,23 +88,26 @@ const StateSeoOverviewTab = ({
     return () => { if (batchTimerRef.current) clearTimeout(batchTimerRef.current); };
   }, [batchCompleted, batchTotal, batchRunning]);
 
-  const handleConfirmFix = useCallback(() => {
+  const handleConfirmFix = useCallback(async () => {
     const states = Array.from(selectedStates);
+    if (states.length === 0) return;
     setBatchTotal(states.length);
     setBatchCompleted(0);
     setCompletedStates([]);
     setBatchRunning(true);
-
-    states.forEach((state, idx) => {
-      // Stagger mutations slightly to avoid overwhelming the backend
-      setTimeout(() => {
-        autoOptimize.mutate({ threshold: autoFixThreshold, limit: fixLimit, state });
-        setBatchCompleted(prev => prev + 1);
-        setCompletedStates(prev => [...prev, state]);
-      }, idx * 500);
-    });
     setShowAutoFixConfirm(false);
-  }, [selectedStates, autoOptimize, autoFixThreshold, setShowAutoFixConfirm]);
+
+    // Run sequentially so each mutateAsync completes before the next starts
+    for (const state of states) {
+      try {
+        await autoOptimize.mutateAsync({ threshold: autoFixThreshold, limit: fixLimit, state });
+      } catch (e) {
+        console.error(`Auto-fix failed for ${state}:`, e);
+      }
+      setBatchCompleted(prev => prev + 1);
+      setCompletedStates(prev => [...prev, state]);
+    }
+  }, [selectedStates, autoOptimize, autoFixThreshold, fixLimit, setShowAutoFixConfirm]);
 
   return (
     <div className="space-y-3">
