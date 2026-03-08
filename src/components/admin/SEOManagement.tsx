@@ -66,7 +66,7 @@ const SEOManagement = () => {
             Analyze Batch
           </Button>
           <Button
-            onClick={() => autoOptimize.mutate({ threshold: 50, limit: 10 })}
+            onClick={() => autoOptimize.mutate({ threshold: 70, limit: 20 })}
             disabled={autoOptimize.isPending}
           >
             {autoOptimize.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Zap className="h-4 w-4 mr-2" />}
