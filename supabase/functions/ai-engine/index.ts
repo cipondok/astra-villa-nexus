@@ -296,7 +296,7 @@ function ensureLength(text: string, min: number, max: number, filler: string) {
   return output.trim();
 }
 
-function computeSeoDraft(property: Record<string, unknown>, boost = 0) {
+function computeSeoDraft(property: Record<string, unknown>, boost = 0, imageScore = 20) {
   const title = normalizeText(property.title) || "Property Listing";
   const description = normalizeText(property.description);
   const propertyType = normalizeText(property.property_type) || "property";
