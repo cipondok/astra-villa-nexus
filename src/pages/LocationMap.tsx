@@ -1,18 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import { SEOHead } from '@/components/SEOHead';
 import { useTranslation } from "@/i18n/useTranslation";
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Building2, Home, TrendingUp, Search, Filter, ChevronRight, ArrowLeft, Loader2, Navigation2, Globe2, Star, Layers } from 'lucide-react';
-import { IndonesiaMap, Province } from '@/components/location/IndonesiaMap';
+import { Province } from '@/components/location/IndonesiaMap';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Progress } from '@/components/ui/progress';
 import { useProvincePropertyCounts, useTotalPropertyCount } from '@/hooks/useProvincePropertyCounts';
 import ProvincePropertiesModal from '@/components/location/ProvincePropertiesModal';
 import { useLastSelectedProvince } from '@/hooks/useLastSelectedProvince';
+
+// Lazy-load the heavy map component
+const IndonesiaMap = lazy(() => import('@/components/location/IndonesiaMap').then(mod => ({ default: mod.IndonesiaMap })));
 
 const provinceNameToId: Record<string, string> = {
   'Aceh': 'aceh', 'Sumatera Utara': 'sumut', 'Sumatera Barat': 'sumbar', 'Riau': 'riau',
@@ -93,6 +98,22 @@ const LocationMap = () => {
 
   const isLoading = isLoadingCounts || isLoadingTotal;
 
+  // Loading progress simulation for better UX
+  const [loadProgress, setLoadProgress] = useState(0);
+  useEffect(() => {
+    if (!isLoading) {
+      setLoadProgress(100);
+      return;
+    }
+    const timer = setInterval(() => {
+      setLoadProgress(prev => {
+        if (prev >= 90) { clearInterval(timer); return prev; }
+        return prev + Math.random() * 15;
+      });
+    }, 200);
+    return () => clearInterval(timer);
+  }, [isLoading]);
+
   const filteredProvinces = provinces.filter(p =>
     p.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -135,6 +156,20 @@ const LocationMap = () => {
     { label: 'Agen Aktif', value: '12.3K', icon: TrendingUp, gradient: 'from-gold-primary to-chart-3', bg: 'bg-gold-primary/10 dark:bg-gold-primary/20', text: 'text-gold-primary' },
   ];
 
+  // Map loading fallback
+  const MapLoadingSkeleton = () => (
+    <div className="relative w-full aspect-[2/1] flex flex-col items-center justify-center gap-4 bg-muted/30">
+      <Loader2 className="h-10 w-10 text-primary animate-spin" />
+      <div className="text-center space-y-1">
+        <p className="text-sm font-semibold text-foreground">Memuat Peta Indonesia...</p>
+        <p className="text-xs text-muted-foreground">Loading interactive map</p>
+      </div>
+      <div className="w-48">
+        <Progress value={loadProgress} className="h-1.5" />
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       <SEOHead
@@ -142,6 +177,18 @@ const LocationMap = () => {
         description={t('seo.locationMap.description')}
         keywords="peta properti indonesia, properti per provinsi, lokasi properti, peta real estate"
       />
+
+      {/* Top loading bar */}
+      {isLoading && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed top-0 left-0 right-0 z-50"
+        >
+          <Progress value={loadProgress} className="h-1 rounded-none" />
+        </motion.div>
+      )}
+
       {/* Decorative background blobs */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-primary/10 dark:bg-primary/15 blur-3xl" />
@@ -242,11 +289,13 @@ const LocationMap = () => {
               <span>Klik provinsi untuk detail</span>
             </div>
           </div>
-          <IndonesiaMap
-            onProvinceSelect={handleProvinceSelect}
-            selectedProvince={selectedProvince}
-            userProvince={lastProvince?.id || null}
-          />
+          <Suspense fallback={<MapLoadingSkeleton />}>
+            <IndonesiaMap
+              onProvinceSelect={handleProvinceSelect}
+              selectedProvince={selectedProvince}
+              userProvince={lastProvince?.id || null}
+            />
+          </Suspense>
         </motion.div>
 
         {/* ── POPULAR PROVINCES ── */}
