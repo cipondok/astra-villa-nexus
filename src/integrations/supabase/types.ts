@@ -29708,6 +29708,29 @@ export type Database = {
           visitor_count: number
         }[]
       }
+      get_weak_seo_properties: {
+        Args: {
+          p_area?: string
+          p_city?: string
+          p_limit?: number
+          p_state?: string
+          p_threshold?: number
+        }
+        Returns: {
+          bathrooms: number
+          bedrooms: number
+          city: string
+          description: string
+          listing_type: string
+          location: string
+          price: number
+          property_id: string
+          property_type: string
+          seo_score: number
+          state: string
+          title: string
+        }[]
+      }
       has_editor_access: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
