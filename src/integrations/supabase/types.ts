@@ -1989,6 +1989,92 @@ export type Database = {
           },
         ]
       }
+      ai_job_tasks: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          job_id: string
+          payload: Json | null
+          result: Json | null
+          status: string
+          task_type: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          job_id: string
+          payload?: Json | null
+          result?: Json | null
+          status?: string
+          task_type: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          job_id?: string
+          payload?: Json | null
+          result?: Json | null
+          status?: string
+          task_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_job_tasks_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "ai_jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_jobs: {
+        Row: {
+          completed_at: string | null
+          completed_tasks: number
+          created_at: string
+          created_by: string | null
+          error_message: string | null
+          id: string
+          job_type: string
+          payload: Json | null
+          progress: number
+          started_at: string | null
+          status: string
+          total_tasks: number
+        }
+        Insert: {
+          completed_at?: string | null
+          completed_tasks?: number
+          created_at?: string
+          created_by?: string | null
+          error_message?: string | null
+          id?: string
+          job_type: string
+          payload?: Json | null
+          progress?: number
+          started_at?: string | null
+          status?: string
+          total_tasks?: number
+        }
+        Update: {
+          completed_at?: string | null
+          completed_tasks?: number
+          created_at?: string
+          created_by?: string | null
+          error_message?: string | null
+          id?: string
+          job_type?: string
+          payload?: Json | null
+          progress?: number
+          started_at?: string | null
+          status?: string
+          total_tasks?: number
+        }
+        Relationships: []
+      }
       ai_learning_snapshots: {
         Row: {
           adjustments: Json | null

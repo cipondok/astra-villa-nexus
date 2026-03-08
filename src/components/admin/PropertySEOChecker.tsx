@@ -35,6 +35,7 @@ import { cn } from '@/lib/utils';
 import StateSeoOverviewTab from './seo/StateSeoOverviewTab';
 import SeoHistoryTab from './seo/SeoHistoryTab';
 import SeoDashboardCharts from './seo/SeoDashboardCharts';
+import AiJobsTab from './seo/AiJobsTab';
 
 // ─── Helpers ────────────────────────────────────────────────
 const ScoreBadge = ({ score }: { score: number }) => {
@@ -745,6 +746,7 @@ const PropertySEOChecker = () => {
           <TabsTrigger value="top" className="text-xs gap-1"><CheckCircle2 className="h-3 w-3" />Top ({topTotalCount})</TabsTrigger>
           <TabsTrigger value="keywords" className="text-xs gap-1"><Flame className="h-3 w-3" />Keywords</TabsTrigger>
           <TabsTrigger value="history" className="text-xs gap-1"><TrendingUp className="h-3 w-3" />History</TabsTrigger>
+          <TabsTrigger value="jobs" className="text-xs gap-1"><Loader2 className="h-3 w-3" />AI Jobs</TabsTrigger>
           {currentAnalysis && <TabsTrigger value="detail" className="text-xs gap-1"><Eye className="h-3 w-3" />Detail</TabsTrigger>}
         </TabsList>
 
@@ -986,6 +988,11 @@ const PropertySEOChecker = () => {
         {/* ─── History Tab ─── */}
         <TabsContent value="history" className="space-y-3">
           <SeoHistoryTab />
+        </TabsContent>
+
+        {/* ─── AI Jobs Tab ─── */}
+        <TabsContent value="jobs" className="space-y-3">
+          <AiJobsTab />
         </TabsContent>
 
         {/* ─── Detail View Tab ─── */}

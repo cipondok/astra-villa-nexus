@@ -7,9 +7,10 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Loader2, MapPin, Lock, ShieldCheck, Shield, AlertTriangle, Zap } from 'lucide-react';
+import { Loader2, MapPin, Lock, ShieldCheck, Shield, AlertTriangle, Zap, Server } from 'lucide-react';
 import SeoStateSummaryCards from './SeoStateSummaryCards';
 import ProvinceRow, { type ProvinceData } from './ProvinceRow';
+import { useCreateJob } from '@/hooks/useAiJobs';
 
 interface StateSeoOverviewTabProps {
   stateSeoOverview: ProvinceData[];
@@ -88,26 +89,33 @@ const StateSeoOverviewTab = ({
     return () => { if (batchTimerRef.current) clearTimeout(batchTimerRef.current); };
   }, [batchCompleted, batchTotal, batchRunning]);
 
-  const handleConfirmFix = useCallback(async () => {
+  const createJob = useCreateJob();
+
+  const handleConfirmFix = useCallback(() => {
     const states = Array.from(selectedStates);
     if (states.length === 0) return;
-    setBatchTotal(states.length);
-    setBatchCompleted(0);
-    setCompletedStates([]);
-    setBatchRunning(true);
     setShowAutoFixConfirm(false);
 
-    // Run sequentially so each mutateAsync completes before the next starts
-    for (const state of states) {
-      try {
-        await autoOptimize.mutateAsync({ threshold: autoFixThreshold, limit: fixLimit, state });
-      } catch (e) {
-        console.error(`Auto-fix failed for ${state}:`, e);
-      }
-      setBatchCompleted(prev => prev + 1);
-      setCompletedStates(prev => [...prev, state]);
-    }
-  }, [selectedStates, autoOptimize, autoFixThreshold, fixLimit, setShowAutoFixConfirm]);
+    // Create a server-side job instead of running client-side mutations
+    createJob.mutate({
+      job_type: 'seo_optimize',
+      payload: {
+        threshold: autoFixThreshold,
+        limit: fixLimit,
+        states,
+      },
+    });
+
+    setBatchTotal(states.length);
+    setBatchRunning(true);
+    setBatchCompleted(0);
+    setCompletedStates([]);
+
+    // Auto-clear UI indicator after a moment
+    setTimeout(() => {
+      setBatchRunning(false);
+    }, 4000);
+  }, [selectedStates, autoFixThreshold, fixLimit, setShowAutoFixConfirm, createJob]);
 
   return (
     <div className="space-y-3">
