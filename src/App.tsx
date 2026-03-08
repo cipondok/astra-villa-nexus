@@ -415,6 +415,7 @@ const AppContent = () => {
                 </Route>
                 <Route path="/ai-map" element={<AIMapSearchPage />} />
                 <Route path="/map-search" element={<AIMapSearchPage />} />
+                <Route path="/property-map" element={<PropertyMapSearchPage />} />
                 <Route path="/digital-twin/:id" element={<DigitalTwinPage />} />
                 <Route path="/virtual-staging" element={<VirtualStagingPage />} />
                 <Route path="/market-report" element={<MarketReportPage />} />
