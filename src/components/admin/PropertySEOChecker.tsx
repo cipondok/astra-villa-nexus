@@ -33,6 +33,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
 import StateSeoOverviewTab from './seo/StateSeoOverviewTab';
+import SeoHistoryTab from './seo/SeoHistoryTab';
 
 // ─── Helpers ────────────────────────────────────────────────
 const ScoreBadge = ({ score }: { score: number }) => {
@@ -738,6 +739,7 @@ const PropertySEOChecker = () => {
           <TabsTrigger value="weak" className="text-xs gap-1"><AlertTriangle className="h-3 w-3" />Weak ({weakTotalCount})</TabsTrigger>
           <TabsTrigger value="top" className="text-xs gap-1"><CheckCircle2 className="h-3 w-3" />Top ({topTotalCount})</TabsTrigger>
           <TabsTrigger value="keywords" className="text-xs gap-1"><Flame className="h-3 w-3" />Keywords</TabsTrigger>
+          <TabsTrigger value="history" className="text-xs gap-1"><TrendingUp className="h-3 w-3" />History</TabsTrigger>
           {currentAnalysis && <TabsTrigger value="detail" className="text-xs gap-1"><Eye className="h-3 w-3" />Detail</TabsTrigger>}
         </TabsList>
 
@@ -974,6 +976,11 @@ const PropertySEOChecker = () => {
               )}
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* ─── History Tab ─── */}
+        <TabsContent value="history" className="space-y-3">
+          <SeoHistoryTab />
         </TabsContent>
 
         {/* ─── Detail View Tab ─── */}
