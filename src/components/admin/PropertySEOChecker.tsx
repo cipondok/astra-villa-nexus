@@ -978,6 +978,11 @@ const PropertySEOChecker = () => {
           </Card>
         </TabsContent>
 
+        {/* ─── History Tab ─── */}
+        <TabsContent value="history" className="space-y-3">
+          <SeoHistoryTab />
+        </TabsContent>
+
         {/* ─── Detail View Tab ─── */}
         <TabsContent value="detail">
           {currentAnalysis ? (
