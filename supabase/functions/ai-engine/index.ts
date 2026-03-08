@@ -450,7 +450,7 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
       let candidates: Record<string, unknown>[] = [];
 
       if (filter === "unanalyzed") {
-        // Use NOT IN subquery approach to reliably find unanalyzed properties
+        // Fetch analyzed IDs (limited set), then fetch random properties excluding them
         const { data: existing, error: existingError } = await supabase
           .from("property_seo_analysis")
           .select("property_id")
@@ -458,23 +458,24 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
           .limit(10000);
 
         if (existingError) return json({ error: existingError.message }, 500);
+        const analyzedIds = new Set((existing || []).map((row: any) => row.property_id));
 
-        const analyzedIds = (existing || []).map((row: any) => row.property_id).filter(Boolean);
+        // Fetch more candidates than needed to filter client-side
+        const fetchSize = Math.min(limit * 10, 500);
+        // Use a random offset to avoid always hitting same properties
+        const randomOffset = Math.floor(Math.random() * 1000);
 
-        let query = supabase
+        const { data: allCandidates, error: fetchError } = await supabase
           .from("properties")
           .select(SEO_PROPERTY_SELECT)
-          .order("updated_at", { ascending: false })
-          .limit(limit);
+          .order("created_at", { ascending: false })
+          .range(randomOffset, randomOffset + fetchSize - 1);
 
-        if (analyzedIds.length > 0) {
-          // Filter out already-analyzed properties
-          query = query.not("id", "in", `(${analyzedIds.join(",")})`);
-        }
-
-        const { data, error: fetchError } = await query;
         if (fetchError) return json({ error: fetchError.message }, 500);
-        candidates = (data || []) as Record<string, unknown>[];
+
+        candidates = ((allCandidates || []) as Record<string, unknown>[])
+          .filter((p) => !analyzedIds.has(p.id as string))
+          .slice(0, limit);
       } else {
         const { data, error: fetchError } = await supabase
           .from("properties")
