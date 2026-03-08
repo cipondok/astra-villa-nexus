@@ -604,7 +604,7 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
           };
           const currentScore = Number(row.seo_score) || 0;
           const boost = clamp(Math.round((threshold + 15 - currentScore) * 0.6), 8, 30);
-          return upsertSeoAnalysis(supabase, property, boost);
+          return upsertSeoAnalysis(supabase, property, boost, "auto_optimize", threshold);
         })
       );
 
