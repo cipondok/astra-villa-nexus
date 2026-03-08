@@ -5,11 +5,12 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Search, RefreshCw, Zap, CheckCircle2, XCircle, AlertTriangle, 
   Loader2, Target, TrendingUp, Globe, BarChart3, FileText, 
   Hash, Eye, Lightbulb, ArrowUpRight, ArrowDownRight, Minus,
-  Sparkles, X, Plus, Tag, Flame, Shield, ChevronDown
+  Sparkles, X, Plus, Tag, Flame, Shield, ChevronDown, MapPin
 } from 'lucide-react';
 import {
   usePropertySeoAnalyses,
@@ -77,20 +78,121 @@ const KeywordStrengthBadge = ({ volume, competition }: { volume: number; competi
   );
 };
 
-// ─── Property Search Hook ────────────────────────────────────
-function usePropertySearch(searchTerm: string) {
+// ─── Progress Overlay ────────────────────────────────────────
+const AnalysisProgress = ({ label, isPending }: { label: string; isPending: boolean }) => {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (!isPending) { setProgress(0); return; }
+    setProgress(5);
+    const interval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 95) return 95;
+        return prev + Math.random() * 8;
+      });
+    }, 400);
+    return () => clearInterval(interval);
+  }, [isPending]);
+
+  // When done, flash to 100
+  useEffect(() => {
+    if (!isPending && progress > 0) {
+      setProgress(100);
+      const t = setTimeout(() => setProgress(0), 1200);
+      return () => clearTimeout(t);
+    }
+  }, [isPending]);
+
+  if (!isPending && progress === 0) return null;
+
+  return (
+    <Card className="bg-primary/5 border-primary/20 animate-in fade-in">
+      <CardContent className="p-3">
+        <div className="flex items-center gap-3">
+          <Loader2 className="h-4 w-4 animate-spin text-primary shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium text-foreground">{label}</p>
+            <Progress value={progress} className="h-1.5 mt-1.5" />
+          </div>
+          <span className="text-xs font-bold text-primary tabular-nums">{Math.round(progress)}%</span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+// ─── Location Filters Hook ──────────────────────────────────
+function useLocationFilters() {
+  const { data: states = [] } = useQuery({
+    queryKey: ['seo-filter-states'],
+    queryFn: async () => {
+      const { data, error } = await (supabase.from('properties') as any)
+        .select('state')
+        .not('state', 'is', null)
+        .limit(1000);
+      if (error) throw error;
+      const unique = [...new Set((data || []).map((d: any) => d.state).filter(Boolean))].sort() as string[];
+      return unique;
+    },
+    staleTime: 10 * 60 * 1000,
+  });
+
+  return { states };
+}
+
+function useCitiesByState(state: string) {
   return useQuery({
-    queryKey: ['property-search-seo', searchTerm],
+    queryKey: ['seo-filter-cities', state],
+    queryFn: async () => {
+      const { data, error } = await (supabase.from('properties') as any)
+        .select('city')
+        .eq('state', state)
+        .not('city', 'is', null)
+        .limit(1000);
+      if (error) throw error;
+      const unique = [...new Set((data || []).map((d: any) => d.city).filter(Boolean))].sort() as string[];
+      return unique;
+    },
+    enabled: !!state,
+    staleTime: 10 * 60 * 1000,
+  });
+}
+
+function useAreasByCity(city: string) {
+  return useQuery({
+    queryKey: ['seo-filter-areas', city],
+    queryFn: async () => {
+      const { data, error } = await (supabase.from('properties') as any)
+        .select('location')
+        .eq('city', city)
+        .not('location', 'is', null)
+        .limit(1000);
+      if (error) throw error;
+      const unique = [...new Set((data || []).map((d: any) => d.location).filter(Boolean))].sort() as string[];
+      return unique;
+    },
+    enabled: !!city,
+    staleTime: 10 * 60 * 1000,
+  });
+}
+
+// ─── Property Search Hook ────────────────────────────────────
+function usePropertySearch(searchTerm: string, filters: { state?: string; city?: string; area?: string }) {
+  return useQuery({
+    queryKey: ['property-search-seo', searchTerm, filters],
     queryFn: async () => {
       let query = (supabase.from('properties') as any)
-        .select('id, title, location, property_type')
-        .limit(20);
+        .select('id, title, location, property_type, state, city')
+        .limit(25);
       if (searchTerm.trim()) {
         query = query.ilike('title', `%${searchTerm}%`);
       }
+      if (filters.state) query = query.eq('state', filters.state);
+      if (filters.city) query = query.eq('city', filters.city);
+      if (filters.area) query = query.ilike('location', `%${filters.area}%`);
       const { data, error } = await query;
       if (error) throw error;
-      return (data || []) as { id: string; title: string; location: string; property_type: string }[];
+      return (data || []) as { id: string; title: string; location: string; property_type: string; state: string; city: string }[];
     },
     enabled: searchTerm.length >= 2 || searchTerm.length === 0,
     staleTime: 30 * 1000,
@@ -103,6 +205,11 @@ const PropertySEOChecker = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
   const [selectedAnalysis, setSelectedAnalysis] = useState<PropertySeoAnalysis | null>(null);
+  
+  // Location filters
+  const [filterState, setFilterState] = useState('');
+  const [filterCity, setFilterCity] = useState('');
+  const [filterArea, setFilterArea] = useState('');
   
   // Manual property search
   const [propertySearch, setPropertySearch] = useState('');
@@ -119,12 +226,17 @@ const PropertySEOChecker = () => {
   // AI optimization state
   const [aiResult, setAiResult] = useState<ContentOptimization | null>(null);
 
+  // Location data
+  const { states } = useLocationFilters();
+  const { data: cities = [] } = useCitiesByState(filterState);
+  const { data: areas = [] } = useAreasByCity(filterCity);
+
   // Hooks
   const { data: stats, isLoading: statsLoading } = useSeoStats();
   const { data: allAnalyses = [], isLoading: analysesLoading } = usePropertySeoAnalyses({ limit: 100 });
-  const { data: weakListings = [] } = usePropertySeoAnalyses({ limit: 20, filter: 'weak' });
-  const { data: topListings = [] } = usePropertySeoAnalyses({ limit: 10, filter: 'excellent' });
-  const { data: searchResults = [] } = usePropertySearch(propertySearch);
+  const { data: weakListings = [] } = usePropertySeoAnalyses({ limit: 25, filter: 'weak' });
+  const { data: topListings = [] } = usePropertySeoAnalyses({ limit: 25, filter: 'excellent' });
+  const { data: searchResults = [] } = usePropertySearch(propertySearch, { state: filterState, city: filterCity, area: filterArea });
   const { data: trendKeywords = [], isLoading: trendsLoading } = useSeoTrendKeywords({ 
     category: trendCategory || undefined, 
     language: trendLanguage || undefined, 
@@ -136,6 +248,10 @@ const PropertySEOChecker = () => {
   const analyzeProperty = useAnalyzeProperty();
   const applySeo = useApplySeo();
   const contentOptimize = useContentOptimize();
+
+  // Reset city/area on state change
+  useEffect(() => { setFilterCity(''); setFilterArea(''); }, [filterState]);
+  useEffect(() => { setFilterArea(''); }, [filterCity]);
 
   // Auto-analyze on property click if stale (>1hr)
   const handlePropertyClick = useCallback((analysis: PropertySeoAnalysis) => {
@@ -222,11 +338,13 @@ const PropertySEOChecker = () => {
     }
   };
 
-  const filteredAnalyses = allAnalyses.filter(item =>
-    !searchQuery || 
-    item.seo_title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.seo_keywords?.some(k => k.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  const filteredAnalyses = useMemo(() => {
+    return allAnalyses.filter(item =>
+      (!searchQuery || 
+        item.seo_title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.seo_keywords?.some(k => k.toLowerCase().includes(searchQuery.toLowerCase())))
+    ).slice(0, 25);
+  }, [allAnalyses, searchQuery]);
 
   const getScoreBreakdown = (analysis: PropertySeoAnalysis) => [
     { label: 'Title Optimization', passed: analysis.title_score >= 70, suggestion: analysis.title_score >= 70 ? 'Title is well-optimized' : 'Improve title with target keywords and proper length (50-60 chars)' },
@@ -238,7 +356,7 @@ const PropertySEOChecker = () => {
 
   return (
     <div className="space-y-4">
-      {/* Header + Manual Property Selector */}
+      {/* Header + Actions */}
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
           <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
@@ -259,13 +377,68 @@ const PropertySEOChecker = () => {
         </div>
       </div>
 
+      {/* Progress Indicators */}
+      <AnalysisProgress label="Analyzing batch properties... This may take a moment." isPending={analyzeBatch.isPending} />
+      <AnalysisProgress label="Auto-optimizing weak listings..." isPending={autoOptimize.isPending} />
+      <AnalysisProgress label="Analyzing property SEO..." isPending={analyzeProperty.isPending} />
+
+      {/* Location Filters */}
+      <Card className="bg-card/60 border-border/40">
+        <CardContent className="p-3">
+          <div className="flex items-center gap-2 mb-2">
+            <MapPin className="h-3.5 w-3.5 text-primary" />
+            <span className="text-xs font-medium">Filter by Location</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <Select value={filterState} onValueChange={setFilterState}>
+              <SelectTrigger className="h-8 text-xs">
+                <SelectValue placeholder="All States / Provinces" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">All States</SelectItem>
+                {states.map(s => (
+                  <SelectItem key={s} value={s}>{s}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={filterCity} onValueChange={setFilterCity} disabled={!filterState || filterState === '__all__'}>
+              <SelectTrigger className="h-8 text-xs">
+                <SelectValue placeholder="All Cities" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">All Cities</SelectItem>
+                {cities.map(c => (
+                  <SelectItem key={c} value={c}>{c}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={filterArea} onValueChange={setFilterArea} disabled={!filterCity || filterCity === '__all__'}>
+              <SelectTrigger className="h-8 text-xs">
+                <SelectValue placeholder="All Areas" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__all__">All Areas</SelectItem>
+                {areas.map(a => (
+                  <SelectItem key={a} value={a}>{a}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          {(filterState && filterState !== '__all__') && (
+            <Button variant="ghost" size="sm" className="h-6 text-[10px] mt-2" onClick={() => { setFilterState(''); setFilterCity(''); setFilterArea(''); }}>
+              <X className="h-3 w-3 mr-1" /> Clear Filters
+            </Button>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Manual Property Selector */}
       <Card className="bg-card/60 border-border/40">
         <CardContent className="p-3">
           <div className="flex items-center gap-2 mb-2">
             <Target className="h-3.5 w-3.5 text-primary" />
             <span className="text-xs font-medium">Manual Property Selector</span>
-            {analyzeProperty.isPending && <Loader2 className="h-3 w-3 animate-spin text-primary" />}
+            {analyzeProperty.isPending && <Badge variant="secondary" className="text-[10px] animate-pulse"><Loader2 className="h-2.5 w-2.5 mr-1 animate-spin" />Analyzing...</Badge>}
           </div>
           <div className="relative">
             <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
@@ -292,7 +465,7 @@ const PropertySEOChecker = () => {
                     onClick={() => handleManualSelect(p)}
                   >
                     <p className="text-xs font-medium truncate">{p.title}</p>
-                    <p className="text-[10px] text-muted-foreground">{p.location} · {p.property_type}</p>
+                    <p className="text-[10px] text-muted-foreground">{p.location} · {p.property_type} {p.state ? `· ${p.state}` : ''}</p>
                   </button>
                 ))}
               </div>
@@ -366,6 +539,7 @@ const PropertySEOChecker = () => {
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Search by title or keyword..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-9 h-9" />
           </div>
+          <p className="text-[10px] text-muted-foreground">Showing {filteredAnalyses.length} of {allAnalyses.length} records (max 25)</p>
           {analysesLoading ? (
             <div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
           ) : filteredAnalyses.length > 0 ? (
@@ -412,6 +586,7 @@ const PropertySEOChecker = () => {
 
         {/* ─── Weak Tab ─── */}
         <TabsContent value="weak" className="space-y-2">
+          <p className="text-[10px] text-muted-foreground">Showing up to 25 weak listings</p>
           {weakListings.length > 0 ? weakListings.map(item => (
             <Card key={item.id} className="bg-card/60 border-border/40 border-l-2 border-l-destructive hover:border-primary/30 cursor-pointer transition-all" onClick={() => handlePropertyClick(item)}>
               <CardContent className="p-3">
@@ -440,6 +615,7 @@ const PropertySEOChecker = () => {
 
         {/* ─── Top Tab ─── */}
         <TabsContent value="top" className="space-y-2">
+          <p className="text-[10px] text-muted-foreground">Showing up to 25 top listings</p>
           {topListings.length > 0 ? topListings.map(item => (
             <Card key={item.id} className="bg-card/60 border-border/40 border-l-2 border-l-chart-1 hover:border-primary/30 cursor-pointer transition-all" onClick={() => handlePropertyClick(item)}>
               <CardContent className="p-3">
@@ -810,6 +986,7 @@ const PropertySEOChecker = () => {
                   <CardContent className="p-6 text-center">
                     <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
                     <p className="text-xs text-muted-foreground">AI is analyzing and optimizing content...</p>
+                    <Progress value={65} className="h-1.5 mt-3 max-w-xs mx-auto" />
                   </CardContent>
                 </Card>
               )}
