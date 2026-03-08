@@ -336,10 +336,17 @@ const PropertySEOChecker = () => {
 
   // Hooks
   const { data: stats, isLoading: statsLoading } = useSeoStats();
+  const { data: filteredStats } = useFilteredSeoStats(locationFilters);
   const { data: stateSeoOverview = [], isLoading: stateOverviewLoading } = useStateSeoStats();
-  const { data: allAnalyses = [], isLoading: analysesLoading } = usePropertySeoAnalyses({ limit: 100 });
-  const { data: weakListings = [] } = usePropertySeoAnalyses({ limit: 25, filter: 'weak' });
-  const { data: topListings = [] } = usePropertySeoAnalyses({ limit: 25, filter: 'excellent' });
+  const { data: allResult, isLoading: analysesLoading } = usePropertySeoAnalyses({ location: locationFilters, page: allPage, pageSize: PAGE_SIZE });
+  const { data: weakResult } = usePropertySeoAnalyses({ filter: 'weak', location: locationFilters, page: weakPage, pageSize: PAGE_SIZE });
+  const { data: topResult } = usePropertySeoAnalyses({ filter: 'excellent', location: locationFilters, page: topPage, pageSize: PAGE_SIZE });
+  const allAnalyses = allResult?.data || [];
+  const allTotalCount = allResult?.totalCount || 0;
+  const weakListings = weakResult?.data || [];
+  const weakTotalCount = weakResult?.totalCount || 0;
+  const topListings = topResult?.data || [];
+  const topTotalCount = topResult?.totalCount || 0;
   const { data: searchResults = [] } = usePropertySearch(propertySearch, { state: filterState, city: filterCity, area: filterArea });
   const { data: trendKeywords = [], isLoading: trendsLoading } = useSeoTrendKeywords({ 
     category: trendCategory || undefined, 
