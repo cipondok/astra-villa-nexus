@@ -38,6 +38,7 @@ import SearchPagination from '@/components/search/SearchPagination';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
+import StateSeoOverviewTab from './seo/StateSeoOverviewTab';
 
 // ─── Helpers ────────────────────────────────────────────────
 const ScoreBadge = ({ score }: { score: number }) => {
