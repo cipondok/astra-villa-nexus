@@ -65,9 +65,40 @@ const StateSeoOverviewTab = ({
     setSelectedStates(new Set(weakStates));
   }, [stateSeoOverview, setSelectedStates]);
 
+  // Batch progress tracking
+  const [batchTotal, setBatchTotal] = useState(0);
+  const [batchCompleted, setBatchCompleted] = useState(0);
+  const [batchRunning, setBatchRunning] = useState(false);
+  const [completedStates, setCompletedStates] = useState<string[]>([]);
+  const batchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Clear batch indicator after completion
+  useEffect(() => {
+    if (batchRunning && batchCompleted >= batchTotal && batchTotal > 0) {
+      batchTimerRef.current = setTimeout(() => {
+        setBatchRunning(false);
+        setBatchTotal(0);
+        setBatchCompleted(0);
+        setCompletedStates([]);
+      }, 3000);
+    }
+    return () => { if (batchTimerRef.current) clearTimeout(batchTimerRef.current); };
+  }, [batchCompleted, batchTotal, batchRunning]);
+
   const handleConfirmFix = useCallback(() => {
-    Array.from(selectedStates).forEach(state => {
-      autoOptimize.mutate({ threshold: autoFixThreshold, limit: 20, state });
+    const states = Array.from(selectedStates);
+    setBatchTotal(states.length);
+    setBatchCompleted(0);
+    setCompletedStates([]);
+    setBatchRunning(true);
+
+    states.forEach((state, idx) => {
+      // Stagger mutations slightly to avoid overwhelming the backend
+      setTimeout(() => {
+        autoOptimize.mutate({ threshold: autoFixThreshold, limit: 20, state });
+        setBatchCompleted(prev => prev + 1);
+        setCompletedStates(prev => [...prev, state]);
+      }, idx * 500);
     });
     setShowAutoFixConfirm(false);
   }, [selectedStates, autoOptimize, autoFixThreshold, setShowAutoFixConfirm]);
