@@ -6,12 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import {
+import { 
   Search, RefreshCw, Zap, CheckCircle2, XCircle, AlertTriangle, 
   Loader2, Target, TrendingUp, Globe, BarChart3, FileText, 
   Hash, Eye, Lightbulb, ArrowUpRight, ArrowDownRight, Minus,
-  Sparkles, X, Plus, Tag, Flame, Shield, ChevronDown, MapPin,
-  Lock, ShieldCheck, Play
+  Sparkles, X, Plus, Tag, Flame, MapPin
 } from 'lucide-react';
 import {
   usePropertySeoAnalyses,
