@@ -1,4 +1,4 @@
-import { useState, Suspense, lazy } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import { SEOHead } from '@/components/SEOHead';
 import { useTranslation } from "@/i18n/useTranslation";
 import { useNavigate } from 'react-router-dom';
