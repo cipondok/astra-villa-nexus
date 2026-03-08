@@ -563,6 +563,13 @@ const SamplePropertyGenerator = () => {
     if (autoRunState?.completedProvinces) {
       autoRunState.completedProvinces.forEach(p => definiteDone.add(p));
     }
+    // Also fetch cloud done-provinces in case mount sync hasn't completed yet
+    try {
+      const cloudDone = await loadDoneProvinceCheckpoints();
+      cloudDone.forEach(r => definiteDone.add(r.province));
+    } catch {
+      console.warn('[SPG] Could not fetch cloud done-provinces for definiteDone set');
+    }
 
     let queue: string[];
     let completedList: string[];
@@ -722,14 +729,48 @@ const SamplePropertyGenerator = () => {
     }
   }, [provinces, doneProvinces, persistedDoneNames, autoRunState, refetchCounts, liveCity, liveArea, saveAutoRunCheckpoint, saveDoneProvinceCheckpoint, clearAutoRunCheckpoint]);
 
-  const handleAutoRun = () => {
+  const handleAutoRun = async () => {
+    // 1. Check localStorage first
     const saved = loadAutoRunState();
     if (saved && saved.provincesQueue.length > 0) {
       toast.info("Resuming from saved progress...");
       startAutoRun(saved);
-    } else {
-      startAutoRun(null);
+      return;
     }
+
+    // 2. If no local state, check cloud checkpoint before starting fresh
+    try {
+      const cloudState = await loadAutoRunCheckpoint();
+      if (cloudState && cloudState.provincesQueue.length > 0) {
+        const asLocal: AutoRunState = { ...cloudState, recentLocations: [] };
+        saveAutoRunState(asLocal);
+        setAutoRunState(asLocal);
+        toast.info("Resuming from cloud checkpoint...");
+        startAutoRun(asLocal);
+        return;
+      }
+
+      // 3. Also load cloud done-provinces before starting fresh to avoid re-processing
+      const cloudDone = await loadDoneProvinceCheckpoints();
+      if (cloudDone.length > 0) {
+        const localDone = loadDoneProvinces();
+        const merged = new Map<string, DoneProvinceRecord>();
+        localDone.forEach(r => merged.set(r.province, r));
+        cloudDone.forEach(r => {
+          const existing = merged.get(r.province);
+          if (!existing || new Date(r.completedAt) > new Date(existing.completedAt)) {
+            merged.set(r.province, r);
+          }
+        });
+        const mergedList = Array.from(merged.values());
+        localStorage.setItem(DONE_PROVINCES_KEY, JSON.stringify(mergedList));
+        setPersistedDoneRecords(mergedList);
+      }
+    } catch (e) {
+      console.warn('[SPG] Cloud checkpoint check failed, starting fresh', e);
+    }
+
+    startAutoRun(null);
   };
   const handleResumeAutoRun = () => startAutoRun(autoRunState);
   const handleSmartRun = () => {
