@@ -426,8 +426,12 @@ async function upsertSeoAnalysis(
   triggeredBy = "manual",
   thresholdUsed?: number
 ) {
-  const draft = computeSeoDraft(property, boost);
   const propertyId = normalizeText(property.id);
+
+  // Compute image score from property_images alt_text coverage
+  const imageScore = await computeImageScore(supabase, propertyId);
+
+  const draft = computeSeoDraft(property, boost, imageScore);
 
   // Get old score for history tracking
   let oldScore = 0;
