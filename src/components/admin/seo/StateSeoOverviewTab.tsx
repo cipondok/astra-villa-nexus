@@ -65,6 +65,9 @@ const StateSeoOverviewTab = ({
     setSelectedStates(new Set(weakStates));
   }, [stateSeoOverview, setSelectedStates]);
 
+  // Limit selector for bulk operations
+  const [fixLimit, setFixLimit] = useState(20);
+
   // Batch progress tracking
   const [batchTotal, setBatchTotal] = useState(0);
   const [batchCompleted, setBatchCompleted] = useState(0);
