@@ -33,6 +33,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
 import StateSeoOverviewTab from './seo/StateSeoOverviewTab';
+import SeoHistoryTab from './seo/SeoHistoryTab';
 
 // ─── Helpers ────────────────────────────────────────────────
 const ScoreBadge = ({ score }: { score: number }) => {
