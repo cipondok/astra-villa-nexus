@@ -446,6 +446,10 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
     if (action === "analyze-batch") {
       const limit = clamp(Number(payload.limit) || 20, 1, 100);
       const filter = normalizeText(payload.filter) || "unanalyzed";
+      const locState = normalizeText(payload.state);
+      const locCity = normalizeText(payload.city);
+      const locArea = normalizeText(payload.area);
+      const hasLocationFilter = !!(locState || locCity || locArea);
 
       let candidates: Record<string, unknown>[] = [];
 
@@ -462,14 +466,21 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
 
         // Fetch more candidates than needed to filter client-side
         const fetchSize = Math.min(limit * 10, 500);
-        // Use a random offset to avoid always hitting same properties
         const randomOffset = Math.floor(Math.random() * 1000);
 
-        const { data: allCandidates, error: fetchError } = await supabase
+        let candidateQuery = supabase
           .from("properties")
           .select(SEO_PROPERTY_SELECT)
-          .order("created_at", { ascending: false })
-          .range(randomOffset, randomOffset + fetchSize - 1);
+          .order("created_at", { ascending: false });
+
+        // Apply location filters
+        if (locState) candidateQuery = candidateQuery.eq("state", locState);
+        if (locCity) candidateQuery = candidateQuery.eq("city", locCity);
+        if (locArea) candidateQuery = candidateQuery.ilike("location", `%${locArea}%`);
+
+        candidateQuery = candidateQuery.range(randomOffset, randomOffset + fetchSize - 1);
+
+        const { data: allCandidates, error: fetchError } = await candidateQuery;
 
         if (fetchError) return json({ error: fetchError.message }, 500);
 
@@ -477,11 +488,18 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
           .filter((p) => !analyzedIds.has(p.id as string))
           .slice(0, limit);
       } else {
-        const { data, error: fetchError } = await supabase
+        let fetchQuery = supabase
           .from("properties")
           .select(SEO_PROPERTY_SELECT)
-          .order("updated_at", { ascending: false })
-          .limit(limit);
+          .order("updated_at", { ascending: false });
+
+        if (locState) fetchQuery = fetchQuery.eq("state", locState);
+        if (locCity) fetchQuery = fetchQuery.eq("city", locCity);
+        if (locArea) fetchQuery = fetchQuery.ilike("location", `%${locArea}%`);
+
+        fetchQuery = fetchQuery.limit(limit);
+
+        const { data, error: fetchError } = await fetchQuery;
 
         if (fetchError) return json({ error: fetchError.message }, 500);
         candidates = (data || []) as Record<string, unknown>[];
