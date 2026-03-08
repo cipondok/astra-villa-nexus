@@ -98,6 +98,25 @@ const LocationMap = () => {
 
   const isLoading = isLoadingCounts || isLoadingTotal;
 
+  // Loading progress simulation for better UX
+  const [loadProgress, setLoadProgress] = useState(0);
+  useState(() => {
+    let step = 0;
+    const timer = setInterval(() => {
+      step += 1;
+      setLoadProgress(prev => {
+        if (prev >= 90) { clearInterval(timer); return prev; }
+        return prev + Math.random() * 15;
+      });
+    }, 200);
+    return () => clearInterval(timer);
+  });
+
+  // Once data is loaded, jump to 100
+  if (!isLoading && loadProgress < 100) {
+    setLoadProgress(100);
+  }
+
   const filteredProvinces = provinces.filter(p =>
     p.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
