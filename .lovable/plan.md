@@ -1,41 +1,23 @@
 
+# Plan: Edge Function Consolidation
 
-## Auto-Optimize Edge Function — Hardening Plan
+## Status: ✅ COMPLETE
 
-### Current State
-The code at lines 523–601 in `supabase/functions/ai-engine/index.ts` **already implements** chunked batching (50 IDs per chunk) and caps location property IDs at 200. The previous fix resolved the core URL overflow issue.
+Consolidated **82 standalone Edge Functions → 6 unified routers**.
 
-However, there is one remaining risk and several hardening improvements needed:
+## Final Architecture
 
-### Issues to Fix
+| Router | Modes/Responsibilities |
+|--------|----------------------|
+| `ai-engine` | generate_description, generate_image, nlp_search, match_property, seo_generate, recommendations, transcribe_audio, virtual_staging, market_report, property_assistant, smart_pricing, lead_scoring, etc. (25+ modes) |
+| `auth-engine` | Auth, KYC, device registration, session heartbeat, verification requests, OTP, 2FA |
+| `core-engine` | Diagnostics, algorithms, location sync, Astra tokens, health checks, analytics, auto_tune_ai_weights, investment_score, ai_brain, deal_detector, etc. (25+ modes) |
+| `notification-engine` | Emails, inquiry notifications, campaign emails, push notifications |
+| `payment-engine` | Midtrans, PayPal, invoices, booking payments, mortgages, refunds, subscriptions |
+| `vendor-engine` | Vendor services, validation, function generation, Indonesian vendor onboarding |
 
-**1. Line 580: `.in("id", ids)` can receive up to 100 IDs without chunking**
-After collecting `weakRows`, the code fetches full property data with `.in("id", ids)` where `ids` can be up to 100 UUIDs. While 100 UUIDs (~3600 chars) is unlikely to overflow, it should be chunked for consistency and safety.
-
-**2. Line 589: `normalizeText(property.id)` may lowercase UUIDs incorrectly**
-If `normalizeText` lowercases strings but the `weakById` map keys are original-case UUIDs from Supabase, the lookup will fail silently, producing `currentScore = 0` for every property. This means the boost calculation is wrong.
-
-**3. No error handling on chunk queries (line 551)**
-The chunked queries inside the `for` loop ignore errors — a failing chunk silently returns no data.
-
-### Plan
-
-#### A. Chunk the property fetch at line 577–580
-Batch the `.in("id", ids)` call into chunks of 50, accumulate results into a single `properties` array.
-
-#### B. Fix UUID comparison at line 589
-Use `property.id` directly (not `normalizeText`) when looking up in `weakById`, since UUIDs from Supabase are consistently formatted.
-
-#### C. Add error handling to chunk queries
-Log or handle errors from individual chunk queries instead of silently ignoring them.
-
-### File to modify
-- `supabase/functions/ai-engine/index.ts` (lines 523–601)
-
-### Changes Summary
-```text
-Line 577-580:  Chunk .in("id", ids) into batches of 50
-Line 551-558:  Add error logging for chunk query failures  
-Line 589:      Replace normalizeText(property.id) with property.id
-```
-
+## AI Model Auto-Tuning
+- `ai_model_weights` table with 6 factors (location, price, feature, investment, popularity, collaborative)
+- `ai_recommendation_events` table for conversion tracking
+- Daily pg_cron job runs `auto_tune_ai_weights` mode
+- Guardrails: ±3 max change, minimum 5 per factor, sum=100

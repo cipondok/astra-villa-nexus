@@ -548,13 +548,14 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
         const CHUNK_SIZE = 50;
         for (let i = 0; i < locationPropertyIds.length && weakRows.length < limit; i += CHUNK_SIZE) {
           const chunk = locationPropertyIds.slice(i, i + CHUNK_SIZE);
-          const { data: chunkRows } = await supabase
+          const { data: chunkRows, error: chunkErr } = await supabase
             .from("property_seo_analysis")
             .select("property_id, seo_score")
             .lt("seo_score", threshold)
             .in("property_id", chunk)
             .order("seo_score", { ascending: true })
             .limit(limit - weakRows.length);
+          if (chunkErr) console.error("auto-optimize chunk query error:", chunkErr.message);
           if (chunkRows) weakRows = weakRows.concat(chunkRows);
         }
         weakRows = weakRows.slice(0, limit);
@@ -574,19 +575,26 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
       }
 
       const ids = weakRows.map((r: any) => r.property_id).filter(Boolean);
-      const { data: properties, error: propError } = await supabase
-        .from("properties")
-        .select(SEO_PROPERTY_SELECT)
-        .in("id", ids);
 
-      if (propError) return json({ error: propError.message }, 500);
+      // Chunk property fetch to avoid URL overflow with large ID lists
+      const PROP_CHUNK = 50;
+      let allProperties: any[] = [];
+      for (let i = 0; i < ids.length; i += PROP_CHUNK) {
+        const idChunk = ids.slice(i, i + PROP_CHUNK);
+        const { data: chunkProps, error: chunkPropErr } = await supabase
+          .from("properties")
+          .select(SEO_PROPERTY_SELECT)
+          .in("id", idChunk);
+        if (chunkPropErr) console.error("auto-optimize property fetch error:", chunkPropErr.message);
+        if (chunkProps) allProperties = allProperties.concat(chunkProps);
+      }
 
       const weakById = new Map(weakRows.map((r: any) => [r.property_id, Number(r.seo_score) || 0]));
-      const propertyList = (properties || []) as Record<string, unknown>[];
+      const propertyList = allProperties as Record<string, unknown>[];
 
       const optimized = await Promise.all(
         propertyList.map((property) => {
-          const currentScore = weakById.get(normalizeText(property.id)) || 0;
+          const currentScore = weakById.get(String(property.id)) || 0;
           const boost = clamp(Math.round((threshold + 15 - currentScore) * 0.6), 8, 30);
           return upsertSeoAnalysis(supabase, property, boost);
         })
