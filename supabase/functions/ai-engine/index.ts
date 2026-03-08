@@ -379,14 +379,15 @@ function computeSeoDraft(property: Record<string, unknown>, boost = 0, imageScor
   const keywordScore = clamp(Math.round(keywordScoreBase + boost));
   const hashtagScore = clamp(Math.round(hashtagScoreBase + boost));
   const locationScore = clamp(Math.round(locationScoreBase + boost));
+  const imgScore = clamp(Math.round(imageScore + boost));
 
+  // 4-component 25-weight model: title(25) + description(25) + keyword(25) + image(25)
   const seoScore = clamp(
     Math.round(
-      titleScore * 0.24 +
-      descriptionScore * 0.24 +
-      keywordScore * 0.24 +
-      hashtagScore * 0.14 +
-      locationScore * 0.14
+      titleScore * 0.25 +
+      descriptionScore * 0.25 +
+      keywordScore * 0.25 +
+      imgScore * 0.25
     )
   );
 
@@ -409,6 +410,7 @@ function computeSeoDraft(property: Record<string, unknown>, boost = 0, imageScor
     keyword_score: keywordScore,
     hashtag_score: hashtagScore,
     location_score: locationScore,
+    image_score: imgScore,
     seo_score: seoScore,
     seo_rating: seoRating,
     suggested_keywords: seoKeywords,
