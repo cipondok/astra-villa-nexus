@@ -1025,11 +1025,12 @@ const PropertySEOChecker = () => {
                   </div>
 
                   {/* Sub-scores */}
-                  <div className="grid grid-cols-5 gap-2 mb-3">
+                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-3">
                     {[
-                      { label: 'Title', score: currentAnalysis.title_score, icon: FileText },
-                      { label: 'Description', score: currentAnalysis.description_score, icon: FileText },
-                      { label: 'Keywords', score: currentAnalysis.keyword_score, icon: Hash },
+                      { label: 'Title (25%)', score: currentAnalysis.title_score, icon: FileText },
+                      { label: 'Description (25%)', score: currentAnalysis.description_score, icon: FileText },
+                      { label: 'Keywords (25%)', score: currentAnalysis.keyword_score, icon: Hash },
+                      { label: 'Image Alt (25%)', score: currentAnalysis.image_score || 0, icon: Eye },
                       { label: 'Hashtags', score: currentAnalysis.hashtag_score, icon: Hash },
                       { label: 'Location', score: currentAnalysis.location_score, icon: Globe },
                     ].map(sub => (
