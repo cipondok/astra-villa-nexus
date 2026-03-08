@@ -725,8 +725,8 @@ Generate optimized SEO content. Call the seo_optimize function with your results
       if (!propertyId) return json({ error: "propertyId is required" }, 400);
 
       const [propertyRes, analysisRes] = await Promise.all([
-        supabase.from("properties").select("id, title, description, city, state, location, property_type").eq("id", propertyId).maybeSingle(),
-        supabase.from("property_seo_analysis").select("seo_title, seo_description, seo_score").eq("property_id", propertyId).maybeSingle(),
+        supabase.from("properties").select("id, title, description, city, state, location, property_type, price").eq("id", propertyId).maybeSingle(),
+        supabase.from("property_seo_analysis").select("seo_title, seo_description, seo_score, seo_keywords").eq("property_id", propertyId).maybeSingle(),
       ]);
 
       if (propertyRes.error) return json({ error: propertyRes.error.message }, 500);
@@ -738,23 +738,43 @@ Generate optimized SEO content. Call the seo_optimize function with your results
       const currentTitle = prop.title || "Untitled Property";
       const currentDesc = prop.description?.slice(0, 160) || "No description available";
       const slug = currentTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 50);
+      const baseUrl = "astra-villa-realty.lovable.app/property";
 
-      return json({
-        action,
-        propertyId,
-        current: {
-          title: currentTitle,
-          description: currentDesc,
-          url: `astra-villa-realty.lovable.app/property/${propertyId}`,
-        },
-        optimized: seo ? {
-          title: seo.seo_title || currentTitle,
-          description: seo.seo_description || currentDesc,
-          url: `astra-villa-realty.lovable.app/property/${slug}-${propertyId.slice(0, 8)}`,
-          score: seo.seo_score,
-        } : null,
+      // Match SerpPreview interface: { title, description, url, type, keywords?, score? }
+      const current = {
+        title: currentTitle,
+        description: currentDesc,
+        url: `${baseUrl}/${propertyId}`,
+        type: "current",
+        keywords: [] as string[],
+        score: seo?.seo_score || 0,
+      };
+
+      const optimized = seo ? {
+        title: seo.seo_title || currentTitle,
+        description: seo.seo_description || currentDesc,
+        url: `${baseUrl}/${slug}-${propertyId.slice(0, 8)}`,
+        type: "optimized",
+        keywords: seo.seo_keywords || [],
+        score: seo.seo_score || 0,
+      } : {
+        title: currentTitle,
+        description: currentDesc,
+        url: `${baseUrl}/${propertyId}`,
+        type: "optimized",
+        keywords: [],
+        score: 0,
+      };
+
+      const improvements = {
+        title_changed: current.title !== optimized.title,
+        description_changed: current.description !== optimized.description,
+        url_changed: current.url !== optimized.url,
+        score_improvement: (optimized.score || 0) - (current.score || 0),
         has_analysis: !!seo,
-      });
+      };
+
+      return json({ action, propertyId, current, optimized, improvements });
     }
 
     // ── competitor-analysis: Compare with similar properties ──
