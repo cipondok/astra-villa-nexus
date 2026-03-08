@@ -477,15 +477,8 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
         </motion.div>
       )}
 
-      {/* Animated section content */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeSection}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -4 }}
-          transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-        >
+      {/* Section content */}
+      <div key={activeSection}>
           {!isOverview && (
             <AdminCategoryTabs
               activeSection={activeSection}
@@ -497,8 +490,7 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
               {renderSection(activeSection, onSectionChange)}
             </Suspense>
           </SectionErrorBoundary>
-        </motion.div>
-      </AnimatePresence>
+      </div>
     </div>
   );
 };
