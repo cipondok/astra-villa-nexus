@@ -227,6 +227,35 @@ async function handleMatchProperty(payload: Record<string, unknown>) {
 
 const SEO_PROPERTY_SELECT = "id,title,description,property_type,listing_type,location,city,state,bedrooms,bathrooms,price";
 
+// Compute image alt score by checking property_images alt_text coverage
+async function computeImageScore(
+  supabase: ReturnType<typeof createClient>,
+  propertyId: string
+): Promise<number> {
+  try {
+    const { data: images } = await supabase
+      .from("property_images")
+      .select("alt_text")
+      .eq("property_id", propertyId)
+      .limit(20);
+
+    if (!images || images.length === 0) return 15; // no images = low score
+
+    const withAlt = images.filter(
+      (img: any) => img.alt_text && img.alt_text.trim().length > 5
+    ).length;
+    const ratio = withAlt / images.length;
+
+    // Score: base 20 for having images, up to 100 based on alt text coverage
+    let score = 20 + Math.round(ratio * 70);
+    if (images.length >= 5) score += 5; // bonus for having many images
+    if (images.length >= 10) score += 5;
+    return clamp(score);
+  } catch {
+    return 20; // fallback on error
+  }
+}
+
 function clamp(value: number, min = 0, max = 100) {
   return Math.max(min, Math.min(max, value));
 }
@@ -267,7 +296,7 @@ function ensureLength(text: string, min: number, max: number, filler: string) {
   return output.trim();
 }
 
-function computeSeoDraft(property: Record<string, unknown>, boost = 0) {
+function computeSeoDraft(property: Record<string, unknown>, boost = 0, imageScore = 20) {
   const title = normalizeText(property.title) || "Property Listing";
   const description = normalizeText(property.description);
   const propertyType = normalizeText(property.property_type) || "property";
@@ -350,14 +379,15 @@ function computeSeoDraft(property: Record<string, unknown>, boost = 0) {
   const keywordScore = clamp(Math.round(keywordScoreBase + boost));
   const hashtagScore = clamp(Math.round(hashtagScoreBase + boost));
   const locationScore = clamp(Math.round(locationScoreBase + boost));
+  const imgScore = clamp(Math.round(imageScore + boost));
 
+  // 4-component 25-weight model: title(25) + description(25) + keyword(25) + image(25)
   const seoScore = clamp(
     Math.round(
-      titleScore * 0.24 +
-      descriptionScore * 0.24 +
-      keywordScore * 0.24 +
-      hashtagScore * 0.14 +
-      locationScore * 0.14
+      titleScore * 0.25 +
+      descriptionScore * 0.25 +
+      keywordScore * 0.25 +
+      imgScore * 0.25
     )
   );
 
@@ -380,6 +410,7 @@ function computeSeoDraft(property: Record<string, unknown>, boost = 0) {
     keyword_score: keywordScore,
     hashtag_score: hashtagScore,
     location_score: locationScore,
+    image_score: imgScore,
     seo_score: seoScore,
     seo_rating: seoRating,
     suggested_keywords: seoKeywords,
@@ -395,8 +426,12 @@ async function upsertSeoAnalysis(
   triggeredBy = "manual",
   thresholdUsed?: number
 ) {
-  const draft = computeSeoDraft(property, boost);
   const propertyId = normalizeText(property.id);
+
+  // Compute image score from property_images alt_text coverage
+  const imageScore = await computeImageScore(supabase, propertyId);
+
+  const draft = computeSeoDraft(property, boost, imageScore);
 
   // Get old score for history tracking
   let oldScore = 0;
