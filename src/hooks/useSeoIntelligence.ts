@@ -16,6 +16,7 @@ export interface PropertySeoAnalysis {
   keyword_score: number;
   hashtag_score: number;
   location_score: number;
+  image_score: number;
   suggested_keywords: string[];
   missing_keywords: string[];
   ranking_difficulty: string;
