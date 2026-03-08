@@ -55,8 +55,8 @@ const StateSeoOverviewTab = ({
   }, [setFilterState, setActiveTab]);
 
   const handleQuickFix = useCallback((state: string) => {
-    autoOptimize.mutate({ threshold: autoFixThreshold, limit: 20, state });
-  }, [autoOptimize, autoFixThreshold]);
+    autoOptimize.mutate({ threshold: autoFixThreshold, limit: fixLimit, state });
+  }, [autoOptimize, autoFixThreshold, fixLimit]);
 
   const handleSelectAllWeak = useCallback(() => {
     const weakStates = stateSeoOverview
