@@ -54,9 +54,12 @@ const StateSeoOverviewTab = ({
     setActiveTab('dashboard');
   }, [setFilterState, setActiveTab]);
 
+  // Limit selector for bulk operations
+  const [fixLimit, setFixLimit] = useState(20);
+
   const handleQuickFix = useCallback((state: string) => {
-    autoOptimize.mutate({ threshold: autoFixThreshold, limit: 20, state });
-  }, [autoOptimize, autoFixThreshold]);
+    autoOptimize.mutate({ threshold: autoFixThreshold, limit: fixLimit, state });
+  }, [autoOptimize, autoFixThreshold, fixLimit]);
 
   const handleSelectAllWeak = useCallback(() => {
     const weakStates = stateSeoOverview
@@ -95,7 +98,7 @@ const StateSeoOverviewTab = ({
     states.forEach((state, idx) => {
       // Stagger mutations slightly to avoid overwhelming the backend
       setTimeout(() => {
-        autoOptimize.mutate({ threshold: autoFixThreshold, limit: 20, state });
+        autoOptimize.mutate({ threshold: autoFixThreshold, limit: fixLimit, state });
         setBatchCompleted(prev => prev + 1);
         setCompletedStates(prev => [...prev, state]);
       }, idx * 500);
@@ -126,6 +129,17 @@ const StateSeoOverviewTab = ({
                 <option value={60}>Score &lt; 60</option>
                 <option value={70}>Score &lt; 70 (Recommended)</option>
                 <option value={80}>Score &lt; 80</option>
+              </select>
+              <select
+                className="h-7 rounded-md border border-input bg-background px-2 text-xs"
+                value={fixLimit}
+                onChange={(e) => setFixLimit(Number(e.target.value))}
+              >
+                <option value={10}>10 listings</option>
+                <option value={20}>20 listings</option>
+                <option value={50}>50 listings</option>
+                <option value={100}>100 listings</option>
+                <option value={500}>500 listings</option>
               </select>
               <Button
                 size="sm"
@@ -234,7 +248,7 @@ const StateSeoOverviewTab = ({
             </AlertDialogTitle>
             <AlertDialogDescription asChild>
               <div className="space-y-3">
-                <p>This will run AI-powered SEO optimization on properties in <strong>{selectedStates.size} selected state(s)</strong> with scores below <strong>{autoFixThreshold}</strong>.</p>
+                <p>This will run AI-powered SEO optimization on properties in <strong>{selectedStates.size} selected state(s)</strong> with scores below <strong>{autoFixThreshold}</strong> (up to <strong>{fixLimit}</strong> listings per state).</p>
                 <div className="bg-muted/30 rounded-lg p-3 space-y-1">
                   <p className="text-xs font-medium text-foreground">Selected States:</p>
                   <div className="flex flex-wrap gap-1">

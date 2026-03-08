@@ -682,21 +682,21 @@ const PropertySEOChecker = () => {
         </Card>
       )}
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
         {[
-          { label: 'Avg Score', value: stats?.avgScore ?? 0, icon: BarChart3, color: 'text-primary' },
-          { label: 'Analyzed', value: `${stats?.analyzedCount ?? 0}/${stats?.totalProperties ?? 0}`, icon: Target, color: 'text-chart-2' },
-          { label: 'Excellent', value: stats?.excellent ?? 0, icon: CheckCircle2, color: 'text-chart-1' },
-          { label: 'Good', value: stats?.good ?? 0, icon: TrendingUp, color: 'text-chart-4' },
-          { label: 'Needs Work', value: (stats?.needsImprovement ?? 0) + (stats?.poor ?? 0), icon: AlertTriangle, color: 'text-destructive' },
+          { label: 'Avg SEO Score', value: stats?.avgScore ?? 0, icon: BarChart3, color: 'text-primary', bg: 'bg-primary/5 border-primary/20' },
+          { label: 'Total Properties', value: stats?.totalProperties ?? 0, icon: Globe, color: 'text-chart-2', bg: 'bg-chart-2/5 border-chart-2/20' },
+          { label: 'Analyzed', value: stats?.analyzedCount ?? 0, icon: Target, color: 'text-chart-2', bg: 'bg-chart-2/5 border-chart-2/20' },
+          { label: 'Good (≥70)', value: (stats?.excellent ?? 0) + (stats?.good ?? 0), icon: CheckCircle2, color: 'text-chart-1', bg: 'bg-chart-1/5 border-chart-1/20' },
+          { label: 'Needs Work', value: stats?.needsImprovement ?? 0, icon: TrendingUp, color: 'text-chart-4', bg: 'bg-chart-4/5 border-chart-4/20' },
+          { label: 'Poor (<40)', value: stats?.poor ?? 0, icon: XCircle, color: 'text-destructive', bg: 'bg-destructive/5 border-destructive/20' },
+          { label: 'Unanalyzed', value: (stats?.totalProperties ?? 0) - (stats?.analyzedCount ?? 0), icon: AlertTriangle, color: 'text-muted-foreground', bg: 'bg-muted/30 border-border/40' },
         ].map(stat => (
-          <Card key={stat.label} className="bg-card/60 border-border/40">
-            <CardContent className="p-3">
-              <div className="flex items-center gap-2">
-                <stat.icon className={`h-4 w-4 ${stat.color}`} />
-                <span className="text-[10px] text-muted-foreground">{stat.label}</span>
-              </div>
-              <p className="text-xl font-bold mt-1">{statsLoading ? '...' : stat.value}</p>
+          <Card key={stat.label} className={stat.bg}>
+            <CardContent className="p-2.5 text-center">
+              <stat.icon className={cn("h-4 w-4 mx-auto mb-1", stat.color)} />
+              <p className={cn("text-xl font-bold tabular-nums", stat.color)}>{statsLoading ? '...' : stat.value}</p>
+              <p className="text-[8px] text-muted-foreground mt-0.5">{stat.label}</p>
             </CardContent>
           </Card>
         ))}
