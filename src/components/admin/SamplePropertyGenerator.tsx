@@ -248,14 +248,22 @@ const SamplePropertyGenerator = () => {
   const { data: provincePropertyCounts = {}, refetch: refetchCounts } = useQuery({
     queryKey: ["province-property-counts"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("properties")
-        .select("state");
-      if (error) return {};
+      // Paginate to avoid 1000-row limit — only fetch state column
       const counts: Record<string, number> = {};
-      (data || []).forEach((p: any) => {
-        if (p.state) counts[p.state] = (counts[p.state] || 0) + 1;
-      });
+      let from = 0;
+      const pageSize = 1000;
+      while (true) {
+        const { data, error } = await supabase
+          .from("properties")
+          .select("state")
+          .range(from, from + pageSize - 1);
+        if (error || !data || data.length === 0) break;
+        data.forEach((p: any) => {
+          if (p.state) counts[p.state] = (counts[p.state] || 0) + 1;
+        });
+        if (data.length < pageSize) break;
+        from += pageSize;
+      }
       return counts;
     },
   });
@@ -546,7 +554,15 @@ const SamplePropertyGenerator = () => {
     setRunStartTime(Date.now());
     setElapsedTime(0);
 
-    const doneLive = getDoneProvinceNames();
+    // Build a single definitive done-set from ALL sources (localStorage, cloud, DB counts, runtime state)
+    // so we never re-process a province that's already completed anywhere
+    const definiteDone = new Set<string>();
+    getDoneProvinceNames().forEach(p => definiteDone.add(p));
+    doneProvinces.forEach(p => definiteDone.add(p));
+    persistedDoneNames.forEach(p => definiteDone.add(p));
+    if (autoRunState?.completedProvinces) {
+      autoRunState.completedProvinces.forEach(p => definiteDone.add(p));
+    }
 
     let queue: string[];
     let completedList: string[];
@@ -555,14 +571,15 @@ const SamplePropertyGenerator = () => {
     let currentProv = "";
 
     if (resumeState) {
-      queue = resumeState.provincesQueue.filter(p => !doneLive.has(p) || p === resumeState.currentProvince);
+      // Keep the current in-progress province even if partially done; skip all others already finished
+      queue = resumeState.provincesQueue.filter(p => p === resumeState.currentProvince || !definiteDone.has(p));
       completedList = resumeState.completedProvinces;
       globalTotals = { created: resumeState.totalCreated, skipped: resumeState.totalSkipped, errors: resumeState.totalErrors };
       currentProv = resumeState.currentProvince;
       startOffset = resumeState.currentOffset;
       toast.info(`Resuming from ${currentProv} (offset ${startOffset}), ${queue.length} provinces left`);
     } else if (smartQueue && smartQueue.length > 0) {
-      queue = smartQueue.filter(p => !doneLive.has(p));
+      queue = smartQueue.filter(p => !definiteDone.has(p));
       completedList = [];
       if (queue.length === 0) {
         toast.info("All selected provinces are already done!");
@@ -574,8 +591,7 @@ const SamplePropertyGenerator = () => {
       currentProv = queue[0];
       toast.info(`Smart run: ${queue.length} selected provinces`);
     } else {
-      const allDoneNow = new Set([...doneLive, ...doneProvinces]);
-      queue = provinces.filter(p => !allDoneNow.has(p));
+      queue = provinces.filter(p => !definiteDone.has(p));
       completedList = [];
       if (queue.length === 0) {
         toast.info("All provinces already done! Click Reset to re-run.");
@@ -585,7 +601,7 @@ const SamplePropertyGenerator = () => {
         return;
       }
       currentProv = queue[0];
-      toast.info(`Starting auto-run for ${queue.length} remaining provinces (skipping ${allDoneNow.size} done)`);
+      toast.info(`Starting auto-run for ${queue.length} remaining provinces (skipping ${definiteDone.size} done)`);
     }
 
     setAutoTotalProvinces(queue.length + completedList.length);
