@@ -29429,6 +29429,40 @@ export type Database = {
           years_experience: string
         }[]
       }
+      get_properties_in_bounds: {
+        Args: {
+          p_east: number
+          p_limit?: number
+          p_max_price?: number
+          p_min_bedrooms?: number
+          p_min_price?: number
+          p_north: number
+          p_property_type?: string
+          p_south: number
+          p_west: number
+        }
+        Returns: {
+          bathrooms: number
+          bedrooms: number
+          building_area_sqm: number
+          city: string
+          demand_heat_score: number
+          id: string
+          image_urls: string[]
+          images: string[]
+          investment_score: number
+          land_area_sqm: number
+          latitude: number
+          listing_type: string
+          location: string
+          longitude: number
+          price: number
+          property_type: string
+          state: string
+          thumbnail_url: string
+          title: string
+        }[]
+      }
       get_property_booking_stats: {
         Args: { p_property_id: string }
         Returns: Json
