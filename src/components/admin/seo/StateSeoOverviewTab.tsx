@@ -54,6 +54,9 @@ const StateSeoOverviewTab = ({
     setActiveTab('dashboard');
   }, [setFilterState, setActiveTab]);
 
+  // Limit selector for bulk operations
+  const [fixLimit, setFixLimit] = useState(20);
+
   const handleQuickFix = useCallback((state: string) => {
     autoOptimize.mutate({ threshold: autoFixThreshold, limit: fixLimit, state });
   }, [autoOptimize, autoFixThreshold, fixLimit]);
@@ -64,9 +67,6 @@ const StateSeoOverviewTab = ({
       .map(s => s.state);
     setSelectedStates(new Set(weakStates));
   }, [stateSeoOverview, setSelectedStates]);
-
-  // Limit selector for bulk operations
-  const [fixLimit, setFixLimit] = useState(20);
 
   // Batch progress tracking
   const [batchTotal, setBatchTotal] = useState(0);
