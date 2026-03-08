@@ -312,7 +312,7 @@ export function useAnalyzeProperty() {
 export function useAnalyzeBatch() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (params: { limit?: number; filter?: string }) => {
+    mutationFn: async (params: { limit?: number; filter?: string; state?: string; city?: string; area?: string }) => {
       const { data, error } = await supabase.functions.invoke('ai-engine', {
         body: { mode: 'seo_generate', payload: { action: 'analyze-batch', ...params } },
       });
@@ -332,7 +332,7 @@ export function useAnalyzeBatch() {
 export function useAutoOptimize() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (params?: { threshold?: number; limit?: number }) => {
+    mutationFn: async (params?: { threshold?: number; limit?: number; state?: string; city?: string; area?: string }) => {
       const { data, error } = await supabase.functions.invoke('ai-engine', {
         body: { mode: 'seo_generate', payload: { action: 'auto-optimize', ...(params || {}) } },
       });

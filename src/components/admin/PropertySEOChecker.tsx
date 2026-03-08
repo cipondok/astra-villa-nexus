@@ -478,11 +478,11 @@ const PropertySEOChecker = () => {
           <p className="text-xs text-muted-foreground">Auto-check on click · AI recommendations · Keyword manager</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => analyzeBatch.mutate({ limit: 20, filter: 'unanalyzed' })} disabled={analyzeBatch.isPending}>
+          <Button variant="outline" size="sm" onClick={() => analyzeBatch.mutate({ limit: 20, filter: 'unanalyzed', ...locationFilters })} disabled={analyzeBatch.isPending}>
             {analyzeBatch.isPending ? <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5 mr-1.5" />}
             Analyze Batch
           </Button>
-          <Button size="sm" onClick={() => autoOptimize.mutate({ threshold: 50, limit: 10 })} disabled={autoOptimize.isPending}>
+          <Button size="sm" onClick={() => autoOptimize.mutate({ threshold: 50, limit: 10, ...locationFilters })} disabled={autoOptimize.isPending}>
             {autoOptimize.isPending ? <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> : <Zap className="h-3.5 w-3.5 mr-1.5" />}
             Auto-Optimize
           </Button>
@@ -860,7 +860,7 @@ const PropertySEOChecker = () => {
               <CardContent className="p-8 text-center">
                 <Search className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
                 <p className="text-sm text-muted-foreground">No analyzed properties found</p>
-                <Button size="sm" className="mt-3" onClick={() => analyzeBatch.mutate({ limit: 20, filter: 'unanalyzed' })}>Start Analyzing</Button>
+                <Button size="sm" className="mt-3" onClick={() => analyzeBatch.mutate({ limit: 20, filter: 'unanalyzed', ...locationFilters })}>Start Analyzing</Button>
               </CardContent>
             </Card>
           )}
