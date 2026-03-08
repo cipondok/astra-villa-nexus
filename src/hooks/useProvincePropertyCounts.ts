@@ -9,47 +9,59 @@ export interface ProvinceCount {
 // Province name normalization: maps raw state values → display names
 const normalizeProvinceName = (state: string): string => {
   const s = state.trim().toLowerCase();
-  const map: Record<string, string> = {
-    'aceh': 'Aceh',
-    'sumatera utara': 'Sumatera Utara', 'north sumatra': 'Sumatera Utara',
+  
+  // Direct match first
+  const directMap: Record<string, string> = {
+    'aceh': 'Aceh', 'sumatera utara': 'Sumatera Utara', 'north sumatra': 'Sumatera Utara',
     'sumatera barat': 'Sumatera Barat', 'west sumatra': 'Sumatera Barat',
-    'riau': 'Riau',
-    'kepulauan riau': 'Kepulauan Riau', 'riau islands': 'Kepulauan Riau',
-    'jambi': 'Jambi',
-    'sumatera selatan': 'Sumatera Selatan', 'south sumatra': 'Sumatera Selatan',
-    'bengkulu': 'Bengkulu',
-    'kepulauan bangka belitung': 'Bangka Belitung', 'bangka belitung': 'Bangka Belitung',
-    'lampung': 'Lampung',
-    'banten': 'Banten',
+    'riau': 'Riau', 'kepulauan riau': 'Kepulauan Riau', 'riau islands': 'Kepulauan Riau',
+    'jambi': 'Jambi', 'sumatera selatan': 'Sumatera Selatan', 'south sumatra': 'Sumatera Selatan',
+    'bengkulu': 'Bengkulu', 'kepulauan bangka belitung': 'Bangka Belitung', 'bangka belitung': 'Bangka Belitung',
+    'lampung': 'Lampung', 'banten': 'Banten',
     'dki jakarta': 'DKI Jakarta', 'jakarta': 'DKI Jakarta',
     'jawa barat': 'Jawa Barat', 'west java': 'Jawa Barat',
     'jawa tengah': 'Jawa Tengah', 'central java': 'Jawa Tengah',
     'di yogyakarta': 'Yogyakarta', 'diy yogyakarta': 'Yogyakarta', 'yogyakarta': 'Yogyakarta', 'yogya': 'Yogyakarta', 'jogja': 'Yogyakarta',
     'jawa timur': 'Jawa Timur', 'east java': 'Jawa Timur',
-    'kalimantan barat': 'Kalimantan Barat', 'west kalimantan': 'Kalimantan Barat',
-    'kalimantan tengah': 'Kalimantan Tengah', 'central kalimantan': 'Kalimantan Tengah',
-    'kalimantan selatan': 'Kalimantan Selatan', 'south kalimantan': 'Kalimantan Selatan',
-    'kalimantan timur': 'Kalimantan Timur', 'east kalimantan': 'Kalimantan Timur',
-    'kalimantan utara': 'Kalimantan Utara', 'north kalimantan': 'Kalimantan Utara',
-    'sulawesi utara': 'Sulawesi Utara', 'north sulawesi': 'Sulawesi Utara',
-    'gorontalo': 'Gorontalo',
-    'sulawesi tengah': 'Sulawesi Tengah', 'central sulawesi': 'Sulawesi Tengah',
-    'sulawesi barat': 'Sulawesi Barat', 'west sulawesi': 'Sulawesi Barat',
-    'sulawesi selatan': 'Sulawesi Selatan', 'south sulawesi': 'Sulawesi Selatan',
-    'sulawesi tenggara': 'Sulawesi Tenggara', 'southeast sulawesi': 'Sulawesi Tenggara',
-    'bali': 'Bali',
-    'nusa tenggara barat': 'Nusa Tenggara Barat', 'west nusa tenggara': 'Nusa Tenggara Barat', 'ntb': 'Nusa Tenggara Barat',
-    'nusa tenggara timur': 'Nusa Tenggara Timur', 'east nusa tenggara': 'Nusa Tenggara Timur', 'ntt': 'Nusa Tenggara Timur',
-    'maluku': 'Maluku',
-    'maluku utara': 'Maluku Utara', 'north maluku': 'Maluku Utara',
-    'papua barat': 'Papua Barat', 'west papua': 'Papua Barat',
-    'papua': 'Papua',
-    'papua tengah': 'Papua Tengah',
-    'papua pegunungan': 'Papua Pegunungan',
-    'papua selatan': 'Papua Selatan',
-    'papua barat daya': 'Papua Barat Daya',
+    'kalimantan barat': 'Kalimantan Barat', 'kalimantan tengah': 'Kalimantan Tengah',
+    'kalimantan selatan': 'Kalimantan Selatan', 'kalimantan timur': 'Kalimantan Timur', 'kalimantan utara': 'Kalimantan Utara',
+    'sulawesi utara': 'Sulawesi Utara', 'gorontalo': 'Gorontalo',
+    'sulawesi tengah': 'Sulawesi Tengah', 'sulawesi barat': 'Sulawesi Barat',
+    'sulawesi selatan': 'Sulawesi Selatan', 'sulawesi tenggara': 'Sulawesi Tenggara',
+    'bali': 'Bali', 'nusa tenggara barat': 'Nusa Tenggara Barat', 'ntb': 'Nusa Tenggara Barat',
+    'nusa tenggara timur': 'Nusa Tenggara Timur', 'ntt': 'Nusa Tenggara Timur',
+    'maluku': 'Maluku', 'maluku utara': 'Maluku Utara', 'north maluku': 'Maluku Utara',
+    'papua barat': 'Papua Barat', 'west papua': 'Papua Barat', 'papua': 'Papua',
+    'papua tengah': 'Papua Tengah', 'papua pegunungan': 'Papua Pegunungan',
+    'papua selatan': 'Papua Selatan', 'papua barat daya': 'Papua Barat Daya',
   };
-  return map[s] || state.trim();
+  if (directMap[s]) return directMap[s];
+
+  // Fuzzy / substring match for KABUPATEN/KOTA prefix patterns like "KABUPATEN Aceh Besar"
+  const fuzzyPatterns: [string, string][] = [
+    ['aceh', 'Aceh'], ['sumatera utara', 'Sumatera Utara'], ['sumatera barat', 'Sumatera Barat'],
+    ['kepulauan riau', 'Kepulauan Riau'], ['riau', 'Riau'], ['jambi', 'Jambi'],
+    ['sumatera selatan', 'Sumatera Selatan'], ['bengkulu', 'Bengkulu'],
+    ['bangka', 'Bangka Belitung'], ['belitung', 'Bangka Belitung'],
+    ['lampung', 'Lampung'], ['banten', 'Banten'], ['jakarta', 'DKI Jakarta'],
+    ['jawa barat', 'Jawa Barat'], ['jawa tengah', 'Jawa Tengah'],
+    ['yogyakarta', 'Yogyakarta'], ['jawa timur', 'Jawa Timur'],
+    ['kalimantan barat', 'Kalimantan Barat'], ['kalimantan tengah', 'Kalimantan Tengah'],
+    ['kalimantan selatan', 'Kalimantan Selatan'], ['kalimantan timur', 'Kalimantan Timur'],
+    ['kalimantan utara', 'Kalimantan Utara'], ['sulawesi utara', 'Sulawesi Utara'],
+    ['gorontalo', 'Gorontalo'], ['sulawesi tengah', 'Sulawesi Tengah'],
+    ['sulawesi barat', 'Sulawesi Barat'], ['sulawesi selatan', 'Sulawesi Selatan'],
+    ['sulawesi tenggara', 'Sulawesi Tenggara'], ['bali', 'Bali'],
+    ['lombok', 'Nusa Tenggara Barat'], ['nusa tenggara barat', 'Nusa Tenggara Barat'],
+    ['nusa tenggara timur', 'Nusa Tenggara Timur'],
+    ['maluku utara', 'Maluku Utara'], ['maluku', 'Maluku'],
+    ['papua barat', 'Papua Barat'], ['papua', 'Papua'],
+  ];
+  for (const [pattern, province] of fuzzyPatterns) {
+    if (s.includes(pattern)) return province;
+  }
+  
+  return state.trim();
 };
 
 export const useProvincePropertyCounts = () => {

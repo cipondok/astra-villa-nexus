@@ -520,7 +520,7 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
           {/* Property count markers */}
           {Object.entries(provinceCoordinates).map(([name, coords]) => {
             const count = provincePropertyCounts[name] || 0;
-            if (count < 100) return null;
+            if (count === 0) return null;
             const displayCount = count >= 1000 ? `${(count / 1000).toFixed(count >= 10000 ? 0 : 1)}K` : count.toString();
             const isLarge = count >= 5000;
             const r = isLarge ? 18 : 14;
