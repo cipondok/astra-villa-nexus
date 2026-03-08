@@ -781,6 +781,24 @@ Generate optimized SEO content. Call the seo_optimize function with your results
         .update({ updated_at: new Date().toISOString() })
         .eq("property_id", propertyId);
 
+      // Log apply action
+      try {
+        await supabase.from("seo_ai_actions").insert({
+          property_id: propertyId,
+          action_type: "apply_seo",
+          old_score: 0,
+          new_score: 0,
+          new_title: analysis.seo_title || null,
+          new_description: analysis.seo_description || null,
+          keywords_added: analysis.seo_keywords || [],
+          ai_model: "apply",
+          triggered_by: "manual",
+          metadata: { fields_applied: Object.keys(updateFields) },
+        });
+      } catch (e) {
+        console.warn("Failed to log apply action:", e);
+      }
+
       return json({
         action,
         propertyId,
