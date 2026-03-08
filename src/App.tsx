@@ -113,6 +113,7 @@ const AstraDevelopment = lazy(() => import('@/pages/AstraDevelopment'));
 const BookingsPage = lazy(() => import('@/pages/BookingsPage'));
 const LocationMap = lazy(() => import('@/pages/LocationMap'));
 const AIMapSearchPage = lazy(() => import('@/pages/AIMapSearchPage'));
+const PropertyMapSearchPage = lazy(() => import('@/pages/PropertyMapSearch'));
 const DigitalTwinPage = lazy(() => import('@/pages/DigitalTwinPage'));
 const VirtualStagingPage = lazy(() => import('@/pages/VirtualStagingPage'));
 const MarketReportPage = lazy(() => import('@/pages/MarketReportPage'));
@@ -415,6 +416,7 @@ const AppContent = () => {
                 </Route>
                 <Route path="/ai-map" element={<AIMapSearchPage />} />
                 <Route path="/map-search" element={<AIMapSearchPage />} />
+                <Route path="/property-map" element={<PropertyMapSearchPage />} />
                 <Route path="/digital-twin/:id" element={<DigitalTwinPage />} />
                 <Route path="/virtual-staging" element={<VirtualStagingPage />} />
                 <Route path="/market-report" element={<MarketReportPage />} />
