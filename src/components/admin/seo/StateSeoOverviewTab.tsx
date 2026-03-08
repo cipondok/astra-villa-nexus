@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
+import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -64,9 +65,40 @@ const StateSeoOverviewTab = ({
     setSelectedStates(new Set(weakStates));
   }, [stateSeoOverview, setSelectedStates]);
 
+  // Batch progress tracking
+  const [batchTotal, setBatchTotal] = useState(0);
+  const [batchCompleted, setBatchCompleted] = useState(0);
+  const [batchRunning, setBatchRunning] = useState(false);
+  const [completedStates, setCompletedStates] = useState<string[]>([]);
+  const batchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Clear batch indicator after completion
+  useEffect(() => {
+    if (batchRunning && batchCompleted >= batchTotal && batchTotal > 0) {
+      batchTimerRef.current = setTimeout(() => {
+        setBatchRunning(false);
+        setBatchTotal(0);
+        setBatchCompleted(0);
+        setCompletedStates([]);
+      }, 3000);
+    }
+    return () => { if (batchTimerRef.current) clearTimeout(batchTimerRef.current); };
+  }, [batchCompleted, batchTotal, batchRunning]);
+
   const handleConfirmFix = useCallback(() => {
-    Array.from(selectedStates).forEach(state => {
-      autoOptimize.mutate({ threshold: autoFixThreshold, limit: 20, state });
+    const states = Array.from(selectedStates);
+    setBatchTotal(states.length);
+    setBatchCompleted(0);
+    setCompletedStates([]);
+    setBatchRunning(true);
+
+    states.forEach((state, idx) => {
+      // Stagger mutations slightly to avoid overwhelming the backend
+      setTimeout(() => {
+        autoOptimize.mutate({ threshold: autoFixThreshold, limit: 20, state });
+        setBatchCompleted(prev => prev + 1);
+        setCompletedStates(prev => [...prev, state]);
+      }, idx * 500);
     });
     setShowAutoFixConfirm(false);
   }, [selectedStates, autoOptimize, autoFixThreshold, setShowAutoFixConfirm]);
@@ -122,7 +154,37 @@ const StateSeoOverviewTab = ({
         </CardContent>
       </Card>
 
-      {/* Summary Cards */}
+      {/* Batch Progress Indicator */}
+      {batchRunning && (
+        <Card className="bg-chart-2/5 border-chart-2/20 animate-in fade-in">
+          <CardContent className="p-3">
+            <div className="flex items-center gap-3">
+              <Loader2 className="h-4 w-4 animate-spin text-chart-2 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-medium text-foreground">
+                    {batchCompleted >= batchTotal ? 'AI Auto-Fix Complete!' : 'Running AI Auto-Fix...'}
+                  </span>
+                  <span className="text-xs font-bold text-chart-2 tabular-nums">
+                    {batchCompleted}/{batchTotal} states
+                  </span>
+                </div>
+                <Progress value={batchTotal > 0 ? (batchCompleted / batchTotal) * 100 : 0} className="h-2" />
+                {completedStates.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {completedStates.map(s => (
+                      <Badge key={s} variant="secondary" className="text-[9px] px-1.5 py-0 bg-chart-2/10 text-chart-2">
+                        ✓ {s}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {!stateOverviewLoading && stateSeoOverview.length > 0 && (
         <SeoStateSummaryCards overview={stateSeoOverview} />
       )}
