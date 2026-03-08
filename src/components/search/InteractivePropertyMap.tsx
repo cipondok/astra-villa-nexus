@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   MapPin, Search, SlidersHorizontal, X, Bed, Bath, Maximize2,
   Home, Building2, Layers, Flame, Pentagon, ChevronUp, ChevronDown,
-  Loader2, TrendingUp, DollarSign, Eye,
+  Loader2, TrendingUp, DollarSign, Eye, Sparkles,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,6 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useMapProperties, MapBounds, MapFilters, MapProperty } from '@/hooks/useMapProperties';
 import { getCurrencyFormatterShort } from '@/stores/currencyStore';
+import MapNLPSearchBar, { MapNLPResult } from '@/components/search/MapNLPSearchBar';
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbTN1eGo4eXAwMWV4MnFzYTNwaTgzZnN0In0.JfxWbLcAYW83y5b-A5hLUQ';
 
@@ -281,12 +282,36 @@ export default function InteractivePropertyMap() {
   const [selectedProperty, setSelectedProperty] = useState<MapProperty | null>(null);
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [drawMode, setDrawMode] = useState<'none' | 'polygon'>('none');
-  const [filterOpen, setFilterOpen] = useState(true);
+  const [filterOpen, setFilterOpen] = useState(false);
   const [mapReady, setMapReady] = useState(false);
+  const [nlpActive, setNlpActive] = useState(false);
 
   const navigate = useNavigate();
 
   const { data: properties = [], isLoading } = useMapProperties(bounds, filters, mapReady);
+
+  // Handle NLP search result
+  const handleNLPResult = useCallback((result: MapNLPResult) => {
+    const m = mapRef.current;
+    // Apply filters
+    setFilters(result.filters);
+
+    if (Object.keys(result.filters).length > 0) {
+      setNlpActive(true);
+    } else {
+      setNlpActive(false);
+    }
+
+    // Fly to location if detected
+    if (result.flyTo && m) {
+      m.flyTo({
+        center: [result.flyTo.lng, result.flyTo.lat],
+        zoom: result.flyTo.zoom,
+        duration: 2000,
+        essential: true,
+      });
+    }
+  }, []);
 
   // Initialize map
   useEffect(() => {
@@ -526,6 +551,29 @@ export default function InteractivePropertyMap() {
     <div className="relative w-full h-screen overflow-hidden bg-background">
       {/* Map container */}
       <div ref={mapContainer} className="absolute inset-0" />
+
+      {/* AI NLP Search Bar */}
+      <MapNLPSearchBar onResult={handleNLPResult} />
+
+      {/* AI search active indicator */}
+      <AnimatePresence>
+        {nlpActive && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="absolute top-[4.5rem] left-1/2 -translate-x-1/2 z-30"
+          >
+            <Badge className="bg-primary/90 text-primary-foreground text-[10px] gap-1.5 px-3 py-1 shadow-lg backdrop-blur-sm">
+              <Sparkles className="h-3 w-3" />
+              AI filters active
+              <button onClick={() => { setFilters({}); setNlpActive(false); }} className="ml-1 hover:opacity-70">
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Filter Panel */}
       <FilterPanel
