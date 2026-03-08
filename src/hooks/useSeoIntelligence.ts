@@ -332,7 +332,7 @@ export function useAnalyzeBatch() {
 export function useAutoOptimize() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (params?: { threshold?: number; limit?: number }) => {
+    mutationFn: async (params?: { threshold?: number; limit?: number; state?: string; city?: string; area?: string }) => {
       const { data, error } = await supabase.functions.invoke('ai-engine', {
         body: { mode: 'seo_generate', payload: { action: 'auto-optimize', ...(params || {}) } },
       });
