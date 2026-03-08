@@ -528,44 +528,52 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
       const locArea = normalizeText(payload.area);
       const hasLocationFilter = !!(locState || locCity || locArea);
 
-      // If location filter, first get matching property IDs
-      let locationPropertyIds: string[] | null = null;
+      let weakRows: any[] = [];
+
+      // If location filter, get matching property IDs then find weak ones among them
       if (hasLocationFilter) {
         let locQuery = supabase.from("properties").select("id");
         if (locState) locQuery = locQuery.eq("state", locState);
         if (locCity) locQuery = locQuery.eq("city", locCity);
         if (locArea) locQuery = locQuery.ilike("location", `%${locArea}%`);
-        locQuery = locQuery.limit(1000);
+        locQuery = locQuery.limit(200);
 
         const { data: locData } = await locQuery;
-        locationPropertyIds = (locData || []).map((r: any) => r.id);
+        const locationPropertyIds = (locData || []).map((r: any) => r.id);
         if (locationPropertyIds.length === 0) {
           return json({ action, optimized: 0, threshold, message: "No properties in selected location" });
         }
+
+        // Batch into chunks of 50 to avoid URL length limits
+        const CHUNK_SIZE = 50;
+        for (let i = 0; i < locationPropertyIds.length && weakRows.length < limit; i += CHUNK_SIZE) {
+          const chunk = locationPropertyIds.slice(i, i + CHUNK_SIZE);
+          const { data: chunkRows } = await supabase
+            .from("property_seo_analysis")
+            .select("property_id, seo_score")
+            .lt("seo_score", threshold)
+            .in("property_id", chunk)
+            .order("seo_score", { ascending: true })
+            .limit(limit - weakRows.length);
+          if (chunkRows) weakRows = weakRows.concat(chunkRows);
+        }
+        weakRows = weakRows.slice(0, limit);
+      } else {
+        const { data, error: weakError } = await supabase
+          .from("property_seo_analysis")
+          .select("property_id, seo_score")
+          .lt("seo_score", threshold)
+          .order("seo_score", { ascending: true })
+          .limit(limit);
+        if (weakError) return json({ error: weakError.message }, 500);
+        weakRows = data || [];
       }
 
-      let weakQuery = supabase
-        .from("property_seo_analysis")
-        .select("property_id, seo_score")
-        .lt("seo_score", threshold)
-        .order("seo_score", { ascending: true })
-        .limit(hasLocationFilter ? 500 : limit);
-
-      // Filter by location property IDs if applicable
-      if (locationPropertyIds) {
-        weakQuery = weakQuery.in("property_id", locationPropertyIds.slice(0, 500));
-      }
-
-      const { data: weakRows, error: weakError } = await weakQuery;
-
-      if (weakError) return json({ error: weakError.message }, 500);
-      if (!weakRows || weakRows.length === 0) {
+      if (weakRows.length === 0) {
         return json({ action, optimized: 0, threshold, message: "No weak listings found" });
       }
 
-      // Apply limit after location filtering
-      const limitedWeakRows = weakRows.slice(0, limit);
-      const ids = limitedWeakRows.map((r) => r.property_id).filter(Boolean);
+      const ids = weakRows.map((r: any) => r.property_id).filter(Boolean);
       const { data: properties, error: propError } = await supabase
         .from("properties")
         .select(SEO_PROPERTY_SELECT)
@@ -573,7 +581,7 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
 
       if (propError) return json({ error: propError.message }, 500);
 
-      const weakById = new Map(limitedWeakRows.map((r) => [r.property_id, Number(r.seo_score) || 0]));
+      const weakById = new Map(weakRows.map((r: any) => [r.property_id, Number(r.seo_score) || 0]));
       const propertyList = (properties || []) as Record<string, unknown>[];
 
       const optimized = await Promise.all(
