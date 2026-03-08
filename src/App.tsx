@@ -571,8 +571,7 @@ function App() {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <AnimatePresence mode="wait">
-          {isLoading && welcomeEnabled ? (
+        {isLoading && welcomeEnabled ? (
             <Suspense fallback={null}><InitialLoadingScreen key="loading" /></Suspense>
           ) : (
             <Router key="app" future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
@@ -610,7 +609,6 @@ function App() {
               </ThemeProvider>
             </Router>
           )}
-        </AnimatePresence>
       </QueryClientProvider>
     </ErrorBoundary>
   );
