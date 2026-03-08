@@ -320,6 +320,7 @@ const PropertySEOChecker = () => {
 
   // Hooks
   const { data: stats, isLoading: statsLoading } = useSeoStats();
+  const { data: stateSeoOverview = [], isLoading: stateOverviewLoading } = useStateSeoStats();
   const { data: allAnalyses = [], isLoading: analysesLoading } = usePropertySeoAnalyses({ limit: 100 });
   const { data: weakListings = [] } = usePropertySeoAnalyses({ limit: 25, filter: 'weak' });
   const { data: topListings = [] } = usePropertySeoAnalyses({ limit: 25, filter: 'excellent' });
