@@ -551,7 +551,6 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
       if (!propertyId) return json({ error: "propertyId is required" }, 400);
 
       const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-      if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
 
       const { data: property, error: propErr } = await supabase
         .from("properties")
@@ -562,90 +561,115 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
       if (propErr) return json({ error: propErr.message }, 500);
       if (!property) return json({ error: "Property not found" }, 404);
 
-      const prompt = `You are an expert real estate SEO copywriter for Indonesian property listings.
+      const locationLabel = [property.location, property.city, property.state].filter(Boolean).join(", ") || "Indonesia";
+      const currentTitle = property.title || "Untitled";
+      const currentDesc = property.description || "";
+
+      let optimization: Record<string, unknown> = {};
+
+      if (LOVABLE_API_KEY) {
+        const prompt = `You are an expert real estate SEO copywriter for Indonesian property listings.
 
 Property details:
-- Title: ${property.title || "N/A"}
-- Description: ${property.description || "N/A"}
+- Title: ${currentTitle}
+- Description: ${currentDesc || "N/A"}
 - Type: ${property.property_type || "N/A"}
 - Listing: ${property.listing_type || "sale"}
-- Location: ${[property.location, property.city, property.state].filter(Boolean).join(", ") || "Indonesia"}
+- Location: ${locationLabel}
 - Price: ${property.price || "N/A"}
 - Bedrooms: ${property.bedrooms || "N/A"}, Bathrooms: ${property.bathrooms || "N/A"}
 
 Generate optimized SEO content. Call the seo_optimize function with your results.`;
 
-      const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
-          messages: [
-            { role: "system", content: "You are an expert SEO copywriter for real estate." },
-            { role: "user", content: prompt },
-          ],
-          tools: [{
-            type: "function",
-            function: {
-              name: "seo_optimize",
-              description: "Return optimized SEO content for a property listing",
-              parameters: {
-                type: "object",
-                properties: {
-                  optimized_title: { type: "string", description: "SEO title 50-60 chars" },
-                  optimized_description: { type: "string", description: "Meta description 120-160 chars" },
-                  keywords: { type: "array", items: { type: "string" }, description: "5-8 target keywords" },
-                  hashtags: { type: "array", items: { type: "string" }, description: "4-6 hashtags" },
-                  content_suggestions: { type: "array", items: { type: "string" }, description: "3-5 improvement tips" },
-                  readability_tips: { type: "array", items: { type: "string" }, description: "2-3 readability improvements" },
-                },
-                required: ["optimized_title", "optimized_description", "keywords", "hashtags", "content_suggestions"],
-                additionalProperties: false,
-              },
-            },
-          }],
-          tool_choice: { type: "function", function: { name: "seo_optimize" } },
-        }),
-      });
-
-      if (!aiResp.ok) {
-        const status = aiResp.status;
-        if (status === 429) return json({ error: "Rate limited. Please try again shortly." }, 429);
-        if (status === 402) return json({ error: "AI credits required." }, 402);
-        const t = await aiResp.text();
-        console.error("AI content-optimize error:", status, t);
-        return json({ error: "AI content optimization failed" }, 500);
-      }
-
-      const aiData = await aiResp.json();
-      const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
-
-      let optimization: Record<string, unknown> = {};
-      if (toolCall?.function?.arguments) {
         try {
-          optimization = JSON.parse(toolCall.function.arguments);
-        } catch {
-          console.error("Failed to parse AI response");
+          const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${LOVABLE_API_KEY}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              model: "google/gemini-3-flash-preview",
+              messages: [
+                { role: "system", content: "You are an expert SEO copywriter for real estate." },
+                { role: "user", content: prompt },
+              ],
+              tools: [{
+                type: "function",
+                function: {
+                  name: "seo_optimize",
+                  description: "Return optimized SEO content for a property listing",
+                  parameters: {
+                    type: "object",
+                    properties: {
+                      optimized_title: { type: "string", description: "SEO title 50-60 chars" },
+                      optimized_description: { type: "string", description: "Meta description 120-160 chars" },
+                      focus_keywords: { type: "array", items: { type: "string" }, description: "3-5 primary keywords" },
+                      secondary_keywords: { type: "array", items: { type: "string" }, description: "3-5 secondary keywords" },
+                      hashtags: { type: "array", items: { type: "string" }, description: "4-6 hashtags" },
+                      content_suggestions: { type: "array", items: { type: "string" }, description: "3-5 improvement tips" },
+                      readability_tips: { type: "array", items: { type: "string" }, description: "2-3 readability improvements" },
+                      content_score: { type: "number", description: "Estimated content quality score 0-100" },
+                    },
+                    required: ["optimized_title", "optimized_description", "focus_keywords", "hashtags", "content_suggestions"],
+                    additionalProperties: false,
+                  },
+                },
+              }],
+              tool_choice: { type: "function", function: { name: "seo_optimize" } },
+            }),
+          });
+
+          if (aiResp.ok) {
+            const aiData = await aiResp.json();
+            const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+            if (toolCall?.function?.arguments) {
+              try { optimization = JSON.parse(toolCall.function.arguments); } catch { /* fallback below */ }
+            }
+          } else {
+            console.error("AI content-optimize error:", aiResp.status);
+          }
+        } catch (e) {
+          console.error("AI content-optimize exception:", e);
         }
       }
 
-      // Fall back to template if AI didn't return structured data
+      // Fallback to template if AI didn't return structured data
       if (!optimization.optimized_title) {
         const draft = computeSeoDraft(property as Record<string, unknown>);
         optimization = {
           optimized_title: draft.seo_title,
           optimized_description: draft.seo_description,
-          keywords: draft.seo_keywords,
+          focus_keywords: draft.seo_keywords.slice(0, 5),
+          secondary_keywords: draft.seo_keywords.slice(5),
           hashtags: draft.seo_hashtags,
-          content_suggestions: ["Add more property details", "Include neighborhood info", "Mention nearby amenities"],
+          content_suggestions: ["Add more property details", "Include neighborhood amenities", "Mention nearby landmarks"],
           readability_tips: ["Use shorter sentences", "Add bullet points for features"],
+          content_score: draft.seo_score,
         };
       }
 
-      return json({ action, propertyId, optimization });
+      // Ensure all expected fields for ContentOptimization interface
+      return json({
+        action,
+        propertyId,
+        optimization: {
+          optimized_title: optimization.optimized_title || "",
+          optimized_description: optimization.optimized_description || "",
+          meta_title: optimization.optimized_title || "",
+          meta_description: optimization.optimized_description || "",
+          focus_keywords: optimization.focus_keywords || [],
+          secondary_keywords: optimization.secondary_keywords || [],
+          hashtags: optimization.hashtags || [],
+          content_score: optimization.content_score || 50,
+          word_count_recommendation: 300,
+          readability_tips: optimization.readability_tips || [],
+          schema_suggestions: ["Add PropertyListing schema", "Include price and location markup"],
+          content_suggestions: optimization.content_suggestions || [],
+          propertyId,
+          currentTitle: currentTitle,
+        },
+      });
     }
 
     // ── apply-seo: Apply SEO analysis to the property ──
@@ -701,8 +725,8 @@ Generate optimized SEO content. Call the seo_optimize function with your results
       if (!propertyId) return json({ error: "propertyId is required" }, 400);
 
       const [propertyRes, analysisRes] = await Promise.all([
-        supabase.from("properties").select("id, title, description, city, state, location, property_type").eq("id", propertyId).maybeSingle(),
-        supabase.from("property_seo_analysis").select("seo_title, seo_description, seo_score").eq("property_id", propertyId).maybeSingle(),
+        supabase.from("properties").select("id, title, description, city, state, location, property_type, price").eq("id", propertyId).maybeSingle(),
+        supabase.from("property_seo_analysis").select("seo_title, seo_description, seo_score, seo_keywords").eq("property_id", propertyId).maybeSingle(),
       ]);
 
       if (propertyRes.error) return json({ error: propertyRes.error.message }, 500);
@@ -714,101 +738,157 @@ Generate optimized SEO content. Call the seo_optimize function with your results
       const currentTitle = prop.title || "Untitled Property";
       const currentDesc = prop.description?.slice(0, 160) || "No description available";
       const slug = currentTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 50);
+      const baseUrl = "astra-villa-realty.lovable.app/property";
 
-      return json({
-        action,
-        propertyId,
-        current: {
-          title: currentTitle,
-          description: currentDesc,
-          url: `astra-villa-realty.lovable.app/property/${propertyId}`,
-        },
-        optimized: seo ? {
-          title: seo.seo_title || currentTitle,
-          description: seo.seo_description || currentDesc,
-          url: `astra-villa-realty.lovable.app/property/${slug}-${propertyId.slice(0, 8)}`,
-          score: seo.seo_score,
-        } : null,
+      // Match SerpPreview interface: { title, description, url, type, keywords?, score? }
+      const current = {
+        title: currentTitle,
+        description: currentDesc,
+        url: `${baseUrl}/${propertyId}`,
+        type: "current",
+        keywords: [] as string[],
+        score: seo?.seo_score || 0,
+      };
+
+      const optimized = seo ? {
+        title: seo.seo_title || currentTitle,
+        description: seo.seo_description || currentDesc,
+        url: `${baseUrl}/${slug}-${propertyId.slice(0, 8)}`,
+        type: "optimized",
+        keywords: seo.seo_keywords || [],
+        score: seo.seo_score || 0,
+      } : {
+        title: currentTitle,
+        description: currentDesc,
+        url: `${baseUrl}/${propertyId}`,
+        type: "optimized",
+        keywords: [],
+        score: 0,
+      };
+
+      const improvements = {
+        title_changed: current.title !== optimized.title,
+        description_changed: current.description !== optimized.description,
+        url_changed: current.url !== optimized.url,
+        score_improvement: (optimized.score || 0) - (current.score || 0),
         has_analysis: !!seo,
-      });
+      };
+
+      return json({ action, propertyId, current, optimized, improvements });
     }
 
     // ── competitor-analysis: Compare with similar properties ──
     if (action === "competitor-analysis") {
+      // Support both propertyId-based and location/propertyType-based queries
       const propertyId = normalizeText(payload.propertyId);
-      if (!propertyId) return json({ error: "propertyId is required" }, 400);
+      const locationParam = normalizeText(payload.location);
+      const propertyTypeParam = normalizeText(payload.propertyType);
 
-      const { data: property, error: propErr } = await supabase
-        .from("properties")
-        .select("id, title, description, property_type, city, state, price")
-        .eq("id", propertyId)
-        .maybeSingle();
+      let targetCity = locationParam;
+      let targetType = propertyTypeParam;
+      let myScore: number | null = null;
 
-      if (propErr) return json({ error: propErr.message }, 500);
-      if (!property) return json({ error: "Property not found" }, 404);
+      // If propertyId provided, use it to get location/type
+      if (propertyId) {
+        const { data: property, error: propErr } = await supabase
+          .from("properties")
+          .select("id, title, description, property_type, city, state, price")
+          .eq("id", propertyId)
+          .maybeSingle();
 
-      // Find similar properties (same city & type)
+        if (propErr) return json({ error: propErr.message }, 500);
+        if (!property) return json({ error: "Property not found" }, 404);
+
+        targetCity = targetCity || property.city || "";
+        targetType = targetType || property.property_type || "";
+
+        const { data: mySeo } = await supabase
+          .from("property_seo_analysis")
+          .select("seo_score")
+          .eq("property_id", propertyId)
+          .maybeSingle();
+        myScore = mySeo?.seo_score || null;
+      }
+
+      if (!targetCity && !targetType) {
+        return json({ error: "Provide propertyId, or location/propertyType" }, 400);
+      }
+
+      // Find competitor properties
       let competitorQuery = supabase
         .from("properties")
-        .select("id, title, description, property_type, city, state, price")
-        .neq("id", propertyId)
-        .limit(20);
+        .select("id, title, property_type, city, state, price, location")
+        .limit(30);
 
-      if (property.city) competitorQuery = competitorQuery.eq("city", property.city);
-      if (property.property_type) competitorQuery = competitorQuery.eq("property_type", property.property_type);
+      if (propertyId) competitorQuery = competitorQuery.neq("id", propertyId);
+      if (targetCity) competitorQuery = competitorQuery.eq("city", targetCity);
+      if (targetType) competitorQuery = competitorQuery.eq("property_type", targetType);
 
       const { data: competitors } = await competitorQuery;
-
-      // Get SEO scores for competitors
       const competitorIds = (competitors || []).map((c: any) => c.id);
-      const allIds = [propertyId, ...competitorIds];
 
-      const { data: seoScores } = await supabase
-        .from("property_seo_analysis")
-        .select("property_id, seo_score, seo_title, title_score, description_score")
-        .in("property_id", allIds);
+      // Get SEO scores
+      let seoScores: any[] = [];
+      if (competitorIds.length > 0) {
+        const { data } = await supabase
+          .from("property_seo_analysis")
+          .select("property_id, seo_score, seo_rating, seo_keywords")
+          .in("property_id", competitorIds.slice(0, 50));
+        seoScores = data || [];
+      }
 
-      const scoreMap = new Map((seoScores || []).map((s: any) => [s.property_id, s]));
-      const mySeo = scoreMap.get(propertyId);
+      const scoreMap = new Map(seoScores.map((s: any) => [s.property_id, s]));
 
-      const competitorAnalysis = (competitors || []).slice(0, 10).map((c: any) => {
+      // Build CompetitorData[] matching the interface
+      const competitorData = (competitors || []).slice(0, 15).map((c: any) => {
         const cSeo = scoreMap.get(c.id);
         return {
           id: c.id,
-          title: c.title,
-          city: c.city,
-          price: c.price,
+          title: c.title || "Untitled",
+          location: [c.location, c.city, c.state].filter(Boolean).join(", ") || "Unknown",
+          price: c.price || 0,
+          property_type: c.property_type || "unknown",
           seo_score: cSeo?.seo_score || null,
-          has_analysis: !!cSeo,
+          seo_rating: cSeo?.seo_rating || "unanalyzed",
+          keywords: cSeo?.seo_keywords || [],
         };
       });
 
-      const analyzedCompetitors = competitorAnalysis.filter((c) => c.seo_score !== null);
-      const avgCompetitorScore = analyzedCompetitors.length > 0
-        ? Math.round(analyzedCompetitors.reduce((sum, c) => sum + (c.seo_score || 0), 0) / analyzedCompetitors.length)
-        : null;
+      const analyzed = competitorData.filter((c) => c.seo_score !== null);
+      const avgScore = analyzed.length > 0
+        ? Math.round(analyzed.reduce((sum, c) => sum + (c.seo_score || 0), 0) / analyzed.length)
+        : 0;
 
-      const insights: string[] = [];
-      if (mySeo && avgCompetitorScore !== null) {
-        if (mySeo.seo_score > avgCompetitorScore + 10) insights.push("Your SEO score is above average for this area. Great job!");
-        else if (mySeo.seo_score < avgCompetitorScore - 10) insights.push("Your SEO score is below competitors. Consider optimizing title and description.");
-        else insights.push("Your SEO score is on par with competitors in this area.");
-      }
-      if (!property.description || property.description.length < 100) {
-        insights.push("Your description is shorter than recommended. Aim for 150+ characters.");
-      }
-      if (competitorAnalysis.length === 0) {
-        insights.push("No direct competitors found in the same city and property type.");
-      }
+      // Build CompetitorInsights matching the interface
+      const allKeywords = analyzed.flatMap((c) => c.keywords || []);
+      const keywordFreq = new Map<string, number>();
+      allKeywords.forEach((k) => keywordFreq.set(k, (keywordFreq.get(k) || 0) + 1));
+      const topKeywords = [...keywordFreq.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10)
+        .map(([k]) => k);
+
+      const insights: Record<string, unknown> = {
+        market_saturation: competitorData.length > 10 ? "high" : competitorData.length > 5 ? "medium" : "low",
+        avg_keyword_density: topKeywords.length > 0 ? +(allKeywords.length / Math.max(analyzed.length, 1)).toFixed(1) : 0,
+        top_performing_keywords: topKeywords,
+        keyword_gaps: [],
+        price_positioning: avgScore > 60 ? "competitive" : "underoptimized",
+        recommendations: [
+          analyzed.length < 5 ? "Few competitors analyzed — run batch analysis first" : `${analyzed.length} competitors analyzed in this segment`,
+          myScore !== null && avgScore > 0 && myScore < avgScore ? "Your SEO score is below the area average — optimize title and description" : "Your SEO positioning looks solid",
+          topKeywords.length > 0 ? `Top keywords in area: ${topKeywords.slice(0, 3).join(", ")}` : "No keyword data available yet",
+        ],
+        difficulty_score: clamp(Math.round(competitorData.length * 3 + avgScore * 0.5), 0, 100),
+      };
 
       return json({
         action,
-        propertyId,
-        my_score: mySeo?.seo_score || null,
-        avg_competitor_score: avgCompetitorScore,
-        total_competitors: competitorAnalysis.length,
-        competitors: competitorAnalysis,
+        competitors: competitorData,
         insights,
+        my_score: myScore,
+        avg_competitor_score: avgScore,
+        total_competitors: competitorData.length,
       });
     }
 
