@@ -17733,6 +17733,7 @@ export type Database = {
           description_score: number | null
           hashtag_score: number | null
           id: string
+          image_score: number | null
           keyword_score: number | null
           last_analyzed_at: string | null
           location_score: number | null
@@ -17760,6 +17761,7 @@ export type Database = {
           description_score?: number | null
           hashtag_score?: number | null
           id?: string
+          image_score?: number | null
           keyword_score?: number | null
           last_analyzed_at?: string | null
           location_score?: number | null
@@ -17787,6 +17789,7 @@ export type Database = {
           description_score?: number | null
           hashtag_score?: number | null
           id?: string
+          image_score?: number | null
           keyword_score?: number | null
           last_analyzed_at?: string | null
           location_score?: number | null
