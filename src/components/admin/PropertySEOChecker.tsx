@@ -482,10 +482,22 @@ const PropertySEOChecker = () => {
             {analyzeBatch.isPending ? <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5 mr-1.5" />}
             Analyze Batch
           </Button>
-          <Button size="sm" onClick={() => autoOptimize.mutate({ threshold: 50, limit: 10, ...locationFilters })} disabled={autoOptimize.isPending}>
-            {autoOptimize.isPending ? <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> : <Zap className="h-3.5 w-3.5 mr-1.5" />}
-            Auto-Optimize
-          </Button>
+          <div className="flex items-center gap-1">
+            <select
+              className="h-8 rounded-md border border-input bg-background px-2 text-xs"
+              value={autoOptThreshold}
+              onChange={(e) => setAutoOptThreshold(Number(e.target.value))}
+            >
+              <option value={50}>Score &lt; 50</option>
+              <option value={60}>Score &lt; 60</option>
+              <option value={70}>Score &lt; 70</option>
+              <option value={80}>Score &lt; 80</option>
+            </select>
+            <Button size="sm" onClick={() => autoOptimize.mutate({ threshold: autoOptThreshold, limit: 20, ...locationFilters })} disabled={autoOptimize.isPending}>
+              {autoOptimize.isPending ? <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> : <Zap className="h-3.5 w-3.5 mr-1.5" />}
+              Auto-Optimize
+            </Button>
+          </div>
         </div>
       </div>
 
