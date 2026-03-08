@@ -34,6 +34,7 @@ import { useQuery } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
 import StateSeoOverviewTab from './seo/StateSeoOverviewTab';
 import SeoHistoryTab from './seo/SeoHistoryTab';
+import SeoDashboardCharts from './seo/SeoDashboardCharts';
 
 // ─── Helpers ────────────────────────────────────────────────
 const ScoreBadge = ({ score }: { score: number }) => {
