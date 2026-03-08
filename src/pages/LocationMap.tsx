@@ -292,11 +292,13 @@ const LocationMap = () => {
               <span>Klik provinsi untuk detail</span>
             </div>
           </div>
-          <IndonesiaMap
-            onProvinceSelect={handleProvinceSelect}
-            selectedProvince={selectedProvince}
-            userProvince={lastProvince?.id || null}
-          />
+          <Suspense fallback={<MapLoadingSkeleton />}>
+            <IndonesiaMap
+              onProvinceSelect={handleProvinceSelect}
+              selectedProvince={selectedProvince}
+              userProvince={lastProvince?.id || null}
+            />
+          </Suspense>
         </motion.div>
 
         {/* ── POPULAR PROVINCES ── */}
