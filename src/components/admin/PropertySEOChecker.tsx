@@ -204,7 +204,7 @@ function useStateSeoStats() {
           if (data) analyzedProps.push(...data);
         }
 
-        (analyzedProps || []).forEach((p: any) => {
+        analyzedProps.forEach((p: any) => {
           const raw = (p.state || '').trim();
           const norm = stateNormMap[raw.toLowerCase()] || aliases[raw.toLowerCase()] || raw;
           if (!stateMap[norm]) return;
