@@ -21,6 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useMapProperties, MapBounds, MapFilters, MapProperty } from '@/hooks/useMapProperties';
 import { getCurrencyFormatterShort } from '@/stores/currencyStore';
+import MapNLPSearchBar, { MapNLPResult } from '@/components/search/MapNLPSearchBar';
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbTN1eGo4eXAwMWV4MnFzYTNwaTgzZnN0In0.JfxWbLcAYW83y5b-A5hLUQ';
 
