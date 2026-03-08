@@ -20,7 +20,7 @@ interface StateSeoOverviewTabProps {
   setAutoFixThreshold: React.Dispatch<React.SetStateAction<number>>;
   showAutoFixConfirm: boolean;
   setShowAutoFixConfirm: React.Dispatch<React.SetStateAction<boolean>>;
-  autoOptimize: { mutate: (args: { threshold: number; limit: number; state?: string }) => void; isPending: boolean };
+  autoOptimize: { mutate: (args: { threshold: number; limit: number; state?: string }) => void; mutateAsync: (args: { threshold: number; limit: number; state?: string }) => Promise<any>; isPending: boolean };
   filterState: string;
   setFilterState: (state: string) => void;
   setActiveTab: (tab: string) => void;
