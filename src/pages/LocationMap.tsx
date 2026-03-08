@@ -282,11 +282,13 @@ const LocationMap = () => {
           <div className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-gradient-to-r from-primary/5 via-transparent to-accent/5">
             <div className="flex items-center gap-2">
               <div className="h-2 w-2 rounded-full bg-chart-1 animate-pulse" />
-              <span className="text-sm font-semibold text-foreground">Peta Interaktif Indonesia</span>
+              <span className="text-sm font-semibold text-foreground">Peta Analytics Indonesia</span>
+              <Badge variant="outline" className="text-[10px] border-primary/30 text-primary hidden sm:inline-flex">Heatmap</Badge>
             </div>
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <Layers className="h-3.5 w-3.5" />
-              <span>Klik provinsi untuk detail</span>
+              <span className="hidden sm:inline">Gunakan kontrol peta untuk toggle heatmap & hotspot</span>
+              <span className="sm:hidden">Klik provinsi</span>
             </div>
           </div>
           <Suspense fallback={<MapLoadingSkeleton />}>
