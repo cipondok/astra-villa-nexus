@@ -121,23 +121,110 @@ const AnalysisProgress = ({ label, isPending }: { label: string; isPending: bool
   );
 };
 
-// ─── Location Filters Hook ──────────────────────────────────
-function useLocationFilters() {
-  const { data: states = [] } = useQuery({
-    queryKey: ['seo-filter-states'],
+// ─── All 38 Indonesian Provinces ────────────────────────────
+const INDONESIA_PROVINCES = [
+  'Aceh', 'Sumatera Utara', 'Sumatera Barat', 'Riau', 'Jambi', 'Sumatera Selatan',
+  'Bengkulu', 'Lampung', 'Kepulauan Bangka Belitung', 'Kepulauan Riau',
+  'DKI Jakarta', 'Jawa Barat', 'Jawa Tengah', 'DI Yogyakarta', 'Jawa Timur',
+  'Banten', 'Bali', 'Nusa Tenggara Barat', 'Nusa Tenggara Timur',
+  'Kalimantan Barat', 'Kalimantan Tengah', 'Kalimantan Selatan', 'Kalimantan Timur', 'Kalimantan Utara',
+  'Sulawesi Utara', 'Sulawesi Tengah', 'Sulawesi Selatan', 'Sulawesi Tenggara', 'Gorontalo', 'Sulawesi Barat',
+  'Maluku', 'Maluku Utara', 'Papua', 'Papua Barat', 'Papua Selatan', 'Papua Tengah', 'Papua Pegunungan', 'Papua Barat Daya',
+].sort();
+
+// ─── State SEO Stats Hook ───────────────────────────────────
+function useStateSeoStats() {
+  return useQuery({
+    queryKey: ['state-seo-overview'],
     queryFn: async () => {
-      const { data, error } = await (supabase.from('properties') as any)
+      // Get property counts per state
+      const { data: propData } = await (supabase.from('properties') as any)
         .select('state')
         .not('state', 'is', null)
         .limit(1000);
-      if (error) throw error;
-      const unique = [...new Set((data || []).map((d: any) => d.state).filter(Boolean))].sort() as string[];
-      return unique;
-    },
-    staleTime: 10 * 60 * 1000,
-  });
 
-  return { states };
+      // Get SEO analyses with property state info
+      const { data: seoData } = await (supabase.from('property_seo_analysis') as any)
+        .select('property_id, seo_score, keyword_score, seo_keywords')
+        .limit(1000);
+
+      // Build state map
+      const stateMap: Record<string, { total: number; analyzed: number; totalScore: number; totalKeywordScore: number; topKeywords: Record<string, number> }> = {};
+      INDONESIA_PROVINCES.forEach(s => {
+        stateMap[s] = { total: 0, analyzed: 0, totalScore: 0, totalKeywordScore: 0, topKeywords: {} };
+      });
+
+      // Count properties per state (normalize names)
+      const stateNormMap: Record<string, string> = {};
+      INDONESIA_PROVINCES.forEach(p => { stateNormMap[p.toLowerCase()] = p; });
+      // Add common aliases
+      const aliases: Record<string, string> = {
+        'di yogyakarta': 'DI Yogyakarta', 'diy yogyakarta': 'DI Yogyakarta',
+        'dki jakarta': 'DKI Jakarta', 'central java': 'Jawa Tengah',
+        'east java': 'Jawa Timur', 'west java': 'Jawa Barat',
+        'north sulawesi': 'Sulawesi Utara', 'south sulawesi': 'Sulawesi Selatan',
+        'north sumatra': 'Sumatera Utara', 'west kalimantan': 'Kalimantan Barat',
+        'west nusa tenggara': 'Nusa Tenggara Barat',
+      };
+
+      const propStateMap: Record<string, string> = {}; // property_id -> normalized state
+      (propData || []).forEach((p: any) => {
+        const raw = (p.state || '').trim();
+        const norm = stateNormMap[raw.toLowerCase()] || aliases[raw.toLowerCase()] || raw;
+        if (stateMap[norm]) {
+          stateMap[norm].total++;
+        }
+      });
+
+      // Map SEO data (we need property->state mapping)
+      // For now, just use counts from seoData length
+      const seoPropertyIds = new Set((seoData || []).map((s: any) => s.property_id));
+
+      // We need to get property states for SEO-analyzed properties
+      if (seoPropertyIds.size > 0) {
+        const { data: analyzedProps } = await (supabase.from('properties') as any)
+          .select('id, state')
+          .in('id', Array.from(seoPropertyIds).slice(0, 500));
+
+        (analyzedProps || []).forEach((p: any) => {
+          const raw = (p.state || '').trim();
+          const norm = stateNormMap[raw.toLowerCase()] || aliases[raw.toLowerCase()] || raw;
+          if (!stateMap[norm]) return;
+          const seo = (seoData || []).find((s: any) => s.property_id === p.id);
+          if (seo) {
+            stateMap[norm].analyzed++;
+            stateMap[norm].totalScore += seo.seo_score || 0;
+            stateMap[norm].totalKeywordScore += seo.keyword_score || 0;
+            (seo.seo_keywords || []).forEach((kw: string) => {
+              stateMap[norm].topKeywords[kw] = (stateMap[norm].topKeywords[kw] || 0) + 1;
+            });
+          }
+        });
+      }
+
+      return INDONESIA_PROVINCES.map(state => {
+        const d = stateMap[state];
+        const avgScore = d.analyzed > 0 ? Math.round(d.totalScore / d.analyzed) : 0;
+        const avgKwScore = d.analyzed > 0 ? Math.round(d.totalKeywordScore / d.analyzed) : 0;
+        const topKws = Object.entries(d.topKeywords).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([kw]) => kw);
+        return {
+          state,
+          totalProperties: d.total,
+          analyzedCount: d.analyzed,
+          avgSeoScore: avgScore,
+          avgKeywordScore: avgKwScore,
+          topKeywords: topKws,
+          status: d.total === 0 ? 'no-data' : d.analyzed === 0 ? 'unanalyzed' : avgScore >= 70 ? 'good' : avgScore >= 40 ? 'needs-work' : 'poor',
+        };
+      });
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+// ─── Location Filters Hook ──────────────────────────────────
+function useLocationFilters() {
+  return { states: INDONESIA_PROVINCES };
 }
 
 function useCitiesByState(state: string) {
