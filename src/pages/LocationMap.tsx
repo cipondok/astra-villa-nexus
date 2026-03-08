@@ -159,6 +159,20 @@ const LocationMap = () => {
     { label: 'Agen Aktif', value: '12.3K', icon: TrendingUp, gradient: 'from-gold-primary to-chart-3', bg: 'bg-gold-primary/10 dark:bg-gold-primary/20', text: 'text-gold-primary' },
   ];
 
+  // Map loading fallback
+  const MapLoadingSkeleton = () => (
+    <div className="relative w-full aspect-[2/1] flex flex-col items-center justify-center gap-4 bg-muted/30">
+      <Loader2 className="h-10 w-10 text-primary animate-spin" />
+      <div className="text-center space-y-1">
+        <p className="text-sm font-semibold text-foreground">Memuat Peta Indonesia...</p>
+        <p className="text-xs text-muted-foreground">Loading interactive map</p>
+      </div>
+      <div className="w-48">
+        <Progress value={loadProgress} className="h-1.5" />
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       <SEOHead
@@ -166,6 +180,18 @@ const LocationMap = () => {
         description={t('seo.locationMap.description')}
         keywords="peta properti indonesia, properti per provinsi, lokasi properti, peta real estate"
       />
+
+      {/* Top loading bar */}
+      {isLoading && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed top-0 left-0 right-0 z-50"
+        >
+          <Progress value={loadProgress} className="h-1 rounded-none" />
+        </motion.div>
+      )}
+
       {/* Decorative background blobs */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-primary/10 dark:bg-primary/15 blur-3xl" />
