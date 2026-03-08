@@ -57,6 +57,7 @@ export const ASTRATokenHub = lazyRetry(() => import("./ASTRATokenHub"));
 export const ToolsManagementDashboard = lazyRetry(() => import("./ToolsManagementDashboard"));
 // SEOSettings removed – use SystemSettings with defaultTab="seo-hub" instead
 export const SEOManagement = lazyRetry(() => import("./SEOManagement"));
+export const PropertySEOChecker = lazyRetry(() => import("./PropertySEOChecker"));
 export const ProjectDiagnosticSystem = lazyRetry(() => import("./ProjectDiagnosticSystem"));
 export const IndonesianPaymentMerchantConfig = lazyRetry(() => import("./IndonesianPaymentMerchantConfig"));
 export const VendorsHubContent = lazyRetry(() => import("./VendorsHubContent"));
@@ -248,6 +249,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "customer-service-control": { label: "CS Control Panel", category: "Support" },
   "seo-settings": { label: "SEO Hub", category: "Settings" },
   "seo-management": { label: "SEO Management", category: "Marketing" },
+  "property-seo-checker": { label: "Property SEO Checker", category: "Core Management" },
   "vendor-agent-control": { label: "Vendor/Agent Control", category: "Vendors & Services" },
   "authorization-monitoring": { label: "Authorization", category: "Security" },
   "admin-alerts": { label: "Admin Alerts", category: "System" },
