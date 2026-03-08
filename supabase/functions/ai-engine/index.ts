@@ -225,9 +225,294 @@ async function handleMatchProperty(payload: Record<string, unknown>) {
   return json({ mode: "match_property", status: "not_implemented", payload });
 }
 
-async function handleSeoGeneration(payload: Record<string, unknown>) {
-  return json({ mode: "seo_generate", status: "not_implemented", payload });
+const SEO_PROPERTY_SELECT = "id,title,description,property_type,listing_type,location,city,state,bedrooms,bathrooms,price";
+
+function clamp(value: number, min = 0, max = 100) {
+  return Math.max(min, Math.min(max, value));
 }
+
+function normalizeText(value: unknown): string {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function uniqueKeywords(values: string[]) {
+  const seen = new Set<string>();
+  return values
+    .map((v) => normalizeText(v).toLowerCase())
+    .filter((v) => {
+      if (!v || seen.has(v)) return false;
+      seen.add(v);
+      return true;
+    });
+}
+
+function toHashtag(value: string) {
+  return `#${value.replace(/[^a-zA-Z0-9\s]/g, "").split(/\s+/).filter(Boolean).join("")}`;
+}
+
+function ensureLength(text: string, min: number, max: number, filler: string) {
+  let output = text.trim();
+  if (!output) output = filler;
+
+  while (output.length < min) {
+    output = `${output} ${filler}`.slice(0, max);
+  }
+
+  if (output.length > max) {
+    output = output.slice(0, max);
+    const lastSpace = output.lastIndexOf(" ");
+    if (lastSpace > min * 0.7) output = output.slice(0, lastSpace);
+  }
+
+  return output.trim();
+}
+
+function computeSeoDraft(property: Record<string, unknown>, boost = 0) {
+  const title = normalizeText(property.title) || "Property Listing";
+  const description = normalizeText(property.description);
+  const propertyType = normalizeText(property.property_type) || "property";
+  const listingType = normalizeText(property.listing_type) || "sale";
+  const city = normalizeText(property.city);
+  const state = normalizeText(property.state);
+  const area = normalizeText(property.location);
+  const locationLabel = city || area || state || "Indonesia";
+
+  const listingLabel = listingType === "rent" ? "for Rent" : "for Sale";
+
+  const seoTitle = ensureLength(
+    `${title} ${listingLabel} in ${locationLabel} | ASTRA Villa`,
+    50,
+    60,
+    `Best ${propertyType} in ${locationLabel}`
+  );
+
+  const seoDescription = ensureLength(
+    `${title} ${listingLabel} in ${locationLabel}. Explore ${propertyType} details, pricing insights, and location highlights with ASTRA Villa for faster decisions.`,
+    120,
+    160,
+    `Discover this ${propertyType} in ${locationLabel} with ASTRA Villa.`
+  );
+
+  const keywordCandidates = uniqueKeywords([
+    `${propertyType} ${listingLabel} ${locationLabel}`,
+    `${propertyType} ${locationLabel}`,
+    `${listingType} property ${locationLabel}`,
+    `${propertyType} Indonesia`,
+    `investasi properti ${locationLabel}`,
+    `ASTRA Villa ${locationLabel}`,
+    `real estate ${state || "Indonesia"}`,
+    `${propertyType} ${city || area || "Indonesia"}`,
+  ]);
+
+  const seoKeywords = keywordCandidates.slice(0, 8);
+  const seoHashtags = uniqueKeywords([
+    propertyType,
+    city,
+    state,
+    listingType,
+    "properti",
+    "astravilla",
+    "realestate",
+  ])
+    .slice(0, 6)
+    .map(toHashtag);
+
+  const titleLength = seoTitle.length;
+  const descLength = seoDescription.length;
+
+  const titleScoreBase = clamp(100 - Math.abs(55 - titleLength) * 3, 45, 100);
+  const descriptionScoreBase = clamp(100 - Math.abs(140 - descLength) * 1.5, 45, 100);
+  const keywordScoreBase = clamp(55 + seoKeywords.length * 5, 45, 95);
+  const hashtagScoreBase = clamp(50 + seoHashtags.length * 7, 40, 95);
+  const locationScoreBase = clamp((city ? 35 : 0) + (state ? 35 : 0) + (area ? 30 : 15), 35, 100);
+
+  const titleScore = clamp(Math.round(titleScoreBase + boost));
+  const descriptionScore = clamp(Math.round(descriptionScoreBase + boost));
+  const keywordScore = clamp(Math.round(keywordScoreBase + boost));
+  const hashtagScore = clamp(Math.round(hashtagScoreBase + boost));
+  const locationScore = clamp(Math.round(locationScoreBase + boost));
+
+  const seoScore = clamp(
+    Math.round(
+      titleScore * 0.24 +
+      descriptionScore * 0.24 +
+      keywordScore * 0.24 +
+      hashtagScore * 0.14 +
+      locationScore * 0.14
+    )
+  );
+
+  const seoRating = seoScore >= 80 ? "Excellent" : seoScore >= 60 ? "Good" : seoScore >= 40 ? "Needs Improvement" : "Poor";
+  const rankingDifficulty = seoScore < 45 ? "high" : seoScore < 70 ? "medium" : "low";
+
+  return {
+    seo_title: seoTitle,
+    seo_description: seoDescription,
+    seo_keywords: seoKeywords,
+    seo_hashtags: seoHashtags,
+    title_score: titleScore,
+    description_score: descriptionScore,
+    keyword_score: keywordScore,
+    hashtag_score: hashtagScore,
+    location_score: locationScore,
+    seo_score: seoScore,
+    seo_rating: seoRating,
+    suggested_keywords: seoKeywords,
+    missing_keywords: [],
+    ranking_difficulty: rankingDifficulty,
+  };
+}
+
+async function upsertSeoAnalysis(
+  supabase: ReturnType<typeof createClient>,
+  property: Record<string, unknown>,
+  boost = 0
+) {
+  const draft = computeSeoDraft(property, boost);
+  const propertyId = normalizeText(property.id);
+
+  const payload = {
+    property_id: propertyId,
+    ...draft,
+    ai_model_used: boost > 0 ? "astra-seo-v2-auto" : "astra-seo-v2",
+    last_analyzed_at: new Date().toISOString(),
+    analysis_version: 2,
+    updated_at: new Date().toISOString(),
+  };
+
+  const { error } = await supabase
+    .from("property_seo_analysis")
+    .upsert(payload, { onConflict: "property_id" });
+
+  if (error) throw error;
+
+  return { propertyId, ...payload };
+}
+
+async function handleSeoGeneration(payload: Record<string, unknown>) {
+  const action = normalizeText(payload.action);
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+
+  if (!supabaseUrl || !serviceKey) {
+    return json({ error: "Supabase service configuration missing" }, 500);
+  }
+
+  const supabase = createClient(supabaseUrl, serviceKey);
+
+  try {
+    if (action === "analyze-property") {
+      const propertyId = normalizeText(payload.propertyId);
+      if (!propertyId) return json({ error: "propertyId is required" }, 400);
+
+      const { data: property, error } = await supabase
+        .from("properties")
+        .select(SEO_PROPERTY_SELECT)
+        .eq("id", propertyId)
+        .maybeSingle();
+
+      if (error) return json({ error: error.message }, 500);
+      if (!property) return json({ error: "Property not found" }, 404);
+
+      const analysis = await upsertSeoAnalysis(supabase, property);
+      return json({ action, propertyId, analysis });
+    }
+
+    if (action === "analyze-batch") {
+      const limit = clamp(Number(payload.limit) || 20, 1, 100);
+      const filter = normalizeText(payload.filter) || "unanalyzed";
+
+      const { data: allCandidates, error: candidatesError } = await supabase
+        .from("properties")
+        .select(SEO_PROPERTY_SELECT)
+        .order("updated_at", { ascending: false })
+        .limit(Math.min(limit * 8, 800));
+
+      if (candidatesError) return json({ error: candidatesError.message }, 500);
+
+      let candidates = (allCandidates || []) as Record<string, unknown>[];
+
+      if (filter === "unanalyzed") {
+        const { data: existing, error: existingError } = await supabase
+          .from("property_seo_analysis")
+          .select("property_id")
+          .not("property_id", "is", null)
+          .limit(5000);
+
+        if (existingError) return json({ error: existingError.message }, 500);
+
+        const analyzedIds = new Set((existing || []).map((row: any) => row.property_id));
+        candidates = candidates.filter((p) => !analyzedIds.has(p.id));
+      }
+
+      const targets = candidates.slice(0, limit);
+      if (targets.length === 0) {
+        return json({ action, analyzed: 0, filter, message: "No matching properties found" });
+      }
+
+      const analyses = await Promise.all(targets.map((property) => upsertSeoAnalysis(supabase, property)));
+
+      return json({
+        action,
+        filter,
+        requested: limit,
+        analyzed: analyses.length,
+        propertyIds: analyses.map((a) => a.propertyId),
+      });
+    }
+
+    if (action === "auto-optimize") {
+      const limit = clamp(Number(payload.limit) || 10, 1, 100);
+      const threshold = clamp(Number(payload.threshold) || 50, 1, 100);
+
+      const { data: weakRows, error: weakError } = await supabase
+        .from("property_seo_analysis")
+        .select("property_id, seo_score")
+        .lt("seo_score", threshold)
+        .order("seo_score", { ascending: true })
+        .limit(limit);
+
+      if (weakError) return json({ error: weakError.message }, 500);
+      if (!weakRows || weakRows.length === 0) {
+        return json({ action, optimized: 0, threshold, message: "No weak listings found" });
+      }
+
+      const ids = weakRows.map((r) => r.property_id).filter(Boolean);
+      const { data: properties, error: propError } = await supabase
+        .from("properties")
+        .select(SEO_PROPERTY_SELECT)
+        .in("id", ids);
+
+      if (propError) return json({ error: propError.message }, 500);
+
+      const weakById = new Map(weakRows.map((r) => [r.property_id, Number(r.seo_score) || 0]));
+      const propertyList = (properties || []) as Record<string, unknown>[];
+
+      const optimized = await Promise.all(
+        propertyList.map((property) => {
+          const currentScore = weakById.get(normalizeText(property.id)) || 0;
+          const boost = clamp(Math.round((threshold + 15 - currentScore) * 0.6), 8, 30);
+          return upsertSeoAnalysis(supabase, property, boost);
+        })
+      );
+
+      return json({
+        action,
+        threshold,
+        optimized: optimized.length,
+        propertyIds: optimized.map((item) => item.propertyId),
+      });
+    }
+
+    return json({ mode: "seo_generate", status: "not_implemented", payload });
+  } catch (error) {
+    console.error("SEO generation error:", error);
+    return json({
+      error: error instanceof Error ? error.message : "SEO generation failed",
+    }, 500);
+  }
+}
+
 
 async function handleRecommendations(payload: Record<string, unknown>) {
   return json({ mode: "recommendations", status: "not_implemented", payload });
