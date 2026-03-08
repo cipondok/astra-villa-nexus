@@ -563,6 +563,13 @@ const SamplePropertyGenerator = () => {
     if (autoRunState?.completedProvinces) {
       autoRunState.completedProvinces.forEach(p => definiteDone.add(p));
     }
+    // Also fetch cloud done-provinces in case mount sync hasn't completed yet
+    try {
+      const cloudDone = await loadDoneProvinceCheckpoints();
+      cloudDone.forEach(r => definiteDone.add(r.province));
+    } catch {
+      console.warn('[SPG] Could not fetch cloud done-provinces for definiteDone set');
+    }
 
     let queue: string[];
     let completedList: string[];
