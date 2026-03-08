@@ -7,9 +7,10 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Loader2, MapPin, Lock, ShieldCheck, Shield, AlertTriangle, Zap } from 'lucide-react';
+import { Loader2, MapPin, Lock, ShieldCheck, Shield, AlertTriangle, Zap, Server } from 'lucide-react';
 import SeoStateSummaryCards from './SeoStateSummaryCards';
 import ProvinceRow, { type ProvinceData } from './ProvinceRow';
+import { useCreateJob } from '@/hooks/useAiJobs';
 
 interface StateSeoOverviewTabProps {
   stateSeoOverview: ProvinceData[];
