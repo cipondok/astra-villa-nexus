@@ -581,7 +581,7 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
 
       if (propError) return json({ error: propError.message }, 500);
 
-      const weakById = new Map(limitedWeakRows.map((r) => [r.property_id, Number(r.seo_score) || 0]));
+      const weakById = new Map(weakRows.map((r: any) => [r.property_id, Number(r.seo_score) || 0]));
       const propertyList = (properties || []) as Record<string, unknown>[];
 
       const optimized = await Promise.all(
