@@ -360,9 +360,10 @@ const PropertySEOChecker = () => {
   const applySeo = useApplySeo();
   const contentOptimize = useContentOptimize();
 
-  // Reset city/area on state change
-  useEffect(() => { setFilterCity(''); setFilterArea(''); }, [filterState]);
-  useEffect(() => { setFilterArea(''); }, [filterCity]);
+  // Reset city/area on state change, reset pages on any filter change
+  useEffect(() => { setFilterCity(''); setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterState]);
+  useEffect(() => { setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterCity]);
+  useEffect(() => { setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterArea]);
 
   // Auto-analyze on property click if stale (>1hr)
   const handlePropertyClick = useCallback((analysis: PropertySeoAnalysis) => {
