@@ -451,11 +451,11 @@ const PropertySEOChecker = () => {
   };
 
   const filteredAnalyses = useMemo(() => {
+    if (!searchQuery) return allAnalyses;
     return allAnalyses.filter(item =>
-      (!searchQuery || 
-        item.seo_title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.seo_keywords?.some(k => k.toLowerCase().includes(searchQuery.toLowerCase())))
-    ).slice(0, 25);
+      item.seo_title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.seo_keywords?.some(k => k.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
   }, [allAnalyses, searchQuery]);
 
   const getScoreBreakdown = (analysis: PropertySeoAnalysis) => [
