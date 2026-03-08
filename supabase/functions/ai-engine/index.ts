@@ -548,13 +548,14 @@ async function handleSeoGeneration(payload: Record<string, unknown>) {
         const CHUNK_SIZE = 50;
         for (let i = 0; i < locationPropertyIds.length && weakRows.length < limit; i += CHUNK_SIZE) {
           const chunk = locationPropertyIds.slice(i, i + CHUNK_SIZE);
-          const { data: chunkRows } = await supabase
+          const { data: chunkRows, error: chunkErr } = await supabase
             .from("property_seo_analysis")
             .select("property_id, seo_score")
             .lt("seo_score", threshold)
             .in("property_id", chunk)
             .order("seo_score", { ascending: true })
             .limit(limit - weakRows.length);
+          if (chunkErr) console.error("auto-optimize chunk query error:", chunkErr.message);
           if (chunkRows) weakRows = weakRows.concat(chunkRows);
         }
         weakRows = weakRows.slice(0, limit);
