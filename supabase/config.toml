@@ -211,3 +211,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.batch-dom-predictor]
     verify_jwt = false
 
+  [functions.seo-scheduler]
+    verify_jwt = false
+
