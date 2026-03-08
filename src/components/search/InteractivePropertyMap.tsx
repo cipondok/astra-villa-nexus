@@ -552,6 +552,29 @@ export default function InteractivePropertyMap() {
       {/* Map container */}
       <div ref={mapContainer} className="absolute inset-0" />
 
+      {/* AI NLP Search Bar */}
+      <MapNLPSearchBar onResult={handleNLPResult} />
+
+      {/* AI search active indicator */}
+      <AnimatePresence>
+        {nlpActive && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="absolute top-[4.5rem] left-1/2 -translate-x-1/2 z-30"
+          >
+            <Badge className="bg-primary/90 text-primary-foreground text-[10px] gap-1.5 px-3 py-1 shadow-lg backdrop-blur-sm">
+              <Sparkles className="h-3 w-3" />
+              AI filters active
+              <button onClick={() => { setFilters({}); setNlpActive(false); }} className="ml-1 hover:opacity-70">
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Filter Panel */}
       <FilterPanel
         filters={filters}
