@@ -301,6 +301,12 @@ const PropertySEOChecker = () => {
   const [filterCity, setFilterCity] = useState('');
   const [filterArea, setFilterArea] = useState('');
   
+  // Pagination
+  const [allPage, setAllPage] = useState(1);
+  const [weakPage, setWeakPage] = useState(1);
+  const [topPage, setTopPage] = useState(1);
+  const PAGE_SIZE = 25;
+  
   // Manual property search
   const [propertySearch, setPropertySearch] = useState('');
   const [showPropertyDropdown, setShowPropertyDropdown] = useState(false);
@@ -315,6 +321,13 @@ const PropertySEOChecker = () => {
   
   // AI optimization state
   const [aiResult, setAiResult] = useState<ContentOptimization | null>(null);
+
+  // Location filter object
+  const locationFilters: SeoLocationFilters = useMemo(() => ({
+    state: filterState && filterState !== '__all__' ? filterState : undefined,
+    city: filterCity && filterCity !== '__all__' ? filterCity : undefined,
+    area: filterArea && filterArea !== '__all__' ? filterArea : undefined,
+  }), [filterState, filterCity, filterArea]);
 
   // Location data
   const { states } = useLocationFilters();
