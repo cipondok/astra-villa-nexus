@@ -93,7 +93,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
   }, [activeSection]);
 
   // Find which category contains the active section
-  const getActiveCategory = (): string | null => {
+  const activeCategory = useMemo((): string | null => {
     for (const category of categories) {
       const sections = navigationSections[category as keyof typeof navigationSections];
       if (sections?.some((section) => section.key === activeSection)) {
@@ -101,39 +101,39 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
       }
     }
     return null;
-  };
+  }, [activeSection]);
 
-  const activeCategory = getActiveCategory();
-  
-  if (!activeCategory || activeSection === 'overview') {
-    return null;
-  }
-
-  const categorySections = navigationSections[activeCategory as keyof typeof navigationSections] || [];
-  const CategoryIcon = categoryIcons[activeCategory] || LayoutDashboard;
-  const theme = categoryThemes[activeCategory] || categoryThemes.overview;
-  const categoryTitle = sectionTitles[activeCategory as keyof typeof sectionTitles] || activeCategory;
+  const categorySections = useMemo(() => 
+    activeCategory ? (navigationSections[activeCategory as keyof typeof navigationSections] || []) : [],
+    [activeCategory]
+  );
 
   // Sort sections: active first, then by most recently visited, then the rest
   const sortedSections = useMemo(() => {
     return [...categorySections].sort((a, b) => {
-      // Active section always first
       if (a.key === activeSection) return -1;
       if (b.key === activeSection) return 1;
-      // Then by visit recency
       const aTime = visitHistory[a.key] || 0;
       const bTime = visitHistory[b.key] || 0;
       return bTime - aTime;
     });
   }, [categorySections, activeSection, visitHistory]);
 
-  const visibleSections = expanded ? sortedSections : sortedSections.slice(0, VISIBLE_COUNT);
-  const hiddenCount = sortedSections.length - VISIBLE_COUNT;
-  const hasMore = sortedSections.length > VISIBLE_COUNT;
-
   const handleSectionClick = useCallback((key: string) => {
     onSectionChange(key);
   }, [onSectionChange]);
+
+  if (!activeCategory || activeSection === 'overview') {
+    return null;
+  }
+
+  const CategoryIcon = categoryIcons[activeCategory] || LayoutDashboard;
+  const theme = categoryThemes[activeCategory] || categoryThemes.overview;
+  const categoryTitle = sectionTitles[activeCategory as keyof typeof sectionTitles] || activeCategory;
+
+  const visibleSections = expanded ? sortedSections : sortedSections.slice(0, VISIBLE_COUNT);
+  const hiddenCount = sortedSections.length - VISIBLE_COUNT;
+  const hasMore = sortedSections.length > VISIBLE_COUNT;
 
   const renderTab = (section: typeof categorySections[0], isActive: boolean) => {
     const Icon = section.icon;
