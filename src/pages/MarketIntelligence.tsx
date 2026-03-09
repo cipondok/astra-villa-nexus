@@ -96,6 +96,12 @@ export default function MarketIntelligence() {
                 <TopLuxuryAreas />
               </Suspense>
             </TabsContent>
+
+            <TabsContent value="hotspots">
+              <Suspense fallback={<SectionLoader />}>
+                <InvestmentHotspotsChart />
+              </Suspense>
+            </TabsContent>
           </Tabs>
         </section>
       </div>
