@@ -1102,19 +1102,82 @@ const AICommandCenter = () => {
             {/* JOBS SECTION */}
             {activeNav === 'jobs' && (
               <div className="space-y-4">
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                   <KPICard label="Running" value={jobStatus.running.toString()} icon={Activity} color="from-chart-1 to-chart-1/60" />
                   <KPICard label="Pending" value={jobStatus.pending.toString()} icon={Clock} color="from-chart-2 to-chart-2/60" delay={0.05} />
                   <KPICard label="Completed" value={jobStatus.completed.toString()} icon={CheckCircle2} color="from-chart-3 to-chart-3/60" delay={0.1} />
                   <KPICard label="Failed" value={jobStatus.failed.toString()} icon={XCircle} color="from-destructive to-destructive/60" delay={0.15} />
+                  <KPICard label="Avg Duration" value={`${jobStatus.avgDurationSec}s`} subValue="per job" icon={Timer} color="from-chart-4 to-chart-4/60" delay={0.2} />
+                  <KPICard label="Processed (14d)" value={jobStatus.totalProcessed.toString()} icon={Zap} color="from-primary to-primary/60" delay={0.25} />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Panel title="Job Distribution" icon={Radar}>
+
+                {/* Throughput Chart */}
+                <Panel title="Job Throughput (14 days)" icon={LineChartIcon} className="col-span-full">
+                  {jobStatus.throughput.some(d => d.completed > 0 || d.failed > 0) ? (
+                    <div className="h-56">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={jobStatus.throughput} margin={{ left: -10, right: 8, top: 10, bottom: 0 }}>
+                          <defs>
+                            <linearGradient id="throughputCompGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="hsl(var(--chart-1))" stopOpacity={0.3} />
+                              <stop offset="100%" stopColor="hsl(var(--chart-1))" stopOpacity={0} />
+                            </linearGradient>
+                            <linearGradient id="throughputFailGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="hsl(var(--destructive))" stopOpacity={0.3} />
+                              <stop offset="100%" stopColor="hsl(var(--destructive))" stopOpacity={0} />
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                          <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+                          <YAxis tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+                          <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
+                          <Area type="monotone" dataKey="completed" name="Completed" stroke="hsl(var(--chart-1))" fill="url(#throughputCompGrad)" strokeWidth={2} />
+                          <Area type="monotone" dataKey="failed" name="Failed" stroke="hsl(var(--destructive))" fill="url(#throughputFailGrad)" strokeWidth={2} />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                  ) : (
+                    <EmptyState icon={LineChartIcon} label="No throughput data yet" />
+                  )}
+                </Panel>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Job Type Breakdown */}
+                  <Panel title="Job Type Breakdown" icon={Radar}>
+                    {jobStatus.jobTypeBreakdown.length > 0 ? (
+                      <div className="flex items-center justify-center gap-6">
+                        <ResponsiveContainer width={130} height={130}>
+                          <PieChart>
+                            <Pie data={jobStatus.jobTypeBreakdown} cx="50%" cy="50%" innerRadius={36} outerRadius={56} dataKey="count" stroke="hsl(var(--background))" strokeWidth={3}>
+                              {jobStatus.jobTypeBreakdown.map((entry, i) => (
+                                <Cell key={i} fill={entry.fill} />
+                              ))}
+                            </Pie>
+                            <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
+                          </PieChart>
+                        </ResponsiveContainer>
+                        <div className="space-y-1.5">
+                          {jobStatus.jobTypeBreakdown.map(item => (
+                            <div key={item.type} className="flex items-center gap-2 text-[11px]">
+                              <div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: item.fill }} />
+                              <span className="text-muted-foreground capitalize truncate max-w-[90px]">{item.type}</span>
+                              <span className="font-bold text-foreground ml-auto tabular-nums">{item.count}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <EmptyState icon={Bot} label="No jobs recorded" />
+                    )}
+                  </Panel>
+
+                  {/* Status Distribution */}
+                  <Panel title="Status Distribution" icon={Radar}>
                     {jobPieData.length > 0 ? (
                       <div className="flex items-center justify-center gap-6">
-                        <ResponsiveContainer width={160} height={160}>
+                        <ResponsiveContainer width={130} height={130}>
                           <PieChart>
-                            <Pie data={jobPieData} cx="50%" cy="50%" innerRadius={42} outerRadius={68} dataKey="value" stroke="hsl(var(--background))" strokeWidth={3}>
+                            <Pie data={jobPieData} cx="50%" cy="50%" innerRadius={36} outerRadius={56} dataKey="value" stroke="hsl(var(--background))" strokeWidth={3}>
                               {jobPieData.map((entry, i) => (
                                 <Cell key={i} fill={entry.fill} />
                               ))}
@@ -1122,10 +1185,10 @@ const AICommandCenter = () => {
                             <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
                           </PieChart>
                         </ResponsiveContainer>
-                        <div className="space-y-2">
+                        <div className="space-y-1.5">
                           {jobPieData.map(item => (
-                            <div key={item.name} className="flex items-center gap-2 text-xs">
-                              <div className="w-3 h-3 rounded" style={{ backgroundColor: item.fill }} />
+                            <div key={item.name} className="flex items-center gap-2 text-[11px]">
+                              <div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: item.fill }} />
                               <span className="text-muted-foreground">{item.name}</span>
                               <span className="font-bold text-foreground ml-auto tabular-nums">{item.value}</span>
                             </div>
@@ -1136,6 +1199,8 @@ const AICommandCenter = () => {
                       <EmptyState icon={Bot} label="No jobs recorded" />
                     )}
                   </Panel>
+
+                  {/* Active Job Progress */}
                   <Panel title="Active Job Progress" icon={Activity}>
                     {jobStatus.recentJobs.length > 0 ? (
                       <div className="space-y-3">
