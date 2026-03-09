@@ -344,8 +344,7 @@ const AdminAlertSystem = () => {
         })
         .eq('id', selectedAlert.id);
 
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      invalidateAlertQueries();
       showSuccess("Approved", "Verification approved and user notified.");
       setIsDialogOpen(false);
       setSelectedAlert(null);
