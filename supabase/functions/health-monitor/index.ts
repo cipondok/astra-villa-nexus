@@ -6,9 +6,15 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const STALLED_THRESHOLD_MINUTES = 30;
-const FAILURE_RATE_THRESHOLD = 20; // percent
-const ALERT_COOLDOWN_HOURS = 4;
+// Defaults used when config table is unavailable
+const DEFAULTS: Record<string, number> = {
+  stalled_threshold_minutes: 30,
+  failure_rate_threshold: 20,
+  alert_cooldown_hours: 4,
+  max_retry_threshold: 3,
+  edge_function_timeout_ms: 10000,
+  db_latency_threshold_ms: 5000,
+};
 
 interface HealthAlert {
   alert_type: string;
@@ -16,6 +22,22 @@ interface HealthAlert {
   severity: "warning" | "critical";
   message: string;
   metadata: Record<string, unknown>;
+}
+
+async function loadConfig(supabase: any): Promise<Record<string, number>> {
+  try {
+    const { data } = await supabase
+      .from("health_monitor_config")
+      .select("key, value");
+    if (!data || data.length === 0) return { ...DEFAULTS };
+    const config = { ...DEFAULTS };
+    for (const row of data) {
+      config[row.key] = typeof row.value === "number" ? row.value : Number(row.value);
+    }
+    return config;
+  } catch {
+    return { ...DEFAULTS };
+  }
 }
 
 Deno.serve(async (req) => {
@@ -28,10 +50,12 @@ Deno.serve(async (req) => {
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, serviceKey);
 
+    const cfg = await loadConfig(supabase);
     const alerts: HealthAlert[] = [];
+    const now = new Date().toISOString();
 
-    // ── Check 1: Stalled jobs (running > 30 min) ──
-    const stalledCutoff = new Date(Date.now() - STALLED_THRESHOLD_MINUTES * 60_000).toISOString();
+    // ── Check 1: Stalled jobs ──
+    const stalledCutoff = new Date(Date.now() - cfg.stalled_threshold_minutes * 60_000).toISOString();
     const { data: stalledJobs } = await supabase
       .from("ai_jobs")
       .select("id, job_type, started_at")
@@ -43,7 +67,7 @@ Deno.serve(async (req) => {
         alert_type: "stalled_jobs",
         alert_key: `stalled_${stalledJobs.length}`,
         severity: stalledJobs.length >= 3 ? "critical" : "warning",
-        message: `${stalledJobs.length} AI job(s) stalled for over ${STALLED_THRESHOLD_MINUTES} minutes`,
+        message: `${stalledJobs.length} AI job(s) stalled for over ${cfg.stalled_threshold_minutes} minutes`,
         metadata: { job_ids: stalledJobs.map((j: any) => j.id), count: stalledJobs.length },
       });
     }
@@ -58,7 +82,7 @@ Deno.serve(async (req) => {
     if (recentJobs && recentJobs.length >= 5) {
       const failedCount = recentJobs.filter((j: any) => j.status === "failed").length;
       const failureRate = (failedCount / recentJobs.length) * 100;
-      if (failureRate >= FAILURE_RATE_THRESHOLD) {
+      if (failureRate >= cfg.failure_rate_threshold) {
         alerts.push({
           alert_type: "high_failure_rate",
           alert_key: `failure_rate_${Math.round(failureRate)}`,
@@ -74,7 +98,7 @@ Deno.serve(async (req) => {
       .from("ai_job_tasks")
       .select("id, job_id, task_type")
       .eq("status", "failed")
-      .gte("retry_count", 3)
+      .gte("retry_count", cfg.max_retry_threshold)
       .gte("created_at", oneHourAgo)
       .limit(20);
 
@@ -106,7 +130,7 @@ Deno.serve(async (req) => {
             message: `Edge function '${fnName}' is not responding: ${error.message}`,
             metadata: { function: fnName, error: error.message, latencyMs: latency },
           });
-        } else if (latency > 10_000) {
+        } else if (latency > cfg.edge_function_timeout_ms) {
           alerts.push({
             alert_type: "edge_function_slow",
             alert_key: `ef_slow_${fnName}`,
@@ -139,7 +163,7 @@ Deno.serve(async (req) => {
           message: `Database query failed: ${error.message}`,
           metadata: { latencyMs: latency },
         });
-      } else if (latency > 5000) {
+      } else if (latency > cfg.db_latency_threshold_ms) {
         alerts.push({
           alert_type: "db_slow",
           alert_key: "db_latency",
@@ -162,8 +186,7 @@ Deno.serve(async (req) => {
     const processedAlerts: string[] = [];
 
     for (const alert of alerts) {
-      // Check cooldown: skip if unresolved alert of same type+key exists within cooldown
-      const cooldownCutoff = new Date(Date.now() - ALERT_COOLDOWN_HOURS * 3600_000).toISOString();
+      const cooldownCutoff = new Date(Date.now() - cfg.alert_cooldown_hours * 3600_000).toISOString();
       const { data: existing } = await supabase
         .from("health_alert_log")
         .select("id")
@@ -174,11 +197,10 @@ Deno.serve(async (req) => {
         .limit(1);
 
       if (existing && existing.length > 0) {
-        console.log(`[HEALTH-MONITOR] Skipping duplicate alert: ${alert.alert_type}/${alert.alert_key}`);
+        console.log(`[HEALTH-MONITOR] Skipping duplicate: ${alert.alert_type}/${alert.alert_key}`);
         continue;
       }
 
-      // Log the alert
       await supabase.from("health_alert_log").insert({
         alert_type: alert.alert_type,
         alert_key: alert.alert_key,
@@ -187,7 +209,7 @@ Deno.serve(async (req) => {
         metadata: alert.metadata,
       });
 
-      // ── In-app notification to all admins ──
+      // In-app notification to admins
       const { data: adminUsers } = await supabase
         .from("user_roles")
         .select("user_id")
@@ -204,11 +226,10 @@ Deno.serve(async (req) => {
           is_read: false,
           metadata: { alert_type: alert.alert_type, severity: alert.severity, ...alert.metadata },
         }));
-
         await supabase.from("in_app_notifications").insert(notifications);
       }
 
-      // ── Email notification to admins (critical only) ──
+      // Email for critical alerts
       if (alert.severity === "critical" && adminUsers && adminUsers.length > 0) {
         for (const admin of adminUsers) {
           try {
@@ -233,7 +254,7 @@ Deno.serve(async (req) => {
               });
             }
           } catch (emailErr) {
-            console.error(`[HEALTH-MONITOR] Email failed for admin ${admin.user_id}:`, emailErr);
+            console.error(`[HEALTH-MONITOR] Email failed for ${admin.user_id}:`, emailErr);
           }
         }
       }
@@ -241,7 +262,7 @@ Deno.serve(async (req) => {
       processedAlerts.push(`${alert.severity}: ${alert.message}`);
     }
 
-    // ── Auto-resolve old alerts that no longer apply ──
+    // Auto-resolve stalled alerts
     if (!stalledJobs || stalledJobs.length === 0) {
       await supabase
         .from("health_alert_log")
@@ -255,11 +276,11 @@ Deno.serve(async (req) => {
       alertsDetected: alerts.length,
       alertsNotified: processedAlerts.length,
       alerts: processedAlerts,
+      config: cfg,
       timestamp: new Date().toISOString(),
     };
 
     console.log("[HEALTH-MONITOR] Complete:", JSON.stringify(result));
-
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
