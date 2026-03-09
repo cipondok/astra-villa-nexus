@@ -177,6 +177,7 @@ const AICommandCenter = () => {
   const { data: monitorConfig = [], isLoading: configLoading } = useHealthMonitorConfig();
   const updateConfig = useUpdateHealthMonitorConfig();
   const [showSettings, setShowSettings] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   const handleRunSeoScan = async () => {
     setSeoRunning(true);
