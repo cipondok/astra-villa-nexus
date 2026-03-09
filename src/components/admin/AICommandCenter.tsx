@@ -1542,6 +1542,13 @@ const AICommandCenter = () => {
               </Suspense>
             )}
 
+            {/* MARKET INTELLIGENCE SECTION */}
+            {activeNav === 'market-intel' && (
+              <Suspense fallback={<div className="h-64 bg-muted animate-pulse rounded-lg" />}>
+                <MarketIntelligencePanel />
+              </Suspense>
+            )}
+
             {/* HEALTH SECTION — ENHANCED */}
             {activeNav === 'health' && (
               <div className="space-y-4">
