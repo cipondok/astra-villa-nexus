@@ -220,4 +220,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.scheduler]
     verify_jwt = false
 
+  [functions.health-monitor]
+    verify_jwt = false
 
