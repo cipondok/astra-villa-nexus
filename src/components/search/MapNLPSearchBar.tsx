@@ -249,6 +249,39 @@ export default function MapNLPSearchBar({ onResult, className }: MapNLPSearchBar
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Quick suggestions */}
+        {!lastResult && !query && (
+          <div className="px-3 pb-2.5 flex flex-wrap gap-1.5">
+            {suggestions.map((s, i) => (
+              <button
+                key={i}
+                onClick={() => {
+                  setQuery(s);
+                  processNaturalLanguage(s, 'map_page').then(filters => {
+                    if (!filters) return;
+                    setLastResult(filters);
+                    const locationQuery = filters.city || filters.location || filters.state || '';
+                    let flyTo: MapNLPResult['flyTo'] | undefined;
+                    if (locationQuery) {
+                      const local = lookupLocation(locationQuery);
+                      if (local) flyTo = { lng: local[0], lat: local[1], zoom: local[2] };
+                    }
+                    onResult({
+                      filters: { minPrice: filters.min_price, maxPrice: filters.max_price, minBedrooms: filters.bedrooms, propertyType: filters.property_type },
+                      flyTo,
+                      summary: filters.intent_summary,
+                      rawFilters: filters,
+                    });
+                  });
+                }}
+                className="text-[10px] px-2 py-0.5 rounded-full bg-muted/60 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        )}
       </motion.div>
     </div>
   );
