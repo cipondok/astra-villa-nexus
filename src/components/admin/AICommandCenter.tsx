@@ -933,41 +933,168 @@ const AICommandCenter = () => {
             {/* SEO SECTION */}
             {activeNav === 'seo' && (
               <div className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <KPICard label="Weak Listings" value={seo.weakListings.toString()} icon={AlertTriangle} color="from-destructive to-destructive/60" />
-                  <KPICard label="Average Score" value={`${seo.avgScore}/100`} icon={Gauge} color="from-chart-1 to-chart-1/60" delay={0.05} />
-                  <KPICard label="Total Analyzed" value={overview.totalProperties.toLocaleString()} icon={Search} color="from-primary to-primary/60" delay={0.1} />
+                {/* KPI Row */}
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                  <KPICard label="Average Score" value={`${seo.avgScore}/100`} icon={Gauge} color="from-chart-1 to-chart-1/60" />
+                  <KPICard label="Weak Listings" value={seo.weakListings.toString()} subValue="Score < 60" icon={AlertTriangle} color="from-destructive to-destructive/60" delay={0.05} />
+                  <KPICard label="Total Analyzed" value={seo.totalAnalyzed.toLocaleString()} icon={Search} color="from-primary to-primary/60" delay={0.1} />
+                  <KPICard label="Coverage" value={`${seo.coveragePercent}%`} subValue={`of ${overview.totalProperties} properties`} icon={Target} color="from-chart-2 to-chart-2/60" delay={0.15} />
+                  <KPICard
+                    label="SEO Health"
+                    value={seo.avgScore >= 80 ? 'Excellent' : seo.avgScore >= 60 ? 'Good' : seo.avgScore >= 40 ? 'Average' : 'Poor'}
+                    icon={Shield}
+                    color={seo.avgScore >= 60 ? 'from-chart-1 to-chart-1/60' : 'from-chart-3 to-chart-3/60'}
+                    trend={seo.avgScore >= 60 ? 'up' : 'down'}
+                    delay={0.2}
+                  />
                 </div>
-                <Panel title="SEO Automation Controls" icon={Settings2} action={
-                  <Badge variant="outline" className="text-[9px]">Engine v2.0</Badge>
-                }>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <Button
-                      variant="outline"
-                      className="h-20 flex-col gap-2 border-dashed border-border/50 hover:border-primary/40 hover:bg-primary/5"
-                      onClick={handleRunSeoScan}
-                      disabled={seoRunning}
-                    >
-                      <Search className="h-5 w-5 text-primary" />
-                      <span className="text-xs font-medium">{seoRunning ? 'Scanning...' : 'Run Full SEO Scan'}</span>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="h-20 flex-col gap-2 border-dashed border-border/50 hover:border-chart-1/40 hover:bg-chart-1/5"
-                      onClick={handleRunAIOptimization}
-                      disabled={aiOptRunning}
-                    >
-                      <Sparkles className="h-5 w-5 text-chart-1" />
-                      <span className="text-xs font-medium">{aiOptRunning ? 'Optimizing...' : 'AI Auto-Optimize'}</span>
-                    </Button>
-                  </div>
-                  <div className="mt-4">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-[11px] text-muted-foreground">Platform SEO Health</span>
-                      <span className="text-[11px] font-bold text-foreground">{seo.avgScore}%</span>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Score Distribution */}
+                  <Panel title="Score Distribution" icon={BarChart3}>
+                    {seo.scoreBuckets.some(b => b.count > 0) ? (
+                      <div className="h-52">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart data={seo.scoreBuckets} barSize={28}>
+                            <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                            <XAxis dataKey="range" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+                            <YAxis tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+                            <Tooltip contentStyle={CHART_TOOLTIP_STYLE} cursor={{ fill: 'hsl(var(--muted) / 0.3)' }} />
+                            <Bar dataKey="count" name="Properties" radius={[6, 6, 0, 0]}>
+                              {seo.scoreBuckets.map((entry, idx) => (
+                                <Cell key={idx} fill={entry.fill} />
+                              ))}
+                            </Bar>
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    ) : (
+                      <EmptyState icon={BarChart3} label="No SEO data yet" />
+                    )}
+                  </Panel>
+
+                  {/* Sub-Score Breakdown */}
+                  <Panel title="Sub-Score Breakdown" icon={Radar}>
+                    <div className="space-y-3 pt-1">
+                      {seo.subScores.map((sub) => (
+                        <div key={sub.metric} className="space-y-1">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[11px] font-medium text-foreground">{sub.metric}</span>
+                            <span className={`text-[11px] font-bold tabular-nums ${
+                              sub.avg >= 70 ? 'text-chart-1' : sub.avg >= 40 ? 'text-chart-3' : 'text-destructive'
+                            }`}>{sub.avg}/100</span>
+                          </div>
+                          <Progress value={sub.avg} className="h-2" />
+                        </div>
+                      ))}
                     </div>
-                    <Progress value={seo.avgScore} className="h-2.5" />
-                  </div>
+                  </Panel>
+
+                  {/* Rating Breakdown */}
+                  <Panel title="SEO Rating Breakdown" icon={Gauge}>
+                    {seo.ratingBreakdown.length > 0 ? (
+                      <div className="flex items-center justify-center gap-6">
+                        <ResponsiveContainer width={140} height={140}>
+                          <PieChart>
+                            <Pie data={seo.ratingBreakdown} cx="50%" cy="50%" innerRadius={38} outerRadius={60} dataKey="count" stroke="hsl(var(--background))" strokeWidth={3}>
+                              {seo.ratingBreakdown.map((entry, i) => (
+                                <Cell key={i} fill={entry.fill} />
+                              ))}
+                            </Pie>
+                            <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
+                          </PieChart>
+                        </ResponsiveContainer>
+                        <div className="space-y-2">
+                          {seo.ratingBreakdown.map(item => (
+                            <div key={item.rating} className="flex items-center gap-2 text-xs">
+                              <div className="w-3 h-3 rounded" style={{ backgroundColor: item.fill }} />
+                              <span className="text-muted-foreground capitalize">{item.rating}</span>
+                              <span className="font-bold text-foreground ml-auto tabular-nums">{item.count}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <EmptyState icon={Gauge} label="No ratings yet" />
+                    )}
+                  </Panel>
+
+                  {/* SEO Controls */}
+                  <Panel title="SEO Automation Controls" icon={Settings2} action={
+                    <Badge variant="outline" className="text-[9px]">Engine v2.0</Badge>
+                  }>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <Button
+                        variant="outline"
+                        className="h-20 flex-col gap-2 border-dashed border-border/50 hover:border-primary/40 hover:bg-primary/5"
+                        onClick={handleRunSeoScan}
+                        disabled={seoRunning}
+                      >
+                        <Search className="h-5 w-5 text-primary" />
+                        <span className="text-xs font-medium">{seoRunning ? 'Scanning...' : 'Run Full SEO Scan'}</span>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="h-20 flex-col gap-2 border-dashed border-border/50 hover:border-chart-1/40 hover:bg-chart-1/5"
+                        onClick={handleRunAIOptimization}
+                        disabled={aiOptRunning}
+                      >
+                        <Sparkles className="h-5 w-5 text-chart-1" />
+                        <span className="text-xs font-medium">{aiOptRunning ? 'Optimizing...' : 'AI Auto-Optimize'}</span>
+                      </Button>
+                    </div>
+                    <div className="mt-4">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-[11px] text-muted-foreground">Platform SEO Health</span>
+                        <span className="text-[11px] font-bold text-foreground">{seo.avgScore}%</span>
+                      </div>
+                      <Progress value={seo.avgScore} className="h-2.5" />
+                    </div>
+                  </Panel>
+                </div>
+
+                {/* Recent Analyses Table */}
+                <Panel title="Recent SEO Analyses" icon={Activity}>
+                  {seo.recentAnalyses.length === 0 ? (
+                    <EmptyState icon={Search} label="No analyses yet — run an SEO scan" />
+                  ) : (
+                    <ScrollArea className="max-h-[320px]">
+                      <div className="space-y-1.5">
+                        {seo.recentAnalyses.map((a: any) => (
+                          <div key={a.id} className="flex items-center justify-between p-2.5 rounded-lg border border-border/30 hover:bg-muted/10 transition-colors">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div className={`w-2 h-2 rounded-full shrink-0 ${
+                                (a.seo_score || 0) >= 80 ? 'bg-chart-1' :
+                                (a.seo_score || 0) >= 60 ? 'bg-chart-2' :
+                                (a.seo_score || 0) >= 40 ? 'bg-chart-3' : 'bg-destructive'
+                              }`} />
+                              <div className="min-w-0">
+                                <p className="text-[11px] font-medium text-foreground truncate">
+                                  {a.property_id?.slice(0, 8)}…
+                                </p>
+                                <p className="text-[10px] text-muted-foreground">
+                                  {a.ranking_difficulty || 'N/A'} difficulty · {a.last_analyzed_at ? new Date(a.last_analyzed_at).toLocaleDateString() : 'N/A'}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="text-right shrink-0 ml-3 flex items-center gap-2">
+                              {a.seo_rating && (
+                                <Badge variant="outline" className={`text-[9px] capitalize ${
+                                  a.seo_rating === 'excellent' ? 'text-chart-1 border-chart-1/30' :
+                                  a.seo_rating === 'good' ? 'text-chart-2 border-chart-2/30' :
+                                  a.seo_rating === 'average' ? 'text-chart-3 border-chart-3/30' :
+                                  'text-destructive border-destructive/30'
+                                }`}>
+                                  {a.seo_rating}
+                                </Badge>
+                              )}
+                              <span className="text-[12px] font-bold tabular-nums text-foreground">{a.seo_score || 0}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  )}
                 </Panel>
               </div>
             )}
