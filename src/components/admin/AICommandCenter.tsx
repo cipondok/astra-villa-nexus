@@ -162,6 +162,12 @@ const AICommandCenter = () => {
   const [activeNav, setActiveNav] = useState<NavSection>('overview');
   const [seoRunning, setSeoRunning] = useState(false);
   const [aiOptRunning, setAiOptRunning] = useState(false);
+  const [showResolved, setShowResolved] = useState(false);
+  const { data: healthAlerts = [], isLoading: alertsLoading } = useHealthAlerts(showResolved);
+  const resolveAlert = useResolveHealthAlert();
+  const resolveAll = useResolveAllHealthAlerts();
+  const triggerCheck = useTriggerHealthCheck();
+  const unresolvedCount = healthAlerts.filter(a => !a.resolved).length;
 
   const handleRunSeoScan = async () => {
     setSeoRunning(true);
