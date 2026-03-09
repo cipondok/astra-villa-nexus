@@ -812,7 +812,7 @@ const AdminAlertSystem = () => {
           <ScrollArea className="h-[400px] scroll-smooth">
             {isLoading ? (
               <div className="text-center py-4 text-xs text-muted-foreground">Loading alerts...</div>
-            ) : filteredAlerts.length === 0 ? (
+            ) : paginatedAlerts.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <Bell className="h-6 w-6 mx-auto mb-2 opacity-30" />
                 <p className="text-xs">No alerts in this category</p>
@@ -820,7 +820,7 @@ const AdminAlertSystem = () => {
             ) : (
               <AnimatePresence mode="popLayout">
                 <div className="space-y-0.5">
-                  {filteredAlerts.map((alert) => {
+                  {paginatedAlerts.map((alert) => {
                     const Icon = getAlertIcon(alert.type);
                     return (
                       <motion.div
