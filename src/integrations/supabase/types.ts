@@ -11018,6 +11018,69 @@ export type Database = {
         }
         Relationships: []
       }
+      location_market_insights: {
+        Row: {
+          avg_investment_score: number | null
+          avg_price: number | null
+          avg_price_per_sqm: number | null
+          avg_rental_yield: number | null
+          avg_roi: number | null
+          city: string
+          created_at: string
+          demand_score: number | null
+          id: string
+          last_updated: string
+          listing_volume: number | null
+          location: string | null
+          market_growth_rate: number | null
+          market_status: string | null
+          price_range_max: number | null
+          price_range_min: number | null
+          state: string | null
+          top_property_types: string[] | null
+        }
+        Insert: {
+          avg_investment_score?: number | null
+          avg_price?: number | null
+          avg_price_per_sqm?: number | null
+          avg_rental_yield?: number | null
+          avg_roi?: number | null
+          city: string
+          created_at?: string
+          demand_score?: number | null
+          id?: string
+          last_updated?: string
+          listing_volume?: number | null
+          location?: string | null
+          market_growth_rate?: number | null
+          market_status?: string | null
+          price_range_max?: number | null
+          price_range_min?: number | null
+          state?: string | null
+          top_property_types?: string[] | null
+        }
+        Update: {
+          avg_investment_score?: number | null
+          avg_price?: number | null
+          avg_price_per_sqm?: number | null
+          avg_rental_yield?: number | null
+          avg_roi?: number | null
+          city?: string
+          created_at?: string
+          demand_score?: number | null
+          id?: string
+          last_updated?: string
+          listing_volume?: number | null
+          location?: string | null
+          market_growth_rate?: number | null
+          market_status?: string | null
+          price_range_max?: number | null
+          price_range_min?: number | null
+          state?: string | null
+          top_property_types?: string[] | null
+        }
+        Relationships: []
+      }
       location_price_trends: {
         Row: {
           average_price: number
