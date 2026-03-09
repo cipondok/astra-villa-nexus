@@ -332,11 +332,16 @@ export default function InteractivePropertyMap() {
       m.on('mouseleave', 'clusters', () => { m.getCanvas().style.cursor = ''; });
     });
 
-    const onMoveEnd = () => updateBounds(m);
+    // Debounce moveend to avoid excessive re-fetches during panning
+    let moveTimer: ReturnType<typeof setTimeout> | null = null;
+    const onMoveEnd = () => {
+      if (moveTimer) clearTimeout(moveTimer);
+      moveTimer = setTimeout(() => updateBounds(m), 300);
+    };
     m.on('moveend', onMoveEnd);
     mapRef.current = m;
 
-    return () => { m.off('moveend', onMoveEnd); m.remove(); mapRef.current = null; };
+    return () => { if (moveTimer) clearTimeout(moveTimer); m.off('moveend', onMoveEnd); m.remove(); mapRef.current = null; };
   }, []);
 
   const updateBounds = useCallback((m: mapboxgl.Map) => {
