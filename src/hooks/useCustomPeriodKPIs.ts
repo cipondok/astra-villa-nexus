@@ -28,7 +28,7 @@ async function countRows(
 }
 
 async function avgPrice(gte: string, lt?: string): Promise<number> {
-  let q = supabase.from('properties').select('price').not('price', 'is', null).gte('created_at', gte);
+  let q = (supabase as any).from('properties').select('price').not('price', 'is', null).gte('created_at', gte);
   if (lt) q = q.lt('created_at', lt);
   const { data } = await q;
   if (!data || data.length === 0) return 0;
