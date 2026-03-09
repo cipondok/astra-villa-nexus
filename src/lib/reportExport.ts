@@ -344,3 +344,104 @@ export async function exportCustomPeriodPDF(
 
   doc.save(`period-comparison-${ts()}.pdf`);
 }
+
+// ─── WoW/MoM Preset Comparison Export ───────────────────────────────────────
+
+function presetRows(kpis: HistoricalKPIs) {
+  const row = (period: string, label: string, d: PeriodComparison) =>
+    [period, label, String(d.current), String(d.previous), String(d.delta), d.direction];
+  return [
+    row('WoW', 'New Properties', kpis.wow.newProperties),
+    row('WoW', 'Jobs Completed', kpis.wow.jobsCompleted),
+    row('WoW', 'Jobs Failed', kpis.wow.jobsFailed),
+    row('WoW', 'AI Searches', kpis.wow.searches),
+    row('MoM', 'New Properties', kpis.mom.newProperties),
+    row('MoM', 'Jobs Completed', kpis.mom.jobsCompleted),
+    row('MoM', 'Jobs Failed', kpis.mom.jobsFailed),
+    row('MoM', 'AI Searches', kpis.mom.searches),
+    row('MoM', 'Avg Price', kpis.mom.avgPrice),
+  ];
+}
+
+export function exportPresetComparisonCSV(kpis: HistoricalKPIs) {
+  const headers = ['Period', 'Metric', 'Current', 'Previous', 'Delta (%)', 'Direction'];
+  const csv = toCsv(headers, presetRows(kpis));
+  downloadFile(csv, `wow-mom-comparison-${ts()}.csv`, 'text/csv');
+}
+
+export async function exportPresetComparisonPDF(kpis: HistoricalKPIs) {
+  const { default: jsPDF } = await import('jspdf');
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const pw = doc.internal.pageSize.getWidth();
+  const m = 14;
+  let y = 20;
+
+  doc.setFontSize(16);
+  doc.setFont('helvetica', 'bold');
+  doc.text('WoW / MoM Comparison Report', m, y);
+  y += 8;
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(120, 120, 120);
+  doc.text(`Generated: ${format(new Date(), 'PPpp')}`, m, y);
+  y += 6;
+  doc.setDrawColor(220, 220, 220);
+  doc.line(m, y, pw - m, y);
+  y += 8;
+
+  const sections: [string, [string, PeriodComparison][]][] = [
+    ['Week over Week', [
+      ['New Properties', kpis.wow.newProperties],
+      ['Jobs Completed', kpis.wow.jobsCompleted],
+      ['Jobs Failed', kpis.wow.jobsFailed],
+      ['AI Searches', kpis.wow.searches],
+    ]],
+    ['Month over Month', [
+      ['New Properties', kpis.mom.newProperties],
+      ['Jobs Completed', kpis.mom.jobsCompleted],
+      ['Jobs Failed', kpis.mom.jobsFailed],
+      ['AI Searches', kpis.mom.searches],
+      ['Avg Price', kpis.mom.avgPrice],
+    ]],
+  ];
+
+  const cols = [m + 2, m + 55, m + 85, m + 115, m + 145];
+
+  for (const [title, metrics] of sections) {
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(30, 30, 30);
+    doc.text(title, m, y);
+    y += 7;
+
+    doc.setFillColor(245, 245, 245);
+    doc.rect(m, y - 2, pw - m * 2, 8, 'F');
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(60, 60, 60);
+    ['Metric', 'Current', 'Previous', 'Delta', 'Direction'].forEach((h, i) => doc.text(h, cols[i], y + 4));
+    y += 12;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(30, 30, 30);
+    for (const [label, d] of metrics) {
+      doc.text(label, cols[0], y);
+      doc.text(String(d.current.toLocaleString()), cols[1], y);
+      doc.text(String(d.previous.toLocaleString()), cols[2], y);
+      const deltaStr = `${d.delta > 0 ? '+' : ''}${d.delta}%`;
+      doc.setTextColor(d.direction === 'up' ? 34 : d.direction === 'down' ? 220 : 120, d.direction === 'up' ? 139 : d.direction === 'down' ? 38 : 120, d.direction === 'up' ? 34 : d.direction === 'down' ? 38 : 120);
+      doc.text(deltaStr, cols[3], y);
+      doc.setTextColor(120, 120, 120);
+      doc.text(d.direction, cols[4], y);
+      doc.setTextColor(30, 30, 30);
+      y += 7;
+    }
+    y += 6;
+  }
+
+  doc.setFontSize(7);
+  doc.setTextColor(160, 160, 160);
+  doc.text('ASTRA Villa — WoW/MoM Comparison Report', m, doc.internal.pageSize.getHeight() - 8);
+
+  doc.save(`wow-mom-comparison-${ts()}.pdf`);
+}
