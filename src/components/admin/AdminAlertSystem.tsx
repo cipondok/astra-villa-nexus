@@ -717,7 +717,11 @@ const AdminAlertSystem = () => {
                 </Badge>
               )}
             </CardTitle>
-            <span className="text-xs text-muted-foreground">{alerts?.length || 0} total</span>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="text-[10px] px-1.5 py-0">{alerts?.length || 0} Total</Badge>
+              <Badge variant="secondary" className="text-[10px] px-1.5 py-0">{unreadCount} Unread</Badge>
+              <Badge variant="default" className="text-[10px] px-1.5 py-0">{readCount} Read</Badge>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
