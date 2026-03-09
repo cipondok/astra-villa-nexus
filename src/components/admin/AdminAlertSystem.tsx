@@ -220,9 +220,7 @@ const AdminAlertSystem = () => {
       // Brief pause to show completed progress
       await new Promise(r => setTimeout(r, 500));
 
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-total-count'] });
+      invalidateAlertQueries();
       showSuccess("Deleted", `${deletedCount} ${label} alerts have been permanently deleted.`);
       setCurrentPage(1);
     } catch (error: any) {
