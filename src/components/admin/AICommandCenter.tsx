@@ -14,7 +14,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import {
-  Brain, Building2, TrendingUp, Search, Activity, AlertTriangle,
+  Brain, Building2, TrendingUp, TrendingDown, Search, Activity, AlertTriangle,
   CheckCircle2, Clock, XCircle, BarChart3, Zap, RefreshCw,
   Server, Database, Timer, Eye, Gauge, Shield, Cpu,
   ChevronRight, Sparkles, Target, LineChart as LineChartIcon,
