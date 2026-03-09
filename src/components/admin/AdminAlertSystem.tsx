@@ -146,10 +146,7 @@ const AdminAlertSystem = () => {
 
   const deleteAllAlertsMutation = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase
-        .from('admin_alerts')
-        .delete()
-        .gte('id', '00000000-0000-0000-0000-000000000000');
+      const { error } = await supabase.rpc('delete_all_admin_alerts');
       if (error) throw error;
     },
     onSuccess: () => {
