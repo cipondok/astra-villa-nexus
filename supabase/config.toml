@@ -223,3 +223,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.health-monitor]
     verify_jwt = false
 
+  [functions.kpi-alert-monitor]
+    verify_jwt = false
+
