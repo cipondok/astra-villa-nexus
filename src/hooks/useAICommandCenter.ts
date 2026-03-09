@@ -157,7 +157,7 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'pending'),
     supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'failed'),
     supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'completed'),
-    supabase.from('property_seo_analysis').select('id, seo_score').not('seo_score', 'is', null),
+    supabase.from('property_seo_analysis').select('id, seo_score, title_score, description_score, keyword_score, image_score, location_score, hashtag_score, seo_rating, property_id, last_analyzed_at, ranking_difficulty').not('seo_score', 'is', null).order('last_analyzed_at', { ascending: false }).limit(200),
     supabase.from('property_roi_forecast').select('*').order('last_calculated', { ascending: false }).limit(20),
     supabase.from('ai_property_queries').select('query_text, created_at').order('created_at', { ascending: false }).limit(200),
     supabase.from('ai_job_logs').select('*').order('created_at', { ascending: false }).limit(20),
