@@ -117,9 +117,16 @@ export function useBehaviorTracking() {
     trackEvent({ eventType: 'scroll', propertyId, eventData: { scrollDepth } });
   }, [trackEvent]);
 
+  const trackMapInteraction = useCallback((action: string, data?: Record<string, any>) => {
+    trackEvent({ eventType: 'map_interaction', eventData: { action, ...data } });
+  }, [trackEvent]);
+
+  const trackLocationClick = useCallback((latitude: number, longitude: number, city?: string) => {
+    trackEvent({ eventType: 'location_click', eventData: { latitude, longitude, city } });
+  }, [trackEvent]);
+
   const trackInquiry = useCallback(async (propertyId: string) => {
     trackEvent({ eventType: 'inquiry', propertyId });
-    // Also log conversion event for AI weight tuning
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
@@ -134,5 +141,5 @@ export function useBehaviorTracking() {
     } catch { /* silent */ }
   }, [trackEvent]);
 
-  return { trackEvent, trackView, trackClick, trackSearch, trackSave, trackScroll, trackInquiry };
+  return { trackEvent, trackView, trackClick, trackSearch, trackSave, trackScroll, trackInquiry, trackMapInteraction, trackLocationClick };
 }
