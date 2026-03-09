@@ -671,6 +671,18 @@ const AdminAlertSystem = () => {
     return alerts.filter(a => getCategory(a.type) === activeCategory);
   }, [alerts, activeCategory]);
 
+  const totalPages = Math.ceil(filteredAlerts.length / PAGE_SIZE);
+  const paginatedAlerts = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return filteredAlerts.slice(start, start + PAGE_SIZE);
+  }, [filteredAlerts, currentPage]);
+
+  // Reset page when category changes
+  const handleCategoryChange = (v: string) => {
+    setActiveCategory(v as AlertCategory);
+    setCurrentPage(1);
+  };
+
   const formatTimeAgo = (dateStr: string) => {
     const diff = Date.now() - new Date(dateStr).getTime();
     const mins = Math.floor(diff / 60000);
