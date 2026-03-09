@@ -124,6 +124,14 @@ const SharePropertyButton = ({
       ),
     },
     {
+      name: 'LinkedIn',
+      icon: Send,
+      color: 'text-[#0A66C2]',
+      action: () => handleSocialShare('linkedin', (url) =>
+        `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`
+      ),
+    },
+    {
       name: 'Telegram',
       icon: Send,
       color: 'text-[#0088cc]',
