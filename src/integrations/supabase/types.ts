@@ -17644,6 +17644,68 @@ export type Database = {
         }
         Relationships: []
       }
+      property_recommendations: {
+        Row: {
+          created_at: string
+          factors: Json | null
+          id: string
+          property_id: string
+          recommendation_score: number
+          recommendation_type: string
+          recommended_property_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          factors?: Json | null
+          id?: string
+          property_id: string
+          recommendation_score?: number
+          recommendation_type?: string
+          recommended_property_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          factors?: Json | null
+          id?: string
+          property_id?: string
+          recommendation_score?: number
+          recommendation_type?: string
+          recommended_property_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_recommendations_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_recommendations_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_recommendations_recommended_property_id_fkey"
+            columns: ["recommended_property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_recommendations_recommended_property_id_fkey"
+            columns: ["recommended_property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_rental_items: {
         Row: {
           condition_status: string | null
@@ -24418,6 +24480,48 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_property_activity: {
+        Row: {
+          activity_type: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          property_id: string | null
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          property_id?: string | null
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          property_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_property_activity_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_property_activity_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_role_audit: {
         Row: {
