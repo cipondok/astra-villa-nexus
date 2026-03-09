@@ -46,13 +46,14 @@ const formatIDR = (v: number) => {
   return `Rp ${v.toLocaleString()}`;
 };
 
-type NavSection = 'overview' | 'seo' | 'jobs' | 'scheduler' | 'investment' | 'valuations' | 'search' | 'health';
+type NavSection = 'overview' | 'seo' | 'jobs' | 'scheduler' | 'investment' | 'valuations' | 'search' | 'health' | 'market-intel';
 
 const NAV_ITEMS: { id: NavSection; label: string; icon: React.ElementType }[] = [
   { id: 'overview', label: 'Overview', icon: Gauge },
   { id: 'seo', label: 'SEO Engine', icon: Search },
   { id: 'jobs', label: 'Job Queue', icon: Cpu },
   { id: 'scheduler', label: 'Scheduler', icon: CalendarClock },
+  { id: 'market-intel', label: 'Market Intel', icon: Radar },
   { id: 'investment', label: 'Investment AI', icon: TrendingUp },
   { id: 'valuations', label: 'Valuations', icon: BarChart3 },
   { id: 'search', label: 'Search Intel', icon: Eye },
