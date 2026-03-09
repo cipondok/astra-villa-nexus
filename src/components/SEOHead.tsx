@@ -54,6 +54,7 @@ export const SEOHead = ({
     setMeta('meta[property="og:description"]', 'property=og:description', description);
     setMeta('meta[property="og:type"]', 'property=og:type', ogType);
     setMeta('meta[property="og:image"]', 'property=og:image', ogImage);
+    setMeta('meta[property="og:url"]', 'property=og:url', canonical || `${SITE_URL}${window.location.pathname}`);
     setMeta('meta[property="og:site_name"]', 'property=og:site_name', SITE_NAME);
 
     // Twitter Card
