@@ -40,6 +40,10 @@ export interface AICommandCenterData {
     completed: number;
     failed: number;
     recentJobs: any[];
+    throughput: { date: string; completed: number; failed: number }[];
+    avgDurationSec: number;
+    totalProcessed: number;
+    jobTypeBreakdown: { type: string; count: number; fill: string }[];
   };
   seo: {
     weakListings: number;
