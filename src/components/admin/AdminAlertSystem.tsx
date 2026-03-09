@@ -152,9 +152,7 @@ const AdminAlertSystem = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      // Invalidate both alerts and count queries
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      invalidateAlertQueries();
       showSuccess("Alert Marked", "Alert has been marked as read.");
     },
   });
