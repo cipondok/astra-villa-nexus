@@ -14,6 +14,7 @@ import EnhancedImageGallery from '@/components/property/EnhancedImageGallery';
 import PropertyComparisonButton from '@/components/property/PropertyComparisonButton';
 import SimpleProperty3DViewer from '@/components/property/SimpleProperty3DViewer';
 import { AutoValuationCard } from '@/components/property/AutoValuationCard';
+import { ROIForecastCard } from '@/components/property/ROIForecastCard';
 import DroneVideoPlayer from '@/components/property/DroneVideoPlayer';
 const GLBModelViewer = lazy(() => import('@/components/property/GLBModelViewer'));
 import PropertyCard from '@/components/property/PropertyCard';
