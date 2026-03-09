@@ -9,7 +9,7 @@ import {
   MapPin, Search, SlidersHorizontal, X, Bed, Bath, Maximize2,
   Home, Building2, Layers, Flame, Pentagon, ChevronUp, ChevronDown,
   Loader2, TrendingUp, DollarSign, Eye, Sparkles, List, Map as MapIcon,
-  ChevronLeft, ChevronRight,
+  ChevronLeft, ChevronRight, ArrowUpDown, ArrowUp, ArrowDown,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -167,9 +167,23 @@ export default function InteractivePropertyMap() {
   const [nlpActive, setNlpActive] = useState(false);
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(true);
+  const [sortBy, setSortBy] = useState<'default' | 'price-asc' | 'price-desc' | 'score' | 'newest'>('default');
 
   const navigate = useNavigate();
   const { data: properties = [], isLoading } = useMapProperties(bounds, filters, mapReady);
+
+  // ── Sorted properties ──
+  const sortedProperties = useMemo(() => {
+    if (sortBy === 'default') return properties;
+    const sorted = [...properties];
+    switch (sortBy) {
+      case 'price-asc': return sorted.sort((a, b) => a.price - b.price);
+      case 'price-desc': return sorted.sort((a, b) => b.price - a.price);
+      case 'score': return sorted.sort((a, b) => (b.investment_score || 0) - (a.investment_score || 0));
+      case 'newest': return sorted; // already ordered by created_at from RPC
+      default: return sorted;
+    }
+  }, [properties, sortBy]);
 
   // ── Hover handler (bidirectional) ──
   const handleHover = useCallback((id: string | null) => {
@@ -437,31 +451,46 @@ export default function InteractivePropertyMap() {
             <List className="h-4 w-4 text-primary" />
             <span className="text-sm font-bold text-foreground">Properti</span>
             <Badge variant="secondary" className="text-[10px]">
-              {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : properties.length}
+              {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : sortedProperties.length}
             </Badge>
           </div>
-          <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setPanelCollapsed(true)}>
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-1">
+            <Select value={sortBy} onValueChange={(v) => setSortBy(v as any)}>
+              <SelectTrigger className="h-7 w-[130px] text-[11px] border-border/60">
+                <ArrowUpDown className="h-3 w-3 mr-1 flex-shrink-0" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="default">Default</SelectItem>
+                <SelectItem value="price-asc">Harga ↑</SelectItem>
+                <SelectItem value="price-desc">Harga ↓</SelectItem>
+                <SelectItem value="score">Skor Investasi</SelectItem>
+                <SelectItem value="newest">Terbaru</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setPanelCollapsed(true)}>
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
 
         {/* Scrollable property list */}
         <div ref={listScrollRef} className="flex-1 overflow-y-auto p-3 space-y-2">
-          {properties.length === 0 && !isLoading && (
+          {sortedProperties.length === 0 && !isLoading && (
             <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
               <MapPin className="h-10 w-10 mb-3 opacity-40" />
               <p className="text-sm font-medium">Tidak ada properti di area ini</p>
               <p className="text-xs mt-1">Geser peta atau ubah filter</p>
             </div>
           )}
-          {isLoading && properties.length === 0 && (
+          {isLoading && sortedProperties.length === 0 && (
             <div className="flex flex-col gap-2">
               {Array.from({ length: 5 }).map((_, i) => (
                 <div key={i} className="h-[120px] rounded-lg bg-muted animate-pulse" />
               ))}
             </div>
           )}
-          {properties.map(p => (
+          {sortedProperties.map(p => (
             <SyncedPropertyCard
               key={p.id}
               ref={(el) => setCardRef(p.id, el)}
@@ -511,7 +540,7 @@ export default function InteractivePropertyMap() {
           filters={filters} onFiltersChange={setFilters}
           showHeatmap={showHeatmap} onToggleHeatmap={setShowHeatmap}
           drawMode={drawMode} onSetDrawMode={setDrawMode}
-          propertyCount={properties.length} isLoading={isLoading}
+          propertyCount={sortedProperties.length} isLoading={isLoading}
           isOpen={filterOpen} onToggle={() => setFilterOpen(o => !o)}
         />
 
@@ -519,7 +548,7 @@ export default function InteractivePropertyMap() {
         <div className="absolute top-4 right-4 z-20 sm:right-16">
           <Badge className="bg-background/95 backdrop-blur-md text-foreground border border-border/60 shadow-lg text-xs px-3 py-1.5">
             {isLoading ? <Loader2 className="h-3 w-3 animate-spin mr-1.5" /> : <Building2 className="h-3 w-3 mr-1.5 text-primary" />}
-            {properties.length} properti
+            {sortedProperties.length} properti
           </Badge>
         </div>
 
@@ -580,7 +609,7 @@ export default function InteractivePropertyMap() {
           >
             <div className="w-8 h-1 rounded-full bg-muted-foreground/40 mx-auto" />
             <span className="text-[10px] text-muted-foreground mt-0.5 block">
-              {properties.length} properti
+              {sortedProperties.length} properti
             </span>
           </button>
         </div>
@@ -599,12 +628,12 @@ export default function InteractivePropertyMap() {
                 className="flex gap-3 px-4 py-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide"
                 style={{ WebkitOverflowScrolling: 'touch' }}
               >
-                {properties.length === 0 && !isLoading && (
+                {sortedProperties.length === 0 && !isLoading && (
                   <div className="flex-shrink-0 w-full flex items-center justify-center py-4">
                     <p className="text-xs text-muted-foreground">Geser peta untuk cari properti</p>
                   </div>
                 )}
-                {properties.map(p => (
+                {sortedProperties.map(p => (
                   <SyncedPropertyCard
                     key={p.id}
                     ref={(el) => setCardRef(p.id, el)}
