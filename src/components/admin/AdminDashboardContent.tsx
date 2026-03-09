@@ -180,7 +180,7 @@ import {
   NeighborhoodInsights,
   DocumentSigningHub,
   PropertyAuctionManager,
-  TenantScreening,
+  AICommandCenter,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
