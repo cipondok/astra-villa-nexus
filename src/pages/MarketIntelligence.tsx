@@ -68,6 +68,9 @@ export default function MarketIntelligence() {
               <TabsTrigger value="luxury" className="gap-1.5 text-xs md:text-sm">
                 <Crown className="h-4 w-4" /> Top Luxury
               </TabsTrigger>
+              <TabsTrigger value="hotspots" className="gap-1.5 text-xs md:text-sm">
+                <Flame className="h-4 w-4" /> Hotspots
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="trends">
