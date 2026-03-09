@@ -87,18 +87,33 @@ export default function NLPSearchBar({ onApplyFilters, className }: NLPSearchBar
     setIsListening(true);
   }, [isListening]);
 
+  const suggestions = [
+    'Villa in Bali under 3 billion',
+    'Apartment Jakarta 2 bedroom',
+    'Investment property under 2B',
+    'Modern house Bandung with pool',
+    'Land in Lombok for investment',
+  ];
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim() || isProcessing) return;
-    // Stop listening if active
     if (isListening) {
       recognitionRef.current?.stop();
       setIsListening(false);
     }
-    const filters = await processNaturalLanguage(query);
+    const filters = await processNaturalLanguage(query, 'search_page');
     if (filters) {
       onApplyFilters(toSearchParams(filters));
     }
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setQuery(suggestion);
+    // Auto-submit
+    processNaturalLanguage(suggestion, 'search_page').then(filters => {
+      if (filters) onApplyFilters(toSearchParams(filters));
+    });
   };
 
   const chips = buildChips(extractedFilters);
