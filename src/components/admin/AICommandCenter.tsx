@@ -210,6 +210,8 @@ const AICommandCenter = () => {
   const updateConfig = useUpdateHealthMonitorConfig();
   const [showSettings, setShowSettings] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [kpiAlertRunning, setKpiAlertRunning] = useState(false);
+  const [kpiAlertResult, setKpiAlertResult] = useState<any>(null);
 
   const handleRunSeoScan = async () => {
     setSeoRunning(true);
