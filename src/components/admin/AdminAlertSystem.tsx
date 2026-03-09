@@ -723,17 +723,20 @@ const AdminAlertSystem = () => {
     }
   };
 
-  const unreadCount = alerts?.filter(alert => !alert.is_read).length || 0;
-  const readCount = alerts?.filter(alert => alert.is_read).length || 0;
+  const unreadCount = alertCounts?.unread ?? alerts?.filter(alert => !alert.is_read).length ?? 0;
+  const readCount = alertCounts?.read ?? alerts?.filter(alert => alert.is_read).length ?? 0;
   const todayPropertiesCount = todayProperties?.length || 0;
   const todayUsersCount = todayUsers?.length || 0;
 
-  const categoryCounts = useMemo(() => {
-    if (!alerts) return { all: 0, verification: 0, property: 0, profile: 0, system: 0, other: 0 };
-    const counts = { all: alerts.length, verification: 0, property: 0, profile: 0, system: 0, other: 0 };
-    alerts.forEach(a => { counts[getCategory(a.type)]++; });
+  const serverCategoryCounts = useMemo(() => {
+    if (!typeCounts) return { all: alertCounts?.total || 0, verification: 0, property: 0, profile: 0, system: 0, other: 0 };
+    const counts = { all: alertCounts?.total || 0, verification: 0, property: 0, profile: 0, system: 0, other: 0 };
+    for (const [type, cnt] of Object.entries(typeCounts)) {
+      const cat = getCategory(type);
+      counts[cat] += cnt as number;
+    }
     return counts;
-  }, [alerts]);
+  }, [typeCounts, alertCounts]);
 
   const filteredAlerts = useMemo(() => {
     if (!alerts) return [];
