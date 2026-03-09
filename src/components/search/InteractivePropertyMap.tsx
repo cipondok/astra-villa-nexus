@@ -548,7 +548,7 @@ export default function InteractivePropertyMap() {
         <div className="absolute top-4 right-4 z-20 sm:right-16">
           <Badge className="bg-background/95 backdrop-blur-md text-foreground border border-border/60 shadow-lg text-xs px-3 py-1.5">
             {isLoading ? <Loader2 className="h-3 w-3 animate-spin mr-1.5" /> : <Building2 className="h-3 w-3 mr-1.5 text-primary" />}
-            {properties.length} properti
+            {sortedProperties.length} properti
           </Badge>
         </div>
 
