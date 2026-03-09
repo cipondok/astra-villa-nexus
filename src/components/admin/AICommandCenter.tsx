@@ -1,5 +1,5 @@
 import React, { useState, lazy, Suspense } from 'react';
-import { useAICommandCenter } from '@/hooks/useAICommandCenter';
+import { useAICommandCenter, type PeriodComparison } from '@/hooks/useAICommandCenter';
 import { useHealthAlerts, useResolveHealthAlert, useResolveAllHealthAlerts, useTriggerHealthCheck } from '@/hooks/useHealthAlerts';
 import { useHealthMonitorConfig, useUpdateHealthMonitorConfig } from '@/hooks/useHealthMonitorConfig';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -162,6 +162,38 @@ const HealthIndicator = ({ status, label, detail, latency, icon: Icon }: {
   );
 };
 
+// ─── Comparison Cell for WoW/MoM ──────────────────────────────────────────────
+const ComparisonCell = ({ label, data, invertColor = false, format }: {
+  label: string; data: PeriodComparison; invertColor?: boolean; format?: 'price';
+}) => {
+  const isPositive = invertColor ? data.direction === 'down' : data.direction === 'up';
+  const isNegative = invertColor ? data.direction === 'up' : data.direction === 'down';
+  const displayValue = format === 'price' ? formatIDR(data.current) : data.current.toLocaleString();
+
+  return (
+    <div className="p-2.5 rounded-lg bg-muted/20 border border-border/30 space-y-1">
+      <p className="text-[9px] text-muted-foreground font-medium truncate">{label}</p>
+      <p className="text-sm font-bold text-foreground tabular-nums">{displayValue}</p>
+      <div className="flex items-center gap-1">
+        <span className={`text-[10px] font-semibold tabular-nums ${
+          isPositive ? 'text-chart-1' : isNegative ? 'text-destructive' : 'text-muted-foreground'
+        }`}>
+          {data.delta > 0 ? '+' : ''}{data.delta}%
+        </span>
+        <span className="text-[9px] text-muted-foreground">vs prev</span>
+      </div>
+      <div className="flex gap-0.5">
+        <div className={`h-1 flex-1 rounded-full ${isPositive ? 'bg-chart-1/30' : isNegative ? 'bg-destructive/30' : 'bg-muted/40'}`}>
+          <div
+            className={`h-full rounded-full transition-all ${isPositive ? 'bg-chart-1' : isNegative ? 'bg-destructive' : 'bg-muted-foreground'}`}
+            style={{ width: `${Math.min(Math.abs(data.delta), 100)}%` }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 const AICommandCenter = () => {
   const { data, isLoading, refetch } = useAICommandCenter();
@@ -224,7 +256,7 @@ const AICommandCenter = () => {
     );
   }
 
-  const { overview, jobStatus, seo, roiForecasts, searchAnalytics, priceTrends, recentActions, systemHealth } = data;
+  const { overview, jobStatus, seo, roiForecasts, searchAnalytics, priceTrends, recentActions, systemHealth, historicalKPIs } = data;
   const totalJobs = jobStatus.running + jobStatus.pending + jobStatus.completed + jobStatus.failed;
 
   // ─── Chart Data ───────────────────────────────────────────────────────────
@@ -478,7 +510,33 @@ const AICommandCenter = () => {
             {activeNav === 'overview' && (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <div className="lg:col-span-2 space-y-4">
-                  {/* Price Trends Chart — NEW */}
+                  {/* WoW / MoM Historical Comparison */}
+                  <Panel title="Week-over-Week & Month-over-Month" icon={BarChart3}>
+                    <div className="space-y-3">
+                      <div>
+                        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">Week over Week</p>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                          <ComparisonCell label="New Properties" data={historicalKPIs.wow.newProperties} />
+                          <ComparisonCell label="Jobs Completed" data={historicalKPIs.wow.jobsCompleted} />
+                          <ComparisonCell label="Jobs Failed" data={historicalKPIs.wow.jobsFailed} invertColor />
+                          <ComparisonCell label="AI Searches" data={historicalKPIs.wow.searches} />
+                        </div>
+                      </div>
+                      <Separator className="opacity-30" />
+                      <div>
+                        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">Month over Month</p>
+                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                          <ComparisonCell label="New Properties" data={historicalKPIs.mom.newProperties} />
+                          <ComparisonCell label="Jobs Completed" data={historicalKPIs.mom.jobsCompleted} />
+                          <ComparisonCell label="Jobs Failed" data={historicalKPIs.mom.jobsFailed} invertColor />
+                          <ComparisonCell label="AI Searches" data={historicalKPIs.mom.searches} />
+                          <ComparisonCell label="Avg Price" data={historicalKPIs.mom.avgPrice} format="price" />
+                        </div>
+                      </div>
+                    </div>
+                  </Panel>
+
+                  {/* Price Trends Chart */}
                   <Panel title="Property Price Trends" icon={LineChartIcon}>
                     {priceTrends.length > 0 ? (
                       <ResponsiveContainer width="100%" height={220}>
