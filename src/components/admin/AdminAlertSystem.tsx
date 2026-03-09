@@ -753,7 +753,7 @@ const AdminAlertSystem = () => {
             <span className="text-muted-foreground">
               Showing {filteredAlerts.length} alerts {unreadCount > 0 && `· ${unreadCount} unread`}
             </span>
-            <div className="flex gap-1.5">
+            <div className="flex gap-1.5 flex-wrap">
               <Button
                 variant="ghost"
                 size="sm"
@@ -773,6 +773,20 @@ const AdminAlertSystem = () => {
               >
                 <Trash2 className="h-3 w-3 mr-1" />
                 Clear Read
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 text-[10px] px-2 text-destructive hover:text-destructive"
+                onClick={() => {
+                  if (window.confirm('Delete ALL alerts permanently? This cannot be undone.')) {
+                    deleteAllAlertsMutation.mutate();
+                  }
+                }}
+                disabled={deleteAllAlertsMutation.isPending || (alerts?.length || 0) === 0}
+              >
+                <Trash2 className="h-3 w-3 mr-1" />
+                Delete All
               </Button>
             </div>
           </div>
