@@ -45,7 +45,7 @@ const formatIDR = (v: number) => {
   return `Rp ${v.toLocaleString()}`;
 };
 
-type NavSection = 'overview' | 'seo' | 'jobs' | 'scheduler' | 'investment' | 'search' | 'health';
+type NavSection = 'overview' | 'seo' | 'jobs' | 'scheduler' | 'investment' | 'valuations' | 'search' | 'health';
 
 const NAV_ITEMS: { id: NavSection; label: string; icon: React.ElementType }[] = [
   { id: 'overview', label: 'Overview', icon: Gauge },
@@ -53,6 +53,7 @@ const NAV_ITEMS: { id: NavSection; label: string; icon: React.ElementType }[] = 
   { id: 'jobs', label: 'Job Queue', icon: Cpu },
   { id: 'scheduler', label: 'Scheduler', icon: CalendarClock },
   { id: 'investment', label: 'Investment AI', icon: TrendingUp },
+  { id: 'valuations', label: 'Valuations', icon: BarChart3 },
   { id: 'search', label: 'Search Intel', icon: Eye },
   { id: 'health', label: 'System Health', icon: Shield },
 ];
