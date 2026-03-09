@@ -7,6 +7,7 @@ export interface PeriodComparison {
   previous: number;
   delta: number; // percentage change
   direction: 'up' | 'down' | 'neutral';
+  sparkline?: number[]; // daily values for the current period
 }
 
 export interface HistoricalKPIs {
@@ -85,9 +86,20 @@ async function checkDbHealth(): Promise<{ status: 'ok' | 'error'; latencyMs: num
   }
 }
 
-function makePeriodComparison(current: number, previous: number): PeriodComparison {
+function makePeriodComparison(current: number, previous: number, sparkline?: number[]): PeriodComparison {
   const delta = previous > 0 ? Math.round(((current - previous) / previous) * 1000) / 10 : (current > 0 ? 100 : 0);
-  return { current, previous, delta, direction: delta > 0 ? 'up' : delta < 0 ? 'down' : 'neutral' };
+  return { current, previous, delta, direction: delta > 0 ? 'up' : delta < 0 ? 'down' : 'neutral', sparkline };
+}
+
+function groupByDay(rows: any[], dateCol: string, startIso: string, days: number): number[] {
+  const start = new Date(startIso).getTime();
+  const buckets = new Array(days).fill(0);
+  for (const r of rows) {
+    const d = new Date(r[dateCol]).getTime();
+    const idx = Math.floor((d - start) / 86400000);
+    if (idx >= 0 && idx < days) buckets[idx]++;
+  }
+  return buckets;
 }
 
 async function fetchCommandCenterData(): Promise<AICommandCenterData> {
@@ -115,6 +127,8 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     jobsCompThisWeek, jobsCompLastWeek, jobsCompThisMonth, jobsCompLastMonth,
     jobsFailThisWeek, jobsFailLastWeek, jobsFailThisMonth, jobsFailLastMonth,
     searchThisWeek, searchLastWeek, searchThisMonth, searchLastMonth,
+    // Sparkline raw data
+    sparkPropsRaw, sparkJobsCompRaw, sparkJobsFailRaw, sparkSearchRaw,
   ] = await Promise.all([
     supabase.from('properties').select('id, investment_score, price, created_at', { count: 'exact' }),
     supabase.from('ai_jobs').select('*').eq('status', 'running').limit(10),
@@ -148,6 +162,11 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     supabase.from('ai_property_queries').select('id', { count: 'exact' }).gte('created_at', lastWeekStart).lt('created_at', thisWeekStart),
     supabase.from('ai_property_queries').select('id', { count: 'exact' }).gte('created_at', thisMonthStart),
     supabase.from('ai_property_queries').select('id', { count: 'exact' }).gte('created_at', lastMonthStart).lt('created_at', thisMonthStart),
+    // Sparkline raw data (current week)
+    supabase.from('properties').select('created_at').gte('created_at', thisWeekStart).order('created_at', { ascending: true }),
+    supabase.from('ai_jobs').select('created_at').eq('status', 'completed').gte('completed_at', thisWeekStart).order('created_at', { ascending: true }),
+    supabase.from('ai_jobs').select('created_at').eq('status', 'failed').gte('created_at', thisWeekStart).order('created_at', { ascending: true }),
+    supabase.from('ai_property_queries').select('created_at').gte('created_at', thisWeekStart).order('created_at', { ascending: true }),
   ]);
 
   // Run health checks in parallel
@@ -236,12 +255,18 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
   const currMonthPrice = sortedTrends.length > 0 ? sortedTrends[sortedTrends.length - 1].avgPrice : 0;
   const prevMonthPrice = sortedTrends.length > 1 ? sortedTrends[sortedTrends.length - 2].avgPrice : 0;
 
+  // Build sparklines (7 days for WoW)
+  const sparkProps = groupByDay(sparkPropsRaw.data || [], 'created_at', thisWeekStart, 7);
+  const sparkJobsComp = groupByDay(sparkJobsCompRaw.data || [], 'created_at', thisWeekStart, 7);
+  const sparkJobsFail = groupByDay(sparkJobsFailRaw.data || [], 'created_at', thisWeekStart, 7);
+  const sparkSearch = groupByDay(sparkSearchRaw.data || [], 'created_at', thisWeekStart, 7);
+
   const historicalKPIs: HistoricalKPIs = {
     wow: {
-      newProperties: makePeriodComparison(propsThisWeek.count || 0, propsLastWeek.count || 0),
-      jobsCompleted: makePeriodComparison(jobsCompThisWeek.count || 0, jobsCompLastWeek.count || 0),
-      jobsFailed: makePeriodComparison(jobsFailThisWeek.count || 0, jobsFailLastWeek.count || 0),
-      searches: makePeriodComparison(searchThisWeek.count || 0, searchLastWeek.count || 0),
+      newProperties: makePeriodComparison(propsThisWeek.count || 0, propsLastWeek.count || 0, sparkProps),
+      jobsCompleted: makePeriodComparison(jobsCompThisWeek.count || 0, jobsCompLastWeek.count || 0, sparkJobsComp),
+      jobsFailed: makePeriodComparison(jobsFailThisWeek.count || 0, jobsFailLastWeek.count || 0, sparkJobsFail),
+      searches: makePeriodComparison(searchThisWeek.count || 0, searchLastWeek.count || 0, sparkSearch),
     },
     mom: {
       newProperties: makePeriodComparison(propsThisMonth.count || 0, propsLastMonth.count || 0),

@@ -166,6 +166,35 @@ const HealthIndicator = ({ status, label, detail, latency, icon: Icon }: {
   );
 };
 
+// ─── Sparkline SVG ────────────────────────────────────────────────────────────
+const Sparkline = ({ data, color, width = 60, height = 20 }: {
+  data: number[]; color: string; width?: number; height?: number;
+}) => {
+  if (!data || data.length < 2) return null;
+  const max = Math.max(...data, 1);
+  const min = Math.min(...data, 0);
+  const range = max - min || 1;
+  const points = data.map((v, i) => {
+    const x = (i / (data.length - 1)) * width;
+    const y = height - ((v - min) / range) * (height - 2) - 1;
+    return `${x},${y}`;
+  });
+  const areaPoints = [...points, `${width},${height}`, `0,${height}`];
+
+  return (
+    <svg width={width} height={height} className="shrink-0">
+      <defs>
+        <linearGradient id={`spark-${color}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={`hsl(var(--${color}))`} stopOpacity={0.3} />
+          <stop offset="100%" stopColor={`hsl(var(--${color}))`} stopOpacity={0.03} />
+        </linearGradient>
+      </defs>
+      <polygon points={areaPoints.join(' ')} fill={`url(#spark-${color})`} />
+      <polyline points={points.join(' ')} fill="none" stroke={`hsl(var(--${color}))`} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+};
+
 // ─── Comparison Cell for WoW/MoM ──────────────────────────────────────────────
 const ComparisonCell = ({ label, data, invertColor = false, format }: {
   label: string; data: PeriodComparison; invertColor?: boolean; format?: 'price';
@@ -173,11 +202,17 @@ const ComparisonCell = ({ label, data, invertColor = false, format }: {
   const isPositive = invertColor ? data.direction === 'down' : data.direction === 'up';
   const isNegative = invertColor ? data.direction === 'up' : data.direction === 'down';
   const displayValue = format === 'price' ? formatIDR(data.current) : data.current.toLocaleString();
+  const sparkColor = isPositive ? 'chart-1' : isNegative ? 'destructive' : 'muted-foreground';
 
   return (
     <div className="p-2.5 rounded-lg bg-muted/20 border border-border/30 space-y-1">
       <p className="text-[9px] text-muted-foreground font-medium truncate">{label}</p>
-      <p className="text-sm font-bold text-foreground tabular-nums">{displayValue}</p>
+      <div className="flex items-center justify-between gap-1.5">
+        <p className="text-sm font-bold text-foreground tabular-nums">{displayValue}</p>
+        {data.sparkline && data.sparkline.length >= 2 && (
+          <Sparkline data={data.sparkline} color={sparkColor} width={48} height={18} />
+        )}
+      </div>
       <div className="flex items-center gap-1">
         <span className={`text-[10px] font-semibold tabular-nums ${
           isPositive ? 'text-chart-1' : isNegative ? 'text-destructive' : 'text-muted-foreground'
