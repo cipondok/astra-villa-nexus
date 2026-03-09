@@ -15,7 +15,7 @@ import {
   Server, Database, Timer, Eye, Gauge, Shield, Cpu,
   ChevronRight, Sparkles, Target, LineChart as LineChartIcon,
   Bot, Radar, Settings2, PlayCircle, PauseCircle, Wifi, WifiOff,
-  ArrowUpRight, Percent, CalendarClock, Bell, CheckCheck, Loader2,
+  ArrowUpRight, Percent, CalendarClock, Bell, CheckCheck, Loader2, Download, FileText,
 } from 'lucide-react';
 
 const AIJobScheduler = lazy(() => import('./AIJobScheduler'));
