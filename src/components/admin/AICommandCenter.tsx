@@ -12,8 +12,10 @@ import {
   Server, Database, Timer, Eye, Gauge, Shield, Cpu,
   ChevronRight, Sparkles, Target, LineChart as LineChartIcon,
   Bot, Radar, Settings2, PlayCircle, PauseCircle, Wifi, WifiOff,
-  ArrowUpRight, Percent,
+  ArrowUpRight, Percent, CalendarClock,
 } from 'lucide-react';
+
+const AIJobScheduler = lazy(() => import('./AIJobScheduler'));
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, AreaChart, Area, CartesianGrid, LineChart, Line,
