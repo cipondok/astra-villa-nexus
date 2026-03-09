@@ -167,9 +167,23 @@ export default function InteractivePropertyMap() {
   const [nlpActive, setNlpActive] = useState(false);
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(true);
+  const [sortBy, setSortBy] = useState<'default' | 'price-asc' | 'price-desc' | 'score' | 'newest'>('default');
 
   const navigate = useNavigate();
   const { data: properties = [], isLoading } = useMapProperties(bounds, filters, mapReady);
+
+  // ── Sorted properties ──
+  const sortedProperties = useMemo(() => {
+    if (sortBy === 'default') return properties;
+    const sorted = [...properties];
+    switch (sortBy) {
+      case 'price-asc': return sorted.sort((a, b) => a.price - b.price);
+      case 'price-desc': return sorted.sort((a, b) => b.price - a.price);
+      case 'score': return sorted.sort((a, b) => (b.investment_score || 0) - (a.investment_score || 0));
+      case 'newest': return sorted; // already ordered by created_at from RPC
+      default: return sorted;
+    }
+  }, [properties, sortBy]);
 
   // ── Hover handler (bidirectional) ──
   const handleHover = useCallback((id: string | null) => {
