@@ -58,6 +58,7 @@ const AdminAlertSystem = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [activeCategory, setActiveCategory] = useState<AlertCategory>('all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [deleteProgress, setDeleteProgress] = useState<{ total: number; deleted: number; isDeleting: boolean }>({ total: 0, deleted: 0, isDeleting: false });
   const [activityModal, setActivityModal] = useState<{
     isOpen: boolean;
     type: 'properties' | 'users';
@@ -147,17 +148,44 @@ const AdminAlertSystem = () => {
     },
   });
 
-  const deleteAllAlertsMutation = useMutation({
-    mutationFn: async () => {
-      const { error } = await supabase.rpc('delete_all_admin_alerts');
-      if (error) throw error;
-    },
-    onSuccess: () => {
+  const deleteCategoryAlerts = async () => {
+    // Get IDs to delete based on active category
+    const idsToDelete = activeCategory === 'all'
+      ? (alerts || []).map(a => a.id)
+      : (alerts || []).filter(a => getCategory(a.type) === activeCategory).map(a => a.id);
+
+    if (idsToDelete.length === 0) return;
+
+    const label = activeCategory === 'all' ? 'ALL' : activeCategory.toUpperCase();
+    if (!window.confirm(`Delete ${idsToDelete.length} ${label} alerts permanently? This cannot be undone.`)) return;
+
+    setDeleteProgress({ total: idsToDelete.length, deleted: 0, isDeleting: true });
+
+    const BATCH_SIZE = 50;
+    let deleted = 0;
+
+    try {
+      for (let i = 0; i < idsToDelete.length; i += BATCH_SIZE) {
+        const batch = idsToDelete.slice(i, i + BATCH_SIZE);
+        const { error } = await supabase
+          .from('admin_alerts')
+          .delete()
+          .in('id', batch);
+        if (error) throw error;
+        deleted += batch.length;
+        setDeleteProgress({ total: idsToDelete.length, deleted, isDeleting: true });
+      }
+
       queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
       queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
-      showSuccess("All Deleted", "All alerts have been permanently deleted.");
-    },
-  });
+      showSuccess("Deleted", `${deleted} ${label} alerts have been permanently deleted.`);
+      setCurrentPage(1);
+    } catch (error: any) {
+      showError("Error", error.message || "Failed to delete alerts");
+    } finally {
+      setDeleteProgress({ total: 0, deleted: 0, isDeleting: false });
+    }
+  };
 
   const markAllAsReadMutation = useMutation({
     mutationFn: async () => {
@@ -795,18 +823,33 @@ const AdminAlertSystem = () => {
                 variant="ghost"
                 size="sm"
                 className="h-6 text-[10px] px-2 text-destructive hover:text-destructive"
-                onClick={() => {
-                  if (window.confirm('Delete ALL alerts permanently? This cannot be undone.')) {
-                    deleteAllAlertsMutation.mutate();
-                  }
-                }}
-                disabled={deleteAllAlertsMutation.isPending || (alerts?.length || 0) === 0}
+                onClick={deleteCategoryAlerts}
+                disabled={deleteProgress.isDeleting || filteredAlerts.length === 0}
               >
                 <Trash2 className="h-3 w-3 mr-1" />
-                Delete All
+                {deleteProgress.isDeleting
+                  ? `Deleting ${deleteProgress.deleted}/${deleteProgress.total}...`
+                  : `Delete ${activeCategory === 'all' ? 'All' : activeCategory} (${filteredAlerts.length})`
+                }
               </Button>
             </div>
           </div>
+
+          {/* Delete Progress Bar */}
+          {deleteProgress.isDeleting && (
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                <span>Deleting alerts...</span>
+                <span>{deleteProgress.deleted} / {deleteProgress.total} · {deleteProgress.total - deleteProgress.deleted} remaining</span>
+              </div>
+              <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-destructive rounded-full transition-all duration-300"
+                  style={{ width: `${(deleteProgress.deleted / deleteProgress.total) * 100}%` }}
+                />
+              </div>
+            </div>
+          )}
 
           {/* Slim Alert List */}
           <ScrollArea className="h-[400px] scroll-smooth">
