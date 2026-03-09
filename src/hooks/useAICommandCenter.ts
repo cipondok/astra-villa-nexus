@@ -141,6 +141,11 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     searchThisWeek, searchLastWeek, searchThisMonth, searchLastMonth,
     // Sparkline raw data
     sparkPropsRaw, sparkJobsCompRaw, sparkJobsFailRaw, sparkSearchRaw,
+    // Valuation data
+    valuationsRes,
+    valuationsThisWeekRes,
+    valuationsLastWeekRes,
+    roiForecastCountRes,
   ] = await Promise.all([
     supabase.from('properties').select('id, investment_score, price, created_at', { count: 'exact' }),
     supabase.from('ai_jobs').select('*').eq('status', 'running').limit(10),
@@ -179,6 +184,11 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     supabase.from('ai_jobs').select('created_at').eq('status', 'completed').gte('completed_at', thisWeekStart).order('created_at', { ascending: true }),
     supabase.from('ai_jobs').select('created_at').eq('status', 'failed').gte('created_at', thisWeekStart).order('created_at', { ascending: true }),
     supabase.from('ai_property_queries').select('created_at').gte('created_at', thisWeekStart).order('created_at', { ascending: true }),
+    // Valuation queries
+    supabase.from('property_valuations').select('id, confidence_score, estimated_value, market_trend, created_at, property_id', { count: 'exact' }).order('created_at', { ascending: false }).limit(50),
+    supabase.from('property_valuations').select('id', { count: 'exact' }).gte('created_at', thisWeekStart),
+    supabase.from('property_valuations').select('id', { count: 'exact' }).gte('created_at', lastWeekStart).lt('created_at', thisWeekStart),
+    supabase.from('property_roi_forecast').select('id', { count: 'exact' }),
   ]);
 
   // Run health checks in parallel
