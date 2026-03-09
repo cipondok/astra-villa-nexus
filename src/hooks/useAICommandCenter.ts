@@ -319,11 +319,67 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
       failed: failedJobsRes.count || 0,
       recentJobs: jobsRes.data || [],
     },
-    seo: {
-      weakListings,
-      avgScore: Math.round(avgSeo * 10) / 10,
-      recentOptimized: [],
-    },
+    seo: (() => {
+      const scoreBuckets = [
+        { range: '0-20', count: 0, fill: 'hsl(var(--destructive))' },
+        { range: '20-40', count: 0, fill: 'hsl(var(--chart-3))' },
+        { range: '40-60', count: 0, fill: 'hsl(var(--chart-2))' },
+        { range: '60-80', count: 0, fill: 'hsl(var(--chart-4))' },
+        { range: '80-100', count: 0, fill: 'hsl(var(--chart-1))' },
+      ];
+
+      const subTotals = { title: 0, description: 0, keyword: 0, image: 0, location: 0, hashtag: 0 };
+      const ratingCounts: Record<string, number> = {};
+
+      seoProperties.forEach((p: any) => {
+        const s = p.seo_score || 0;
+        if (s < 20) scoreBuckets[0].count++;
+        else if (s < 40) scoreBuckets[1].count++;
+        else if (s < 60) scoreBuckets[2].count++;
+        else if (s < 80) scoreBuckets[3].count++;
+        else scoreBuckets[4].count++;
+
+        subTotals.title += p.title_score || 0;
+        subTotals.description += p.description_score || 0;
+        subTotals.keyword += p.keyword_score || 0;
+        subTotals.image += p.image_score || 0;
+        subTotals.location += p.location_score || 0;
+        subTotals.hashtag += p.hashtag_score || 0;
+
+        const rating = p.seo_rating || 'unrated';
+        ratingCounts[rating] = (ratingCounts[rating] || 0) + 1;
+      });
+
+      const n = seoProperties.length || 1;
+      const subScores = [
+        { metric: 'Title', avg: Math.round(subTotals.title / n) },
+        { metric: 'Description', avg: Math.round(subTotals.description / n) },
+        { metric: 'Keywords', avg: Math.round(subTotals.keyword / n) },
+        { metric: 'Images', avg: Math.round(subTotals.image / n) },
+        { metric: 'Location', avg: Math.round(subTotals.location / n) },
+        { metric: 'Hashtags', avg: Math.round(subTotals.hashtag / n) },
+      ];
+
+      const ratingColors: Record<string, string> = {
+        excellent: 'hsl(var(--chart-1))', good: 'hsl(var(--chart-2))',
+        average: 'hsl(var(--chart-3))', poor: 'hsl(var(--destructive))',
+        unrated: 'hsl(var(--muted-foreground))',
+      };
+      const ratingBreakdown = Object.entries(ratingCounts)
+        .map(([rating, count]) => ({ rating, count, fill: ratingColors[rating] || 'hsl(var(--muted-foreground))' }))
+        .sort((a, b) => b.count - a.count);
+
+      return {
+        weakListings,
+        avgScore: Math.round(avgSeo * 10) / 10,
+        totalAnalyzed: seoProperties.length,
+        coveragePercent: totalProperties > 0 ? Math.round((seoProperties.length / totalProperties) * 100) : 0,
+        recentAnalyses: seoProperties.slice(0, 15),
+        scoreBuckets,
+        subScores,
+        ratingBreakdown,
+      };
+    })(),
     roiForecasts: forecasts,
     searchAnalytics: {
       topQueries,
