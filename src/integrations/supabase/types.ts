@@ -29128,7 +29128,7 @@ export type Database = {
         Returns: string
       }
       delete_admin_alerts_by_types: {
-        Args: { type_patterns: string[] }
+        Args: { p_types: string[] }
         Returns: number
       }
       delete_all_admin_alerts: { Args: never; Returns: undefined }

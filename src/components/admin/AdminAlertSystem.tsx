@@ -71,12 +71,22 @@ const AdminAlertSystem = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
+  // Get total count from server (no limit)
+  const { data: totalAlertCount } = useQuery({
+    queryKey: ['admin-alerts-total-count'],
+    queryFn: async () => {
+      const { data, error } = await (supabase.rpc as any)('count_admin_alerts');
+      if (error) throw error;
+      return (data as number) || 0;
+    },
+  });
+
   const { data: alerts, isLoading } = useQuery({
     queryKey: ['admin-alerts'],
     queryFn: async () => {
-      const { data, error, count } = await supabase
+      const { data, error } = await supabase
         .from('admin_alerts')
-        .select('*', { count: 'exact' })
+        .select('*')
         .order('created_at', { ascending: false })
         .limit(5000);
       
@@ -148,37 +158,59 @@ const AdminAlertSystem = () => {
     },
   });
 
+  const ALL_KNOWN_TYPES = [
+    'kyc_verification', 'company_verification',
+    'property_listing',
+    'profile_update', 'user_registration',
+    'error', 'warning', 'system_error', 'success',
+  ];
+
   const deleteCategoryAlerts = async () => {
-    // Get IDs to delete based on active category
-    const idsToDelete = activeCategory === 'all'
-      ? (alerts || []).map(a => a.id)
-      : (alerts || []).filter(a => getCategory(a.type) === activeCategory).map(a => a.id);
-
-    if (idsToDelete.length === 0) return;
-
     const label = activeCategory === 'all' ? 'ALL' : activeCategory.toUpperCase();
-    if (!window.confirm(`Delete ${idsToDelete.length} ${label} alerts permanently? This cannot be undone.`)) return;
+    const count = activeCategory === 'all' ? (totalAlertCount || alerts?.length || 0) : filteredAlerts.length;
 
-    setDeleteProgress({ total: idsToDelete.length, deleted: 0, isDeleting: true });
+    if (count === 0) return;
+    if (!window.confirm(`Delete ${count} ${label} alerts permanently? This cannot be undone.`)) return;
 
-    const BATCH_SIZE = 50;
-    let deleted = 0;
+    setDeleteProgress({ total: count, deleted: 0, isDeleting: true });
 
     try {
-      for (let i = 0; i < idsToDelete.length; i += BATCH_SIZE) {
-        const batch = idsToDelete.slice(i, i + BATCH_SIZE);
-        const { error } = await supabase
-          .from('admin_alerts')
-          .delete()
-          .in('id', batch);
+      let deletedCount = 0;
+
+      if (activeCategory === 'all') {
+        // Use RPC to delete ALL on server side
+        const { data, error } = await (supabase.rpc as any)('delete_all_admin_alerts');
         if (error) throw error;
-        deleted += batch.length;
-        setDeleteProgress({ total: idsToDelete.length, deleted, isDeleting: true });
+        deletedCount = data || count;
+      } else {
+        // Get types for this category
+        const categoryTypes = CATEGORY_TYPES[activeCategory];
+
+        if (activeCategory === 'other') {
+          // "other" = types NOT in any known category
+          const { data, error } = await (supabase.rpc as any)('delete_admin_alerts_except_types', {
+            p_types: ALL_KNOWN_TYPES
+          });
+          if (error) throw error;
+          deletedCount = data || 0;
+        } else {
+          const { data, error } = await (supabase.rpc as any)('delete_admin_alerts_by_types', {
+            p_types: categoryTypes
+          });
+          if (error) throw error;
+          deletedCount = data || 0;
+        }
       }
+
+      setDeleteProgress({ total: count, deleted: deletedCount, isDeleting: true });
+
+      // Brief pause to show completed progress
+      await new Promise(r => setTimeout(r, 500));
 
       queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
       queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
-      showSuccess("Deleted", `${deleted} ${label} alerts have been permanently deleted.`);
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts-total-count'] });
+      showSuccess("Deleted", `${deletedCount} ${label} alerts have been permanently deleted.`);
       setCurrentPage(1);
     } catch (error: any) {
       showError("Error", error.message || "Failed to delete alerts");
@@ -746,7 +778,7 @@ const AdminAlertSystem = () => {
               )}
             </CardTitle>
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-[10px] px-1.5 py-0">{alerts?.length || 0} Total</Badge>
+              <Badge variant="outline" className="text-[10px] px-1.5 py-0">{totalAlertCount ?? alerts?.length ?? 0} Total</Badge>
               <Badge variant="secondary" className="text-[10px] px-1.5 py-0">{unreadCount} Unread</Badge>
               <Badge variant="default" className="text-[10px] px-1.5 py-0">{readCount} Read</Badge>
             </div>
