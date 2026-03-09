@@ -148,17 +148,44 @@ const AdminAlertSystem = () => {
     },
   });
 
-  const deleteAllAlertsMutation = useMutation({
-    mutationFn: async () => {
-      const { error } = await supabase.rpc('delete_all_admin_alerts');
-      if (error) throw error;
-    },
-    onSuccess: () => {
+  const deleteCategoryAlerts = async () => {
+    // Get IDs to delete based on active category
+    const idsToDelete = activeCategory === 'all'
+      ? (alerts || []).map(a => a.id)
+      : (alerts || []).filter(a => getCategory(a.type) === activeCategory).map(a => a.id);
+
+    if (idsToDelete.length === 0) return;
+
+    const label = activeCategory === 'all' ? 'ALL' : activeCategory.toUpperCase();
+    if (!window.confirm(`Delete ${idsToDelete.length} ${label} alerts permanently? This cannot be undone.`)) return;
+
+    setDeleteProgress({ total: idsToDelete.length, deleted: 0, isDeleting: true });
+
+    const BATCH_SIZE = 50;
+    let deleted = 0;
+
+    try {
+      for (let i = 0; i < idsToDelete.length; i += BATCH_SIZE) {
+        const batch = idsToDelete.slice(i, i + BATCH_SIZE);
+        const { error } = await supabase
+          .from('admin_alerts')
+          .delete()
+          .in('id', batch);
+        if (error) throw error;
+        deleted += batch.length;
+        setDeleteProgress({ total: idsToDelete.length, deleted, isDeleting: true });
+      }
+
       queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
       queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
-      showSuccess("All Deleted", "All alerts have been permanently deleted.");
-    },
-  });
+      showSuccess("Deleted", `${deleted} ${label} alerts have been permanently deleted.`);
+      setCurrentPage(1);
+    } catch (error: any) {
+      showError("Error", error.message || "Failed to delete alerts");
+    } finally {
+      setDeleteProgress({ total: 0, deleted: 0, isDeleting: false });
+    }
+  };
 
   const markAllAsReadMutation = useMutation({
     mutationFn: async () => {
