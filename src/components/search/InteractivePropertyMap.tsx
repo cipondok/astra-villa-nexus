@@ -451,31 +451,46 @@ export default function InteractivePropertyMap() {
             <List className="h-4 w-4 text-primary" />
             <span className="text-sm font-bold text-foreground">Properti</span>
             <Badge variant="secondary" className="text-[10px]">
-              {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : properties.length}
+              {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : sortedProperties.length}
             </Badge>
           </div>
-          <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setPanelCollapsed(true)}>
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-1">
+            <Select value={sortBy} onValueChange={(v) => setSortBy(v as any)}>
+              <SelectTrigger className="h-7 w-[130px] text-[11px] border-border/60">
+                <ArrowUpDown className="h-3 w-3 mr-1 flex-shrink-0" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="default">Default</SelectItem>
+                <SelectItem value="price-asc">Harga ↑</SelectItem>
+                <SelectItem value="price-desc">Harga ↓</SelectItem>
+                <SelectItem value="score">Skor Investasi</SelectItem>
+                <SelectItem value="newest">Terbaru</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setPanelCollapsed(true)}>
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
 
         {/* Scrollable property list */}
         <div ref={listScrollRef} className="flex-1 overflow-y-auto p-3 space-y-2">
-          {properties.length === 0 && !isLoading && (
+          {sortedProperties.length === 0 && !isLoading && (
             <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
               <MapPin className="h-10 w-10 mb-3 opacity-40" />
               <p className="text-sm font-medium">Tidak ada properti di area ini</p>
               <p className="text-xs mt-1">Geser peta atau ubah filter</p>
             </div>
           )}
-          {isLoading && properties.length === 0 && (
+          {isLoading && sortedProperties.length === 0 && (
             <div className="flex flex-col gap-2">
               {Array.from({ length: 5 }).map((_, i) => (
                 <div key={i} className="h-[120px] rounded-lg bg-muted animate-pulse" />
               ))}
             </div>
           )}
-          {properties.map(p => (
+          {sortedProperties.map(p => (
             <SyncedPropertyCard
               key={p.id}
               ref={(el) => setCardRef(p.id, el)}
