@@ -537,8 +537,7 @@ const AdminAlertSystem = () => {
         metadata: { ...selectedAlert.metadata, resolved_at: new Date().toISOString(), resolution: 'denied', denial_reason: reviewNotes }
       }).eq('id', selectedAlert.id);
 
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      invalidateAlertQueries();
       queryClient.invalidateQueries({ queryKey: ['enhanced-users'] });
       showSuccess("Denied", "Profile changes reverted and user notified.");
       setIsDialogOpen(false);
