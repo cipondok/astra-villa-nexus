@@ -73,6 +73,7 @@ const InvestorPathSelector = lazy(() => import("@/components/home/InvestorPathSe
 const PropertySlideshow = lazy(() => import("@/components/PropertySlideshow"));
 const FeaturedPropertiesCarousel = lazy(() => import("@/components/home/FeaturedPropertiesCarousel"));
 const SmartCollectionsShowcase = lazy(() => import("@/components/home/SmartCollectionsV2"));
+const TrendingROIDeals = lazy(() => import("@/components/home/TrendingROIDeals"));
 const AIPriceEstimatorCTA = lazy(() => import("@/components/home/AIPriceEstimatorCTA"));
 const MarketIntelligenceCTA = lazy(() => import("@/components/home/MarketIntelligenceCTA"));
 const EarlyInvestmentCTA = lazy(() => import("@/components/home/EarlyInvestmentCTA"));
@@ -1022,6 +1023,15 @@ const Index = () => {
                 <div className="mb-4">
                   <Suspense fallback={<div className="h-48 bg-muted/30 rounded-xl animate-pulse" />}>
                     <SmartRecommendations limit={6} className="shadow-sm" />
+                  </Suspense>
+                </div>
+                </ScrollReveal>
+
+                {/* Trending & ROI Deals */}
+                <ScrollReveal direction="right" delay={0}>
+                <div className="mb-4">
+                  <Suspense fallback={<div className="h-48 bg-muted/30 rounded-xl animate-pulse" />}>
+                    <TrendingROIDeals onPropertyClick={handlePropertyClick} />
                   </Suspense>
                 </div>
                 </ScrollReveal>
