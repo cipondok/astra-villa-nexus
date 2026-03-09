@@ -478,7 +478,33 @@ const AICommandCenter = () => {
             {activeNav === 'overview' && (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <div className="lg:col-span-2 space-y-4">
-                  {/* Price Trends Chart — NEW */}
+                  {/* WoW / MoM Historical Comparison */}
+                  <Panel title="Week-over-Week & Month-over-Month" icon={BarChart3}>
+                    <div className="space-y-3">
+                      <div>
+                        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">Week over Week</p>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                          <ComparisonCell label="New Properties" data={historicalKPIs.wow.newProperties} />
+                          <ComparisonCell label="Jobs Completed" data={historicalKPIs.wow.jobsCompleted} />
+                          <ComparisonCell label="Jobs Failed" data={historicalKPIs.wow.jobsFailed} invertColor />
+                          <ComparisonCell label="AI Searches" data={historicalKPIs.wow.searches} />
+                        </div>
+                      </div>
+                      <Separator className="opacity-30" />
+                      <div>
+                        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">Month over Month</p>
+                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                          <ComparisonCell label="New Properties" data={historicalKPIs.mom.newProperties} />
+                          <ComparisonCell label="Jobs Completed" data={historicalKPIs.mom.jobsCompleted} />
+                          <ComparisonCell label="Jobs Failed" data={historicalKPIs.mom.jobsFailed} invertColor />
+                          <ComparisonCell label="AI Searches" data={historicalKPIs.mom.searches} />
+                          <ComparisonCell label="Avg Price" data={historicalKPIs.mom.avgPrice} format="price" />
+                        </div>
+                      </div>
+                    </div>
+                  </Panel>
+
+                  {/* Price Trends Chart */}
                   <Panel title="Property Price Trends" icon={LineChartIcon}>
                     {priceTrends.length > 0 ? (
                       <ResponsiveContainer width="100%" height={220}>
