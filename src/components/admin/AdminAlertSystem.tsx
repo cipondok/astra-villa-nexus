@@ -768,12 +768,12 @@ const AdminAlertSystem = () => {
   };
 
   const categoryTabs: { value: AlertCategory; label: string; count: number }[] = [
-    { value: 'all', label: 'All', count: categoryCounts.all },
-    { value: 'verification', label: 'Verification', count: categoryCounts.verification },
-    { value: 'property', label: 'Property', count: categoryCounts.property },
-    { value: 'profile', label: 'Profile', count: categoryCounts.profile },
-    { value: 'system', label: 'System', count: categoryCounts.system },
-    { value: 'other', label: 'Other', count: categoryCounts.other },
+    { value: 'all', label: 'All', count: serverCategoryCounts.all },
+    { value: 'verification', label: 'Verification', count: serverCategoryCounts.verification },
+    { value: 'property', label: 'Property', count: serverCategoryCounts.property },
+    { value: 'profile', label: 'Profile', count: serverCategoryCounts.profile },
+    { value: 'system', label: 'System', count: serverCategoryCounts.system },
+    { value: 'other', label: 'Other', count: serverCategoryCounts.other },
   ];
 
   return (
