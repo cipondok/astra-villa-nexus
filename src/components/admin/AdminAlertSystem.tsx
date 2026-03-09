@@ -618,8 +618,7 @@ const AdminAlertSystem = () => {
         metadata: { ...selectedAlert.metadata, resolved_at: new Date().toISOString(), resolution: 'denied', denial_reason: reviewNotes }
       }).eq('id', selectedAlert.id);
 
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      invalidateAlertQueries();
       showSuccess("Denied", "Property listing denied and owner notified.");
       setIsDialogOpen(false);
       setSelectedAlert(null);
