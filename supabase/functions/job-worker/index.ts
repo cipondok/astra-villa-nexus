@@ -208,8 +208,13 @@ async function handleProcess(supabase: any) {
         // Generate recommendations for properties
         result = await generatePropertyRecommendations(supabase, task.payload);
       } else if (pendingJob.job_type === "update_trending_properties") {
-        // Update trending property scores
         result = await updateTrendingProperties(supabase, task.payload);
+      } else if (pendingJob.job_type === "update_price_trends") {
+        result = await updatePriceTrends(supabase);
+      } else if (pendingJob.job_type === "update_rental_insights") {
+        result = await updateRentalInsights(supabase);
+      } else if (pendingJob.job_type === "detect_investment_hotspots") {
+        result = await detectInvestmentHotspots(supabase);
       }
 
       // Mark task completed
@@ -493,6 +498,210 @@ async function updateTrendingProperties(supabase: any, taskPayload: any) {
   }
 
   return { trending_properties: entries.length, updated };
+}
+
+// ── Update Price Trends ──
+async function updatePriceTrends(supabase: any) {
+  const { data: props } = await supabase
+    .from("properties")
+    .select("city, state, location, price, area_sqm")
+    .eq("status", "available")
+    .not("price", "is", null)
+    .gt("price", 0);
+
+  if (!props || props.length === 0) return { processed: 0 };
+
+  const byCity: Record<string, { prices: number[]; sqmPrices: number[]; state: string; location: string | null }> = {};
+  for (const p of props) {
+    const city = p.city || "Unknown";
+    if (!byCity[city]) byCity[city] = { prices: [], sqmPrices: [], state: p.state || "", location: p.location };
+    byCity[city].prices.push(p.price);
+    if (p.area_sqm && p.area_sqm > 0) byCity[city].sqmPrices.push(p.price / p.area_sqm);
+  }
+
+  const rows = Object.entries(byCity).map(([city, d]) => {
+    const sorted = [...d.prices].sort((a, b) => a - b);
+    const avg = d.prices.reduce((a, b) => a + b, 0) / d.prices.length;
+    const median = sorted.length % 2 === 0
+      ? (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2
+      : sorted[Math.floor(sorted.length / 2)];
+    const avgSqm = d.sqmPrices.length > 0 ? d.sqmPrices.reduce((a, b) => a + b, 0) / d.sqmPrices.length : 0;
+
+    return {
+      city,
+      state: d.state,
+      location: d.location,
+      average_price: Math.round(avg),
+      median_price: Math.round(median),
+      min_price: sorted[0],
+      max_price: sorted[sorted.length - 1],
+      property_count: d.prices.length,
+      price_per_sqm: Math.round(avgSqm),
+      price_growth: 0,
+      trend_direction: "stable",
+      period: "monthly",
+      updated_at: new Date().toISOString(),
+    };
+  });
+
+  // Clear old data and insert fresh
+  await supabase.from("location_price_trends").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+
+  let inserted = 0;
+  for (let i = 0; i < rows.length; i += 20) {
+    const chunk = rows.slice(i, i + 20);
+    const { error } = await supabase.from("location_price_trends").insert(chunk);
+    if (!error) inserted += chunk.length;
+  }
+
+  return { cities_processed: rows.length, inserted };
+}
+
+// ── Update Rental Insights ──
+async function updateRentalInsights(supabase: any) {
+  const { data: props } = await supabase
+    .from("properties")
+    .select("id, city, state, location, price, listing_type")
+    .eq("status", "available")
+    .not("price", "is", null)
+    .gt("price", 0);
+
+  if (!props || props.length === 0) return { processed: 0 };
+
+  // Get ROI forecasts
+  const propIds = props.map((p: any) => p.id);
+  const roiChunks: any[] = [];
+  for (let i = 0; i < propIds.length; i += 50) {
+    const chunk = propIds.slice(i, i + 50);
+    const { data } = await supabase.from("property_roi_forecast").select("property_id, rental_yield, expected_roi").in("property_id", chunk);
+    if (data) roiChunks.push(...data);
+  }
+  const roiMap = new Map(roiChunks.map((r: any) => [r.property_id, r]));
+
+  const byCity: Record<string, { yields: number[]; prices: number[]; rentalCount: number; state: string; location: string | null }> = {};
+  for (const p of props) {
+    const city = p.city || "Unknown";
+    if (!byCity[city]) byCity[city] = { yields: [], prices: [], rentalCount: 0, state: p.state || "", location: p.location };
+    byCity[city].prices.push(p.price);
+    if (p.listing_type === "rent") byCity[city].rentalCount++;
+    const roi = roiMap.get(p.id) as any;
+    if (roi?.rental_yield) byCity[city].yields.push(roi.rental_yield);
+  }
+
+  const rows = Object.entries(byCity).map(([city, d]) => {
+    const avgYield = d.yields.length > 0 ? d.yields.reduce((a, b) => a + b, 0) / d.yields.length : 0;
+    const avgPrice = d.prices.reduce((a, b) => a + b, 0) / d.prices.length;
+    const demandScore = Math.min(100, Math.round((d.rentalCount / Math.max(d.prices.length, 1)) * 100 + avgYield * 5));
+
+    return {
+      city,
+      state: d.state,
+      location: d.location,
+      avg_rental_yield: Math.round(avgYield * 100) / 100,
+      avg_monthly_rent: Math.round(avgPrice * (avgYield / 100) / 12),
+      demand_score: demandScore,
+      occupancy_prediction: Math.min(98, Math.round(60 + demandScore * 0.38)),
+      rental_property_count: d.rentalCount,
+      avg_price: Math.round(avgPrice),
+      updated_at: new Date().toISOString(),
+    };
+  });
+
+  await supabase.from("rental_market_insights").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+
+  let inserted = 0;
+  for (let i = 0; i < rows.length; i += 20) {
+    const chunk = rows.slice(i, i + 20);
+    const { error } = await supabase.from("rental_market_insights").insert(chunk);
+    if (!error) inserted += chunk.length;
+  }
+
+  return { cities_processed: rows.length, inserted };
+}
+
+// ── Detect Investment Hotspots ──
+async function detectInvestmentHotspots(supabase: any) {
+  const { data: props } = await supabase
+    .from("properties")
+    .select("id, city, state, location, investment_score")
+    .eq("status", "available")
+    .not("investment_score", "is", null);
+
+  if (!props || props.length === 0) return { processed: 0 };
+
+  const propIds = props.map((p: any) => p.id);
+  const roiChunks: any[] = [];
+  for (let i = 0; i < propIds.length; i += 50) {
+    const chunk = propIds.slice(i, i + 50);
+    const { data } = await supabase.from("property_roi_forecast").select("property_id, expected_roi, rental_yield").in("property_id", chunk);
+    if (data) roiChunks.push(...data);
+  }
+  const roiMap = new Map(roiChunks.map((r: any) => [r.property_id, r]));
+
+  // Get recent activity for growth signals
+  const cutoff = new Date(Date.now() - 30 * 86400000).toISOString();
+  const { data: activity } = await supabase
+    .from("ai_behavior_tracking")
+    .select("property_id")
+    .gte("created_at", cutoff)
+    .not("property_id", "is", null);
+  const activityCount: Record<string, number> = {};
+  (activity || []).forEach((a: any) => {
+    if (a.property_id) activityCount[a.property_id] = (activityCount[a.property_id] || 0) + 1;
+  });
+
+  const byCity: Record<string, { scores: number[]; rois: number[]; yields: number[]; activityTotal: number; state: string; location: string | null; count: number }> = {};
+  for (const p of props) {
+    const city = p.city || "Unknown";
+    if (!byCity[city]) byCity[city] = { scores: [], rois: [], yields: [], activityTotal: 0, state: p.state || "", location: p.location, count: 0 };
+    byCity[city].scores.push(p.investment_score || 0);
+    byCity[city].count++;
+    byCity[city].activityTotal += activityCount[p.id] || 0;
+    const roi = roiMap.get(p.id) as any;
+    if (roi?.expected_roi) byCity[city].rois.push(roi.expected_roi);
+    if (roi?.rental_yield) byCity[city].yields.push(roi.rental_yield);
+  }
+
+  const rows = Object.entries(byCity).map(([city, d]) => {
+    const avgScore = d.scores.reduce((a, b) => a + b, 0) / d.scores.length;
+    const avgRoi = d.rois.length > 0 ? d.rois.reduce((a, b) => a + b, 0) / d.rois.length : 0;
+    const avgYield = d.yields.length > 0 ? d.yields.reduce((a, b) => a + b, 0) / d.yields.length : 0;
+
+    // Growth score based on activity (normalized 0-100)
+    const growthScore = Math.min(100, Math.round((d.activityTotal / Math.max(d.count, 1)) * 10));
+    // Rental score from yields
+    const rentalScore = Math.min(100, Math.round(avgYield * 12));
+    // ROI score
+    const roiScore = Math.min(100, Math.round(avgRoi * 5));
+    // Composite hotspot score (weighted)
+    const hotspotScore = Math.round(avgScore * 0.3 + growthScore * 0.25 + rentalScore * 0.25 + roiScore * 0.2);
+
+    return {
+      city,
+      state: d.state,
+      location: d.location,
+      hotspot_score: hotspotScore,
+      growth_score: growthScore,
+      rental_score: rentalScore,
+      roi_score: roiScore,
+      property_count: d.count,
+      avg_investment_score: Math.round(avgScore),
+      avg_roi: Math.round(avgRoi * 100) / 100,
+      trend: growthScore > 60 ? "rising" : growthScore > 30 ? "stable" : "cooling",
+      updated_at: new Date().toISOString(),
+    };
+  });
+
+  await supabase.from("investment_hotspots").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+
+  let inserted = 0;
+  for (let i = 0; i < rows.length; i += 20) {
+    const chunk = rows.slice(i, i + 20);
+    const { error } = await supabase.from("investment_hotspots").insert(chunk);
+    if (!error) inserted += chunk.length;
+  }
+
+  return { cities_processed: rows.length, inserted };
 }
 
 function json(data: unknown, status = 200) {

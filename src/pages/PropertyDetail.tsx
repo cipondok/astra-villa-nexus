@@ -29,6 +29,7 @@ import UserStatusBadge from '@/components/ui/UserStatusBadge';
 import { PropertyReviews } from '@/components/property/PropertyReviews';
 import PropertyRecommendations from '@/components/property/PropertyRecommendations';
 import NearbyInvestments from '@/components/property/NearbyInvestments';
+const MarketContextCard = React.lazy(() => import('@/components/property/MarketContextCard'));
 import { KPRCalculator } from '@/components/property/KPRCalculator';
 import PropertyMortgageWidget from '@/components/mortgage/PropertyMortgageWidget';
 import DaysOnMarketTracker from '@/components/property/DaysOnMarketTracker';
@@ -1436,6 +1437,13 @@ const PropertyDetail: React.FC = () => {
         {/* Reviews Section */}
         <div className="mt-6 sm:mt-8">
           <PropertyReviews propertyId={property.id} />
+        </div>
+
+        {/* Market Intelligence Context */}
+        <div className="mt-4 sm:mt-6">
+          <Suspense fallback={null}>
+            <MarketContextCard city={property.city} currentPrice={property.price} />
+          </Suspense>
         </div>
 
         {/* Similar Properties & Nearby Investments */}

@@ -1,12 +1,13 @@
 import React, { Suspense, lazy } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TrendingUp, Map, Search, Crown, BarChart3 } from 'lucide-react';
+import { TrendingUp, Map, Search, Crown, BarChart3, Flame } from 'lucide-react';
 
 const AreaPriceTrends = lazy(() => import('@/components/market-intelligence/AreaPriceTrends'));
 const PriceHeatMap = lazy(() => import('@/components/market-intelligence/PriceHeatMap'));
 const MostSearchedLocations = lazy(() => import('@/components/market-intelligence/MostSearchedLocations'));
 const TopLuxuryAreas = lazy(() => import('@/components/market-intelligence/TopLuxuryAreas'));
 const MarketOverviewCards = lazy(() => import('@/components/market-intelligence/MarketOverviewCards'));
+const InvestmentHotspotsChart = lazy(() => import('@/components/market-intelligence/InvestmentHotspotsChart'));
 
 const SectionLoader = () => (
   <div className="animate-pulse space-y-4">
@@ -67,6 +68,9 @@ export default function MarketIntelligence() {
               <TabsTrigger value="luxury" className="gap-1.5 text-xs md:text-sm">
                 <Crown className="h-4 w-4" /> Top Luxury
               </TabsTrigger>
+              <TabsTrigger value="hotspots" className="gap-1.5 text-xs md:text-sm">
+                <Flame className="h-4 w-4" /> Hotspots
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="trends">
@@ -90,6 +94,12 @@ export default function MarketIntelligence() {
             <TabsContent value="luxury">
               <Suspense fallback={<SectionLoader />}>
                 <TopLuxuryAreas />
+              </Suspense>
+            </TabsContent>
+
+            <TabsContent value="hotspots">
+              <Suspense fallback={<SectionLoader />}>
+                <InvestmentHotspotsChart />
               </Suspense>
             </TabsContent>
           </Tabs>

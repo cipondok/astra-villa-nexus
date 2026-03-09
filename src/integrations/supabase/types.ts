@@ -9510,6 +9510,57 @@ export type Database = {
           },
         ]
       }
+      investment_hotspots: {
+        Row: {
+          avg_investment_score: number | null
+          avg_roi: number | null
+          city: string
+          created_at: string
+          growth_score: number | null
+          hotspot_score: number | null
+          id: string
+          location: string | null
+          property_count: number | null
+          rental_score: number | null
+          roi_score: number | null
+          state: string | null
+          trend: string | null
+          updated_at: string
+        }
+        Insert: {
+          avg_investment_score?: number | null
+          avg_roi?: number | null
+          city: string
+          created_at?: string
+          growth_score?: number | null
+          hotspot_score?: number | null
+          id?: string
+          location?: string | null
+          property_count?: number | null
+          rental_score?: number | null
+          roi_score?: number | null
+          state?: string | null
+          trend?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avg_investment_score?: number | null
+          avg_roi?: number | null
+          city?: string
+          created_at?: string
+          growth_score?: number | null
+          hotspot_score?: number | null
+          id?: string
+          location?: string | null
+          property_count?: number | null
+          rental_score?: number | null
+          roi_score?: number | null
+          state?: string | null
+          trend?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       investment_metrics: {
         Row: {
           area_growth_pct: number | null
@@ -10964,6 +11015,60 @@ export type Database = {
           setting_value?: Json
           updated_at?: string | null
           updated_by?: string | null
+        }
+        Relationships: []
+      }
+      location_price_trends: {
+        Row: {
+          average_price: number
+          city: string
+          created_at: string
+          id: string
+          location: string | null
+          max_price: number | null
+          median_price: number | null
+          min_price: number | null
+          period: string | null
+          price_growth: number | null
+          price_per_sqm: number | null
+          property_count: number | null
+          state: string | null
+          trend_direction: string | null
+          updated_at: string
+        }
+        Insert: {
+          average_price?: number
+          city: string
+          created_at?: string
+          id?: string
+          location?: string | null
+          max_price?: number | null
+          median_price?: number | null
+          min_price?: number | null
+          period?: string | null
+          price_growth?: number | null
+          price_per_sqm?: number | null
+          property_count?: number | null
+          state?: string | null
+          trend_direction?: string | null
+          updated_at?: string
+        }
+        Update: {
+          average_price?: number
+          city?: string
+          created_at?: string
+          id?: string
+          location?: string | null
+          max_price?: number | null
+          median_price?: number | null
+          min_price?: number | null
+          period?: string | null
+          price_growth?: number | null
+          price_per_sqm?: number | null
+          property_count?: number | null
+          state?: string | null
+          trend_direction?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -19627,6 +19732,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      rental_market_insights: {
+        Row: {
+          avg_monthly_rent: number | null
+          avg_price: number | null
+          avg_rental_yield: number | null
+          city: string
+          created_at: string
+          demand_score: number | null
+          id: string
+          location: string | null
+          occupancy_prediction: number | null
+          rental_property_count: number | null
+          state: string | null
+          updated_at: string
+        }
+        Insert: {
+          avg_monthly_rent?: number | null
+          avg_price?: number | null
+          avg_rental_yield?: number | null
+          city: string
+          created_at?: string
+          demand_score?: number | null
+          id?: string
+          location?: string | null
+          occupancy_prediction?: number | null
+          rental_property_count?: number | null
+          state?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avg_monthly_rent?: number | null
+          avg_price?: number | null
+          avg_rental_yield?: number | null
+          city?: string
+          created_at?: string
+          demand_score?: number | null
+          id?: string
+          location?: string | null
+          occupancy_prediction?: number | null
+          rental_property_count?: number | null
+          state?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       rental_messages: {
         Row: {
