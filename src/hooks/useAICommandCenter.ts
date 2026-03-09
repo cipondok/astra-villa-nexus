@@ -432,11 +432,47 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
       };
     })(),
     roiForecasts: forecasts,
-    searchAnalytics: {
-      topQueries,
-      totalSearches: searchData.length,
-      conversionRate: Math.round(conversionRate * 10) / 10,
-    },
+    searchAnalytics: (() => {
+      // Volume by day (14 days)
+      const searchVolData = searchVolumeRes.data || [];
+      const volumeByDayMap: Record<string, number> = {};
+      for (let i = 0; i < 14; i++) {
+        const d = new Date(now.getTime() - (13 - i) * 86400000);
+        volumeByDayMap[d.toISOString().slice(0, 10)] = 0;
+      }
+      searchVolData.forEach((s: any) => {
+        const day = s.created_at?.slice(0, 10);
+        if (day && volumeByDayMap[day] !== undefined) volumeByDayMap[day]++;
+      });
+      const volumeByDay = Object.entries(volumeByDayMap).map(([date, searches]) => ({ date: date.slice(5), searches }));
+
+      // Category breakdown
+      const categories: Record<string, number> = { buy: 0, rent: 0, invest: 0, location: 0, other: 0 };
+      const catColors: Record<string, string> = {
+        buy: 'hsl(var(--chart-1))', rent: 'hsl(var(--chart-2))',
+        invest: 'hsl(var(--chart-3))', location: 'hsl(var(--chart-4))',
+        other: 'hsl(var(--muted-foreground))',
+      };
+      searchData.forEach(s => {
+        const q = (s.query_text || '').toLowerCase();
+        if (/buy|beli|purchase|rumah|house|villa|apartment/.test(q)) categories.buy++;
+        else if (/rent|sewa|kost|lease/.test(q)) categories.rent++;
+        else if (/invest|roi|yield|return/.test(q)) categories.invest++;
+        else if (/bali|jakarta|bandung|surabaya|location|area|city/.test(q)) categories.location++;
+        else categories.other++;
+      });
+      const categoryBreakdown = Object.entries(categories)
+        .filter(([, count]) => count > 0)
+        .map(([category, count]) => ({ category: category.charAt(0).toUpperCase() + category.slice(1), count, fill: catColors[category] }));
+
+      return {
+        topQueries,
+        totalSearches: searchData.length,
+        conversionRate: Math.round(conversionRate * 10) / 10,
+        volumeByDay,
+        categoryBreakdown,
+      };
+    })(),
     priceTrends,
     recentActions,
     systemHealth: {
