@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AlertTriangle, CheckCircle, Info, X, Eye, UserPlus, Building2, ShoppingCart, Shield, XCircle, ExternalLink, Trash2, CheckCheck, Bell } from "lucide-react";
+import { AlertTriangle, CheckCircle, Info, X, Eye, UserPlus, Building2, ShoppingCart, Shield, XCircle, ExternalLink, Trash2, CheckCheck, Bell, ChevronLeft, ChevronRight } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 import ActivityDetailsModal from "./ActivityDetailsModal";
 import { motion, AnimatePresence } from "framer-motion";
