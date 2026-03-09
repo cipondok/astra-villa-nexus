@@ -30,7 +30,21 @@ export function useNLPSearch() {
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const processNaturalLanguage = useCallback(async (query: string) => {
+  const trackQuery = useCallback(async (queryText: string, filters: NLPFilters | null, source: string = 'search_page') => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      await supabase.from('ai_property_queries' as any).insert({
+        user_id: user.id,
+        query_text: queryText,
+        parsed_filters: filters || {},
+        intent_summary: filters?.intent_summary || null,
+        source,
+      });
+    } catch { /* silent */ }
+  }, []);
+
+  const processNaturalLanguage = useCallback(async (query: string, source: string = 'search_page') => {
     if (!query.trim()) return null;
 
     setIsProcessing(true);
@@ -47,6 +61,10 @@ export function useNLPSearch() {
       const filters: NLPFilters = data.filters;
       setExtractedFilters(filters);
       setIntentSummary(filters.intent_summary || '');
+      
+      // Track query for analytics
+      trackQuery(query.trim(), filters, source);
+      
       return filters;
     } catch (e: any) {
       const msg = e?.message || 'Failed to process search query';
@@ -56,7 +74,7 @@ export function useNLPSearch() {
     } finally {
       setIsProcessing(false);
     }
-  }, [toast]);
+  }, [toast, trackQuery]);
 
   /** Convert NLP filters to the format usePropertySearch.searchProperties expects */
   const toSearchParams = useCallback((filters: NLPFilters) => {

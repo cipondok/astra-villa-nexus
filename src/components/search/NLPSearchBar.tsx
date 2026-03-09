@@ -87,18 +87,33 @@ export default function NLPSearchBar({ onApplyFilters, className }: NLPSearchBar
     setIsListening(true);
   }, [isListening]);
 
+  const suggestions = [
+    'Villa in Bali under 3 billion',
+    'Apartment Jakarta 2 bedroom',
+    'Investment property under 2B',
+    'Modern house Bandung with pool',
+    'Land in Lombok for investment',
+  ];
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim() || isProcessing) return;
-    // Stop listening if active
     if (isListening) {
       recognitionRef.current?.stop();
       setIsListening(false);
     }
-    const filters = await processNaturalLanguage(query);
+    const filters = await processNaturalLanguage(query, 'search_page');
     if (filters) {
       onApplyFilters(toSearchParams(filters));
     }
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setQuery(suggestion);
+    // Auto-submit
+    processNaturalLanguage(suggestion, 'search_page').then(filters => {
+      if (filters) onApplyFilters(toSearchParams(filters));
+    });
   };
 
   const chips = buildChips(extractedFilters);
@@ -238,6 +253,22 @@ export default function NLPSearchBar({ onApplyFilters, className }: NLPSearchBar
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Search suggestions */}
+        {!extractedFilters && !query && (
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            <span className="text-[10px] text-muted-foreground mr-1">Try:</span>
+            {suggestions.map((s, i) => (
+              <button
+                key={i}
+                onClick={() => handleSuggestionClick(s)}
+                className="text-[10px] px-2 py-0.5 rounded-full bg-muted/50 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors border border-transparent hover:border-primary/20"
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   );
