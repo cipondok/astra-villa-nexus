@@ -32,6 +32,8 @@ interface AdminAlert {
 
 type AlertCategory = 'all' | 'verification' | 'property' | 'profile' | 'system' | 'other';
 
+const PAGE_SIZE = 50;
+
 const CATEGORY_TYPES: Record<AlertCategory, string[]> = {
   all: [],
   verification: ['kyc_verification', 'company_verification'],
