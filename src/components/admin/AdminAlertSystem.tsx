@@ -791,7 +791,7 @@ const AdminAlertSystem = () => {
               )}
             </CardTitle>
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-[10px] px-1.5 py-0">{totalAlertCount ?? alerts?.length ?? 0} Total</Badge>
+              <Badge variant="outline" className="text-[10px] px-1.5 py-0">{alertCounts?.total ?? alerts?.length ?? 0} Total</Badge>
               <Badge variant="secondary" className="text-[10px] px-1.5 py-0">{unreadCount} Unread</Badge>
               <Badge variant="default" className="text-[10px] px-1.5 py-0">{readCount} Read</Badge>
             </div>
