@@ -35,6 +35,7 @@ import {
   exportOverviewCsv, exportJobHistoryCsv, exportHealthAlertsCsv,
   exportSearchAnalyticsCsv, exportPriceTrendsCsv, exportFullReportPdf,
   exportCustomPeriodCSV, exportCustomPeriodPDF,
+  exportPresetComparisonCSV, exportPresetComparisonPDF,
 } from '@/lib/reportExport';
 
 const formatIDR = (v: number) => {
