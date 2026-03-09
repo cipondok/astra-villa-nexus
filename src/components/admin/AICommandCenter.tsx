@@ -1148,17 +1148,17 @@ const AICommandCenter = () => {
                   <Panel title="Confidence Distribution" icon={BarChart3}>
                     <div className="h-48">
                       <ResponsiveContainer width="100%" height="100%">
-                        <RechartsBarChart data={data.valuations.confidenceBuckets} barSize={32}>
+                        <BarChart data={data.valuations.confidenceBuckets} barSize={32}>
                           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
                           <XAxis dataKey="range" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} />
                           <YAxis tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} />
-                          <RechartsTooltip contentStyle={CHART_TOOLTIP_STYLE} />
+                          <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
                           <Bar dataKey="count" name="Properties" radius={[6, 6, 0, 0]}>
                             {data.valuations.confidenceBuckets.map((entry, idx) => (
                               <Cell key={idx} fill={entry.fill} />
                             ))}
                           </Bar>
-                        </RechartsBarChart>
+                        </BarChart>
                       </ResponsiveContainer>
                     </div>
                   </Panel>
