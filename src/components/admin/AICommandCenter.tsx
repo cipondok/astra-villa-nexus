@@ -342,6 +342,44 @@ const AICommandCenter = () => {
             {aiOptRunning ? 'Optimizing...' : 'AI Optimize'}
           </Button>
 
+          <Separator className="my-2 opacity-50" />
+          <p className="px-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-widest mb-1">Export Reports</p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full justify-start gap-2 text-[11px] h-8 border-border/40 hover:border-primary/30 hover:bg-primary/5"
+            disabled={exporting}
+            onClick={async () => {
+              setExporting(true);
+              try {
+                await exportFullReportPdf(data, healthAlerts);
+                toast.success('PDF report downloaded');
+              } catch (e: any) { toast.error('Export failed: ' + e.message); }
+              setExporting(false);
+            }}
+          >
+            {exporting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <FileText className="h-3.5 w-3.5" />}
+            Full Report (PDF)
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full justify-start gap-2 text-[11px] h-8 border-border/40 hover:border-primary/30 hover:bg-primary/5"
+            onClick={() => { exportOverviewCsv(data); toast.success('Overview CSV downloaded'); }}
+          >
+            <Download className="h-3.5 w-3.5" />
+            Overview (CSV)
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full justify-start gap-2 text-[11px] h-8 border-border/40 hover:border-primary/30 hover:bg-primary/5"
+            onClick={async () => { await exportJobHistoryCsv(); toast.success('Job history CSV downloaded'); }}
+          >
+            <Download className="h-3.5 w-3.5" />
+            Job History (CSV)
+          </Button>
+
           <div className="mt-4 p-3 rounded-lg bg-muted/20 border border-border/30 space-y-2">
             <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-widest">Live Status</p>
             <div className="flex items-center gap-2">
