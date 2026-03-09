@@ -30,11 +30,31 @@ interface AdminAlert {
   created_at: string;
 }
 
+type AlertCategory = 'all' | 'verification' | 'property' | 'profile' | 'system' | 'other';
+
+const CATEGORY_TYPES: Record<AlertCategory, string[]> = {
+  all: [],
+  verification: ['kyc_verification', 'company_verification'],
+  property: ['property_listing'],
+  profile: ['profile_update', 'user_registration'],
+  system: ['error', 'warning', 'system_error', 'success'],
+  other: [],
+};
+
+const getCategory = (type: string): AlertCategory => {
+  for (const [cat, types] of Object.entries(CATEGORY_TYPES)) {
+    if (cat === 'all' || cat === 'other') continue;
+    if (types.includes(type)) return cat as AlertCategory;
+  }
+  return 'other';
+};
+
 const AdminAlertSystem = () => {
   const [selectedAlert, setSelectedAlert] = useState<AdminAlert | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [reviewNotes, setReviewNotes] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<AlertCategory>('all');
   const [activityModal, setActivityModal] = useState<{
     isOpen: boolean;
     type: 'properties' | 'users';
