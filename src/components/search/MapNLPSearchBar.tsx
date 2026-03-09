@@ -122,12 +122,19 @@ export default function MapNLPSearchBar({ onResult, className }: MapNLPSearchBar
     setIsListening(true);
   }, [isListening]);
 
+  const suggestions = [
+    'Villa Bali under 3B',
+    'Apartment Jakarta 2BR',
+    'Investment property Ubud',
+    'Land Lombok cheap',
+  ];
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim() || isProcessing) return;
     if (isListening) { recognitionRef.current?.stop(); setIsListening(false); }
 
-    const filters = await processNaturalLanguage(query);
+    const filters = await processNaturalLanguage(query, 'map_page');
     if (!filters) return;
     setLastResult(filters);
 
