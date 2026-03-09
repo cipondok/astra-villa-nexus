@@ -442,8 +442,7 @@ const AdminAlertSystem = () => {
         })
         .eq('id', selectedAlert.id);
 
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      invalidateAlertQueries();
       showSuccess("Denied", "Verification denied and user notified.");
       setIsDialogOpen(false);
       setSelectedAlert(null);
