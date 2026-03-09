@@ -35,6 +35,7 @@ import {
   exportOverviewCsv, exportJobHistoryCsv, exportHealthAlertsCsv,
   exportSearchAnalyticsCsv, exportPriceTrendsCsv, exportFullReportPdf,
   exportCustomPeriodCSV, exportCustomPeriodPDF,
+  exportPresetComparisonCSV, exportPresetComparisonPDF,
 } from '@/lib/reportExport';
 
 const formatIDR = (v: number) => {
@@ -613,14 +614,22 @@ const AICommandCenter = () => {
                   }>
                     {comparisonMode === 'preset' ? (
                     <div className="space-y-3">
-                      <div>
-                        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">Week over Week</p>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                          <ComparisonCell label="New Properties" data={historicalKPIs.wow.newProperties} />
-                          <ComparisonCell label="Jobs Completed" data={historicalKPIs.wow.jobsCompleted} />
-                          <ComparisonCell label="Jobs Failed" data={historicalKPIs.wow.jobsFailed} invertColor />
-                          <ComparisonCell label="AI Searches" data={historicalKPIs.wow.searches} />
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Week over Week</p>
+                        <div className="flex gap-1">
+                          <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px] gap-1" onClick={() => exportPresetComparisonCSV(historicalKPIs)}>
+                            <Download className="h-3 w-3" />CSV
+                          </Button>
+                          <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px] gap-1" onClick={() => exportPresetComparisonPDF(historicalKPIs)}>
+                            <FileText className="h-3 w-3" />PDF
+                          </Button>
                         </div>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <ComparisonCell label="New Properties" data={historicalKPIs.wow.newProperties} />
+                        <ComparisonCell label="Jobs Completed" data={historicalKPIs.wow.jobsCompleted} />
+                        <ComparisonCell label="Jobs Failed" data={historicalKPIs.wow.jobsFailed} invertColor />
+                        <ComparisonCell label="AI Searches" data={historicalKPIs.wow.searches} />
                       </div>
                       <Separator className="opacity-30" />
                       <div>
