@@ -482,8 +482,7 @@ const AdminAlertSystem = () => {
         metadata: { ...selectedAlert.metadata, resolved_at: new Date().toISOString(), resolution: 'approved', admin_notes: reviewNotes }
       }).eq('id', selectedAlert.id);
 
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      invalidateAlertQueries();
       showSuccess("Approved", "Profile changes approved and user notified.");
       setIsDialogOpen(false);
       setSelectedAlert(null);
