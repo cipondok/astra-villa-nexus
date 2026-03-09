@@ -609,7 +609,7 @@ export default function InteractivePropertyMap() {
           >
             <div className="w-8 h-1 rounded-full bg-muted-foreground/40 mx-auto" />
             <span className="text-[10px] text-muted-foreground mt-0.5 block">
-              {properties.length} properti
+              {sortedProperties.length} properti
             </span>
           </button>
         </div>
