@@ -326,13 +326,50 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
       avgEstimatedValue: Math.round(avgValue),
       avgPredictedROI: Math.round(avgROI * 10) / 10,
     },
-    jobStatus: {
-      running: jobsRes.data?.length || 0,
-      pending: pendingCount,
-      completed: completedJobsRes.count || 0,
-      failed: failedJobsRes.count || 0,
-      recentJobs: jobsRes.data || [],
-    },
+    jobStatus: (() => {
+      const throughputJobs = jobThroughputRes.data || [];
+      // Build throughput by day (14 days)
+      const throughputByDay: Record<string, { completed: number; failed: number }> = {};
+      for (let i = 0; i < 14; i++) {
+        const d = new Date(now.getTime() - (13 - i) * 86400000);
+        throughputByDay[d.toISOString().slice(0, 10)] = { completed: 0, failed: 0 };
+      }
+      let totalDuration = 0;
+      let durationCount = 0;
+      const typeCounts: Record<string, number> = {};
+
+      throughputJobs.forEach((j: any) => {
+        const day = (j.completed_at || j.created_at)?.slice(0, 10);
+        if (day && throughputByDay[day]) {
+          if (j.status === 'completed') throughputByDay[day].completed++;
+          else throughputByDay[day].failed++;
+        }
+        if (j.status === 'completed' && j.started_at && j.completed_at) {
+          totalDuration += new Date(j.completed_at).getTime() - new Date(j.started_at).getTime();
+          durationCount++;
+        }
+        const t = j.job_type || 'unknown';
+        typeCounts[t] = (typeCounts[t] || 0) + 1;
+      });
+
+      const typeColors = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))', 'hsl(var(--primary))'];
+      const jobTypeBreakdown = Object.entries(typeCounts)
+        .map(([type, count], i) => ({ type: type.replace(/_/g, ' '), count, fill: typeColors[i % typeColors.length] }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 6);
+
+      return {
+        running: jobsRes.data?.length || 0,
+        pending: pendingCount,
+        completed: completedJobsRes.count || 0,
+        failed: failedJobsRes.count || 0,
+        recentJobs: jobsRes.data || [],
+        throughput: Object.entries(throughputByDay).map(([date, d]) => ({ date: date.slice(5), ...d })),
+        avgDurationSec: durationCount > 0 ? Math.round(totalDuration / durationCount / 1000) : 0,
+        totalProcessed: throughputJobs.length,
+        jobTypeBreakdown,
+      };
+    })(),
     seo: (() => {
       const scoreBuckets = [
         { range: '0-20', count: 0, fill: 'hsl(var(--destructive))' },
