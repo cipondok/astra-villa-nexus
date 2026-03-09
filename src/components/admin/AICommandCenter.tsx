@@ -162,6 +162,38 @@ const HealthIndicator = ({ status, label, detail, latency, icon: Icon }: {
   );
 };
 
+// ─── Comparison Cell for WoW/MoM ──────────────────────────────────────────────
+const ComparisonCell = ({ label, data, invertColor = false, format }: {
+  label: string; data: PeriodComparison; invertColor?: boolean; format?: 'price';
+}) => {
+  const isPositive = invertColor ? data.direction === 'down' : data.direction === 'up';
+  const isNegative = invertColor ? data.direction === 'up' : data.direction === 'down';
+  const displayValue = format === 'price' ? formatIDR(data.current) : data.current.toLocaleString();
+
+  return (
+    <div className="p-2.5 rounded-lg bg-muted/20 border border-border/30 space-y-1">
+      <p className="text-[9px] text-muted-foreground font-medium truncate">{label}</p>
+      <p className="text-sm font-bold text-foreground tabular-nums">{displayValue}</p>
+      <div className="flex items-center gap-1">
+        <span className={`text-[10px] font-semibold tabular-nums ${
+          isPositive ? 'text-chart-1' : isNegative ? 'text-destructive' : 'text-muted-foreground'
+        }`}>
+          {data.delta > 0 ? '+' : ''}{data.delta}%
+        </span>
+        <span className="text-[9px] text-muted-foreground">vs prev</span>
+      </div>
+      <div className="flex gap-0.5">
+        <div className={`h-1 flex-1 rounded-full ${isPositive ? 'bg-chart-1/30' : isNegative ? 'bg-destructive/30' : 'bg-muted/40'}`}>
+          <div
+            className={`h-full rounded-full transition-all ${isPositive ? 'bg-chart-1' : isNegative ? 'bg-destructive' : 'bg-muted-foreground'}`}
+            style={{ width: `${Math.min(Math.abs(data.delta), 100)}%` }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 const AICommandCenter = () => {
   const { data, isLoading, refetch } = useAICommandCenter();
