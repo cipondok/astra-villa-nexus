@@ -1,12 +1,13 @@
 import React, { Suspense, lazy } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TrendingUp, Map, Search, Crown, BarChart3 } from 'lucide-react';
+import { TrendingUp, Map, Search, Crown, BarChart3, Flame } from 'lucide-react';
 
 const AreaPriceTrends = lazy(() => import('@/components/market-intelligence/AreaPriceTrends'));
 const PriceHeatMap = lazy(() => import('@/components/market-intelligence/PriceHeatMap'));
 const MostSearchedLocations = lazy(() => import('@/components/market-intelligence/MostSearchedLocations'));
 const TopLuxuryAreas = lazy(() => import('@/components/market-intelligence/TopLuxuryAreas'));
 const MarketOverviewCards = lazy(() => import('@/components/market-intelligence/MarketOverviewCards'));
+const InvestmentHotspotsChart = lazy(() => import('@/components/market-intelligence/InvestmentHotspotsChart'));
 
 const SectionLoader = () => (
   <div className="animate-pulse space-y-4">
