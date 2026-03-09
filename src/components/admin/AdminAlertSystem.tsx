@@ -143,6 +143,21 @@ const AdminAlertSystem = () => {
     },
   });
 
+  const deleteAllAlertsMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from('admin_alerts')
+        .delete()
+        .gte('id', '00000000-0000-0000-0000-000000000000');
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      showSuccess("All Deleted", "All alerts have been permanently deleted.");
+    },
+  });
+
   const markAllAsReadMutation = useMutation({
     mutationFn: async () => {
       const { error } = await supabase
