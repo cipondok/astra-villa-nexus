@@ -416,6 +416,7 @@ const renderSection = (
     case "document-signing":     return <DocumentSigningHub />;
     case "property-auctions":    return <PropertyAuctionManager />;
     case "tenant-screening":     return <TenantScreening />;
+    case "ai-command-center":   return <AICommandCenter />;
     default:                    return <AdminOverview />;
   }
 };
