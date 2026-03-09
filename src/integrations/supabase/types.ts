@@ -29052,6 +29052,8 @@ export type Database = {
       cleanup_old_bpjs_responses: { Args: never; Returns: undefined }
       cleanup_rate_limit_entries: { Args: never; Returns: undefined }
       count_admin_alerts: { Args: never; Returns: number }
+      count_admin_alerts_by_status: { Args: never; Returns: Json }
+      count_admin_alerts_by_type: { Args: never; Returns: Json }
       create_account_lockout: {
         Args: {
           p_duration_minutes?: number

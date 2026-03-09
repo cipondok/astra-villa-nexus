@@ -71,13 +71,29 @@ const AdminAlertSystem = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  // Get total count from server (no limit)
-  const { data: totalAlertCount } = useQuery({
-    queryKey: ['admin-alerts-total-count'],
+  const invalidateAlertQueries = () => {
+    queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-alerts-counts'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-alerts-type-counts'] });
+  };
+
+  // Get total/unread/read counts from server (no limit)
+  const { data: alertCounts } = useQuery({
+    queryKey: ['admin-alerts-counts'],
     queryFn: async () => {
-      const { data, error } = await (supabase.rpc as any)('count_admin_alerts');
+      const { data, error } = await (supabase.rpc as any)('count_admin_alerts_by_status');
       if (error) throw error;
-      return (data as number) || 0;
+      return (data as { total: number; unread: number; read: number }) || { total: 0, unread: 0, read: 0 };
+    },
+  });
+
+  // Get counts grouped by type from server
+  const { data: typeCounts } = useQuery({
+    queryKey: ['admin-alerts-type-counts'],
+    queryFn: async () => {
+      const { data, error } = await (supabase.rpc as any)('count_admin_alerts_by_type');
+      if (error) throw error;
+      return (data as Record<string, number>) || {};
     },
   });
 
@@ -136,9 +152,7 @@ const AdminAlertSystem = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      // Invalidate both alerts and count queries
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      invalidateAlertQueries();
       showSuccess("Alert Marked", "Alert has been marked as read.");
     },
   });
@@ -152,8 +166,7 @@ const AdminAlertSystem = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      invalidateAlertQueries();
       showSuccess("Cleared", "All read alerts have been removed.");
     },
   });
@@ -167,7 +180,7 @@ const AdminAlertSystem = () => {
 
   const deleteCategoryAlerts = async () => {
     const label = activeCategory === 'all' ? 'ALL' : activeCategory.toUpperCase();
-    const count = activeCategory === 'all' ? (totalAlertCount || alerts?.length || 0) : filteredAlerts.length;
+    const count = activeCategory === 'all' ? (alertCounts?.total || alerts?.length || 0) : serverCategoryCounts[activeCategory];
 
     if (count === 0) return;
     if (!window.confirm(`Delete ${count} ${label} alerts permanently? This cannot be undone.`)) return;
@@ -207,9 +220,7 @@ const AdminAlertSystem = () => {
       // Brief pause to show completed progress
       await new Promise(r => setTimeout(r, 500));
 
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-total-count'] });
+      invalidateAlertQueries();
       showSuccess("Deleted", `${deletedCount} ${label} alerts have been permanently deleted.`);
       setCurrentPage(1);
     } catch (error: any) {
@@ -228,8 +239,7 @@ const AdminAlertSystem = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      invalidateAlertQueries();
       showSuccess("Done", "All alerts marked as read.");
     },
   });
@@ -243,8 +253,7 @@ const AdminAlertSystem = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      invalidateAlertQueries();
       showSuccess("Alert Deleted", "Alert has been deleted successfully.");
       setIsDialogOpen(false);
       setSelectedAlert(null);
@@ -335,8 +344,7 @@ const AdminAlertSystem = () => {
         })
         .eq('id', selectedAlert.id);
 
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      invalidateAlertQueries();
       showSuccess("Approved", "Verification approved and user notified.");
       setIsDialogOpen(false);
       setSelectedAlert(null);
@@ -434,8 +442,7 @@ const AdminAlertSystem = () => {
         })
         .eq('id', selectedAlert.id);
 
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      invalidateAlertQueries();
       showSuccess("Denied", "Verification denied and user notified.");
       setIsDialogOpen(false);
       setSelectedAlert(null);
@@ -475,8 +482,7 @@ const AdminAlertSystem = () => {
         metadata: { ...selectedAlert.metadata, resolved_at: new Date().toISOString(), resolution: 'approved', admin_notes: reviewNotes }
       }).eq('id', selectedAlert.id);
 
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      invalidateAlertQueries();
       showSuccess("Approved", "Profile changes approved and user notified.");
       setIsDialogOpen(false);
       setSelectedAlert(null);
@@ -531,8 +537,7 @@ const AdminAlertSystem = () => {
         metadata: { ...selectedAlert.metadata, resolved_at: new Date().toISOString(), resolution: 'denied', denial_reason: reviewNotes }
       }).eq('id', selectedAlert.id);
 
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      invalidateAlertQueries();
       queryClient.invalidateQueries({ queryKey: ['enhanced-users'] });
       showSuccess("Denied", "Profile changes reverted and user notified.");
       setIsDialogOpen(false);
@@ -572,8 +577,7 @@ const AdminAlertSystem = () => {
         metadata: { ...selectedAlert.metadata, resolved_at: new Date().toISOString(), resolution: 'approved', admin_notes: reviewNotes }
       }).eq('id', selectedAlert.id);
 
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      invalidateAlertQueries();
       showSuccess("Approved", "Property listing approved and owner notified.");
       setIsDialogOpen(false);
       setSelectedAlert(null);
@@ -614,8 +618,7 @@ const AdminAlertSystem = () => {
         metadata: { ...selectedAlert.metadata, resolved_at: new Date().toISOString(), resolution: 'denied', denial_reason: reviewNotes }
       }).eq('id', selectedAlert.id);
 
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      invalidateAlertQueries();
       showSuccess("Denied", "Property listing denied and owner notified.");
       setIsDialogOpen(false);
       setSelectedAlert(null);
@@ -713,17 +716,20 @@ const AdminAlertSystem = () => {
     }
   };
 
-  const unreadCount = alerts?.filter(alert => !alert.is_read).length || 0;
-  const readCount = alerts?.filter(alert => alert.is_read).length || 0;
+  const unreadCount = alertCounts?.unread ?? alerts?.filter(alert => !alert.is_read).length ?? 0;
+  const readCount = alertCounts?.read ?? alerts?.filter(alert => alert.is_read).length ?? 0;
   const todayPropertiesCount = todayProperties?.length || 0;
   const todayUsersCount = todayUsers?.length || 0;
 
-  const categoryCounts = useMemo(() => {
-    if (!alerts) return { all: 0, verification: 0, property: 0, profile: 0, system: 0, other: 0 };
-    const counts = { all: alerts.length, verification: 0, property: 0, profile: 0, system: 0, other: 0 };
-    alerts.forEach(a => { counts[getCategory(a.type)]++; });
+  const serverCategoryCounts = useMemo(() => {
+    if (!typeCounts) return { all: alertCounts?.total || 0, verification: 0, property: 0, profile: 0, system: 0, other: 0 };
+    const counts = { all: alertCounts?.total || 0, verification: 0, property: 0, profile: 0, system: 0, other: 0 };
+    for (const [type, cnt] of Object.entries(typeCounts)) {
+      const cat = getCategory(type);
+      counts[cat] += cnt as number;
+    }
     return counts;
-  }, [alerts]);
+  }, [typeCounts, alertCounts]);
 
   const filteredAlerts = useMemo(() => {
     if (!alerts) return [];
@@ -755,12 +761,12 @@ const AdminAlertSystem = () => {
   };
 
   const categoryTabs: { value: AlertCategory; label: string; count: number }[] = [
-    { value: 'all', label: 'All', count: categoryCounts.all },
-    { value: 'verification', label: 'Verification', count: categoryCounts.verification },
-    { value: 'property', label: 'Property', count: categoryCounts.property },
-    { value: 'profile', label: 'Profile', count: categoryCounts.profile },
-    { value: 'system', label: 'System', count: categoryCounts.system },
-    { value: 'other', label: 'Other', count: categoryCounts.other },
+    { value: 'all', label: 'All', count: serverCategoryCounts.all },
+    { value: 'verification', label: 'Verification', count: serverCategoryCounts.verification },
+    { value: 'property', label: 'Property', count: serverCategoryCounts.property },
+    { value: 'profile', label: 'Profile', count: serverCategoryCounts.profile },
+    { value: 'system', label: 'System', count: serverCategoryCounts.system },
+    { value: 'other', label: 'Other', count: serverCategoryCounts.other },
   ];
 
   return (
@@ -778,7 +784,7 @@ const AdminAlertSystem = () => {
               )}
             </CardTitle>
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-[10px] px-1.5 py-0">{totalAlertCount ?? alerts?.length ?? 0} Total</Badge>
+              <Badge variant="outline" className="text-[10px] px-1.5 py-0">{alertCounts?.total ?? alerts?.length ?? 0} Total</Badge>
               <Badge variant="secondary" className="text-[10px] px-1.5 py-0">{unreadCount} Unread</Badge>
               <Badge variant="default" className="text-[10px] px-1.5 py-0">{readCount} Read</Badge>
             </div>
