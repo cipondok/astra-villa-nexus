@@ -205,8 +205,11 @@ export const DocumentSigningHub = lazyRetry(() => import("./DocumentSigningHub")
 export const PropertyAuctionManager = lazyRetry(() => import("./PropertyAuctionManager"));
 export const TenantScreening = lazyRetry(() => import("./TenantScreening"));
 
+export const AICommandCenter = lazyRetry(() => import("./AICommandCenter"));
+
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
+  "ai-command-center": { label: "AI Command Center", category: "AI & Tools" },
   "overview": { label: "Dashboard Overview", category: "" },
   "diagnostic": { label: "Project Diagnostics", category: "System" },
   "project-progress": { label: "Launch Readiness", category: "System" },
