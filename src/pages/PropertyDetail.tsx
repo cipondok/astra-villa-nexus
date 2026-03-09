@@ -188,6 +188,20 @@ const PropertyDetail: React.FC = () => {
   } : null, [property]);
   const { matchScore, confidenceScore, collaborativeOverlap } = usePropertyMatchScore(propertyForMatch, userAiProfile);
 
+  // Share count
+  const { data: shareCount = 0 } = useQuery({
+    queryKey: ['property-share-count', id],
+    queryFn: async () => {
+      const { count } = await supabase
+        .from('property_shares')
+        .select('id', { count: 'exact', head: true })
+        .eq('property_id', id!);
+      return count || 0;
+    },
+    enabled: !!id,
+    staleTime: 60_000,
+  });
+
   // Auto-scroll refs for mobile carousels
   const similarScrollRef = useRef<HTMLDivElement>(null);
   const moreFromAgentRef = useRef<HTMLDivElement>(null);
