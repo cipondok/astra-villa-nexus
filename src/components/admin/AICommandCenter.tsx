@@ -216,6 +216,17 @@ const AICommandCenter = () => {
   const [exporting, setExporting] = useState(false);
   const [kpiAlertRunning, setKpiAlertRunning] = useState(false);
   const [kpiAlertResult, setKpiAlertResult] = useState<any>(null);
+  const [comparisonMode, setComparisonMode] = useState<'preset' | 'custom'>('preset');
+  const [customCurrentStart, setCustomCurrentStart] = useState<Date | undefined>(undefined);
+  const [customCurrentEnd, setCustomCurrentEnd] = useState<Date | undefined>(undefined);
+  const [customPreviousStart, setCustomPreviousStart] = useState<Date | undefined>(undefined);
+  const [customPreviousEnd, setCustomPreviousEnd] = useState<Date | undefined>(undefined);
+
+  const customKPIs = useCustomPeriodKPIs(
+    customCurrentStart ?? null, customCurrentEnd ?? null,
+    customPreviousStart ?? null, customPreviousEnd ?? null,
+    comparisonMode === 'custom' && !!customCurrentStart && !!customCurrentEnd && !!customPreviousStart && !!customPreviousEnd,
+  );
 
   const handleRunSeoScan = async () => {
     setSeoRunning(true);
