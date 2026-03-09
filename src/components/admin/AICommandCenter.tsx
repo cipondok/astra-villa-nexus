@@ -1186,6 +1186,83 @@ const AICommandCenter = () => {
                   )}
                 </Panel>
 
+                {/* KPI Email Alert Monitor */}
+                <Panel
+                  title="KPI Email Alerts"
+                  icon={AlertTriangle}
+                  action={
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="gap-1.5 text-xs h-7"
+                      disabled={kpiAlertRunning}
+                      onClick={async () => {
+                        setKpiAlertRunning(true);
+                        toast.info('Running KPI threshold check...');
+                        try {
+                          const { data: result, error } = await supabase.functions.invoke('kpi-alert-monitor', { body: {} });
+                          if (error) throw error;
+                          if (result?.breachedCount > 0) {
+                            toast.warning(`${result.breachedCount} KPI metric(s) breached threshold${result.emailSent ? ' — email sent' : ''}`);
+                          } else {
+                            toast.success('All KPI metrics within thresholds');
+                          }
+                          setKpiAlertResult(result);
+                        } catch (e: any) {
+                          toast.error('KPI check failed: ' + e.message);
+                        }
+                        setKpiAlertRunning(false);
+                      }}
+                    >
+                      {kpiAlertRunning ? <Loader2 className="h-3 w-3 animate-spin" /> : <Zap className="h-3 w-3" />}
+                      Run KPI Check
+                    </Button>
+                  }
+                >
+                  <p className="text-[11px] text-muted-foreground mb-3">
+                    Compares WoW/MoM KPIs against configured thresholds and sends email alerts when breached. Configure thresholds and recipient email below.
+                  </p>
+                  {kpiAlertResult && (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge variant={kpiAlertResult.breachedCount > 0 ? 'destructive' : 'default'} className="text-[10px]">
+                          {kpiAlertResult.breachedCount > 0 ? `${kpiAlertResult.breachedCount} Breached` : 'All Clear'}
+                        </Badge>
+                        {kpiAlertResult.emailSent && (
+                          <Badge variant="outline" className="text-[10px] text-chart-1 border-chart-1/30">
+                            ✉️ Email sent to {kpiAlertResult.emailTo}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="space-y-1.5">
+                        {kpiAlertResult.metrics?.map((m: any) => (
+                          <div key={m.metric} className={`flex items-center justify-between p-2 rounded-lg border text-[11px] ${
+                            m.breached ? 'bg-destructive/5 border-destructive/20' : 'bg-muted/10 border-border/30'
+                          }`}>
+                            <div className="flex items-center gap-2">
+                              {m.breached ? <XCircle className="h-3.5 w-3.5 text-destructive" /> : <CheckCircle2 className="h-3.5 w-3.5 text-chart-1" />}
+                              <span className="font-medium text-foreground">{m.label}</span>
+                            </div>
+                            <div className="flex items-center gap-3 tabular-nums">
+                              <span className="text-muted-foreground">{m.previous.toLocaleString()} → {m.current.toLocaleString()}</span>
+                              <span className={`font-semibold ${m.breached ? 'text-destructive' : 'text-chart-1'}`}>
+                                {m.deltaPct > 0 ? '+' : ''}{m.deltaPct}%
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {!kpiAlertResult && (
+                    <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
+                      <Activity className="h-8 w-8 mb-2 opacity-20" />
+                      <p className="text-xs font-medium">No recent check</p>
+                      <p className="text-[10px] mt-0.5">Click "Run KPI Check" to evaluate metrics</p>
+                    </div>
+                  )}
+                </Panel>
+
                 {/* Edge Functions & Services */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {systemHealth.edgeFunctions.map((fn) => (
