@@ -1424,6 +1424,11 @@ const PropertyDetail: React.FC = () => {
           </div>
         </div>
 
+        {/* AI Property Valuation */}
+        <div className="mt-6 sm:mt-8">
+          <AutoValuationCard propertyId={property.id} currentPrice={property.price} />
+        </div>
+
         {/* Reviews Section */}
         <div className="mt-6 sm:mt-8">
           <PropertyReviews propertyId={property.id} />
