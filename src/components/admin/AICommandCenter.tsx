@@ -293,8 +293,15 @@ const AICommandCenter = () => {
               >
                 <item.icon className={`h-3.5 w-3.5 transition-colors ${isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`} />
                 <span className="flex-1 text-left">{item.label}</span>
-                {item.id === 'health' && !overallHealthOk && (
-                  <span className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
+                {item.id === 'health' && (unresolvedCount > 0 || !overallHealthOk) && (
+                  <span className="flex items-center gap-1">
+                    {unresolvedCount > 0 && (
+                      <span className="min-w-[16px] h-4 rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold flex items-center justify-center px-1">
+                        {unresolvedCount}
+                      </span>
+                    )}
+                    <span className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
+                  </span>
                 )}
                 {isActive && <ChevronRight className="h-3 w-3 text-primary/60" />}
               </button>
