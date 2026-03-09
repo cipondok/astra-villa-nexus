@@ -628,12 +628,12 @@ export default function InteractivePropertyMap() {
                 className="flex gap-3 px-4 py-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide"
                 style={{ WebkitOverflowScrolling: 'touch' }}
               >
-                {properties.length === 0 && !isLoading && (
+                {sortedProperties.length === 0 && !isLoading && (
                   <div className="flex-shrink-0 w-full flex items-center justify-center py-4">
                     <p className="text-xs text-muted-foreground">Geser peta untuk cari properti</p>
                   </div>
                 )}
-                {properties.map(p => (
+                {sortedProperties.map(p => (
                   <SyncedPropertyCard
                     key={p.id}
                     ref={(el) => setCardRef(p.id, el)}
