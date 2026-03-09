@@ -2,6 +2,29 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useEffect } from 'react';
 
+export interface PeriodComparison {
+  current: number;
+  previous: number;
+  delta: number; // percentage change
+  direction: 'up' | 'down' | 'neutral';
+}
+
+export interface HistoricalKPIs {
+  wow: { // week-over-week
+    newProperties: PeriodComparison;
+    jobsCompleted: PeriodComparison;
+    jobsFailed: PeriodComparison;
+    searches: PeriodComparison;
+  };
+  mom: { // month-over-month
+    newProperties: PeriodComparison;
+    jobsCompleted: PeriodComparison;
+    jobsFailed: PeriodComparison;
+    searches: PeriodComparison;
+    avgPrice: PeriodComparison;
+  };
+}
+
 export interface AICommandCenterData {
   overview: {
     totalProperties: number;
@@ -38,6 +61,7 @@ export interface AICommandCenterData {
     lastJobRun: string | null;
     stalledJobs: number;
   };
+  historicalKPIs: HistoricalKPIs;
 }
 
 async function checkEdgeFunctionHealth(name: string): Promise<{ status: 'ok' | 'error'; latencyMs: number }> {
