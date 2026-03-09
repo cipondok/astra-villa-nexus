@@ -323,7 +323,7 @@ async function generatePropertyRecommendations(supabase: any, taskPayload: any) 
   // Get batch of properties to generate recommendations for
   const { data: properties } = await supabase
     .from("properties")
-    .select("id, city, property_type, price, bedrooms, investment_score, latitude, longitude")
+    .select("id, city, state, property_type, price, bedrooms, bathrooms, area_sqm, investment_score, latitude, longitude, save_count")
     .eq("status", "available")
     .not("latitude", "is", null)
     .order("created_at", { ascending: false })
@@ -331,73 +331,123 @@ async function generatePropertyRecommendations(supabase: any, taskPayload: any) 
 
   if (!properties || properties.length === 0) return { processed: 0 };
 
+  // Pre-fetch ROI forecasts for all properties in batch
+  const propIds = properties.map((p: any) => p.id);
+  const { data: roiData } = await supabase
+    .from("property_roi_forecast")
+    .select("property_id, expected_roi, rental_yield")
+    .in("property_id", propIds);
+  const roiMap = new Map((roiData || []).map((r: any) => [r.property_id, r]));
+
+  // Pre-fetch popularity signals (views in last 30 days)
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+  const { data: viewCounts } = await supabase
+    .from("ai_behavior_tracking")
+    .select("property_id")
+    .eq("event_type", "view")
+    .gte("created_at", thirtyDaysAgo)
+    .in("property_id", propIds);
+  const popularityMap: Record<string, number> = {};
+  (viewCounts || []).forEach((v: any) => {
+    if (v.property_id) popularityMap[v.property_id] = (popularityMap[v.property_id] || 0) + 1;
+  });
+
   let inserted = 0;
 
   for (const prop of properties) {
-    // Find similar properties in same city
-    const { data: similar } = await supabase
+    // Find candidates: same city first, then same state for diversity
+    const { data: candidates } = await supabase
       .from("properties")
-      .select("id, price, investment_score, bedrooms, property_type")
+      .select("id, city, state, price, investment_score, bedrooms, bathrooms, area_sqm, property_type, save_count")
       .eq("status", "available")
-      .eq("city", prop.city)
+      .eq("state", prop.state)
       .neq("id", prop.id)
-      .limit(20);
+      .limit(40);
 
-    if (!similar || similar.length === 0) continue;
+    if (!candidates || candidates.length === 0) continue;
 
-    // Score each candidate
-    const scored = similar.map((s: any) => {
+    // Enhanced scoring with multiple signals
+    const scored = candidates.map((s: any) => {
       let score = 0;
-      // Type match
-      if (s.property_type === prop.property_type) score += 25;
-      // Price similarity (within 30%)
+      const factors: Record<string, number> = {};
+
+      // Property type match (0-25)
+      if (s.property_type === prop.property_type) { score += 25; factors.type = 25; }
+
+      // Location match (0-25)
+      if (s.city === prop.city) { score += 25; factors.location = 25; }
+      else { score += 8; factors.location = 8; } // same state
+
+      // Price similarity (0-20)
       const priceDiff = Math.abs(s.price - prop.price) / Math.max(prop.price, 1);
-      if (priceDiff < 0.15) score += 20;
-      else if (priceDiff < 0.3) score += 10;
-      // Bedroom match
-      if (s.bedrooms === prop.bedrooms) score += 15;
-      else if (Math.abs(s.bedrooms - prop.bedrooms) <= 1) score += 8;
-      // Investment score
-      if (s.investment_score && s.investment_score >= 70) score += 20;
-      else if (s.investment_score && s.investment_score >= 50) score += 10;
-      // Same city bonus
-      score += 20;
-      return { id: s.id, score, investment_score: s.investment_score };
+      const priceScore = priceDiff < 0.1 ? 20 : priceDiff < 0.2 ? 15 : priceDiff < 0.35 ? 8 : 0;
+      score += priceScore; factors.price = priceScore;
+
+      // Bedroom match (0-10)
+      if (s.bedrooms === prop.bedrooms) { score += 10; factors.bedrooms = 10; }
+      else if (Math.abs(s.bedrooms - prop.bedrooms) <= 1) { score += 5; factors.bedrooms = 5; }
+
+      // Area similarity (0-10)
+      if (prop.area_sqm && s.area_sqm) {
+        const areaDiff = Math.abs(s.area_sqm - prop.area_sqm) / Math.max(prop.area_sqm, 1);
+        const areaScore = areaDiff < 0.15 ? 10 : areaDiff < 0.3 ? 6 : areaDiff < 0.5 ? 3 : 0;
+        score += areaScore; factors.area = areaScore;
+      }
+
+      // Investment score bonus (0-15)
+      if (s.investment_score && s.investment_score >= 80) { score += 15; factors.investment = 15; }
+      else if (s.investment_score && s.investment_score >= 60) { score += 10; factors.investment = 10; }
+      else if (s.investment_score && s.investment_score >= 40) { score += 5; factors.investment = 5; }
+
+      // Popularity bonus (0-10)
+      const views = popularityMap[s.id] || 0;
+      const saves = s.save_count || 0;
+      const popScore = views > 20 || saves > 10 ? 10 : views > 5 || saves > 3 ? 5 : 0;
+      score += popScore; factors.popularity = popScore;
+
+      // ROI bonus (0-10)
+      const roi = roiMap.get(s.id) as any;
+      if (roi?.expected_roi && roi.expected_roi > 8) { score += 10; factors.roi = 10; }
+      else if (roi?.expected_roi && roi.expected_roi > 5) { score += 5; factors.roi = 5; }
+
+      return { id: s.id, score, investment_score: s.investment_score, factors };
     });
 
-    // Take top 6
-    const topSimilar = scored.sort((a: any, b: any) => b.score - a.score).slice(0, 6);
+    // Top 8 similar (higher limit for better coverage)
+    const topSimilar = scored.sort((a: any, b: any) => b.score - a.score).slice(0, 8);
     const topInvestment = scored
-      .filter((s: any) => s.investment_score && s.investment_score >= 60)
+      .filter((s: any) => s.investment_score && s.investment_score >= 50)
       .sort((a: any, b: any) => (b.investment_score || 0) - (a.investment_score || 0))
       .slice(0, 6);
 
-    // Upsert similar recommendations
     const recs = topSimilar.map((s: any) => ({
       property_id: prop.id,
       recommended_property_id: s.id,
       recommendation_score: s.score,
       recommendation_type: "similar",
-      factors: { type_match: s.id === prop.property_type, price_diff: true },
+      factors: s.factors,
       updated_at: new Date().toISOString(),
     }));
 
-    // Upsert nearby investment recommendations
     const investRecs = topInvestment.map((s: any) => ({
       property_id: prop.id,
       recommended_property_id: s.id,
       recommendation_score: s.investment_score || 0,
       recommendation_type: "nearby_investment",
-      factors: { investment_score: s.investment_score },
+      factors: s.factors,
       updated_at: new Date().toISOString(),
     }));
 
     const allRecs = [...recs, ...investRecs];
     if (allRecs.length > 0) {
-      const { error } = await supabase
-        .from("property_recommendations")
-        .upsert(allRecs, { onConflict: "property_id,recommended_property_id,recommendation_type" });
-      if (!error) inserted += allRecs.length;
+      // Batch upsert in chunks of 20 to avoid URI too long
+      for (let i = 0; i < allRecs.length; i += 20) {
+        const chunk = allRecs.slice(i, i + 20);
+        const { error } = await supabase
+          .from("property_recommendations")
+          .upsert(chunk, { onConflict: "property_id,recommended_property_id,recommendation_type" });
+        if (!error) inserted += chunk.length;
+      }
     }
   }
 
@@ -409,27 +459,35 @@ async function updateTrendingProperties(supabase: any, taskPayload: any) {
   const days = taskPayload?.days || 30;
   const cutoff = new Date(Date.now() - days * 86400000).toISOString();
 
-  // Count saves per property in the period
-  const { data: saves } = await supabase
-    .from("favorites")
-    .select("property_id")
-    .gte("created_at", cutoff);
+  // Aggregate multiple signals: saves, views, inquiries
+  const [savesRes, viewsRes, inquiriesRes] = await Promise.all([
+    supabase.from("favorites").select("property_id").gte("created_at", cutoff),
+    supabase.from("ai_behavior_tracking").select("property_id").eq("event_type", "view").gte("created_at", cutoff).not("property_id", "is", null),
+    supabase.from("ai_behavior_tracking").select("property_id").eq("event_type", "inquiry").gte("created_at", cutoff).not("property_id", "is", null),
+  ]);
 
-  if (!saves || saves.length === 0) return { updated: 0 };
+  const scores: Record<string, number> = {};
+  const addSignal = (items: any[], weight: number) => {
+    (items || []).forEach((s: any) => {
+      if (s.property_id) scores[s.property_id] = (scores[s.property_id] || 0) + weight;
+    });
+  };
 
-  // Count occurrences
-  const counts: Record<string, number> = {};
-  saves.forEach((s: any) => {
-    if (s.property_id) counts[s.property_id] = (counts[s.property_id] || 0) + 1;
-  });
+  addSignal(savesRes.data, 3);    // saves are strongest signal
+  addSignal(inquiriesRes.data, 5); // inquiries are highest intent
+  addSignal(viewsRes.data, 1);     // views are weakest signal
 
-  // Update save_count on properties
+  if (Object.keys(scores).length === 0) return { updated: 0 };
+
+  // Update save_count (trending score) on top 200 properties
   let updated = 0;
-  const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 100);
-  for (const [propertyId, count] of entries) {
+  const entries = Object.entries(scores).sort((a, b) => b[1] - a[1]).slice(0, 200);
+
+  // Batch update in chunks of 20
+  for (const [propertyId, score] of entries) {
     const { error } = await supabase
       .from("properties")
-      .update({ save_count: count })
+      .update({ save_count: score })
       .eq("id", propertyId);
     if (!error) updated++;
   }
