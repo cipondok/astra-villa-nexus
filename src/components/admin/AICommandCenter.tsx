@@ -169,6 +169,9 @@ const AICommandCenter = () => {
   const resolveAll = useResolveAllHealthAlerts();
   const triggerCheck = useTriggerHealthCheck();
   const unresolvedCount = healthAlerts.filter(a => !a.resolved).length;
+  const { data: monitorConfig = [], isLoading: configLoading } = useHealthMonitorConfig();
+  const updateConfig = useUpdateHealthMonitorConfig();
+  const [showSettings, setShowSettings] = useState(false);
 
   const handleRunSeoScan = async () => {
     setSeoRunning(true);
