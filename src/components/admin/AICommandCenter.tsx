@@ -1,5 +1,6 @@
 import React, { useState, lazy, Suspense } from 'react';
 import { useAICommandCenter } from '@/hooks/useAICommandCenter';
+import { useHealthAlerts, useResolveHealthAlert, useResolveAllHealthAlerts, useTriggerHealthCheck } from '@/hooks/useHealthAlerts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
