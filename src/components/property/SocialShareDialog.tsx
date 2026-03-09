@@ -1,10 +1,14 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Facebook, Twitter, Linkedin, MessageCircle, Send, Link, Share2 } from "lucide-react";
+import { Facebook, Twitter, Linkedin, MessageCircle, Send, Link, Share2, TrendingUp } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { BaseProperty } from "@/types/property";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 import { getCurrencyFormatterShort } from "@/stores/currencyStore";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Badge } from "@/components/ui/badge";
 
 interface SocialShareDialogProps {
   open: boolean;
@@ -13,46 +17,84 @@ interface SocialShareDialogProps {
 }
 
 const SocialShareDialog = ({ open, onOpenChange, property }: SocialShareDialogProps) => {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
   const shareUrl = `${window.location.origin}/properties/${property.id}`;
   const shareTitle = property.title;
   const shareDescription = `Check out this property: ${property.title} in ${property.city || property.location}`;
   const { getPropertyImage } = useDefaultPropertyImage();
-
   const formatPrice = getCurrencyFormatterShort();
-
   const shareMessage = `${shareTitle}\n${formatPrice(property.price)}\n${property.bedrooms}BR | ${property.bathrooms}BA | ${property.area_sqm}m²\n${shareUrl}`;
 
-  // Default social platforms (always available)
+  // Fetch share count
+  const { data: shareCount = 0 } = useQuery({
+    queryKey: ['property-share-count', property.id],
+    queryFn: async () => {
+      const { count } = await supabase
+        .from('property_shares')
+        .select('id', { count: 'exact', head: true })
+        .eq('property_id', property.id);
+      return count || 0;
+    },
+    staleTime: 60_000,
+  });
+
+  const trackShare = async (platform: string) => {
+    try {
+      await supabase.from('property_shares' as any).insert({
+        property_id: property.id,
+        user_id: user?.id || null,
+        channel: platform,
+      });
+      queryClient.invalidateQueries({ queryKey: ['property-share-count', property.id] });
+    } catch { /* silent */ }
+  };
+
+  const handleShare = (platform: string, urlBuilder: (url: string, text: string) => string) => {
+    window.open(urlBuilder(shareUrl, shareDescription), '_blank', 'width=600,height=400');
+    trackShare(platform);
+  };
+
   const socialPlatforms = [
+    {
+      name: "WhatsApp",
+      icon: MessageCircle,
+      color: "bg-[#25D366] hover:bg-[#20BD5A]",
+      action: () => handleShare('whatsapp', (url) =>
+        `https://wa.me/?text=${encodeURIComponent(shareMessage)}`
+      ),
+    },
     {
       name: "Facebook",
       icon: Facebook,
       color: "bg-[#1877F2] hover:bg-[#0C63D4]",
-      action: () => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank')
+      action: () => handleShare('facebook', (url) =>
+        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`
+      ),
     },
     {
       name: "Twitter",
       icon: Twitter,
       color: "bg-[#1DA1F2] hover:bg-[#0C8BD9]",
-      action: () => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareDescription)}&url=${encodeURIComponent(shareUrl)}`, '_blank')
+      action: () => handleShare('twitter', (url, text) =>
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`
+      ),
     },
     {
       name: "LinkedIn",
       icon: Linkedin,
       color: "bg-[#0A66C2] hover:bg-[#084F94]",
-      action: () => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank')
-    },
-    {
-      name: "WhatsApp",
-      icon: MessageCircle,
-      color: "bg-[#25D366] hover:bg-[#20BD5A]",
-      action: () => window.open(`https://wa.me/?text=${encodeURIComponent(shareMessage)}`, '_blank')
+      action: () => handleShare('linkedin', (url) =>
+        `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`
+      ),
     },
     {
       name: "Telegram",
       icon: Send,
       color: "bg-[#0088cc] hover:bg-[#006DA8]",
-      action: () => window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareDescription)}`, '_blank')
+      action: () => handleShare('telegram', (url, text) =>
+        `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`
+      ),
     },
     {
       name: "Copy Link",
@@ -60,34 +102,23 @@ const SocialShareDialog = ({ open, onOpenChange, property }: SocialShareDialogPr
       color: "bg-primary hover:bg-primary/90",
       action: () => {
         navigator.clipboard.writeText(shareUrl).then(() => {
-          toast({
-            title: "Link Copied!",
-            description: "Property link has been copied to clipboard",
-          });
+          toast({ title: "Link Copied!", description: "Property link copied to clipboard" });
+          trackShare('copy');
           onOpenChange(false);
         }).catch(() => {
-          toast({
-            title: "Failed",
-            description: "Could not copy link",
-            variant: "destructive",
-          });
+          toast({ title: "Failed", description: "Could not copy link", variant: "destructive" });
         });
-      }
-    }
+      },
+    },
   ];
 
   const handleNativeShare = async () => {
     if (navigator.share && window.parent === window) {
       try {
-        await navigator.share({
-          title: shareTitle,
-          text: shareDescription,
-          url: shareUrl,
-        });
+        await navigator.share({ title: shareTitle, text: shareDescription, url: shareUrl });
+        trackShare('native');
         onOpenChange(false);
-      } catch (error) {
-        console.error('Native share failed:', error);
-      }
+      } catch { /* cancelled */ }
     }
   };
 
@@ -98,33 +129,35 @@ const SocialShareDialog = ({ open, onOpenChange, property }: SocialShareDialogPr
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[380px] !bg-card border border-border shadow-2xl p-0 gap-0 overflow-hidden" autoClose={false}>
-        {/* Modern Gradient Header */}
+        {/* Gradient Header */}
         <div className="bg-gradient-to-r from-primary to-primary/80 p-4 text-primary-foreground">
           <DialogHeader className="space-y-0">
             <div className="flex items-center gap-2.5">
               <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm">
                 <Share2 className="h-5 w-5" />
               </div>
-              <div>
+              <div className="flex-1">
                 <DialogTitle className="text-base font-bold">Share Property</DialogTitle>
                 <DialogDescription className="text-primary-foreground/80 text-xs">
                   Share with your network
                 </DialogDescription>
               </div>
+              {shareCount > 0 && (
+                <Badge className="bg-white/20 text-primary-foreground border-0 text-[10px] gap-1">
+                  <TrendingUp className="h-3 w-3" />
+                  {shareCount} shares
+                </Badge>
+              )}
             </div>
           </DialogHeader>
         </div>
 
         {/* Content */}
         <div className="p-3.5 space-y-3">
-          {/* Property Preview - Ultra Compact */}
+          {/* Property Preview */}
           <div className="rounded-lg overflow-hidden border-2 border-primary/20 bg-gradient-to-br from-accent/30 to-accent/50 shadow-sm">
             <div className="aspect-video relative overflow-hidden bg-muted/50">
-              <img 
-                src={getImageUrl()} 
-                alt={property.title}
-                className="w-full h-full object-cover"
-              />
+              <img src={getImageUrl()} alt={property.title} className="w-full h-full object-cover" />
               <div className="absolute bottom-1.5 left-1.5 bg-primary text-primary-foreground px-2 py-0.5 rounded text-xs font-bold shadow-lg">
                 {formatPrice(property.price)}
               </div>
@@ -141,9 +174,9 @@ const SocialShareDialog = ({ open, onOpenChange, property }: SocialShareDialogPr
             </div>
           </div>
 
-          {/* Social Buttons - Compact Grid */}
-          <div className="grid grid-cols-4 gap-1.5">
-            {socialPlatforms.map((platform: any) => (
+          {/* Social Buttons */}
+          <div className="grid grid-cols-3 gap-1.5">
+            {socialPlatforms.map((platform) => (
               <Button
                 key={platform.name}
                 variant="ghost"
@@ -160,13 +193,8 @@ const SocialShareDialog = ({ open, onOpenChange, property }: SocialShareDialogPr
 
           {/* Native Share */}
           {navigator.share && window.parent === window && (
-            <Button
-              variant="outline"
-              className="w-full border-2 hover:bg-accent py-2 text-xs"
-              onClick={handleNativeShare}
-            >
-              <Share2 className="h-3 w-3 mr-1.5" />
-              More Options
+            <Button variant="outline" className="w-full border-2 hover:bg-accent py-2 text-xs" onClick={handleNativeShare}>
+              <Share2 className="h-3 w-3 mr-1.5" /> More Options
             </Button>
           )}
         </div>
