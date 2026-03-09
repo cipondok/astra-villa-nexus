@@ -75,9 +75,9 @@ const AdminAlertSystem = () => {
   const { data: totalAlertCount } = useQuery({
     queryKey: ['admin-alerts-total-count'],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc('count_admin_alerts');
+      const { data, error } = await (supabase.rpc as any)('count_admin_alerts');
       if (error) throw error;
-      return data as number;
+      return (data as number) || 0;
     },
   });
 
