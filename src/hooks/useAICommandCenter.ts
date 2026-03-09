@@ -339,6 +339,46 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
       stalledJobs,
     },
     historicalKPIs,
+    valuations: (() => {
+      const valData = valuationsRes.data || [];
+      const totalValuations = valuationsRes.count || 0;
+      const avgConfidence = valData.length > 0
+        ? Math.round(valData.reduce((s: number, v: any) => s + (v.confidence_score || 0), 0) / valData.length)
+        : 0;
+      const coveragePercent = totalProperties > 0 ? Math.round((totalValuations / totalProperties) * 100) : 0;
+      const avgEstVal = valData.length > 0
+        ? Math.round(valData.reduce((s: number, v: any) => s + (v.estimated_value || 0), 0) / valData.length)
+        : 0;
+      const vThisWeek = valuationsThisWeekRes.count || 0;
+      const vLastWeek = valuationsLastWeekRes.count || 0;
+
+      const confidenceBuckets = [
+        { range: '0-40', count: 0, fill: 'hsl(var(--destructive))' },
+        { range: '40-60', count: 0, fill: 'hsl(var(--chart-3))' },
+        { range: '60-80', count: 0, fill: 'hsl(var(--chart-2))' },
+        { range: '80-100', count: 0, fill: 'hsl(var(--chart-1))' },
+      ];
+      valData.forEach((v: any) => {
+        const c = v.confidence_score || 0;
+        if (c < 40) confidenceBuckets[0].count++;
+        else if (c < 60) confidenceBuckets[1].count++;
+        else if (c < 80) confidenceBuckets[2].count++;
+        else confidenceBuckets[3].count++;
+      });
+
+      return {
+        totalValuations,
+        avgConfidence,
+        coveragePercent,
+        recentValuations: valData.slice(0, 10),
+        confidenceBuckets,
+        roiForecastCount: roiForecastCountRes.count || 0,
+        valuationsThisWeek: vThisWeek,
+        valuationsLastWeek: vLastWeek,
+        avgEstimatedValue: avgEstVal,
+        trendDirection: vThisWeek > vLastWeek ? 'up' as const : vThisWeek < vLastWeek ? 'down' as const : 'neutral' as const,
+      };
+    })(),
   };
 }
 
