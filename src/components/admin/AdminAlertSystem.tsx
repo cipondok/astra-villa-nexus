@@ -57,6 +57,7 @@ const AdminAlertSystem = () => {
   const [reviewNotes, setReviewNotes] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [activeCategory, setActiveCategory] = useState<AlertCategory>('all');
+  const [currentPage, setCurrentPage] = useState(1);
   const [activityModal, setActivityModal] = useState<{
     isOpen: boolean;
     type: 'properties' | 'users';
