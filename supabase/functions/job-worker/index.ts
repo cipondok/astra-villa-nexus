@@ -315,6 +315,128 @@ async function logEvent(supabase: any, jobId: string, taskId: string | null, mes
   }
 }
 
+// ── Generate Property Recommendations ──
+async function generatePropertyRecommendations(supabase: any, taskPayload: any) {
+  const limit = taskPayload?.limit || 50;
+  const offset = taskPayload?.offset || 0;
+
+  // Get batch of properties to generate recommendations for
+  const { data: properties } = await supabase
+    .from("properties")
+    .select("id, city, property_type, price, bedrooms, investment_score, latitude, longitude")
+    .eq("status", "available")
+    .not("latitude", "is", null)
+    .order("created_at", { ascending: false })
+    .range(offset, offset + limit - 1);
+
+  if (!properties || properties.length === 0) return { processed: 0 };
+
+  let inserted = 0;
+
+  for (const prop of properties) {
+    // Find similar properties in same city
+    const { data: similar } = await supabase
+      .from("properties")
+      .select("id, price, investment_score, bedrooms, property_type")
+      .eq("status", "available")
+      .eq("city", prop.city)
+      .neq("id", prop.id)
+      .limit(20);
+
+    if (!similar || similar.length === 0) continue;
+
+    // Score each candidate
+    const scored = similar.map((s: any) => {
+      let score = 0;
+      // Type match
+      if (s.property_type === prop.property_type) score += 25;
+      // Price similarity (within 30%)
+      const priceDiff = Math.abs(s.price - prop.price) / Math.max(prop.price, 1);
+      if (priceDiff < 0.15) score += 20;
+      else if (priceDiff < 0.3) score += 10;
+      // Bedroom match
+      if (s.bedrooms === prop.bedrooms) score += 15;
+      else if (Math.abs(s.bedrooms - prop.bedrooms) <= 1) score += 8;
+      // Investment score
+      if (s.investment_score && s.investment_score >= 70) score += 20;
+      else if (s.investment_score && s.investment_score >= 50) score += 10;
+      // Same city bonus
+      score += 20;
+      return { id: s.id, score, investment_score: s.investment_score };
+    });
+
+    // Take top 6
+    const topSimilar = scored.sort((a: any, b: any) => b.score - a.score).slice(0, 6);
+    const topInvestment = scored
+      .filter((s: any) => s.investment_score && s.investment_score >= 60)
+      .sort((a: any, b: any) => (b.investment_score || 0) - (a.investment_score || 0))
+      .slice(0, 6);
+
+    // Upsert similar recommendations
+    const recs = topSimilar.map((s: any) => ({
+      property_id: prop.id,
+      recommended_property_id: s.id,
+      recommendation_score: s.score,
+      recommendation_type: "similar",
+      factors: { type_match: s.id === prop.property_type, price_diff: true },
+      updated_at: new Date().toISOString(),
+    }));
+
+    // Upsert nearby investment recommendations
+    const investRecs = topInvestment.map((s: any) => ({
+      property_id: prop.id,
+      recommended_property_id: s.id,
+      recommendation_score: s.investment_score || 0,
+      recommendation_type: "nearby_investment",
+      factors: { investment_score: s.investment_score },
+      updated_at: new Date().toISOString(),
+    }));
+
+    const allRecs = [...recs, ...investRecs];
+    if (allRecs.length > 0) {
+      const { error } = await supabase
+        .from("property_recommendations")
+        .upsert(allRecs, { onConflict: "property_id,recommended_property_id,recommendation_type" });
+      if (!error) inserted += allRecs.length;
+    }
+  }
+
+  return { processed: properties.length, recommendations_created: inserted };
+}
+
+// ── Update Trending Properties ──
+async function updateTrendingProperties(supabase: any, taskPayload: any) {
+  const days = taskPayload?.days || 30;
+  const cutoff = new Date(Date.now() - days * 86400000).toISOString();
+
+  // Count saves per property in the period
+  const { data: saves } = await supabase
+    .from("favorites")
+    .select("property_id")
+    .gte("created_at", cutoff);
+
+  if (!saves || saves.length === 0) return { updated: 0 };
+
+  // Count occurrences
+  const counts: Record<string, number> = {};
+  saves.forEach((s: any) => {
+    if (s.property_id) counts[s.property_id] = (counts[s.property_id] || 0) + 1;
+  });
+
+  // Update save_count on properties
+  let updated = 0;
+  const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 100);
+  for (const [propertyId, count] of entries) {
+    const { error } = await supabase
+      .from("properties")
+      .update({ save_count: count })
+      .eq("id", propertyId);
+    if (!error) updated++;
+  }
+
+  return { trending_properties: entries.length, updated };
+}
+
 function json(data: unknown, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
