@@ -198,6 +198,33 @@ const ComparisonCell = ({ label, data, invertColor = false, format }: {
   );
 };
 
+// ─── Mini Date Picker ─────────────────────────────────────────────────────────
+const DatePickerMini = ({ label, date, onSelect }: {
+  label: string; date: Date | undefined; onSelect: (d: Date | undefined) => void;
+}) => (
+  <Popover>
+    <PopoverTrigger asChild>
+      <Button variant="outline" size="sm" className={cn(
+        "h-7 w-full justify-start text-left text-[10px] gap-1.5 font-normal",
+        !date && "text-muted-foreground"
+      )}>
+        <CalendarIcon className="h-3 w-3" />
+        {date ? format(date, 'MMM dd, yyyy') : label}
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent className="w-auto p-0" align="start">
+      <Calendar
+        mode="single"
+        selected={date}
+        onSelect={onSelect}
+        disabled={(d) => d > new Date()}
+        initialFocus
+        className={cn("p-3 pointer-events-auto")}
+      />
+    </PopoverContent>
+  </Popover>
+);
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 const AICommandCenter = () => {
   const { data, isLoading, refetch } = useAICommandCenter();
