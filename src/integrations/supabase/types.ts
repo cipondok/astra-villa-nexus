@@ -29051,6 +29051,7 @@ export type Database = {
       cleanup_expired_sessions: { Args: never; Returns: undefined }
       cleanup_old_bpjs_responses: { Args: never; Returns: undefined }
       cleanup_rate_limit_entries: { Args: never; Returns: undefined }
+      count_admin_alerts: { Args: never; Returns: number }
       create_account_lockout: {
         Args: {
           p_duration_minutes?: number
@@ -29131,7 +29132,11 @@ export type Database = {
         Args: { p_types: string[] }
         Returns: number
       }
-      delete_all_admin_alerts: { Args: never; Returns: undefined }
+      delete_admin_alerts_except_types: {
+        Args: { p_types: string[] }
+        Returns: number
+      }
+      delete_all_admin_alerts: { Args: never; Returns: number }
       delete_property_admin_property: {
         Args: { p_property_id: string }
         Returns: undefined
