@@ -6,35 +6,25 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription,
 } from '@/components/ui/dialog';
 import {
-  CalendarClock, Plus, Pencil, Trash2, Play, Pause, Clock,
+  CalendarClock, Plus, Pencil, Trash2, Play, Clock,
   Zap, Search, TrendingUp, BarChart3, Shield, Bot, RefreshCw,
-  ChevronRight, AlertTriangle,
+  AlertTriangle, Loader2,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from 'sonner';
 import { useCreateJob } from '@/hooks/useAiJobs';
+import {
+  useScheduledJobs,
+  useCreateScheduledJob,
+  useUpdateScheduledJob,
+  useDeleteScheduledJob,
+  useToggleScheduledJob,
+} from '@/hooks/useScheduledJobs';
 import { formatDistanceToNow } from 'date-fns';
-
-// ─── Types ──────────────────────────────────────────────────────────────────
-export interface ScheduledJob {
-  id: string;
-  name: string;
-  description: string;
-  job_type: string;
-  payload: Record<string, any>;
-  cron_expression: string;
-  cron_label: string;
-  enabled: boolean;
-  priority: number;
-  last_run_at: string | null;
-  created_at: string;
-}
 
 // ─── Preset Templates ───────────────────────────────────────────────────────
 const JOB_TEMPLATES = [
@@ -57,31 +47,22 @@ const CRON_PRESETS = [
   { label: 'Every 1st of month', value: '0 0 1 * *' },
 ];
 
-// ─── Storage helpers ─────────────────────────────────────────────────────────
-const STORAGE_KEY = 'astra_scheduled_jobs';
-
-function loadScheduledJobs(): ScheduledJob[] {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-  } catch { return []; }
-}
-
-function saveScheduledJobs(jobs: ScheduledJob[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs));
-}
-
 function getCronLabel(cron: string): string {
-  const preset = CRON_PRESETS.find(p => p.value === cron);
-  return preset?.label || cron;
+  return CRON_PRESETS.find(p => p.value === cron)?.label || cron;
 }
 
 // ─── Component ──────────────────────────────────────────────────────────────
 const AIJobScheduler = () => {
-  const [jobs, setJobs] = useState<ScheduledJob[]>(loadScheduledJobs);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingJob, setEditingJob] = useState<ScheduledJob | null>(null);
-  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const { data: jobs = [], isLoading } = useScheduledJobs();
+  const createScheduled = useCreateScheduledJob();
+  const updateScheduled = useUpdateScheduledJob();
+  const deleteScheduled = useDeleteScheduledJob();
+  const toggleScheduled = useToggleScheduledJob();
   const createJob = useCreateJob();
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingJobId, setEditingJobId] = useState<string | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   // Form state
   const [formName, setFormName] = useState('');
@@ -92,7 +73,7 @@ const AIJobScheduler = () => {
 
   const resetForm = useCallback(() => {
     setFormName(''); setFormDesc(''); setFormType(''); setFormCron('0 */6 * * *'); setFormPriority(5);
-    setEditingJob(null);
+    setEditingJobId(null);
   }, []);
 
   const openCreate = useCallback(() => {
@@ -100,8 +81,8 @@ const AIJobScheduler = () => {
     setDialogOpen(true);
   }, [resetForm]);
 
-  const openEdit = useCallback((job: ScheduledJob) => {
-    setEditingJob(job);
+  const openEdit = useCallback((job: typeof jobs[0]) => {
+    setEditingJobId(job.id);
     setFormName(job.name);
     setFormDesc(job.description);
     setFormType(job.job_type);
@@ -112,78 +93,59 @@ const AIJobScheduler = () => {
 
   const handleSave = useCallback(() => {
     if (!formName.trim() || !formType) {
-      toast.error('Name and job type are required');
       return;
     }
 
     const template = JOB_TEMPLATES.find(t => t.type === formType);
-    const updated = [...jobs];
+    const cronLabel = getCronLabel(formCron);
 
-    if (editingJob) {
-      const idx = updated.findIndex(j => j.id === editingJob.id);
-      if (idx >= 0) {
-        updated[idx] = {
-          ...updated[idx],
-          name: formName.trim(),
-          description: formDesc.trim() || template?.description || '',
-          job_type: formType,
-          cron_expression: formCron,
-          cron_label: getCronLabel(formCron),
-          priority: formPriority,
-        };
-      }
-      toast.success('Schedule updated');
+    if (editingJobId) {
+      updateScheduled.mutate({
+        id: editingJobId,
+        name: formName.trim(),
+        description: formDesc.trim() || template?.description || '',
+        job_type: formType,
+        cron_expression: formCron,
+        cron_label: cronLabel,
+        priority: formPriority,
+      });
     } else {
-      updated.push({
-        id: crypto.randomUUID(),
+      createScheduled.mutate({
         name: formName.trim(),
         description: formDesc.trim() || template?.description || '',
         job_type: formType,
         payload: {},
         cron_expression: formCron,
-        cron_label: getCronLabel(formCron),
+        cron_label: cronLabel,
         enabled: true,
         priority: formPriority,
-        last_run_at: null,
-        created_at: new Date().toISOString(),
+        created_by: null, // hook sets this
       });
-      toast.success('Schedule created');
     }
 
-    setJobs(updated);
-    saveScheduledJobs(updated);
     setDialogOpen(false);
     resetForm();
-  }, [formName, formDesc, formType, formCron, formPriority, jobs, editingJob, resetForm]);
+  }, [formName, formDesc, formType, formCron, formPriority, editingJobId, resetForm, createScheduled, updateScheduled]);
 
-  const toggleJob = useCallback((id: string) => {
-    const updated = jobs.map(j => j.id === id ? { ...j, enabled: !j.enabled } : j);
-    setJobs(updated);
-    saveScheduledJobs(updated);
-    const job = updated.find(j => j.id === id);
-    toast.success(`${job?.name} ${job?.enabled ? 'enabled' : 'disabled'}`);
-  }, [jobs]);
+  const handleToggle = useCallback((id: string, currentEnabled: boolean) => {
+    toggleScheduled.mutate({ id, enabled: !currentEnabled });
+  }, [toggleScheduled]);
 
-  const deleteJob = useCallback((id: string) => {
-    const updated = jobs.filter(j => j.id !== id);
-    setJobs(updated);
-    saveScheduledJobs(updated);
+  const handleDelete = useCallback((id: string) => {
+    deleteScheduled.mutate(id);
     setDeleteConfirm(null);
-    toast.success('Schedule deleted');
-  }, [jobs]);
+  }, [deleteScheduled]);
 
-  const runNow = useCallback((job: ScheduledJob) => {
+  const runNow = useCallback((job: typeof jobs[0]) => {
     createJob.mutate(
       { job_type: job.job_type, payload: job.payload, priority: job.priority },
       {
         onSuccess: () => {
-          const updated = jobs.map(j => j.id === job.id ? { ...j, last_run_at: new Date().toISOString() } : j);
-          setJobs(updated);
-          saveScheduledJobs(updated);
+          updateScheduled.mutate({ id: job.id, last_run_at: new Date().toISOString() } as any);
         },
       }
     );
-  }, [createJob, jobs]);
+  }, [createJob, updateScheduled]);
 
   const applyTemplate = useCallback((type: string) => {
     const template = JOB_TEMPLATES.find(t => t.type === type);
@@ -250,7 +212,12 @@ const AIJobScheduler = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4 pb-4">
-          {jobs.length === 0 ? (
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12 text-muted-foreground">
+              <Loader2 className="h-6 w-6 animate-spin mr-2" />
+              <span className="text-sm">Loading schedules...</span>
+            </div>
+          ) : jobs.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
               <CalendarClock className="h-10 w-10 mb-3 opacity-20" />
               <p className="text-sm font-medium">No scheduled jobs yet</p>
@@ -283,17 +250,20 @@ const AIJobScheduler = () => {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-0.5">
                               <p className="text-sm font-semibold text-foreground truncate">{job.name}</p>
-                              <Badge variant="outline" className="text-[9px] shrink-0">{job.cron_label}</Badge>
+                              <Badge variant="outline" className="text-[9px] shrink-0">{job.cron_label || getCronLabel(job.cron_expression)}</Badge>
                               {!job.enabled && <Badge variant="secondary" className="text-[9px]">Paused</Badge>}
                             </div>
                             <p className="text-[11px] text-muted-foreground">{job.description}</p>
                             <div className="flex items-center gap-3 mt-1.5">
-                              <span className="text-[10px] text-muted-foreground">
-                                Priority: {job.priority}
-                              </span>
+                              <span className="text-[10px] text-muted-foreground">Priority: {job.priority}</span>
                               {job.last_run_at && (
                                 <span className="text-[10px] text-muted-foreground">
                                   Last run: {formatDistanceToNow(new Date(job.last_run_at), { addSuffix: true })}
+                                </span>
+                              )}
+                              {job.next_run_at && (
+                                <span className="text-[10px] text-muted-foreground">
+                                  Next: {formatDistanceToNow(new Date(job.next_run_at), { addSuffix: true })}
                                 </span>
                               )}
                             </div>
@@ -301,35 +271,16 @@ const AIJobScheduler = () => {
                           <div className="flex items-center gap-1.5 shrink-0">
                             <Switch
                               checked={job.enabled}
-                              onCheckedChange={() => toggleJob(job.id)}
+                              onCheckedChange={() => handleToggle(job.id, job.enabled)}
                               className="scale-75"
                             />
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 w-7 p-0"
-                              onClick={() => runNow(job)}
-                              disabled={createJob.isPending}
-                              title="Run now"
-                            >
+                            <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => runNow(job)} disabled={createJob.isPending} title="Run now">
                               <Play className="h-3.5 w-3.5 text-chart-1" />
                             </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 w-7 p-0"
-                              onClick={() => openEdit(job)}
-                              title="Edit"
-                            >
+                            <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => openEdit(job)} title="Edit">
                               <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
                             </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 w-7 p-0"
-                              onClick={() => setDeleteConfirm(job.id)}
-                              title="Delete"
-                            >
+                            <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => setDeleteConfirm(job.id)} title="Delete">
                               <Trash2 className="h-3.5 w-3.5 text-destructive" />
                             </Button>
                           </div>
@@ -350,20 +301,17 @@ const AIJobScheduler = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <CalendarClock className="h-5 w-5 text-primary" />
-              {editingJob ? 'Edit Schedule' : 'Create New Schedule'}
+              {editingJobId ? 'Edit Schedule' : 'Create New Schedule'}
             </DialogTitle>
             <DialogDescription>
-              {editingJob ? 'Update the recurring job schedule.' : 'Set up a recurring AI job with a cron schedule.'}
+              {editingJobId ? 'Update the recurring job schedule.' : 'Set up a recurring AI job with a cron schedule.'}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-2">
-            {/* Job Type */}
             <div className="space-y-1.5">
               <Label className="text-xs">Job Type</Label>
               <Select value={formType} onValueChange={applyTemplate}>
-                <SelectTrigger className="text-xs h-9">
-                  <SelectValue placeholder="Select job type" />
-                </SelectTrigger>
+                <SelectTrigger className="text-xs h-9"><SelectValue placeholder="Select job type" /></SelectTrigger>
                 <SelectContent>
                   {JOB_TEMPLATES.map(tpl => (
                     <SelectItem key={tpl.type} value={tpl.type}>
@@ -376,36 +324,18 @@ const AIJobScheduler = () => {
                 </SelectContent>
               </Select>
             </div>
-
-            {/* Name */}
             <div className="space-y-1.5">
               <Label className="text-xs">Schedule Name</Label>
-              <Input
-                value={formName}
-                onChange={e => setFormName(e.target.value)}
-                placeholder="e.g., Nightly SEO Scan"
-                className="text-xs h-9"
-              />
+              <Input value={formName} onChange={e => setFormName(e.target.value)} placeholder="e.g., Nightly SEO Scan" className="text-xs h-9" />
             </div>
-
-            {/* Description */}
             <div className="space-y-1.5">
               <Label className="text-xs">Description</Label>
-              <Input
-                value={formDesc}
-                onChange={e => setFormDesc(e.target.value)}
-                placeholder="What does this job do?"
-                className="text-xs h-9"
-              />
+              <Input value={formDesc} onChange={e => setFormDesc(e.target.value)} placeholder="What does this job do?" className="text-xs h-9" />
             </div>
-
-            {/* Cron */}
             <div className="space-y-1.5">
               <Label className="text-xs">Schedule Frequency</Label>
               <Select value={formCron} onValueChange={setFormCron}>
-                <SelectTrigger className="text-xs h-9">
-                  <SelectValue />
-                </SelectTrigger>
+                <SelectTrigger className="text-xs h-9"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {CRON_PRESETS.map(p => (
                     <SelectItem key={p.value} value={p.value}>
@@ -415,14 +345,10 @@ const AIJobScheduler = () => {
                 </SelectContent>
               </Select>
             </div>
-
-            {/* Priority */}
             <div className="space-y-1.5">
               <Label className="text-xs">Priority (1 = highest, 10 = lowest)</Label>
               <Select value={formPriority.toString()} onValueChange={v => setFormPriority(parseInt(v))}>
-                <SelectTrigger className="text-xs h-9">
-                  <SelectValue />
-                </SelectTrigger>
+                <SelectTrigger className="text-xs h-9"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(p => (
                     <SelectItem key={p} value={p.toString()}>
@@ -435,9 +361,15 @@ const AIJobScheduler = () => {
           </div>
           <DialogFooter>
             <Button variant="outline" size="sm" onClick={() => { setDialogOpen(false); resetForm(); }}>Cancel</Button>
-            <Button size="sm" onClick={handleSave} className="gap-1.5">
-              {editingJob ? <RefreshCw className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
-              {editingJob ? 'Update' : 'Create Schedule'}
+            <Button size="sm" onClick={handleSave} disabled={createScheduled.isPending || updateScheduled.isPending} className="gap-1.5">
+              {(createScheduled.isPending || updateScheduled.isPending) ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : editingJobId ? (
+                <RefreshCw className="h-3.5 w-3.5" />
+              ) : (
+                <Plus className="h-3.5 w-3.5" />
+              )}
+              {editingJobId ? 'Update' : 'Create Schedule'}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -457,7 +389,8 @@ const AIJobScheduler = () => {
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" size="sm" onClick={() => setDeleteConfirm(null)}>Cancel</Button>
-            <Button variant="destructive" size="sm" onClick={() => deleteConfirm && deleteJob(deleteConfirm)}>
+            <Button variant="destructive" size="sm" disabled={deleteScheduled.isPending} onClick={() => deleteConfirm && handleDelete(deleteConfirm)}>
+              {deleteScheduled.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" /> : null}
               Delete
             </Button>
           </DialogFooter>
