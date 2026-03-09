@@ -768,7 +768,7 @@ const AdminAlertSystem = () => {
           {/* Bulk Actions Bar */}
           <div className="flex items-center justify-between gap-2 text-[10px]">
             <span className="text-muted-foreground">
-              Showing {filteredAlerts.length} alerts {unreadCount > 0 && `· ${unreadCount} unread`}
+              Showing {filteredAlerts.length > 0 ? ((currentPage - 1) * PAGE_SIZE + 1) : 0}-{Math.min(currentPage * PAGE_SIZE, filteredAlerts.length)} of {filteredAlerts.length} alerts
             </span>
             <div className="flex gap-1.5 flex-wrap">
               <Button
