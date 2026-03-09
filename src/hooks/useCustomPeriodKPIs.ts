@@ -10,11 +10,22 @@ export interface CustomPeriodKPIs {
   avgPrice: PeriodComparison;
 }
 
-function makePeriodComparison(current: number, previous: number): PeriodComparison {
+function makePeriodComparison(current: number, previous: number, sparkline?: number[]): PeriodComparison {
   const delta = previous > 0
     ? Math.round(((current - previous) / previous) * 1000) / 10
     : current > 0 ? 100 : 0;
-  return { current, previous, delta, direction: delta > 0 ? 'up' : delta < 0 ? 'down' : 'neutral' };
+  return { current, previous, delta, direction: delta > 0 ? 'up' : delta < 0 ? 'down' : 'neutral', sparkline };
+}
+
+function groupByDay(rows: any[], dateCol: string, startIso: string, days: number): number[] {
+  const start = new Date(startIso).getTime();
+  const buckets = new Array(days).fill(0);
+  for (const r of rows) {
+    const d = new Date(r[dateCol]).getTime();
+    const idx = Math.floor((d - start) / 86400000);
+    if (idx >= 0 && idx < days) buckets[idx]++;
+  }
+  return buckets;
 }
 
 async function countRows(
