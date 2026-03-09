@@ -20,7 +20,7 @@ function makePeriodComparison(current: number, previous: number): PeriodComparis
 async function countRows(
   table: string, col: string, gte: string, lt?: string, filters?: Record<string, string>,
 ): Promise<number> {
-  let q = supabase.from(table).select('id', { count: 'exact', head: true }).gte(col, gte);
+  let q = (supabase as any).from(table).select('id', { count: 'exact', head: true }).gte(col, gte);
   if (lt) q = q.lt(col, lt);
   if (filters) for (const [k, v] of Object.entries(filters)) q = q.eq(k, v);
   const { count } = await q;
