@@ -208,25 +208,21 @@ Deno.serve(async (req) => {
       locationsProcessed.push({ city: cityFull, area, types_created: typesCreated });
     }
 
-    // Bulk insert
+    // Bulk insert in chunks of 20 to avoid compute limits
     if (toInsert.length > 0) {
-      const { error: insertErr, data: insertData } = await supabase
-        .from("properties")
-        .insert(toInsert)
-        .select("id");
+      const CHUNK = 20;
+      for (let i = 0; i < toInsert.length; i += CHUNK) {
+        const chunk = toInsert.slice(i, i + CHUNK);
+        const { error: insertErr, count } = await supabase
+          .from("properties")
+          .insert(chunk, { count: "exact" });
 
-      if (insertErr) {
-        console.error("Bulk insert error:", insertErr.message);
-        for (const prop of toInsert) {
-          const { error: singleErr } = await supabase.from("properties").insert(prop);
-          if (singleErr) {
-            errors++;
-          } else {
-            created++;
-          }
+        if (insertErr) {
+          console.error("Chunk insert error:", insertErr.message);
+          errors += chunk.length;
+        } else {
+          created += count || chunk.length;
         }
-      } else {
-        created = insertData?.length || toInsert.length;
       }
     }
 
