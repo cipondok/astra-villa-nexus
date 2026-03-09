@@ -157,6 +157,10 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     valuationsThisWeekRes,
     valuationsLastWeekRes,
     roiForecastCountRes,
+    // Job throughput (14 days of completed+failed jobs with timestamps)
+    jobThroughputRes,
+    // Search volume (14 days)
+    searchVolumeRes,
   ] = await Promise.all([
     supabase.from('properties').select('id, investment_score, price, created_at', { count: 'exact' }),
     supabase.from('ai_jobs').select('*').eq('status', 'running').limit(10),
@@ -165,7 +169,7 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'completed'),
     supabase.from('property_seo_analysis').select('id, seo_score, title_score, description_score, keyword_score, image_score, location_score, hashtag_score, seo_rating, property_id, last_analyzed_at, ranking_difficulty').not('seo_score', 'is', null).order('last_analyzed_at', { ascending: false }).limit(200),
     supabase.from('property_roi_forecast').select('*').order('last_calculated', { ascending: false }).limit(20),
-    supabase.from('ai_property_queries').select('query_text, created_at').order('created_at', { ascending: false }).limit(200),
+    supabase.from('ai_property_queries').select('query_text, created_at').order('created_at', { ascending: false }).limit(500),
     supabase.from('ai_job_logs').select('*').order('created_at', { ascending: false }).limit(20),
     supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'running').lt('started_at', new Date(Date.now() - 30 * 60000).toISOString()),
     supabase.from('ai_jobs').select('completed_at').eq('status', 'completed').order('completed_at', { ascending: false }).limit(1),
@@ -200,6 +204,10 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     supabase.from('property_valuations').select('id', { count: 'exact' }).gte('created_at', thisWeekStart),
     supabase.from('property_valuations').select('id', { count: 'exact' }).gte('created_at', lastWeekStart).lt('created_at', thisWeekStart),
     supabase.from('property_roi_forecast').select('id', { count: 'exact' }),
+    // Job throughput (14 days — completed & failed with dates)
+    supabase.from('ai_jobs').select('status, job_type, completed_at, started_at, created_at').in('status', ['completed', 'failed']).gte('created_at', lastWeekStart).order('created_at', { ascending: true }).limit(500),
+    // Search volume (14 days)
+    supabase.from('ai_property_queries').select('query_text, created_at').gte('created_at', lastWeekStart).order('created_at', { ascending: true }).limit(1000),
   ]);
 
   // Run health checks in parallel
