@@ -748,7 +748,7 @@ const AdminAlertSystem = () => {
           </div>
 
           {/* Category Tabs */}
-          <Tabs value={activeCategory} onValueChange={(v) => setActiveCategory(v as AlertCategory)}>
+          <Tabs value={activeCategory} onValueChange={handleCategoryChange}>
             <TabsList className="w-full h-auto flex flex-wrap gap-0.5 bg-muted/30 border border-border/30 p-0.5 rounded-md">
               {categoryTabs.map(tab => (
                 <TabsTrigger
