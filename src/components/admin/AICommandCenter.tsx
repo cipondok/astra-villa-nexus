@@ -527,8 +527,20 @@ const AICommandCenter = () => {
             {activeNav === 'overview' && (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <div className="lg:col-span-2 space-y-4">
-                  {/* WoW / MoM Historical Comparison */}
-                  <Panel title="Week-over-Week & Month-over-Month" icon={BarChart3}>
+                  {/* WoW / MoM / Custom Historical Comparison */}
+                  <Panel title="Period Comparison" icon={BarChart3} action={
+                    <div className="flex items-center gap-1 bg-muted/30 rounded-lg p-0.5">
+                      <button
+                        onClick={() => setComparisonMode('preset')}
+                        className={`px-2.5 py-1 rounded-md text-[10px] font-medium transition-all ${comparisonMode === 'preset' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                      >WoW / MoM</button>
+                      <button
+                        onClick={() => setComparisonMode('custom')}
+                        className={`px-2.5 py-1 rounded-md text-[10px] font-medium transition-all ${comparisonMode === 'custom' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                      >Custom Range</button>
+                    </div>
+                  }>
+                    {comparisonMode === 'preset' ? (
                     <div className="space-y-3">
                       <div>
                         <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">Week over Week</p>
@@ -551,6 +563,71 @@ const AICommandCenter = () => {
                         </div>
                       </div>
                     </div>
+                    ) : (
+                    <div className="space-y-4">
+                      {/* Date Pickers */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="p-3 rounded-lg bg-primary/5 border border-primary/10 space-y-2">
+                          <p className="text-[10px] font-semibold text-primary uppercase tracking-widest">Current Period</p>
+                          <div className="grid grid-cols-2 gap-2">
+                            <DatePickerMini label="Start" date={customCurrentStart} onSelect={setCustomCurrentStart} />
+                            <DatePickerMini label="End" date={customCurrentEnd} onSelect={setCustomCurrentEnd} />
+                          </div>
+                        </div>
+                        <div className="p-3 rounded-lg bg-muted/20 border border-border/30 space-y-2">
+                          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Previous Period</p>
+                          <div className="grid grid-cols-2 gap-2">
+                            <DatePickerMini label="Start" date={customPreviousStart} onSelect={setCustomPreviousStart} />
+                            <DatePickerMini label="End" date={customPreviousEnd} onSelect={setCustomPreviousEnd} />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Quick Presets */}
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-[9px] text-muted-foreground font-medium mr-1">Quick:</span>
+                        {[
+                          { label: 'Last 7d vs prior 7d', cd: 7 },
+                          { label: 'Last 14d vs prior 14d', cd: 14 },
+                          { label: 'Last 30d vs prior 30d', cd: 30 },
+                          { label: 'Last 90d vs prior 90d', cd: 90 },
+                        ].map(p => (
+                          <Button key={p.cd} variant="outline" size="sm" className="h-6 text-[9px] px-2"
+                            onClick={() => {
+                              const now = new Date();
+                              setCustomCurrentEnd(now);
+                              setCustomCurrentStart(new Date(now.getTime() - p.cd * 86400000));
+                              setCustomPreviousEnd(new Date(now.getTime() - p.cd * 86400000));
+                              setCustomPreviousStart(new Date(now.getTime() - p.cd * 2 * 86400000));
+                            }}
+                          >{p.label}</Button>
+                        ))}
+                      </div>
+
+                      {/* Results */}
+                      {customKPIs.isLoading ? (
+                        <div className="flex items-center justify-center py-6">
+                          <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                        </div>
+                      ) : customKPIs.data ? (
+                        <div>
+                          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">Comparison Results</p>
+                          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                            <ComparisonCell label="New Properties" data={customKPIs.data.newProperties} />
+                            <ComparisonCell label="Jobs Completed" data={customKPIs.data.jobsCompleted} />
+                            <ComparisonCell label="Jobs Failed" data={customKPIs.data.jobsFailed} invertColor />
+                            <ComparisonCell label="AI Searches" data={customKPIs.data.searches} />
+                            <ComparisonCell label="Avg Price" data={customKPIs.data.avgPrice} format="price" />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center py-6 text-muted-foreground">
+                          <CalendarIcon className="h-6 w-6 mb-2 opacity-20" />
+                          <p className="text-[10px]">Select date ranges above to compare</p>
+                        </div>
+                      )}
+                    </div>
+                    )}
                   </Panel>
 
                   {/* Price Trends Chart */}
