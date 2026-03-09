@@ -15,7 +15,7 @@ import {
   Server, Database, Timer, Eye, Gauge, Shield, Cpu,
   ChevronRight, Sparkles, Target, LineChart as LineChartIcon,
   Bot, Radar, Settings2, PlayCircle, PauseCircle, Wifi, WifiOff,
-  ArrowUpRight, Percent, CalendarClock, Bell, CheckCheck, Loader2,
+  ArrowUpRight, Percent, CalendarClock, Bell, CheckCheck, Loader2, Download, FileText,
 } from 'lucide-react';
 
 const AIJobScheduler = lazy(() => import('./AIJobScheduler'));
@@ -27,6 +27,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { format, formatDistanceToNow } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import {
+  exportOverviewCsv, exportJobHistoryCsv, exportHealthAlertsCsv,
+  exportSearchAnalyticsCsv, exportPriceTrendsCsv, exportFullReportPdf,
+} from '@/lib/reportExport';
 
 const formatIDR = (v: number) => {
   if (v >= 1e12) return `Rp ${(v / 1e12).toFixed(1)}T`;
@@ -173,6 +177,7 @@ const AICommandCenter = () => {
   const { data: monitorConfig = [], isLoading: configLoading } = useHealthMonitorConfig();
   const updateConfig = useUpdateHealthMonitorConfig();
   const [showSettings, setShowSettings] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   const handleRunSeoScan = async () => {
     setSeoRunning(true);
@@ -335,6 +340,44 @@ const AICommandCenter = () => {
           >
             <Sparkles className="h-3.5 w-3.5" />
             {aiOptRunning ? 'Optimizing...' : 'AI Optimize'}
+          </Button>
+
+          <Separator className="my-2 opacity-50" />
+          <p className="px-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-widest mb-1">Export Reports</p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full justify-start gap-2 text-[11px] h-8 border-border/40 hover:border-primary/30 hover:bg-primary/5"
+            disabled={exporting}
+            onClick={async () => {
+              setExporting(true);
+              try {
+                await exportFullReportPdf(data, healthAlerts);
+                toast.success('PDF report downloaded');
+              } catch (e: any) { toast.error('Export failed: ' + e.message); }
+              setExporting(false);
+            }}
+          >
+            {exporting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <FileText className="h-3.5 w-3.5" />}
+            Full Report (PDF)
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full justify-start gap-2 text-[11px] h-8 border-border/40 hover:border-primary/30 hover:bg-primary/5"
+            onClick={() => { exportOverviewCsv(data); toast.success('Overview CSV downloaded'); }}
+          >
+            <Download className="h-3.5 w-3.5" />
+            Overview (CSV)
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full justify-start gap-2 text-[11px] h-8 border-border/40 hover:border-primary/30 hover:bg-primary/5"
+            onClick={async () => { await exportJobHistoryCsv(); toast.success('Job history CSV downloaded'); }}
+          >
+            <Download className="h-3.5 w-3.5" />
+            Job History (CSV)
           </Button>
 
           <div className="mt-4 p-3 rounded-lg bg-muted/20 border border-border/30 space-y-2">
