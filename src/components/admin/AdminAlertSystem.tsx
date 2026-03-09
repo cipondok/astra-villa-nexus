@@ -71,13 +71,23 @@ const AdminAlertSystem = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
-  // Get total count from server (no limit)
-  const { data: totalAlertCount } = useQuery({
-    queryKey: ['admin-alerts-total-count'],
+  // Get total/unread/read counts from server (no limit)
+  const { data: alertCounts } = useQuery({
+    queryKey: ['admin-alerts-counts'],
     queryFn: async () => {
-      const { data, error } = await (supabase.rpc as any)('count_admin_alerts');
+      const { data, error } = await (supabase.rpc as any)('count_admin_alerts_by_status');
       if (error) throw error;
-      return (data as number) || 0;
+      return (data as { total: number; unread: number; read: number }) || { total: 0, unread: 0, read: 0 };
+    },
+  });
+
+  // Get counts grouped by type from server
+  const { data: typeCounts } = useQuery({
+    queryKey: ['admin-alerts-type-counts'],
+    queryFn: async () => {
+      const { data, error } = await (supabase.rpc as any)('count_admin_alerts_by_type');
+      if (error) throw error;
+      return (data as Record<string, number>) || {};
     },
   });
 
