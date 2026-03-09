@@ -34,6 +34,7 @@ import { toast } from 'sonner';
 import {
   exportOverviewCsv, exportJobHistoryCsv, exportHealthAlertsCsv,
   exportSearchAnalyticsCsv, exportPriceTrendsCsv, exportFullReportPdf,
+  exportCustomPeriodCSV, exportCustomPeriodPDF,
 } from '@/lib/reportExport';
 
 const formatIDR = (v: number) => {

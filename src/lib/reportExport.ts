@@ -259,3 +259,88 @@ export async function exportFullReportPdf(data: AICommandCenterData, alerts: Hea
 
   doc.save(`astra-ai-report-${ts()}.pdf`);
 }
+
+// ─── Custom Period Comparison Export ─────────────────────────────────────────
+
+const fmtDate = (d: Date) => format(d, 'yyyy-MM-dd');
+
+export function exportCustomPeriodCSV(
+  kpis: CustomPeriodKPIs, cs: Date, ce: Date, ps: Date, pe: Date,
+) {
+  const headers = ['Metric', 'Current', 'Previous', 'Delta (%)', 'Direction'];
+  const rows = [
+    ['New Properties', kpis.newProperties],
+    ['Jobs Completed', kpis.jobsCompleted],
+    ['Jobs Failed', kpis.jobsFailed],
+    ['AI Searches', kpis.searches],
+    ['Avg Price', kpis.avgPrice],
+  ].map(([label, d]: any) => [label, String(d.current), String(d.previous), String(d.delta), d.direction]);
+
+  const meta = `# Period Comparison: ${fmtDate(cs)} to ${fmtDate(ce)} vs ${fmtDate(ps)} to ${fmtDate(pe)}\n`;
+  const csv = meta + toCsv(headers, rows);
+  downloadFile(csv, `period-comparison-${ts()}.csv`, 'text/csv');
+}
+
+export async function exportCustomPeriodPDF(
+  kpis: CustomPeriodKPIs, cs: Date, ce: Date, ps: Date, pe: Date,
+) {
+  const { default: jsPDF } = await import('jspdf');
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const pw = doc.internal.pageSize.getWidth();
+  const m = 14;
+  let y = 20;
+
+  doc.setFontSize(16);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Period Comparison Report', m, y);
+  y += 8;
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(120, 120, 120);
+  doc.text(`Current: ${fmtDate(cs)} → ${fmtDate(ce)}   |   Previous: ${fmtDate(ps)} → ${fmtDate(pe)}`, m, y);
+  y += 4;
+  doc.text(`Generated: ${format(new Date(), 'PPpp')}`, m, y);
+  y += 8;
+  doc.setDrawColor(220, 220, 220);
+  doc.line(m, y, pw - m, y);
+  y += 8;
+
+  const metrics: [string, any][] = [
+    ['New Properties', kpis.newProperties],
+    ['Jobs Completed', kpis.jobsCompleted],
+    ['Jobs Failed', kpis.jobsFailed],
+    ['AI Searches', kpis.searches],
+    ['Avg Price', kpis.avgPrice],
+  ];
+
+  // Table header
+  doc.setFillColor(245, 245, 245);
+  doc.rect(m, y - 2, pw - m * 2, 8, 'F');
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(60, 60, 60);
+  const cols = [m + 2, m + 55, m + 85, m + 115, m + 145];
+  ['Metric', 'Current', 'Previous', 'Delta', 'Direction'].forEach((h, i) => doc.text(h, cols[i], y + 4));
+  y += 12;
+
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(30, 30, 30);
+  metrics.forEach(([label, d]) => {
+    doc.text(label, cols[0], y);
+    doc.text(String(d.current.toLocaleString()), cols[1], y);
+    doc.text(String(d.previous.toLocaleString()), cols[2], y);
+    const deltaStr = `${d.delta > 0 ? '+' : ''}${d.delta}%`;
+    doc.setTextColor(d.direction === 'up' ? 34 : d.direction === 'down' ? 220 : 120, d.direction === 'up' ? 139 : d.direction === 'down' ? 38 : 120, d.direction === 'up' ? 34 : d.direction === 'down' ? 38 : 120);
+    doc.text(deltaStr, cols[3], y);
+    doc.setTextColor(120, 120, 120);
+    doc.text(d.direction, cols[4], y);
+    doc.setTextColor(30, 30, 30);
+    y += 7;
+  });
+
+  doc.setFontSize(7);
+  doc.setTextColor(160, 160, 160);
+  doc.text('ASTRA Villa — Period Comparison Report', m, doc.internal.pageSize.getHeight() - 8);
+
+  doc.save(`period-comparison-${ts()}.pdf`);
+}
