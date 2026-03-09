@@ -160,6 +160,11 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     supabase.from('ai_property_queries').select('id', { count: 'exact' }).gte('created_at', lastWeekStart).lt('created_at', thisWeekStart),
     supabase.from('ai_property_queries').select('id', { count: 'exact' }).gte('created_at', thisMonthStart),
     supabase.from('ai_property_queries').select('id', { count: 'exact' }).gte('created_at', lastMonthStart).lt('created_at', thisMonthStart),
+    // Sparkline raw data (current week)
+    supabase.from('properties').select('created_at').gte('created_at', thisWeekStart).order('created_at', { ascending: true }),
+    supabase.from('ai_jobs').select('created_at').eq('status', 'completed').gte('completed_at', thisWeekStart).order('created_at', { ascending: true }),
+    supabase.from('ai_jobs').select('created_at').eq('status', 'failed').gte('created_at', thisWeekStart).order('created_at', { ascending: true }),
+    supabase.from('ai_property_queries').select('created_at').gte('created_at', thisWeekStart).order('created_at', { ascending: true }),
   ]);
 
   // Run health checks in parallel
