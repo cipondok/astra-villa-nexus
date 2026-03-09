@@ -29,6 +29,7 @@ import UserStatusBadge from '@/components/ui/UserStatusBadge';
 import { PropertyReviews } from '@/components/property/PropertyReviews';
 import PropertyRecommendations from '@/components/property/PropertyRecommendations';
 import NearbyInvestments from '@/components/property/NearbyInvestments';
+const MarketContextCard = React.lazy(() => import('@/components/property/MarketContextCard'));
 import { KPRCalculator } from '@/components/property/KPRCalculator';
 import PropertyMortgageWidget from '@/components/mortgage/PropertyMortgageWidget';
 import DaysOnMarketTracker from '@/components/property/DaysOnMarketTracker';
