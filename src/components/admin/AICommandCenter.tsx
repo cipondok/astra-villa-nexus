@@ -1,5 +1,6 @@
 import React, { useState, lazy, Suspense } from 'react';
 import { useAICommandCenter } from '@/hooks/useAICommandCenter';
+import { useHealthAlerts, useResolveHealthAlert, useResolveAllHealthAlerts, useTriggerHealthCheck } from '@/hooks/useHealthAlerts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -12,7 +13,7 @@ import {
   Server, Database, Timer, Eye, Gauge, Shield, Cpu,
   ChevronRight, Sparkles, Target, LineChart as LineChartIcon,
   Bot, Radar, Settings2, PlayCircle, PauseCircle, Wifi, WifiOff,
-  ArrowUpRight, Percent, CalendarClock,
+  ArrowUpRight, Percent, CalendarClock, Bell, CheckCheck, Loader2,
 } from 'lucide-react';
 
 const AIJobScheduler = lazy(() => import('./AIJobScheduler'));
@@ -161,6 +162,12 @@ const AICommandCenter = () => {
   const [activeNav, setActiveNav] = useState<NavSection>('overview');
   const [seoRunning, setSeoRunning] = useState(false);
   const [aiOptRunning, setAiOptRunning] = useState(false);
+  const [showResolved, setShowResolved] = useState(false);
+  const { data: healthAlerts = [], isLoading: alertsLoading } = useHealthAlerts(showResolved);
+  const resolveAlert = useResolveHealthAlert();
+  const resolveAll = useResolveAllHealthAlerts();
+  const triggerCheck = useTriggerHealthCheck();
+  const unresolvedCount = healthAlerts.filter(a => !a.resolved).length;
 
   const handleRunSeoScan = async () => {
     setSeoRunning(true);
@@ -286,8 +293,15 @@ const AICommandCenter = () => {
               >
                 <item.icon className={`h-3.5 w-3.5 transition-colors ${isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`} />
                 <span className="flex-1 text-left">{item.label}</span>
-                {item.id === 'health' && !overallHealthOk && (
-                  <span className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
+                {item.id === 'health' && (unresolvedCount > 0 || !overallHealthOk) && (
+                  <span className="flex items-center gap-1">
+                    {unresolvedCount > 0 && (
+                      <span className="min-w-[16px] h-4 rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold flex items-center justify-center px-1">
+                        {unresolvedCount}
+                      </span>
+                    )}
+                    <span className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
+                  </span>
                 )}
                 {isActive && <ChevronRight className="h-3 w-3 text-primary/60" />}
               </button>
@@ -905,10 +919,12 @@ const AICommandCenter = () => {
                         )}
                         <div>
                           <p className="text-sm font-bold text-foreground">
-                            {overallHealthOk ? 'All Systems Operational' : 'System Issues Detected'}
+                            {overallHealthOk && unresolvedCount === 0 ? 'All Systems Operational' : 'System Issues Detected'}
                           </p>
                           <p className="text-[11px] text-muted-foreground">
-                            {systemHealth.stalledJobs > 0
+                            {unresolvedCount > 0
+                              ? `${unresolvedCount} active alert(s)`
+                              : systemHealth.stalledJobs > 0
                               ? `${systemHealth.stalledJobs} stalled job(s) detected`
                               : systemHealth.lastJobRun
                               ? `Last job completed ${formatDistanceToNow(new Date(systemHealth.lastJobRun), { addSuffix: true })}`
@@ -916,16 +932,157 @@ const AICommandCenter = () => {
                           </p>
                         </div>
                       </div>
-                      <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8" onClick={() => refetch()}>
-                        <RefreshCw className="h-3 w-3" /> Re-check
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="gap-1.5 text-xs h-8"
+                          onClick={() => triggerCheck.mutate()}
+                          disabled={triggerCheck.isPending}
+                        >
+                          {triggerCheck.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Radar className="h-3 w-3" />}
+                          Run Check
+                        </Button>
+                        <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8" onClick={() => refetch()}>
+                          <RefreshCw className="h-3 w-3" /> Refresh
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                {/* Edge Functions */}
+                {/* Health Alerts Panel */}
+                <Panel
+                  title={`Health Alerts ${unresolvedCount > 0 ? `(${unresolvedCount})` : ''}`}
+                  icon={Bell}
+                  action={
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setShowResolved(!showResolved)}
+                        className="text-[10px] text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {showResolved ? 'Hide resolved' : 'Show resolved'}
+                      </button>
+                      {unresolvedCount > 0 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="gap-1 text-[10px] h-6 px-2"
+                          onClick={() => resolveAll.mutate()}
+                          disabled={resolveAll.isPending}
+                        >
+                          <CheckCheck className="h-3 w-3" /> Resolve all
+                        </Button>
+                      )}
+                    </div>
+                  }
+                >
+                  {alertsLoading ? (
+                    <div className="flex items-center justify-center py-8">
+                      <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                    </div>
+                  ) : healthAlerts.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-10 text-muted-foreground">
+                      <CheckCircle2 className="h-8 w-8 mb-2 opacity-20" />
+                      <p className="text-xs font-medium">No alerts</p>
+                      <p className="text-[10px] mt-0.5">System is running smoothly</p>
+                    </div>
+                  ) : (
+                    <ScrollArea className="max-h-[400px]">
+                      <AnimatePresence>
+                        <div className="space-y-2">
+                          {healthAlerts.map((alert, i) => {
+                            const isCritical = alert.severity === 'critical';
+                            const isResolved = alert.resolved;
+                            return (
+                              <motion.div
+                                key={alert.id}
+                                initial={{ opacity: 0, y: 6 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, x: -16 }}
+                                transition={{ delay: i * 0.03 }}
+                                className={`p-3 rounded-lg border transition-all ${
+                                  isResolved
+                                    ? 'bg-muted/5 border-border/20 opacity-50'
+                                    : isCritical
+                                    ? 'bg-destructive/5 border-destructive/20'
+                                    : 'bg-chart-3/5 border-chart-3/20'
+                                }`}
+                              >
+                                <div className="flex items-start gap-3">
+                                  <div className={`p-1.5 rounded-lg shrink-0 ${
+                                    isResolved ? 'bg-muted/20' : isCritical ? 'bg-destructive/10' : 'bg-chart-3/10'
+                                  }`}>
+                                    {isResolved ? (
+                                      <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+                                    ) : isCritical ? (
+                                      <XCircle className="h-4 w-4 text-destructive" />
+                                    ) : (
+                                      <AlertTriangle className="h-4 w-4 text-chart-3" />
+                                    )}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                                      <Badge
+                                        variant={isCritical ? 'destructive' : 'secondary'}
+                                        className="text-[9px] uppercase tracking-wider"
+                                      >
+                                        {alert.severity}
+                                      </Badge>
+                                      <Badge variant="outline" className="text-[9px]">
+                                        {alert.alert_type.replace(/_/g, ' ')}
+                                      </Badge>
+                                      {isResolved && (
+                                        <Badge variant="outline" className="text-[9px] text-chart-1 border-chart-1/30">
+                                          Resolved
+                                        </Badge>
+                                      )}
+                                    </div>
+                                    <p className="text-[12px] text-foreground font-medium mt-1 leading-snug">
+                                      {alert.message}
+                                    </p>
+                                    <div className="flex items-center gap-3 mt-1.5">
+                                      <span className="text-[10px] text-muted-foreground">
+                                        {formatDistanceToNow(new Date(alert.created_at), { addSuffix: true })}
+                                      </span>
+                                      {alert.resolved_at && (
+                                        <span className="text-[10px] text-muted-foreground">
+                                          Resolved {formatDistanceToNow(new Date(alert.resolved_at), { addSuffix: true })}
+                                        </span>
+                                      )}
+                                      {alert.metadata && Object.keys(alert.metadata).length > 0 && (
+                                        <span className="text-[10px] text-muted-foreground">
+                                          {alert.metadata.count ? `${alert.metadata.count} affected` : ''}
+                                          {alert.metadata.latencyMs ? `${alert.metadata.latencyMs}ms` : ''}
+                                          {alert.metadata.failureRate ? `${alert.metadata.failureRate}% failure rate` : ''}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  {!isResolved && (
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-7 px-2 text-[10px] gap-1 shrink-0"
+                                      onClick={() => resolveAlert.mutate(alert.id)}
+                                      disabled={resolveAlert.isPending}
+                                    >
+                                      <CheckCircle2 className="h-3 w-3" /> Resolve
+                                    </Button>
+                                  )}
+                                </div>
+                              </motion.div>
+                            );
+                          })}
+                        </div>
+                      </AnimatePresence>
+                    </ScrollArea>
+                  )}
+                </Panel>
+
+                {/* Edge Functions & Services */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {systemHealth.edgeFunctions.map((fn, i) => (
+                  {systemHealth.edgeFunctions.map((fn) => (
                     <HealthIndicator
                       key={fn.name}
                       status={fn.status}
