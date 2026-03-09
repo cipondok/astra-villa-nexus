@@ -91,32 +91,51 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
     refetchInterval: 60000, // was 30s
   });
 
-  // Fetch system health
+  // Fetch system health + AI subsystem status
   const { data: systemHealth } = useQuery({
     queryKey: ['system-health-overview'],
     queryFn: async () => {
       const startTime = Date.now();
       try {
-        const { count: dbErrors } = await supabase
-          .from('database_error_tracking')
-          .select('*', { count: 'exact', head: true })
-          .eq('is_resolved', false);
+        const [dbErrorsRes, jobsRunning, jobsFailed, jobsPending, seoRes, valuationsRes] = await Promise.all([
+          supabase.from('database_error_tracking').select('*', { count: 'exact', head: true }).eq('is_resolved', false),
+          supabase.from('ai_jobs').select('id', { count: 'exact', head: true }).eq('status', 'running'),
+          supabase.from('ai_jobs').select('id', { count: 'exact', head: true }).eq('status', 'failed'),
+          supabase.from('ai_jobs').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
+          supabase.from('property_seo_analysis').select('seo_score').not('seo_score', 'is', null).limit(100),
+          supabase.from('property_valuations').select('id', { count: 'exact', head: true }),
+        ]);
+
+        const seoScores = (seoRes.data || []) as any[];
+        const avgSeo = seoScores.length > 0
+          ? Math.round(seoScores.reduce((s: number, p: any) => s + (p.seo_score || 0), 0) / seoScores.length)
+          : 0;
 
         return {
-          dbErrors: dbErrors || 0,
+          dbErrors: dbErrorsRes.count || 0,
           responseTime: Date.now() - startTime,
-          cpuUsage: Math.floor(Math.random() * 30) + 15,
-          memoryUsage: Math.floor(Math.random() * 25) + 40,
-          diskUsage: Math.floor(Math.random() * 20) + 35,
           uptime: 99.97,
-          status: dbErrors === 0 ? 'healthy' : 'warning'
+          status: (dbErrorsRes.count || 0) === 0 ? 'healthy' : 'warning',
+          aiSystems: {
+            jobsRunning: jobsRunning.count || 0,
+            jobsFailed: jobsFailed.count || 0,
+            jobsPending: jobsPending.count || 0,
+            avgSeoScore: avgSeo,
+            totalValuations: valuationsRes.count || 0,
+            seoStatus: avgSeo >= 50 ? 'operational' as const : avgSeo > 0 ? 'degraded' as const : 'unknown' as const,
+            jobStatus: (jobsFailed.count || 0) > 5 ? 'degraded' as const : 'operational' as const,
+            valuationStatus: (valuationsRes.count || 0) > 0 ? 'operational' as const : 'unknown' as const,
+          },
         };
       } catch (error) {
-        return { dbErrors: 0, responseTime: 0, cpuUsage: 0, memoryUsage: 0, diskUsage: 0, uptime: 0, status: 'error' };
+        return {
+          dbErrors: 0, responseTime: 0, uptime: 0, status: 'error',
+          aiSystems: { jobsRunning: 0, jobsFailed: 0, jobsPending: 0, avgSeoScore: 0, totalValuations: 0, seoStatus: 'unknown' as const, jobStatus: 'unknown' as const, valuationStatus: 'unknown' as const },
+        };
       }
     },
     staleTime: 2 * 60 * 1000,
-    refetchInterval: 60000, // was 15s
+    refetchInterval: 60000,
   });
 
   // Fetch recent activity
