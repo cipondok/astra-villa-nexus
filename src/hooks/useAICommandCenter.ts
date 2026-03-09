@@ -7,6 +7,7 @@ export interface PeriodComparison {
   previous: number;
   delta: number; // percentage change
   direction: 'up' | 'down' | 'neutral';
+  sparkline?: number[]; // daily values for the current period
 }
 
 export interface HistoricalKPIs {
