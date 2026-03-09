@@ -71,6 +71,12 @@ const AdminAlertSystem = () => {
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
 
+  const invalidateAlertQueries = () => {
+    queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-alerts-counts'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-alerts-type-counts'] });
+  };
+
   // Get total/unread/read counts from server (no limit)
   const { data: alertCounts } = useQuery({
     queryKey: ['admin-alerts-counts'],
