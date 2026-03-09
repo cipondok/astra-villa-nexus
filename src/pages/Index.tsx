@@ -1027,6 +1027,15 @@ const Index = () => {
                 </div>
                 </ScrollReveal>
 
+                {/* Trending & ROI Deals */}
+                <ScrollReveal direction="right" delay={0}>
+                <div className="mb-4">
+                  <Suspense fallback={<div className="h-48 bg-muted/30 rounded-xl animate-pulse" />}>
+                    <TrendingROIDeals onPropertyClick={handlePropertyClick} />
+                  </Suspense>
+                </div>
+                </ScrollReveal>
+
                 {/* AI Recommended Properties (legacy) */}
                 <ScrollReveal direction="right" delay={0}>
                 <div className="mb-4">

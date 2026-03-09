@@ -1438,10 +1438,13 @@ const PropertyDetail: React.FC = () => {
           <PropertyReviews propertyId={property.id} />
         </div>
 
-        {/* Similar Properties & More From - Side by Side on Wide Screens */}
+        {/* Similar Properties & Nearby Investments */}
         <div className="mt-4 sm:mt-8 grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
           {/* Smart Property Recommendations */}
           <PropertyRecommendations propertyId={property.id} propertyType={property.property_type} />
+
+          {/* Nearby Investment Opportunities */}
+          <NearbyInvestments propertyId={property.id} />
 
           {/* More from Agent */}
           {userMoreProperties.length > 0 && (
