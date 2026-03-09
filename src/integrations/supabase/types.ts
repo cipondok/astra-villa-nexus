@@ -29131,6 +29131,7 @@ export type Database = {
         Args: { type_patterns: string[] }
         Returns: number
       }
+      delete_all_admin_alerts: { Args: never; Returns: undefined }
       delete_property_admin_property: {
         Args: { p_property_id: string }
         Returns: undefined
