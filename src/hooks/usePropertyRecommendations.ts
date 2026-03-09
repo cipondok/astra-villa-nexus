@@ -146,11 +146,11 @@ export function useTopROIDeals(limit = 6) {
 
       const roiMap = new Map(forecasts.map((f: any) => [f.property_id, f]));
       return properties
-        .map((p: any) => {
-          const roi = roiMap.get(p.id);
+        .map((p) => {
+          const roi = roiMap.get(p.id) as any;
           return { ...p, expected_roi: roi?.expected_roi, rental_yield: roi?.rental_yield, risk_level: roi?.risk_level };
         })
-        .sort((a: any, b: any) => (b.expected_roi || b.investment_score || 0) - (a.expected_roi || a.investment_score || 0))
+        .sort((a, b) => ((b as any).expected_roi || (b as any).investment_score || 0) - ((a as any).expected_roi || (a as any).investment_score || 0))
         .slice(0, limit);
     },
     staleTime: 5 * 60 * 1000,
