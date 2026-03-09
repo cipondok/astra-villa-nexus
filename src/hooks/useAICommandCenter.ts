@@ -60,6 +60,8 @@ export interface AICommandCenterData {
     topQueries: { query: string; count: number }[];
     totalSearches: number;
     conversionRate: number;
+    volumeByDay: { date: string; searches: number }[];
+    categoryBreakdown: { category: string; count: number; fill: string }[];
   };
   priceTrends: { month: string; avgPrice: number; count: number }[];
   recentActions: any[];
