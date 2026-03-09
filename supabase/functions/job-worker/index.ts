@@ -204,6 +204,12 @@ async function handleProcess(supabase: any) {
         });
         if (error) throw error;
         result = data;
+      } else if (pendingJob.job_type === "generate_property_recommendations") {
+        // Generate recommendations for properties
+        result = await generatePropertyRecommendations(supabase, task.payload);
+      } else if (pendingJob.job_type === "update_trending_properties") {
+        // Update trending property scores
+        result = await updateTrendingProperties(supabase, task.payload);
       }
 
       // Mark task completed
