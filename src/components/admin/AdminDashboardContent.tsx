@@ -180,6 +180,7 @@ import {
   NeighborhoodInsights,
   DocumentSigningHub,
   PropertyAuctionManager,
+  TenantScreening,
   AICommandCenter,
 } from "./adminSectionRegistry";
 
