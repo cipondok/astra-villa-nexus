@@ -11,11 +11,12 @@ import {
   CheckCircle2, Clock, XCircle, BarChart3, Zap, RefreshCw,
   Server, Database, Timer, Eye, Gauge, Shield, Cpu,
   ChevronRight, Sparkles, Target, LineChart as LineChartIcon,
-  Bot, Radar, Settings2, PlayCircle, PauseCircle,
+  Bot, Radar, Settings2, PlayCircle, PauseCircle, Wifi, WifiOff,
+  ArrowUpRight, Percent,
 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, AreaChart, Area, CartesianGrid, RadialBarChart, RadialBar,
+  PieChart, Pie, Cell, AreaChart, Area, CartesianGrid, LineChart, Line,
 } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format, formatDistanceToNow } from 'date-fns';
@@ -31,7 +32,7 @@ const formatIDR = (v: number) => {
 
 type NavSection = 'overview' | 'seo' | 'jobs' | 'investment' | 'search' | 'health';
 
-const NAV_ITEMS: { id: NavSection; label: string; icon: React.ElementType; badge?: string }[] = [
+const NAV_ITEMS: { id: NavSection; label: string; icon: React.ElementType }[] = [
   { id: 'overview', label: 'Overview', icon: Gauge },
   { id: 'seo', label: 'SEO Engine', icon: Search },
   { id: 'jobs', label: 'Job Queue', icon: Cpu },
@@ -105,6 +106,52 @@ const Panel = ({ children, title, icon: Icon, action, className = '' }: {
   </Card>
 );
 
+// ─── Health Status Indicator ──────────────────────────────────────────────────
+const HealthIndicator = ({ status, label, detail, latency, icon: Icon }: {
+  status: 'ok' | 'error' | 'warning' | 'unknown'; label: string; detail: string;
+  latency?: number; icon: React.ElementType;
+}) => {
+  const statusConfig = {
+    ok: { color: 'text-chart-1', bg: 'bg-chart-1/10', border: 'border-chart-1/20', badge: 'Operational', badgeVariant: 'default' as const },
+    error: { color: 'text-destructive', bg: 'bg-destructive/10', border: 'border-destructive/20', badge: 'Error', badgeVariant: 'destructive' as const },
+    warning: { color: 'text-chart-3', bg: 'bg-chart-3/10', border: 'border-chart-3/20', badge: 'Warning', badgeVariant: 'secondary' as const },
+    unknown: { color: 'text-muted-foreground', bg: 'bg-muted/10', border: 'border-border', badge: 'Unknown', badgeVariant: 'outline' as const },
+  };
+  const cfg = statusConfig[status];
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+      <Card className={`border-border/40 bg-card/60 overflow-hidden ${status !== 'ok' ? cfg.border : ''}`}>
+        <CardContent className="p-4">
+          <div className="flex items-start justify-between mb-3">
+            <div className="flex items-center gap-2.5">
+              <div className={`p-2 rounded-lg ${cfg.bg}`}>
+                <Icon className={`h-4 w-4 ${cfg.color}`} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-foreground">{label}</p>
+                <p className="text-[10px] text-muted-foreground">{detail}</p>
+              </div>
+            </div>
+            <Badge variant={cfg.badgeVariant} className="text-[9px] gap-1">
+              {status === 'ok' ? <CheckCircle2 className="h-3 w-3" /> :
+               status === 'error' ? <XCircle className="h-3 w-3" /> :
+               <AlertTriangle className="h-3 w-3" />}
+              {cfg.badge}
+            </Badge>
+          </div>
+          <div className="flex items-center justify-between">
+            <Progress value={status === 'ok' ? 100 : status === 'warning' ? 60 : 30} className="h-1.5 flex-1 mr-3" />
+            {latency !== undefined && (
+              <span className="text-[10px] text-muted-foreground tabular-nums shrink-0">{latency}ms</span>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+};
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 const AICommandCenter = () => {
   const { data, isLoading, refetch } = useAICommandCenter();
@@ -157,7 +204,7 @@ const AICommandCenter = () => {
     );
   }
 
-  const { overview, jobStatus, seo, roiForecasts, searchAnalytics, recentActions } = data;
+  const { overview, jobStatus, seo, roiForecasts, searchAnalytics, priceTrends, recentActions, systemHealth } = data;
   const totalJobs = jobStatus.running + jobStatus.pending + jobStatus.completed + jobStatus.failed;
 
   // ─── Chart Data ───────────────────────────────────────────────────────────
@@ -195,23 +242,9 @@ const AICommandCenter = () => {
     { name: 'Failed', value: jobStatus.failed, fill: 'hsl(var(--destructive))' },
   ].filter(d => d.value > 0);
 
-  // Mock search trend (last 7 entries from searches, grouped by day)
-  const searchTrend = (() => {
-    const days: Record<string, number> = {};
-    (data.searchAnalytics.topQueries || []).forEach((_, i) => {
-      const day = `Day ${i + 1}`;
-      days[day] = (days[day] || 0) + Math.floor(Math.random() * 20 + 5);
-    });
-    return Object.entries(days).slice(0, 7).map(([day, count]) => ({ day, searches: count }));
-  })();
-
-  const systemHealth = [
-    { name: 'Edge Functions', status: 'operational' as const, icon: Server, detail: 'All endpoints responding' },
-    { name: 'Database Jobs', status: jobStatus.failed > 5 ? 'degraded' as const : 'operational' as const, icon: Database, detail: `${jobStatus.failed} failed jobs` },
-    { name: 'AI Scheduler', status: jobStatus.pending > 50 ? 'warning' as const : 'operational' as const, icon: Timer, detail: `${jobStatus.pending} tasks queued` },
-    { name: 'SEO Engine', status: seo.weakListings > 100 ? 'warning' as const : 'operational' as const, icon: Search, detail: `${seo.weakListings} weak listings` },
-    { name: 'ROI Forecaster', status: 'operational' as const, icon: Target, detail: `${roiForecasts.length} forecasts active` },
-  ];
+  // Overall system status
+  const overallHealthOk = systemHealth.edgeFunctions.every(f => f.status === 'ok') &&
+    systemHealth.dbHealth === 'ok' && systemHealth.schedulerHealth === 'ok';
 
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
@@ -224,7 +257,6 @@ const AICommandCenter = () => {
         className="w-52 shrink-0 hidden lg:flex flex-col"
       >
         <div className="sticky top-4 space-y-1">
-          {/* Brand Header */}
           <div className="flex items-center gap-2.5 px-3 py-3 mb-2">
             <div className="p-1.5 rounded-lg bg-gradient-to-br from-primary to-primary/70 shadow-lg shadow-primary/20">
               <Brain className="h-5 w-5 text-primary-foreground" />
@@ -251,6 +283,9 @@ const AICommandCenter = () => {
               >
                 <item.icon className={`h-3.5 w-3.5 transition-colors ${isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'}`} />
                 <span className="flex-1 text-left">{item.label}</span>
+                {item.id === 'health' && !overallHealthOk && (
+                  <span className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
+                )}
                 {isActive && <ChevronRight className="h-3 w-3 text-primary/60" />}
               </button>
             );
@@ -258,7 +293,6 @@ const AICommandCenter = () => {
 
           <Separator className="my-2 opacity-50" />
 
-          {/* Quick Actions */}
           <p className="px-3 text-[9px] font-semibold text-muted-foreground uppercase tracking-widest mb-1">Quick Actions</p>
           <Button
             variant="outline"
@@ -281,7 +315,6 @@ const AICommandCenter = () => {
             {aiOptRunning ? 'Optimizing...' : 'AI Optimize'}
           </Button>
 
-          {/* Live Status */}
           <div className="mt-4 p-3 rounded-lg bg-muted/20 border border-border/30 space-y-2">
             <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-widest">Live Status</p>
             <div className="flex items-center gap-2">
@@ -294,6 +327,12 @@ const AICommandCenter = () => {
             <div className="flex items-center gap-2">
               <Clock className="h-3 w-3 text-muted-foreground" />
               <span className="text-[10px] text-muted-foreground">{jobStatus.pending} pending</span>
+            </div>
+            <div className="flex items-center gap-2">
+              {overallHealthOk ? <Wifi className="h-3 w-3 text-chart-1" /> : <WifiOff className="h-3 w-3 text-destructive" />}
+              <span className={`text-[10px] ${overallHealthOk ? 'text-chart-1' : 'text-destructive'}`}>
+                {overallHealthOk ? 'All systems OK' : 'Issues detected'}
+              </span>
             </div>
           </div>
         </div>
@@ -308,12 +347,8 @@ const AICommandCenter = () => {
           className="flex items-center justify-between"
         >
           <div>
-            <h2 className="text-xl md:text-2xl font-bold text-foreground tracking-tight">
-              AI Command Center
-            </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Real-time monitoring & control of all ASTRA AI systems
-            </p>
+            <h2 className="text-xl md:text-2xl font-bold text-foreground tracking-tight">AI Command Center</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">Real-time monitoring & control of all ASTRA AI systems</p>
           </div>
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="text-[10px] gap-1 border-chart-1/30 text-chart-1 bg-chart-1/5">
@@ -377,8 +412,35 @@ const AICommandCenter = () => {
             {/* OVERVIEW */}
             {activeNav === 'overview' && (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                {/* Left column - 2 span */}
                 <div className="lg:col-span-2 space-y-4">
+                  {/* Price Trends Chart — NEW */}
+                  <Panel title="Property Price Trends" icon={LineChartIcon}>
+                    {priceTrends.length > 0 ? (
+                      <ResponsiveContainer width="100%" height={220}>
+                        <LineChart data={priceTrends} margin={{ left: 0, right: 8, top: 10, bottom: 0 }}>
+                          <defs>
+                            <linearGradient id="priceFill" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.15} />
+                              <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                          <XAxis dataKey="month" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+                          <YAxis tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} tickFormatter={(v) => formatIDR(v)} />
+                          <Tooltip
+                            contentStyle={CHART_TOOLTIP_STYLE}
+                            formatter={(v: number) => [formatIDR(v), 'Avg Price']}
+                            labelFormatter={(l) => `Month: ${l}`}
+                          />
+                          <Area type="monotone" dataKey="avgPrice" fill="url(#priceFill)" stroke="transparent" />
+                          <Line type="monotone" dataKey="avgPrice" stroke="hsl(var(--primary))" strokeWidth={2.5} dot={{ r: 3, fill: 'hsl(var(--primary))' }} activeDot={{ r: 5 }} />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <EmptyState icon={LineChartIcon} label="No price data available" />
+                    )}
+                  </Panel>
+
                   {/* SEO + Jobs Row */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Panel title="SEO Automation" icon={Search} action={
@@ -443,10 +505,7 @@ const AICommandCenter = () => {
                           </div>
                         </div>
                       ) : (
-                        <div className="flex flex-col items-center justify-center py-6 text-muted-foreground">
-                          <Bot className="h-8 w-8 mb-2 opacity-30" />
-                          <p className="text-xs">No active jobs</p>
-                        </div>
+                        <EmptyState icon={Bot} label="No active jobs" />
                       )}
                       {jobStatus.recentJobs.slice(0, 2).map((job: any) => (
                         <div key={job.id} className="mt-2.5">
@@ -500,23 +559,27 @@ const AICommandCenter = () => {
                   </div>
                 </div>
 
-                {/* Right Column - Activity Feed + Search */}
+                {/* Right Column */}
                 <div className="space-y-4">
                   <Panel title="AI Search Analytics" icon={Eye}>
-                    <div className="p-3 rounded-lg bg-primary/5 border border-primary/10 mb-3">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-[10px] text-muted-foreground font-medium">Total Searches</p>
-                          <p className="text-2xl font-bold text-foreground">{searchAnalytics.totalSearches}</p>
+                    <div className="grid grid-cols-2 gap-2 mb-3">
+                      <div className="p-3 rounded-lg bg-primary/5 border border-primary/10">
+                        <p className="text-[10px] text-muted-foreground font-medium">Total Searches</p>
+                        <p className="text-xl font-bold text-foreground">{searchAnalytics.totalSearches}</p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-chart-2/5 border border-chart-2/10">
+                        <div className="flex items-center gap-1 mb-1">
+                          <Percent className="h-3 w-3 text-chart-2" />
+                          <p className="text-[10px] text-muted-foreground font-medium">Conversion</p>
                         </div>
-                        <Eye className="h-8 w-8 text-primary/20" />
+                        <p className="text-xl font-bold text-foreground">{searchAnalytics.conversionRate}%</p>
                       </div>
                     </div>
                     <div className="space-y-1">
                       <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-widest mb-1.5">Trending Queries</p>
                       {searchAnalytics.topQueries.length > 0 ? (
                         searchAnalytics.topQueries.slice(0, 5).map((q, i) => (
-                          <div key={i} className="flex items-center justify-between text-[11px] p-2 rounded-md hover:bg-muted/30 transition-colors group">
+                          <div key={i} className="flex items-center justify-between text-[11px] p-2 rounded-md hover:bg-muted/30 transition-colors">
                             <div className="flex items-center gap-2 min-w-0">
                               <span className="text-[10px] text-muted-foreground/60 w-3 shrink-0">#{i + 1}</span>
                               <span className="text-foreground truncate">{q.query}</span>
@@ -535,7 +598,7 @@ const AICommandCenter = () => {
                       {recentActions.length > 0 ? (
                         <div className="space-y-1">
                           {recentActions.map((action: any) => (
-                            <div key={action.id} className="flex items-start gap-2.5 p-2 rounded-lg hover:bg-muted/20 transition-colors group">
+                            <div key={action.id} className="flex items-start gap-2.5 p-2 rounded-lg hover:bg-muted/20 transition-colors">
                               <div className={`mt-1 w-2 h-2 rounded-full shrink-0 ${
                                 action.level === 'error' ? 'bg-destructive shadow-destructive/30 shadow-sm' :
                                 action.level === 'warning' ? 'bg-chart-3 shadow-chart-3/30 shadow-sm' :
@@ -665,6 +728,29 @@ const AICommandCenter = () => {
             {/* INVESTMENT SECTION */}
             {activeNav === 'investment' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Price Trends — NEW */}
+                <Panel title="Property Price Trends" icon={LineChartIcon} className="md:col-span-2">
+                  {priceTrends.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={240}>
+                      <AreaChart data={priceTrends} margin={{ left: 0, right: 8, top: 10, bottom: 0 }}>
+                        <defs>
+                          <linearGradient id="investPriceGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={0.3} />
+                            <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={0} />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                        <XAxis dataKey="month" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+                        <YAxis tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} tickFormatter={(v) => formatIDR(v)} />
+                        <Tooltip contentStyle={CHART_TOOLTIP_STYLE} formatter={(v: number) => [formatIDR(v), 'Avg Price']} />
+                        <Area type="monotone" dataKey="avgPrice" stroke="hsl(var(--chart-2))" fill="url(#investPriceGrad)" strokeWidth={2.5} />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <EmptyState icon={LineChartIcon} label="No price trend data" />
+                  )}
+                </Panel>
+
                 <Panel title="Top ROI Locations" icon={TrendingUp} className="md:col-span-2">
                   {topROILocations.length > 0 ? (
                     <ResponsiveContainer width="100%" height={260}>
@@ -729,8 +815,8 @@ const AICommandCenter = () => {
             {/* SEARCH SECTION */}
             {activeNav === 'search' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Panel title="Search Volume" icon={Eye} className="md:col-span-2">
-                  <div className="grid grid-cols-3 gap-3 mb-4">
+                <Panel title="Search Volume & Conversion" icon={Eye} className="md:col-span-2">
+                  <div className="grid grid-cols-4 gap-3 mb-4">
                     <div className="p-3 rounded-lg bg-primary/5 border border-primary/10 text-center">
                       <p className="text-2xl font-bold text-foreground">{searchAnalytics.totalSearches}</p>
                       <p className="text-[10px] text-muted-foreground">Total Searches</p>
@@ -745,24 +831,14 @@ const AICommandCenter = () => {
                       </p>
                       <p className="text-[10px] text-muted-foreground">Avg per Query</p>
                     </div>
+                    <div className="p-3 rounded-lg bg-chart-3/5 border border-chart-3/10 text-center">
+                      <div className="flex items-center justify-center gap-1 mb-0.5">
+                        <ArrowUpRight className="h-3.5 w-3.5 text-chart-3" />
+                      </div>
+                      <p className="text-2xl font-bold text-foreground">{searchAnalytics.conversionRate}%</p>
+                      <p className="text-[10px] text-muted-foreground">Conversion Rate</p>
+                    </div>
                   </div>
-                  {searchTrend.length > 0 && (
-                    <ResponsiveContainer width="100%" height={180}>
-                      <AreaChart data={searchTrend} margin={{ left: -10, right: 0, top: 0, bottom: 0 }}>
-                        <defs>
-                          <linearGradient id="searchGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
-                            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-                        <XAxis dataKey="day" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-                        <YAxis tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-                        <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
-                        <Area type="monotone" dataKey="searches" stroke="hsl(var(--primary))" fill="url(#searchGrad)" strokeWidth={2} />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  )}
                 </Panel>
                 <Panel title="Trending Queries" icon={Search}>
                   <div className="space-y-1">
@@ -802,49 +878,88 @@ const AICommandCenter = () => {
               </div>
             )}
 
-            {/* HEALTH SECTION */}
+            {/* HEALTH SECTION — ENHANCED */}
             {activeNav === 'health' && (
               <div className="space-y-4">
+                {/* Overall Status Banner */}
+                <Card className={`border-border/40 overflow-hidden ${
+                  !overallHealthOk ? 'bg-destructive/5 border-destructive/20' : 'bg-chart-1/5 border-chart-1/20'
+                }`}>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        {overallHealthOk ? (
+                          <CheckCircle2 className="h-6 w-6 text-chart-1" />
+                        ) : (
+                          <AlertTriangle className="h-6 w-6 text-destructive animate-pulse" />
+                        )}
+                        <div>
+                          <p className="text-sm font-bold text-foreground">
+                            {overallHealthOk ? 'All Systems Operational' : 'System Issues Detected'}
+                          </p>
+                          <p className="text-[11px] text-muted-foreground">
+                            {systemHealth.stalledJobs > 0
+                              ? `${systemHealth.stalledJobs} stalled job(s) detected`
+                              : systemHealth.lastJobRun
+                              ? `Last job completed ${formatDistanceToNow(new Date(systemHealth.lastJobRun), { addSuffix: true })}`
+                              : 'No completed jobs yet'}
+                          </p>
+                        </div>
+                      </div>
+                      <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8" onClick={() => refetch()}>
+                        <RefreshCw className="h-3 w-3" /> Re-check
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Edge Functions */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {systemHealth.map((item, i) => (
-                    <motion.div key={item.name} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}>
-                      <Card className={`border-border/40 bg-card/60 overflow-hidden ${
-                        item.status !== 'operational' ? 'border-destructive/30' : ''
-                      }`}>
-                        <CardContent className="p-4">
-                          <div className="flex items-start justify-between mb-3">
-                            <div className="flex items-center gap-2.5">
-                              <div className={`p-2 rounded-lg ${
-                                item.status === 'operational' ? 'bg-chart-1/10' : 'bg-destructive/10'
-                              }`}>
-                                <item.icon className={`h-4 w-4 ${
-                                  item.status === 'operational' ? 'text-chart-1' : 'text-destructive'
-                                }`} />
-                              </div>
-                              <div>
-                                <p className="text-sm font-semibold text-foreground">{item.name}</p>
-                                <p className="text-[10px] text-muted-foreground">{item.detail}</p>
-                              </div>
-                            </div>
-                            <Badge
-                              variant={item.status === 'operational' ? 'default' : 'destructive'}
-                              className="text-[9px] gap-1"
-                            >
-                              {item.status === 'operational' ? (
-                                <><CheckCircle2 className="h-3 w-3" /> OK</>
-                              ) : (
-                                <><AlertTriangle className="h-3 w-3" /> {item.status}</>
-                              )}
-                            </Badge>
-                          </div>
-                          <Progress
-                            value={item.status === 'operational' ? 100 : item.status === 'warning' ? 60 : 30}
-                            className="h-1.5"
-                          />
-                        </CardContent>
-                      </Card>
-                    </motion.div>
+                  {systemHealth.edgeFunctions.map((fn, i) => (
+                    <HealthIndicator
+                      key={fn.name}
+                      status={fn.status}
+                      label={fn.name}
+                      detail={fn.status === 'ok' ? `Responding in ${fn.latencyMs}ms` : 'Not responding'}
+                      latency={fn.latencyMs}
+                      icon={Server}
+                    />
                   ))}
+                  <HealthIndicator
+                    status={systemHealth.dbHealth}
+                    label="Database"
+                    detail={systemHealth.dbHealth === 'ok' ? `Latency: ${systemHealth.dbLatencyMs}ms` : 'Connection failed'}
+                    latency={systemHealth.dbLatencyMs}
+                    icon={Database}
+                  />
+                  <HealthIndicator
+                    status={systemHealth.schedulerHealth}
+                    label="AI Scheduler"
+                    detail={
+                      systemHealth.schedulerHealth === 'ok' ? `${jobStatus.pending} tasks queued` :
+                      systemHealth.stalledJobs > 0 ? `${systemHealth.stalledJobs} stalled jobs` :
+                      `${jobStatus.pending} tasks backed up`
+                    }
+                    icon={Timer}
+                  />
+                  <HealthIndicator
+                    status={seo.weakListings > 100 ? 'warning' : 'ok'}
+                    label="SEO Engine"
+                    detail={`${seo.weakListings} weak listings`}
+                    icon={Search}
+                  />
+                  <HealthIndicator
+                    status={jobStatus.failed > 5 ? 'warning' : 'ok'}
+                    label="Job Worker"
+                    detail={`${jobStatus.failed} failed jobs total`}
+                    icon={Cpu}
+                  />
+                  <HealthIndicator
+                    status="ok"
+                    label="ROI Forecaster"
+                    detail={`${roiForecasts.length} active forecasts`}
+                    icon={Target}
+                  />
                 </div>
               </div>
             )}

@@ -1,5 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useEffect } from 'react';
 
 export interface AICommandCenterData {
   overview: {
@@ -25,8 +26,39 @@ export interface AICommandCenterData {
   searchAnalytics: {
     topQueries: { query: string; count: number }[];
     totalSearches: number;
+    conversionRate: number;
   };
+  priceTrends: { month: string; avgPrice: number; count: number }[];
   recentActions: any[];
+  systemHealth: {
+    edgeFunctions: { name: string; status: 'ok' | 'error' | 'unknown'; latencyMs: number }[];
+    dbHealth: 'ok' | 'error' | 'unknown';
+    dbLatencyMs: number;
+    schedulerHealth: 'ok' | 'warning' | 'error';
+    lastJobRun: string | null;
+    stalledJobs: number;
+  };
+}
+
+async function checkEdgeFunctionHealth(name: string): Promise<{ status: 'ok' | 'error'; latencyMs: number }> {
+  const start = Date.now();
+  try {
+    const { error } = await supabase.functions.invoke(name, { body: { healthCheck: true } });
+    const latencyMs = Date.now() - start;
+    return { status: error?.message?.includes('not found') ? 'error' : 'ok', latencyMs };
+  } catch {
+    return { status: 'error', latencyMs: Date.now() - start };
+  }
+}
+
+async function checkDbHealth(): Promise<{ status: 'ok' | 'error'; latencyMs: number }> {
+  const start = Date.now();
+  try {
+    const { error } = await supabase.from('profiles').select('id').limit(1);
+    return { status: error ? 'error' : 'ok', latencyMs: Date.now() - start };
+  } catch {
+    return { status: 'error', latencyMs: Date.now() - start };
+  }
 }
 
 async function fetchCommandCenterData(): Promise<AICommandCenterData> {
@@ -40,16 +72,32 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     roiRes,
     searchRes,
     recentJobLogsRes,
+    stalledJobsRes,
+    lastCompletedJobRes,
+    priceTrendRes,
   ] = await Promise.all([
-    supabase.from('properties').select('id, investment_score, price', { count: 'exact' }),
+    supabase.from('properties').select('id, investment_score, price, created_at', { count: 'exact' }),
     supabase.from('ai_jobs').select('*').eq('status', 'running').limit(10),
     supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'pending'),
     supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'failed'),
     supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'completed'),
     supabase.from('property_seo_analysis').select('id, seo_score').not('seo_score', 'is', null),
     supabase.from('property_roi_forecast').select('*').order('last_calculated', { ascending: false }).limit(20),
-    supabase.from('ai_property_queries').select('query_text, created_at').order('created_at', { ascending: false }).limit(100),
+    supabase.from('ai_property_queries').select('query_text, created_at').order('created_at', { ascending: false }).limit(200),
     supabase.from('ai_job_logs').select('*').order('created_at', { ascending: false }).limit(20),
+    // Stalled jobs (running > 30 min)
+    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'running').lt('started_at', new Date(Date.now() - 30 * 60000).toISOString()),
+    // Last completed job
+    supabase.from('ai_jobs').select('completed_at').eq('status', 'completed').order('completed_at', { ascending: false }).limit(1),
+    // Price trends — properties with price, grouped by month
+    supabase.from('properties').select('price, created_at').not('price', 'is', null).order('created_at', { ascending: true }).limit(500),
+  ]);
+
+  // Run health checks in parallel
+  const [coreHealth, jobWorkerHealth, dbHealth] = await Promise.all([
+    checkEdgeFunctionHealth('core-engine'),
+    checkEdgeFunctionHealth('job-worker'),
+    checkDbHealth(),
   ]);
 
   const properties = (propertiesRes.data || []) as any[];
@@ -74,7 +122,7 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     ? forecasts.reduce((s, f) => s + (f.expected_roi || 0), 0) / forecasts.length
     : 0;
 
-  // Search analytics - aggregate top queries
+  // Search analytics
   const searchData = searchRes.data || [];
   const queryCounts: Record<string, number> = {};
   searchData.forEach(s => {
@@ -86,6 +134,29 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     .sort((a, b) => b.count - a.count)
     .slice(0, 10);
 
+  // Search conversion rate (queries with property-related terms / total)
+  const conversionTerms = ['buy', 'invest', 'villa', 'house', 'apartment', 'land', 'beli', 'rumah'];
+  const convertedSearches = searchData.filter(s => {
+    const q = (s.query_text || '').toLowerCase();
+    return conversionTerms.some(t => q.includes(t));
+  }).length;
+  const conversionRate = searchData.length > 0 ? (convertedSearches / searchData.length) * 100 : 0;
+
+  // Price trends by month
+  const priceData = priceTrendRes.data || [];
+  const monthlyPrices: Record<string, { total: number; count: number }> = {};
+  priceData.forEach((p: any) => {
+    if (!p.price || !p.created_at) return;
+    const month = p.created_at.slice(0, 7); // YYYY-MM
+    if (!monthlyPrices[month]) monthlyPrices[month] = { total: 0, count: 0 };
+    monthlyPrices[month].total += p.price;
+    monthlyPrices[month].count += 1;
+  });
+  const priceTrends = Object.entries(monthlyPrices)
+    .map(([month, d]) => ({ month, avgPrice: Math.round(d.total / d.count), count: d.count }))
+    .sort((a, b) => a.month.localeCompare(b.month))
+    .slice(-12);
+
   // Recent actions from job logs
   const recentActions = (recentJobLogsRes.data || []).map(log => ({
     id: log.id,
@@ -93,6 +164,14 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     level: log.level,
     created_at: log.created_at,
   }));
+
+  // System health
+  const stalledJobs = stalledJobsRes.count || 0;
+  const lastJobCompleted = lastCompletedJobRes.data?.[0]?.completed_at || null;
+  const pendingCount = pendingJobsRes.count || 0;
+  const schedulerHealth: 'ok' | 'warning' | 'error' =
+    stalledJobs > 0 ? 'error' :
+    pendingCount > 50 ? 'warning' : 'ok';
 
   return {
     overview: {
@@ -104,7 +183,7 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     },
     jobStatus: {
       running: jobsRes.data?.length || 0,
-      pending: pendingJobsRes.count || 0,
+      pending: pendingCount,
       completed: completedJobsRes.count || 0,
       failed: failedJobsRes.count || 0,
       recentJobs: jobsRes.data || [],
@@ -118,16 +197,53 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     searchAnalytics: {
       topQueries,
       totalSearches: searchData.length,
+      conversionRate: Math.round(conversionRate * 10) / 10,
     },
+    priceTrends,
     recentActions,
+    systemHealth: {
+      edgeFunctions: [
+        { name: 'core-engine', ...coreHealth },
+        { name: 'job-worker', ...jobWorkerHealth },
+      ],
+      dbHealth: dbHealth.status,
+      dbLatencyMs: dbHealth.latencyMs,
+      schedulerHealth,
+      lastJobRun: lastJobCompleted,
+      stalledJobs,
+    },
   };
 }
 
 export function useAICommandCenter() {
+  const qc = useQueryClient();
+
+  // Realtime subscriptions for live updates
+  useEffect(() => {
+    const jobChannel = supabase
+      .channel('cmd-center-jobs')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'ai_jobs' }, () => {
+        qc.invalidateQueries({ queryKey: ['ai-command-center'] });
+      })
+      .subscribe();
+
+    const logChannel = supabase
+      .channel('cmd-center-logs')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'ai_job_logs' }, () => {
+        qc.invalidateQueries({ queryKey: ['ai-command-center'] });
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(jobChannel);
+      supabase.removeChannel(logChannel);
+    };
+  }, [qc]);
+
   return useQuery({
     queryKey: ['ai-command-center'],
     queryFn: fetchCommandCenterData,
     refetchInterval: 30000,
-    staleTime: 15000,
+    staleTime: 10000,
   });
 }
