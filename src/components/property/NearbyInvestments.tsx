@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TrendingUp, MapPin, Bed, Sparkles } from 'lucide-react';
+import { TrendingUp, MapPin, Bed, Sparkles, DollarSign, Percent } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import Price from '@/components/ui/Price';
@@ -65,9 +65,14 @@ const NearbyInvestments = memo(function NearbyInvestments({ propertyId }: Nearby
                   alt={property.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                {property.investment_score && (
-                  <div className="absolute top-2 right-2 bg-chart-1/90 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md">
+                {property.investment_score != null && (
+                  <div className="absolute top-2 right-2 bg-chart-1/90 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md shadow-sm">
                     Score {property.investment_score}
+                  </div>
+                )}
+                {property.expected_roi != null && (
+                  <div className="absolute top-2 left-2 bg-background/85 backdrop-blur-sm text-chart-1 text-[10px] font-bold px-1.5 py-0.5 rounded-md border border-chart-1/20">
+                    {property.expected_roi}% ROI
                   </div>
                 )}
               </div>
@@ -87,6 +92,17 @@ const NearbyInvestments = memo(function NearbyInvestments({ propertyId }: Nearby
                     </span>
                   )}
                 </div>
+                {property.rental_yield != null && (
+                  <div className="flex items-center gap-1 text-[10px] text-chart-2 font-medium">
+                    <Percent className="h-2.5 w-2.5" />
+                    Yield {property.rental_yield}%
+                    {property.risk_level && (
+                      <Badge variant="outline" className="text-[8px] h-3.5 ml-auto border-border/40">
+                        {property.risk_level}
+                      </Badge>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           );

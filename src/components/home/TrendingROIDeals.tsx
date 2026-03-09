@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TrendingUp, Flame, MapPin, Bed, DollarSign, Sparkles, ChevronRight } from 'lucide-react';
+import { Flame, MapPin, Bed, DollarSign, Sparkles, ChevronRight, Percent, TrendingUp } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -39,10 +39,10 @@ const PropertyCard = memo(function PropertyCard({
           alt={property.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <div className={cn('absolute top-2 left-2 text-white text-[10px] font-bold px-2 py-0.5 rounded-md', badgeColor)}>
+        <div className={cn('absolute top-2 left-2 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm', badgeColor)}>
           {badge}
         </div>
-        {property.investment_score && (
+        {property.investment_score != null && (
           <div className="absolute bottom-2 right-2 bg-background/80 backdrop-blur-sm text-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-md border border-border/30">
             📊 {property.investment_score}
           </div>
@@ -64,12 +64,22 @@ const PropertyCard = memo(function PropertyCard({
             </span>
           )}
         </div>
-        {property.expected_roi && (
-          <div className="flex items-center gap-1 text-chart-1 text-[10px] font-semibold">
-            <DollarSign className="h-2.5 w-2.5" />
-            ROI {property.expected_roi}%
+        {(property.expected_roi || property.rental_yield) && (
+          <div className="flex items-center gap-2 text-[10px] font-semibold">
+            {property.expected_roi && (
+              <span className="flex items-center gap-0.5 text-chart-1">
+                <DollarSign className="h-2.5 w-2.5" />
+                ROI {property.expected_roi}%
+              </span>
+            )}
+            {property.rental_yield && (
+              <span className="flex items-center gap-0.5 text-chart-2">
+                <Percent className="h-2.5 w-2.5" />
+                Yield {property.rental_yield}%
+              </span>
+            )}
             {property.risk_level && (
-              <Badge variant="outline" className="text-[8px] h-3.5 ml-auto">
+              <Badge variant="outline" className="text-[8px] h-3.5 ml-auto border-border/40">
                 {property.risk_level}
               </Badge>
             )}
@@ -158,6 +168,9 @@ const TrendingROIDeals = memo(function TrendingROIDeals({ onPropertyClick, class
           <div className="flex items-center gap-2">
             <Flame className="h-4 w-4 text-chart-3" />
             <h2 className="text-base sm:text-lg font-bold text-foreground">Trending Properties</h2>
+            <Badge variant="outline" className="text-[10px] bg-chart-3/5 border-chart-3/20 text-chart-3 gap-0.5">
+              <TrendingUp className="h-2.5 w-2.5" /> {trending?.length || 0}
+            </Badge>
           </div>
           <Button
             variant="ghost"
@@ -177,7 +190,7 @@ const TrendingROIDeals = memo(function TrendingROIDeals({ onPropertyClick, class
               <PropertyCard
                 key={property.id}
                 property={property}
-                badge="🔥 Trending"
+                badge={`🔥 ${property.save_count || 0} engagements`}
                 badgeColor="bg-chart-3/90"
                 onClick={() => handleClick(property)}
               />
