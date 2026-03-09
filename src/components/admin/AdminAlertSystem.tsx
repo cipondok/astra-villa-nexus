@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AlertTriangle, CheckCircle, Info, X, Eye, UserPlus, Building2, ShoppingCart, Shield, XCircle, ExternalLink, Trash2, CheckCheck, Bell } from "lucide-react";
+import { AlertTriangle, CheckCircle, Info, X, Eye, UserPlus, Building2, ShoppingCart, Shield, XCircle, ExternalLink, Trash2, CheckCheck, Bell, ChevronLeft, ChevronRight } from "lucide-react";
 import { useAlert } from "@/contexts/AlertContext";
 import ActivityDetailsModal from "./ActivityDetailsModal";
 import { motion, AnimatePresence } from "framer-motion";
@@ -31,6 +31,8 @@ interface AdminAlert {
 }
 
 type AlertCategory = 'all' | 'verification' | 'property' | 'profile' | 'system' | 'other';
+
+const PAGE_SIZE = 50;
 
 const CATEGORY_TYPES: Record<AlertCategory, string[]> = {
   all: [],
@@ -55,6 +57,7 @@ const AdminAlertSystem = () => {
   const [reviewNotes, setReviewNotes] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [activeCategory, setActiveCategory] = useState<AlertCategory>('all');
+  const [currentPage, setCurrentPage] = useState(1);
   const [activityModal, setActivityModal] = useState<{
     isOpen: boolean;
     type: 'properties' | 'users';
@@ -668,6 +671,18 @@ const AdminAlertSystem = () => {
     return alerts.filter(a => getCategory(a.type) === activeCategory);
   }, [alerts, activeCategory]);
 
+  const totalPages = Math.ceil(filteredAlerts.length / PAGE_SIZE);
+  const paginatedAlerts = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return filteredAlerts.slice(start, start + PAGE_SIZE);
+  }, [filteredAlerts, currentPage]);
+
+  // Reset page when category changes
+  const handleCategoryChange = (v: string) => {
+    setActiveCategory(v as AlertCategory);
+    setCurrentPage(1);
+  };
+
   const formatTimeAgo = (dateStr: string) => {
     const diff = Date.now() - new Date(dateStr).getTime();
     const mins = Math.floor(diff / 60000);
@@ -702,7 +717,11 @@ const AdminAlertSystem = () => {
                 </Badge>
               )}
             </CardTitle>
-            <span className="text-xs text-muted-foreground">{alerts?.length || 0} total</span>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="text-[10px] px-1.5 py-0">{alerts?.length || 0} Total</Badge>
+              <Badge variant="secondary" className="text-[10px] px-1.5 py-0">{unreadCount} Unread</Badge>
+              <Badge variant="default" className="text-[10px] px-1.5 py-0">{readCount} Read</Badge>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -729,7 +748,7 @@ const AdminAlertSystem = () => {
           </div>
 
           {/* Category Tabs */}
-          <Tabs value={activeCategory} onValueChange={(v) => setActiveCategory(v as AlertCategory)}>
+          <Tabs value={activeCategory} onValueChange={handleCategoryChange}>
             <TabsList className="w-full h-auto flex flex-wrap gap-0.5 bg-muted/30 border border-border/30 p-0.5 rounded-md">
               {categoryTabs.map(tab => (
                 <TabsTrigger
@@ -749,7 +768,7 @@ const AdminAlertSystem = () => {
           {/* Bulk Actions Bar */}
           <div className="flex items-center justify-between gap-2 text-[10px]">
             <span className="text-muted-foreground">
-              Showing {filteredAlerts.length} alerts {unreadCount > 0 && `· ${unreadCount} unread`}
+              Showing {filteredAlerts.length > 0 ? ((currentPage - 1) * PAGE_SIZE + 1) : 0}-{Math.min(currentPage * PAGE_SIZE, filteredAlerts.length)} of {filteredAlerts.length} alerts
             </span>
             <div className="flex gap-1.5 flex-wrap">
               <Button
@@ -793,7 +812,7 @@ const AdminAlertSystem = () => {
           <ScrollArea className="h-[400px] scroll-smooth">
             {isLoading ? (
               <div className="text-center py-4 text-xs text-muted-foreground">Loading alerts...</div>
-            ) : filteredAlerts.length === 0 ? (
+            ) : paginatedAlerts.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <Bell className="h-6 w-6 mx-auto mb-2 opacity-30" />
                 <p className="text-xs">No alerts in this category</p>
@@ -801,7 +820,7 @@ const AdminAlertSystem = () => {
             ) : (
               <AnimatePresence mode="popLayout">
                 <div className="space-y-0.5">
-                  {filteredAlerts.map((alert) => {
+                  {paginatedAlerts.map((alert) => {
                     const Icon = getAlertIcon(alert.type);
                     return (
                       <motion.div
@@ -850,6 +869,58 @@ const AdminAlertSystem = () => {
               </AnimatePresence>
             )}
           </ScrollArea>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between pt-3 border-t border-border/40">
+              <span className="text-[10px] text-muted-foreground">
+                Page {currentPage} of {totalPages}
+              </span>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-6 w-6 p-0"
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft className="h-3 w-3" />
+                </Button>
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let page: number;
+                  if (totalPages <= 5) {
+                    page = i + 1;
+                  } else if (currentPage <= 3) {
+                    page = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    page = totalPages - 4 + i;
+                  } else {
+                    page = currentPage - 2 + i;
+                  }
+                  return (
+                    <Button
+                      key={page}
+                      variant={page === currentPage ? "default" : "outline"}
+                      size="sm"
+                      className="h-6 min-w-[24px] px-1.5 text-[10px]"
+                      onClick={() => setCurrentPage(page)}
+                    >
+                      {page}
+                    </Button>
+                  );
+                })}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-6 w-6 p-0"
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  <ChevronRight className="h-3 w-3" />
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 

@@ -1,32 +1,23 @@
 
+# Plan: Edge Function Consolidation
 
-# Add Pagination & Total Count to Admin Alerts
+## Status: ✅ COMPLETE
 
-## Changes to `src/components/admin/AdminAlertSystem.tsx`
+Consolidated **82 standalone Edge Functions → 6 unified routers**.
 
-### 1. Pagination State
-Add `currentPage` state (default 1), reset to 1 when category changes. Define `PAGE_SIZE = 50`.
+## Final Architecture
 
-### 2. Paginated Display
-Instead of rendering all `filteredAlerts`, slice to show only the current page:
-```
-const paginatedAlerts = filteredAlerts.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
-const totalPages = Math.ceil(filteredAlerts.length / PAGE_SIZE);
-```
+| Router | Modes/Responsibilities |
+|--------|----------------------|
+| `ai-engine` | generate_description, generate_image, nlp_search, match_property, seo_generate, recommendations, transcribe_audio, virtual_staging, market_report, property_assistant, smart_pricing, lead_scoring, etc. (25+ modes) |
+| `auth-engine` | Auth, KYC, device registration, session heartbeat, verification requests, OTP, 2FA |
+| `core-engine` | Diagnostics, algorithms, location sync, Astra tokens, health checks, analytics, auto_tune_ai_weights, investment_score, ai_brain, deal_detector, etc. (25+ modes) |
+| `notification-engine` | Emails, inquiry notifications, campaign emails, push notifications |
+| `payment-engine` | Midtrans, PayPal, invoices, booking payments, mortgages, refunds, subscriptions |
+| `vendor-engine` | Vendor services, validation, function generation, Indonesian vendor onboarding |
 
-### 3. Total All-Time Count in Header
-Replace the simple "X total" span with a more prominent display showing:
-- **All-time total**: total alerts count
-- **Unread**: unread count  
-- **Read**: read count
-
-### 4. Pagination Controls
-Add pagination bar below the ScrollArea with:
-- "Showing 1-50 of 234" text
-- Previous / Next buttons
-- Page number indicators
-- Import `ChevronLeft`, `ChevronRight` from lucide-react
-
-### File
-- **Edit**: `src/components/admin/AdminAlertSystem.tsx` — add state, slice logic, pagination UI, total count header
-
+## AI Model Auto-Tuning
+- `ai_model_weights` table with 6 factors (location, price, feature, investment, popularity, collaborative)
+- `ai_recommendation_events` table for conversion tracking
+- Daily pg_cron job runs `auto_tune_ai_weights` mode
+- Guardrails: ±3 max change, minimum 5 per factor, sum=100
