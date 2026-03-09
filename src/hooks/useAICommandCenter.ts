@@ -230,6 +230,28 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     stalledJobs > 0 ? 'error' :
     pendingCount > 50 ? 'warning' : 'ok';
 
+  // Historical KPI comparisons
+  // Avg price MoM from priceTrends
+  const sortedTrends = [...priceTrends];
+  const currMonthPrice = sortedTrends.length > 0 ? sortedTrends[sortedTrends.length - 1].avgPrice : 0;
+  const prevMonthPrice = sortedTrends.length > 1 ? sortedTrends[sortedTrends.length - 2].avgPrice : 0;
+
+  const historicalKPIs: HistoricalKPIs = {
+    wow: {
+      newProperties: makePeriodComparison(propsThisWeek.count || 0, propsLastWeek.count || 0),
+      jobsCompleted: makePeriodComparison(jobsCompThisWeek.count || 0, jobsCompLastWeek.count || 0),
+      jobsFailed: makePeriodComparison(jobsFailThisWeek.count || 0, jobsFailLastWeek.count || 0),
+      searches: makePeriodComparison(searchThisWeek.count || 0, searchLastWeek.count || 0),
+    },
+    mom: {
+      newProperties: makePeriodComparison(propsThisMonth.count || 0, propsLastMonth.count || 0),
+      jobsCompleted: makePeriodComparison(jobsCompThisMonth.count || 0, jobsCompLastMonth.count || 0),
+      jobsFailed: makePeriodComparison(jobsFailThisMonth.count || 0, jobsFailLastMonth.count || 0),
+      searches: makePeriodComparison(searchThisMonth.count || 0, searchLastMonth.count || 0),
+      avgPrice: makePeriodComparison(currMonthPrice, prevMonthPrice),
+    },
+  };
+
   return {
     overview: {
       totalProperties,
@@ -269,6 +291,7 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
       lastJobRun: lastJobCompleted,
       stalledJobs,
     },
+    historicalKPIs,
   };
 }
 
