@@ -40,6 +40,10 @@ export interface AICommandCenterData {
     completed: number;
     failed: number;
     recentJobs: any[];
+    throughput: { date: string; completed: number; failed: number }[];
+    avgDurationSec: number;
+    totalProcessed: number;
+    jobTypeBreakdown: { type: string; count: number; fill: string }[];
   };
   seo: {
     weakListings: number;
@@ -56,6 +60,8 @@ export interface AICommandCenterData {
     topQueries: { query: string; count: number }[];
     totalSearches: number;
     conversionRate: number;
+    volumeByDay: { date: string; searches: number }[];
+    categoryBreakdown: { category: string; count: number; fill: string }[];
   };
   priceTrends: { month: string; avgPrice: number; count: number }[];
   recentActions: any[];
@@ -151,6 +157,10 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     valuationsThisWeekRes,
     valuationsLastWeekRes,
     roiForecastCountRes,
+    // Job throughput (14 days of completed+failed jobs with timestamps)
+    jobThroughputRes,
+    // Search volume (14 days)
+    searchVolumeRes,
   ] = await Promise.all([
     supabase.from('properties').select('id, investment_score, price, created_at', { count: 'exact' }),
     supabase.from('ai_jobs').select('*').eq('status', 'running').limit(10),
@@ -159,7 +169,7 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'completed'),
     supabase.from('property_seo_analysis').select('id, seo_score, title_score, description_score, keyword_score, image_score, location_score, hashtag_score, seo_rating, property_id, last_analyzed_at, ranking_difficulty').not('seo_score', 'is', null).order('last_analyzed_at', { ascending: false }).limit(200),
     supabase.from('property_roi_forecast').select('*').order('last_calculated', { ascending: false }).limit(20),
-    supabase.from('ai_property_queries').select('query_text, created_at').order('created_at', { ascending: false }).limit(200),
+    supabase.from('ai_property_queries').select('query_text, created_at').order('created_at', { ascending: false }).limit(500),
     supabase.from('ai_job_logs').select('*').order('created_at', { ascending: false }).limit(20),
     supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'running').lt('started_at', new Date(Date.now() - 30 * 60000).toISOString()),
     supabase.from('ai_jobs').select('completed_at').eq('status', 'completed').order('completed_at', { ascending: false }).limit(1),
@@ -194,6 +204,10 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     supabase.from('property_valuations').select('id', { count: 'exact' }).gte('created_at', thisWeekStart),
     supabase.from('property_valuations').select('id', { count: 'exact' }).gte('created_at', lastWeekStart).lt('created_at', thisWeekStart),
     supabase.from('property_roi_forecast').select('id', { count: 'exact' }),
+    // Job throughput (14 days — completed & failed with dates)
+    supabase.from('ai_jobs').select('status, job_type, completed_at, started_at, created_at').in('status', ['completed', 'failed']).gte('created_at', lastWeekStart).order('created_at', { ascending: true }).limit(500),
+    // Search volume (14 days)
+    supabase.from('ai_property_queries').select('query_text, created_at').gte('created_at', lastWeekStart).order('created_at', { ascending: true }).limit(1000),
   ]);
 
   // Run health checks in parallel
@@ -312,13 +326,50 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
       avgEstimatedValue: Math.round(avgValue),
       avgPredictedROI: Math.round(avgROI * 10) / 10,
     },
-    jobStatus: {
-      running: jobsRes.data?.length || 0,
-      pending: pendingCount,
-      completed: completedJobsRes.count || 0,
-      failed: failedJobsRes.count || 0,
-      recentJobs: jobsRes.data || [],
-    },
+    jobStatus: (() => {
+      const throughputJobs = jobThroughputRes.data || [];
+      // Build throughput by day (14 days)
+      const throughputByDay: Record<string, { completed: number; failed: number }> = {};
+      for (let i = 0; i < 14; i++) {
+        const d = new Date(now.getTime() - (13 - i) * 86400000);
+        throughputByDay[d.toISOString().slice(0, 10)] = { completed: 0, failed: 0 };
+      }
+      let totalDuration = 0;
+      let durationCount = 0;
+      const typeCounts: Record<string, number> = {};
+
+      throughputJobs.forEach((j: any) => {
+        const day = (j.completed_at || j.created_at)?.slice(0, 10);
+        if (day && throughputByDay[day]) {
+          if (j.status === 'completed') throughputByDay[day].completed++;
+          else throughputByDay[day].failed++;
+        }
+        if (j.status === 'completed' && j.started_at && j.completed_at) {
+          totalDuration += new Date(j.completed_at).getTime() - new Date(j.started_at).getTime();
+          durationCount++;
+        }
+        const t = j.job_type || 'unknown';
+        typeCounts[t] = (typeCounts[t] || 0) + 1;
+      });
+
+      const typeColors = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))', 'hsl(var(--primary))'];
+      const jobTypeBreakdown = Object.entries(typeCounts)
+        .map(([type, count], i) => ({ type: type.replace(/_/g, ' '), count, fill: typeColors[i % typeColors.length] }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 6);
+
+      return {
+        running: jobsRes.data?.length || 0,
+        pending: pendingCount,
+        completed: completedJobsRes.count || 0,
+        failed: failedJobsRes.count || 0,
+        recentJobs: jobsRes.data || [],
+        throughput: Object.entries(throughputByDay).map(([date, d]) => ({ date: date.slice(5), ...d })),
+        avgDurationSec: durationCount > 0 ? Math.round(totalDuration / durationCount / 1000) : 0,
+        totalProcessed: throughputJobs.length,
+        jobTypeBreakdown,
+      };
+    })(),
     seo: (() => {
       const scoreBuckets = [
         { range: '0-20', count: 0, fill: 'hsl(var(--destructive))' },
@@ -381,11 +432,47 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
       };
     })(),
     roiForecasts: forecasts,
-    searchAnalytics: {
-      topQueries,
-      totalSearches: searchData.length,
-      conversionRate: Math.round(conversionRate * 10) / 10,
-    },
+    searchAnalytics: (() => {
+      // Volume by day (14 days)
+      const searchVolData = searchVolumeRes.data || [];
+      const volumeByDayMap: Record<string, number> = {};
+      for (let i = 0; i < 14; i++) {
+        const d = new Date(now.getTime() - (13 - i) * 86400000);
+        volumeByDayMap[d.toISOString().slice(0, 10)] = 0;
+      }
+      searchVolData.forEach((s: any) => {
+        const day = s.created_at?.slice(0, 10);
+        if (day && volumeByDayMap[day] !== undefined) volumeByDayMap[day]++;
+      });
+      const volumeByDay = Object.entries(volumeByDayMap).map(([date, searches]) => ({ date: date.slice(5), searches }));
+
+      // Category breakdown
+      const categories: Record<string, number> = { buy: 0, rent: 0, invest: 0, location: 0, other: 0 };
+      const catColors: Record<string, string> = {
+        buy: 'hsl(var(--chart-1))', rent: 'hsl(var(--chart-2))',
+        invest: 'hsl(var(--chart-3))', location: 'hsl(var(--chart-4))',
+        other: 'hsl(var(--muted-foreground))',
+      };
+      searchData.forEach(s => {
+        const q = (s.query_text || '').toLowerCase();
+        if (/buy|beli|purchase|rumah|house|villa|apartment/.test(q)) categories.buy++;
+        else if (/rent|sewa|kost|lease/.test(q)) categories.rent++;
+        else if (/invest|roi|yield|return/.test(q)) categories.invest++;
+        else if (/bali|jakarta|bandung|surabaya|location|area|city/.test(q)) categories.location++;
+        else categories.other++;
+      });
+      const categoryBreakdown = Object.entries(categories)
+        .filter(([, count]) => count > 0)
+        .map(([category, count]) => ({ category: category.charAt(0).toUpperCase() + category.slice(1), count, fill: catColors[category] }));
+
+      return {
+        topQueries,
+        totalSearches: searchData.length,
+        conversionRate: Math.round(conversionRate * 10) / 10,
+        volumeByDay,
+        categoryBreakdown,
+      };
+    })(),
     priceTrends,
     recentActions,
     systemHealth: {
