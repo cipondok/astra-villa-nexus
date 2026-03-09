@@ -473,6 +473,18 @@ const InvestorDashboard = () => {
             </div>
           </motion.div>
         )}
+
+        {/* ROI Forecast Analytics */}
+        <motion.div {...fadeIn}>
+          <Separator className="my-6" />
+          <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-primary" />
+            AI ROI Forecast Analytics
+          </h2>
+          <Suspense fallback={<Skeleton className="h-64 w-full" />}>
+            <ROIAnalyticsDashboard />
+          </Suspense>
+        </motion.div>
       </div>
     </div>
   );
