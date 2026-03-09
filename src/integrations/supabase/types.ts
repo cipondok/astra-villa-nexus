@@ -2231,6 +2231,39 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_property_queries: {
+        Row: {
+          created_at: string
+          id: string
+          intent_summary: string | null
+          parsed_filters: Json | null
+          query_text: string
+          results_count: number | null
+          source: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          intent_summary?: string | null
+          parsed_filters?: Json | null
+          query_text: string
+          results_count?: number | null
+          source?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          intent_summary?: string | null
+          parsed_filters?: Json | null
+          query_text?: string
+          results_count?: number | null
+          source?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       ai_recommendation_events: {
         Row: {
           ai_match_score: number | null
