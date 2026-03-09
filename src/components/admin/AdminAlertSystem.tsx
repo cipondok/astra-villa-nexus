@@ -823,15 +823,14 @@ const AdminAlertSystem = () => {
                 variant="ghost"
                 size="sm"
                 className="h-6 text-[10px] px-2 text-destructive hover:text-destructive"
-                onClick={() => {
-                  if (window.confirm('Delete ALL alerts permanently? This cannot be undone.')) {
-                    deleteAllAlertsMutation.mutate();
-                  }
-                }}
-                disabled={deleteAllAlertsMutation.isPending || (alerts?.length || 0) === 0}
+                onClick={deleteCategoryAlerts}
+                disabled={deleteProgress.isDeleting || filteredAlerts.length === 0}
               >
                 <Trash2 className="h-3 w-3 mr-1" />
-                Delete All
+                {deleteProgress.isDeleting
+                  ? `Deleting ${deleteProgress.deleted}/${deleteProgress.total}...`
+                  : `Delete ${activeCategory === 'all' ? 'All' : activeCategory} (${filteredAlerts.length})`
+                }
               </Button>
             </div>
           </div>
