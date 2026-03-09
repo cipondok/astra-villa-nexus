@@ -253,6 +253,22 @@ export default function NLPSearchBar({ onApplyFilters, className }: NLPSearchBar
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Search suggestions */}
+        {!extractedFilters && !query && (
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            <span className="text-[10px] text-muted-foreground mr-1">Try:</span>
+            {suggestions.map((s, i) => (
+              <button
+                key={i}
+                onClick={() => handleSuggestionClick(s)}
+                className="text-[10px] px-2 py-0.5 rounded-full bg-muted/50 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors border border-transparent hover:border-primary/20"
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   );
