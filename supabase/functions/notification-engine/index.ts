@@ -30,6 +30,7 @@ const builtInTemplates: Record<string, Record<string, any>> = {
   booking_cancelled: { subject: 'Booking Cancelled – {{property_title}}', headerText: 'Booking Cancelled', body: 'Dear {{user_name}},\n\nYour booking for <strong>{{property_title}}</strong> on {{booking_date}} has been cancelled.\n\n📝 Reason: {{cancellation_reason}}', buttonText: 'Browse Properties', buttonUrl: '{{site_url}}/properties', showSocialLinks: true },
   verification_approved: { subject: 'Verification Approved – {{verification_type}}', headerText: 'Verification Approved ✅', body: 'Dear {{user_name}},\n\nYour <strong>{{verification_type}}</strong> verification has been approved.', buttonText: 'Explore Benefits', buttonUrl: '{{site_url}}/dashboard', showSocialLinks: true },
   general: { subject: 'Message from ASTRA Villa', body: '{{message}}', showSocialLinks: true, showUnsubscribe: true },
+  system_health_alert: { subject: '🚨 System Alert: {{alert_type}}', headerText: '⚠️ System Health Alert', body: '<strong>Severity:</strong> {{severity}}\n<strong>Issue:</strong> {{message}}\n\n<strong>Details:</strong>\n<pre style="background:#f5f0eb;padding:12px;border-radius:6px;font-size:12px;overflow-x:auto;">{{details}}</pre>\n\n<strong>Detected at:</strong> {{timestamp}}', buttonText: 'Open Command Center', buttonUrl: '{{dashboard_url}}', showSocialLinks: false },
 };
 
 function replaceVariables(str: string, vars: Record<string, string>): string {
