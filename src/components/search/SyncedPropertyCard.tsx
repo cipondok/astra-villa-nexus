@@ -1,9 +1,12 @@
-import { memo, forwardRef } from 'react';
-import { MapPin, Bed, Bath, Maximize2, TrendingUp } from 'lucide-react';
+import { memo, forwardRef, useCallback } from 'react';
+import { MapPin, Bed, Bath, Maximize2, TrendingUp, Plus, Check } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { MapProperty } from '@/hooks/useMapProperties';
+import { usePropertyComparison } from '@/contexts/PropertyComparisonContext';
+import { BaseProperty } from '@/types/property';
 import { cn } from '@/lib/utils';
 
 const formatPrice = (price: number) => {
@@ -20,6 +23,43 @@ interface SyncedPropertyCardProps {
   onClick: (property: MapProperty) => void;
   compact?: boolean;
 }
+
+/** Small compare toggle button overlaid on the card image */
+const CompareToggle = memo(({ property }: { property: MapProperty }) => {
+  const { addToComparison, removeFromComparison, isInComparison, canAddMore } = usePropertyComparison();
+  const inComparison = isInComparison(property.id);
+
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (inComparison) {
+      removeFromComparison(property.id);
+    } else if (canAddMore) {
+      addToComparison(property as unknown as BaseProperty);
+    }
+  }, [inComparison, property, addToComparison, removeFromComparison, canAddMore]);
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          onClick={handleClick}
+          className={cn(
+            "absolute top-1.5 right-1.5 h-6 w-6 rounded-full flex items-center justify-center transition-all duration-200 border shadow-sm z-10",
+            inComparison
+              ? "bg-primary text-primary-foreground border-primary/80 scale-110"
+              : "bg-background/80 backdrop-blur-sm text-foreground border-border/60 hover:bg-primary hover:text-primary-foreground hover:border-primary"
+          )}
+        >
+          {inComparison ? <Check className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
+        </button>
+      </TooltipTrigger>
+      <TooltipContent side="left" className="text-[11px]">
+        {inComparison ? 'Hapus dari perbandingan' : 'Bandingkan'}
+      </TooltipContent>
+    </Tooltip>
+  );
+});
+CompareToggle.displayName = 'CompareToggle';
 
 const SyncedPropertyCard = memo(forwardRef<HTMLDivElement, SyncedPropertyCardProps>(
   ({ property, isHighlighted, onHover, onClick, compact = false }, ref) => {
@@ -52,6 +92,7 @@ const SyncedPropertyCard = memo(forwardRef<HTMLDivElement, SyncedPropertyCardPro
               <Badge className="absolute top-1.5 left-1.5 bg-primary text-primary-foreground font-bold text-[10px] shadow">
                 {formatPrice(property.price)}
               </Badge>
+              <CompareToggle property={property} />
             </div>
             <CardContent className="p-2.5">
               <h4 className="text-xs font-semibold text-foreground line-clamp-1">{property.title}</h4>
@@ -92,6 +133,7 @@ const SyncedPropertyCard = memo(forwardRef<HTMLDivElement, SyncedPropertyCardPro
                 loading="lazy"
                 onError={(e) => { (e.target as HTMLImageElement).src = '/placeholder.svg'; }}
               />
+              <CompareToggle property={property} />
               {property.investment_score && property.investment_score >= 80 && (
                 <Badge className="absolute bottom-1 left-1 bg-chart-3/90 text-primary-foreground text-[9px] px-1 py-0">
                   <TrendingUp className="h-2.5 w-2.5 mr-0.5" />{property.investment_score}
