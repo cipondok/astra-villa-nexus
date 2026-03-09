@@ -708,6 +708,124 @@ async function detectInvestmentHotspots(supabase: any) {
   return { cities_processed: rows.length, inserted };
 }
 
+// ── Update Market Insights (unified city-level intelligence) ──
+async function updateMarketInsights(supabase: any) {
+  const { data: props } = await supabase
+    .from("properties")
+    .select("id, city, state, location, price, area_sqm, property_type, investment_score, listing_type")
+    .eq("status", "available")
+    .not("price", "is", null)
+    .gt("price", 0);
+
+  if (!props || props.length === 0) return { processed: 0 };
+
+  // Fetch ROI data in chunks
+  const propIds = props.map((p: any) => p.id);
+  const roiChunks: any[] = [];
+  for (let i = 0; i < propIds.length; i += 50) {
+    const chunk = propIds.slice(i, i + 50);
+    const { data } = await supabase.from("property_roi_forecast").select("property_id, expected_roi, rental_yield").in("property_id", chunk);
+    if (data) roiChunks.push(...data);
+  }
+  const roiMap = new Map(roiChunks.map((r: any) => [r.property_id, r]));
+
+  // Fetch activity signals (last 30 days)
+  const cutoff = new Date(Date.now() - 30 * 86400000).toISOString();
+  const { data: activity } = await supabase
+    .from("ai_behavior_tracking")
+    .select("property_id")
+    .gte("created_at", cutoff)
+    .not("property_id", "is", null);
+  const activityMap: Record<string, number> = {};
+  (activity || []).forEach((a: any) => {
+    if (a.property_id) activityMap[a.property_id] = (activityMap[a.property_id] || 0) + 1;
+  });
+
+  // Group by city
+  const byCity: Record<string, {
+    prices: number[]; sqmPrices: number[]; rois: number[]; yields: number[];
+    scores: number[]; types: Record<string, number>; activityTotal: number;
+    state: string; location: string | null;
+  }> = {};
+
+  for (const p of props) {
+    const city = p.city || "Unknown";
+    if (!byCity[city]) byCity[city] = {
+      prices: [], sqmPrices: [], rois: [], yields: [], scores: [],
+      types: {}, activityTotal: 0, state: p.state || "", location: p.location
+    };
+    const c = byCity[city];
+    c.prices.push(p.price);
+    if (p.area_sqm > 0) c.sqmPrices.push(p.price / p.area_sqm);
+    if (p.investment_score) c.scores.push(p.investment_score);
+    if (p.property_type) c.types[p.property_type] = (c.types[p.property_type] || 0) + 1;
+    c.activityTotal += activityMap[p.id] || 0;
+    const roi = roiMap.get(p.id) as any;
+    if (roi?.expected_roi) c.rois.push(roi.expected_roi);
+    if (roi?.rental_yield) c.yields.push(roi.rental_yield);
+  }
+
+  const rows = Object.entries(byCity).map(([city, d]) => {
+    const avg = (arr: number[]) => arr.length > 0 ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
+    const sorted = [...d.prices].sort((a, b) => a - b);
+    const topTypes = Object.entries(d.types).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([t]) => t);
+
+    // Demand score from activity
+    const demandScore = Math.min(100, Math.round((d.activityTotal / Math.max(d.prices.length, 1)) * 8));
+
+    // Growth rate approximation from investment scores + activity
+    const avgScore = avg(d.scores);
+    const growthRate = Math.round((avgScore * 0.06 + demandScore * 0.04) * 100) / 100;
+
+    // Market status classification
+    let status = "stable";
+    if (avgScore >= 75 && demandScore >= 50) status = "hot";
+    else if (avgScore >= 60 || demandScore >= 40) status = "emerging";
+    else if (avgScore < 30 && demandScore < 20) status = "cooling";
+
+    return {
+      city,
+      state: d.state,
+      location: d.location,
+      avg_price: Math.round(avg(d.prices)),
+      avg_price_per_sqm: Math.round(avg(d.sqmPrices)),
+      avg_roi: Math.round(avg(d.rois) * 100) / 100,
+      avg_rental_yield: Math.round(avg(d.yields) * 100) / 100,
+      avg_investment_score: Math.round(avgScore),
+      market_growth_rate: growthRate,
+      market_status: status,
+      demand_score: demandScore,
+      listing_volume: d.prices.length,
+      price_range_min: sorted[0],
+      price_range_max: sorted[sorted.length - 1],
+      top_property_types: topTypes,
+      last_updated: new Date().toISOString(),
+    };
+  });
+
+  // Upsert by city (unique index)
+  let upserted = 0;
+  for (let i = 0; i < rows.length; i += 20) {
+    const chunk = rows.slice(i, i + 20);
+    const { error } = await supabase.from("location_market_insights").upsert(chunk, { onConflict: "city" });
+    if (!error) upserted += chunk.length;
+  }
+
+  return { cities_processed: rows.length, upserted };
+}
+
+// ── Detect Hot Markets (updates market_status based on signals) ──
+async function detectHotMarkets(supabase: any) {
+  // First ensure market insights exist
+  const result = await updateMarketInsights(supabase);
+
+  // Then also update investment_hotspots and location_price_trends
+  await updatePriceTrends(supabase);
+  await detectInvestmentHotspots(supabase);
+
+  return { ...result, also_updated: ["location_price_trends", "investment_hotspots"] };
+}
+
 function json(data: unknown, status = 200) {
   return new Response(JSON.stringify(data), {
     status,

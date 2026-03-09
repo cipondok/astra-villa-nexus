@@ -49,20 +49,55 @@ export function useInvestmentHotspots(limit = 20) {
   });
 }
 
+export function useLocationMarketInsights(limit = 20) {
+  return useQuery({
+    queryKey: ['location-market-insights', limit],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('location_market_insights')
+        .select('*')
+        .order('avg_investment_score', { ascending: false })
+        .limit(limit);
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 10 * 60 * 1000,
+  });
+}
+
+export function useHotMarkets() {
+  return useQuery({
+    queryKey: ['hot-markets'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('location_market_insights')
+        .select('*')
+        .in('market_status', ['hot', 'emerging'])
+        .order('avg_investment_score', { ascending: false })
+        .limit(20);
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 10 * 60 * 1000,
+  });
+}
+
 export function usePropertyMarketContext(city: string | null) {
   return useQuery({
     queryKey: ['property-market-context', city],
     enabled: !!city,
     queryFn: async () => {
-      const [trendRes, rentalRes, hotspotRes] = await Promise.all([
+      const [trendRes, rentalRes, hotspotRes, insightRes] = await Promise.all([
         supabase.from('location_price_trends').select('*').eq('city', city!).limit(1).maybeSingle(),
         supabase.from('rental_market_insights').select('*').eq('city', city!).limit(1).maybeSingle(),
         supabase.from('investment_hotspots').select('*').eq('city', city!).limit(1).maybeSingle(),
+        supabase.from('location_market_insights').select('*').eq('city', city!).limit(1).maybeSingle(),
       ]);
       return {
         priceTrend: trendRes.data,
         rentalInsight: rentalRes.data,
         hotspot: hotspotRes.data,
+        marketInsight: insightRes.data,
       };
     },
     staleTime: 10 * 60 * 1000,
