@@ -14,7 +14,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import {
-  Brain, Building2, TrendingUp, Search, Activity, AlertTriangle,
+  Brain, Building2, TrendingUp, TrendingDown, Search, Activity, AlertTriangle,
   CheckCircle2, Clock, XCircle, BarChart3, Zap, RefreshCw,
   Server, Database, Timer, Eye, Gauge, Shield, Cpu,
   ChevronRight, Sparkles, Target, LineChart as LineChartIcon,
@@ -45,7 +45,7 @@ const formatIDR = (v: number) => {
   return `Rp ${v.toLocaleString()}`;
 };
 
-type NavSection = 'overview' | 'seo' | 'jobs' | 'scheduler' | 'investment' | 'search' | 'health';
+type NavSection = 'overview' | 'seo' | 'jobs' | 'scheduler' | 'investment' | 'valuations' | 'search' | 'health';
 
 const NAV_ITEMS: { id: NavSection; label: string; icon: React.ElementType }[] = [
   { id: 'overview', label: 'Overview', icon: Gauge },
@@ -53,6 +53,7 @@ const NAV_ITEMS: { id: NavSection; label: string; icon: React.ElementType }[] = 
   { id: 'jobs', label: 'Job Queue', icon: Cpu },
   { id: 'scheduler', label: 'Scheduler', icon: CalendarClock },
   { id: 'investment', label: 'Investment AI', icon: TrendingUp },
+  { id: 'valuations', label: 'Valuations', icon: BarChart3 },
   { id: 'search', label: 'Search Intel', icon: Eye },
   { id: 'health', label: 'System Health', icon: Shield },
 ];
@@ -1119,7 +1120,120 @@ const AICommandCenter = () => {
               </div>
             )}
 
-            {/* SEARCH SECTION */}
+            {/* VALUATIONS SECTION */}
+            {activeNav === 'valuations' && (
+              <div className="space-y-4">
+                {/* KPI Cards */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="p-3 rounded-lg bg-primary/5 border border-primary/10 text-center">
+                    <p className="text-2xl font-bold text-foreground">{data.valuations.totalValuations.toLocaleString()}</p>
+                    <p className="text-[10px] text-muted-foreground">Total Valuations</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-chart-1/5 border border-chart-1/10 text-center">
+                    <p className="text-2xl font-bold text-foreground">{data.valuations.avgConfidence}%</p>
+                    <p className="text-[10px] text-muted-foreground">Avg Confidence</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-chart-2/5 border border-chart-2/10 text-center">
+                    <p className="text-2xl font-bold text-foreground">{data.valuations.coveragePercent}%</p>
+                    <p className="text-[10px] text-muted-foreground">Coverage</p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-chart-3/5 border border-chart-3/10 text-center">
+                    <p className="text-2xl font-bold text-foreground">{data.valuations.roiForecastCount.toLocaleString()}</p>
+                    <p className="text-[10px] text-muted-foreground">ROI Forecasts</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Confidence Distribution */}
+                  <Panel title="Confidence Distribution" icon={BarChart3}>
+                    <div className="h-48">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={data.valuations.confidenceBuckets} barSize={32}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                          <XAxis dataKey="range" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} />
+                          <YAxis tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} />
+                          <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
+                          <Bar dataKey="count" name="Properties" radius={[6, 6, 0, 0]}>
+                            {data.valuations.confidenceBuckets.map((entry, idx) => (
+                              <Cell key={idx} fill={entry.fill} />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </Panel>
+
+                  {/* Weekly Activity */}
+                  <Panel title="Valuation Activity" icon={TrendingUp}>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="p-3 rounded-lg border border-border/40 text-center">
+                          <div className="flex items-center justify-center gap-1.5 mb-1">
+                            <p className="text-xl font-bold text-foreground">{data.valuations.valuationsThisWeek}</p>
+                            {data.valuations.trendDirection === 'up' && <TrendingUp className="h-3.5 w-3.5 text-chart-1" />}
+                            {data.valuations.trendDirection === 'down' && <TrendingDown className="h-3.5 w-3.5 text-destructive" />}
+                          </div>
+                          <p className="text-[10px] text-muted-foreground">This Week</p>
+                        </div>
+                        <div className="p-3 rounded-lg border border-border/40 text-center">
+                          <p className="text-xl font-bold text-foreground">{data.valuations.valuationsLastWeek}</p>
+                          <p className="text-[10px] text-muted-foreground">Last Week</p>
+                        </div>
+                      </div>
+                      <div className="p-3 rounded-lg bg-muted/20 border border-border/30">
+                        <p className="text-[10px] text-muted-foreground mb-1">Avg Estimated Value</p>
+                        <p className="text-lg font-bold text-foreground">{formatIDR(data.valuations.avgEstimatedValue)}</p>
+                      </div>
+                    </div>
+                  </Panel>
+                </div>
+
+                {/* Recent Valuations Table */}
+                <Panel title="Recent Valuations" icon={Activity}>
+                  {data.valuations.recentValuations.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-10 text-muted-foreground">
+                      <BarChart3 className="h-8 w-8 mb-2 opacity-20" />
+                      <p className="text-xs font-medium">No valuations yet</p>
+                      <p className="text-[10px] mt-0.5">Run the valuation engine to generate data</p>
+                    </div>
+                  ) : (
+                    <ScrollArea className="max-h-[300px]">
+                      <div className="space-y-1.5">
+                        {data.valuations.recentValuations.map((v: any) => (
+                          <div key={v.id} className="flex items-center justify-between p-2.5 rounded-lg border border-border/30 hover:bg-muted/10 transition-colors">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div className={`w-2 h-2 rounded-full shrink-0 ${
+                                (v.confidence_score || 0) >= 80 ? 'bg-chart-1' :
+                                (v.confidence_score || 0) >= 60 ? 'bg-chart-2' :
+                                (v.confidence_score || 0) >= 40 ? 'bg-chart-3' : 'bg-destructive'
+                              }`} />
+                              <div className="min-w-0">
+                                <p className="text-[11px] font-medium text-foreground truncate">
+                                  {v.property_id?.slice(0, 8)}…
+                                </p>
+                                <p className="text-[10px] text-muted-foreground">
+                                  {v.market_trend || 'N/A'} · {new Date(v.created_at).toLocaleDateString()}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="text-right shrink-0 ml-3">
+                              <p className="text-[11px] font-semibold text-foreground">{formatIDR(v.estimated_value || 0)}</p>
+                              <Badge variant="outline" className={`text-[9px] ${
+                                (v.confidence_score || 0) >= 80 ? 'text-chart-1 border-chart-1/30' :
+                                (v.confidence_score || 0) >= 60 ? 'text-chart-2 border-chart-2/30' : 'text-chart-3 border-chart-3/30'
+                              }`}>
+                                {v.confidence_score || 0}% conf
+                              </Badge>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  )}
+                </Panel>
+              </div>
+            )}
+
             {activeNav === 'search' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Panel title="Search Volume & Conversion" icon={Eye} className="md:col-span-2">

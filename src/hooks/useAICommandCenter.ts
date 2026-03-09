@@ -63,6 +63,18 @@ export interface AICommandCenterData {
     stalledJobs: number;
   };
   historicalKPIs: HistoricalKPIs;
+  valuations: {
+    totalValuations: number;
+    avgConfidence: number;
+    coveragePercent: number;
+    recentValuations: any[];
+    confidenceBuckets: { range: string; count: number; fill: string }[];
+    roiForecastCount: number;
+    valuationsThisWeek: number;
+    valuationsLastWeek: number;
+    avgEstimatedValue: number;
+    trendDirection: 'up' | 'down' | 'neutral';
+  };
 }
 
 async function checkEdgeFunctionHealth(name: string): Promise<{ status: 'ok' | 'error'; latencyMs: number }> {
@@ -129,6 +141,11 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     searchThisWeek, searchLastWeek, searchThisMonth, searchLastMonth,
     // Sparkline raw data
     sparkPropsRaw, sparkJobsCompRaw, sparkJobsFailRaw, sparkSearchRaw,
+    // Valuation data
+    valuationsRes,
+    valuationsThisWeekRes,
+    valuationsLastWeekRes,
+    roiForecastCountRes,
   ] = await Promise.all([
     supabase.from('properties').select('id, investment_score, price, created_at', { count: 'exact' }),
     supabase.from('ai_jobs').select('*').eq('status', 'running').limit(10),
@@ -167,6 +184,11 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     supabase.from('ai_jobs').select('created_at').eq('status', 'completed').gte('completed_at', thisWeekStart).order('created_at', { ascending: true }),
     supabase.from('ai_jobs').select('created_at').eq('status', 'failed').gte('created_at', thisWeekStart).order('created_at', { ascending: true }),
     supabase.from('ai_property_queries').select('created_at').gte('created_at', thisWeekStart).order('created_at', { ascending: true }),
+    // Valuation queries
+    supabase.from('property_valuations').select('id, confidence_score, estimated_value, market_trend, created_at, property_id', { count: 'exact' }).order('created_at', { ascending: false }).limit(50),
+    supabase.from('property_valuations').select('id', { count: 'exact' }).gte('created_at', thisWeekStart),
+    supabase.from('property_valuations').select('id', { count: 'exact' }).gte('created_at', lastWeekStart).lt('created_at', thisWeekStart),
+    supabase.from('property_roi_forecast').select('id', { count: 'exact' }),
   ]);
 
   // Run health checks in parallel
@@ -317,6 +339,46 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
       stalledJobs,
     },
     historicalKPIs,
+    valuations: (() => {
+      const valData = valuationsRes.data || [];
+      const totalValuations = valuationsRes.count || 0;
+      const avgConfidence = valData.length > 0
+        ? Math.round(valData.reduce((s: number, v: any) => s + (v.confidence_score || 0), 0) / valData.length)
+        : 0;
+      const coveragePercent = totalProperties > 0 ? Math.round((totalValuations / totalProperties) * 100) : 0;
+      const avgEstVal = valData.length > 0
+        ? Math.round(valData.reduce((s: number, v: any) => s + (v.estimated_value || 0), 0) / valData.length)
+        : 0;
+      const vThisWeek = valuationsThisWeekRes.count || 0;
+      const vLastWeek = valuationsLastWeekRes.count || 0;
+
+      const confidenceBuckets = [
+        { range: '0-40', count: 0, fill: 'hsl(var(--destructive))' },
+        { range: '40-60', count: 0, fill: 'hsl(var(--chart-3))' },
+        { range: '60-80', count: 0, fill: 'hsl(var(--chart-2))' },
+        { range: '80-100', count: 0, fill: 'hsl(var(--chart-1))' },
+      ];
+      valData.forEach((v: any) => {
+        const c = v.confidence_score || 0;
+        if (c < 40) confidenceBuckets[0].count++;
+        else if (c < 60) confidenceBuckets[1].count++;
+        else if (c < 80) confidenceBuckets[2].count++;
+        else confidenceBuckets[3].count++;
+      });
+
+      return {
+        totalValuations,
+        avgConfidence,
+        coveragePercent,
+        recentValuations: valData.slice(0, 10),
+        confidenceBuckets,
+        roiForecastCount: roiForecastCountRes.count || 0,
+        valuationsThisWeek: vThisWeek,
+        valuationsLastWeek: vLastWeek,
+        avgEstimatedValue: avgEstVal,
+        trendDirection: vThisWeek > vLastWeek ? 'up' as const : vThisWeek < vLastWeek ? 'down' as const : 'neutral' as const,
+      };
+    })(),
   };
 }
 
