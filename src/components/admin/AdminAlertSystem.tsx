@@ -177,7 +177,7 @@ const AdminAlertSystem = () => {
 
   const deleteCategoryAlerts = async () => {
     const label = activeCategory === 'all' ? 'ALL' : activeCategory.toUpperCase();
-    const count = activeCategory === 'all' ? (totalAlertCount || alerts?.length || 0) : filteredAlerts.length;
+    const count = activeCategory === 'all' ? (alertCounts?.total || alerts?.length || 0) : serverCategoryCounts[activeCategory];
 
     if (count === 0) return;
     if (!window.confirm(`Delete ${count} ${label} alerts permanently? This cannot be undone.`)) return;
