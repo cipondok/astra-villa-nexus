@@ -1439,6 +1439,13 @@ const PropertyDetail: React.FC = () => {
           <PropertyReviews propertyId={property.id} />
         </div>
 
+        {/* Market Intelligence Context */}
+        <div className="mt-4 sm:mt-6">
+          <Suspense fallback={null}>
+            <MarketContextCard city={property.city} currentPrice={property.price} />
+          </Suspense>
+        </div>
+
         {/* Similar Properties & Nearby Investments */}
         <div className="mt-4 sm:mt-8 grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
           {/* Smart Property Recommendations */}
