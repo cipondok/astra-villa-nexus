@@ -224,7 +224,7 @@ const AICommandCenter = () => {
     );
   }
 
-  const { overview, jobStatus, seo, roiForecasts, searchAnalytics, priceTrends, recentActions, systemHealth } = data;
+  const { overview, jobStatus, seo, roiForecasts, searchAnalytics, priceTrends, recentActions, systemHealth, historicalKPIs } = data;
   const totalJobs = jobStatus.running + jobStatus.pending + jobStatus.completed + jobStatus.failed;
 
   // ─── Chart Data ───────────────────────────────────────────────────────────
