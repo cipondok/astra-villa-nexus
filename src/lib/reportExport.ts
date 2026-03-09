@@ -2,6 +2,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
 import type { AICommandCenterData } from '@/hooks/useAICommandCenter';
 import type { HealthAlert } from '@/hooks/useHealthAlerts';
+import type { CustomPeriodKPIs } from '@/hooks/useCustomPeriodKPIs';
 
 // ─── CSV Helpers ────────────────────────────────────────────────────────────
 
