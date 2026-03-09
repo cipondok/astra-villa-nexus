@@ -253,8 +253,7 @@ const AdminAlertSystem = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      invalidateAlertQueries();
       showSuccess("Alert Deleted", "Alert has been deleted successfully.");
       setIsDialogOpen(false);
       setSelectedAlert(null);
