@@ -158,37 +158,59 @@ const AdminAlertSystem = () => {
     },
   });
 
+  const ALL_KNOWN_TYPES = [
+    'kyc_verification', 'company_verification',
+    'property_listing',
+    'profile_update', 'user_registration',
+    'error', 'warning', 'system_error', 'success',
+  ];
+
   const deleteCategoryAlerts = async () => {
-    // Get IDs to delete based on active category
-    const idsToDelete = activeCategory === 'all'
-      ? (alerts || []).map(a => a.id)
-      : (alerts || []).filter(a => getCategory(a.type) === activeCategory).map(a => a.id);
-
-    if (idsToDelete.length === 0) return;
-
     const label = activeCategory === 'all' ? 'ALL' : activeCategory.toUpperCase();
-    if (!window.confirm(`Delete ${idsToDelete.length} ${label} alerts permanently? This cannot be undone.`)) return;
+    const count = activeCategory === 'all' ? (totalAlertCount || alerts?.length || 0) : filteredAlerts.length;
 
-    setDeleteProgress({ total: idsToDelete.length, deleted: 0, isDeleting: true });
+    if (count === 0) return;
+    if (!window.confirm(`Delete ${count} ${label} alerts permanently? This cannot be undone.`)) return;
 
-    const BATCH_SIZE = 50;
-    let deleted = 0;
+    setDeleteProgress({ total: count, deleted: 0, isDeleting: true });
 
     try {
-      for (let i = 0; i < idsToDelete.length; i += BATCH_SIZE) {
-        const batch = idsToDelete.slice(i, i + BATCH_SIZE);
-        const { error } = await supabase
-          .from('admin_alerts')
-          .delete()
-          .in('id', batch);
+      let deletedCount = 0;
+
+      if (activeCategory === 'all') {
+        // Use RPC to delete ALL on server side
+        const { data, error } = await (supabase.rpc as any)('delete_all_admin_alerts');
         if (error) throw error;
-        deleted += batch.length;
-        setDeleteProgress({ total: idsToDelete.length, deleted, isDeleting: true });
+        deletedCount = data || count;
+      } else {
+        // Get types for this category
+        const categoryTypes = CATEGORY_TYPES[activeCategory];
+
+        if (activeCategory === 'other') {
+          // "other" = types NOT in any known category
+          const { data, error } = await (supabase.rpc as any)('delete_admin_alerts_except_types', {
+            p_types: ALL_KNOWN_TYPES
+          });
+          if (error) throw error;
+          deletedCount = data || 0;
+        } else {
+          const { data, error } = await (supabase.rpc as any)('delete_admin_alerts_by_types', {
+            p_types: categoryTypes
+          });
+          if (error) throw error;
+          deletedCount = data || 0;
+        }
       }
+
+      setDeleteProgress({ total: count, deleted: deletedCount, isDeleting: true });
+
+      // Brief pause to show completed progress
+      await new Promise(r => setTimeout(r, 500));
 
       queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
       queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
-      showSuccess("Deleted", `${deleted} ${label} alerts have been permanently deleted.`);
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts-total-count'] });
+      showSuccess("Deleted", `${deletedCount} ${label} alerts have been permanently deleted.`);
       setCurrentPage(1);
     } catch (error: any) {
       showError("Error", error.message || "Failed to delete alerts");
