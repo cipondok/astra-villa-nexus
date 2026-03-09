@@ -540,7 +540,7 @@ export default function InteractivePropertyMap() {
           filters={filters} onFiltersChange={setFilters}
           showHeatmap={showHeatmap} onToggleHeatmap={setShowHeatmap}
           drawMode={drawMode} onSetDrawMode={setDrawMode}
-          propertyCount={properties.length} isLoading={isLoading}
+          propertyCount={sortedProperties.length} isLoading={isLoading}
           isOpen={filterOpen} onToggle={() => setFilterOpen(o => !o)}
         />
 
