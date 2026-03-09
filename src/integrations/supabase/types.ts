@@ -17888,6 +17888,63 @@ export type Database = {
           },
         ]
       }
+      property_roi_forecast: {
+        Row: {
+          comparable_count: number | null
+          confidence_score: number | null
+          created_at: string
+          expected_roi: number | null
+          forecast_data: Json | null
+          id: string
+          last_calculated: string
+          market_risk: string | null
+          price_growth_forecast: number | null
+          property_id: string
+          rental_yield: number | null
+        }
+        Insert: {
+          comparable_count?: number | null
+          confidence_score?: number | null
+          created_at?: string
+          expected_roi?: number | null
+          forecast_data?: Json | null
+          id?: string
+          last_calculated?: string
+          market_risk?: string | null
+          price_growth_forecast?: number | null
+          property_id: string
+          rental_yield?: number | null
+        }
+        Update: {
+          comparable_count?: number | null
+          confidence_score?: number | null
+          created_at?: string
+          expected_roi?: number | null
+          forecast_data?: Json | null
+          id?: string
+          last_calculated?: string
+          market_risk?: string | null
+          price_growth_forecast?: number | null
+          property_id?: string
+          rental_yield?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_roi_forecast_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: true
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_roi_forecast_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: true
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_seo_analysis: {
         Row: {
           ai_model_used: string | null

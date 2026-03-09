@@ -14,6 +14,7 @@ import EnhancedImageGallery from '@/components/property/EnhancedImageGallery';
 import PropertyComparisonButton from '@/components/property/PropertyComparisonButton';
 import SimpleProperty3DViewer from '@/components/property/SimpleProperty3DViewer';
 import { AutoValuationCard } from '@/components/property/AutoValuationCard';
+import { ROIForecastCard } from '@/components/property/ROIForecastCard';
 import DroneVideoPlayer from '@/components/property/DroneVideoPlayer';
 const GLBModelViewer = lazy(() => import('@/components/property/GLBModelViewer'));
 import PropertyCard from '@/components/property/PropertyCard';
@@ -1425,9 +1426,10 @@ const PropertyDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* AI Property Valuation */}
-        <div className="mt-6 sm:mt-8">
+        {/* AI Property Valuation & ROI Forecast */}
+        <div className="mt-6 sm:mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           <AutoValuationCard propertyId={property.id} currentPrice={property.price} />
+          <ROIForecastCard propertyId={property.id} currentPrice={property.price} />
         </div>
 
         {/* Reviews Section */}

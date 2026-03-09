@@ -2,6 +2,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { usePortfolioManager, PortfolioData } from '@/hooks/usePortfolioManager';
 import { useDealAlerts, DealAlert } from '@/hooks/useDealAlerts';
 import { useUserAiProfile } from '@/hooks/useUserAiProfile';
+import { lazy, Suspense } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,6 +19,8 @@ import {
 } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { motion } from 'framer-motion';
+
+const ROIAnalyticsDashboard = lazy(() => import('@/components/investor/ROIAnalyticsDashboard'));
 
 const formatIDR = (v: number) =>
   new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v);
@@ -470,6 +473,18 @@ const InvestorDashboard = () => {
             </div>
           </motion.div>
         )}
+
+        {/* ROI Forecast Analytics */}
+        <motion.div {...fadeIn}>
+          <Separator className="my-6" />
+          <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-primary" />
+            AI ROI Forecast Analytics
+          </h2>
+          <Suspense fallback={<Skeleton className="h-64 w-full" />}>
+            <ROIAnalyticsDashboard />
+          </Suspense>
+        </motion.div>
       </div>
     </div>
   );
