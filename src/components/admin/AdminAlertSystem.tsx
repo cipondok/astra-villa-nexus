@@ -577,8 +577,7 @@ const AdminAlertSystem = () => {
         metadata: { ...selectedAlert.metadata, resolved_at: new Date().toISOString(), resolution: 'approved', admin_notes: reviewNotes }
       }).eq('id', selectedAlert.id);
 
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      invalidateAlertQueries();
       showSuccess("Approved", "Property listing approved and owner notified.");
       setIsDialogOpen(false);
       setSelectedAlert(null);
