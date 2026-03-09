@@ -58,6 +58,7 @@ const AdminAlertSystem = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [activeCategory, setActiveCategory] = useState<AlertCategory>('all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [deleteProgress, setDeleteProgress] = useState<{ total: number; deleted: number; isDeleting: boolean }>({ total: 0, deleted: 0, isDeleting: false });
   const [activityModal, setActivityModal] = useState<{
     isOpen: boolean;
     type: 'properties' | 'users';
