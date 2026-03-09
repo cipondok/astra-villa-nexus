@@ -85,7 +85,18 @@ async function checkDbHealth(): Promise<{ status: 'ok' | 'error'; latencyMs: num
   }
 }
 
+function makePeriodComparison(current: number, previous: number): PeriodComparison {
+  const delta = previous > 0 ? Math.round(((current - previous) / previous) * 1000) / 10 : (current > 0 ? 100 : 0);
+  return { current, previous, delta, direction: delta > 0 ? 'up' : delta < 0 ? 'down' : 'neutral' };
+}
+
 async function fetchCommandCenterData(): Promise<AICommandCenterData> {
+  const now = new Date();
+  const thisWeekStart = new Date(now.getTime() - 7 * 86400000).toISOString();
+  const lastWeekStart = new Date(now.getTime() - 14 * 86400000).toISOString();
+  const thisMonthStart = new Date(now.getTime() - 30 * 86400000).toISOString();
+  const lastMonthStart = new Date(now.getTime() - 60 * 86400000).toISOString();
+
   const [
     propertiesRes,
     jobsRes,
@@ -99,6 +110,11 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     stalledJobsRes,
     lastCompletedJobRes,
     priceTrendRes,
+    // Historical period queries
+    propsThisWeek, propsLastWeek, propsThisMonth, propsLastMonth,
+    jobsCompThisWeek, jobsCompLastWeek, jobsCompThisMonth, jobsCompLastMonth,
+    jobsFailThisWeek, jobsFailLastWeek, jobsFailThisMonth, jobsFailLastMonth,
+    searchThisWeek, searchLastWeek, searchThisMonth, searchLastMonth,
   ] = await Promise.all([
     supabase.from('properties').select('id, investment_score, price, created_at', { count: 'exact' }),
     supabase.from('ai_jobs').select('*').eq('status', 'running').limit(10),
@@ -109,12 +125,29 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     supabase.from('property_roi_forecast').select('*').order('last_calculated', { ascending: false }).limit(20),
     supabase.from('ai_property_queries').select('query_text, created_at').order('created_at', { ascending: false }).limit(200),
     supabase.from('ai_job_logs').select('*').order('created_at', { ascending: false }).limit(20),
-    // Stalled jobs (running > 30 min)
     supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'running').lt('started_at', new Date(Date.now() - 30 * 60000).toISOString()),
-    // Last completed job
     supabase.from('ai_jobs').select('completed_at').eq('status', 'completed').order('completed_at', { ascending: false }).limit(1),
-    // Price trends — properties with price, grouped by month
     supabase.from('properties').select('price, created_at').not('price', 'is', null).order('created_at', { ascending: true }).limit(500),
+    // Properties by period
+    supabase.from('properties').select('id', { count: 'exact' }).gte('created_at', thisWeekStart),
+    supabase.from('properties').select('id', { count: 'exact' }).gte('created_at', lastWeekStart).lt('created_at', thisWeekStart),
+    supabase.from('properties').select('id', { count: 'exact' }).gte('created_at', thisMonthStart),
+    supabase.from('properties').select('id', { count: 'exact' }).gte('created_at', lastMonthStart).lt('created_at', thisMonthStart),
+    // Jobs completed by period
+    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'completed').gte('completed_at', thisWeekStart),
+    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'completed').gte('completed_at', lastWeekStart).lt('completed_at', thisWeekStart),
+    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'completed').gte('completed_at', thisMonthStart),
+    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'completed').gte('completed_at', lastMonthStart).lt('completed_at', thisMonthStart),
+    // Jobs failed by period
+    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'failed').gte('created_at', thisWeekStart),
+    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'failed').gte('created_at', lastWeekStart).lt('created_at', thisWeekStart),
+    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'failed').gte('created_at', thisMonthStart),
+    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'failed').gte('created_at', lastMonthStart).lt('created_at', thisMonthStart),
+    // Searches by period
+    supabase.from('ai_property_queries').select('id', { count: 'exact' }).gte('created_at', thisWeekStart),
+    supabase.from('ai_property_queries').select('id', { count: 'exact' }).gte('created_at', lastWeekStart).lt('created_at', thisWeekStart),
+    supabase.from('ai_property_queries').select('id', { count: 'exact' }).gte('created_at', thisMonthStart),
+    supabase.from('ai_property_queries').select('id', { count: 'exact' }).gte('created_at', lastMonthStart).lt('created_at', thisMonthStart),
   ]);
 
   // Run health checks in parallel
