@@ -70,10 +70,11 @@ const AdminAlertSystem = () => {
   const { data: alerts, isLoading } = useQuery({
     queryKey: ['admin-alerts'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error, count } = await supabase
         .from('admin_alerts')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('*', { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .limit(5000);
       
       if (error) throw error;
       return data as AdminAlert[];
