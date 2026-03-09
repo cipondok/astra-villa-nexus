@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
 import EnhancedImageGallery from '@/components/property/EnhancedImageGallery';
 import PropertyComparisonButton from '@/components/property/PropertyComparisonButton';
 import SimpleProperty3DViewer from '@/components/property/SimpleProperty3DViewer';
@@ -187,6 +188,20 @@ const PropertyDetail: React.FC = () => {
     property_type: property.property_type,
   } : null, [property]);
   const { matchScore, confidenceScore, collaborativeOverlap } = usePropertyMatchScore(propertyForMatch, userAiProfile);
+
+  // Share count
+  const { data: shareCount = 0 } = useQuery({
+    queryKey: ['property-share-count', id],
+    queryFn: async () => {
+      const { count } = await supabase
+        .from('property_shares')
+        .select('id', { count: 'exact', head: true })
+        .eq('property_id', id!);
+      return count || 0;
+    },
+    enabled: !!id,
+    staleTime: 60_000,
+  });
 
   // Auto-scroll refs for mobile carousels
   const similarScrollRef = useRef<HTMLDivElement>(null);
@@ -716,9 +731,12 @@ const PropertyDetail: React.FC = () => {
                 variant="ghost" 
                 size="sm"
                 onClick={handleShareProperty}
-                className="h-7 w-7 p-0 text-foreground/70 hover:text-primary active:scale-95 transition-transform"
+                className="h-7 gap-1 px-1.5 text-foreground/70 hover:text-primary active:scale-95 transition-transform"
               >
                 <Share2 className="h-3.5 w-3.5" />
+                {shareCount > 0 && (
+                  <span className="text-[10px] font-medium">{shareCount}</span>
+                )}
               </Button>
               
               <Button 
