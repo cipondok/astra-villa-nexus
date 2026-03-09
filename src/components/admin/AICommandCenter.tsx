@@ -27,6 +27,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { format, formatDistanceToNow } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import {
+  exportOverviewCsv, exportJobHistoryCsv, exportHealthAlertsCsv,
+  exportSearchAnalyticsCsv, exportPriceTrendsCsv, exportFullReportPdf,
+} from '@/lib/reportExport';
 
 const formatIDR = (v: number) => {
   if (v >= 1e12) return `Rp ${(v / 1e12).toFixed(1)}T`;
