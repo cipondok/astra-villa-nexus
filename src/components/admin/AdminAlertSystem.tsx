@@ -128,6 +128,36 @@ const AdminAlertSystem = () => {
     },
   });
 
+  const clearAllReadMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from('admin_alerts')
+        .delete()
+        .eq('is_read', true);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      showSuccess("Cleared", "All read alerts have been removed.");
+    },
+  });
+
+  const markAllAsReadMutation = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from('admin_alerts')
+        .update({ is_read: true })
+        .eq('is_read', false);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
+      showSuccess("Done", "All alerts marked as read.");
+    },
+  });
+
   const deleteAlertMutation = useMutation({
     mutationFn: async (alertId: string) => {
       const { error } = await supabase
@@ -137,7 +167,6 @@ const AdminAlertSystem = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      // Invalidate both alerts and count queries
       queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
       queryClient.invalidateQueries({ queryKey: ['admin-alerts-count'] });
       showSuccess("Alert Deleted", "Alert has been deleted successfully.");
