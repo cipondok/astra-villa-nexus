@@ -835,6 +835,22 @@ const AdminAlertSystem = () => {
             </div>
           </div>
 
+          {/* Delete Progress Bar */}
+          {deleteProgress.isDeleting && (
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                <span>Deleting alerts...</span>
+                <span>{deleteProgress.deleted} / {deleteProgress.total} · {deleteProgress.total - deleteProgress.deleted} remaining</span>
+              </div>
+              <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-destructive rounded-full transition-all duration-300"
+                  style={{ width: `${(deleteProgress.deleted / deleteProgress.total) * 100}%` }}
+                />
+              </div>
+            </div>
+          )}
+
           {/* Slim Alert List */}
           <ScrollArea className="h-[400px] scroll-smooth">
             {isLoading ? (
