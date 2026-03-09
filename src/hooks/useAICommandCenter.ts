@@ -127,6 +127,8 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     jobsCompThisWeek, jobsCompLastWeek, jobsCompThisMonth, jobsCompLastMonth,
     jobsFailThisWeek, jobsFailLastWeek, jobsFailThisMonth, jobsFailLastMonth,
     searchThisWeek, searchLastWeek, searchThisMonth, searchLastMonth,
+    // Sparkline raw data
+    sparkPropsRaw, sparkJobsCompRaw, sparkJobsFailRaw, sparkSearchRaw,
   ] = await Promise.all([
     supabase.from('properties').select('id, investment_score, price, created_at', { count: 'exact' }),
     supabase.from('ai_jobs').select('*').eq('status', 'running').limit(10),
