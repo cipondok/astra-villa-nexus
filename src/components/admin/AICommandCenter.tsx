@@ -881,6 +881,13 @@ const AICommandCenter = () => {
               </div>
             )}
 
+            {/* SCHEDULER SECTION */}
+            {activeNav === 'scheduler' && (
+              <Suspense fallback={<div className="h-64 rounded-xl bg-muted/30 animate-pulse" />}>
+                <AIJobScheduler />
+              </Suspense>
+            )}
+
             {/* HEALTH SECTION — ENHANCED */}
             {activeNav === 'health' && (
               <div className="space-y-4">
