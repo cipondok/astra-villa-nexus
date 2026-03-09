@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 
 const AIJobScheduler = lazy(() => import('./AIJobScheduler'));
+const MarketIntelligencePanel = lazy(() => import('./MarketIntelligencePanel'));
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, AreaChart, Area, CartesianGrid, LineChart, Line,
