@@ -34,6 +34,7 @@ import { toast } from 'sonner';
 import {
   exportOverviewCsv, exportJobHistoryCsv, exportHealthAlertsCsv,
   exportSearchAnalyticsCsv, exportPriceTrendsCsv, exportFullReportPdf,
+  exportCustomPeriodCSV, exportCustomPeriodPDF,
 } from '@/lib/reportExport';
 
 const formatIDR = (v: number) => {
@@ -672,8 +673,18 @@ const AICommandCenter = () => {
                           <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
                         </div>
                       ) : customKPIs.data ? (
-                        <div>
-                          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">Comparison Results</p>
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Comparison Results</p>
+                            <div className="flex gap-1">
+                              <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px] gap-1" onClick={() => exportCustomPeriodCSV(customKPIs.data!, customCurrentStart!, customCurrentEnd!, customPreviousStart!, customPreviousEnd!)}>
+                                <Download className="h-3 w-3" />CSV
+                              </Button>
+                              <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px] gap-1" onClick={() => exportCustomPeriodPDF(customKPIs.data!, customCurrentStart!, customCurrentEnd!, customPreviousStart!, customPreviousEnd!)}>
+                                <FileText className="h-3 w-3" />PDF
+                              </Button>
+                            </div>
+                          </div>
                           <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                             <ComparisonCell label="New Properties" data={customKPIs.data.newProperties} />
                             <ComparisonCell label="Jobs Completed" data={customKPIs.data.jobsCompleted} />
