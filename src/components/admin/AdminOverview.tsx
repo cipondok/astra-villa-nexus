@@ -411,40 +411,60 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
                 </Badge>
               </div>
               
-              <HealthBar label="CPU" value={systemHealth?.cpuUsage || 0} icon={Cpu} />
-              <HealthBar label="Memory" value={systemHealth?.memoryUsage || 0} icon={MemoryStick} />
-              <HealthBar label="Disk" value={systemHealth?.diskUsage || 0} icon={HardDrive} />
               <HealthBar label="Database" value={systemHealth?.dbErrors === 0 ? 100 : 70} icon={Database} isStatus />
+              <HealthBar label="SEO Engine" value={systemHealth?.aiSystems.avgSeoScore || 0} icon={Globe} />
+              <HealthBar label="Job Queue" value={
+                (systemHealth?.aiSystems.jobsFailed || 0) === 0 ? 100 :
+                Math.max(100 - (systemHealth?.aiSystems.jobsFailed || 0) * 10, 20)
+              } icon={Cpu} isStatus />
             </CardContent>
           </Card>
 
-          {/* Services Status */}
+          {/* AI Systems Status */}
           <Card className="border-border/30">
             <CardHeader className="p-3 pb-2">
               <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
-                <ShieldCheck className="h-3.5 w-3.5" /> Services
+                <ShieldCheck className="h-3.5 w-3.5" /> AI Systems
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 pt-0 space-y-1.5">
-              <ServiceRow name="API" status="operational" />
-              <ServiceRow name="Database" status="operational" />
+              <ServiceRow name="SEO Engine" status={systemHealth?.aiSystems.seoStatus || 'unknown'} detail={`${systemHealth?.aiSystems.avgSeoScore || 0}% avg`} />
+              <ServiceRow name="Job Worker" status={systemHealth?.aiSystems.jobStatus || 'unknown'} detail={`${systemHealth?.aiSystems.jobsRunning || 0} running`} />
+              <ServiceRow name="Valuations" status={systemHealth?.aiSystems.valuationStatus || 'unknown'} detail={`${systemHealth?.aiSystems.totalValuations || 0} total`} />
+              <ServiceRow name="Database" status={systemHealth?.dbErrors === 0 ? 'operational' : 'degraded'} detail={`${systemHealth?.dbErrors || 0} errors`} />
               <ServiceRow name="Auth" status="operational" />
-              <ServiceRow name="Storage" status="operational" />
-              <ServiceRow name="Real-time" status="operational" />
+              {(systemHealth?.aiSystems.jobsPending || 0) > 0 && (
+                <div className="mt-1.5 p-2 rounded-lg bg-chart-2/5 border border-chart-2/20">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] text-muted-foreground">Queued Jobs</span>
+                    <Badge variant="secondary" className="text-[10px] h-5">{systemHealth?.aiSystems.jobsPending}</Badge>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
 
-          {/* Quick Diagnostics */}
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="w-full h-9 text-xs gap-1.5"
-            onClick={() => handleQuickAction('diagnostic')}
-          >
-            <Gauge className="h-4 w-4" />
-            Open Full Diagnostics
-            <ChevronRight className="h-3.5 w-3.5 ml-auto" />
-          </Button>
+          {/* Quick Actions */}
+          <div className="grid grid-cols-2 gap-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="h-9 text-xs gap-1.5"
+              onClick={() => handleQuickAction('ai-command-center')}
+            >
+              <Zap className="h-3.5 w-3.5" />
+              AI Center
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="h-9 text-xs gap-1.5"
+              onClick={() => handleQuickAction('diagnostic')}
+            >
+              <Gauge className="h-3.5 w-3.5" />
+              Diagnostics
+            </Button>
+          </div>
         </div>
       </div>
     </div>
