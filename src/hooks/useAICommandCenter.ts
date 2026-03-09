@@ -30,7 +30,6 @@ export interface AICommandCenterData {
 }
 
 async function fetchCommandCenterData(): Promise<AICommandCenterData> {
-  // Parallel fetches
   const [
     propertiesRes,
     jobsRes,
@@ -47,27 +46,27 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'pending'),
     supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'failed'),
     supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'completed'),
-    supabase.from('property_seo').select('id, seo_score').not('seo_score', 'is', null),
+    supabase.from('property_seo_analysis').select('id, seo_score').not('seo_score', 'is', null),
     supabase.from('property_roi_forecast').select('*').order('last_calculated', { ascending: false }).limit(20),
     supabase.from('ai_property_queries').select('query_text, created_at').order('created_at', { ascending: false }).limit(100),
     supabase.from('ai_job_logs').select('*').order('created_at', { ascending: false }).limit(20),
   ]);
 
-  const properties = propertiesRes.data || [];
+  const properties = (propertiesRes.data || []) as any[];
   const totalProperties = propertiesRes.count || properties.length;
 
-  const seoProperties = seoRes.data || [];
+  const seoProperties = (seoRes.data || []) as any[];
   const avgSeo = seoProperties.length > 0
-    ? seoProperties.reduce((s, p) => s + (p.seo_score || 0), 0) / seoProperties.length
+    ? seoProperties.reduce((s: number, p: any) => s + (p.seo_score || 0), 0) / seoProperties.length
     : 0;
-  const weakListings = seoProperties.filter(p => (p.seo_score || 0) < 60).length;
+  const weakListings = seoProperties.filter((p: any) => (p.seo_score || 0) < 60).length;
 
   const avgInvestment = properties.length > 0
-    ? properties.reduce((s, p) => s + (p.investment_score || 0), 0) / properties.length
+    ? properties.reduce((s: number, p: any) => s + (p.investment_score || 0), 0) / properties.length
     : 0;
 
   const avgValue = properties.length > 0
-    ? properties.reduce((s, p) => s + (p.price || 0), 0) / properties.length
+    ? properties.reduce((s: number, p: any) => s + (p.price || 0), 0) / properties.length
     : 0;
 
   const forecasts = roiRes.data || [];
