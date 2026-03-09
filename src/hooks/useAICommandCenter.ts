@@ -255,12 +255,18 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
   const currMonthPrice = sortedTrends.length > 0 ? sortedTrends[sortedTrends.length - 1].avgPrice : 0;
   const prevMonthPrice = sortedTrends.length > 1 ? sortedTrends[sortedTrends.length - 2].avgPrice : 0;
 
+  // Build sparklines (7 days for WoW)
+  const sparkProps = groupByDay(sparkPropsRaw.data || [], 'created_at', thisWeekStart, 7);
+  const sparkJobsComp = groupByDay(sparkJobsCompRaw.data || [], 'created_at', thisWeekStart, 7);
+  const sparkJobsFail = groupByDay(sparkJobsFailRaw.data || [], 'created_at', thisWeekStart, 7);
+  const sparkSearch = groupByDay(sparkSearchRaw.data || [], 'created_at', thisWeekStart, 7);
+
   const historicalKPIs: HistoricalKPIs = {
     wow: {
-      newProperties: makePeriodComparison(propsThisWeek.count || 0, propsLastWeek.count || 0),
-      jobsCompleted: makePeriodComparison(jobsCompThisWeek.count || 0, jobsCompLastWeek.count || 0),
-      jobsFailed: makePeriodComparison(jobsFailThisWeek.count || 0, jobsFailLastWeek.count || 0),
-      searches: makePeriodComparison(searchThisWeek.count || 0, searchLastWeek.count || 0),
+      newProperties: makePeriodComparison(propsThisWeek.count || 0, propsLastWeek.count || 0, sparkProps),
+      jobsCompleted: makePeriodComparison(jobsCompThisWeek.count || 0, jobsCompLastWeek.count || 0, sparkJobsComp),
+      jobsFailed: makePeriodComparison(jobsFailThisWeek.count || 0, jobsFailLastWeek.count || 0, sparkJobsFail),
+      searches: makePeriodComparison(searchThisWeek.count || 0, searchLastWeek.count || 0, sparkSearch),
     },
     mom: {
       newProperties: makePeriodComparison(propsThisMonth.count || 0, propsLastMonth.count || 0),
