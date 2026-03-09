@@ -638,119 +638,189 @@ const AdminAlertSystem = () => {
   };
 
   const unreadCount = alerts?.filter(alert => !alert.is_read).length || 0;
+  const readCount = alerts?.filter(alert => alert.is_read).length || 0;
   const todayPropertiesCount = todayProperties?.length || 0;
   const todayUsersCount = todayUsers?.length || 0;
+
+  const categoryCounts = useMemo(() => {
+    if (!alerts) return { all: 0, verification: 0, property: 0, profile: 0, system: 0, other: 0 };
+    const counts = { all: alerts.length, verification: 0, property: 0, profile: 0, system: 0, other: 0 };
+    alerts.forEach(a => { counts[getCategory(a.type)]++; });
+    return counts;
+  }, [alerts]);
+
+  const filteredAlerts = useMemo(() => {
+    if (!alerts) return [];
+    if (activeCategory === 'all') return alerts;
+    return alerts.filter(a => getCategory(a.type) === activeCategory);
+  }, [alerts, activeCategory]);
+
+  const formatTimeAgo = (dateStr: string) => {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'Just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    const days = Math.floor(hrs / 24);
+    return `${days}d ago`;
+  };
+
+  const categoryTabs: { value: AlertCategory; label: string; count: number }[] = [
+    { value: 'all', label: 'All', count: categoryCounts.all },
+    { value: 'verification', label: 'Verification', count: categoryCounts.verification },
+    { value: 'property', label: 'Property', count: categoryCounts.property },
+    { value: 'profile', label: 'Profile', count: categoryCounts.profile },
+    { value: 'system', label: 'System', count: categoryCounts.system },
+    { value: 'other', label: 'Other', count: categoryCounts.other },
+  ];
 
   return (
     <>
       <Card>
-        <CardHeader>
+        <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Bell className="h-4 w-4" />
               Admin Alerts & Today's Activity
               {unreadCount > 0 && (
-                <Badge variant="destructive" className="ml-2">
-                  {unreadCount} unread
+                <Badge variant="destructive" className="text-[10px] px-1.5 py-0">
+                  {unreadCount}
                 </Badge>
               )}
             </CardTitle>
+            <span className="text-xs text-muted-foreground">{alerts?.length || 0} total</span>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           {/* Today's Activity Summary */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <Card className="cursor-pointer hover:bg-muted/50 transition-colors" onClick={handleShowPropertiesDetails}>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="cursor-pointer rounded-lg border border-border/50 p-3 hover:bg-muted/30 transition-colors" onClick={handleShowPropertiesDetails}>
+              <div className="flex items-center justify-between">
                 <div>
-                    <p className="text-sm font-medium text-muted-foreground">New Properties Today</p>
-                    <p className="text-2xl font-bold text-chart-1">{todayPropertiesCount}</p>
-                    <p className="text-xs text-muted-foreground">Click to view details</p>
-                  </div>
-                  <Building2 className="h-8 w-8 text-chart-1" />
+                  <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Properties Today</p>
+                  <p className="text-xl font-bold text-chart-1">{todayPropertiesCount}</p>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card className="cursor-pointer hover:bg-muted/50 transition-colors" onClick={handleShowUsersDetails}>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">New Users Today</p>
-                    <p className="text-2xl font-bold text-chart-2">{todayUsersCount}</p>
-                    <p className="text-xs text-muted-foreground">Click to view details</p>
-                  </div>
-                  <UserPlus className="h-8 w-8 text-chart-2" />
+                <Building2 className="h-5 w-5 text-chart-1 opacity-60" />
+              </div>
+            </div>
+            <div className="cursor-pointer rounded-lg border border-border/50 p-3 hover:bg-muted/30 transition-colors" onClick={handleShowUsersDetails}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Users Today</p>
+                  <p className="text-xl font-bold text-chart-2">{todayUsersCount}</p>
                 </div>
-              </CardContent>
-            </Card>
+                <UserPlus className="h-5 w-5 text-chart-2 opacity-60" />
+              </div>
+            </div>
           </div>
 
-          <ScrollArea className="h-80">
+          {/* Category Tabs */}
+          <Tabs value={activeCategory} onValueChange={(v) => setActiveCategory(v as AlertCategory)}>
+            <TabsList className="w-full h-auto flex flex-wrap gap-0.5 bg-muted/30 border border-border/30 p-0.5 rounded-md">
+              {categoryTabs.map(tab => (
+                <TabsTrigger
+                  key={tab.value}
+                  value={tab.value}
+                  className="text-[10px] px-2 py-1 rounded data-[state=active]:bg-background data-[state=active]:shadow-sm flex-1 min-w-0"
+                >
+                  {tab.label}
+                  {tab.count > 0 && (
+                    <span className="ml-1 text-[9px] opacity-70">({tab.count})</span>
+                  )}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+
+          {/* Bulk Actions Bar */}
+          <div className="flex items-center justify-between gap-2 text-[10px]">
+            <span className="text-muted-foreground">
+              Showing {filteredAlerts.length} alerts {unreadCount > 0 && `· ${unreadCount} unread`}
+            </span>
+            <div className="flex gap-1.5">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 text-[10px] px-2"
+                onClick={() => markAllAsReadMutation.mutate()}
+                disabled={markAllAsReadMutation.isPending || unreadCount === 0}
+              >
+                <CheckCheck className="h-3 w-3 mr-1" />
+                Mark All Read
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 text-[10px] px-2 text-destructive hover:text-destructive"
+                onClick={() => clearAllReadMutation.mutate()}
+                disabled={clearAllReadMutation.isPending || readCount === 0}
+              >
+                <Trash2 className="h-3 w-3 mr-1" />
+                Clear Read
+              </Button>
+            </div>
+          </div>
+
+          {/* Slim Alert List */}
+          <ScrollArea className="h-[400px] scroll-smooth">
             {isLoading ? (
-              <div className="text-center py-4">Loading alerts...</div>
-            ) : alerts?.length === 0 ? (
+              <div className="text-center py-4 text-xs text-muted-foreground">Loading alerts...</div>
+            ) : filteredAlerts.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
-                <AlertTriangle className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                <p>No alerts at this time</p>
+                <Bell className="h-6 w-6 mx-auto mb-2 opacity-30" />
+                <p className="text-xs">No alerts in this category</p>
               </div>
             ) : (
-              <div className="space-y-3">
-                {alerts?.map((alert) => {
-                  const Icon = getAlertIcon(alert.type);
-                  return (
-                    <div
-                      key={alert.id}
-                      className={`p-3 border rounded-lg cursor-pointer transition-colors hover:bg-muted/50 ${
-                        !alert.is_read ? 'bg-primary/5 border-primary/20' : ''
-                      }`}
-                      onClick={() => handleViewAlert(alert)}
-                    >
-                      <div className="flex items-start gap-3">
-                        <Icon className={`h-4 w-4 mt-0.5 ${getAlertColor(alert.type, alert.priority)}`} />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h4 className={`text-sm font-medium truncate ${!alert.is_read ? 'font-semibold' : ''}`}>
-                              {alert.title}
-                            </h4>
-                            <Badge variant={getPriorityVariant(alert.priority)} className="text-xs">
-                              {alert.priority}
-                            </Badge>
-                            {alert.action_required && (
-                              <Badge variant="outline" className="text-xs">
-                                Action Required
-                              </Badge>
-                            )}
-                            {!alert.is_read && (
-                              <Badge variant="default" className="text-xs bg-chart-2 text-chart-2-foreground">
-                                New
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="text-xs text-muted-foreground line-clamp-2">
-                            {alert.message}
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {new Date(alert.created_at).toLocaleString()}
-                          </p>
-                        </div>
-                        <Button 
-                          size="sm" 
-                          variant="ghost" 
-                          className="h-6 w-6 p-0"
+              <AnimatePresence mode="popLayout">
+                <div className="space-y-0.5">
+                  {filteredAlerts.map((alert) => {
+                    const Icon = getAlertIcon(alert.type);
+                    return (
+                      <motion.div
+                        key={alert.id}
+                        layout
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.15 }}
+                        className={`flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer transition-colors hover:bg-muted/40 group ${
+                          !alert.is_read ? 'bg-primary/5 border-l-2 border-l-primary' : 'border-l-2 border-l-transparent'
+                        }`}
+                        onClick={() => handleViewAlert(alert)}
+                      >
+                        <Icon className={`h-3.5 w-3.5 shrink-0 ${getAlertColor(alert.type, alert.priority)}`} />
+                        <span className={`text-xs truncate flex-1 min-w-0 ${!alert.is_read ? 'font-semibold text-foreground' : 'text-muted-foreground'}`}>
+                          {alert.title}
+                        </span>
+                        <Badge variant="outline" className="text-[9px] px-1 py-0 h-4 shrink-0 hidden sm:inline-flex">
+                          {alert.type.replace(/_/g, ' ')}
+                        </Badge>
+                        <Badge variant={getPriorityVariant(alert.priority)} className="text-[9px] px-1 py-0 h-4 shrink-0">
+                          {alert.priority}
+                        </Badge>
+                        {alert.action_required && (
+                          <span className="h-1.5 w-1.5 rounded-full bg-destructive shrink-0" title="Action required" />
+                        )}
+                        <span className="text-[9px] text-muted-foreground shrink-0 w-12 text-right">
+                          {formatTimeAgo(alert.created_at)}
+                        </span>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-5 w-5 p-0 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleViewAlert(alert);
+                            deleteAlertMutation.mutate(alert.id);
                           }}
                         >
-                          <Eye className="h-3 w-3" />
+                          <X className="h-3 w-3" />
                         </Button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </AnimatePresence>
             )}
           </ScrollArea>
         </CardContent>
