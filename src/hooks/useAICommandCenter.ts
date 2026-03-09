@@ -44,7 +44,12 @@ export interface AICommandCenterData {
   seo: {
     weakListings: number;
     avgScore: number;
-    recentOptimized: any[];
+    totalAnalyzed: number;
+    coveragePercent: number;
+    recentAnalyses: any[];
+    scoreBuckets: { range: string; count: number; fill: string }[];
+    subScores: { metric: string; avg: number }[];
+    ratingBreakdown: { rating: string; count: number; fill: string }[];
   };
   roiForecasts: any[];
   searchAnalytics: {
