@@ -294,18 +294,26 @@ const AICommandCenter = () => {
   const handleRunSeoScan = async () => {
     setSeoRunning(true);
     toast.info('Initiating SEO scan across all properties...');
-    const { error } = await supabase.functions.invoke('core-engine', { body: { mode: 'seo_scan' } });
-    if (error) toast.error('SEO scan failed');
-    else { toast.success('SEO scan queued successfully'); refetch(); }
+    const { error } = await supabase.from('ai_jobs').insert({
+      job_type: 'seo_scan',
+      status: 'pending',
+      payload: { limit: 50, filter: 'unanalyzed' },
+    });
+    if (error) toast.error('SEO scan failed: ' + error.message);
+    else { toast.success('SEO scan job queued successfully'); refetch(); }
     setSeoRunning(false);
   };
 
   const handleRunAIOptimization = async () => {
     setAiOptRunning(true);
     toast.info('Starting AI optimization pipeline...');
-    const { error } = await supabase.functions.invoke('core-engine', { body: { mode: 'ai_optimization' } });
-    if (error) toast.error('AI optimization failed');
-    else { toast.success('AI optimization started'); refetch(); }
+    const { error } = await supabase.from('ai_jobs').insert({
+      job_type: 'investment_analysis',
+      status: 'pending',
+      payload: { action: 'optimize', threshold: 60 },
+    });
+    if (error) toast.error('AI optimization failed: ' + error.message);
+    else { toast.success('AI optimization job queued successfully'); refetch(); }
     setAiOptRunning(false);
   };
 
