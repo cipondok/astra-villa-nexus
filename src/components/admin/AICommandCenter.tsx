@@ -1133,6 +1133,122 @@ const AICommandCenter = () => {
                     icon={Target}
                   />
                 </div>
+
+                {/* Alert Thresholds Settings */}
+                <Panel
+                  title="Alert Thresholds"
+                  icon={Settings2}
+                  action={
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-[10px] h-6 px-2 gap-1"
+                      onClick={() => setShowSettings(!showSettings)}
+                    >
+                      <Settings2 className="h-3 w-3" />
+                      {showSettings ? 'Hide' : 'Configure'}
+                    </Button>
+                  }
+                >
+                  {showSettings && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="space-y-3"
+                    >
+                      {configLoading ? (
+                        <div className="flex items-center justify-center py-6">
+                          <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                        </div>
+                      ) : monitorConfig.length === 0 ? (
+                        <p className="text-xs text-muted-foreground text-center py-4">
+                          Config table not found. Run the migration first.
+                        </p>
+                      ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {monitorConfig.map((cfg) => {
+                            const labels: Record<string, { label: string; unit: string; icon: React.ElementType }> = {
+                              stalled_threshold_minutes: { label: 'Stalled Job Threshold', unit: 'min', icon: Timer },
+                              failure_rate_threshold: { label: 'Failure Rate Alert', unit: '%', icon: AlertTriangle },
+                              alert_cooldown_hours: { label: 'Alert Cooldown', unit: 'hrs', icon: Clock },
+                              max_retry_threshold: { label: 'Max Task Retries', unit: 'retries', icon: RefreshCw },
+                              edge_function_timeout_ms: { label: 'Edge Fn Timeout', unit: 'ms', icon: Server },
+                              db_latency_threshold_ms: { label: 'DB Latency Limit', unit: 'ms', icon: Database },
+                            };
+                            const meta = labels[cfg.key] || { label: cfg.key, unit: '', icon: Settings2 };
+                            const MetaIcon = meta.icon;
+
+                            return (
+                              <motion.div
+                                key={cfg.key}
+                                initial={{ opacity: 0, y: 6 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="p-3 rounded-lg border border-border/40 bg-muted/5 space-y-2"
+                              >
+                                <div className="flex items-center gap-2">
+                                  <div className="p-1.5 rounded-md bg-primary/10">
+                                    <MetaIcon className="h-3.5 w-3.5 text-primary" />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-[11px] font-semibold text-foreground truncate">{meta.label}</p>
+                                    <p className="text-[9px] text-muted-foreground">{cfg.description}</p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Input
+                                    type="number"
+                                    defaultValue={cfg.value}
+                                    className="text-xs h-8 w-full"
+                                    min={0}
+                                    onBlur={(e) => {
+                                      const newVal = Number(e.target.value);
+                                      if (!isNaN(newVal) && newVal !== cfg.value) {
+                                        updateConfig.mutate({ key: cfg.key, value: newVal });
+                                      }
+                                    }}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') {
+                                        (e.target as HTMLInputElement).blur();
+                                      }
+                                    }}
+                                  />
+                                  <span className="text-[10px] text-muted-foreground shrink-0 w-10">{meta.unit}</span>
+                                </div>
+                              </motion.div>
+                            );
+                          })}
+                        </div>
+                      )}
+                      <p className="text-[9px] text-muted-foreground text-center pt-1">
+                        Changes take effect on the next health check cycle
+                      </p>
+                    </motion.div>
+                  )}
+                  {!showSettings && (
+                    <div className="flex items-center gap-4 text-[11px] text-muted-foreground">
+                      {monitorConfig.slice(0, 3).map((cfg) => {
+                        const shortLabels: Record<string, string> = {
+                          stalled_threshold_minutes: 'Stall',
+                          failure_rate_threshold: 'Fail Rate',
+                          alert_cooldown_hours: 'Cooldown',
+                        };
+                        const units: Record<string, string> = {
+                          stalled_threshold_minutes: 'min',
+                          failure_rate_threshold: '%',
+                          alert_cooldown_hours: 'hrs',
+                        };
+                        return (
+                          <span key={cfg.key} className="flex items-center gap-1">
+                            <span className="font-medium text-foreground">{cfg.value}</span>
+                            <span>{units[cfg.key]}</span>
+                            <span className="text-muted-foreground/60">{shortLabels[cfg.key]}</span>
+                          </span>
+                        );
+                      })}
+                    </div>
+                  )}
+                </Panel>
               </div>
             )}
           </motion.div>
