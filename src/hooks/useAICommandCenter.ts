@@ -63,6 +63,18 @@ export interface AICommandCenterData {
     stalledJobs: number;
   };
   historicalKPIs: HistoricalKPIs;
+  valuations: {
+    totalValuations: number;
+    avgConfidence: number;
+    coveragePercent: number;
+    recentValuations: any[];
+    confidenceBuckets: { range: string; count: number; fill: string }[];
+    roiForecastCount: number;
+    valuationsThisWeek: number;
+    valuationsLastWeek: number;
+    avgEstimatedValue: number;
+    trendDirection: 'up' | 'down' | 'neutral';
+  };
 }
 
 async function checkEdgeFunctionHealth(name: string): Promise<{ status: 'ok' | 'error'; latencyMs: number }> {
