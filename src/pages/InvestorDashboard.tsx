@@ -20,6 +20,8 @@ import {
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { motion } from 'framer-motion';
 
+const ROIAnalyticsDashboard = lazy(() => import('@/components/investor/ROIAnalyticsDashboard'));
+
 const formatIDR = (v: number) =>
   new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v);
 const formatShort = (v: number) =>
