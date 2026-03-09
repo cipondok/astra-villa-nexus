@@ -1427,67 +1427,109 @@ const AICommandCenter = () => {
             )}
 
             {activeNav === 'search' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Panel title="Search Volume & Conversion" icon={Eye} className="md:col-span-2">
-                  <div className="grid grid-cols-4 gap-3 mb-4">
-                    <div className="p-3 rounded-lg bg-primary/5 border border-primary/10 text-center">
-                      <p className="text-2xl font-bold text-foreground">{searchAnalytics.totalSearches}</p>
-                      <p className="text-[10px] text-muted-foreground">Total Searches</p>
+              <div className="space-y-4">
+                {/* KPI Row */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <KPICard label="Total Searches" value={searchAnalytics.totalSearches.toString()} icon={Search} color="from-primary to-primary/60" />
+                  <KPICard label="Unique Queries" value={searchAnalytics.topQueries.length.toString()} icon={Eye} color="from-chart-1 to-chart-1/60" delay={0.05} />
+                  <KPICard label="Avg per Query" value={(searchAnalytics.totalSearches > 0 ? Math.round(searchAnalytics.totalSearches / Math.max(searchAnalytics.topQueries.length, 1)) : 0).toString()} icon={Gauge} color="from-chart-2 to-chart-2/60" delay={0.1} />
+                  <KPICard label="Conversion Rate" value={`${searchAnalytics.conversionRate}%`} icon={ArrowUpRight} color="from-chart-3 to-chart-3/60" trend={searchAnalytics.conversionRate > 30 ? 'up' : 'down'} delay={0.15} />
+                </div>
+
+                {/* Search Volume Trend */}
+                <Panel title="Search Volume (14 days)" icon={LineChartIcon}>
+                  {searchAnalytics.volumeByDay.some(d => d.searches > 0) ? (
+                    <div className="h-52">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={searchAnalytics.volumeByDay} margin={{ left: -10, right: 8, top: 10, bottom: 0 }}>
+                          <defs>
+                            <linearGradient id="searchVolGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                              <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                          <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+                          <YAxis tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
+                          <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
+                          <Area type="monotone" dataKey="searches" name="Searches" stroke="hsl(var(--primary))" fill="url(#searchVolGrad)" strokeWidth={2.5} />
+                        </AreaChart>
+                      </ResponsiveContainer>
                     </div>
-                    <div className="p-3 rounded-lg bg-chart-1/5 border border-chart-1/10 text-center">
-                      <p className="text-2xl font-bold text-foreground">{searchAnalytics.topQueries.length}</p>
-                      <p className="text-[10px] text-muted-foreground">Unique Queries</p>
-                    </div>
-                    <div className="p-3 rounded-lg bg-chart-2/5 border border-chart-2/10 text-center">
-                      <p className="text-2xl font-bold text-foreground">
-                        {searchAnalytics.totalSearches > 0 ? Math.round(searchAnalytics.totalSearches / Math.max(searchAnalytics.topQueries.length, 1)) : 0}
-                      </p>
-                      <p className="text-[10px] text-muted-foreground">Avg per Query</p>
-                    </div>
-                    <div className="p-3 rounded-lg bg-chart-3/5 border border-chart-3/10 text-center">
-                      <div className="flex items-center justify-center gap-1 mb-0.5">
-                        <ArrowUpRight className="h-3.5 w-3.5 text-chart-3" />
-                      </div>
-                      <p className="text-2xl font-bold text-foreground">{searchAnalytics.conversionRate}%</p>
-                      <p className="text-[10px] text-muted-foreground">Conversion Rate</p>
-                    </div>
-                  </div>
+                  ) : (
+                    <EmptyState icon={LineChartIcon} label="No search volume data" />
+                  )}
                 </Panel>
-                <Panel title="Trending Queries" icon={Search}>
-                  <div className="space-y-1">
-                    {searchAnalytics.topQueries.slice(0, 8).map((q, i) => (
-                      <div key={i} className="flex items-center gap-2 p-2 rounded-md hover:bg-muted/30 transition-colors">
-                        <span className="w-5 h-5 rounded bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center shrink-0">{i + 1}</span>
-                        <span className="text-[11px] text-foreground truncate flex-1">{q.query}</span>
-                        <Badge variant="secondary" className="text-[9px] h-5 shrink-0">{q.count}</Badge>
-                      </div>
-                    ))}
-                    {searchAnalytics.topQueries.length === 0 && <EmptyState icon={Search} label="No search data" />}
-                  </div>
-                </Panel>
-                <Panel title="Recent AI Activity" icon={Zap}>
-                  <ScrollArea className="h-[300px]">
-                    {recentActions.length > 0 ? (
-                      <div className="space-y-1">
-                        {recentActions.map((action: any) => (
-                          <div key={action.id} className="flex items-start gap-2.5 p-2 rounded-lg hover:bg-muted/20 transition-colors">
-                            <div className={`mt-1 w-2 h-2 rounded-full shrink-0 ${
-                              action.level === 'error' ? 'bg-destructive' : action.level === 'warning' ? 'bg-chart-3' : 'bg-chart-1'
-                            }`} />
-                            <div className="flex-1 min-w-0">
-                              <p className="text-[11px] text-foreground leading-snug">{action.message}</p>
-                              <p className="text-[10px] text-muted-foreground mt-0.5">
-                                {formatDistanceToNow(new Date(action.created_at), { addSuffix: true })}
-                              </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Query Category Breakdown */}
+                  <Panel title="Query Categories" icon={Radar}>
+                    {searchAnalytics.categoryBreakdown.length > 0 ? (
+                      <div className="flex items-center justify-center gap-6">
+                        <ResponsiveContainer width={130} height={130}>
+                          <PieChart>
+                            <Pie data={searchAnalytics.categoryBreakdown} cx="50%" cy="50%" innerRadius={36} outerRadius={56} dataKey="count" stroke="hsl(var(--background))" strokeWidth={3}>
+                              {searchAnalytics.categoryBreakdown.map((entry, i) => (
+                                <Cell key={i} fill={entry.fill} />
+                              ))}
+                            </Pie>
+                            <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
+                          </PieChart>
+                        </ResponsiveContainer>
+                        <div className="space-y-1.5">
+                          {searchAnalytics.categoryBreakdown.map(item => (
+                            <div key={item.category} className="flex items-center gap-2 text-[11px]">
+                              <div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: item.fill }} />
+                              <span className="text-muted-foreground">{item.category}</span>
+                              <span className="font-bold text-foreground ml-auto tabular-nums">{item.count}</span>
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
                     ) : (
-                      <EmptyState icon={Activity} label="No recent activity" />
+                      <EmptyState icon={Radar} label="No category data" />
                     )}
-                  </ScrollArea>
-                </Panel>
+                  </Panel>
+
+                  {/* Trending Queries */}
+                  <Panel title="Trending Queries" icon={Search}>
+                    <div className="space-y-1">
+                      {searchAnalytics.topQueries.slice(0, 8).map((q, i) => (
+                        <div key={i} className="flex items-center gap-2 p-2 rounded-md hover:bg-muted/30 transition-colors">
+                          <span className="w-5 h-5 rounded bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center shrink-0">{i + 1}</span>
+                          <span className="text-[11px] text-foreground truncate flex-1">{q.query}</span>
+                          <Badge variant="secondary" className="text-[9px] h-5 shrink-0">{q.count}</Badge>
+                        </div>
+                      ))}
+                      {searchAnalytics.topQueries.length === 0 && <EmptyState icon={Search} label="No search data" />}
+                    </div>
+                  </Panel>
+
+                  {/* Recent AI Activity */}
+                  <Panel title="Recent AI Activity" icon={Zap}>
+                    <ScrollArea className="h-[260px]">
+                      {recentActions.length > 0 ? (
+                        <div className="space-y-1">
+                          {recentActions.map((action: any) => (
+                            <div key={action.id} className="flex items-start gap-2.5 p-2 rounded-lg hover:bg-muted/20 transition-colors">
+                              <div className={`mt-1 w-2 h-2 rounded-full shrink-0 ${
+                                action.level === 'error' ? 'bg-destructive' : action.level === 'warning' ? 'bg-chart-3' : 'bg-chart-1'
+                              }`} />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-[11px] text-foreground leading-snug">{action.message}</p>
+                                <p className="text-[10px] text-muted-foreground mt-0.5">
+                                  {formatDistanceToNow(new Date(action.created_at), { addSuffix: true })}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <EmptyState icon={Activity} label="No recent activity" />
+                      )}
+                    </ScrollArea>
+                  </Panel>
+                </div>
               </div>
             )}
 
