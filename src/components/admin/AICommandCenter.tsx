@@ -614,7 +614,17 @@ const AICommandCenter = () => {
                   }>
                     {comparisonMode === 'preset' ? (
                     <div className="space-y-3">
-                      <div>
+                      <div className="flex items-center justify-between">
+                        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">Week over Week</p>
+                        <div className="flex gap-1">
+                          <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px] gap-1" onClick={() => exportPresetComparisonCSV(historicalKPIs)}>
+                            <Download className="h-3 w-3" />CSV
+                          </Button>
+                          <Button size="sm" variant="ghost" className="h-6 px-2 text-[10px] gap-1" onClick={() => exportPresetComparisonPDF(historicalKPIs)}>
+                            <FileText className="h-3 w-3" />PDF
+                          </Button>
+                        </div>
+                      </div>
                         <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest mb-2">Week over Week</p>
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                           <ComparisonCell label="New Properties" data={historicalKPIs.wow.newProperties} />
