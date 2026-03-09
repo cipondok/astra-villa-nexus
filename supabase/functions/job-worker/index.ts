@@ -215,6 +215,10 @@ async function handleProcess(supabase: any) {
         result = await updateRentalInsights(supabase);
       } else if (pendingJob.job_type === "detect_investment_hotspots") {
         result = await detectInvestmentHotspots(supabase);
+      } else if (pendingJob.job_type === "update_market_insights") {
+        result = await updateMarketInsights(supabase);
+      } else if (pendingJob.job_type === "detect_hot_markets") {
+        result = await detectHotMarkets(supabase);
       }
 
       // Mark task completed
