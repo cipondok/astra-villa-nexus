@@ -44,7 +44,13 @@ const Navigation = () => {
 
   useEffect(() => {
     if (!isMenuOpen) return;
-    const handleScroll = () => setIsMenuOpen(false);
+    let lastScrollY = window.scrollY;
+    const handleScroll = () => {
+      // Only close on significant scroll (>80px), not tiny movements from layout shifts
+      if (Math.abs(window.scrollY - lastScrollY) > 80) {
+        setIsMenuOpen(false);
+      }
+    };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isMenuOpen]);
