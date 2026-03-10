@@ -403,55 +403,55 @@ const Navigation = () => {
                   {/* Properties Section */}
                   <MobileSectionLabel>Properties</MobileSectionLabel>
                   {propertyNavItems.map((item) => (
-                    <MobileNavButton key={item.path} icon={item.icon} label={item.label} active={isActive(item.path)} onClick={() => { navigate(item.path); toggleMenu(); }} indent />
+                    <MobileNavButton key={item.path} icon={item.icon} label={item.label} active={isActive(item.path)} onClick={() => smoothNavigate(item.path)} indent />
                   ))}
-                  <MobileNavButton icon={Box} label="VR Tours" active={isActive('/vr-tour')} onClick={() => { navigate('/vr-tour'); toggleMenu(); }} indent />
-                  <MobileNavButton icon={Scale} label="Compare" active={isActive('/property-comparison')} onClick={() => { navigate('/property-comparison'); toggleMenu(); }} indent />
-                  <MobileNavButton icon={MapPin} label={t('nav2.location')} active={isActive('/location')} onClick={() => { navigate('/location'); toggleMenu(); }} indent />
-                  <MobileNavButton icon={Plus} label={t('nav2.addProperty')} onClick={() => { navigate('/add-property'); toggleMenu(); }} indent />
+                  <MobileNavButton icon={Box} label="VR Tours" active={isActive('/vr-tour')} onClick={() => smoothNavigate('/vr-tour')} indent />
+                  <MobileNavButton icon={Scale} label="Compare" active={isActive('/property-comparison')} onClick={() => smoothNavigate('/property-comparison')} indent />
+                  <MobileNavButton icon={MapPin} label={t('nav2.location')} active={isActive('/location')} onClick={() => smoothNavigate('/location')} indent />
+                  <MobileNavButton icon={Plus} label={t('nav2.addProperty')} onClick={() => smoothNavigate('/add-property')} indent />
 
                   {/* Tools & Finance */}
                   <MobileSectionLabel>Tools & Finance</MobileSectionLabel>
-                  <MobileNavButton icon={Calculator} label="AI Price Estimator" active={isActive('/ai-pricing')} onClick={() => { navigate('/ai-pricing'); toggleMenu(); }} indent />
-                  <MobileNavButton icon={BarChart3} label="Loan Calculator" active={isActive('/calculators/loan')} onClick={() => { navigate('/calculators/loan'); toggleMenu(); }} indent />
-                  <MobileNavButton icon={Hammer} label="Construction Cost" active={isActive('/calculators/construction')} onClick={() => { navigate('/calculators/construction'); toggleMenu(); }} indent />
-                  <MobileNavButton icon={TrendingUp} label={t('nav2.investment')} active={isActive('/investment')} onClick={() => { navigate('/investment'); toggleMenu(); }} indent />
-                  <MobileNavButton icon={Shield} label="Pre-Qualification" active={isActive('/pre-qualification')} onClick={() => { navigate('/pre-qualification'); toggleMenu(); }} indent />
+                  <MobileNavButton icon={Calculator} label="AI Price Estimator" active={isActive('/ai-pricing')} onClick={() => smoothNavigate('/ai-pricing')} indent />
+                  <MobileNavButton icon={BarChart3} label="Loan Calculator" active={isActive('/calculators/loan')} onClick={() => smoothNavigate('/calculators/loan')} indent />
+                  <MobileNavButton icon={Hammer} label="Construction Cost" active={isActive('/calculators/construction')} onClick={() => smoothNavigate('/calculators/construction')} indent />
+                  <MobileNavButton icon={TrendingUp} label={t('nav2.investment')} active={isActive('/investment')} onClick={() => smoothNavigate('/investment')} indent />
+                  <MobileNavButton icon={Shield} label="Pre-Qualification" active={isActive('/pre-qualification')} onClick={() => smoothNavigate('/pre-qualification')} indent />
 
                   {/* Discover */}
                   <MobileSectionLabel>Discover</MobileSectionLabel>
-                  <MobileNavButton icon={Users} label="Find Agents" active={isActive('/agents')} onClick={() => { navigate('/agents'); toggleMenu(); }} indent />
-                  <MobileNavButton icon={Settings2} label={t('nav.services')} active={isActive('/services')} onClick={() => { navigate('/services'); toggleMenu(); }} indent />
-                  <MobileNavButton icon={Layers} label="Marketplace" active={isActive('/marketplace')} onClick={() => { navigate('/marketplace'); toggleMenu(); }} indent />
-                  <MobileNavButton icon={MessageSquare} label="Community" active={isActive('/community')} onClick={() => { navigate('/community'); toggleMenu(); }} indent />
-                  <MobileNavButton icon={BookOpen} label="Area Guides" active={isActive('/areas')} onClick={() => { navigate('/areas'); toggleMenu(); }} indent />
+                  <MobileNavButton icon={Users} label="Find Agents" active={isActive('/agents')} onClick={() => smoothNavigate('/agents')} indent />
+                  <MobileNavButton icon={Settings2} label={t('nav.services')} active={isActive('/services')} onClick={() => smoothNavigate('/services')} indent />
+                  <MobileNavButton icon={Layers} label="Marketplace" active={isActive('/marketplace')} onClick={() => smoothNavigate('/marketplace')} indent />
+                  <MobileNavButton icon={MessageSquare} label="Community" active={isActive('/community')} onClick={() => smoothNavigate('/community')} indent />
+                  <MobileNavButton icon={BookOpen} label="Area Guides" active={isActive('/areas')} onClick={() => smoothNavigate('/areas')} indent />
 
                   {/* User Section */}
                   {user && (
                     <>
                       <MobileSectionLabel>Account</MobileSectionLabel>
                       {user && !isAdmin && !isAgent && isPropertyOwner && (
-                        <MobileNavButton icon={BarChart3} label={t('nav.dashboard')} active={isActive('/dashboard/property-owner')} onClick={() => { navigate('/dashboard/property-owner'); toggleMenu(); }} indent />
+                        <MobileNavButton icon={BarChart3} label={t('nav.dashboard')} active={isActive('/dashboard/property-owner')} onClick={() => smoothNavigate('/dashboard/property-owner')} indent />
                       )}
                       {user && !isAdmin && isPropertyOwner && (
-                        <MobileNavButton icon={TrendingUp} label="Seller Intelligence" active={isActive('/seller-intelligence')} onClick={() => { navigate('/seller-intelligence'); toggleMenu(); }} indent />
+                        <MobileNavButton icon={TrendingUp} label="Seller Intelligence" active={isActive('/seller-intelligence')} onClick={() => smoothNavigate('/seller-intelligence')} indent />
                       )}
                       {user && !isAdmin && isPropertyOwner && (
-                        <MobileNavButton icon={Sparkles} label="Listing Optimizer" active={isActive('/listing-optimizer')} onClick={() => { navigate('/listing-optimizer'); toggleMenu(); }} indent />
+                        <MobileNavButton icon={Sparkles} label="Listing Optimizer" active={isActive('/listing-optimizer')} onClick={() => smoothNavigate('/listing-optimizer')} indent />
                       )}
                       {user && !isAdmin && isPropertyOwner && (
-                        <MobileNavButton icon={Scale} label="Negotiation Assistant" active={isActive('/negotiation-assistant')} onClick={() => { navigate('/negotiation-assistant'); toggleMenu(); }} indent />
+                        <MobileNavButton icon={Scale} label="Negotiation Assistant" active={isActive('/negotiation-assistant')} onClick={() => smoothNavigate('/negotiation-assistant')} indent />
                       )}
                       {user && !isAdmin && !isAgent && !isPropertyOwner && (
-                        <MobileNavButton icon={BarChart3} label={t('nav.dashboard')} active={isActive('/dashboard/user')} onClick={() => { navigate('/dashboard/user'); toggleMenu(); }} indent />
+                        <MobileNavButton icon={BarChart3} label={t('nav.dashboard')} active={isActive('/dashboard/user')} onClick={() => smoothNavigate('/dashboard/user')} indent />
                       )}
-                      <MobileNavButton icon={Heart} label="Saved Properties" active={isActive('/saved')} onClick={() => { navigate('/saved'); toggleMenu(); }} indent />
-                      <MobileNavButton icon={MessageSquare} label="Messages" active={isActive('/messages')} onClick={() => { navigate('/messages'); toggleMenu(); }} indent />
+                      <MobileNavButton icon={Heart} label="Saved Properties" active={isActive('/saved')} onClick={() => smoothNavigate('/saved')} indent />
+                      <MobileNavButton icon={MessageSquare} label="Messages" active={isActive('/messages')} onClick={() => smoothNavigate('/messages')} indent />
                       {isAgent && (
-                        <MobileNavButton icon={User} label={t('nav.agentDashboard')} colorClass="text-chart-1" active={isActive('/agent-dashboard')} onClick={() => { navigate('/agent'); toggleMenu(); }} indent />
+                        <MobileNavButton icon={User} label={t('nav.agentDashboard')} colorClass="text-chart-1" active={isActive('/agent-dashboard')} onClick={() => smoothNavigate('/agent')} indent />
                       )}
                       {profile?.role === 'vendor' && (
-                        <MobileNavButton icon={Settings} label={t('nav.vendorDashboard')} colorClass="text-accent-foreground" onClick={() => { navigate('/vendor'); toggleMenu(); }} indent />
+                        <MobileNavButton icon={Settings} label={t('nav.vendorDashboard')} colorClass="text-accent-foreground" onClick={() => smoothNavigate('/vendor')} indent />
                       )}
                     </>
                   )}
