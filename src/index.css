@@ -118,7 +118,9 @@ footer {
    react-remove-scroll adds inline padding-right + overflow:hidden which causes a "jump"
    when combined with scrollbar-gutter: stable. Override everything it touches. */
 body[data-scroll-locked],
-html[data-scroll-locked] {
+html[data-scroll-locked],
+body[data-scroll-locked="1"],
+html[data-scroll-locked="1"] {
   padding-right: 0 !important;
   margin-right: 0 !important;
   overflow: auto !important;
@@ -126,7 +128,16 @@ html[data-scroll-locked] {
   position: static !important;
   top: auto !important;
   width: auto !important;
+  max-width: 100% !important;
   scrollbar-gutter: stable !important;
+  touch-action: auto !important;
+}
+
+/* Also override the react-remove-scroll-bar's style injection */
+[data-overlayscrollbars-body],
+.react-remove-scroll,
+[data-radix-scroll-area-viewport] {
+  overflow: visible !important;
 }
 
 /* Global safeguard: always keep vertical scrollbar visible */
