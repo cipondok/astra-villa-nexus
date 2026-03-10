@@ -79,6 +79,7 @@ const PropertyImageManager = () => {
   const [selectedPropertyIds, setSelectedPropertyIds] = useState<Set<string>>(new Set());
   const [bulkRegenerating, setBulkRegenerating] = useState(false);
   const [bulkProgress, setBulkProgress] = useState({ done: 0, total: 0 });
+  const [bulkAIGenerating, setBulkAIGenerating] = useState(false);
 
   const toggleSelectProperty = useCallback((id: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
