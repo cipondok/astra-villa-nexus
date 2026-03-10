@@ -591,13 +591,13 @@ const PropertyImageManager = () => {
   return (
     <div className="space-y-3">
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
         <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => handleFilterChange("all")}>
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[10px] text-muted-foreground">Total</p>
-                <p className="text-lg font-bold">{stats.total}</p>
+                <p className="text-[10px] text-muted-foreground">Total Properties</p>
+                <p className="text-lg font-bold">{stats.total.toLocaleString()}</p>
               </div>
               <Building2 className={`h-5 w-5 ${filter === "all" ? "text-primary" : "text-muted-foreground"}`} />
             </div>
@@ -608,9 +608,20 @@ const PropertyImageManager = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] text-muted-foreground">With Images</p>
-                <p className="text-lg font-bold text-chart-1">{stats.withImages}</p>
+                <p className="text-lg font-bold text-chart-1">{stats.withImages.toLocaleString()}</p>
               </div>
               <CheckCircle className={`h-5 w-5 ${filter === "with-images" ? "text-chart-1" : "text-muted-foreground"}`} />
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="cursor-pointer hover:shadow-md transition-shadow border-primary/30 bg-primary/5">
+          <CardContent className="p-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[10px] text-muted-foreground">Total Images</p>
+                <p className="text-lg font-bold text-primary">{stats.totalImages.toLocaleString()}</p>
+              </div>
+              <ImageIcon className="h-5 w-5 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -619,7 +630,7 @@ const PropertyImageManager = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] text-muted-foreground">No Images</p>
-                <p className="text-lg font-bold text-destructive">{stats.noImages}</p>
+                <p className="text-lg font-bold text-destructive">{stats.noImages.toLocaleString()}</p>
               </div>
               <ImageOff className={`h-5 w-5 ${filter === "no-images" ? "text-destructive" : "text-muted-foreground"}`} />
             </div>
