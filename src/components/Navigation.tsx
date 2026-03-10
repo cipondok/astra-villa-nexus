@@ -133,7 +133,7 @@ const Navigation = () => {
           isHomePage && !scrolled
             ? "bg-transparent border-b border-white/10 shadow-none"
             : "bg-background/80 backdrop-blur-2xl border-b border-gold-primary/10 shadow-sm",
-          pastHero ? "h-12 md:h-13 lg:h-14" : "h-10 md:h-11 lg:h-12"
+          "h-12 md:h-13 lg:h-14"
         )} 
         style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
       >
