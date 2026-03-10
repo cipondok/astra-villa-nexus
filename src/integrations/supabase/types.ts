@@ -29819,6 +29819,7 @@ export type Database = {
           valid_until: string
         }[]
       }
+      get_image_stats: { Args: never; Returns: Json }
       get_location_stats: { Args: never; Returns: Json }
       get_masked_api_settings: {
         Args: never
