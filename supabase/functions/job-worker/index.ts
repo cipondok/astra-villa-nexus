@@ -223,6 +223,8 @@ async function handleProcess(supabase: any) {
         result = await calculateInvestmentScores(supabase, task.payload);
       } else if (pendingJob.job_type === "update_roi_forecasts") {
         result = await updateRoiForecasts(supabase, task.payload);
+      } else if (pendingJob.job_type === "bulk_generate_property_images") {
+        result = await bulkGeneratePropertyImages(supabase, task.payload);
       }
 
       // Mark task completed
