@@ -46,6 +46,15 @@ const SystemSettings = ({ defaultTab }: SystemSettingsProps) => {
 
   // Handle URL tab parameter for direct token settings access
   const [activeTab, setActiveTab] = React.useState(defaultTab || 'general');
+  
+  const overflowTabs = ['welcome-screen', 'security', 'notifications', 'files', 'discounts', 'filters', 'centralized-filters', 'astra-tokens', 'system', 'backup'];
+  const [showMore, setShowMore] = useState(overflowTabs.includes(defaultTab || ''));
+
+  React.useEffect(() => {
+    if (overflowTabs.includes(activeTab)) {
+      setShowMore(true);
+    }
+  }, [activeTab]);
 
   React.useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
