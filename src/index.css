@@ -88,9 +88,10 @@ body {
   min-height: 100vh !important;
   min-height: -webkit-fill-available;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: scroll !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scrollbar-gutter: stable !important;
 }
 
 main {
@@ -113,15 +114,24 @@ footer {
 }
 
 
-/* Radix (react-remove-scroll) adds padding-right on body to compensate for scrollbar.
-   We already reserve gutter via `scrollbar-gutter`, so that padding causes a horizontal “jump”. */
+/* Radix (react-remove-scroll) scroll-lock override — prevent layout shift globally.
+   react-remove-scroll adds inline padding-right + overflow:hidden which causes a "jump"
+   when combined with scrollbar-gutter: stable. Override everything it touches. */
 body[data-scroll-locked],
 html[data-scroll-locked] {
   padding-right: 0 !important;
   margin-right: 0 !important;
   overflow: auto !important;
+  overflow-y: scroll !important;
   position: static !important;
   top: auto !important;
+  width: auto !important;
+  scrollbar-gutter: stable !important;
+}
+
+/* Global safeguard: always keep vertical scrollbar visible */
+html, body {
+  overflow-y: scroll !important;
   scrollbar-gutter: stable !important;
 }
 
