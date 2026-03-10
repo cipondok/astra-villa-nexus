@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback, memo, useMemo, createRef } from 'react';
+import { useEffect, useRef, useState, useCallback, memo, useMemo } from 'react';
 import mapboxgl from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
@@ -9,7 +9,7 @@ import {
   MapPin, Search, SlidersHorizontal, X, Bed, Bath, Maximize2,
   Home, Building2, Layers, Flame, Pentagon, ChevronUp, ChevronDown,
   Loader2, TrendingUp, DollarSign, Eye, Sparkles, List, Map as MapIcon,
-  ChevronLeft, ChevronRight, ArrowUpDown, ArrowUp, ArrowDown,
+  ChevronLeft, ChevronRight, ArrowUpDown, ArrowUp, ArrowDown, BarChart3,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,6 +31,8 @@ const MAPBOX_TOKEN = 'pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbTN1eGo4eXAwMWV4MnFzYTNwaTg
 const DEFAULT_CENTER: [number, number] = [117.5, -2.5];
 const DEFAULT_ZOOM = 5;
 
+type HeatmapMode = 'price' | 'investment';
+
 const formatPrice = (price: number) => {
   if (price >= 1_000_000_000) return `Rp ${(price / 1_000_000_000).toFixed(1)}M`;
   if (price >= 1_000_000) return `Rp ${(price / 1_000_000).toFixed(0)}jt`;
@@ -41,12 +43,15 @@ const formatPrice = (price: number) => {
 // ── Filter Panel ──
 const FilterPanel = memo(({
   filters, onFiltersChange, showHeatmap, onToggleHeatmap,
+  heatmapMode, onHeatmapModeChange,
   drawMode, onSetDrawMode, propertyCount, isLoading, isOpen, onToggle,
 }: {
   filters: MapFilters;
   onFiltersChange: (f: MapFilters) => void;
   showHeatmap: boolean;
   onToggleHeatmap: (v: boolean) => void;
+  heatmapMode: HeatmapMode;
+  onHeatmapModeChange: (m: HeatmapMode) => void;
   drawMode: 'none' | 'polygon';
   onSetDrawMode: (m: 'none' | 'polygon') => void;
   propertyCount: number;
@@ -126,6 +131,18 @@ const FilterPanel = memo(({
                     </Label>
                     <Switch id="heatmap-toggle" checked={showHeatmap} onCheckedChange={onToggleHeatmap} />
                   </div>
+                  {showHeatmap && (
+                    <div className="flex gap-1.5 mt-1">
+                      <Button size="sm" variant={heatmapMode === 'price' ? 'default' : 'outline'}
+                        className="flex-1 h-7 text-[10px]" onClick={() => onHeatmapModeChange('price')}>
+                        <DollarSign className="h-3 w-3 mr-1" /> Harga
+                      </Button>
+                      <Button size="sm" variant={heatmapMode === 'investment' ? 'default' : 'outline'}
+                        className="flex-1 h-7 text-[10px]" onClick={() => onHeatmapModeChange('investment')}>
+                        <BarChart3 className="h-3 w-3 mr-1" /> Investasi
+                      </Button>
+                    </div>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label className="text-xs font-semibold">Cari di Area</Label>
@@ -146,6 +163,18 @@ const FilterPanel = memo(({
 });
 FilterPanel.displayName = 'FilterPanel';
 
+// ── Point-in-polygon check ──
+function pointInPolygon(lat: number, lng: number, polygon: number[][]): boolean {
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const xi = polygon[i][0], yi = polygon[i][1];
+    const xj = polygon[j][0], yj = polygon[j][1];
+    const intersect = ((yi > lng) !== (yj > lng)) && (lat < (xj - xi) * (lng - yi) / (yj - yi) + xi);
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+
 // ── Main Component ──
 export default function InteractivePropertyMap() {
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -161,7 +190,9 @@ export default function InteractivePropertyMap() {
   const [selectedProperty, setSelectedProperty] = useState<MapProperty | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [showHeatmap, setShowHeatmap] = useState(false);
+  const [heatmapMode, setHeatmapMode] = useState<HeatmapMode>('price');
   const [drawMode, setDrawMode] = useState<'none' | 'polygon'>('none');
+  const [polygonCoords, setPolygonCoords] = useState<number[][] | null>(null);
   const [filterOpen, setFilterOpen] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [nlpActive, setNlpActive] = useState(false);
@@ -172,18 +203,24 @@ export default function InteractivePropertyMap() {
   const navigate = useNavigate();
   const { data: properties = [], isLoading } = useMapProperties(bounds, filters, mapReady);
 
+  // ── Filter by polygon if drawn ──
+  const filteredProperties = useMemo(() => {
+    if (!polygonCoords || polygonCoords.length < 3) return properties;
+    return properties.filter(p => pointInPolygon(p.longitude, p.latitude, polygonCoords));
+  }, [properties, polygonCoords]);
+
   // ── Sorted properties ──
   const sortedProperties = useMemo(() => {
-    if (sortBy === 'default') return properties;
-    const sorted = [...properties];
+    if (sortBy === 'default') return filteredProperties;
+    const sorted = [...filteredProperties];
     switch (sortBy) {
       case 'price-asc': return sorted.sort((a, b) => a.price - b.price);
       case 'price-desc': return sorted.sort((a, b) => b.price - a.price);
       case 'score': return sorted.sort((a, b) => (b.investment_score || 0) - (a.investment_score || 0));
-      case 'newest': return sorted; // already ordered by created_at from RPC
+      case 'newest': return sorted;
       default: return sorted;
     }
-  }, [properties, sortBy]);
+  }, [filteredProperties, sortBy]);
 
   // ── Hover handler (bidirectional) ──
   const handleHover = useCallback((id: string | null) => {
@@ -208,13 +245,11 @@ export default function InteractivePropertyMap() {
       }
     });
 
-    // Auto-scroll property list to hovered card
     if (hoveredId) {
       const cardEl = cardRefsMap.current.get(hoveredId);
       if (cardEl) {
         cardEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
-      // Mobile: scroll horizontal strip
       const mobileContainer = mobileScrollRef.current;
       if (mobileContainer && cardEl) {
         const offset = cardEl.offsetLeft - mobileContainer.offsetWidth / 2 + cardEl.offsetWidth / 2;
@@ -272,6 +307,7 @@ export default function InteractivePropertyMap() {
       setMapReady(true);
       updateBounds(m);
 
+      // ── Cluster source ──
       m.addSource('property-cluster', {
         type: 'geojson',
         data: { type: 'FeatureCollection', features: [] },
@@ -301,11 +337,50 @@ export default function InteractivePropertyMap() {
         paint: { 'text-color': '#ffffff' },
       });
 
+      // ── Unclustered points (GPU-rendered, replaces DOM markers at mid zoom) ──
+      m.addLayer({
+        id: 'unclustered-point', type: 'circle', source: 'property-cluster',
+        filter: ['!', ['has', 'point_count']],
+        paint: {
+          'circle-color': ['interpolate', ['linear'], ['get', 'investmentScore'],
+            0, 'hsl(215, 50%, 60%)', 50, 'hsl(45, 80%, 55%)', 80, 'hsl(140, 60%, 45%)', 100, 'hsl(340, 70%, 50%)'],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 8, 4, 12, 6, 16, 8],
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#fff',
+          'circle-opacity': 0.9,
+        },
+        minzoom: 8,
+        maxzoom: 13,
+      });
+
+      // ── Price label layer (visible at high zoom, replaces DOM markers) ──
+      m.addLayer({
+        id: 'price-labels', type: 'symbol', source: 'property-cluster',
+        filter: ['!', ['has', 'point_count']],
+        layout: {
+          'text-field': ['get', 'priceLabel'],
+          'text-font': ['DIN Pro Bold', 'Arial Unicode MS Bold'],
+          'text-size': 11,
+          'text-offset': [0, -1.8],
+          'text-anchor': 'bottom',
+          'text-allow-overlap': false,
+          'symbol-sort-key': ['*', -1, ['get', 'price']],
+        },
+        paint: {
+          'text-color': 'hsl(var(--primary-foreground))',
+          'text-halo-color': 'hsl(var(--primary))',
+          'text-halo-width': 6,
+          'text-halo-blur': 0,
+        },
+        minzoom: 13,
+      });
+
+      // ── Price heatmap ──
       m.addSource('property-heat', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
       m.addLayer({
         id: 'property-heatmap', type: 'heatmap', source: 'property-heat',
         paint: {
-          'heatmap-weight': ['interpolate', ['linear'], ['get', 'price'], 0, 0.1, 10000000000, 1],
+          'heatmap-weight': ['interpolate', ['linear'], ['get', 'weight'], 0, 0.1, 1, 1],
           'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 0, 0.5, 15, 3],
           'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'],
             0, 'rgba(33,102,172,0)', 0.2, 'hsl(215, 65%, 65%)', 0.4, 'hsl(180, 50%, 50%)',
@@ -316,6 +391,7 @@ export default function InteractivePropertyMap() {
         layout: { visibility: 'none' },
       });
 
+      // ── Cluster click → zoom in ──
       m.on('click', 'clusters', (e) => {
         const features = m.queryRenderedFeatures(e.point, { layers: ['clusters'] });
         if (!features.length) return;
@@ -328,11 +404,31 @@ export default function InteractivePropertyMap() {
         });
       });
 
+      // ── Unclustered point click → select property ──
+      m.on('click', 'unclustered-point', (e) => {
+        const feat = e.features?.[0];
+        if (!feat?.properties?.id) return;
+        const pid = feat.properties.id;
+        const prop = properties.find(p => p.id === pid);
+        if (prop) setSelectedProperty(prop);
+      });
+
+      // ── Cursor states ──
       m.on('mouseenter', 'clusters', () => { m.getCanvas().style.cursor = 'pointer'; });
       m.on('mouseleave', 'clusters', () => { m.getCanvas().style.cursor = ''; });
+      m.on('mouseenter', 'unclustered-point', () => { m.getCanvas().style.cursor = 'pointer'; });
+      m.on('mouseleave', 'unclustered-point', () => { m.getCanvas().style.cursor = ''; });
+      m.on('mouseenter', 'price-labels', () => { m.getCanvas().style.cursor = 'pointer'; });
+      m.on('mouseleave', 'price-labels', () => { m.getCanvas().style.cursor = ''; });
+      m.on('click', 'price-labels', (e) => {
+        const feat = e.features?.[0];
+        if (!feat?.properties?.id) return;
+        const prop = properties.find(p => p.id === feat.properties!.id);
+        if (prop) setSelectedProperty(prop);
+      });
     });
 
-    // Debounce moveend to avoid excessive re-fetches during panning
+    // Debounce moveend
     let moveTimer: ReturnType<typeof setTimeout> | null = null;
     const onMoveEnd = () => {
       if (moveTimer) clearTimeout(moveTimer);
@@ -349,39 +445,65 @@ export default function InteractivePropertyMap() {
     setBounds({ north: b.getNorth(), south: b.getSouth(), east: b.getEast(), west: b.getWest() });
   }, []);
 
-  // ── Update markers ──
+  // ── Update GeoJSON sources ──
   useEffect(() => {
     const m = mapRef.current;
     if (!m || !mapReady) return;
 
-    // Remove old markers not in new set
-    const newIds = new Set(properties.map(p => p.id));
-    markersRef.current.forEach(({ marker }, id) => {
-      if (!newIds.has(id)) { marker.remove(); markersRef.current.delete(id); }
-    });
+    const maxPrice = Math.max(...filteredProperties.map(p => p.price), 1);
+    const maxScore = Math.max(...filteredProperties.map(p => p.investment_score || 0), 1);
 
-    // Build GeoJSON
-    const features: GeoJSON.Feature[] = properties.map(p => ({
+    const features: GeoJSON.Feature[] = filteredProperties.map(p => ({
       type: 'Feature' as const,
       geometry: { type: 'Point' as const, coordinates: [p.longitude, p.latitude] },
-      properties: { id: p.id, price: p.price, title: p.title },
+      properties: {
+        id: p.id,
+        price: p.price,
+        priceLabel: formatPrice(p.price),
+        title: p.title,
+        investmentScore: p.investment_score || 0,
+      },
     }));
     const geojson: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features };
 
     const clusterSrc = m.getSource('property-cluster') as mapboxgl.GeoJSONSource | undefined;
     if (clusterSrc) clusterSrc.setData(geojson);
-    const heatSrc = m.getSource('property-heat') as mapboxgl.GeoJSONSource | undefined;
-    if (heatSrc) heatSrc.setData(geojson);
 
-    // Price markers at zoom > 12
-    if (m.getZoom() > 12) {
-      properties.forEach(p => {
-        if (markersRef.current.has(p.id)) return; // already exists
+    // Heatmap: weight based on mode
+    const heatFeatures: GeoJSON.Feature[] = filteredProperties.map(p => ({
+      type: 'Feature' as const,
+      geometry: { type: 'Point' as const, coordinates: [p.longitude, p.latitude] },
+      properties: {
+        weight: heatmapMode === 'investment'
+          ? (p.investment_score || 0) / maxScore
+          : p.price / maxPrice,
+      },
+    }));
+    const heatGeoJson: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features: heatFeatures };
+    const heatSrc = m.getSource('property-heat') as mapboxgl.GeoJSONSource | undefined;
+    if (heatSrc) heatSrc.setData(heatGeoJson);
+
+    // DOM price markers at high zoom (zoom > 13) for interactive hover
+    const zoom = m.getZoom();
+    const newIds = new Set(filteredProperties.map(p => p.id));
+
+    // Remove old markers
+    markersRef.current.forEach(({ marker }, id) => {
+      if (!newIds.has(id) || zoom <= 13) { marker.remove(); markersRef.current.delete(id); }
+    });
+
+    if (zoom > 13) {
+      // Only render visible markers (limit to 100 for perf)
+      const visibleProps = filteredProperties.slice(0, 100);
+      visibleProps.forEach(p => {
+        if (markersRef.current.has(p.id)) return;
 
         const el = document.createElement('div');
         el.className = 'map-price-marker';
+        const scoreColor = (p.investment_score || 0) >= 75 ? 'hsl(140, 60%, 40%)' :
+          (p.investment_score || 0) >= 50 ? 'hsl(45, 80%, 50%)' : 'hsl(var(--primary))';
         el.innerHTML = `<div style="
-          background: hsl(var(--primary));
+          background: ${scoreColor};
           color: white;
           padding: 2px 8px;
           border-radius: 6px;
@@ -406,12 +528,8 @@ export default function InteractivePropertyMap() {
           .addTo(m);
         markersRef.current.set(p.id, { marker, el });
       });
-    } else {
-      // Remove individual markers when zoomed out (clusters visible)
-      markersRef.current.forEach(({ marker }, id) => { marker.remove(); });
-      markersRef.current.clear();
     }
-  }, [properties, mapReady, handleHover]);
+  }, [filteredProperties, mapReady, handleHover, heatmapMode]);
 
   // ── Heatmap toggle ──
   useEffect(() => {
@@ -424,18 +542,49 @@ export default function InteractivePropertyMap() {
     } catch {}
   }, [showHeatmap, mapReady]);
 
-  // ── Draw mode ──
+  // ── Heatmap color change for investment mode ──
+  useEffect(() => {
+    const m = mapRef.current;
+    if (!m || !mapReady) return;
+    try {
+      if (heatmapMode === 'investment') {
+        m.setPaintProperty('property-heatmap', 'heatmap-color', [
+          'interpolate', ['linear'], ['heatmap-density'],
+          0, 'rgba(0,0,0,0)', 0.2, 'hsl(215, 50%, 60%)', 0.4, 'hsl(45, 80%, 55%)',
+          0.6, 'hsl(140, 65%, 50%)', 0.8, 'hsl(140, 70%, 40%)', 1, 'hsl(340, 70%, 50%)',
+        ]);
+      } else {
+        m.setPaintProperty('property-heatmap', 'heatmap-color', [
+          'interpolate', ['linear'], ['heatmap-density'],
+          0, 'rgba(33,102,172,0)', 0.2, 'hsl(215, 65%, 65%)', 0.4, 'hsl(180, 50%, 50%)',
+          0.6, 'hsl(60, 80%, 55%)', 0.8, 'hsl(25, 85%, 55%)', 1, 'hsl(0, 80%, 50%)',
+        ]);
+      }
+    } catch {}
+  }, [heatmapMode, mapReady]);
+
+  // ── Draw mode + polygon filtering ──
   useEffect(() => {
     const draw = drawRef.current;
     const m = mapRef.current;
     if (!draw || !m) return;
-    if (drawMode === 'polygon') draw.changeMode('draw_polygon');
-    else draw.deleteAll();
+    if (drawMode === 'polygon') {
+      draw.deleteAll();
+      draw.changeMode('draw_polygon');
+    } else if (drawMode === 'none' && !polygonCoords) {
+      draw.deleteAll();
+    }
 
-    const onDrawCreate = () => setDrawMode('none');
+    const onDrawCreate = (e: any) => {
+      setDrawMode('none');
+      const coords = e.features?.[0]?.geometry?.coordinates?.[0];
+      if (coords && coords.length >= 3) {
+        setPolygonCoords(coords);
+      }
+    };
     m.on('draw.create', onDrawCreate);
     return () => { m.off('draw.create', onDrawCreate); };
-  }, [drawMode]);
+  }, [drawMode, polygonCoords]);
 
   // Card ref setter
   const setCardRef = useCallback((id: string, el: HTMLDivElement | null) => {
@@ -478,6 +627,21 @@ export default function InteractivePropertyMap() {
             </Button>
           </div>
         </div>
+
+        {/* Polygon active indicator */}
+        {polygonCoords && (
+          <div className="px-4 py-2 bg-primary/10 border-b border-primary/20 flex items-center justify-between">
+            <span className="text-xs font-medium text-primary flex items-center gap-1.5">
+              <Pentagon className="h-3.5 w-3.5" /> Area pencarian aktif
+            </span>
+            <Button size="sm" variant="ghost" className="h-6 text-xs text-primary" onClick={() => {
+              setPolygonCoords(null);
+              drawRef.current?.deleteAll();
+            }}>
+              <X className="h-3 w-3 mr-1" /> Hapus
+            </Button>
+          </div>
+        )}
 
         {/* Scrollable property list */}
         <div ref={listScrollRef} className="flex-1 overflow-y-auto p-3 space-y-2">
@@ -544,6 +708,7 @@ export default function InteractivePropertyMap() {
         <FilterPanel
           filters={filters} onFiltersChange={setFilters}
           showHeatmap={showHeatmap} onToggleHeatmap={setShowHeatmap}
+          heatmapMode={heatmapMode} onHeatmapModeChange={setHeatmapMode}
           drawMode={drawMode} onSetDrawMode={setDrawMode}
           propertyCount={sortedProperties.length} isLoading={isLoading}
           isOpen={filterOpen} onToggle={() => setFilterOpen(o => !o)}
@@ -556,6 +721,34 @@ export default function InteractivePropertyMap() {
             {sortedProperties.length} properti
           </Badge>
         </div>
+
+        {/* Heatmap legend */}
+        <AnimatePresence>
+          {showHeatmap && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
+              className="absolute bottom-20 md:bottom-4 right-4 z-20">
+              <Card className="bg-background/95 backdrop-blur-md border-border/60 shadow-lg">
+                <CardContent className="p-2.5">
+                  <p className="text-[10px] font-semibold text-foreground mb-1.5">
+                    {heatmapMode === 'investment' ? '📊 Investment Score' : '💰 Price Density'}
+                  </p>
+                  <div className="flex items-center gap-1">
+                    <span className="text-[9px] text-muted-foreground">Low</span>
+                    <div className="flex gap-0.5">
+                      {(heatmapMode === 'investment'
+                        ? ['bg-blue-400', 'bg-yellow-400', 'bg-green-500', 'bg-green-700', 'bg-rose-500']
+                        : ['bg-blue-400', 'bg-teal-400', 'bg-yellow-400', 'bg-orange-500', 'bg-red-500']
+                      ).map((c, i) => (
+                        <div key={i} className={cn('w-6 h-2.5 rounded-sm', c)} />
+                      ))}
+                    </div>
+                    <span className="text-[9px] text-muted-foreground">High</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Selected Property Popup */}
         <AnimatePresence>
@@ -582,6 +775,11 @@ export default function InteractivePropertyMap() {
                   <Badge className="absolute top-2 left-2 bg-primary text-primary-foreground font-bold text-xs shadow-md">
                     {formatPrice(selectedProperty.price)}
                   </Badge>
+                  {(selectedProperty.investment_score || 0) >= 60 && (
+                    <Badge className="absolute bottom-2 left-2 bg-chart-1/90 text-chart-1-foreground text-[10px] shadow-md">
+                      <TrendingUp className="h-3 w-3 mr-1" /> Score {selectedProperty.investment_score}
+                    </Badge>
+                  )}
                 </div>
                 <CardContent className="p-3">
                   <h3 className="text-sm font-bold text-foreground line-clamp-1 mb-1">{selectedProperty.title}</h3>
