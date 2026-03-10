@@ -44,7 +44,13 @@ const Navigation = () => {
 
   useEffect(() => {
     if (!isMenuOpen) return;
-    const handleScroll = () => setIsMenuOpen(false);
+    let lastScrollY = window.scrollY;
+    const handleScroll = () => {
+      // Only close on significant scroll (>80px), not tiny movements from layout shifts
+      if (Math.abs(window.scrollY - lastScrollY) > 80) {
+        setIsMenuOpen(false);
+      }
+    };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isMenuOpen]);
@@ -132,7 +138,7 @@ const Navigation = () => {
         style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
       >
         <div className="w-full mx-auto px-1.5 sm:px-3 lg:px-4">
-          <div className={cn("flex items-center justify-between gap-2 transition-all duration-300", pastHero ? "h-12 md:h-13 lg:h-14" : "h-10 md:h-11 lg:h-12")}>
+          <div className={cn("flex items-center justify-between gap-2 transition-[height] duration-500 ease-out", pastHero ? "h-12 md:h-13 lg:h-14" : "h-10 md:h-11 lg:h-12")}>
             {/* Logo */}
             <div className="flex items-center cursor-pointer group flex-shrink-0 -ml-1" onClick={() => navigate('/')}>
               {hasCustomLogo ? (
