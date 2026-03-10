@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 import { cn } from "@/lib/utils";
 import OwnerSubscriptionBadge from "./OwnerSubscriptionBadge";
+import InvestmentScoreBadge from "./InvestmentScoreBadge";
 
 interface ASTRAVillaPropertyCardProps {
   property: {
