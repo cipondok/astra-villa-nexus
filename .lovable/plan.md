@@ -1,70 +1,47 @@
 
-# ASTRA Villa — Platform Architecture Analysis & Roadmap
 
-## Status: 🔄 IN PROGRESS
+# Fix Property Image Manager -- Accurate Counts and Image Display
 
-## Current State Assessment (March 2026)
+## Problems Identified
 
-### Scale
-| Metric | Count |
-|--------|-------|
-| Pages | 120+ |
-| Components | 200+ directories |
-| Hooks | 230+ |
-| Edge Functions | 18 (consolidated from 82) |
-| Database Tables | 450+ |
-| RLS Policies | 1,000+ |
+1. **Stats are wrong**: The query fetches properties without a row limit, but Supabase defaults to 1000 rows max. The stats ("Total", "With Images", "No Images") reflect only that 1000-row subset, not the actual database totals (283,856 properties, 125,649 with images, 158,207 without).
 
-### Three-Layer Architecture ✅
-| Layer | Key Features | Status |
-|-------|-------------|--------|
-| **Public Platform** | Property browse, search, map, detail pages, AI chat, mortgage tools | ✅ Mature |
-| **Investor Intelligence** | ROI forecasts, deal finder, portfolio builder, market trends, location intel | ✅ Mature |
-| **Admin AI Command Center** | Job queue, SEO engine, valuations, health monitor, KPI alerts | ✅ Mature |
+2. **No total image count**: The dashboard doesn't show how many total images exist in the database (125,693 images).
 
-### Edge Function Architecture ✅
-| Router | Modes |
-|--------|-------|
-| `core-engine` | 25+ modes (investment_score, valuation, health, diagnostics, map_search) |
-| `ai-engine` | 25+ modes (descriptions, NLP, recommendations, market reports) |
-| `deal-engine` | deal_finder, alerts, negotiation, pricing, forecasts |
-| `ai-assistant` | SSE streaming chatbot, NLP search, investment advisor |
-| `notification-engine` | Email, push, campaigns |
-| `payment-engine` | Midtrans, PayPal, invoices, subscriptions |
-| `vendor-engine` | Vendor services, validation |
+3. **Property list dominated by "no image" entries**: Newer properties (no images) appear first due to `order by created_at desc`, making it look like nothing has images.
 
-### AI Automation Systems ✅
-- SEO: Daily audits (3AM UTC), 6-hour auto-optimizer, property_seo_analysis tracking
-- Jobs: ai_jobs queue with claim_next_job() SKIP LOCKED, stall recovery, retry logic
-- Valuations: property_valuations with auto-recalculation
-- ROI: property_roi_forecast with 5-year projections
-- Autonomous Agent: 6-hour market scans for opportunity detection
+## Plan
 
----
+### 1. Add server-side count queries for accurate stats
+Instead of computing stats from the fetched array, use separate Supabase `count` queries with `head: true`:
+- Total properties count
+- Properties with images count (using `not.is.null` filter on `images`)
+- Total image count (new RPC function)
 
-## Identified Gaps & Improvements
+Create a small Supabase RPC function `get_total_image_count` that runs:
+```sql
+SELECT COALESCE(SUM(array_length(images, 1)), 0)::int FROM properties;
+```
 
-### 🔴 Critical Performance
-1. **Map viewport debouncing** — `moveend` fires on every pan; needs 300ms debounce ✅ FIXED
-2. **Spatial indexes** — Need composite indexes on (latitude, longitude, status) ✅ FIXED
-3. **Platform health aggregation** — Real AI system status on admin overview ✅ FIXED (prev iteration)
+### 2. Add "Total Images" stat card
+Add a 5th stat card showing the total image count across all properties (125,693). This gives the user the metric they asked for.
 
-### 🟡 Architecture Improvements
-4. **Unified health hook** — Single hook aggregating all AI subsystem health ✅ FIXED
-5. **Query deduplication** — MapBounds type duplicated across useMapSearch/useMapProperties
-6. **Large file refactoring** — PropertyDetail.tsx (1544 lines), Index.tsx (1199 lines) need splitting
+### 3. Fix property list to prioritize properties WITH images
+Change the default query ordering and filtering:
+- Default filter to "with-images" instead of "all" so the manager opens showing properties that have images
+- Add secondary sort: properties with images first, then by created_at desc
+- Keep pagination at 30 per page with server-side pagination using `.range()`
 
-### 🟢 Future Expansion Ready
-- AI deal finder ✅ Exists (/deal-finder)
-- Predictive market analytics ✅ Exists (/market-trends, /price-prediction)
-- AI recommendation engine ✅ Exists (ai-match-engine-v2)
-- Location intelligence ✅ Exists (/location-intelligence)
-- Knowledge graph ✅ Hook exists (useKnowledgeGraph)
+### 4. Show image thumbnails in property list cards
+The property cards in the list already show image counts but may not render the actual thumbnail preview correctly when `images` is a text array. Verify the rendering uses `getImages()` helper properly and displays the first image as a small thumbnail.
 
-### Recommended Next Steps
-1. Add database indexes for map queries at scale
-2. Debounce map viewport changes
-3. Create unified platform health dashboard
-4. Split PropertyDetail.tsx into sub-components
-5. Add API response caching headers to edge functions
-6. Implement property search result caching with stale-while-revalidate
+## Files to Change
+
+- **New migration**: Create `get_total_image_count` RPC function
+- **`src/components/admin/PropertyImageManager.tsx`**: 
+  - Replace client-side stats with server-side count queries
+  - Add "Total Images" stat card
+  - Change default filter to "with-images"
+  - Add server-side pagination with `.range()`
+  - Ensure thumbnail previews render in the property list
+
