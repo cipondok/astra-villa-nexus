@@ -1447,6 +1447,13 @@ const PropertyDetail: React.FC = () => {
           </Suspense>
         </div>
 
+        {/* Investment Insights */}
+        <div className="mt-4 sm:mt-6">
+          <Suspense fallback={null}>
+            <PropertyInvestmentInsights propertyId={property.id} />
+          </Suspense>
+        </div>
+
         {/* Similar Properties & Nearby Investments */}
         <div className="mt-4 sm:mt-8 grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
           {/* Smart Property Recommendations */}
