@@ -398,7 +398,7 @@ const Navigation = () => {
               
               <div ref={menuRef} className="lg:hidden absolute top-full right-0 w-64 max-w-[85vw] max-h-[75vh] overflow-y-auto overscroll-contain bg-popover/95 backdrop-blur-2xl border border-gold-primary/15 shadow-2xl z-[9999] rounded-b-2xl rounded-tl-lg animate-in slide-in-from-top-2 fade-in duration-300 origin-top-right">
                 <div className="p-2 space-y-0.5">
-                  <MobileNavButton icon={HomeIcon} label={t('nav.home')} active={isActive('/')} onClick={() => { navigate('/'); toggleMenu(); }} />
+                  <MobileNavButton icon={HomeIcon} label={t('nav.home')} active={isActive('/')} onClick={() => smoothNavigate('/')} />
 
                   {/* Properties Section */}
                   <MobileSectionLabel>Properties</MobileSectionLabel>
