@@ -77,8 +77,7 @@ const ProvincePropertiesModal = ({ isOpen, onClose, provinceName }: ProvinceProp
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Prevent layout shift when modal opens/closes
-  useScrollLock(isOpen);
+  // Scroll lock removed — Dialog component handles this internally
 
   useEffect(() => {
     if (isOpen && provinceName) {
