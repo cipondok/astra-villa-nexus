@@ -830,6 +830,173 @@ async function detectHotMarkets(supabase: any) {
   return { ...result, also_updated: ["location_price_trends", "investment_hotspots"] };
 }
 
+// ── Calculate Investment Scores (batch) ──
+async function calculateInvestmentScores(supabase: any, taskPayload: any) {
+  const limit = taskPayload?.limit || 100;
+  const offset = taskPayload?.offset || 0;
+
+  const { data: props } = await supabase
+    .from("properties")
+    .select("id, city, state, price, area_sqm, property_type, investment_score, bedrooms, listing_type")
+    .eq("status", "available")
+    .not("price", "is", null)
+    .gt("price", 0)
+    .order("created_at", { ascending: false })
+    .range(offset, offset + limit - 1);
+
+  if (!props || props.length === 0) return { processed: 0 };
+
+  const propIds = props.map((p: any) => p.id);
+
+  // Fetch ROI forecasts
+  const roiChunks: any[] = [];
+  for (let i = 0; i < propIds.length; i += 50) {
+    const chunk = propIds.slice(i, i + 50);
+    const { data } = await supabase.from("property_roi_forecast").select("property_id, expected_roi, rental_yield").in("property_id", chunk);
+    if (data) roiChunks.push(...data);
+  }
+  const roiMap = new Map(roiChunks.map((r: any) => [r.property_id, r]));
+
+  // Fetch city-level market insights
+  const cities = [...new Set(props.map((p: any) => p.city).filter(Boolean))];
+  const { data: marketData } = await supabase
+    .from("location_market_insights")
+    .select("city, avg_price_per_sqm, avg_investment_score, demand_score, market_growth_rate, market_status")
+    .in("city", cities);
+  const marketMap = new Map((marketData || []).map((m: any) => [m.city, m]));
+
+  // Fetch activity signals (last 30 days)
+  const cutoff = new Date(Date.now() - 30 * 86400000).toISOString();
+  const { data: activityData } = await supabase
+    .from("ai_behavior_tracking")
+    .select("property_id")
+    .gte("created_at", cutoff)
+    .in("property_id", propIds);
+  const activityCount: Record<string, number> = {};
+  (activityData || []).forEach((a: any) => {
+    if (a.property_id) activityCount[a.property_id] = (activityCount[a.property_id] || 0) + 1;
+  });
+
+  const rows: any[] = [];
+
+  for (const p of props) {
+    const roi = roiMap.get(p.id) as any;
+    const market = marketMap.get(p.city) as any;
+    const views = activityCount[p.id] || 0;
+
+    // Factor: ROI forecast (0-25)
+    const roiValue = roi?.expected_roi || 0;
+    const roiFactor = Math.min(25, Math.round(roiValue * 2.5));
+
+    // Factor: Rental yield (0-20)
+    const yieldValue = roi?.rental_yield || 0;
+    const yieldFactor = Math.min(20, Math.round(yieldValue * 3));
+
+    // Factor: Price growth / market growth (0-20)
+    const growthRate = market?.market_growth_rate || 0;
+    const growthFactor = Math.min(20, Math.round(growthRate * 2));
+
+    // Factor: Location demand (0-20)
+    const demandBase = market?.demand_score || 0;
+    const viewBoost = Math.min(10, Math.round(views * 0.5));
+    const demandFactor = Math.min(20, Math.round(demandBase * 0.2 + viewBoost));
+
+    // Factor: Area investment score average comparison (0-15)
+    const areaAvgScore = market?.avg_investment_score || 50;
+    const existingScore = p.investment_score || 50;
+    const areaFactor = Math.min(15, Math.round((existingScore / Math.max(areaAvgScore, 1)) * 10));
+
+    const totalScore = Math.min(100, roiFactor + yieldFactor + growthFactor + demandFactor + areaFactor);
+
+    // Risk classification
+    let riskLevel = "medium";
+    if (totalScore >= 75 && yieldValue >= 5) riskLevel = "low";
+    else if (totalScore < 40 || roiValue < 2) riskLevel = "high";
+
+    // Grade
+    let grade = "C";
+    if (totalScore >= 85) grade = "A+";
+    else if (totalScore >= 75) grade = "A";
+    else if (totalScore >= 65) grade = "B+";
+    else if (totalScore >= 55) grade = "B";
+    else if (totalScore >= 40) grade = "C";
+    else grade = "D";
+
+    // Recommendation
+    let recommendation = "Moderate investment potential";
+    if (grade === "A+" || grade === "A") recommendation = "Strong investment opportunity with excellent fundamentals";
+    else if (grade === "B+" || grade === "B") recommendation = "Good investment potential, monitor market trends";
+    else if (grade === "D") recommendation = "High risk — requires careful due diligence";
+
+    rows.push({
+      property_id: p.id,
+      investment_score: totalScore,
+      roi_forecast: Math.round(roiValue * 100) / 100,
+      rental_yield: Math.round(yieldValue * 100) / 100,
+      growth_prediction: Math.round(growthRate * 100) / 100,
+      risk_level: riskLevel,
+      location_demand_score: demandFactor,
+      price_fairness_score: areaFactor,
+      liquidity_score: Math.min(15, Math.round(views * 0.8)),
+      grade,
+      recommendation,
+      factors: { roi: roiFactor, yield: yieldFactor, growth: growthFactor, demand: demandFactor, area: areaFactor },
+      last_updated: new Date().toISOString(),
+    });
+  }
+
+  // Upsert in chunks
+  let upserted = 0;
+  for (let i = 0; i < rows.length; i += 20) {
+    const chunk = rows.slice(i, i + 20);
+    const { error } = await supabase.from("property_investment_scores").upsert(chunk, { onConflict: "property_id" });
+    if (!error) upserted += chunk.length;
+  }
+
+  // Also update the properties table investment_score column for consistency
+  for (const row of rows) {
+    await supabase.from("properties").update({ investment_score: row.investment_score }).eq("id", row.property_id);
+  }
+
+  return { processed: rows.length, upserted };
+}
+
+// ── Update ROI Forecasts (batch trigger) ──
+async function updateRoiForecasts(supabase: any, taskPayload: any) {
+  const limit = taskPayload?.limit || 50;
+  const offset = taskPayload?.offset || 0;
+
+  // Get properties that need ROI recalculation
+  const { data: props } = await supabase
+    .from("properties")
+    .select("id")
+    .eq("status", "available")
+    .not("price", "is", null)
+    .gt("price", 0)
+    .order("updated_at", { ascending: true })
+    .range(offset, offset + limit - 1);
+
+  if (!props || props.length === 0) return { processed: 0 };
+
+  let processed = 0;
+  for (const p of props) {
+    try {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+      const authHeader = `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`;
+      await fetch(`${supabaseUrl}/functions/v1/calculate-roi-forecast`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": authHeader },
+        body: JSON.stringify({ property_id: p.id }),
+      });
+      processed++;
+    } catch (e) {
+      console.error(`ROI forecast failed for ${p.id}:`, e);
+    }
+  }
+
+  return { processed };
+}
+
 function json(data: unknown, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
