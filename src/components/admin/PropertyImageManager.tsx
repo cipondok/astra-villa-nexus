@@ -251,6 +251,59 @@ const PropertyImageManager = () => {
   const properties = queryResult?.properties ?? [];
   const totalFilteredCount = queryResult?.totalCount ?? 0;
 
+  // Helper to get images from property
+  const getImages = (p: any): string[] => {
+    const imgs: string[] = [];
+    if (Array.isArray(p.images)) imgs.push(...p.images.filter((i: any) => typeof i === "string" && i.length > 5));
+    else if (typeof p.images === "string" && p.images.length > 5) imgs.push(p.images);
+    if (Array.isArray(p.image_urls)) imgs.push(...p.image_urls.filter((i: any) => typeof i === "string" && i.length > 5));
+    if (p.thumbnail_url && typeof p.thumbnail_url === "string" && p.thumbnail_url.length > 5) {
+      if (!imgs.includes(p.thumbnail_url)) imgs.push(p.thumbnail_url);
+    }
+    return [...new Set(imgs)];
+  };
+
+  // Detect image format from URL
+  const getImageFormat = (url: string): string => {
+    const extMatch = url.match(/\.(\w+)(\?.*)?$/);
+    if (extMatch) return extMatch[1].toUpperCase();
+    if (url.includes('unsplash.com')) return 'JPG';
+    if (url.startsWith('data:image/')) {
+      const match = url.match(/data:image\/(\w+)/);
+      return match ? match[1].toUpperCase() : 'Unknown';
+    }
+    return 'Unknown';
+  };
+
+  // Health status icon
+  const HealthIcon = ({ result }: { result?: ImageHealthResult }) => {
+    if (!result) return null;
+    switch (result.status) {
+      case 'ok': return <CheckCircle2 className="h-3.5 w-3.5 text-chart-1" />;
+      case 'broken': return <XCircle className="h-3.5 w-3.5 text-destructive" />;
+      case 'slow': return <Clock className="h-3.5 w-3.5 text-chart-3" />;
+      case 'loading': return <Loader2 className="h-3.5 w-3.5 text-primary animate-spin" />;
+      default: return null;
+    }
+  };
+
+  // Since we do server-side pagination, paginatedProperties = properties (already paginated)
+  const paginatedProperties = properties;
+  const totalPages = Math.max(1, Math.ceil(totalFilteredCount / PAGE_SIZE));
+  const safePage = Math.min(currentPage, totalPages);
+
+  // Client-side "broken" filter (only applies after health check)
+  const filteredProperties = filter === "broken"
+    ? properties.filter(p => getImages(p).some(url => healthResults[url]?.status === 'broken'))
+    : properties;
+
+  // Stats for health check progress
+  const allImageUrls = properties.flatMap(p => getImages(p));
+  const brokenCount = allImageUrls.filter(url => healthResults[url]?.status === 'broken').length;
+  const slowCount = allImageUrls.filter(url => healthResults[url]?.status === 'slow').length;
+  const okCount = allImageUrls.filter(url => healthResults[url]?.status === 'ok').length;
+  const checkedCount = Object.keys(healthResults).length;
+
   const handleFilterChange = (f: typeof filter) => {
     setFilter(f);
     setCurrentPage(1);
