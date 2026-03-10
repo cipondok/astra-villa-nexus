@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
 import { cn } from "@/lib/utils";
 import OwnerSubscriptionBadge from "./OwnerSubscriptionBadge";
+import InvestmentScoreBadge from "./InvestmentScoreBadge";
 
 interface ASTRAVillaPropertyCardProps {
   property: {
@@ -23,6 +24,7 @@ interface ASTRAVillaPropertyCardProps {
     land_area?: number;
     images?: string[];
     thumbnail_url?: string;
+    investment_score?: number;
     city?: string;
     state?: string;
     area?: string;
@@ -145,6 +147,13 @@ const ASTRAVillaPropertyCard = ({
         {property.owner_subscription_type && property.owner_subscription_type !== 'free' && (
           <div className="absolute bottom-2 right-2 z-10">
             <OwnerSubscriptionBadge subscriptionType={property.owner_subscription_type} />
+          </div>
+        )}
+
+        {/* Investment Score Badge */}
+        {(property.investment_score ?? 0) >= 50 && (
+          <div className="absolute bottom-2 left-2 z-10">
+            <InvestmentScoreBadge score={property.investment_score} compact />
           </div>
         )}
 
