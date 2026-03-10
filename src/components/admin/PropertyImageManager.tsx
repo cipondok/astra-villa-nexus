@@ -56,7 +56,7 @@ const PropertyImageManager = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
-  const [filter, setFilter] = useState<"all" | "with-images" | "no-images" | "broken">("all");
+  const [filter, setFilter] = useState<"all" | "with-images" | "no-images" | "broken">("with-images");
   const [selectedProperty, setSelectedProperty] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
   const [viewImage, setViewImage] = useState<string | null>(null);
@@ -194,24 +194,61 @@ const PropertyImageManager = () => {
     setAiCheckingUrl(null);
   };
 
-  // Fetch all properties with image data
-  const { data: properties = [], isLoading } = useQuery({
-    queryKey: ["admin-property-images", searchTerm],
+  // Server-side stats via RPC
+  const { data: dbStats } = useQuery({
+    queryKey: ["admin-image-stats"],
     queryFn: async () => {
-      let query = supabase
-        .from("properties")
-        .select("id, title, description, images, image_urls, thumbnail_url, property_type, status, city, location")
-        .order("created_at", { ascending: false });
-
-      if (searchTerm.trim()) {
-        query = query.or(`title.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%`);
-      }
-
-      const { data, error } = await query;
+      const { data, error } = await supabase.rpc("get_image_stats");
       if (error) throw error;
-      return data || [];
+      return data as { total_properties: number; with_images: number; no_images: number; total_images: number };
     },
   });
+
+  const stats = {
+    total: dbStats?.total_properties ?? 0,
+    withImages: dbStats?.with_images ?? 0,
+    noImages: dbStats?.no_images ?? 0,
+    totalImages: dbStats?.total_images ?? 0,
+  };
+
+  // Fetch properties with server-side filtering + pagination
+  const { data: queryResult, isLoading } = useQuery({
+    queryKey: ["admin-property-images", searchTerm, filter, currentPage],
+    queryFn: async () => {
+      // Count query for pagination
+      let countQuery = supabase
+        .from("properties")
+        .select("id", { count: "exact", head: true });
+
+      let dataQuery = supabase
+        .from("properties")
+        .select("id, title, description, images, image_urls, thumbnail_url, property_type, status, city, location")
+        .order("created_at", { ascending: false })
+        .range((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE - 1);
+
+      // Apply filters
+      if (filter === "with-images") {
+        countQuery = countQuery.not("images", "is", null);
+        dataQuery = dataQuery.not("images", "is", null);
+      } else if (filter === "no-images") {
+        countQuery = countQuery.is("images", null);
+        dataQuery = dataQuery.is("images", null);
+      }
+
+      if (searchTerm.trim()) {
+        const search = `title.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%`;
+        countQuery = countQuery.or(search);
+        dataQuery = dataQuery.or(search);
+      }
+
+      const [{ count }, { data, error }] = await Promise.all([countQuery, dataQuery]);
+      if (error) throw error;
+      return { properties: data || [], totalCount: count ?? 0 };
+    },
+  });
+
+  const properties = queryResult?.properties ?? [];
+  const totalFilteredCount = queryResult?.totalCount ?? 0;
 
   // Helper to get images from property
   const getImages = (p: any): string[] => {
@@ -249,32 +286,22 @@ const PropertyImageManager = () => {
     }
   };
 
-  const filteredProperties = properties.filter((p) => {
-    const imgs = getImages(p);
-    if (filter === "with-images") return imgs.length > 0;
-    if (filter === "no-images") return imgs.length === 0;
-    if (filter === "broken") {
-      return imgs.some(url => healthResults[url]?.status === 'broken');
-    }
-    return true;
-  });
-
-  const totalPages = Math.max(1, Math.ceil(filteredProperties.length / PAGE_SIZE));
+  // Since we do server-side pagination, paginatedProperties = properties (already paginated)
+  const paginatedProperties = properties;
+  const totalPages = Math.max(1, Math.ceil(totalFilteredCount / PAGE_SIZE));
   const safePage = Math.min(currentPage, totalPages);
-  const paginatedProperties = filteredProperties.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
-  // Stats
+  // Client-side "broken" filter (only applies after health check)
+  const filteredProperties = filter === "broken"
+    ? properties.filter(p => getImages(p).some(url => healthResults[url]?.status === 'broken'))
+    : properties;
+
+  // Stats for health check progress
   const allImageUrls = properties.flatMap(p => getImages(p));
   const brokenCount = allImageUrls.filter(url => healthResults[url]?.status === 'broken').length;
   const slowCount = allImageUrls.filter(url => healthResults[url]?.status === 'slow').length;
   const okCount = allImageUrls.filter(url => healthResults[url]?.status === 'ok').length;
   const checkedCount = Object.keys(healthResults).length;
-
-  const stats = {
-    total: properties.length,
-    withImages: properties.filter((p) => getImages(p).length > 0).length,
-    noImages: properties.filter((p) => getImages(p).length === 0).length,
-  };
 
   const handleFilterChange = (f: typeof filter) => {
     setFilter(f);
@@ -563,13 +590,13 @@ const PropertyImageManager = () => {
   return (
     <div className="space-y-3">
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
         <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => handleFilterChange("all")}>
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[10px] text-muted-foreground">Total</p>
-                <p className="text-lg font-bold">{stats.total}</p>
+                <p className="text-[10px] text-muted-foreground">Total Properties</p>
+                <p className="text-lg font-bold">{stats.total.toLocaleString()}</p>
               </div>
               <Building2 className={`h-5 w-5 ${filter === "all" ? "text-primary" : "text-muted-foreground"}`} />
             </div>
@@ -580,9 +607,20 @@ const PropertyImageManager = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] text-muted-foreground">With Images</p>
-                <p className="text-lg font-bold text-chart-1">{stats.withImages}</p>
+                <p className="text-lg font-bold text-chart-1">{stats.withImages.toLocaleString()}</p>
               </div>
               <CheckCircle className={`h-5 w-5 ${filter === "with-images" ? "text-chart-1" : "text-muted-foreground"}`} />
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="cursor-pointer hover:shadow-md transition-shadow border-primary/30 bg-primary/5">
+          <CardContent className="p-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[10px] text-muted-foreground">Total Images</p>
+                <p className="text-lg font-bold text-primary">{stats.totalImages.toLocaleString()}</p>
+              </div>
+              <ImageIcon className="h-5 w-5 text-primary" />
             </div>
           </CardContent>
         </Card>
@@ -591,7 +629,7 @@ const PropertyImageManager = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] text-muted-foreground">No Images</p>
-                <p className="text-lg font-bold text-destructive">{stats.noImages}</p>
+                <p className="text-lg font-bold text-destructive">{stats.noImages.toLocaleString()}</p>
               </div>
               <ImageOff className={`h-5 w-5 ${filter === "no-images" ? "text-destructive" : "text-muted-foreground"}`} />
             </div>
@@ -816,7 +854,7 @@ const PropertyImageManager = () => {
           {totalPages > 1 && (
             <div className="flex items-center justify-between pt-3 border-t border-border/50">
               <p className="text-[10px] text-muted-foreground">
-                Showing {(safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, filteredProperties.length)} of {filteredProperties.length}
+                Showing {(safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, totalFilteredCount)} of {totalFilteredCount.toLocaleString()}
               </p>
               <div className="flex items-center gap-1">
                 <Button variant="outline" size="sm" className="h-7 w-7 p-0" disabled={safePage <= 1} onClick={() => setCurrentPage(safePage - 1)}>
