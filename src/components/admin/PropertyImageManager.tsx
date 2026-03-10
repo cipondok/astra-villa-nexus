@@ -56,7 +56,7 @@ const PropertyImageManager = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
-  const [filter, setFilter] = useState<"all" | "with-images" | "no-images" | "broken">("all");
+  const [filter, setFilter] = useState<"all" | "with-images" | "no-images" | "broken">("with-images");
   const [selectedProperty, setSelectedProperty] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
   const [viewImage, setViewImage] = useState<string | null>(null);
