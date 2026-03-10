@@ -65,6 +65,10 @@ const DropdownMenuContent = React.forwardRef<
         if (onCloseAutoFocus) return onCloseAutoFocus(e);
         e.preventDefault();
       }}
+      onOpenAutoFocus={(e) => {
+        // Prevent focus shift that can cause scroll jump
+        e.preventDefault();
+      }}
       className={cn(
         "z-[100] min-w-[8rem] overflow-hidden rounded-xl glass-menu p-1.5 text-foreground shadow-xl will-change-[transform,opacity]",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
