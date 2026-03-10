@@ -150,6 +150,13 @@ const ASTRAVillaPropertyCard = ({
           </div>
         )}
 
+        {/* Investment Score Badge */}
+        {(property.investment_score ?? 0) >= 50 && (
+          <div className="absolute bottom-2 left-2 z-10">
+            <InvestmentScoreBadge score={property.investment_score} compact />
+          </div>
+        )}
+
         {/* Heart Button */}
         <Button
           variant="ghost"
