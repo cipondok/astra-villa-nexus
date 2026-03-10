@@ -113,6 +113,39 @@ if ('serviceWorker' in navigator) {
     }
   }
 }
+
+// Prevent react-remove-scroll from causing page jumps by stripping its
+// inline styles immediately whenever it modifies body/html.
+const preventScrollLockJump = () => {
+  const observer = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.type === 'attributes') {
+        const el = mutation.target as HTMLElement;
+        if (el === document.body || el === document.documentElement) {
+          // Remove data-scroll-locked attribute
+          if (el.hasAttribute('data-scroll-locked')) {
+            el.removeAttribute('data-scroll-locked');
+          }
+          // Strip inline padding-right and overflow set by react-remove-scroll
+          if (el.style.paddingRight) el.style.paddingRight = '';
+          if (el.style.overflow === 'hidden') el.style.overflow = '';
+          if (el.style.position === 'fixed') el.style.position = '';
+          if (el.style.top) el.style.top = '';
+          if (el.style.width && el.style.width !== '') {
+            // react-remove-scroll sets width to calc(100% - scrollbarWidth)
+            if (el.style.width.includes('calc')) el.style.width = '';
+          }
+        }
+      }
+    }
+  });
+
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style', 'data-scroll-locked'] });
+  observer.observe(document.body, { attributes: true, attributeFilter: ['style', 'data-scroll-locked'] });
+};
+
+preventScrollLockJump();
+
 const container = document.getElementById("root");
 
 if (!container) {
