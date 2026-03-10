@@ -17500,6 +17500,75 @@ export type Database = {
           },
         ]
       }
+      property_investment_scores: {
+        Row: {
+          created_at: string
+          factors: Json | null
+          grade: string | null
+          growth_prediction: number | null
+          id: string
+          investment_score: number
+          last_updated: string
+          liquidity_score: number | null
+          location_demand_score: number | null
+          price_fairness_score: number | null
+          property_id: string
+          recommendation: string | null
+          rental_yield: number | null
+          risk_level: string | null
+          roi_forecast: number | null
+        }
+        Insert: {
+          created_at?: string
+          factors?: Json | null
+          grade?: string | null
+          growth_prediction?: number | null
+          id?: string
+          investment_score?: number
+          last_updated?: string
+          liquidity_score?: number | null
+          location_demand_score?: number | null
+          price_fairness_score?: number | null
+          property_id: string
+          recommendation?: string | null
+          rental_yield?: number | null
+          risk_level?: string | null
+          roi_forecast?: number | null
+        }
+        Update: {
+          created_at?: string
+          factors?: Json | null
+          grade?: string | null
+          growth_prediction?: number | null
+          id?: string
+          investment_score?: number
+          last_updated?: string
+          liquidity_score?: number | null
+          location_demand_score?: number | null
+          price_fairness_score?: number | null
+          property_id?: string
+          recommendation?: string | null
+          rental_yield?: number | null
+          risk_level?: string | null
+          roi_forecast?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_investment_scores_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: true
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_investment_scores_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: true
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_leads: {
         Row: {
           agent_id: string
