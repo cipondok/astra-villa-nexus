@@ -87,25 +87,40 @@ const SystemSettings = ({ defaultTab }: SystemSettingsProps) => {
   return (
     <div className="space-y-4 w-full overflow-x-hidden">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 w-full">
-        <div className="overflow-x-auto pb-1">
-          <TabsList className="inline-flex h-8 w-auto gap-1 bg-muted/40 p-1 rounded-lg border border-border/30">
-            <TabsTrigger value="general" className="text-xs h-6 px-3">General</TabsTrigger>
-            <TabsTrigger value="seo-hub" className="text-xs h-6 px-3">SEO Hub</TabsTrigger>
-            <TabsTrigger value="website-design" className="text-xs h-6 px-3">Website Design</TabsTrigger>
-            <TabsTrigger value="hero-slider" className="text-xs h-6 px-3">Hero Slider</TabsTrigger>
-            <TabsTrigger value="branding" className="text-xs h-6 px-3">Branding</TabsTrigger>
-            <TabsTrigger value="social-media" className="text-xs h-6 px-3">Social Media</TabsTrigger>
-            <TabsTrigger value="welcome-screen" className="text-xs h-6 px-3">Welcome Screen</TabsTrigger>
-            <TabsTrigger value="security" className="text-xs h-6 px-3">Security</TabsTrigger>
-            <TabsTrigger value="notifications" className="text-xs h-6 px-3">Notifications</TabsTrigger>
-            <TabsTrigger value="files" className="text-xs h-6 px-3">Files</TabsTrigger>
-            <TabsTrigger value="discounts" className="text-xs h-6 px-3">Discounts</TabsTrigger>
-            <TabsTrigger value="filters" className="text-xs h-6 px-3">Property Filters</TabsTrigger>
-            <TabsTrigger value="centralized-filters" className="text-xs h-6 px-3">Centralized Filters</TabsTrigger>
-            <TabsTrigger value="astra-tokens" className="text-xs h-6 px-3">ASTRA Tokens</TabsTrigger>
-            <TabsTrigger value="system" className="text-xs h-6 px-3">System Monitor</TabsTrigger>
-            <TabsTrigger value="backup" className="text-xs h-6 px-3">Backup</TabsTrigger>
-          </TabsList>
+        <div className="space-y-1">
+          <div className="flex items-center gap-1">
+            <TabsList className="inline-flex h-8 w-auto gap-1 bg-muted/40 p-1 rounded-lg border border-border/30">
+              <TabsTrigger value="general" className="text-xs h-6 px-3">General</TabsTrigger>
+              <TabsTrigger value="seo-hub" className="text-xs h-6 px-3">SEO Hub</TabsTrigger>
+              <TabsTrigger value="website-design" className="text-xs h-6 px-3">Website Design</TabsTrigger>
+              <TabsTrigger value="hero-slider" className="text-xs h-6 px-3">Hero Slider</TabsTrigger>
+              <TabsTrigger value="branding" className="text-xs h-6 px-3">Branding</TabsTrigger>
+              <TabsTrigger value="social-media" className="text-xs h-6 px-3">Social Media</TabsTrigger>
+            </TabsList>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 px-2 text-xs text-muted-foreground hover:text-foreground"
+              onClick={() => setShowMore(!showMore)}
+            >
+              {showMore ? <ChevronUp className="h-4 w-4 mr-1" /> : <ChevronDown className="h-4 w-4 mr-1" />}
+              {showMore ? 'Less' : 'More'}
+            </Button>
+          </div>
+          {showMore && (
+            <TabsList className="inline-flex h-8 w-auto gap-1 bg-muted/40 p-1 rounded-lg border border-border/30">
+              <TabsTrigger value="welcome-screen" className="text-xs h-6 px-3">Welcome Screen</TabsTrigger>
+              <TabsTrigger value="security" className="text-xs h-6 px-3">Security</TabsTrigger>
+              <TabsTrigger value="notifications" className="text-xs h-6 px-3">Notifications</TabsTrigger>
+              <TabsTrigger value="files" className="text-xs h-6 px-3">Files</TabsTrigger>
+              <TabsTrigger value="discounts" className="text-xs h-6 px-3">Discounts</TabsTrigger>
+              <TabsTrigger value="filters" className="text-xs h-6 px-3">Property Filters</TabsTrigger>
+              <TabsTrigger value="centralized-filters" className="text-xs h-6 px-3">Centralized Filters</TabsTrigger>
+              <TabsTrigger value="astra-tokens" className="text-xs h-6 px-3">ASTRA Tokens</TabsTrigger>
+              <TabsTrigger value="system" className="text-xs h-6 px-3">System Monitor</TabsTrigger>
+              <TabsTrigger value="backup" className="text-xs h-6 px-3">Backup</TabsTrigger>
+            </TabsList>
+          )}
         </div>
 
         <TabsContent value="general" className="space-y-4">
