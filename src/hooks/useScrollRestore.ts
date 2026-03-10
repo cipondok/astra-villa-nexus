@@ -31,14 +31,11 @@ export const useScrollRestore = (enabled = true) => {
       const positions = JSON.parse(sessionStorage.getItem(SCROLL_POSITIONS_KEY) || '{}');
       const saved = positions[location.pathname];
       
+      // Scroll instantly to prevent visible jump
       if (saved) {
-        // Use requestAnimationFrame to ensure DOM is ready
-        requestAnimationFrame(() => {
-          window.scrollTo(saved.x, saved.y);
-        });
+        window.scrollTo({ left: saved.x, top: saved.y, behavior: 'instant' as ScrollBehavior });
       } else {
-        // Default to top for new routes
-        window.scrollTo(0, 0);
+        window.scrollTo({ left: 0, top: 0, behavior: 'instant' as ScrollBehavior });
       }
     };
 
