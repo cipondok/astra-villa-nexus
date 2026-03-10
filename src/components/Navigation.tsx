@@ -171,7 +171,7 @@ const Navigation = () => {
               <NavIconButton icon={HomeIcon} label={t('nav.home')} isActive={isActive('/')} onClick={() => navigate('/')} showLabel />
 
               {/* Properties Dropdown */}
-              <DropdownMenu>
+              <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm" className={`h-8 px-3 text-xs font-medium rounded-xl border ${navIconStyle} gap-1`}>
                     <Building className={`h-4 w-4 ${navIconColor}`} />
