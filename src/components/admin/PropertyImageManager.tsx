@@ -228,7 +228,6 @@ const PropertyImageManager = () => {
 
       // Apply filters
       if (filter === "with-images") {
-        const imgFilter = "images.not.is.null";
         countQuery = countQuery.not("images", "is", null);
         dataQuery = dataQuery.not("images", "is", null);
       } else if (filter === "no-images") {
