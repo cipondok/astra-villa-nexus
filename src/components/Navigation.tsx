@@ -100,6 +100,13 @@ const Navigation = () => {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
   const handleSignOut = async () => { await signOut(); navigate('/'); };
+  
+  // Navigate without page jump - scroll to top instantly before route change
+  const smoothNavigate = (path: string) => {
+    window.scrollTo({ left: 0, top: 0, behavior: 'instant' as ScrollBehavior });
+    navigate(path);
+    setIsMenuOpen(false);
+  };
 
   const navIconStyle = 'bg-muted/50 border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 hover:shadow-md transition-all duration-300';
   const navIconColor = 'text-foreground/70';
