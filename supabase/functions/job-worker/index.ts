@@ -223,6 +223,8 @@ async function handleProcess(supabase: any) {
         result = await calculateInvestmentScores(supabase, task.payload);
       } else if (pendingJob.job_type === "update_roi_forecasts") {
         result = await updateRoiForecasts(supabase, task.payload);
+      } else if (pendingJob.job_type === "bulk_generate_property_images") {
+        result = await bulkGeneratePropertyImages(supabase, task.payload);
       }
 
       // Mark task completed
@@ -995,6 +997,61 @@ async function updateRoiForecasts(supabase: any, taskPayload: any) {
   }
 
   return { processed };
+}
+
+// ── Bulk Generate Property Images ──
+async function bulkGeneratePropertyImages(supabase: any, taskPayload: any) {
+  const batchSize = taskPayload?.batch_size || 10;
+  const offset = taskPayload?.offset || 0;
+
+  // Fetch properties with no images
+  const { data: properties, error } = await supabase
+    .from("properties")
+    .select("id, title, description, property_type, city, location, state")
+    .or("images.is.null,images.eq.{}")
+    .order("created_at", { ascending: false })
+    .range(offset, offset + batchSize - 1);
+
+  if (error) throw new Error(`Fetch error: ${error.message}`);
+  if (!properties || properties.length === 0) return { processed: 0, message: "No more properties without images" };
+
+  let processed = 0;
+  const CONCURRENCY = 2; // Process 2 at a time to avoid rate limits
+
+  for (let i = 0; i < properties.length; i += CONCURRENCY) {
+    const batch = properties.slice(i, i + CONCURRENCY);
+    
+    await Promise.allSettled(
+      batch.map(async (prop: any) => {
+        try {
+          const { data, error: fnError } = await supabase.functions.invoke("ai-engine", {
+            body: {
+              mode: "generate_image",
+              payload: {
+                propertyId: prop.id,
+                title: prop.title,
+                description: prop.description,
+                propertyType: prop.property_type,
+                location: prop.location || prop.city || prop.state,
+              },
+            },
+          });
+          if (fnError) throw fnError;
+          if (data?.error) throw new Error(data.error);
+          processed++;
+        } catch (e) {
+          console.error(`Image generation failed for ${prop.id}:`, e);
+        }
+      })
+    );
+
+    // Small delay between batches to respect rate limits
+    if (i + CONCURRENCY < properties.length) {
+      await new Promise(r => setTimeout(r, 2000));
+    }
+  }
+
+  return { processed, total: properties.length, offset };
 }
 
 function json(data: unknown, status = 200) {

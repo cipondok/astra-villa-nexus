@@ -79,6 +79,7 @@ const PropertyImageManager = () => {
   const [selectedPropertyIds, setSelectedPropertyIds] = useState<Set<string>>(new Set());
   const [bulkRegenerating, setBulkRegenerating] = useState(false);
   const [bulkProgress, setBulkProgress] = useState({ done: 0, total: 0 });
+  const [bulkAIGenerating, setBulkAIGenerating] = useState(false);
 
   const toggleSelectProperty = useCallback((id: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -159,6 +160,56 @@ const PropertyImageManager = () => {
     queryClient.invalidateQueries({ queryKey: ["simple-properties"] });
     clearResults();
     clearSelection();
+  };
+
+  // Bulk AI Generate images for all no-image properties via job queue
+  const handleBulkAIGenerate = async () => {
+    setBulkAIGenerating(true);
+    try {
+      // Create batch tasks — each task processes 10 properties
+      const totalNoImages = stats.noImages;
+      const batchSize = 10;
+      const numTasks = Math.ceil(totalNoImages / batchSize);
+      
+      // Create tasks as offset-based batches
+      const tasks = Array.from({ length: Math.min(numTasks, 500) }, (_, i) => ({
+        task_type: "bulk_generate_property_images",
+        payload: { batch_size: batchSize, offset: i * batchSize },
+        status: "pending" as const,
+        retry_count: 0,
+      }));
+
+      const { data, error } = await supabase.functions.invoke("job-worker", {
+        body: {
+          action: "create",
+          job_type: "bulk_generate_property_images",
+          payload: { total_properties: totalNoImages, batch_size: batchSize },
+          created_by: user?.id,
+          priority: 3,
+        },
+      });
+
+      if (error) throw error;
+      
+      // Insert tasks for the job
+      if (data?.jobId && tasks.length > 0) {
+        const taskRows = tasks.map(t => ({ ...t, job_id: data.jobId }));
+        // Insert in chunks of 50
+        for (let i = 0; i < taskRows.length; i += 50) {
+          await supabase.from("ai_job_tasks").insert(taskRows.slice(i, i + 50));
+        }
+        await supabase.from("ai_jobs").update({ total_tasks: tasks.length }).eq("id", data.jobId);
+      }
+
+      showSuccess(
+        "Job Queued",
+        `AI image generation started for ${Math.min(totalNoImages, 5000).toLocaleString()} properties. Track progress in AI Command Center.`
+      );
+    } catch (err: any) {
+      showError("Failed to queue job", err.message);
+    } finally {
+      setBulkAIGenerating(false);
+    }
   };
 
   // Bulk AI relevance check for selected properties
@@ -647,6 +698,34 @@ const PropertyImageManager = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* AI Image Generation for No-Image Properties */}
+      {stats.noImages > 0 && (
+        <Card className="border-chart-3/20 bg-chart-3/5">
+          <CardContent className="p-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Wand2 className="h-4 w-4 text-chart-3" />
+                <div>
+                  <span className="text-xs font-semibold">AI Image Generator</span>
+                  <p className="text-[10px] text-muted-foreground">
+                    {stats.noImages.toLocaleString()} properties have no images. Generate AI photos in batches.
+                  </p>
+                </div>
+              </div>
+              <Button
+                size="sm"
+                className="h-7 text-[10px] gap-1.5"
+                onClick={handleBulkAIGenerate}
+                disabled={bulkAIGenerating}
+              >
+                {bulkAIGenerating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Wand2 className="h-3 w-3" />}
+                {bulkAIGenerating ? "Queuing..." : "Generate Images (Batch Job)"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Health Check Bar */}
       <Card className="border-primary/20 bg-primary/5">

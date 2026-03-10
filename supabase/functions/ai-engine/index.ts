@@ -21,7 +21,107 @@ async function handleGenerateDescription(payload: Record<string, unknown>) {
 }
 
 async function handleGenerateImage(payload: Record<string, unknown>) {
-  return json({ mode: "generate_image", status: "not_implemented", payload });
+  const { propertyId, title, description, propertyType, location, brokenImageUrl } = payload as {
+    propertyId?: string;
+    title?: string;
+    description?: string;
+    propertyType?: string;
+    location?: string;
+    brokenImageUrl?: string;
+  };
+
+  if (!propertyId || !title) {
+    return json({ error: "propertyId and title are required" }, 400);
+  }
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) {
+    return json({ error: "LOVABLE_API_KEY not configured" }, 500);
+  }
+
+  const prompt = `Generate a professional, high-quality real estate photograph of a ${propertyType || "property"} in ${location || "Indonesia"}. 
+Property name: "${title}". ${description ? `Description: ${description.slice(0, 200)}` : ""}
+Style: Professional real estate listing photo, well-lit, clean composition, architectural photography. Show the exterior or main living area. Photorealistic, no text or watermarks.`;
+
+  const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${LOVABLE_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "google/gemini-2.5-flash-image",
+      messages: [{ role: "user", content: prompt }],
+      modalities: ["image", "text"],
+    }),
+  });
+
+  if (!aiResponse.ok) {
+    const errText = await aiResponse.text();
+    console.error("AI image generation failed:", aiResponse.status, errText);
+    return json({ error: `AI generation failed: ${aiResponse.status}` }, 500);
+  }
+
+  const aiData = await aiResponse.json();
+  const imageData = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+
+  if (!imageData || !imageData.startsWith("data:image/")) {
+    return json({ error: "No image returned from AI" }, 500);
+  }
+
+  // Extract base64 and upload to Supabase Storage
+  const base64Match = imageData.match(/^data:image\/(\w+);base64,(.+)$/);
+  if (!base64Match) {
+    return json({ error: "Invalid image data format" }, 500);
+  }
+
+  const ext = base64Match[1] === "jpeg" ? "jpg" : base64Match[1];
+  const base64Data = base64Match[2];
+  const binaryData = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+  const fileName = `ai-generated/${propertyId}/${Date.now()}.${ext}`;
+
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2.49.10");
+  const supabase = createClient(supabaseUrl, serviceKey);
+
+  const { error: uploadError } = await supabase.storage
+    .from("property-images")
+    .upload(fileName, binaryData, { contentType: `image/${base64Match[1]}`, upsert: true });
+
+  if (uploadError) {
+    console.error("Storage upload error:", uploadError);
+    return json({ error: "Failed to upload generated image" }, 500);
+  }
+
+  const { data: { publicUrl } } = supabase.storage.from("property-images").getPublicUrl(fileName);
+
+  // Update property: replace broken image or add new one
+  const { data: property } = await supabase
+    .from("properties")
+    .select("images, thumbnail_url")
+    .eq("id", propertyId)
+    .single();
+
+  let updatedImages: string[] = Array.isArray(property?.images) ? [...property.images] : [];
+  let newThumb = property?.thumbnail_url;
+
+  if (brokenImageUrl) {
+    const idx = updatedImages.indexOf(brokenImageUrl);
+    if (idx >= 0) updatedImages[idx] = publicUrl;
+    else updatedImages.push(publicUrl);
+    if (newThumb === brokenImageUrl) newThumb = publicUrl;
+  } else {
+    updatedImages.push(publicUrl);
+    if (!newThumb) newThumb = publicUrl;
+  }
+
+  await supabase
+    .from("properties")
+    .update({ images: updatedImages, thumbnail_url: newThumb })
+    .eq("id", propertyId);
+
+  return json({ success: true, newImageUrl: publicUrl, propertyId });
 }
 
 async function handleVirtualStaging(payload: Record<string, unknown>) {
