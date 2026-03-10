@@ -855,7 +855,7 @@ const PropertyImageManager = () => {
           {totalPages > 1 && (
             <div className="flex items-center justify-between pt-3 border-t border-border/50">
               <p className="text-[10px] text-muted-foreground">
-                Showing {(safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, filteredProperties.length)} of {filteredProperties.length}
+                Showing {(safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, totalFilteredCount)} of {totalFilteredCount.toLocaleString()}
               </p>
               <div className="flex items-center gap-1">
                 <Button variant="outline" size="sm" className="h-7 w-7 p-0" disabled={safePage <= 1} onClick={() => setCurrentPage(safePage - 1)}>
