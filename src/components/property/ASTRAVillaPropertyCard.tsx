@@ -24,6 +24,7 @@ interface ASTRAVillaPropertyCardProps {
     land_area?: number;
     images?: string[];
     thumbnail_url?: string;
+    investment_score?: number;
     city?: string;
     state?: string;
     area?: string;
