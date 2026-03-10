@@ -194,87 +194,62 @@ const PropertyImageManager = () => {
     setAiCheckingUrl(null);
   };
 
-  // Fetch all properties with image data
-  const { data: properties = [], isLoading } = useQuery({
-    queryKey: ["admin-property-images", searchTerm],
+  // Server-side stats via RPC
+  const { data: dbStats } = useQuery({
+    queryKey: ["admin-image-stats"],
     queryFn: async () => {
-      let query = supabase
-        .from("properties")
-        .select("id, title, description, images, image_urls, thumbnail_url, property_type, status, city, location")
-        .order("created_at", { ascending: false });
-
-      if (searchTerm.trim()) {
-        query = query.or(`title.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%`);
-      }
-
-      const { data, error } = await query;
+      const { data, error } = await supabase.rpc("get_image_stats");
       if (error) throw error;
-      return data || [];
+      return data as { total_properties: number; with_images: number; no_images: number; total_images: number };
     },
   });
 
-  // Helper to get images from property
-  const getImages = (p: any): string[] => {
-    const imgs: string[] = [];
-    if (Array.isArray(p.images)) imgs.push(...p.images.filter((i: any) => typeof i === "string" && i.length > 5));
-    else if (typeof p.images === "string" && p.images.length > 5) imgs.push(p.images);
-    if (Array.isArray(p.image_urls)) imgs.push(...p.image_urls.filter((i: any) => typeof i === "string" && i.length > 5));
-    if (p.thumbnail_url && typeof p.thumbnail_url === "string" && p.thumbnail_url.length > 5) {
-      if (!imgs.includes(p.thumbnail_url)) imgs.push(p.thumbnail_url);
-    }
-    return [...new Set(imgs)];
+  const stats = {
+    total: dbStats?.total_properties ?? 0,
+    withImages: dbStats?.with_images ?? 0,
+    noImages: dbStats?.no_images ?? 0,
+    totalImages: dbStats?.total_images ?? 0,
   };
 
-  // Detect image format from URL
-  const getImageFormat = (url: string): string => {
-    const extMatch = url.match(/\.(\w+)(\?.*)?$/);
-    if (extMatch) return extMatch[1].toUpperCase();
-    if (url.includes('unsplash.com')) return 'JPG';
-    if (url.startsWith('data:image/')) {
-      const match = url.match(/data:image\/(\w+)/);
-      return match ? match[1].toUpperCase() : 'Unknown';
-    }
-    return 'Unknown';
-  };
+  // Fetch properties with server-side filtering + pagination
+  const { data: queryResult, isLoading } = useQuery({
+    queryKey: ["admin-property-images", searchTerm, filter, currentPage],
+    queryFn: async () => {
+      // Count query for pagination
+      let countQuery = supabase
+        .from("properties")
+        .select("id", { count: "exact", head: true });
 
-  // Health status icon
-  const HealthIcon = ({ result }: { result?: ImageHealthResult }) => {
-    if (!result) return null;
-    switch (result.status) {
-      case 'ok': return <CheckCircle2 className="h-3.5 w-3.5 text-chart-1" />;
-      case 'broken': return <XCircle className="h-3.5 w-3.5 text-destructive" />;
-      case 'slow': return <Clock className="h-3.5 w-3.5 text-chart-3" />;
-      case 'loading': return <Loader2 className="h-3.5 w-3.5 text-primary animate-spin" />;
-      default: return null;
-    }
-  };
+      let dataQuery = supabase
+        .from("properties")
+        .select("id, title, description, images, image_urls, thumbnail_url, property_type, status, city, location")
+        .order("created_at", { ascending: false })
+        .range((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE - 1);
 
-  const filteredProperties = properties.filter((p) => {
-    const imgs = getImages(p);
-    if (filter === "with-images") return imgs.length > 0;
-    if (filter === "no-images") return imgs.length === 0;
-    if (filter === "broken") {
-      return imgs.some(url => healthResults[url]?.status === 'broken');
-    }
-    return true;
+      // Apply filters
+      if (filter === "with-images") {
+        const imgFilter = "images.not.is.null";
+        countQuery = countQuery.not("images", "is", null);
+        dataQuery = dataQuery.not("images", "is", null);
+      } else if (filter === "no-images") {
+        countQuery = countQuery.is("images", null);
+        dataQuery = dataQuery.is("images", null);
+      }
+
+      if (searchTerm.trim()) {
+        const search = `title.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%`;
+        countQuery = countQuery.or(search);
+        dataQuery = dataQuery.or(search);
+      }
+
+      const [{ count }, { data, error }] = await Promise.all([countQuery, dataQuery]);
+      if (error) throw error;
+      return { properties: data || [], totalCount: count ?? 0 };
+    },
   });
 
-  const totalPages = Math.max(1, Math.ceil(filteredProperties.length / PAGE_SIZE));
-  const safePage = Math.min(currentPage, totalPages);
-  const paginatedProperties = filteredProperties.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
-
-  // Stats
-  const allImageUrls = properties.flatMap(p => getImages(p));
-  const brokenCount = allImageUrls.filter(url => healthResults[url]?.status === 'broken').length;
-  const slowCount = allImageUrls.filter(url => healthResults[url]?.status === 'slow').length;
-  const okCount = allImageUrls.filter(url => healthResults[url]?.status === 'ok').length;
-  const checkedCount = Object.keys(healthResults).length;
-
-  const stats = {
-    total: properties.length,
-    withImages: properties.filter((p) => getImages(p).length > 0).length,
-    noImages: properties.filter((p) => getImages(p).length === 0).length,
-  };
+  const properties = queryResult?.properties ?? [];
+  const totalFilteredCount = queryResult?.totalCount ?? 0;
 
   const handleFilterChange = (f: typeof filter) => {
     setFilter(f);
