@@ -168,8 +168,8 @@ const AstraSearchPanel = ({
     return () => window.removeEventListener('recentSearchesUpdated', handleUpdate);
   }, []);
 
-  // Lock scroll when advanced filters popup is open to prevent page jumping
-  useScrollLock(showAdvancedFilters);
+  // Scroll lock removed — filter panel is fixed-positioned with backdrop overlay,
+  // so scroll lock is unnecessary and causes visible page jump
   
 
   // Ref for click outside detection
