@@ -1,8 +1,7 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { RefreshCw } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
 import { useSystemInfo } from '@/hooks/useSystemInfo';
 import { useBackupSettings } from '@/hooks/useBackupSettings';
