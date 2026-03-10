@@ -415,6 +415,7 @@ const AppContent = () => {
                 <Route path="/investor-alerts" element={<ProtectedRoute />}>
                   <Route index element={<InvestorAlertsPage />} />
                 </Route>
+                <Route path="/ai-search" element={<AISearchAssistantPage />} />
                 <Route path="/ai-map" element={<AIMapSearchPage />} />
                 <Route path="/map-search" element={<AIMapSearchPage />} />
                 <Route path="/property-map" element={<PropertyMapSearchPage />} />
