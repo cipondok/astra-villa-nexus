@@ -120,6 +120,8 @@ html[data-scroll-locked] {
   padding-right: 0 !important;
   margin-right: 0 !important;
   overflow: auto !important;
+  position: static !important;
+  top: auto !important;
   scrollbar-gutter: stable !important;
 }
 

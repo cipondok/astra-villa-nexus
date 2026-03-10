@@ -1,32 +1,70 @@
 
+# ASTRA Villa — Platform Architecture Analysis & Roadmap
 
-# Fix Page Jumping Globally Across All Pages
+## Status: 🔄 IN PROGRESS
 
-## Root Causes Found
+## Current State Assessment (March 2026)
 
-Two remaining issues are causing the page jump on desktop across multiple pages:
+### Scale
+| Metric | Count |
+|--------|-------|
+| Pages | 120+ |
+| Components | 200+ directories |
+| Hooks | 230+ |
+| Edge Functions | 18 (consolidated from 82) |
+| Database Tables | 450+ |
+| RLS Policies | 1,000+ |
 
-1. **`scroll-behavior: smooth` in `mobile-first-responsive.css`** (line 16) - This was removed from `index.css` but still exists in another CSS file, re-enabling smooth scroll which causes visible jumps during focus management and popover positioning.
+### Three-Layer Architecture ✅
+| Layer | Key Features | Status |
+|-------|-------------|--------|
+| **Public Platform** | Property browse, search, map, detail pages, AI chat, mortgage tools | ✅ Mature |
+| **Investor Intelligence** | ROI forecasts, deal finder, portfolio builder, market trends, location intel | ✅ Mature |
+| **Admin AI Command Center** | Job queue, SEO engine, valuations, health monitor, KPI alerts | ✅ Mature |
 
-2. **Radix UI scroll-lock (`react-remove-scroll`)** - Dialog, Sheet, and Select components all use Radix's built-in scroll locking which adds `padding-right` and hides scrollbar. The CSS override in `index.css` targets `body[data-scroll-locked]` but needs to be more comprehensive to catch all edge cases.
+### Edge Function Architecture ✅
+| Router | Modes |
+|--------|-------|
+| `core-engine` | 25+ modes (investment_score, valuation, health, diagnostics, map_search) |
+| `ai-engine` | 25+ modes (descriptions, NLP, recommendations, market reports) |
+| `deal-engine` | deal_finder, alerts, negotiation, pricing, forecasts |
+| `ai-assistant` | SSE streaming chatbot, NLP search, investment advisor |
+| `notification-engine` | Email, push, campaigns |
+| `payment-engine` | Midtrans, PayPal, invoices, subscriptions |
+| `vendor-engine` | Vendor services, validation |
 
-3. **`useScrollLock` hook still uses `position: fixed`** - Even though calls were removed from two components, the hook itself still applies `position: fixed` to body which causes layout reflow. The hook should be made into a no-op to prevent any future usage from causing jumps.
+### AI Automation Systems ✅
+- SEO: Daily audits (3AM UTC), 6-hour auto-optimizer, property_seo_analysis tracking
+- Jobs: ai_jobs queue with claim_next_job() SKIP LOCKED, stall recovery, retry logic
+- Valuations: property_valuations with auto-recalculation
+- ROI: property_roi_forecast with 5-year projections
+- Autonomous Agent: 6-hour market scans for opportunity detection
 
-## Plan
+---
 
-### 1. Remove `scroll-behavior: smooth` from `mobile-first-responsive.css`
-- Line 16: Change `scroll-behavior: smooth` to `scroll-behavior: auto`
-- This is the same fix already applied to `index.css` but missed in this second CSS file
+## Identified Gaps & Improvements
 
-### 2. Make `useScrollLock` a safe no-op
-- Replace the hook body to do nothing (no `position: fixed`, no overflow changes)
-- This prevents any current or future callers from causing layout shifts
-- Keep the export so imports don't break
+### 🔴 Critical Performance
+1. **Map viewport debouncing** — `moveend` fires on every pan; needs 300ms debounce ✅ FIXED
+2. **Spatial indexes** — Need composite indexes on (latitude, longitude, status) ✅ FIXED
+3. **Platform health aggregation** — Real AI system status on admin overview ✅ FIXED (prev iteration)
 
-### 3. Strengthen the global CSS override for Radix scroll-lock
-- Expand the `body[data-scroll-locked]` rule to also cover inline styles that Radix sets directly
-- Add `position: static !important` and `top: auto !important` to prevent any fixed-position tricks from Radix's internal scroll lock
+### 🟡 Architecture Improvements
+4. **Unified health hook** — Single hook aggregating all AI subsystem health ✅ FIXED
+5. **Query deduplication** — MapBounds type duplicated across useMapSearch/useMapProperties
+6. **Large file refactoring** — PropertyDetail.tsx (1544 lines), Index.tsx (1199 lines) need splitting
 
-### 4. Update test file to match new no-op behavior
-- Update `useScrollLock.test.ts` expectations since the hook will no longer modify styles
+### 🟢 Future Expansion Ready
+- AI deal finder ✅ Exists (/deal-finder)
+- Predictive market analytics ✅ Exists (/market-trends, /price-prediction)
+- AI recommendation engine ✅ Exists (ai-match-engine-v2)
+- Location intelligence ✅ Exists (/location-intelligence)
+- Knowledge graph ✅ Hook exists (useKnowledgeGraph)
 
+### Recommended Next Steps
+1. Add database indexes for map queries at scale
+2. Debounce map viewport changes
+3. Create unified platform health dashboard
+4. Split PropertyDetail.tsx into sub-components
+5. Add API response caching headers to edge functions
+6. Implement property search result caching with stale-while-revalidate
