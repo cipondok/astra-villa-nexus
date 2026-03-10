@@ -113,10 +113,12 @@ footer {
 
 /* Radix (react-remove-scroll) adds padding-right on body to compensate for scrollbar.
    We already reserve gutter via `scrollbar-gutter`, so that padding causes a horizontal “jump”. */
-body[data-scroll-locked] {
+body[data-scroll-locked],
+html[data-scroll-locked] {
   padding-right: 0 !important;
   margin-right: 0 !important;
   overflow: auto !important;
+  scrollbar-gutter: stable !important;
 }
 
 
