@@ -40,7 +40,7 @@ const Navigation = () => {
 
   const { logoUrl: headerLogoUrl, isLoading: isLogoLoading, hasCustomLogo } = useHeaderLogo();
 
-  useEffect(() => { setIsMenuOpen(false); }, [location]);
+  useEffect(() => { setIsMenuOpen(false); }, [location.pathname]);
 
   useEffect(() => {
     if (!isMenuOpen) return;
