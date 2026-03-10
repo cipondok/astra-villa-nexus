@@ -219,6 +219,10 @@ async function handleProcess(supabase: any) {
         result = await updateMarketInsights(supabase);
       } else if (pendingJob.job_type === "detect_hot_markets") {
         result = await detectHotMarkets(supabase);
+      } else if (pendingJob.job_type === "calculate_investment_scores") {
+        result = await calculateInvestmentScores(supabase, task.payload);
+      } else if (pendingJob.job_type === "update_roi_forecasts") {
+        result = await updateRoiForecasts(supabase, task.payload);
       }
 
       // Mark task completed
