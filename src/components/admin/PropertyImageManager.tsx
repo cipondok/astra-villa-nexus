@@ -648,6 +648,34 @@ const PropertyImageManager = () => {
         </Card>
       </div>
 
+      {/* AI Image Generation for No-Image Properties */}
+      {stats.noImages > 0 && (
+        <Card className="border-chart-3/20 bg-chart-3/5">
+          <CardContent className="p-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Wand2 className="h-4 w-4 text-chart-3" />
+                <div>
+                  <span className="text-xs font-semibold">AI Image Generator</span>
+                  <p className="text-[10px] text-muted-foreground">
+                    {stats.noImages.toLocaleString()} properties have no images. Generate AI photos in batches.
+                  </p>
+                </div>
+              </div>
+              <Button
+                size="sm"
+                className="h-7 text-[10px] gap-1.5"
+                onClick={handleBulkAIGenerate}
+                disabled={bulkAIGenerating}
+              >
+                {bulkAIGenerating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Wand2 className="h-3 w-3" />}
+                {bulkAIGenerating ? "Queuing..." : "Generate Images (Batch Job)"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Health Check Bar */}
       <Card className="border-primary/20 bg-primary/5">
         <CardContent className="p-3">
