@@ -162,6 +162,56 @@ const PropertyImageManager = () => {
     clearSelection();
   };
 
+  // Bulk AI Generate images for all no-image properties via job queue
+  const handleBulkAIGenerate = async () => {
+    setBulkAIGenerating(true);
+    try {
+      // Create batch tasks — each task processes 10 properties
+      const totalNoImages = stats.noImages;
+      const batchSize = 10;
+      const numTasks = Math.ceil(totalNoImages / batchSize);
+      
+      // Create tasks as offset-based batches
+      const tasks = Array.from({ length: Math.min(numTasks, 500) }, (_, i) => ({
+        task_type: "bulk_generate_property_images",
+        payload: { batch_size: batchSize, offset: i * batchSize },
+        status: "pending" as const,
+        retry_count: 0,
+      }));
+
+      const { data, error } = await supabase.functions.invoke("job-worker", {
+        body: {
+          action: "create",
+          job_type: "bulk_generate_property_images",
+          payload: { total_properties: totalNoImages, batch_size: batchSize },
+          created_by: user?.id,
+          priority: 3,
+        },
+      });
+
+      if (error) throw error;
+      
+      // Insert tasks for the job
+      if (data?.jobId && tasks.length > 0) {
+        const taskRows = tasks.map(t => ({ ...t, job_id: data.jobId }));
+        // Insert in chunks of 50
+        for (let i = 0; i < taskRows.length; i += 50) {
+          await supabase.from("ai_job_tasks").insert(taskRows.slice(i, i + 50));
+        }
+        await supabase.from("ai_jobs").update({ total_tasks: tasks.length }).eq("id", data.jobId);
+      }
+
+      showSuccess(
+        "Job Queued",
+        `AI image generation started for ${Math.min(totalNoImages, 5000).toLocaleString()} properties. Track progress in AI Command Center.`
+      );
+    } catch (err: any) {
+      showError("Failed to queue job", err.message);
+    } finally {
+      setBulkAIGenerating(false);
+    }
+  };
+
   // Bulk AI relevance check for selected properties
   const handleBulkAICheck = async () => {
     const selectedProps = properties.filter(p => selectedPropertyIds.has(p.id));
