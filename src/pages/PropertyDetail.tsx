@@ -30,6 +30,7 @@ import { PropertyReviews } from '@/components/property/PropertyReviews';
 import PropertyRecommendations from '@/components/property/PropertyRecommendations';
 import NearbyInvestments from '@/components/property/NearbyInvestments';
 const MarketContextCard = React.lazy(() => import('@/components/property/MarketContextCard'));
+const PropertyInvestmentInsights = React.lazy(() => import('@/components/property/PropertyInvestmentInsights'));
 import { KPRCalculator } from '@/components/property/KPRCalculator';
 import PropertyMortgageWidget from '@/components/mortgage/PropertyMortgageWidget';
 import DaysOnMarketTracker from '@/components/property/DaysOnMarketTracker';
