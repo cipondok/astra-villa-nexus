@@ -170,6 +170,13 @@ export const navigationSections = {
       icon: Sparkles,
       description: "View all investor DNA profiles with persona, risk, and churn filtering for behavioral oversight",
       badge: "New"
+    },
+    {
+      key: "global-macro-intelligence",
+      label: "Global Macro Intelligence",
+      icon: Globe,
+      description: "Capital flow prediction, regional heatmaps, cross-border strategy, and infrastructure impact analysis",
+      badge: "New"
     }
   ],
 
