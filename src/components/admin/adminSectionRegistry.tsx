@@ -208,11 +208,13 @@ export const TenantScreening = lazyRetry(() => import("./TenantScreening"));
 export const AICommandCenter = lazyRetry(() => import("./AICommandCenter"));
 export const GlobalStrategyPanel = lazyRetry(() => import("./GlobalStrategyPanel"));
 export const InvestorDNAAdminPanel = lazyRetry(() => import("./InvestorDNAAdminPanel"));
+export const GlobalMacroIntelligencePanel = lazyRetry(() => import("@/pages/GlobalMacroIntelligencePage"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
   "ai-command-center": { label: "AI Command Center", category: "AI & Tools" },
   "investor-dna-admin": { label: "Investor DNA Intelligence", category: "Investor Management" },
+  "global-macro-intelligence": { label: "Global Macro Intelligence", category: "Investor Management" },
   "global-strategy": { label: "Global Strategy", category: "AI & Tools" },
   "overview": { label: "Dashboard Overview", category: "" },
   "diagnostic": { label: "Project Diagnostics", category: "System" },

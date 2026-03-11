@@ -184,6 +184,7 @@ import {
   AICommandCenter,
   GlobalStrategyPanel,
   InvestorDNAAdminPanel,
+  GlobalMacroIntelligencePanel,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -421,6 +422,7 @@ const renderSection = (
     case "ai-command-center":   return <AICommandCenter />;
     case "global-strategy":     return <GlobalStrategyPanel />;
     case "investor-dna-admin":  return <InvestorDNAAdminPanel />;
+    case "global-macro-intelligence": return <GlobalMacroIntelligencePanel />;
     default:                    return <AdminOverview />;
   }
 };
