@@ -139,6 +139,7 @@ const AISmartPricingPage = lazy(() => import('@/pages/AISmartPricingPage'));
 const AIDocumentGeneratorPage = lazy(() => import('@/pages/AIDocumentGeneratorPage'));
 const RentalYieldOptimizerPage = lazy(() => import('@/pages/RentalYieldOptimizerPage'));
 const WealthSimulatorPage = lazy(() => import('@/pages/WealthSimulatorPage'));
+const GlobalMacroIntelligencePage = lazy(() => import('@/pages/GlobalMacroIntelligencePage'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const Help = lazy(() => import('@/pages/Help'));
 const About = lazy(() => import('@/pages/About'));
