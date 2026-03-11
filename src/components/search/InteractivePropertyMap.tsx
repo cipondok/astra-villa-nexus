@@ -31,7 +31,7 @@ const MAPBOX_TOKEN = 'pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbTN1eGo4eXAwMWV4MnFzYTNwaTg
 const DEFAULT_CENTER: [number, number] = [117.5, -2.5];
 const DEFAULT_ZOOM = 5;
 
-type HeatmapMode = 'price' | 'investment' | 'deal' | 'roi';
+type HeatmapMode = 'price' | 'investment' | 'deal' | 'roi' | 'liquidity';
 
 const formatPrice = (price: number) => {
   if (price >= 1_000_000_000) return `Rp ${(price / 1_000_000_000).toFixed(1)}M`;
