@@ -1265,7 +1265,7 @@ const PropertySEOChecker = () => {
               )}
             </div>
           ) : (
-            <Card className="bg-card/60"><CardContent className="p-8 text-center text-sm text-muted-foreground">Select a property from the list or use the manual selector above</CardContent></Card>
+            <Card className="bg-card border-border"><CardContent className="p-8 text-center text-sm text-muted-foreground">Select a property from the list or use the manual selector above</CardContent></Card>
           )}
         </TabsContent>
       </Tabs>
