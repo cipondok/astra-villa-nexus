@@ -235,3 +235,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.fund-intelligence]
     verify_jwt = false
 
+  [functions.price-intelligence]
+    verify_jwt = false
+

@@ -175,6 +175,7 @@ const LocationIntelligencePage = lazy(() => import('@/pages/LocationIntelligence
 const InvestorAlertsPage = lazy(() => import('@/pages/InvestorAlertsPage'));
 const PortfolioBuilderPage = lazy(() => import('@/pages/PortfolioBuilderPage'));
 const FundIntelligencePage = lazy(() => import('@/pages/FundIntelligencePage'));
+const PriceIntelligencePage = lazy(() => import('@/pages/PriceIntelligencePage'));
 const OffMarketDealsPage = lazy(() => import('@/pages/OffMarketDealsPage'));
 const ProjectLaunchPage = lazy(() => import('@/pages/ProjectLaunchPage'));
 const InvestorFeedPage = lazy(() => import('@/pages/InvestorFeedPage'));
@@ -330,6 +331,9 @@ const AppContent = () => {
                 </Route>
                 <Route path="/fund-intelligence" element={<ProtectedRoute />}>
                   <Route index element={<FundIntelligencePage />} />
+                </Route>
+                <Route path="/price-intelligence" element={<ProtectedRoute />}>
+                  <Route index element={<PriceIntelligencePage />} />
                 </Route>
                 <Route path="/off-market-deals" element={<ProtectedRoute />}>
                   <Route index element={<OffMarketDealsPage />} />

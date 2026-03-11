@@ -10107,6 +10107,66 @@ export type Database = {
           },
         ]
       }
+      growth_zone_signals: {
+        Row: {
+          capital_appreciation_horizon: string | null
+          city: string
+          current_avg_price: number | null
+          detected_at: string
+          developer_activity_score: number | null
+          district: string
+          entry_timing: string | null
+          expires_at: string | null
+          gentrification_signals: Json | null
+          growth_confidence: number | null
+          id: string
+          infrastructure_pipeline: Json | null
+          is_active: boolean | null
+          projected_appreciation_pct: number | null
+          projected_price_3y: number | null
+          undervaluation_pct: number | null
+          zone_type: string
+        }
+        Insert: {
+          capital_appreciation_horizon?: string | null
+          city: string
+          current_avg_price?: number | null
+          detected_at?: string
+          developer_activity_score?: number | null
+          district: string
+          entry_timing?: string | null
+          expires_at?: string | null
+          gentrification_signals?: Json | null
+          growth_confidence?: number | null
+          id?: string
+          infrastructure_pipeline?: Json | null
+          is_active?: boolean | null
+          projected_appreciation_pct?: number | null
+          projected_price_3y?: number | null
+          undervaluation_pct?: number | null
+          zone_type: string
+        }
+        Update: {
+          capital_appreciation_horizon?: string | null
+          city?: string
+          current_avg_price?: number | null
+          detected_at?: string
+          developer_activity_score?: number | null
+          district?: string
+          entry_timing?: string | null
+          expires_at?: string | null
+          gentrification_signals?: Json | null
+          growth_confidence?: number | null
+          id?: string
+          infrastructure_pipeline?: Json | null
+          is_active?: boolean | null
+          projected_appreciation_pct?: number | null
+          projected_price_3y?: number | null
+          undervaluation_pct?: number | null
+          zone_type?: string
+        }
+        Relationships: []
+      }
       homepage_slider_settings: {
         Row: {
           animation_duration: number | null
@@ -13021,6 +13081,60 @@ export type Database = {
           },
         ]
       }
+      market_cycle_classifications: {
+        Row: {
+          city: string
+          computed_at: string
+          country_code: string | null
+          current_phase: string
+          cycle_position_pct: number | null
+          id: string
+          leading_indicators: Json | null
+          phase_confidence: number | null
+          phase_duration_months: number | null
+          price_momentum: number | null
+          recommended_strategy: string | null
+          risk_adjusted_roi: number | null
+          sentiment_score: number | null
+          transition_probability: Json | null
+          volume_momentum: number | null
+        }
+        Insert: {
+          city: string
+          computed_at?: string
+          country_code?: string | null
+          current_phase: string
+          cycle_position_pct?: number | null
+          id?: string
+          leading_indicators?: Json | null
+          phase_confidence?: number | null
+          phase_duration_months?: number | null
+          price_momentum?: number | null
+          recommended_strategy?: string | null
+          risk_adjusted_roi?: number | null
+          sentiment_score?: number | null
+          transition_probability?: Json | null
+          volume_momentum?: number | null
+        }
+        Update: {
+          city?: string
+          computed_at?: string
+          country_code?: string | null
+          current_phase?: string
+          cycle_position_pct?: number | null
+          id?: string
+          leading_indicators?: Json | null
+          phase_confidence?: number | null
+          phase_duration_months?: number | null
+          price_momentum?: number | null
+          recommended_strategy?: string | null
+          risk_adjusted_roi?: number | null
+          sentiment_score?: number | null
+          transition_probability?: Json | null
+          volume_momentum?: number | null
+        }
+        Relationships: []
+      }
       market_trend_factors: {
         Row: {
           avg_days_on_market: number | null
@@ -14011,6 +14125,78 @@ export type Database = {
           method?: string | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      micro_location_valuations: {
+        Row: {
+          appreciation_pct_1y: number | null
+          appreciation_pct_3y: number | null
+          appreciation_pct_5y: number | null
+          city: string
+          commercial_emergence_score: number | null
+          computed_at: string
+          current_price_per_sqm: number | null
+          demand_heat_score: number | null
+          district: string
+          id: string
+          investment_desirability: number | null
+          latitude: number | null
+          lifestyle_infra_score: number | null
+          liquidity_forecast: number | null
+          longitude: number | null
+          predicted_price_per_sqm_1y: number | null
+          predicted_price_per_sqm_3y: number | null
+          predicted_price_per_sqm_5y: number | null
+          sub_district: string | null
+          tourism_value_spike: number | null
+          transport_proximity_score: number | null
+        }
+        Insert: {
+          appreciation_pct_1y?: number | null
+          appreciation_pct_3y?: number | null
+          appreciation_pct_5y?: number | null
+          city: string
+          commercial_emergence_score?: number | null
+          computed_at?: string
+          current_price_per_sqm?: number | null
+          demand_heat_score?: number | null
+          district: string
+          id?: string
+          investment_desirability?: number | null
+          latitude?: number | null
+          lifestyle_infra_score?: number | null
+          liquidity_forecast?: number | null
+          longitude?: number | null
+          predicted_price_per_sqm_1y?: number | null
+          predicted_price_per_sqm_3y?: number | null
+          predicted_price_per_sqm_5y?: number | null
+          sub_district?: string | null
+          tourism_value_spike?: number | null
+          transport_proximity_score?: number | null
+        }
+        Update: {
+          appreciation_pct_1y?: number | null
+          appreciation_pct_3y?: number | null
+          appreciation_pct_5y?: number | null
+          city?: string
+          commercial_emergence_score?: number | null
+          computed_at?: string
+          current_price_per_sqm?: number | null
+          demand_heat_score?: number | null
+          district?: string
+          id?: string
+          investment_desirability?: number | null
+          latitude?: number | null
+          lifestyle_infra_score?: number | null
+          liquidity_forecast?: number | null
+          longitude?: number | null
+          predicted_price_per_sqm_1y?: number | null
+          predicted_price_per_sqm_3y?: number | null
+          predicted_price_per_sqm_5y?: number | null
+          sub_district?: string | null
+          tourism_value_spike?: number | null
+          transport_proximity_score?: number | null
         }
         Relationships: []
       }
@@ -17898,6 +18084,120 @@ export type Database = {
           status?: string | null
           topics?: string[] | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      price_shock_alerts: {
+        Row: {
+          affected_cities: string[] | null
+          affected_countries: string[] | null
+          alert_type: string
+          confidence: number | null
+          direction: string | null
+          id: string
+          is_active: boolean | null
+          metadata: Json | null
+          price_impact_pct: number | null
+          recommendations: Json | null
+          resolved_at: string | null
+          severity: string
+          shock_description: string
+          source: string | null
+          triggered_at: string
+        }
+        Insert: {
+          affected_cities?: string[] | null
+          affected_countries?: string[] | null
+          alert_type: string
+          confidence?: number | null
+          direction?: string | null
+          id?: string
+          is_active?: boolean | null
+          metadata?: Json | null
+          price_impact_pct?: number | null
+          recommendations?: Json | null
+          resolved_at?: string | null
+          severity?: string
+          shock_description: string
+          source?: string | null
+          triggered_at?: string
+        }
+        Update: {
+          affected_cities?: string[] | null
+          affected_countries?: string[] | null
+          alert_type?: string
+          confidence?: number | null
+          direction?: string | null
+          id?: string
+          is_active?: boolean | null
+          metadata?: Json | null
+          price_impact_pct?: number | null
+          recommendations?: Json | null
+          resolved_at?: string | null
+          severity?: string
+          shock_description?: string
+          source?: string | null
+          triggered_at?: string
+        }
+        Relationships: []
+      }
+      price_trend_index: {
+        Row: {
+          appreciation_velocity: number | null
+          avg_price_per_sqm: number | null
+          bubble_risk_score: number | null
+          city: string
+          computed_at: string
+          country_code: string | null
+          district: string | null
+          growth_trajectory: string | null
+          id: string
+          infrastructure_impact_score: number | null
+          median_price: number | null
+          metadata: Json | null
+          period: string
+          population_growth_pct: number | null
+          price_change_pct: number | null
+          transaction_volume: number | null
+          urban_expansion_index: number | null
+        }
+        Insert: {
+          appreciation_velocity?: number | null
+          avg_price_per_sqm?: number | null
+          bubble_risk_score?: number | null
+          city: string
+          computed_at?: string
+          country_code?: string | null
+          district?: string | null
+          growth_trajectory?: string | null
+          id?: string
+          infrastructure_impact_score?: number | null
+          median_price?: number | null
+          metadata?: Json | null
+          period: string
+          population_growth_pct?: number | null
+          price_change_pct?: number | null
+          transaction_volume?: number | null
+          urban_expansion_index?: number | null
+        }
+        Update: {
+          appreciation_velocity?: number | null
+          avg_price_per_sqm?: number | null
+          bubble_risk_score?: number | null
+          city?: string
+          computed_at?: string
+          country_code?: string | null
+          district?: string | null
+          growth_trajectory?: string | null
+          id?: string
+          infrastructure_impact_score?: number | null
+          median_price?: number | null
+          metadata?: Json | null
+          period?: string
+          population_growth_pct?: number | null
+          price_change_pct?: number | null
+          transaction_volume?: number | null
+          urban_expansion_index?: number | null
         }
         Relationships: []
       }
