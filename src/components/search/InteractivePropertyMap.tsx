@@ -240,6 +240,7 @@ export default function InteractivePropertyMap() {
 
   const navigate = useNavigate();
   const { data: properties = [], isLoading } = useMapProperties(bounds, filters, mapReady);
+  const { data: hotspots = [] } = useInvestmentHotspots(showHotspots);
 
   // ── Filter by polygon if drawn ──
   const filteredProperties = useMemo(() => {
