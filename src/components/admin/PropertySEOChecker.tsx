@@ -632,7 +632,7 @@ const PropertySEOChecker = () => {
                 <p className="text-lg font-bold">{filteredStats.totalProperties}</p>
                 <p className="text-[9px] text-muted-foreground">Total Properties</p>
               </div>
-              <div className="text-center p-2 rounded-lg border border-border/50 bg-background/50">
+                <div className="text-center p-2 rounded-lg border border-border bg-card">
                 <p className="text-lg font-bold text-chart-2">{filteredStats.analyzedCount}<span className="text-[10px] text-muted-foreground font-normal">/{filteredStats.totalProperties}</span></p>
                 <p className="text-[9px] text-muted-foreground">Analyzed</p>
               </div>
