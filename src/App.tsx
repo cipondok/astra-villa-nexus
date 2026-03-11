@@ -183,6 +183,7 @@ const SmartCityPage = lazy(() => import('@/pages/SmartCityPage'));
 const LiquidityEnginePage = lazy(() => import('@/pages/LiquidityEnginePage'));
 const HedgingEnginePage = lazy(() => import('@/pages/HedgingEnginePage'));
 const StressTestEnginePage = lazy(() => import('@/pages/StressTestEnginePage'));
+const PortfolioOptimizerPage = lazy(() => import('@/pages/PortfolioOptimizerPage'));
 const InvestorFeedPage = lazy(() => import('@/pages/InvestorFeedPage'));
 const TourPlannerPage = lazy(() => import('@/pages/TourPlannerPage'));
 const InvestmentAssistantPage = lazy(() => import('@/pages/InvestmentAssistantPage'));
