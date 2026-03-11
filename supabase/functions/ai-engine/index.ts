@@ -339,8 +339,8 @@ async function handleMatchProperty(payload: Record<string, unknown>) {
   // 2. Build property query with DNA-informed filters
   let q = sb
     .from("properties")
-    .select("id, title, price, city, state, property_type, listing_type, bedrooms, bathrooms, building_area_sqm, land_area_sqm, investment_score, demand_heat_score, thumbnail_url, created_at")
-    .eq("status", "available")
+    .select("id, title, price, city, state, property_type, listing_type, bedrooms, bathrooms, building_area_sqm, land_area_sqm, investment_score, thumbnail_url, created_at")
+    .eq("status", "active")
     .order("investment_score", { ascending: false })
     .limit(100);
 
@@ -375,7 +375,7 @@ async function handleMatchProperty(payload: Record<string, unknown>) {
       if (p.price >= (dna.budget_range_min || 0) && p.price <= (dna.budget_range_max || Infinity)) dnaScore += 20;
       // Strategy alignment
       if (dna.investor_persona === "conservative" && (deal.rental_stability_score || 0) >= 60) dnaScore += 15;
-      if (dna.investor_persona === "aggressive" && (p.demand_heat_score || 0) >= 60) dnaScore += 15;
+      if (dna.investor_persona === "aggressive" && (p.investment_score || 0) >= 60) dnaScore += 15;
       if (dna.investor_persona === "flipper" && (deal.flip_potential_score || 0) >= 50) dnaScore += 15;
       if (dna.investor_persona === "luxury" && p.price >= (dna.budget_range_max || 0) * 0.8) dnaScore += 15;
       // Risk alignment: +10 if investment_score aligns with risk tolerance
@@ -386,7 +386,7 @@ async function handleMatchProperty(payload: Record<string, unknown>) {
     }
 
     // Composite match score: base quality (60%) + DNA fit (40%)
-    const baseScore = (p.investment_score || 0) * 0.4 + (p.demand_heat_score || 0) * 0.3 + (deal.deal_score || 0) * 0.3;
+    const baseScore = (p.investment_score || 0) * 0.6 + (deal.deal_score || 0) * 0.4;
     const matchScore = dna
       ? Math.round(baseScore * 0.6 + dnaScore * 0.4)
       : Math.round(baseScore);
@@ -1246,8 +1246,8 @@ async function handleRecommendations(payload: Record<string, unknown>) {
   // Build candidate query with DNA preferences
   let q = sb
     .from("properties")
-    .select("id, title, price, city, state, property_type, listing_type, bedrooms, bathrooms, building_area_sqm, investment_score, demand_heat_score, thumbnail_url")
-    .eq("status", "available");
+    .select("id, title, price, city, state, property_type, listing_type, bedrooms, bathrooms, building_area_sqm, investment_score, thumbnail_url")
+    .eq("status", "active");
 
   // DNA-based pre-filter
   if (dna?.preferred_cities?.length) {
@@ -1275,9 +1275,8 @@ async function handleRecommendations(payload: Record<string, unknown>) {
     let score = 0;
 
     // Base quality (50%)
-    score += (p.investment_score || 0) * 0.25;
-    score += (p.demand_heat_score || 0) * 0.15;
-    score += (deal.deal_score || 0) * 0.10;
+    score += (p.investment_score || 0) * 0.35;
+    score += (deal.deal_score || 0) * 0.15;
 
     // DNA personalization (50%)
     if (dna) {
@@ -1291,7 +1290,7 @@ async function handleRecommendations(payload: Record<string, unknown>) {
         score += Math.min(8, (deal.rental_stability_score || 0) * 0.08);
         score += dna.rental_income_pref_weight > 0.5 ? 5 : 0;
       } else if (persona === "aggressive") {
-        score += Math.min(8, (p.demand_heat_score || 0) * 0.08);
+        score += Math.min(8, (p.investment_score || 0) * 0.08);
         score += dna.capital_growth_pref_weight > 0.5 ? 5 : 0;
       } else if (persona === "flipper") {
         score += Math.min(8, (deal.flip_potential_score || 0) * 0.08);
