@@ -769,6 +769,8 @@ export default function InteractivePropertyMap() {
           drawMode={drawMode} onSetDrawMode={setDrawMode}
           propertyCount={sortedProperties.length} isLoading={isLoading}
           isOpen={filterOpen} onToggle={() => setFilterOpen(o => !o)}
+          showHotspots={showHotspots} onToggleHotspots={setShowHotspots}
+          dealClusterMode={dealClusterMode} onToggleDealClusters={setDealClusterMode}
         />
 
         {/* Property count badge */}
