@@ -97,7 +97,7 @@ const InvestorDNAPanel = () => {
           <div className="grid grid-cols-2 gap-3">
             <div className="p-2.5 rounded-lg bg-muted/30 border border-border/30">
               <div className="flex items-center gap-1.5 mb-1.5">
-                <TrendingUp className="w-3 h-3 text-emerald-500" />
+                <TrendingUp className="w-3 h-3 text-primary" />
                 <span className="text-[10px] text-muted-foreground">Purchase Probability</span>
               </div>
               <p className="text-lg font-bold text-foreground">{Math.round(dna.probability_next_purchase * 100)}%</p>
