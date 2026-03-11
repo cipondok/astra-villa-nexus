@@ -201,7 +201,7 @@ const SeoHistoryTab = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {/* Action Type Breakdown */}
-        <Card className="bg-card/60 border-border/40">
+        <Card className="bg-card border-border">
           <CardHeader className="p-3 pb-1">
             <CardTitle className="text-xs flex items-center gap-1.5">
               <Zap className="h-3.5 w-3.5 text-chart-4" />
