@@ -6,6 +6,20 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+// ── Batch Scheduler Strategy ──
+// ROI forecast → daily incremental (0 3 * * *)
+// Deal analysis → every 6 hours (0 */6 * * *)
+// Opportunity signals → real-time trigger (event-driven, not cron)
+// Market hotspot index → daily full recompute (0 2 * * *)
+// Predictive alerts → every 12 hours (0 */12 * * *)
+
+// Anti-patterns prevented:
+// 1. Duplicate execution → batch locks via acquire_batch_lock()
+// 2. Cascading compute spikes → staggered execution with priority + max 3 concurrent
+// 3. Queue starvation → priority ordering ensures high-priority jobs run first
+
+const MAX_CONCURRENT_TRIGGERS = 3; // prevent cascade spikes
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -29,11 +43,53 @@ Deno.serve(async (req) => {
 
     if (fetchErr) throw fetchErr;
 
-    const results: { id: string; status: string }[] = [];
+    // Check current running jobs to prevent queue starvation
+    const { count: runningCount } = await supabase
+      .from("ai_jobs")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "running");
+
+    const availableSlots = Math.max(0, MAX_CONCURRENT_TRIGGERS - (runningCount || 0));
+    if (availableSlots === 0) {
+      return new Response(
+        JSON.stringify({ message: "Max concurrent jobs reached, skipping cycle", running: runningCount }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const results: { id: string; job_type: string; status: string }[] = [];
+    let triggered = 0;
 
     for (const job of dueJobs || []) {
+      if (triggered >= availableSlots) break;
+
       try {
-        // Create the actual AI job via the job-worker
+        // 1. Acquire batch lock to prevent duplicate execution
+        const { data: locked } = await supabase.rpc("acquire_batch_lock", {
+          p_job_type: job.job_type,
+          p_ttl_minutes: 30,
+        });
+
+        if (!locked) {
+          console.log(`Skipping ${job.job_type}: lock not acquired (already running)`);
+          results.push({ id: job.id, job_type: job.job_type, status: "skipped_locked" });
+          continue;
+        }
+
+        // 2. Check if a job of this type is already pending/running
+        const { count: existingCount } = await supabase
+          .from("ai_jobs")
+          .select("id", { count: "exact", head: true })
+          .eq("job_type", job.job_type)
+          .in("status", ["pending", "running"]);
+
+        if ((existingCount || 0) > 0) {
+          await supabase.rpc("release_batch_lock", { p_job_type: job.job_type });
+          results.push({ id: job.id, job_type: job.job_type, status: "skipped_duplicate" });
+          continue;
+        }
+
+        // 3. Create the actual AI job via the job-worker
         const { error: invokeErr } = await supabase.functions.invoke("job-worker", {
           body: {
             action: "create",
@@ -44,12 +100,15 @@ Deno.serve(async (req) => {
           },
         });
 
-        if (invokeErr) throw invokeErr;
+        if (invokeErr) {
+          await supabase.rpc("release_batch_lock", { p_job_type: job.job_type });
+          throw invokeErr;
+        }
 
-        // Calculate next run time
+        // 4. Calculate next run time
         const nextRun = calculateNextRun(job.cron_expression);
 
-        // Update last_run_at and next_run_at
+        // 5. Update last_run_at and next_run_at
         await supabase
           .from("ai_scheduled_jobs")
           .update({
@@ -58,15 +117,26 @@ Deno.serve(async (req) => {
           })
           .eq("id", job.id);
 
-        results.push({ id: job.id, status: "triggered" });
+        // 6. Release lock (the job-worker will handle actual processing)
+        await supabase.rpc("release_batch_lock", { p_job_type: job.job_type });
+
+        results.push({ id: job.id, job_type: job.job_type, status: "triggered" });
+        triggered++;
       } catch (err) {
-        console.error(`Failed to trigger job ${job.id}:`, err);
-        results.push({ id: job.id, status: "error" });
+        console.error(`Failed to trigger job ${job.id} (${job.job_type}):`, err);
+        results.push({ id: job.id, job_type: job.job_type, status: "error" });
       }
     }
 
+    // 7. Compute readiness score on every scheduler cycle
+    try {
+      await supabase.rpc("compute_ai_readiness");
+    } catch (e) {
+      console.error("Readiness score computation failed:", e);
+    }
+
     return new Response(
-      JSON.stringify({ triggered: results.length, results }),
+      JSON.stringify({ triggered, total_due: (dueJobs || []).length, results }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {
@@ -85,14 +155,12 @@ Deno.serve(async (req) => {
 function calculateNextRun(cron: string): string {
   const parts = cron.trim().split(/\s+/);
   if (parts.length !== 5) {
-    // Fallback: 6 hours from now
     return new Date(Date.now() + 6 * 3600_000).toISOString();
   }
 
   const [minPart, hourPart] = parts;
   const now = new Date();
 
-  // Handle common patterns
   if (cron === "* * * * *") {
     return new Date(now.getTime() + 60_000).toISOString();
   }

@@ -1,4 +1,6 @@
 import React, { useState, lazy, Suspense } from 'react';
+const AIIntelligenceHealthPanel = lazy(() => import('./AIIntelligenceHealthPanel'));
+const AIReadinessBadge = lazy(() => import('../ai/AIReadinessBadge'));
 import { useAICommandCenter, type PeriodComparison } from '@/hooks/useAICommandCenter';
 import { useCustomPeriodKPIs } from '@/hooks/useCustomPeriodKPIs';
 import { useHealthAlerts, useResolveHealthAlert, useResolveAllHealthAlerts, useTriggerHealthCheck } from '@/hooks/useHealthAlerts';
@@ -46,10 +48,11 @@ const formatIDR = (v: number) => {
   return `Rp ${v.toLocaleString()}`;
 };
 
-type NavSection = 'overview' | 'seo' | 'jobs' | 'scheduler' | 'investment' | 'valuations' | 'search' | 'health' | 'market-intel';
+type NavSection = 'overview' | 'seo' | 'jobs' | 'scheduler' | 'investment' | 'valuations' | 'search' | 'health' | 'market-intel' | 'ai-health';
 
 const NAV_ITEMS: { id: NavSection; label: string; icon: React.ElementType }[] = [
   { id: 'overview', label: 'Overview', icon: Gauge },
+  { id: 'ai-health', label: 'AI Readiness', icon: Brain },
   { id: 'seo', label: 'SEO Engine', icon: Search },
   { id: 'jobs', label: 'Job Queue', icon: Cpu },
   { id: 'scheduler', label: 'Scheduler', icon: CalendarClock },
@@ -401,7 +404,7 @@ const AICommandCenter = () => {
         className="w-52 shrink-0 hidden lg:flex flex-col"
       >
         <div className="sticky top-4 space-y-1">
-          <div className="flex items-center gap-2.5 px-3 py-3 mb-2">
+          <div className="flex items-center gap-2.5 px-3 py-3 mb-1">
             <div className="p-1.5 rounded-lg bg-gradient-to-br from-primary to-primary/70 shadow-lg shadow-primary/20">
               <Brain className="h-5 w-5 text-primary-foreground" />
             </div>
@@ -409,6 +412,11 @@ const AICommandCenter = () => {
               <p className="text-xs font-bold text-foreground tracking-wide">AI COMMAND</p>
               <p className="text-[9px] text-muted-foreground font-medium uppercase tracking-widest">Center</p>
             </div>
+          </div>
+          <div className="px-3 mb-2">
+            <Suspense fallback={null}>
+              <AIReadinessBadge compact={false} />
+            </Suspense>
           </div>
 
           <Separator className="mb-2 opacity-50" />
@@ -1546,6 +1554,13 @@ const AICommandCenter = () => {
             {activeNav === 'market-intel' && (
               <Suspense fallback={<div className="h-64 bg-muted animate-pulse rounded-lg" />}>
                 <MarketIntelligencePanel />
+              </Suspense>
+            )}
+
+            {/* AI INTELLIGENCE HEALTH / READINESS SECTION */}
+            {activeNav === 'ai-health' && (
+              <Suspense fallback={<div className="h-64 bg-muted animate-pulse rounded-lg" />}>
+                <AIIntelligenceHealthPanel />
               </Suspense>
             )}
 

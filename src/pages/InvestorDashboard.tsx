@@ -3,6 +3,7 @@ import { usePortfolioManager, PortfolioData } from '@/hooks/usePortfolioManager'
 import { useDealAlerts, DealAlert } from '@/hooks/useDealAlerts';
 import { useUserAiProfile } from '@/hooks/useUserAiProfile';
 import { lazy, Suspense } from 'react';
+const AIReadinessBadge = lazy(() => import('@/components/ai/AIReadinessBadge'));
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -132,7 +133,10 @@ const InvestorDashboard = () => {
               </p>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
+            <Suspense fallback={null}>
+              <AIReadinessBadge compact />
+            </Suspense>
             <Button variant="outline" size="sm" onClick={() => navigate('/portfolio-dashboard')}>
               <BarChart3 className="w-3.5 h-3.5 mr-1.5" /> Full Portfolio
             </Button>
