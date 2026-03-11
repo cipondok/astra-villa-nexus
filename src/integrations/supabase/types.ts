@@ -12269,6 +12269,216 @@ export type Database = {
           },
         ]
       }
+      liquidity_absorption: {
+        Row: {
+          absorption_rating: string | null
+          avg_dom: number | null
+          city: string
+          created_at: string | null
+          demand_cycle_phase: string | null
+          exit_difficulty: number | null
+          id: string
+          liquidity_speed_index: number | null
+          property_type: string
+          seasonal_factor: Json | null
+          transaction_velocity: number | null
+          view_to_inquiry_ratio: number | null
+        }
+        Insert: {
+          absorption_rating?: string | null
+          avg_dom?: number | null
+          city: string
+          created_at?: string | null
+          demand_cycle_phase?: string | null
+          exit_difficulty?: number | null
+          id?: string
+          liquidity_speed_index?: number | null
+          property_type: string
+          seasonal_factor?: Json | null
+          transaction_velocity?: number | null
+          view_to_inquiry_ratio?: number | null
+        }
+        Update: {
+          absorption_rating?: string | null
+          avg_dom?: number | null
+          city?: string
+          created_at?: string | null
+          demand_cycle_phase?: string | null
+          exit_difficulty?: number | null
+          id?: string
+          liquidity_speed_index?: number | null
+          property_type?: string
+          seasonal_factor?: Json | null
+          transaction_velocity?: number | null
+          view_to_inquiry_ratio?: number | null
+        }
+        Relationships: []
+      }
+      liquidity_crisis_resilience: {
+        Row: {
+          capital_protection_rank: number | null
+          city: string
+          created_at: string | null
+          forced_sale_risk: number | null
+          id: string
+          price_drop_estimate: number | null
+          property_type: string
+          recovery_time_months: number | null
+          scenario: string
+          stress_liquidity_score: number | null
+        }
+        Insert: {
+          capital_protection_rank?: number | null
+          city: string
+          created_at?: string | null
+          forced_sale_risk?: number | null
+          id?: string
+          price_drop_estimate?: number | null
+          property_type: string
+          recovery_time_months?: number | null
+          scenario: string
+          stress_liquidity_score?: number | null
+        }
+        Update: {
+          capital_protection_rank?: number | null
+          city?: string
+          created_at?: string | null
+          forced_sale_risk?: number | null
+          id?: string
+          price_drop_estimate?: number | null
+          property_type?: string
+          recovery_time_months?: number | null
+          scenario?: string
+          stress_liquidity_score?: number | null
+        }
+        Relationships: []
+      }
+      liquidity_demand_elasticity: {
+        Row: {
+          city: string
+          competition_intensity: number | null
+          created_at: string | null
+          elasticity_coefficient: number | null
+          foreign_investor_participation: number | null
+          id: string
+          mortgage_affordability_impact: number | null
+          optimal_pricing_strategy: string | null
+          price_reduction_risk: number | null
+          property_type: string
+          supply_pressure: number | null
+        }
+        Insert: {
+          city: string
+          competition_intensity?: number | null
+          created_at?: string | null
+          elasticity_coefficient?: number | null
+          foreign_investor_participation?: number | null
+          id?: string
+          mortgage_affordability_impact?: number | null
+          optimal_pricing_strategy?: string | null
+          price_reduction_risk?: number | null
+          property_type: string
+          supply_pressure?: number | null
+        }
+        Update: {
+          city?: string
+          competition_intensity?: number | null
+          created_at?: string | null
+          elasticity_coefficient?: number | null
+          foreign_investor_participation?: number | null
+          id?: string
+          mortgage_affordability_impact?: number | null
+          optimal_pricing_strategy?: string | null
+          price_reduction_risk?: number | null
+          property_type?: string
+          supply_pressure?: number | null
+        }
+        Relationships: []
+      }
+      liquidity_exit_timing: {
+        Row: {
+          best_sell_window: string | null
+          city: string
+          created_at: string | null
+          exit_scenarios: Json | null
+          flip_profitability: number | null
+          hold_profitability: number | null
+          id: string
+          liquidity_adjusted_roi: number | null
+          optimal_hold_months: number | null
+          peak_liquidity_month: number | null
+          property_type: string
+        }
+        Insert: {
+          best_sell_window?: string | null
+          city: string
+          created_at?: string | null
+          exit_scenarios?: Json | null
+          flip_profitability?: number | null
+          hold_profitability?: number | null
+          id?: string
+          liquidity_adjusted_roi?: number | null
+          optimal_hold_months?: number | null
+          peak_liquidity_month?: number | null
+          property_type: string
+        }
+        Update: {
+          best_sell_window?: string | null
+          city?: string
+          created_at?: string | null
+          exit_scenarios?: Json | null
+          flip_profitability?: number | null
+          hold_profitability?: number | null
+          id?: string
+          liquidity_adjusted_roi?: number | null
+          optimal_hold_months?: number | null
+          peak_liquidity_month?: number | null
+          property_type?: string
+        }
+        Relationships: []
+      }
+      liquidity_rental_stability: {
+        Row: {
+          cashflow_reliability_index: number | null
+          city: string
+          created_at: string | null
+          id: string
+          long_term_viability: number | null
+          occupancy_stability: number | null
+          property_type: string
+          rental_income_continuity: number | null
+          short_term_viability: number | null
+          tenant_turnover_prob: number | null
+          vacancy_risk: number | null
+        }
+        Insert: {
+          cashflow_reliability_index?: number | null
+          city: string
+          created_at?: string | null
+          id?: string
+          long_term_viability?: number | null
+          occupancy_stability?: number | null
+          property_type: string
+          rental_income_continuity?: number | null
+          short_term_viability?: number | null
+          tenant_turnover_prob?: number | null
+          vacancy_risk?: number | null
+        }
+        Update: {
+          cashflow_reliability_index?: number | null
+          city?: string
+          created_at?: string | null
+          id?: string
+          long_term_viability?: number | null
+          occupancy_stability?: number | null
+          property_type?: string
+          rental_income_continuity?: number | null
+          short_term_viability?: number | null
+          tenant_turnover_prob?: number | null
+          vacancy_risk?: number | null
+        }
+        Relationships: []
+      }
       listing_automation_config: {
         Row: {
           ai_description_enhancement: boolean | null

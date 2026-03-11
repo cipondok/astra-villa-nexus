@@ -180,6 +180,7 @@ const OffMarketDealsPage = lazy(() => import('@/pages/OffMarketDealsPage'));
 const ProjectLaunchPage = lazy(() => import('@/pages/ProjectLaunchPage'));
 const LaunchRadarPage = lazy(() => import('@/pages/LaunchRadarPage'));
 const SmartCityPage = lazy(() => import('@/pages/SmartCityPage'));
+const LiquidityEnginePage = lazy(() => import('@/pages/LiquidityEnginePage'));
 const InvestorFeedPage = lazy(() => import('@/pages/InvestorFeedPage'));
 const TourPlannerPage = lazy(() => import('@/pages/TourPlannerPage'));
 const InvestmentAssistantPage = lazy(() => import('@/pages/InvestmentAssistantPage'));
@@ -348,6 +349,9 @@ const AppContent = () => {
                 </Route>
                 <Route path="/smart-city" element={<ProtectedRoute />}>
                   <Route index element={<SmartCityPage />} />
+                </Route>
+                <Route path="/liquidity-engine" element={<ProtectedRoute />}>
+                  <Route index element={<LiquidityEnginePage />} />
                 </Route>
                 <Route path="/investor-feed" element={<ProtectedRoute />}>
                   <Route index element={<InvestorFeedPage />} />
