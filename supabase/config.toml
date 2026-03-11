@@ -253,3 +253,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.stress-test-engine]
     verify_jwt = false
 
+  [functions.portfolio-optimizer]
+    verify_jwt = false
+

@@ -18520,6 +18520,198 @@ export type Database = {
         }
         Relationships: []
       }
+      portfolio_optimizer_allocations: {
+        Row: {
+          adjustment_direction: string | null
+          city: string
+          created_at: string
+          current_allocation_pct: number | null
+          id: string
+          optimal_allocation_pct: number | null
+          property_type: string
+          rebalance_priority: number | null
+          risk_adjusted_return: number | null
+          sharpe_ratio: number | null
+        }
+        Insert: {
+          adjustment_direction?: string | null
+          city: string
+          created_at?: string
+          current_allocation_pct?: number | null
+          id?: string
+          optimal_allocation_pct?: number | null
+          property_type: string
+          rebalance_priority?: number | null
+          risk_adjusted_return?: number | null
+          sharpe_ratio?: number | null
+        }
+        Update: {
+          adjustment_direction?: string | null
+          city?: string
+          created_at?: string
+          current_allocation_pct?: number | null
+          id?: string
+          optimal_allocation_pct?: number | null
+          property_type?: string
+          rebalance_priority?: number | null
+          risk_adjusted_return?: number | null
+          sharpe_ratio?: number | null
+        }
+        Relationships: []
+      }
+      portfolio_optimizer_diversification: {
+        Row: {
+          city: string
+          concentration_risk: number | null
+          correlation_score: number | null
+          created_at: string
+          diversification_benefit: number | null
+          id: string
+          property_type: string
+          recommended_weight: number | null
+          sector_exposure: string | null
+        }
+        Insert: {
+          city: string
+          concentration_risk?: number | null
+          correlation_score?: number | null
+          created_at?: string
+          diversification_benefit?: number | null
+          id?: string
+          property_type: string
+          recommended_weight?: number | null
+          sector_exposure?: string | null
+        }
+        Update: {
+          city?: string
+          concentration_risk?: number | null
+          correlation_score?: number | null
+          created_at?: string
+          diversification_benefit?: number | null
+          id?: string
+          property_type?: string
+          recommended_weight?: number | null
+          sector_exposure?: string | null
+        }
+        Relationships: []
+      }
+      portfolio_optimizer_performance: {
+        Row: {
+          alpha: number | null
+          beta: number | null
+          city: string
+          created_at: string
+          efficiency_score: number | null
+          id: string
+          max_drawdown: number | null
+          property_type: string
+          risk_score: number | null
+          total_return: number | null
+          yield_stability: number | null
+        }
+        Insert: {
+          alpha?: number | null
+          beta?: number | null
+          city: string
+          created_at?: string
+          efficiency_score?: number | null
+          id?: string
+          max_drawdown?: number | null
+          property_type: string
+          risk_score?: number | null
+          total_return?: number | null
+          yield_stability?: number | null
+        }
+        Update: {
+          alpha?: number | null
+          beta?: number | null
+          city?: string
+          created_at?: string
+          efficiency_score?: number | null
+          id?: string
+          max_drawdown?: number | null
+          property_type?: string
+          risk_score?: number | null
+          total_return?: number | null
+          yield_stability?: number | null
+        }
+        Relationships: []
+      }
+      portfolio_optimizer_rebalancing: {
+        Row: {
+          action: string | null
+          capital_required: number | null
+          city: string
+          created_at: string
+          expected_return_improvement: number | null
+          id: string
+          property_type: string
+          reason: string | null
+          risk_reduction_pct: number | null
+          urgency: string | null
+        }
+        Insert: {
+          action?: string | null
+          capital_required?: number | null
+          city: string
+          created_at?: string
+          expected_return_improvement?: number | null
+          id?: string
+          property_type: string
+          reason?: string | null
+          risk_reduction_pct?: number | null
+          urgency?: string | null
+        }
+        Update: {
+          action?: string | null
+          capital_required?: number | null
+          city?: string
+          created_at?: string
+          expected_return_improvement?: number | null
+          id?: string
+          property_type?: string
+          reason?: string | null
+          risk_reduction_pct?: number | null
+          urgency?: string | null
+        }
+        Relationships: []
+      }
+      portfolio_optimizer_scenarios: {
+        Row: {
+          city: string
+          created_at: string
+          id: string
+          projected_return: number | null
+          projected_risk: number | null
+          property_type: string
+          scenario_name: string
+          sharpe_ratio: number | null
+          weight_pct: number | null
+        }
+        Insert: {
+          city: string
+          created_at?: string
+          id?: string
+          projected_return?: number | null
+          projected_risk?: number | null
+          property_type: string
+          scenario_name: string
+          sharpe_ratio?: number | null
+          weight_pct?: number | null
+        }
+        Update: {
+          city?: string
+          created_at?: string
+          id?: string
+          projected_return?: number | null
+          projected_risk?: number | null
+          property_type?: string
+          scenario_name?: string
+          sharpe_ratio?: number | null
+          weight_pct?: number | null
+        }
+        Relationships: []
+      }
       pr_agencies: {
         Row: {
           agency_name: string
