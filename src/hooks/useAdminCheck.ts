@@ -3,6 +3,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { isValidUUID } from '@/utils/uuid-validation';
 
+/**
+ * UI-ONLY admin check — used solely for conditional rendering.
+ * This is NOT a security control. All privileged operations MUST
+ * be validated server-side via RLS policies or edge function auth.
+ */
 export const useAdminCheck = () => {
   const { user } = useAuth();
 

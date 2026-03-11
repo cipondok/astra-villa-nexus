@@ -27,12 +27,29 @@ export const storageSupport = {
   local: canUseWindow() ? testPersistentStorage(window.localStorage) : false,
 };
 
+/**
+ * Validates storage values to prevent injection attacks.
+ * Rejects values containing script tags or event handlers.
+ */
+const validateStorageValue = (value: string | null): string | null => {
+  if (value === null) return null;
+  // Reject values that look like script injection attempts
+  const dangerousPatterns = /<script[\s>]/i;
+  if (dangerousPatterns.test(value)) {
+    console.warn('[safeStorage] Potentially unsafe value detected and rejected');
+    return null;
+  }
+  return value;
+};
+
 const safeGet = (storage: StorageLike | undefined, key: string): string | null => {
   try {
-    if (!storage) return memoryFallback.get(key) ?? null;
-    return storage.getItem(key);
+    const raw = !storage
+      ? memoryFallback.get(key) ?? null
+      : storage.getItem(key);
+    return validateStorageValue(raw);
   } catch {
-    return memoryFallback.get(key) ?? null;
+    return validateStorageValue(memoryFallback.get(key) ?? null);
   }
 };
 
