@@ -604,7 +604,7 @@ function App() {
                             <CookieSystem />
                             <Suspense fallback={null}>
                               <ResponsiveAIChatWidget />
-                              <InvestorCopilot />
+                              
                               <WhatsAppInquiryButton variant="floating" defaultType="general" />
                               
                               <SessionExpirationHandler />
