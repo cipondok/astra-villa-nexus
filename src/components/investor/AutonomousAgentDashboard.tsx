@@ -7,9 +7,10 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   useAgentScanHistory, useRunAgentScan, AgentScanLog, AgentOpportunity,
 } from '@/hooks/useAutonomousAgent2';
+import { useRunDealHunterScan } from '@/hooks/useDealHunter';
 import {
   Bot, Play, Loader2, Clock, Building2, TrendingDown, TrendingUp,
-  DollarSign, Flame, Star, Activity, MapPin, BarChart3, Zap, History,
+  DollarSign, Flame, Star, Activity, MapPin, BarChart3, Zap, History, Crosshair,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -30,6 +31,7 @@ export default function AutonomousAgentDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const scanHistory = useAgentScanHistory();
   const scanMutation = useRunAgentScan();
+  const dealHunterScan = useRunDealHunterScan();
   const navigate = useNavigate();
 
   const result = scanMutation.data;
@@ -58,6 +60,18 @@ export default function AutonomousAgentDashboard() {
             </span>
             <span className="text-xs font-medium text-primary">Agent Active • Every 6h</span>
           </div>
+          <Button
+            onClick={() => dealHunterScan.mutate()}
+            disabled={dealHunterScan.isPending}
+            variant="outline"
+            className="border-primary/30"
+          >
+            {dealHunterScan.isPending ? (
+              <><Loader2 className="h-4 w-4 animate-spin mr-1.5" /> Hunting...</>
+            ) : (
+              <><Crosshair className="h-4 w-4 mr-1.5" /> Deal Hunter</>
+            )}
+          </Button>
           <Button
             onClick={() => scanMutation.mutate()}
             disabled={scanMutation.isPending}

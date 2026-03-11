@@ -10918,7 +10918,7 @@ Project Details:
       const { data: properties, error: propErr } = await serviceClient
         .from('properties')
         .select('id, title, price, city, state, property_type, area_sqm, investment_score, created_at, status, days_on_market, save_count, listing_type')
-        .eq('status', 'published')
+        .in('status', ['active', 'published'])
         .not('price', 'is', null)
         .gt('price', 0)
         .limit(500);
@@ -11181,10 +11181,12 @@ Project Details:
       // 8. Log scan
       await serviceClient.from('autonomous_agent_scans').insert({
         scan_type: 'deal_hunter',
-        properties_scanned: properties.length,
-        opportunities_found: opportunities.length,
-        alerts_generated: alertsCreated,
-        scan_metadata: {
+        status: 'completed',
+        total_properties_scanned: properties.length,
+        total_alerts_created: alertsCreated,
+        total_users_notified: 0,
+        summary: {
+          opportunities_found: opportunities.length,
           top_deals: topDeals.length,
           classifications: {
             hot_deal: opportunities.filter(o => o.deal_classification === 'hot_deal').length,
@@ -11198,6 +11200,7 @@ Project Details:
             institutional: opportunities.filter(o => o.deal_tier === 'institutional').length,
           },
         },
+        duration_ms: Date.now() - now,
       }).then(() => {}).catch(e => console.error('Scan log error:', e));
 
       console.log(`Deal Hunter scan complete: ${opportunities.length} opportunities from ${properties.length} properties, ${alertsCreated} alerts`);
