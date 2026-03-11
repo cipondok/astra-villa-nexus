@@ -708,7 +708,7 @@ const PropertySEOChecker = () => {
 
       {/* Score Distribution */}
       {stats && (
-        <Card className="bg-card/60 border-border/40">
+        <Card className="bg-card border-border">
           <CardContent className="p-3">
             <div className="flex items-center gap-2 mb-2">
               <Globe className="h-3.5 w-3.5 text-primary" />
