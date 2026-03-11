@@ -28,6 +28,8 @@ export interface GlobalRegion {
   stamp_duty_pct: number;
   expansion_phase: string;
   launched_at: string | null;
+  locale: string;
+  timezone: string;
 }
 
 export interface GlobalOpportunity {
