@@ -344,11 +344,15 @@ export default function InteractivePropertyMap() {
       setMapReady(true);
       updateBounds(m);
 
-      // ── Cluster source ──
+      // ── Cluster source with deal score aggregation ──
       m.addSource('property-cluster', {
         type: 'geojson',
         data: { type: 'FeatureCollection', features: [] },
         cluster: true, clusterMaxZoom: 14, clusterRadius: 60,
+        clusterProperties: {
+          sumDealScore: ['+', ['get', 'dealScore']],
+          pointCount: ['+', 1],
+        },
       });
 
       m.addLayer({
@@ -359,6 +363,64 @@ export default function InteractivePropertyMap() {
           'circle-radius': ['step', ['get', 'point_count'], 22, 10, 28, 50, 35],
           'circle-stroke-width': 2, 'circle-stroke-color': '#fff',
         },
+      });
+
+      // ── Deal-score colored clusters (hidden by default) ──
+      m.addLayer({
+        id: 'deal-clusters', type: 'circle', source: 'property-cluster',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': [
+            'interpolate', ['linear'],
+            ['/', ['get', 'sumDealScore'], ['get', 'pointCount']],
+            0, 'hsl(0, 0%, 60%)',
+            30, 'hsl(0, 0%, 60%)',
+            50, 'hsl(45, 80%, 55%)',
+            70, 'hsl(140, 60%, 45%)',
+            100, 'hsl(140, 70%, 35%)',
+          ],
+          'circle-radius': ['step', ['get', 'point_count'], 24, 10, 30, 50, 38],
+          'circle-stroke-width': 3,
+          'circle-stroke-color': [
+            'interpolate', ['linear'],
+            ['/', ['get', 'sumDealScore'], ['get', 'pointCount']],
+            0, 'hsl(0, 0%, 80%)', 50, 'hsl(45, 60%, 70%)', 70, 'hsl(140, 50%, 60%)',
+          ],
+          'circle-opacity': 0.9,
+        },
+        layout: { visibility: 'none' },
+      });
+
+      // ── Deal cluster count label ──
+      m.addLayer({
+        id: 'deal-cluster-count', type: 'symbol', source: 'property-cluster',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': [
+            'concat',
+            ['to-string', ['round', ['/', ['get', 'sumDealScore'], ['get', 'pointCount']]]],
+            '★',
+          ],
+          'text-font': ['DIN Pro Bold', 'Arial Unicode MS Bold'],
+          'text-size': 12,
+          visibility: 'none',
+        },
+        paint: { 'text-color': '#ffffff' },
+      });
+
+      m.addLayer({
+        id: 'unclustered-point', type: 'circle', source: 'property-cluster',
+        filter: ['!', ['has', 'point_count']],
+        paint: {
+          'circle-color': ['interpolate', ['linear'], ['get', 'investmentScore'],
+            0, 'hsl(215, 50%, 60%)', 50, 'hsl(45, 80%, 55%)', 80, 'hsl(140, 60%, 45%)', 100, 'hsl(340, 70%, 50%)'],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 8, 4, 12, 6, 16, 8],
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#fff',
+          'circle-opacity': 0.9,
+        },
+        minzoom: 8,
+        maxzoom: 13,
       });
 
       m.addLayer({
