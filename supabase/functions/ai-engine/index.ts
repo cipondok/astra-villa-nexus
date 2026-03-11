@@ -375,7 +375,7 @@ async function handleMatchProperty(payload: Record<string, unknown>) {
       if (p.price >= (dna.budget_range_min || 0) && p.price <= (dna.budget_range_max || Infinity)) dnaScore += 20;
       // Strategy alignment
       if (dna.investor_persona === "conservative" && (deal.rental_stability_score || 0) >= 60) dnaScore += 15;
-      if (dna.investor_persona === "aggressive" && (p.demand_score || 0) >= 60) dnaScore += 15;
+      if (dna.investor_persona === "aggressive" && (p.investment_score || 0) >= 60) dnaScore += 15;
       if (dna.investor_persona === "flipper" && (deal.flip_potential_score || 0) >= 50) dnaScore += 15;
       if (dna.investor_persona === "luxury" && p.price >= (dna.budget_range_max || 0) * 0.8) dnaScore += 15;
       // Risk alignment: +10 if investment_score aligns with risk tolerance
