@@ -7,9 +7,10 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   useAgentScanHistory, useRunAgentScan, AgentScanLog, AgentOpportunity,
 } from '@/hooks/useAutonomousAgent2';
+import { useRunDealHunterScan } from '@/hooks/useDealHunter';
 import {
   Bot, Play, Loader2, Clock, Building2, TrendingDown, TrendingUp,
-  DollarSign, Flame, Star, Activity, MapPin, BarChart3, Zap, History,
+  DollarSign, Flame, Star, Activity, MapPin, BarChart3, Zap, History, Crosshair,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
