@@ -1226,7 +1226,7 @@ async function handleRecommendations(payload: Record<string, unknown>) {
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
   const sb = createClient(supabaseUrl, serviceKey);
 
-  const userId = payload.user_id as string;
+  const userId = (payload.user_id || payload.userId) as string;
   const limit = Math.min(Number(payload.limit) || 8, 20);
 
   if (!userId) return json({ error: "user_id required for recommendations" }, 400);
