@@ -117,38 +117,52 @@ if ('serviceWorker' in navigator) {
 // Prevent react-remove-scroll from causing page jumps by making
 // body/html style properties read-only for the props it touches.
 const preventScrollLockJump = () => {
-  // Freeze specific style properties on body and html so react-remove-scroll
-  // cannot set them at all (no flash, no race condition).
-  const freezeStyleProp = (el: HTMLElement, prop: string, value: string) => {
+  // Block react-remove-scroll from modifying body/html styles.
+  // It uses BOTH el.style.prop = value AND el.style.setProperty(prop, value),
+  // so we must intercept both paths.
+
+  const blockedProps = new Set([
+    'padding-right', 'paddingRight',
+    'overflow', 'overflow-y', 'overflowY',
+    'position',
+    'top',
+    'width',
+    'margin-right', 'marginRight',
+  ]);
+
+  const patchStyleObject = (el: HTMLElement) => {
     const style = el.style;
-    const descriptor = Object.getOwnPropertyDescriptor(CSSStyleDeclaration.prototype, prop) 
-      || Object.getOwnPropertyDescriptor(style, prop);
-    
-    // Set the desired value first
-    style.setProperty(
-      prop.replace(/([A-Z])/g, '-$1').toLowerCase(),
-      value,
-      'important'
-    );
-    
-    // Override the setter to be a no-op
-    Object.defineProperty(style, prop, {
-      get() { return descriptor?.get?.call(style) ?? value; },
-      set() { /* no-op: block react-remove-scroll */ },
-      configurable: true,
-    });
+
+    // 1. Override setProperty to block react-remove-scroll's setProperty calls
+    const origSetProperty = style.setProperty.bind(style);
+    style.setProperty = function(prop: string, value: string, priority?: string) {
+      if (blockedProps.has(prop)) return; // no-op
+      origSetProperty(prop, value, priority || '');
+    };
+
+    // 2. Override removeProperty for the same blocked props
+    const origRemoveProperty = style.removeProperty.bind(style);
+    style.removeProperty = function(prop: string) {
+      if (blockedProps.has(prop)) return '';
+      return origRemoveProperty(prop);
+    };
+
+    // 3. Override JS property setters (react-remove-scroll also uses these)
+    const propsToFreeze = ['paddingRight', 'overflow', 'overflowY', 'position', 'top', 'width', 'marginRight'];
+    for (const prop of propsToFreeze) {
+      const currentVal = (style as any)[prop] || '';
+      Object.defineProperty(style, prop, {
+        get() { return currentVal; },
+        set() { /* no-op */ },
+        configurable: true,
+      });
+    }
   };
 
-  // Block the exact properties react-remove-scroll modifies
-  [document.body, document.documentElement].forEach(el => {
-    freezeStyleProp(el, 'paddingRight', '0px');
-    freezeStyleProp(el, 'overflow', '');
-    freezeStyleProp(el, 'position', '');
-    freezeStyleProp(el, 'top', '');
-    freezeStyleProp(el, 'width', '');
-  });
+  patchStyleObject(document.body);
+  patchStyleObject(document.documentElement);
 
-  // Also strip data-scroll-locked attribute reactively
+  // Strip data-scroll-locked attribute reactively
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       if (mutation.type === 'attributes') {
