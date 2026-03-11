@@ -322,7 +322,102 @@ Always call the extract_filters function with the parsed values.`;
 }
 
 async function handleMatchProperty(payload: Record<string, unknown>) {
-  return json({ mode: "match_property", status: "not_implemented", payload });
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const sb = createClient(supabaseUrl, serviceKey);
+
+  const userId = payload.user_id as string;
+  const limit = Math.min(Number(payload.limit) || 10, 30);
+
+  // 1. Fetch Investor DNA (if user authenticated)
+  let dna: any = null;
+  if (userId) {
+    const { data } = await sb.from("investor_dna").select("*").eq("user_id", userId).maybeSingle();
+    dna = data;
+  }
+
+  // 2. Build property query with DNA-informed filters
+  let q = sb
+    .from("properties")
+    .select("id, title, price, city, state, property_type, listing_type, bedrooms, bathrooms, building_area_sqm, land_area_sqm, investment_score, demand_heat_score, thumbnail_url, created_at")
+    .eq("status", "available")
+    .order("investment_score", { ascending: false })
+    .limit(100);
+
+  // DNA city/type pre-filter: widen pool but prefer DNA-preferred
+  if (dna?.preferred_cities?.length && !payload.city) {
+    // Fetch from preferred cities + some global for diversity
+    q = q.in("city", [...dna.preferred_cities.slice(0, 5)]);
+  }
+  if (payload.city) q = q.eq("city", payload.city);
+  if (payload.property_type) q = q.eq("property_type", payload.property_type);
+
+  const { data: properties, error } = await q;
+  if (error) return json({ error: error.message }, 500);
+  if (!properties?.length) return json({ properties: [], match_meta: { dna_used: false } });
+
+  // 3. Fetch deal analysis for scored properties
+  const propIds = properties.map((p: any) => p.id);
+  const { data: deals } = await sb.from("property_deal_analysis").select("property_id, deal_score, undervaluation_percent, rental_stability_score, flip_potential_score").in("property_id", propIds);
+  const dealMap = new Map((deals || []).map((d: any) => [d.property_id, d]));
+
+  // 4. DNA-weighted scoring
+  const scored = properties.map((p: any) => {
+    const deal = dealMap.get(p.id) || {} as any;
+    let dnaScore = 0;
+
+    if (dna) {
+      // City match: +25 if in preferred cities
+      if (dna.preferred_cities?.includes(p.city)) dnaScore += 25;
+      // Type match: +20
+      if (dna.preferred_property_types?.includes(p.property_type)) dnaScore += 20;
+      // Budget fit: +20 if within range
+      if (p.price >= (dna.budget_range_min || 0) && p.price <= (dna.budget_range_max || Infinity)) dnaScore += 20;
+      // Strategy alignment
+      if (dna.investor_persona === "conservative" && (deal.rental_stability_score || 0) >= 60) dnaScore += 15;
+      if (dna.investor_persona === "aggressive" && (p.demand_heat_score || 0) >= 60) dnaScore += 15;
+      if (dna.investor_persona === "flipper" && (deal.flip_potential_score || 0) >= 50) dnaScore += 15;
+      if (dna.investor_persona === "luxury" && p.price >= (dna.budget_range_max || 0) * 0.8) dnaScore += 15;
+      // Risk alignment: +10 if investment_score aligns with risk tolerance
+      const riskFit = dna.risk_tolerance_score > 60
+        ? (p.investment_score || 0) * 0.1
+        : ((deal.rental_stability_score || 50) * 0.1);
+      dnaScore += Math.min(10, riskFit);
+    }
+
+    // Composite match score: base quality (60%) + DNA fit (40%)
+    const baseScore = (p.investment_score || 0) * 0.4 + (p.demand_heat_score || 0) * 0.3 + (deal.deal_score || 0) * 0.3;
+    const matchScore = dna
+      ? Math.round(baseScore * 0.6 + dnaScore * 0.4)
+      : Math.round(baseScore);
+
+    return {
+      ...p,
+      match_score: Math.min(100, matchScore),
+      dna_fit: dna ? Math.min(100, dnaScore) : null,
+      deal_score: deal.deal_score || null,
+      undervaluation_percent: deal.undervaluation_percent || null,
+      match_factors: dna ? {
+        city_match: dna.preferred_cities?.includes(p.city) || false,
+        type_match: dna.preferred_property_types?.includes(p.property_type) || false,
+        budget_fit: p.price >= (dna.budget_range_min || 0) && p.price <= (dna.budget_range_max || Infinity),
+        persona_aligned: true,
+      } : null,
+    };
+  });
+
+  // Sort by match_score desc
+  scored.sort((a: any, b: any) => b.match_score - a.match_score);
+
+  return json({
+    properties: scored.slice(0, limit),
+    match_meta: {
+      dna_used: !!dna,
+      persona: dna?.investor_persona || null,
+      total_evaluated: properties.length,
+      scoring_weights: dna ? { base: 0.6, dna: 0.4 } : { base: 1.0, dna: 0 },
+    },
+  });
 }
 
 const SEO_PROPERTY_SELECT = "id,title,description,property_type,listing_type,location,city,state,bedrooms,bathrooms,price";
@@ -1127,7 +1222,117 @@ Generate optimized SEO content. Call the seo_optimize function with your results
 
 
 async function handleRecommendations(payload: Record<string, unknown>) {
-  return json({ mode: "recommendations", status: "not_implemented", payload });
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const sb = createClient(supabaseUrl, serviceKey);
+
+  const userId = payload.user_id as string;
+  const limit = Math.min(Number(payload.limit) || 8, 20);
+
+  if (!userId) return json({ error: "user_id required for recommendations" }, 400);
+
+  // Parallel fetch: DNA + behavior + favorites
+  const [dnaRes, behaviorRes, favRes] = await Promise.all([
+    sb.from("investor_dna").select("*").eq("user_id", userId).maybeSingle(),
+    sb.from("ai_behavior_tracking").select("property_id, event_type, event_data").eq("user_id", userId).order("created_at", { ascending: false }).limit(100),
+    sb.from("favorites").select("property_id").eq("user_id", userId).limit(50),
+  ]);
+
+  const dna = dnaRes.data;
+  const viewedIds = new Set((behaviorRes.data || []).map((b: any) => b.property_id).filter(Boolean));
+  const savedIds = new Set((favRes.data || []).map((f: any) => f.property_id));
+  const excludeIds = [...new Set([...viewedIds, ...savedIds])].slice(0, 50);
+
+  // Build candidate query with DNA preferences
+  let q = sb
+    .from("properties")
+    .select("id, title, price, city, state, property_type, listing_type, bedrooms, bathrooms, building_area_sqm, investment_score, demand_heat_score, thumbnail_url")
+    .eq("status", "available");
+
+  // DNA-based pre-filter
+  if (dna?.preferred_cities?.length) {
+    q = q.in("city", dna.preferred_cities.slice(0, 8));
+  }
+  if (dna?.budget_range_min) q = q.gte("price", dna.budget_range_min * 0.7);
+  if (dna?.budget_range_max) q = q.lte("price", dna.budget_range_max * 1.3);
+
+  q = q.order("investment_score", { ascending: false }).limit(80);
+
+  const { data: candidates } = await q;
+  if (!candidates?.length) return json({ recommendations: [], meta: { dna_used: !!dna, reason: "no_candidates" } });
+
+  // Filter out already seen/saved
+  const fresh = candidates.filter((p: any) => !excludeIds.includes(p.id));
+
+  // Deal data for scoring
+  const freshIds = fresh.map((p: any) => p.id).slice(0, 50);
+  const { data: deals } = await sb.from("property_deal_analysis").select("property_id, deal_score, rental_stability_score, flip_potential_score").in("property_id", freshIds);
+  const dealMap = new Map((deals || []).map((d: any) => [d.property_id, d]));
+
+  // Score with DNA personalization
+  const scored = fresh.map((p: any) => {
+    const deal = dealMap.get(p.id) || {} as any;
+    let score = 0;
+
+    // Base quality (50%)
+    score += (p.investment_score || 0) * 0.25;
+    score += (p.demand_heat_score || 0) * 0.15;
+    score += (deal.deal_score || 0) * 0.10;
+
+    // DNA personalization (50%)
+    if (dna) {
+      if (dna.preferred_cities?.includes(p.city)) score += 15;
+      if (dna.preferred_property_types?.includes(p.property_type)) score += 12;
+      if (p.price >= (dna.budget_range_min || 0) && p.price <= (dna.budget_range_max || Infinity)) score += 10;
+
+      // Persona strategy fit
+      const persona = dna.investor_persona;
+      if (persona === "conservative") {
+        score += Math.min(8, (deal.rental_stability_score || 0) * 0.08);
+        score += dna.rental_income_pref_weight > 0.5 ? 5 : 0;
+      } else if (persona === "aggressive") {
+        score += Math.min(8, (p.demand_heat_score || 0) * 0.08);
+        score += dna.capital_growth_pref_weight > 0.5 ? 5 : 0;
+      } else if (persona === "flipper") {
+        score += Math.min(8, (deal.flip_potential_score || 0) * 0.08);
+      } else if (persona === "luxury") {
+        const budgetMax = dna.budget_range_max || 0;
+        score += p.price >= budgetMax * 0.7 ? 8 : 0;
+      } else {
+        score += 5; // balanced gets moderate boost
+      }
+    }
+
+    return {
+      ...p,
+      recommendation_score: Math.min(100, Math.round(score)),
+      deal_score: deal.deal_score || null,
+      why: dna ? buildRecommendationReason(p, dna, deal) : "High investment score property",
+    };
+  });
+
+  scored.sort((a: any, b: any) => b.recommendation_score - a.recommendation_score);
+
+  return json({
+    recommendations: scored.slice(0, limit),
+    meta: {
+      dna_used: !!dna,
+      persona: dna?.investor_persona || null,
+      total_evaluated: fresh.length,
+      excluded_seen: excludeIds.length,
+    },
+  });
+}
+
+function buildRecommendationReason(prop: any, dna: any, deal: any): string {
+  const reasons: string[] = [];
+  if (dna.preferred_cities?.includes(prop.city)) reasons.push(`Matches your preferred city (${prop.city})`);
+  if (dna.preferred_property_types?.includes(prop.property_type)) reasons.push(`Your preferred type (${prop.property_type})`);
+  if (dna.investor_persona === "conservative" && (deal.rental_stability_score || 0) >= 60) reasons.push("Strong rental stability");
+  if (dna.investor_persona === "flipper" && (deal.flip_potential_score || 0) >= 50) reasons.push("High flip potential");
+  if ((prop.investment_score || 0) >= 70) reasons.push("High investment score");
+  if ((deal.deal_score || 0) >= 70) reasons.push("Strong deal score");
+  return reasons.slice(0, 3).join(" · ") || "Matches your investment profile";
 }
 
 async function handleTranscription(payload: Record<string, unknown>) {
