@@ -404,7 +404,7 @@ const AICommandCenter = () => {
         className="w-52 shrink-0 hidden lg:flex flex-col"
       >
         <div className="sticky top-4 space-y-1">
-          <div className="flex items-center gap-2.5 px-3 py-3 mb-2">
+          <div className="flex items-center gap-2.5 px-3 py-3 mb-1">
             <div className="p-1.5 rounded-lg bg-gradient-to-br from-primary to-primary/70 shadow-lg shadow-primary/20">
               <Brain className="h-5 w-5 text-primary-foreground" />
             </div>
@@ -412,6 +412,11 @@ const AICommandCenter = () => {
               <p className="text-xs font-bold text-foreground tracking-wide">AI COMMAND</p>
               <p className="text-[9px] text-muted-foreground font-medium uppercase tracking-widest">Center</p>
             </div>
+          </div>
+          <div className="px-3 mb-2">
+            <Suspense fallback={null}>
+              <AIReadinessBadge compact={false} />
+            </Suspense>
           </div>
 
           <Separator className="mb-2 opacity-50" />

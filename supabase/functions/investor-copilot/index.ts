@@ -26,7 +26,7 @@ async function gatherPropertyContext(propertyId: string) {
     supabaseAdmin.from("properties").select("id, title, price, city, state, property_type, bedrooms as kt, bathrooms as km, building_area_sqm, land_area_sqm, investment_score, demand_heat_score, listing_type, thumbnail_url").eq("id", propertyId).maybeSingle(),
     supabaseAdmin.from("property_deal_analysis").select("deal_score, undervaluation_percent, estimated_value, deal_tag, deal_confidence, flip_potential_score, rental_stability_score").eq("property_id", propertyId).maybeSingle(),
     supabaseAdmin.from("property_roi_forecast").select("expected_roi_percent, growth_forecast_percent, rental_yield_percent, risk_level, predicted_value_1y, predicted_value_3y, predicted_value_5y").eq("property_id", propertyId).maybeSingle(),
-    supabaseAdmin.from("investment_hotspots").select("hotspot_score, growth_score, rental_score, trend").limit(1),
+    supabaseAdmin.from("investment_hotspots").select("city, hotspot_score, growth_score, rental_score, trend").limit(1),
   ]);
 
   return {
@@ -34,6 +34,69 @@ async function gatherPropertyContext(propertyId: string) {
     deal: dealRes.data,
     forecast: insightRes.data,
     hotspot: hotspotRes.data?.[0],
+  };
+}
+
+// ── COPILOT CONTEXT OPTIMIZER ──
+// Automatically selects top 5 comparable properties, injects city-level trends,
+// liquidity signals, and ranks context by relevance score
+
+async function gatherOptimizedContext(propertyId: string) {
+  const base = await gatherPropertyContext(propertyId);
+  if (!base.property) return base;
+
+  const prop = base.property;
+
+  // 1) Top 5 comparable properties (same city + type, scored by price proximity)
+  const { data: comparables } = await supabaseAdmin
+    .from("properties")
+    .select("id, title, price, city, property_type, investment_score, demand_heat_score, building_area_sqm")
+    .eq("city", prop.city)
+    .eq("status", "available")
+    .neq("id", propertyId)
+    .order("investment_score", { ascending: false })
+    .limit(20);
+
+  const scoredComps = (comparables || []).map((c: any) => {
+    let relevance = 0;
+    if (c.property_type === prop.property_type) relevance += 30;
+    const priceDiff = Math.abs(c.price - prop.price) / Math.max(prop.price, 1);
+    relevance += Math.max(0, 30 - priceDiff * 100);
+    relevance += (c.investment_score || 0) * 0.4;
+    return { ...c, relevance_score: Math.round(relevance) };
+  }).sort((a: any, b: any) => b.relevance_score - a.relevance_score).slice(0, 5);
+
+  // 2) City-level trend metrics
+  const { data: cityTrend } = await supabaseAdmin
+    .from("investment_hotspots")
+    .select("city, hotspot_score, growth_score, rental_score, roi_score, trend, property_count, avg_roi")
+    .eq("city", prop.city)
+    .maybeSingle();
+
+  // 3) Liquidity signals (days on market, save count, view velocity)
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+  const { count: recentViews } = await supabaseAdmin
+    .from("ai_behavior_tracking")
+    .select("id", { count: "exact", head: true })
+    .eq("property_id", propertyId)
+    .eq("event_type", "view")
+    .gte("created_at", thirtyDaysAgo);
+
+  const { count: recentSaves } = await supabaseAdmin
+    .from("favorites")
+    .select("id", { count: "exact", head: true })
+    .eq("property_id", propertyId)
+    .gte("created_at", thirtyDaysAgo);
+
+  return {
+    ...base,
+    comparables: scoredComps,
+    cityTrend: cityTrend || null,
+    liquiditySignals: {
+      views_30d: recentViews || 0,
+      saves_30d: recentSaves || 0,
+      demand_level: (recentViews || 0) > 50 ? "high" : (recentViews || 0) > 15 ? "moderate" : "low",
+    },
   };
 }
 
@@ -45,18 +108,14 @@ async function gatherPortfolioContext(userId: string) {
     .limit(20);
 
   const props = (favorites || []).map((f: any) => f.properties).filter(Boolean);
-  
-  // Compute diversification metrics
   const cities = [...new Set(props.map((p: any) => p.city))];
   const types = [...new Set(props.map((p: any) => p.property_type))];
   const totalValue = props.reduce((s: number, p: any) => s + (p.price || 0), 0);
   const avgScore = props.length ? props.reduce((s: number, p: any) => s + (p.investment_score || 0), 0) / props.length : 0;
-  
-  // City concentration
   const cityCounts: Record<string, number> = {};
   props.forEach((p: any) => { cityCounts[p.city] = (cityCounts[p.city] || 0) + 1; });
   const maxCityPct = props.length ? Math.max(...Object.values(cityCounts)) / props.length * 100 : 0;
-  
+
   return {
     properties: props,
     count: props.length,
@@ -76,11 +135,9 @@ async function gatherMarketContext(city?: string) {
     .select("city, hotspot_score, growth_score, rental_score, roi_score, trend, property_count")
     .order("hotspot_score", { ascending: false })
     .limit(10);
-  
   if (city) q = q.eq("city", city);
   const { data } = await q;
 
-  // Get recent alerts
   const { data: alerts } = await supabaseAdmin
     .from("copilot_investment_alerts")
     .select("title, message, city, severity, trend_direction")
@@ -115,6 +172,34 @@ CONFIDENCE INDICATORS:
     const p = context.property;
     const d = context.deal;
     const f = context.forecast;
+
+    // Build comparables section (Context Optimizer)
+    let compSection = "";
+    if (context.comparables?.length) {
+      compSection = `\n\nTOP COMPARABLE PROPERTIES:
+${context.comparables.map((c: any, i: number) => `  ${i + 1}. ${c.title} | Rp ${(c.price || 0).toLocaleString("id-ID")} | Score: ${c.investment_score || 0}/100 | Relevance: ${c.relevance_score}`).join("\n")}`;
+    }
+
+    // City trend injection
+    let trendSection = "";
+    if (context.cityTrend) {
+      const t = context.cityTrend;
+      trendSection = `\n\nCITY MARKET TREND (${t.city}):
+- Hotspot Score: ${t.hotspot_score}/100 | Trend: ${t.trend}
+- Growth Score: ${t.growth_score}/100 | Rental Score: ${t.rental_score}/100
+- ROI Score: ${t.roi_score || "N/A"}/100 | Avg ROI: ${t.avg_roi || "N/A"}%
+- Active Listings: ${t.property_count}`;
+    }
+
+    // Liquidity signals
+    let liquiditySection = "";
+    if (context.liquiditySignals) {
+      const l = context.liquiditySignals;
+      liquiditySection = `\n\nLIQUIDITY SIGNALS:
+- Views (30d): ${l.views_30d} | Saves (30d): ${l.saves_30d}
+- Demand Level: ${l.demand_level}`;
+    }
+
     return `${base}
 
 PROPERTY CONTEXT:
@@ -143,7 +228,7 @@ ROI FORECAST:
 - Risk Level: ${f?.risk_level || "N/A"}
 - 1Y Value: Rp ${(f?.predicted_value_1y || 0).toLocaleString("id-ID")}
 - 3Y Value: Rp ${(f?.predicted_value_3y || 0).toLocaleString("id-ID")}
-- 5Y Value: Rp ${(f?.predicted_value_5y || 0).toLocaleString("id-ID")}`;
+- 5Y Value: Rp ${(f?.predicted_value_5y || 0).toLocaleString("id-ID")}${compSection}${trendSection}${liquiditySection}`;
   }
 
   if (mode === "portfolio_copilot" && context.portfolio) {
@@ -180,7 +265,6 @@ ${(mkt.alerts || []).map((a: any) => `  - [${a.severity}] ${a.title}: ${a.messag
 // ── Deal Explanation Generator ──
 
 async function generateDealInsight(propertyId: string): Promise<any> {
-  // Check cache first
   const { data: existing } = await supabaseAdmin
     .from("property_ai_insights")
     .select("*")
@@ -188,7 +272,6 @@ async function generateDealInsight(propertyId: string): Promise<any> {
     .eq("insight_type", "deal_explanation")
     .gt("expires_at", new Date().toISOString())
     .maybeSingle();
-
   if (existing) return existing;
 
   const ctx = await gatherPropertyContext(propertyId);
@@ -227,18 +310,13 @@ Return ONLY valid JSON, no markdown.`;
         messages: [{ role: "user", content: prompt }],
       }),
     });
-
     if (!aiRes.ok) return null;
     const aiData = await aiRes.json();
     const rawContent = aiData.choices?.[0]?.message?.content || "";
-    
-    // Extract JSON from response
     const jsonMatch = rawContent.match(/\{[\s\S]*\}/);
     if (!jsonMatch) return null;
-    
     const parsed = JSON.parse(jsonMatch[0]);
 
-    // Store in cache
     const { data: inserted } = await supabaseAdmin
       .from("property_ai_insights")
       .insert({
@@ -255,7 +333,6 @@ Return ONLY valid JSON, no markdown.`;
       })
       .select()
       .single();
-
     return inserted;
   } catch (e) {
     console.error("Deal insight generation failed:", e);
@@ -272,79 +349,53 @@ async function generatePredictiveAlerts() {
     .gte("hotspot_score", 20)
     .order("hotspot_score", { ascending: false })
     .limit(30);
-
   if (!hotspots?.length) return { generated: 0 };
 
   const alerts: any[] = [];
-
   for (const h of hotspots) {
     if (h.trend === "hot" && h.growth_score >= 60) {
       alerts.push({
-        alert_type: "price_rising",
-        title: `${h.city} prices rising fast`,
+        alert_type: "price_rising", title: `${h.city} prices rising fast`,
         message: `${h.city} shows strong growth signals (Score: ${h.growth_score}/100) with ${h.property_count} active listings. Consider entering before prices peak.`,
-        city: h.city,
-        state: h.state,
-        severity: "warning",
-        trend_direction: "up",
-        trend_magnitude: h.growth_score,
+        city: h.city, state: h.state, severity: "warning", trend_direction: "up", trend_magnitude: h.growth_score,
         data_points: { hotspot_score: h.hotspot_score, growth_score: h.growth_score, rental_score: h.rental_score },
       });
     }
     if (h.rental_score >= 65) {
       alerts.push({
-        alert_type: "high_rental_yield",
-        title: `Strong rental yields in ${h.city}`,
+        alert_type: "high_rental_yield", title: `Strong rental yields in ${h.city}`,
         message: `${h.city} rental market shows excellent returns (Rental Score: ${h.rental_score}/100). Ideal for passive income investors.`,
-        city: h.city,
-        state: h.state,
-        severity: "info",
-        trend_direction: "up",
-        trend_magnitude: h.rental_score,
+        city: h.city, state: h.state, severity: "info", trend_direction: "up", trend_magnitude: h.rental_score,
         data_points: { rental_score: h.rental_score, avg_roi: h.avg_roi },
       });
     }
     if (h.trend === "cooling" && h.hotspot_score < 40) {
       alerts.push({
-        alert_type: "market_cooling",
-        title: `${h.city} market cooling down`,
+        alert_type: "market_cooling", title: `${h.city} market cooling down`,
         message: `Demand signals weakening in ${h.city} (Score: ${h.hotspot_score}/100). Consider reducing exposure or waiting for better entry.`,
-        city: h.city,
-        state: h.state,
-        severity: "alert",
-        trend_direction: "down",
-        trend_magnitude: h.hotspot_score,
+        city: h.city, state: h.state, severity: "alert", trend_direction: "down", trend_magnitude: h.hotspot_score,
         data_points: { hotspot_score: h.hotspot_score, trend: h.trend },
       });
     }
     if (h.trend === "emerging" && h.growth_score >= 50) {
       alerts.push({
-        alert_type: "emerging_market",
-        title: `${h.city} emerging as investment hotspot`,
+        alert_type: "emerging_market", title: `${h.city} emerging as investment hotspot`,
         message: `Early signals show ${h.city} gaining momentum (Growth: ${h.growth_score}/100). Early investors may benefit from appreciation.`,
-        city: h.city,
-        state: h.state,
-        severity: "opportunity",
-        trend_direction: "up",
-        trend_magnitude: h.growth_score,
+        city: h.city, state: h.state, severity: "opportunity", trend_direction: "up", trend_magnitude: h.growth_score,
         data_points: { hotspot_score: h.hotspot_score, growth_score: h.growth_score },
       });
     }
   }
 
   if (alerts.length) {
-    // Deactivate old alerts
     await supabaseAdmin
       .from("copilot_investment_alerts")
       .update({ is_active: false })
       .lt("generated_at", new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString());
-
-    // Insert new alerts in chunks
     for (let i = 0; i < alerts.length; i += 20) {
       await supabaseAdmin.from("copilot_investment_alerts").insert(alerts.slice(i, i + 20));
     }
   }
-
   return { generated: alerts.length };
 }
 
@@ -391,7 +442,6 @@ serve(async (req) => {
         .gt("expires_at", new Date().toISOString())
         .maybeSingle();
       if (!data) {
-        // Generate on demand
         const insight = await generateDealInsight(property_id);
         return json({ data: insight });
       }
@@ -404,14 +454,15 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
 
-    // Determine context mode and gather data
+    // Determine context mode and gather data with OPTIMIZED context
     let contextMode = "general";
     let context: any = {};
     const lastMessage = messages[messages.length - 1]?.content?.toLowerCase() || "";
 
     if (property_id) {
       contextMode = "property_analysis";
-      context = await gatherPropertyContext(property_id);
+      // Use optimized context gathering with comparables, trends, liquidity
+      context = await gatherOptimizedContext(property_id);
     } else if (
       lastMessage.includes("portfolio") ||
       lastMessage.includes("diversif") ||
@@ -433,16 +484,19 @@ serve(async (req) => {
       lastMessage.includes("bandung")
     ) {
       contextMode = "market_intelligence";
-      // Extract city from message
       const cityMatch = lastMessage.match(/(?:in|di|for)\s+(bali|jakarta|surabaya|bandung|yogyakarta|semarang|makassar|medan|denpasar|bekasi|tangerang|bogor|malang|lombok)/i);
       context.market = await gatherMarketContext(cityMatch?.[1]);
     } else {
-      // General investment query — still provide market context
       context.market = await gatherMarketContext();
       contextMode = "market_intelligence";
     }
 
     const systemPrompt = buildSystemPrompt(context, contextMode);
+
+    // Intelligent token limiting: keep system prompt under ~3000 tokens
+    // and conversation history to last 8 messages to stay within budget
+    const maxHistory = 8;
+    const trimmedMessages = messages.slice(-maxHistory);
 
     // Save conversation if user is authenticated
     let convId = conversation_id;
@@ -455,7 +509,6 @@ serve(async (req) => {
       convId = conv?.id;
     }
 
-    // Save user message
     if (convId) {
       await supabaseAdmin
         .from("copilot_messages")
@@ -473,7 +526,7 @@ serve(async (req) => {
         model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: systemPrompt },
-          ...messages.slice(-10), // Keep last 10 messages for context window
+          ...trimmedMessages,
         ],
         stream: true,
       }),
@@ -495,11 +548,9 @@ serve(async (req) => {
       return json({ error: "AI service unavailable" }, 500);
     }
 
-    // Collect full response for saving, while streaming
     const originalBody = aiResponse.body!;
     const [streamForClient, streamForCapture] = originalBody.tee();
 
-    // Background: capture full response and save
     if (convId) {
       (async () => {
         try {
@@ -529,7 +580,6 @@ serve(async (req) => {
         }
       })();
     } else {
-      // Still need to consume the teed stream to avoid backpressure
       streamForCapture.cancel();
     }
 
