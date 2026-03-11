@@ -105,7 +105,7 @@ const InvestorDNAPanel = () => {
             </div>
             <div className="p-2.5 rounded-lg bg-muted/30 border border-border/30">
               <div className="flex items-center gap-1.5 mb-1.5">
-                <ShieldAlert className="w-3 h-3 text-amber-500" />
+                <ShieldAlert className="w-3 h-3 text-destructive" />
                 <span className="text-[10px] text-muted-foreground">Churn Risk</span>
               </div>
               <p className="text-lg font-bold text-foreground">{Math.round(dna.churn_risk_score)}%</p>

@@ -40,7 +40,7 @@ export function useInvestorDNA() {
         console.error('Error fetching investor DNA:', error);
         return null;
       }
-      return data as InvestorDNA | null;
+      return data as unknown as InvestorDNA | null;
     },
     enabled: !!user?.id,
     staleTime: 60 * 1000,
