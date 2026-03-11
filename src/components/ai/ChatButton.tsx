@@ -141,7 +141,7 @@ const ChatButton = forwardRef<HTMLDivElement, ChatButtonProps>(({
 
   // Long press to activate drag (300ms)
   const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
+    if (e.button !== 0) return; // Only handle left click
     pressTimerRef.current = setTimeout(() => {
       setIsLongPress(true);
       setIsDragging(true);
