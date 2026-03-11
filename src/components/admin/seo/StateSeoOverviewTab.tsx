@@ -120,7 +120,7 @@ const StateSeoOverviewTab = ({
   return (
     <div className="space-y-3">
       {/* AI Auto-Fix Controls */}
-      <Card className="bg-primary/5 border-primary/20">
+      <Card className="bg-primary/5 border-primary/30">
         <CardContent className="p-3">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-2">
