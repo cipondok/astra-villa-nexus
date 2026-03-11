@@ -114,7 +114,7 @@ const SeoHistoryTab = () => {
 
   if (actions.length === 0) {
     return (
-      <Card className="bg-card/60 border-border/40">
+      <Card className="bg-card border-border">
         <CardContent className="p-8 text-center">
           <History className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
           <p className="text-sm text-muted-foreground">No SEO actions recorded yet. Run an analysis or optimization to see history.</p>
@@ -134,7 +134,7 @@ const SeoHistoryTab = () => {
           { label: 'Avg Improvement', value: `+${summaryStats.avgImprovement}`, icon: TrendingUp, color: 'text-chart-4' },
           { label: 'Scheduler Runs', value: summaryStats.schedulerRuns, icon: Calendar, color: 'text-muted-foreground' },
         ].map(s => (
-          <Card key={s.label} className="bg-card/60 border-border/40">
+          <Card key={s.label} className="bg-card border-border">
             <CardContent className="p-2.5 text-center">
               <s.icon className={cn("h-4 w-4 mx-auto mb-1", s.color)} />
               <p className={cn("text-xl font-bold tabular-nums", s.color)}>{s.value}</p>
@@ -147,7 +147,7 @@ const SeoHistoryTab = () => {
       {/* Charts Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {/* Daily Activity Chart */}
-        <Card className="bg-card/60 border-border/40">
+        <Card className="bg-card border-border">
           <CardHeader className="p-3 pb-1">
             <CardTitle className="text-xs flex items-center gap-1.5">
               <BarChart3 className="h-3.5 w-3.5 text-primary" />
@@ -161,7 +161,7 @@ const SeoHistoryTab = () => {
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
                   <XAxis dataKey="date" tick={{ fontSize: 9 }} tickFormatter={(v) => v.slice(5)} stroke="hsl(var(--muted-foreground))" />
                   <YAxis tick={{ fontSize: 9 }} stroke="hsl(var(--muted-foreground))" />
-                  <Tooltip contentStyle={{ fontSize: 11, background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))' }} />
+                   <Tooltip contentStyle={{ fontSize: 11, background: 'hsl(var(--popover))', color: 'hsl(var(--popover-foreground))', border: '1px solid hsl(var(--border))', borderRadius: 8 }} itemStyle={{ color: 'hsl(var(--popover-foreground))' }} />
                   <Bar dataKey="analyzed" name="Analyzed" fill="hsl(var(--chart-2))" radius={[2, 2, 0, 0]} />
                   <Bar dataKey="optimized" name="Optimized" fill="hsl(var(--chart-1))" radius={[2, 2, 0, 0]} />
                   <Bar dataKey="applied" name="Applied" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} />
@@ -174,7 +174,7 @@ const SeoHistoryTab = () => {
         </Card>
 
         {/* Score Improvement Trend */}
-        <Card className="bg-card/60 border-border/40">
+        <Card className="bg-card border-border">
           <CardHeader className="p-3 pb-1">
             <CardTitle className="text-xs flex items-center gap-1.5">
               <TrendingUp className="h-3.5 w-3.5 text-chart-1" />
@@ -188,7 +188,7 @@ const SeoHistoryTab = () => {
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
                   <XAxis dataKey="date" tick={{ fontSize: 9 }} tickFormatter={(v) => v.slice(5)} stroke="hsl(var(--muted-foreground))" />
                   <YAxis tick={{ fontSize: 9 }} stroke="hsl(var(--muted-foreground))" />
-                  <Tooltip contentStyle={{ fontSize: 11, background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))' }} />
+                   <Tooltip contentStyle={{ fontSize: 11, background: 'hsl(var(--popover))', color: 'hsl(var(--popover-foreground))', border: '1px solid hsl(var(--border))', borderRadius: 8 }} itemStyle={{ color: 'hsl(var(--popover-foreground))' }} />
                   <Line type="monotone" dataKey="avgImprovement" name="Avg Improvement" stroke="hsl(var(--chart-1))" strokeWidth={2} dot={{ r: 3 }} />
                 </LineChart>
               </ResponsiveContainer>
@@ -201,7 +201,7 @@ const SeoHistoryTab = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {/* Action Type Breakdown */}
-        <Card className="bg-card/60 border-border/40">
+        <Card className="bg-card border-border">
           <CardHeader className="p-3 pb-1">
             <CardTitle className="text-xs flex items-center gap-1.5">
               <Zap className="h-3.5 w-3.5 text-chart-4" />
@@ -217,7 +217,7 @@ const SeoHistoryTab = () => {
                       <Cell key={i} fill={COLORS[i % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip contentStyle={{ fontSize: 11, background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))' }} />
+                   <Tooltip contentStyle={{ fontSize: 11, background: 'hsl(var(--popover))', color: 'hsl(var(--popover-foreground))', border: '1px solid hsl(var(--border))', borderRadius: 8 }} itemStyle={{ color: 'hsl(var(--popover-foreground))' }} />
                 </PieChart>
               </ResponsiveContainer>
             ) : (
@@ -227,7 +227,7 @@ const SeoHistoryTab = () => {
         </Card>
 
         {/* Score Improvement Distribution */}
-        <Card className="bg-card/60 border-border/40">
+        <Card className="bg-card border-border">
           <CardHeader className="p-3 pb-1">
             <CardTitle className="text-xs flex items-center gap-1.5">
               <BarChart3 className="h-3.5 w-3.5 text-chart-2" />
@@ -240,7 +240,7 @@ const SeoHistoryTab = () => {
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
                 <XAxis dataKey="range" tick={{ fontSize: 9 }} stroke="hsl(var(--muted-foreground))" />
                 <YAxis tick={{ fontSize: 9 }} stroke="hsl(var(--muted-foreground))" />
-                <Tooltip contentStyle={{ fontSize: 11, background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))' }} />
+                <Tooltip contentStyle={{ fontSize: 11, background: 'hsl(var(--popover))', color: 'hsl(var(--popover-foreground))', border: '1px solid hsl(var(--border))', borderRadius: 8 }} itemStyle={{ color: 'hsl(var(--popover-foreground))' }} />
                 <Bar dataKey="count" name="Properties" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -249,7 +249,7 @@ const SeoHistoryTab = () => {
       </div>
 
       {/* Recent Actions Log */}
-      <Card className="bg-card/60 border-border/40">
+      <Card className="bg-card border-border">
         <CardHeader className="p-3 pb-2">
           <CardTitle className="text-xs flex items-center gap-1.5">
             <History className="h-3.5 w-3.5 text-primary" />

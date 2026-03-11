@@ -526,7 +526,7 @@ const PropertySEOChecker = () => {
       <AnalysisProgress label="Analyzing property SEO..." isPending={analyzeProperty.isPending} />
 
       {/* Location Filters */}
-      <Card className="bg-card/60 border-border/40">
+      <Card className="bg-card border-border">
         <CardContent className="p-3">
           <div className="flex items-center gap-2 mb-2">
             <MapPin className="h-3.5 w-3.5 text-primary" />
@@ -576,7 +576,7 @@ const PropertySEOChecker = () => {
       </Card>
 
       {/* Manual Property Selector */}
-      <Card className="bg-card/60 border-border/40">
+      <Card className="bg-card border-border">
         <CardContent className="p-3">
           <div className="flex items-center gap-2 mb-2">
             <Target className="h-3.5 w-3.5 text-primary" />
@@ -619,7 +619,7 @@ const PropertySEOChecker = () => {
 
       {/* Filtered Location SEO Status */}
       {filteredStats && (
-        <Card className="bg-primary/5 border-primary/20">
+        <Card className="bg-primary/5 border-primary/30">
           <CardContent className="p-3">
             <div className="flex items-center gap-2 mb-2">
               <MapPin className="h-3.5 w-3.5 text-primary" />
@@ -628,15 +628,15 @@ const PropertySEOChecker = () => {
               </span>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
-              <div className="text-center p-2 rounded-lg border border-border/50 bg-background/50">
+                <div className="text-center p-2 rounded-lg border border-border bg-card">
                 <p className="text-lg font-bold">{filteredStats.totalProperties}</p>
                 <p className="text-[9px] text-muted-foreground">Total Properties</p>
               </div>
-              <div className="text-center p-2 rounded-lg border border-border/50 bg-background/50">
+                <div className="text-center p-2 rounded-lg border border-border bg-card">
                 <p className="text-lg font-bold text-chart-2">{filteredStats.analyzedCount}<span className="text-[10px] text-muted-foreground font-normal">/{filteredStats.totalProperties}</span></p>
                 <p className="text-[9px] text-muted-foreground">Analyzed</p>
               </div>
-              <div className="text-center p-2 rounded-lg border border-border/50 bg-background/50">
+                <div className="text-center p-2 rounded-lg border border-border bg-card">
                 <p className={cn("text-lg font-bold", filteredStats.avgScore >= 70 ? "text-chart-1" : filteredStats.avgScore >= 40 ? "text-chart-4" : "text-destructive")}>{filteredStats.avgScore}</p>
                 <p className="text-[9px] text-muted-foreground">Avg SEO Score</p>
                 {stats && filteredStats.avgScore > 0 && (
@@ -650,7 +650,7 @@ const PropertySEOChecker = () => {
                   </div>
                 )}
               </div>
-              <div className="text-center p-2 rounded-lg border border-border/50 bg-background/50">
+              <div className="text-center p-2 rounded-lg border border-border bg-card">
                 <div className="flex justify-center gap-2 text-[10px]">
                   <span className="text-chart-1 font-bold">{filteredStats.excellent}✓</span>
                   <span className="text-primary font-bold">{filteredStats.good}</span>
@@ -688,13 +688,13 @@ const PropertySEOChecker = () => {
 
       <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
         {[
-          { label: 'Avg SEO Score', value: stats?.avgScore ?? 0, icon: BarChart3, color: 'text-primary', bg: 'bg-primary/5 border-primary/20' },
-          { label: 'Total Properties', value: stats?.totalProperties ?? 0, icon: Globe, color: 'text-chart-2', bg: 'bg-chart-2/5 border-chart-2/20' },
-          { label: 'Analyzed', value: stats?.analyzedCount ?? 0, icon: Target, color: 'text-chart-2', bg: 'bg-chart-2/5 border-chart-2/20' },
-          { label: 'Good (≥70)', value: (stats?.excellent ?? 0) + (stats?.good ?? 0), icon: CheckCircle2, color: 'text-chart-1', bg: 'bg-chart-1/5 border-chart-1/20' },
-          { label: 'Needs Work', value: stats?.needsImprovement ?? 0, icon: TrendingUp, color: 'text-chart-4', bg: 'bg-chart-4/5 border-chart-4/20' },
-          { label: 'Poor (<40)', value: stats?.poor ?? 0, icon: XCircle, color: 'text-destructive', bg: 'bg-destructive/5 border-destructive/20' },
-          { label: 'Unanalyzed', value: (stats?.totalProperties ?? 0) - (stats?.analyzedCount ?? 0), icon: AlertTriangle, color: 'text-muted-foreground', bg: 'bg-muted/30 border-border/40' },
+          { label: 'Avg SEO Score', value: stats?.avgScore ?? 0, icon: BarChart3, color: 'text-primary', bg: 'bg-card border-border' },
+          { label: 'Total Properties', value: stats?.totalProperties ?? 0, icon: Globe, color: 'text-chart-2', bg: 'bg-card border-border' },
+          { label: 'Analyzed', value: stats?.analyzedCount ?? 0, icon: Target, color: 'text-chart-2', bg: 'bg-card border-border' },
+          { label: 'Good (≥70)', value: (stats?.excellent ?? 0) + (stats?.good ?? 0), icon: CheckCircle2, color: 'text-chart-1', bg: 'bg-card border-border' },
+          { label: 'Needs Work', value: stats?.needsImprovement ?? 0, icon: TrendingUp, color: 'text-chart-4', bg: 'bg-card border-border' },
+          { label: 'Poor (<40)', value: stats?.poor ?? 0, icon: XCircle, color: 'text-destructive', bg: 'bg-card border-border' },
+          { label: 'Unanalyzed', value: (stats?.totalProperties ?? 0) - (stats?.analyzedCount ?? 0), icon: AlertTriangle, color: 'text-muted-foreground', bg: 'bg-card border-border' },
         ].map(stat => (
           <Card key={stat.label} className={stat.bg}>
             <CardContent className="p-2.5 text-center">
@@ -708,13 +708,13 @@ const PropertySEOChecker = () => {
 
       {/* Score Distribution */}
       {stats && (
-        <Card className="bg-card/60 border-border/40">
+        <Card className="bg-card border-border">
           <CardContent className="p-3">
             <div className="flex items-center gap-2 mb-2">
               <Globe className="h-3.5 w-3.5 text-primary" />
               <span className="text-xs font-medium">Score Distribution</span>
             </div>
-            <div className="flex h-3 rounded-full overflow-hidden bg-muted/30">
+            <div className="flex h-3 rounded-full overflow-hidden bg-muted">
               {stats.analyzedCount > 0 && (
                 <>
                   <div className="bg-chart-1 transition-all" style={{ width: `${(stats.excellent / stats.analyzedCount) * 100}%` }} />
@@ -739,7 +739,7 @@ const PropertySEOChecker = () => {
 
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
-        <TabsList className="bg-muted/40 border border-border/30 flex-wrap">
+        <TabsList className="bg-muted border border-border flex-wrap">
           <TabsTrigger value="dashboard" className="text-xs gap-1"><BarChart3 className="h-3 w-3" />All Properties</TabsTrigger>
           <TabsTrigger value="states" className="text-xs gap-1"><MapPin className="h-3 w-3" />State Overview</TabsTrigger>
           <TabsTrigger value="weak" className="text-xs gap-1"><AlertTriangle className="h-3 w-3" />Weak ({weakTotalCount})</TabsTrigger>
@@ -779,7 +779,7 @@ const PropertySEOChecker = () => {
           ) : filteredAnalyses.length > 0 ? (
             <div className="space-y-2">
               {filteredAnalyses.map(item => (
-                <Card key={item.id} className="bg-card/60 border-border/40 hover:border-primary/30 transition-all cursor-pointer" onClick={() => handlePropertyClick(item)}>
+                <Card key={item.id} className="bg-card border-border hover:border-primary/30 transition-all cursor-pointer" onClick={() => handlePropertyClick(item)}>
                   <CardContent className="p-3">
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex-1 min-w-0">
@@ -816,7 +816,7 @@ const PropertySEOChecker = () => {
               />
             </div>
           ) : (
-            <Card className="bg-card/60 border-border/40">
+            <Card className="bg-card border-border">
               <CardContent className="p-8 text-center">
                 <Search className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
                 <p className="text-sm text-muted-foreground">No analyzed properties found</p>
@@ -831,7 +831,7 @@ const PropertySEOChecker = () => {
           {weakListings.length > 0 ? (
             <>
               {weakListings.map(item => (
-                <Card key={item.id} className="bg-card/60 border-border/40 border-l-2 border-l-destructive hover:border-primary/30 cursor-pointer transition-all" onClick={() => handlePropertyClick(item)}>
+                <Card key={item.id} className="bg-card border-border border-l-2 border-l-destructive hover:border-primary/30 cursor-pointer transition-all" onClick={() => handlePropertyClick(item)}>
                   <CardContent className="p-3">
                     <div className="flex items-center justify-between">
                       <div className="flex-1 min-w-0">
@@ -861,7 +861,7 @@ const PropertySEOChecker = () => {
               />
             </>
           ) : (
-            <Card className="bg-card/60"><CardContent className="p-8 text-center text-sm text-muted-foreground">No weak listings — great job! 🎉</CardContent></Card>
+            <Card className="bg-card border-border"><CardContent className="p-8 text-center text-sm text-muted-foreground">No weak listings — great job! 🎉</CardContent></Card>
           )}
         </TabsContent>
 
@@ -870,7 +870,7 @@ const PropertySEOChecker = () => {
           {topListings.length > 0 ? (
             <>
               {topListings.map(item => (
-                <Card key={item.id} className="bg-card/60 border-border/40 border-l-2 border-l-chart-1 hover:border-primary/30 cursor-pointer transition-all" onClick={() => handlePropertyClick(item)}>
+                <Card key={item.id} className="bg-card border-border border-l-2 border-l-chart-1 hover:border-primary/30 cursor-pointer transition-all" onClick={() => handlePropertyClick(item)}>
                   <CardContent className="p-3">
                     <div className="flex items-center justify-between">
                       <div className="flex-1 min-w-0">
@@ -895,13 +895,13 @@ const PropertySEOChecker = () => {
               />
             </>
           ) : (
-            <Card className="bg-card/60"><CardContent className="p-8 text-center text-sm text-muted-foreground">No excellent listings yet. Run Auto-Optimize!</CardContent></Card>
+            <Card className="bg-card border-border"><CardContent className="p-8 text-center text-sm text-muted-foreground">No excellent listings yet. Run Auto-Optimize!</CardContent></Card>
           )}
         </TabsContent>
 
         {/* ─── Trending Keywords Tab ─── */}
         <TabsContent value="keywords" className="space-y-3">
-          <Card className="bg-card/60 border-border/40">
+          <Card className="bg-card border-border">
             <CardHeader className="p-3 pb-2">
               <CardTitle className="text-sm flex items-center gap-2">
                 <Flame className="h-4 w-4 text-destructive" />
@@ -1000,7 +1000,7 @@ const PropertySEOChecker = () => {
           {currentAnalysis ? (
             <div className="space-y-3">
               {/* Header Card */}
-              <Card className="bg-card/60 border-border/40">
+              <Card className="bg-card border-border">
                 <CardHeader className="p-3 pb-2">
                   <div className="flex items-center justify-between flex-wrap gap-2">
                     <CardTitle className="text-sm">{currentAnalysis.seo_title || 'Untitled Property'}</CardTitle>
@@ -1091,7 +1091,7 @@ const PropertySEOChecker = () => {
               </Card>
 
               {/* Manual Keywords Manager */}
-              <Card className="bg-card/60 border-border/40">
+              <Card className="bg-card border-border">
                 <CardHeader className="p-3 pb-2">
                   <CardTitle className="text-sm flex items-center gap-2">
                     <Tag className="h-4 w-4 text-chart-2" />
@@ -1144,7 +1144,7 @@ const PropertySEOChecker = () => {
 
               {/* AI Recommendations Card */}
               {aiResult && (
-                <Card className="bg-card/60 border-border/40 border-l-2 border-l-primary">
+                <Card className="bg-card border-border border-l-2 border-l-primary">
                   <CardHeader className="p-3 pb-2">
                     <CardTitle className="text-sm flex items-center gap-2">
                       <Sparkles className="h-4 w-4 text-primary" />
@@ -1243,7 +1243,7 @@ const PropertySEOChecker = () => {
               )}
 
               {!aiResult && !contentOptimize.isPending && (
-                <Card className="bg-card/60 border-border/40 border-dashed">
+                <Card className="bg-card border-border border-dashed">
                   <CardContent className="p-4 text-center">
                     <Sparkles className="h-6 w-6 mx-auto text-muted-foreground mb-2" />
                     <p className="text-xs text-muted-foreground mb-2">Click "AI Optimize" to get AI-powered recommendations for this property</p>
@@ -1255,7 +1255,7 @@ const PropertySEOChecker = () => {
               )}
 
               {contentOptimize.isPending && (
-                <Card className="bg-card/60 border-border/40">
+                <Card className="bg-card border-border">
                   <CardContent className="p-6 text-center">
                     <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
                     <p className="text-xs text-muted-foreground">AI is analyzing and optimizing content...</p>
@@ -1265,7 +1265,7 @@ const PropertySEOChecker = () => {
               )}
             </div>
           ) : (
-            <Card className="bg-card/60"><CardContent className="p-8 text-center text-sm text-muted-foreground">Select a property from the list or use the manual selector above</CardContent></Card>
+            <Card className="bg-card border-border"><CardContent className="p-8 text-center text-sm text-muted-foreground">Select a property from the list or use the manual selector above</CardContent></Card>
           )}
         </TabsContent>
       </Tabs>

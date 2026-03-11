@@ -23,6 +23,15 @@ const SCORE_COLORS = [
   'hsl(var(--destructive))',
 ];
 
+const tooltipStyle = {
+  fontSize: 11,
+  background: 'hsl(var(--popover))',
+  color: 'hsl(var(--popover-foreground))',
+  border: '1px solid hsl(var(--border))',
+  borderRadius: 8,
+  boxShadow: '0 4px 12px hsl(var(--foreground) / 0.08)',
+};
+
 const SeoDashboardCharts = React.memo(({ stats, stateSeoOverview }: SeoDashboardChartsProps) => {
   const scoreDistribution = useMemo(() => {
     if (!stats) return [];
@@ -56,7 +65,7 @@ const SeoDashboardCharts = React.memo(({ stats, stateSeoOverview }: SeoDashboard
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
       {/* SEO Score Distribution */}
-      <Card className="bg-card border-border/50 shadow-sm">
+      <Card className="bg-card border-border">
         <CardHeader className="p-3 pb-1">
           <CardTitle className="text-xs flex items-center gap-1.5 text-foreground">
             <BarChart3 className="h-3.5 w-3.5 text-primary" />
@@ -84,14 +93,7 @@ const SeoDashboardCharts = React.memo(({ stats, stateSeoOverview }: SeoDashboard
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{
-                    fontSize: 11,
-                    background: 'hsl(var(--popover))',
-                    color: 'hsl(var(--popover-foreground))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: 8,
-                    boxShadow: '0 4px 12px hsl(var(--foreground) / 0.1)',
-                  }}
+                  contentStyle={tooltipStyle}
                   itemStyle={{ color: 'hsl(var(--popover-foreground))' }}
                 />
                 <Legend
@@ -107,7 +109,7 @@ const SeoDashboardCharts = React.memo(({ stats, stateSeoOverview }: SeoDashboard
       </Card>
 
       {/* Province SEO Rankings */}
-      <Card className="bg-card border-border/50 shadow-sm">
+      <Card className="bg-card border-border">
         <CardHeader className="p-3 pb-1">
           <CardTitle className="text-xs flex items-center gap-1.5 text-foreground">
             <Globe className="h-3.5 w-3.5 text-chart-2" />
@@ -122,27 +124,20 @@ const SeoDashboardCharts = React.memo(({ stats, stateSeoOverview }: SeoDashboard
                 <XAxis
                   type="number"
                   domain={[0, 100]}
-                  tick={{ fontSize: 9, fill: 'hsl(var(--foreground))' }}
+                  tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }}
                   stroke="hsl(var(--border))"
                   tickLine={{ stroke: 'hsl(var(--border))' }}
                 />
                 <YAxis
                   type="category"
                   dataKey="name"
-                  tick={{ fontSize: 8, fill: 'hsl(var(--foreground))' }}
+                  tick={{ fontSize: 8, fill: 'hsl(var(--muted-foreground))' }}
                   width={80}
                   stroke="hsl(var(--border))"
                   tickLine={{ stroke: 'hsl(var(--border))' }}
                 />
                 <Tooltip
-                  contentStyle={{
-                    fontSize: 11,
-                    background: 'hsl(var(--popover))',
-                    color: 'hsl(var(--popover-foreground))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: 8,
-                    boxShadow: '0 4px 12px hsl(var(--foreground) / 0.1)',
-                  }}
+                  contentStyle={tooltipStyle}
                   itemStyle={{ color: 'hsl(var(--popover-foreground))' }}
                   labelStyle={{ color: 'hsl(var(--popover-foreground))' }}
                   formatter={(value: number) => [`${value}/100`, 'SEO Score']}
