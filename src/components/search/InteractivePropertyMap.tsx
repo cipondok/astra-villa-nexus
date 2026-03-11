@@ -21,6 +21,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useMapProperties, MapBounds, MapFilters, MapProperty } from '@/hooks/useMapProperties';
+import { useInvestmentHotspots } from '@/hooks/useInvestmentHotspots';
 import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import MapNLPSearchBar, { MapNLPResult } from '@/components/search/MapNLPSearchBar';
 import SyncedPropertyCard from '@/components/search/SyncedPropertyCard';
