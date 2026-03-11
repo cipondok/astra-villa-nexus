@@ -1552,6 +1552,13 @@ const AICommandCenter = () => {
               </Suspense>
             )}
 
+            {/* AI INTELLIGENCE HEALTH / READINESS SECTION */}
+            {activeNav === 'ai-health' && (
+              <Suspense fallback={<div className="h-64 bg-muted animate-pulse rounded-lg" />}>
+                <AIIntelligenceHealthPanel />
+              </Suspense>
+            )}
+
             {/* HEALTH SECTION — ENHANCED */}
             {activeNav === 'health' && (
               <div className="space-y-4">
