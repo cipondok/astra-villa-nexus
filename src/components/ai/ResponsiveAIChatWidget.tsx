@@ -957,9 +957,9 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
 
       console.log('Invoking edge function:', functionName, 'with body:', body);
 
-      // Use streaming for ai-assistant, non-streaming for others
-      if (functionName === 'ai-assistant') {
-        const STREAM_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-assistant`;
+      // Use streaming for ai-assistant and investor-copilot, non-streaming for others
+      if (functionName === 'ai-assistant' || functionName === 'investor-copilot') {
+        const STREAM_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/${functionName}`;
         const resp = await fetch(STREAM_URL, {
           method: 'POST',
           headers: {
