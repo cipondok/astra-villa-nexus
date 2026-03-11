@@ -395,6 +395,13 @@ const InvestorDashboard = () => {
               </Suspense>
             </motion.div>
 
+            {/* Deal Hunter Notifications */}
+            <motion.div {...fadeIn} transition={{ delay: 0.34 }}>
+              <Suspense fallback={<Skeleton className="h-48 w-full" />}>
+                <DealHunterNotificationPanel />
+              </Suspense>
+            </motion.div>
+
             {/* Smart Alerts */}
             <motion.div {...fadeIn} transition={{ delay: 0.3 }}>
               <Card className="bg-card/60 backdrop-blur-xl border-border/50">
