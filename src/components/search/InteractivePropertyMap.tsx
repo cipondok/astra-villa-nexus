@@ -132,14 +132,22 @@ const FilterPanel = memo(({
                     <Switch id="heatmap-toggle" checked={showHeatmap} onCheckedChange={onToggleHeatmap} />
                   </div>
                   {showHeatmap && (
-                    <div className="flex gap-1.5 mt-1">
+                    <div className="grid grid-cols-2 gap-1.5 mt-1">
                       <Button size="sm" variant={heatmapMode === 'price' ? 'default' : 'outline'}
-                        className="flex-1 h-7 text-[10px]" onClick={() => onHeatmapModeChange('price')}>
+                        className="h-7 text-[10px]" onClick={() => onHeatmapModeChange('price')}>
                         <DollarSign className="h-3 w-3 mr-1" /> Harga
                       </Button>
                       <Button size="sm" variant={heatmapMode === 'investment' ? 'default' : 'outline'}
-                        className="flex-1 h-7 text-[10px]" onClick={() => onHeatmapModeChange('investment')}>
+                        className="h-7 text-[10px]" onClick={() => onHeatmapModeChange('investment')}>
                         <BarChart3 className="h-3 w-3 mr-1" /> Investasi
+                      </Button>
+                      <Button size="sm" variant={heatmapMode === 'deal' ? 'default' : 'outline'}
+                        className="h-7 text-[10px]" onClick={() => onHeatmapModeChange('deal')}>
+                        <Flame className="h-3 w-3 mr-1" /> Deals
+                      </Button>
+                      <Button size="sm" variant={heatmapMode === 'roi' ? 'default' : 'outline'}
+                        className="h-7 text-[10px]" onClick={() => onHeatmapModeChange('roi')}>
+                        <TrendingUp className="h-3 w-3 mr-1" /> ROI
                       </Button>
                     </div>
                   )}
