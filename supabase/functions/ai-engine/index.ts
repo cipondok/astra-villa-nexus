@@ -1276,7 +1276,7 @@ async function handleRecommendations(payload: Record<string, unknown>) {
 
     // Base quality (50%)
     score += (p.investment_score || 0) * 0.25;
-    score += (p.demand_heat_score || 0) * 0.15;
+    score += (p.demand_score || 0) * 0.15;
     score += (deal.deal_score || 0) * 0.10;
 
     // DNA personalization (50%)
