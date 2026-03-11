@@ -585,6 +585,11 @@ export default function InteractivePropertyMap() {
           0, 'rgba(0,0,0,0)', 0.2, 'hsl(200, 50%, 55%)', 0.4, 'hsl(160, 60%, 50%)',
           0.6, 'hsl(120, 65%, 45%)', 0.8, 'hsl(80, 70%, 40%)', 1, 'hsl(45, 90%, 50%)',
         ],
+        liquidity: [
+          'interpolate', ['linear'], ['heatmap-density'],
+          0, 'rgba(0,0,0,0)', 0.2, 'hsl(190, 60%, 60%)', 0.4, 'hsl(180, 70%, 50%)',
+          0.6, 'hsl(170, 80%, 45%)', 0.8, 'hsl(160, 85%, 40%)', 1, 'hsl(150, 90%, 35%)',
+        ],
       };
       m.setPaintProperty('property-heatmap', 'heatmap-color', colorRamps[heatmapMode]);
     } catch {}
