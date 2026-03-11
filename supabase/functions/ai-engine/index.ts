@@ -1246,7 +1246,7 @@ async function handleRecommendations(payload: Record<string, unknown>) {
   // Build candidate query with DNA preferences
   let q = sb
     .from("properties")
-    .select("id, title, price, city, state, property_type, listing_type, bedrooms, bathrooms, building_area_sqm, investment_score, demand_score, thumbnail_url")
+    .select("id, title, price, city, state, property_type, listing_type, bedrooms, bathrooms, building_area_sqm, investment_score, thumbnail_url")
     .eq("status", "active");
 
   // DNA-based pre-filter
