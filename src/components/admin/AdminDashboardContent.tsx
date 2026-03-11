@@ -182,6 +182,7 @@ import {
   PropertyAuctionManager,
   TenantScreening,
   AICommandCenter,
+  GlobalStrategyPanel,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
@@ -417,6 +418,7 @@ const renderSection = (
     case "property-auctions":    return <PropertyAuctionManager />;
     case "tenant-screening":     return <TenantScreening />;
     case "ai-command-center":   return <AICommandCenter />;
+    case "global-strategy":     return <GlobalStrategyPanel />;
     default:                    return <AdminOverview />;
   }
 };

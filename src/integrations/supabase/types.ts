@@ -5868,6 +5868,53 @@ export type Database = {
         }
         Relationships: []
       }
+      compute_priority_index: {
+        Row: {
+          city: string | null
+          compute_priority: number | null
+          id: string
+          investor_activity: number | null
+          last_computed_at: string | null
+          listing_velocity: number | null
+          price_volatility: number | null
+          recommended_tier: string | null
+          region_id: string
+          search_heat: number | null
+        }
+        Insert: {
+          city?: string | null
+          compute_priority?: number | null
+          id?: string
+          investor_activity?: number | null
+          last_computed_at?: string | null
+          listing_velocity?: number | null
+          price_volatility?: number | null
+          recommended_tier?: string | null
+          region_id: string
+          search_heat?: number | null
+        }
+        Update: {
+          city?: string | null
+          compute_priority?: number | null
+          id?: string
+          investor_activity?: number | null
+          last_computed_at?: string | null
+          listing_velocity?: number | null
+          price_volatility?: number | null
+          recommended_tier?: string | null
+          region_id?: string
+          search_heat?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "compute_priority_index_region_id_fkey"
+            columns: ["region_id"]
+            isOneToOne: false
+            referencedRelation: "global_regions"
+            referencedColumns: ["region_id"]
+          },
+        ]
+      }
       concierge_packages: {
         Row: {
           add_on_services: Json | null
@@ -8598,6 +8645,36 @@ export type Database = {
           },
         ]
       }
+      fx_rate_snapshots: {
+        Row: {
+          base_currency: string
+          id: string
+          inverse_rate: number
+          rate: number
+          snapshot_at: string
+          source: string | null
+          target_currency: string
+        }
+        Insert: {
+          base_currency?: string
+          id?: string
+          inverse_rate: number
+          rate: number
+          snapshot_at?: string
+          source?: string | null
+          target_currency: string
+        }
+        Update: {
+          base_currency?: string
+          id?: string
+          inverse_rate?: number
+          rate?: number
+          snapshot_at?: string
+          source?: string | null
+          target_currency?: string
+        }
+        Relationships: []
+      }
       gamification_config: {
         Row: {
           config_key: string
@@ -8699,6 +8776,220 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      global_expansion_log: {
+        Row: {
+          created_at: string | null
+          event_type: string
+          from_phase: string | null
+          id: string
+          notes: string | null
+          performed_by: string | null
+          region_id: string
+          to_phase: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_type: string
+          from_phase?: string | null
+          id?: string
+          notes?: string | null
+          performed_by?: string | null
+          region_id: string
+          to_phase?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          event_type?: string
+          from_phase?: string | null
+          id?: string
+          notes?: string | null
+          performed_by?: string | null
+          region_id?: string
+          to_phase?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "global_expansion_log_region_id_fkey"
+            columns: ["region_id"]
+            isOneToOne: false
+            referencedRelation: "global_regions"
+            referencedColumns: ["region_id"]
+          },
+        ]
+      }
+      global_opportunity_scores: {
+        Row: {
+          avg_price_per_sqm_usd: number | null
+          avg_price_usd: number | null
+          avg_rental_yield_pct: number | null
+          capital_entry_barrier: number | null
+          city: string | null
+          created_at: string | null
+          data_freshness_score: number | null
+          fx_rate_at_computation: number | null
+          global_opportunity_score: number | null
+          global_roi_score: number | null
+          id: string
+          last_computed_at: string | null
+          liquidity_index: number | null
+          market_growth_weight: number | null
+          median_roi_pct: number | null
+          political_risk_adjustment: number | null
+          property_count: number | null
+          region_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          avg_price_per_sqm_usd?: number | null
+          avg_price_usd?: number | null
+          avg_rental_yield_pct?: number | null
+          capital_entry_barrier?: number | null
+          city?: string | null
+          created_at?: string | null
+          data_freshness_score?: number | null
+          fx_rate_at_computation?: number | null
+          global_opportunity_score?: number | null
+          global_roi_score?: number | null
+          id?: string
+          last_computed_at?: string | null
+          liquidity_index?: number | null
+          market_growth_weight?: number | null
+          median_roi_pct?: number | null
+          political_risk_adjustment?: number | null
+          property_count?: number | null
+          region_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          avg_price_per_sqm_usd?: number | null
+          avg_price_usd?: number | null
+          avg_rental_yield_pct?: number | null
+          capital_entry_barrier?: number | null
+          city?: string | null
+          created_at?: string | null
+          data_freshness_score?: number | null
+          fx_rate_at_computation?: number | null
+          global_opportunity_score?: number | null
+          global_roi_score?: number | null
+          id?: string
+          last_computed_at?: string | null
+          liquidity_index?: number | null
+          market_growth_weight?: number | null
+          median_roi_pct?: number | null
+          political_risk_adjustment?: number | null
+          property_count?: number | null
+          region_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "global_opportunity_scores_region_id_fkey"
+            columns: ["region_id"]
+            isOneToOne: false
+            referencedRelation: "global_regions"
+            referencedColumns: ["region_id"]
+          },
+        ]
+      }
+      global_regions: {
+        Row: {
+          ai_model_variant: string
+          capital_gains_tax_pct: number | null
+          compute_tier: string
+          country_code: string
+          country_name: string
+          created_at: string | null
+          data_density_score: number | null
+          demand_weight: number | null
+          expansion_phase: string | null
+          flag_emoji: string | null
+          foreign_ownership_allowed: boolean | null
+          growth_weight: number | null
+          id: string
+          inflation_rate: number | null
+          is_active: boolean | null
+          is_primary: boolean | null
+          launched_at: string | null
+          liquidity_weight: number | null
+          locale: string | null
+          market_maturity_level: string
+          max_foreign_ownership_pct: number | null
+          primary_currency: string
+          region_id: string
+          region_name: string
+          rental_regulation_level: string | null
+          risk_multiplier: number | null
+          roi_weight: number | null
+          stamp_duty_pct: number | null
+          timezone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          ai_model_variant?: string
+          capital_gains_tax_pct?: number | null
+          compute_tier?: string
+          country_code: string
+          country_name: string
+          created_at?: string | null
+          data_density_score?: number | null
+          demand_weight?: number | null
+          expansion_phase?: string | null
+          flag_emoji?: string | null
+          foreign_ownership_allowed?: boolean | null
+          growth_weight?: number | null
+          id?: string
+          inflation_rate?: number | null
+          is_active?: boolean | null
+          is_primary?: boolean | null
+          launched_at?: string | null
+          liquidity_weight?: number | null
+          locale?: string | null
+          market_maturity_level?: string
+          max_foreign_ownership_pct?: number | null
+          primary_currency?: string
+          region_id: string
+          region_name: string
+          rental_regulation_level?: string | null
+          risk_multiplier?: number | null
+          roi_weight?: number | null
+          stamp_duty_pct?: number | null
+          timezone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          ai_model_variant?: string
+          capital_gains_tax_pct?: number | null
+          compute_tier?: string
+          country_code?: string
+          country_name?: string
+          created_at?: string | null
+          data_density_score?: number | null
+          demand_weight?: number | null
+          expansion_phase?: string | null
+          flag_emoji?: string | null
+          foreign_ownership_allowed?: boolean | null
+          growth_weight?: number | null
+          id?: string
+          inflation_rate?: number | null
+          is_active?: boolean | null
+          is_primary?: boolean | null
+          launched_at?: string | null
+          liquidity_weight?: number | null
+          locale?: string | null
+          market_maturity_level?: string
+          max_foreign_ownership_pct?: number | null
+          primary_currency?: string
+          region_id?: string
+          region_name?: string
+          rental_regulation_level?: string | null
+          risk_multiplier?: number | null
+          roi_weight?: number | null
+          stamp_duty_pct?: number | null
+          timezone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       group_deal_participants: {
         Row: {
@@ -29981,6 +30272,10 @@ export type Database = {
       cleanup_old_bpjs_responses: { Args: never; Returns: undefined }
       cleanup_rate_limit_entries: { Args: never; Returns: undefined }
       compute_ai_readiness: { Args: never; Returns: Json }
+      compute_global_opportunity: {
+        Args: { p_region_id: string }
+        Returns: Json
+      }
       count_admin_alerts: { Args: never; Returns: number }
       count_admin_alerts_by_status: { Args: never; Returns: Json }
       count_admin_alerts_by_type: { Args: never; Returns: Json }
