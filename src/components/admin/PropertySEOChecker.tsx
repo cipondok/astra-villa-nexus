@@ -1243,7 +1243,7 @@ const PropertySEOChecker = () => {
               )}
 
               {!aiResult && !contentOptimize.isPending && (
-                <Card className="bg-card/60 border-border/40 border-dashed">
+                <Card className="bg-card border-border border-dashed">
                   <CardContent className="p-4 text-center">
                     <Sparkles className="h-6 w-6 mx-auto text-muted-foreground mb-2" />
                     <p className="text-xs text-muted-foreground mb-2">Click "AI Optimize" to get AI-powered recommendations for this property</p>
