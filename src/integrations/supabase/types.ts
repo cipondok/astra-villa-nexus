@@ -10167,6 +10167,204 @@ export type Database = {
         }
         Relationships: []
       }
+      hedging_downside_protection: {
+        Row: {
+          city: string
+          created_at: string | null
+          downside_resilience_index: number | null
+          forced_liquidation_risk: number | null
+          id: string
+          income_decline_prob: number | null
+          max_drawdown_pct: number | null
+          property_type: string | null
+          recovery_horizon_score: number | null
+          time_to_recovery_months: number | null
+        }
+        Insert: {
+          city: string
+          created_at?: string | null
+          downside_resilience_index?: number | null
+          forced_liquidation_risk?: number | null
+          id?: string
+          income_decline_prob?: number | null
+          max_drawdown_pct?: number | null
+          property_type?: string | null
+          recovery_horizon_score?: number | null
+          time_to_recovery_months?: number | null
+        }
+        Update: {
+          city?: string
+          created_at?: string | null
+          downside_resilience_index?: number | null
+          forced_liquidation_risk?: number | null
+          id?: string
+          income_decline_prob?: number | null
+          max_drawdown_pct?: number | null
+          property_type?: string | null
+          recovery_horizon_score?: number | null
+          time_to_recovery_months?: number | null
+        }
+        Relationships: []
+      }
+      hedging_macro_risk: {
+        Row: {
+          capital_flight_probability: number | null
+          capital_flow_shift: number | null
+          city: string
+          construction_cost_trend: number | null
+          created_at: string | null
+          currency_volatility: number | null
+          cycle_phase: string | null
+          id: string
+          inflation_momentum: number | null
+          interest_rate_risk: number | null
+          macro_risk_pressure_index: number | null
+          policy_tightening_risk: number | null
+        }
+        Insert: {
+          capital_flight_probability?: number | null
+          capital_flow_shift?: number | null
+          city: string
+          construction_cost_trend?: number | null
+          created_at?: string | null
+          currency_volatility?: number | null
+          cycle_phase?: string | null
+          id?: string
+          inflation_momentum?: number | null
+          interest_rate_risk?: number | null
+          macro_risk_pressure_index?: number | null
+          policy_tightening_risk?: number | null
+        }
+        Update: {
+          capital_flight_probability?: number | null
+          capital_flow_shift?: number | null
+          city?: string
+          construction_cost_trend?: number | null
+          created_at?: string | null
+          currency_volatility?: number | null
+          cycle_phase?: string | null
+          id?: string
+          inflation_momentum?: number | null
+          interest_rate_risk?: number | null
+          macro_risk_pressure_index?: number | null
+          policy_tightening_risk?: number | null
+        }
+        Relationships: []
+      }
+      hedging_portfolio_exposure: {
+        Row: {
+          allocation_pct: number | null
+          city: string
+          created_at: string | null
+          geo_concentration_risk: number | null
+          id: string
+          overexposure_flag: boolean | null
+          price_tier: string | null
+          property_type: string | null
+          strategy_imbalance_score: number | null
+          vulnerability_score: number | null
+        }
+        Insert: {
+          allocation_pct?: number | null
+          city: string
+          created_at?: string | null
+          geo_concentration_risk?: number | null
+          id?: string
+          overexposure_flag?: boolean | null
+          price_tier?: string | null
+          property_type?: string | null
+          strategy_imbalance_score?: number | null
+          vulnerability_score?: number | null
+        }
+        Update: {
+          allocation_pct?: number | null
+          city?: string
+          created_at?: string | null
+          geo_concentration_risk?: number | null
+          id?: string
+          overexposure_flag?: boolean | null
+          price_tier?: string | null
+          property_type?: string | null
+          strategy_imbalance_score?: number | null
+          vulnerability_score?: number | null
+        }
+        Relationships: []
+      }
+      hedging_safe_havens: {
+        Row: {
+          capital_protection_score: number | null
+          city: string
+          created_at: string | null
+          defensive_score: number | null
+          id: string
+          infra_backed_growth: number | null
+          policy_protection_score: number | null
+          recommended_allocation_pct: number | null
+          rental_stability: number | null
+          safe_haven_rank: number | null
+        }
+        Insert: {
+          capital_protection_score?: number | null
+          city: string
+          created_at?: string | null
+          defensive_score?: number | null
+          id?: string
+          infra_backed_growth?: number | null
+          policy_protection_score?: number | null
+          recommended_allocation_pct?: number | null
+          rental_stability?: number | null
+          safe_haven_rank?: number | null
+        }
+        Update: {
+          capital_protection_score?: number | null
+          city?: string
+          created_at?: string | null
+          defensive_score?: number | null
+          id?: string
+          infra_backed_growth?: number | null
+          policy_protection_score?: number | null
+          recommended_allocation_pct?: number | null
+          rental_stability?: number | null
+          safe_haven_rank?: number | null
+        }
+        Relationships: []
+      }
+      hedging_strategies: {
+        Row: {
+          action_description: string | null
+          capital_preservation_prob: number | null
+          city: string
+          created_at: string | null
+          id: string
+          priority_rank: number | null
+          risk_adjusted_return_improvement: number | null
+          risk_reduction_pct: number | null
+          strategy_type: string
+        }
+        Insert: {
+          action_description?: string | null
+          capital_preservation_prob?: number | null
+          city: string
+          created_at?: string | null
+          id?: string
+          priority_rank?: number | null
+          risk_adjusted_return_improvement?: number | null
+          risk_reduction_pct?: number | null
+          strategy_type: string
+        }
+        Update: {
+          action_description?: string | null
+          capital_preservation_prob?: number | null
+          city?: string
+          created_at?: string | null
+          id?: string
+          priority_rank?: number | null
+          risk_adjusted_return_improvement?: number | null
+          risk_reduction_pct?: number | null
+          strategy_type?: string
+        }
+        Relationships: []
+      }
       homepage_slider_settings: {
         Row: {
           animation_duration: number | null
