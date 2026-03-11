@@ -225,6 +225,16 @@ async function handleProcess(supabase: any) {
         result = await updateRoiForecasts(supabase, task.payload);
       } else if (pendingJob.job_type === "bulk_generate_property_images") {
         result = await bulkGeneratePropertyImages(supabase, task.payload);
+      } else if (pendingJob.job_type === "compute_investor_dna") {
+        // Compute DNA for a specific user or batch
+        const targetUserIds: string[] = task.payload?.user_ids || [task.payload?.user_id].filter(Boolean);
+        for (const uid of targetUserIds) {
+          const { error } = await supabase.functions.invoke("core-engine", {
+            body: { mode: "compute_investor_dna", target_user_id: uid },
+          });
+          if (error) console.error(`DNA compute failed for ${uid}:`, error);
+        }
+        result = { computed: targetUserIds.length };
       }
 
       // Mark task completed
