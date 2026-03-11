@@ -250,3 +250,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.hedging-engine]
     verify_jwt = false
 
+  [functions.stress-test-engine]
+    verify_jwt = false
+

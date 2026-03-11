@@ -358,6 +358,9 @@ const AppContent = () => {
                 <Route path="/hedging-engine" element={<ProtectedRoute />}>
                   <Route index element={<HedgingEnginePage />} />
                 </Route>
+                <Route path="/stress-test-engine" element={<ProtectedRoute />}>
+                  <Route index element={<StressTestEnginePage />} />
+                </Route>
                 <Route path="/investor-feed" element={<ProtectedRoute />}>
                   <Route index element={<InvestorFeedPage />} />
                 </Route>
