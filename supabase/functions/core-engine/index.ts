@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'price_fairness', 'listing_performance_predictor', 'investment_advisor', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'deal_analysis_v2', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence', 'investor_alerts', 'portfolio_builder', 'off_market_deals', 'developer_project_launch', 'smart_tour_planner', 'market_trends_analyzer', 'astra_token', 'filter_analytics', 'system_health_check', 'sync_indonesia_locations', 'database_diagnostics', 'database_fix', 'compute_investor_dna'];
+    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'price_fairness', 'listing_performance_predictor', 'investment_advisor', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'deal_analysis_v2', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence', 'investor_alerts', 'portfolio_builder', 'off_market_deals', 'developer_project_launch', 'smart_tour_planner', 'market_trends_analyzer', 'astra_token', 'filter_analytics', 'system_health_check', 'sync_indonesia_locations', 'database_diagnostics', 'database_fix', 'compute_investor_dna', 'deal_hunter_scan'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -10900,6 +10900,328 @@ Project Details:
       }
 
       return new Response(JSON.stringify({ data: dnaPayload, signals_processed: behaviors.length + signals.length }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ═══════════════════════════════════════════
+    // MODE: deal_hunter_scan — Autonomous Deal Hunter Engine
+    // ═══════════════════════════════════════════
+    if (mode === 'deal_hunter_scan') {
+      const serviceClient = createClient(supabaseUrl, serviceKey);
+      const SCAN_VERSION = 1;
+      const now = Date.now();
+      const threeDaysAgo = new Date(now - 3 * 86400000).toISOString();
+      const thirtyDaysAgo = new Date(now - 30 * 86400000).toISOString();
+
+      // 1. Fetch all active properties with relevant fields
+      const { data: properties, error: propErr } = await serviceClient
+        .from('properties')
+        .select('id, title, price, city, state, property_type, area_sqm, investment_score, created_at, status, days_on_market, save_count, listing_type')
+        .eq('status', 'published')
+        .not('price', 'is', null)
+        .gt('price', 0)
+        .limit(500);
+
+      if (propErr || !properties) {
+        return new Response(JSON.stringify({ error: propErr?.message || 'No properties' }), {
+          status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // 2. Compute city-level medians for FMV
+      const cityPriceMap: Record<string, number[]> = {};
+      const cityPSMMap: Record<string, number[]> = {};
+      for (const p of properties) {
+        if (!p.city || !p.price) continue;
+        if (!cityPriceMap[p.city]) cityPriceMap[p.city] = [];
+        cityPriceMap[p.city].push(Number(p.price));
+        if (p.area_sqm && Number(p.area_sqm) > 0) {
+          if (!cityPSMMap[p.city]) cityPSMMap[p.city] = [];
+          cityPSMMap[p.city].push(Number(p.price) / Number(p.area_sqm));
+        }
+      }
+
+      const median = (arr: number[]) => {
+        const s = [...arr].sort((a, b) => a - b);
+        const m = Math.floor(s.length / 2);
+        return s.length % 2 !== 0 ? s[m] : (s[m - 1] + s[m]) / 2;
+      };
+
+      const cityMedian: Record<string, number> = {};
+      const cityPSMMedian: Record<string, number> = {};
+      for (const [city, prices] of Object.entries(cityPriceMap)) {
+        cityMedian[city] = median(prices);
+      }
+      for (const [city, psms] of Object.entries(cityPSMMap)) {
+        cityPSMMedian[city] = median(psms);
+      }
+
+      // 3. Fetch price history for price drop detection
+      const { data: priceHistory } = await serviceClient
+        .from('property_price_history')
+        .select('property_id, old_price, new_price, changed_at')
+        .gte('changed_at', thirtyDaysAgo)
+        .order('changed_at', { ascending: false });
+
+      const priceDropMap: Record<string, { dropPct: number; recency: number }> = {};
+      for (const ph of priceHistory || []) {
+        if (priceDropMap[ph.property_id]) continue;
+        const oldP = Number(ph.old_price);
+        const newP = Number(ph.new_price);
+        if (oldP > 0 && newP < oldP) {
+          const dropPct = ((oldP - newP) / oldP) * 100;
+          const daysSinceDrop = (now - new Date(ph.changed_at).getTime()) / 86400000;
+          priceDropMap[ph.property_id] = { dropPct, recency: Math.max(0, 1 - daysSinceDrop / 30) };
+        }
+      }
+
+      // 4. Fetch view counts for demand heat
+      const propIds = properties.map(p => p.id);
+      const viewCountMap: Record<string, number> = {};
+      for (let i = 0; i < propIds.length; i += 50) {
+        const chunk = propIds.slice(i, i + 50);
+        const { data: views } = await serviceClient
+          .from('ai_behavior_tracking')
+          .select('property_id')
+          .eq('event_type', 'view')
+          .gte('created_at', thirtyDaysAgo)
+          .in('property_id', chunk);
+        for (const v of views || []) {
+          if (v.property_id) viewCountMap[v.property_id] = (viewCountMap[v.property_id] || 0) + 1;
+        }
+      }
+
+      // 5. Score each property
+      const opportunities: any[] = [];
+      const sigmoid = (x: number) => 1 / (1 + Math.exp(-x));
+
+      for (const prop of properties) {
+        const price = Number(prop.price);
+        const city = prop.city || '';
+        const area = Number(prop.area_sqm) || 0;
+        const dom = Number(prop.days_on_market) || 0;
+        const invScore = Number(prop.investment_score) || 50;
+        const saves = Number(prop.save_count) || 0;
+        const views = viewCountMap[prop.id] || 0;
+        const isNew = new Date(prop.created_at) >= new Date(threeDaysAgo);
+        const signals: string[] = [];
+
+        // — FMV calculation —
+        const psmMedian = cityPSMMedian[city] || 0;
+        const cityMed = cityMedian[city] || price;
+        let fmv = price;
+        if (psmMedian > 0 && area > 0) {
+          fmv = Math.round(psmMedian * area * 0.6 + cityMed * 0.25 + price * 0.15);
+        } else {
+          fmv = cityMed;
+        }
+        const undervalPct = fmv > 0 ? Math.round(((fmv - price) / fmv) * 100) : 0;
+
+        // — Signal scoring —
+        // Undervaluation signal (0-100)
+        const undervalSignal = Math.min(100, Math.max(0, undervalPct * 5));
+        if (undervalPct >= 10) signals.push('undervalued');
+
+        // Price drop signal (0-100)
+        const drop = priceDropMap[prop.id];
+        const priceDropSignal = drop ? Math.min(100, drop.dropPct * 10) : 0;
+        if (drop && drop.dropPct >= 5) signals.push('price_drop');
+
+        // Yield signal (approximate from investment score)
+        const yieldSignal = invScore >= 70 ? 80 : invScore >= 50 ? 50 : 20;
+        if (invScore >= 75) signals.push('high_yield');
+
+        // Demand heat signal
+        const demandHeat = Math.min(100, (views * 2 + saves * 5));
+        if (demandHeat >= 60) signals.push('high_demand');
+
+        // Growth signal (approx from city listing density)
+        const cityListings = cityPriceMap[city]?.length || 0;
+        const growthSignal = cityListings >= 30 ? 70 : cityListings >= 15 ? 50 : 30;
+        if (growthSignal >= 60) signals.push('growth_corridor');
+
+        // DOM anomaly signal
+        const domSignal = dom >= 90 ? 80 : dom >= 60 ? 50 : 0;
+        if (dom >= 60) signals.push('distressed');
+
+        // New listing signal
+        if (isNew) signals.push('new_listing');
+
+        // — Composite signal score —
+        const signalScore = Math.min(100, Math.round(
+          undervalSignal * 0.30 +
+          priceDropSignal * 0.20 +
+          yieldSignal * 0.15 +
+          demandHeat * 0.15 +
+          growthSignal * 0.10 +
+          domSignal * 0.10
+        ));
+
+        if (signalScore < 30) continue; // Skip low-signal properties
+
+        // — Deal strength index —
+        const strengthIndex = Math.min(100, Math.round(
+          Math.max(0, undervalPct) * 0.5 + demandHeat * 0.3 + growthSignal * 0.002 * 100
+        ));
+
+        // — Lifecycle predictions —
+        const sellProb = sigmoid(
+          -0.05 * dom +
+          0.03 * demandHeat +
+          0.02 * (100 - (price / Math.max(cityMed, 1)) * 100) +
+          (views > 10 ? 0.5 : 0)
+        );
+        const dropRecency = drop?.recency || 0;
+        const scarcity = cityListings < 10 ? 80 : cityListings < 25 ? 50 : 20;
+        const urgency = Math.min(100, Math.round(sellProb * 60 + dropRecency * 20 + scarcity * 0.2));
+        const entryWindow = Math.max(1, Math.round(30 - urgency * 0.3));
+
+        // — Classification —
+        let classification = 'speculative';
+        if (strengthIndex >= 70 && demandHeat >= 60) classification = 'hot_deal';
+        else if (undervalPct >= 15 && demandHeat < 40) classification = 'silent_opportunity';
+        else if (growthSignal >= 60 && invScore >= 70) classification = 'long_term_value';
+
+        // — Deal tier —
+        let tier = 'public';
+        if (signalScore >= 65) tier = 'vip';
+        if (price >= 10_000_000_000 && undervalPct >= 20) tier = 'institutional';
+
+        opportunities.push({
+          property_id: prop.id,
+          deal_opportunity_signal_score: signalScore,
+          deal_strength_index: strengthIndex,
+          undervaluation_percent: undervalPct,
+          estimated_fair_value: fmv,
+          deal_classification: classification,
+          urgency_score: urgency,
+          sell_probability_30d: Math.round(sellProb * 100) / 100,
+          price_velocity: drop ? -drop.dropPct : 0,
+          optimal_entry_window_days: entryWindow,
+          deal_tier: tier,
+          signals,
+          signal_metadata: {
+            views_30d: views,
+            saves: saves,
+            dom,
+            city_median: cityMed,
+            fmv,
+            price_drop: drop || null,
+          },
+          surfaced_at: new Date().toISOString(),
+          expires_at: new Date(now + entryWindow * 86400000).toISOString(),
+          scan_version: SCAN_VERSION,
+        });
+      }
+
+      // 6. Upsert opportunities in chunks
+      let upserted = 0;
+      for (let i = 0; i < opportunities.length; i += 30) {
+        const chunk = opportunities.slice(i, i + 30);
+        const { error: upsErr } = await serviceClient
+          .from('deal_hunter_opportunities')
+          .upsert(chunk, { onConflict: 'property_id' });
+        if (!upsErr) upserted += chunk.length;
+        else console.error('Deal hunter upsert error:', upsErr);
+      }
+
+      // 7. DNA-matched alert routing — top deals to matching investors
+      const topDeals = opportunities
+        .filter(o => o.deal_opportunity_signal_score >= 50)
+        .sort((a, b) => b.deal_opportunity_signal_score - a.deal_opportunity_signal_score)
+        .slice(0, 20);
+
+      let alertsCreated = 0;
+      if (topDeals.length > 0) {
+        const { data: dnaProfiles } = await serviceClient
+          .from('investor_dna')
+          .select('user_id, preferred_cities, preferred_property_types, budget_range_min, budget_range_max, investor_persona');
+
+        for (const deal of topDeals) {
+          const dealProp = properties.find(p => p.id === deal.property_id);
+          if (!dealProp) continue;
+
+          const matchedUsers = (dnaProfiles || []).filter((dna: any) => {
+            const cityMatch = !dna.preferred_cities?.length || dna.preferred_cities.includes(dealProp.city);
+            const typeMatch = !dna.preferred_property_types?.length || dna.preferred_property_types.includes(dealProp.property_type);
+            const budgetMin = Number(dna.budget_range_min) || 0;
+            const budgetMax = Number(dna.budget_range_max) || Infinity;
+            const budgetFit = Number(dealProp.price) >= budgetMin && Number(dealProp.price) <= budgetMax;
+            return cityMatch && typeMatch && budgetFit;
+          }).slice(0, 50);
+
+          if (matchedUsers.length === 0) continue;
+
+          const notifications = matchedUsers.map((u: any) => ({
+            user_id: u.user_id,
+            title: `🎯 ${deal.deal_classification === 'hot_deal' ? 'Hot Deal' : deal.deal_classification === 'silent_opportunity' ? 'Silent Opportunity' : 'Investment Opportunity'}: ${dealProp.title}`,
+            message: `${dealProp.city} · ${deal.undervaluation_percent}% below FMV · Urgency ${deal.urgency_score}/100`,
+            type: `deal_hunter_${deal.deal_classification}`,
+            property_id: deal.property_id,
+            is_read: false,
+            metadata: {
+              signal_score: deal.deal_opportunity_signal_score,
+              strength_index: deal.deal_strength_index,
+              urgency: deal.urgency_score,
+              sell_probability: deal.sell_probability_30d,
+              deal_tier: deal.deal_tier,
+              classification: deal.deal_classification,
+            },
+          }));
+
+          for (let i = 0; i < notifications.length; i += 30) {
+            const chunk = notifications.slice(i, i + 30);
+            const { error: notifErr } = await serviceClient.from('in_app_notifications').insert(chunk);
+            if (!notifErr) alertsCreated += chunk.length;
+          }
+        }
+      }
+
+      // 8. Log scan
+      await serviceClient.from('autonomous_agent_scans').insert({
+        scan_type: 'deal_hunter',
+        properties_scanned: properties.length,
+        opportunities_found: opportunities.length,
+        alerts_generated: alertsCreated,
+        scan_metadata: {
+          top_deals: topDeals.length,
+          classifications: {
+            hot_deal: opportunities.filter(o => o.deal_classification === 'hot_deal').length,
+            silent_opportunity: opportunities.filter(o => o.deal_classification === 'silent_opportunity').length,
+            long_term_value: opportunities.filter(o => o.deal_classification === 'long_term_value').length,
+            speculative: opportunities.filter(o => o.deal_classification === 'speculative').length,
+          },
+          tiers: {
+            public: opportunities.filter(o => o.deal_tier === 'public').length,
+            vip: opportunities.filter(o => o.deal_tier === 'vip').length,
+            institutional: opportunities.filter(o => o.deal_tier === 'institutional').length,
+          },
+        },
+      }).then(() => {}).catch(e => console.error('Scan log error:', e));
+
+      console.log(`Deal Hunter scan complete: ${opportunities.length} opportunities from ${properties.length} properties, ${alertsCreated} alerts`);
+
+      return new Response(JSON.stringify({
+        data: {
+          total_properties_scanned: properties.length,
+          opportunities_found: opportunities.length,
+          opportunities_upserted: upserted,
+          alerts_created: alertsCreated,
+          classifications: {
+            hot_deal: opportunities.filter(o => o.deal_classification === 'hot_deal').length,
+            silent_opportunity: opportunities.filter(o => o.deal_classification === 'silent_opportunity').length,
+            long_term_value: opportunities.filter(o => o.deal_classification === 'long_term_value').length,
+            speculative: opportunities.filter(o => o.deal_classification === 'speculative').length,
+          },
+          top_deals: topDeals.slice(0, 5).map(d => ({
+            property_id: d.property_id,
+            signal_score: d.deal_opportunity_signal_score,
+            classification: d.deal_classification,
+            urgency: d.urgency_score,
+          })),
+        },
+      }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }

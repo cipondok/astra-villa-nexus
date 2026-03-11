@@ -1,180 +1,70 @@
 
+# ASTRA Villa — Platform Architecture Analysis & Roadmap
 
-# AI Autonomous Deal Hunter Engine — Implementation Plan
+## Status: 🔄 IN PROGRESS
 
-## Current State Analysis
+## Current State Assessment (March 2026)
 
-The platform already has significant deal infrastructure:
-- `investor_alerts` mode in core-engine (scans 5 signals: price_drop, high_rental_yield, high_deal_score, market_growth, high_investment_score)
-- `deal_analysis_v2` mode (batch scoring with confidence, liquidity, flip potential)
-- `deal_detector` mode (single property undervaluation check)
-- `deal_finder` mode via deal-engine (filtered deal discovery)
-- `property_deal_analysis` table with deal_score, undervaluation_percent, deal_tag
-- `autonomous_agent_scans` table for scan logging
-- Investor DNA system for personalization
+### Scale
+| Metric | Count |
+|--------|-------|
+| Pages | 120+ |
+| Components | 200+ directories |
+| Hooks | 230+ |
+| Edge Functions | 18 (consolidated from 82) |
+| Database Tables | 450+ |
+| RLS Policies | 1,000+ |
 
-**What's missing**: lifecycle predictions, urgency scoring, deal surfacing into homepage/feeds, DNA-routed alerts, deal tier classification, and the autonomous scanner as a unified pipeline.
+### Three-Layer Architecture ✅
+| Layer | Key Features | Status |
+|-------|-------------|--------|
+| **Public Platform** | Property browse, search, map, detail pages, AI chat, mortgage tools | ✅ Mature |
+| **Investor Intelligence** | ROI forecasts, deal finder, portfolio builder, market trends, location intel | ✅ Mature |
+| **Admin AI Command Center** | Job queue, SEO engine, valuations, health monitor, KPI alerts | ✅ Mature |
 
-## Architecture
+### Edge Function Architecture ✅
+| Router | Modes |
+|--------|-------|
+| `core-engine` | 25+ modes (investment_score, valuation, health, diagnostics, map_search) |
+| `ai-engine` | 25+ modes (descriptions, NLP, recommendations, market reports) |
+| `deal-engine` | deal_finder, alerts, negotiation, pricing, forecasts |
+| `ai-assistant` | SSE streaming chatbot, NLP search, investment advisor |
+| `notification-engine` | Email, push, campaigns |
+| `payment-engine` | Midtrans, PayPal, invoices, subscriptions |
+| `vendor-engine` | Vendor services, validation |
 
-```text
-┌──────────────────────────────────────────────────────────┐
-│                  Scheduled Trigger (pg_cron)              │
-│   deal_hunter_scan: every 3 hours                        │
-└────────────────────────┬─────────────────────────────────┘
-                         ▼
-┌──────────────────────────────────────────────────────────┐
-│           core-engine: deal_hunter_scan                   │
-│                                                          │
-│  1. Scan all active properties                           │
-│  2. Compute deal_opportunity_signal_score                │
-│  3. Smart undervaluation detection (FMV + momentum)      │
-│  4. Predict deal lifecycle (sell probability, urgency)   │
-│  5. Classify deal tier (public / VIP / institutional)    │
-│  6. Upsert into deal_hunter_opportunities table          │
-│  7. Route alerts to matching investor DNA profiles       │
-│  8. Surface top deals for homepage injection             │
-└──────────────────────────┬───────────────────────────────┘
-                           ▼
-┌──────────────────────────────────────────────────────────┐
-│            deal_hunter_opportunities table                │
-│                                                          │
-│  deal_opportunity_signal_score, deal_strength_index,     │
-│  undervaluation_percent, deal_classification,            │
-│  urgency_score, sell_probability_30d,                    │
-│  optimal_entry_window, deal_tier, surfaced_at            │
-└──────┬───────────┬──────────────┬────────────────────────┘
-       ▼           ▼              ▼
-  Homepage      Investor       DNA-Matched
-  Hero Feed     Feed Inject    Alert Routing
-```
+### AI Automation Systems ✅
+- SEO: Daily audits (3AM UTC), 6-hour auto-optimizer, property_seo_analysis tracking
+- Jobs: ai_jobs queue with claim_next_job() SKIP LOCKED, stall recovery, retry logic
+- Valuations: property_valuations with auto-recalculation
+- ROI: property_roi_forecast with 5-year projections
+- Autonomous Agent: 6-hour market scans for opportunity detection
 
-## Implementation Steps
+---
 
-### 1. Database: `deal_hunter_opportunities` table
+## Identified Gaps & Improvements
 
-New table storing the autonomous scanner's output:
+### 🔴 Critical Performance
+1. **Map viewport debouncing** — `moveend` fires on every pan; needs 300ms debounce ✅ FIXED
+2. **Spatial indexes** — Need composite indexes on (latitude, longitude, status) ✅ FIXED
+3. **Platform health aggregation** — Real AI system status on admin overview ✅ FIXED (prev iteration)
 
-| Column | Type | Purpose |
-|--------|------|---------|
-| property_id | uuid PK | FK to properties |
-| deal_opportunity_signal_score | smallint 0-100 | Composite signal score |
-| deal_strength_index | smallint 0-100 | Undervaluation + momentum + absorption |
-| undervaluation_percent | numeric | FMV gap |
-| estimated_fair_value | bigint | Computed FMV |
-| deal_classification | text | hot_deal / silent_opportunity / long_term_value / speculative |
-| urgency_score | smallint 0-100 | Time-sensitivity indicator |
-| sell_probability_30d | numeric 0-1 | Predicted probability |
-| price_velocity | numeric | Expected price change rate |
-| optimal_entry_window_days | int | Days before opportunity closes |
-| deal_tier | text | public / vip / institutional |
-| signals | text[] | Array of detected signals |
-| signal_metadata | jsonb | Signal details |
-| surfaced_at | timestamptz | When deal was first surfaced |
-| expires_at | timestamptz | Estimated deal expiry |
-| scan_version | int | Scanner version for invalidation |
+### 🟡 Architecture Improvements
+4. **Unified health hook** — Single hook aggregating all AI subsystem health ✅ FIXED
+5. **Query deduplication** — MapBounds type duplicated across useMapSearch/useMapProperties
+6. **Large file refactoring** — PropertyDetail.tsx (1544 lines), Index.tsx (1199 lines) need splitting
 
-RLS: public read for authenticated, service_role write.
+### 🟢 Future Expansion Ready
+- AI deal finder ✅ Exists (/deal-finder)
+- Predictive market analytics ✅ Exists (/market-trends, /price-prediction)
+- AI recommendation engine ✅ Exists (ai-match-engine-v2)
+- Location intelligence ✅ Exists (/location-intelligence)
+- Knowledge graph ✅ Hook exists (useKnowledgeGraph)
 
-### 2. Core Engine: `deal_hunter_scan` mode
-
-New mode in core-engine that runs the full autonomous pipeline:
-
-**Signal Detection** (expanded from current investor_alerts):
-- New listings (< 3 days old)
-- Price reductions (from property_price_history)
-- DOM anomalies (listed > 60 days = distressed signal)
-- High rental yield zones (>= 6%)
-- Emerging growth corridors (annual_growth_rate >= 5%)
-- Undervaluation vs city median (>= 10%)
-- Developer early inventory (is_pre_launch flag)
-
-**Deal Opportunity Signal Score**:
-```
-deal_opportunity_signal_score = (
-  undervaluation_signal * 30 +
-  price_drop_signal * 20 +
-  yield_signal * 15 +
-  demand_heat_signal * 15 +
-  growth_signal * 10 +
-  dom_anomaly_signal * 10
-)
-```
-
-**Undervaluation Detection** (enhanced FMV):
-```
-estimated_fair_value = weighted_avg(
-  comparable_median_psm * area * 0.6,
-  city_growth_adjusted_value * 0.25,
-  price_history_momentum * 0.15
-)
-undervaluation_percent = (FMV - listing_price) / FMV * 100
-deal_strength_index = undervaluation_pct * 0.5 + demand_heat * 0.3 + growth_rate * 0.2
-```
-
-**Deal Classification**:
-- `hot_deal`: deal_strength >= 70 AND demand_heat >= 60
-- `silent_opportunity`: undervaluation >= 15% AND demand_heat < 40
-- `long_term_value`: growth_rate >= 8% AND investment_score >= 70
-- `speculative`: high volatility OR pre-launch with low completion
-
-**Lifecycle Predictions**:
-```
-sell_probability_30d = sigmoid(
-  -0.05 * days_on_market +
-  0.03 * demand_heat_score +
-  0.02 * (100 - price_vs_median_pct) +
-  recent_views_boost
-)
-urgency_score = min(100, sell_prob * 60 + price_drop_recency * 20 + scarcity * 20)
-optimal_entry_window = max(1, 30 - urgency_score * 0.3)
-```
-
-**Deal Tier Classification**:
-- `public`: All deals with signal_score >= 40
-- `vip`: signal_score >= 65 OR pre_launch with discount >= 15%
-- `institutional`: price >= 10B IDR AND undervaluation >= 20%
-
-### 3. DNA-Matched Alert Routing
-
-After computing opportunities, match against `investor_dna` profiles:
-- City match: property city in investor's preferred_cities
-- Type match: property type in investor's preferred_property_types
-- Budget fit: price within budget_range_min/max
-- Strategy fit: flip deals → flipper persona, yield deals → conservative persona
-
-Create `in_app_notifications` with `type = 'deal_hunter_[classification]'` for matched investors.
-
-### 4. Homepage Deal Surfacing
-
-New hook `useDealHunterFeed` that fetches top-scored opportunities from `deal_hunter_opportunities` for:
-- Homepage hero injection (top 5 by urgency_score, tier = public)
-- SmartAIFeed integration (blend deal_hunter results into AI ranking)
-
-New component `DealHunterHero` showing countdown-style urgency indicators.
-
-### 5. Frontend: Deal Hunter Dashboard
-
-New component `DealHunterPanel.tsx` on the Investor Dashboard showing:
-- Active hot deals with urgency countdown
-- Deal classification breakdown (cards per category)
-- Sell probability gauge per opportunity
-- "Optimal entry window" indicator
-
-### 6. Scheduled Job
-
-Add `deal_hunter_scan` to scheduler's cron (every 3 hours) via job-worker integration.
-
-### Files to Create/Edit
-
-| File | Action |
-|------|--------|
-| `supabase/migrations/xxx_deal_hunter.sql` | Create `deal_hunter_opportunities` table |
-| `supabase/functions/core-engine/index.ts` | Add `deal_hunter_scan` mode (~150 lines) |
-| `src/hooks/useDealHunter.ts` | Hook to fetch/display deal hunter opportunities |
-| `src/components/investor/DealHunterPanel.tsx` | Dashboard panel with urgency indicators |
-| `src/components/home/DealHunterHero.tsx` | Homepage hero deal injection component |
-| `src/pages/InvestorDashboard.tsx` | Integrate DealHunterPanel |
-| `src/components/home/SmartAIFeed.tsx` | Blend deal hunter results into feed |
-| `supabase/functions/job-worker/index.ts` | Add `deal_hunter_scan` job type |
-
+### Recommended Next Steps
+1. Add database indexes for map queries at scale
+2. Debounce map viewport changes
+3. Create unified platform health dashboard
+4. Split PropertyDetail.tsx into sub-components
+5. Add API response caching headers to edge functions
+6. Implement property search result caching with stale-while-revalidate

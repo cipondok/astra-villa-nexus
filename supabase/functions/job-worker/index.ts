@@ -235,7 +235,13 @@ async function handleProcess(supabase: any) {
           if (error) console.error(`DNA compute failed for ${uid}:`, error);
         }
         result = { computed: targetUserIds.length };
-      }
+      } else if (pendingJob.job_type === "deal_hunter_scan") {
+        // Run autonomous deal hunter scan
+        const { data, error } = await supabase.functions.invoke("core-engine", {
+          body: { mode: "deal_hunter_scan" },
+        });
+        if (error) throw error;
+        result = data?.data || data;
 
       // Mark task completed
       await supabase
