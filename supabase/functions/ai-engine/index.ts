@@ -339,7 +339,7 @@ async function handleMatchProperty(payload: Record<string, unknown>) {
   // 2. Build property query with DNA-informed filters
   let q = sb
     .from("properties")
-    .select("id, title, price, city, state, property_type, listing_type, bedrooms, bathrooms, building_area_sqm, land_area_sqm, investment_score, demand_score, thumbnail_url, created_at")
+    .select("id, title, price, city, state, property_type, listing_type, bedrooms, bathrooms, building_area_sqm, land_area_sqm, investment_score, thumbnail_url, created_at")
     .eq("status", "active")
     .order("investment_score", { ascending: false })
     .limit(100);
