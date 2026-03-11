@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'price_fairness', 'listing_performance_predictor', 'investment_advisor', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'deal_analysis_v2', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence', 'investor_alerts', 'portfolio_builder', 'off_market_deals', 'developer_project_launch', 'smart_tour_planner', 'market_trends_analyzer', 'astra_token', 'filter_analytics', 'system_health_check', 'sync_indonesia_locations', 'database_diagnostics', 'database_fix'];
+    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'price_fairness', 'listing_performance_predictor', 'investment_advisor', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'deal_analysis_v2', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence', 'investor_alerts', 'portfolio_builder', 'off_market_deals', 'developer_project_launch', 'smart_tour_planner', 'market_trends_analyzer', 'astra_token', 'filter_analytics', 'system_health_check', 'sync_indonesia_locations', 'database_diagnostics', 'database_fix', 'compute_investor_dna'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -10727,6 +10727,181 @@ Project Details:
           generated_at: new Date().toISOString(),
         },
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+
+    // ═══════════════════════════════════════════
+    // ── COMPUTE INVESTOR DNA ──
+    // ═══════════════════════════════════════════
+    if (mode === 'compute_investor_dna') {
+      const targetUserId = body.target_user_id || userId;
+      if (!targetUserId) {
+        return new Response(JSON.stringify({ error: 'User ID required' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const serviceClient = createClient(supabaseUrl, serviceKey);
+      const ninetyDaysAgo = new Date(Date.now() - 90 * 86400000).toISOString();
+
+      // Gather behavioral signals
+      const [behaviorRes, favoritesRes, signalsRes] = await Promise.all([
+        serviceClient.from('ai_behavior_tracking').select('event_type, property_id, event_data, created_at').eq('user_id', targetUserId).gte('created_at', ninetyDaysAgo).order('created_at', { ascending: false }).limit(500),
+        serviceClient.from('favorites').select('property_id, properties:property_id(price, city, property_type)').eq('user_id', targetUserId).limit(100),
+        serviceClient.from('investor_dna_signals').select('signal_type, signal_data, property_id, created_at').eq('user_id', targetUserId).gte('created_at', ninetyDaysAgo).order('created_at', { ascending: false }).limit(300),
+      ]);
+
+      const behaviors = behaviorRes.data || [];
+      const favorites = favoritesRes.data || [];
+      const signals = signalsRes.data || [];
+
+      // Get viewed property details
+      const viewedPropertyIds = [...new Set(behaviors.filter((b: any) => b.property_id).map((b: any) => b.property_id))].slice(0, 50);
+      let viewedProperties: any[] = [];
+      if (viewedPropertyIds.length > 0) {
+        const { data } = await serviceClient.from('properties').select('id, price, city, property_type, investment_score').in('id', viewedPropertyIds);
+        viewedProperties = data || [];
+      }
+
+      const propMap = new Map(viewedProperties.map((p: any) => [p.id, p]));
+      const savedProps = favorites.map((f: any) => f.properties).filter(Boolean);
+      const allRelevantProps = [...viewedProperties, ...savedProps];
+
+      // ── Compute DNA dimensions ──
+
+      // Risk Tolerance: std dev of viewed property prices normalized 0-100
+      const prices = allRelevantProps.map((p: any) => p.price).filter(Boolean);
+      let riskTolerance = 50;
+      if (prices.length >= 3) {
+        const mean = prices.reduce((s: number, p: number) => s + p, 0) / prices.length;
+        const variance = prices.reduce((s: number, p: number) => s + (p - mean) ** 2, 0) / prices.length;
+        const stdDev = Math.sqrt(variance);
+        const coeffOfVariation = mean > 0 ? stdDev / mean : 0;
+        riskTolerance = Math.min(100, Math.round(coeffOfVariation * 200));
+      }
+
+      // Preferred property types/cities: weighted (view=1, save=3, inquiry=5)
+      const typeScores: Record<string, number> = {};
+      const cityScores: Record<string, number> = {};
+      behaviors.forEach((b: any) => {
+        const prop = propMap.get(b.property_id);
+        if (!prop) return;
+        const weight = b.event_type === 'inquiry' ? 5 : b.event_type === 'save' ? 3 : 1;
+        if (prop.property_type) typeScores[prop.property_type] = (typeScores[prop.property_type] || 0) + weight;
+        if (prop.city) cityScores[prop.city] = (cityScores[prop.city] || 0) + weight;
+      });
+      savedProps.forEach((p: any) => {
+        if (p.property_type) typeScores[p.property_type] = (typeScores[p.property_type] || 0) + 3;
+        if (p.city) cityScores[p.city] = (cityScores[p.city] || 0) + 3;
+      });
+
+      const preferredTypes = Object.entries(typeScores).sort((a, b) => b[1] - a[1]).slice(0, 3).map(e => e[0]);
+      const preferredCities = Object.entries(cityScores).sort((a, b) => b[1] - a[1]).slice(0, 5).map(e => e[0]);
+
+      // Budget range: P10/P90
+      const sortedPrices = [...prices].sort((a, b) => a - b);
+      const budgetMin = sortedPrices.length > 0 ? sortedPrices[Math.floor(sortedPrices.length * 0.1)] : 0;
+      const budgetMax = sortedPrices.length > 0 ? sortedPrices[Math.floor(sortedPrices.length * 0.9)] : 0;
+
+      // Rental vs growth preference
+      const yieldSignals = signals.filter((s: any) => s.signal_type === 'filter_change' && s.signal_data?.sort_by === 'rental_yield').length;
+      const growthSignals = signals.filter((s: any) => s.signal_type === 'filter_change' && s.signal_data?.sort_by === 'growth').length;
+      const dealFinderViews = behaviors.filter((b: any) => b.event_data?.page_url?.includes('deal-finder')).length;
+      const totalStrategySignals = Math.max(yieldSignals + growthSignals, 1);
+      const rentalWeight = Math.max(0.1, Math.min(0.9, yieldSignals / totalStrategySignals || 0.5));
+      const growthWeight = 1 - rentalWeight;
+
+      // Flip strategy affinity
+      const flipSignals = dealFinderViews + behaviors.filter((b: any) => b.event_type === 'click' && b.event_data?.action?.includes('deal')).length;
+      const flipAffinity = Math.min(100, flipSignals * 5);
+
+      // Luxury bias: % of viewed in top 20% price tier
+      let luxuryBias = 0;
+      if (sortedPrices.length >= 5) {
+        const p80 = sortedPrices[Math.floor(sortedPrices.length * 0.8)];
+        const luxuryCount = prices.filter(p => p >= p80).length;
+        luxuryBias = Math.round((luxuryCount / prices.length) * 100);
+      }
+
+      // Diversification: Shannon entropy of city+type spread
+      const totalCityScore = Object.values(cityScores).reduce((s, v) => s + v, 0) || 1;
+      let entropy = 0;
+      Object.values(cityScores).forEach(v => {
+        const p = v / totalCityScore;
+        if (p > 0) entropy -= p * Math.log2(p);
+      });
+      const maxEntropy = Math.log2(Math.max(Object.keys(cityScores).length, 1));
+      const diversificationScore = maxEntropy > 0 ? Math.round((entropy / maxEntropy) * 100) : 0;
+
+      // Predictive: probability of next purchase (activity acceleration)
+      const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+      const thirtyDaysAgo2 = new Date(Date.now() - 30 * 86400000).toISOString();
+      const recent7d = behaviors.filter((b: any) => b.created_at >= sevenDaysAgo).length;
+      const recent30d = behaviors.filter((b: any) => b.created_at >= thirtyDaysAgo2).length;
+      const accelerationRatio = recent30d > 0 ? (recent7d * 30 / 7) / recent30d : 0;
+      const purchaseProb = Math.min(1, 1 / (1 + Math.exp(-2 * (accelerationRatio - 1))));
+
+      // Churn risk: exponential decay from last activity
+      const lastActivity = behaviors[0]?.created_at ? new Date(behaviors[0].created_at).getTime() : 0;
+      const daysSinceActive = lastActivity > 0 ? (Date.now() - lastActivity) / 86400000 : 90;
+      const churnRisk = Math.min(100, Math.round(100 * (1 - Math.exp(-daysSinceActive / 30))));
+
+      // Budget upgrade: slope of budget drift
+      const recentPrices = behaviors.slice(0, 20).map((b: any) => propMap.get(b.property_id)?.price).filter(Boolean);
+      const olderPrices = behaviors.slice(-20).map((b: any) => propMap.get(b.property_id)?.price).filter(Boolean);
+      const recentAvg = recentPrices.length ? recentPrices.reduce((s: number, p: number) => s + p, 0) / recentPrices.length : 0;
+      const olderAvg = olderPrices.length ? olderPrices.reduce((s: number, p: number) => s + p, 0) / olderPrices.length : 0;
+      const budgetUpgrade = olderAvg > 0 ? Math.min(1, Math.max(0, (recentAvg - olderAvg) / olderAvg)) : 0;
+
+      // Geo expansion: new cities in last 30d vs total
+      const recentCities = new Set(behaviors.filter((b: any) => b.created_at >= thirtyDaysAgo2).map((b: any) => propMap.get(b.property_id)?.city).filter(Boolean));
+      const totalCities = new Set(allRelevantProps.map((p: any) => p.city).filter(Boolean));
+      const newCities = [...recentCities].filter(c => !totalCities.has(c)).length;
+      const geoExpansion = totalCities.size > 0 ? Math.min(1, newCities / Math.max(totalCities.size, 1)) : 0;
+
+      // Persona classification
+      let persona = 'balanced';
+      if (riskTolerance < 30 && rentalWeight > 0.6) persona = 'conservative';
+      else if (riskTolerance > 70 && growthWeight > 0.6) persona = 'aggressive';
+      else if (luxuryBias > 60) persona = 'luxury';
+      else if (flipAffinity > 50) persona = 'flipper';
+
+      // Upsert DNA
+      const dnaPayload = {
+        user_id: targetUserId,
+        risk_tolerance_score: riskTolerance,
+        investment_horizon_years: persona === 'flipper' ? 1 : persona === 'aggressive' ? 3 : 5,
+        preferred_property_types: preferredTypes,
+        preferred_cities: preferredCities,
+        budget_range_min: budgetMin,
+        budget_range_max: budgetMax,
+        rental_income_pref_weight: Math.round(rentalWeight * 100) / 100,
+        capital_growth_pref_weight: Math.round(growthWeight * 100) / 100,
+        flip_strategy_affinity: flipAffinity,
+        luxury_bias_score: luxuryBias,
+        diversification_score: diversificationScore,
+        probability_next_purchase: Math.round(purchaseProb * 100) / 100,
+        churn_risk_score: churnRisk,
+        expected_budget_upgrade: Math.round(budgetUpgrade * 100) / 100,
+        geo_expansion_likelihood: Math.round(geoExpansion * 100) / 100,
+        investor_persona: persona,
+        last_computed_at: new Date().toISOString(),
+        version: 1,
+      };
+
+      const { error: upsertError } = await serviceClient
+        .from('investor_dna')
+        .upsert(dnaPayload, { onConflict: 'user_id' });
+
+      if (upsertError) {
+        console.error('DNA upsert error:', upsertError);
+        return new Response(JSON.stringify({ error: 'Failed to save DNA' }), {
+          status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      return new Response(JSON.stringify({ data: dnaPayload, signals_processed: behaviors.length + signals.length }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     return new Response(JSON.stringify({ error: 'Unknown mode or unhandled request' }), {

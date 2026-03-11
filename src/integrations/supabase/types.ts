@@ -10236,6 +10236,105 @@ export type Database = {
           },
         ]
       }
+      investor_dna: {
+        Row: {
+          budget_range_max: number | null
+          budget_range_min: number | null
+          capital_growth_pref_weight: number | null
+          churn_risk_score: number | null
+          created_at: string | null
+          diversification_score: number | null
+          expected_budget_upgrade: number | null
+          flip_strategy_affinity: number | null
+          geo_expansion_likelihood: number | null
+          investment_horizon_years: number | null
+          investor_persona: string | null
+          last_computed_at: string | null
+          luxury_bias_score: number | null
+          preferred_cities: string[] | null
+          preferred_property_types: string[] | null
+          probability_next_purchase: number | null
+          rental_income_pref_weight: number | null
+          risk_tolerance_score: number | null
+          updated_at: string | null
+          user_id: string
+          version: number | null
+        }
+        Insert: {
+          budget_range_max?: number | null
+          budget_range_min?: number | null
+          capital_growth_pref_weight?: number | null
+          churn_risk_score?: number | null
+          created_at?: string | null
+          diversification_score?: number | null
+          expected_budget_upgrade?: number | null
+          flip_strategy_affinity?: number | null
+          geo_expansion_likelihood?: number | null
+          investment_horizon_years?: number | null
+          investor_persona?: string | null
+          last_computed_at?: string | null
+          luxury_bias_score?: number | null
+          preferred_cities?: string[] | null
+          preferred_property_types?: string[] | null
+          probability_next_purchase?: number | null
+          rental_income_pref_weight?: number | null
+          risk_tolerance_score?: number | null
+          updated_at?: string | null
+          user_id: string
+          version?: number | null
+        }
+        Update: {
+          budget_range_max?: number | null
+          budget_range_min?: number | null
+          capital_growth_pref_weight?: number | null
+          churn_risk_score?: number | null
+          created_at?: string | null
+          diversification_score?: number | null
+          expected_budget_upgrade?: number | null
+          flip_strategy_affinity?: number | null
+          geo_expansion_likelihood?: number | null
+          investment_horizon_years?: number | null
+          investor_persona?: string | null
+          last_computed_at?: string | null
+          luxury_bias_score?: number | null
+          preferred_cities?: string[] | null
+          preferred_property_types?: string[] | null
+          probability_next_purchase?: number | null
+          rental_income_pref_weight?: number | null
+          risk_tolerance_score?: number | null
+          updated_at?: string | null
+          user_id?: string
+          version?: number | null
+        }
+        Relationships: []
+      }
+      investor_dna_signals: {
+        Row: {
+          created_at: string | null
+          id: string
+          property_id: string | null
+          signal_data: Json | null
+          signal_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          property_id?: string | null
+          signal_data?: Json | null
+          signal_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          property_id?: string | null
+          signal_data?: Json | null
+          signal_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       investor_feed_preferences: {
         Row: {
           budget_max: number | null

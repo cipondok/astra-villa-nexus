@@ -64,6 +64,7 @@ export function useBehaviorTracking() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return; // Only track authenticated users
 
+      // Insert into ai_behavior_tracking
       await supabase.from('ai_behavior_tracking').insert({
         user_id: user.id,
         event_type: eventType,
@@ -72,6 +73,17 @@ export function useBehaviorTracking() {
         duration_ms: durationMs || null,
         page_url: window.location.pathname,
       });
+
+      // Also insert enriched DNA signal for high-value event types
+      const dnaSignalTypes = ['view', 'save', 'search', 'inquiry', 'click', 'filter_change', 'comparison_usage', 'alert_response', 'map_explore'];
+      if (dnaSignalTypes.includes(eventType)) {
+        await supabase.from('investor_dna_signals' as any).insert({
+          user_id: user.id,
+          signal_type: eventType,
+          signal_data: { ...eventData, duration_ms: durationMs, page_url: window.location.pathname },
+          property_id: propertyId || null,
+        });
+      }
 
       // Trigger debounced cache invalidation for high-signal events
       const highSignalEvents = ['save', 'inquiry', 'contact', 'view'];

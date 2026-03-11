@@ -491,7 +491,40 @@ serve(async (req) => {
       contextMode = "market_intelligence";
     }
 
-    const systemPrompt = buildSystemPrompt(context, contextMode);
+    // ── Fetch Investor DNA for personalized prompts ──
+    let dnaSection = "";
+    if (user_id) {
+      const { data: dna } = await supabaseAdmin
+        .from("investor_dna")
+        .select("*")
+        .eq("user_id", user_id)
+        .maybeSingle();
+
+      if (dna) {
+        const toneGuide = dna.investor_persona === 'conservative'
+          ? 'Emphasize stability, rental yield, low-risk metrics, and proven locations.'
+          : dna.investor_persona === 'aggressive'
+          ? 'Highlight undervalued deals, flip potential, growth corridors, and short-term plays.'
+          : dna.investor_persona === 'luxury'
+          ? 'Focus on prestige, premium locations, long-term capital appreciation, and exclusivity.'
+          : dna.investor_persona === 'flipper'
+          ? 'Prioritize quick-turnaround deals, renovation potential, undervaluation, and exit speed.'
+          : 'Balance growth and income strategies with moderate risk analysis.';
+
+        dnaSection = `\n\nINVESTOR DNA PROFILE:
+- Persona: ${dna.investor_persona} | Risk: ${dna.risk_tolerance_score}/100
+- Preferred Cities: ${(dna.preferred_cities || []).join(', ') || 'N/A'}
+- Preferred Types: ${(dna.preferred_property_types || []).join(', ') || 'N/A'}
+- Budget: Rp ${(dna.budget_range_min || 0).toLocaleString('id-ID')} – Rp ${(dna.budget_range_max || 0).toLocaleString('id-ID')}
+- Strategy: ${Math.round((dna.rental_income_pref_weight || 0.5) * 100)}% yield / ${Math.round((dna.capital_growth_pref_weight || 0.5) * 100)}% growth
+- Flip Affinity: ${dna.flip_strategy_affinity || 0}/100 | Luxury Bias: ${dna.luxury_bias_score || 0}/100
+- Diversification: ${dna.diversification_score || 0}/100
+
+ADAPT YOUR RESPONSE STYLE: ${toneGuide}`;
+      }
+    }
+
+    const systemPrompt = buildSystemPrompt(context, contextMode) + dnaSection;
 
     // Intelligent token limiting: keep system prompt under ~3000 tokens
     // and conversation history to last 8 messages to stay within budget
