@@ -922,8 +922,17 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
       
       let functionName: string;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const conversationHistory = currentMessages.slice(-10).map(m => ({ role: m.role, content: m.content }));
+      
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const body: { [key: string]: any } = {
         mode: 'property_chatbot',
+        payload: {
+          message: currentMessage,
+          messages: conversationHistory,
+          property_id: propertyId || null,
+          conversation_history: conversationHistory,
+        },
         message: currentMessage,
         conversationId
       };
@@ -932,7 +941,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
 
       if (isNegotiationQuery && propertyId) {
         functionName = 'rental-negotiator';
-        body.conversationHistory = currentMessages.slice(-10).map(m => ({ role: m.role, content: m.content }));
+        body.conversationHistory = conversationHistory;
       } else if (isNeighborhoodQuery) {
         functionName = 'neighborhood-simulator';
       } else {
