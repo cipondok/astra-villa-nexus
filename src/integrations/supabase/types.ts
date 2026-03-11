@@ -7440,6 +7440,90 @@ export type Database = {
           },
         ]
       }
+      deal_hunter_notifications: {
+        Row: {
+          channel: string
+          created_at: string
+          deal_classification: string
+          deal_score: number
+          deal_tier: string
+          email_sent: boolean
+          estimated_fair_value: number | null
+          expires_at: string | null
+          id: string
+          is_dismissed: boolean
+          is_read: boolean
+          match_reason: Json
+          message: string
+          opportunity_id: string
+          property_city: string | null
+          property_id: string
+          property_price: number | null
+          property_title: string | null
+          push_sent: boolean
+          thumbnail_url: string | null
+          title: string
+          undervaluation_percent: number | null
+          updated_at: string
+          urgency_score: number
+          user_id: string
+        }
+        Insert: {
+          channel?: string
+          created_at?: string
+          deal_classification?: string
+          deal_score?: number
+          deal_tier?: string
+          email_sent?: boolean
+          estimated_fair_value?: number | null
+          expires_at?: string | null
+          id?: string
+          is_dismissed?: boolean
+          is_read?: boolean
+          match_reason?: Json
+          message: string
+          opportunity_id: string
+          property_city?: string | null
+          property_id: string
+          property_price?: number | null
+          property_title?: string | null
+          push_sent?: boolean
+          thumbnail_url?: string | null
+          title: string
+          undervaluation_percent?: number | null
+          updated_at?: string
+          urgency_score?: number
+          user_id: string
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          deal_classification?: string
+          deal_score?: number
+          deal_tier?: string
+          email_sent?: boolean
+          estimated_fair_value?: number | null
+          expires_at?: string | null
+          id?: string
+          is_dismissed?: boolean
+          is_read?: boolean
+          match_reason?: Json
+          message?: string
+          opportunity_id?: string
+          property_city?: string | null
+          property_id?: string
+          property_price?: number | null
+          property_title?: string | null
+          push_sent?: boolean
+          thumbnail_url?: string | null
+          title?: string
+          undervaluation_percent?: number | null
+          updated_at?: string
+          urgency_score?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       deal_hunter_opportunities: {
         Row: {
           created_at: string | null
