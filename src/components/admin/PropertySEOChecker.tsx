@@ -779,7 +779,7 @@ const PropertySEOChecker = () => {
           ) : filteredAnalyses.length > 0 ? (
             <div className="space-y-2">
               {filteredAnalyses.map(item => (
-                <Card key={item.id} className="bg-card/60 border-border/40 hover:border-primary/30 transition-all cursor-pointer" onClick={() => handlePropertyClick(item)}>
+                <Card key={item.id} className="bg-card border-border hover:border-primary/30 transition-all cursor-pointer" onClick={() => handlePropertyClick(item)}>
                   <CardContent className="p-3">
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex-1 min-w-0">
