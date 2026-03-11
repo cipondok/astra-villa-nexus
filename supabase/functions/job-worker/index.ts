@@ -242,6 +242,7 @@ async function handleProcess(supabase: any) {
         });
         if (error) throw error;
         result = data?.data || data;
+      }
 
       // Mark task completed
       await supabase
