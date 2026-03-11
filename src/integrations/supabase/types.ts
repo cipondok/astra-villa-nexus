@@ -17074,6 +17074,81 @@ export type Database = {
           },
         ]
       }
+      property_deal_analysis: {
+        Row: {
+          analysis_metadata: Json | null
+          analyzed_at: string
+          city_avg_price_per_sqm: number | null
+          created_at: string
+          deal_score: number
+          deal_tag: string
+          demand_signal_score: number | null
+          estimated_value: number
+          id: string
+          listing_price: number
+          location_growth_score: number | null
+          price_per_sqm: number | null
+          property_id: string
+          rental_yield_estimate: number | null
+          roi_forecast_gap: number | null
+          undervaluation_percent: number
+          updated_at: string
+        }
+        Insert: {
+          analysis_metadata?: Json | null
+          analyzed_at?: string
+          city_avg_price_per_sqm?: number | null
+          created_at?: string
+          deal_score?: number
+          deal_tag?: string
+          demand_signal_score?: number | null
+          estimated_value?: number
+          id?: string
+          listing_price?: number
+          location_growth_score?: number | null
+          price_per_sqm?: number | null
+          property_id: string
+          rental_yield_estimate?: number | null
+          roi_forecast_gap?: number | null
+          undervaluation_percent?: number
+          updated_at?: string
+        }
+        Update: {
+          analysis_metadata?: Json | null
+          analyzed_at?: string
+          city_avg_price_per_sqm?: number | null
+          created_at?: string
+          deal_score?: number
+          deal_tag?: string
+          demand_signal_score?: number | null
+          estimated_value?: number
+          id?: string
+          listing_price?: number
+          location_growth_score?: number | null
+          price_per_sqm?: number | null
+          property_id?: string
+          rental_yield_estimate?: number | null
+          roi_forecast_gap?: number | null
+          undervaluation_percent?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_deal_analysis_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: true
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_deal_analysis_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: true
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_engagement_scores: {
         Row: {
           avg_dwell_seconds: number | null
