@@ -23857,6 +23857,240 @@ export type Database = {
         }
         Relationships: []
       }
+      smart_city_demographics: {
+        Row: {
+          absorption_capacity: number | null
+          city: string
+          created_at: string | null
+          demographic_details: Json | null
+          district: string | null
+          expat_settlement_probability: number | null
+          housing_demand_growth: number | null
+          id: string
+          income_migration_shift: string | null
+          population_inflow_score: number | null
+          price_pressure_probability: number | null
+          remote_work_index: number | null
+          young_professional_demand: number | null
+        }
+        Insert: {
+          absorption_capacity?: number | null
+          city: string
+          created_at?: string | null
+          demographic_details?: Json | null
+          district?: string | null
+          expat_settlement_probability?: number | null
+          housing_demand_growth?: number | null
+          id?: string
+          income_migration_shift?: string | null
+          population_inflow_score?: number | null
+          price_pressure_probability?: number | null
+          remote_work_index?: number | null
+          young_professional_demand?: number | null
+        }
+        Update: {
+          absorption_capacity?: number | null
+          city?: string
+          created_at?: string | null
+          demographic_details?: Json | null
+          district?: string | null
+          expat_settlement_probability?: number | null
+          housing_demand_growth?: number | null
+          id?: string
+          income_migration_shift?: string | null
+          population_inflow_score?: number | null
+          price_pressure_probability?: number | null
+          remote_work_index?: number | null
+          young_professional_demand?: number | null
+        }
+        Relationships: []
+      }
+      smart_city_districts: {
+        Row: {
+          capital_appreciation_index: number | null
+          city: string
+          created_at: string | null
+          current_price_sqm: number | null
+          district: string
+          drivers: Json | null
+          evolution_type: string
+          id: string
+          lifestyle_desirability: number | null
+          premiumization_probability: number | null
+          projected_price_sqm_3y: number | null
+          projected_price_sqm_5y: number | null
+          rental_demand_strength: number | null
+        }
+        Insert: {
+          capital_appreciation_index?: number | null
+          city: string
+          created_at?: string | null
+          current_price_sqm?: number | null
+          district: string
+          drivers?: Json | null
+          evolution_type: string
+          id?: string
+          lifestyle_desirability?: number | null
+          premiumization_probability?: number | null
+          projected_price_sqm_3y?: number | null
+          projected_price_sqm_5y?: number | null
+          rental_demand_strength?: number | null
+        }
+        Update: {
+          capital_appreciation_index?: number | null
+          city?: string
+          created_at?: string | null
+          current_price_sqm?: number | null
+          district?: string
+          drivers?: Json | null
+          evolution_type?: string
+          id?: string
+          lifestyle_desirability?: number | null
+          premiumization_probability?: number | null
+          projected_price_sqm_3y?: number | null
+          projected_price_sqm_5y?: number | null
+          rental_demand_strength?: number | null
+        }
+        Relationships: []
+      }
+      smart_city_infrastructure: {
+        Row: {
+          accessibility_index: number | null
+          city: string
+          completion_stage: string | null
+          created_at: string | null
+          details: Json | null
+          district: string | null
+          estimated_completion: string | null
+          expansion_velocity: number | null
+          id: string
+          impact_score: number | null
+          infrastructure_type: string
+          project_name: string
+          value_uplift_pct: number | null
+        }
+        Insert: {
+          accessibility_index?: number | null
+          city: string
+          completion_stage?: string | null
+          created_at?: string | null
+          details?: Json | null
+          district?: string | null
+          estimated_completion?: string | null
+          expansion_velocity?: number | null
+          id?: string
+          impact_score?: number | null
+          infrastructure_type: string
+          project_name: string
+          value_uplift_pct?: number | null
+        }
+        Update: {
+          accessibility_index?: number | null
+          city?: string
+          completion_stage?: string | null
+          created_at?: string | null
+          details?: Json | null
+          district?: string | null
+          estimated_completion?: string | null
+          expansion_velocity?: number | null
+          id?: string
+          impact_score?: number | null
+          infrastructure_type?: string
+          project_name?: string
+          value_uplift_pct?: number | null
+        }
+        Relationships: []
+      }
+      smart_city_opportunities: {
+        Row: {
+          city: string
+          created_at: string | null
+          demographic_drivers: Json | null
+          district: string
+          entry_timing: string | null
+          expected_roi_5y: number | null
+          growth_corridor_score: number | null
+          id: string
+          infrastructure_drivers: Json | null
+          investment_priority: number | null
+          opportunity_type: string
+          policy_drivers: Json | null
+          risk_level: string | null
+        }
+        Insert: {
+          city: string
+          created_at?: string | null
+          demographic_drivers?: Json | null
+          district: string
+          entry_timing?: string | null
+          expected_roi_5y?: number | null
+          growth_corridor_score?: number | null
+          id?: string
+          infrastructure_drivers?: Json | null
+          investment_priority?: number | null
+          opportunity_type: string
+          policy_drivers?: Json | null
+          risk_level?: string | null
+        }
+        Update: {
+          city?: string
+          created_at?: string | null
+          demographic_drivers?: Json | null
+          district?: string
+          entry_timing?: string | null
+          expected_roi_5y?: number | null
+          growth_corridor_score?: number | null
+          id?: string
+          infrastructure_drivers?: Json | null
+          investment_priority?: number | null
+          opportunity_type?: string
+          policy_drivers?: Json | null
+          risk_level?: string | null
+        }
+        Relationships: []
+      }
+      smart_city_policies: {
+        Row: {
+          city: string
+          created_at: string | null
+          effective_date: string | null
+          growth_acceleration_score: number | null
+          id: string
+          impact_summary: string | null
+          investment_friendliness: number | null
+          policy_details: Json | null
+          policy_name: string
+          policy_type: string
+          urban_transformation_index: number | null
+        }
+        Insert: {
+          city: string
+          created_at?: string | null
+          effective_date?: string | null
+          growth_acceleration_score?: number | null
+          id?: string
+          impact_summary?: string | null
+          investment_friendliness?: number | null
+          policy_details?: Json | null
+          policy_name: string
+          policy_type: string
+          urban_transformation_index?: number | null
+        }
+        Update: {
+          city?: string
+          created_at?: string | null
+          effective_date?: string | null
+          growth_acceleration_score?: number | null
+          id?: string
+          impact_summary?: string | null
+          investment_friendliness?: number | null
+          policy_details?: Json | null
+          policy_name?: string
+          policy_type?: string
+          urban_transformation_index?: number | null
+        }
+        Relationships: []
+      }
       social_commerce_campaigns: {
         Row: {
           budget: number | null
