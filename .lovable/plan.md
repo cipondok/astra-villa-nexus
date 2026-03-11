@@ -1,70 +1,59 @@
 
-# ASTRA Villa — Platform Architecture Analysis & Roadmap
 
-## Status: 🔄 IN PROGRESS
+# AI Portfolio Optimizer
 
-## Current State Assessment (March 2026)
+## Architecture
+Same proven pattern: 1 edge function, 5 DB tables, 1 hook file, 1 dashboard page.
 
-### Scale
-| Metric | Count |
-|--------|-------|
-| Pages | 120+ |
-| Components | 200+ directories |
-| Hooks | 230+ |
-| Edge Functions | 18 (consolidated from 82) |
-| Database Tables | 450+ |
-| RLS Policies | 1,000+ |
+## Database Tables
 
-### Three-Layer Architecture ✅
-| Layer | Key Features | Status |
-|-------|-------------|--------|
-| **Public Platform** | Property browse, search, map, detail pages, AI chat, mortgage tools | ✅ Mature |
-| **Investor Intelligence** | ROI forecasts, deal finder, portfolio builder, market trends, location intel | ✅ Mature |
-| **Admin AI Command Center** | Job queue, SEO engine, valuations, health monitor, KPI alerts | ✅ Mature |
+| Table | Key Columns |
+|-------|-------------|
+| `portfolio_optimizer_allocations` | `city`, `property_type`, `current_allocation_pct`, `optimal_allocation_pct`, `adjustment_direction` (increase/decrease/hold), `risk_adjusted_return`, `sharpe_ratio`, `rebalance_priority` |
+| `portfolio_optimizer_diversification` | `city`, `property_type`, `correlation_score`, `diversification_benefit`, `concentration_risk`, `recommended_weight`, `sector_exposure` |
+| `portfolio_optimizer_rebalancing` | `city`, `property_type`, `action` (buy/sell/hold/rotate), `reason`, `expected_return_improvement`, `risk_reduction_pct`, `urgency` (high/medium/low), `capital_required` |
+| `portfolio_optimizer_performance` | `city`, `property_type`, `total_return`, `risk_score`, `alpha`, `beta`, `max_drawdown`, `yield_stability`, `efficiency_score` |
+| `portfolio_optimizer_scenarios` | `scenario_name` (aggressive/balanced/conservative/income), `city`, `property_type`, `weight_pct`, `projected_return`, `projected_risk`, `sharpe_ratio` |
 
-### Edge Function Architecture ✅
-| Router | Modes |
-|--------|-------|
-| `core-engine` | 25+ modes (investment_score, valuation, health, diagnostics, map_search) |
-| `ai-engine` | 25+ modes (descriptions, NLP, recommendations, market reports) |
-| `deal-engine` | deal_finder, alerts, negotiation, pricing, forecasts |
-| `ai-assistant` | SSE streaming chatbot, NLP search, investment advisor |
-| `notification-engine` | Email, push, campaigns |
-| `payment-engine` | Midtrans, PayPal, invoices, subscriptions |
-| `vendor-engine` | Vendor services, validation |
+All: `id uuid PK`, `created_at timestamptz`, RLS public read.
 
-### AI Automation Systems ✅
-- SEO: Daily audits (3AM UTC), 6-hour auto-optimizer, property_seo_analysis tracking
-- Jobs: ai_jobs queue with claim_next_job() SKIP LOCKED, stall recovery, retry logic
-- Valuations: property_valuations with auto-recalculation
-- ROI: property_roi_forecast with 5-year projections
-- Autonomous Agent: 6-hour market scans for opportunity detection
+## Edge Function: `portfolio-optimizer`
 
----
+Pipelines via `pipeline` body param:
+- **`performance`** — Calculates return, alpha, beta, drawdown, efficiency per city×type from properties data
+- **`diversification`** — Computes correlation scores, concentration risk, recommended weights
+- **`allocations`** — Generates current vs optimal allocation with adjustment directions
+- **`rebalancing`** — Produces buy/sell/hold/rotate recommendations with urgency levels
+- **`scenarios`** — Builds 4 strategy scenarios (aggressive/balanced/conservative/income) with projected returns
+- **`full_optimize`** — Runs all 5 sequentially
 
-## Identified Gaps & Improvements
+## Frontend Hook: `src/hooks/usePortfolioOptimizer.ts`
 
-### 🔴 Critical Performance
-1. **Map viewport debouncing** — `moveend` fires on every pan; needs 300ms debounce ✅ FIXED
-2. **Spatial indexes** — Need composite indexes on (latitude, longitude, status) ✅ FIXED
-3. **Platform health aggregation** — Real AI system status on admin overview ✅ FIXED (prev iteration)
+6 exports: `usePortfolioOptimizerScan()` mutation + 5 queries for each table.
 
-### 🟡 Architecture Improvements
-4. **Unified health hook** — Single hook aggregating all AI subsystem health ✅ FIXED
-5. **Query deduplication** — MapBounds type duplicated across useMapSearch/useMapProperties
-6. **Large file refactoring** — PropertyDetail.tsx (1544 lines), Index.tsx (1199 lines) need splitting
+## Frontend Page: `src/pages/PortfolioOptimizerPage.tsx`
 
-### 🟢 Future Expansion Ready
-- AI deal finder ✅ Exists (/deal-finder)
-- Predictive market analytics ✅ Exists (/market-trends, /price-prediction)
-- AI recommendation engine ✅ Exists (ai-match-engine-v2)
-- Location intelligence ✅ Exists (/location-intelligence)
-- Knowledge graph ✅ Hook exists (useKnowledgeGraph)
+Route: `/portfolio-optimizer`
 
-### Recommended Next Steps
-1. Add database indexes for map queries at scale
-2. Debounce map viewport changes
-3. Create unified platform health dashboard
-4. Split PropertyDetail.tsx into sub-components
-5. Add API response caching headers to edge functions
-6. Implement property search result caching with stale-while-revalidate
+5-tab dashboard:
+1. **Performance** — Efficiency score bars + alpha/beta table + max drawdown indicators
+2. **Diversification** — Correlation matrix visualization + concentration risk badges
+3. **Allocations** — Current vs optimal allocation bar chart + adjustment direction arrows
+4. **Rebalancing** — Action cards (Buy/Sell/Hold/Rotate) with urgency badges + capital required
+5. **Scenarios** — 4 strategy cards with projected return/risk + Sharpe ratio comparison bar chart
+
+"Run Full Optimization" button triggers `full_optimize`.
+
+Theme-aware colors using `hsl(var(--chart-*))`, `hsl(var(--foreground))`, semantic tokens throughout.
+
+## Files
+
+| Action | File |
+|--------|------|
+| Create | `supabase/migrations/..._portfolio_optimizer.sql` |
+| Create | `supabase/functions/portfolio-optimizer/index.ts` |
+| Create | `src/hooks/usePortfolioOptimizer.ts` |
+| Create | `src/pages/PortfolioOptimizerPage.tsx` |
+| Edit | `src/App.tsx` (lazy import + route) |
+| Edit | `supabase/config.toml` (add function) |
+
