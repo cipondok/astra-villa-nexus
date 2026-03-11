@@ -420,6 +420,7 @@ const renderSection = (
     case "tenant-screening":     return <TenantScreening />;
     case "ai-command-center":   return <AICommandCenter />;
     case "global-strategy":     return <GlobalStrategyPanel />;
+    case "investor-dna-admin":  return <InvestorDNAAdminPanel />;
     default:                    return <AdminOverview />;
   }
 };

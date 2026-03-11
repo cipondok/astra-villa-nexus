@@ -207,6 +207,7 @@ export const TenantScreening = lazyRetry(() => import("./TenantScreening"));
 
 export const AICommandCenter = lazyRetry(() => import("./AICommandCenter"));
 export const GlobalStrategyPanel = lazyRetry(() => import("./GlobalStrategyPanel"));
+export const InvestorDNAAdminPanel = lazyRetry(() => import("./InvestorDNAAdminPanel"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
