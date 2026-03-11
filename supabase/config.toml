@@ -238,3 +238,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.price-intelligence]
     verify_jwt = false
 
+  [functions.launch-radar]
+    verify_jwt = false
+
