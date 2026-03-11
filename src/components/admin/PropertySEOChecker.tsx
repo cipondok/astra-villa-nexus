@@ -861,7 +861,7 @@ const PropertySEOChecker = () => {
               />
             </>
           ) : (
-            <Card className="bg-card/60"><CardContent className="p-8 text-center text-sm text-muted-foreground">No weak listings — great job! 🎉</CardContent></Card>
+            <Card className="bg-card border-border"><CardContent className="p-8 text-center text-sm text-muted-foreground">No weak listings — great job! 🎉</CardContent></Card>
           )}
         </TabsContent>
 
