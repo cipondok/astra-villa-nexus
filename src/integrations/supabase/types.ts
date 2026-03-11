@@ -1733,6 +1733,33 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_batch_locks: {
+        Row: {
+          expires_at: string
+          id: string
+          job_type: string
+          last_completed_at: string | null
+          locked_at: string
+          locked_by: string | null
+        }
+        Insert: {
+          expires_at?: string
+          id?: string
+          job_type: string
+          last_completed_at?: string | null
+          locked_at?: string
+          locked_by?: string | null
+        }
+        Update: {
+          expires_at?: string
+          id?: string
+          job_type?: string
+          last_completed_at?: string | null
+          locked_at?: string
+          locked_by?: string | null
+        }
+        Relationships: []
+      }
       ai_behavior_tracking: {
         Row: {
           created_at: string
@@ -1982,6 +2009,69 @@ export type Database = {
           },
           {
             foreignKeyName: "ai_generated_content_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_intelligence_cache: {
+        Row: {
+          cache_tier: string
+          cache_type: string
+          created_at: string | null
+          data_snapshot: Json
+          expires_at: string
+          freshness_score: number | null
+          id: string
+          is_stale: boolean | null
+          last_computed_at: string
+          property_id: string | null
+          refresh_priority: number | null
+          source_table: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          cache_tier?: string
+          cache_type: string
+          created_at?: string | null
+          data_snapshot?: Json
+          expires_at?: string
+          freshness_score?: number | null
+          id?: string
+          is_stale?: boolean | null
+          last_computed_at?: string
+          property_id?: string | null
+          refresh_priority?: number | null
+          source_table?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          cache_tier?: string
+          cache_type?: string
+          created_at?: string | null
+          data_snapshot?: Json
+          expires_at?: string
+          freshness_score?: number | null
+          id?: string
+          is_stale?: boolean | null
+          last_computed_at?: string
+          property_id?: string | null
+          refresh_priority?: number | null
+          source_table?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_intelligence_cache_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_intelligence_cache_property_id_fkey"
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "public_properties"
@@ -2261,6 +2351,48 @@ export type Database = {
           results_count?: number | null
           source?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      ai_readiness_snapshots: {
+        Row: {
+          alert_health: number | null
+          component_scores: Json | null
+          computed_at: string | null
+          coverage_deal: number | null
+          coverage_insight: number | null
+          coverage_roi: number | null
+          coverage_scored: number | null
+          freshness_avg: number | null
+          id: string
+          job_success_rate: number | null
+          readiness_score: number
+        }
+        Insert: {
+          alert_health?: number | null
+          component_scores?: Json | null
+          computed_at?: string | null
+          coverage_deal?: number | null
+          coverage_insight?: number | null
+          coverage_roi?: number | null
+          coverage_scored?: number | null
+          freshness_avg?: number | null
+          id?: string
+          job_success_rate?: number | null
+          readiness_score: number
+        }
+        Update: {
+          alert_health?: number | null
+          component_scores?: Json | null
+          computed_at?: string | null
+          coverage_deal?: number | null
+          coverage_insight?: number | null
+          coverage_roi?: number | null
+          coverage_scored?: number | null
+          freshness_avg?: number | null
+          id?: string
+          job_success_rate?: number | null
+          readiness_score?: number
         }
         Relationships: []
       }
@@ -29764,6 +29896,10 @@ export type Database = {
       }
     }
     Functions: {
+      acquire_batch_lock: {
+        Args: { p_job_type: string; p_ttl_minutes?: number }
+        Returns: boolean
+      }
       add_customer_response_secure: {
         Args: { p_customer_response: string; p_ticket_id: string }
         Returns: boolean
@@ -29844,6 +29980,7 @@ export type Database = {
       cleanup_expired_sessions: { Args: never; Returns: undefined }
       cleanup_old_bpjs_responses: { Args: never; Returns: undefined }
       cleanup_rate_limit_entries: { Args: never; Returns: undefined }
+      compute_ai_readiness: { Args: never; Returns: Json }
       count_admin_alerts: { Args: never; Returns: number }
       count_admin_alerts_by_status: { Args: never; Returns: Json }
       count_admin_alerts_by_type: { Args: never; Returns: Json }
@@ -29990,6 +30127,7 @@ export type Database = {
           verification_status: string
         }[]
       }
+      get_ai_health_metrics: { Args: never; Returns: Json }
       get_all_survey_bookings_admin: {
         Args: { p_limit?: number; p_offset?: number }
         Returns: {
@@ -30899,6 +31037,7 @@ export type Database = {
         Returns: Json
       }
       recover_stalled_jobs: { Args: never; Returns: number }
+      release_batch_lock: { Args: { p_job_type: string }; Returns: undefined }
       reset_admin_password: { Args: { new_password: string }; Returns: string }
       resolve_database_error: {
         Args: {
