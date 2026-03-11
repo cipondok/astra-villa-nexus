@@ -1255,7 +1255,7 @@ const PropertySEOChecker = () => {
               )}
 
               {contentOptimize.isPending && (
-                <Card className="bg-card/60 border-border/40">
+                <Card className="bg-card border-border">
                   <CardContent className="p-6 text-center">
                     <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
                     <p className="text-xs text-muted-foreground">AI is analyzing and optimizing content...</p>
