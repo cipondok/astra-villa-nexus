@@ -634,6 +634,11 @@ const SEOSettingsHub = ({ settings, loading, onInputChange, onSave }: SEOSetting
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* LANDING PAGE CONTENT GENERATOR */}
+        <TabsContent value="landing-gen">
+          <SeoLandingContentGenerator />
+        </TabsContent>
       </Tabs>
 
       {/* Save Button */}
