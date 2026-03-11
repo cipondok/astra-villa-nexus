@@ -386,7 +386,7 @@ async function handleMatchProperty(payload: Record<string, unknown>) {
     }
 
     // Composite match score: base quality (60%) + DNA fit (40%)
-    const baseScore = (p.investment_score || 0) * 0.4 + (p.demand_heat_score || 0) * 0.3 + (deal.deal_score || 0) * 0.3;
+    const baseScore = (p.investment_score || 0) * 0.4 + (p.demand_score || 0) * 0.3 + (deal.deal_score || 0) * 0.3;
     const matchScore = dna
       ? Math.round(baseScore * 0.6 + dnaScore * 0.4)
       : Math.round(baseScore);
