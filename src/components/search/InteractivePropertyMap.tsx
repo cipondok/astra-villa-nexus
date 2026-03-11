@@ -460,6 +460,7 @@ export default function InteractivePropertyMap() {
 
     const maxPrice = Math.max(...filteredProperties.map(p => p.price), 1);
     const maxScore = Math.max(...filteredProperties.map(p => p.investment_score || 0), 1);
+    const maxDemand = Math.max(...filteredProperties.map(p => p.demand_heat_score || 0), 1);
 
     const features: GeoJSON.Feature[] = filteredProperties.map(p => ({
       type: 'Feature' as const,
