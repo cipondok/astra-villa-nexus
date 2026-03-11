@@ -31,7 +31,7 @@ const MAPBOX_TOKEN = 'pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbTN1eGo4eXAwMWV4MnFzYTNwaTg
 const DEFAULT_CENTER: [number, number] = [117.5, -2.5];
 const DEFAULT_ZOOM = 5;
 
-type HeatmapMode = 'price' | 'investment';
+type HeatmapMode = 'price' | 'investment' | 'deal' | 'roi';
 
 const formatPrice = (price: number) => {
   if (price >= 1_000_000_000) return `Rp ${(price / 1_000_000_000).toFixed(1)}M`;
@@ -132,14 +132,22 @@ const FilterPanel = memo(({
                     <Switch id="heatmap-toggle" checked={showHeatmap} onCheckedChange={onToggleHeatmap} />
                   </div>
                   {showHeatmap && (
-                    <div className="flex gap-1.5 mt-1">
+                    <div className="grid grid-cols-2 gap-1.5 mt-1">
                       <Button size="sm" variant={heatmapMode === 'price' ? 'default' : 'outline'}
-                        className="flex-1 h-7 text-[10px]" onClick={() => onHeatmapModeChange('price')}>
+                        className="h-7 text-[10px]" onClick={() => onHeatmapModeChange('price')}>
                         <DollarSign className="h-3 w-3 mr-1" /> Harga
                       </Button>
                       <Button size="sm" variant={heatmapMode === 'investment' ? 'default' : 'outline'}
-                        className="flex-1 h-7 text-[10px]" onClick={() => onHeatmapModeChange('investment')}>
+                        className="h-7 text-[10px]" onClick={() => onHeatmapModeChange('investment')}>
                         <BarChart3 className="h-3 w-3 mr-1" /> Investasi
+                      </Button>
+                      <Button size="sm" variant={heatmapMode === 'deal' ? 'default' : 'outline'}
+                        className="h-7 text-[10px]" onClick={() => onHeatmapModeChange('deal')}>
+                        <Flame className="h-3 w-3 mr-1" /> Deals
+                      </Button>
+                      <Button size="sm" variant={heatmapMode === 'roi' ? 'default' : 'outline'}
+                        className="h-7 text-[10px]" onClick={() => onHeatmapModeChange('roi')}>
+                        <TrendingUp className="h-3 w-3 mr-1" /> ROI
                       </Button>
                     </div>
                   )}
@@ -452,6 +460,7 @@ export default function InteractivePropertyMap() {
 
     const maxPrice = Math.max(...filteredProperties.map(p => p.price), 1);
     const maxScore = Math.max(...filteredProperties.map(p => p.investment_score || 0), 1);
+    const maxDemand = Math.max(...filteredProperties.map(p => p.demand_heat_score || 0), 1);
 
     const features: GeoJSON.Feature[] = filteredProperties.map(p => ({
       type: 'Feature' as const,
@@ -475,6 +484,10 @@ export default function InteractivePropertyMap() {
       geometry: { type: 'Point' as const, coordinates: [p.longitude, p.latitude] },
       properties: {
         weight: heatmapMode === 'investment'
+          ? (p.investment_score || 0) / maxScore
+          : heatmapMode === 'deal'
+          ? (p.demand_heat_score || 0) / maxDemand
+          : heatmapMode === 'roi'
           ? (p.investment_score || 0) / maxScore
           : p.price / maxPrice,
       },
@@ -542,24 +555,34 @@ export default function InteractivePropertyMap() {
     } catch {}
   }, [showHeatmap, mapReady]);
 
-  // ── Heatmap color change for investment mode ──
+  // ── Heatmap color change based on mode ──
   useEffect(() => {
     const m = mapRef.current;
     if (!m || !mapReady) return;
     try {
-      if (heatmapMode === 'investment') {
-        m.setPaintProperty('property-heatmap', 'heatmap-color', [
-          'interpolate', ['linear'], ['heatmap-density'],
-          0, 'rgba(0,0,0,0)', 0.2, 'hsl(215, 50%, 60%)', 0.4, 'hsl(45, 80%, 55%)',
-          0.6, 'hsl(140, 65%, 50%)', 0.8, 'hsl(140, 70%, 40%)', 1, 'hsl(340, 70%, 50%)',
-        ]);
-      } else {
-        m.setPaintProperty('property-heatmap', 'heatmap-color', [
+      const colorRamps: Record<HeatmapMode, any> = {
+        price: [
           'interpolate', ['linear'], ['heatmap-density'],
           0, 'rgba(33,102,172,0)', 0.2, 'hsl(215, 65%, 65%)', 0.4, 'hsl(180, 50%, 50%)',
           0.6, 'hsl(60, 80%, 55%)', 0.8, 'hsl(25, 85%, 55%)', 1, 'hsl(0, 80%, 50%)',
-        ]);
-      }
+        ],
+        investment: [
+          'interpolate', ['linear'], ['heatmap-density'],
+          0, 'rgba(0,0,0,0)', 0.2, 'hsl(215, 50%, 60%)', 0.4, 'hsl(45, 80%, 55%)',
+          0.6, 'hsl(140, 65%, 50%)', 0.8, 'hsl(140, 70%, 40%)', 1, 'hsl(340, 70%, 50%)',
+        ],
+        deal: [
+          'interpolate', ['linear'], ['heatmap-density'],
+          0, 'rgba(0,0,0,0)', 0.2, 'hsl(45, 50%, 50%)', 0.4, 'hsl(30, 70%, 50%)',
+          0.6, 'hsl(15, 80%, 50%)', 0.8, 'hsl(0, 85%, 50%)', 1, 'hsl(340, 90%, 45%)',
+        ],
+        roi: [
+          'interpolate', ['linear'], ['heatmap-density'],
+          0, 'rgba(0,0,0,0)', 0.2, 'hsl(200, 50%, 55%)', 0.4, 'hsl(160, 60%, 50%)',
+          0.6, 'hsl(120, 65%, 45%)', 0.8, 'hsl(80, 70%, 40%)', 1, 'hsl(45, 90%, 50%)',
+        ],
+      };
+      m.setPaintProperty('property-heatmap', 'heatmap-color', colorRamps[heatmapMode]);
     } catch {}
   }, [heatmapMode, mapReady]);
 
