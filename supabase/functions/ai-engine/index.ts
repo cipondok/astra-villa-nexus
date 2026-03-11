@@ -1290,7 +1290,7 @@ async function handleRecommendations(payload: Record<string, unknown>) {
         score += Math.min(8, (deal.rental_stability_score || 0) * 0.08);
         score += dna.rental_income_pref_weight > 0.5 ? 5 : 0;
       } else if (persona === "aggressive") {
-        score += Math.min(8, (p.demand_score || 0) * 0.08);
+        score += Math.min(8, (p.investment_score || 0) * 0.08);
         score += dna.capital_growth_pref_weight > 0.5 ? 5 : 0;
       } else if (persona === "flipper") {
         score += Math.min(8, (deal.flip_potential_score || 0) * 0.08);
