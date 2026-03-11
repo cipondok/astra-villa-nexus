@@ -2,7 +2,7 @@ import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Zap } from 'lucide-react';
+import { Zap, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export interface ProvinceData {
@@ -39,13 +39,21 @@ const ProvinceRow = React.memo(({
   const progressPct = s.totalProperties > 0 ? Math.round((s.analyzedCount / s.totalProperties) * 100) : 0;
   const scoreColor = s.avgSeoScore >= 70 ? 'text-chart-1' : s.avgSeoScore >= 40 ? 'text-chart-4' : s.avgSeoScore > 0 ? 'text-destructive' : 'text-muted-foreground';
   const barColor = s.avgSeoScore >= 70 ? 'bg-chart-1' : s.avgSeoScore >= 40 ? 'bg-chart-4' : s.avgSeoScore > 0 ? 'bg-destructive' : 'bg-muted';
-  const statusIcon = s.status === 'good' ? '✅' : s.status === 'needs-work' ? '⚠️' : s.status === 'poor' ? '❌' : s.status === 'unanalyzed' ? '🔍' : '—';
+  const statusBadge = s.status === 'good'
+    ? { label: 'Good', cls: 'bg-chart-1/10 text-chart-1 border-chart-1/20' }
+    : s.status === 'needs-work'
+    ? { label: 'Needs Work', cls: 'bg-chart-4/10 text-chart-4 border-chart-4/20' }
+    : s.status === 'poor'
+    ? { label: 'Poor', cls: 'bg-destructive/10 text-destructive border-destructive/20' }
+    : s.status === 'unanalyzed'
+    ? { label: 'Unanalyzed', cls: 'bg-muted text-muted-foreground border-border' }
+    : { label: 'No Data', cls: 'bg-muted text-muted-foreground border-border' };
 
   return (
     <div
       className={cn(
         "flex items-center gap-3 p-2.5 rounded-lg border transition-all cursor-pointer group",
-        isSelected ? "border-primary/40 bg-primary/5" : "border-border/30 hover:border-border/60 hover:bg-accent/20",
+        isSelected ? "border-primary/40 bg-primary/5" : "border-border hover:border-primary/20 hover:bg-accent/20",
         isFilterActive && "ring-1 ring-primary/30"
       )}
     >
@@ -56,27 +64,27 @@ const ProvinceRow = React.memo(({
         onClick={(e) => e.stopPropagation()}
       />
 
-      <span className="text-[10px] text-muted-foreground w-5 text-right shrink-0">#{rank}</span>
+      <span className="text-[10px] text-muted-foreground w-5 text-right shrink-0 font-mono">#{rank}</span>
 
       <div className="w-40 shrink-0" onClick={() => onClickProvince(s.state)}>
         <div className="flex items-center gap-1.5">
-          <span className="text-xs font-medium truncate">{s.state}</span>
-          <span className="text-[10px]">{statusIcon}</span>
+          <span className="text-xs font-medium text-foreground truncate">{s.state}</span>
+          <Badge className={cn("text-[7px] px-1 py-0 border", statusBadge.cls)}>{statusBadge.label}</Badge>
         </div>
         <p className="text-[9px] text-muted-foreground">
-          {s.totalProperties} properties · {s.analyzedCount} analyzed
+          {s.totalProperties} properties · {s.analyzedCount} analyzed ({progressPct}%)
         </p>
       </div>
 
       <div className="flex-1 min-w-0" onClick={() => onClickProvince(s.state)}>
         <div className="flex items-center gap-2">
-          <div className="flex-1 h-4 rounded-full bg-muted/30 overflow-hidden relative">
+          <div className="flex-1 h-4 rounded-full bg-muted overflow-hidden relative">
             <div
               className={cn("h-full rounded-full transition-all duration-700 ease-out", barColor)}
               style={{ width: `${s.avgSeoScore}%` }}
             />
             {s.avgSeoScore > 0 && (
-              <span className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-foreground/80">
+              <span className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-foreground">
                 {s.avgSeoScore}/100
               </span>
             )}
@@ -87,10 +95,10 @@ const ProvinceRow = React.memo(({
         </div>
         {s.totalProperties > 0 && (
           <div className="flex items-center gap-1.5 mt-1">
-            <div className="flex-1 h-1 rounded-full bg-muted/20 overflow-hidden">
-              <div className="h-full rounded-full bg-chart-2/60 transition-all" style={{ width: `${progressPct}%` }} />
+            <div className="flex-1 h-1 rounded-full bg-muted overflow-hidden">
+              <div className="h-full rounded-full bg-primary/60 transition-all" style={{ width: `${progressPct}%` }} />
             </div>
-            <span className="text-[8px] text-muted-foreground">{progressPct}% analyzed</span>
+            <span className="text-[8px] text-muted-foreground">{progressPct}%</span>
           </div>
         )}
       </div>
@@ -98,7 +106,7 @@ const ProvinceRow = React.memo(({
       <div className="w-16 text-center shrink-0">
         {s.analyzedCount > 0 ? (
           <div>
-            <p className="text-xs font-bold">{s.avgKeywordScore}</p>
+            <p className={cn("text-xs font-bold", s.avgKeywordScore >= 70 ? 'text-chart-1' : s.avgKeywordScore >= 40 ? 'text-chart-4' : 'text-destructive')}>{s.avgKeywordScore}</p>
             <p className="text-[8px] text-muted-foreground">Keywords</p>
           </div>
         ) : (
@@ -109,7 +117,7 @@ const ProvinceRow = React.memo(({
       <div className="w-32 shrink-0 hidden md:block">
         <div className="flex flex-wrap gap-0.5">
           {s.topKeywords.length > 0 ? s.topKeywords.slice(0, 3).map(kw => (
-            <Badge key={kw} variant="outline" className="text-[7px] px-1 py-0">{kw}</Badge>
+            <Badge key={kw} variant="outline" className="text-[7px] px-1 py-0 border-border text-foreground">{kw}</Badge>
           )) : <span className="text-[9px] text-muted-foreground">No keywords</span>}
         </div>
       </div>
