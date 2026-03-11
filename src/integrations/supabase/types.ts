@@ -11733,6 +11733,270 @@ export type Database = {
         }
         Relationships: []
       }
+      launch_radar_alerts: {
+        Row: {
+          alert_type: string
+          city: string | null
+          created_at: string | null
+          developer_name: string | null
+          id: string
+          investment_score: number | null
+          is_read: boolean | null
+          message: string | null
+          metadata: Json | null
+          priority: string | null
+          signal_id: string | null
+          title: string
+        }
+        Insert: {
+          alert_type: string
+          city?: string | null
+          created_at?: string | null
+          developer_name?: string | null
+          id?: string
+          investment_score?: number | null
+          is_read?: boolean | null
+          message?: string | null
+          metadata?: Json | null
+          priority?: string | null
+          signal_id?: string | null
+          title: string
+        }
+        Update: {
+          alert_type?: string
+          city?: string | null
+          created_at?: string | null
+          developer_name?: string | null
+          id?: string
+          investment_score?: number | null
+          is_read?: boolean | null
+          message?: string | null
+          metadata?: Json | null
+          priority?: string | null
+          signal_id?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "launch_radar_alerts_signal_id_fkey"
+            columns: ["signal_id"]
+            isOneToOne: false
+            referencedRelation: "launch_radar_developer_signals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      launch_radar_demand_forecasts: {
+        Row: {
+          buyer_absorption_speed: string | null
+          city: string
+          created_at: string | null
+          district: string | null
+          foreign_investor_attraction: number | null
+          id: string
+          inventory_sellout_probability: number | null
+          post_launch_appreciation_pct: number | null
+          rental_demand_readiness: number | null
+          sales_velocity_score: number | null
+          signal_id: string | null
+          target_segments: Json | null
+        }
+        Insert: {
+          buyer_absorption_speed?: string | null
+          city: string
+          created_at?: string | null
+          district?: string | null
+          foreign_investor_attraction?: number | null
+          id?: string
+          inventory_sellout_probability?: number | null
+          post_launch_appreciation_pct?: number | null
+          rental_demand_readiness?: number | null
+          sales_velocity_score?: number | null
+          signal_id?: string | null
+          target_segments?: Json | null
+        }
+        Update: {
+          buyer_absorption_speed?: string | null
+          city?: string
+          created_at?: string | null
+          district?: string | null
+          foreign_investor_attraction?: number | null
+          id?: string
+          inventory_sellout_probability?: number | null
+          post_launch_appreciation_pct?: number | null
+          rental_demand_readiness?: number | null
+          sales_velocity_score?: number | null
+          signal_id?: string | null
+          target_segments?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "launch_radar_demand_forecasts_signal_id_fkey"
+            columns: ["signal_id"]
+            isOneToOne: false
+            referencedRelation: "launch_radar_developer_signals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      launch_radar_developer_risks: {
+        Row: {
+          avg_delay_months: number | null
+          completed_projects: number | null
+          completion_reliability: number | null
+          created_at: string | null
+          delay_probability: number | null
+          developer_name: string
+          execution_risk_rating: string | null
+          financial_strength: number | null
+          id: string
+          investment_safety_index: number | null
+          quality_perception_index: number | null
+          risk_details: Json | null
+          total_projects: number | null
+          track_record_score: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          avg_delay_months?: number | null
+          completed_projects?: number | null
+          completion_reliability?: number | null
+          created_at?: string | null
+          delay_probability?: number | null
+          developer_name: string
+          execution_risk_rating?: string | null
+          financial_strength?: number | null
+          id?: string
+          investment_safety_index?: number | null
+          quality_perception_index?: number | null
+          risk_details?: Json | null
+          total_projects?: number | null
+          track_record_score?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          avg_delay_months?: number | null
+          completed_projects?: number | null
+          completion_reliability?: number | null
+          created_at?: string | null
+          delay_probability?: number | null
+          developer_name?: string
+          execution_risk_rating?: string | null
+          financial_strength?: number | null
+          id?: string
+          investment_safety_index?: number | null
+          quality_perception_index?: number | null
+          risk_details?: Json | null
+          total_projects?: number | null
+          track_record_score?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      launch_radar_developer_signals: {
+        Row: {
+          activity_intensity_score: number | null
+          city: string
+          created_at: string | null
+          detected_at: string | null
+          developer_name: string
+          district: string | null
+          estimated_launch_date: string | null
+          estimated_project_scale: string | null
+          estimated_units: number | null
+          id: string
+          launch_probability: number | null
+          signal_details: Json | null
+          signal_type: string
+        }
+        Insert: {
+          activity_intensity_score?: number | null
+          city: string
+          created_at?: string | null
+          detected_at?: string | null
+          developer_name: string
+          district?: string | null
+          estimated_launch_date?: string | null
+          estimated_project_scale?: string | null
+          estimated_units?: number | null
+          id?: string
+          launch_probability?: number | null
+          signal_details?: Json | null
+          signal_type: string
+        }
+        Update: {
+          activity_intensity_score?: number | null
+          city?: string
+          created_at?: string | null
+          detected_at?: string | null
+          developer_name?: string
+          district?: string | null
+          estimated_launch_date?: string | null
+          estimated_project_scale?: string | null
+          estimated_units?: number | null
+          id?: string
+          launch_probability?: number | null
+          signal_details?: Json | null
+          signal_type?: string
+        }
+        Relationships: []
+      }
+      launch_radar_price_predictions: {
+        Row: {
+          arbitrage_details: Json | null
+          city: string
+          created_at: string | null
+          developer_name: string
+          early_bird_discount_pct: number | null
+          early_entry_profit_score: number | null
+          expected_capital_gain_pct: number | null
+          expected_launch_price_sqm: number | null
+          expected_resale_price_sqm: number | null
+          id: string
+          optimal_booking_window: string | null
+          phase_price_escalation: Json | null
+          signal_id: string | null
+        }
+        Insert: {
+          arbitrage_details?: Json | null
+          city: string
+          created_at?: string | null
+          developer_name: string
+          early_bird_discount_pct?: number | null
+          early_entry_profit_score?: number | null
+          expected_capital_gain_pct?: number | null
+          expected_launch_price_sqm?: number | null
+          expected_resale_price_sqm?: number | null
+          id?: string
+          optimal_booking_window?: string | null
+          phase_price_escalation?: Json | null
+          signal_id?: string | null
+        }
+        Update: {
+          arbitrage_details?: Json | null
+          city?: string
+          created_at?: string | null
+          developer_name?: string
+          early_bird_discount_pct?: number | null
+          early_entry_profit_score?: number | null
+          expected_capital_gain_pct?: number | null
+          expected_launch_price_sqm?: number | null
+          expected_resale_price_sqm?: number | null
+          id?: string
+          optimal_booking_window?: string | null
+          phase_price_escalation?: Json | null
+          signal_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "launch_radar_price_predictions_signal_id_fkey"
+            columns: ["signal_id"]
+            isOneToOne: false
+            referencedRelation: "launch_radar_developer_signals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leaderboard_snapshots: {
         Row: {
           area: string | null
