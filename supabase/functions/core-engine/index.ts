@@ -1016,6 +1016,9 @@ Deno.serve(async (req) => {
       'developer_project_launch', 'smart_tour_planner',
       'lead_generation', 'knowledge_graph', 'investor_strategy',
       'anomaly_detector', 'premium_insights',
+      'system_health_check', 'astra_token', 'filter_analytics',
+      'sync_indonesia_locations', 'database_diagnostics', 'database_fix',
+      'compute_investor_dna', 'deal_hunter_scan',
     ]);
 
     console.log('[CORE-ENGINE] mode:', mode, 'property_id:', property_id, 'NO_PID:', NO_PROPERTY_ID_MODES.has(mode));
