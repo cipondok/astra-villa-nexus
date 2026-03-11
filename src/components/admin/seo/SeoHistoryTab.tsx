@@ -134,7 +134,7 @@ const SeoHistoryTab = () => {
           { label: 'Avg Improvement', value: `+${summaryStats.avgImprovement}`, icon: TrendingUp, color: 'text-chart-4' },
           { label: 'Scheduler Runs', value: summaryStats.schedulerRuns, icon: Calendar, color: 'text-muted-foreground' },
         ].map(s => (
-          <Card key={s.label} className="bg-card/60 border-border/40">
+          <Card key={s.label} className="bg-card border-border">
             <CardContent className="p-2.5 text-center">
               <s.icon className={cn("h-4 w-4 mx-auto mb-1", s.color)} />
               <p className={cn("text-xl font-bold tabular-nums", s.color)}>{s.value}</p>
