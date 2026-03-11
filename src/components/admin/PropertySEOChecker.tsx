@@ -650,7 +650,7 @@ const PropertySEOChecker = () => {
                   </div>
                 )}
               </div>
-              <div className="text-center p-2 rounded-lg border border-border/50 bg-background/50">
+              <div className="text-center p-2 rounded-lg border border-border bg-card">
                 <div className="flex justify-center gap-2 text-[10px]">
                   <span className="text-chart-1 font-bold">{filteredStats.excellent}✓</span>
                   <span className="text-primary font-bold">{filteredStats.good}</span>
