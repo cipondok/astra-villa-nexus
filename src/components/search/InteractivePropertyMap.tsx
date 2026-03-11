@@ -553,36 +553,48 @@ export default function InteractivePropertyMap() {
     const maxScore = Math.max(...filteredProperties.map(p => p.investment_score || 0), 1);
     const maxDemand = Math.max(...filteredProperties.map(p => p.demand_heat_score || 0), 1);
 
-    const features: GeoJSON.Feature[] = filteredProperties.map(p => ({
-      type: 'Feature' as const,
-      geometry: { type: 'Point' as const, coordinates: [p.longitude, p.latitude] },
-      properties: {
-        id: p.id,
-        price: p.price,
-        priceLabel: formatPrice(p.price),
-        title: p.title,
-        investmentScore: p.investment_score || 0,
-      },
-    }));
+    const features: GeoJSON.Feature[] = filteredProperties.map(p => {
+      // Composite deal score from available signals
+      const dealScore = Math.min(100, Math.round(
+        ((p.investment_score || 0) * 0.4) + ((p.demand_heat_score || 0) * 0.6)
+      ));
+      return {
+        type: 'Feature' as const,
+        geometry: { type: 'Point' as const, coordinates: [p.longitude, p.latitude] },
+        properties: {
+          id: p.id,
+          price: p.price,
+          priceLabel: formatPrice(p.price),
+          title: p.title,
+          investmentScore: p.investment_score || 0,
+          dealScore,
+        },
+      };
+    });
     const geojson: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features };
 
     const clusterSrc = m.getSource('property-cluster') as mapboxgl.GeoJSONSource | undefined;
     if (clusterSrc) clusterSrc.setData(geojson);
 
     // Heatmap: weight based on mode
-    const heatFeatures: GeoJSON.Feature[] = filteredProperties.map(p => ({
-      type: 'Feature' as const,
-      geometry: { type: 'Point' as const, coordinates: [p.longitude, p.latitude] },
-      properties: {
-        weight: heatmapMode === 'investment'
-          ? (p.investment_score || 0) / maxScore
-          : heatmapMode === 'deal'
-          ? (p.demand_heat_score || 0) / maxDemand
-          : heatmapMode === 'roi'
-          ? (p.investment_score || 0) / maxScore
-          : p.price / maxPrice,
-      },
-    }));
+    const heatFeatures: GeoJSON.Feature[] = filteredProperties.map(p => {
+      let weight = p.price / maxPrice;
+      if (heatmapMode === 'investment') weight = (p.investment_score || 0) / maxScore;
+      else if (heatmapMode === 'deal') weight = (p.demand_heat_score || 0) / maxDemand;
+      else if (heatmapMode === 'roi') weight = (p.investment_score || 0) / maxScore;
+      else if (heatmapMode === 'liquidity') {
+        // Liquidity = composite of demand signals + investment score + inverse price
+        const demandW = (p.demand_heat_score || 0) / maxDemand;
+        const scoreW = (p.investment_score || 0) / maxScore;
+        const priceW = 1 - (p.price / maxPrice); // cheaper = more liquid
+        weight = demandW * 0.4 + scoreW * 0.35 + priceW * 0.25;
+      }
+      return {
+        type: 'Feature' as const,
+        geometry: { type: 'Point' as const, coordinates: [p.longitude, p.latitude] },
+        properties: { weight: Math.max(0, Math.min(1, weight)) },
+      };
+    });
     const heatGeoJson: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features: heatFeatures };
     const heatSrc = m.getSource('property-heat') as mapboxgl.GeoJSONSource | undefined;
     if (heatSrc) heatSrc.setData(heatGeoJson);
