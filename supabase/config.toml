@@ -247,3 +247,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.liquidity-engine]
     verify_jwt = false
 
+  [functions.hedging-engine]
+    verify_jwt = false
+
