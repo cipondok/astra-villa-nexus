@@ -10918,7 +10918,7 @@ Project Details:
       const { data: properties, error: propErr } = await serviceClient
         .from('properties')
         .select('id, title, price, city, state, property_type, area_sqm, investment_score, created_at, status, days_on_market, save_count, listing_type')
-        .eq('status', 'published')
+        .in('status', ['active', 'published'])
         .not('price', 'is', null)
         .gt('price', 0)
         .limit(500);
