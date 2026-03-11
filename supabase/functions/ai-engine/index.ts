@@ -1247,7 +1247,7 @@ async function handleRecommendations(payload: Record<string, unknown>) {
   let q = sb
     .from("properties")
     .select("id, title, price, city, state, property_type, listing_type, bedrooms, bathrooms, building_area_sqm, investment_score, demand_score, thumbnail_url")
-    .eq("status", "available");
+    .eq("status", "active");
 
   // DNA-based pre-filter
   if (dna?.preferred_cities?.length) {
