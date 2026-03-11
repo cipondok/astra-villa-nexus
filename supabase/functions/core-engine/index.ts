@@ -11245,10 +11245,11 @@ Project Details:
         status: 'completed',
         total_properties_scanned: properties.length,
         total_alerts_created: alertsCreated,
-        total_users_notified: 0,
+        total_users_notified: usersNotified,
         summary: {
           opportunities_found: opportunities.length,
           top_deals: topDeals.length,
+          users_notified: usersNotified,
           classifications: {
             hot_deal: opportunities.filter(o => o.deal_classification === 'hot_deal').length,
             silent_opportunity: opportunities.filter(o => o.deal_classification === 'silent_opportunity').length,
