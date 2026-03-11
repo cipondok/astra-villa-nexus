@@ -212,6 +212,7 @@ export const InvestorDNAAdminPanel = lazyRetry(() => import("./InvestorDNAAdminP
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
   "ai-command-center": { label: "AI Command Center", category: "AI & Tools" },
+  "investor-dna-admin": { label: "Investor DNA Intelligence", category: "Investor Management" },
   "global-strategy": { label: "Global Strategy", category: "AI & Tools" },
   "overview": { label: "Dashboard Overview", category: "" },
   "diagnostic": { label: "Project Diagnostics", category: "System" },
