@@ -762,13 +762,23 @@ export default function InteractivePropertyMap() {
               <Card className="bg-background/95 backdrop-blur-md border-border/60 shadow-lg">
                 <CardContent className="p-2.5">
                   <p className="text-[10px] font-semibold text-foreground mb-1.5">
-                    {heatmapMode === 'investment' ? '📊 Investment Score' : '💰 Price Density'}
+                    {heatmapMode === 'investment' ? '📊 Investment Score' :
+                     heatmapMode === 'deal' ? '🔥 Deal Heat' :
+                     heatmapMode === 'roi' ? '📈 ROI Density' :
+                     heatmapMode === 'liquidity' ? '💧 Liquidity Glow' :
+                     '💰 Price Density'}
                   </p>
                   <div className="flex items-center gap-1">
                     <span className="text-[9px] text-muted-foreground">Low</span>
                     <div className="flex gap-0.5">
                       {(heatmapMode === 'investment'
                         ? ['bg-blue-400', 'bg-yellow-400', 'bg-green-500', 'bg-green-700', 'bg-rose-500']
+                        : heatmapMode === 'liquidity'
+                        ? ['bg-cyan-400', 'bg-teal-400', 'bg-emerald-400', 'bg-emerald-600', 'bg-green-700']
+                        : heatmapMode === 'deal'
+                        ? ['bg-yellow-400', 'bg-orange-400', 'bg-orange-600', 'bg-red-500', 'bg-rose-600']
+                        : heatmapMode === 'roi'
+                        ? ['bg-blue-400', 'bg-teal-400', 'bg-green-500', 'bg-lime-500', 'bg-yellow-500']
                         : ['bg-blue-400', 'bg-teal-400', 'bg-yellow-400', 'bg-orange-500', 'bg-red-500']
                       ).map((c, i) => (
                         <div key={i} className={cn('w-6 h-2.5 rounded-sm', c)} />
