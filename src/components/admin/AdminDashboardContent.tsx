@@ -185,6 +185,7 @@ import {
   GlobalStrategyPanel,
   InvestorDNAAdminPanel,
   GlobalMacroIntelligencePanel,
+  DealHunterAdminPanel,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
