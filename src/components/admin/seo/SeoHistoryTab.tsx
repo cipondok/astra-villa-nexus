@@ -161,7 +161,7 @@ const SeoHistoryTab = () => {
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
                   <XAxis dataKey="date" tick={{ fontSize: 9 }} tickFormatter={(v) => v.slice(5)} stroke="hsl(var(--muted-foreground))" />
                   <YAxis tick={{ fontSize: 9 }} stroke="hsl(var(--muted-foreground))" />
-                  <Tooltip contentStyle={{ fontSize: 11, background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))' }} />
+                   <Tooltip contentStyle={{ fontSize: 11, background: 'hsl(var(--popover))', color: 'hsl(var(--popover-foreground))', border: '1px solid hsl(var(--border))', borderRadius: 8 }} itemStyle={{ color: 'hsl(var(--popover-foreground))' }} />
                   <Bar dataKey="analyzed" name="Analyzed" fill="hsl(var(--chart-2))" radius={[2, 2, 0, 0]} />
                   <Bar dataKey="optimized" name="Optimized" fill="hsl(var(--chart-1))" radius={[2, 2, 0, 0]} />
                   <Bar dataKey="applied" name="Applied" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} />
