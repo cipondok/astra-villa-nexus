@@ -12,6 +12,8 @@ import {
 } from 'lucide-react';
 import { PieChart as RPieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
+import ScenarioComparison from './ScenarioComparison';
+import FinancingSimulation from './FinancingSimulation';
 
 const formatIDR = (v: number) =>
   new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v);
