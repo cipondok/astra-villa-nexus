@@ -232,3 +232,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.intelligence-brain]
     verify_jwt = false
 
+  [functions.fund-intelligence]
+    verify_jwt = false
+
