@@ -114,7 +114,7 @@ const SeoHistoryTab = () => {
 
   if (actions.length === 0) {
     return (
-      <Card className="bg-card/60 border-border/40">
+      <Card className="bg-card border-border">
         <CardContent className="p-8 text-center">
           <History className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
           <p className="text-sm text-muted-foreground">No SEO actions recorded yet. Run an analysis or optimization to see history.</p>
