@@ -133,6 +133,10 @@ const InvestorDashboard = () => {
               </p>
             </div>
           </div>
+          <div className="flex items-center gap-2">
+            <Suspense fallback={null}>
+              <AIReadinessBadge compact />
+            </Suspense>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => navigate('/portfolio-dashboard')}>
               <BarChart3 className="w-3.5 h-3.5 mr-1.5" /> Full Portfolio
