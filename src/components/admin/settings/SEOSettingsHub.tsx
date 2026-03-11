@@ -13,7 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Progress } from '@/components/ui/progress';
 import {
   Search, Globe, Image, Tags, FileText, ExternalLink, BarChart3, Shield,
-  CheckCircle2, XCircle, AlertTriangle, Eye, Sparkles, Code, Gauge
+  CheckCircle2, XCircle, AlertTriangle, Eye, Sparkles, Code, Gauge, MapPin
 } from 'lucide-react';
 import SEOAuditReport from './SEOAuditReport';
 import SeoLandingContentGenerator from './SeoLandingContentGenerator';
