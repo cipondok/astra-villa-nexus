@@ -35,6 +35,7 @@ import { KPRCalculator } from '@/components/property/KPRCalculator';
 import PropertyMortgageWidget from '@/components/mortgage/PropertyMortgageWidget';
 import DaysOnMarketTracker from '@/components/property/DaysOnMarketTracker';
 import ValuationHistory from '@/components/property/ValuationHistory';
+const PropertyLiquidityWidget = lazy(() => import('@/components/property/PropertyLiquidityWidget'));
 import { PropertyPosterInfo } from '@/components/property/PropertyPosterInfo';
 import PropertyTrustBadges from '@/components/property/PropertyTrustBadges';
 import PropertyTrustShield from '@/components/property/PropertyTrustShield';
@@ -1430,9 +1431,12 @@ const PropertyDetail: React.FC = () => {
         </div>
 
         {/* AI Property Valuation & ROI Forecast */}
-        <div className="mt-6 sm:mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <div className="mt-6 sm:mt-8 grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           <AutoValuationCard propertyId={property.id} currentPrice={property.price} />
           <ROIForecastCard propertyId={property.id} currentPrice={property.price} />
+          <Suspense fallback={null}>
+            <PropertyLiquidityWidget city={property.city} propertyType={property.property_type} />
+          </Suspense>
         </div>
 
         {/* Reviews Section */}
