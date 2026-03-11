@@ -254,6 +254,12 @@ export default function PortfolioBuilderPanel() {
             {/* Scenario Comparison */}
             <ScenarioComparison result={result} />
 
+            {/* Portfolio Risk Analysis */}
+            <PortfolioRiskPanel result={result} />
+
+            {/* Investment Timeline Forecast */}
+            <InvestmentTimelineForecast result={result} />
+
             {/* Financing Simulation */}
             <FinancingSimulation
               propertyPrice={result.total_allocated}

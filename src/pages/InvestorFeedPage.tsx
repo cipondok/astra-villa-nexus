@@ -85,6 +85,9 @@ export default function InvestorFeedPage() {
             </div>
           </div>
 
+          {/* Strategy Selector */}
+          <FeedStrategySelector />
+
           {/* Category Tabs */}
           <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
             {CATEGORIES.map(cat => (
