@@ -9694,6 +9694,54 @@ export type Database = {
           },
         ]
       }
+      investor_feed_preferences: {
+        Row: {
+          budget_max: number | null
+          budget_min: number | null
+          created_at: string
+          id: string
+          preferred_cities: string[] | null
+          risk_tolerance: string
+          strategy_type: string
+          updated_at: string
+          user_id: string
+          weight_appreciation: number
+          weight_deal_score: number
+          weight_liquidity: number
+          weight_rental_yield: number
+        }
+        Insert: {
+          budget_max?: number | null
+          budget_min?: number | null
+          created_at?: string
+          id?: string
+          preferred_cities?: string[] | null
+          risk_tolerance?: string
+          strategy_type?: string
+          updated_at?: string
+          user_id: string
+          weight_appreciation?: number
+          weight_deal_score?: number
+          weight_liquidity?: number
+          weight_rental_yield?: number
+        }
+        Update: {
+          budget_max?: number | null
+          budget_min?: number | null
+          created_at?: string
+          id?: string
+          preferred_cities?: string[] | null
+          risk_tolerance?: string
+          strategy_type?: string
+          updated_at?: string
+          user_id?: string
+          weight_appreciation?: number
+          weight_deal_score?: number
+          weight_liquidity?: number
+          weight_rental_yield?: number
+        }
+        Relationships: []
+      }
       investor_profiles: {
         Row: {
           country_of_residence: string | null
@@ -17080,15 +17128,21 @@ export type Database = {
           analyzed_at: string
           city_avg_price_per_sqm: number | null
           created_at: string
+          deal_confidence: number | null
           deal_score: number
           deal_tag: string
           demand_signal_score: number | null
           estimated_value: number
+          flip_potential_score: number | null
           id: string
+          liquidity_probability: number | null
+          listing_age_days: number | null
           listing_price: number
           location_growth_score: number | null
+          macro_growth_factor: number | null
           price_per_sqm: number | null
           property_id: string
+          rental_stability_score: number | null
           rental_yield_estimate: number | null
           roi_forecast_gap: number | null
           undervaluation_percent: number
@@ -17099,15 +17153,21 @@ export type Database = {
           analyzed_at?: string
           city_avg_price_per_sqm?: number | null
           created_at?: string
+          deal_confidence?: number | null
           deal_score?: number
           deal_tag?: string
           demand_signal_score?: number | null
           estimated_value?: number
+          flip_potential_score?: number | null
           id?: string
+          liquidity_probability?: number | null
+          listing_age_days?: number | null
           listing_price?: number
           location_growth_score?: number | null
+          macro_growth_factor?: number | null
           price_per_sqm?: number | null
           property_id: string
+          rental_stability_score?: number | null
           rental_yield_estimate?: number | null
           roi_forecast_gap?: number | null
           undervaluation_percent?: number
@@ -17118,15 +17178,21 @@ export type Database = {
           analyzed_at?: string
           city_avg_price_per_sqm?: number | null
           created_at?: string
+          deal_confidence?: number | null
           deal_score?: number
           deal_tag?: string
           demand_signal_score?: number | null
           estimated_value?: number
+          flip_potential_score?: number | null
           id?: string
+          liquidity_probability?: number | null
+          listing_age_days?: number | null
           listing_price?: number
           location_growth_score?: number | null
+          macro_growth_factor?: number | null
           price_per_sqm?: number | null
           property_id?: string
+          rental_stability_score?: number | null
           rental_yield_estimate?: number | null
           roi_forecast_gap?: number | null
           undervaluation_percent?: number
