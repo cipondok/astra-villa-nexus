@@ -1005,7 +1005,7 @@ Deno.serve(async (req) => {
 
     // Modes that do NOT require a property_id (bulk/market-wide operations)
     const NO_PROPERTY_ID_MODES = new Set([
-      'deal_finder', 'deal_alerts', 'deal_detector', 'investment_advisor',
+      'deal_finder', 'deal_alerts', 'deal_detector', 'deal_analysis_v2', 'investment_advisor',
       'market_trends_analyzer', 'market_trend_predictor', 'market_trend',
       'off_market_deals', 'portfolio_builder', 'investor_alerts',
       'map_search', 'global_market_intelligence', 'demand_intelligence',
