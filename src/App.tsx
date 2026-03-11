@@ -362,6 +362,9 @@ const AppContent = () => {
                 <Route path="/stress-test-engine" element={<ProtectedRoute />}>
                   <Route index element={<StressTestEnginePage />} />
                 </Route>
+                <Route path="/portfolio-optimizer" element={<ProtectedRoute />}>
+                  <Route index element={<PortfolioOptimizerPage />} />
+                </Route>
                 <Route path="/investor-feed" element={<ProtectedRoute />}>
                   <Route index element={<InvestorFeedPage />} />
                 </Route>
