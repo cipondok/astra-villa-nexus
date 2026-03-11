@@ -209,9 +209,11 @@ export const AICommandCenter = lazyRetry(() => import("./AICommandCenter"));
 export const GlobalStrategyPanel = lazyRetry(() => import("./GlobalStrategyPanel"));
 export const InvestorDNAAdminPanel = lazyRetry(() => import("./InvestorDNAAdminPanel"));
 export const GlobalMacroIntelligencePanel = lazyRetry(() => import("@/pages/GlobalMacroIntelligencePage"));
+export const DealHunterAdminPanel = lazyRetry(() => import("./DealHunterAdminPanel"));
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
+  "deal-hunter-admin": { label: "Deal Hunter Engine", category: "Investor Management" },
   "ai-command-center": { label: "AI Command Center", category: "AI & Tools" },
   "investor-dna-admin": { label: "Investor DNA Intelligence", category: "Investor Management" },
   "global-macro-intelligence": { label: "Global Macro Intelligence", category: "Investor Management" },

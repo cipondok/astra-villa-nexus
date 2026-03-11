@@ -424,6 +424,7 @@ const renderSection = (
     case "global-strategy":     return <GlobalStrategyPanel />;
     case "investor-dna-admin":  return <InvestorDNAAdminPanel />;
     case "global-macro-intelligence": return <GlobalMacroIntelligencePanel />;
+    case "deal-hunter-admin":   return <DealHunterAdminPanel />;
     default:                    return <AdminOverview />;
   }
 };

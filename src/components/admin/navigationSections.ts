@@ -177,6 +177,13 @@ export const navigationSections = {
       icon: Globe,
       description: "Capital flow prediction, regional heatmaps, cross-border strategy, and infrastructure impact analysis",
       badge: "New"
+    },
+    {
+      key: "deal-hunter-admin",
+      label: "Deal Hunter Engine",
+      icon: Target,
+      description: "AI deal detection engine — scan history, opportunity breakdown by classification/tier, and manual scan trigger",
+      badge: "New"
     }
   ],
 
