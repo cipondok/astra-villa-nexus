@@ -241,3 +241,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.launch-radar]
     verify_jwt = false
 
+  [functions.smart-city-engine]
+    verify_jwt = false
+
