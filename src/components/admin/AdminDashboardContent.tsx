@@ -182,6 +182,7 @@ import {
   PropertyAuctionManager,
   TenantScreening,
   AICommandCenter,
+  GlobalStrategyPanel,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
