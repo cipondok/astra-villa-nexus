@@ -1926,6 +1926,50 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_feature_importance: {
+        Row: {
+          correlation_with_outcome: number | null
+          created_at: string | null
+          feature_name: string
+          id: string
+          importance_score: number | null
+          last_computed_at: string | null
+          model_id: string | null
+          stability_score: number | null
+          trend: string | null
+        }
+        Insert: {
+          correlation_with_outcome?: number | null
+          created_at?: string | null
+          feature_name: string
+          id?: string
+          importance_score?: number | null
+          last_computed_at?: string | null
+          model_id?: string | null
+          stability_score?: number | null
+          trend?: string | null
+        }
+        Update: {
+          correlation_with_outcome?: number | null
+          created_at?: string | null
+          feature_name?: string
+          id?: string
+          importance_score?: number | null
+          last_computed_at?: string | null
+          model_id?: string | null
+          stability_score?: number | null
+          trend?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_feature_importance_model_id_fkey"
+            columns: ["model_id"]
+            isOneToOne: false
+            referencedRelation: "ai_model_registry"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_feedback_signals: {
         Row: {
           action_weight: number | null
@@ -2079,6 +2123,122 @@ export type Database = {
           },
         ]
       }
+      ai_investor_cluster_membership: {
+        Row: {
+          avg_hold_months: number | null
+          behavioral_vector: Json | null
+          cluster_id: string | null
+          created_at: string | null
+          evolution_history: Json | null
+          id: string
+          investment_style: string | null
+          last_action_at: string | null
+          membership_score: number | null
+          persona_label: string | null
+          risk_appetite: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          avg_hold_months?: number | null
+          behavioral_vector?: Json | null
+          cluster_id?: string | null
+          created_at?: string | null
+          evolution_history?: Json | null
+          id?: string
+          investment_style?: string | null
+          last_action_at?: string | null
+          membership_score?: number | null
+          persona_label?: string | null
+          risk_appetite?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          avg_hold_months?: number | null
+          behavioral_vector?: Json | null
+          cluster_id?: string | null
+          created_at?: string | null
+          evolution_history?: Json | null
+          id?: string
+          investment_style?: string | null
+          last_action_at?: string | null
+          membership_score?: number | null
+          persona_label?: string | null
+          risk_appetite?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_investor_cluster_membership_cluster_id_fkey"
+            columns: ["cluster_id"]
+            isOneToOne: false
+            referencedRelation: "ai_investor_clusters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_investor_clusters: {
+        Row: {
+          avg_holding_period_months: number | null
+          avg_portfolio_value: number | null
+          avg_risk_score: number | null
+          behavioral_signature: Json | null
+          centroid_features: Json
+          cluster_name: string
+          cluster_type: string
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          last_reclustered_at: string | null
+          member_count: number | null
+          performance_metrics: Json | null
+          preferred_locations: string[] | null
+          preferred_property_types: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          avg_holding_period_months?: number | null
+          avg_portfolio_value?: number | null
+          avg_risk_score?: number | null
+          behavioral_signature?: Json | null
+          centroid_features?: Json
+          cluster_name: string
+          cluster_type?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_reclustered_at?: string | null
+          member_count?: number | null
+          performance_metrics?: Json | null
+          preferred_locations?: string[] | null
+          preferred_property_types?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          avg_holding_period_months?: number | null
+          avg_portfolio_value?: number | null
+          avg_risk_score?: number | null
+          behavioral_signature?: Json | null
+          centroid_features?: Json
+          cluster_name?: string
+          cluster_type?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_reclustered_at?: string | null
+          member_count?: number | null
+          performance_metrics?: Json | null
+          preferred_locations?: string[] | null
+          preferred_property_types?: string[] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       ai_job_logs: {
         Row: {
           created_at: string
@@ -2213,6 +2373,54 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_learning_cycles: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          cycle_type: string
+          data_points_processed: number | null
+          duration_ms: number | null
+          error_message: string | null
+          id: string
+          improvements: Json | null
+          metrics_after: Json | null
+          metrics_before: Json | null
+          models_affected: string[] | null
+          started_at: string | null
+          status: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          cycle_type: string
+          data_points_processed?: number | null
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          improvements?: Json | null
+          metrics_after?: Json | null
+          metrics_before?: Json | null
+          models_affected?: string[] | null
+          started_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          cycle_type?: string
+          data_points_processed?: number | null
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          improvements?: Json | null
+          metrics_after?: Json | null
+          metrics_before?: Json | null
+          models_affected?: string[] | null
+          started_at?: string | null
+          status?: string | null
+        }
+        Relationships: []
+      }
       ai_learning_snapshots: {
         Row: {
           adjustments: Json | null
@@ -2261,6 +2469,66 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_market_patterns: {
+        Row: {
+          confidence: number | null
+          created_at: string | null
+          discovery_method: string | null
+          expired_at: string | null
+          first_detected_at: string | null
+          id: string
+          is_active: boolean | null
+          last_confirmed_at: string | null
+          location_city: string | null
+          location_coordinates: unknown
+          location_district: string | null
+          pattern_data: Json
+          pattern_type: string
+          recommended_action: string | null
+          severity: string | null
+          signal_strength: number | null
+          supporting_evidence: Json | null
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string | null
+          discovery_method?: string | null
+          expired_at?: string | null
+          first_detected_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_confirmed_at?: string | null
+          location_city?: string | null
+          location_coordinates?: unknown
+          location_district?: string | null
+          pattern_data?: Json
+          pattern_type: string
+          recommended_action?: string | null
+          severity?: string | null
+          signal_strength?: number | null
+          supporting_evidence?: Json | null
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string | null
+          discovery_method?: string | null
+          expired_at?: string | null
+          first_detected_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_confirmed_at?: string | null
+          location_city?: string | null
+          location_coordinates?: unknown
+          location_district?: string | null
+          pattern_data?: Json
+          pattern_type?: string
+          recommended_action?: string | null
+          severity?: string | null
+          signal_strength?: number | null
+          supporting_evidence?: Json | null
+        }
+        Relationships: []
+      }
       ai_message_reactions: {
         Row: {
           conversation_id: string | null
@@ -2297,6 +2565,134 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_model_performance_history: {
+        Row: {
+          accuracy_bucket: Json | null
+          created_at: string | null
+          drift_detected: boolean | null
+          drift_magnitude: number | null
+          id: string
+          mae: number | null
+          mape: number | null
+          model_id: string | null
+          period_end: string
+          period_start: string
+          r_squared: number | null
+          region_accuracy: Json | null
+          resolved_predictions: number | null
+          rmse: number | null
+          total_predictions: number | null
+        }
+        Insert: {
+          accuracy_bucket?: Json | null
+          created_at?: string | null
+          drift_detected?: boolean | null
+          drift_magnitude?: number | null
+          id?: string
+          mae?: number | null
+          mape?: number | null
+          model_id?: string | null
+          period_end: string
+          period_start: string
+          r_squared?: number | null
+          region_accuracy?: Json | null
+          resolved_predictions?: number | null
+          rmse?: number | null
+          total_predictions?: number | null
+        }
+        Update: {
+          accuracy_bucket?: Json | null
+          created_at?: string | null
+          drift_detected?: boolean | null
+          drift_magnitude?: number | null
+          id?: string
+          mae?: number | null
+          mape?: number | null
+          model_id?: string | null
+          period_end?: string
+          period_start?: string
+          r_squared?: number | null
+          region_accuracy?: Json | null
+          resolved_predictions?: number | null
+          rmse?: number | null
+          total_predictions?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_model_performance_history_model_id_fkey"
+            columns: ["model_id"]
+            isOneToOne: false
+            referencedRelation: "ai_model_registry"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_model_registry: {
+        Row: {
+          accuracy_score: number | null
+          correct_predictions: number | null
+          created_at: string | null
+          drift_score: number | null
+          f1_score: number | null
+          feature_weights: Json | null
+          hyperparameters: Json | null
+          id: string
+          model_name: string
+          model_type: string
+          model_version: string
+          precision_score: number | null
+          promoted_at: string | null
+          recall_score: number | null
+          retired_at: string | null
+          status: string
+          total_predictions: number | null
+          training_data_range: unknown
+          updated_at: string | null
+        }
+        Insert: {
+          accuracy_score?: number | null
+          correct_predictions?: number | null
+          created_at?: string | null
+          drift_score?: number | null
+          f1_score?: number | null
+          feature_weights?: Json | null
+          hyperparameters?: Json | null
+          id?: string
+          model_name: string
+          model_type?: string
+          model_version?: string
+          precision_score?: number | null
+          promoted_at?: string | null
+          recall_score?: number | null
+          retired_at?: string | null
+          status?: string
+          total_predictions?: number | null
+          training_data_range?: unknown
+          updated_at?: string | null
+        }
+        Update: {
+          accuracy_score?: number | null
+          correct_predictions?: number | null
+          created_at?: string | null
+          drift_score?: number | null
+          f1_score?: number | null
+          feature_weights?: Json | null
+          hyperparameters?: Json | null
+          id?: string
+          model_name?: string
+          model_type?: string
+          model_version?: string
+          precision_score?: number | null
+          promoted_at?: string | null
+          recall_score?: number | null
+          retired_at?: string | null
+          status?: string
+          total_predictions?: number | null
+          training_data_range?: unknown
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       ai_model_weights: {
         Row: {
           factor: string
@@ -2320,6 +2716,74 @@ export type Database = {
           weight?: number
         }
         Relationships: []
+      }
+      ai_prediction_log: {
+        Row: {
+          absolute_error: number | null
+          actual_value: number | null
+          city: string | null
+          confidence: number | null
+          created_at: string | null
+          features_used: Json | null
+          id: string
+          model_id: string | null
+          model_name: string
+          percentage_error: number | null
+          predicted_value: number
+          prediction_error: number | null
+          prediction_horizon_days: number | null
+          prediction_type: string
+          property_id: string | null
+          region: string | null
+          resolved_at: string | null
+        }
+        Insert: {
+          absolute_error?: number | null
+          actual_value?: number | null
+          city?: string | null
+          confidence?: number | null
+          created_at?: string | null
+          features_used?: Json | null
+          id?: string
+          model_id?: string | null
+          model_name: string
+          percentage_error?: number | null
+          predicted_value: number
+          prediction_error?: number | null
+          prediction_horizon_days?: number | null
+          prediction_type: string
+          property_id?: string | null
+          region?: string | null
+          resolved_at?: string | null
+        }
+        Update: {
+          absolute_error?: number | null
+          actual_value?: number | null
+          city?: string | null
+          confidence?: number | null
+          created_at?: string | null
+          features_used?: Json | null
+          id?: string
+          model_id?: string | null
+          model_name?: string
+          percentage_error?: number | null
+          predicted_value?: number
+          prediction_error?: number | null
+          prediction_horizon_days?: number | null
+          prediction_type?: string
+          property_id?: string | null
+          region?: string | null
+          resolved_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_prediction_log_model_id_fkey"
+            columns: ["model_id"]
+            isOneToOne: false
+            referencedRelation: "ai_model_registry"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ai_property_queries: {
         Row: {
@@ -2440,6 +2904,63 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      ai_strategy_simulations: {
+        Row: {
+          capital_efficiency: number | null
+          confidence_interval: Json | null
+          created_at: string | null
+          execution_time_ms: number | null
+          expected_return: number | null
+          id: string
+          input_parameters: Json
+          max_drawdown: number | null
+          num_scenarios: number | null
+          optimal_strategy: Json | null
+          results_summary: Json
+          risk_adjusted_return: number | null
+          scenario_distribution: Json | null
+          simulation_type: string
+          user_id: string | null
+          var_95: number | null
+        }
+        Insert: {
+          capital_efficiency?: number | null
+          confidence_interval?: Json | null
+          created_at?: string | null
+          execution_time_ms?: number | null
+          expected_return?: number | null
+          id?: string
+          input_parameters?: Json
+          max_drawdown?: number | null
+          num_scenarios?: number | null
+          optimal_strategy?: Json | null
+          results_summary?: Json
+          risk_adjusted_return?: number | null
+          scenario_distribution?: Json | null
+          simulation_type: string
+          user_id?: string | null
+          var_95?: number | null
+        }
+        Update: {
+          capital_efficiency?: number | null
+          confidence_interval?: Json | null
+          created_at?: string | null
+          execution_time_ms?: number | null
+          expected_return?: number | null
+          id?: string
+          input_parameters?: Json
+          max_drawdown?: number | null
+          num_scenarios?: number | null
+          optimal_strategy?: Json | null
+          results_summary?: Json
+          risk_adjusted_return?: number | null
+          scenario_distribution?: Json | null
+          simulation_type?: string
+          user_id?: string | null
+          var_95?: number | null
+        }
+        Relationships: []
       }
       ai_training_specialists: {
         Row: {
