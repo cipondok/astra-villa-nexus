@@ -132,7 +132,7 @@ const FilterPanel = memo(({
                     <Switch id="heatmap-toggle" checked={showHeatmap} onCheckedChange={onToggleHeatmap} />
                   </div>
                   {showHeatmap && (
-                    <div className="grid grid-cols-2 gap-1.5 mt-1">
+                    <div className="grid grid-cols-3 gap-1.5 mt-1">
                       <Button size="sm" variant={heatmapMode === 'price' ? 'default' : 'outline'}
                         className="h-7 text-[10px]" onClick={() => onHeatmapModeChange('price')}>
                         <DollarSign className="h-3 w-3 mr-1" /> Harga
@@ -148,6 +148,10 @@ const FilterPanel = memo(({
                       <Button size="sm" variant={heatmapMode === 'roi' ? 'default' : 'outline'}
                         className="h-7 text-[10px]" onClick={() => onHeatmapModeChange('roi')}>
                         <TrendingUp className="h-3 w-3 mr-1" /> ROI
+                      </Button>
+                      <Button size="sm" variant={heatmapMode === 'liquidity' ? 'default' : 'outline'}
+                        className="h-7 text-[10px] col-span-2" onClick={() => onHeatmapModeChange('liquidity')}>
+                        <Sparkles className="h-3 w-3 mr-1" /> Liquidity
                       </Button>
                     </div>
                   )}
