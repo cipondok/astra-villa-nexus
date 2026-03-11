@@ -114,34 +114,54 @@ if ('serviceWorker' in navigator) {
   }
 }
 
-// Prevent react-remove-scroll from causing page jumps by stripping its
-// inline styles immediately whenever it modifies body/html.
+// Prevent react-remove-scroll from causing page jumps by making
+// body/html style properties read-only for the props it touches.
 const preventScrollLockJump = () => {
+  // Freeze specific style properties on body and html so react-remove-scroll
+  // cannot set them at all (no flash, no race condition).
+  const freezeStyleProp = (el: HTMLElement, prop: string, value: string) => {
+    const style = el.style;
+    const descriptor = Object.getOwnPropertyDescriptor(CSSStyleDeclaration.prototype, prop) 
+      || Object.getOwnPropertyDescriptor(style, prop);
+    
+    // Set the desired value first
+    style.setProperty(
+      prop.replace(/([A-Z])/g, '-$1').toLowerCase(),
+      value,
+      'important'
+    );
+    
+    // Override the setter to be a no-op
+    Object.defineProperty(style, prop, {
+      get() { return descriptor?.get?.call(style) ?? value; },
+      set() { /* no-op: block react-remove-scroll */ },
+      configurable: true,
+    });
+  };
+
+  // Block the exact properties react-remove-scroll modifies
+  [document.body, document.documentElement].forEach(el => {
+    freezeStyleProp(el, 'paddingRight', '0px');
+    freezeStyleProp(el, 'overflow', '');
+    freezeStyleProp(el, 'position', '');
+    freezeStyleProp(el, 'top', '');
+    freezeStyleProp(el, 'width', '');
+  });
+
+  // Also strip data-scroll-locked attribute reactively
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       if (mutation.type === 'attributes') {
         const el = mutation.target as HTMLElement;
-        if (el === document.body || el === document.documentElement) {
-          // Remove data-scroll-locked attribute
-          if (el.hasAttribute('data-scroll-locked')) {
-            el.removeAttribute('data-scroll-locked');
-          }
-          // Strip inline padding-right and overflow set by react-remove-scroll
-          if (el.style.paddingRight) el.style.paddingRight = '';
-          if (el.style.overflow === 'hidden') el.style.overflow = '';
-          if (el.style.position === 'fixed') el.style.position = '';
-          if (el.style.top) el.style.top = '';
-          if (el.style.width && el.style.width !== '') {
-            // react-remove-scroll sets width to calc(100% - scrollbarWidth)
-            if (el.style.width.includes('calc')) el.style.width = '';
-          }
+        if ((el === document.body || el === document.documentElement) 
+            && el.hasAttribute('data-scroll-locked')) {
+          el.removeAttribute('data-scroll-locked');
         }
       }
     }
   });
-
-  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style', 'data-scroll-locked'] });
-  observer.observe(document.body, { attributes: true, attributeFilter: ['style', 'data-scroll-locked'] });
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-scroll-locked'] });
+  observer.observe(document.body, { attributes: true, attributeFilter: ['data-scroll-locked'] });
 };
 
 preventScrollLockJump();
