@@ -244,3 +244,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.smart-city-engine]
     verify_jwt = false
 
+  [functions.liquidity-engine]
+    verify_jwt = false
+
