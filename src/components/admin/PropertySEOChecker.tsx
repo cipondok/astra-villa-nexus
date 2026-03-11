@@ -688,13 +688,13 @@ const PropertySEOChecker = () => {
 
       <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
         {[
-          { label: 'Avg SEO Score', value: stats?.avgScore ?? 0, icon: BarChart3, color: 'text-primary', bg: 'bg-primary/5 border-primary/20' },
-          { label: 'Total Properties', value: stats?.totalProperties ?? 0, icon: Globe, color: 'text-chart-2', bg: 'bg-chart-2/5 border-chart-2/20' },
-          { label: 'Analyzed', value: stats?.analyzedCount ?? 0, icon: Target, color: 'text-chart-2', bg: 'bg-chart-2/5 border-chart-2/20' },
-          { label: 'Good (≥70)', value: (stats?.excellent ?? 0) + (stats?.good ?? 0), icon: CheckCircle2, color: 'text-chart-1', bg: 'bg-chart-1/5 border-chart-1/20' },
-          { label: 'Needs Work', value: stats?.needsImprovement ?? 0, icon: TrendingUp, color: 'text-chart-4', bg: 'bg-chart-4/5 border-chart-4/20' },
-          { label: 'Poor (<40)', value: stats?.poor ?? 0, icon: XCircle, color: 'text-destructive', bg: 'bg-destructive/5 border-destructive/20' },
-          { label: 'Unanalyzed', value: (stats?.totalProperties ?? 0) - (stats?.analyzedCount ?? 0), icon: AlertTriangle, color: 'text-muted-foreground', bg: 'bg-muted/30 border-border/40' },
+          { label: 'Avg SEO Score', value: stats?.avgScore ?? 0, icon: BarChart3, color: 'text-primary', bg: 'bg-card border-border' },
+          { label: 'Total Properties', value: stats?.totalProperties ?? 0, icon: Globe, color: 'text-chart-2', bg: 'bg-card border-border' },
+          { label: 'Analyzed', value: stats?.analyzedCount ?? 0, icon: Target, color: 'text-chart-2', bg: 'bg-card border-border' },
+          { label: 'Good (≥70)', value: (stats?.excellent ?? 0) + (stats?.good ?? 0), icon: CheckCircle2, color: 'text-chart-1', bg: 'bg-card border-border' },
+          { label: 'Needs Work', value: stats?.needsImprovement ?? 0, icon: TrendingUp, color: 'text-chart-4', bg: 'bg-card border-border' },
+          { label: 'Poor (<40)', value: stats?.poor ?? 0, icon: XCircle, color: 'text-destructive', bg: 'bg-card border-border' },
+          { label: 'Unanalyzed', value: (stats?.totalProperties ?? 0) - (stats?.analyzedCount ?? 0), icon: AlertTriangle, color: 'text-muted-foreground', bg: 'bg-card border-border' },
         ].map(stat => (
           <Card key={stat.label} className={stat.bg}>
             <CardContent className="p-2.5 text-center">
