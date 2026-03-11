@@ -628,7 +628,7 @@ const PropertySEOChecker = () => {
               </span>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
-              <div className="text-center p-2 rounded-lg border border-border/50 bg-background/50">
+                <div className="text-center p-2 rounded-lg border border-border bg-card">
                 <p className="text-lg font-bold">{filteredStats.totalProperties}</p>
                 <p className="text-[9px] text-muted-foreground">Total Properties</p>
               </div>
