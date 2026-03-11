@@ -816,7 +816,7 @@ const PropertySEOChecker = () => {
               />
             </div>
           ) : (
-            <Card className="bg-card/60 border-border/40">
+            <Card className="bg-card border-border">
               <CardContent className="p-8 text-center">
                 <Search className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
                 <p className="text-sm text-muted-foreground">No analyzed properties found</p>
