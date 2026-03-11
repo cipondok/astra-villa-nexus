@@ -1000,7 +1000,7 @@ const PropertySEOChecker = () => {
           {currentAnalysis ? (
             <div className="space-y-3">
               {/* Header Card */}
-              <Card className="bg-card/60 border-border/40">
+              <Card className="bg-card border-border">
                 <CardHeader className="p-3 pb-2">
                   <div className="flex items-center justify-between flex-wrap gap-2">
                     <CardTitle className="text-sm">{currentAnalysis.seo_title || 'Untitled Property'}</CardTitle>
