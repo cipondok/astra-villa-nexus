@@ -619,7 +619,7 @@ const PropertySEOChecker = () => {
 
       {/* Filtered Location SEO Status */}
       {filteredStats && (
-        <Card className="bg-primary/5 border-primary/20">
+        <Card className="bg-primary/5 border-primary/30">
           <CardContent className="p-3">
             <div className="flex items-center gap-2 mb-2">
               <MapPin className="h-3.5 w-3.5 text-primary" />
