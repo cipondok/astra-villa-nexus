@@ -35,6 +35,7 @@ import { KPRCalculator } from '@/components/property/KPRCalculator';
 import PropertyMortgageWidget from '@/components/mortgage/PropertyMortgageWidget';
 import DaysOnMarketTracker from '@/components/property/DaysOnMarketTracker';
 import ValuationHistory from '@/components/property/ValuationHistory';
+const PropertyLiquidityWidget = lazy(() => import('@/components/property/PropertyLiquidityWidget'));
 import { PropertyPosterInfo } from '@/components/property/PropertyPosterInfo';
 import PropertyTrustBadges from '@/components/property/PropertyTrustBadges';
 import PropertyTrustShield from '@/components/property/PropertyTrustShield';
