@@ -6305,6 +6305,125 @@ export type Database = {
           },
         ]
       }
+      copilot_conversations: {
+        Row: {
+          context_id: string | null
+          context_type: string | null
+          created_at: string
+          id: string
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          context_id?: string | null
+          context_type?: string | null
+          created_at?: string
+          id?: string
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          context_id?: string | null
+          context_type?: string | null
+          created_at?: string
+          id?: string
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      copilot_investment_alerts: {
+        Row: {
+          alert_type: string
+          city: string | null
+          created_at: string
+          data_points: Json | null
+          expires_at: string | null
+          generated_at: string
+          id: string
+          is_active: boolean | null
+          message: string
+          property_type: string | null
+          severity: string | null
+          state: string | null
+          title: string
+          trend_direction: string | null
+          trend_magnitude: number | null
+        }
+        Insert: {
+          alert_type: string
+          city?: string | null
+          created_at?: string
+          data_points?: Json | null
+          expires_at?: string | null
+          generated_at?: string
+          id?: string
+          is_active?: boolean | null
+          message: string
+          property_type?: string | null
+          severity?: string | null
+          state?: string | null
+          title: string
+          trend_direction?: string | null
+          trend_magnitude?: number | null
+        }
+        Update: {
+          alert_type?: string
+          city?: string | null
+          created_at?: string
+          data_points?: Json | null
+          expires_at?: string | null
+          generated_at?: string
+          id?: string
+          is_active?: boolean | null
+          message?: string
+          property_type?: string | null
+          severity?: string | null
+          state?: string | null
+          title?: string
+          trend_direction?: string | null
+          trend_magnitude?: number | null
+        }
+        Relationships: []
+      }
+      copilot_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          role: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          role: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "copilot_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "copilot_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       core_team_members: {
         Row: {
           avatar_url: string | null
@@ -16659,6 +16778,63 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      property_ai_insights: {
+        Row: {
+          best_for_persona: string | null
+          comparable_ids: string[] | null
+          confidence_score: number | null
+          created_at: string
+          exit_strategy: Json | null
+          expires_at: string | null
+          generated_at: string
+          id: string
+          insight_type: string
+          projected_roi: number | null
+          property_id: string
+          raw_reasoning: string | null
+          recommendation_level: string | null
+          risks: Json | null
+          updated_at: string
+          why_good_deal: string | null
+        }
+        Insert: {
+          best_for_persona?: string | null
+          comparable_ids?: string[] | null
+          confidence_score?: number | null
+          created_at?: string
+          exit_strategy?: Json | null
+          expires_at?: string | null
+          generated_at?: string
+          id?: string
+          insight_type?: string
+          projected_roi?: number | null
+          property_id: string
+          raw_reasoning?: string | null
+          recommendation_level?: string | null
+          risks?: Json | null
+          updated_at?: string
+          why_good_deal?: string | null
+        }
+        Update: {
+          best_for_persona?: string | null
+          comparable_ids?: string[] | null
+          confidence_score?: number | null
+          created_at?: string
+          exit_strategy?: Json | null
+          expires_at?: string | null
+          generated_at?: string
+          id?: string
+          insight_type?: string
+          projected_roi?: number | null
+          property_id?: string
+          raw_reasoning?: string | null
+          recommendation_level?: string | null
+          risks?: Json | null
+          updated_at?: string
+          why_good_deal?: string | null
+        }
+        Relationships: []
       }
       property_alerts: {
         Row: {

@@ -41,6 +41,7 @@ const GlobalLoadingIndicator = lazy(() => import('@/components/ui/GlobalLoadingI
 
 
 const ResponsiveAIChatWidget = lazy(() => import('@/components/ai/ResponsiveAIChatWidget'));
+const InvestorCopilot = lazy(() => import('@/components/investor/InvestorCopilot'));
 const WhatsAppInquiryButton = lazy(() => import('@/components/WhatsAppInquiryButton'));
 const FloatingThemeToggle = lazy(() => import('@/components/FloatingThemeToggle'));
 
@@ -603,6 +604,7 @@ function App() {
                             <CookieSystem />
                             <Suspense fallback={null}>
                               <ResponsiveAIChatWidget />
+                              <InvestorCopilot />
                               <WhatsAppInquiryButton variant="floating" defaultType="general" />
                               
                               <SessionExpirationHandler />
