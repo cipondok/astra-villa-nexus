@@ -226,3 +226,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.kpi-alert-monitor]
     verify_jwt = false
 
+  [functions.investor-copilot]
+    verify_jwt = false
+
