@@ -11294,6 +11294,18 @@ Project Details:
       });
     }
 
+    // ── System Health Check ──
+    if (mode === 'system_health_check') {
+      return new Response(JSON.stringify({
+        status: 'ok',
+        mode: 'system_health_check',
+        timestamp: new Date().toISOString(),
+        uptime: true,
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     return new Response(JSON.stringify({ error: 'Unknown mode or unhandled request' }), {
       status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
