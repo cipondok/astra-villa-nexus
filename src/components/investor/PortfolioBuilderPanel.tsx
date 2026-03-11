@@ -248,6 +248,15 @@ export default function PortfolioBuilderPanel() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Scenario Comparison */}
+            <ScenarioComparison result={result} />
+
+            {/* Financing Simulation */}
+            <FinancingSimulation
+              propertyPrice={result.total_allocated}
+              investmentHorizon={result.investment_horizon}
+            />
           </motion.div>
         )}
       </AnimatePresence>
