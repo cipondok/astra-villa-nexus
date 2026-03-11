@@ -217,7 +217,7 @@ const SeoHistoryTab = () => {
                       <Cell key={i} fill={COLORS[i % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip contentStyle={{ fontSize: 11, background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))' }} />
+                   <Tooltip contentStyle={{ fontSize: 11, background: 'hsl(var(--popover))', color: 'hsl(var(--popover-foreground))', border: '1px solid hsl(var(--border))', borderRadius: 8 }} itemStyle={{ color: 'hsl(var(--popover-foreground))' }} />
                 </PieChart>
               </ResponsiveContainer>
             ) : (
