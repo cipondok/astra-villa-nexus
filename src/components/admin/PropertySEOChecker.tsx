@@ -831,7 +831,7 @@ const PropertySEOChecker = () => {
           {weakListings.length > 0 ? (
             <>
               {weakListings.map(item => (
-                <Card key={item.id} className="bg-card/60 border-border/40 border-l-2 border-l-destructive hover:border-primary/30 cursor-pointer transition-all" onClick={() => handlePropertyClick(item)}>
+                <Card key={item.id} className="bg-card border-border border-l-2 border-l-destructive hover:border-primary/30 cursor-pointer transition-all" onClick={() => handlePropertyClick(item)}>
                   <CardContent className="p-3">
                     <div className="flex items-center justify-between">
                       <div className="flex-1 min-w-0">
