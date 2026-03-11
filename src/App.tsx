@@ -456,6 +456,9 @@ const AppContent = () => {
                 <Route path="/wealth-simulator" element={<ProtectedRoute />}>
                   <Route index element={<WealthSimulatorPage />} />
                 </Route>
+                <Route path="/global-macro-intelligence" element={<ProtectedRoute />}>
+                  <Route index element={<GlobalMacroIntelligencePage />} />
+                </Route>
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
