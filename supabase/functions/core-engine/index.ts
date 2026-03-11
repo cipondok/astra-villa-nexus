@@ -11133,10 +11133,13 @@ Project Details:
         .slice(0, 20);
 
       let alertsCreated = 0;
+      let usersNotified = 0;
+      const notifiedUserIds = new Set<string>();
+
       if (topDeals.length > 0) {
         const { data: dnaProfiles } = await serviceClient
           .from('investor_dna')
-          .select('user_id, preferred_cities, preferred_property_types, budget_range_min, budget_range_max, investor_persona');
+          .select('user_id, preferred_cities, preferred_property_types, budget_range_min, budget_range_max, investor_persona, risk_tolerance_score, luxury_bias_score, flip_strategy_affinity');
 
         for (const deal of topDeals) {
           const dealProp = properties.find(p => p.id === deal.property_id);
@@ -11148,14 +11151,70 @@ Project Details:
             const budgetMin = Number(dna.budget_range_min) || 0;
             const budgetMax = Number(dna.budget_range_max) || Infinity;
             const budgetFit = Number(dealProp.price) >= budgetMin && Number(dealProp.price) <= budgetMax;
-            return cityMatch && typeMatch && budgetFit;
+            // Persona affinity: luxury personas match luxury properties, flippers match undervalued
+            const personaBoost = (dna.investor_persona === 'luxury' && Number(dealProp.price) >= 5_000_000_000)
+              || (dna.investor_persona === 'flipper' && deal.undervaluation_percent >= 15)
+              || (dna.investor_persona === 'aggressive' && deal.urgency_score >= 60);
+            return (cityMatch && typeMatch && budgetFit) || personaBoost;
           }).slice(0, 50);
 
           if (matchedUsers.length === 0) continue;
 
-          const notifications = matchedUsers.map((u: any) => ({
+          // Build match reasons per user
+          const buildMatchReasons = (dna: any) => {
+            const reasons: string[] = [];
+            if (dna.preferred_cities?.includes(dealProp.city)) reasons.push('city_match');
+            if (dna.preferred_property_types?.includes(dealProp.property_type)) reasons.push('type_match');
+            const budgetMin = Number(dna.budget_range_min) || 0;
+            const budgetMax = Number(dna.budget_range_max) || Infinity;
+            if (Number(dealProp.price) >= budgetMin && Number(dealProp.price) <= budgetMax) reasons.push('budget_fit');
+            if (dna.investor_persona === 'luxury' && Number(dealProp.price) >= 5_000_000_000) reasons.push('luxury_persona');
+            if (dna.investor_persona === 'flipper' && deal.undervaluation_percent >= 15) reasons.push('flipper_persona');
+            if (dna.investor_persona === 'aggressive' && deal.urgency_score >= 60) reasons.push('aggressive_match');
+            return reasons;
+          };
+
+          const classLabel = deal.deal_classification === 'hot_deal' ? '🔥 Hot Deal' 
+            : deal.deal_classification === 'silent_opportunity' ? '🤫 Silent Opportunity' 
+            : deal.deal_classification === 'long_term_value' ? '📈 Long-term Value'
+            : '⚡ Opportunity';
+
+          // Insert into deal_hunter_notifications (new dedicated table)
+          const dhnRows = matchedUsers.map((u: any) => ({
             user_id: u.user_id,
-            title: `🎯 ${deal.deal_classification === 'hot_deal' ? 'Hot Deal' : deal.deal_classification === 'silent_opportunity' ? 'Silent Opportunity' : 'Investment Opportunity'}: ${dealProp.title}`,
+            opportunity_id: deal.property_id, // using property_id as opportunity ref
+            property_id: deal.property_id,
+            deal_classification: deal.deal_classification,
+            deal_tier: deal.deal_tier,
+            deal_score: deal.deal_opportunity_signal_score,
+            urgency_score: deal.urgency_score,
+            match_reason: buildMatchReasons(u),
+            title: `${classLabel}: ${dealProp.title}`,
+            message: `${dealProp.city} · ${deal.undervaluation_percent}% below FMV · Urgency ${deal.urgency_score}/100 · Entry window ${deal.optimal_entry_window_days}d`,
+            property_title: dealProp.title,
+            property_city: dealProp.city,
+            property_price: Number(dealProp.price),
+            undervaluation_percent: deal.undervaluation_percent,
+            estimated_fair_value: deal.estimated_fair_value,
+            expires_at: deal.expires_at,
+            channel: deal.deal_tier === 'vip' || deal.deal_tier === 'institutional' ? 'push_email' : 'in_app',
+          }));
+
+          for (let i = 0; i < dhnRows.length; i += 30) {
+            const chunk = dhnRows.slice(i, i + 30);
+            const { error: dhnErr } = await serviceClient.from('deal_hunter_notifications').insert(chunk);
+            if (!dhnErr) {
+              alertsCreated += chunk.length;
+              chunk.forEach((r: any) => notifiedUserIds.add(r.user_id));
+            } else {
+              console.error('deal_hunter_notifications insert error:', dhnErr);
+            }
+          }
+
+          // Also insert into in_app_notifications for general notification bell
+          const inAppNotifs = matchedUsers.map((u: any) => ({
+            user_id: u.user_id,
+            title: `🎯 ${classLabel}: ${dealProp.title}`,
             message: `${dealProp.city} · ${deal.undervaluation_percent}% below FMV · Urgency ${deal.urgency_score}/100`,
             type: `deal_hunter_${deal.deal_classification}`,
             property_id: deal.property_id,
@@ -11167,15 +11226,17 @@ Project Details:
               sell_probability: deal.sell_probability_30d,
               deal_tier: deal.deal_tier,
               classification: deal.deal_classification,
+              expires_at: deal.expires_at,
             },
           }));
 
-          for (let i = 0; i < notifications.length; i += 30) {
-            const chunk = notifications.slice(i, i + 30);
-            const { error: notifErr } = await serviceClient.from('in_app_notifications').insert(chunk);
-            if (!notifErr) alertsCreated += chunk.length;
+          for (let i = 0; i < inAppNotifs.length; i += 30) {
+            const chunk = inAppNotifs.slice(i, i + 30);
+            await serviceClient.from('in_app_notifications').insert(chunk).then(() => {}).catch(() => {});
           }
         }
+
+        usersNotified = notifiedUserIds.size;
       }
 
       // 8. Log scan
@@ -11184,10 +11245,11 @@ Project Details:
         status: 'completed',
         total_properties_scanned: properties.length,
         total_alerts_created: alertsCreated,
-        total_users_notified: 0,
+        total_users_notified: usersNotified,
         summary: {
           opportunities_found: opportunities.length,
           top_deals: topDeals.length,
+          users_notified: usersNotified,
           classifications: {
             hot_deal: opportunities.filter(o => o.deal_classification === 'hot_deal').length,
             silent_opportunity: opportunities.filter(o => o.deal_classification === 'silent_opportunity').length,

@@ -6,6 +6,7 @@ import { lazy, Suspense } from 'react';
 const AIReadinessBadge = lazy(() => import('@/components/ai/AIReadinessBadge'));
 const InvestorDNAPanel = lazy(() => import('@/components/investor/InvestorDNAPanel'));
 const DealHunterPanel = lazy(() => import('@/components/investor/DealHunterPanel'));
+const DealHunterNotificationPanel = lazy(() => import('@/components/investor/DealHunterNotificationPanel'));
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -391,6 +392,13 @@ const InvestorDashboard = () => {
             <motion.div {...fadeIn} transition={{ delay: 0.32 }}>
               <Suspense fallback={<Skeleton className="h-64 w-full" />}>
                 <DealHunterPanel />
+              </Suspense>
+            </motion.div>
+
+            {/* Deal Hunter Notifications */}
+            <motion.div {...fadeIn} transition={{ delay: 0.34 }}>
+              <Suspense fallback={<Skeleton className="h-48 w-full" />}>
+                <DealHunterNotificationPanel />
               </Suspense>
             </motion.div>
 
