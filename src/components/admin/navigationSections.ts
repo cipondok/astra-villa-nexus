@@ -163,6 +163,13 @@ export const navigationSections = {
       icon: TrendingUp,
       description: "Track investor inquiries, eligibility checks, and conversion metrics",
       badge: "New"
+    },
+    {
+      key: "investor-dna-admin",
+      label: "Investor DNA Intelligence",
+      icon: Sparkles,
+      description: "View all investor DNA profiles with persona, risk, and churn filtering for behavioral oversight",
+      badge: "New"
     }
   ],
 
