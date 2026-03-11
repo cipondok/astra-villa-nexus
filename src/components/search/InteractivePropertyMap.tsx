@@ -485,6 +485,10 @@ export default function InteractivePropertyMap() {
       properties: {
         weight: heatmapMode === 'investment'
           ? (p.investment_score || 0) / maxScore
+          : heatmapMode === 'deal'
+          ? (p.demand_heat_score || 0) / maxDemand
+          : heatmapMode === 'roi'
+          ? (p.investment_score || 0) / maxScore
           : p.price / maxPrice,
       },
     }));
