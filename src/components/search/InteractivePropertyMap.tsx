@@ -653,10 +653,106 @@ export default function InteractivePropertyMap() {
     if (!m || !mapReady) return;
     try {
       m.setLayoutProperty('property-heatmap', 'visibility', showHeatmap ? 'visible' : 'none');
-      m.setLayoutProperty('clusters', 'visibility', showHeatmap ? 'none' : 'visible');
-      m.setLayoutProperty('cluster-count', 'visibility', showHeatmap ? 'none' : 'visible');
+      // When heatmap is on, hide standard clusters; show deal clusters only if deal mode active
+      const showStdClusters = !showHeatmap && !dealClusterMode;
+      m.setLayoutProperty('clusters', 'visibility', showStdClusters ? 'visible' : 'none');
+      m.setLayoutProperty('cluster-count', 'visibility', showStdClusters ? 'visible' : 'none');
     } catch {}
-  }, [showHeatmap, mapReady]);
+  }, [showHeatmap, mapReady, dealClusterMode]);
+
+  // ── Deal cluster mode toggle ──
+  useEffect(() => {
+    const m = mapRef.current;
+    if (!m || !mapReady) return;
+    try {
+      const showDeal = dealClusterMode && !showHeatmap;
+      m.setLayoutProperty('deal-clusters', 'visibility', showDeal ? 'visible' : 'none');
+      m.setLayoutProperty('deal-cluster-count', 'visibility', showDeal ? 'visible' : 'none');
+      m.setLayoutProperty('clusters', 'visibility', !showDeal && !showHeatmap ? 'visible' : 'none');
+      m.setLayoutProperty('cluster-count', 'visibility', !showDeal && !showHeatmap ? 'visible' : 'none');
+    } catch {}
+  }, [dealClusterMode, showHeatmap, mapReady]);
+
+  // ── Growth Hotspot markers ──
+  const hotspotMarkersRef = useRef<mapboxgl.Marker[]>([]);
+  useEffect(() => {
+    const m = mapRef.current;
+    // Clean up old hotspot markers
+    hotspotMarkersRef.current.forEach(mk => mk.remove());
+    hotspotMarkersRef.current = [];
+
+    if (!m || !mapReady || !showHotspots || !hotspots.length) return;
+
+    // City coordinates lookup (approximate centers for major Indonesian cities)
+    const CITY_COORDS: Record<string, [number, number]> = {
+      'Jakarta': [106.8456, -6.2088], 'Bandung': [107.6191, -6.9175],
+      'Surabaya': [112.7508, -7.2575], 'Bali': [115.1889, -8.4095],
+      'Denpasar': [115.2167, -8.6500], 'Yogyakarta': [110.3695, -7.7956],
+      'Semarang': [110.4203, -6.9666], 'Makassar': [119.4327, -5.1477],
+      'Medan': [98.6722, 3.5952], 'Palembang': [104.7458, -2.9761],
+      'Bekasi': [107.0008, -6.2349], 'Tangerang': [106.6297, -6.1702],
+      'Depok': [106.8316, -6.4025], 'Bogor': [106.8019, -6.5944],
+      'Malang': [112.6326, -7.9666], 'Batam': [104.0305, 1.0456],
+      'Lombok': [116.3249, -8.5830], 'Canggu': [115.1325, -8.6478],
+      'Ubud': [115.2625, -8.5069], 'Seminyak': [115.1614, -8.6913],
+      'Kuta': [115.1745, -8.7220], 'Nusa Dua': [115.2326, -8.8006],
+    };
+
+    hotspots.forEach(h => {
+      const coords = CITY_COORDS[h.city];
+      if (!coords) return;
+
+      const score = h.hotspot_score || 0;
+      const trend = h.trend || 'stable';
+      const trendEmoji = trend === 'hot' ? '🔥' : trend === 'emerging' ? '🚀' : trend === 'cooling' ? '❄️' : '📊';
+      const ringColor = score >= 70 ? 'hsl(140, 60%, 45%)' : score >= 40 ? 'hsl(45, 80%, 55%)' : 'hsl(215, 50%, 55%)';
+      const glowColor = score >= 70 ? 'rgba(34, 197, 94, 0.25)' : score >= 40 ? 'rgba(234, 179, 8, 0.2)' : 'rgba(59, 130, 246, 0.15)';
+
+      const el = document.createElement('div');
+      el.className = 'hotspot-marker';
+      el.innerHTML = `
+        <div style="
+          position: relative;
+          width: 60px; height: 60px;
+          display: flex; align-items: center; justify-content: center;
+        ">
+          <div style="
+            position: absolute; inset: 0;
+            border-radius: 50%;
+            background: ${glowColor};
+            border: 2px solid ${ringColor};
+            animation: pulse 2s ease-in-out infinite;
+          "></div>
+          <div style="
+            position: relative; z-index: 1;
+            background: hsl(var(--background));
+            border: 2px solid ${ringColor};
+            border-radius: 8px;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: 700;
+            color: hsl(var(--foreground));
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+          ">
+            ${trendEmoji} ${h.city.slice(0, 8)}
+            <br/>
+            <span style="font-size: 9px; opacity: 0.7;">${score}★ ${h.property_count || 0}p</span>
+          </div>
+        </div>
+      `;
+
+      const marker = new mapboxgl.Marker({ element: el, anchor: 'center' })
+        .setLngLat(coords)
+        .addTo(m);
+      hotspotMarkersRef.current.push(marker);
+    });
+
+    return () => {
+      hotspotMarkersRef.current.forEach(mk => mk.remove());
+      hotspotMarkersRef.current = [];
+    };
+  }, [hotspots, showHotspots, mapReady]);
 
   // ── Heatmap color change based on mode ──
   useEffect(() => {
