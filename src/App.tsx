@@ -178,6 +178,7 @@ const FundIntelligencePage = lazy(() => import('@/pages/FundIntelligencePage'));
 const PriceIntelligencePage = lazy(() => import('@/pages/PriceIntelligencePage'));
 const OffMarketDealsPage = lazy(() => import('@/pages/OffMarketDealsPage'));
 const ProjectLaunchPage = lazy(() => import('@/pages/ProjectLaunchPage'));
+const LaunchRadarPage = lazy(() => import('@/pages/LaunchRadarPage'));
 const InvestorFeedPage = lazy(() => import('@/pages/InvestorFeedPage'));
 const TourPlannerPage = lazy(() => import('@/pages/TourPlannerPage'));
 const InvestmentAssistantPage = lazy(() => import('@/pages/InvestmentAssistantPage'));
