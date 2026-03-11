@@ -215,7 +215,7 @@ const StateSeoOverviewTab = ({
       )}
 
       {/* State Table */}
-      <Card className="bg-card/60 border-border/40">
+      <Card className="bg-card border-border">
         <CardHeader className="p-3 pb-2">
           <CardTitle className="text-sm flex items-center gap-2">
             <MapPin className="h-4 w-4 text-primary" />
