@@ -183,6 +183,7 @@ import {
   TenantScreening,
   AICommandCenter,
   GlobalStrategyPanel,
+  InvestorDNAAdminPanel,
 } from "./adminSectionRegistry";
 
 const OffPlanProjectManager = lazy(() => import("./OffPlanProjectManager"));
