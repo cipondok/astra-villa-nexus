@@ -5,6 +5,7 @@ import { useUserAiProfile } from '@/hooks/useUserAiProfile';
 import { lazy, Suspense } from 'react';
 const AIReadinessBadge = lazy(() => import('@/components/ai/AIReadinessBadge'));
 const InvestorDNAPanel = lazy(() => import('@/components/investor/InvestorDNAPanel'));
+const DealHunterPanel = lazy(() => import('@/components/investor/DealHunterPanel'));
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
