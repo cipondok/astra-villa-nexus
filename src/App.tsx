@@ -452,6 +452,9 @@ const AppContent = () => {
                 <Route path="/rental-yield-optimizer" element={<ProtectedRoute />}>
                   <Route index element={<RentalYieldOptimizerPage />} />
                 </Route>
+                <Route path="/wealth-simulator" element={<ProtectedRoute />}>
+                  <Route index element={<WealthSimulatorPage />} />
+                </Route>
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
