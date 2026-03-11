@@ -322,7 +322,102 @@ Always call the extract_filters function with the parsed values.`;
 }
 
 async function handleMatchProperty(payload: Record<string, unknown>) {
-  return json({ mode: "match_property", status: "not_implemented", payload });
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const sb = createClient(supabaseUrl, serviceKey);
+
+  const userId = payload.user_id as string;
+  const limit = Math.min(Number(payload.limit) || 10, 30);
+
+  // 1. Fetch Investor DNA (if user authenticated)
+  let dna: any = null;
+  if (userId) {
+    const { data } = await sb.from("investor_dna").select("*").eq("user_id", userId).maybeSingle();
+    dna = data;
+  }
+
+  // 2. Build property query with DNA-informed filters
+  let q = sb
+    .from("properties")
+    .select("id, title, price, city, state, property_type, listing_type, bedrooms, bathrooms, building_area_sqm, land_area_sqm, investment_score, demand_heat_score, thumbnail_url, created_at")
+    .eq("status", "available")
+    .order("investment_score", { ascending: false })
+    .limit(100);
+
+  // DNA city/type pre-filter: widen pool but prefer DNA-preferred
+  if (dna?.preferred_cities?.length && !payload.city) {
+    // Fetch from preferred cities + some global for diversity
+    q = q.in("city", [...dna.preferred_cities.slice(0, 5)]);
+  }
+  if (payload.city) q = q.eq("city", payload.city);
+  if (payload.property_type) q = q.eq("property_type", payload.property_type);
+
+  const { data: properties, error } = await q;
+  if (error) return json({ error: error.message }, 500);
+  if (!properties?.length) return json({ properties: [], match_meta: { dna_used: false } });
+
+  // 3. Fetch deal analysis for scored properties
+  const propIds = properties.map((p: any) => p.id);
+  const { data: deals } = await sb.from("property_deal_analysis").select("property_id, deal_score, undervaluation_percent, rental_stability_score, flip_potential_score").in("property_id", propIds);
+  const dealMap = new Map((deals || []).map((d: any) => [d.property_id, d]));
+
+  // 4. DNA-weighted scoring
+  const scored = properties.map((p: any) => {
+    const deal = dealMap.get(p.id) || {} as any;
+    let dnaScore = 0;
+
+    if (dna) {
+      // City match: +25 if in preferred cities
+      if (dna.preferred_cities?.includes(p.city)) dnaScore += 25;
+      // Type match: +20
+      if (dna.preferred_property_types?.includes(p.property_type)) dnaScore += 20;
+      // Budget fit: +20 if within range
+      if (p.price >= (dna.budget_range_min || 0) && p.price <= (dna.budget_range_max || Infinity)) dnaScore += 20;
+      // Strategy alignment
+      if (dna.investor_persona === "conservative" && (deal.rental_stability_score || 0) >= 60) dnaScore += 15;
+      if (dna.investor_persona === "aggressive" && (p.demand_heat_score || 0) >= 60) dnaScore += 15;
+      if (dna.investor_persona === "flipper" && (deal.flip_potential_score || 0) >= 50) dnaScore += 15;
+      if (dna.investor_persona === "luxury" && p.price >= (dna.budget_range_max || 0) * 0.8) dnaScore += 15;
+      // Risk alignment: +10 if investment_score aligns with risk tolerance
+      const riskFit = dna.risk_tolerance_score > 60
+        ? (p.investment_score || 0) * 0.1
+        : ((deal.rental_stability_score || 50) * 0.1);
+      dnaScore += Math.min(10, riskFit);
+    }
+
+    // Composite match score: base quality (60%) + DNA fit (40%)
+    const baseScore = (p.investment_score || 0) * 0.4 + (p.demand_heat_score || 0) * 0.3 + (deal.deal_score || 0) * 0.3;
+    const matchScore = dna
+      ? Math.round(baseScore * 0.6 + dnaScore * 0.4)
+      : Math.round(baseScore);
+
+    return {
+      ...p,
+      match_score: Math.min(100, matchScore),
+      dna_fit: dna ? Math.min(100, dnaScore) : null,
+      deal_score: deal.deal_score || null,
+      undervaluation_percent: deal.undervaluation_percent || null,
+      match_factors: dna ? {
+        city_match: dna.preferred_cities?.includes(p.city) || false,
+        type_match: dna.preferred_property_types?.includes(p.property_type) || false,
+        budget_fit: p.price >= (dna.budget_range_min || 0) && p.price <= (dna.budget_range_max || Infinity),
+        persona_aligned: true,
+      } : null,
+    };
+  });
+
+  // Sort by match_score desc
+  scored.sort((a: any, b: any) => b.match_score - a.match_score);
+
+  return json({
+    properties: scored.slice(0, limit),
+    match_meta: {
+      dna_used: !!dna,
+      persona: dna?.investor_persona || null,
+      total_evaluated: properties.length,
+      scoring_weights: dna ? { base: 0.6, dna: 0.4 } : { base: 1.0, dna: 0 },
+    },
+  });
 }
 
 const SEO_PROPERTY_SELECT = "id,title,description,property_type,listing_type,location,city,state,bedrooms,bathrooms,price";
