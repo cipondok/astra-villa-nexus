@@ -21,6 +21,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useMapProperties, MapBounds, MapFilters, MapProperty } from '@/hooks/useMapProperties';
+import { useInvestmentHotspots } from '@/hooks/useInvestmentHotspots';
 import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import MapNLPSearchBar, { MapNLPResult } from '@/components/search/MapNLPSearchBar';
 import SyncedPropertyCard from '@/components/search/SyncedPropertyCard';
@@ -45,6 +46,7 @@ const FilterPanel = memo(({
   filters, onFiltersChange, showHeatmap, onToggleHeatmap,
   heatmapMode, onHeatmapModeChange,
   drawMode, onSetDrawMode, propertyCount, isLoading, isOpen, onToggle,
+  showHotspots, onToggleHotspots, dealClusterMode, onToggleDealClusters,
 }: {
   filters: MapFilters;
   onFiltersChange: (f: MapFilters) => void;
@@ -58,6 +60,10 @@ const FilterPanel = memo(({
   isLoading: boolean;
   isOpen: boolean;
   onToggle: () => void;
+  showHotspots: boolean;
+  onToggleHotspots: (v: boolean) => void;
+  dealClusterMode: boolean;
+  onToggleDealClusters: (v: boolean) => void;
 }) => {
   const priceRange = [filters.minPrice || 0, filters.maxPrice || 50_000_000_000];
 
@@ -156,6 +162,22 @@ const FilterPanel = memo(({
                     </div>
                   )}
                 </div>
+                <div className="h-px bg-border" />
+                <div className="space-y-2">
+                  <Label className="text-xs font-semibold">Intelligence Layers</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="deal-cluster-toggle" className="text-xs flex items-center gap-1.5 cursor-pointer">
+                      <TrendingUp className="h-3 w-3 text-emerald-400" /> Deal Score Clusters
+                    </Label>
+                    <Switch id="deal-cluster-toggle" checked={dealClusterMode} onCheckedChange={onToggleDealClusters} />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="hotspot-toggle" className="text-xs flex items-center gap-1.5 cursor-pointer">
+                      <Flame className="h-3 w-3 text-amber-400" /> Growth Hotspots
+                    </Label>
+                    <Switch id="hotspot-toggle" checked={showHotspots} onCheckedChange={onToggleHotspots} />
+                  </div>
+                </div>
                 <div className="space-y-2">
                   <Label className="text-xs font-semibold">Cari di Area</Label>
                   <Button size="sm" variant={drawMode === 'polygon' ? 'default' : 'outline'}
@@ -211,9 +233,12 @@ export default function InteractivePropertyMap() {
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [mobileSheetOpen, setMobileSheetOpen] = useState(true);
   const [sortBy, setSortBy] = useState<'default' | 'price-asc' | 'price-desc' | 'score' | 'newest'>('default');
+  const [showHotspots, setShowHotspots] = useState(false);
+  const [dealClusterMode, setDealClusterMode] = useState(false);
 
   const navigate = useNavigate();
   const { data: properties = [], isLoading } = useMapProperties(bounds, filters, mapReady);
+  const { data: hotspots = [] } = useInvestmentHotspots(showHotspots);
 
   // ── Filter by polygon if drawn ──
   const filteredProperties = useMemo(() => {
@@ -319,11 +344,15 @@ export default function InteractivePropertyMap() {
       setMapReady(true);
       updateBounds(m);
 
-      // ── Cluster source ──
+      // ── Cluster source with deal score aggregation ──
       m.addSource('property-cluster', {
         type: 'geojson',
         data: { type: 'FeatureCollection', features: [] },
         cluster: true, clusterMaxZoom: 14, clusterRadius: 60,
+        clusterProperties: {
+          sumDealScore: ['+', ['get', 'dealScore']],
+          pointCount: ['+', 1],
+        },
       });
 
       m.addLayer({
@@ -334,6 +363,64 @@ export default function InteractivePropertyMap() {
           'circle-radius': ['step', ['get', 'point_count'], 22, 10, 28, 50, 35],
           'circle-stroke-width': 2, 'circle-stroke-color': '#fff',
         },
+      });
+
+      // ── Deal-score colored clusters (hidden by default) ──
+      m.addLayer({
+        id: 'deal-clusters', type: 'circle', source: 'property-cluster',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': [
+            'interpolate', ['linear'],
+            ['/', ['get', 'sumDealScore'], ['get', 'pointCount']],
+            0, 'hsl(0, 0%, 60%)',
+            30, 'hsl(0, 0%, 60%)',
+            50, 'hsl(45, 80%, 55%)',
+            70, 'hsl(140, 60%, 45%)',
+            100, 'hsl(140, 70%, 35%)',
+          ],
+          'circle-radius': ['step', ['get', 'point_count'], 24, 10, 30, 50, 38],
+          'circle-stroke-width': 3,
+          'circle-stroke-color': [
+            'interpolate', ['linear'],
+            ['/', ['get', 'sumDealScore'], ['get', 'pointCount']],
+            0, 'hsl(0, 0%, 80%)', 50, 'hsl(45, 60%, 70%)', 70, 'hsl(140, 50%, 60%)',
+          ],
+          'circle-opacity': 0.9,
+        },
+        layout: { visibility: 'none' },
+      });
+
+      // ── Deal cluster count label ──
+      m.addLayer({
+        id: 'deal-cluster-count', type: 'symbol', source: 'property-cluster',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': [
+            'concat',
+            ['to-string', ['round', ['/', ['get', 'sumDealScore'], ['get', 'pointCount']]]],
+            '★',
+          ],
+          'text-font': ['DIN Pro Bold', 'Arial Unicode MS Bold'],
+          'text-size': 12,
+          visibility: 'none',
+        },
+        paint: { 'text-color': '#ffffff' },
+      });
+
+      m.addLayer({
+        id: 'unclustered-point', type: 'circle', source: 'property-cluster',
+        filter: ['!', ['has', 'point_count']],
+        paint: {
+          'circle-color': ['interpolate', ['linear'], ['get', 'investmentScore'],
+            0, 'hsl(215, 50%, 60%)', 50, 'hsl(45, 80%, 55%)', 80, 'hsl(140, 60%, 45%)', 100, 'hsl(340, 70%, 50%)'],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 8, 4, 12, 6, 16, 8],
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#fff',
+          'circle-opacity': 0.9,
+        },
+        minzoom: 8,
+        maxzoom: 13,
       });
 
       m.addLayer({
@@ -466,36 +553,48 @@ export default function InteractivePropertyMap() {
     const maxScore = Math.max(...filteredProperties.map(p => p.investment_score || 0), 1);
     const maxDemand = Math.max(...filteredProperties.map(p => p.demand_heat_score || 0), 1);
 
-    const features: GeoJSON.Feature[] = filteredProperties.map(p => ({
-      type: 'Feature' as const,
-      geometry: { type: 'Point' as const, coordinates: [p.longitude, p.latitude] },
-      properties: {
-        id: p.id,
-        price: p.price,
-        priceLabel: formatPrice(p.price),
-        title: p.title,
-        investmentScore: p.investment_score || 0,
-      },
-    }));
+    const features: GeoJSON.Feature[] = filteredProperties.map(p => {
+      // Composite deal score from available signals
+      const dealScore = Math.min(100, Math.round(
+        ((p.investment_score || 0) * 0.4) + ((p.demand_heat_score || 0) * 0.6)
+      ));
+      return {
+        type: 'Feature' as const,
+        geometry: { type: 'Point' as const, coordinates: [p.longitude, p.latitude] },
+        properties: {
+          id: p.id,
+          price: p.price,
+          priceLabel: formatPrice(p.price),
+          title: p.title,
+          investmentScore: p.investment_score || 0,
+          dealScore,
+        },
+      };
+    });
     const geojson: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features };
 
     const clusterSrc = m.getSource('property-cluster') as mapboxgl.GeoJSONSource | undefined;
     if (clusterSrc) clusterSrc.setData(geojson);
 
     // Heatmap: weight based on mode
-    const heatFeatures: GeoJSON.Feature[] = filteredProperties.map(p => ({
-      type: 'Feature' as const,
-      geometry: { type: 'Point' as const, coordinates: [p.longitude, p.latitude] },
-      properties: {
-        weight: heatmapMode === 'investment'
-          ? (p.investment_score || 0) / maxScore
-          : heatmapMode === 'deal'
-          ? (p.demand_heat_score || 0) / maxDemand
-          : heatmapMode === 'roi'
-          ? (p.investment_score || 0) / maxScore
-          : p.price / maxPrice,
-      },
-    }));
+    const heatFeatures: GeoJSON.Feature[] = filteredProperties.map(p => {
+      let weight = p.price / maxPrice;
+      if (heatmapMode === 'investment') weight = (p.investment_score || 0) / maxScore;
+      else if (heatmapMode === 'deal') weight = (p.demand_heat_score || 0) / maxDemand;
+      else if (heatmapMode === 'roi') weight = (p.investment_score || 0) / maxScore;
+      else if (heatmapMode === 'liquidity') {
+        // Liquidity = composite of demand signals + investment score + inverse price
+        const demandW = (p.demand_heat_score || 0) / maxDemand;
+        const scoreW = (p.investment_score || 0) / maxScore;
+        const priceW = 1 - (p.price / maxPrice); // cheaper = more liquid
+        weight = demandW * 0.4 + scoreW * 0.35 + priceW * 0.25;
+      }
+      return {
+        type: 'Feature' as const,
+        geometry: { type: 'Point' as const, coordinates: [p.longitude, p.latitude] },
+        properties: { weight: Math.max(0, Math.min(1, weight)) },
+      };
+    });
     const heatGeoJson: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features: heatFeatures };
     const heatSrc = m.getSource('property-heat') as mapboxgl.GeoJSONSource | undefined;
     if (heatSrc) heatSrc.setData(heatGeoJson);
@@ -554,10 +653,106 @@ export default function InteractivePropertyMap() {
     if (!m || !mapReady) return;
     try {
       m.setLayoutProperty('property-heatmap', 'visibility', showHeatmap ? 'visible' : 'none');
-      m.setLayoutProperty('clusters', 'visibility', showHeatmap ? 'none' : 'visible');
-      m.setLayoutProperty('cluster-count', 'visibility', showHeatmap ? 'none' : 'visible');
+      // When heatmap is on, hide standard clusters; show deal clusters only if deal mode active
+      const showStdClusters = !showHeatmap && !dealClusterMode;
+      m.setLayoutProperty('clusters', 'visibility', showStdClusters ? 'visible' : 'none');
+      m.setLayoutProperty('cluster-count', 'visibility', showStdClusters ? 'visible' : 'none');
     } catch {}
-  }, [showHeatmap, mapReady]);
+  }, [showHeatmap, mapReady, dealClusterMode]);
+
+  // ── Deal cluster mode toggle ──
+  useEffect(() => {
+    const m = mapRef.current;
+    if (!m || !mapReady) return;
+    try {
+      const showDeal = dealClusterMode && !showHeatmap;
+      m.setLayoutProperty('deal-clusters', 'visibility', showDeal ? 'visible' : 'none');
+      m.setLayoutProperty('deal-cluster-count', 'visibility', showDeal ? 'visible' : 'none');
+      m.setLayoutProperty('clusters', 'visibility', !showDeal && !showHeatmap ? 'visible' : 'none');
+      m.setLayoutProperty('cluster-count', 'visibility', !showDeal && !showHeatmap ? 'visible' : 'none');
+    } catch {}
+  }, [dealClusterMode, showHeatmap, mapReady]);
+
+  // ── Growth Hotspot markers ──
+  const hotspotMarkersRef = useRef<mapboxgl.Marker[]>([]);
+  useEffect(() => {
+    const m = mapRef.current;
+    // Clean up old hotspot markers
+    hotspotMarkersRef.current.forEach(mk => mk.remove());
+    hotspotMarkersRef.current = [];
+
+    if (!m || !mapReady || !showHotspots || !hotspots.length) return;
+
+    // City coordinates lookup (approximate centers for major Indonesian cities)
+    const CITY_COORDS: Record<string, [number, number]> = {
+      'Jakarta': [106.8456, -6.2088], 'Bandung': [107.6191, -6.9175],
+      'Surabaya': [112.7508, -7.2575], 'Bali': [115.1889, -8.4095],
+      'Denpasar': [115.2167, -8.6500], 'Yogyakarta': [110.3695, -7.7956],
+      'Semarang': [110.4203, -6.9666], 'Makassar': [119.4327, -5.1477],
+      'Medan': [98.6722, 3.5952], 'Palembang': [104.7458, -2.9761],
+      'Bekasi': [107.0008, -6.2349], 'Tangerang': [106.6297, -6.1702],
+      'Depok': [106.8316, -6.4025], 'Bogor': [106.8019, -6.5944],
+      'Malang': [112.6326, -7.9666], 'Batam': [104.0305, 1.0456],
+      'Lombok': [116.3249, -8.5830], 'Canggu': [115.1325, -8.6478],
+      'Ubud': [115.2625, -8.5069], 'Seminyak': [115.1614, -8.6913],
+      'Kuta': [115.1745, -8.7220], 'Nusa Dua': [115.2326, -8.8006],
+    };
+
+    hotspots.forEach(h => {
+      const coords = CITY_COORDS[h.city];
+      if (!coords) return;
+
+      const score = h.hotspot_score || 0;
+      const trend = h.trend || 'stable';
+      const trendEmoji = trend === 'hot' ? '🔥' : trend === 'emerging' ? '🚀' : trend === 'cooling' ? '❄️' : '📊';
+      const ringColor = score >= 70 ? 'hsl(140, 60%, 45%)' : score >= 40 ? 'hsl(45, 80%, 55%)' : 'hsl(215, 50%, 55%)';
+      const glowColor = score >= 70 ? 'rgba(34, 197, 94, 0.25)' : score >= 40 ? 'rgba(234, 179, 8, 0.2)' : 'rgba(59, 130, 246, 0.15)';
+
+      const el = document.createElement('div');
+      el.className = 'hotspot-marker';
+      el.innerHTML = `
+        <div style="
+          position: relative;
+          width: 60px; height: 60px;
+          display: flex; align-items: center; justify-content: center;
+        ">
+          <div style="
+            position: absolute; inset: 0;
+            border-radius: 50%;
+            background: ${glowColor};
+            border: 2px solid ${ringColor};
+            animation: pulse 2s ease-in-out infinite;
+          "></div>
+          <div style="
+            position: relative; z-index: 1;
+            background: hsl(var(--background));
+            border: 2px solid ${ringColor};
+            border-radius: 8px;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: 700;
+            color: hsl(var(--foreground));
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+          ">
+            ${trendEmoji} ${h.city.slice(0, 8)}
+            <br/>
+            <span style="font-size: 9px; opacity: 0.7;">${score}★ ${h.property_count || 0}p</span>
+          </div>
+        </div>
+      `;
+
+      const marker = new mapboxgl.Marker({ element: el, anchor: 'center' })
+        .setLngLat(coords)
+        .addTo(m);
+      hotspotMarkersRef.current.push(marker);
+    });
+
+    return () => {
+      hotspotMarkersRef.current.forEach(mk => mk.remove());
+      hotspotMarkersRef.current = [];
+    };
+  }, [hotspots, showHotspots, mapReady]);
 
   // ── Heatmap color change based on mode ──
   useEffect(() => {
@@ -744,6 +939,8 @@ export default function InteractivePropertyMap() {
           drawMode={drawMode} onSetDrawMode={setDrawMode}
           propertyCount={sortedProperties.length} isLoading={isLoading}
           isOpen={filterOpen} onToggle={() => setFilterOpen(o => !o)}
+          showHotspots={showHotspots} onToggleHotspots={setShowHotspots}
+          dealClusterMode={dealClusterMode} onToggleDealClusters={setDealClusterMode}
         />
 
         {/* Property count badge */}
