@@ -162,6 +162,22 @@ const FilterPanel = memo(({
                     </div>
                   )}
                 </div>
+                <div className="h-px bg-border" />
+                <div className="space-y-2">
+                  <Label className="text-xs font-semibold">Intelligence Layers</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="deal-cluster-toggle" className="text-xs flex items-center gap-1.5 cursor-pointer">
+                      <TrendingUp className="h-3 w-3 text-emerald-400" /> Deal Score Clusters
+                    </Label>
+                    <Switch id="deal-cluster-toggle" checked={dealClusterMode} onCheckedChange={onToggleDealClusters} />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="hotspot-toggle" className="text-xs flex items-center gap-1.5 cursor-pointer">
+                      <Flame className="h-3 w-3 text-amber-400" /> Growth Hotspots
+                    </Label>
+                    <Switch id="hotspot-toggle" checked={showHotspots} onCheckedChange={onToggleHotspots} />
+                  </div>
+                </div>
                 <div className="space-y-2">
                   <Label className="text-xs font-semibold">Cari di Area</Label>
                   <Button size="sm" variant={drawMode === 'polygon' ? 'default' : 'outline'}
