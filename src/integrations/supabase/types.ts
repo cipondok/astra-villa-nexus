@@ -9331,6 +9331,309 @@ export type Database = {
           },
         ]
       }
+      fund_capital_allocations: {
+        Row: {
+          allocation_matrix: Json
+          allocation_type: string
+          confidence_score: number | null
+          cycle_phase: string | null
+          expected_annual_return: number | null
+          expires_at: string | null
+          generated_at: string
+          id: string
+          macro_signals: Json | null
+          portfolio_volatility: number | null
+          target_property_types: Json
+          target_regions: Json
+          target_risk_tiers: Json
+          user_id: string | null
+          wealth_growth_10y: number | null
+        }
+        Insert: {
+          allocation_matrix?: Json
+          allocation_type?: string
+          confidence_score?: number | null
+          cycle_phase?: string | null
+          expected_annual_return?: number | null
+          expires_at?: string | null
+          generated_at?: string
+          id?: string
+          macro_signals?: Json | null
+          portfolio_volatility?: number | null
+          target_property_types?: Json
+          target_regions?: Json
+          target_risk_tiers?: Json
+          user_id?: string | null
+          wealth_growth_10y?: number | null
+        }
+        Update: {
+          allocation_matrix?: Json
+          allocation_type?: string
+          confidence_score?: number | null
+          cycle_phase?: string | null
+          expected_annual_return?: number | null
+          expires_at?: string | null
+          generated_at?: string
+          id?: string
+          macro_signals?: Json | null
+          portfolio_volatility?: number | null
+          target_property_types?: Json
+          target_regions?: Json
+          target_risk_tiers?: Json
+          user_id?: string | null
+          wealth_growth_10y?: number | null
+        }
+        Relationships: []
+      }
+      fund_deal_readiness: {
+        Row: {
+          created_at: string
+          due_diligence_summary: Json | null
+          execution_packet: Json | null
+          financing_structure: Json | null
+          id: string
+          legal_readiness_score: number | null
+          liquidity_assessment: Json | null
+          property_id: string | null
+          readiness_score: number | null
+          status: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          due_diligence_summary?: Json | null
+          execution_packet?: Json | null
+          financing_structure?: Json | null
+          id?: string
+          legal_readiness_score?: number | null
+          liquidity_assessment?: Json | null
+          property_id?: string | null
+          readiness_score?: number | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          due_diligence_summary?: Json | null
+          execution_packet?: Json | null
+          financing_structure?: Json | null
+          id?: string
+          legal_readiness_score?: number | null
+          liquidity_assessment?: Json | null
+          property_id?: string | null
+          readiness_score?: number | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      fund_entry_signals: {
+        Row: {
+          city: string
+          created_at: string
+          id: string
+          liquidity_risk: number | null
+          macro_alignment_score: number | null
+          metadata: Json | null
+          price_momentum: number | null
+          property_type: string | null
+          region_id: string | null
+          signal_type: string
+          timing_confidence: number
+          upside_multiplier: number | null
+          volume_trend: string | null
+          window_closes_at: string | null
+          window_opens_at: string | null
+        }
+        Insert: {
+          city: string
+          created_at?: string
+          id?: string
+          liquidity_risk?: number | null
+          macro_alignment_score?: number | null
+          metadata?: Json | null
+          price_momentum?: number | null
+          property_type?: string | null
+          region_id?: string | null
+          signal_type: string
+          timing_confidence?: number
+          upside_multiplier?: number | null
+          volume_trend?: string | null
+          window_closes_at?: string | null
+          window_opens_at?: string | null
+        }
+        Update: {
+          city?: string
+          created_at?: string
+          id?: string
+          liquidity_risk?: number | null
+          macro_alignment_score?: number | null
+          metadata?: Json | null
+          price_momentum?: number | null
+          property_type?: string | null
+          region_id?: string | null
+          signal_type?: string
+          timing_confidence?: number
+          upside_multiplier?: number | null
+          volume_trend?: string | null
+          window_closes_at?: string | null
+          window_opens_at?: string | null
+        }
+        Relationships: []
+      }
+      fund_exit_strategies: {
+        Row: {
+          created_at: string
+          expected_profit: number | null
+          id: string
+          optimal_exit_window: string | null
+          peak_probability: number | null
+          property_id: string | null
+          reasoning: string | null
+          recommended: boolean | null
+          scenarios: Json | null
+          strategy_type: string
+          tax_efficiency_score: number | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          expected_profit?: number | null
+          id?: string
+          optimal_exit_window?: string | null
+          peak_probability?: number | null
+          property_id?: string | null
+          reasoning?: string | null
+          recommended?: boolean | null
+          scenarios?: Json | null
+          strategy_type: string
+          tax_efficiency_score?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          expected_profit?: number | null
+          id?: string
+          optimal_exit_window?: string | null
+          peak_probability?: number | null
+          property_id?: string | null
+          reasoning?: string | null
+          recommended?: boolean | null
+          scenarios?: Json | null
+          strategy_type?: string
+          tax_efficiency_score?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      fund_rebalancing_signals: {
+        Row: {
+          action: string
+          affected_city: string | null
+          affected_property_id: string | null
+          created_at: string
+          current_allocation_pct: number | null
+          expected_impact_pct: number | null
+          expires_at: string | null
+          id: string
+          is_acted_upon: boolean | null
+          reasoning: string | null
+          recommended_allocation_pct: number | null
+          severity: string
+          signal_type: string
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          affected_city?: string | null
+          affected_property_id?: string | null
+          created_at?: string
+          current_allocation_pct?: number | null
+          expected_impact_pct?: number | null
+          expires_at?: string | null
+          id?: string
+          is_acted_upon?: boolean | null
+          reasoning?: string | null
+          recommended_allocation_pct?: number | null
+          severity?: string
+          signal_type: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          affected_city?: string | null
+          affected_property_id?: string | null
+          created_at?: string
+          current_allocation_pct?: number | null
+          expected_impact_pct?: number | null
+          expires_at?: string | null
+          id?: string
+          is_acted_upon?: boolean | null
+          reasoning?: string | null
+          recommended_allocation_pct?: number | null
+          severity?: string
+          signal_type?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      fund_wealth_simulations: {
+        Row: {
+          cashflow_curve: Json | null
+          compounding_efficiency: number | null
+          final_net_worth: number | null
+          generated_at: string
+          id: string
+          initial_capital: number
+          max_drawdown_pct: number | null
+          monthly_contribution: number | null
+          net_worth_trajectory: Json | null
+          persona: string
+          projection_years: number | null
+          risk_heatmap: Json | null
+          sharpe_ratio: number | null
+          total_return_pct: number | null
+          user_id: string | null
+        }
+        Insert: {
+          cashflow_curve?: Json | null
+          compounding_efficiency?: number | null
+          final_net_worth?: number | null
+          generated_at?: string
+          id?: string
+          initial_capital: number
+          max_drawdown_pct?: number | null
+          monthly_contribution?: number | null
+          net_worth_trajectory?: Json | null
+          persona?: string
+          projection_years?: number | null
+          risk_heatmap?: Json | null
+          sharpe_ratio?: number | null
+          total_return_pct?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          cashflow_curve?: Json | null
+          compounding_efficiency?: number | null
+          final_net_worth?: number | null
+          generated_at?: string
+          id?: string
+          initial_capital?: number
+          max_drawdown_pct?: number | null
+          monthly_contribution?: number | null
+          net_worth_trajectory?: Json | null
+          persona?: string
+          projection_years?: number | null
+          risk_heatmap?: Json | null
+          sharpe_ratio?: number | null
+          total_return_pct?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       fx_rate_snapshots: {
         Row: {
           base_currency: string
