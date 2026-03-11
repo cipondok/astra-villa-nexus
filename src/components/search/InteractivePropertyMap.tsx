@@ -235,8 +235,6 @@ export default function InteractivePropertyMap() {
   const [sortBy, setSortBy] = useState<'default' | 'price-asc' | 'price-desc' | 'score' | 'newest'>('default');
   const [showHotspots, setShowHotspots] = useState(false);
   const [dealClusterMode, setDealClusterMode] = useState(false);
-  const [mobileSheetOpen, setMobileSheetOpen] = useState(true);
-  const [sortBy, setSortBy] = useState<'default' | 'price-asc' | 'price-desc' | 'score' | 'newest'>('default');
 
   const navigate = useNavigate();
   const { data: properties = [], isLoading } = useMapProperties(bounds, filters, mapReady);
