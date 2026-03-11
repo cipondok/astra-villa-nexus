@@ -249,7 +249,7 @@ const SeoHistoryTab = () => {
       </div>
 
       {/* Recent Actions Log */}
-      <Card className="bg-card/60 border-border/40">
+      <Card className="bg-card border-border">
         <CardHeader className="p-3 pb-2">
           <CardTitle className="text-xs flex items-center gap-1.5">
             <History className="h-3.5 w-3.5 text-primary" />
