@@ -923,6 +923,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
       let functionName: string;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const body: { [key: string]: any } = {
+        mode: 'property_chatbot',
         message: currentMessage,
         conversationId
       };
