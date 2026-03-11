@@ -16,6 +16,7 @@ import {
   CheckCircle2, XCircle, AlertTriangle, Eye, Sparkles, Code, Gauge
 } from 'lucide-react';
 import SEOAuditReport from './SEOAuditReport';
+import SeoLandingContentGenerator from './SeoLandingContentGenerator';
 
 interface SEOSettingsHubProps {
   settings: any;
