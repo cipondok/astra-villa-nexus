@@ -31,6 +31,7 @@ export default function AutonomousAgentDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const scanHistory = useAgentScanHistory();
   const scanMutation = useRunAgentScan();
+  const dealHunterScan = useRunDealHunterScan();
   const navigate = useNavigate();
 
   const result = scanMutation.data;
