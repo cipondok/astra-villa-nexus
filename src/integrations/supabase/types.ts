@@ -24831,6 +24831,245 @@ export type Database = {
         }
         Relationships: []
       }
+      stress_crisis_strategies: {
+        Row: {
+          action_description: string | null
+          capital_preservation_score: number | null
+          city: string
+          created_at: string | null
+          decision: string
+          defensive_allocation_pct: number | null
+          id: string
+          restructuring_priority: number | null
+          scenario_id: string | null
+          strategy_type: string
+        }
+        Insert: {
+          action_description?: string | null
+          capital_preservation_score?: number | null
+          city: string
+          created_at?: string | null
+          decision: string
+          defensive_allocation_pct?: number | null
+          id?: string
+          restructuring_priority?: number | null
+          scenario_id?: string | null
+          strategy_type: string
+        }
+        Update: {
+          action_description?: string | null
+          capital_preservation_score?: number | null
+          city?: string
+          created_at?: string | null
+          decision?: string
+          defensive_allocation_pct?: number | null
+          id?: string
+          restructuring_priority?: number | null
+          scenario_id?: string | null
+          strategy_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stress_crisis_strategies_scenario_id_fkey"
+            columns: ["scenario_id"]
+            isOneToOne: false
+            referencedRelation: "stress_scenarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stress_portfolio_projections: {
+        Row: {
+          cash_flow_stress_months: number | null
+          city: string
+          created_at: string | null
+          id: string
+          loss_containment_prob: number | null
+          property_type: string | null
+          rental_contraction_pct: number | null
+          risk_exposure_rank: number | null
+          scenario_id: string | null
+          time_to_market_months: number | null
+          transaction_volume_drop_pct: number | null
+          value_decline_pct: number | null
+        }
+        Insert: {
+          cash_flow_stress_months?: number | null
+          city: string
+          created_at?: string | null
+          id?: string
+          loss_containment_prob?: number | null
+          property_type?: string | null
+          rental_contraction_pct?: number | null
+          risk_exposure_rank?: number | null
+          scenario_id?: string | null
+          time_to_market_months?: number | null
+          transaction_volume_drop_pct?: number | null
+          value_decline_pct?: number | null
+        }
+        Update: {
+          cash_flow_stress_months?: number | null
+          city?: string
+          created_at?: string | null
+          id?: string
+          loss_containment_prob?: number | null
+          property_type?: string | null
+          rental_contraction_pct?: number | null
+          risk_exposure_rank?: number | null
+          scenario_id?: string | null
+          time_to_market_months?: number | null
+          transaction_volume_drop_pct?: number | null
+          value_decline_pct?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stress_portfolio_projections_scenario_id_fkey"
+            columns: ["scenario_id"]
+            isOneToOne: false
+            referencedRelation: "stress_scenarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stress_recovery_forecasts: {
+        Row: {
+          appreciation_recovery_pct: number | null
+          city: string
+          created_at: string | null
+          hotspot_emergence_score: number | null
+          id: string
+          post_crisis_opportunity_rank: number | null
+          recovery_horizon_months: number | null
+          reinvestment_signal: string | null
+          rental_normalization_months: number | null
+          scenario_id: string | null
+        }
+        Insert: {
+          appreciation_recovery_pct?: number | null
+          city: string
+          created_at?: string | null
+          hotspot_emergence_score?: number | null
+          id?: string
+          post_crisis_opportunity_rank?: number | null
+          recovery_horizon_months?: number | null
+          reinvestment_signal?: string | null
+          rental_normalization_months?: number | null
+          scenario_id?: string | null
+        }
+        Update: {
+          appreciation_recovery_pct?: number | null
+          city?: string
+          created_at?: string | null
+          hotspot_emergence_score?: number | null
+          id?: string
+          post_crisis_opportunity_rank?: number | null
+          recovery_horizon_months?: number | null
+          reinvestment_signal?: string | null
+          rental_normalization_months?: number | null
+          scenario_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stress_recovery_forecasts_scenario_id_fkey"
+            columns: ["scenario_id"]
+            isOneToOne: false
+            referencedRelation: "stress_scenarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stress_scenarios: {
+        Row: {
+          affected_cities: string[] | null
+          created_at: string | null
+          description: string | null
+          geographic_impact_probability: number | null
+          id: string
+          liquidity_freeze_risk: number | null
+          scenario_name: string
+          scenario_type: string
+          severity_score: number | null
+          shock_duration_months: number | null
+          trigger_factors: Json | null
+        }
+        Insert: {
+          affected_cities?: string[] | null
+          created_at?: string | null
+          description?: string | null
+          geographic_impact_probability?: number | null
+          id?: string
+          liquidity_freeze_risk?: number | null
+          scenario_name: string
+          scenario_type: string
+          severity_score?: number | null
+          shock_duration_months?: number | null
+          trigger_factors?: Json | null
+        }
+        Update: {
+          affected_cities?: string[] | null
+          created_at?: string | null
+          description?: string | null
+          geographic_impact_probability?: number | null
+          id?: string
+          liquidity_freeze_risk?: number | null
+          scenario_name?: string
+          scenario_type?: string
+          severity_score?: number | null
+          shock_duration_months?: number | null
+          trigger_factors?: Json | null
+        }
+        Relationships: []
+      }
+      stress_survival_scores: {
+        Row: {
+          city: string
+          created_at: string | null
+          debt_servicing_risk: number | null
+          emergency_liquidity_months: number | null
+          forced_liquidation_prob: number | null
+          id: string
+          min_capital_buffer_pct: number | null
+          priority_actions: Json | null
+          property_type: string | null
+          scenario_id: string | null
+          survival_index: number | null
+        }
+        Insert: {
+          city: string
+          created_at?: string | null
+          debt_servicing_risk?: number | null
+          emergency_liquidity_months?: number | null
+          forced_liquidation_prob?: number | null
+          id?: string
+          min_capital_buffer_pct?: number | null
+          priority_actions?: Json | null
+          property_type?: string | null
+          scenario_id?: string | null
+          survival_index?: number | null
+        }
+        Update: {
+          city?: string
+          created_at?: string | null
+          debt_servicing_risk?: number | null
+          emergency_liquidity_months?: number | null
+          forced_liquidation_prob?: number | null
+          id?: string
+          min_capital_buffer_pct?: number | null
+          priority_actions?: Json | null
+          property_type?: string | null
+          scenario_id?: string | null
+          survival_index?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stress_survival_scores_scenario_id_fkey"
+            columns: ["scenario_id"]
+            isOneToOne: false
+            referencedRelation: "stress_scenarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscription_invoices: {
         Row: {
           amount: number
