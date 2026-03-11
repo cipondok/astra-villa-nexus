@@ -123,8 +123,8 @@ const ResponsiveAIChatWidget = ({
     { icon: Phone, text: "Contact agent", action: "I need to contact an agent" },
     { icon: Calendar, text: "Schedule viewing", action: "I want to schedule a property viewing" },
     { icon: Home, text: "Property details", action: "Tell me about property features" },
-    { icon: MessageSquare, text: "Ask question", action: "I have a question about..." },
-    { icon: HelpCircle, text: "Get help", action: "How can you help me?" },
+    { icon: Star, text: "Best ROI cities", action: "Which Indonesian city has the best ROI potential for real estate in the next 3 years?" },
+    { icon: HelpCircle, text: "Portfolio review", action: "How can I improve my portfolio diversification and reduce risk?" },
   ];
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -919,6 +919,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
 
       const isNeighborhoodQuery = /neighborhood|area|around|walk to|safe at night|cafes nearby|near a|close to/i.test(currentMessage);
       const isNegotiationQuery = /negotiate|lower the price|deposit|rent|deal|offer|lease/i.test(currentMessage);
+      const isInvestorQuery = /\b(roi|portfolio|diversif|investment|hotspot|undervalued|rental yield|deal finder|best city|market trend|overexposed|growth potential|buy or sell|flip potential)\b/i.test(currentMessage);
       
       let functionName: string;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -944,15 +945,21 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
         body.conversationHistory = conversationHistory;
       } else if (isNeighborhoodQuery) {
         functionName = 'neighborhood-simulator';
+      } else if (isInvestorQuery) {
+        functionName = 'investor-copilot';
+        body.mode = 'chat';
+        body.messages = conversationHistory;
+        body.property_id = propertyId || null;
+        body.user_id = user?.id || null;
       } else {
         functionName = 'ai-assistant';
       }
 
       console.log('Invoking edge function:', functionName, 'with body:', body);
 
-      // Use streaming for ai-assistant, non-streaming for others
-      if (functionName === 'ai-assistant') {
-        const STREAM_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-assistant`;
+      // Use streaming for ai-assistant and investor-copilot, non-streaming for others
+      if (functionName === 'ai-assistant' || functionName === 'investor-copilot') {
+        const STREAM_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/${functionName}`;
         const resp = await fetch(STREAM_URL, {
           method: 'POST',
           headers: {
