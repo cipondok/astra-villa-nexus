@@ -65,6 +65,7 @@ const AIRecommendedProperties = lazy(() => import("@/components/property/AIRecom
 const SmartAIFeed = lazy(() => import("@/components/home/SmartAIFeed"));
 const SmartRecommendations = lazy(() => import("@/components/ai/SmartRecommendations"));
 const BehaviorPatternBanner = lazy(() => import("@/components/ai/BehaviorPatternBanner"));
+const DealHunterHero = lazy(() => import("@/components/home/DealHunterHero"));
 const FeaturedAdsCarousel = lazy(() => import("@/components/home/FeaturedAdsCarousel"));
 const MarketplaceServices = lazy(() => import("@/components/home/MarketplaceServices"));
 const PartnerLogosMarquee = lazy(() => import("@/components/home/PartnerLogosMarquee"));
