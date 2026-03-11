@@ -33072,10 +33072,9 @@ export type Database = {
         }
         Returns: string
       }
-      decrypt_api_key: {
-        Args: { encrypted_key: string; key_name: string }
-        Returns: string
-      }
+      decrypt_api_key:
+        | { Args: { encrypted_key: string }; Returns: string }
+        | { Args: { encrypted_key: string; key_name: string }; Returns: string }
       decrypt_healthcare_data: {
         Args: { data_type: string; encrypted_data: string }
         Returns: string
@@ -33094,10 +33093,9 @@ export type Database = {
         Returns: undefined
       }
       delete_user_admin: { Args: { p_user_id: string }; Returns: undefined }
-      encrypt_api_key: {
-        Args: { api_key: string; key_name: string }
-        Returns: string
-      }
+      encrypt_api_key:
+        | { Args: { api_key: string; key_name: string }; Returns: string }
+        | { Args: { plain_key: string }; Returns: string }
       encrypt_healthcare_data: {
         Args: { data_type: string; healthcare_data: string }
         Returns: string

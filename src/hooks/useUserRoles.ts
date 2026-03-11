@@ -4,6 +4,11 @@ import { useAuth } from '@/contexts/AuthContext';
 
 export type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin' | 'customer_service' | 'super_admin' | 'investor' | 'editor';
 
+/**
+ * UI-ONLY role check — used solely for conditional rendering and navigation guards.
+ * This is NOT a security control. All data access is enforced by RLS policies
+ * and all privileged operations are validated server-side in edge functions.
+ */
 export const useUserRoles = () => {
   const { user } = useAuth();
 
