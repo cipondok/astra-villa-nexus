@@ -4504,6 +4504,8 @@ serve(async (req) => {
         return await handleDocumentGenerate(payload);
       case "investment_assistant":
         return await handleInvestmentAssistant(payload);
+      case "seo_landing_content":
+        return await handleSeoLandingContent(payload);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
