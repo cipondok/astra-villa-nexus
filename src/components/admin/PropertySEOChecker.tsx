@@ -714,7 +714,7 @@ const PropertySEOChecker = () => {
               <Globe className="h-3.5 w-3.5 text-primary" />
               <span className="text-xs font-medium">Score Distribution</span>
             </div>
-            <div className="flex h-3 rounded-full overflow-hidden bg-muted/30">
+            <div className="flex h-3 rounded-full overflow-hidden bg-muted">
               {stats.analyzedCount > 0 && (
                 <>
                   <div className="bg-chart-1 transition-all" style={{ width: `${(stats.excellent / stats.analyzedCount) * 100}%` }} />
