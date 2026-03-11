@@ -13,9 +13,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Progress } from '@/components/ui/progress';
 import {
   Search, Globe, Image, Tags, FileText, ExternalLink, BarChart3, Shield,
-  CheckCircle2, XCircle, AlertTriangle, Eye, Sparkles, Code, Gauge
+  CheckCircle2, XCircle, AlertTriangle, Eye, Sparkles, Code, Gauge, MapPin
 } from 'lucide-react';
 import SEOAuditReport from './SEOAuditReport';
+import SeoLandingContentGenerator from './SeoLandingContentGenerator';
 
 interface SEOSettingsHubProps {
   settings: any;
@@ -164,6 +165,7 @@ const SEOSettingsHub = ({ settings, loading, onInputChange, onSave }: SEOSetting
             <TabsTrigger value="verification" className="text-[10px] h-6 px-2 gap-1"><Shield className="h-2.5 w-2.5" />Verification</TabsTrigger>
             <TabsTrigger value="audit" className="text-[10px] h-6 px-2 gap-1"><Sparkles className="h-2.5 w-2.5" />Audit</TabsTrigger>
             <TabsTrigger value="pages" className="text-[10px] h-6 px-2 gap-1"><Globe className="h-2.5 w-2.5" />Pages</TabsTrigger>
+            <TabsTrigger value="landing-gen" className="text-[10px] h-6 px-2 gap-1"><MapPin className="h-2.5 w-2.5" />Landing</TabsTrigger>
           </TabsList>
         </div>
 
@@ -631,6 +633,11 @@ const SEOSettingsHub = ({ settings, loading, onInputChange, onSave }: SEOSetting
               </Table>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* LANDING PAGE CONTENT GENERATOR */}
+        <TabsContent value="landing-gen">
+          <SeoLandingContentGenerator />
         </TabsContent>
       </Tabs>
 
