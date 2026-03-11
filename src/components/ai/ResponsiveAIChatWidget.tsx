@@ -123,8 +123,8 @@ const ResponsiveAIChatWidget = ({
     { icon: Phone, text: "Contact agent", action: "I need to contact an agent" },
     { icon: Calendar, text: "Schedule viewing", action: "I want to schedule a property viewing" },
     { icon: Home, text: "Property details", action: "Tell me about property features" },
-    { icon: MessageSquare, text: "Ask question", action: "I have a question about..." },
-    { icon: HelpCircle, text: "Get help", action: "How can you help me?" },
+    { icon: Star, text: "Best ROI cities", action: "Which Indonesian city has the best ROI potential for real estate in the next 3 years?" },
+    { icon: HelpCircle, text: "Portfolio review", action: "How can I improve my portfolio diversification and reduce risk?" },
   ];
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
