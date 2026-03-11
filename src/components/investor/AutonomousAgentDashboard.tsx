@@ -61,6 +61,18 @@ export default function AutonomousAgentDashboard() {
             <span className="text-xs font-medium text-primary">Agent Active • Every 6h</span>
           </div>
           <Button
+            onClick={() => dealHunterScan.mutate()}
+            disabled={dealHunterScan.isPending}
+            variant="outline"
+            className="border-primary/30"
+          >
+            {dealHunterScan.isPending ? (
+              <><Loader2 className="h-4 w-4 animate-spin mr-1.5" /> Hunting...</>
+            ) : (
+              <><Crosshair className="h-4 w-4 mr-1.5" /> Deal Hunter</>
+            )}
+          </Button>
+          <Button
             onClick={() => scanMutation.mutate()}
             disabled={scanMutation.isPending}
             className="shadow-lg shadow-primary/20"
