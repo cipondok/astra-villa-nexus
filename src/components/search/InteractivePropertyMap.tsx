@@ -46,6 +46,7 @@ const FilterPanel = memo(({
   filters, onFiltersChange, showHeatmap, onToggleHeatmap,
   heatmapMode, onHeatmapModeChange,
   drawMode, onSetDrawMode, propertyCount, isLoading, isOpen, onToggle,
+  showHotspots, onToggleHotspots, dealClusterMode, onToggleDealClusters,
 }: {
   filters: MapFilters;
   onFiltersChange: (f: MapFilters) => void;
@@ -59,6 +60,10 @@ const FilterPanel = memo(({
   isLoading: boolean;
   isOpen: boolean;
   onToggle: () => void;
+  showHotspots: boolean;
+  onToggleHotspots: (v: boolean) => void;
+  dealClusterMode: boolean;
+  onToggleDealClusters: (v: boolean) => void;
 }) => {
   const priceRange = [filters.minPrice || 0, filters.maxPrice || 50_000_000_000];
 
