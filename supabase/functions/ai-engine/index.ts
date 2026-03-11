@@ -340,7 +340,7 @@ async function handleMatchProperty(payload: Record<string, unknown>) {
   let q = sb
     .from("properties")
     .select("id, title, price, city, state, property_type, listing_type, bedrooms, bathrooms, building_area_sqm, land_area_sqm, investment_score, demand_score, thumbnail_url, created_at")
-    .eq("status", "available")
+    .eq("status", "active")
     .order("investment_score", { ascending: false })
     .limit(100);
 
