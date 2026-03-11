@@ -16,6 +16,13 @@ export interface DealAnalysis {
   price_per_sqm: number;
   city_avg_price_per_sqm: number;
   analyzed_at: string;
+  // V2 fields
+  deal_confidence: number;
+  liquidity_probability: number;
+  flip_potential_score: number;
+  rental_stability_score: number;
+  listing_age_days: number;
+  macro_growth_factor: number;
 }
 
 export function useDealAnalysis(propertyId: string | undefined) {

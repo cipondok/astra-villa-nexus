@@ -31,7 +31,7 @@ const MAPBOX_TOKEN = 'pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbTN1eGo4eXAwMWV4MnFzYTNwaTg
 const DEFAULT_CENTER: [number, number] = [117.5, -2.5];
 const DEFAULT_ZOOM = 5;
 
-type HeatmapMode = 'price' | 'investment' | 'deal' | 'roi';
+type HeatmapMode = 'price' | 'investment' | 'deal' | 'roi' | 'liquidity';
 
 const formatPrice = (price: number) => {
   if (price >= 1_000_000_000) return `Rp ${(price / 1_000_000_000).toFixed(1)}M`;
@@ -132,7 +132,7 @@ const FilterPanel = memo(({
                     <Switch id="heatmap-toggle" checked={showHeatmap} onCheckedChange={onToggleHeatmap} />
                   </div>
                   {showHeatmap && (
-                    <div className="grid grid-cols-2 gap-1.5 mt-1">
+                    <div className="grid grid-cols-3 gap-1.5 mt-1">
                       <Button size="sm" variant={heatmapMode === 'price' ? 'default' : 'outline'}
                         className="h-7 text-[10px]" onClick={() => onHeatmapModeChange('price')}>
                         <DollarSign className="h-3 w-3 mr-1" /> Harga
@@ -148,6 +148,10 @@ const FilterPanel = memo(({
                       <Button size="sm" variant={heatmapMode === 'roi' ? 'default' : 'outline'}
                         className="h-7 text-[10px]" onClick={() => onHeatmapModeChange('roi')}>
                         <TrendingUp className="h-3 w-3 mr-1" /> ROI
+                      </Button>
+                      <Button size="sm" variant={heatmapMode === 'liquidity' ? 'default' : 'outline'}
+                        className="h-7 text-[10px] col-span-2" onClick={() => onHeatmapModeChange('liquidity')}>
+                        <Sparkles className="h-3 w-3 mr-1" /> Liquidity
                       </Button>
                     </div>
                   )}
@@ -581,6 +585,11 @@ export default function InteractivePropertyMap() {
           0, 'rgba(0,0,0,0)', 0.2, 'hsl(200, 50%, 55%)', 0.4, 'hsl(160, 60%, 50%)',
           0.6, 'hsl(120, 65%, 45%)', 0.8, 'hsl(80, 70%, 40%)', 1, 'hsl(45, 90%, 50%)',
         ],
+        liquidity: [
+          'interpolate', ['linear'], ['heatmap-density'],
+          0, 'rgba(0,0,0,0)', 0.2, 'hsl(190, 60%, 60%)', 0.4, 'hsl(180, 70%, 50%)',
+          0.6, 'hsl(170, 80%, 45%)', 0.8, 'hsl(160, 85%, 40%)', 1, 'hsl(150, 90%, 35%)',
+        ],
       };
       m.setPaintProperty('property-heatmap', 'heatmap-color', colorRamps[heatmapMode]);
     } catch {}
@@ -753,13 +762,23 @@ export default function InteractivePropertyMap() {
               <Card className="bg-background/95 backdrop-blur-md border-border/60 shadow-lg">
                 <CardContent className="p-2.5">
                   <p className="text-[10px] font-semibold text-foreground mb-1.5">
-                    {heatmapMode === 'investment' ? '📊 Investment Score' : '💰 Price Density'}
+                    {heatmapMode === 'investment' ? '📊 Investment Score' :
+                     heatmapMode === 'deal' ? '🔥 Deal Heat' :
+                     heatmapMode === 'roi' ? '📈 ROI Density' :
+                     heatmapMode === 'liquidity' ? '💧 Liquidity Glow' :
+                     '💰 Price Density'}
                   </p>
                   <div className="flex items-center gap-1">
                     <span className="text-[9px] text-muted-foreground">Low</span>
                     <div className="flex gap-0.5">
                       {(heatmapMode === 'investment'
                         ? ['bg-blue-400', 'bg-yellow-400', 'bg-green-500', 'bg-green-700', 'bg-rose-500']
+                        : heatmapMode === 'liquidity'
+                        ? ['bg-cyan-400', 'bg-teal-400', 'bg-emerald-400', 'bg-emerald-600', 'bg-green-700']
+                        : heatmapMode === 'deal'
+                        ? ['bg-yellow-400', 'bg-orange-400', 'bg-orange-600', 'bg-red-500', 'bg-rose-600']
+                        : heatmapMode === 'roi'
+                        ? ['bg-blue-400', 'bg-teal-400', 'bg-green-500', 'bg-lime-500', 'bg-yellow-500']
                         : ['bg-blue-400', 'bg-teal-400', 'bg-yellow-400', 'bg-orange-500', 'bg-red-500']
                       ).map((c, i) => (
                         <div key={i} className={cn('w-6 h-2.5 rounded-sm', c)} />

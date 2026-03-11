@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { SEOHead } from '@/components/SEOHead';
+import FeedStrategySelector from '@/components/investor/FeedStrategySelector';
 import {
   TrendingUp, Flame, Shield, DollarSign, Building2, MapPin,
   Loader2, ChevronRight, Sparkles, BarChart3, Home, Zap,
@@ -84,6 +85,9 @@ export default function InvestorFeedPage() {
               </div>
             </div>
           </div>
+
+          {/* Strategy Selector */}
+          <FeedStrategySelector />
 
           {/* Category Tabs */}
           <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">

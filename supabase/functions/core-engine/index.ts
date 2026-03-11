@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
     // ── Parse request ──
     const body = await req.json();
     const { property_id, mode, city: reqCity, hold_years: reqHoldYears, property_ids } = body;
-    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'price_fairness', 'listing_performance_predictor', 'investment_advisor', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence', 'investor_alerts', 'portfolio_builder', 'off_market_deals', 'developer_project_launch', 'smart_tour_planner', 'market_trends_analyzer', 'astra_token', 'filter_analytics', 'system_health_check', 'sync_indonesia_locations', 'database_diagnostics', 'database_fix'];
+    const validModes = ['investment_score', 'investment_score_v2', 'price_suggestion', 'price_suggestion_inline', 'price_fairness', 'listing_performance_predictor', 'investment_advisor', 'listing_health', 'days_to_sell_prediction', 'demand_heat_score', 'price_adjustment_strategy', 'roi_simulation', 'compare_properties', 'portfolio_analysis', 'ranking_score', 'listing_visibility_analytics', 'ai_performance_summary', 'auto_tune_ai_weights', 'property_intelligence', 'buyer_profile', 'market_trend', 'investment_projection', 'lead_score', 'ai_brain', 'deal_detector', 'deal_finder', 'deal_analysis_v2', 'similar_properties', 'price_forecast', 'buyer_intent', 'negotiation_assist', 'seller_intelligence', 'listing_optimizer', 'map_search', 'digital_twin', 'anomaly_detector', 'premium_insights', 'deal_alerts', 'lead_generation', 'knowledge_graph', 'investor_strategy', 'demand_intelligence', 'portfolio_manager', 'property_valuation', 'rental_yield_predictor', 'market_trend_predictor', 'super_engine', 'autonomous_agent', 'knowledge_network', 'market_pulse', 'predictive_development', 'expansion_intelligence', 'self_learning', 'global_market_intelligence', 'mortgage_investment_simulator', 'property_market_dashboard', 'location_intelligence', 'investor_alerts', 'portfolio_builder', 'off_market_deals', 'developer_project_launch', 'smart_tour_planner', 'market_trends_analyzer', 'astra_token', 'filter_analytics', 'system_health_check', 'sync_indonesia_locations', 'database_diagnostics', 'database_fix'];
     if (!mode || !validModes.includes(mode)) {
       return new Response(JSON.stringify({ error: 'Invalid mode' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -1005,7 +1005,7 @@ Deno.serve(async (req) => {
 
     // Modes that do NOT require a property_id (bulk/market-wide operations)
     const NO_PROPERTY_ID_MODES = new Set([
-      'deal_finder', 'deal_alerts', 'deal_detector', 'investment_advisor',
+      'deal_finder', 'deal_alerts', 'deal_detector', 'deal_analysis_v2', 'investment_advisor',
       'market_trends_analyzer', 'market_trend_predictor', 'market_trend',
       'off_market_deals', 'portfolio_builder', 'investor_alerts',
       'map_search', 'global_market_intelligence', 'demand_intelligence',
@@ -3266,7 +3266,180 @@ Deno.serve(async (req) => {
     }
 
     // ═══════════════════════════════════════════
-    // MODE: similar_properties — Vector similarity search
+    // MODE: deal_analysis_v2 — Enhanced deal scoring with confidence, liquidity, flip, rental stability
+    // ═══════════════════════════════════════════
+    if (mode === 'deal_analysis_v2') {
+      const batchSize = body.batch_size || 30;
+      const offset = body.offset || 0;
+      const targetCity = body.city || null;
+
+      console.log('[CORE-ENGINE] deal_analysis_v2 batch:', { batchSize, offset, targetCity });
+
+      // Fetch properties batch
+      let propQuery = supabase
+        .from('properties')
+        .select('id, title, city, state, price, property_type, listing_type, land_area_sqm, building_area_sqm, kt:bedrooms, km:bathrooms, investment_score, demand_heat_score, created_at, status')
+        .eq('status', 'active')
+        .order('created_at', { ascending: false })
+        .range(offset, offset + batchSize - 1);
+
+      if (targetCity) propQuery = propQuery.eq('city', targetCity);
+      const { data: props, error: propErr } = await propQuery;
+      if (propErr) throw propErr;
+      if (!props || props.length === 0) {
+        return new Response(JSON.stringify({ mode: 'deal_analysis_v2', data: { processed: 0, message: 'No properties to process' } }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Get unique cities for median price lookup
+      const cities = [...new Set(props.map((p: any) => p.city).filter(Boolean))];
+
+      // Fetch city-level price trends for median price_per_sqm
+      const { data: priceTrends } = await supabase
+        .from('location_price_trends')
+        .select('city, avg_price_per_sqm, median_price, price_growth_pct')
+        .in('city', cities.slice(0, 30));
+
+      const cityMedians: Record<string, { avgPpsqm: number; growth: number }> = {};
+      (priceTrends || []).forEach((t: any) => {
+        cityMedians[t.city] = { avgPpsqm: t.avg_price_per_sqm || 0, growth: t.price_growth_pct || 0 };
+      });
+
+      // Fetch market insights for macro growth
+      const { data: marketInsights } = await supabase
+        .from('location_market_insights')
+        .select('city, growth_potential_score, market_status, demand_level')
+        .in('city', cities.slice(0, 30));
+
+      const cityInsights: Record<string, { growth: number; status: string; demand: string }> = {};
+      (marketInsights || []).forEach((m: any) => {
+        cityInsights[m.city] = { growth: m.growth_potential_score || 50, status: m.market_status || 'stable', demand: m.demand_level || 'medium' };
+      });
+
+      // Process each property
+      const results: any[] = [];
+      for (const p of props) {
+        const area = p.building_area_sqm || p.land_area_sqm || 100;
+        const ppsqm = p.price / area;
+        const cityData = cityMedians[p.city] || { avgPpsqm: ppsqm, growth: 0 };
+        const insight = cityInsights[p.city] || { growth: 50, status: 'stable', demand: 'medium' };
+
+        // Listing age
+        const listingAgeDays = Math.floor((Date.now() - new Date(p.created_at).getTime()) / (1000 * 60 * 60 * 24));
+
+        // Undervaluation
+        const estimatedValue = cityData.avgPpsqm > 0 ? cityData.avgPpsqm * area : p.price;
+        const undervalPct = estimatedValue > 0 ? ((estimatedValue - p.price) / estimatedValue) * 100 : 0;
+
+        // Listing age factor (0-100): fresh = high, stale = low
+        const ageFactor = listingAgeDays <= 7 ? 100 : listingAgeDays <= 14 ? 85 : listingAgeDays <= 30 ? 70 : listingAgeDays <= 60 ? 50 : listingAgeDays <= 90 ? 30 : 15;
+
+        // Demand factor from demand_heat_score
+        const demandFactor = Math.min(100, (p.demand_heat_score || 0));
+
+        // Macro growth factor
+        const macroGrowth = insight.growth / 100;
+        const demandMultiplier = insight.demand === 'high' ? 1.1 : insight.demand === 'medium' ? 1.0 : 0.9;
+
+        // Rental yield estimate (simplified by property type)
+        const baseYield = p.property_type === 'kost' ? 8.5 : p.property_type === 'apartment' ? 6.5 : p.property_type === 'villa' ? 5.5 : 4.5;
+        const cityYieldBoost = cityData.growth > 5 ? 1.15 : cityData.growth > 0 ? 1.05 : 0.95;
+        const rentalYield = Math.round(baseYield * cityYieldBoost * demandMultiplier * 100) / 100;
+
+        // ROI forecast gap
+        const roiForecastGap = Math.round((undervalPct + cityData.growth) * 10) / 10;
+
+        // === NEW V2 SCORES ===
+        // Deal confidence: weighted composite of data quality signals
+        const hasAreaData = (p.building_area_sqm || p.land_area_sqm) ? 20 : 0;
+        const hasCityData = cityData.avgPpsqm > 0 ? 30 : 0;
+        const hasInsight = insight.growth !== 50 ? 20 : 0;
+        const hasDemand = (p.demand_heat_score || 0) > 0 ? 15 : 0;
+        const hasScore = (p.investment_score || 0) > 0 ? 15 : 0;
+        const dealConfidence = Math.min(100, hasAreaData + hasCityData + hasInsight + hasDemand + hasScore);
+
+        // Liquidity probability: how fast it'll sell
+        const liquidityBase = demandFactor * 0.35 + ageFactor * 0.25;
+        const liquidityType = p.listing_type === 'rent' ? 20 : p.listing_type === 'sale' ? 10 : 15;
+        const liquidityPrice = undervalPct > 10 ? 20 : undervalPct > 0 ? 10 : 0;
+        const liquidityProbability = Math.min(100, Math.round(liquidityBase + liquidityType + liquidityPrice));
+
+        // Flip potential: underval (40%) + demand (30%) + freshness (30%)
+        const flipPotential = Math.min(100, Math.round(
+          (Math.max(0, Math.min(100, undervalPct * 2)) * 0.4) +
+          (demandFactor * 0.3) +
+          (ageFactor * 0.3)
+        ));
+
+        // Rental stability: inverse of yield variance proxy + type consistency
+        const typeStability = ['apartment', 'kost', 'house'].includes(p.property_type || '') ? 30 : 15;
+        const demandStability = demandFactor >= 40 ? 25 : 10;
+        const marketStability = insight.status === 'stable' ? 25 : insight.status === 'hot' ? 20 : 10;
+        const yieldStability = rentalYield >= 4 && rentalYield <= 10 ? 20 : 10;
+        const rentalStabilityScore = Math.min(100, typeStability + demandStability + marketStability + yieldStability);
+
+        // Deal score (enhanced)
+        const dealScore = Math.min(100, Math.round(
+          (Math.max(0, Math.min(100, undervalPct * 2)) * 0.30) +
+          (rentalYield * 3 * 0.20) +
+          (demandFactor * 0.20) +
+          ((p.investment_score || 0) * 0.15) +
+          (ageFactor * 0.15)
+        ));
+
+        // Deal tag
+        const dealTag = dealScore >= 75 ? 'hot_deal' : dealScore >= 55 ? 'good_deal' : dealScore >= 35 ? 'fair' : 'overpriced';
+
+        // Location growth score
+        const locationGrowthScore = Math.min(100, Math.round(insight.growth * demandMultiplier));
+
+        results.push({
+          property_id: p.id,
+          deal_score: dealScore,
+          deal_tag: dealTag,
+          estimated_value: Math.round(estimatedValue),
+          listing_price: p.price,
+          undervaluation_percent: Math.round(undervalPct * 100) / 100,
+          rental_yield_estimate: rentalYield,
+          roi_forecast_gap: roiForecastGap,
+          location_growth_score: locationGrowthScore,
+          demand_signal_score: Math.round(demandFactor),
+          price_per_sqm: Math.round(ppsqm),
+          city_avg_price_per_sqm: Math.round(cityData.avgPpsqm),
+          deal_confidence: dealConfidence,
+          liquidity_probability: liquidityProbability,
+          flip_potential_score: flipPotential,
+          rental_stability_score: rentalStabilityScore,
+          listing_age_days: listingAgeDays,
+          macro_growth_factor: Math.round(macroGrowth * 100) / 100,
+          analyzed_at: new Date().toISOString(),
+        });
+      }
+
+      // Upsert in chunks of 30
+      for (let i = 0; i < results.length; i += 30) {
+        const chunk = results.slice(i, i + 30);
+        const { error: upsertErr } = await supabase
+          .from('property_deal_analysis')
+          .upsert(chunk, { onConflict: 'property_id' });
+        if (upsertErr) console.error('[deal_analysis_v2] upsert error:', upsertErr.message);
+      }
+
+      return new Response(JSON.stringify({
+        mode: 'deal_analysis_v2',
+        data: {
+          processed: results.length,
+          offset,
+          batch_size: batchSize,
+          has_more: props.length === batchSize,
+          avg_deal_score: Math.round(results.reduce((s, r) => s + r.deal_score, 0) / results.length),
+          avg_confidence: Math.round(results.reduce((s, r) => s + r.deal_confidence, 0) / results.length),
+        },
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
     // ═══════════════════════════════════════════
     if (mode === 'similar_properties') {
       if (!property_id) {
