@@ -4430,6 +4430,106 @@ ${contextParts.length > 0 ? '\nDATA CONTEXT:\n' + contextParts.join('\n\n') : '\
   });
 }
 
+async function handleSeoLandingContent(payload: Record<string, unknown>) {
+  const { province, city, district, village } = payload as {
+    province?: string; city?: string; district?: string; village?: string;
+  };
+
+  if (!province || !city || !district || !village) {
+    return json({ error: "province, city, district, and village are required" }, 400);
+  }
+
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
+
+  const systemPrompt = `Anda adalah analis pasar properti Indonesia dan SEO copywriter profesional.
+Anda HARUS merespons dalam Bahasa Indonesia.
+Tugas: Buat konten landing page SEO untuk pencarian properti di lokasi yang diberikan.
+
+Konten harus mencakup:
+1. Gambaran umum area dan daya tarik gaya hidup
+2. Infrastruktur dan aksesibilitas
+3. Potensi investasi dan tren harga
+4. Profil permintaan pembeli (keluarga, investor, mahasiswa, wisata, dll)
+5. Penempatan keyword alami untuk pencarian properti
+
+Nada: Profesional, terpercaya, fokus investasi.
+Panjang intro_content: 250-350 kata.
+
+Anda juga HARUS menghasilkan 25 keyword SEO high-intent dalam Bahasa Indonesia, dikategorikan sebagai:
+- primary_keywords: 5-7 keyword utama (intent beli/sewa)
+- secondary_keywords: 5-7 keyword pendukung (investasi/tipe properti)
+- long_tail_keywords: 6-8 keyword long-tail (frasa spesifik)
+- urgent_buyer_keywords: 4-5 keyword pembeli urgent`;
+
+  const userPrompt = `Lokasi:
+- Provinsi: ${province}
+- Kota/Kabupaten: ${city}
+- Kecamatan: ${district}
+- Kelurahan/Desa: ${village}
+
+Buat konten SEO landing page lengkap untuk lokasi ini.`;
+
+  const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${LOVABLE_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "google/gemini-3-flash-preview",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      tools: [{
+        type: "function",
+        function: {
+          name: "seo_landing_content",
+          description: "Return SEO landing page content and keywords for a property location",
+          parameters: {
+            type: "object",
+            properties: {
+              seo_title: { type: "string", description: "SEO title, max 60 chars, include location + property keyword" },
+              meta_description: { type: "string", description: "Meta description, 140-160 chars" },
+              intro_content: { type: "string", description: "250-350 word intro content in Indonesian" },
+              investment_insight: { type: "string", description: "Investment insight paragraph, 80-120 words" },
+              primary_keywords: { type: "array", items: { type: "string" }, description: "5-7 primary keywords" },
+              secondary_keywords: { type: "array", items: { type: "string" }, description: "5-7 secondary keywords" },
+              long_tail_keywords: { type: "array", items: { type: "string" }, description: "6-8 long tail keywords" },
+              urgent_buyer_keywords: { type: "array", items: { type: "string" }, description: "4-5 urgent buyer keywords" },
+            },
+            required: ["seo_title", "meta_description", "intro_content", "investment_insight", "primary_keywords", "secondary_keywords", "long_tail_keywords", "urgent_buyer_keywords"],
+            additionalProperties: false,
+          },
+        },
+      }],
+      tool_choice: { type: "function", function: { name: "seo_landing_content" } },
+    }),
+  });
+
+  if (!aiResponse.ok) {
+    const errText = await aiResponse.text();
+    console.error("AI gateway error:", aiResponse.status, errText);
+    if (aiResponse.status === 429) return json({ error: "Rate limit exceeded, coba lagi nanti." }, 429);
+    if (aiResponse.status === 402) return json({ error: "Kredit AI habis." }, 402);
+    return json({ error: "AI gateway error" }, 500);
+  }
+
+  const aiData = await aiResponse.json();
+  const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+
+  if (!toolCall?.function?.arguments) {
+    return json({ error: "AI failed to generate structured content" }, 500);
+  }
+
+  try {
+    const result = JSON.parse(toolCall.function.arguments);
+    return json(result);
+  } catch {
+    return json({ error: "Failed to parse AI response" }, 500);
+  }
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
