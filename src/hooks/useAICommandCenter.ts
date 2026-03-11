@@ -91,8 +91,9 @@ export interface AICommandCenterData {
 async function checkEdgeFunctionHealth(name: string): Promise<{ status: 'ok' | 'error'; latencyMs: number }> {
   const start = Date.now();
   try {
-    const { error } = await supabase.functions.invoke(name, { body: { healthCheck: true } });
+    const { error } = await supabase.functions.invoke(name, { body: { mode: 'system_health_check', healthCheck: true } });
     const latencyMs = Date.now() - start;
+    // A 400 "Invalid mode" still means the function is reachable
     return { status: error?.message?.includes('not found') ? 'error' : 'ok', latencyMs };
   } catch {
     return { status: 'error', latencyMs: Date.now() - start };
