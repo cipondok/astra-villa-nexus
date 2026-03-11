@@ -7440,6 +7440,87 @@ export type Database = {
           },
         ]
       }
+      deal_hunter_opportunities: {
+        Row: {
+          created_at: string | null
+          deal_classification: string
+          deal_opportunity_signal_score: number
+          deal_strength_index: number
+          deal_tier: string
+          estimated_fair_value: number | null
+          expires_at: string | null
+          id: string
+          optimal_entry_window_days: number | null
+          price_velocity: number | null
+          property_id: string
+          scan_version: number | null
+          sell_probability_30d: number | null
+          signal_metadata: Json | null
+          signals: string[] | null
+          surfaced_at: string | null
+          undervaluation_percent: number | null
+          updated_at: string | null
+          urgency_score: number
+        }
+        Insert: {
+          created_at?: string | null
+          deal_classification?: string
+          deal_opportunity_signal_score?: number
+          deal_strength_index?: number
+          deal_tier?: string
+          estimated_fair_value?: number | null
+          expires_at?: string | null
+          id?: string
+          optimal_entry_window_days?: number | null
+          price_velocity?: number | null
+          property_id: string
+          scan_version?: number | null
+          sell_probability_30d?: number | null
+          signal_metadata?: Json | null
+          signals?: string[] | null
+          surfaced_at?: string | null
+          undervaluation_percent?: number | null
+          updated_at?: string | null
+          urgency_score?: number
+        }
+        Update: {
+          created_at?: string | null
+          deal_classification?: string
+          deal_opportunity_signal_score?: number
+          deal_strength_index?: number
+          deal_tier?: string
+          estimated_fair_value?: number | null
+          expires_at?: string | null
+          id?: string
+          optimal_entry_window_days?: number | null
+          price_velocity?: number | null
+          property_id?: string
+          scan_version?: number | null
+          sell_probability_30d?: number | null
+          signal_metadata?: Json | null
+          signals?: string[] | null
+          surfaced_at?: string | null
+          undervaluation_percent?: number | null
+          updated_at?: string | null
+          urgency_score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_hunter_opportunities_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: true
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deal_hunter_opportunities_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: true
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       deposit_escrows: {
         Row: {
           booking_id: string
