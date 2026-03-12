@@ -973,6 +973,129 @@ Generate optimized SEO content. Call the seo_optimize function with your results
       });
     }
 
+    // ── ai-audit: Deep AI-powered SEO audit ──
+    if (action === "ai-audit") {
+      const propertyId = normalizeText(payload.propertyId);
+      if (!propertyId) return json({ error: "propertyId is required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const { data: property, error: propErr } = await supabase
+        .from("properties")
+        .select(SEO_PROPERTY_SELECT)
+        .eq("id", propertyId)
+        .maybeSingle();
+
+      if (propErr) return json({ error: propErr.message }, 500);
+      if (!property) return json({ error: "Property not found" }, 404);
+
+      // Count images
+      const { count: imageCount } = await supabase
+        .from("property_images")
+        .select("id", { count: "exact", head: true })
+        .eq("property_id", propertyId);
+
+      const locationLabel = [property.location, property.city, property.state].filter(Boolean).join(", ") || "Indonesia";
+
+      const prompt = `You are an AI SEO auditor for an Indonesian property listing platform.
+
+Analyze the following property listing:
+
+TITLE: ${property.title || "Untitled"}
+DESCRIPTION: ${property.description || "N/A"}
+PROPERTY TYPE: ${property.property_type || "N/A"}
+TRANSACTION TYPE: ${property.listing_type || "sale"}
+LOCATION: ${locationLabel}
+PRICE: ${property.price || "N/A"}
+IMAGE COUNT: ${imageCount || 0}
+
+Tasks:
+1. Check keyword optimization in title
+2. Evaluate description quality and uniqueness
+3. Evaluate location depth usage
+4. Evaluate emotional buying triggers
+5. Evaluate investment language strength
+6. Predict Google ranking potential
+7. Generate SEO score from 0–100
+
+Be specific with feedback. Use Indonesian property market context. Reference competitor keywords in the same area.`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${LOVABLE_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: "You are an expert Indonesian property market analyst and SEO auditor. Provide actionable, data-driven SEO audits for property listings. Always respond in Indonesian context with local market awareness." },
+              { role: "user", content: prompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "seo_audit_result",
+                description: "Return the complete SEO audit result for a property listing",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    seo_score: { type: "number", description: "SEO score from 0-100" },
+                    ranking_probability: { type: "string", enum: ["LOW", "MEDIUM", "HIGH"], description: "Google ranking potential" },
+                    title_feedback: { type: "string", description: "Detailed feedback on title keyword optimization, length, and effectiveness" },
+                    description_feedback: { type: "string", description: "Detailed feedback on description quality, uniqueness, emotional triggers, and investment language" },
+                    keyword_suggestions: { type: "array", items: { type: "string" }, description: "8-12 high-intent keywords for this property in Indonesian" },
+                    improvement_actions: { type: "array", items: { type: "string" }, description: "5-8 specific actionable improvement steps" },
+                    location_depth_score: { type: "number", description: "Location keyword depth score 0-100" },
+                    emotional_trigger_score: { type: "number", description: "Emotional buying trigger score 0-100" },
+                    investment_language_score: { type: "number", description: "Investment language strength score 0-100" },
+                  },
+                  required: ["seo_score", "ranking_probability", "title_feedback", "description_feedback", "keyword_suggestions", "improvement_actions"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "seo_audit_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded, please try again later" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          console.error("AI audit error:", aiResp.status);
+          return json({ error: "AI audit failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) {
+          return json({ error: "AI did not return structured audit data" }, 500);
+        }
+
+        const audit = JSON.parse(toolCall.function.arguments);
+
+        // Log the audit action
+        try {
+          await supabase.from("seo_ai_actions").insert({
+            property_id: propertyId,
+            action_type: "ai_audit",
+            old_score: 0,
+            new_score: audit.seo_score,
+            ai_model: "gemini-3-flash-preview",
+            triggered_by: "manual",
+            metadata: { ranking_probability: audit.ranking_probability, keyword_count: audit.keyword_suggestions?.length },
+          });
+        } catch { /* non-blocking */ }
+
+        return json({ action: "ai-audit", propertyId, audit });
+      } catch (e) {
+        console.error("AI audit exception:", e);
+        return json({ error: e instanceof Error ? e.message : "AI audit failed" }, 500);
+      }
+    }
+
     // ── apply-seo: Apply SEO analysis to the property ──
     if (action === "apply-seo") {
       const propertyId = normalizeText(payload.propertyId);

@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import { useSeoAudit, type SeoAuditResult } from '@/hooks/useSeoAudit';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -333,6 +334,7 @@ const PropertySEOChecker = () => {
   
   // AI optimization state
   const [aiResult, setAiResult] = useState<ContentOptimization | null>(null);
+  const [auditResult, setAuditResult] = useState<SeoAuditResult | null>(null);
   const [autoOptThreshold, setAutoOptThreshold] = useState(70);
   
   // AI Auto-Fix state selection
@@ -377,6 +379,7 @@ const PropertySEOChecker = () => {
   const analyzeProperty = useAnalyzeProperty();
   const applySeo = useApplySeo();
   const contentOptimize = useContentOptimize();
+  const seoAudit = useSeoAudit();
 
   // Reset city/area on state change, reset pages on any filter change
   useEffect(() => { setFilterCity(''); setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterState]);
@@ -433,6 +436,13 @@ const PropertySEOChecker = () => {
       onSuccess: (data) => setAiResult(data),
     });
   }, [selectedPropertyId, contentOptimize]);
+
+  const handleAiAudit = useCallback(() => {
+    if (!selectedPropertyId) return;
+    seoAudit.mutate(selectedPropertyId, {
+      onSuccess: (data) => setAuditResult(data),
+    });
+  }, [selectedPropertyId, seoAudit]);
 
   // Save custom keywords
   const handleSaveKeywords = useCallback(async () => {
@@ -1013,6 +1023,10 @@ const PropertySEOChecker = () => {
                         {contentOptimize.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Sparkles className="h-3 w-3 mr-1" />}
                         AI Optimize
                       </Button>
+                      <Button size="sm" variant="outline" className="h-7 text-xs" onClick={handleAiAudit} disabled={seoAudit.isPending}>
+                        {seoAudit.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Target className="h-3 w-3 mr-1" />}
+                        AI Audit
+                      </Button>
                       <Button size="sm" className="h-7 text-xs" onClick={() => applySeo.mutate(currentAnalysis.property_id)} disabled={applySeo.isPending}>
                         <Zap className="h-3 w-3 mr-1" /> Apply SEO
                       </Button>
@@ -1260,6 +1274,99 @@ const PropertySEOChecker = () => {
                     <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
                     <p className="text-xs text-muted-foreground">AI is analyzing and optimizing content...</p>
                     <Progress value={65} className="h-1.5 mt-3 max-w-xs mx-auto" />
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* AI Audit Results */}
+              {seoAudit.isPending && (
+                <Card className="bg-card border-border">
+                  <CardContent className="p-6 text-center">
+                    <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                    <p className="text-xs text-muted-foreground">AI is performing deep SEO audit...</p>
+                    <Progress value={45} className="h-1.5 mt-3 max-w-xs mx-auto" />
+                  </CardContent>
+                </Card>
+              )}
+
+              {auditResult && (
+                <Card className="bg-card border-border">
+                  <CardHeader className="p-3 pb-2">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-sm flex items-center gap-2">
+                        <Target className="h-4 w-4 text-primary" />
+                        AI SEO Audit Report
+                      </CardTitle>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={auditResult.ranking_probability === 'HIGH' ? 'default' : auditResult.ranking_probability === 'MEDIUM' ? 'secondary' : 'destructive'} className="text-[10px]">
+                          Ranking: {auditResult.ranking_probability}
+                        </Badge>
+                        <ScoreBadge score={auditResult.seo_score} />
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-3 pt-0 space-y-3">
+                    {/* Sub-scores */}
+                    {(auditResult.location_depth_score !== undefined || auditResult.emotional_trigger_score !== undefined || auditResult.investment_language_score !== undefined) && (
+                      <div className="grid grid-cols-3 gap-2">
+                        {auditResult.location_depth_score !== undefined && (
+                          <div className="p-2 rounded-lg border border-border/50 bg-accent/20 text-center">
+                            <MapPin className="h-3 w-3 mx-auto mb-1 text-primary" />
+                            <p className="text-[9px] text-muted-foreground">Location Depth</p>
+                            <p className="text-sm font-bold text-foreground">{auditResult.location_depth_score}</p>
+                          </div>
+                        )}
+                        {auditResult.emotional_trigger_score !== undefined && (
+                          <div className="p-2 rounded-lg border border-border/50 bg-accent/20 text-center">
+                            <Flame className="h-3 w-3 mx-auto mb-1 text-chart-3" />
+                            <p className="text-[9px] text-muted-foreground">Emotional Triggers</p>
+                            <p className="text-sm font-bold text-foreground">{auditResult.emotional_trigger_score}</p>
+                          </div>
+                        )}
+                        {auditResult.investment_language_score !== undefined && (
+                          <div className="p-2 rounded-lg border border-border/50 bg-accent/20 text-center">
+                            <TrendingUp className="h-3 w-3 mx-auto mb-1 text-chart-1" />
+                            <p className="text-[9px] text-muted-foreground">Investment Language</p>
+                            <p className="text-sm font-bold text-foreground">{auditResult.investment_language_score}</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Title Feedback */}
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1"><FileText className="h-3 w-3" /> Title Feedback</p>
+                      <p className="text-xs text-foreground bg-accent/30 p-2 rounded-md">{auditResult.title_feedback}</p>
+                    </div>
+
+                    {/* Description Feedback */}
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1"><FileText className="h-3 w-3" /> Description Feedback</p>
+                      <p className="text-xs text-foreground bg-accent/30 p-2 rounded-md">{auditResult.description_feedback}</p>
+                    </div>
+
+                    {/* Keyword Suggestions */}
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1"><Hash className="h-3 w-3" /> Keyword Suggestions</p>
+                      <div className="flex flex-wrap gap-1">
+                        {auditResult.keyword_suggestions.map((kw, i) => (
+                          <Badge key={i} variant="outline" className="text-[9px] bg-primary/5 border-primary/20">{kw}</Badge>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Improvement Actions */}
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1"><Lightbulb className="h-3 w-3" /> Improvement Actions</p>
+                      <div className="space-y-1">
+                        {auditResult.improvement_actions.map((action, i) => (
+                          <div key={i} className="flex items-start gap-2 p-1.5 rounded border border-border/50 bg-accent/10">
+                            <ArrowUpRight className="h-3 w-3 text-chart-1 shrink-0 mt-0.5" />
+                            <p className="text-[10px] text-foreground">{action}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               )}
