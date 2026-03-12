@@ -1306,32 +1306,24 @@ const PropertySEOChecker = () => {
                     </div>
                   </CardHeader>
                   <CardContent className="p-3 pt-0 space-y-3">
-                    {/* Sub-scores */}
-                    {(auditResult.location_depth_score !== undefined || auditResult.emotional_trigger_score !== undefined || auditResult.investment_language_score !== undefined) && (
-                      <div className="grid grid-cols-3 gap-2">
-                        {auditResult.location_depth_score !== undefined && (
-                          <div className="p-2 rounded-lg border border-border/50 bg-accent/20 text-center">
-                            <MapPin className="h-3 w-3 mx-auto mb-1 text-primary" />
-                            <p className="text-[9px] text-muted-foreground">Location Depth</p>
-                            <p className="text-sm font-bold text-foreground">{auditResult.location_depth_score}</p>
-                          </div>
-                        )}
-                        {auditResult.emotional_trigger_score !== undefined && (
-                          <div className="p-2 rounded-lg border border-border/50 bg-accent/20 text-center">
-                            <Flame className="h-3 w-3 mx-auto mb-1 text-chart-3" />
-                            <p className="text-[9px] text-muted-foreground">Emotional Triggers</p>
-                            <p className="text-sm font-bold text-foreground">{auditResult.emotional_trigger_score}</p>
-                          </div>
-                        )}
-                        {auditResult.investment_language_score !== undefined && (
-                          <div className="p-2 rounded-lg border border-border/50 bg-accent/20 text-center">
-                            <TrendingUp className="h-3 w-3 mx-auto mb-1 text-chart-1" />
-                            <p className="text-[9px] text-muted-foreground">Investment Language</p>
-                            <p className="text-sm font-bold text-foreground">{auditResult.investment_language_score}</p>
-                          </div>
-                        )}
-                      </div>
-                    )}
+                    {/* Score Grid - 7 dimensions */}
+                    <div className="grid grid-cols-4 gap-1.5">
+                      {[
+                        { icon: <MapPin className="h-3 w-3" />, label: "Location Depth", score: auditResult.location_depth_score, color: "text-primary" },
+                        { icon: <Flame className="h-3 w-3" />, label: "Emotional Triggers", score: auditResult.emotional_trigger_score, color: "text-chart-3" },
+                        { icon: <TrendingUp className="h-3 w-3" />, label: "Investment Lang", score: auditResult.investment_language_score, color: "text-chart-1" },
+                        { icon: <Globe className="h-3 w-3" />, label: "Location Competition", score: auditResult.location_competition_score, color: "text-chart-4" },
+                        { icon: <Target className="h-3 w-3" />, label: "Buyer Intent", score: auditResult.buyer_intent_score, color: "text-chart-2" },
+                        { icon: <FileText className="h-3 w-3" />, label: "Content Unique", score: auditResult.content_uniqueness_score, color: "text-primary" },
+                        { icon: <BarChart3 className="h-3 w-3" />, label: "Traffic Potential", score: auditResult.traffic_potential_score, color: "text-chart-1" },
+                      ].map((item, i) => (
+                        <div key={i} className="p-1.5 rounded-lg border border-border/50 bg-accent/20 text-center">
+                          <div className={cn("mx-auto mb-0.5", item.color)}>{item.icon}</div>
+                          <p className="text-[8px] text-muted-foreground leading-tight">{item.label}</p>
+                          <p className={cn("text-sm font-bold", item.score >= 70 ? "text-chart-1" : item.score >= 40 ? "text-chart-4" : "text-destructive")}>{item.score}</p>
+                        </div>
+                      ))}
+                    </div>
 
                     {/* Title Feedback */}
                     <div className="space-y-1">
@@ -1345,6 +1337,14 @@ const PropertySEOChecker = () => {
                       <p className="text-xs text-foreground bg-accent/30 p-2 rounded-md">{auditResult.description_feedback}</p>
                     </div>
 
+                    {/* Competitive Analysis */}
+                    {auditResult.competitive_analysis && (
+                      <div className="space-y-1">
+                        <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1"><BarChart3 className="h-3 w-3" /> Competitive Analysis</p>
+                        <p className="text-xs text-foreground bg-chart-4/10 border border-chart-4/20 p-2 rounded-md">{auditResult.competitive_analysis}</p>
+                      </div>
+                    )}
+
                     {/* Keyword Suggestions */}
                     <div className="space-y-1">
                       <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1"><Hash className="h-3 w-3" /> Keyword Suggestions</p>
@@ -1354,6 +1354,18 @@ const PropertySEOChecker = () => {
                         ))}
                       </div>
                     </div>
+
+                    {/* Content Gap Keywords */}
+                    {auditResult.content_gap_keywords?.length > 0 && (
+                      <div className="space-y-1">
+                        <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1"><AlertTriangle className="h-3 w-3" /> Content Gap (Competitor Keywords You're Missing)</p>
+                        <div className="flex flex-wrap gap-1">
+                          {auditResult.content_gap_keywords.map((kw, i) => (
+                            <Badge key={i} variant="outline" className="text-[9px] bg-destructive/5 border-destructive/20 text-destructive">{kw}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     {/* Improvement Actions */}
                     <div className="space-y-1">

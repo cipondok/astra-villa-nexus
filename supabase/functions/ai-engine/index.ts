@@ -998,28 +998,36 @@ Generate optimized SEO content. Call the seo_optimize function with your results
 
       const locationLabel = [property.location, property.city, property.state].filter(Boolean).join(", ") || "Indonesia";
 
-      const prompt = `You are an AI SEO auditor for an Indonesian property listing platform.
+      const prompt = `You are an elite Indonesian real estate SEO strategist and Google ranking analyst.
 
-Analyze the following property listing:
+Deeply analyze this property listing and predict its organic search ranking strength.
 
-TITLE: ${property.title || "Untitled"}
-DESCRIPTION: ${property.description || "N/A"}
-PROPERTY TYPE: ${property.property_type || "N/A"}
-TRANSACTION TYPE: ${property.listing_type || "sale"}
-LOCATION: ${locationLabel}
-PRICE: ${property.price || "N/A"}
-IMAGE COUNT: ${imageCount || 0}
+PROPERTY DATA:
+Title: ${property.title || "Untitled"}
+Description: ${property.description || "N/A"}
+Property Type: ${property.property_type || "N/A"}
+Transaction Type: ${property.listing_type || "sale"}
+Price: ${property.price || "N/A"}
+
+Location Hierarchy:
+Village: ${property.location || "N/A"}
+City: ${property.city || "N/A"}
+Province: ${property.state || "N/A"}
+
+Image Count: ${imageCount || 0}
 
 Tasks:
-1. Check keyword optimization in title
-2. Evaluate description quality and uniqueness
-3. Evaluate location depth usage
-4. Evaluate emotional buying triggers
-5. Evaluate investment language strength
-6. Predict Google ranking potential
-7. Generate SEO score from 0–100
+1. Evaluate keyword optimization strength in title
+2. Evaluate emotional buyer triggers and urgency language
+3. Evaluate investment attractiveness language
+4. Evaluate micro-location SEO depth usage (village/district/city granularity)
+5. Estimate location competition level for property SEO in this area
+6. Evaluate description uniqueness risk for duplicate content
+7. Estimate search demand and traffic potential for this property type + location
+8. Predict Google ranking probability
+9. Generate total SEO score (0–100)
 
-Be specific with feedback. Use Indonesian property market context. Reference competitor keywords in the same area.`;
+Be extremely specific. Use Indonesian property market context. Reference real competitor keyword patterns in this location.`;
 
       try {
         const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -1031,28 +1039,34 @@ Be specific with feedback. Use Indonesian property market context. Reference com
           body: JSON.stringify({
             model: "google/gemini-3-flash-preview",
             messages: [
-              { role: "system", content: "You are an expert Indonesian property market analyst and SEO auditor. Provide actionable, data-driven SEO audits for property listings. Always respond in Indonesian context with local market awareness." },
+              { role: "system", content: "You are an elite Indonesian real estate SEO strategist with deep knowledge of Google's ranking algorithms, Indonesian property market dynamics, and buyer search behavior. Provide brutally honest, data-driven audits. Score conservatively — only truly optimized listings should score above 75." },
               { role: "user", content: prompt },
             ],
             tools: [{
               type: "function",
               function: {
                 name: "seo_audit_result",
-                description: "Return the complete SEO audit result for a property listing",
+                description: "Return the complete deep SEO audit result for a property listing",
                 parameters: {
                   type: "object",
                   properties: {
-                    seo_score: { type: "number", description: "SEO score from 0-100" },
-                    ranking_probability: { type: "string", enum: ["LOW", "MEDIUM", "HIGH"], description: "Google ranking potential" },
-                    title_feedback: { type: "string", description: "Detailed feedback on title keyword optimization, length, and effectiveness" },
-                    description_feedback: { type: "string", description: "Detailed feedback on description quality, uniqueness, emotional triggers, and investment language" },
-                    keyword_suggestions: { type: "array", items: { type: "string" }, description: "8-12 high-intent keywords for this property in Indonesian" },
-                    improvement_actions: { type: "array", items: { type: "string" }, description: "5-8 specific actionable improvement steps" },
-                    location_depth_score: { type: "number", description: "Location keyword depth score 0-100" },
-                    emotional_trigger_score: { type: "number", description: "Emotional buying trigger score 0-100" },
-                    investment_language_score: { type: "number", description: "Investment language strength score 0-100" },
+                    seo_score: { type: "number", description: "Total SEO score 0-100, scored conservatively" },
+                    ranking_probability: { type: "string", enum: ["LOW", "MEDIUM", "HIGH"], description: "Google organic ranking probability" },
+                    location_competition_score: { type: "number", description: "Location competition level 0-100 (higher = more competitive)" },
+                    buyer_intent_score: { type: "number", description: "Buyer intent and urgency language strength 0-100" },
+                    content_uniqueness_score: { type: "number", description: "Description uniqueness and duplicate content risk 0-100" },
+                    traffic_potential_score: { type: "number", description: "Estimated search demand and traffic potential 0-100" },
+                    location_depth_score: { type: "number", description: "Micro-location SEO depth (village/district/city usage) 0-100" },
+                    emotional_trigger_score: { type: "number", description: "Emotional buying trigger effectiveness 0-100" },
+                    investment_language_score: { type: "number", description: "Investment attractiveness language strength 0-100" },
+                    title_feedback: { type: "string", description: "Detailed analysis of title keyword optimization, length, structure, and missed opportunities" },
+                    description_feedback: { type: "string", description: "Detailed analysis of description quality, uniqueness, emotional triggers, investment language, and SEO density" },
+                    keyword_suggestions: { type: "array", items: { type: "string" }, description: "10-15 high-intent Indonesian property keywords for this listing" },
+                    improvement_actions: { type: "array", items: { type: "string" }, description: "6-10 specific, prioritized actionable improvement steps" },
+                    competitive_analysis: { type: "string", description: "Brief analysis of competitive landscape for this property type and location" },
+                    content_gap_keywords: { type: "array", items: { type: "string" }, description: "5-8 keywords competitors rank for that this listing misses" },
                   },
-                  required: ["seo_score", "ranking_probability", "title_feedback", "description_feedback", "keyword_suggestions", "improvement_actions"],
+                  required: ["seo_score", "ranking_probability", "location_competition_score", "buyer_intent_score", "content_uniqueness_score", "traffic_potential_score", "location_depth_score", "emotional_trigger_score", "investment_language_score", "title_feedback", "description_feedback", "keyword_suggestions", "improvement_actions", "competitive_analysis", "content_gap_keywords"],
                   additionalProperties: false,
                 },
               },
