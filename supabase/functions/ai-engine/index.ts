@@ -1029,6 +1029,7 @@ Tasks:
 
 Be extremely specific. Use Indonesian property market context. Reference real competitor keyword patterns in this location.`;
 
+      try {
         const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
           headers: {
