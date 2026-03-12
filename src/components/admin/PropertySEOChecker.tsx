@@ -1023,6 +1023,10 @@ const PropertySEOChecker = () => {
                         {contentOptimize.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Sparkles className="h-3 w-3 mr-1" />}
                         AI Optimize
                       </Button>
+                      <Button size="sm" variant="outline" className="h-7 text-xs" onClick={handleAiAudit} disabled={seoAudit.isPending}>
+                        {seoAudit.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Target className="h-3 w-3 mr-1" />}
+                        AI Audit
+                      </Button>
                       <Button size="sm" className="h-7 text-xs" onClick={() => applySeo.mutate(currentAnalysis.property_id)} disabled={applySeo.isPending}>
                         <Zap className="h-3 w-3 mr-1" /> Apply SEO
                       </Button>
