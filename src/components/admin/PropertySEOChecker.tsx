@@ -1007,7 +1007,11 @@ const PropertySEOChecker = () => {
           <AiJobsTab />
         </TabsContent>
 
-        {/* ─── Detail View Tab ─── */}
+        {/* ─── Platform Health Tab ─── */}
+        <TabsContent value="platform-health" className="space-y-3">
+          <SeoPlatformHealthTab />
+        </TabsContent>
+
         <TabsContent value="detail">
           {currentAnalysis ? (
             <div className="space-y-3">
