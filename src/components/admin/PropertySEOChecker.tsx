@@ -37,6 +37,7 @@ import StateSeoOverviewTab from './seo/StateSeoOverviewTab';
 import SeoHistoryTab from './seo/SeoHistoryTab';
 import SeoDashboardCharts from './seo/SeoDashboardCharts';
 import AiJobsTab from './seo/AiJobsTab';
+import SeoPlatformHealthTab from './seo/SeoPlatformHealthTab';
 
 // ─── Helpers ────────────────────────────────────────────────
 const ScoreBadge = ({ score }: { score: number }) => {
@@ -757,6 +758,7 @@ const PropertySEOChecker = () => {
           <TabsTrigger value="keywords" className="text-xs gap-1"><Flame className="h-3 w-3" />Keywords</TabsTrigger>
           <TabsTrigger value="history" className="text-xs gap-1"><TrendingUp className="h-3 w-3" />History</TabsTrigger>
           <TabsTrigger value="jobs" className="text-xs gap-1"><Loader2 className="h-3 w-3" />AI Jobs</TabsTrigger>
+          <TabsTrigger value="platform-health" className="text-xs gap-1"><Sparkles className="h-3 w-3" />Platform Health</TabsTrigger>
           {currentAnalysis && <TabsTrigger value="detail" className="text-xs gap-1"><Eye className="h-3 w-3" />Detail</TabsTrigger>}
         </TabsList>
 
@@ -1005,7 +1007,11 @@ const PropertySEOChecker = () => {
           <AiJobsTab />
         </TabsContent>
 
-        {/* ─── Detail View Tab ─── */}
+        {/* ─── Platform Health Tab ─── */}
+        <TabsContent value="platform-health" className="space-y-3">
+          <SeoPlatformHealthTab />
+        </TabsContent>
+
         <TabsContent value="detail">
           {currentAnalysis ? (
             <div className="space-y-3">
