@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useSeoAudit, type SeoAuditResult } from '@/hooks/useSeoAudit';
+import { useTitleRewrite, type TitleRewriteResponse } from '@/hooks/useTitleRewrite';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -336,6 +337,7 @@ const PropertySEOChecker = () => {
   // AI optimization state
   const [aiResult, setAiResult] = useState<ContentOptimization | null>(null);
   const [auditResult, setAuditResult] = useState<SeoAuditResult | null>(null);
+  const [titleRewriteResult, setTitleRewriteResult] = useState<TitleRewriteResponse | null>(null);
   const [autoOptThreshold, setAutoOptThreshold] = useState(70);
   
   // AI Auto-Fix state selection
@@ -381,6 +383,7 @@ const PropertySEOChecker = () => {
   const applySeo = useApplySeo();
   const contentOptimize = useContentOptimize();
   const seoAudit = useSeoAudit();
+  const titleRewrite = useTitleRewrite();
 
   // Reset city/area on state change, reset pages on any filter change
   useEffect(() => { setFilterCity(''); setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterState]);
@@ -393,6 +396,7 @@ const PropertySEOChecker = () => {
     setSelectedPropertyId(analysis.property_id);
     setCustomKeywords(analysis.custom_keywords || []);
     setAiResult(null);
+    setTitleRewriteResult(null);
     setActiveTab('detail');
     
     // Auto-check if older than 1 hour
@@ -409,6 +413,7 @@ const PropertySEOChecker = () => {
     setPropertySearch('');
     setShowPropertyDropdown(false);
     setAiResult(null);
+    setTitleRewriteResult(null);
     setActiveTab('detail');
     // Always trigger analysis for manually selected property
     analyzeProperty.mutate(property.id);
@@ -444,6 +449,13 @@ const PropertySEOChecker = () => {
       onSuccess: (data) => setAuditResult(data),
     });
   }, [selectedPropertyId, seoAudit]);
+
+  const handleTitleRewrite = useCallback(() => {
+    if (!selectedPropertyId) return;
+    titleRewrite.mutate(selectedPropertyId, {
+      onSuccess: (data) => setTitleRewriteResult(data),
+    });
+  }, [selectedPropertyId, titleRewrite]);
 
   // Save custom keywords
   const handleSaveKeywords = useCallback(async () => {
@@ -1033,6 +1045,10 @@ const PropertySEOChecker = () => {
                         {seoAudit.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Target className="h-3 w-3 mr-1" />}
                         AI Audit
                       </Button>
+                      <Button size="sm" variant="outline" className="h-7 text-xs" onClick={handleTitleRewrite} disabled={titleRewrite.isPending}>
+                        {titleRewrite.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <FileText className="h-3 w-3 mr-1" />}
+                        Rewrite Title
+                      </Button>
                       <Button size="sm" className="h-7 text-xs" onClick={() => applySeo.mutate(currentAnalysis.property_id)} disabled={applySeo.isPending}>
                         <Zap className="h-3 w-3 mr-1" /> Apply SEO
                       </Button>
@@ -1385,6 +1401,90 @@ const PropertySEOChecker = () => {
                         ))}
                       </div>
                     </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Title Rewrite Result */}
+              {titleRewriteResult && (
+                <Card className="bg-card border-border border-l-2 border-l-chart-1">
+                  <CardHeader className="p-3 pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <FileText className="h-4 w-4 text-chart-1" />
+                      AI Title Rewrite — 3 Variants
+                    </CardTitle>
+                    <CardDescription className="text-[10px]">
+                      Optimized for Google ranking & buyer CTR · Indonesian language · Max 65 chars
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-3 pt-0 space-y-3">
+                    {/* Original title */}
+                    <div className="p-2 rounded-md border border-border/50 bg-muted/20">
+                      <p className="text-[9px] text-muted-foreground mb-0.5">Original Title</p>
+                      <p className="text-xs text-foreground">{titleRewriteResult.original_title}</p>
+                      <p className="text-[8px] text-muted-foreground mt-1">{titleRewriteResult.original_title.length} chars</p>
+                    </div>
+
+                    {/* Original Issues */}
+                    {titleRewriteResult.result.original_issues?.length > 0 && (
+                      <div className="space-y-1">
+                        <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1">
+                          <AlertTriangle className="h-3 w-3 text-chart-4" /> Issues Found
+                        </p>
+                        <div className="space-y-1">
+                          {titleRewriteResult.result.original_issues.map((issue, i) => (
+                            <div key={i} className="flex items-start gap-2 p-1.5 rounded border border-chart-4/20 bg-chart-4/5">
+                              <XCircle className="h-3 w-3 text-chart-4 shrink-0 mt-0.5" />
+                              <p className="text-[10px] text-foreground">{issue}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Title Variants */}
+                    <div className="space-y-2">
+                      <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1">
+                        <Sparkles className="h-3 w-3 text-chart-1" /> Optimized Variants (ranked by CTR)
+                      </p>
+                      {titleRewriteResult.result.titles.map((variant, i) => (
+                        <div key={i} className={cn(
+                          "p-2.5 rounded-md border",
+                          i === 0 ? "border-chart-1/40 bg-chart-1/5" : "border-border/50 bg-accent/10"
+                        )}>
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                {i === 0 && <Badge className="text-[8px] px-1.5 py-0 bg-chart-1 text-chart-1-foreground">Best</Badge>}
+                                <Badge variant={
+                                  variant.predicted_ctr === 'VERY_HIGH' ? 'default' :
+                                  variant.predicted_ctr === 'HIGH' ? 'secondary' : 'outline'
+                                } className="text-[8px] px-1.5 py-0">
+                                  CTR: {variant.predicted_ctr}
+                                </Badge>
+                                <span className="text-[8px] text-muted-foreground">{variant.title.length}/65 chars</span>
+                              </div>
+                              <p className={cn("text-xs font-medium", i === 0 ? "text-chart-1" : "text-foreground")}>{variant.title}</p>
+                              <p className="text-[9px] text-muted-foreground mt-1">{variant.reasoning}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Keywords Used */}
+                    {titleRewriteResult.result.keywords_used?.length > 0 && (
+                      <div className="space-y-1">
+                        <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1">
+                          <Hash className="h-3 w-3" /> SEO Keywords Embedded
+                        </p>
+                        <div className="flex flex-wrap gap-1">
+                          {titleRewriteResult.result.keywords_used.map((kw, i) => (
+                            <Badge key={i} variant="outline" className="text-[9px] bg-chart-1/5 border-chart-1/20 text-chart-1">{kw}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               )}

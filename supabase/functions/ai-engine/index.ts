@@ -973,6 +973,130 @@ Generate optimized SEO content. Call the seo_optimize function with your results
       });
     }
 
+    // ── rewrite-title: Dedicated title rewrite for max Google ranking & CTR ──
+    if (action === "rewrite-title") {
+      const propertyId = normalizeText(payload.propertyId);
+      if (!propertyId) return json({ error: "propertyId is required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const { data: property, error: propErr } = await supabase
+        .from("properties")
+        .select(SEO_PROPERTY_SELECT)
+        .eq("id", propertyId)
+        .maybeSingle();
+
+      if (propErr) return json({ error: propErr.message }, 500);
+      if (!property) return json({ error: "Property not found" }, 404);
+
+      const locationLabel = [property.location, property.city, property.state].filter(Boolean).join(", ") || "Indonesia";
+      const currentTitle = property.title || "Untitled";
+
+      const prompt = `Rewrite this property title to maximize Google ranking and buyer click-through rate.
+
+Original Title: ${currentTitle}
+
+Location: ${locationLabel}
+Property Type: ${property.property_type || "N/A"}
+Transaction Type: ${property.listing_type || "sale"}
+Price: ${property.price || "N/A"}
+Bedrooms: ${property.bedrooms || "N/A"}
+
+Rules:
+- Use Indonesian language
+- Include strong transaction keyword (jual / sewa / investasi / dijual / disewakan)
+- Include micro-location keyword (village/district/city name)
+- Include emotional trigger (strategis, siap huni, murah, premium, view bagus, lokasi prime, dekat pusat kota)
+- Include price signal if possible (harga terjangkau, under X M, cicilan murah)
+- Max length 65 characters
+- Make it compelling for Google SERP clicks
+- Generate 3 title variants ranked by predicted CTR
+
+Return exactly 3 optimized title options.`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${LOVABLE_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: "You are an elite Indonesian real estate SEO title copywriter. You specialize in crafting property titles that rank #1 on Google and get maximum clicks. Always write in Bahasa Indonesia. Every title must be under 65 characters." },
+              { role: "user", content: prompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "rewrite_title_result",
+                description: "Return 3 optimized title variants for the property listing",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    titles: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          title: { type: "string", description: "The rewritten title, max 65 characters, in Indonesian" },
+                          reasoning: { type: "string", description: "Brief explanation of why this title ranks well" },
+                          predicted_ctr: { type: "string", enum: ["LOW", "MEDIUM", "HIGH", "VERY_HIGH"], description: "Predicted click-through rate" },
+                        },
+                        required: ["title", "reasoning", "predicted_ctr"],
+                        additionalProperties: false,
+                      },
+                      description: "3 title variants ranked by predicted CTR (best first)",
+                    },
+                    keywords_used: { type: "array", items: { type: "string" }, description: "Key SEO keywords embedded in the titles" },
+                    original_issues: { type: "array", items: { type: "string" }, description: "Problems found in the original title" },
+                  },
+                  required: ["titles", "keywords_used", "original_issues"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "rewrite_title_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded, please try again later" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          console.error("AI rewrite-title error:", aiResp.status);
+          return json({ error: "AI title rewrite failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) {
+          return json({ error: "AI did not return structured title data" }, 500);
+        }
+
+        const result = JSON.parse(toolCall.function.arguments);
+
+        // Log the action
+        try {
+          await supabase.from("seo_ai_actions").insert({
+            property_id: propertyId,
+            action_type: "rewrite_title",
+            old_score: 0,
+            new_score: 0,
+            ai_model: "gemini-3-flash-preview",
+            triggered_by: "manual",
+            metadata: { variants_count: result.titles?.length, original_title: currentTitle },
+          });
+        } catch { /* non-blocking */ }
+
+        return json({ action: "rewrite-title", propertyId, result, original_title: currentTitle });
+      } catch (e) {
+        console.error("Rewrite title exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Title rewrite failed" }, 500);
+      }
+    }
+
     // ── ai-audit: Deep AI-powered SEO audit ──
     if (action === "ai-audit") {
       const propertyId = normalizeText(payload.propertyId);
