@@ -383,6 +383,7 @@ const PropertySEOChecker = () => {
   const applySeo = useApplySeo();
   const contentOptimize = useContentOptimize();
   const seoAudit = useSeoAudit();
+  const titleRewrite = useTitleRewrite();
 
   // Reset city/area on state change, reset pages on any filter change
   useEffect(() => { setFilterCity(''); setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterState]);
