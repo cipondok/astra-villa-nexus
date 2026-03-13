@@ -1110,6 +1110,168 @@ Be extremely specific. Use Indonesian property market context. Reference real co
       }
     }
 
+    // ── seo-platform-health: Aggregate SEO health insights across the platform ──
+    if (action === "seo-platform-health") {
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const limit = Number(payload.limit) || 200;
+
+      // Fetch recent SEO analyses with scores
+      const { data: analyses, error: analysesErr } = await supabase
+        .from("property_seo_analysis")
+        .select("property_id, seo_score, seo_title, seo_keywords, title_score, description_score, keyword_score, location_score, hashtag_score, image_score, last_analyzed_at")
+        .not("seo_score", "is", null)
+        .order("last_analyzed_at", { ascending: false })
+        .limit(limit);
+
+      if (analysesErr) return json({ error: analysesErr.message }, 500);
+      if (!analyses || analyses.length === 0) return json({ error: "No SEO analyses found. Run batch analysis first." }, 404);
+
+      // Fetch location data for properties
+      const propertyIds = analyses.map((a: any) => a.property_id);
+      const { data: properties } = await supabase
+        .from("properties")
+        .select("id, city, state, property_type, listing_type")
+        .in("id", propertyIds.slice(0, 200));
+
+      const propMap = new Map((properties || []).map((p: any) => [p.id, p]));
+
+      // Build aggregated summary for AI
+      const scores = analyses.map((a: any) => a.seo_score || 0);
+      const avgScore = Math.round(scores.reduce((s: number, v: number) => s + v, 0) / scores.length);
+      const highCount = scores.filter((s: number) => s >= 70).length;
+      const lowCount = scores.filter((s: number) => s < 40).length;
+
+      // Location distribution
+      const locationCounts: Record<string, number> = {};
+      const typeCounts: Record<string, number> = {};
+      const weakLocations: Record<string, { total: number; weak: number; avgScore: number }> = {};
+
+      for (const a of analyses as any[]) {
+        const prop = propMap.get(a.property_id);
+        const loc = prop?.state || prop?.city || "Unknown";
+        const ptype = prop?.property_type || "Unknown";
+        locationCounts[loc] = (locationCounts[loc] || 0) + 1;
+        typeCounts[ptype] = (typeCounts[ptype] || 0) + 1;
+
+        if (!weakLocations[loc]) weakLocations[loc] = { total: 0, weak: 0, avgScore: 0 };
+        weakLocations[loc].total++;
+        weakLocations[loc].avgScore += a.seo_score || 0;
+        if ((a.seo_score || 0) < 50) weakLocations[loc].weak++;
+      }
+
+      // Calculate avg scores per location
+      for (const loc of Object.keys(weakLocations)) {
+        weakLocations[loc].avgScore = Math.round(weakLocations[loc].avgScore / weakLocations[loc].total);
+      }
+
+      // Score dimension averages
+      const dimAvg = (field: string) => {
+        const vals = analyses.map((a: any) => a[field] || 0).filter((v: number) => v > 0);
+        return vals.length > 0 ? Math.round(vals.reduce((s: number, v: number) => s + v, 0) / vals.length) : 0;
+      };
+
+      const summaryForAI = {
+        total_analyzed: analyses.length,
+        average_seo_score: avgScore,
+        high_performers: highCount,
+        low_performers: lowCount,
+        score_dimensions: {
+          avg_title_score: dimAvg("title_score"),
+          avg_description_score: dimAvg("description_score"),
+          avg_keyword_score: dimAvg("keyword_score"),
+          avg_location_score: dimAvg("location_score"),
+          avg_hashtag_score: dimAvg("hashtag_score"),
+          avg_image_score: dimAvg("image_score"),
+        },
+        locations: weakLocations,
+        property_types: typeCounts,
+      };
+
+      const prompt = `You are an AI SEO performance analyst for a national Indonesian property marketplace.
+
+Analyze this aggregated platform SEO data and generate strategic insights.
+
+PLATFORM SEO DATA:
+${JSON.stringify(summaryForAI, null, 2)}
+
+Tasks:
+1. Identify the most common SEO weaknesses across the platform
+2. Identify locations with high SEO improvement opportunity (low avg scores but high listing count)
+3. Recommend 5-8 platform-level SEO actions to improve overall ranking performance
+4. Be specific to the Indonesian property market context`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${LOVABLE_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: "You are a strategic SEO analyst for Indonesian real estate marketplaces. Provide actionable, data-driven platform health insights. Focus on scalable improvements." },
+              { role: "user", content: prompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "seo_platform_health_result",
+                description: "Return the platform-level SEO health analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    average_seo_score: { type: "number", description: "Average SEO score across all analyzed listings" },
+                    high_rank_listings: { type: "number", description: "Number of listings with HIGH ranking potential (score >= 70)" },
+                    low_rank_listings: { type: "number", description: "Number of listings with LOW ranking potential (score < 40)" },
+                    common_issues: { type: "array", items: { type: "string" }, description: "5-8 most common SEO weaknesses found across the platform" },
+                    seo_opportunity_locations: { type: "array", items: { type: "string" }, description: "5-8 locations with highest SEO improvement opportunity" },
+                    recommended_actions: { type: "array", items: { type: "string" }, description: "5-8 strategic platform-level SEO actions" },
+                    dimension_insights: { type: "string", description: "Analysis of which score dimensions (title, description, keyword, location, etc.) need the most attention" },
+                    priority_focus: { type: "string", description: "The single most impactful area to focus on first" },
+                  },
+                  required: ["average_seo_score", "high_rank_listings", "low_rank_listings", "common_issues", "seo_opportunity_locations", "recommended_actions", "dimension_insights", "priority_focus"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "seo_platform_health_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          console.error("AI platform health error:", aiResp.status);
+          return json({ error: "AI analysis failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) {
+          return json({ error: "AI did not return structured health data" }, 500);
+        }
+
+        const health = JSON.parse(toolCall.function.arguments);
+
+        return json({
+          action: "seo-platform-health",
+          health,
+          raw_stats: {
+            total_analyzed: analyses.length,
+            avg_score: avgScore,
+            high_count: highCount,
+            low_count: lowCount,
+            score_dimensions: summaryForAI.score_dimensions,
+            locations: weakLocations,
+          },
+        });
+      } catch (e) {
+        console.error("Platform health exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Platform health analysis failed" }, 500);
+      }
+    }
+
     // ── apply-seo: Apply SEO analysis to the property ──
     if (action === "apply-seo") {
       const propertyId = normalizeText(payload.propertyId);
