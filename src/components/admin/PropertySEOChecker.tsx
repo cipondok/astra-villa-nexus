@@ -37,6 +37,7 @@ import StateSeoOverviewTab from './seo/StateSeoOverviewTab';
 import SeoHistoryTab from './seo/SeoHistoryTab';
 import SeoDashboardCharts from './seo/SeoDashboardCharts';
 import AiJobsTab from './seo/AiJobsTab';
+import SeoPlatformHealthTab from './seo/SeoPlatformHealthTab';
 
 // ─── Helpers ────────────────────────────────────────────────
 const ScoreBadge = ({ score }: { score: number }) => {
