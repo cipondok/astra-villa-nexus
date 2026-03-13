@@ -413,6 +413,7 @@ const PropertySEOChecker = () => {
     setPropertySearch('');
     setShowPropertyDropdown(false);
     setAiResult(null);
+    setTitleRewriteResult(null);
     setActiveTab('detail');
     // Always trigger analysis for manually selected property
     analyzeProperty.mutate(property.id);
