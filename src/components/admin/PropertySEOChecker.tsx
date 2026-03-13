@@ -396,6 +396,7 @@ const PropertySEOChecker = () => {
     setSelectedPropertyId(analysis.property_id);
     setCustomKeywords(analysis.custom_keywords || []);
     setAiResult(null);
+    setTitleRewriteResult(null);
     setActiveTab('detail');
     
     // Auto-check if older than 1 hour
