@@ -1045,6 +1045,10 @@ const PropertySEOChecker = () => {
                         {seoAudit.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Target className="h-3 w-3 mr-1" />}
                         AI Audit
                       </Button>
+                      <Button size="sm" variant="outline" className="h-7 text-xs" onClick={handleTitleRewrite} disabled={titleRewrite.isPending}>
+                        {titleRewrite.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <FileText className="h-3 w-3 mr-1" />}
+                        Rewrite Title
+                      </Button>
                       <Button size="sm" className="h-7 text-xs" onClick={() => applySeo.mutate(currentAnalysis.property_id)} disabled={applySeo.isPending}>
                         <Zap className="h-3 w-3 mr-1" /> Apply SEO
                       </Button>
