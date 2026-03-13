@@ -448,6 +448,13 @@ const PropertySEOChecker = () => {
     });
   }, [selectedPropertyId, seoAudit]);
 
+  const handleTitleRewrite = useCallback(() => {
+    if (!selectedPropertyId) return;
+    titleRewrite.mutate(selectedPropertyId, {
+      onSuccess: (data) => setTitleRewriteResult(data),
+    });
+  }, [selectedPropertyId, titleRewrite]);
+
   // Save custom keywords
   const handleSaveKeywords = useCallback(async () => {
     if (!currentAnalysis) return;
