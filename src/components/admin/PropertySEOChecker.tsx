@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useSeoAudit, type SeoAuditResult } from '@/hooks/useSeoAudit';
 import { useTitleRewrite, type TitleRewriteResponse } from '@/hooks/useTitleRewrite';
+import { useDescriptionRewrite, type DescriptionRewriteResponse } from '@/hooks/useDescriptionRewrite';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -338,6 +339,7 @@ const PropertySEOChecker = () => {
   const [aiResult, setAiResult] = useState<ContentOptimization | null>(null);
   const [auditResult, setAuditResult] = useState<SeoAuditResult | null>(null);
   const [titleRewriteResult, setTitleRewriteResult] = useState<TitleRewriteResponse | null>(null);
+  const [descRewriteResult, setDescRewriteResult] = useState<DescriptionRewriteResponse | null>(null);
   const [autoOptThreshold, setAutoOptThreshold] = useState(70);
   
   // AI Auto-Fix state selection
@@ -384,6 +386,7 @@ const PropertySEOChecker = () => {
   const contentOptimize = useContentOptimize();
   const seoAudit = useSeoAudit();
   const titleRewrite = useTitleRewrite();
+  const descRewrite = useDescriptionRewrite();
 
   // Reset city/area on state change, reset pages on any filter change
   useEffect(() => { setFilterCity(''); setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterState]);
@@ -397,6 +400,7 @@ const PropertySEOChecker = () => {
     setCustomKeywords(analysis.custom_keywords || []);
     setAiResult(null);
     setTitleRewriteResult(null);
+    setDescRewriteResult(null);
     setActiveTab('detail');
     
     // Auto-check if older than 1 hour
@@ -414,6 +418,7 @@ const PropertySEOChecker = () => {
     setShowPropertyDropdown(false);
     setAiResult(null);
     setTitleRewriteResult(null);
+    setDescRewriteResult(null);
     setActiveTab('detail');
     // Always trigger analysis for manually selected property
     analyzeProperty.mutate(property.id);
@@ -456,6 +461,13 @@ const PropertySEOChecker = () => {
       onSuccess: (data) => setTitleRewriteResult(data),
     });
   }, [selectedPropertyId, titleRewrite]);
+
+  const handleDescRewrite = useCallback(() => {
+    if (!selectedPropertyId) return;
+    descRewrite.mutate(selectedPropertyId, {
+      onSuccess: (data) => setDescRewriteResult(data),
+    });
+  }, [selectedPropertyId, descRewrite]);
 
   // Save custom keywords
   const handleSaveKeywords = useCallback(async () => {
@@ -1049,6 +1061,10 @@ const PropertySEOChecker = () => {
                         {titleRewrite.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <FileText className="h-3 w-3 mr-1" />}
                         Rewrite Title
                       </Button>
+                      <Button size="sm" variant="outline" className="h-7 text-xs" onClick={handleDescRewrite} disabled={descRewrite.isPending}>
+                        {descRewrite.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <FileText className="h-3 w-3 mr-1" />}
+                        Rewrite Description
+                      </Button>
                       <Button size="sm" className="h-7 text-xs" onClick={() => applySeo.mutate(currentAnalysis.property_id)} disabled={applySeo.isPending}>
                         <Zap className="h-3 w-3 mr-1" /> Apply SEO
                       </Button>
@@ -1481,6 +1497,111 @@ const PropertySEOChecker = () => {
                         <div className="flex flex-wrap gap-1">
                           {titleRewriteResult.result.keywords_used.map((kw, i) => (
                             <Badge key={i} variant="outline" className="text-[9px] bg-chart-1/5 border-chart-1/20 text-chart-1">{kw}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Description Rewrite Result */}
+              {descRewriteResult && (
+                <Card className="bg-card border-border border-l-2 border-l-chart-2">
+                  <CardHeader className="p-3 pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <FileText className="h-4 w-4 text-chart-2" />
+                      AI Description Rewrite
+                    </CardTitle>
+                    <CardDescription className="text-[10px]">
+                      SEO-optimized description with lifestyle storytelling, investment angles & urgency triggers
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-3 pt-0 space-y-3">
+                    {/* Original Issues */}
+                    {descRewriteResult.result.original_issues?.length > 0 && (
+                      <div className="space-y-1">
+                        <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1">
+                          <XCircle className="h-3 w-3 text-chart-4" /> Original Issues
+                        </p>
+                        <div className="space-y-1">
+                          {descRewriteResult.result.original_issues.map((issue, i) => (
+                            <div key={i} className="flex items-start gap-2 p-1.5 rounded border border-chart-4/20 bg-chart-4/5">
+                              <XCircle className="h-3 w-3 text-chart-4 shrink-0 mt-0.5" />
+                              <span className="text-[10px] text-foreground">{issue}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Rewritten Description */}
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1">
+                        <Sparkles className="h-3 w-3 text-chart-2" /> Rewritten Description ({descRewriteResult.result.word_count} words)
+                      </p>
+                      <div className="p-3 rounded-md border border-chart-2/30 bg-chart-2/5">
+                        <p className="text-xs text-foreground whitespace-pre-line leading-relaxed">{descRewriteResult.result.description}</p>
+                      </div>
+                    </div>
+
+                    {/* Improvements Made */}
+                    {descRewriteResult.result.improvements?.length > 0 && (
+                      <div className="space-y-1">
+                        <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1">
+                          <CheckCircle2 className="h-3 w-3 text-chart-2" /> Improvements Made
+                        </p>
+                        <div className="space-y-1">
+                          {descRewriteResult.result.improvements.map((imp, i) => (
+                            <div key={i} className="flex items-start gap-2 p-1.5 rounded border border-chart-2/20 bg-chart-2/5">
+                              <CheckCircle2 className="h-3 w-3 text-chart-2 shrink-0 mt-0.5" />
+                              <span className="text-[10px] text-foreground">{imp}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* SEO Elements Breakdown */}
+                    {descRewriteResult.result.seo_elements && (
+                      <div className="space-y-1">
+                        <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1">
+                          <Target className="h-3 w-3 text-chart-3" /> SEO Elements Used
+                        </p>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="p-2 rounded border border-border/50 bg-muted/20">
+                            <p className="text-[9px] text-muted-foreground mb-0.5">🏡 Lifestyle Hook</p>
+                            <p className="text-[10px] text-foreground">{descRewriteResult.result.seo_elements.lifestyle_hook}</p>
+                          </div>
+                          <div className="p-2 rounded border border-border/50 bg-muted/20">
+                            <p className="text-[9px] text-muted-foreground mb-0.5">⏰ Urgency Trigger</p>
+                            <p className="text-[10px] text-foreground">{descRewriteResult.result.seo_elements.urgency_trigger}</p>
+                          </div>
+                          <div className="p-2 rounded border border-border/50 bg-muted/20">
+                            <p className="text-[9px] text-muted-foreground mb-0.5">📈 Investment Angle</p>
+                            <p className="text-[10px] text-foreground">{descRewriteResult.result.seo_elements.investment_angle}</p>
+                          </div>
+                          <div className="p-2 rounded border border-border/50 bg-muted/20">
+                            <p className="text-[9px] text-muted-foreground mb-0.5">📍 Infrastructure</p>
+                            <div className="flex flex-wrap gap-1 mt-0.5">
+                              {descRewriteResult.result.seo_elements.infrastructure_mentioned.map((inf, i) => (
+                                <Badge key={i} variant="outline" className="text-[8px] bg-chart-3/5 border-chart-3/20 text-chart-3">{inf}</Badge>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Keywords Embedded */}
+                    {descRewriteResult.result.keywords_embedded?.length > 0 && (
+                      <div className="space-y-1">
+                        <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1">
+                          <Search className="h-3 w-3 text-chart-2" /> Keywords Embedded
+                        </p>
+                        <div className="flex flex-wrap gap-1">
+                          {descRewriteResult.result.keywords_embedded.map((kw, i) => (
+                            <Badge key={i} variant="outline" className="text-[9px] bg-chart-2/5 border-chart-2/20 text-chart-2">{kw}</Badge>
                           ))}
                         </div>
                       </div>

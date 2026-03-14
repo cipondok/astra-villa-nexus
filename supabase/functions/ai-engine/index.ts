@@ -1097,6 +1097,133 @@ Return exactly 3 optimized title options.`;
       }
     }
 
+    // ── rewrite-description: Rewrite listing description for max SEO & conversion ──
+    if (action === "rewrite-description") {
+      const propertyId = normalizeText(payload.propertyId);
+      if (!propertyId) return json({ error: "propertyId is required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const { data: property, error: propErr } = await supabase
+        .from("properties")
+        .select(SEO_PROPERTY_SELECT)
+        .eq("id", propertyId)
+        .maybeSingle();
+
+      if (propErr) return json({ error: propErr.message }, 500);
+      if (!property) return json({ error: "Property not found" }, 404);
+
+      const locationLabel = [property.location, property.city, property.state].filter(Boolean).join(", ") || "Indonesia";
+      const currentDescription = property.description || "";
+
+      const prompt = `Rewrite this property listing description for maximum SEO strength and buyer conversion.
+
+Location: ${locationLabel}
+Property Type: ${property.property_type || "N/A"}
+Transaction Type: ${property.listing_type || "sale"}
+Price: ${property.price || "N/A"}
+Bedrooms: ${property.bedrooms || "N/A"}
+Bathrooms: ${property.bathrooms || "N/A"}
+
+Original Description:
+${currentDescription || "(empty)"}
+
+Requirements:
+- Write in natural Indonesian language (Bahasa Indonesia)
+- Add natural Indonesian property search keywords (jual rumah, villa dijual, investasi properti, etc.)
+- Add lifestyle attractiveness storytelling (describe the living experience)
+- Mention nearby infrastructure or landmarks (sekolah, rumah sakit, mall, bandara, pantai, etc.)
+- Add investment value angle (ROI, capital gain, rental yield potential)
+- Create urgency for buyers (unit terbatas, harga naik, promo khusus)
+- Write in short readable paragraphs (3-5 paragraphs)
+- Length 200–260 words
+- Make every sentence count for SEO and conversion
+
+Generate the rewritten description.`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${LOVABLE_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: "You are an elite Indonesian real estate SEO copywriter and conversion specialist. You write property descriptions that rank #1 on Google Indonesia and convert browsers into serious buyers. Always write in Bahasa Indonesia. Every description must be 200-260 words, structured in short paragraphs, and packed with natural search keywords." },
+              { role: "user", content: prompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "rewrite_description_result",
+                description: "Return the rewritten property description with SEO analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    description: { type: "string", description: "The rewritten description in Indonesian, 200-260 words, with short paragraphs" },
+                    word_count: { type: "number", description: "Word count of the rewritten description" },
+                    keywords_embedded: { type: "array", items: { type: "string" }, description: "Indonesian SEO keywords naturally embedded in the description" },
+                    improvements: { type: "array", items: { type: "string" }, description: "List of specific improvements made over the original" },
+                    original_issues: { type: "array", items: { type: "string" }, description: "Problems found in the original description" },
+                    seo_elements: {
+                      type: "object",
+                      properties: {
+                        lifestyle_hook: { type: "string", description: "The lifestyle storytelling element used" },
+                        urgency_trigger: { type: "string", description: "The urgency element used" },
+                        investment_angle: { type: "string", description: "The investment value proposition used" },
+                        infrastructure_mentioned: { type: "array", items: { type: "string" }, description: "Nearby infrastructure/landmarks mentioned" },
+                      },
+                      required: ["lifestyle_hook", "urgency_trigger", "investment_angle", "infrastructure_mentioned"],
+                      additionalProperties: false,
+                    },
+                  },
+                  required: ["description", "word_count", "keywords_embedded", "improvements", "original_issues", "seo_elements"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "rewrite_description_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded, please try again later" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          console.error("AI rewrite-description error:", aiResp.status);
+          return json({ error: "AI description rewrite failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) {
+          return json({ error: "AI did not return structured description data" }, 500);
+        }
+
+        const result = JSON.parse(toolCall.function.arguments);
+
+        // Log the action
+        try {
+          await supabase.from("seo_ai_actions").insert({
+            property_id: propertyId,
+            action_type: "rewrite_description",
+            old_score: 0,
+            new_score: 0,
+            ai_model: "gemini-3-flash-preview",
+            triggered_by: "manual",
+            metadata: { word_count: result.word_count, original_length: currentDescription.length },
+          });
+        } catch { /* non-blocking */ }
+
+        return json({ action: "rewrite-description", propertyId, result, original_description: currentDescription });
+      } catch (e) {
+        console.error("Rewrite description exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Description rewrite failed" }, 500);
+      }
+    }
+
     // ── ai-audit: Deep AI-powered SEO audit ──
     if (action === "ai-audit") {
       const propertyId = normalizeText(payload.propertyId);
