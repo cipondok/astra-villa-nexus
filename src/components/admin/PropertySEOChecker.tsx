@@ -400,6 +400,7 @@ const PropertySEOChecker = () => {
     setCustomKeywords(analysis.custom_keywords || []);
     setAiResult(null);
     setTitleRewriteResult(null);
+    setDescRewriteResult(null);
     setActiveTab('detail');
     
     // Auto-check if older than 1 hour
