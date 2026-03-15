@@ -367,6 +367,10 @@ const PropertySEOChecker = () => {
   const [rePropertyType, setRePropertyType] = useState('');
   const [rePrice, setRePrice] = useState('');
   const [reNearby, setReNearby] = useState('');
+  const [badgeScore, setBadgeScore] = useState('');
+  const [badgeTrend, setBadgeTrend] = useState<'UP' | 'STABLE' | 'DOWN'>('UP');
+  const [badgeYield, setBadgeYield] = useState('');
+  const [badgeResult, setBadgeResult] = useState<{ badge: string; color: string } | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
