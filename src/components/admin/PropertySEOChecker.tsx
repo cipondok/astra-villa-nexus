@@ -13,6 +13,7 @@ import { useRentalEstimate, type RentalEstimateResponse } from '@/hooks/useRenta
 import { generateInvestmentBadge } from '@/hooks/useInvestmentBadge';
 import { useBuyerIntentAnalyzer, type BuyerIntentResponse } from '@/hooks/useBuyerIntentAnalyzer';
 import { classifyLeadPriority } from '@/hooks/useLeadPriority';
+import { useSalesReplyGenerator, type SalesReplyResponse } from '@/hooks/useSalesReplyGenerator';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -383,6 +384,9 @@ const PropertySEOChecker = () => {
   const [lpVisitPlan, setLpVisitPlan] = useState('yes');
   const [lpTimeframe, setLpTimeframe] = useState('this_week');
   const [leadPriorityResult, setLeadPriorityResult] = useState<{ lead_priority: string; follow_up_strategy: string; urgency_color: string } | null>(null);
+  const [srMessage, setSrMessage] = useState('');
+  const [srLocation, setSrLocation] = useState('');
+  const [salesReplyResult, setSalesReplyResult] = useState<SalesReplyResponse | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
@@ -443,6 +447,7 @@ const PropertySEOChecker = () => {
   const marketTrend = useMarketTrendPrediction();
   const rentalEst = useRentalEstimate();
   const buyerIntent = useBuyerIntentAnalyzer();
+  const salesReply = useSalesReplyGenerator();
 
   // Reset city/area on state change, reset pages on any filter change
   useEffect(() => { setFilterCity(''); setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterState]);
@@ -862,6 +867,7 @@ const PropertySEOChecker = () => {
           <TabsTrigger value="invest-badge" className="text-xs gap-1"><Tag className="h-3 w-3" />Badge</TabsTrigger>
           <TabsTrigger value="buyer-intent" className="text-xs gap-1"><Flame className="h-3 w-3" />Intent</TabsTrigger>
           <TabsTrigger value="lead-priority" className="text-xs gap-1"><Target className="h-3 w-3" />Priority</TabsTrigger>
+          <TabsTrigger value="sales-reply" className="text-xs gap-1"><Zap className="h-3 w-3" />Reply</TabsTrigger>
           {currentAnalysis && <TabsTrigger value="detail" className="text-xs gap-1"><Eye className="h-3 w-3" />Detail</TabsTrigger>}
         </TabsList>
 
@@ -2291,6 +2297,85 @@ const PropertySEOChecker = () => {
               </div>
             );
           })()}
+        </TabsContent>
+
+        {/* ─── Sales Reply Generator Tab ─── */}
+        <TabsContent value="sales-reply" className="space-y-3">
+          <Card className="bg-card border-border">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Zap className="h-4 w-4 text-primary" />
+                Sales Reply Generator
+              </CardTitle>
+              <CardDescription className="text-[10px]">
+                Generate persuasive WhatsApp-style replies to buyer inquiries
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0 space-y-3">
+              <div>
+                <label className="text-[10px] text-muted-foreground mb-1 block">Buyer Message *</label>
+                <textarea
+                  className="w-full h-20 text-xs p-2 rounded-md border border-input bg-background text-foreground resize-none"
+                  placeholder="e.g. Saya tertarik dengan rumah ini, masih available? Budget saya sekitar 1.3M"
+                  value={srMessage}
+                  onChange={e => setSrMessage(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-[10px] text-muted-foreground mb-1 block">Property Location</label>
+                <Input className="h-8 text-xs" placeholder="e.g. Dago, Bandung" value={srLocation} onChange={e => setSrLocation(e.target.value)} />
+              </div>
+              <Button
+                size="sm"
+                className="h-8 text-xs w-full"
+                disabled={!srMessage || salesReply.isPending}
+                onClick={() => {
+                  salesReply.mutate(
+                    { message: srMessage, location: srLocation },
+                    { onSuccess: (data) => setSalesReplyResult(data) }
+                  );
+                }}
+              >
+                {salesReply.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Zap className="h-3 w-3 mr-1" />}
+                Generate Reply
+              </Button>
+            </CardContent>
+          </Card>
+
+          {salesReply.isPending && (
+            <Card className="bg-card border-border">
+              <CardContent className="p-6 text-center">
+                <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                <p className="text-xs text-muted-foreground">AI is crafting your reply...</p>
+                <Progress value={50} className="h-1.5 mt-3 max-w-xs mx-auto" />
+              </CardContent>
+            </Card>
+          )}
+
+          {salesReplyResult && (
+            <Card className="bg-card border-border border-l-2 border-l-chart-2">
+              <CardContent className="p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-[10px] font-semibold text-muted-foreground">💬 Ready-to-Send Reply</p>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-6 text-[10px] px-2"
+                    onClick={() => {
+                      navigator.clipboard.writeText(salesReplyResult.result.reply_text);
+                    }}
+                  >
+                    Copy
+                  </Button>
+                </div>
+                <div className="p-3 rounded-lg bg-chart-2/10 border border-chart-2/20">
+                  <p className="text-xs text-foreground whitespace-pre-line leading-relaxed">
+                    {salesReplyResult.result.reply_text}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         <TabsContent value="detail">

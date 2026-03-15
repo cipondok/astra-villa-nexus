@@ -1224,6 +1224,77 @@ Generate the rewritten description.`;
       }
     }
 
+    // ── sales-reply: Generate WhatsApp-style sales reply ──
+    if (action === "sales-reply") {
+      const message = normalizeText(payload.message);
+      const location = normalizeText(payload.location);
+
+      if (!message) return json({ error: "message is required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a professional Indonesian property sales closer.
+Generate persuasive but friendly WhatsApp-style replies to buyer inquiries.
+Goals: Build trust, encourage property visit, reinforce urgency, highlight key advantages.
+Tone: Professional, warm, confident. Use Indonesian language naturally.
+Keep replies short (3-5 lines), use emojis sparingly, and include a clear call-to-action.`;
+
+      const userPrompt = `Generate a WhatsApp reply for this buyer inquiry:
+
+BUYER MESSAGE: "${message}"
+PROPERTY LOCATION: ${location || "Not specified"}
+
+Return a short, ready-to-send WhatsApp reply text.`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "sales_reply_result",
+                description: "Return a WhatsApp-style sales reply",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    reply_text: { type: "string", description: "Ready-to-send WhatsApp reply in Indonesian, 3-5 lines with emojis" },
+                  },
+                  required: ["reply_text"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "sales_reply_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI sales reply generation failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+
+        return json({ action: "sales-reply", result, input: { message, location } });
+      } catch (e) {
+        console.error("Sales reply exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Sales reply generation failed" }, 500);
+      }
+    }
+
     // ── buyer-intent: Analyze inquiry message for buying seriousness ──
     if (action === "buyer-intent") {
       const message = normalizeText(payload.message);
