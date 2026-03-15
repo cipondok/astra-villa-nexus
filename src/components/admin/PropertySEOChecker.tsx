@@ -378,6 +378,11 @@ const PropertySEOChecker = () => {
   const [biTransactionType, setBiTransactionType] = useState('');
   const [biCity, setBiCity] = useState('');
   const [buyerIntentResult, setBuyerIntentResult] = useState<BuyerIntentResponse | null>(null);
+  const [lpScore, setLpScore] = useState('');
+  const [lpBudgetLevel, setLpBudgetLevel] = useState('clear');
+  const [lpVisitPlan, setLpVisitPlan] = useState('yes');
+  const [lpTimeframe, setLpTimeframe] = useState('this_week');
+  const [leadPriorityResult, setLeadPriorityResult] = useState<{ lead_priority: string; follow_up_strategy: string; urgency_color: string } | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
