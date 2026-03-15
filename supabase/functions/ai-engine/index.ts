@@ -2314,6 +2314,84 @@ Tasks:
       }
     }
 
+    // ── investment-advisor: Autonomous investment advisory ──
+    if (action === "investment-advisor") {
+      const opportunity_score = Number(payload.opportunity_score) || 0;
+      const roi_grade = normalizeText(payload.roi_grade);
+      const market_momentum = normalizeText(payload.market_momentum);
+      const liquidity_level = normalizeText(payload.liquidity_level);
+
+      if (!roi_grade || !market_momentum) return json({ error: "roi_grade and market_momentum are required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a fully autonomous AI real estate investment advisor for the Indonesian property market.
+Provide strategic, data-driven advice. Use Indonesian language for all text fields. Be decisive and actionable.`;
+
+      const userPrompt = `Provide investment advisory based on these signals:
+
+- Opportunity Score: ${opportunity_score}/100
+- ROI Grade: ${roi_grade}
+- Market Momentum: ${market_momentum}
+- Liquidity Level: ${liquidity_level}
+
+Tasks:
+1. Provide buy / wait / diversify recommendation with brief rationale
+2. Suggest optimal holding duration
+3. Suggest one risk mitigation strategy
+4. Provide final investor confidence rating (e.g. "85% — Sangat Percaya Diri")`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "investment_advisor_result",
+                description: "Return investment advisory analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    investment_decision: { type: "string", description: "Buy/wait/diversify recommendation with rationale in Indonesian" },
+                    recommended_holding_period: { type: "string", description: "Optimal holding duration in Indonesian" },
+                    risk_mitigation_tip: { type: "string", description: "Risk mitigation strategy in Indonesian" },
+                    confidence_rating: { type: "string", description: "Confidence rating with percentage and label in Indonesian" },
+                  },
+                  required: ["investment_decision", "recommended_holding_period", "risk_mitigation_tip", "confidence_rating"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "investment_advisor_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI investment advisor failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "investment-advisor", result, input: { opportunity_score, roi_grade, market_momentum, liquidity_level } });
+      } catch (e) {
+        console.error("Investment advisor exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Investment advisor failed" }, 500);
+      }
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
