@@ -203,8 +203,8 @@ const PropertyManagement = () => {
     const sorted = [...allProperties].sort((a, b) => {
       let aVal: number, bVal: number;
       if (sortField === 'deal_probability_score') {
-        aVal = a.deal_analysis?.deal_score ?? -1;
-        bVal = b.deal_analysis?.deal_score ?? -1;
+        aVal = (a as any).deal_probability_score ?? -1;
+        bVal = (b as any).deal_probability_score ?? -1;
       } else if (sortField === 'price') {
         aVal = a.price ?? 0;
         bVal = b.price ?? 0;
@@ -745,12 +745,12 @@ const PropertyManagement = () => {
                                 </div>
                               ) : null}
                               {/* Mobile-only deal score inline */}
-                              {property.deal_analysis?.deal_score != null && (
+                              {(property as any).deal_probability_score != null && (
                                 <div className="md:hidden pt-0.5">
                                   <DealScoreBadge
-                                    score={property.deal_analysis.deal_score}
-                                    label={property.deal_analysis.deal_tag}
-                                    recommendation={property.deal_analysis.deal_tag}
+                                    score={(property as any).deal_probability_score}
+                                    label={(property as any).deal_probability_label}
+                                    recommendation={(property as any).deal_ai_recommendation}
                                     compact
                                   />
                                 </div>
@@ -788,9 +788,10 @@ const PropertyManagement = () => {
                           </TableCell>
                           <TableCell className="text-center hidden md:table-cell">
                             <DealScoreBadge
-                              score={property.deal_analysis?.deal_score ?? null}
-                              label={property.deal_analysis?.deal_tag}
-                              recommendation={property.deal_analysis?.deal_tag}
+                              score={(property as any).deal_probability_score ?? null}
+                              label={(property as any).deal_probability_label}
+                              recommendation={(property as any).deal_ai_recommendation}
+                              compact
                             />
                           </TableCell>
                           <TableCell>
