@@ -33294,6 +33294,7 @@ export type Database = {
         }[]
       }
       get_image_stats: { Args: never; Returns: Json }
+      get_lead_intelligence_summary: { Args: never; Returns: Json }
       get_location_stats: { Args: never; Returns: Json }
       get_masked_api_settings: {
         Args: never
