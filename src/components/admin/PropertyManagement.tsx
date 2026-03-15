@@ -32,6 +32,7 @@ import { Edit, Trash2, Eye, MapPin, DollarSign, RefreshCw, Axis3d, Filter, Dropl
          Image, Heart, MessageSquare, Star, Shield, TrendingUp, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAlert } from "@/contexts/AlertContext";
 import Price from "@/components/ui/Price";
+import DealScoreBadge from "./DealScoreBadge";
 
 interface PropertyOwner {
   full_name: string;
