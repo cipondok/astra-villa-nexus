@@ -108,7 +108,7 @@ function RankingRow({ ranking, rank }: { ranking: InvestmentRanking; rank: numbe
 }
 
 const InvestmentAttractivenessCard = React.memo(function InvestmentAttractivenessCard() {
-  const { data, isLoading } = useInvestmentAttractiveness(12);
+  const { data, isLoading } = useInvestmentRanking(12);
   const [expanded, setExpanded] = useState(false);
 
   if (isLoading || !data) {

@@ -3,7 +3,7 @@ import {
   classifyOpportunity,
   classifyAction,
   detectKeyStrength,
-} from '../useInvestmentAttractiveness';
+} from '../useInvestmentRanking';
 
 describe('classifyOpportunity', () => {
   it('returns PRIME_INVESTMENT for >= 75', () => {
