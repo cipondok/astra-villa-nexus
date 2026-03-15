@@ -341,6 +341,7 @@ const PropertySEOChecker = () => {
   const [auditResult, setAuditResult] = useState<SeoAuditResult | null>(null);
   const [titleRewriteResult, setTitleRewriteResult] = useState<TitleRewriteResponse | null>(null);
   const [descRewriteResult, setDescRewriteResult] = useState<DescriptionRewriteResponse | null>(null);
+  const [trafficResult, setTrafficResult] = useState<TrafficPredictionResponse | null>(null);
   const [autoOptThreshold, setAutoOptThreshold] = useState(70);
   
   // AI Auto-Fix state selection
