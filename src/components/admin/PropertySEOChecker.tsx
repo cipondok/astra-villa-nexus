@@ -384,6 +384,9 @@ const PropertySEOChecker = () => {
   const [lpVisitPlan, setLpVisitPlan] = useState('yes');
   const [lpTimeframe, setLpTimeframe] = useState('this_week');
   const [leadPriorityResult, setLeadPriorityResult] = useState<{ lead_priority: string; follow_up_strategy: string; urgency_color: string } | null>(null);
+  const [srMessage, setSrMessage] = useState('');
+  const [srLocation, setSrLocation] = useState('');
+  const [salesReplyResult, setSalesReplyResult] = useState<SalesReplyResponse | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
