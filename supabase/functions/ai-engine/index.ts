@@ -3195,6 +3195,86 @@ Tasks:
       }
     }
 
+    // ── agent-performance: Agent performance evaluation ──
+    if (action === "agent-performance") {
+      const listings = Number(payload.listings) || 0;
+      const active_listings = Number(payload.active_listings) || 0;
+      const leads = Number(payload.leads) || 0;
+      const deals = Number(payload.deals) || 0;
+      const seo_score = Number(payload.seo_score) || 0;
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a property marketplace agent performance analyst AI for the Indonesian real estate market.
+Evaluate agent effectiveness based on listing activity, lead conversion, and content quality. Use Indonesian language for strengths, improvement_areas, and productivity_tips. Be specific and actionable.`;
+
+      const userPrompt = `Evaluate this agent's performance:
+
+- Total Listings Posted: ${listings}
+- Active Listings: ${active_listings}
+- Monthly Leads Received: ${leads}
+- Deals Closed: ${deals}
+- Average SEO Score: ${seo_score}/100
+
+Tasks:
+1. Generate agent performance score (0-100)
+2. Classify level (LOW / AVERAGE / STRONG / TOP AGENT)
+3. Identify 2-3 key strengths
+4. Identify 2-3 improvement areas
+5. Suggest 3 productivity improvement tips`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "agent_performance_result",
+                description: "Return agent performance evaluation",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    agent_score: { type: "number", description: "Performance score 0-100" },
+                    performance_level: { type: "string", enum: ["LOW", "AVERAGE", "STRONG", "TOP AGENT"] },
+                    strengths: { type: "array", items: { type: "string" }, description: "Key strengths in Indonesian" },
+                    improvement_areas: { type: "array", items: { type: "string" }, description: "Improvement areas in Indonesian" },
+                    productivity_tips: { type: "array", items: { type: "string" }, description: "Productivity tips in Indonesian" },
+                  },
+                  required: ["agent_score", "performance_level", "strengths", "improvement_areas", "productivity_tips"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "agent_performance_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI agent performance failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "agent-performance", result, input: { listings, active_listings, leads, deals, seo_score } });
+      } catch (e) {
+        console.error("Agent performance exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Agent performance failed" }, 500);
+      }
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
