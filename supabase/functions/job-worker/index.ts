@@ -143,6 +143,21 @@ async function handleProcess(supabase: any) {
     .limit(MAX_TASKS_PER_CYCLE);
 
   const allTasks = tasks || [];
+
+  // ── Taskless job execution (scheduler-triggered composite jobs) ──
+  if (allTasks.length === 0) {
+    const { data: anyTasks } = await supabase
+      .from("ai_job_tasks")
+      .select("id")
+      .eq("job_id", pendingJob.id)
+      .limit(1);
+
+    // Only run direct execution if the job was created without any tasks at all
+    if (!anyTasks || anyTasks.length === 0) {
+      return handleTasklessJob(supabase, pendingJob);
+    }
+  }
+
   let completed = 0;
   let failed = 0;
   const MAX_FAILURES = Math.max(Math.ceil(allTasks.length * 0.5), 3);
@@ -205,7 +220,6 @@ async function handleProcess(supabase: any) {
         if (error) throw error;
         result = data;
       } else if (pendingJob.job_type === "generate_property_recommendations") {
-        // Generate recommendations for properties
         result = await generatePropertyRecommendations(supabase, task.payload);
       } else if (pendingJob.job_type === "update_trending_properties") {
         result = await updateTrendingProperties(supabase, task.payload);
@@ -226,7 +240,6 @@ async function handleProcess(supabase: any) {
       } else if (pendingJob.job_type === "bulk_generate_property_images") {
         result = await bulkGeneratePropertyImages(supabase, task.payload);
       } else if (pendingJob.job_type === "compute_investor_dna") {
-        // Compute DNA for a specific user or batch
         const targetUserIds: string[] = task.payload?.user_ids || [task.payload?.user_id].filter(Boolean);
         for (const uid of targetUserIds) {
           const { error } = await supabase.functions.invoke("core-engine", {
@@ -236,26 +249,22 @@ async function handleProcess(supabase: any) {
         }
         result = { computed: targetUserIds.length };
       } else if (pendingJob.job_type === "deal_hunter_scan") {
-        // Run autonomous deal hunter scan
         const { data, error } = await supabase.functions.invoke("core-engine", {
           body: { mode: "deal_hunter_scan" },
         });
         if (error) throw error;
         result = data?.data || data;
       } else if (pendingJob.job_type === "investment_analysis") {
-        // Full AI analysis: scores + ROI + hotspots + market insights
         const scoreResult = await calculateInvestmentScores(supabase, { limit: 100, offset: (task.payload?.batch || 0) * 100 });
         const roiResult = await updateRoiForecasts(supabase, { limit: 50, offset: (task.payload?.batch || 0) * 50 });
         const hotspotResult = await detectInvestmentHotspots(supabase);
         const marketResult = await updateMarketInsights(supabase);
         result = { scores: scoreResult, roi: roiResult, hotspots: hotspotResult, market: marketResult };
       } else if (pendingJob.job_type === "demand_signal_refresh") {
-        // Lightweight demand recalculation
         const trendingResult = await updateTrendingProperties(supabase, { days: 30 });
         const rentalResult = await updateRentalInsights(supabase);
         result = { trending: trendingResult, rental: rentalResult };
       } else if (pendingJob.job_type === "market_intelligence_update") {
-        // Full market intelligence recalibration
         const marketResult = await updateMarketInsights(supabase);
         const priceResult = await updatePriceTrends(supabase);
         const hotspotResult = await detectInvestmentHotspots(supabase);
