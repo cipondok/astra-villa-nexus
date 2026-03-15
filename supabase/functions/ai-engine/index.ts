@@ -1991,6 +1991,67 @@ Tasks:
       }
     }
 
+    // ── seo-headlines: Generate high-CTR SEO headlines ──
+    if (action === "seo-headlines") {
+      const city = normalizeText(payload.city);
+      const market_condition = normalizeText(payload.market_condition);
+
+      if (!city) return json({ error: "city is required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a real estate media headline strategist. Generate 5 high-CTR SEO headlines for property market reports. Tone: professional, investment-focused, high curiosity. Write in Indonesian. Each headline should be 50-70 characters for optimal SEO.`;
+
+      const userPrompt = `Generate 5 SEO headlines for:\nCity: ${city}\nMarket Condition: ${market_condition || "Not specified"}`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "seo_headlines_result",
+                description: "Return 5 SEO headlines",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    headlines: { type: "array", items: { type: "string" }, description: "5 high-CTR SEO headlines in Indonesian" },
+                  },
+                  required: ["headlines"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "seo_headlines_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI headlines failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "seo-headlines", result, input: { city, market_condition } });
+      } catch (e) {
+        console.error("SEO headlines exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Headlines generation failed" }, 500);
+      }
+    }
+
     // ── market-insight-block: Short market insight for listing display ──
     if (action === "market-insight-block") {
       const village = normalizeText(payload.village);
