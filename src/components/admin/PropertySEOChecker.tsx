@@ -3370,6 +3370,167 @@ const PropertySEOChecker = () => {
           )}
         </TabsContent>
 
+
+        {/* ─── ROI Projection Tab ─── */}
+        <TabsContent value="roi-proj" className="space-y-3">
+          <Card className="bg-card border-border">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <BarChart3 className="h-4 w-4 text-primary" />
+                ROI Projection
+              </CardTitle>
+              <CardDescription className="text-[10px]">
+                AI-powered investment return estimation
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0 space-y-2">
+              <div className="grid grid-cols-3 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Price (Rp) *</label>
+                  <Input className="h-8 text-xs" type="number" placeholder="2000000000" value={roiPrice} onChange={e => setRoiPrice(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Property Type</label>
+                  <select className="w-full h-8 text-xs p-1 rounded-md border border-input bg-background text-foreground" value={roiPropertyType} onChange={e => setRoiPropertyType(e.target.value)}>
+                    <option value="rumah">Rumah</option>
+                    <option value="villa">Villa</option>
+                    <option value="apartment">Apartment</option>
+                    <option value="tanah">Tanah</option>
+                    <option value="ruko">Ruko</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Transaction</label>
+                  <select className="w-full h-8 text-xs p-1 rounded-md border border-input bg-background text-foreground" value={roiTransactionType} onChange={e => setRoiTransactionType(e.target.value)}>
+                    <option value="sale">Jual</option>
+                    <option value="rent">Sewa</option>
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">City *</label>
+                  <Input className="h-8 text-xs" placeholder="Bandung" value={roiCity} onChange={e => setRoiCity(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Province</label>
+                  <Input className="h-8 text-xs" placeholder="Jawa Barat" value={roiProvince} onChange={e => setRoiProvince(e.target.value)} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">District</label>
+                  <Input className="h-8 text-xs" placeholder="Coblong" value={roiDistrict} onChange={e => setRoiDistrict(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Village</label>
+                  <Input className="h-8 text-xs" placeholder="Dago" value={roiVillage} onChange={e => setRoiVillage(e.target.value)} />
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Growth Score</label>
+                  <Input className="h-8 text-xs" type="number" placeholder="85" value={roiGrowthScore} onChange={e => setRoiGrowthScore(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Demand Score</label>
+                  <Input className="h-8 text-xs" type="number" placeholder="78" value={roiDemandScore} onChange={e => setRoiDemandScore(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Liquidity Score</label>
+                  <Input className="h-8 text-xs" type="number" placeholder="72" value={roiLiquidityScore} onChange={e => setRoiLiquidityScore(e.target.value)} />
+                </div>
+              </div>
+              <Button
+                size="sm"
+                className="h-8 text-xs w-full"
+                disabled={!roiPrice || !roiCity || roiProjection.isPending}
+                onClick={() => {
+                  roiProjection.mutate(
+                    {
+                      price: Number(roiPrice),
+                      property_type: roiPropertyType,
+                      transaction_type: roiTransactionType,
+                      village: roiVillage,
+                      district: roiDistrict,
+                      city: roiCity,
+                      province: roiProvince,
+                      growth_score: roiGrowthScore ? Number(roiGrowthScore) : undefined,
+                      demand_score: roiDemandScore ? Number(roiDemandScore) : undefined,
+                      liquidity_score: roiLiquidityScore ? Number(roiLiquidityScore) : undefined,
+                    },
+                    { onSuccess: (data) => setRoiProjectionResult(data) }
+                  );
+                }}
+              >
+                {roiProjection.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <BarChart3 className="h-3 w-3 mr-1" />}
+                Project ROI
+              </Button>
+            </CardContent>
+          </Card>
+
+          {roiProjection.isPending && (
+            <Card className="bg-card border-border">
+              <CardContent className="p-6 text-center">
+                <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                <p className="text-xs text-muted-foreground">AI is calculating ROI projections...</p>
+                <Progress value={50} className="h-1.5 mt-3 max-w-xs mx-auto" />
+              </CardContent>
+            </Card>
+          )}
+
+          {roiProjectionResult && (
+            <Card className={cn(
+              "bg-card border-border border-l-2",
+              roiProjectionResult.result.roi_grade === "EXCELLENT" ? "border-l-chart-1" :
+              roiProjectionResult.result.roi_grade === "STRONG" ? "border-l-chart-1" :
+              roiProjectionResult.result.roi_grade === "MODERATE" ? "border-l-chart-4" : "border-l-muted"
+            )}>
+              <CardContent className="p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-[10px] font-semibold text-muted-foreground">💰 ROI Grade</p>
+                    <Badge variant={
+                      roiProjectionResult.result.roi_grade === 'EXCELLENT' ? 'default' :
+                      roiProjectionResult.result.roi_grade === 'STRONG' ? 'default' :
+                      roiProjectionResult.result.roi_grade === 'MODERATE' ? 'secondary' : 'outline'
+                    } className="mt-1 text-sm">
+                      {roiProjectionResult.result.roi_grade === 'EXCELLENT' ? '🏆' :
+                       roiProjectionResult.result.roi_grade === 'STRONG' ? '💪' :
+                       roiProjectionResult.result.roi_grade === 'MODERATE' ? '📊' : '📉'}{' '}
+                      {roiProjectionResult.result.roi_grade}
+                    </Badge>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] font-semibold text-muted-foreground">Total ROI</p>
+                    <p className="text-xl font-bold text-primary">{roiProjectionResult.result.estimated_total_roi_percent}</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="p-2 rounded-lg border border-border/50 bg-muted/20 text-center">
+                    <p className="text-[8px] text-muted-foreground">Annual Growth</p>
+                    <p className="text-xs font-bold text-foreground">{roiProjectionResult.result.annual_appreciation_estimate}</p>
+                  </div>
+                  <div className="p-2 rounded-lg border border-border/50 bg-muted/20 text-center">
+                    <p className="text-[8px] text-muted-foreground">Value @ 3yr</p>
+                    <p className="text-xs font-bold text-foreground">{roiProjectionResult.result.projected_value_3yr}</p>
+                  </div>
+                  <div className="p-2 rounded-lg border border-border/50 bg-muted/20 text-center">
+                    <p className="text-[8px] text-muted-foreground">Value @ 5yr</p>
+                    <p className="text-xs font-bold text-foreground">{roiProjectionResult.result.projected_value_5yr}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-[10px] font-semibold text-muted-foreground mb-1">📋 Strategy Summary</p>
+                  <p className="text-xs text-foreground leading-relaxed">{roiProjectionResult.result.roi_strategy_summary}</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
         <TabsContent value="detail">
           {currentAnalysis ? (
             <div className="space-y-3">
