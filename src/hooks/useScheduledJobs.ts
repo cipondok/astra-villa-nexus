@@ -13,6 +13,10 @@ export interface ScheduledJob {
   cron_label: string;
   enabled: boolean;
   priority: number;
+  max_retries: number;
+  retry_count: number;
+  last_error: string | null;
+  last_status: string;
   last_run_at: string | null;
   next_run_at: string | null;
   created_by: string | null;
