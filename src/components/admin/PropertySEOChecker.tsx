@@ -1936,6 +1936,97 @@ const PropertySEOChecker = () => {
           })()}
         </TabsContent>
 
+        {/* ─── Investment Badge Tab ─── */}
+        <TabsContent value="invest-badge" className="space-y-3">
+          <Card className="bg-card border-border">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Tag className="h-4 w-4 text-primary" />
+                Investment Badge Generator
+              </CardTitle>
+              <CardDescription className="text-[10px]">
+                Generate a recommendation badge from investment score, price trend, and rental yield
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0 space-y-3">
+              <div className="grid grid-cols-3 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Investment Score *</label>
+                  <Input className="h-8 text-xs" type="number" placeholder="0-100" value={badgeScore} onChange={e => setBadgeScore(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Price Trend *</label>
+                  <Select value={badgeTrend} onValueChange={(v) => setBadgeTrend(v as 'UP' | 'STABLE' | 'DOWN')}>
+                    <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="UP" className="text-xs">📈 UP</SelectItem>
+                      <SelectItem value="STABLE" className="text-xs">➡️ STABLE</SelectItem>
+                      <SelectItem value="DOWN" className="text-xs">📉 DOWN</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Rental Yield *</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. 5.7% - 7.5%" value={badgeYield} onChange={e => setBadgeYield(e.target.value)} />
+                </div>
+              </div>
+              <Button
+                size="sm"
+                className="h-8 text-xs w-full"
+                disabled={!badgeScore || !badgeYield}
+                onClick={() => {
+                  const result = generateInvestmentBadge({
+                    investment_score: Number(badgeScore),
+                    price_trend: badgeTrend,
+                    rental_yield: badgeYield,
+                  });
+                  setBadgeResult(result);
+                }}
+              >
+                <Tag className="h-3 w-3 mr-1" />
+                Generate Badge
+              </Button>
+            </CardContent>
+          </Card>
+
+          {badgeResult && (() => {
+            const colorMap: Record<string, string> = {
+              prime: 'bg-chart-1/20 border-chart-1 text-chart-1',
+              high: 'bg-chart-2/20 border-chart-2 text-chart-2',
+              rental: 'bg-primary/20 border-primary text-primary',
+              land: 'bg-chart-4/20 border-chart-4 text-chart-4',
+              speculative: 'bg-accent/40 border-accent-foreground/30 text-accent-foreground',
+              low: 'bg-destructive/20 border-destructive text-destructive',
+            };
+            const classes = colorMap[badgeResult.color] || colorMap.low;
+
+            return (
+              <Card className="bg-card border-border">
+                <CardContent className="p-6 text-center space-y-3">
+                  <p className="text-[10px] text-muted-foreground">AI Investment Recommendation</p>
+                  <Badge className={`text-lg font-bold px-6 py-2 border-2 ${classes}`} variant="outline">
+                    {badgeResult.badge}
+                  </Badge>
+                  <div className="grid grid-cols-3 gap-2 pt-2">
+                    <div className="text-center">
+                      <p className="text-[9px] text-muted-foreground">Score</p>
+                      <p className="text-sm font-bold text-foreground">{badgeScore}/100</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-[9px] text-muted-foreground">Trend</p>
+                      <p className="text-sm font-bold text-foreground">{badgeTrend}</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-[9px] text-muted-foreground">Yield</p>
+                      <p className="text-sm font-bold text-foreground">{badgeYield}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })()}
+        </TabsContent>
+
         <TabsContent value="detail">
           {currentAnalysis ? (
             <div className="space-y-3">
