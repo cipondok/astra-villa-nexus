@@ -1224,6 +1224,130 @@ Generate the rewritten description.`;
       }
     }
 
+    // ── traffic-prediction: Estimate organic traffic & lead potential ──
+    if (action === "traffic-prediction") {
+      const propertyId = normalizeText(payload.propertyId);
+      if (!propertyId) return json({ error: "propertyId is required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const { data: property, error: propErr } = await supabase
+        .from("properties")
+        .select(SEO_PROPERTY_SELECT)
+        .eq("id", propertyId)
+        .maybeSingle();
+
+      if (propErr || !property) return json({ error: "Property not found" }, 404);
+
+      const p = property as Record<string, unknown>;
+      const location = [p.location, p.city, p.state].filter(Boolean).join(", ");
+      const priceStr = p.price ? `Rp ${Number(p.price).toLocaleString("id-ID")}` : "N/A";
+
+      const systemPrompt = `You are an expert property SEO traffic prediction AI specializing in the Indonesian real estate market.
+You analyze property listings and predict their organic search traffic potential, click-through rates, and lead generation capability.
+Use your knowledge of Indonesian property search behavior, Google search trends for property keywords, and real estate conversion rates.
+Be realistic and data-driven in your estimates.`;
+
+      const userPrompt = `Predict organic traffic and lead potential for this property listing:
+
+Title: ${p.title || "Untitled"}
+Location: ${location}
+Property Type: ${p.property_type || "unknown"}
+Transaction Type: ${p.listing_type || "sale"}
+Price: ${priceStr}
+Bedrooms: ${p.bedrooms || "N/A"}
+Bathrooms: ${p.bathrooms || "N/A"}
+Description length: ${String(p.description || "").length} chars
+
+Tasks:
+1. Estimate monthly Google search demand for this property type + location combo
+2. Estimate realistic monthly click potential (CTR from search results)
+3. Estimate monthly inquiry/lead potential (conversion from clicks)
+4. Evaluate investment attractiveness (0-100 score)
+5. Break down demand by search intent type
+6. Identify top keyword opportunities
+7. Assess competitive difficulty
+8. Predict growth trend for this market segment`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "traffic_prediction_result",
+                description: "Return SEO traffic prediction and lead potential analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    estimated_search_demand: { type: "string", description: "Monthly search volume estimate e.g. '1,200 - 2,500 searches/month'" },
+                    estimated_monthly_clicks: { type: "string", description: "Realistic monthly click potential e.g. '80 - 150 clicks/month'" },
+                    estimated_monthly_leads: { type: "string", description: "Monthly inquiry potential e.g. '3 - 8 leads/month'" },
+                    investment_attractiveness_score: { type: "number", description: "0-100 investment attractiveness score" },
+                    demand_breakdown: {
+                      type: "object",
+                      properties: {
+                        transactional_searches: { type: "string", description: "Volume of buy/rent intent searches" },
+                        informational_searches: { type: "string", description: "Volume of research/comparison searches" },
+                        branded_searches: { type: "string", description: "Volume of location/brand-specific searches" },
+                      },
+                      required: ["transactional_searches", "informational_searches", "branded_searches"],
+                      additionalProperties: false,
+                    },
+                    keyword_opportunities: { type: "array", items: { type: "string" }, description: "Top 5-8 keyword opportunities for this listing" },
+                    competitive_difficulty: { type: "string", description: "LOW, MEDIUM, or HIGH competitive difficulty" },
+                    growth_trend: { type: "string", description: "RISING, STABLE, or DECLINING market trend" },
+                    confidence_level: { type: "string", description: "HIGH, MEDIUM, or LOW confidence in prediction" },
+                    reasoning: { type: "string", description: "Brief explanation of the prediction methodology and key factors" },
+                  },
+                  required: ["estimated_search_demand", "estimated_monthly_clicks", "estimated_monthly_leads", "investment_attractiveness_score", "demand_breakdown", "keyword_opportunities", "competitive_difficulty", "growth_trend", "confidence_level", "reasoning"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "traffic_prediction_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded, please try again later" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          console.error("AI traffic-prediction error:", aiResp.status);
+          return json({ error: "AI traffic prediction failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+
+        return json({
+          action: "traffic-prediction",
+          propertyId,
+          result,
+          property_summary: {
+            title: p.title || "Untitled",
+            location,
+            property_type: p.property_type || "unknown",
+            listing_type: p.listing_type || "sale",
+            price: Number(p.price) || 0,
+          },
+        });
+      } catch (e) {
+        console.error("Traffic prediction exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Traffic prediction failed" }, 500);
+      }
+    }
+
     // ── ai-audit: Deep AI-powered SEO audit ──
     if (action === "ai-audit") {
       const propertyId = normalizeText(payload.propertyId);
