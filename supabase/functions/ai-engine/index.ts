@@ -3326,6 +3326,85 @@ Tasks:
       });
     }
 
+    // ── discovery-recommendations: Personalized property discovery ──
+    if (action === "discovery-recommendations") {
+      const budget = normalizeText(payload.budget);
+      const city = normalizeText(payload.city);
+      const property_type = normalizeText(payload.property_type);
+      const purpose = normalizeText(payload.purpose);
+
+      if (!budget || !city || !property_type || !purpose)
+        return json({ error: "budget, city, property_type, and purpose are required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are an AI real estate recommendation engine for the Indonesian property market.
+Generate personalized property discovery recommendations based on user profile. Use Indonesian language for all suggestions. Be specific to the city and budget range provided. Focus on actionable, engaging recommendations.`;
+
+      const userPrompt = `Generate personalized property discovery recommendations:
+
+- Budget Range: ${budget}
+- Preferred City: ${city}
+- Property Type Interest: ${property_type}
+- Purpose: ${purpose}
+
+Tasks:
+1. Recommend 3-4 suitable property search themes (specific to city & purpose)
+2. Suggest 5 discovery keywords (SEO-friendly Indonesian terms)
+3. Suggest 3-4 lifestyle-based property categories
+4. Suggest 3 urgency/engagement discovery triggers`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "discovery_recommendations_result",
+                description: "Return personalized property discovery recommendations",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    recommended_search_themes: { type: "array", items: { type: "string" }, description: "Search themes in Indonesian" },
+                    discovery_keywords: { type: "array", items: { type: "string" }, description: "5 discovery keywords in Indonesian" },
+                    lifestyle_categories: { type: "array", items: { type: "string" }, description: "Lifestyle-based categories in Indonesian" },
+                    engagement_triggers: { type: "array", items: { type: "string" }, description: "Urgency triggers in Indonesian" },
+                  },
+                  required: ["recommended_search_themes", "discovery_keywords", "lifestyle_categories", "engagement_triggers"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "discovery_recommendations_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI discovery recommendations failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "discovery-recommendations", result, input: { budget, city, property_type, purpose } });
+      } catch (e) {
+        console.error("Discovery recommendations exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Discovery recommendations failed" }, 500);
+      }
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
