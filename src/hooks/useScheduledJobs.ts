@@ -56,7 +56,7 @@ export function useScheduledJobs() {
 export function useCreateScheduledJob() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (job: Omit<ScheduledJob, 'id' | 'last_run_at' | 'next_run_at' | 'created_at' | 'updated_at'>) => {
+    mutationFn: async (job: Omit<ScheduledJob, 'id' | 'last_run_at' | 'next_run_at' | 'created_at' | 'updated_at' | 'max_retries' | 'retry_count' | 'last_error' | 'last_status'>) => {
       const { data: { user } } = await supabase.auth.getUser();
       const { data, error } = await (supabase as any)
         .from('ai_scheduled_jobs')

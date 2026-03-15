@@ -199,6 +199,12 @@ const AIBatchControlPanel = React.memo(function AIBatchControlPanel() {
             <p className="text-[9px] text-destructive truncate">{latestJob.error_message}</p>
           </div>
         )}
+
+        {/* Auto-scheduling indicator */}
+        <div className="flex items-center justify-center gap-1.5 pt-1 border-t border-border/30">
+          <div className="w-1.5 h-1.5 rounded-full bg-chart-1 animate-pulse" />
+          <span className="text-[9px] text-muted-foreground">Auto-scheduling active</span>
+        </div>
       </CardContent>
     </Card>
   );

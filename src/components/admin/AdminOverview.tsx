@@ -46,7 +46,7 @@ import AgentPerformanceCard from "./AgentPerformanceCard";
 import DealPipelineCard from "./DealPipelineCard";
 import GeoExpansionCard from "./GeoExpansionCard";
 import AIBatchControlPanel from "./AIBatchControlPanel";
-
+import AISchedulingDashboard from "./AISchedulingDashboard";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
