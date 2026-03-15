@@ -15,6 +15,7 @@ import { useBuyerIntentAnalyzer, type BuyerIntentResponse } from '@/hooks/useBuy
 import { classifyLeadPriority } from '@/hooks/useLeadPriority';
 import { useSalesReplyGenerator, type SalesReplyResponse } from '@/hooks/useSalesReplyGenerator';
 import { usePriceBenchmark, type PriceBenchmarkResponse } from '@/hooks/usePriceBenchmark';
+import { useMarketHeat, type MarketHeatResponse } from '@/hooks/useMarketHeat';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
