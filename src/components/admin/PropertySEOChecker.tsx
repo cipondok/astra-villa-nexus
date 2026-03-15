@@ -402,6 +402,7 @@ const PropertySEOChecker = () => {
   const trafficPrediction = useTrafficPrediction();
   const internalLinking = useInternalLinking();
   const landingPageGen = useLandingPageGenerator();
+  const kwCluster = useKeywordCluster();
 
   // Reset city/area on state change, reset pages on any filter change
   useEffect(() => { setFilterCity(''); setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterState]);
