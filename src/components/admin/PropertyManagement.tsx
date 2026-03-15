@@ -679,7 +679,18 @@ const PropertyManagement = () => {
                       <TableHead>Property</TableHead>
                       <TableHead>Owner/Agent</TableHead>
                       <TableHead>Details</TableHead>
-                      <TableHead className="text-center">AI Score</TableHead>
+                      <TableHead
+                        className="text-center cursor-pointer select-none hidden md:table-cell hover:bg-muted/50 transition-colors"
+                        onClick={() => handleSort('deal_score')}
+                      >
+                        <div className="flex items-center justify-center gap-1">
+                          <TrendingUp className="h-3 w-3" />
+                          Deal Intel
+                          {sortField === 'deal_score' && (
+                            <span className="text-[10px]">{sortDir === 'desc' ? '↓' : '↑'}</span>
+                          )}
+                        </div>
+                      </TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Created</TableHead>
                       <TableHead>Actions</TableHead>
