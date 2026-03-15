@@ -33224,6 +33224,7 @@ export type Database = {
           survey_type: string
         }[]
       }
+      get_deal_pipeline_intelligence: { Args: never; Returns: Json }
       get_distinct_cities: {
         Args: { p_province_code?: string }
         Returns: {
