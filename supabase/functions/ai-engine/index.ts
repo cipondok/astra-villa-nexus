@@ -3627,6 +3627,41 @@ Tasks:
       }
     }
 
+    // ── market-cycle: Deterministic market cycle phase detection ──
+    if (action === "market-cycle") {
+      const growth_score = Number(payload.growth_score) || 0;
+      const demand_score = Number(payload.demand_score) || 0;
+      const price_trend = normalizeText(payload.price_trend).toUpperCase();
+
+      const avg = (growth_score + demand_score) / 2;
+      const trendUp = price_trend === "RISING" || price_trend === "SURGING";
+      const trendDown = price_trend === "DOWN";
+      const trendStable = price_trend === "STABLE";
+
+      let market_cycle_stage: string;
+      let cycle_insight: string;
+
+      if (avg >= 75 && trendUp) {
+        market_cycle_stage = "PEAK MARKET";
+        cycle_insight = "Pasar berada di puncak siklus dengan pertumbuhan dan permintaan tinggi. Harga mendekati titik tertinggi — investor sebaiknya fokus pada exit strategy atau aset dengan yield stabil, bukan spekulasi capital gain jangka pendek.";
+      } else if (avg >= 50 && trendUp) {
+        market_cycle_stage = "GROWTH PHASE";
+        cycle_insight = "Pasar dalam fase pertumbuhan aktif dengan momentum positif. Waktu optimal untuk akuisisi aset sebelum harga mencapai puncak — prioritaskan lokasi emerging dengan infrastruktur baru.";
+      } else if (avg < 50 && (trendStable || trendUp)) {
+        market_cycle_stage = "EARLY RECOVERY";
+        cycle_insight = "Pasar mulai pulih dari fase koreksi dengan sinyal permintaan yang membaik. Entry point terbaik untuk investor jangka panjang — harga masih di bawah fair value dengan potensi apresiasi signifikan.";
+      } else {
+        market_cycle_stage = "CORRECTION PHASE";
+        cycle_insight = "Pasar mengalami koreksi dengan tekanan harga menurun. Hindari pembelian spekulatif — fokus pada aset undervalued dengan fundamental kuat dan cash flow positif dari sewa.";
+      }
+
+      return json({
+        action: "market-cycle",
+        result: { market_cycle_stage, cycle_insight },
+        input: { growth_score, demand_score, price_trend },
+      });
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
