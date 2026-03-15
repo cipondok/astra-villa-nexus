@@ -19,6 +19,7 @@ import { useMarketHeat, type MarketHeatResponse } from '@/hooks/useMarketHeat';
 import { usePricingStrategy, type PricingStrategyResponse } from '@/hooks/usePricingStrategy';
 import { useDemandForecast, type DemandForecastResponse } from '@/hooks/useDemandForecast';
 import { useBuyerSegment, type BuyerSegmentResponse } from '@/hooks/useBuyerSegment';
+import { useResaleRisk, type ResaleRiskResponse } from '@/hooks/useResaleRisk';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
