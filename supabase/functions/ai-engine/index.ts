@@ -3291,6 +3291,41 @@ Tasks:
       return json({ action: "agent-badge", result: { badge }, input: { agent_score, deals } });
     }
 
+    // ── churn-risk: Agent churn/inactivity risk detection ──
+    if (action === "churn-risk") {
+      const last_post_days = Number(payload.last_post_days) || 0;
+      const leads = Number(payload.leads) || 0;
+      const login_freq = Number(payload.login_freq) || 0;
+
+      let activity_risk_level: string;
+      let risk_reason: string;
+      let retention_action: string;
+
+      if (last_post_days >= 30 && leads <= 2 && login_freq <= 1) {
+        activity_risk_level = "CRITICAL";
+        risk_reason = "Agen tidak aktif lebih dari 30 hari, hampir tidak ada leads, dan jarang login — indikasi churn tinggi.";
+        retention_action = "Kirim notifikasi re-engagement personal + tawarkan listing boost gratis 7 hari untuk memicu aktivitas kembali.";
+      } else if (last_post_days >= 14 && leads <= 5 && login_freq <= 3) {
+        activity_risk_level = "HIGH";
+        risk_reason = "Listing terakhir lebih dari 2 minggu lalu dengan leads rendah dan login jarang — tanda awal disengagement.";
+        retention_action = "Trigger email 'Agen Spotlight' dengan tips performa + undangan webinar strategi listing.";
+      } else if (last_post_days >= 7 && leads <= 10 && login_freq <= 5) {
+        activity_risk_level = "MODERATE";
+        risk_reason = "Aktivitas menurun dalam 7 hari terakhir — perlu monitoring sebelum menjadi risiko tinggi.";
+        retention_action = "Tampilkan in-app nudge 'Listing baru Anda bisa mendapat 3x lebih banyak views minggu ini' + badge progress reminder.";
+      } else {
+        activity_risk_level = "LOW";
+        risk_reason = "Agen aktif dengan frekuensi listing, leads, dan login yang sehat.";
+        retention_action = "Pertahankan engagement dengan leaderboard update dan program reward bulanan.";
+      }
+
+      return json({
+        action: "churn-risk",
+        result: { activity_risk_level, risk_reason, retention_action },
+        input: { last_post_days, leads, login_freq },
+      });
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
