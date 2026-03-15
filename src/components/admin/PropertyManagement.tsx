@@ -59,6 +59,11 @@ interface PropertyWithRelations {
   development_status?: string;
   three_d_model_url?: string;
   virtual_tour_url?: string;
+  deal_analysis?: {
+    deal_score: number;
+    deal_tag: string;
+    deal_confidence: number | null;
+  } | null;
 }
 
 const PropertyManagement = () => {
