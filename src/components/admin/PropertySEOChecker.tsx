@@ -406,6 +406,14 @@ const PropertySEOChecker = () => {
   const [mhCity, setMhCity] = useState('');
   const [mhPropertyType, setMhPropertyType] = useState('rumah');
   const [marketHeatResult, setMarketHeatResult] = useState<MarketHeatResponse | null>(null);
+  const [psPrice, setPsPrice] = useState('');
+  const [psPropertyType, setPsPropertyType] = useState('rumah');
+  const [psVillage, setPsVillage] = useState('');
+  const [psDistrict, setPsDistrict] = useState('');
+  const [psCity, setPsCity] = useState('');
+  const [psProvince, setPsProvince] = useState('');
+  const [psPricePosition, setPsPricePosition] = useState('FAIR MARKET');
+  const [pricingStrategyResult, setPricingStrategyResult] = useState<PricingStrategyResponse | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
