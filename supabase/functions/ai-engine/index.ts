@@ -3040,6 +3040,81 @@ Tasks:
       }
     }
 
+    // ── conversion-optimizer: Conversion optimization analysis ──
+    if (action === "conversion-optimizer") {
+      const traffic = Number(payload.traffic) || 0;
+      const listings = Number(payload.listings) || 0;
+      const leads = Number(payload.leads) || 0;
+      const conversion_rate = Number(payload.conversion_rate) || 0;
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a conversion optimization strategist for ASTRA, an AI-driven Indonesian property marketplace.
+Analyze platform performance and suggest ways to increase buyer inquiries. Use Indonesian language.
+Be specific about UI/UX changes, psychological triggers, and PropTech-specific conversion tactics.`;
+
+      const userPrompt = `Analyze conversion performance:
+
+- Daily Traffic: ${traffic}
+- Total Listings: ${listings}
+- Monthly Leads: ${leads}
+- Conversion Rate: ${conversion_rate}%
+
+Tasks:
+1. Identify 3 conversion weak points
+2. Suggest 3 UI improvement suggestions
+3. Suggest 3 lead generation tactics`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "conversion_optimizer_result",
+                description: "Return conversion optimization analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    conversion_weak_points: { type: "array", items: { type: "string" }, description: "3 conversion weak points in Indonesian" },
+                    ui_improvement_suggestions: { type: "array", items: { type: "string" }, description: "3 UI improvements in Indonesian" },
+                    lead_generation_tactics: { type: "array", items: { type: "string" }, description: "3 lead gen tactics in Indonesian" },
+                  },
+                  required: ["conversion_weak_points", "ui_improvement_suggestions", "lead_generation_tactics"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "conversion_optimizer_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI conversion optimizer failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "conversion-optimizer", result, input: { traffic, listings, leads, conversion_rate } });
+      } catch (e) {
+        console.error("Conversion optimizer exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Conversion optimizer failed" }, 500);
+      }
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
