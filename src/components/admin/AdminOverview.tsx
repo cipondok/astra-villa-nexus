@@ -52,6 +52,7 @@ import AIJobObservabilityPanel from "./AIJobObservabilityPanel";
 import MarketAnomalyCard from "./MarketAnomalyCard";
 import ListingPerformanceOptimizerCard from "./ListingPerformanceOptimizerCard";
 import PricingIntelligenceCard from "./PricingIntelligenceCard";
+import DealClosingTimelineCard from "./DealClosingTimelineCard";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
