@@ -2968,6 +2968,78 @@ Tasks:
       }
     }
 
+    // ── supply-growth: Listing supply growth strategies ──
+    if (action === "supply-growth") {
+      const listings = Number(payload.listings) || 0;
+      const agents = Number(payload.agents) || 0;
+      const traffic = Number(payload.traffic) || 0;
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a property marketplace supply growth expert for ASTRA, an AI-driven Indonesian property platform.
+Suggest concrete, executable strategies to rapidly increase listings. Use Indonesian language. Be hyper-specific to the Indonesian market — mention specific platforms, communities, and tactics that work locally.`;
+
+      const userPrompt = `Suggest supply growth strategies based on:
+
+- Current Listings: ${listings}
+- Active Agents: ${agents}
+- Daily Traffic: ${traffic}
+
+Tasks:
+1. Suggest 4 listing growth methods (concrete tactics to add more listings fast)
+2. Suggest 3 agent activation triggers (what makes agents post more)
+3. Suggest one overarching inventory scaling strategy (2-3 sentences)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "supply_growth_result",
+                description: "Return supply growth strategies",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    listing_growth_methods: { type: "array", items: { type: "string" }, description: "4 listing growth methods in Indonesian" },
+                    agent_activation_triggers: { type: "array", items: { type: "string" }, description: "3 agent activation triggers in Indonesian" },
+                    inventory_scaling_strategy: { type: "string", description: "Overarching inventory scaling strategy in Indonesian" },
+                  },
+                  required: ["listing_growth_methods", "agent_activation_triggers", "inventory_scaling_strategy"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "supply_growth_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI supply growth failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "supply-growth", result, input: { listings, agents, traffic } });
+      } catch (e) {
+        console.error("Supply growth exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Supply growth failed" }, 500);
+      }
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
