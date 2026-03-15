@@ -34028,6 +34028,7 @@ export type Database = {
         Args: { phone_number: string }
         Returns: boolean
       }
+      job_queue_watchdog: { Args: never; Returns: Json }
       log_database_error: {
         Args: {
           p_error_message: string
