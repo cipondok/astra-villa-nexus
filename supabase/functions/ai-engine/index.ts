@@ -3679,6 +3679,46 @@ Tasks:
       return json({ action: "market-heat-label", result: { label }, input: { price_index_score, market_cycle_stage } });
     }
 
+    // ── spatial-heat: Deterministic micro-location heat score ──
+    if (action === "spatial-heat") {
+      const village = normalizeText(payload.village);
+      const district = normalizeText(payload.district);
+      const city = normalizeText(payload.city);
+      const demand_score = Number(payload.demand_score) || 0;
+      const growth_score = Number(payload.growth_score) || 0;
+      const price_index_score = Number(payload.price_index_score) || 0;
+
+      if (!village || !district || !city)
+        return json({ error: "village, district, and city are required" }, 400);
+
+      // Weighted heat score: demand 40%, growth 35%, price index 25%
+      const heat_score = Math.round(demand_score * 0.4 + growth_score * 0.35 + price_index_score * 0.25);
+      const clamped = Math.max(0, Math.min(100, heat_score));
+
+      let heat_zone_level: string;
+      let heat_zone_summary: string;
+
+      if (clamped >= 85) {
+        heat_zone_level = "PRIME HOTSPOT";
+        heat_zone_summary = `${village}, ${district} adalah zona premium dengan permintaan sangat tinggi dan pertumbuhan agresif. Harga properti di area ini cenderung naik cepat — cocok untuk investor yang mengincar capital gain jangka pendek hingga menengah.`;
+      } else if (clamped >= 65) {
+        heat_zone_level = "HOT";
+        heat_zone_summary = `${village}, ${district} menunjukkan aktivitas pasar yang kuat dengan momentum pertumbuhan positif. Area ini menarik untuk akuisisi sebelum harga mencapai puncak — perhatikan listing baru yang masuk.`;
+      } else if (clamped >= 40) {
+        heat_zone_level = "WARM";
+        heat_zone_summary = `${village}, ${district} memiliki potensi yang sedang berkembang. Cocok untuk investor jangka panjang yang mencari entry point dengan harga masih terjangkau dan ruang apresiasi.`;
+      } else {
+        heat_zone_level = "COOL";
+        heat_zone_summary = `${village}, ${district} masih dalam fase awal dengan aktivitas pasar terbatas. Cocok untuk land banking atau investor dengan horizon investasi panjang yang siap menunggu perkembangan infrastruktur.`;
+      }
+
+      return json({
+        action: "spatial-heat",
+        result: { heat_score: clamped, heat_zone_level, heat_zone_summary },
+        input: { village, district, city, demand_score, growth_score, price_index_score },
+      });
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
