@@ -145,27 +145,25 @@ const PropertyManagement = () => {
       const ownerIds = [...new Set(propertiesData.map(p => p.owner_id).filter(Boolean))];
       const agentIds = [...new Set(propertiesData.map(p => p.agent_id).filter(Boolean))];
       const allUserIds = [...new Set([...ownerIds, ...agentIds])];
+      const propertyIds = propertiesData.map(p => p.id);
 
-      console.log('Fetching user profiles for IDs:', allUserIds);
+      // Fetch profiles and deal analysis in parallel
+      const [profilesResult, dealAnalysisResult] = await Promise.all([
+        allUserIds.length > 0
+          ? supabase.from('profiles').select('id, full_name, email').in('id', allUserIds)
+          : Promise.resolve({ data: [], error: null }),
+        supabase
+          .from('property_deal_analysis')
+          .select('property_id, deal_score, deal_tag, deal_confidence')
+          .in('property_id', propertyIds),
+      ]);
 
-      // Fetch profiles separately
-      let profilesData = [];
-      if (allUserIds.length > 0) {
-        const { data: profiles, error: profilesError } = await supabase
-          .from('profiles')
-          .select('id, full_name, email')
-          .in('id', allUserIds);
+      const profilesData = profilesResult.data || [];
+      const dealScoreMap = new Map(
+        (dealAnalysisResult.data || []).map((d: any) => [d.property_id, d])
+      );
 
-        if (profilesError) {
-          console.warn('Error fetching profiles:', profilesError);
-        } else {
-          profilesData = profiles || [];
-        }
-      }
-
-      console.log('Profiles data:', profilesData);
-
-      // Map properties with owner/agent information
+      // Map properties with owner/agent/deal information
       const propertiesWithRelations = propertiesData.map((property: any) => {
         const owner = profilesData.find(p => p.id === property.owner_id);
         const agent = profilesData.find(p => p.id === property.agent_id);
@@ -174,10 +172,10 @@ const PropertyManagement = () => {
           ...property,
           owner: owner ? { full_name: owner.full_name, email: owner.email } : null,
           agent: agent ? { full_name: agent.full_name, email: agent.email } : null,
+          deal_analysis: dealScoreMap.get(property.id) || null,
         };
       });
 
-      console.log('Final properties with relations:', propertiesWithRelations);
       return propertiesWithRelations as PropertyWithRelations[];
     },
   });
