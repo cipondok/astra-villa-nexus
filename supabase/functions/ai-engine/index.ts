@@ -2520,6 +2520,86 @@ Tasks:
       }
     }
 
+    // ── discovery-themes: Personalized property exploration themes ──
+    if (action === "discovery-themes") {
+      const budget = normalizeText(payload.budget);
+      const city = normalizeText(payload.city);
+      const purpose = normalizeText(payload.purpose);
+
+      if (!budget || !city || !purpose) {
+        return json({ error: "budget, city, and purpose are required" }, 400);
+      }
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a property discovery experience AI for the Indonesian real estate market.
+Generate personalized, creative property exploration themes that inspire users to browse and discover properties.
+All responses MUST be in Indonesian. Be creative, emotionally resonant, and market-aware.`;
+
+      const userPrompt = `User profile:
+- Budget: ${budget}
+- City Interest: ${city}
+- Purpose: ${purpose}
+
+Tasks:
+1. Suggest 5 smart property exploration themes — creative category names that feel curated and personal (in Indonesian, each 3-8 words)
+2. Suggest 3 emotional discovery angles — short phrases that tap into aspirations and lifestyle dreams (in Indonesian)
+3. Suggest 3 urgency triggers — compelling reasons to browse and act now (in Indonesian)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "discovery_themes_result",
+                description: "Return personalized discovery themes",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    discovery_themes: { type: "array", items: { type: "string" }, description: "5 smart exploration theme names in Indonesian" },
+                    emotional_angles: { type: "array", items: { type: "string" }, description: "3 emotional discovery angles in Indonesian" },
+                    urgency_triggers: { type: "array", items: { type: "string" }, description: "3 urgency triggers in Indonesian" },
+                  },
+                  required: ["discovery_themes", "emotional_angles", "urgency_triggers"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "discovery_themes_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI discovery themes failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({
+          action: "discovery-themes",
+          result,
+          input: { budget, city, purpose },
+        });
+      } catch (e) {
+        console.error("Discovery themes exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Discovery themes failed" }, 500);
+      }
+    }
+
     // ── market-momentum: Detect current market momentum ──
     if (action === "market-momentum") {
       const growth_score = Number(payload.growth_score) || 0;
