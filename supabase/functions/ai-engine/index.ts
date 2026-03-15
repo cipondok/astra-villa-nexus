@@ -2161,6 +2161,82 @@ Tasks:
       }
     }
 
+    // ── market-momentum: Detect current market momentum ──
+    if (action === "market-momentum") {
+      const growth_score = Number(payload.growth_score) || 0;
+      const demand_score = Number(payload.demand_score) || 0;
+      const price_trend = normalizeText(payload.price_trend);
+      const city = normalizeText(payload.city);
+
+      if (!price_trend) return json({ error: "price_trend is required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a national property trend intelligence AI for the Indonesian real estate market.
+Detect market momentum and predict activity levels. Use Indonesian language for activity_forecast and timing_strategy. Be specific and data-driven.`;
+
+      const userPrompt = `Detect market momentum from these signals:
+
+- Growth Score: ${growth_score}/100
+- Demand Score: ${demand_score}/100
+- Price Trend: ${price_trend}
+${city ? `- City: ${city}` : ""}
+
+Tasks:
+1. Classify market momentum (DECLINING / STABLE / RISING / BOOMING)
+2. Predict next 12-month activity level (2-3 sentences in Indonesian)
+3. Suggest investor timing strategy (2-3 sentences in Indonesian)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "market_momentum_result",
+                description: "Return market momentum analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    market_momentum: { type: "string", enum: ["DECLINING", "STABLE", "RISING", "BOOMING"], description: "Market momentum classification" },
+                    activity_forecast: { type: "string", description: "12-month activity forecast in Indonesian" },
+                    timing_strategy: { type: "string", description: "Investor timing strategy in Indonesian" },
+                  },
+                  required: ["market_momentum", "activity_forecast", "timing_strategy"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "market_momentum_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI market momentum failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "market-momentum", result, input: { growth_score, demand_score, price_trend, city } });
+      } catch (e) {
+        console.error("Market momentum exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Market momentum failed" }, 500);
+      }
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
