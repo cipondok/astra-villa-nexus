@@ -429,6 +429,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           {/* Lead Intelligence Summary */}
           <LeadIntelligenceCard onNavigate={() => handleQuickAction('lead-management')} />
 
+          {/* Market Intelligence Summary */}
+          <MarketIntelligenceCard onNavigate={() => handleQuickAction('ai-command-center')} />
+
           {/* AI Systems Status */}
           <Card className="border-border/30">
             <CardHeader className="p-3 pb-2">
