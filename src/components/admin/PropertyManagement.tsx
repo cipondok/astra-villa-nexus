@@ -81,6 +81,19 @@ const PropertyManagement = () => {
   const [searchTerm, setSearchTerm] = usePropertyState("");
   const [currentPage, setCurrentPage] = usePropertyState(1);
   const itemsPerPage = 10;
+
+  // Sort state — default: deal score descending
+  const [sortField, setSortField] = usePropertyState<'deal_score' | 'created_at' | 'price'>('deal_score');
+  const [sortDir, setSortDir] = usePropertyState<'asc' | 'desc'>('desc');
+
+  const handleSort = (field: typeof sortField) => {
+    if (sortField === field) {
+      setSortDir(prev => prev === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDir('desc');
+    }
+  };
   
   const [newProperty, setNewProperty] = usePropertyState({
     title: "",
