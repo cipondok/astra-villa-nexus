@@ -1224,6 +1224,120 @@ Generate the rewritten description.`;
       }
     }
 
+    // ── landing-page-content: Generate SEO landing page content for a location ──
+    if (action === "landing-page-content") {
+      const province = normalizeText(payload.province);
+      const city = normalizeText(payload.city);
+      const district = normalizeText(payload.district) || "";
+      const village = normalizeText(payload.village) || "";
+
+      if (!province || !city) return json({ error: "province and city are required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      // Get property stats for this location for context
+      let locationContext = "";
+      try {
+        const query = supabase.from("properties").select("id,property_type,listing_type,price", { count: "exact" }).eq("city", city);
+        const { count } = await query;
+        const { data: priceData } = await supabase.from("properties").select("price,property_type").eq("city", city).order("price", { ascending: true }).limit(50);
+        if (priceData?.length) {
+          const prices = (priceData as { price: number; property_type: string }[]).filter(p => p.price > 0).map(p => p.price);
+          const types = [...new Set((priceData as { property_type: string }[]).map(p => p.property_type))];
+          const minPrice = Math.min(...prices);
+          const maxPrice = Math.max(...prices);
+          locationContext = `\nPlatform data: ${count || 0} listings in ${city}. Price range: Rp ${minPrice.toLocaleString("id-ID")} - Rp ${maxPrice.toLocaleString("id-ID")}. Property types: ${types.join(", ")}.`;
+        }
+      } catch { /* non-blocking */ }
+
+      const locationLabel = [village, district, city, province].filter(Boolean).join(", ");
+
+      const systemPrompt = `You are an elite Indonesian real estate SEO strategist and programmatic content generator.
+You create highly optimized landing page content for property marketplace location pages.
+Write all content in Indonesian language. Use professional, trustworthy, investor-focused tone.
+Naturally embed property search keywords. Focus on local expertise and market knowledge.`;
+
+      const userPrompt = `Generate structured SEO landing page data for this location:
+
+Province: ${province}
+City: ${city}
+District: ${district || "N/A"}
+Village: ${village || "N/A"}
+${locationContext}
+
+REQUIREMENTS:
+- SEO title: powerful local SEO title (<65 chars)
+- Meta description: high CTR (<160 chars)
+- Intro content: 300-400 words covering property market overview
+- Investment section: investment potential analysis
+- Rental section: rental opportunity potential
+- Lifestyle section: lifestyle attractiveness
+- Infrastructure section: accessibility & infrastructure
+- Include keyword variations like: rumah dijual di ${village || city}, properti investasi ${city}, sewa rumah ${district || city}, tanah murah ${city}, apartemen strategis ${city}
+- All content in Indonesian language`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "landing_page_content_result",
+                description: "Return structured SEO landing page content for a property location",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    seo_title: { type: "string", description: "SEO-optimized page title, max 65 chars, Indonesian" },
+                    meta_description: { type: "string", description: "High CTR meta description, max 160 chars, Indonesian" },
+                    intro_content: { type: "string", description: "300-400 word SEO intro content in Indonesian covering market overview" },
+                    investment_section: { type: "string", description: "Investment potential analysis paragraph in Indonesian" },
+                    rental_potential_section: { type: "string", description: "Rental opportunity potential paragraph in Indonesian" },
+                    lifestyle_section: { type: "string", description: "Lifestyle attractiveness paragraph in Indonesian" },
+                    infrastructure_section: { type: "string", description: "Infrastructure & accessibility paragraph in Indonesian" },
+                    primary_keywords: { type: "array", items: { type: "string" }, description: "10-15 primary Indonesian property search keywords" },
+                    secondary_keywords: { type: "array", items: { type: "string" }, description: "10-15 secondary/long-tail Indonesian keywords" },
+                  },
+                  required: ["seo_title", "meta_description", "intro_content", "investment_section", "rental_potential_section", "lifestyle_section", "infrastructure_section", "primary_keywords", "secondary_keywords"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "landing_page_content_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded, please try again later" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          console.error("AI landing-page-content error:", aiResp.status);
+          return json({ error: "AI landing page generation failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+
+        return json({
+          action: "landing-page-content",
+          result,
+          location: { province, city, district, village },
+        });
+      } catch (e) {
+        console.error("Landing page content exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Landing page generation failed" }, 500);
+      }
+    }
+
     // ── internal-linking: Smart internal link suggestions for SEO authority ──
     if (action === "internal-linking") {
       const propertyId = normalizeText(payload.propertyId);
