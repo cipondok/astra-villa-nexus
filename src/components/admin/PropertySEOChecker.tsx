@@ -464,6 +464,11 @@ const PropertySEOChecker = () => {
   const [roiDemandScore, setRoiDemandScore] = useState('');
   const [roiLiquidityScore, setRoiLiquidityScore] = useState('');
   const [roiProjectionResult, setRoiProjectionResult] = useState<RoiProjectionResponse | null>(null);
+  const [rentalPrice, setRentalPrice] = useState('');
+  const [rentalMonthlyRent, setRentalMonthlyRent] = useState('');
+  const [rentalCity, setRentalCity] = useState('');
+  const [rentalDemandLevel, setRentalDemandLevel] = useState('');
+  const [rentalRoiResult, setRentalRoiResult] = useState<RentalRoiResponse | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
