@@ -476,6 +476,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           {/* Deal Closing Timeline Predictions */}
           <DealClosingTimelineCard />
 
+          {/* Investment Attractiveness Ranking */}
+          <InvestmentAttractivenessCard />
+
           {/* AI Systems Status */}
           <Card className="border-border/30">
             <CardHeader className="p-3 pb-2">
