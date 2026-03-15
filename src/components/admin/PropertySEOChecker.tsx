@@ -452,6 +452,17 @@ const PropertySEOChecker = () => {
   const [gpProvince, setGpProvince] = useState('');
   const [gpAreaSignals, setGpAreaSignals] = useState('');
   const [growthPotentialResult, setGrowthPotentialResult] = useState<GrowthPotentialResponse | null>(null);
+  const [roiPrice, setRoiPrice] = useState('');
+  const [roiPropertyType, setRoiPropertyType] = useState('rumah');
+  const [roiTransactionType, setRoiTransactionType] = useState('sale');
+  const [roiVillage, setRoiVillage] = useState('');
+  const [roiDistrict, setRoiDistrict] = useState('');
+  const [roiCity, setRoiCity] = useState('');
+  const [roiProvince, setRoiProvince] = useState('');
+  const [roiGrowthScore, setRoiGrowthScore] = useState('');
+  const [roiDemandScore, setRoiDemandScore] = useState('');
+  const [roiLiquidityScore, setRoiLiquidityScore] = useState('');
+  const [roiProjectionResult, setRoiProjectionResult] = useState<RoiProjectionResponse | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
