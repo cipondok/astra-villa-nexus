@@ -43,6 +43,7 @@ import AIHealthSummaryCard from "./AIHealthSummaryCard";
 import LeadIntelligenceCard from "./LeadIntelligenceCard";
 import MarketIntelligenceCard from "./MarketIntelligenceCard";
 import AgentPerformanceCard from "./AgentPerformanceCard";
+import DealPipelineCard from "./DealPipelineCard";
 
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
@@ -435,6 +436,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
 
           {/* Agent Performance Intelligence */}
           <AgentPerformanceCard onNavigate={() => handleQuickAction('agent-management')} />
+
+          {/* Deal Pipeline & Revenue Intelligence */}
+          <DealPipelineCard onNavigate={() => handleQuickAction('financial-management')} />
 
           {/* AI Systems Status */}
           <Card className="border-border/30">
