@@ -345,6 +345,11 @@ const PropertySEOChecker = () => {
   const [descRewriteResult, setDescRewriteResult] = useState<DescriptionRewriteResponse | null>(null);
   const [trafficResult, setTrafficResult] = useState<TrafficPredictionResponse | null>(null);
   const [linkingResult, setLinkingResult] = useState<InternalLinkingResponse | null>(null);
+  const [landingPageResult, setLandingPageResult] = useState<LandingPageResponse | null>(null);
+  const [lpProvince, setLpProvince] = useState('');
+  const [lpCity, setLpCity] = useState('');
+  const [lpDistrict, setLpDistrict] = useState('');
+  const [lpVillage, setLpVillage] = useState('');
   const [autoOptThreshold, setAutoOptThreshold] = useState(70);
   
   // AI Auto-Fix state selection
