@@ -54,7 +54,7 @@ const DealScoreBadge = memo(function DealScoreBadge({
     );
   }
 
-  const { tier, emoji, label: tierLabel } = getTier(score);
+  const { tier, emoji, label: tierLabel } = useMemo(() => getTier(score), [score]);
   const displayLabel = label || tierLabel;
 
   const pill = (
