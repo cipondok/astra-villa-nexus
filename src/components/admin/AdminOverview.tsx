@@ -39,6 +39,7 @@ import {
   ChevronRight
 } from "lucide-react";
 import { motion } from "framer-motion";
+import AIHealthSummaryCard from "./AIHealthSummaryCard";
 
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
@@ -419,6 +420,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
               } icon={Cpu} isStatus />
             </CardContent>
           </Card>
+
+          {/* AI Intelligence Health Summary */}
+          <AIHealthSummaryCard onNavigate={() => handleQuickAction('ai-command-center')} />
 
           {/* AI Systems Status */}
           <Card className="border-border/30">
