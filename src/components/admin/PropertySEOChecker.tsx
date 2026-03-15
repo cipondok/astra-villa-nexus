@@ -20,6 +20,7 @@ import { usePricingStrategy, type PricingStrategyResponse } from '@/hooks/usePri
 import { useDemandForecast, type DemandForecastResponse } from '@/hooks/useDemandForecast';
 import { useBuyerSegment, type BuyerSegmentResponse } from '@/hooks/useBuyerSegment';
 import { useResaleRisk, type ResaleRiskResponse } from '@/hooks/useResaleRisk';
+import { useGrowthPotential, type GrowthPotentialResponse } from '@/hooks/useGrowthPotential';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -444,6 +445,12 @@ const PropertySEOChecker = () => {
   const [rrCity, setRrCity] = useState('');
   const [rrNearby, setRrNearby] = useState('');
   const [resaleRiskResult, setResaleRiskResult] = useState<ResaleRiskResponse | null>(null);
+  const [gpVillage, setGpVillage] = useState('');
+  const [gpDistrict, setGpDistrict] = useState('');
+  const [gpCity, setGpCity] = useState('');
+  const [gpProvince, setGpProvince] = useState('');
+  const [gpAreaSignals, setGpAreaSignals] = useState('');
+  const [growthPotentialResult, setGrowthPotentialResult] = useState<GrowthPotentialResponse | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
@@ -511,6 +518,7 @@ const PropertySEOChecker = () => {
   const demandForecast = useDemandForecast();
   const buyerSegment = useBuyerSegment();
   const resaleRisk = useResaleRisk();
+  const growthPotential = useGrowthPotential();
 
   // Reset city/area on state change, reset pages on any filter change
   useEffect(() => { setFilterCity(''); setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterState]);
@@ -937,6 +945,7 @@ const PropertySEOChecker = () => {
           <TabsTrigger value="demand-fc" className="text-xs gap-1"><TrendingUp className="h-3 w-3" />Demand</TabsTrigger>
           <TabsTrigger value="buyer-seg" className="text-xs gap-1"><Lightbulb className="h-3 w-3" />Segment</TabsTrigger>
           <TabsTrigger value="resale-risk" className="text-xs gap-1"><AlertTriangle className="h-3 w-3" />Risk</TabsTrigger>
+          <TabsTrigger value="growth-pot" className="text-xs gap-1"><ArrowUpRight className="h-3 w-3" />Growth</TabsTrigger>
           {currentAnalysis && <TabsTrigger value="detail" className="text-xs gap-1"><Eye className="h-3 w-3" />Detail</TabsTrigger>}
         </TabsList>
 
@@ -3209,6 +3218,138 @@ const PropertySEOChecker = () => {
                 <div>
                   <p className="text-[10px] font-semibold text-muted-foreground mb-1">📋 Risk Summary</p>
                   <p className="text-xs text-foreground leading-relaxed">{resaleRiskResult.result.risk_summary}</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+
+        {/* ─── Growth Potential Tab ─── */}
+        <TabsContent value="growth-pot" className="space-y-3">
+          <Card className="bg-card border-border">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <ArrowUpRight className="h-4 w-4 text-primary" />
+                Growth Potential Analyzer
+              </CardTitle>
+              <CardDescription className="text-[10px]">
+                AI-powered micro-location growth forecast
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0 space-y-2">
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">City *</label>
+                  <Input className="h-8 text-xs" placeholder="Jakarta Selatan" value={gpCity} onChange={e => setGpCity(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Province</label>
+                  <Input className="h-8 text-xs" placeholder="DKI Jakarta" value={gpProvince} onChange={e => setGpProvince(e.target.value)} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">District</label>
+                  <Input className="h-8 text-xs" placeholder="Jagakarsa" value={gpDistrict} onChange={e => setGpDistrict(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Village</label>
+                  <Input className="h-8 text-xs" placeholder="Ciganjur" value={gpVillage} onChange={e => setGpVillage(e.target.value)} />
+                </div>
+              </div>
+              <div>
+                <label className="text-[10px] text-muted-foreground mb-1 block">Area Signals</label>
+                <textarea
+                  className="w-full h-16 text-xs p-2 rounded-md border border-input bg-background text-foreground resize-none"
+                  placeholder="e.g. rencana LRT, pembangunan tol baru, kawasan industri baru, CBD expansion..."
+                  value={gpAreaSignals}
+                  onChange={e => setGpAreaSignals(e.target.value)}
+                />
+              </div>
+              <Button
+                size="sm"
+                className="h-8 text-xs w-full"
+                disabled={!gpCity || growthPotential.isPending}
+                onClick={() => {
+                  growthPotential.mutate(
+                    { village: gpVillage, district: gpDistrict, city: gpCity, province: gpProvince, area_signals: gpAreaSignals },
+                    { onSuccess: (data) => setGrowthPotentialResult(data) }
+                  );
+                }}
+              >
+                {growthPotential.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <ArrowUpRight className="h-3 w-3 mr-1" />}
+                Analyze Growth
+              </Button>
+            </CardContent>
+          </Card>
+
+          {growthPotential.isPending && (
+            <Card className="bg-card border-border">
+              <CardContent className="p-6 text-center">
+                <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                <p className="text-xs text-muted-foreground">AI is forecasting growth potential...</p>
+                <Progress value={50} className="h-1.5 mt-3 max-w-xs mx-auto" />
+              </CardContent>
+            </Card>
+          )}
+
+          {growthPotentialResult && (
+            <Card className={cn(
+              "bg-card border-border border-l-2",
+              growthPotentialResult.result.growth_level === "FUTURE HOTSPOT" ? "border-l-chart-1" :
+              growthPotentialResult.result.growth_level === "HIGH" ? "border-l-chart-1" :
+              growthPotentialResult.result.growth_level === "MODERATE" ? "border-l-chart-4" : "border-l-muted"
+            )}>
+              <CardContent className="p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-[10px] font-semibold text-muted-foreground">🌱 Growth Level</p>
+                    <Badge variant={
+                      growthPotentialResult.result.growth_level === 'FUTURE HOTSPOT' ? 'default' :
+                      growthPotentialResult.result.growth_level === 'HIGH' ? 'default' :
+                      growthPotentialResult.result.growth_level === 'MODERATE' ? 'secondary' : 'outline'
+                    } className="mt-1">
+                      {growthPotentialResult.result.growth_level === 'FUTURE HOTSPOT' ? '🚀' :
+                       growthPotentialResult.result.growth_level === 'HIGH' ? '📈' :
+                       growthPotentialResult.result.growth_level === 'MODERATE' ? '📊' : '📉'}{' '}
+                      {growthPotentialResult.result.growth_level}
+                    </Badge>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] font-semibold text-muted-foreground">Score</p>
+                    <p className="text-2xl font-bold text-primary">{growthPotentialResult.result.growth_score}<span className="text-xs text-muted-foreground">/100</span></p>
+                  </div>
+                </div>
+
+                <Progress value={growthPotentialResult.result.growth_score} className="h-2" />
+
+                <div>
+                  <p className="text-[10px] font-semibold text-muted-foreground mb-1">⏰ Time Horizon</p>
+                  <p className="text-sm font-bold text-foreground">{growthPotentialResult.result.growth_time_horizon}</p>
+                </div>
+
+                <div>
+                  <p className="text-[10px] font-semibold text-muted-foreground mb-1">🚀 Key Growth Drivers</p>
+                  <div className="flex flex-wrap gap-1">
+                    {growthPotentialResult.result.key_growth_drivers.map((d, i) => (
+                      <Badge key={i} variant="outline" className="text-[10px]">{d}</Badge>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-[10px] font-semibold text-muted-foreground mb-1">⚠️ Growth Risks</p>
+                  <div className="flex flex-wrap gap-1">
+                    {growthPotentialResult.result.growth_risk_factors.map((r, i) => (
+                      <Badge key={i} variant="destructive" className="text-[10px]">{r}</Badge>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-[10px] font-semibold text-muted-foreground mb-1">📋 Growth Summary</p>
+                  <p className="text-xs text-foreground leading-relaxed">{growthPotentialResult.result.growth_summary}</p>
                 </div>
               </CardContent>
             </Card>

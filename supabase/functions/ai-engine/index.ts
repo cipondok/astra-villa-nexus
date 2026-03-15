@@ -1814,6 +1814,88 @@ Tasks:
       }
     }
 
+    // ── growth-potential: Analyze micro-location growth potential ──
+    if (action === "growth-potential") {
+      const village = normalizeText(payload.village);
+      const district = normalizeText(payload.district);
+      const city = normalizeText(payload.city);
+      const province = normalizeText(payload.province);
+      const area_signals = normalizeText(payload.area_signals);
+
+      if (!city) return json({ error: "city is required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are an Indonesian urban development and real estate growth prediction AI.
+Analyze future property growth potential for micro-locations.
+Use Indonesian language for growth_summary. Be specific about infrastructure projects and urban trends.`;
+
+      const userPrompt = `Analyze growth potential for this micro-location:
+
+Location: ${village || "-"}, ${district || "-"}, ${city}, ${province || "-"}
+Area Signals: ${area_signals || "Not specified"}
+
+Tasks:
+1. Evaluate urban expansion direction
+2. Evaluate infrastructure development signals (toll, LRT, MRT, CBD expansion)
+3. Evaluate tourism or lifestyle attractiveness growth
+4. Evaluate population and housing demand trend
+5. Evaluate investor land banking opportunity
+6. Generate growth potential score (0-100)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "growth_potential_result",
+                description: "Return growth potential analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    growth_score: { type: "number", description: "Growth potential score 0-100" },
+                    growth_level: { type: "string", enum: ["LOW", "MODERATE", "HIGH", "FUTURE HOTSPOT"], description: "Overall growth level" },
+                    growth_time_horizon: { type: "string", description: "Expected timeline for growth, e.g. '2-3 tahun' or '5+ tahun'" },
+                    key_growth_drivers: { type: "array", items: { type: "string" }, description: "Main growth drivers in Indonesian" },
+                    growth_risk_factors: { type: "array", items: { type: "string" }, description: "Growth risk factors in Indonesian" },
+                    growth_summary: { type: "string", description: "2-3 sentence growth forecast summary in Indonesian" },
+                  },
+                  required: ["growth_score", "growth_level", "growth_time_horizon", "key_growth_drivers", "growth_risk_factors", "growth_summary"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "growth_potential_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI growth potential analysis failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "growth-potential", result, input: { village, district, city, province, area_signals } });
+      } catch (e) {
+        console.error("Growth potential exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Growth potential analysis failed" }, 500);
+      }
+    }
+
     // ── buyer-intent: Analyze inquiry message for buying seriousness ──
     if (action === "buyer-intent") {
       const message = normalizeText(payload.message);
