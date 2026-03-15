@@ -3453,6 +3453,84 @@ Tasks:
       return json({ action: "property-similarity", result, input: { price, property_type, city } });
     }
 
+    // ── city-price-index: Macro market price index insight ──
+    if (action === "city-price-index") {
+      const city = normalizeText(payload.city);
+      const province = normalizeText(payload.province);
+      const market_signals = payload.market_signals || {};
+
+      if (!city || !province) return json({ error: "city and province are required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are an Indonesian real estate macro market analyst AI specializing in city-level property price intelligence.
+Analyze market signals to estimate price trends, identify growth drivers and risks. Use Indonesian language for growth_drivers, risk_factors, and market_summary. Be data-driven and specific to the city/province context.`;
+
+      const userPrompt = `Generate property price index insight:
+
+- City: ${city}
+- Province: ${province}
+- Market Signals: ${JSON.stringify(market_signals)}
+
+Tasks:
+1. Estimate price movement trend (DOWN / STABLE / RISING / SURGING)
+2. Generate city price index score (0-100)
+3. Identify 3-4 main growth drivers
+4. Identify 2-3 price pressure risks
+5. Provide short investor market summary (2-3 sentences)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "city_price_index_result",
+                description: "Return city property price index insight",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    price_trend: { type: "string", enum: ["DOWN", "STABLE", "RISING", "SURGING"] },
+                    price_index_score: { type: "number", description: "Score 0-100" },
+                    growth_drivers: { type: "array", items: { type: "string" }, description: "Growth drivers in Indonesian" },
+                    risk_factors: { type: "array", items: { type: "string" }, description: "Risk factors in Indonesian" },
+                    market_summary: { type: "string", description: "Investor summary in Indonesian" },
+                  },
+                  required: ["price_trend", "price_index_score", "growth_drivers", "risk_factors", "market_summary"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "city_price_index_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI city price index failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "city-price-index", result, input: { city, province, market_signals } });
+      } catch (e) {
+        console.error("City price index exception:", e);
+        return json({ error: e instanceof Error ? e.message : "City price index failed" }, 500);
+      }
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
