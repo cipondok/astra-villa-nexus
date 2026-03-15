@@ -50,6 +50,7 @@ import AISchedulingDashboard from "./AISchedulingDashboard";
 import JobQueueHealthCard from "./JobQueueHealthCard";
 import AIJobObservabilityPanel from "./AIJobObservabilityPanel";
 import MarketAnomalyCard from "./MarketAnomalyCard";
+import ListingPerformanceOptimizerCard from "./ListingPerformanceOptimizerCard";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
@@ -462,6 +463,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
 
           {/* Market Risk Anomaly Detector */}
           <MarketAnomalyCard />
+
+          {/* Listing Performance Optimizer */}
+          <ListingPerformanceOptimizerCard />
 
           {/* AI Systems Status */}
           <Card className="border-border/30">
