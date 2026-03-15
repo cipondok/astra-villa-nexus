@@ -14,6 +14,7 @@ import { generateInvestmentBadge } from '@/hooks/useInvestmentBadge';
 import { useBuyerIntentAnalyzer, type BuyerIntentResponse } from '@/hooks/useBuyerIntentAnalyzer';
 import { classifyLeadPriority } from '@/hooks/useLeadPriority';
 import { useSalesReplyGenerator, type SalesReplyResponse } from '@/hooks/useSalesReplyGenerator';
+import { usePriceBenchmark, type PriceBenchmarkResponse } from '@/hooks/usePriceBenchmark';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -387,6 +388,17 @@ const PropertySEOChecker = () => {
   const [srMessage, setSrMessage] = useState('');
   const [srLocation, setSrLocation] = useState('');
   const [salesReplyResult, setSalesReplyResult] = useState<SalesReplyResponse | null>(null);
+  const [pbPropertyType, setPbPropertyType] = useState('villa');
+  const [pbTransactionType, setPbTransactionType] = useState('sale');
+  const [pbPrice, setPbPrice] = useState('');
+  const [pbBuildingSize, setPbBuildingSize] = useState('');
+  const [pbLandSize, setPbLandSize] = useState('');
+  const [pbVillage, setPbVillage] = useState('');
+  const [pbDistrict, setPbDistrict] = useState('');
+  const [pbCity, setPbCity] = useState('');
+  const [pbProvince, setPbProvince] = useState('');
+  const [pbNearby, setPbNearby] = useState('');
+  const [priceBenchmarkResult, setPriceBenchmarkResult] = useState<PriceBenchmarkResponse | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
@@ -448,6 +460,7 @@ const PropertySEOChecker = () => {
   const rentalEst = useRentalEstimate();
   const buyerIntent = useBuyerIntentAnalyzer();
   const salesReply = useSalesReplyGenerator();
+  const priceBenchmark = usePriceBenchmark();
 
   // Reset city/area on state change, reset pages on any filter change
   useEffect(() => { setFilterCity(''); setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterState]);
@@ -868,6 +881,7 @@ const PropertySEOChecker = () => {
           <TabsTrigger value="buyer-intent" className="text-xs gap-1"><Flame className="h-3 w-3" />Intent</TabsTrigger>
           <TabsTrigger value="lead-priority" className="text-xs gap-1"><Target className="h-3 w-3" />Priority</TabsTrigger>
           <TabsTrigger value="sales-reply" className="text-xs gap-1"><Zap className="h-3 w-3" />Reply</TabsTrigger>
+          <TabsTrigger value="price-bench" className="text-xs gap-1"><BarChart3 className="h-3 w-3" />Benchmark</TabsTrigger>
           {currentAnalysis && <TabsTrigger value="detail" className="text-xs gap-1"><Eye className="h-3 w-3" />Detail</TabsTrigger>}
         </TabsList>
 
@@ -2373,6 +2387,160 @@ const PropertySEOChecker = () => {
                     {salesReplyResult.result.reply_text}
                   </p>
                 </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        {/* ─── Price Benchmark Tab ─── */}
+        <TabsContent value="price-bench" className="space-y-3">
+          <Card className="bg-card border-border">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <BarChart3 className="h-4 w-4 text-primary" />
+                Price Benchmark AI
+              </CardTitle>
+              <CardDescription className="text-[10px]">
+                Analyze property price position vs market level
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0 space-y-2">
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Property Type</label>
+                  <select className="w-full h-8 text-xs p-1 rounded-md border border-input bg-background text-foreground" value={pbPropertyType} onChange={e => setPbPropertyType(e.target.value)}>
+                    <option value="villa">Villa</option>
+                    <option value="house">House</option>
+                    <option value="apartment">Apartment</option>
+                    <option value="land">Land</option>
+                    <option value="commercial">Commercial</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Transaction</label>
+                  <select className="w-full h-8 text-xs p-1 rounded-md border border-input bg-background text-foreground" value={pbTransactionType} onChange={e => setPbTransactionType(e.target.value)}>
+                    <option value="sale">Sale</option>
+                    <option value="rent">Rent</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="text-[10px] text-muted-foreground mb-1 block">Price (Rp) *</label>
+                <Input className="h-8 text-xs" type="number" placeholder="e.g. 3500000000" value={pbPrice} onChange={e => setPbPrice(e.target.value)} />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Building (sqm)</label>
+                  <Input className="h-8 text-xs" type="number" placeholder="250" value={pbBuildingSize} onChange={e => setPbBuildingSize(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Land (sqm)</label>
+                  <Input className="h-8 text-xs" type="number" placeholder="300" value={pbLandSize} onChange={e => setPbLandSize(e.target.value)} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">City *</label>
+                  <Input className="h-8 text-xs" placeholder="Bandung" value={pbCity} onChange={e => setPbCity(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Province</label>
+                  <Input className="h-8 text-xs" placeholder="Jawa Barat" value={pbProvince} onChange={e => setPbProvince(e.target.value)} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">District</label>
+                  <Input className="h-8 text-xs" placeholder="Coblong" value={pbDistrict} onChange={e => setPbDistrict(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Village</label>
+                  <Input className="h-8 text-xs" placeholder="Dago" value={pbVillage} onChange={e => setPbVillage(e.target.value)} />
+                </div>
+              </div>
+              <div>
+                <label className="text-[10px] text-muted-foreground mb-1 block">Nearby Facilities</label>
+                <Input className="h-8 text-xs" placeholder="ITB Campus, Dago Toll, Parahyangan Hills" value={pbNearby} onChange={e => setPbNearby(e.target.value)} />
+              </div>
+              <Button
+                size="sm"
+                className="h-8 text-xs w-full"
+                disabled={!pbPrice || !pbCity || priceBenchmark.isPending}
+                onClick={() => {
+                  priceBenchmark.mutate(
+                    {
+                      property_type: pbPropertyType,
+                      transaction_type: pbTransactionType,
+                      price: Number(pbPrice),
+                      building_size: Number(pbBuildingSize) || 0,
+                      land_size: Number(pbLandSize) || 0,
+                      village: pbVillage,
+                      district: pbDistrict,
+                      city: pbCity,
+                      province: pbProvince,
+                      nearby_facilities: pbNearby,
+                    },
+                    { onSuccess: (data) => setPriceBenchmarkResult(data) }
+                  );
+                }}
+              >
+                {priceBenchmark.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <BarChart3 className="h-3 w-3 mr-1" />}
+                Analyze Price
+              </Button>
+            </CardContent>
+          </Card>
+
+          {priceBenchmark.isPending && (
+            <Card className="bg-card border-border">
+              <CardContent className="p-6 text-center">
+                <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                <p className="text-xs text-muted-foreground">AI is benchmarking your price...</p>
+                <Progress value={50} className="h-1.5 mt-3 max-w-xs mx-auto" />
+              </CardContent>
+            </Card>
+          )}
+
+          {priceBenchmarkResult && (
+            <Card className="bg-card border-border border-l-2 border-l-primary">
+              <CardContent className="p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <Badge variant={
+                    priceBenchmarkResult.result.price_position === "BELOW MARKET" ? "default" :
+                    priceBenchmarkResult.result.price_position === "FAIR MARKET" ? "secondary" :
+                    priceBenchmarkResult.result.price_position === "PREMIUM JUSTIFIED" ? "outline" :
+                    "destructive"
+                  } className="text-[10px]">
+                    {priceBenchmarkResult.result.price_position === "BELOW MARKET" && "🟢"}
+                    {priceBenchmarkResult.result.price_position === "FAIR MARKET" && "🔵"}
+                    {priceBenchmarkResult.result.price_position === "ABOVE MARKET" && "🔴"}
+                    {priceBenchmarkResult.result.price_position === "PREMIUM JUSTIFIED" && "🟡"}
+                    {" "}{priceBenchmarkResult.result.price_position}
+                  </Badge>
+                  <span className="text-lg font-bold text-primary">{priceBenchmarkResult.result.price_attractiveness_score}/100</span>
+                </div>
+
+                <div className="space-y-2">
+                  <div>
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-1">📊 Estimated Market Range</p>
+                    <p className="text-xs text-foreground">{priceBenchmarkResult.result.estimated_market_price_range}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-1">💡 Benchmark Insight</p>
+                    <p className="text-xs text-foreground leading-relaxed">{priceBenchmarkResult.result.benchmark_insight}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-1">🧠 Buyer Psychology</p>
+                    <p className="text-xs text-foreground leading-relaxed">{priceBenchmarkResult.result.buyer_psychology_effect}</p>
+                  </div>
+                </div>
+
+                <div className="w-full bg-muted rounded-full h-2 mt-2">
+                  <div
+                    className="bg-primary h-2 rounded-full transition-all"
+                    style={{ width: `${priceBenchmarkResult.result.price_attractiveness_score}%` }}
+                  />
+                </div>
+                <p className="text-[10px] text-muted-foreground text-center">Price Attractiveness Score</p>
               </CardContent>
             </Card>
           )}
