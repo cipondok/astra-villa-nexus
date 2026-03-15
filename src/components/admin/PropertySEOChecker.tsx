@@ -445,6 +445,12 @@ const PropertySEOChecker = () => {
   const [rrCity, setRrCity] = useState('');
   const [rrNearby, setRrNearby] = useState('');
   const [resaleRiskResult, setResaleRiskResult] = useState<ResaleRiskResponse | null>(null);
+  const [gpVillage, setGpVillage] = useState('');
+  const [gpDistrict, setGpDistrict] = useState('');
+  const [gpCity, setGpCity] = useState('');
+  const [gpProvince, setGpProvince] = useState('');
+  const [gpAreaSignals, setGpAreaSignals] = useState('');
+  const [growthPotentialResult, setGrowthPotentialResult] = useState<GrowthPotentialResponse | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
