@@ -83,7 +83,7 @@ const PropertyManagement = () => {
   const itemsPerPage = 10;
 
   // Sort state — default: deal score descending
-  const [sortField, setSortField] = usePropertyState<'deal_score' | 'created_at' | 'price'>('deal_score');
+  const [sortField, setSortField] = usePropertyState<'deal_probability_score' | 'created_at' | 'price'>('deal_probability_score');
   const [sortDir, setSortDir] = usePropertyState<'asc' | 'desc'>('desc');
 
   const handleSort = (field: typeof sortField) => {
@@ -202,7 +202,7 @@ const PropertyManagement = () => {
   const sortedProperties = React.useMemo(() => {
     const sorted = [...allProperties].sort((a, b) => {
       let aVal: number, bVal: number;
-      if (sortField === 'deal_score') {
+      if (sortField === 'deal_probability_score') {
         aVal = a.deal_analysis?.deal_score ?? -1;
         bVal = b.deal_analysis?.deal_score ?? -1;
       } else if (sortField === 'price') {
@@ -681,12 +681,12 @@ const PropertyManagement = () => {
                       <TableHead>Details</TableHead>
                       <TableHead
                         className="text-center cursor-pointer select-none hidden md:table-cell hover:bg-muted/50 transition-colors"
-                        onClick={() => handleSort('deal_score')}
+                        onClick={() => handleSort('deal_probability_score')}
                       >
                         <div className="flex items-center justify-center gap-1">
                           <TrendingUp className="h-3 w-3" />
-                          Deal Intel
-                          {sortField === 'deal_score' && (
+                          Deal Intelligence
+                          {sortField === 'deal_probability_score' && (
                             <span className="text-[10px]">{sortDir === 'desc' ? '↓' : '↑'}</span>
                           )}
                         </div>
