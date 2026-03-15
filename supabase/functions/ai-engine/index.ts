@@ -1991,6 +1991,98 @@ Tasks:
       }
     }
 
+    // ── negotiation-tactics: Suggest optimal negotiation strategy ──
+    if (action === "negotiation-tactics") {
+      const property_type = normalizeText(payload.property_type);
+      const transaction_type = normalizeText(payload.transaction_type);
+      const price = Number(payload.price) || 0;
+      const village = normalizeText(payload.village);
+      const district = normalizeText(payload.district);
+      const city = normalizeText(payload.city);
+      const demand_level = normalizeText(payload.demand_level);
+      const price_position = normalizeText(payload.price_position);
+      const liquidity_score = Number(payload.liquidity_score) || 0;
+
+      if (!city || !price) return json({ error: "city and price are required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are an expert Indonesian real estate negotiation strategist.
+Analyze property situations and suggest optimal negotiation tactics for buyers.
+Use Indonesian language for negotiation_strategy_summary, closing_tactics, and value_justification_points.
+Be practical and culturally aware of Indonesian property negotiation norms.`;
+
+      const userPrompt = `Analyze this property and suggest negotiation tactics:
+
+Property Type: ${property_type || "Not specified"}
+Transaction Type: ${transaction_type || "Jual"}
+Listing Price: Rp ${price.toLocaleString("id-ID")}
+Location: ${village || "-"}, ${district || "-"}, ${city}
+
+Market Signals:
+- Demand Level: ${demand_level || "N/A"}
+- Price Position: ${price_position || "N/A"}
+- Liquidity Score: ${liquidity_score || "N/A"}/100
+
+Tasks:
+1. Estimate buyer negotiation power level
+2. Suggest safe negotiation discount range
+3. Suggest urgency-based closing tactics (3 items)
+4. Suggest value justification talking points (3 items)
+5. Provide strategic negotiation summary`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "negotiation_tactics_result",
+                description: "Return negotiation tactics analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    buyer_negotiation_power: { type: "string", enum: ["LOW", "MODERATE", "STRONG"], description: "Buyer's negotiation leverage level" },
+                    safe_discount_range: { type: "string", description: "Safe discount range, e.g. '5-10% dari harga listing'" },
+                    closing_tactics: { type: "array", items: { type: "string" }, description: "3 urgency-based closing tactics in Indonesian" },
+                    value_justification_points: { type: "array", items: { type: "string" }, description: "3 value justification talking points in Indonesian" },
+                    negotiation_strategy_summary: { type: "string", description: "2-3 sentence strategic negotiation summary in Indonesian" },
+                  },
+                  required: ["buyer_negotiation_power", "safe_discount_range", "closing_tactics", "value_justification_points", "negotiation_strategy_summary"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "negotiation_tactics_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI negotiation tactics failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "negotiation-tactics", result, input: { property_type, transaction_type, price, village, district, city, demand_level, price_position, liquidity_score } });
+      } catch (e) {
+        console.error("Negotiation tactics exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Negotiation tactics failed" }, 500);
+      }
+    }
+
     // ── rental-roi-projection: Estimate rental income ROI potential ──
     if (action === "rental-roi-projection") {
       const price = Number(payload.price) || 0;
