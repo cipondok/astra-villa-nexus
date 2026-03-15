@@ -16,6 +16,7 @@ import { classifyLeadPriority } from '@/hooks/useLeadPriority';
 import { useSalesReplyGenerator, type SalesReplyResponse } from '@/hooks/useSalesReplyGenerator';
 import { usePriceBenchmark, type PriceBenchmarkResponse } from '@/hooks/usePriceBenchmark';
 import { useMarketHeat, type MarketHeatResponse } from '@/hooks/useMarketHeat';
+import { usePricingStrategy, type PricingStrategyResponse } from '@/hooks/usePricingStrategy';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -405,6 +406,14 @@ const PropertySEOChecker = () => {
   const [mhCity, setMhCity] = useState('');
   const [mhPropertyType, setMhPropertyType] = useState('rumah');
   const [marketHeatResult, setMarketHeatResult] = useState<MarketHeatResponse | null>(null);
+  const [psPrice, setPsPrice] = useState('');
+  const [psPropertyType, setPsPropertyType] = useState('rumah');
+  const [psVillage, setPsVillage] = useState('');
+  const [psDistrict, setPsDistrict] = useState('');
+  const [psCity, setPsCity] = useState('');
+  const [psProvince, setPsProvince] = useState('');
+  const [psPricePosition, setPsPricePosition] = useState('FAIR MARKET');
+  const [pricingStrategyResult, setPricingStrategyResult] = useState<PricingStrategyResponse | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
@@ -468,6 +477,7 @@ const PropertySEOChecker = () => {
   const salesReply = useSalesReplyGenerator();
   const priceBenchmark = usePriceBenchmark();
   const marketHeat = useMarketHeat();
+  const pricingStrategy = usePricingStrategy();
 
   // Reset city/area on state change, reset pages on any filter change
   useEffect(() => { setFilterCity(''); setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterState]);
@@ -890,6 +900,7 @@ const PropertySEOChecker = () => {
           <TabsTrigger value="sales-reply" className="text-xs gap-1"><Zap className="h-3 w-3" />Reply</TabsTrigger>
           <TabsTrigger value="price-bench" className="text-xs gap-1"><BarChart3 className="h-3 w-3" />Benchmark</TabsTrigger>
           <TabsTrigger value="market-heat" className="text-xs gap-1"><Flame className="h-3 w-3" />Heat</TabsTrigger>
+          <TabsTrigger value="price-strat" className="text-xs gap-1"><Target className="h-3 w-3" />Strategy</TabsTrigger>
           {currentAnalysis && <TabsTrigger value="detail" className="text-xs gap-1"><Eye className="h-3 w-3" />Detail</TabsTrigger>}
         </TabsList>
 
@@ -2645,6 +2656,116 @@ const PropertySEOChecker = () => {
                   <div>
                     <p className="text-[10px] font-semibold text-muted-foreground mb-1">🗺️ Market Heat Summary</p>
                     <p className="text-xs text-foreground leading-relaxed">{marketHeatResult.result.market_heat_summary}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        {/* ─── Pricing Strategy Tab ─── */}
+        <TabsContent value="price-strat" className="space-y-3">
+          <Card className="bg-card border-border">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Target className="h-4 w-4 text-primary" />
+                Pricing Strategy Advisor
+              </CardTitle>
+              <CardDescription className="text-[10px]">
+                AI-powered optimal listing price strategy
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0 space-y-2">
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Price (Rp) *</label>
+                  <Input className="h-8 text-xs" type="number" placeholder="1100000000" value={psPrice} onChange={e => setPsPrice(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Property Type</label>
+                  <select className="w-full h-8 text-xs p-1 rounded-md border border-input bg-background text-foreground" value={psPropertyType} onChange={e => setPsPropertyType(e.target.value)}>
+                    <option value="rumah">Rumah</option>
+                    <option value="villa">Villa</option>
+                    <option value="apartment">Apartment</option>
+                    <option value="tanah">Tanah</option>
+                    <option value="ruko">Ruko</option>
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">City *</label>
+                  <Input className="h-8 text-xs" placeholder="Bandung" value={psCity} onChange={e => setPsCity(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Province</label>
+                  <Input className="h-8 text-xs" placeholder="Jawa Barat" value={psProvince} onChange={e => setPsProvince(e.target.value)} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">District</label>
+                  <Input className="h-8 text-xs" placeholder="Antapani" value={psDistrict} onChange={e => setPsDistrict(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Village</label>
+                  <Input className="h-8 text-xs" placeholder="Antapani Kidul" value={psVillage} onChange={e => setPsVillage(e.target.value)} />
+                </div>
+              </div>
+              <div>
+                <label className="text-[10px] text-muted-foreground mb-1 block">Market Position</label>
+                <select className="w-full h-8 text-xs p-1 rounded-md border border-input bg-background text-foreground" value={psPricePosition} onChange={e => setPsPricePosition(e.target.value)}>
+                  <option value="BELOW MARKET">Below Market</option>
+                  <option value="FAIR MARKET">Fair Market</option>
+                  <option value="ABOVE MARKET">Above Market</option>
+                  <option value="PREMIUM JUSTIFIED">Premium Justified</option>
+                </select>
+              </div>
+              <Button
+                size="sm"
+                className="h-8 text-xs w-full"
+                disabled={!psPrice || !psCity || pricingStrategy.isPending}
+                onClick={() => {
+                  pricingStrategy.mutate(
+                    { price: Number(psPrice), property_type: psPropertyType, village: psVillage, district: psDistrict, city: psCity, province: psProvince, price_position: psPricePosition },
+                    { onSuccess: (data) => setPricingStrategyResult(data) }
+                  );
+                }}
+              >
+                {pricingStrategy.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Target className="h-3 w-3 mr-1" />}
+                Get Strategy
+              </Button>
+            </CardContent>
+          </Card>
+
+          {pricingStrategy.isPending && (
+            <Card className="bg-card border-border">
+              <CardContent className="p-6 text-center">
+                <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                <p className="text-xs text-muted-foreground">AI is crafting your pricing strategy...</p>
+                <Progress value={50} className="h-1.5 mt-3 max-w-xs mx-auto" />
+              </CardContent>
+            </Card>
+          )}
+
+          {pricingStrategyResult && (
+            <Card className="bg-card border-border border-l-2 border-l-chart-4">
+              <CardContent className="p-4 space-y-3">
+                <p className="text-[10px] font-semibold text-muted-foreground">💰 Suggested Price Range</p>
+                <p className="text-sm font-bold text-primary">{pricingStrategyResult.result.suggested_price_range}</p>
+
+                <div className="space-y-2">
+                  <div>
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-1">📋 Strategy</p>
+                    <p className="text-xs text-foreground leading-relaxed">{pricingStrategyResult.result.recommended_price_strategy}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-1">🤝 Negotiation Tip</p>
+                    <p className="text-xs text-foreground leading-relaxed">{pricingStrategyResult.result.negotiation_tip}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-1">⚡ Sale Speed Impact</p>
+                    <p className="text-xs text-foreground leading-relaxed">{pricingStrategyResult.result.sale_speed_impact}</p>
                   </div>
                 </div>
               </CardContent>
