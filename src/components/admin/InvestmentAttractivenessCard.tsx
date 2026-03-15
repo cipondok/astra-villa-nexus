@@ -8,11 +8,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
-  useInvestmentAttractiveness,
+  useInvestmentRanking,
   type InvestmentRanking,
   type OpportunityLevel,
   type InvestorAction,
-} from "@/hooks/useInvestmentAttractiveness";
+} from "@/hooks/useInvestmentRanking";
 import {
   Crown,
   TrendingUp,
