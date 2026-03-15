@@ -2919,6 +2919,100 @@ Tasks:
       }
     }
 
+    // ── emerging-cities: Identify emerging property investment cities ──
+    if (action === "emerging-cities") {
+      const city_signals = normalizeText(payload.city_signals);
+      if (!city_signals) return json({ error: "city_signals is required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a national urban growth intelligence AI specializing in Indonesian property markets.
+Identify and rank emerging cities for property investment based on development signals.
+All text MUST be in Indonesian. Be specific, data-driven, and forward-looking.`;
+
+      const userPrompt = `City Development Signals for Indonesia:
+${city_signals}
+
+Tasks:
+1. Rank top 5-8 emerging cities for property growth (each with city name and score 0-100)
+2. Identify the main growth catalyst for each ranked city (one sentence each, in Indonesian)
+3. Provide overall investor entry timing advice (concise paragraph in Indonesian)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "emerging_cities_result",
+                description: "Return emerging city ranking and investment timing",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    emerging_city_ranking: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          city: { type: "string" },
+                          score: { type: "number", description: "Growth potential score 0-100" },
+                          region: { type: "string", description: "Province or region" },
+                        },
+                        required: ["city", "score", "region"],
+                        additionalProperties: false,
+                      },
+                      description: "Cities ranked by growth potential",
+                    },
+                    growth_catalysts: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          city: { type: "string" },
+                          catalyst: { type: "string", description: "Main growth catalyst in Indonesian" },
+                        },
+                        required: ["city", "catalyst"],
+                        additionalProperties: false,
+                      },
+                      description: "Growth catalyst per city",
+                    },
+                    entry_timing_advice: { type: "string", description: "Investor entry timing advice in Indonesian" },
+                  },
+                  required: ["emerging_city_ranking", "growth_catalysts", "entry_timing_advice"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "emerging_cities_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI emerging cities analysis failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "emerging-cities", result, input: { city_signals } });
+      } catch (e) {
+        console.error("Emerging cities exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Emerging cities analysis failed" }, 500);
+      }
+    }
+
     // ── market-momentum: Detect current market momentum ──
     if (action === "market-momentum") {
       const growth_score = Number(payload.growth_score) || 0;
