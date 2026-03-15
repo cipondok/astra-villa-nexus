@@ -1209,6 +1209,127 @@ const PropertySEOChecker = () => {
           )}
         </TabsContent>
 
+        {/* ─── Keyword Cluster Tab ─── */}
+        <TabsContent value="kw-cluster" className="space-y-3">
+          <Card className="bg-card border-border">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Hash className="h-4 w-4 text-primary" />
+                Keyword Cluster Generator
+              </CardTitle>
+              <CardDescription className="text-[10px]">
+                Generate 50 high-intent Indonesian property keywords clustered by search intent
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0 space-y-3">
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Province *</label>
+                  <Select value={lpProvince} onValueChange={setLpProvince}>
+                    <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Select province" /></SelectTrigger>
+                    <SelectContent>
+                      {INDONESIA_PROVINCES.map(p => (
+                        <SelectItem key={p} value={p} className="text-xs">{p}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">City *</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. Denpasar" value={lpCity} onChange={e => setLpCity(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">District</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. Kuta Selatan" value={lpDistrict} onChange={e => setLpDistrict(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Village</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. Ungasan" value={lpVillage} onChange={e => setLpVillage(e.target.value)} />
+                </div>
+              </div>
+              <Button
+                size="sm"
+                className="h-8 text-xs w-full"
+                disabled={!lpProvince || !lpCity || kwCluster.isPending}
+                onClick={() => {
+                  kwCluster.mutate(
+                    { province: lpProvince, city: lpCity, district: lpDistrict, village: lpVillage },
+                    { onSuccess: (data) => setKwClusterResult(data) }
+                  );
+                }}
+              >
+                {kwCluster.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Hash className="h-3 w-3 mr-1" />}
+                Generate Keyword Cluster
+              </Button>
+            </CardContent>
+          </Card>
+
+          {kwCluster.isPending && (
+            <Card className="bg-card border-border">
+              <CardContent className="p-6 text-center">
+                <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                <p className="text-xs text-muted-foreground">AI is generating keyword clusters...</p>
+                <Progress value={55} className="h-1.5 mt-3 max-w-xs mx-auto" />
+              </CardContent>
+            </Card>
+          )}
+
+          {kwClusterResult && (
+            <div className="space-y-3">
+              {/* Summary */}
+              <Card className="bg-card border-border border-l-2 border-l-primary">
+                <CardContent className="p-3 space-y-2">
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="p-2 rounded-lg border border-border/50 bg-accent/20 text-center">
+                      <p className="text-[9px] text-muted-foreground">Total Keywords</p>
+                      <p className="text-lg font-bold text-foreground">{kwClusterResult.result.total_keywords}</p>
+                    </div>
+                    <div className="p-2 rounded-lg border border-border/50 bg-accent/20 text-center">
+                      <p className="text-[9px] text-muted-foreground">Est. Combined Volume</p>
+                      <p className="text-sm font-bold text-chart-1">{kwClusterResult.result.estimated_combined_volume}</p>
+                    </div>
+                    <div className="p-2 rounded-lg border border-border/50 bg-accent/20 text-center">
+                      <p className="text-[9px] text-muted-foreground">Location</p>
+                      <p className="text-[10px] font-medium text-foreground">{[kwClusterResult.location.village, kwClusterResult.location.city].filter(Boolean).join(', ')}</p>
+                    </div>
+                  </div>
+                  <div className="p-2 rounded-md border border-chart-1/30 bg-chart-1/5">
+                    <p className="text-[9px] text-muted-foreground mb-0.5">🏆 Top Opportunity</p>
+                    <p className="text-[10px] font-medium text-chart-1">{kwClusterResult.result.top_opportunity}</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Keyword Clusters */}
+              {[
+                { title: "🛒 Buy Intent", keywords: kwClusterResult.result.buy_keywords, color: "chart-1" },
+                { title: "🏠 Rent Intent", keywords: kwClusterResult.result.rent_keywords, color: "chart-2" },
+                { title: "💰 Investment Intent", keywords: kwClusterResult.result.investment_keywords, color: "chart-3" },
+                { title: "🔥 Urgent Buyer (Long-tail)", keywords: kwClusterResult.result.urgent_keywords, color: "chart-4" },
+                { title: "🌴 Lifestyle & Landmark", keywords: kwClusterResult.result.lifestyle_keywords, color: "primary" },
+              ].map((cluster, i) => (
+                <Card key={i} className="bg-card border-border">
+                  <CardHeader className="p-3 pb-1">
+                    <CardTitle className="text-xs flex items-center justify-between">
+                      <span>{cluster.title}</span>
+                      <Badge variant="outline" className="text-[8px]">{cluster.keywords.length} keywords</Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-3 pt-0">
+                    <div className="flex flex-wrap gap-1">
+                      {cluster.keywords.map((kw, j) => (
+                        <Badge key={j} variant="outline" className={cn("text-[9px]",
+                          `bg-${cluster.color}/5 border-${cluster.color}/20 text-${cluster.color}`
+                        )}>{kw}</Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
         <TabsContent value="detail">
           {currentAnalysis ? (
             <div className="space-y-3">
