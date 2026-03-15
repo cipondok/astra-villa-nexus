@@ -3115,6 +3115,86 @@ Tasks:
       }
     }
 
+    // ── monetization-strategy: Revenue activation tactics ──
+    if (action === "monetization-strategy") {
+      const agents = Number(payload.agents) || 0;
+      const leads = Number(payload.leads) || 0;
+      const traffic = Number(payload.traffic) || 0;
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a SaaS monetization strategist for ASTRA, an AI-driven Indonesian property marketplace entering early traction.
+
+Platform already has:
+- 4 membership tiers: Silver (free), Gold (Rp 499K/mo), Platinum (Rp 1.5M/mo), Diamond (VIP Investor)
+- AI usage limits: 5 free requests/month, unlimited for Pro/Admin
+- Premium Insights system with tiered analytics
+- Midtrans payment gateway (infrastructure ready)
+- Feature gating via subscription tiers
+
+Use Indonesian language. Be specific about pricing, packaging, and activation tactics for the Indonesian market.`;
+
+      const userPrompt = `Suggest revenue activation tactics:
+
+- Active Agents: ${agents}
+- Monthly Leads: ${leads}
+- Daily Traffic: ${traffic}
+
+Tasks:
+1. Identify 4 monetization opportunities (specific revenue streams)
+2. Suggest 3 premium feature launch plan items (what to launch first for revenue)
+3. Suggest overall pricing activation strategy (2-3 sentences)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "monetization_strategy_result",
+                description: "Return monetization strategy analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    monetization_opportunities: { type: "array", items: { type: "string" }, description: "4 monetization opportunities in Indonesian" },
+                    premium_feature_launch_plan: { type: "array", items: { type: "string" }, description: "3 premium feature launch items in Indonesian" },
+                    pricing_activation_strategy: { type: "string", description: "Overall pricing activation strategy in Indonesian" },
+                  },
+                  required: ["monetization_opportunities", "premium_feature_launch_plan", "pricing_activation_strategy"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "monetization_strategy_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI monetization strategy failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "monetization-strategy", result, input: { agents, leads, traffic } });
+      } catch (e) {
+        console.error("Monetization strategy exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Monetization strategy failed" }, 500);
+      }
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
