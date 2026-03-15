@@ -2237,6 +2237,83 @@ Tasks:
       }
     }
 
+    // ── growth-diagnostic: Analyze platform metrics and suggest growth focus ──
+    if (action === "growth-diagnostic") {
+      const traffic = Number(payload.traffic) || 0;
+      const listings = Number(payload.listings) || 0;
+      const agents = Number(payload.agents) || 0;
+      const leads = Number(payload.leads) || 0;
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are an AI startup growth strategist for an Indonesian property marketplace platform.
+Analyze platform metrics and identify growth stage, priorities, and monetization readiness.
+Use Indonesian language for all text fields. Be specific and actionable.`;
+
+      const userPrompt = `Analyze these platform metrics:
+
+- Monthly Traffic: ${traffic.toLocaleString()} visitors
+- Active Listings: ${listings.toLocaleString()}
+- Agent Count: ${agents}
+- Monthly Leads: ${leads.toLocaleString()}
+
+Tasks:
+1. Identify current growth stage (e.g. "Pre-Traction", "Early Traction", "Growth", "Scale")
+2. Suggest ONE priority growth action (2-3 sentences)
+3. Suggest traffic expansion strategy (2-3 sentences)
+4. Assess monetization readiness level (e.g. "Belum Siap", "Siap Uji Coba", "Siap Monetisasi Penuh")`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "growth_diagnostic_result",
+                description: "Return growth diagnostic analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    growth_stage: { type: "string", description: "Current growth stage label" },
+                    priority_action: { type: "string", description: "Priority growth action in Indonesian" },
+                    traffic_strategy: { type: "string", description: "Traffic expansion strategy in Indonesian" },
+                    revenue_readiness: { type: "string", description: "Monetization readiness assessment in Indonesian" },
+                  },
+                  required: ["growth_stage", "priority_action", "traffic_strategy", "revenue_readiness"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "growth_diagnostic_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI growth diagnostic failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "growth-diagnostic", result, input: { traffic, listings, agents, leads } });
+      } catch (e) {
+        console.error("Growth diagnostic exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Growth diagnostic failed" }, 500);
+      }
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
