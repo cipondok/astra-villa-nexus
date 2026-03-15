@@ -45,16 +45,17 @@ const DealScoreBadge = memo(function DealScoreBadge({
   compact = false,
   className,
 }: DealScoreBadgeProps) {
-  // Lazy tooltip mount: only render TooltipContent after first hover
+  // Hooks must be called before early returns
   const [hasHovered, setHasHovered] = useState(false);
+  const tierData = useMemo(() => (score != null ? getTier(score) : null), [score]);
 
-  if (score == null) {
+  if (score == null || !tierData) {
     return compact ? null : (
       <span className="text-[10px] text-muted-foreground">—</span>
     );
   }
 
-  const { tier, emoji, label: tierLabel } = useMemo(() => getTier(score), [score]);
+  const { tier, emoji, label: tierLabel } = tierData;
   const displayLabel = label || tierLabel;
 
   const pill = (
