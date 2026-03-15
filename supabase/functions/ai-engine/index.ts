@@ -2573,6 +2573,97 @@ Tasks:
       }
     }
 
+    // ── platform-health: Platform performance health analysis ──
+    if (action === "platform-health") {
+      const daily_traffic = Number(payload.daily_traffic) || 0;
+      const traffic_growth = Number(payload.traffic_growth) || 0;
+      const listings = Number(payload.listings) || 0;
+      const agents = Number(payload.agents) || 0;
+      const leads = Number(payload.leads) || 0;
+      const conversion_rate = Number(payload.conversion_rate) || 0;
+      const premium_sales = Number(payload.premium_sales) || 0;
+      const revenue = Number(payload.revenue) || 0;
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a PropTech startup performance analyst AI for ASTRA, an AI-driven Indonesian property marketplace.
+Analyze operational health and growth performance. Use Indonesian language for all text fields except performance_stage and strongest_metric.
+Be data-driven, honest about weaknesses, and actionable in recommendations.`;
+
+      const userPrompt = `Analyze platform KPIs:
+
+- Daily Traffic: ${daily_traffic.toLocaleString()}
+- Monthly Traffic Growth: ${traffic_growth}%
+- Total Listings: ${listings.toLocaleString()}
+- Active Agents: ${agents}
+- Monthly Leads: ${leads.toLocaleString()}
+- Lead Conversion Rate: ${conversion_rate}%
+- Premium Listings Sold: ${premium_sales}
+- Monthly Revenue: Rp ${revenue.toLocaleString()}
+
+Tasks:
+1. Classify performance stage (critical / early traction / growth momentum / strong scaling)
+2. Overall health score 0-100
+3. Identify strongest metric
+4. Identify weakest risk area
+5. Suggest 3 immediate optimization actions
+6. Strategic focus for next growth cycle
+7. Short founder advisory summary (2-3 sentences)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "platform_health_result",
+                description: "Return platform health analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    performance_stage: { type: "string", enum: ["critical", "early traction", "growth momentum", "strong scaling"] },
+                    overall_health_score: { type: "number", description: "Health score 0-100" },
+                    strongest_metric: { type: "string", description: "Best performing metric" },
+                    risk_area: { type: "string", description: "Weakest area in Indonesian" },
+                    immediate_actions: { type: "array", items: { type: "string" }, description: "3 immediate actions in Indonesian" },
+                    next_growth_focus: { type: "string", description: "Next growth cycle focus in Indonesian" },
+                    founder_advisory: { type: "string", description: "Founder advisory summary in Indonesian" },
+                  },
+                  required: ["performance_stage", "overall_health_score", "strongest_metric", "risk_area", "immediate_actions", "next_growth_focus", "founder_advisory"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "platform_health_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI platform health failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "platform-health", result, input: { daily_traffic, traffic_growth, listings, agents, leads, conversion_rate, premium_sales, revenue } });
+      } catch (e) {
+        console.error("Platform health exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Platform health failed" }, 500);
+      }
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
