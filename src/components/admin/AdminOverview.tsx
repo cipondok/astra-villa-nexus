@@ -48,6 +48,7 @@ import GeoExpansionCard from "./GeoExpansionCard";
 import AIBatchControlPanel from "./AIBatchControlPanel";
 import AISchedulingDashboard from "./AISchedulingDashboard";
 import JobQueueHealthCard from "./JobQueueHealthCard";
+import AIJobObservabilityPanel from "./AIJobObservabilityPanel";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
@@ -454,6 +455,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
 
           {/* Job Queue Watchdog */}
           <JobQueueHealthCard />
+
+          {/* AI Job Observability */}
+          <AIJobObservabilityPanel />
 
           {/* AI Systems Status */}
           <Card className="border-border/30">
