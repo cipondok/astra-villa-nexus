@@ -41,6 +41,7 @@ import {
 import { motion } from "framer-motion";
 import AIHealthSummaryCard from "./AIHealthSummaryCard";
 import LeadIntelligenceCard from "./LeadIntelligenceCard";
+import MarketIntelligenceCard from "./MarketIntelligenceCard";
 
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
