@@ -391,6 +391,9 @@ const PropertySEOChecker = () => {
   const [leadPriorityResult, setLeadPriorityResult] = useState<{ lead_priority: string; follow_up_strategy: string; urgency_color: string } | null>(null);
   const [srMessage, setSrMessage] = useState('');
   const [srLocation, setSrLocation] = useState('');
+  const [srBuyerProfile, setSrBuyerProfile] = useState('');
+  const [srPropertyAdvantage, setSrPropertyAdvantage] = useState('');
+  const [srNegotiationContext, setSrNegotiationContext] = useState('');
   const [salesReplyResult, setSalesReplyResult] = useState<SalesReplyResponse | null>(null);
   const [pbPropertyType, setPbPropertyType] = useState('villa');
   const [pbTransactionType, setPbTransactionType] = useState('sale');

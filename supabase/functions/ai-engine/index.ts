@@ -1296,7 +1296,7 @@ Return a short, ready-to-send WhatsApp reply text.`;
 
         const result = JSON.parse(toolCall.function.arguments);
 
-        return json({ action: "sales-reply", result, input: { message, location } });
+        return json({ action: "sales-reply", result, input: { message, location, buyer_profile, property_advantage, negotiation_context } });
       } catch (e) {
         console.error("Sales reply exception:", e);
         return json({ error: e instanceof Error ? e.message : "Sales reply generation failed" }, 500);
