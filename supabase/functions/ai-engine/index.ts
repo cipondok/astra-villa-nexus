@@ -3719,6 +3719,48 @@ Tasks:
       });
     }
 
+    // ── heat-narrative: AI-generated investment heat story ──
+    if (action === "heat-narrative") {
+      const heat_zone = normalizeText(payload.heat_zone);
+      const city = normalizeText(payload.city);
+
+      if (!heat_zone || !city) return json({ error: "heat_zone and city are required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a property investment storyteller for the Indonesian real estate market. Write compelling, concise narratives in Indonesian that explain why a city has a specific market heat level. Be evocative and data-aware. Always return ONLY the narrative text, no JSON.`;
+
+      const userPrompt = `Write a 40-70 word narrative explaining why ${city} is classified as "${heat_zone}". Make it compelling for investors. Indonesian language only.`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI heat narrative failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const narrative = aiData.choices?.[0]?.message?.content?.trim() || "";
+        return json({ action: "heat-narrative", result: { narrative }, input: { heat_zone, city } });
+      } catch (e) {
+        console.error("Heat narrative exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Heat narrative failed" }, 500);
+      }
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
