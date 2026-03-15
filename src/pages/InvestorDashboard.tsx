@@ -7,6 +7,7 @@ const AIReadinessBadge = lazy(() => import('@/components/ai/AIReadinessBadge'));
 const InvestorDNAPanel = lazy(() => import('@/components/investor/InvestorDNAPanel'));
 const DealHunterPanel = lazy(() => import('@/components/investor/DealHunterPanel'));
 const DealHunterNotificationPanel = lazy(() => import('@/components/investor/DealHunterNotificationPanel'));
+const InvestorSuperDashboard = lazy(() => import('@/components/investor/InvestorSuperDashboard'));
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -177,6 +178,19 @@ const InvestorDashboard = () => {
             ))}
           </div>
         </motion.div>
+
+        {/* ═══════ SUPER INSIGHTS ═══════ */}
+        {p && (
+          <motion.div {...fadeIn} transition={{ delay: 0.08 }}>
+            <Suspense fallback={<Skeleton className="h-64 w-full" />}>
+              <InvestorSuperDashboard
+                portfolio={p}
+                hotspots={heatData}
+                onPropertyClick={(id) => navigate(`/property/${id}`)}
+              />
+            </Suspense>
+          </motion.div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* ═══════ LEFT: AI Recs + Market Heat ═══════ */}
