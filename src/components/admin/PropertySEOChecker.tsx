@@ -1089,6 +1089,10 @@ const PropertySEOChecker = () => {
                         {trafficPrediction.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <TrendingUp className="h-3 w-3 mr-1" />}
                         Traffic Predict
                       </Button>
+                      <Button size="sm" variant="outline" className="h-7 text-xs" onClick={handleInternalLinking} disabled={internalLinking.isPending}>
+                        {internalLinking.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Globe className="h-3 w-3 mr-1" />}
+                        Internal Links
+                      </Button>
                       <Button size="sm" className="h-7 text-xs" onClick={() => applySeo.mutate(currentAnalysis.property_id)} disabled={applySeo.isPending}>
                         <Zap className="h-3 w-3 mr-1" /> Apply SEO
                       </Button>
