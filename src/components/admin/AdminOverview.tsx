@@ -51,6 +51,7 @@ import JobQueueHealthCard from "./JobQueueHealthCard";
 import AIJobObservabilityPanel from "./AIJobObservabilityPanel";
 import MarketAnomalyCard from "./MarketAnomalyCard";
 import ListingPerformanceOptimizerCard from "./ListingPerformanceOptimizerCard";
+import PricingIntelligenceCard from "./PricingIntelligenceCard";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
