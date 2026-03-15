@@ -1896,6 +1896,101 @@ Tasks:
       }
     }
 
+    // ── roi-projection: Estimate investment ROI potential ──
+    if (action === "roi-projection") {
+      const property_type = normalizeText(payload.property_type);
+      const transaction_type = normalizeText(payload.transaction_type);
+      const price = Number(payload.price) || 0;
+      const village = normalizeText(payload.village);
+      const district = normalizeText(payload.district);
+      const city = normalizeText(payload.city);
+      const province = normalizeText(payload.province);
+      const growth_score = Number(payload.growth_score) || 0;
+      const demand_score = Number(payload.demand_score) || 0;
+      const liquidity_score = Number(payload.liquidity_score) || 0;
+
+      if (!city || !price) return json({ error: "city and price are required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are an Indonesian real estate financial projection AI.
+Estimate potential return on investment for properties based on location, market scores, and property characteristics.
+Use Indonesian language for roi_strategy_summary. Be realistic and data-driven with projections.
+Format monetary values in Rupiah (Rp).`;
+
+      const userPrompt = `Estimate ROI for this property:
+
+Property Type: ${property_type || "Not specified"}
+Transaction Type: ${transaction_type || "Sale"}
+Purchase Price: Rp ${price.toLocaleString("id-ID")}
+Location: ${village || "-"}, ${district || "-"}, ${city}, ${province || "-"}
+
+Market Scores:
+- Growth Score: ${growth_score || "N/A"}/100
+- Demand Score: ${demand_score || "N/A"}/100
+- Liquidity Score: ${liquidity_score || "N/A"}/100
+
+Tasks:
+1. Estimate annual property appreciation potential
+2. Estimate projected property value after 3 years
+3. Estimate projected property value after 5 years
+4. Estimate total capital gain percentage
+5. Estimate investment ROI attractiveness level
+6. Provide strategic hold recommendation`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "roi_projection_result",
+                description: "Return ROI projection analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    annual_appreciation_estimate: { type: "string", description: "Estimated annual appreciation percentage, e.g. '8-12% per tahun'" },
+                    projected_value_3yr: { type: "string", description: "Projected property value after 3 years in Rp" },
+                    projected_value_5yr: { type: "string", description: "Projected property value after 5 years in Rp" },
+                    estimated_total_roi_percent: { type: "string", description: "Total estimated ROI percentage over hold period" },
+                    roi_grade: { type: "string", enum: ["LOW", "MODERATE", "STRONG", "EXCELLENT"], description: "ROI attractiveness grade" },
+                    roi_strategy_summary: { type: "string", description: "2-3 sentence strategic hold recommendation in Indonesian" },
+                  },
+                  required: ["annual_appreciation_estimate", "projected_value_3yr", "projected_value_5yr", "estimated_total_roi_percent", "roi_grade", "roi_strategy_summary"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "roi_projection_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI ROI projection failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "roi-projection", result, input: { property_type, transaction_type, price, village, district, city, province, growth_score, demand_score, liquidity_score } });
+      } catch (e) {
+        console.error("ROI projection exception:", e);
+        return json({ error: e instanceof Error ? e.message : "ROI projection failed" }, 500);
+      }
+    }
+
     // ── buyer-intent: Analyze inquiry message for buying seriousness ──
     if (action === "buyer-intent") {
       const message = normalizeText(payload.message);
