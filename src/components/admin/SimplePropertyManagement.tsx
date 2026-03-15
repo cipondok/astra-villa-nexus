@@ -346,6 +346,9 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
 
   return (
     <div className="space-y-3">
+      {/* Listing Optimization Alerts */}
+      <ListingOptimizationBanner />
+
       {/* Header - Slim Style */}
       <div className="flex items-center justify-between">
         <div>
