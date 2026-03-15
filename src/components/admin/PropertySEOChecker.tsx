@@ -3,6 +3,7 @@ import { useSeoAudit, type SeoAuditResult } from '@/hooks/useSeoAudit';
 import { useTitleRewrite, type TitleRewriteResponse } from '@/hooks/useTitleRewrite';
 import { useDescriptionRewrite, type DescriptionRewriteResponse } from '@/hooks/useDescriptionRewrite';
 import { useTrafficPrediction, type TrafficPredictionResponse } from '@/hooks/useTrafficPrediction';
+import { useInternalLinking, type InternalLinkingResponse } from '@/hooks/useInternalLinking';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -342,6 +343,7 @@ const PropertySEOChecker = () => {
   const [titleRewriteResult, setTitleRewriteResult] = useState<TitleRewriteResponse | null>(null);
   const [descRewriteResult, setDescRewriteResult] = useState<DescriptionRewriteResponse | null>(null);
   const [trafficResult, setTrafficResult] = useState<TrafficPredictionResponse | null>(null);
+  const [linkingResult, setLinkingResult] = useState<InternalLinkingResponse | null>(null);
   const [autoOptThreshold, setAutoOptThreshold] = useState(70);
   
   // AI Auto-Fix state selection
@@ -390,6 +392,7 @@ const PropertySEOChecker = () => {
   const titleRewrite = useTitleRewrite();
   const descRewrite = useDescriptionRewrite();
   const trafficPrediction = useTrafficPrediction();
+  const internalLinking = useInternalLinking();
 
   // Reset city/area on state change, reset pages on any filter change
   useEffect(() => { setFilterCity(''); setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterState]);
@@ -478,6 +481,13 @@ const PropertySEOChecker = () => {
       onSuccess: (data) => setTrafficResult(data),
     });
   }, [selectedPropertyId, trafficPrediction]);
+
+  const handleInternalLinking = useCallback(() => {
+    if (!selectedPropertyId) return;
+    internalLinking.mutate(selectedPropertyId, {
+      onSuccess: (data) => setLinkingResult(data),
+    });
+  }, [selectedPropertyId, internalLinking]);
 
   // Save custom keywords
   const handleSaveKeywords = useCallback(async () => {
@@ -1078,6 +1088,10 @@ const PropertySEOChecker = () => {
                       <Button size="sm" variant="outline" className="h-7 text-xs" onClick={handleTrafficPrediction} disabled={trafficPrediction.isPending}>
                         {trafficPrediction.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <TrendingUp className="h-3 w-3 mr-1" />}
                         Traffic Predict
+                      </Button>
+                      <Button size="sm" variant="outline" className="h-7 text-xs" onClick={handleInternalLinking} disabled={internalLinking.isPending}>
+                        {internalLinking.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Globe className="h-3 w-3 mr-1" />}
+                        Internal Links
                       </Button>
                       <Button size="sm" className="h-7 text-xs" onClick={() => applySeo.mutate(currentAnalysis.property_id)} disabled={applySeo.isPending}>
                         <Zap className="h-3 w-3 mr-1" /> Apply SEO
@@ -1729,6 +1743,91 @@ const PropertySEOChecker = () => {
                         <Lightbulb className="h-3 w-3" /> Prediction Reasoning
                       </p>
                       <p className="text-[10px] text-foreground bg-accent/30 p-2 rounded-md leading-relaxed">{trafficResult.result.reasoning}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Internal Linking Loading */}
+              {internalLinking.isPending && (
+                <Card className="bg-card border-border">
+                  <CardContent className="p-6 text-center">
+                    <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                    <p className="text-xs text-muted-foreground">AI is generating internal linking suggestions...</p>
+                    <Progress value={50} className="h-1.5 mt-3 max-w-xs mx-auto" />
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Internal Linking Result */}
+              {linkingResult && (
+                <Card className="bg-card border-border border-l-2 border-l-chart-3">
+                  <CardHeader className="p-3 pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <Globe className="h-4 w-4 text-chart-3" />
+                      Internal Linking Suggestions
+                    </CardTitle>
+                    <CardDescription className="text-[10px]">
+                      Smart link recommendations to boost SEO authority for {linkingResult.property_summary.title}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-3 pt-0 space-y-3">
+                    {/* Strategy & Authority */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="p-2 rounded-md border border-border/50 bg-accent/20">
+                        <p className="text-[9px] text-muted-foreground mb-0.5">📈 Estimated Authority Boost</p>
+                        <p className="text-[10px] font-medium text-chart-1">{linkingResult.result.estimated_authority_boost}</p>
+                      </div>
+                      <div className="p-2 rounded-md border border-border/50 bg-accent/20">
+                        <p className="text-[9px] text-muted-foreground mb-0.5">🏛️ Pillar Page</p>
+                        <p className="text-[10px] font-medium text-foreground">{linkingResult.result.pillar_page_recommendation}</p>
+                      </div>
+                    </div>
+
+                    {/* Strategy */}
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1">
+                        <Lightbulb className="h-3 w-3" /> Linking Strategy
+                      </p>
+                      <p className="text-[10px] text-foreground bg-accent/30 p-2 rounded-md leading-relaxed">{linkingResult.result.linking_strategy}</p>
+                    </div>
+
+                    {/* Link Suggestions */}
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1">
+                        <ArrowUpRight className="h-3 w-3 text-chart-3" /> Suggested Links ({linkingResult.result.internal_link_suggestions.length})
+                      </p>
+                      <div className="space-y-1.5">
+                        {linkingResult.result.internal_link_suggestions.map((link, i) => (
+                          <div key={i} className={cn(
+                            "p-2 rounded-md border",
+                            link.seo_value === 'HIGH' ? "border-chart-1/30 bg-chart-1/5" :
+                            link.seo_value === 'MEDIUM' ? "border-chart-4/30 bg-chart-4/5" :
+                            "border-border/50 bg-muted/20"
+                          )}>
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                                  <Badge variant={
+                                    link.seo_value === 'HIGH' ? 'default' :
+                                    link.seo_value === 'MEDIUM' ? 'secondary' : 'outline'
+                                  } className="text-[8px] px-1.5 py-0">
+                                    {link.seo_value}
+                                  </Badge>
+                                  <Badge variant="outline" className="text-[8px] px-1.5 py-0 border-chart-3/30 text-chart-3">
+                                    {link.link_type.replace(/_/g, ' ')}
+                                  </Badge>
+                                </div>
+                                <p className="text-[10px] font-medium text-foreground">
+                                  <span className="text-chart-3 underline">{link.anchor_text}</span>
+                                </p>
+                                <p className="text-[9px] text-muted-foreground mt-0.5 font-mono truncate">{link.target_url}</p>
+                                <p className="text-[9px] text-muted-foreground mt-0.5">{link.reasoning}</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

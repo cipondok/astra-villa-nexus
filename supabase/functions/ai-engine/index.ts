@@ -1224,6 +1224,150 @@ Generate the rewritten description.`;
       }
     }
 
+    // ── internal-linking: Smart internal link suggestions for SEO authority ──
+    if (action === "internal-linking") {
+      const propertyId = normalizeText(payload.propertyId);
+      if (!propertyId) return json({ error: "propertyId is required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const { data: property, error: propErr } = await supabase
+        .from("properties")
+        .select(SEO_PROPERTY_SELECT)
+        .eq("id", propertyId)
+        .maybeSingle();
+
+      if (propErr || !property) return json({ error: "Property not found" }, 404);
+
+      const p = property as Record<string, unknown>;
+      const location = [p.location, p.city, p.state].filter(Boolean).join(", ");
+      const locationParts = String(p.location || "").split(",").map((s: string) => s.trim()).filter(Boolean);
+      const village = locationParts[0] || "";
+      const district = locationParts[1] || "";
+      const city = String(p.city || "");
+      const state = String(p.state || "");
+      const priceStr = p.price ? `Rp ${Number(p.price).toLocaleString("id-ID")}` : "N/A";
+
+      // Fetch nearby properties for context
+      let nearbyContext = "";
+      try {
+        const { data: nearby } = await supabase
+          .from("properties")
+          .select("id,title,property_type,listing_type,price,location,city")
+          .eq("city", city)
+          .neq("id", propertyId)
+          .limit(10);
+        if (nearby?.length) {
+          nearbyContext = `\n\nNearby listings in same city (${city}):\n` +
+            (nearby as Record<string, unknown>[]).map((n) =>
+              `- "${n.title}" (${n.property_type}, ${n.listing_type}, Rp ${Number(n.price || 0).toLocaleString("id-ID")}, ${n.location})`
+            ).join("\n");
+        }
+      } catch { /* non-blocking */ }
+
+      const systemPrompt = `You are an expert SEO internal linking strategist for an Indonesian property marketplace platform.
+You generate smart internal link suggestions that build topical authority, improve crawlability, and distribute page rank.
+The platform has property listing pages, location landing pages (by village/district/city/province), collection pages (investment properties, luxury villas, trending), and blog/guide content.
+Think about hub-and-spoke linking models, breadcrumb reinforcement, and cross-selling related properties.`;
+
+      const userPrompt = `Generate internal linking suggestions for this property page:
+
+Title: ${p.title || "Untitled"}
+Location hierarchy: ${village || "N/A"}, ${district || "N/A"}, ${city || "N/A"}, ${state || "N/A"}
+Property Type: ${p.property_type || "unknown"}
+Transaction: ${p.listing_type || "sale"}
+Price: ${priceStr}
+Bedrooms: ${p.bedrooms || "N/A"}
+${nearbyContext}
+
+Tasks:
+1. Suggest links to same village/area listings (contextual related properties)
+2. Suggest links to district and city landing pages (breadcrumb/hub pages)
+3. Suggest links to investment property collections (thematic collections)
+4. Suggest links to similar price range listings (cross-sell)
+5. Suggest links to relevant guide/blog content topics
+6. Provide an overall linking strategy summary
+7. Estimate the SEO authority boost from implementing these links
+8. Recommend a pillar page this property should link to and from`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "internal_linking_result",
+                description: "Return smart internal linking suggestions for SEO authority",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    internal_link_suggestions: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          anchor_text: { type: "string", description: "The clickable text for the link in Indonesian" },
+                          target_url: { type: "string", description: "Suggested URL path e.g. /properties?city=Denpasar or /collections/investment" },
+                          link_type: { type: "string", description: "Type: same_village, district_landing, city_landing, collection, price_range, guide, breadcrumb" },
+                          seo_value: { type: "string", description: "HIGH, MEDIUM, or LOW SEO value" },
+                          reasoning: { type: "string", description: "Why this link helps SEO" },
+                        },
+                        required: ["anchor_text", "target_url", "link_type", "seo_value", "reasoning"],
+                        additionalProperties: false,
+                      },
+                      description: "8-12 internal link suggestions",
+                    },
+                    linking_strategy: { type: "string", description: "Overall linking strategy summary for this property page" },
+                    estimated_authority_boost: { type: "string", description: "Estimated SEO authority improvement e.g. 'Moderate (+15-25% topical relevance)'" },
+                    pillar_page_recommendation: { type: "string", description: "The recommended pillar/hub page this property should link to and from" },
+                  },
+                  required: ["internal_link_suggestions", "linking_strategy", "estimated_authority_boost", "pillar_page_recommendation"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "internal_linking_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded, please try again later" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          console.error("AI internal-linking error:", aiResp.status);
+          return json({ error: "AI internal linking failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+
+        return json({
+          action: "internal-linking",
+          propertyId,
+          result,
+          property_summary: {
+            title: p.title || "Untitled",
+            location,
+            property_type: p.property_type || "unknown",
+            listing_type: p.listing_type || "sale",
+          },
+        });
+      } catch (e) {
+        console.error("Internal linking exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Internal linking failed" }, 500);
+      }
+    }
+
     // ── traffic-prediction: Estimate organic traffic & lead potential ──
     if (action === "traffic-prediction") {
       const propertyId = normalizeText(payload.propertyId);
