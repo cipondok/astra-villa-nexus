@@ -359,6 +359,8 @@ const PropertySEOChecker = () => {
   const [iaBuildingSize, setIaBuildingSize] = useState('');
   const [iaLandSize, setIaLandSize] = useState('');
   const [iaNearby, setIaNearby] = useState('');
+  const [marketTrendResult, setMarketTrendResult] = useState<MarketTrendResponse | null>(null);
+  const [mtPropertyType, setMtPropertyType] = useState('');
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
