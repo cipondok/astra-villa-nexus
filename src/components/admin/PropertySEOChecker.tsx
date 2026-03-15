@@ -8,6 +8,7 @@ import { useLandingPageGenerator, type LandingPageResponse, type LandingPageInpu
 import { useKeywordCluster, type KeywordClusterResponse, type KeywordClusterInput } from '@/hooks/useKeywordCluster';
 import { useUrlSlugGenerator, type UrlSlugResponse } from '@/hooks/useUrlSlugGenerator';
 import { useInvestmentAttractiveness, type InvestmentAttractivenessResponse } from '@/hooks/useInvestmentAttractiveness';
+import { useMarketTrendPrediction, type MarketTrendResponse } from '@/hooks/useMarketTrendPrediction';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
