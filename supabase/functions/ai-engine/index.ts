@@ -2664,6 +2664,83 @@ Tasks:
       }
     }
 
+    // ── launch-readiness: Beta launch readiness evaluation ──
+    if (action === "launch-readiness") {
+      const listings = Number(payload.listings) || 0;
+      const seo_pages = Number(payload.seo_pages) || 0;
+      const ai_modules = Number(payload.ai_modules) || 0;
+      const speed_score = Number(payload.speed_score) || 0;
+      const lead_test = normalizeText(payload.lead_test) || "no";
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a startup launch readiness analyst for ASTRA, an AI-driven Indonesian property marketplace.
+Evaluate if the platform is ready for beta public launch. Use Indonesian language for all text fields.
+Be honest and practical — flag real blockers, not theoretical ones.`;
+
+      const userPrompt = `Evaluate beta launch readiness:
+
+- Total Listings: ${listings}
+- SEO Location Pages: ${seo_pages}
+- AI Modules Active: ${ai_modules}
+- Page Speed Score: ${speed_score}/100
+- Lead Flow Tested: ${lead_test}
+
+Tasks:
+1. Classify launch readiness (NOT READY / CONDITIONALLY READY / READY FOR SOFT LAUNCH / FULLY READY)
+2. List critical missing items (if any)
+3. Suggest recommended last actions before launch`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "launch_readiness_result",
+                description: "Return launch readiness evaluation",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    launch_readiness: { type: "string", enum: ["NOT READY", "CONDITIONALLY READY", "READY FOR SOFT LAUNCH", "FULLY READY"] },
+                    critical_missing_items: { type: "array", items: { type: "string" }, description: "Critical missing items in Indonesian" },
+                    recommended_last_actions: { type: "array", items: { type: "string" }, description: "Recommended last actions in Indonesian" },
+                  },
+                  required: ["launch_readiness", "critical_missing_items", "recommended_last_actions"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "launch_readiness_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI launch readiness failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "launch-readiness", result, input: { listings, seo_pages, ai_modules, speed_score, lead_test } });
+      } catch (e) {
+        console.error("Launch readiness exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Launch readiness failed" }, 500);
+      }
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
