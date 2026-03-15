@@ -490,6 +490,7 @@ const PropertySEOChecker = () => {
   const priceBenchmark = usePriceBenchmark();
   const marketHeat = useMarketHeat();
   const pricingStrategy = usePricingStrategy();
+  const demandForecast = useDemandForecast();
 
   // Reset city/area on state change, reset pages on any filter change
   useEffect(() => { setFilterCity(''); setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterState]);
