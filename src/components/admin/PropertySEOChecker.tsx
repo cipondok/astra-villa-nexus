@@ -22,6 +22,7 @@ import { useBuyerSegment, type BuyerSegmentResponse } from '@/hooks/useBuyerSegm
 import { useResaleRisk, type ResaleRiskResponse } from '@/hooks/useResaleRisk';
 import { useGrowthPotential, type GrowthPotentialResponse } from '@/hooks/useGrowthPotential';
 import { useRoiProjection, type RoiProjectionResponse } from '@/hooks/useRoiProjection';
+import { useRentalRoiProjection, type RentalRoiResponse } from '@/hooks/useRentalRoiProjection';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,7 +34,7 @@ import {
   Search, RefreshCw, Zap, CheckCircle2, XCircle, AlertTriangle, 
   Loader2, Target, TrendingUp, Globe, BarChart3, FileText, 
   Hash, Eye, Lightbulb, ArrowUpRight, ArrowDownRight, Minus,
-  Sparkles, X, Plus, Tag, Flame, MapPin
+  Sparkles, X, Plus, Tag, Flame, MapPin, Home
 } from 'lucide-react';
 import {
   usePropertySeoAnalyses,
@@ -463,6 +464,11 @@ const PropertySEOChecker = () => {
   const [roiDemandScore, setRoiDemandScore] = useState('');
   const [roiLiquidityScore, setRoiLiquidityScore] = useState('');
   const [roiProjectionResult, setRoiProjectionResult] = useState<RoiProjectionResponse | null>(null);
+  const [rentalPrice, setRentalPrice] = useState('');
+  const [rentalMonthlyRent, setRentalMonthlyRent] = useState('');
+  const [rentalCity, setRentalCity] = useState('');
+  const [rentalDemandLevel, setRentalDemandLevel] = useState('');
+  const [rentalRoiResult, setRentalRoiResult] = useState<RentalRoiResponse | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
@@ -532,6 +538,7 @@ const PropertySEOChecker = () => {
   const resaleRisk = useResaleRisk();
   const growthPotential = useGrowthPotential();
   const roiProjection = useRoiProjection();
+  const rentalRoiProjection = useRentalRoiProjection();
 
   // Reset city/area on state change, reset pages on any filter change
   useEffect(() => { setFilterCity(''); setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterState]);
@@ -960,6 +967,7 @@ const PropertySEOChecker = () => {
           <TabsTrigger value="resale-risk" className="text-xs gap-1"><AlertTriangle className="h-3 w-3" />Risk</TabsTrigger>
           <TabsTrigger value="growth-pot" className="text-xs gap-1"><ArrowUpRight className="h-3 w-3" />Growth</TabsTrigger>
           <TabsTrigger value="roi-proj" className="text-xs gap-1"><BarChart3 className="h-3 w-3" />ROI</TabsTrigger>
+          <TabsTrigger value="rental-roi" className="text-xs gap-1"><Home className="h-3 w-3" />Rental</TabsTrigger>
           {currentAnalysis && <TabsTrigger value="detail" className="text-xs gap-1"><Eye className="h-3 w-3" />Detail</TabsTrigger>}
         </TabsList>
 
@@ -3525,6 +3533,107 @@ const PropertySEOChecker = () => {
                 <div>
                   <p className="text-[10px] font-semibold text-muted-foreground mb-1">📋 Strategy Summary</p>
                   <p className="text-xs text-foreground leading-relaxed">{roiProjectionResult.result.roi_strategy_summary}</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        {/* ─── Rental ROI Projection Tab ─── */}
+        <TabsContent value="rental-roi" className="space-y-3">
+          <Card className="bg-card border-border">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Home className="h-4 w-4 text-primary" />
+                Rental ROI Projection
+              </CardTitle>
+              <CardDescription className="text-[10px]">
+                AI-powered rental income return estimation
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0 space-y-2">
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Property Price (Rp) *</label>
+                  <Input className="h-8 text-xs" type="number" placeholder="1350000000" value={rentalPrice} onChange={e => setRentalPrice(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Monthly Rent (Rp) *</label>
+                  <Input className="h-8 text-xs" type="number" placeholder="15000000" value={rentalMonthlyRent} onChange={e => setRentalMonthlyRent(e.target.value)} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">City *</label>
+                  <Input className="h-8 text-xs" placeholder="Bandung" value={rentalCity} onChange={e => setRentalCity(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Demand Level</label>
+                  <select className="w-full h-8 text-xs p-1 rounded-md border border-input bg-background text-foreground" value={rentalDemandLevel} onChange={e => setRentalDemandLevel(e.target.value)}>
+                    <option value="">Auto-detect</option>
+                    <option value="LOW">Low</option>
+                    <option value="MODERATE">Moderate</option>
+                    <option value="HIGH">High</option>
+                    <option value="VERY HIGH">Very High</option>
+                  </select>
+                </div>
+              </div>
+              <Button
+                size="sm"
+                className="h-8 text-xs w-full"
+                disabled={!rentalPrice || !rentalMonthlyRent || !rentalCity || rentalRoiProjection.isPending}
+                onClick={() => {
+                  rentalRoiProjection.mutate(
+                    {
+                      price: Number(rentalPrice),
+                      monthly_rent: Number(rentalMonthlyRent),
+                      city: rentalCity,
+                      demand_level: rentalDemandLevel || undefined,
+                    },
+                    { onSuccess: (data) => setRentalRoiResult(data) }
+                  );
+                }}
+              >
+                {rentalRoiProjection.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Home className="h-3 w-3 mr-1" />}
+                Analyze Rental ROI
+              </Button>
+            </CardContent>
+          </Card>
+
+          {rentalRoiProjection.isPending && (
+            <Card className="bg-card border-border">
+              <CardContent className="p-6 text-center">
+                <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                <p className="text-xs text-muted-foreground">AI is calculating rental ROI...</p>
+                <Progress value={50} className="h-1.5 mt-3 max-w-xs mx-auto" />
+              </CardContent>
+            </Card>
+          )}
+
+          {rentalRoiResult && (
+            <Card className="bg-card border-border border-l-2 border-l-chart-1">
+              <CardContent className="p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-[10px] font-semibold text-muted-foreground">📊 Rental Stability</p>
+                    <Badge variant="default" className="mt-1 text-sm">
+                      {rentalRoiResult.result.rental_stability}
+                    </Badge>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] font-semibold text-muted-foreground">Gross Yield</p>
+                    <p className="text-xl font-bold text-primary">{rentalRoiResult.result.gross_yield_percent}</p>
+                  </div>
+                </div>
+
+                <div className="p-2 rounded-lg border border-border/50 bg-muted/20 text-center">
+                  <p className="text-[8px] text-muted-foreground">Annual Rental Income</p>
+                  <p className="text-sm font-bold text-foreground">{rentalRoiResult.result.annual_rental_income}</p>
+                </div>
+
+                <div>
+                  <p className="text-[10px] font-semibold text-muted-foreground mb-1">📋 Rental Outlook</p>
+                  <p className="text-xs text-foreground leading-relaxed">{rentalRoiResult.result.rental_roi_summary}</p>
                 </div>
               </CardContent>
             </Card>

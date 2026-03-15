@@ -1991,6 +1991,86 @@ Tasks:
       }
     }
 
+    // ── rental-roi-projection: Estimate rental income ROI potential ──
+    if (action === "rental-roi-projection") {
+      const price = Number(payload.price) || 0;
+      const monthly_rent = Number(payload.monthly_rent) || 0;
+      const city = normalizeText(payload.city);
+      const demand_level = normalizeText(payload.demand_level);
+
+      if (!price || !monthly_rent || !city) return json({ error: "price, monthly_rent, and city are required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a property rental investment projection AI specializing in the Indonesian market.
+Estimate rental income ROI potential based on property price, estimated rent, location, and demand.
+Use Indonesian language for rental_roi_summary. Be realistic and data-driven.
+Format monetary values in Rupiah (Rp).`;
+
+      const userPrompt = `Estimate rental ROI for this property:
+
+Property Price: Rp ${price.toLocaleString("id-ID")}
+Estimated Monthly Rent: Rp ${monthly_rent.toLocaleString("id-ID")}
+City: ${city}
+Demand Level: ${demand_level || "Not specified"}
+
+Tasks:
+1. Estimate annual rental income
+2. Estimate gross rental yield %
+3. Estimate long-term rental demand stability
+4. Provide rental investment outlook`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "rental_roi_result",
+                description: "Return rental ROI projection analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    annual_rental_income: { type: "string", description: "Estimated annual rental income in Rp, e.g. 'Rp 180.000.000'" },
+                    gross_yield_percent: { type: "string", description: "Gross rental yield percentage, e.g. '6.2%'" },
+                    rental_stability: { type: "string", description: "Long-term rental demand stability assessment, e.g. 'STABLE' or 'HIGH' or 'MODERATE'" },
+                    rental_roi_summary: { type: "string", description: "2-3 sentence rental investment outlook in Indonesian" },
+                  },
+                  required: ["annual_rental_income", "gross_yield_percent", "rental_stability", "rental_roi_summary"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "rental_roi_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI rental ROI projection failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "rental-roi-projection", result, input: { price, monthly_rent, city, demand_level } });
+      } catch (e) {
+        console.error("Rental ROI projection exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Rental ROI projection failed" }, 500);
+      }
+    }
+
     // ── buyer-intent: Analyze inquiry message for buying seriousness ──
     if (action === "buyer-intent") {
       const message = normalizeText(payload.message);
