@@ -45,6 +45,7 @@ import MarketIntelligenceCard from "./MarketIntelligenceCard";
 import AgentPerformanceCard from "./AgentPerformanceCard";
 import DealPipelineCard from "./DealPipelineCard";
 import GeoExpansionCard from "./GeoExpansionCard";
+import AIBatchControlPanel from "./AIBatchControlPanel";
 
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
@@ -443,6 +444,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
 
           {/* Geographic Expansion Intelligence */}
           <GeoExpansionCard onNavigate={() => handleQuickAction('ai-command-center')} />
+
+          {/* AI Batch Control Panel */}
+          <AIBatchControlPanel />
 
           {/* AI Systems Status */}
           <Card className="border-border/30">
