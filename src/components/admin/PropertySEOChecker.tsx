@@ -415,6 +415,17 @@ const PropertySEOChecker = () => {
   const [psProvince, setPsProvince] = useState('');
   const [psPricePosition, setPsPricePosition] = useState('FAIR MARKET');
   const [pricingStrategyResult, setPricingStrategyResult] = useState<PricingStrategyResponse | null>(null);
+  const [dfPrice, setDfPrice] = useState('');
+  const [dfPropertyType, setDfPropertyType] = useState('rumah');
+  const [dfTransactionType, setDfTransactionType] = useState('sale');
+  const [dfBuildingSize, setDfBuildingSize] = useState('');
+  const [dfLandSize, setDfLandSize] = useState('');
+  const [dfVillage, setDfVillage] = useState('');
+  const [dfDistrict, setDfDistrict] = useState('');
+  const [dfCity, setDfCity] = useState('');
+  const [dfProvince, setDfProvince] = useState('');
+  const [dfNearby, setDfNearby] = useState('');
+  const [demandForecastResult, setDemandForecastResult] = useState<DemandForecastResponse | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
