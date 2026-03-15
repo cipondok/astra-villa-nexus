@@ -22,6 +22,7 @@ import { useBuyerSegment, type BuyerSegmentResponse } from '@/hooks/useBuyerSegm
 import { useResaleRisk, type ResaleRiskResponse } from '@/hooks/useResaleRisk';
 import { useGrowthPotential, type GrowthPotentialResponse } from '@/hooks/useGrowthPotential';
 import { useRoiProjection, type RoiProjectionResponse } from '@/hooks/useRoiProjection';
+import { useRentalRoiProjection, type RentalRoiResponse } from '@/hooks/useRentalRoiProjection';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
