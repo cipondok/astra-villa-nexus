@@ -663,7 +663,7 @@ const PropertyManagement = () => {
                       </TableRow>
                     ) : properties?.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={7} className="text-center py-8">
+                        <TableCell colSpan={8} className="text-center py-8">
                           <div className="space-y-2">
                             <p>No properties found</p>
                             <p className="text-sm text-muted-foreground">
