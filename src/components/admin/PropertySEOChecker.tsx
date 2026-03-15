@@ -2385,13 +2385,25 @@ const PropertySEOChecker = () => {
                 <label className="text-[10px] text-muted-foreground mb-1 block">Property Location</label>
                 <Input className="h-8 text-xs" placeholder="e.g. Dago, Bandung" value={srLocation} onChange={e => setSrLocation(e.target.value)} />
               </div>
+              <div>
+                <label className="text-[10px] text-muted-foreground mb-1 block">Buyer Profile</label>
+                <Input className="h-8 text-xs" placeholder="e.g. keluarga muda cari rumah pertama" value={srBuyerProfile} onChange={e => setSrBuyerProfile(e.target.value)} />
+              </div>
+              <div>
+                <label className="text-[10px] text-muted-foreground mb-1 block">Property Advantage</label>
+                <Input className="h-8 text-xs" placeholder="e.g. dekat sekolah dan akses tol" value={srPropertyAdvantage} onChange={e => setSrPropertyAdvantage(e.target.value)} />
+              </div>
+              <div>
+                <label className="text-[10px] text-muted-foreground mb-1 block">Negotiation Context</label>
+                <Input className="h-8 text-xs" placeholder="e.g. buyer masih bandingkan 2 properti" value={srNegotiationContext} onChange={e => setSrNegotiationContext(e.target.value)} />
+              </div>
               <Button
                 size="sm"
                 className="h-8 text-xs w-full"
                 disabled={!srMessage || salesReply.isPending}
                 onClick={() => {
                   salesReply.mutate(
-                    { message: srMessage, location: srLocation },
+                    { message: srMessage, location: srLocation, buyer_profile: srBuyerProfile, property_advantage: srPropertyAdvantage, negotiation_context: srNegotiationContext },
                     { onSuccess: (data) => setSalesReplyResult(data) }
                   );
                 }}
