@@ -33156,6 +33156,7 @@ export type Database = {
         Returns: undefined
       }
       delete_user_admin: { Args: { p_user_id: string }; Returns: undefined }
+      detect_market_anomalies: { Args: never; Returns: Json }
       encrypt_api_key:
         | { Args: { api_key: string; key_name: string }; Returns: string }
         | { Args: { plain_key: string }; Returns: string }
