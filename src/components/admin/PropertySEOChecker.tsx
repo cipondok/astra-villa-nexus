@@ -21,6 +21,7 @@ import { useDemandForecast, type DemandForecastResponse } from '@/hooks/useDeman
 import { useBuyerSegment, type BuyerSegmentResponse } from '@/hooks/useBuyerSegment';
 import { useResaleRisk, type ResaleRiskResponse } from '@/hooks/useResaleRisk';
 import { useGrowthPotential, type GrowthPotentialResponse } from '@/hooks/useGrowthPotential';
+import { useRoiProjection, type RoiProjectionResponse } from '@/hooks/useRoiProjection';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
