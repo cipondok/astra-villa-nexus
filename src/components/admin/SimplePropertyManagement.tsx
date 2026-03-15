@@ -29,6 +29,13 @@ import {
   ChevronRight
 } from "lucide-react";
 import Price from "@/components/ui/Price";
+import DealScoreBadge from "./DealScoreBadge";
+
+interface DealAnalysisRow {
+  deal_score: number;
+  deal_tag: string;
+  deal_confidence: number | null;
+}
 
 interface Property {
   id: string;
@@ -131,17 +138,30 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
         throw error;
       }
 
-      // Fetch profiles for owner information
+      // Fetch profiles and deal analysis in parallel
       if (properties && properties.length > 0) {
         const ownerIds = [...new Set(properties.map(p => p.owner_id))];
-        const { data: profiles } = await supabase
-          .from('profiles')
-          .select('id, phone, full_name')
-          .in('id', ownerIds);
+        const propertyIds = properties.map(p => p.id);
+
+        const [profilesResult, dealAnalysisResult] = await Promise.all([
+          supabase
+            .from('profiles')
+            .select('id, phone, full_name')
+            .in('id', ownerIds),
+          supabase
+            .from('property_deal_analysis')
+            .select('property_id, deal_score, deal_tag, deal_confidence')
+            .in('property_id', propertyIds),
+        ]);
+
+        const dealScoreMap = new Map<string, DealAnalysisRow>(
+          (dealAnalysisResult.data || []).map((d: any) => [d.property_id, d])
+        );
 
         const propertiesWithProfiles = properties.map(property => ({
           ...property,
-          posted_by: profiles?.filter(p => p.id === property.owner_id) || []
+          posted_by: profilesResult.data?.filter(p => p.id === property.owner_id) || [],
+          deal_analysis: dealScoreMap.get(property.id) || null,
         }));
 
         return { properties: propertiesWithProfiles, totalCount: count || 0 };
@@ -487,6 +507,14 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                           className="bg-background shadow-sm h-3.5 w-3.5"
                         />
                       </div>
+                      {(property as any).deal_analysis?.deal_score != null && (
+                        <div className="absolute top-1.5 right-1.5 z-10">
+                          <DealScoreBadge
+                            score={(property as any).deal_analysis.deal_score}
+                            compact
+                          />
+                        </div>
+                      )}
                       {(() => {
                         const imgSrc = (() => {
                           if (property.thumbnail_url) return property.thumbnail_url;

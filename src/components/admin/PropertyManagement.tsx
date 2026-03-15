@@ -32,6 +32,7 @@ import { Edit, Trash2, Eye, MapPin, DollarSign, RefreshCw, Axis3d, Filter, Dropl
          Image, Heart, MessageSquare, Star, Shield, TrendingUp, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAlert } from "@/contexts/AlertContext";
 import Price from "@/components/ui/Price";
+import DealScoreBadge from "./DealScoreBadge";
 
 interface PropertyOwner {
   full_name: string;
@@ -58,6 +59,11 @@ interface PropertyWithRelations {
   development_status?: string;
   three_d_model_url?: string;
   virtual_tour_url?: string;
+  deal_analysis?: {
+    deal_score: number;
+    deal_tag: string;
+    deal_confidence: number | null;
+  } | null;
 }
 
 const PropertyManagement = () => {
@@ -144,27 +150,25 @@ const PropertyManagement = () => {
       const ownerIds = [...new Set(propertiesData.map(p => p.owner_id).filter(Boolean))];
       const agentIds = [...new Set(propertiesData.map(p => p.agent_id).filter(Boolean))];
       const allUserIds = [...new Set([...ownerIds, ...agentIds])];
+      const propertyIds = propertiesData.map(p => p.id);
 
-      console.log('Fetching user profiles for IDs:', allUserIds);
+      // Fetch profiles and deal analysis in parallel
+      const [profilesResult, dealAnalysisResult] = await Promise.all([
+        allUserIds.length > 0
+          ? supabase.from('profiles').select('id, full_name, email').in('id', allUserIds)
+          : Promise.resolve({ data: [], error: null }),
+        supabase
+          .from('property_deal_analysis')
+          .select('property_id, deal_score, deal_tag, deal_confidence')
+          .in('property_id', propertyIds),
+      ]);
 
-      // Fetch profiles separately
-      let profilesData = [];
-      if (allUserIds.length > 0) {
-        const { data: profiles, error: profilesError } = await supabase
-          .from('profiles')
-          .select('id, full_name, email')
-          .in('id', allUserIds);
+      const profilesData = profilesResult.data || [];
+      const dealScoreMap = new Map(
+        (dealAnalysisResult.data || []).map((d: any) => [d.property_id, d])
+      );
 
-        if (profilesError) {
-          console.warn('Error fetching profiles:', profilesError);
-        } else {
-          profilesData = profiles || [];
-        }
-      }
-
-      console.log('Profiles data:', profilesData);
-
-      // Map properties with owner/agent information
+      // Map properties with owner/agent/deal information
       const propertiesWithRelations = propertiesData.map((property: any) => {
         const owner = profilesData.find(p => p.id === property.owner_id);
         const agent = profilesData.find(p => p.id === property.agent_id);
@@ -173,10 +177,10 @@ const PropertyManagement = () => {
           ...property,
           owner: owner ? { full_name: owner.full_name, email: owner.email } : null,
           agent: agent ? { full_name: agent.full_name, email: agent.email } : null,
+          deal_analysis: dealScoreMap.get(property.id) || null,
         };
       });
 
-      console.log('Final properties with relations:', propertiesWithRelations);
       return propertiesWithRelations as PropertyWithRelations[];
     },
   });
@@ -644,6 +648,7 @@ const PropertyManagement = () => {
                       <TableHead>Property</TableHead>
                       <TableHead>Owner/Agent</TableHead>
                       <TableHead>Details</TableHead>
+                      <TableHead className="text-center">AI Score</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Created</TableHead>
                       <TableHead>Actions</TableHead>
@@ -652,13 +657,13 @@ const PropertyManagement = () => {
                   <TableBody>
                     {isLoading ? (
                       <TableRow>
-                        <TableCell colSpan={7} className="text-center py-8">
+                        <TableCell colSpan={8} className="text-center py-8">
                           Loading properties...
                         </TableCell>
                       </TableRow>
                     ) : properties?.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={7} className="text-center py-8">
+                        <TableCell colSpan={8} className="text-center py-8">
                           <div className="space-y-2">
                             <p>No properties found</p>
                             <p className="text-sm text-muted-foreground">
@@ -727,6 +732,12 @@ const PropertyManagement = () => {
                                 {property.listing_type}
                               </div>
                             </div>
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <DealScoreBadge
+                              score={property.deal_analysis?.deal_score ?? null}
+                              recommendation={property.deal_analysis?.deal_tag}
+                            />
                           </TableCell>
                           <TableCell>
                             <Select
