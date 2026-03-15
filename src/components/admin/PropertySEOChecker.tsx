@@ -2960,6 +2960,123 @@ const PropertySEOChecker = () => {
           )}
         </TabsContent>
 
+
+        {/* ─── Buyer Segment Tab ─── */}
+        <TabsContent value="buyer-seg" className="space-y-3">
+          <Card className="bg-card border-border">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Lightbulb className="h-4 w-4 text-primary" />
+                Buyer Segment Analyzer
+              </CardTitle>
+              <CardDescription className="text-[10px]">
+                Identify likely buyer/tenant segments for this property
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0 space-y-2">
+              <div className="grid grid-cols-3 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Property Type</label>
+                  <select className="w-full h-8 text-xs p-1 rounded-md border border-input bg-background text-foreground" value={bsPropertyType} onChange={e => setBsPropertyType(e.target.value)}>
+                    <option value="rumah">Rumah</option>
+                    <option value="villa">Villa</option>
+                    <option value="apartment">Apartment</option>
+                    <option value="tanah">Tanah</option>
+                    <option value="ruko">Ruko</option>
+                    <option value="kost">Kost</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Transaction</label>
+                  <select className="w-full h-8 text-xs p-1 rounded-md border border-input bg-background text-foreground" value={bsTransactionType} onChange={e => setBsTransactionType(e.target.value)}>
+                    <option value="sale">Jual</option>
+                    <option value="rent">Sewa</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">City *</label>
+                  <Input className="h-8 text-xs" placeholder="Depok" value={bsCity} onChange={e => setBsCity(e.target.value)} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">District</label>
+                  <Input className="h-8 text-xs" placeholder="Beji" value={bsDistrict} onChange={e => setBsDistrict(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Village</label>
+                  <Input className="h-8 text-xs" placeholder="Margonda" value={bsVillage} onChange={e => setBsVillage(e.target.value)} />
+                </div>
+              </div>
+              <div>
+                <label className="text-[10px] text-muted-foreground mb-1 block">Nearby Facilities</label>
+                <Input className="h-8 text-xs" placeholder="Universitas, Stasiun KRL, Mall..." value={bsNearby} onChange={e => setBsNearby(e.target.value)} />
+              </div>
+              <Button
+                size="sm"
+                className="h-8 text-xs w-full"
+                disabled={!bsCity || buyerSegment.isPending}
+                onClick={() => {
+                  buyerSegment.mutate(
+                    {
+                      property_type: bsPropertyType,
+                      transaction_type: bsTransactionType,
+                      village: bsVillage,
+                      district: bsDistrict,
+                      city: bsCity,
+                      nearby_facilities: bsNearby,
+                    },
+                    { onSuccess: (data) => setBuyerSegmentResult(data) }
+                  );
+                }}
+              >
+                {buyerSegment.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Lightbulb className="h-3 w-3 mr-1" />}
+                Analyze Segments
+              </Button>
+            </CardContent>
+          </Card>
+
+          {buyerSegment.isPending && (
+            <Card className="bg-card border-border">
+              <CardContent className="p-6 text-center">
+                <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                <p className="text-xs text-muted-foreground">AI is identifying buyer segments...</p>
+                <Progress value={50} className="h-1.5 mt-3 max-w-xs mx-auto" />
+              </CardContent>
+            </Card>
+          )}
+
+          {buyerSegmentResult && (
+            <Card className="bg-card border-border border-l-2 border-l-chart-3">
+              <CardContent className="p-4 space-y-3">
+                <div>
+                  <p className="text-[10px] font-semibold text-muted-foreground">🎯 Primary Segment</p>
+                  <Badge className="mt-1 text-sm">{buyerSegmentResult.result.primary_buyer_segment}</Badge>
+                </div>
+
+                <div>
+                  <p className="text-[10px] font-semibold text-muted-foreground mb-1">👥 Secondary Segments</p>
+                  <div className="flex flex-wrap gap-1">
+                    {buyerSegmentResult.result.secondary_buyer_segments.map((s, i) => (
+                      <Badge key={i} variant="outline" className="text-[10px]">{s}</Badge>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-[10px] font-semibold text-muted-foreground mb-1">📊 Demand Distribution</p>
+                  <p className="text-xs text-foreground font-medium">{buyerSegmentResult.result.segment_demand_distribution}</p>
+                </div>
+
+                <div>
+                  <p className="text-[10px] font-semibold text-muted-foreground mb-1">💡 Segment Insight</p>
+                  <p className="text-xs text-foreground leading-relaxed">{buyerSegmentResult.result.segment_insight}</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
         <TabsContent value="detail">
           {currentAnalysis ? (
             <div className="space-y-3">
