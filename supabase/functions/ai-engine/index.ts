@@ -1224,6 +1224,95 @@ Generate the rewritten description.`;
       }
     }
 
+    // ── buyer-intent: Analyze inquiry message for buying seriousness ──
+    if (action === "buyer-intent") {
+      const message = normalizeText(payload.message);
+      const propertyType = normalizeText(payload.property_type) || "Not specified";
+      const transactionType = normalizeText(payload.transaction_type) || "Not specified";
+      const city = normalizeText(payload.city) || "Not specified";
+
+      if (!message) return json({ error: "message is required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are an AI behavioral analyst for an Indonesian property marketplace.
+You analyze buyer inquiry messages to detect buying seriousness and intent signals.
+You understand Indonesian language nuances including urgency words (segera, butuh cepat, siap deal, mau survey),
+budget readiness signals, emotional motivations, and negotiation patterns.
+Score from 0-100 where 0-25=LOW, 26-50=MEDIUM, 51-75=HIGH, 76-100=HOT.`;
+
+      const userPrompt = `Analyze this user inquiry message and detect buying seriousness level.
+
+USER MESSAGE: "${message}"
+
+PROPERTY TYPE: ${propertyType}
+TRANSACTION TYPE: ${transactionType}
+LOCATION: ${city}
+
+Tasks:
+1. Detect urgency signals (urgent, segera, butuh cepat, siap deal)
+2. Detect budget readiness signals
+3. Detect visit / survey intention
+4. Detect emotional motivation (family need, relocation, investment)
+5. Detect negotiation signals
+6. Generate buyer intent score (0-100)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "buyer_intent_result",
+                description: "Return buyer intent analysis for an inquiry message",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    buyer_intent_score: { type: "number", description: "Buyer intent score 0-100" },
+                    intent_level: { type: "string", enum: ["LOW", "MEDIUM", "HIGH", "HOT"], description: "Intent classification" },
+                    detected_signals: { type: "array", items: { type: "string" }, description: "List of detected behavioral signals e.g. 'Urgency: siap deal', 'Budget ready: sudah siapkan DP'" },
+                    recommended_agent_action: { type: "string", description: "2-3 sentence recommended action for the agent" },
+                  },
+                  required: ["buyer_intent_score", "intent_level", "detected_signals", "recommended_agent_action"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "buyer_intent_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded, please try again later" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI buyer intent analysis failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+
+        return json({
+          action: "buyer-intent",
+          result,
+          input: { message, property_type: propertyType, transaction_type: transactionType, city },
+        });
+      } catch (e) {
+        console.error("Buyer intent exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Buyer intent analysis failed" }, 500);
+      }
+    }
+
     // ── rental-estimate: AI rental yield estimation ──
     if (action === "rental-estimate") {
       const price = Number(payload.price) || 0;

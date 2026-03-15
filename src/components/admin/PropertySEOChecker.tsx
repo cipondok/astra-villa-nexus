@@ -2035,6 +2035,131 @@ const PropertySEOChecker = () => {
           })()}
         </TabsContent>
 
+        {/* ─── Buyer Intent Analyzer Tab ─── */}
+        <TabsContent value="buyer-intent" className="space-y-3">
+          <Card className="bg-card border-border">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Flame className="h-4 w-4 text-primary" />
+                Buyer Intent Analyzer
+              </CardTitle>
+              <CardDescription className="text-[10px]">
+                Analyze inquiry messages to detect buying seriousness and recommend agent actions
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0 space-y-3">
+              <div>
+                <label className="text-[10px] text-muted-foreground mb-1 block">User Message *</label>
+                <textarea
+                  className="w-full h-20 text-xs p-2 rounded-md border border-input bg-background text-foreground resize-none"
+                  placeholder="e.g. Saya butuh rumah segera untuk keluarga, sudah siapkan DP, bisa survey besok?"
+                  value={biMessage}
+                  onChange={e => setBiMessage(e.target.value)}
+                />
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Property Type</label>
+                  <Select value={biPropertyType} onValueChange={setBiPropertyType}>
+                    <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Type" /></SelectTrigger>
+                    <SelectContent>
+                      {['house', 'apartment', 'villa', 'kost', 'land', 'commercial'].map(t => (
+                        <SelectItem key={t} value={t} className="text-xs capitalize">{t}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Transaction</label>
+                  <Select value={biTransactionType} onValueChange={setBiTransactionType}>
+                    <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Type" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="sale" className="text-xs">Sale</SelectItem>
+                      <SelectItem value="rent" className="text-xs">Rent</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">City</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. Jakarta" value={biCity} onChange={e => setBiCity(e.target.value)} />
+                </div>
+              </div>
+              <Button
+                size="sm"
+                className="h-8 text-xs w-full"
+                disabled={!biMessage || buyerIntent.isPending}
+                onClick={() => {
+                  buyerIntent.mutate(
+                    { message: biMessage, property_type: biPropertyType, transaction_type: biTransactionType, city: biCity },
+                    { onSuccess: (data) => setBuyerIntentResult(data) }
+                  );
+                }}
+              >
+                {buyerIntent.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Flame className="h-3 w-3 mr-1" />}
+                Analyze Intent
+              </Button>
+            </CardContent>
+          </Card>
+
+          {buyerIntent.isPending && (
+            <Card className="bg-card border-border">
+              <CardContent className="p-6 text-center">
+                <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                <p className="text-xs text-muted-foreground">AI is analyzing buyer intent...</p>
+                <Progress value={50} className="h-1.5 mt-3 max-w-xs mx-auto" />
+              </CardContent>
+            </Card>
+          )}
+
+          {buyerIntentResult && (() => {
+            const r = buyerIntentResult.result;
+            const levelColor = r.intent_level === 'HOT' ? 'text-destructive border-destructive/40 bg-destructive/10' :
+              r.intent_level === 'HIGH' ? 'text-chart-1 border-chart-1/40 bg-chart-1/10' :
+              r.intent_level === 'MEDIUM' ? 'text-chart-4 border-chart-4/40 bg-chart-4/10' :
+              'text-muted-foreground border-border bg-muted/30';
+            const fireEmoji = r.intent_level === 'HOT' ? '🔥🔥🔥' :
+              r.intent_level === 'HIGH' ? '🔥🔥' :
+              r.intent_level === 'MEDIUM' ? '🔥' : '❄️';
+
+            return (
+              <div className="space-y-3">
+                {/* Score Card */}
+                <Card className={`border-2 ${levelColor}`}>
+                  <CardContent className="p-4 text-center">
+                    <div className="text-2xl mb-1">{fireEmoji}</div>
+                    <div className="text-4xl font-bold text-foreground">{r.buyer_intent_score}</div>
+                    <div className="text-xs text-muted-foreground">/ 100</div>
+                    <Badge variant="outline" className="mt-2 text-sm font-bold">{r.intent_level}</Badge>
+                  </CardContent>
+                </Card>
+
+                {/* Detected Signals */}
+                <Card className="bg-card border-border">
+                  <CardContent className="p-3">
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-2">🎯 Detected Signals</p>
+                    <div className="space-y-1">
+                      {r.detected_signals.map((signal, i) => (
+                        <div key={i} className="flex items-start gap-2 text-[10px]">
+                          <CheckCircle2 className="h-3 w-3 text-chart-2 mt-0.5 shrink-0" />
+                          <span className="text-foreground">{signal}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Agent Action */}
+                <Card className="bg-card border-border border-l-2 border-l-primary">
+                  <CardContent className="p-3">
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-1">📋 Recommended Agent Action</p>
+                    <p className="text-xs text-foreground leading-relaxed">{r.recommended_agent_action}</p>
+                  </CardContent>
+                </Card>
+              </div>
+            );
+          })()}
+        </TabsContent>
+
         <TabsContent value="detail">
           {currentAnalysis ? (
             <div className="space-y-3">
