@@ -351,6 +351,13 @@ const PropertySEOChecker = () => {
   const [landingPageResult, setLandingPageResult] = useState<LandingPageResponse | null>(null);
   const [kwClusterResult, setKwClusterResult] = useState<KeywordClusterResponse | null>(null);
   const [urlSlugResult, setUrlSlugResult] = useState<UrlSlugResponse | null>(null);
+  const [investAttrResult, setInvestAttrResult] = useState<InvestmentAttractivenessResponse | null>(null);
+  const [iaPropertyType, setIaPropertyType] = useState('');
+  const [iaTransactionType, setIaTransactionType] = useState('');
+  const [iaPrice, setIaPrice] = useState('');
+  const [iaBuildingSize, setIaBuildingSize] = useState('');
+  const [iaLandSize, setIaLandSize] = useState('');
+  const [iaNearby, setIaNearby] = useState('');
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
