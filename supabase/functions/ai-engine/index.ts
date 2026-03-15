@@ -3531,6 +3531,102 @@ Tasks:
       }
     }
 
+    // ── district-comparison: Regional district growth comparison ──
+    if (action === "district-comparison") {
+      const city = normalizeText(payload.city);
+      const district_list = Array.isArray(payload.district_list) ? payload.district_list : [];
+
+      if (!city || district_list.length < 2) return json({ error: "city and at least 2 districts are required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a regional property performance comparison AI for the Indonesian real estate market.
+Compare growth attractiveness across districts within a city. Use Indonesian language for all descriptions. Be specific with local knowledge about each district's characteristics, infrastructure, and development trajectory.`;
+
+      const userPrompt = `Compare investment growth potential across districts in ${city}:
+
+Districts: ${district_list.join(", ")}
+
+Tasks:
+1. Rank all districts by investment growth potential (include rank, district name, score 0-100, and short reason)
+2. Classify which are emerging vs mature districts
+3. Suggest top 3 investor focus areas with specific rationale`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "district_comparison_result",
+                description: "Return district growth comparison",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    district_ranking: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          rank: { type: "number" },
+                          district: { type: "string" },
+                          score: { type: "number" },
+                          reason: { type: "string" },
+                        },
+                        required: ["rank", "district", "score", "reason"],
+                        additionalProperties: false,
+                      },
+                    },
+                    emerging_districts: { type: "array", items: { type: "string" } },
+                    mature_districts: { type: "array", items: { type: "string" } },
+                    top_investment_focus: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          district: { type: "string" },
+                          rationale: { type: "string" },
+                        },
+                        required: ["district", "rationale"],
+                        additionalProperties: false,
+                      },
+                    },
+                  },
+                  required: ["district_ranking", "emerging_districts", "mature_districts", "top_investment_focus"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "district_comparison_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI district comparison failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "district-comparison", result, input: { city, district_list } });
+      } catch (e) {
+        console.error("District comparison exception:", e);
+        return json({ error: e instanceof Error ? e.message : "District comparison failed" }, 500);
+      }
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
