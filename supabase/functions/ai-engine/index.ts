@@ -1224,6 +1224,116 @@ Generate the rewritten description.`;
       }
     }
 
+    // ── rental-estimate: AI rental yield estimation ──
+    if (action === "rental-estimate") {
+      const price = Number(payload.price) || 0;
+      const propertyType = normalizeText(payload.property_type);
+      const city = normalizeText(payload.city);
+      const district = normalizeText(payload.district) || "";
+      const village = normalizeText(payload.village) || "";
+      const nearbyFacilities = normalizeText(payload.nearby_facilities) || "Not specified";
+
+      if (!price || !propertyType || !city) return json({ error: "price, property_type, and city are required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const locationLabel = [village, district, city].filter(Boolean).join(", ");
+
+      // Fetch rental comps
+      let rentalContext = "";
+      try {
+        const { data: rentals } = await supabase
+          .from("properties")
+          .select("price, property_type, bedrooms, building_area_sqm")
+          .eq("city", city)
+          .eq("listing_type", "rent")
+          .eq("status", "active")
+          .gt("price", 0)
+          .limit(30);
+
+        if (rentals && rentals.length > 0) {
+          const rents = rentals.map((r: any) => r.price);
+          const avgRent = Math.round(rents.reduce((a: number, b: number) => a + b, 0) / rents.length);
+          const minRent = Math.min(...rents);
+          const maxRent = Math.max(...rents);
+          rentalContext = `\nRental market in ${city}: ${rentals.length} rental listings, avg Rp ${avgRent.toLocaleString()}/mo, range Rp ${minRent.toLocaleString()} - Rp ${maxRent.toLocaleString()}/mo.`;
+        }
+      } catch (e) { console.error("Rental context fetch:", e); }
+
+      const systemPrompt = `You are a rental income estimation AI specialized in Indonesian property markets.
+You understand Indonesian rental dynamics including kost pricing, villa seasonal rates, apartment yields in Jakarta/Bali/Bandung/Surabaya, and demand drivers like universities, offices, and tourist areas.
+Provide realistic estimates based on actual Indonesian market conditions.`;
+
+      const userPrompt = `Estimate rental yield potential:
+
+Property Price: Rp ${price.toLocaleString()}
+Property Type: ${propertyType}
+Location: ${locationLabel}
+Nearby Demand Drivers: ${nearbyFacilities}
+${rentalContext}
+
+Tasks:
+1. Estimate monthly rental income range (min-max in Rp)
+2. Estimate yearly rental yield percentage
+3. Evaluate tenant demand strength (LOW / MODERATE / HIGH / VERY_HIGH)
+4. Provide rental investment advice (3-4 sentences)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "rental_estimate_result",
+                description: "Return rental yield estimation for a property",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    estimated_monthly_rent: { type: "string", description: "Estimated monthly rent range e.g. 'Rp 8,000,000 - Rp 12,000,000'" },
+                    estimated_rental_yield_percent: { type: "string", description: "Estimated annual rental yield e.g. '5.5% - 7.2%'" },
+                    tenant_demand_level: { type: "string", enum: ["LOW", "MODERATE", "HIGH", "VERY_HIGH"], description: "Tenant demand strength" },
+                    rental_investment_advice: { type: "string", description: "3-4 sentence rental investment advice" },
+                  },
+                  required: ["estimated_monthly_rent", "estimated_rental_yield_percent", "tenant_demand_level", "rental_investment_advice"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "rental_estimate_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded, please try again later" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI rental estimation failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+
+        return json({
+          action: "rental-estimate",
+          result,
+          input: { price, property_type: propertyType, city, district, village, nearby_facilities: nearbyFacilities },
+        });
+      } catch (e) {
+        console.error("Rental estimate exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Rental estimation failed" }, 500);
+      }
+    }
+
     // ── market-trend-prediction: Predict property price movement for a location ──
     if (action === "market-trend-prediction") {
       const province = normalizeText(payload.province);

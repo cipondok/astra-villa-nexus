@@ -9,6 +9,7 @@ import { useKeywordCluster, type KeywordClusterResponse, type KeywordClusterInpu
 import { useUrlSlugGenerator, type UrlSlugResponse } from '@/hooks/useUrlSlugGenerator';
 import { useInvestmentAttractiveness, type InvestmentAttractivenessResponse } from '@/hooks/useInvestmentAttractiveness';
 import { useMarketTrendPrediction, type MarketTrendResponse } from '@/hooks/useMarketTrendPrediction';
+import { useRentalEstimate, type RentalEstimateResponse } from '@/hooks/useRentalEstimate';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -361,6 +362,10 @@ const PropertySEOChecker = () => {
   const [iaNearby, setIaNearby] = useState('');
   const [marketTrendResult, setMarketTrendResult] = useState<MarketTrendResponse | null>(null);
   const [mtPropertyType, setMtPropertyType] = useState('');
+  const [rentalEstResult, setRentalEstResult] = useState<RentalEstimateResponse | null>(null);
+  const [rePropertyType, setRePropertyType] = useState('');
+  const [rePrice, setRePrice] = useState('');
+  const [reNearby, setReNearby] = useState('');
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
@@ -419,6 +424,7 @@ const PropertySEOChecker = () => {
   const urlSlugGen = useUrlSlugGenerator();
   const investAttr = useInvestmentAttractiveness();
   const marketTrend = useMarketTrendPrediction();
+  const rentalEst = useRentalEstimate();
 
   // Reset city/area on state change, reset pages on any filter change
   useEffect(() => { setFilterCity(''); setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterState]);
@@ -834,6 +840,7 @@ const PropertySEOChecker = () => {
           <TabsTrigger value="url-slugs" className="text-xs gap-1"><Globe className="h-3 w-3" />URL Slugs</TabsTrigger>
           <TabsTrigger value="invest-attr" className="text-xs gap-1"><TrendingUp className="h-3 w-3" />Invest Score</TabsTrigger>
           <TabsTrigger value="market-trend" className="text-xs gap-1"><BarChart3 className="h-3 w-3" />Trend</TabsTrigger>
+          <TabsTrigger value="rental-est" className="text-xs gap-1"><Sparkles className="h-3 w-3" />Rental</TabsTrigger>
           {currentAnalysis && <TabsTrigger value="detail" className="text-xs gap-1"><Eye className="h-3 w-3" />Detail</TabsTrigger>}
         </TabsList>
 
@@ -1791,6 +1798,131 @@ const PropertySEOChecker = () => {
                   <CardContent className="p-3">
                     <p className="text-[10px] font-semibold text-muted-foreground mb-1">🔮 Market Outlook</p>
                     <p className="text-xs text-foreground leading-relaxed">{r.market_outlook_summary}</p>
+                  </CardContent>
+                </Card>
+              </div>
+            );
+          })()}
+        </TabsContent>
+
+        {/* ─── Rental Yield Estimator Tab ─── */}
+        <TabsContent value="rental-est" className="space-y-3">
+          <Card className="bg-card border-border">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-primary" />
+                Rental Yield Estimator
+              </CardTitle>
+              <CardDescription className="text-[10px]">
+                AI-powered rental income and yield estimation for Indonesian property investors
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0 space-y-3">
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Property Type *</label>
+                  <Select value={rePropertyType} onValueChange={setRePropertyType}>
+                    <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Select type" /></SelectTrigger>
+                    <SelectContent>
+                      {['house', 'apartment', 'villa', 'kost', 'commercial', 'townhouse', 'shophouse'].map(t => (
+                        <SelectItem key={t} value={t} className="text-xs capitalize">{t}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Property Price (Rp) *</label>
+                  <Input className="h-8 text-xs" type="number" placeholder="e.g. 2500000000" value={rePrice} onChange={e => setRePrice(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">City *</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. Bandung" value={lpCity} onChange={e => setLpCity(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">District</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. Coblong" value={lpDistrict} onChange={e => setLpDistrict(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Village</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. Dago" value={lpVillage} onChange={e => setLpVillage(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Nearby Demand Drivers</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. ITB, cafe, wisata" value={reNearby} onChange={e => setReNearby(e.target.value)} />
+                </div>
+              </div>
+              <Button
+                size="sm"
+                className="h-8 text-xs w-full"
+                disabled={!rePropertyType || !rePrice || !lpCity || rentalEst.isPending}
+                onClick={() => {
+                  rentalEst.mutate(
+                    { price: Number(rePrice), property_type: rePropertyType, city: lpCity, district: lpDistrict, village: lpVillage, nearby_facilities: reNearby },
+                    { onSuccess: (data) => setRentalEstResult(data) }
+                  );
+                }}
+              >
+                {rentalEst.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Sparkles className="h-3 w-3 mr-1" />}
+                Estimate Rental Yield
+              </Button>
+            </CardContent>
+          </Card>
+
+          {rentalEst.isPending && (
+            <Card className="bg-card border-border">
+              <CardContent className="p-6 text-center">
+                <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                <p className="text-xs text-muted-foreground">AI is estimating rental yield...</p>
+                <Progress value={50} className="h-1.5 mt-3 max-w-xs mx-auto" />
+              </CardContent>
+            </Card>
+          )}
+
+          {rentalEstResult && (() => {
+            const r = rentalEstResult.result;
+            const demandColor = r.tenant_demand_level === 'VERY_HIGH' ? 'text-chart-1' :
+              r.tenant_demand_level === 'HIGH' ? 'text-chart-2' :
+              r.tenant_demand_level === 'MODERATE' ? 'text-chart-4' : 'text-destructive';
+            const demandBg = r.tenant_demand_level === 'VERY_HIGH' ? 'bg-chart-1/10 border-chart-1/40' :
+              r.tenant_demand_level === 'HIGH' ? 'bg-chart-2/10 border-chart-2/40' :
+              r.tenant_demand_level === 'MODERATE' ? 'bg-chart-4/10 border-chart-4/40' : 'bg-destructive/10 border-destructive/40';
+
+            return (
+              <div className="space-y-3">
+                {/* Demand Level */}
+                <Card className={`border-2 ${demandBg}`}>
+                  <CardContent className="p-4 text-center">
+                    <p className="text-[10px] text-muted-foreground mb-1">Tenant Demand</p>
+                    <Badge variant="outline" className={`text-lg font-bold px-4 py-1 ${demandColor}`}>
+                      {r.tenant_demand_level.replace('_', ' ')}
+                    </Badge>
+                    <p className="text-[10px] text-muted-foreground mt-2">
+                      {rentalEstResult.input.property_type} · Rp {rentalEstResult.input.price.toLocaleString()} · {rentalEstResult.input.city}
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Rent & Yield */}
+                <div className="grid grid-cols-2 gap-2">
+                  <Card className="bg-card border-border">
+                    <CardContent className="p-3 text-center">
+                      <p className="text-[9px] text-muted-foreground">💰 Monthly Rent</p>
+                      <p className="text-sm font-bold text-foreground">{r.estimated_monthly_rent}</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-card border-border">
+                    <CardContent className="p-3 text-center">
+                      <p className="text-[9px] text-muted-foreground">📊 Annual Yield</p>
+                      <p className="text-sm font-bold text-foreground">{r.estimated_rental_yield_percent}</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Advice */}
+                <Card className="bg-card border-border border-l-2 border-l-primary">
+                  <CardContent className="p-3">
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-1">🎯 Rental Investment Advice</p>
+                    <p className="text-xs text-foreground leading-relaxed">{r.rental_investment_advice}</p>
                   </CardContent>
                 </Card>
               </div>
