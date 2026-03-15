@@ -3662,6 +3662,23 @@ Tasks:
       });
     }
 
+    // ── market-heat-label: Deterministic investment heat signal ──
+    if (action === "market-heat-label") {
+      const price_index_score = Number(payload.price_index_score) || 0;
+      const market_cycle_stage = normalizeText(payload.market_cycle_stage).toUpperCase();
+
+      let label: string;
+      if (market_cycle_stage === "PEAK MARKET" && price_index_score >= 80) label = "PREMIUM PEAK AREA";
+      else if (market_cycle_stage === "PEAK MARKET") label = "WAIT AND WATCH MARKET";
+      else if (market_cycle_stage === "GROWTH PHASE" && price_index_score >= 60) label = "HIGH GROWTH MARKET";
+      else if (market_cycle_stage === "GROWTH PHASE") label = "INVESTOR ACCUMULATION ZONE";
+      else if (market_cycle_stage === "EARLY RECOVERY") label = "VALUE BUYING WINDOW";
+      else if (market_cycle_stage === "CORRECTION PHASE" && price_index_score >= 40) label = "WAIT AND WATCH MARKET";
+      else label = "VALUE BUYING WINDOW";
+
+      return json({ action: "market-heat-label", result: { label }, input: { price_index_score, market_cycle_stage } });
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
