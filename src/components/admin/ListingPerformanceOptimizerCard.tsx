@@ -86,8 +86,8 @@ function RecRow({ rec }: { rec: ListingOptimizationRec }) {
   );
 }
 
-const ListingPerformanceOptimizerCard = React.memo(function ListingPerformanceOptimizerCard() {
-  const { data, isLoading } = useListingPerformanceOptimizer();
+const ListingPerformanceOptimizerCard = React.memo(function ListingPerformanceOptimizerCard({ onNavigate }: { onNavigate?: () => void }) {
+  const { data, isLoading } = useListingPerformanceOptimizer(15);
   const [expanded, setExpanded] = useState(false);
 
   if (isLoading || !data) {
