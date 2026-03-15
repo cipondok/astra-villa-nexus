@@ -1398,6 +1398,81 @@ Tasks:
       }
     }
 
+    // ── market-heat: Area price heat classification ──
+    if (action === "market-heat") {
+      const village = normalizeText(payload.village);
+      const district = normalizeText(payload.district);
+      const city = normalizeText(payload.city);
+      const property_type = normalizeText(payload.property_type);
+
+      if (!city) return json({ error: "city is required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are an Indonesian real estate market heat analyst.
+Classify property areas by price heat level using Indonesian market knowledge.
+Consider factors: infrastructure development, new toll roads, university proximity, CBD distance, tourism, population growth, and recent transaction trends.`;
+
+      const userPrompt = `Classify the market heat for this area:
+
+Location: ${village || "-"}, ${district || "-"}, ${city}
+Property Type: ${property_type || "All types"}
+
+Tasks:
+1. Detect if area is emerging, stable, or premium zone
+2. Estimate buyer demand heat level
+3. Provide short market heat insight in Indonesian`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "market_heat_result",
+                description: "Return area market heat classification",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    area_price_heat: { type: "string", enum: ["COOL", "WARM", "HOT", "PREMIUM"], description: "Area price heat level" },
+                    demand_strength: { type: "string", description: "Description of buyer demand strength in Indonesian, 1-2 sentences" },
+                    market_heat_summary: { type: "string", description: "Short market heat insight in Indonesian, 2-3 sentences" },
+                  },
+                  required: ["area_price_heat", "demand_strength", "market_heat_summary"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "market_heat_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI market heat analysis failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "market-heat", result, input: { village, district, city, property_type } });
+      } catch (e) {
+        console.error("Market heat exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Market heat analysis failed" }, 500);
+      }
+    }
+
     // ── buyer-intent: Analyze inquiry message for buying seriousness ──
     if (action === "buyer-intent") {
       const message = normalizeText(payload.message);
