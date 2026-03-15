@@ -138,17 +138,30 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
         throw error;
       }
 
-      // Fetch profiles for owner information
+      // Fetch profiles and deal analysis in parallel
       if (properties && properties.length > 0) {
         const ownerIds = [...new Set(properties.map(p => p.owner_id))];
-        const { data: profiles } = await supabase
-          .from('profiles')
-          .select('id, phone, full_name')
-          .in('id', ownerIds);
+        const propertyIds = properties.map(p => p.id);
+
+        const [profilesResult, dealAnalysisResult] = await Promise.all([
+          supabase
+            .from('profiles')
+            .select('id, phone, full_name')
+            .in('id', ownerIds),
+          supabase
+            .from('property_deal_analysis')
+            .select('property_id, deal_score, deal_tag, deal_confidence')
+            .in('property_id', propertyIds),
+        ]);
+
+        const dealScoreMap = new Map<string, DealAnalysisRow>(
+          (dealAnalysisResult.data || []).map((d: any) => [d.property_id, d])
+        );
 
         const propertiesWithProfiles = properties.map(property => ({
           ...property,
-          posted_by: profiles?.filter(p => p.id === property.owner_id) || []
+          posted_by: profilesResult.data?.filter(p => p.id === property.owner_id) || [],
+          deal_analysis: dealScoreMap.get(property.id) || null,
         }));
 
         return { properties: propertiesWithProfiles, totalCount: count || 0 };
