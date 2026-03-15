@@ -2421,6 +2421,8 @@ Tasks:
       }
     }
 
+    // ── market-momentum: Detect current market momentum ──
+    if (action === "market-momentum") {
       const growth_score = Number(payload.growth_score) || 0;
       const demand_score = Number(payload.demand_score) || 0;
       const price_trend = normalizeText(payload.price_trend);
