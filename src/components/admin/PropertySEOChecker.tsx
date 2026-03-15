@@ -9,6 +9,7 @@ import { useKeywordCluster, type KeywordClusterResponse, type KeywordClusterInpu
 import { useUrlSlugGenerator, type UrlSlugResponse } from '@/hooks/useUrlSlugGenerator';
 import { useInvestmentAttractiveness, type InvestmentAttractivenessResponse } from '@/hooks/useInvestmentAttractiveness';
 import { useMarketTrendPrediction, type MarketTrendResponse } from '@/hooks/useMarketTrendPrediction';
+import { useRentalEstimate, type RentalEstimateResponse } from '@/hooks/useRentalEstimate';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
