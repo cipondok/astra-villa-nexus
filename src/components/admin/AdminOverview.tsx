@@ -464,6 +464,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           {/* Market Risk Anomaly Detector */}
           <MarketAnomalyCard />
 
+          {/* Listing Performance Optimizer */}
+          <ListingPerformanceOptimizerCard />
+
           {/* AI Systems Status */}
           <Card className="border-border/30">
             <CardHeader className="p-3 pb-2">
