@@ -46,8 +46,13 @@ export default function MarketIntelligence() {
           }} />
         </section>
 
-        {/* Overview cards */}
-        <section className="container mx-auto px-4 -mt-6 relative z-10">
+        {/* National Property Market Index */}
+        <section className="container mx-auto px-4 -mt-6 relative z-10 space-y-6">
+          <Suspense fallback={<SectionLoader />}>
+            <NationalPropertyMarketIndex />
+          </Suspense>
+
+          {/* Overview cards */}
           <Suspense fallback={<SectionLoader />}>
             <MarketOverviewCards />
           </Suspense>
