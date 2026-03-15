@@ -1295,6 +1295,109 @@ Return a short, ready-to-send WhatsApp reply text.`;
       }
     }
 
+    // ── price-benchmark: AI property price benchmarking ──
+    if (action === "price-benchmark") {
+      const property_type = normalizeText(payload.property_type);
+      const transaction_type = normalizeText(payload.transaction_type);
+      const price = Number(payload.price) || 0;
+      const building_size = Number(payload.building_size) || 0;
+      const land_size = Number(payload.land_size) || 0;
+      const village = normalizeText(payload.village);
+      const district = normalizeText(payload.district);
+      const city = normalizeText(payload.city);
+      const province = normalizeText(payload.province);
+      const nearby_facilities = normalizeText(payload.nearby_facilities);
+
+      if (!city || !price) return json({ error: "city and price are required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are an Indonesian property valuation and market benchmarking AI.
+Analyze whether a property price is below market, fair market, above market, or premium justified.
+Consider Indonesian real estate nuances: location premiums (Bali, Jakarta CBD), certificate types, nearby facilities.
+Use realistic Indonesian property market data for your analysis.`;
+
+      const userPrompt = `Analyze this property price positioning:
+
+PROPERTY DATA:
+Property Type: ${property_type || "Not specified"}
+Transaction Type: ${transaction_type || "Sale"}
+Price: Rp ${price.toLocaleString("id-ID")}
+Building Size: ${building_size} sqm
+Land Size: ${land_size} sqm
+
+Location:
+Village: ${village || "-"}
+District: ${district || "-"}
+City: ${city}
+Province: ${province || "-"}
+
+Nearby Factors: ${nearby_facilities || "Not specified"}
+
+Tasks:
+1. Estimate indicative price per sqm range for this micro-location
+2. Compare listing price vs perceived market level
+3. Detect premium factors (view, tourism area, CBD proximity, campus, toll access)
+4. Detect price risk (overpriced or underpriced signals)
+5. Generate price benchmark score (0-100 attractiveness)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "price_benchmark_result",
+                description: "Return property price benchmarking analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    price_position: { type: "string", enum: ["BELOW MARKET", "FAIR MARKET", "ABOVE MARKET", "PREMIUM JUSTIFIED"], description: "Market position classification" },
+                    estimated_market_price_range: { type: "string", description: "Estimated fair market price range in Rp, e.g. Rp 1.2M - Rp 1.5M" },
+                    price_attractiveness_score: { type: "number", description: "0-100 score of how attractive the price is for buyers" },
+                    benchmark_insight: { type: "string", description: "2-3 sentence insight about the pricing in Indonesian" },
+                    buyer_psychology_effect: { type: "string", description: "1-2 sentence description of how this price affects buyer psychology in Indonesian" },
+                  },
+                  required: ["price_position", "estimated_market_price_range", "price_attractiveness_score", "benchmark_insight", "buyer_psychology_effect"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "price_benchmark_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI price benchmark failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+
+        return json({
+          action: "price-benchmark",
+          result,
+          input: { property_type, transaction_type, price, building_size, land_size, village, district, city, province, nearby_facilities },
+        });
+      } catch (e) {
+        console.error("Price benchmark exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Price benchmark failed" }, 500);
+      }
+    }
+
     // ── buyer-intent: Analyze inquiry message for buying seriousness ──
     if (action === "buyer-intent") {
       const message = normalizeText(payload.message);
