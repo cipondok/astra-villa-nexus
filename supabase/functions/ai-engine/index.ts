@@ -1473,6 +1473,88 @@ Tasks:
       }
     }
 
+    // ── pricing-strategy: AI pricing strategy advisor ──
+    if (action === "pricing-strategy") {
+      const price = Number(payload.price) || 0;
+      const property_type = normalizeText(payload.property_type);
+      const village = normalizeText(payload.village);
+      const district = normalizeText(payload.district);
+      const city = normalizeText(payload.city);
+      const province = normalizeText(payload.province);
+      const price_position = normalizeText(payload.price_position);
+
+      if (!city || !price) return json({ error: "city and price are required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are an AI property pricing strategist for Indonesian real estate.
+Suggest optimal listing price strategies considering psychological pricing, negotiation buffers, and urgency tactics.
+Use Indonesian language for insights. Consider local market dynamics.`;
+
+      const userPrompt = `Suggest optimal listing price strategy:
+
+Current Price: Rp ${price.toLocaleString("id-ID")}
+Property Type: ${property_type || "Not specified"}
+Location: ${village || "-"}, ${district || "-"}, ${city}, ${province || "-"}
+Market Position: ${price_position || "Unknown"}
+
+Tasks:
+1. Suggest price adjustment strategy
+2. Suggest psychological pricing tactic
+3. Suggest negotiation buffer strategy
+4. Suggest urgency pricing tactic`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "pricing_strategy_result",
+                description: "Return pricing strategy recommendations",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    recommended_price_strategy: { type: "string", description: "2-3 sentence pricing strategy recommendation in Indonesian" },
+                    suggested_price_range: { type: "string", description: "Suggested optimal price range in Rp" },
+                    negotiation_tip: { type: "string", description: "1-2 sentence negotiation buffer advice in Indonesian" },
+                    sale_speed_impact: { type: "string", description: "1-2 sentence impact on sale speed in Indonesian" },
+                  },
+                  required: ["recommended_price_strategy", "suggested_price_range", "negotiation_tip", "sale_speed_impact"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "pricing_strategy_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI pricing strategy failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "pricing-strategy", result, input: { price, property_type, village, district, city, province, price_position } });
+      } catch (e) {
+        console.error("Pricing strategy exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Pricing strategy failed" }, 500);
+      }
+    }
+
     // ── buyer-intent: Analyze inquiry message for buying seriousness ──
     if (action === "buyer-intent") {
       const message = normalizeText(payload.message);
