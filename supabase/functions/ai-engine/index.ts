@@ -2257,7 +2257,88 @@ Tasks:
       }
     }
 
-    // ── market-momentum: Detect current market momentum ──
+    // ── deal-acceleration: Sales acceleration strategies to boost deal probability ──
+    if (action === "deal-acceleration") {
+      const probability_level = normalizeText(payload.probability_level);
+      const demand_level = normalizeText(payload.demand_level);
+      const price_position = normalizeText(payload.price_position);
+
+      if (!probability_level || !demand_level || !price_position) {
+        return json({ error: "probability_level, demand_level, and price_position are required" }, 400);
+      }
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are an elite Indonesian property sales acceleration strategist.
+Given the current deal probability level, market demand, and pricing position, suggest four concrete, actionable strategies to increase the deal's success probability.
+All responses MUST be in Indonesian. Be specific, practical, and tailored to the Indonesian real estate market.`;
+
+      const userPrompt = `Current deal situation:
+- Probability Level: ${probability_level}
+- Demand Level: ${demand_level}
+- Price Position: ${price_position}
+
+Suggest:
+1. One marketing improvement action to increase listing visibility and buyer reach
+2. One pricing tactic to make the listing more competitive or maximize value
+3. One urgency strategy to accelerate buyer decision-making
+4. One agent communication/follow-up strategy to convert leads faster`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "deal_acceleration_result",
+                description: "Return four deal acceleration strategies",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    marketing_action: { type: "string", description: "Marketing improvement action in Indonesian" },
+                    pricing_tactic: { type: "string", description: "Pricing tactic in Indonesian" },
+                    urgency_strategy: { type: "string", description: "Urgency creation strategy in Indonesian" },
+                    agent_followup_tip: { type: "string", description: "Agent follow-up communication strategy in Indonesian" },
+                  },
+                  required: ["marketing_action", "pricing_tactic", "urgency_strategy", "agent_followup_tip"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "deal_acceleration_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI deal acceleration failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({
+          action: "deal-acceleration",
+          result,
+          input: { probability_level, demand_level, price_position },
+        });
+      } catch (e) {
+        console.error("Deal acceleration exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Deal acceleration failed" }, 500);
+      }
+    }
+
     if (action === "market-momentum") {
       const growth_score = Number(payload.growth_score) || 0;
       const demand_score = Number(payload.demand_score) || 0;
