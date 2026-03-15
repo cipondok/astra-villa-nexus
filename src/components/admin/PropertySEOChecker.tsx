@@ -427,6 +427,13 @@ const PropertySEOChecker = () => {
   const [dfProvince, setDfProvince] = useState('');
   const [dfNearby, setDfNearby] = useState('');
   const [demandForecastResult, setDemandForecastResult] = useState<DemandForecastResponse | null>(null);
+  const [bsPropertyType, setBsPropertyType] = useState('rumah');
+  const [bsTransactionType, setBsTransactionType] = useState('sale');
+  const [bsVillage, setBsVillage] = useState('');
+  const [bsDistrict, setBsDistrict] = useState('');
+  const [bsCity, setBsCity] = useState('');
+  const [bsNearby, setBsNearby] = useState('');
+  const [buyerSegmentResult, setBuyerSegmentResult] = useState<BuyerSegmentResponse | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
