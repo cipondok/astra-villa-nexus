@@ -1,70 +1,121 @@
 
-# ASTRA Villa — Platform Architecture Analysis & Roadmap
 
-## Status: 🔄 IN PROGRESS
+## Automated AI Intelligence Scheduling System
 
-## Current State Assessment (March 2026)
+### What Exists Today
 
-### Scale
-| Metric | Count |
-|--------|-------|
-| Pages | 120+ |
-| Components | 200+ directories |
-| Hooks | 230+ |
-| Edge Functions | 18 (consolidated from 82) |
-| Database Tables | 450+ |
-| RLS Policies | 1,000+ |
+The platform already has strong foundations:
+- `ai_scheduled_jobs` table with cron expressions, priority, enabled flags
+- `scheduler` edge function that polls due jobs, acquires batch locks, invokes `job-worker`
+- `AIBatchControlPanel` for manual triggers (investment_analysis, demand_signal_refresh, market_intelligence_update)
+- `ai_batch_locks` for duplicate prevention, `claim_next_job()` for concurrency
+- `get_ai_system_health` RPC returning freshness_state (FRESH/AGING/STALE)
+- Existing pg_cron jobs for SEO and listing revival
 
-### Three-Layer Architecture ✅
-| Layer | Key Features | Status |
-|-------|-------------|--------|
-| **Public Platform** | Property browse, search, map, detail pages, AI chat, mortgage tools | ✅ Mature |
-| **Investor Intelligence** | ROI forecasts, deal finder, portfolio builder, market trends, location intel | ✅ Mature |
-| **Admin AI Command Center** | Job queue, SEO engine, valuations, health monitor, KPI alerts | ✅ Mature |
+### What Needs to Be Built
 
-### Edge Function Architecture ✅
-| Router | Modes |
-|--------|-------|
-| `core-engine` | 25+ modes (investment_score, valuation, health, diagnostics, map_search) |
-| `ai-engine` | 25+ modes (descriptions, NLP, recommendations, market reports) |
-| `deal-engine` | deal_finder, alerts, negotiation, pricing, forecasts |
-| `ai-assistant` | SSE streaming chatbot, NLP search, investment advisor |
-| `notification-engine` | Email, push, campaigns |
-| `payment-engine` | Midtrans, PayPal, invoices, subscriptions |
-| `vendor-engine` | Vendor services, validation |
+**1. Seed Default Scheduled Jobs** (via Supabase insert tool)
 
-### AI Automation Systems ✅
-- SEO: Daily audits (3AM UTC), 6-hour auto-optimizer, property_seo_analysis tracking
-- Jobs: ai_jobs queue with claim_next_job() SKIP LOCKED, stall recovery, retry logic
-- Valuations: property_valuations with auto-recalculation
-- ROI: property_roi_forecast with 5-year projections
-- Autonomous Agent: 6-hour market scans for opportunity detection
+Insert 4 pre-configured schedules into `ai_scheduled_jobs`:
 
----
+| Job | Cron | Priority | Description |
+|-----|------|----------|-------------|
+| Daily Full AI Analysis | `0 2 * * *` (2 AM UTC) | 1 | Score all active listings |
+| Hourly Demand Refresh | `15 * * * *` (every hour at :15) | 3 | Lightweight buyer intent recalc |
+| Weekly Market Recalibration | `0 4 * * 1` (Mon 4 AM) | 2 | Macro trend + liquidity update |
+| Stale Intelligence Emergency | `*/10 * * * *` (every 10 min) | 1 | Check freshness, trigger if STALE |
 
-## Identified Gaps & Improvements
+**2. Enhance Scheduler Edge Function** (`supabase/functions/scheduler/index.ts`)
 
-### 🔴 Critical Performance
-1. **Map viewport debouncing** — `moveend` fires on every pan; needs 300ms debounce ✅ FIXED
-2. **Spatial indexes** — Need composite indexes on (latitude, longitude, status) ✅ FIXED
-3. **Platform health aggregation** — Real AI system status on admin overview ✅ FIXED (prev iteration)
+Add staleness detection logic after the normal job loop:
+- Call `get_ai_system_health` RPC
+- If `freshness_state === 'STALE'` and no `investment_analysis` job is pending/running, auto-create an emergency refresh job
+- Insert an `admin_alerts` row (priority: 'high') notifying admin of the emergency trigger
+- Add failure notification: when a scheduled job results in `error` status, insert an admin alert with the job type and error context
 
-### 🟡 Architecture Improvements
-4. **Unified health hook** — Single hook aggregating all AI subsystem health ✅ FIXED
-5. **Query deduplication** — MapBounds type duplicated across useMapSearch/useMapProperties
-6. **Large file refactoring** — PropertyDetail.tsx (1544 lines), Index.tsx (1199 lines) need splitting
+**3. Add Retry Columns to `ai_scheduled_jobs`** (migration)
 
-### 🟢 Future Expansion Ready
-- AI deal finder ✅ Exists (/deal-finder)
-- Predictive market analytics ✅ Exists (/market-trends, /price-prediction)
-- AI recommendation engine ✅ Exists (ai-match-engine-v2)
-- Location intelligence ✅ Exists (/location-intelligence)
-- Knowledge graph ✅ Hook exists (useKnowledgeGraph)
+```sql
+ALTER TABLE ai_scheduled_jobs
+  ADD COLUMN IF NOT EXISTS max_retries integer DEFAULT 3,
+  ADD COLUMN IF NOT EXISTS retry_count integer DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS last_error text,
+  ADD COLUMN IF NOT EXISTS last_status text DEFAULT 'idle';
+```
 
-### Recommended Next Steps
-1. Add database indexes for map queries at scale
-2. Debounce map viewport changes
-3. Create unified platform health dashboard
-4. Split PropertyDetail.tsx into sub-components
-5. Add API response caching headers to edge functions
-6. Implement property search result caching with stale-while-revalidate
+Update the scheduler to:
+- Track `last_status` ('triggered', 'skipped', 'error') on each cycle
+- On error, increment `retry_count`; if `retry_count >= max_retries`, auto-disable the schedule and fire a critical admin alert
+- Reset `retry_count` to 0 on successful trigger
+
+**4. Register pg_cron for Scheduler** (via insert tool)
+
+Register a pg_cron job to invoke the `scheduler` edge function every minute:
+```sql
+SELECT cron.schedule(
+  'ai-scheduler-every-minute',
+  '* * * * *',
+  $$ SELECT net.http_post(
+    url:='https://zymrajuuyyfkzdmptebl.supabase.co/functions/v1/scheduler',
+    headers:='{"Content-Type":"application/json","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."}'::jsonb,
+    body:='{"time":"' || now() || '"}'::jsonb
+  ) as request_id; $$
+);
+```
+
+**5. Admin Scheduling Dashboard Card** (`src/components/admin/AISchedulingDashboard.tsx`)
+
+A glassmorphic card showing:
+- List of all 4 schedules with enabled/disabled toggles
+- Next run countdown for each
+- Last status badge (idle/triggered/error) with retry count
+- Color-coded rows: green = healthy, orange = retrying, red = disabled due to failures
+- "Staleness Guard" indicator showing current freshness state from `get_ai_system_health`
+
+Placed in the AI Command Center section alongside existing batch control.
+
+**6. Update `AIBatchControlPanel`**
+
+Add a small "Auto-scheduling: Active" indicator at the bottom showing that automated scheduling is running, linking to the full scheduling dashboard.
+
+### Technical Details
+
+**Execution Priority Order:**
+1. Emergency staleness refresh (priority 1)
+2. Daily full analysis (priority 1, but scheduled for off-peak)
+3. Weekly recalibration (priority 2)
+4. Hourly demand refresh (priority 3, lightweight)
+
+The existing scheduler already sorts by `priority ASC` and caps at `MAX_CONCURRENT_TRIGGERS = 3`, so priority ordering is automatic.
+
+**Failure Recovery Flow:**
+```text
+Job triggers → Error
+  └→ retry_count++ , last_error = message
+  └→ retry_count < max_retries? → stays enabled, retries next cycle
+  └→ retry_count >= max_retries? → auto-disable + critical admin alert
+```
+
+**Admin Notification Triggers:**
+- Stale intelligence detected → high priority alert
+- Emergency refresh auto-triggered → high priority alert
+- Schedule disabled after max retries → critical alert
+- Successful recovery after retries → low priority info alert
+
+**Color State Mapping:**
+- Green: schedule healthy, last_status = 'triggered', retry_count = 0
+- Orange: retry_count > 0 but < max_retries
+- Red: disabled due to failures or freshness = STALE
+
+### Files Changed
+
+| File | Action |
+|------|--------|
+| `supabase/migrations/new.sql` | Add retry columns to `ai_scheduled_jobs` |
+| `supabase/functions/scheduler/index.ts` | Staleness detection, retry tracking, admin alerts |
+| `src/components/admin/AISchedulingDashboard.tsx` | New scheduling overview card |
+| `src/hooks/useScheduledJobs.ts` | Extend interface with retry fields |
+| `src/components/admin/AIBatchControlPanel.tsx` | Add auto-scheduling indicator |
+| `src/components/admin/AdminOverview.tsx` | Import + place scheduling dashboard |
+| Data insert (via tool) | Seed 4 default schedules + pg_cron registration |
+
