@@ -150,7 +150,57 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Compute readiness score on every scheduler cycle
+    // 7. Run job queue watchdog (stall detection, retry, health check)
+    let watchdogResult: any = null;
+    try {
+      const { data: wd } = await supabase.rpc("job_queue_watchdog");
+      watchdogResult = wd;
+
+      if (wd) {
+        if (wd.stalled_failed > 0) {
+          await supabase.from("admin_alerts").insert({
+            type: "job_watchdog",
+            title: "⛔ Jobs Permanently Failed",
+            message: `Watchdog permanently failed ${wd.stalled_failed} job(s) after 3 stall recoveries. Queue health: ${wd.health_status}.`,
+            priority: "critical",
+            auto_generated: true,
+            action_required: true,
+            alert_category: "system",
+            urgency_level: 4,
+          });
+        }
+
+        if (wd.stalled_reset > 0) {
+          await supabase.from("admin_alerts").insert({
+            type: "job_watchdog",
+            title: "⚠️ Stalled Jobs Recovered",
+            message: `Watchdog reset ${wd.stalled_reset} stalled job(s) for retry. Queue health: ${wd.health_status}.`,
+            priority: "medium",
+            auto_generated: true,
+            action_required: false,
+            alert_category: "system",
+            urgency_level: 2,
+          });
+        }
+
+        if (wd.queue_delayed && wd.pending_count > 5) {
+          await supabase.from("admin_alerts").insert({
+            type: "job_queue_delay",
+            title: "🕐 Job Queue Backlog Detected",
+            message: `${wd.pending_count} jobs pending, oldest waiting ${Math.round(wd.oldest_pending_age_seconds / 60)}min. Queue may be congested.`,
+            priority: wd.health_status === "critical" ? "high" : "medium",
+            auto_generated: true,
+            action_required: wd.health_status === "critical",
+            alert_category: "system",
+            urgency_level: wd.health_status === "critical" ? 3 : 2,
+          });
+        }
+      }
+    } catch (e) {
+      console.error("Watchdog execution failed:", e);
+    }
+
+    // 8. Compute readiness score
     try {
       await supabase.rpc("compute_ai_readiness");
     } catch (e) {
@@ -158,7 +208,7 @@ Deno.serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ triggered, total_due: (dueJobs || []).length, results }),
+      JSON.stringify({ triggered, total_due: (dueJobs || []).length, results, watchdog: watchdogResult }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {
