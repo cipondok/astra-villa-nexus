@@ -361,6 +361,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "listing-optimization-center",
+      label: "Listing Optimization Center",
+      icon: Sparkles,
+      description: "AI-powered listing performance optimization with bulk actions and impact previews",
+      badge: "New"
+    },
+    {
       key: "content-moderation",
       label: "Content Moderation",
       icon: Shield,

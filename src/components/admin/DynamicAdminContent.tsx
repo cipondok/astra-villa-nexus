@@ -65,6 +65,8 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
       case "properties":
       case "property-management-hub":
         return <AdminPropertyManagement />;
+      case "listing-optimization-center":
+        return <ListingOptimizationCenter />;
       case "property-management-advanced":
         return <PropertyManagementAdvanced />;
       case "analytics":
