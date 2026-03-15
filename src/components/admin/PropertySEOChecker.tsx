@@ -472,6 +472,13 @@ const PropertySEOChecker = () => {
     });
   }, [selectedPropertyId, descRewrite]);
 
+  const handleTrafficPrediction = useCallback(() => {
+    if (!selectedPropertyId) return;
+    trafficPrediction.mutate(selectedPropertyId, {
+      onSuccess: (data) => setTrafficResult(data),
+    });
+  }, [selectedPropertyId, trafficPrediction]);
+
   // Save custom keywords
   const handleSaveKeywords = useCallback(async () => {
     if (!currentAnalysis) return;
