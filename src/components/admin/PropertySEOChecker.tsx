@@ -936,6 +936,7 @@ const PropertySEOChecker = () => {
           <TabsTrigger value="price-strat" className="text-xs gap-1"><Target className="h-3 w-3" />Strategy</TabsTrigger>
           <TabsTrigger value="demand-fc" className="text-xs gap-1"><TrendingUp className="h-3 w-3" />Demand</TabsTrigger>
           <TabsTrigger value="buyer-seg" className="text-xs gap-1"><Lightbulb className="h-3 w-3" />Segment</TabsTrigger>
+          <TabsTrigger value="resale-risk" className="text-xs gap-1"><AlertTriangle className="h-3 w-3" />Risk</TabsTrigger>
           {currentAnalysis && <TabsTrigger value="detail" className="text-xs gap-1"><Eye className="h-3 w-3" />Detail</TabsTrigger>}
         </TabsList>
 
