@@ -12,6 +12,7 @@ import { useMarketTrendPrediction, type MarketTrendResponse } from '@/hooks/useM
 import { useRentalEstimate, type RentalEstimateResponse } from '@/hooks/useRentalEstimate';
 import { generateInvestmentBadge } from '@/hooks/useInvestmentBadge';
 import { useBuyerIntentAnalyzer, type BuyerIntentResponse } from '@/hooks/useBuyerIntentAnalyzer';
+import { classifyLeadPriority } from '@/hooks/useLeadPriority';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
