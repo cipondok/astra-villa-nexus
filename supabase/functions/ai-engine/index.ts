@@ -1991,6 +1991,78 @@ Tasks:
       }
     }
 
+    // ── market-insight-block: Short market insight for listing display ──
+    if (action === "market-insight-block") {
+      const village = normalizeText(payload.village);
+      const district = normalizeText(payload.district);
+      const city = normalizeText(payload.city);
+      const price_trend = normalizeText(payload.price_trend);
+      const demand_level = normalizeText(payload.demand_level);
+      const growth_score = Number(payload.growth_score) || 0;
+
+      if (!city) return json({ error: "city is required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const locationStr = [village, district, city].filter(Boolean).join(", ");
+
+      const systemPrompt = `You are a property insight summarization AI. Generate short market insight blocks for listing display. Write in Indonesian. Exactly 40-60 words. No bullet points, no formatting — just a single flowing paragraph.`;
+
+      const userPrompt = `Generate a short market insight block:
+
+Location: ${locationStr}
+Market Direction: ${price_trend || "N/A"}
+Demand Level: ${demand_level || "N/A"}
+Growth Score: ${growth_score || "N/A"}/100`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "market_insight_block_result",
+                description: "Return the market insight text",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    insight_text: { type: "string", description: "40-60 word market insight paragraph in Indonesian" },
+                  },
+                  required: ["insight_text"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "market_insight_block_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI market insight failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "market-insight-block", result, input: { village, district, city, price_trend, demand_level, growth_score } });
+      } catch (e) {
+        console.error("Market insight block exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Market insight failed" }, 500);
+      }
+    }
+
     // ── location-market-report: Structured property market report ──
     if (action === "location-market-report") {
       const village = normalizeText(payload.village);
