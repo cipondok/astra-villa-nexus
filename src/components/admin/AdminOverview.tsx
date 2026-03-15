@@ -39,6 +39,7 @@ import {
   ChevronRight
 } from "lucide-react";
 import { motion } from "framer-motion";
+import AIHealthSummaryCard from "./AIHealthSummaryCard";
 
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
