@@ -21,11 +21,11 @@ export interface ListingOptimizationResult {
   scanned_at: string;
 }
 
-export function useListingPerformanceOptimizer(enabled = true) {
+export function useListingPerformanceOptimizer(limit = 15, enabled = true) {
   return useQuery({
-    queryKey: ['listing-performance-optimizer'],
+    queryKey: ['listing-performance-optimizer', limit],
     queryFn: async (): Promise<ListingOptimizationResult> => {
-      const { data, error } = await supabase.rpc('detect_listing_optimizations', { p_limit: 15 });
+      const { data, error } = await supabase.rpc('detect_listing_optimizations', { p_limit: limit });
       if (error) throw error;
       return data as unknown as ListingOptimizationResult;
     },
