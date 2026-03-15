@@ -2600,6 +2600,53 @@ Tasks:
       }
     }
 
+    // ── match-narrative: Storytelling why a property suits a buyer ──
+    if (action === "match-narrative") {
+      const purpose = normalizeText(payload.purpose);
+      const location_advantage = normalizeText(payload.location_advantage);
+      const investment_potential = normalizeText(payload.investment_potential);
+
+      if (!purpose || !location_advantage || !investment_potential) {
+        return json({ error: "purpose, location_advantage, and investment_potential are required" }, 400);
+      }
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: `You are a persuasive Indonesian real estate advisor storyteller. Write evocative, concise property recommendation narratives in Indonesian. Exactly 40-60 words. No JSON, no labels — return narrative text only.` },
+              { role: "user", content: `Write a short narrative (40-60 words, Indonesian) explaining why this property is perfect for the buyer:\n\n- Buyer Purpose: ${purpose}\n- Location Advantage: ${location_advantage}\n- Investment Potential: ${investment_potential}\n\nReturn text only.` },
+            ],
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI match narrative failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const narrative = aiData.choices?.[0]?.message?.content?.trim();
+        if (!narrative) return json({ error: "AI returned empty narrative" }, 500);
+
+        return json({
+          action: "match-narrative",
+          narrative,
+          input: { purpose, location_advantage, investment_potential },
+        });
+      } catch (e) {
+        console.error("Match narrative exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Match narrative failed" }, 500);
+      }
+    }
+
     // ── market-momentum: Detect current market momentum ──
     if (action === "market-momentum") {
       const growth_score = Number(payload.growth_score) || 0;
