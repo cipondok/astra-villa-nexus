@@ -33295,6 +33295,7 @@ export type Database = {
           valid_until: string
         }[]
       }
+      get_geo_expansion_intelligence: { Args: never; Returns: Json }
       get_image_stats: { Args: never; Returns: Json }
       get_lead_intelligence_summary: { Args: never; Returns: Json }
       get_listing_optimization_alerts: { Args: never; Returns: Json }
