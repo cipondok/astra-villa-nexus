@@ -1991,6 +1991,84 @@ Tasks:
       }
     }
 
+    // ── growth-content-plan: User acquisition content plan ──
+    if (action === "growth-content-plan") {
+      const city = normalizeText(payload.city);
+      const target_user = normalizeText(payload.target_user);
+
+      if (!city || !target_user) return json({ error: "city and target_user are required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a PropTech growth marketing strategist for Indonesia.
+Generate user acquisition content plans for property platforms.
+Write all content ideas in Indonesian. Be specific and hyperlocal.
+Goals: Increase organic traffic, onboard property agents, attract property investors.`;
+
+      const userPrompt = `Generate a growth content plan:
+
+City Focus: ${city}
+Target User: ${target_user}
+
+Tasks:
+1. Suggest 10 hyperlocal SEO content ideas
+2. Suggest 5 social media content themes
+3. Suggest 5 viral property insight video topics
+4. Suggest outreach strategy to attract property agents (3 strategies)
+5. Suggest lead magnet ideas (3 ideas)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "growth_content_plan_result",
+                description: "Return growth content plan",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    seo_content_ideas: { type: "array", items: { type: "string" }, description: "10 hyperlocal SEO content ideas in Indonesian" },
+                    social_content_themes: { type: "array", items: { type: "string" }, description: "5 social media content themes in Indonesian" },
+                    video_topics: { type: "array", items: { type: "string" }, description: "5 viral property insight video topics in Indonesian" },
+                    agent_outreach_strategies: { type: "array", items: { type: "string" }, description: "3 outreach strategies to attract agents in Indonesian" },
+                    lead_magnet_ideas: { type: "array", items: { type: "string" }, description: "3 lead magnet ideas in Indonesian" },
+                  },
+                  required: ["seo_content_ideas", "social_content_themes", "video_topics", "agent_outreach_strategies", "lead_magnet_ideas"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "growth_content_plan_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI content plan failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "growth-content-plan", result, input: { city, target_user } });
+      } catch (e) {
+        console.error("Growth content plan exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Content plan failed" }, 500);
+      }
+    }
+
     // ── seo-headlines: Generate high-CTR SEO headlines ──
     if (action === "seo-headlines") {
       const city = normalizeText(payload.city);
