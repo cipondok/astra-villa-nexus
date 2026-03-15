@@ -8,6 +8,7 @@ import { useLandingPageGenerator, type LandingPageResponse, type LandingPageInpu
 import { useKeywordCluster, type KeywordClusterResponse, type KeywordClusterInput } from '@/hooks/useKeywordCluster';
 import { useUrlSlugGenerator, type UrlSlugResponse } from '@/hooks/useUrlSlugGenerator';
 import { useInvestmentAttractiveness, type InvestmentAttractivenessResponse } from '@/hooks/useInvestmentAttractiveness';
+import { useMarketTrendPrediction, type MarketTrendResponse } from '@/hooks/useMarketTrendPrediction';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -358,6 +359,8 @@ const PropertySEOChecker = () => {
   const [iaBuildingSize, setIaBuildingSize] = useState('');
   const [iaLandSize, setIaLandSize] = useState('');
   const [iaNearby, setIaNearby] = useState('');
+  const [marketTrendResult, setMarketTrendResult] = useState<MarketTrendResponse | null>(null);
+  const [mtPropertyType, setMtPropertyType] = useState('');
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
@@ -415,6 +418,7 @@ const PropertySEOChecker = () => {
   const kwCluster = useKeywordCluster();
   const urlSlugGen = useUrlSlugGenerator();
   const investAttr = useInvestmentAttractiveness();
+  const marketTrend = useMarketTrendPrediction();
 
   // Reset city/area on state change, reset pages on any filter change
   useEffect(() => { setFilterCity(''); setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterState]);
@@ -829,6 +833,7 @@ const PropertySEOChecker = () => {
           <TabsTrigger value="kw-cluster" className="text-xs gap-1"><Hash className="h-3 w-3" />KW Cluster</TabsTrigger>
           <TabsTrigger value="url-slugs" className="text-xs gap-1"><Globe className="h-3 w-3" />URL Slugs</TabsTrigger>
           <TabsTrigger value="invest-attr" className="text-xs gap-1"><TrendingUp className="h-3 w-3" />Invest Score</TabsTrigger>
+          <TabsTrigger value="market-trend" className="text-xs gap-1"><BarChart3 className="h-3 w-3" />Trend</TabsTrigger>
           {currentAnalysis && <TabsTrigger value="detail" className="text-xs gap-1"><Eye className="h-3 w-3" />Detail</TabsTrigger>}
         </TabsList>
 
@@ -1650,6 +1655,142 @@ const PropertySEOChecker = () => {
                   <CardContent className="p-3">
                     <p className="text-[10px] font-semibold text-muted-foreground mb-1">🎯 Investment Summary</p>
                     <p className="text-xs text-foreground leading-relaxed">{r.investment_summary}</p>
+                  </CardContent>
+                </Card>
+              </div>
+            );
+          })()}
+        </TabsContent>
+
+        {/* ─── Market Trend Prediction Tab ─── */}
+        <TabsContent value="market-trend" className="space-y-3">
+          <Card className="bg-card border-border">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <BarChart3 className="h-4 w-4 text-primary" />
+                Market Trend Prediction
+              </CardTitle>
+              <CardDescription className="text-[10px]">
+                AI-powered property price movement prediction by location and property type
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0 space-y-3">
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Province *</label>
+                  <Select value={lpProvince} onValueChange={setLpProvince}>
+                    <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Province" /></SelectTrigger>
+                    <SelectContent>
+                      {INDONESIA_PROVINCES.map(p => (
+                        <SelectItem key={p} value={p} className="text-xs">{p}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">City *</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. Bandung" value={lpCity} onChange={e => setLpCity(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">District</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. Coblong" value={lpDistrict} onChange={e => setLpDistrict(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Village</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. Dago" value={lpVillage} onChange={e => setLpVillage(e.target.value)} />
+                </div>
+                <div className="col-span-2">
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Property Type *</label>
+                  <Select value={mtPropertyType} onValueChange={setMtPropertyType}>
+                    <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Select type" /></SelectTrigger>
+                    <SelectContent>
+                      {['house', 'apartment', 'villa', 'kost', 'land', 'commercial', 'townhouse', 'shophouse'].map(t => (
+                        <SelectItem key={t} value={t} className="text-xs capitalize">{t}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <Button
+                size="sm"
+                className="h-8 text-xs w-full"
+                disabled={!lpProvince || !lpCity || !mtPropertyType || marketTrend.isPending}
+                onClick={() => {
+                  marketTrend.mutate(
+                    { province: lpProvince, city: lpCity, district: lpDistrict, village: lpVillage, property_type: mtPropertyType },
+                    { onSuccess: (data) => setMarketTrendResult(data) }
+                  );
+                }}
+              >
+                {marketTrend.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <BarChart3 className="h-3 w-3 mr-1" />}
+                Predict Market Trend
+              </Button>
+            </CardContent>
+          </Card>
+
+          {marketTrend.isPending && (
+            <Card className="bg-card border-border">
+              <CardContent className="p-6 text-center">
+                <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                <p className="text-xs text-muted-foreground">AI is analyzing market trends...</p>
+                <Progress value={50} className="h-1.5 mt-3 max-w-xs mx-auto" />
+              </CardContent>
+            </Card>
+          )}
+
+          {marketTrendResult && (() => {
+            const r = marketTrendResult.result;
+            const trendIcon = r.price_trend === 'UP' ? '📈' : r.price_trend === 'DOWN' ? '📉' : '➡️';
+            const trendColor = r.price_trend === 'UP' ? 'text-chart-2 border-chart-2/40 bg-chart-2/10' :
+              r.price_trend === 'DOWN' ? 'text-destructive border-destructive/40 bg-destructive/10' :
+              'text-chart-4 border-chart-4/40 bg-chart-4/10';
+
+            return (
+              <div className="space-y-3">
+                {/* Trend Direction Card */}
+                <Card className={`border-2 ${trendColor}`}>
+                  <CardContent className="p-4 text-center">
+                    <div className="text-3xl mb-1">{trendIcon}</div>
+                    <Badge variant="outline" className="text-lg font-bold px-4 py-1">{r.price_trend}</Badge>
+                    <p className="text-[10px] text-muted-foreground mt-2">
+                      {marketTrendResult.input.property_type} · {[marketTrendResult.input.village, marketTrendResult.input.city].filter(Boolean).join(', ')}
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Growth Estimates */}
+                <div className="grid grid-cols-2 gap-2">
+                  <Card className="bg-card border-border">
+                    <CardContent className="p-3 text-center">
+                      <p className="text-[9px] text-muted-foreground">1-Year Growth</p>
+                      <p className="text-lg font-bold text-foreground">{r.one_year_growth_estimate}</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-card border-border">
+                    <CardContent className="p-3 text-center">
+                      <p className="text-[9px] text-muted-foreground">5-Year Potential</p>
+                      <p className="text-lg font-bold text-foreground">{r.five_year_growth_potential}</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Growth Drivers */}
+                <Card className="bg-card border-border">
+                  <CardContent className="p-3">
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-2">🚀 Growth Drivers</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {r.growth_drivers.map((driver, i) => (
+                        <Badge key={i} variant="secondary" className="text-[10px]">{driver}</Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Market Outlook */}
+                <Card className="bg-card border-border border-l-2 border-l-primary">
+                  <CardContent className="p-3">
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-1">🔮 Market Outlook</p>
+                    <p className="text-xs text-foreground leading-relaxed">{r.market_outlook_summary}</p>
                   </CardContent>
                 </Card>
               </div>

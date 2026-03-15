@@ -1224,6 +1224,114 @@ Generate the rewritten description.`;
       }
     }
 
+    // ── market-trend-prediction: Predict property price movement for a location ──
+    if (action === "market-trend-prediction") {
+      const province = normalizeText(payload.province);
+      const city = normalizeText(payload.city);
+      const district = normalizeText(payload.district) || "";
+      const village = normalizeText(payload.village) || "";
+      const propertyType = normalizeText(payload.property_type);
+
+      if (!province || !city || !propertyType) return json({ error: "province, city, and property_type are required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const locationLabel = [village, district, city, province].filter(Boolean).join(", ");
+
+      // Fetch market data for context
+      let marketContext = "";
+      try {
+        const { data: listings } = await supabase
+          .from("properties")
+          .select("price, building_area_sqm, land_area_sqm, created_at, listing_type")
+          .eq("city", city)
+          .eq("status", "active")
+          .gt("price", 0)
+          .limit(50);
+
+        if (listings && listings.length > 0) {
+          const prices = listings.map((l: any) => l.price);
+          const avg = Math.round(prices.reduce((a: number, b: number) => a + b, 0) / prices.length);
+          const saleCount = listings.filter((l: any) => l.listing_type === "sale").length;
+          const rentCount = listings.filter((l: any) => l.listing_type === "rent").length;
+          marketContext = `\nMarket data for ${city}: ${listings.length} active listings, avg price Rp ${avg.toLocaleString()}, ${saleCount} for sale, ${rentCount} for rent.`;
+        }
+      } catch (e) { console.error("Market data fetch:", e); }
+
+      const systemPrompt = `You are a property market trend prediction AI specialized in Indonesian real estate markets.
+You analyze location fundamentals, infrastructure development, demographic shifts, and economic indicators to predict property price movements.
+Base predictions on real Indonesian market dynamics including government infrastructure programs (IKN, toll roads, MRT), tourism growth, university expansion, and industrial zones.`;
+
+      const userPrompt = `Predict future property price movement for:
+
+Location: ${locationLabel}
+Property Type: ${propertyType}
+${marketContext}
+
+Tasks:
+1. Estimate price trend direction (UP / STABLE / DOWN)
+2. Estimate 1-year growth percentage
+3. Estimate 5-year growth potential
+4. Identify growth drivers (infrastructure, tourism, education, CBD expansion, etc.)
+5. Provide market outlook summary`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "market_trend_result",
+                description: "Return market trend prediction for a location",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    price_trend: { type: "string", enum: ["UP", "STABLE", "DOWN"], description: "Expected price direction" },
+                    one_year_growth_estimate: { type: "string", description: "Estimated 1-year price growth e.g. '+5-8%'" },
+                    five_year_growth_potential: { type: "string", description: "Estimated 5-year cumulative growth e.g. '+25-40%'" },
+                    growth_drivers: { type: "array", items: { type: "string" }, description: "Key growth drivers for this location, 4-6 items" },
+                    market_outlook_summary: { type: "string", description: "3-4 sentence market outlook and recommendation" },
+                  },
+                  required: ["price_trend", "one_year_growth_estimate", "five_year_growth_potential", "growth_drivers", "market_outlook_summary"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "market_trend_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded, please try again later" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI market trend prediction failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+
+        return json({
+          action: "market-trend-prediction",
+          result,
+          input: { province, city, district, village, property_type: propertyType },
+        });
+      } catch (e) {
+        console.error("Market trend prediction exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Market trend prediction failed" }, 500);
+      }
+    }
+
     // ── investment-attractiveness: AI investment score for a property ──
     if (action === "investment-attractiveness") {
       const propertyType = normalizeText(payload.property_type);
