@@ -452,6 +452,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           {/* AI Scheduling Dashboard */}
           <AISchedulingDashboard />
 
+          {/* Job Queue Watchdog */}
+          <JobQueueHealthCard />
+
           {/* AI Systems Status */}
           <Card className="border-border/30">
             <CardHeader className="p-3 pb-2">
