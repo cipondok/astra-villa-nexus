@@ -1224,6 +1224,101 @@ Generate the rewritten description.`;
       }
     }
 
+    // ── keyword-cluster: Generate keyword clusters by location and intent ──
+    if (action === "keyword-cluster") {
+      const province = normalizeText(payload.province);
+      const city = normalizeText(payload.city);
+      const district = normalizeText(payload.district) || "";
+      const village = normalizeText(payload.village) || "";
+
+      if (!province || !city) return json({ error: "province and city are required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const locationLabel = [village, district, city, province].filter(Boolean).join(", ");
+
+      const systemPrompt = `You are an elite Indonesian property search behavior analyst.
+You generate keyword clusters targeting high-intent Google searches for property in specific Indonesian locations.
+All keywords must be in Indonesian language, reflecting how real Indonesian buyers/renters/investors actually search on Google.
+Include natural variations with location names, property types, and transaction intent.`;
+
+      const userPrompt = `Generate keyword clusters for property searches in this location:
+
+Province: ${province}
+City: ${city}
+District: ${district || "N/A"}
+Village: ${village || "N/A"}
+
+Generate exactly:
+- 10 BUY intent keywords (e.g. "rumah dijual di ${village || city}", "villa murah ${city}")
+- 10 RENT intent keywords (e.g. "sewa rumah ${district || city}", "kost dekat ${village || city}")
+- 10 INVESTMENT intent keywords (e.g. "properti investasi ${city}", "tanah kavling ${city}")
+- 10 LONG-TAIL urgent buyer keywords (e.g. "rumah siap huni ${city} harga dibawah 1M", "villa view laut ${city} BU")
+- 10 lifestyle/landmark keywords (e.g. "rumah dekat pantai ${city}", "properti dekat sekolah ${district || city}")
+
+Also estimate the combined monthly search volume and identify the top keyword opportunity.`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "keyword_cluster_result",
+                description: "Return keyword clusters organized by search intent",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    buy_keywords: { type: "array", items: { type: "string" }, description: "10 buy-intent keywords in Indonesian" },
+                    rent_keywords: { type: "array", items: { type: "string" }, description: "10 rent-intent keywords in Indonesian" },
+                    investment_keywords: { type: "array", items: { type: "string" }, description: "10 investment-intent keywords in Indonesian" },
+                    urgent_keywords: { type: "array", items: { type: "string" }, description: "10 long-tail urgent buyer keywords in Indonesian" },
+                    lifestyle_keywords: { type: "array", items: { type: "string" }, description: "10 lifestyle/landmark keywords in Indonesian" },
+                    total_keywords: { type: "number", description: "Total number of keywords generated" },
+                    estimated_combined_volume: { type: "string", description: "Estimated combined monthly search volume" },
+                    top_opportunity: { type: "string", description: "The single best keyword opportunity and why" },
+                  },
+                  required: ["buy_keywords", "rent_keywords", "investment_keywords", "urgent_keywords", "lifestyle_keywords", "total_keywords", "estimated_combined_volume", "top_opportunity"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "keyword_cluster_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded, please try again later" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          console.error("AI keyword-cluster error:", aiResp.status);
+          return json({ error: "AI keyword cluster generation failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+
+        return json({
+          action: "keyword-cluster",
+          result,
+          location: { province, city, district, village },
+        });
+      } catch (e) {
+        console.error("Keyword cluster exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Keyword cluster generation failed" }, 500);
+      }
+    }
+
     // ── landing-page-content: Generate SEO landing page content for a location ──
     if (action === "landing-page-content") {
       const province = normalizeText(payload.province);

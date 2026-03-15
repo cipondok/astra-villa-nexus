@@ -814,6 +814,7 @@ const PropertySEOChecker = () => {
           <TabsTrigger value="jobs" className="text-xs gap-1"><Loader2 className="h-3 w-3" />AI Jobs</TabsTrigger>
           <TabsTrigger value="platform-health" className="text-xs gap-1"><Sparkles className="h-3 w-3" />Platform Health</TabsTrigger>
           <TabsTrigger value="landing-gen" className="text-xs gap-1"><FileText className="h-3 w-3" />Landing Gen</TabsTrigger>
+          <TabsTrigger value="kw-cluster" className="text-xs gap-1"><Hash className="h-3 w-3" />KW Cluster</TabsTrigger>
           {currentAnalysis && <TabsTrigger value="detail" className="text-xs gap-1"><Eye className="h-3 w-3" />Detail</TabsTrigger>}
         </TabsList>
 
