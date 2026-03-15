@@ -372,6 +372,11 @@ const PropertySEOChecker = () => {
   const [badgeTrend, setBadgeTrend] = useState<'UP' | 'STABLE' | 'DOWN'>('UP');
   const [badgeYield, setBadgeYield] = useState('');
   const [badgeResult, setBadgeResult] = useState<{ badge: string; color: string } | null>(null);
+  const [biMessage, setBiMessage] = useState('');
+  const [biPropertyType, setBiPropertyType] = useState('');
+  const [biTransactionType, setBiTransactionType] = useState('');
+  const [biCity, setBiCity] = useState('');
+  const [buyerIntentResult, setBuyerIntentResult] = useState<BuyerIntentResponse | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
