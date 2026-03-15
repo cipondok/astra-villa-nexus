@@ -10,6 +10,7 @@ import { useUrlSlugGenerator, type UrlSlugResponse } from '@/hooks/useUrlSlugGen
 import { useInvestmentAttractiveness, type InvestmentAttractivenessResponse } from '@/hooks/useInvestmentAttractiveness';
 import { useMarketTrendPrediction, type MarketTrendResponse } from '@/hooks/useMarketTrendPrediction';
 import { useRentalEstimate, type RentalEstimateResponse } from '@/hooks/useRentalEstimate';
+import { generateInvestmentBadge } from '@/hooks/useInvestmentBadge';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
