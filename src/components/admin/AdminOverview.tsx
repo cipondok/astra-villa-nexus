@@ -47,6 +47,7 @@ import DealPipelineCard from "./DealPipelineCard";
 import GeoExpansionCard from "./GeoExpansionCard";
 import AIBatchControlPanel from "./AIBatchControlPanel";
 import AISchedulingDashboard from "./AISchedulingDashboard";
+import JobQueueHealthCard from "./JobQueueHealthCard";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
