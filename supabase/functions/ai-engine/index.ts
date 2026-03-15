@@ -1224,6 +1224,116 @@ Generate the rewritten description.`;
       }
     }
 
+    // ── url-slug-generator: Generate SEO URL slug variations for location pages ──
+    if (action === "url-slug-generator") {
+      const province = normalizeText(payload.province);
+      const city = normalizeText(payload.city);
+      const district = normalizeText(payload.district) || "";
+      const village = normalizeText(payload.village) || "";
+
+      if (!province || !city) return json({ error: "province and city are required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const locationLabel = [village, district, city, province].filter(Boolean).join(", ");
+
+      const systemPrompt = `You are a programmatic SEO planner for a national Indonesian property marketplace platform.
+You generate SEO-optimized URL slug variations for location-based landing pages.
+All slugs must use lowercase, hyphens, no special characters, and be in Indonesian.
+Each slug should target a specific search intent and keyword combination.`;
+
+      const userPrompt = `Generate SEO landing page URL slug variations for:
+
+Province: ${province}
+City: ${city}
+District: ${district || "N/A"}
+Village: ${village || "N/A"}
+
+Create URL slug ideas targeting these categories:
+1. jual rumah (buy house)
+2. sewa rumah (rent house)
+3. investasi properti (property investment)
+4. rumah murah (affordable house)
+5. properti premium (premium property)
+6. tanah dijual (land for sale)
+
+For each category, generate 3-5 slug variations at different location granularities (village, district, city, province).
+Include the suggested page title and estimated search volume for each.
+Also provide implementation priority order and sitemap strategy.`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "url_slug_result",
+                description: "Return SEO URL slug variations for property landing pages",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    seo_url_variations: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          slug: { type: "string", description: "URL slug e.g. /jual-rumah-denpasar-bali" },
+                          category: { type: "string", description: "Category: jual_rumah, sewa_rumah, investasi, rumah_murah, premium, tanah" },
+                          target_keyword: { type: "string", description: "Primary keyword this page targets in Indonesian" },
+                          suggested_title: { type: "string", description: "Suggested SEO page title in Indonesian, max 65 chars" },
+                          search_intent: { type: "string", description: "TRANSACTIONAL, COMMERCIAL, or INFORMATIONAL" },
+                          estimated_volume: { type: "string", description: "Estimated monthly search volume e.g. '500-1,000'" },
+                        },
+                        required: ["slug", "category", "target_keyword", "suggested_title", "search_intent", "estimated_volume"],
+                        additionalProperties: false,
+                      },
+                      description: "18-30 URL slug variations across all categories",
+                    },
+                    total_pages: { type: "number", description: "Total number of landing pages suggested" },
+                    implementation_priority: { type: "array", items: { type: "string" }, description: "Ordered list of which pages to build first" },
+                    sitemap_strategy: { type: "string", description: "Recommended sitemap structure and internal linking approach" },
+                  },
+                  required: ["seo_url_variations", "total_pages", "implementation_priority", "sitemap_strategy"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "url_slug_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded, please try again later" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          console.error("AI url-slug-generator error:", aiResp.status);
+          return json({ error: "AI URL slug generation failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+
+        return json({
+          action: "url-slug-generator",
+          result,
+          location: { province, city, district, village },
+        });
+      } catch (e) {
+        console.error("URL slug generator exception:", e);
+        return json({ error: e instanceof Error ? e.message : "URL slug generation failed" }, 500);
+      }
+    }
+
     // ── keyword-cluster: Generate keyword clusters by location and intent ──
     if (action === "keyword-cluster") {
       const province = normalizeText(payload.province);

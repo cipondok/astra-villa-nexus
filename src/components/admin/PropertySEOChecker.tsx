@@ -6,6 +6,7 @@ import { useTrafficPrediction, type TrafficPredictionResponse } from '@/hooks/us
 import { useInternalLinking, type InternalLinkingResponse } from '@/hooks/useInternalLinking';
 import { useLandingPageGenerator, type LandingPageResponse, type LandingPageInput } from '@/hooks/useLandingPageGenerator';
 import { useKeywordCluster, type KeywordClusterResponse, type KeywordClusterInput } from '@/hooks/useKeywordCluster';
+import { useUrlSlugGenerator, type UrlSlugResponse } from '@/hooks/useUrlSlugGenerator';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -348,6 +349,7 @@ const PropertySEOChecker = () => {
   const [linkingResult, setLinkingResult] = useState<InternalLinkingResponse | null>(null);
   const [landingPageResult, setLandingPageResult] = useState<LandingPageResponse | null>(null);
   const [kwClusterResult, setKwClusterResult] = useState<KeywordClusterResponse | null>(null);
+  const [urlSlugResult, setUrlSlugResult] = useState<UrlSlugResponse | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
@@ -403,6 +405,7 @@ const PropertySEOChecker = () => {
   const internalLinking = useInternalLinking();
   const landingPageGen = useLandingPageGenerator();
   const kwCluster = useKeywordCluster();
+  const urlSlugGen = useUrlSlugGenerator();
 
   // Reset city/area on state change, reset pages on any filter change
   useEffect(() => { setFilterCity(''); setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterState]);
@@ -815,6 +818,7 @@ const PropertySEOChecker = () => {
           <TabsTrigger value="platform-health" className="text-xs gap-1"><Sparkles className="h-3 w-3" />Platform Health</TabsTrigger>
           <TabsTrigger value="landing-gen" className="text-xs gap-1"><FileText className="h-3 w-3" />Landing Gen</TabsTrigger>
           <TabsTrigger value="kw-cluster" className="text-xs gap-1"><Hash className="h-3 w-3" />KW Cluster</TabsTrigger>
+          <TabsTrigger value="url-slugs" className="text-xs gap-1"><Globe className="h-3 w-3" />URL Slugs</TabsTrigger>
           {currentAnalysis && <TabsTrigger value="detail" className="text-xs gap-1"><Eye className="h-3 w-3" />Detail</TabsTrigger>}
         </TabsList>
 
@@ -1326,6 +1330,155 @@ const PropertySEOChecker = () => {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          )}
+        </TabsContent>
+
+        {/* ─── URL Slug Generator Tab ─── */}
+        <TabsContent value="url-slugs" className="space-y-3">
+          <Card className="bg-card border-border">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Globe className="h-4 w-4 text-primary" />
+                SEO URL Slug Generator
+              </CardTitle>
+              <CardDescription className="text-[10px]">
+                Generate programmatic SEO landing page URL variations for location targeting
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0 space-y-3">
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Province *</label>
+                  <Select value={lpProvince} onValueChange={setLpProvince}>
+                    <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Select province" /></SelectTrigger>
+                    <SelectContent>
+                      {INDONESIA_PROVINCES.map(p => (
+                        <SelectItem key={p} value={p} className="text-xs">{p}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">City *</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. Denpasar" value={lpCity} onChange={e => setLpCity(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">District</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. Kuta Selatan" value={lpDistrict} onChange={e => setLpDistrict(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Village</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. Ungasan" value={lpVillage} onChange={e => setLpVillage(e.target.value)} />
+                </div>
+              </div>
+              <Button
+                size="sm"
+                className="h-8 text-xs w-full"
+                disabled={!lpProvince || !lpCity || urlSlugGen.isPending}
+                onClick={() => {
+                  urlSlugGen.mutate(
+                    { province: lpProvince, city: lpCity, district: lpDistrict, village: lpVillage },
+                    { onSuccess: (data) => setUrlSlugResult(data) }
+                  );
+                }}
+              >
+                {urlSlugGen.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Globe className="h-3 w-3 mr-1" />}
+                Generate URL Slugs
+              </Button>
+            </CardContent>
+          </Card>
+
+          {urlSlugGen.isPending && (
+            <Card className="bg-card border-border">
+              <CardContent className="p-6 text-center">
+                <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                <p className="text-xs text-muted-foreground">AI is generating URL slug variations...</p>
+                <Progress value={50} className="h-1.5 mt-3 max-w-xs mx-auto" />
+              </CardContent>
+            </Card>
+          )}
+
+          {urlSlugResult && (
+            <div className="space-y-3">
+              {/* Summary */}
+              <Card className="bg-card border-border border-l-2 border-l-primary">
+                <CardContent className="p-3 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-bold text-foreground">{urlSlugResult.result.total_pages} Landing Pages</p>
+                      <p className="text-[10px] text-muted-foreground">
+                        {[urlSlugResult.location.village, urlSlugResult.location.city, urlSlugResult.location.province].filter(Boolean).join(' → ')}
+                      </p>
+                    </div>
+                  </div>
+                  {/* Sitemap Strategy */}
+                  <div className="p-2 rounded-md border border-border/50 bg-accent/20">
+                    <p className="text-[9px] text-muted-foreground mb-0.5">🗺️ Sitemap Strategy</p>
+                    <p className="text-[10px] text-foreground leading-relaxed">{urlSlugResult.result.sitemap_strategy}</p>
+                  </div>
+                  {/* Implementation Priority */}
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-semibold text-muted-foreground">📋 Implementation Priority</p>
+                    <div className="space-y-0.5">
+                      {urlSlugResult.result.implementation_priority.map((item, i) => (
+                        <div key={i} className="flex items-center gap-2 text-[10px]">
+                          <Badge variant="outline" className="text-[8px] px-1.5 py-0 w-5 justify-center">{i + 1}</Badge>
+                          <span className="text-foreground">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* URL Variations grouped by category */}
+              {(() => {
+                const grouped: Record<string, typeof urlSlugResult.result.seo_url_variations> = {};
+                urlSlugResult.result.seo_url_variations.forEach(v => {
+                  const cat = v.category;
+                  if (!grouped[cat]) grouped[cat] = [];
+                  grouped[cat].push(v);
+                });
+                const categoryLabels: Record<string, string> = {
+                  jual_rumah: '🏠 Jual Rumah',
+                  sewa_rumah: '🔑 Sewa Rumah',
+                  investasi: '💰 Investasi Properti',
+                  rumah_murah: '💵 Rumah Murah',
+                  premium: '✨ Properti Premium',
+                  tanah: '🌿 Tanah Dijual',
+                };
+                return Object.entries(grouped).map(([cat, variations]) => (
+                  <Card key={cat} className="bg-card border-border">
+                    <CardHeader className="p-3 pb-1">
+                      <CardTitle className="text-xs flex items-center justify-between">
+                        <span>{categoryLabels[cat] || cat}</span>
+                        <Badge variant="outline" className="text-[8px]">{variations.length} pages</Badge>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-3 pt-0">
+                      <div className="space-y-1.5">
+                        {variations.map((v, j) => (
+                          <div key={j} className="p-2 rounded-md border border-border/50 bg-accent/10">
+                            <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                              <Badge variant={
+                                v.search_intent === 'TRANSACTIONAL' ? 'default' :
+                                v.search_intent === 'COMMERCIAL' ? 'secondary' : 'outline'
+                              } className="text-[8px] px-1.5 py-0">
+                                {v.search_intent}
+                              </Badge>
+                              <span className="text-[8px] text-muted-foreground">~{v.estimated_volume}/mo</span>
+                            </div>
+                            <p className="text-[10px] font-mono text-chart-1 truncate">{v.slug}</p>
+                            <p className="text-[10px] text-foreground mt-0.5">{v.suggested_title}</p>
+                            <p className="text-[9px] text-muted-foreground">Target: {v.target_keyword}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ));
+              })()}
             </div>
           )}
         </TabsContent>
