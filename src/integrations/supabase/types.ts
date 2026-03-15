@@ -2905,6 +2905,69 @@ export type Database = {
           },
         ]
       }
+      ai_scheduled_jobs: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          cron_expression: string
+          cron_label: string
+          description: string
+          enabled: boolean
+          id: string
+          job_type: string
+          last_error: string | null
+          last_run_at: string | null
+          last_status: string
+          max_retries: number
+          name: string
+          next_run_at: string | null
+          payload: Json
+          priority: number
+          retry_count: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          cron_expression: string
+          cron_label?: string
+          description?: string
+          enabled?: boolean
+          id?: string
+          job_type: string
+          last_error?: string | null
+          last_run_at?: string | null
+          last_status?: string
+          max_retries?: number
+          name: string
+          next_run_at?: string | null
+          payload?: Json
+          priority?: number
+          retry_count?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          cron_expression?: string
+          cron_label?: string
+          description?: string
+          enabled?: boolean
+          id?: string
+          job_type?: string
+          last_error?: string | null
+          last_run_at?: string | null
+          last_status?: string
+          max_retries?: number
+          name?: string
+          next_run_at?: string | null
+          payload?: Json
+          priority?: number
+          retry_count?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ai_strategy_simulations: {
         Row: {
           capital_efficiency: number | null

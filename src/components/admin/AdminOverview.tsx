@@ -46,7 +46,7 @@ import AgentPerformanceCard from "./AgentPerformanceCard";
 import DealPipelineCard from "./DealPipelineCard";
 import GeoExpansionCard from "./GeoExpansionCard";
 import AIBatchControlPanel from "./AIBatchControlPanel";
-
+import AISchedulingDashboard from "./AISchedulingDashboard";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
@@ -447,6 +447,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
 
           {/* AI Batch Control Panel */}
           <AIBatchControlPanel />
+
+          {/* AI Scheduling Dashboard */}
+          <AISchedulingDashboard />
 
           {/* AI Systems Status */}
           <Card className="border-border/30">

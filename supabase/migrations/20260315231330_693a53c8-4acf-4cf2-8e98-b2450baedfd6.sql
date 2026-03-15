@@ -1,0 +1,6 @@
+INSERT INTO public.ai_scheduled_jobs (name, description, job_type, payload, cron_expression, cron_label, enabled, priority)
+VALUES
+  ('Daily Full AI Analysis', 'Score all active listings with investment analysis during low-traffic hours', 'investment_analysis', '{"scope":"all_active","triggered_from":"scheduler"}'::jsonb, '0 2 * * *', 'Daily at 2 AM UTC', true, 1),
+  ('Hourly Demand Refresh', 'Lightweight recalculation of buyer intent metrics', 'demand_signal_refresh', '{"scope":"incremental","triggered_from":"scheduler"}'::jsonb, '15 * * * *', 'Every hour at :15', true, 3),
+  ('Weekly Market Recalibration', 'Full macro trend and liquidity signal update', 'market_intelligence_update', '{"scope":"full_recalibration","triggered_from":"scheduler"}'::jsonb, '0 4 * * 1', 'Monday 4 AM UTC', true, 2),
+  ('Stale Intelligence Guard', 'Auto-detect stale AI data and trigger emergency refresh', 'staleness_guard', '{"triggered_from":"scheduler","emergency_capable":true}'::jsonb, '*/10 * * * *', 'Every 10 minutes', true, 1);
