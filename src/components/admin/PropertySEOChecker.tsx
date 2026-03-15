@@ -438,6 +438,12 @@ const PropertySEOChecker = () => {
   const [bsCity, setBsCity] = useState('');
   const [bsNearby, setBsNearby] = useState('');
   const [buyerSegmentResult, setBuyerSegmentResult] = useState<BuyerSegmentResponse | null>(null);
+  const [rrPropertyType, setRrPropertyType] = useState('rumah');
+  const [rrVillage, setRrVillage] = useState('');
+  const [rrDistrict, setRrDistrict] = useState('');
+  const [rrCity, setRrCity] = useState('');
+  const [rrNearby, setRrNearby] = useState('');
+  const [resaleRiskResult, setResaleRiskResult] = useState<ResaleRiskResponse | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
