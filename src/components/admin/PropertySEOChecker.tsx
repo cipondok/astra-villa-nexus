@@ -12,6 +12,7 @@ import { useMarketTrendPrediction, type MarketTrendResponse } from '@/hooks/useM
 import { useRentalEstimate, type RentalEstimateResponse } from '@/hooks/useRentalEstimate';
 import { generateInvestmentBadge } from '@/hooks/useInvestmentBadge';
 import { useBuyerIntentAnalyzer, type BuyerIntentResponse } from '@/hooks/useBuyerIntentAnalyzer';
+import { classifyLeadPriority } from '@/hooks/useLeadPriority';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -377,6 +378,11 @@ const PropertySEOChecker = () => {
   const [biTransactionType, setBiTransactionType] = useState('');
   const [biCity, setBiCity] = useState('');
   const [buyerIntentResult, setBuyerIntentResult] = useState<BuyerIntentResponse | null>(null);
+  const [lpScore, setLpScore] = useState('');
+  const [lpBudgetLevel, setLpBudgetLevel] = useState('clear');
+  const [lpVisitPlan, setLpVisitPlan] = useState('yes');
+  const [lpTimeframe, setLpTimeframe] = useState('this_week');
+  const [leadPriorityResult, setLeadPriorityResult] = useState<{ lead_priority: string; follow_up_strategy: string; urgency_color: string } | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
@@ -855,6 +861,7 @@ const PropertySEOChecker = () => {
           <TabsTrigger value="rental-est" className="text-xs gap-1"><Sparkles className="h-3 w-3" />Rental</TabsTrigger>
           <TabsTrigger value="invest-badge" className="text-xs gap-1"><Tag className="h-3 w-3" />Badge</TabsTrigger>
           <TabsTrigger value="buyer-intent" className="text-xs gap-1"><Flame className="h-3 w-3" />Intent</TabsTrigger>
+          <TabsTrigger value="lead-priority" className="text-xs gap-1"><Target className="h-3 w-3" />Priority</TabsTrigger>
           {currentAnalysis && <TabsTrigger value="detail" className="text-xs gap-1"><Eye className="h-3 w-3" />Detail</TabsTrigger>}
         </TabsList>
 
@@ -2153,6 +2160,132 @@ const PropertySEOChecker = () => {
                   <CardContent className="p-3">
                     <p className="text-[10px] font-semibold text-muted-foreground mb-1">📋 Recommended Agent Action</p>
                     <p className="text-xs text-foreground leading-relaxed">{r.recommended_agent_action}</p>
+                  </CardContent>
+                </Card>
+              </div>
+            );
+          })()}
+        </TabsContent>
+
+        {/* ─── Lead Priority Tab ─── */}
+        <TabsContent value="lead-priority" className="space-y-3">
+          <Card className="bg-card border-border">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Target className="h-4 w-4 text-primary" />
+                Lead Follow-Up Priority
+              </CardTitle>
+              <CardDescription className="text-[10px]">
+                Classify leads into priority levels for agent follow-up strategy
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0 space-y-3">
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Buyer Intent Score *</label>
+                  <Input className="h-8 text-xs" type="number" placeholder="0-100" value={lpScore} onChange={e => setLpScore(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Budget Level *</label>
+                  <Select value={lpBudgetLevel} onValueChange={setLpBudgetLevel}>
+                    <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="clear" className="text-xs">💰 Clear (specific budget)</SelectItem>
+                      <SelectItem value="vague" className="text-xs">🤔 Vague (rough range)</SelectItem>
+                      <SelectItem value="none" className="text-xs">❌ None (no budget mentioned)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Visit Plan *</label>
+                  <Select value={lpVisitPlan} onValueChange={setLpVisitPlan}>
+                    <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="yes" className="text-xs">✅ Yes (wants to survey)</SelectItem>
+                      <SelectItem value="maybe" className="text-xs">🤷 Maybe (considering)</SelectItem>
+                      <SelectItem value="no" className="text-xs">❌ No (no mention)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Timeframe *</label>
+                  <Select value={lpTimeframe} onValueChange={setLpTimeframe}>
+                    <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="this_week" className="text-xs">⚡ This week</SelectItem>
+                      <SelectItem value="this_month" className="text-xs">📅 This month</SelectItem>
+                      <SelectItem value="no_timeline" className="text-xs">🕐 No timeline</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <Button
+                size="sm"
+                className="h-8 text-xs w-full"
+                disabled={!lpScore}
+                onClick={() => {
+                  const result = classifyLeadPriority({
+                    buyer_intent_score: Number(lpScore),
+                    budget_level: lpBudgetLevel,
+                    visit_plan: lpVisitPlan,
+                    timeframe: lpTimeframe,
+                  });
+                  setLeadPriorityResult(result);
+                }}
+              >
+                <Target className="h-3 w-3 mr-1" />
+                Classify Lead
+              </Button>
+            </CardContent>
+          </Card>
+
+          {leadPriorityResult && (() => {
+            const colorMap: Record<string, string> = {
+              hot: 'bg-destructive/10 border-destructive text-destructive',
+              warm: 'bg-chart-4/10 border-chart-4 text-chart-4',
+              cold: 'bg-muted/30 border-border text-muted-foreground',
+            };
+            const emojiMap: Record<string, string> = {
+              hot: '🔴',
+              warm: '🟡',
+              cold: '🔵',
+            };
+            const classes = colorMap[leadPriorityResult.urgency_color] || colorMap.cold;
+            const emoji = emojiMap[leadPriorityResult.urgency_color] || '🔵';
+
+            return (
+              <div className="space-y-3">
+                <Card className={`border-2 ${classes}`}>
+                  <CardContent className="p-4 text-center space-y-2">
+                    <div className="text-2xl">{emoji}</div>
+                    <Badge variant="outline" className="text-lg font-bold px-6 py-1">
+                      {leadPriorityResult.lead_priority}
+                    </Badge>
+                    <div className="grid grid-cols-4 gap-1 pt-2">
+                      <div className="text-center">
+                        <p className="text-[8px] text-muted-foreground">Score</p>
+                        <p className="text-xs font-bold text-foreground">{lpScore}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-[8px] text-muted-foreground">Budget</p>
+                        <p className="text-xs font-bold text-foreground capitalize">{lpBudgetLevel}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-[8px] text-muted-foreground">Visit</p>
+                        <p className="text-xs font-bold text-foreground capitalize">{lpVisitPlan}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-[8px] text-muted-foreground">Timeline</p>
+                        <p className="text-xs font-bold text-foreground">{lpTimeframe.replace('_', ' ')}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-card border-border border-l-2 border-l-primary">
+                  <CardContent className="p-3">
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-1">📋 Follow-Up Strategy</p>
+                    <p className="text-xs text-foreground leading-relaxed">{leadPriorityResult.follow_up_strategy}</p>
                   </CardContent>
                 </Card>
               </div>
