@@ -27,6 +27,7 @@ import MediaGallery from "./MediaGallery";
 import TransactionManagementTabs from "./TransactionManagementTabs";
 import WelcomeScreenSettings from "./WelcomeScreenSettings";
 import InvestorSettingsHub from "./InvestorSettingsHub";
+import ListingOptimizationCenter from "./ListingOptimizationCenter";
 
 
 // Move lazy loading outside the component to prevent re-creation on every render
