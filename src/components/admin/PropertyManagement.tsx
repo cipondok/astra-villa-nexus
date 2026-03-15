@@ -83,7 +83,7 @@ const PropertyManagement = () => {
   const itemsPerPage = 10;
 
   // Sort state — default: deal score descending
-  const [sortField, setSortField] = usePropertyState<'deal_score' | 'created_at' | 'price'>('deal_score');
+  const [sortField, setSortField] = usePropertyState<'deal_probability_score' | 'created_at' | 'price'>('deal_probability_score');
   const [sortDir, setSortDir] = usePropertyState<'asc' | 'desc'>('desc');
 
   const handleSort = (field: typeof sortField) => {
