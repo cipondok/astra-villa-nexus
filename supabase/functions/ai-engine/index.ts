@@ -2339,7 +2339,88 @@ Suggest:
       }
     }
 
-    if (action === "market-momentum") {
+    // ── deal-health: Marketplace-level deal health analysis ──
+    if (action === "deal-health") {
+      const avg_deal_score = Number(payload.avg_deal_score) || 0;
+      const active_listings = Number(payload.active_listings) || 0;
+      const leads = Number(payload.leads) || 0;
+
+      if (!active_listings) return json({ error: "active_listings is required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const leadToListingRatio = active_listings > 0 ? (leads / active_listings).toFixed(2) : "0";
+
+      const systemPrompt = `You are a property marketplace performance intelligence AI for Indonesia.
+Analyze overall deal health trends across listings and identify systemic bottlenecks.
+Classify the marketplace into one of these stages: THRIVING, HEALTHY, UNDERPERFORMING, CRITICAL.
+All text responses MUST be in Indonesian. Be specific and actionable.`;
+
+      const userPrompt = `Marketplace metrics:
+- Average Deal Probability Score: ${avg_deal_score}/100
+- Total Active Listings: ${active_listings}
+- Monthly Leads: ${leads}
+- Lead-to-Listing Ratio: ${leadToListingRatio}
+
+Tasks:
+1. Classify marketplace deal health stage (THRIVING / HEALTHY / UNDERPERFORMING / CRITICAL)
+2. Identify the primary deal conversion bottleneck preventing more closings
+3. Suggest one platform-level improvement action to boost overall deal conversion`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "deal_health_result",
+                description: "Return marketplace deal health analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    deal_health_stage: { type: "string", enum: ["THRIVING", "HEALTHY", "UNDERPERFORMING", "CRITICAL"], description: "Classified marketplace health stage" },
+                    conversion_bottleneck: { type: "string", description: "Primary conversion bottleneck in Indonesian" },
+                    platform_action_recommendation: { type: "string", description: "Platform-level improvement action in Indonesian" },
+                  },
+                  required: ["deal_health_stage", "conversion_bottleneck", "platform_action_recommendation"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "deal_health_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI deal health analysis failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({
+          action: "deal-health",
+          result,
+          input: { avg_deal_score, active_listings, leads, lead_to_listing_ratio: parseFloat(leadToListingRatio) },
+        });
+      } catch (e) {
+        console.error("Deal health exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Deal health analysis failed" }, 500);
+      }
+    }
+
       const growth_score = Number(payload.growth_score) || 0;
       const demand_score = Number(payload.demand_score) || 0;
       const price_trend = normalizeText(payload.price_trend);
