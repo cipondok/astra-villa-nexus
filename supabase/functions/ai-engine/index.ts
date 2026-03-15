@@ -1648,6 +1648,86 @@ Tasks:
       }
     }
 
+    // ── buyer-segment: Identify likely buyer/tenant segments ──
+    if (action === "buyer-segment") {
+      const property_type = normalizeText(payload.property_type);
+      const transaction_type = normalizeText(payload.transaction_type);
+      const village = normalizeText(payload.village);
+      const district = normalizeText(payload.district);
+      const city = normalizeText(payload.city);
+      const nearby_facilities = normalizeText(payload.nearby_facilities);
+
+      if (!city) return json({ error: "city is required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a property buyer behavior analyst for Indonesian real estate.
+Identify the most likely buyer or tenant segments for properties.
+Use Indonesian language for insights. Be specific to the location and property characteristics.`;
+
+      const userPrompt = `Identify buyer/tenant segments for this property:
+
+Property Type: ${property_type || "Not specified"}
+Transaction Type: ${transaction_type || "Sale"}
+Location: ${village || "-"}, ${district || "-"}, ${city}
+Nearby Factors: ${nearby_facilities || "Not specified"}
+
+Tasks:
+1. Detect likely buyer segments (family, investor, student, expat, tourism rental operator, first-home buyer)
+2. Estimate demand percentage distribution
+3. Provide short segment insight`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "buyer_segment_result",
+                description: "Return buyer segment analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    primary_buyer_segment: { type: "string", description: "Primary buyer/tenant segment name" },
+                    secondary_buyer_segments: { type: "array", items: { type: "string" }, description: "Other relevant segments" },
+                    segment_demand_distribution: { type: "string", description: "Percentage breakdown of demand per segment, e.g. 'Mahasiswa 45%, Pekerja Commuter 30%, Keluarga Muda 15%, Investor 10%'" },
+                    segment_insight: { type: "string", description: "2-3 sentence insight about buyer behavior in Indonesian" },
+                  },
+                  required: ["primary_buyer_segment", "secondary_buyer_segments", "segment_demand_distribution", "segment_insight"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "buyer_segment_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI buyer segment failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "buyer-segment", result, input: { property_type, transaction_type, village, district, city, nearby_facilities } });
+      } catch (e) {
+        console.error("Buyer segment exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Buyer segment failed" }, 500);
+      }
+    }
+
     // ── buyer-intent: Analyze inquiry message for buying seriousness ──
     if (action === "buyer-intent") {
       const message = normalizeText(payload.message);
