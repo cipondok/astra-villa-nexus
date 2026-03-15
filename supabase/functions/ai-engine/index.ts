@@ -2738,6 +2738,100 @@ Tasks:
       }
     }
 
+    // ── user-insight-dashboard: Unified property insight summary for a user ──
+    if (action === "user-insight-dashboard") {
+      const budget = normalizeText(payload.budget);
+      const city = normalizeText(payload.city);
+      const property_type = normalizeText(payload.property_type);
+      const purpose = normalizeText(payload.purpose);
+      const views = Number(payload.views) || 0;
+      const saved = Number(payload.saved) || 0;
+      const inquiries = Number(payload.inquiries) || 0;
+
+      if (!budget || !city || !property_type || !purpose) {
+        return json({ error: "budget, city, property_type, and purpose are required" }, 400);
+      }
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a personalized real estate intelligence dashboard AI for the Indonesian property market.
+Generate unified insight summaries that feel personal, data-driven, and actionable.
+All text fields MUST be in Indonesian. Be concise, motivating, and specific.`;
+
+      const userPrompt = `USER PROFILE:
+- Budget Range: ${budget}
+- Preferred City: ${city}
+- Property Interest: ${property_type}
+- Purpose: ${purpose}
+
+ACTIVITY SIGNALS:
+- Viewed Listings: ${views}
+- Saved Listings: ${saved}
+- Inquiries: ${inquiries}
+
+Tasks:
+1. Summarize user's property search behavior stage (e.g. "Eksplorasi Awal", "Perbandingan Aktif", "Siap Transaksi") in Indonesian
+2. Recommend one smart next property exploration action in Indonesian
+3. Suggest the best investment discovery angle tailored to their profile in Indonesian
+4. Suggest one urgency engagement trigger in Indonesian
+5. Generate a short dashboard headline insight (max 15 words, Indonesian) that feels personal and motivating`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "user_insight_dashboard_result",
+                description: "Return unified user insight dashboard",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    search_behavior_stage: { type: "string", description: "User's search stage label in Indonesian" },
+                    next_exploration_action: { type: "string", description: "Recommended next action in Indonesian" },
+                    investment_discovery_angle: { type: "string", description: "Best investment angle in Indonesian" },
+                    urgency_trigger: { type: "string", description: "Urgency engagement trigger in Indonesian" },
+                    dashboard_headline: { type: "string", description: "Short personal dashboard headline in Indonesian, max 15 words" },
+                  },
+                  required: ["search_behavior_stage", "next_exploration_action", "investment_discovery_angle", "urgency_trigger", "dashboard_headline"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "user_insight_dashboard_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI user insight dashboard failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({
+          action: "user-insight-dashboard",
+          result,
+          input: { budget, city, property_type, purpose, views, saved, inquiries },
+        });
+      } catch (e) {
+        console.error("User insight dashboard exception:", e);
+        return json({ error: e instanceof Error ? e.message : "User insight dashboard failed" }, 500);
+      }
+    }
+
     // ── market-momentum: Detect current market momentum ──
     if (action === "market-momentum") {
       const growth_score = Number(payload.growth_score) || 0;
