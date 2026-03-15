@@ -5,6 +5,9 @@ import { throwIfEdgeFunctionReturnedError } from "@/lib/supabaseFunctionErrors";
 export interface SalesReplyInput {
   message: string;
   location: string;
+  buyer_profile?: string;
+  property_advantage?: string;
+  negotiation_context?: string;
 }
 
 export interface SalesReplyResult {

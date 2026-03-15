@@ -1228,6 +1228,9 @@ Generate the rewritten description.`;
     if (action === "sales-reply") {
       const message = normalizeText(payload.message);
       const location = normalizeText(payload.location);
+      const buyer_profile = normalizeText(payload.buyer_profile);
+      const property_advantage = normalizeText(payload.property_advantage);
+      const negotiation_context = normalizeText(payload.negotiation_context);
 
       if (!message) return json({ error: "message is required" }, 400);
 
@@ -1238,12 +1241,17 @@ Generate the rewritten description.`;
 Generate persuasive but friendly WhatsApp-style replies to buyer inquiries.
 Goals: Build trust, encourage property visit, reinforce urgency, highlight key advantages.
 Tone: Professional, warm, confident. Use Indonesian language naturally.
-Keep replies short (3-5 lines), use emojis sparingly, and include a clear call-to-action.`;
+Keep replies short (3-5 lines), use emojis sparingly, and include a clear call-to-action.
+${buyer_profile ? `Tailor your response to the buyer profile provided.` : ""}
+${negotiation_context ? `Factor in the negotiation context to craft a more strategic reply.` : ""}`;
 
       const userPrompt = `Generate a WhatsApp reply for this buyer inquiry:
 
 BUYER MESSAGE: "${message}"
 PROPERTY LOCATION: ${location || "Not specified"}
+${buyer_profile ? `BUYER PROFILE: ${buyer_profile}` : ""}
+${property_advantage ? `PROPERTY ADVANTAGES: ${property_advantage}` : ""}
+${negotiation_context ? `NEGOTIATION CONTEXT: ${negotiation_context}` : ""}
 
 Return a short, ready-to-send WhatsApp reply text.`;
 
@@ -1288,7 +1296,7 @@ Return a short, ready-to-send WhatsApp reply text.`;
 
         const result = JSON.parse(toolCall.function.arguments);
 
-        return json({ action: "sales-reply", result, input: { message, location } });
+        return json({ action: "sales-reply", result, input: { message, location, buyer_profile, property_advantage, negotiation_context } });
       } catch (e) {
         console.error("Sales reply exception:", e);
         return json({ error: e instanceof Error ? e.message : "Sales reply generation failed" }, 500);
