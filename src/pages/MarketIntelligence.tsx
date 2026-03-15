@@ -8,6 +8,7 @@ const MostSearchedLocations = lazy(() => import('@/components/market-intelligenc
 const TopLuxuryAreas = lazy(() => import('@/components/market-intelligence/TopLuxuryAreas'));
 const MarketOverviewCards = lazy(() => import('@/components/market-intelligence/MarketOverviewCards'));
 const InvestmentHotspotsChart = lazy(() => import('@/components/market-intelligence/InvestmentHotspotsChart'));
+const NationalPropertyMarketIndex = lazy(() => import('@/components/market-intelligence/NationalPropertyMarketIndex'));
 
 const SectionLoader = () => (
   <div className="animate-pulse space-y-4">
@@ -45,8 +46,13 @@ export default function MarketIntelligence() {
           }} />
         </section>
 
-        {/* Overview cards */}
-        <section className="container mx-auto px-4 -mt-6 relative z-10">
+        {/* National Property Market Index */}
+        <section className="container mx-auto px-4 -mt-6 relative z-10 space-y-6">
+          <Suspense fallback={<SectionLoader />}>
+            <NationalPropertyMarketIndex />
+          </Suspense>
+
+          {/* Overview cards */}
           <Suspense fallback={<SectionLoader />}>
             <MarketOverviewCards />
           </Suspense>
