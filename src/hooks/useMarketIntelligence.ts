@@ -103,3 +103,29 @@ export function usePropertyMarketContext(city: string | null) {
     staleTime: 10 * 60 * 1000,
   });
 }
+
+export interface MarketIntelligenceSummary {
+  top_area: string;
+  top_area_score: number;
+  top_area_count: number;
+  market_heat: 'HOT' | 'ACTIVE' | 'SLOW';
+  avg_hotspot_score: number;
+  avg_liquidity: number;
+  liquidity_trend: 'IMPROVING' | 'STABLE' | 'WEAKENING';
+  growth_hint: string;
+  sparkline_data: { name: string; score: number }[];
+}
+
+export function useMarketIntelligence(enabled = true) {
+  return useQuery({
+    queryKey: ['market-intelligence-summary'],
+    queryFn: async (): Promise<MarketIntelligenceSummary> => {
+      const { data, error } = await supabase.rpc('get_market_intelligence_summary');
+      if (error) throw error;
+      return data as unknown as MarketIntelligenceSummary;
+    },
+    enabled,
+    staleTime: 60_000,
+    refetchInterval: 120_000,
+  });
+}
