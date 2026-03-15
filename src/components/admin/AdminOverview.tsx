@@ -465,7 +465,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           <MarketAnomalyCard />
 
           {/* Listing Performance Optimizer */}
-          <ListingPerformanceOptimizerCard />
+          <ListingPerformanceOptimizerCard onNavigate={() => onSectionChange?.("listing-optimization-center")} />
 
           {/* AI Systems Status */}
           <Card className="border-border/30">

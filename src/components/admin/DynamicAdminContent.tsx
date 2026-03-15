@@ -27,6 +27,7 @@ import MediaGallery from "./MediaGallery";
 import TransactionManagementTabs from "./TransactionManagementTabs";
 import WelcomeScreenSettings from "./WelcomeScreenSettings";
 import InvestorSettingsHub from "./InvestorSettingsHub";
+import ListingOptimizationCenter from "./ListingOptimizationCenter";
 
 
 // Move lazy loading outside the component to prevent re-creation on every render
@@ -64,6 +65,8 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
       case "properties":
       case "property-management-hub":
         return <AdminPropertyManagement />;
+      case "listing-optimization-center":
+        return <ListingOptimizationCenter />;
       case "property-management-advanced":
         return <PropertyManagementAdvanced />;
       case "analytics":
