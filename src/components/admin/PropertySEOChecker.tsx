@@ -3101,6 +3101,120 @@ const PropertySEOChecker = () => {
           )}
         </TabsContent>
 
+
+        {/* ─── Resale Risk Tab ─── */}
+        <TabsContent value="resale-risk" className="space-y-3">
+          <Card className="bg-card border-border">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 text-primary" />
+                Resale Risk Analyzer
+              </CardTitle>
+              <CardDescription className="text-[10px]">
+                Identify future resale risks for exit strategy planning
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0 space-y-2">
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Property Type</label>
+                  <select className="w-full h-8 text-xs p-1 rounded-md border border-input bg-background text-foreground" value={rrPropertyType} onChange={e => setRrPropertyType(e.target.value)}>
+                    <option value="rumah">Rumah</option>
+                    <option value="villa">Villa</option>
+                    <option value="apartment">Apartment</option>
+                    <option value="tanah">Tanah</option>
+                    <option value="ruko">Ruko</option>
+                    <option value="kost">Kost</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">City *</label>
+                  <Input className="h-8 text-xs" placeholder="Bandung" value={rrCity} onChange={e => setRrCity(e.target.value)} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">District</label>
+                  <Input className="h-8 text-xs" placeholder="Coblong" value={rrDistrict} onChange={e => setRrDistrict(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Village</label>
+                  <Input className="h-8 text-xs" placeholder="Dago" value={rrVillage} onChange={e => setRrVillage(e.target.value)} />
+                </div>
+              </div>
+              <div>
+                <label className="text-[10px] text-muted-foreground mb-1 block">Market Signals / Nearby</label>
+                <Input className="h-8 text-xs" placeholder="e.g. new toll road, university, tourist area..." value={rrNearby} onChange={e => setRrNearby(e.target.value)} />
+              </div>
+              <Button
+                size="sm"
+                className="h-8 text-xs w-full"
+                disabled={!rrCity || resaleRisk.isPending}
+                onClick={() => {
+                  resaleRisk.mutate(
+                    { property_type: rrPropertyType, village: rrVillage, district: rrDistrict, city: rrCity, nearby_facilities: rrNearby },
+                    { onSuccess: (data) => setResaleRiskResult(data) }
+                  );
+                }}
+              >
+                {resaleRisk.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <AlertTriangle className="h-3 w-3 mr-1" />}
+                Analyze Risk
+              </Button>
+            </CardContent>
+          </Card>
+
+          {resaleRisk.isPending && (
+            <Card className="bg-card border-border">
+              <CardContent className="p-6 text-center">
+                <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                <p className="text-xs text-muted-foreground">AI is assessing resale risks...</p>
+                <Progress value={50} className="h-1.5 mt-3 max-w-xs mx-auto" />
+              </CardContent>
+            </Card>
+          )}
+
+          {resaleRiskResult && (
+            <Card className={cn(
+              "bg-card border-border border-l-2",
+              resaleRiskResult.result.resale_risk_level === "HIGH" ? "border-l-destructive" :
+              resaleRiskResult.result.resale_risk_level === "MEDIUM" ? "border-l-chart-4" : "border-l-chart-1"
+            )}>
+              <CardContent className="p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-[10px] font-semibold text-muted-foreground">⚠️ Resale Risk Level</p>
+                    <Badge variant={
+                      resaleRiskResult.result.resale_risk_level === 'HIGH' ? 'destructive' :
+                      resaleRiskResult.result.resale_risk_level === 'MEDIUM' ? 'secondary' : 'default'
+                    } className="mt-1 text-sm">
+                      {resaleRiskResult.result.resale_risk_level === 'HIGH' ? '🔴' :
+                       resaleRiskResult.result.resale_risk_level === 'MEDIUM' ? '🟡' : '🟢'}{' '}
+                      {resaleRiskResult.result.resale_risk_level}
+                    </Badge>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-[10px] font-semibold text-muted-foreground mb-1">🚩 Risk Factors</p>
+                  <div className="space-y-1">
+                    {resaleRiskResult.result.risk_factors.map((r, i) => (
+                      <div key={i} className="flex items-start gap-2 p-1.5 rounded border border-border/50 bg-muted/20">
+                        <AlertTriangle className="h-3 w-3 text-destructive shrink-0 mt-0.5" />
+                        <p className="text-[10px] text-foreground">{r}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-[10px] font-semibold text-muted-foreground mb-1">📋 Risk Summary</p>
+                  <p className="text-xs text-foreground leading-relaxed">{resaleRiskResult.result.risk_summary}</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
         <TabsContent value="detail">
           {currentAnalysis ? (
             <div className="space-y-3">

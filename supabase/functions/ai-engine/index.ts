@@ -1736,6 +1736,84 @@ Tasks:
       }
     }
 
+    // ── resale-risk: Analyze future resale risks ──
+    if (action === "resale-risk") {
+      const property_type = normalizeText(payload.property_type);
+      const village = normalizeText(payload.village);
+      const district = normalizeText(payload.district);
+      const city = normalizeText(payload.city);
+      const nearby_facilities = normalizeText(payload.nearby_facilities);
+
+      if (!city) return json({ error: "city is required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a property investment exit strategy analyst for Indonesian real estate.
+Identify potential future resale risks including niche property risk, oversupply risk, and infrastructure dependency risk.
+Use Indonesian language for risk_summary. Be specific and data-driven.`;
+
+      const userPrompt = `Analyze resale risks for this property:
+
+Property Type: ${property_type || "Not specified"}
+Location: ${village || "-"}, ${district || "-"}, ${city}
+Market Signals / Nearby: ${nearby_facilities || "Not specified"}
+
+Tasks:
+1. Detect niche property risk (limited buyer pool, unusual type)
+2. Detect oversupply risk (too many similar listings)
+3. Detect infrastructure dependency risk (value tied to future projects)
+4. Provide short resale risk insight`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "resale_risk_result",
+                description: "Return resale risk analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    resale_risk_level: { type: "string", enum: ["LOW", "MEDIUM", "HIGH"], description: "Overall resale risk level" },
+                    risk_factors: { type: "array", items: { type: "string" }, description: "Specific risk factors in Indonesian" },
+                    risk_summary: { type: "string", description: "2-3 sentence risk assessment summary in Indonesian" },
+                  },
+                  required: ["resale_risk_level", "risk_factors", "risk_summary"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "resale_risk_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI resale risk analysis failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "resale-risk", result, input: { property_type, village, district, city, nearby_facilities } });
+      } catch (e) {
+        console.error("Resale risk exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Resale risk analysis failed" }, 500);
+      }
+    }
+
     // ── buyer-intent: Analyze inquiry message for buying seriousness ──
     if (action === "buyer-intent") {
       const message = normalizeText(payload.message);
