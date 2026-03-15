@@ -2421,6 +2421,105 @@ Tasks:
       }
     }
 
+    // ── buyer-property-match: AI matchmaking between buyer profile and property ──
+    if (action === "buyer-property-match") {
+      const budget = normalizeText(payload.budget);
+      const city = normalizeText(payload.city);
+      const property_type = normalizeText(payload.property_type);
+      const purpose = normalizeText(payload.purpose);
+      const lifestyle = normalizeText(payload.lifestyle);
+      const price_level = normalizeText(payload.price_level);
+      const location_score = Number(payload.location_score) || 0;
+      const investment_score = Number(payload.investment_score) || 0;
+      const demand_level = normalizeText(payload.demand_level);
+
+      if (!budget || !city || !property_type || !purpose || !price_level) {
+        return json({ error: "budget, city, property_type, purpose, and price_level are required" }, 400);
+      }
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are an elite AI real estate matchmaking engine for the Indonesian property market.
+Evaluate how well a property matches a specific buyer profile by analyzing budget fit, location preference, investment alignment, and lifestyle compatibility.
+Classify match into exactly one of: LOW MATCH, MODERATE MATCH, STRONG MATCH, PERFECT MATCH.
+All text fields MUST be in Indonesian. Be specific and personalized.`;
+
+      const userPrompt = `BUYER PROFILE:
+- Budget Range: ${budget}
+- Preferred City: ${city}
+- Property Type Interest: ${property_type}
+- Purpose: ${purpose}
+- Lifestyle Preferences: ${lifestyle}
+
+PROPERTY DATA:
+- Price Level: ${price_level}
+- Location Attractiveness Score: ${location_score}/100
+- Investment Score: ${investment_score}/100
+- Demand Level: ${demand_level}
+
+Tasks:
+1. Calculate match score (0-100) based on budget fit, location match, purpose alignment, and lifestyle compatibility
+2. Classify match level (LOW MATCH / MODERATE MATCH / STRONG MATCH / PERFECT MATCH)
+3. Identify 2-4 strongest compatibility factors between this buyer and property (in Indonesian)
+4. Identify 1-3 mismatch risks or concerns (in Indonesian)
+5. Suggest one personalized engagement hook to encourage this buyer to inquire (in Indonesian)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "buyer_property_match_result",
+                description: "Return buyer-property match analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    match_score: { type: "number", description: "Match score 0-100" },
+                    match_level: { type: "string", enum: ["LOW MATCH", "MODERATE MATCH", "STRONG MATCH", "PERFECT MATCH"], description: "Classified match tier" },
+                    compatibility_factors: { type: "array", items: { type: "string" }, description: "2-4 strongest compatibility factors in Indonesian" },
+                    mismatch_risks: { type: "array", items: { type: "string" }, description: "1-3 mismatch risks in Indonesian" },
+                    engagement_hook: { type: "string", description: "Personalized engagement hook in Indonesian" },
+                  },
+                  required: ["match_score", "match_level", "compatibility_factors", "mismatch_risks", "engagement_hook"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "buyer_property_match_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI buyer-property match failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({
+          action: "buyer-property-match",
+          result,
+          input: { budget, city, property_type, purpose, lifestyle, price_level, location_score, investment_score, demand_level },
+        });
+      } catch (e) {
+        console.error("Buyer-property match exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Buyer-property match failed" }, 500);
+      }
+    }
+
     // ── market-momentum: Detect current market momentum ──
     if (action === "market-momentum") {
       const growth_score = Number(payload.growth_score) || 0;
