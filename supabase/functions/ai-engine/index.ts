@@ -3275,6 +3275,22 @@ Tasks:
       }
     }
 
+    // ── agent-badge: Deterministic reputation badge ──
+    if (action === "agent-badge") {
+      const agent_score = Number(payload.agent_score) || 0;
+      const deals = Number(payload.deals) || 0;
+
+      let badge: string;
+      if (agent_score >= 85 && deals >= 8) badge = "TOP CLOSER";
+      else if (agent_score >= 75 && deals >= 5) badge = "HIGH VISIBILITY AGENT";
+      else if (agent_score >= 60 && deals >= 3) badge = "FAST GROWING AGENT";
+      else if (agent_score >= 40 && deals >= 1) badge = "RISING STAR";
+      else if (agent_score < 20 && deals === 0) badge = "LOW ACTIVITY";
+      else badge = "NEW AGENT";
+
+      return json({ action: "agent-badge", result: { badge }, input: { agent_score, deals } });
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
