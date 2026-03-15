@@ -361,6 +361,78 @@ async function handleProcess(supabase: any) {
   });
 }
 
+// ── Taskless Job Handler (for scheduler-triggered composite jobs without sub-tasks) ──
+async function handleTasklessJob(supabase: any, job: any) {
+  const CHUNK_SIZE = 20;
+
+  await logEvent(supabase, job.id, null, `Taskless direct execution: ${job.job_type}`, "info");
+  await supabase.from("ai_jobs").update({ progress: 10 }).eq("id", job.id);
+
+  try {
+    let result: any = null;
+
+    if (job.job_type === "investment_analysis") {
+      // Process in chunks: scores → ROI → hotspots → market
+      await supabase.from("ai_jobs").update({ progress: 20 }).eq("id", job.id);
+      const scoreResult = await calculateInvestmentScores(supabase, { limit: 100, offset: 0 });
+      await supabase.from("ai_jobs").update({ progress: 40 }).eq("id", job.id);
+      const roiResult = await updateRoiForecasts(supabase, { limit: 50, offset: 0 });
+      await supabase.from("ai_jobs").update({ progress: 60 }).eq("id", job.id);
+      const hotspotResult = await detectInvestmentHotspots(supabase);
+      await supabase.from("ai_jobs").update({ progress: 80 }).eq("id", job.id);
+      const marketResult = await updateMarketInsights(supabase);
+      result = { scores: scoreResult, roi: roiResult, hotspots: hotspotResult, market: marketResult };
+
+    } else if (job.job_type === "demand_signal_refresh") {
+      await supabase.from("ai_jobs").update({ progress: 30 }).eq("id", job.id);
+      const trendingResult = await updateTrendingProperties(supabase, { days: 30 });
+      await supabase.from("ai_jobs").update({ progress: 70 }).eq("id", job.id);
+      const rentalResult = await updateRentalInsights(supabase);
+      result = { trending: trendingResult, rental: rentalResult };
+
+    } else if (job.job_type === "market_intelligence_update") {
+      await supabase.from("ai_jobs").update({ progress: 20 }).eq("id", job.id);
+      const marketResult = await updateMarketInsights(supabase);
+      await supabase.from("ai_jobs").update({ progress: 45 }).eq("id", job.id);
+      const priceResult = await updatePriceTrends(supabase);
+      await supabase.from("ai_jobs").update({ progress: 70 }).eq("id", job.id);
+      const hotspotResult = await detectInvestmentHotspots(supabase);
+      await supabase.from("ai_jobs").update({ progress: 90 }).eq("id", job.id);
+      const hotMarketResult = await detectHotMarkets(supabase);
+      result = { market: marketResult, prices: priceResult, hotspots: hotspotResult, hotMarkets: hotMarketResult };
+
+    } else {
+      // Unknown taskless job type — mark completed with no-op
+      await logEvent(supabase, job.id, null, `No handler for taskless job type: ${job.job_type}`, "warning");
+      result = { message: "No handler found", job_type: job.job_type };
+    }
+
+    await supabase.from("ai_jobs").update({
+      status: "completed",
+      progress: 100,
+      completed_at: new Date().toISOString(),
+      error_message: null,
+    }).eq("id", job.id);
+
+    await logEvent(supabase, job.id, null, `Taskless job completed: ${job.job_type}`, "info");
+
+    return json({ success: true, jobId: job.id, status: "completed", result });
+  } catch (e) {
+    const errMsg = e instanceof Error ? e.message : "Unknown error";
+    console.error(`Taskless job ${job.id} failed:`, e);
+
+    await supabase.from("ai_jobs").update({
+      status: "failed",
+      completed_at: new Date().toISOString(),
+      error_message: errMsg,
+    }).eq("id", job.id);
+
+    await logEvent(supabase, job.id, null, `Taskless job failed: ${errMsg}`, "error");
+
+    return json({ success: false, jobId: job.id, status: "failed", error: errMsg });
+  }
+}
+
 // ── Logging Helper ──
 async function logEvent(supabase: any, jobId: string, taskId: string | null, message: string, level: string) {
   try {
