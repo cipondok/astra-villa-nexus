@@ -788,9 +788,10 @@ const PropertyManagement = () => {
                           </TableCell>
                           <TableCell className="text-center hidden md:table-cell">
                             <DealScoreBadge
-                              score={property.deal_analysis?.deal_score ?? null}
-                              label={property.deal_analysis?.deal_tag}
-                              recommendation={property.deal_analysis?.deal_tag}
+                              score={(property as any).deal_probability_score ?? null}
+                              label={(property as any).deal_probability_label}
+                              recommendation={(property as any).deal_ai_recommendation}
+                              compact
                             />
                           </TableCell>
                           <TableCell>
