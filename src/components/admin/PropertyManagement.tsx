@@ -81,6 +81,19 @@ const PropertyManagement = () => {
   const [searchTerm, setSearchTerm] = usePropertyState("");
   const [currentPage, setCurrentPage] = usePropertyState(1);
   const itemsPerPage = 10;
+
+  // Sort state — default: deal score descending
+  const [sortField, setSortField] = usePropertyState<'deal_score' | 'created_at' | 'price'>('deal_score');
+  const [sortDir, setSortDir] = usePropertyState<'asc' | 'desc'>('desc');
+
+  const handleSort = (field: typeof sortField) => {
+    if (sortField === field) {
+      setSortDir(prev => prev === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDir('desc');
+    }
+  };
   
   const [newProperty, setNewProperty] = usePropertyState({
     title: "",
@@ -185,11 +198,29 @@ const PropertyManagement = () => {
     },
   });
 
-  // Pagination calculations
-  const totalPages = Math.ceil(allProperties.length / itemsPerPage);
+  // Sort + paginate
+  const sortedProperties = React.useMemo(() => {
+    const sorted = [...allProperties].sort((a, b) => {
+      let aVal: number, bVal: number;
+      if (sortField === 'deal_score') {
+        aVal = a.deal_analysis?.deal_score ?? -1;
+        bVal = b.deal_analysis?.deal_score ?? -1;
+      } else if (sortField === 'price') {
+        aVal = a.price ?? 0;
+        bVal = b.price ?? 0;
+      } else {
+        aVal = new Date(a.created_at || 0).getTime();
+        bVal = new Date(b.created_at || 0).getTime();
+      }
+      return sortDir === 'asc' ? aVal - bVal : bVal - aVal;
+    });
+    return sorted;
+  }, [allProperties, sortField, sortDir]);
+
+  const totalPages = Math.ceil(sortedProperties.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const properties = allProperties.slice(startIndex, endIndex);
+  const properties = sortedProperties.slice(startIndex, endIndex);
 
   // Reset to first page when filters change
   React.useEffect(() => {
@@ -648,7 +679,18 @@ const PropertyManagement = () => {
                       <TableHead>Property</TableHead>
                       <TableHead>Owner/Agent</TableHead>
                       <TableHead>Details</TableHead>
-                      <TableHead className="text-center">AI Score</TableHead>
+                      <TableHead
+                        className="text-center cursor-pointer select-none hidden md:table-cell hover:bg-muted/50 transition-colors"
+                        onClick={() => handleSort('deal_score')}
+                      >
+                        <div className="flex items-center justify-center gap-1">
+                          <TrendingUp className="h-3 w-3" />
+                          Deal Intel
+                          {sortField === 'deal_score' && (
+                            <span className="text-[10px]">{sortDir === 'desc' ? '↓' : '↑'}</span>
+                          )}
+                        </div>
+                      </TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Created</TableHead>
                       <TableHead>Actions</TableHead>
@@ -702,6 +744,17 @@ const PropertyManagement = () => {
                                   {property.bedrooms}BR • {property.bathrooms}BA • {property.area_sqm}sqm
                                 </div>
                               ) : null}
+                              {/* Mobile-only deal score inline */}
+                              {property.deal_analysis?.deal_score != null && (
+                                <div className="md:hidden pt-0.5">
+                                  <DealScoreBadge
+                                    score={property.deal_analysis.deal_score}
+                                    label={property.deal_analysis.deal_tag}
+                                    recommendation={property.deal_analysis.deal_tag}
+                                    compact
+                                  />
+                                </div>
+                              )}
                             </div>
                           </TableCell>
                           <TableCell>
@@ -733,10 +786,11 @@ const PropertyManagement = () => {
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell className="text-center">
+                          <TableCell className="text-center hidden md:table-cell">
                             <DealScoreBadge
                               score={property.deal_analysis?.deal_score ?? null}
                               label={property.deal_analysis?.deal_tag}
+                              recommendation={property.deal_analysis?.deal_tag}
                             />
                           </TableCell>
                           <TableCell>
