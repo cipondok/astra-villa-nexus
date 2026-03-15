@@ -48,6 +48,7 @@ import GeoExpansionCard from "./GeoExpansionCard";
 import AIBatchControlPanel from "./AIBatchControlPanel";
 import AISchedulingDashboard from "./AISchedulingDashboard";
 import JobQueueHealthCard from "./JobQueueHealthCard";
+import AIJobObservabilityPanel from "./AIJobObservabilityPanel";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
