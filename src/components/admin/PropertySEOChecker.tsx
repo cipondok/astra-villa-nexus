@@ -1493,6 +1493,170 @@ const PropertySEOChecker = () => {
           )}
         </TabsContent>
 
+        {/* ─── Investment Attractiveness Tab ─── */}
+        <TabsContent value="invest-attr" className="space-y-3">
+          <Card className="bg-card border-border">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-primary" />
+                Investment Attractiveness Analyzer
+              </CardTitle>
+              <CardDescription className="text-[10px]">
+                AI-powered investment scoring for any property based on location, price, and market signals
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0 space-y-3">
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Property Type *</label>
+                  <Select value={iaPropertyType} onValueChange={setIaPropertyType}>
+                    <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Select type" /></SelectTrigger>
+                    <SelectContent>
+                      {['house', 'apartment', 'villa', 'kost', 'land', 'commercial', 'townhouse', 'shophouse', 'warehouse', 'office'].map(t => (
+                        <SelectItem key={t} value={t} className="text-xs capitalize">{t}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Transaction Type</label>
+                  <Select value={iaTransactionType} onValueChange={setIaTransactionType}>
+                    <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Select" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="sale" className="text-xs">Sale</SelectItem>
+                      <SelectItem value="rent" className="text-xs">Rent</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Price (Rp) *</label>
+                  <Input className="h-8 text-xs" type="number" placeholder="e.g. 2500000000" value={iaPrice} onChange={e => setIaPrice(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Building Size (sqm)</label>
+                  <Input className="h-8 text-xs" type="number" placeholder="e.g. 150" value={iaBuildingSize} onChange={e => setIaBuildingSize(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Land Size (sqm)</label>
+                  <Input className="h-8 text-xs" type="number" placeholder="e.g. 200" value={iaLandSize} onChange={e => setIaLandSize(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Province *</label>
+                  <Select value={lpProvince} onValueChange={setLpProvince}>
+                    <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Province" /></SelectTrigger>
+                    <SelectContent>
+                      {INDONESIA_PROVINCES.map(p => (
+                        <SelectItem key={p} value={p} className="text-xs">{p}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">City *</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. Denpasar" value={lpCity} onChange={e => setLpCity(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">District</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. Kuta Selatan" value={lpDistrict} onChange={e => setLpDistrict(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Village</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. Ungasan" value={lpVillage} onChange={e => setLpVillage(e.target.value)} />
+                </div>
+                <div className="col-span-2">
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Nearby Facilities</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. Beach 500m, Airport 15min, Mall 2km" value={iaNearby} onChange={e => setIaNearby(e.target.value)} />
+                </div>
+              </div>
+              <Button
+                size="sm"
+                className="h-8 text-xs w-full"
+                disabled={!iaPropertyType || !iaPrice || !lpProvince || !lpCity || investAttr.isPending}
+                onClick={() => {
+                  investAttr.mutate(
+                    {
+                      property_type: iaPropertyType,
+                      transaction_type: iaTransactionType || 'sale',
+                      price: Number(iaPrice),
+                      building_size: Number(iaBuildingSize) || undefined,
+                      land_size: Number(iaLandSize) || undefined,
+                      province: lpProvince,
+                      city: lpCity,
+                      district: lpDistrict,
+                      village: lpVillage,
+                      nearby_facilities: iaNearby,
+                    },
+                    { onSuccess: (data) => setInvestAttrResult(data) }
+                  );
+                }}
+              >
+                {investAttr.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <TrendingUp className="h-3 w-3 mr-1" />}
+                Analyze Investment
+              </Button>
+            </CardContent>
+          </Card>
+
+          {investAttr.isPending && (
+            <Card className="bg-card border-border">
+              <CardContent className="p-6 text-center">
+                <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                <p className="text-xs text-muted-foreground">AI is analyzing investment attractiveness...</p>
+                <Progress value={55} className="h-1.5 mt-3 max-w-xs mx-auto" />
+              </CardContent>
+            </Card>
+          )}
+
+          {investAttrResult && (() => {
+            const r = investAttrResult.result;
+            const gradeColor = r.investment_grade === 'PRIME' ? 'text-chart-1' :
+              r.investment_grade === 'HIGH' ? 'text-chart-2' :
+              r.investment_grade === 'MEDIUM' ? 'text-chart-4' : 'text-destructive';
+            const scoreBg = r.investment_score >= 81 ? 'bg-chart-1/20 border-chart-1/40' :
+              r.investment_score >= 56 ? 'bg-chart-2/20 border-chart-2/40' :
+              r.investment_score >= 31 ? 'bg-chart-4/20 border-chart-4/40' : 'bg-destructive/20 border-destructive/40';
+
+            return (
+              <div className="space-y-3">
+                {/* Score Card */}
+                <Card className={`border-2 ${scoreBg}`}>
+                  <CardContent className="p-4 text-center">
+                    <div className="text-4xl font-bold text-foreground">{r.investment_score}</div>
+                    <div className="text-xs text-muted-foreground">/ 100</div>
+                    <Badge className={`mt-2 text-sm ${gradeColor}`} variant="outline">
+                      {r.investment_grade}
+                    </Badge>
+                    <p className="text-[10px] text-muted-foreground mt-1">
+                      {investAttrResult.input.property_type} · Rp {investAttrResult.input.price.toLocaleString()} · {investAttrResult.input.city}
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Analysis Sections */}
+                {[
+                  { icon: '📈', label: 'Capital Growth Potential', text: r.capital_growth_potential },
+                  { icon: '💰', label: 'Rental Yield Potential', text: r.rental_yield_potential },
+                  { icon: '🏗️', label: 'Location Growth Signal', text: r.location_growth_signal },
+                ].map((section, i) => (
+                  <Card key={i} className="bg-card border-border">
+                    <CardContent className="p-3">
+                      <p className="text-[10px] font-semibold text-muted-foreground mb-1">{section.icon} {section.label}</p>
+                      <p className="text-xs text-foreground leading-relaxed">{section.text}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+
+                {/* Investment Summary */}
+                <Card className="bg-card border-border border-l-2 border-l-primary">
+                  <CardContent className="p-3">
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-1">🎯 Investment Summary</p>
+                    <p className="text-xs text-foreground leading-relaxed">{r.investment_summary}</p>
+                  </CardContent>
+                </Card>
+              </div>
+            );
+          })()}
+        </TabsContent>
+
         <TabsContent value="detail">
           {currentAnalysis ? (
             <div className="space-y-3">

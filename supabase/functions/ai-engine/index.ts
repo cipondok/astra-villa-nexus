@@ -1224,6 +1224,134 @@ Generate the rewritten description.`;
       }
     }
 
+    // ── investment-attractiveness: AI investment score for a property ──
+    if (action === "investment-attractiveness") {
+      const propertyType = normalizeText(payload.property_type);
+      const transactionType = normalizeText(payload.transaction_type);
+      const price = Number(payload.price) || 0;
+      const buildingSize = Number(payload.building_size) || 0;
+      const landSize = Number(payload.land_size) || 0;
+      const province = normalizeText(payload.province);
+      const city = normalizeText(payload.city);
+      const district = normalizeText(payload.district) || "";
+      const village = normalizeText(payload.village) || "";
+      const nearbyFacilities = normalizeText(payload.nearby_facilities) || "Not specified";
+
+      if (!propertyType || !price || !province || !city) {
+        return json({ error: "property_type, price, province, and city are required" }, 400);
+      }
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const locationLabel = [village, district, city, province].filter(Boolean).join(", ");
+
+      // Fetch market context
+      let marketContext = "";
+      try {
+        const { data: comps } = await supabase
+          .from("properties")
+          .select("price, building_area_sqm, land_area_sqm, property_type")
+          .eq("city", city)
+          .eq("status", "active")
+          .gt("price", 0)
+          .limit(30);
+
+        if (comps && comps.length > 0) {
+          const prices = comps.map((c: any) => c.price);
+          const avgPrice = Math.round(prices.reduce((a: number, b: number) => a + b, 0) / prices.length);
+          const minPrice = Math.min(...prices);
+          const maxPrice = Math.max(...prices);
+          marketContext = `\nMarket context for ${city}: ${comps.length} active listings, avg price Rp ${avgPrice.toLocaleString()}, range Rp ${minPrice.toLocaleString()} - Rp ${maxPrice.toLocaleString()}.`;
+        }
+      } catch (e) {
+        console.error("Market context fetch error:", e);
+      }
+
+      const systemPrompt = `You are an elite Indonesian real estate investment analyst AI.
+You evaluate property investment attractiveness using deep market knowledge of Indonesian property markets.
+Consider factors like location demand, infrastructure growth, rental potential, price positioning, and capital appreciation.
+Score from 0-100 where 0-30=LOW, 31-55=MEDIUM, 56-80=HIGH, 81-100=PRIME.`;
+
+      const userPrompt = `Analyze this property and generate an investment attractiveness score.
+
+PROPERTY DATA:
+Property Type: ${propertyType}
+Transaction Type: ${transactionType}
+Price: Rp ${price.toLocaleString()}
+Building Size: ${buildingSize ? buildingSize + " sqm" : "N/A"}
+Land Size: ${landSize ? landSize + " sqm" : "N/A"}
+
+Location: ${locationLabel}
+Nearby Factors: ${nearbyFacilities}
+${marketContext}
+
+Tasks:
+1. Evaluate long-term capital appreciation potential
+2. Evaluate rental income opportunity
+3. Evaluate infrastructure growth signals
+4. Evaluate demand strength in this micro-location
+5. Evaluate price attractiveness vs perceived market level
+6. Generate overall investment score (0-100)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "investment_attractiveness_result",
+                description: "Return investment attractiveness analysis for a property",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    investment_score: { type: "number", description: "Overall investment score 0-100" },
+                    investment_grade: { type: "string", enum: ["LOW", "MEDIUM", "HIGH", "PRIME"], description: "Investment grade" },
+                    capital_growth_potential: { type: "string", description: "2-3 sentence analysis of capital appreciation potential" },
+                    rental_yield_potential: { type: "string", description: "2-3 sentence analysis of rental income opportunity" },
+                    location_growth_signal: { type: "string", description: "2-3 sentence analysis of infrastructure and demand growth signals" },
+                    investment_summary: { type: "string", description: "3-4 sentence overall investment recommendation" },
+                  },
+                  required: ["investment_score", "investment_grade", "capital_growth_potential", "rental_yield_potential", "location_growth_signal", "investment_summary"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "investment_attractiveness_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded, please try again later" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          console.error("AI investment-attractiveness error:", aiResp.status);
+          return json({ error: "AI investment analysis failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+
+        return json({
+          action: "investment-attractiveness",
+          result,
+          input: { property_type: propertyType, transaction_type: transactionType, price, building_size: buildingSize, land_size: landSize, province, city, district, village, nearby_facilities: nearbyFacilities },
+        });
+      } catch (e) {
+        console.error("Investment attractiveness exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Investment analysis failed" }, 500);
+      }
+    }
+
     // ── url-slug-generator: Generate SEO URL slug variations for location pages ──
     if (action === "url-slug-generator") {
       const province = normalizeText(payload.province);
