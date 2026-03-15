@@ -349,6 +349,7 @@ const PropertySEOChecker = () => {
   const [linkingResult, setLinkingResult] = useState<InternalLinkingResponse | null>(null);
   const [landingPageResult, setLandingPageResult] = useState<LandingPageResponse | null>(null);
   const [kwClusterResult, setKwClusterResult] = useState<KeywordClusterResponse | null>(null);
+  const [urlSlugResult, setUrlSlugResult] = useState<UrlSlugResponse | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
