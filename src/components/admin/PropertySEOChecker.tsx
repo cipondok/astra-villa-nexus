@@ -4,6 +4,7 @@ import { useTitleRewrite, type TitleRewriteResponse } from '@/hooks/useTitleRewr
 import { useDescriptionRewrite, type DescriptionRewriteResponse } from '@/hooks/useDescriptionRewrite';
 import { useTrafficPrediction, type TrafficPredictionResponse } from '@/hooks/useTrafficPrediction';
 import { useInternalLinking, type InternalLinkingResponse } from '@/hooks/useInternalLinking';
+import { useLandingPageGenerator, type LandingPageResponse, type LandingPageInput } from '@/hooks/useLandingPageGenerator';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
