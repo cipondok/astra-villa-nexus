@@ -44,6 +44,7 @@ import LeadIntelligenceCard from "./LeadIntelligenceCard";
 import MarketIntelligenceCard from "./MarketIntelligenceCard";
 import AgentPerformanceCard from "./AgentPerformanceCard";
 import DealPipelineCard from "./DealPipelineCard";
+import GeoExpansionCard from "./GeoExpansionCard";
 
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
