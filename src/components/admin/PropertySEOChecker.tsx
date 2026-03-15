@@ -17,6 +17,7 @@ import { useSalesReplyGenerator, type SalesReplyResponse } from '@/hooks/useSale
 import { usePriceBenchmark, type PriceBenchmarkResponse } from '@/hooks/usePriceBenchmark';
 import { useMarketHeat, type MarketHeatResponse } from '@/hooks/useMarketHeat';
 import { usePricingStrategy, type PricingStrategyResponse } from '@/hooks/usePricingStrategy';
+import { useDemandForecast, type DemandForecastResponse } from '@/hooks/useDemandForecast';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -414,6 +415,17 @@ const PropertySEOChecker = () => {
   const [psProvince, setPsProvince] = useState('');
   const [psPricePosition, setPsPricePosition] = useState('FAIR MARKET');
   const [pricingStrategyResult, setPricingStrategyResult] = useState<PricingStrategyResponse | null>(null);
+  const [dfPrice, setDfPrice] = useState('');
+  const [dfPropertyType, setDfPropertyType] = useState('rumah');
+  const [dfTransactionType, setDfTransactionType] = useState('sale');
+  const [dfBuildingSize, setDfBuildingSize] = useState('');
+  const [dfLandSize, setDfLandSize] = useState('');
+  const [dfVillage, setDfVillage] = useState('');
+  const [dfDistrict, setDfDistrict] = useState('');
+  const [dfCity, setDfCity] = useState('');
+  const [dfProvince, setDfProvince] = useState('');
+  const [dfNearby, setDfNearby] = useState('');
+  const [demandForecastResult, setDemandForecastResult] = useState<DemandForecastResponse | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
@@ -478,6 +490,7 @@ const PropertySEOChecker = () => {
   const priceBenchmark = usePriceBenchmark();
   const marketHeat = useMarketHeat();
   const pricingStrategy = usePricingStrategy();
+  const demandForecast = useDemandForecast();
 
   // Reset city/area on state change, reset pages on any filter change
   useEffect(() => { setFilterCity(''); setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterState]);
@@ -901,6 +914,7 @@ const PropertySEOChecker = () => {
           <TabsTrigger value="price-bench" className="text-xs gap-1"><BarChart3 className="h-3 w-3" />Benchmark</TabsTrigger>
           <TabsTrigger value="market-heat" className="text-xs gap-1"><Flame className="h-3 w-3" />Heat</TabsTrigger>
           <TabsTrigger value="price-strat" className="text-xs gap-1"><Target className="h-3 w-3" />Strategy</TabsTrigger>
+          <TabsTrigger value="demand-fc" className="text-xs gap-1"><TrendingUp className="h-3 w-3" />Demand</TabsTrigger>
           {currentAnalysis && <TabsTrigger value="detail" className="text-xs gap-1"><Eye className="h-3 w-3" />Detail</TabsTrigger>}
         </TabsList>
 
@@ -2767,6 +2781,169 @@ const PropertySEOChecker = () => {
                     <p className="text-[10px] font-semibold text-muted-foreground mb-1">⚡ Sale Speed Impact</p>
                     <p className="text-xs text-foreground leading-relaxed">{pricingStrategyResult.result.sale_speed_impact}</p>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+
+        {/* ─── Demand Forecast Tab ─── */}
+        <TabsContent value="demand-fc" className="space-y-3">
+          <Card className="bg-card border-border">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-primary" />
+                Demand Forecast
+              </CardTitle>
+              <CardDescription className="text-[10px]">
+                AI-powered buyer/tenant demand analysis
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0 space-y-2">
+              <div className="grid grid-cols-3 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Price (Rp) *</label>
+                  <Input className="h-8 text-xs" type="number" placeholder="1750000000" value={dfPrice} onChange={e => setDfPrice(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Property Type</label>
+                  <select className="w-full h-8 text-xs p-1 rounded-md border border-input bg-background text-foreground" value={dfPropertyType} onChange={e => setDfPropertyType(e.target.value)}>
+                    <option value="rumah">Rumah</option>
+                    <option value="villa">Villa</option>
+                    <option value="apartment">Apartment</option>
+                    <option value="tanah">Tanah</option>
+                    <option value="ruko">Ruko</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Transaction</label>
+                  <select className="w-full h-8 text-xs p-1 rounded-md border border-input bg-background text-foreground" value={dfTransactionType} onChange={e => setDfTransactionType(e.target.value)}>
+                    <option value="sale">Jual</option>
+                    <option value="rent">Sewa</option>
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Building Size (sqm)</label>
+                  <Input className="h-8 text-xs" type="number" placeholder="150" value={dfBuildingSize} onChange={e => setDfBuildingSize(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Land Size (sqm)</label>
+                  <Input className="h-8 text-xs" type="number" placeholder="200" value={dfLandSize} onChange={e => setDfLandSize(e.target.value)} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">City *</label>
+                  <Input className="h-8 text-xs" placeholder="Bandung" value={dfCity} onChange={e => setDfCity(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Province</label>
+                  <Input className="h-8 text-xs" placeholder="Jawa Barat" value={dfProvince} onChange={e => setDfProvince(e.target.value)} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">District</label>
+                  <Input className="h-8 text-xs" placeholder="Coblong" value={dfDistrict} onChange={e => setDfDistrict(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Village</label>
+                  <Input className="h-8 text-xs" placeholder="Dago" value={dfVillage} onChange={e => setDfVillage(e.target.value)} />
+                </div>
+              </div>
+              <div>
+                <label className="text-[10px] text-muted-foreground mb-1 block">Nearby Facilities</label>
+                <Input className="h-8 text-xs" placeholder="Mall, MRT, University, Hospital..." value={dfNearby} onChange={e => setDfNearby(e.target.value)} />
+              </div>
+              <Button
+                size="sm"
+                className="h-8 text-xs w-full"
+                disabled={!dfPrice || !dfCity || demandForecast.isPending}
+                onClick={() => {
+                  demandForecast.mutate(
+                    {
+                      price: Number(dfPrice),
+                      property_type: dfPropertyType,
+                      transaction_type: dfTransactionType,
+                      building_size: dfBuildingSize ? Number(dfBuildingSize) : undefined,
+                      land_size: dfLandSize ? Number(dfLandSize) : undefined,
+                      village: dfVillage,
+                      district: dfDistrict,
+                      city: dfCity,
+                      province: dfProvince,
+                      nearby_facilities: dfNearby,
+                    },
+                    { onSuccess: (data) => setDemandForecastResult(data) }
+                  );
+                }}
+              >
+                {demandForecast.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <TrendingUp className="h-3 w-3 mr-1" />}
+                Forecast Demand
+              </Button>
+            </CardContent>
+          </Card>
+
+          {demandForecast.isPending && (
+            <Card className="bg-card border-border">
+              <CardContent className="p-6 text-center">
+                <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                <p className="text-xs text-muted-foreground">AI is analyzing demand signals...</p>
+                <Progress value={50} className="h-1.5 mt-3 max-w-xs mx-auto" />
+              </CardContent>
+            </Card>
+          )}
+
+          {demandForecastResult && (
+            <Card className="bg-card border-border border-l-2 border-l-chart-1">
+              <CardContent className="p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-[10px] font-semibold text-muted-foreground">📊 Demand Level</p>
+                    <Badge variant={
+                      demandForecastResult.result.demand_level === 'VERY HIGH' ? 'default' :
+                      demandForecastResult.result.demand_level === 'HIGH' ? 'default' :
+                      demandForecastResult.result.demand_level === 'MODERATE' ? 'secondary' : 'destructive'
+                    } className="mt-1">
+                      {demandForecastResult.result.demand_level}
+                    </Badge>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] font-semibold text-muted-foreground">Score</p>
+                    <p className="text-2xl font-bold text-primary">{demandForecastResult.result.demand_score}<span className="text-xs text-muted-foreground">/100</span></p>
+                  </div>
+                </div>
+
+                <Progress value={demandForecastResult.result.demand_score} className="h-2" />
+
+                <div>
+                  <p className="text-[10px] font-semibold text-muted-foreground mb-1">⏱️ Estimated Time on Market</p>
+                  <p className="text-sm font-bold text-foreground">{demandForecastResult.result.estimated_time_on_market}</p>
+                </div>
+
+                <div>
+                  <p className="text-[10px] font-semibold text-muted-foreground mb-1">🚀 Key Demand Drivers</p>
+                  <div className="flex flex-wrap gap-1">
+                    {demandForecastResult.result.key_demand_drivers.map((d, i) => (
+                      <Badge key={i} variant="outline" className="text-[10px]">{d}</Badge>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-[10px] font-semibold text-muted-foreground mb-1">⚠️ Risk Factors</p>
+                  <div className="flex flex-wrap gap-1">
+                    {demandForecastResult.result.demand_risk_factors.map((r, i) => (
+                      <Badge key={i} variant="destructive" className="text-[10px]">{r}</Badge>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-[10px] font-semibold text-muted-foreground mb-1">📋 Forecast Summary</p>
+                  <p className="text-xs text-foreground leading-relaxed">{demandForecastResult.result.forecast_summary}</p>
                 </div>
               </CardContent>
             </Card>

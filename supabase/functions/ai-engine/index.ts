@@ -1555,6 +1555,99 @@ Tasks:
       }
     }
 
+    // ── demand-forecast: Predict buyer/tenant demand level ──
+    if (action === "demand-forecast") {
+      const price = Number(payload.price) || 0;
+      const property_type = normalizeText(payload.property_type);
+      const transaction_type = normalizeText(payload.transaction_type);
+      const building_size = Number(payload.building_size) || 0;
+      const land_size = Number(payload.land_size) || 0;
+      const village = normalizeText(payload.village);
+      const district = normalizeText(payload.district);
+      const city = normalizeText(payload.city);
+      const province = normalizeText(payload.province);
+      const nearby_facilities = normalizeText(payload.nearby_facilities);
+
+      if (!city || !price) return json({ error: "city and price are required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are an Indonesian real estate demand forecasting AI.
+Analyze the expected buyer or tenant demand level for properties.
+Use Indonesian language for the forecast_summary. Be data-driven and specific to the location.`;
+
+      const userPrompt = `Analyze demand for this property:
+
+Property Type: ${property_type || "Not specified"}
+Transaction Type: ${transaction_type || "Sale"}
+Price: Rp ${price.toLocaleString("id-ID")}
+Building Size: ${building_size ? building_size + " sqm" : "N/A"}
+Land Size: ${land_size ? land_size + " sqm" : "N/A"}
+
+Location: ${village || "-"}, ${district || "-"}, ${city}, ${province || "-"}
+
+Nearby Demand Drivers: ${nearby_facilities || "Not specified"}
+
+Tasks:
+1. Estimate overall demand strength (LOW / MODERATE / HIGH / VERY HIGH)
+2. Predict average time to sell or rent
+3. Identify main demand drivers (education, tourism, CBD, transport, industry)
+4. Detect demand risk factors (oversupply, high price, remote access)
+5. Generate demand score (0-100)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "demand_forecast_result",
+                description: "Return demand forecast analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    demand_level: { type: "string", enum: ["LOW", "MODERATE", "HIGH", "VERY HIGH"], description: "Overall demand strength" },
+                    estimated_time_on_market: { type: "string", description: "Estimated days/weeks/months to sell or rent, e.g. '30-45 hari'" },
+                    demand_score: { type: "number", description: "Demand score 0-100" },
+                    key_demand_drivers: { type: "array", items: { type: "string" }, description: "Main demand drivers in Indonesian" },
+                    demand_risk_factors: { type: "array", items: { type: "string" }, description: "Risk factors in Indonesian" },
+                    forecast_summary: { type: "string", description: "2-3 sentence demand forecast summary in Indonesian" },
+                  },
+                  required: ["demand_level", "estimated_time_on_market", "demand_score", "key_demand_drivers", "demand_risk_factors", "forecast_summary"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "demand_forecast_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI demand forecast failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "demand-forecast", result, input: { price, property_type, transaction_type, building_size, land_size, village, district, city, province, nearby_facilities } });
+      } catch (e) {
+        console.error("Demand forecast exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Demand forecast failed" }, 500);
+      }
+    }
+
     // ── buyer-intent: Analyze inquiry message for buying seriousness ──
     if (action === "buyer-intent") {
       const message = normalizeText(payload.message);
