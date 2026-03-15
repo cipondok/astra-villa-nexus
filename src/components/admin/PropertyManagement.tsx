@@ -775,10 +775,11 @@ const PropertyManagement = () => {
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell className="text-center">
+                          <TableCell className="text-center hidden md:table-cell">
                             <DealScoreBadge
                               score={property.deal_analysis?.deal_score ?? null}
                               label={property.deal_analysis?.deal_tag}
+                              recommendation={property.deal_analysis?.deal_tag}
                             />
                           </TableCell>
                           <TableCell>
