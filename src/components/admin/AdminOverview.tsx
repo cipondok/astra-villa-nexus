@@ -50,6 +50,7 @@ import AISchedulingDashboard from "./AISchedulingDashboard";
 import JobQueueHealthCard from "./JobQueueHealthCard";
 import AIJobObservabilityPanel from "./AIJobObservabilityPanel";
 import MarketAnomalyCard from "./MarketAnomalyCard";
+import ListingPerformanceOptimizerCard from "./ListingPerformanceOptimizerCard";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
