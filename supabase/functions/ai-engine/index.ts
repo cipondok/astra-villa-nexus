@@ -2647,6 +2647,97 @@ Tasks:
       }
     }
 
+    // ── lead-distribution: Intelligent agent assignment for buyer inquiries ──
+    if (action === "lead-distribution") {
+      const location = normalizeText(payload.location);
+      const property_type = normalizeText(payload.property_type);
+      const intent_score = Number(payload.intent_score) || 0;
+      const agent_performance_data = payload.agent_performance_data;
+
+      if (!location || !property_type || !agent_performance_data || !Array.isArray(agent_performance_data)) {
+        return json({ error: "location, property_type, and agent_performance_data (array) are required" }, 400);
+      }
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const agentSummary = agent_performance_data.map((a: any, i: number) =>
+        `Agent ${i + 1}: ${a.name || a.agent_name || 'Unknown'} | Location: ${a.coverage_area || a.location || 'N/A'} | Closing Rate: ${a.closing_rate || a.deal_closing_rate || 'N/A'}% | Response Time: ${a.response_time || a.avg_response_time || 'N/A'} | Active Listings: ${a.active_listings || 'N/A'} | Rating: ${a.rating || a.avg_rating || 'N/A'}`
+      ).join('\n');
+
+      const systemPrompt = `You are a property marketplace lead distribution intelligence AI for Indonesia.
+Evaluate agents and assign the most suitable one for a buyer inquiry based on location expertise, activity level, closing performance, and response speed.
+All text fields MUST be in Indonesian. Be precise and data-driven.`;
+
+      const userPrompt = `LEAD DATA:
+- Inquiry Location: ${location}
+- Property Type: ${property_type}
+- Buyer Intent Score: ${intent_score}/100
+
+AGENT CANDIDATES:
+${agentSummary}
+
+Tasks:
+1. Evaluate each agent's suitability based on location coverage, recent activity, closing performance, and response speed
+2. Select the best agent candidate (return their name)
+3. Provide assignment confidence score (0-100)
+4. Explain the assignment reason (in Indonesian)
+5. Suggest a backup assignment strategy if the primary agent is unavailable (in Indonesian)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "lead_distribution_result",
+                description: "Return lead distribution assignment",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    assigned_agent: { type: "string", description: "Name of the best agent candidate" },
+                    assignment_confidence: { type: "number", description: "Confidence score 0-100" },
+                    assignment_reason: { type: "string", description: "Reason for assignment in Indonesian" },
+                    backup_strategy: { type: "string", description: "Backup assignment strategy in Indonesian" },
+                  },
+                  required: ["assigned_agent", "assignment_confidence", "assignment_reason", "backup_strategy"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "lead_distribution_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI lead distribution failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({
+          action: "lead-distribution",
+          result,
+          input: { location, property_type, intent_score, agent_count: agent_performance_data.length },
+        });
+      } catch (e) {
+        console.error("Lead distribution exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Lead distribution failed" }, 500);
+      }
+    }
+
     // ── market-momentum: Detect current market momentum ──
     if (action === "market-momentum") {
       const growth_score = Number(payload.growth_score) || 0;
