@@ -648,6 +648,7 @@ const PropertyManagement = () => {
                       <TableHead>Property</TableHead>
                       <TableHead>Owner/Agent</TableHead>
                       <TableHead>Details</TableHead>
+                      <TableHead className="text-center">AI Score</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Created</TableHead>
                       <TableHead>Actions</TableHead>
