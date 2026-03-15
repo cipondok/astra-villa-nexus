@@ -2741,6 +2741,83 @@ Tasks:
       }
     }
 
+    // ── launch-monitor: Beta launch performance monitoring ──
+    if (action === "launch-monitor") {
+      const visitors = Number(payload.visitors) || 0;
+      const new_listings = Number(payload.new_listings) || 0;
+      const agent_signups = Number(payload.agent_signups) || 0;
+      const leads = Number(payload.leads) || 0;
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a startup launch performance monitor AI for ASTRA, an AI-driven Indonesian property marketplace.
+Analyze early beta launch signals and provide actionable insights. Use Indonesian language for all text fields.
+Be honest — flag real concerns early. Compare against typical PropTech beta benchmarks.`;
+
+      const userPrompt = `Analyze today's beta launch signals:
+
+- Visitors Today: ${visitors}
+- New Listings Added: ${new_listings}
+- Agent Signups: ${agent_signups}
+- Lead Messages: ${leads}
+
+Tasks:
+1. Classify launch momentum (COLD / SLOW / MODERATE / STRONG / VIRAL)
+2. List 2-3 positive signals
+3. List 1-3 risk alerts
+4. Suggest 2-3 immediate fixes`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "launch_monitor_result",
+                description: "Return launch performance analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    launch_momentum: { type: "string", enum: ["COLD", "SLOW", "MODERATE", "STRONG", "VIRAL"] },
+                    positive_signals: { type: "array", items: { type: "string" }, description: "Positive signals in Indonesian" },
+                    risk_alerts: { type: "array", items: { type: "string" }, description: "Risk alerts in Indonesian" },
+                    immediate_fix_suggestions: { type: "array", items: { type: "string" }, description: "Immediate fixes in Indonesian" },
+                  },
+                  required: ["launch_momentum", "positive_signals", "risk_alerts", "immediate_fix_suggestions"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "launch_monitor_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI launch monitor failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "launch-monitor", result, input: { visitors, new_listings, agent_signups, leads } });
+      } catch (e) {
+        console.error("Launch monitor exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Launch monitor failed" }, 500);
+      }
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
