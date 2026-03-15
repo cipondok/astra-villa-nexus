@@ -52,6 +52,7 @@ import AIJobObservabilityPanel from "./AIJobObservabilityPanel";
 import MarketAnomalyCard from "./MarketAnomalyCard";
 import ListingPerformanceOptimizerCard from "./ListingPerformanceOptimizerCard";
 import PricingIntelligenceCard from "./PricingIntelligenceCard";
+import DealClosingTimelineCard from "./DealClosingTimelineCard";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
@@ -470,6 +471,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
 
           {/* Dynamic Pricing Intelligence */}
           <PricingIntelligenceCard />
+
+          {/* Deal Closing Timeline Predictions */}
+          <DealClosingTimelineCard />
 
           {/* AI Systems Status */}
           <Card className="border-border/30">

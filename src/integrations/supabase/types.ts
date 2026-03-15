@@ -34126,6 +34126,10 @@ export type Database = {
         Args: { data_type: string; data_value: string }
         Returns: string
       }
+      predict_deal_closing_timeline: {
+        Args: { p_limit?: number }
+        Returns: Json
+      }
       process_daily_login: { Args: { p_user_id: string }; Returns: Json }
       record_profile_change: {
         Args: { changed_fields: string[]; user_id: string }
