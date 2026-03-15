@@ -53,6 +53,7 @@ import MarketAnomalyCard from "./MarketAnomalyCard";
 import ListingPerformanceOptimizerCard from "./ListingPerformanceOptimizerCard";
 import PricingIntelligenceCard from "./PricingIntelligenceCard";
 import DealClosingTimelineCard from "./DealClosingTimelineCard";
+import InvestmentAttractivenessCard from "./InvestmentAttractivenessCard";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
@@ -474,6 +475,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
 
           {/* Deal Closing Timeline Predictions */}
           <DealClosingTimelineCard />
+
+          {/* Investment Attractiveness Ranking */}
+          <InvestmentAttractivenessCard />
 
           {/* AI Systems Status */}
           <Card className="border-border/30">

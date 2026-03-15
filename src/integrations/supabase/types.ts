@@ -34132,6 +34132,10 @@ export type Database = {
         Returns: Json
       }
       process_daily_login: { Args: { p_user_id: string }; Returns: Json }
+      rank_investment_attractiveness: {
+        Args: { p_limit?: number }
+        Returns: Json
+      }
       record_profile_change: {
         Args: { changed_fields: string[]; user_id: string }
         Returns: Json
