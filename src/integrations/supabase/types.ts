@@ -33145,6 +33145,7 @@ export type Database = {
           verification_status: string
         }[]
       }
+      get_agent_performance_intelligence: { Args: never; Returns: Json }
       get_ai_health_metrics: { Args: never; Returns: Json }
       get_ai_system_health: { Args: never; Returns: Json }
       get_all_survey_bookings_admin: {
