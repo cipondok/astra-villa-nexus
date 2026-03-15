@@ -2832,6 +2832,93 @@ Tasks:
       }
     }
 
+    // ── macro-forecast: National property market forecast ──
+    if (action === "macro-forecast") {
+      const economic_signals = normalizeText(payload.economic_signals);
+      const infra_level = normalizeText(payload.infra_level);
+      const urban_trend = normalizeText(payload.urban_trend);
+      const interest_rate = normalizeText(payload.interest_rate);
+
+      if (!economic_signals || !infra_level || !urban_trend || !interest_rate) {
+        return json({ error: "economic_signals, infra_level, urban_trend, and interest_rate are required" }, 400);
+      }
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a macro real estate economic intelligence AI specializing in the Indonesian property market.
+Generate national-level property market forecast insights based on macroeconomic signals.
+Classify the national price trend into exactly one of: DECLINE, STABLE, GROWTH, STRONG BOOM.
+All text fields MUST be in Indonesian. Be data-driven, specific to Indonesia, and forward-looking.`;
+
+      const userPrompt = `Macroeconomic signals for Indonesia property market:
+- Economic Signals: ${economic_signals}
+- Infrastructure Development Level: ${infra_level}
+- Urbanization Trend: ${urban_trend}
+- Interest Rate Direction: ${interest_rate}
+
+Tasks:
+1. Forecast national property price trend (DECLINE / STABLE / GROWTH / STRONG BOOM)
+2. Estimate 12-month market outlook (concise paragraph in Indonesian)
+3. Identify 3-4 strongest growth drivers (in Indonesian)
+4. Identify 2-3 macro risk pressures (in Indonesian)
+5. Provide a short investor sentiment summary (in Indonesian)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "macro_forecast_result",
+                description: "Return national property market forecast",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    national_price_trend: { type: "string", enum: ["DECLINE", "STABLE", "GROWTH", "STRONG BOOM"], description: "Forecasted national price trend" },
+                    market_outlook_12m: { type: "string", description: "12-month market outlook in Indonesian" },
+                    growth_drivers: { type: "array", items: { type: "string" }, description: "3-4 strongest growth drivers in Indonesian" },
+                    macro_risks: { type: "array", items: { type: "string" }, description: "2-3 macro risk pressures in Indonesian" },
+                    investor_sentiment: { type: "string", description: "Investor sentiment summary in Indonesian" },
+                  },
+                  required: ["national_price_trend", "market_outlook_12m", "growth_drivers", "macro_risks", "investor_sentiment"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "macro_forecast_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI macro forecast failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({
+          action: "macro-forecast",
+          result,
+          input: { economic_signals, infra_level, urban_trend, interest_rate },
+        });
+      } catch (e) {
+        console.error("Macro forecast exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Macro forecast failed" }, 500);
+      }
+    }
+
     // ── market-momentum: Detect current market momentum ──
     if (action === "market-momentum") {
       const growth_score = Number(payload.growth_score) || 0;
