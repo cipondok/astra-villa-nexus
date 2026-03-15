@@ -2392,6 +2392,95 @@ Tasks:
       }
     }
 
+    // ── architecture-advisor: AI system architecture planning ──
+    if (action === "architecture-advisor") {
+      const feature_context = normalizeText(payload.feature_context);
+      const platform_status = normalizeText(payload.platform_status);
+
+      if (!feature_context) return json({ error: "feature_context is required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are the chief AI system architect for ASTRA, an AI-driven Indonesian property marketplace.
+
+The platform architecture has 6 layers:
+1. Data Foundation Layer — PostgreSQL tables, location hierarchy, property data
+2. AI Property Intelligence Layer — Valuation, scoring, benchmarking, demand forecasting
+3. Master Decision Brain Layer — Unified insight synthesis, deal probability, investment advisory
+4. SEO Traffic Engine Layer — Automated content generation, keyword targeting, landing pages
+5. Sales Conversion Layer — Lead scoring, buyer intent, deal acceleration, negotiation assist
+6. Business Growth Layer — Platform metrics, growth diagnostics, monetization strategy
+
+Current scale: 450+ tables, 90+ Edge Functions, 1000+ RLS policies, PostgreSQL 17.6.
+
+Provide structured architecture planning. Use Indonesian language for workflow_logic, ui_feature_placement, and scalability_note.`;
+
+      const userPrompt = `Analyze this feature or status:
+
+Feature/Context: ${feature_context}
+${platform_status ? `Platform Status: ${platform_status}` : ""}
+
+Tasks:
+1. Identify which architecture layer it belongs to
+2. Suggest required database entities or data relationships
+3. Suggest automation workflow logic between modules
+4. Suggest UI feature placement
+5. Suggest scalability or performance considerations
+6. Suggest next evolution level (basic → advanced → autonomous)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "architecture_advisor_result",
+                description: "Return architecture planning analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    architecture_layer: { type: "string", description: "Which of the 6 layers this belongs to" },
+                    required_data_entities: { type: "array", items: { type: "string" }, description: "Required database entities or relationships" },
+                    workflow_logic: { type: "string", description: "Automation workflow logic in Indonesian" },
+                    ui_feature_placement: { type: "string", description: "UI placement suggestion in Indonesian" },
+                    scalability_note: { type: "string", description: "Scalability considerations in Indonesian" },
+                    next_evolution_level: { type: "string", description: "Next evolution level description" },
+                  },
+                  required: ["architecture_layer", "required_data_entities", "workflow_logic", "ui_feature_placement", "scalability_note", "next_evolution_level"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "architecture_advisor_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI architecture advisor failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "architecture-advisor", result, input: { feature_context, platform_status } });
+      } catch (e) {
+        console.error("Architecture advisor exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Architecture advisor failed" }, 500);
+      }
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
