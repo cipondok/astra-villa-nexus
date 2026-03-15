@@ -2084,7 +2084,7 @@ Tasks:
       }
     }
 
-    // ── deal-probability: Predict deal success likelihood ──
+    // ── deal-probability: Predict deal success likelihood (legacy) ──
     if (action === "deal-probability") {
       const demand_level = normalizeText(payload.demand_level);
       const price_position = normalizeText(payload.price_position);
@@ -2158,6 +2158,102 @@ Tasks:
       } catch (e) {
         console.error("Deal probability exception:", e);
         return json({ error: e instanceof Error ? e.message : "Deal probability failed" }, 500);
+      }
+    }
+
+    // ── transaction-probability: Advanced real estate transaction probability analyst ──
+    if (action === "transaction-probability") {
+      const property_type = normalizeText(payload.property_type);
+      const transaction_type = normalizeText(payload.transaction_type);
+      const price_position = normalizeText(payload.price_position);
+      const demand_level = normalizeText(payload.demand_level);
+      const liquidity_score = Number(payload.liquidity_score) || 0;
+      const seo_score = Number(payload.seo_score) || 0;
+      const buyer_activity = normalizeText(payload.buyer_activity);
+
+      if (!property_type || !transaction_type || !price_position || !demand_level) {
+        return json({ error: "property_type, transaction_type, price_position, and demand_level are required" }, 400);
+      }
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are an elite real estate transaction probability analyst AI for the Indonesian property market.
+Your job is to estimate the likelihood that a property listing will successfully sell or rent based on multi-dimensional market signals.
+Classify probability into exactly one of: LOW CHANCE, MODERATE CHANCE, HIGH CHANCE, VERY HIGH CLOSING POTENTIAL.
+Respond only via the tool call. All text fields in Indonesian.`;
+
+      const userPrompt = `Analyze this property listing's transaction probability:
+
+- Property Type: ${property_type}
+- Transaction Type: ${transaction_type}
+- Listing Price Position: ${price_position}
+- Demand Level: ${demand_level}
+- Liquidity Score: ${liquidity_score}/100
+- SEO Visibility Score: ${seo_score}/100
+- Buyer Intent Activity Level: ${buyer_activity}
+
+Tasks:
+1. Calculate deal probability score (0-100)
+2. Classify probability level (LOW CHANCE / MODERATE CHANCE / HIGH CHANCE / VERY HIGH CLOSING POTENTIAL)
+3. Estimate expected time to close (e.g. "2-4 minggu", "1-2 bulan")
+4. Identify 2-4 strongest positive factors driving this deal forward (in Indonesian)
+5. Identify 1-3 risk factors that could slow or block the deal (in Indonesian)
+6. Suggest one strategic improvement action to increase closing probability (in Indonesian)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "transaction_probability_result",
+                description: "Return full transaction probability analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    deal_probability_score: { type: "number", description: "Probability score 0-100" },
+                    probability_level: { type: "string", enum: ["LOW CHANCE", "MODERATE CHANCE", "HIGH CHANCE", "VERY HIGH CLOSING POTENTIAL"], description: "Classified probability tier" },
+                    estimated_time_to_close: { type: "string", description: "Expected closing timeframe in Indonesian e.g. '2-4 minggu'" },
+                    positive_factors: { type: "array", items: { type: "string" }, description: "2-4 strongest positive factors in Indonesian" },
+                    risk_factors: { type: "array", items: { type: "string" }, description: "1-3 risk factors in Indonesian" },
+                    recommended_action: { type: "string", description: "One strategic improvement action in Indonesian" },
+                  },
+                  required: ["deal_probability_score", "probability_level", "estimated_time_to_close", "positive_factors", "risk_factors", "recommended_action"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "transaction_probability_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI transaction probability failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({
+          action: "transaction-probability",
+          result,
+          input: { property_type, transaction_type, price_position, demand_level, liquidity_score, seo_score, buyer_activity },
+        });
+      } catch (e) {
+        console.error("Transaction probability exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Transaction probability failed" }, 500);
       }
     }
 
