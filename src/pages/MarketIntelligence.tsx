@@ -8,6 +8,7 @@ const MostSearchedLocations = lazy(() => import('@/components/market-intelligenc
 const TopLuxuryAreas = lazy(() => import('@/components/market-intelligence/TopLuxuryAreas'));
 const MarketOverviewCards = lazy(() => import('@/components/market-intelligence/MarketOverviewCards'));
 const InvestmentHotspotsChart = lazy(() => import('@/components/market-intelligence/InvestmentHotspotsChart'));
+const NationalPropertyMarketIndex = lazy(() => import('@/components/market-intelligence/NationalPropertyMarketIndex'));
 
 const SectionLoader = () => (
   <div className="animate-pulse space-y-4">
