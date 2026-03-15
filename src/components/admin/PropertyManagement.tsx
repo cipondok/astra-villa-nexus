@@ -744,6 +744,17 @@ const PropertyManagement = () => {
                                   {property.bedrooms}BR • {property.bathrooms}BA • {property.area_sqm}sqm
                                 </div>
                               ) : null}
+                              {/* Mobile-only deal score inline */}
+                              {property.deal_analysis?.deal_score != null && (
+                                <div className="md:hidden pt-0.5">
+                                  <DealScoreBadge
+                                    score={property.deal_analysis.deal_score}
+                                    label={property.deal_analysis.deal_tag}
+                                    recommendation={property.deal_analysis.deal_tag}
+                                    compact
+                                  />
+                                </div>
+                              )}
                             </div>
                           </TableCell>
                           <TableCell>
