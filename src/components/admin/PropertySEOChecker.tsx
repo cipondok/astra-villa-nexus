@@ -388,6 +388,17 @@ const PropertySEOChecker = () => {
   const [srMessage, setSrMessage] = useState('');
   const [srLocation, setSrLocation] = useState('');
   const [salesReplyResult, setSalesReplyResult] = useState<SalesReplyResponse | null>(null);
+  const [pbPropertyType, setPbPropertyType] = useState('villa');
+  const [pbTransactionType, setPbTransactionType] = useState('sale');
+  const [pbPrice, setPbPrice] = useState('');
+  const [pbBuildingSize, setPbBuildingSize] = useState('');
+  const [pbLandSize, setPbLandSize] = useState('');
+  const [pbVillage, setPbVillage] = useState('');
+  const [pbDistrict, setPbDistrict] = useState('');
+  const [pbCity, setPbCity] = useState('');
+  const [pbProvince, setPbProvince] = useState('');
+  const [pbNearby, setPbNearby] = useState('');
+  const [priceBenchmarkResult, setPriceBenchmarkResult] = useState<PriceBenchmarkResponse | null>(null);
   const [lpProvince, setLpProvince] = useState('');
   const [lpCity, setLpCity] = useState('');
   const [lpDistrict, setLpDistrict] = useState('');
