@@ -1991,6 +1991,92 @@ Tasks:
       }
     }
 
+    // ── location-market-report: Structured property market report ──
+    if (action === "location-market-report") {
+      const village = normalizeText(payload.village);
+      const district = normalizeText(payload.district);
+      const city = normalizeText(payload.city);
+      const province = normalizeText(payload.province);
+      const area_signals = normalizeText(payload.area_signals);
+
+      if (!city) return json({ error: "city is required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const locationStr = [village, district, city, province].filter(Boolean).join(", ");
+
+      const systemPrompt = `You are a senior Indonesian property market research analyst.
+Generate structured property market reports with professional, analytical, investor-focused tone.
+Write all sections in Indonesian. Each section should be 40-60 words. Total report 300-400 words.`;
+
+      const userPrompt = `Generate a structured property market report for:
+
+Location: ${locationStr}
+${area_signals ? `Market Signals: ${area_signals}` : ""}
+
+Tasks:
+1. Describe current property market condition
+2. Explain price trend direction
+3. Explain buyer demand strength
+4. Explain rental market potential
+5. Explain investment attractiveness
+6. Mention infrastructure or development drivers
+7. Provide future outlook (1-3 years)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "location_market_report_result",
+                description: "Return structured market report",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    report_title: { type: "string", description: "Report title in Indonesian, e.g. 'Laporan Pasar Properti Dago, Bandung Q1 2026'" },
+                    market_overview: { type: "string", description: "Current market condition overview, 40-60 words in Indonesian" },
+                    price_trend_analysis: { type: "string", description: "Price trend direction analysis, 40-60 words in Indonesian" },
+                    demand_analysis: { type: "string", description: "Buyer demand strength analysis, 40-60 words in Indonesian" },
+                    rental_market_insight: { type: "string", description: "Rental market potential insight, 40-60 words in Indonesian" },
+                    investment_outlook: { type: "string", description: "Investment attractiveness with infrastructure drivers, 50-70 words in Indonesian" },
+                    future_growth_outlook: { type: "string", description: "1-3 year future outlook, 40-60 words in Indonesian" },
+                  },
+                  required: ["report_title", "market_overview", "price_trend_analysis", "demand_analysis", "rental_market_insight", "investment_outlook", "future_growth_outlook"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "location_market_report_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI market report failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "location-market-report", result, input: { village, district, city, province, area_signals } });
+      } catch (e) {
+        console.error("Location market report exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Market report failed" }, 500);
+      }
+    }
+
     // ── sales-closing: Generate persuasive closing message ──
     if (action === "sales-closing") {
       const buyer_profile = normalizeText(payload.buyer_profile);
