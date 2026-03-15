@@ -34,7 +34,7 @@ import {
   Search, RefreshCw, Zap, CheckCircle2, XCircle, AlertTriangle, 
   Loader2, Target, TrendingUp, Globe, BarChart3, FileText, 
   Hash, Eye, Lightbulb, ArrowUpRight, ArrowDownRight, Minus,
-  Sparkles, X, Plus, Tag, Flame, MapPin
+  Sparkles, X, Plus, Tag, Flame, MapPin, Home
 } from 'lucide-react';
 import {
   usePropertySeoAnalyses,
