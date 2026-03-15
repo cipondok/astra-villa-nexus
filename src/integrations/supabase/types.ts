@@ -34133,6 +34133,10 @@ export type Database = {
         Args: { p_limit?: number }
         Returns: Json
       }
+      predict_market_cycle_phase: {
+        Args: { p_lookback_days?: number }
+        Returns: Json
+      }
       process_daily_login: { Args: { p_user_id: string }; Returns: Json }
       rank_investment_attractiveness: {
         Args: { p_limit?: number }
