@@ -55,6 +55,7 @@ import PricingIntelligenceCard from "./PricingIntelligenceCard";
 import DealClosingTimelineCard from "./DealClosingTimelineCard";
 import InvestmentAttractivenessCard from "./InvestmentAttractivenessCard";
 import BuyerListingMatchCard from "./BuyerListingMatchCard";
+import PricingAutomationCard from "./PricingAutomationCard";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
