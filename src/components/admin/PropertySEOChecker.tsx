@@ -3539,6 +3539,107 @@ const PropertySEOChecker = () => {
           )}
         </TabsContent>
 
+        {/* ─── Rental ROI Projection Tab ─── */}
+        <TabsContent value="rental-roi" className="space-y-3">
+          <Card className="bg-card border-border">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Home className="h-4 w-4 text-primary" />
+                Rental ROI Projection
+              </CardTitle>
+              <CardDescription className="text-[10px]">
+                AI-powered rental income return estimation
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0 space-y-2">
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Property Price (Rp) *</label>
+                  <Input className="h-8 text-xs" type="number" placeholder="1350000000" value={rentalPrice} onChange={e => setRentalPrice(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Monthly Rent (Rp) *</label>
+                  <Input className="h-8 text-xs" type="number" placeholder="15000000" value={rentalMonthlyRent} onChange={e => setRentalMonthlyRent(e.target.value)} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">City *</label>
+                  <Input className="h-8 text-xs" placeholder="Bandung" value={rentalCity} onChange={e => setRentalCity(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Demand Level</label>
+                  <select className="w-full h-8 text-xs p-1 rounded-md border border-input bg-background text-foreground" value={rentalDemandLevel} onChange={e => setRentalDemandLevel(e.target.value)}>
+                    <option value="">Auto-detect</option>
+                    <option value="LOW">Low</option>
+                    <option value="MODERATE">Moderate</option>
+                    <option value="HIGH">High</option>
+                    <option value="VERY HIGH">Very High</option>
+                  </select>
+                </div>
+              </div>
+              <Button
+                size="sm"
+                className="h-8 text-xs w-full"
+                disabled={!rentalPrice || !rentalMonthlyRent || !rentalCity || rentalRoiProjection.isPending}
+                onClick={() => {
+                  rentalRoiProjection.mutate(
+                    {
+                      price: Number(rentalPrice),
+                      monthly_rent: Number(rentalMonthlyRent),
+                      city: rentalCity,
+                      demand_level: rentalDemandLevel || undefined,
+                    },
+                    { onSuccess: (data) => setRentalRoiResult(data) }
+                  );
+                }}
+              >
+                {rentalRoiProjection.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Home className="h-3 w-3 mr-1" />}
+                Analyze Rental ROI
+              </Button>
+            </CardContent>
+          </Card>
+
+          {rentalRoiProjection.isPending && (
+            <Card className="bg-card border-border">
+              <CardContent className="p-6 text-center">
+                <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                <p className="text-xs text-muted-foreground">AI is calculating rental ROI...</p>
+                <Progress value={50} className="h-1.5 mt-3 max-w-xs mx-auto" />
+              </CardContent>
+            </Card>
+          )}
+
+          {rentalRoiResult && (
+            <Card className="bg-card border-border border-l-2 border-l-chart-1">
+              <CardContent className="p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-[10px] font-semibold text-muted-foreground">📊 Rental Stability</p>
+                    <Badge variant="default" className="mt-1 text-sm">
+                      {rentalRoiResult.result.rental_stability}
+                    </Badge>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] font-semibold text-muted-foreground">Gross Yield</p>
+                    <p className="text-xl font-bold text-primary">{rentalRoiResult.result.gross_yield_percent}</p>
+                  </div>
+                </div>
+
+                <div className="p-2 rounded-lg border border-border/50 bg-muted/20 text-center">
+                  <p className="text-[8px] text-muted-foreground">Annual Rental Income</p>
+                  <p className="text-sm font-bold text-foreground">{rentalRoiResult.result.annual_rental_income}</p>
+                </div>
+
+                <div>
+                  <p className="text-[10px] font-semibold text-muted-foreground mb-1">📋 Rental Outlook</p>
+                  <p className="text-xs text-foreground leading-relaxed">{rentalRoiResult.result.rental_roi_summary}</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
         <TabsContent value="detail">
           {currentAnalysis ? (
             <div className="space-y-3">
