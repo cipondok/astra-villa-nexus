@@ -2554,6 +2554,104 @@ const PropertySEOChecker = () => {
           )}
         </TabsContent>
 
+        {/* ─── Market Heat Tab ─── */}
+        <TabsContent value="market-heat" className="space-y-3">
+          <Card className="bg-card border-border">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Flame className="h-4 w-4 text-primary" />
+                Market Heat Classifier
+              </CardTitle>
+              <CardDescription className="text-[10px]">
+                Classify area price heat level and buyer demand
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0 space-y-2">
+              <div>
+                <label className="text-[10px] text-muted-foreground mb-1 block">City *</label>
+                <Input className="h-8 text-xs" placeholder="Bandung" value={mhCity} onChange={e => setMhCity(e.target.value)} />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">District</label>
+                  <Input className="h-8 text-xs" placeholder="Antapani" value={mhDistrict} onChange={e => setMhDistrict(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Village</label>
+                  <Input className="h-8 text-xs" placeholder="Antapani Kidul" value={mhVillage} onChange={e => setMhVillage(e.target.value)} />
+                </div>
+              </div>
+              <div>
+                <label className="text-[10px] text-muted-foreground mb-1 block">Property Type</label>
+                <select className="w-full h-8 text-xs p-1 rounded-md border border-input bg-background text-foreground" value={mhPropertyType} onChange={e => setMhPropertyType(e.target.value)}>
+                  <option value="rumah">Rumah</option>
+                  <option value="villa">Villa</option>
+                  <option value="apartment">Apartment</option>
+                  <option value="tanah">Tanah</option>
+                  <option value="ruko">Ruko</option>
+                </select>
+              </div>
+              <Button
+                size="sm"
+                className="h-8 text-xs w-full"
+                disabled={!mhCity || marketHeat.isPending}
+                onClick={() => {
+                  marketHeat.mutate(
+                    { village: mhVillage, district: mhDistrict, city: mhCity, property_type: mhPropertyType },
+                    { onSuccess: (data) => setMarketHeatResult(data) }
+                  );
+                }}
+              >
+                {marketHeat.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Flame className="h-3 w-3 mr-1" />}
+                Classify Heat
+              </Button>
+            </CardContent>
+          </Card>
+
+          {marketHeat.isPending && (
+            <Card className="bg-card border-border">
+              <CardContent className="p-6 text-center">
+                <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                <p className="text-xs text-muted-foreground">Analyzing market heat...</p>
+                <Progress value={50} className="h-1.5 mt-3 max-w-xs mx-auto" />
+              </CardContent>
+            </Card>
+          )}
+
+          {marketHeatResult && (
+            <Card className="bg-card border-border border-l-2 border-l-destructive">
+              <CardContent className="p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <Badge variant={
+                    marketHeatResult.result.area_price_heat === "COOL" ? "secondary" :
+                    marketHeatResult.result.area_price_heat === "WARM" ? "default" :
+                    marketHeatResult.result.area_price_heat === "HOT" ? "destructive" :
+                    "outline"
+                  } className="text-xs px-3 py-1">
+                    {marketHeatResult.result.area_price_heat === "COOL" && "❄️"}
+                    {marketHeatResult.result.area_price_heat === "WARM" && "🌤️"}
+                    {marketHeatResult.result.area_price_heat === "HOT" && "🔥"}
+                    {marketHeatResult.result.area_price_heat === "PREMIUM" && "💎"}
+                    {" "}{marketHeatResult.result.area_price_heat}
+                  </Badge>
+                  <span className="text-[10px] text-muted-foreground">{mhCity} • {mhDistrict}</span>
+                </div>
+
+                <div className="space-y-2">
+                  <div>
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-1">📈 Demand Strength</p>
+                    <p className="text-xs text-foreground leading-relaxed">{marketHeatResult.result.demand_strength}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-1">🗺️ Market Heat Summary</p>
+                    <p className="text-xs text-foreground leading-relaxed">{marketHeatResult.result.market_heat_summary}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
         <TabsContent value="detail">
           {currentAnalysis ? (
             <div className="space-y-3">
