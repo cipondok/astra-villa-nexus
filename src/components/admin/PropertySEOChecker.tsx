@@ -1747,6 +1747,91 @@ const PropertySEOChecker = () => {
                   </CardContent>
                 </Card>
               )}
+
+              {/* Internal Linking Loading */}
+              {internalLinking.isPending && (
+                <Card className="bg-card border-border">
+                  <CardContent className="p-6 text-center">
+                    <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                    <p className="text-xs text-muted-foreground">AI is generating internal linking suggestions...</p>
+                    <Progress value={50} className="h-1.5 mt-3 max-w-xs mx-auto" />
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Internal Linking Result */}
+              {linkingResult && (
+                <Card className="bg-card border-border border-l-2 border-l-chart-3">
+                  <CardHeader className="p-3 pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <Globe className="h-4 w-4 text-chart-3" />
+                      Internal Linking Suggestions
+                    </CardTitle>
+                    <CardDescription className="text-[10px]">
+                      Smart link recommendations to boost SEO authority for {linkingResult.property_summary.title}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-3 pt-0 space-y-3">
+                    {/* Strategy & Authority */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="p-2 rounded-md border border-border/50 bg-accent/20">
+                        <p className="text-[9px] text-muted-foreground mb-0.5">📈 Estimated Authority Boost</p>
+                        <p className="text-[10px] font-medium text-chart-1">{linkingResult.result.estimated_authority_boost}</p>
+                      </div>
+                      <div className="p-2 rounded-md border border-border/50 bg-accent/20">
+                        <p className="text-[9px] text-muted-foreground mb-0.5">🏛️ Pillar Page</p>
+                        <p className="text-[10px] font-medium text-foreground">{linkingResult.result.pillar_page_recommendation}</p>
+                      </div>
+                    </div>
+
+                    {/* Strategy */}
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1">
+                        <Lightbulb className="h-3 w-3" /> Linking Strategy
+                      </p>
+                      <p className="text-[10px] text-foreground bg-accent/30 p-2 rounded-md leading-relaxed">{linkingResult.result.linking_strategy}</p>
+                    </div>
+
+                    {/* Link Suggestions */}
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1">
+                        <ArrowUpRight className="h-3 w-3 text-chart-3" /> Suggested Links ({linkingResult.result.internal_link_suggestions.length})
+                      </p>
+                      <div className="space-y-1.5">
+                        {linkingResult.result.internal_link_suggestions.map((link, i) => (
+                          <div key={i} className={cn(
+                            "p-2 rounded-md border",
+                            link.seo_value === 'HIGH' ? "border-chart-1/30 bg-chart-1/5" :
+                            link.seo_value === 'MEDIUM' ? "border-chart-4/30 bg-chart-4/5" :
+                            "border-border/50 bg-muted/20"
+                          )}>
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                                  <Badge variant={
+                                    link.seo_value === 'HIGH' ? 'default' :
+                                    link.seo_value === 'MEDIUM' ? 'secondary' : 'outline'
+                                  } className="text-[8px] px-1.5 py-0">
+                                    {link.seo_value}
+                                  </Badge>
+                                  <Badge variant="outline" className="text-[8px] px-1.5 py-0 border-chart-3/30 text-chart-3">
+                                    {link.link_type.replace(/_/g, ' ')}
+                                  </Badge>
+                                </div>
+                                <p className="text-[10px] font-medium text-foreground">
+                                  <span className="text-chart-3 underline">{link.anchor_text}</span>
+                                </p>
+                                <p className="text-[9px] text-muted-foreground mt-0.5 font-mono truncate">{link.target_url}</p>
+                                <p className="text-[9px] text-muted-foreground mt-0.5">{link.reasoning}</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           ) : (
             <Card className="bg-card border-border"><CardContent className="p-8 text-center text-sm text-muted-foreground">Select a property from the list or use the manual selector above</CardContent></Card>
