@@ -33384,6 +33384,7 @@ export type Database = {
         }[]
       }
       get_my_property_booking_count: { Args: never; Returns: number }
+      get_national_property_market_index: { Args: never; Returns: Json }
       get_own_vendor_profile_secure: {
         Args: never
         Returns: {
