@@ -242,6 +242,25 @@ async function handleProcess(supabase: any) {
         });
         if (error) throw error;
         result = data?.data || data;
+      } else if (pendingJob.job_type === "investment_analysis") {
+        // Full AI analysis: scores + ROI + hotspots + market insights
+        const scoreResult = await calculateInvestmentScores(supabase, { limit: 100, offset: (task.payload?.batch || 0) * 100 });
+        const roiResult = await updateRoiForecasts(supabase, { limit: 50, offset: (task.payload?.batch || 0) * 50 });
+        const hotspotResult = await detectInvestmentHotspots(supabase);
+        const marketResult = await updateMarketInsights(supabase);
+        result = { scores: scoreResult, roi: roiResult, hotspots: hotspotResult, market: marketResult };
+      } else if (pendingJob.job_type === "demand_signal_refresh") {
+        // Lightweight demand recalculation
+        const trendingResult = await updateTrendingProperties(supabase, { days: 30 });
+        const rentalResult = await updateRentalInsights(supabase);
+        result = { trending: trendingResult, rental: rentalResult };
+      } else if (pendingJob.job_type === "market_intelligence_update") {
+        // Full market intelligence recalibration
+        const marketResult = await updateMarketInsights(supabase);
+        const priceResult = await updatePriceTrends(supabase);
+        const hotspotResult = await detectInvestmentHotspots(supabase);
+        const hotMarketResult = await detectHotMarkets(supabase);
+        result = { market: marketResult, prices: priceResult, hotspots: hotspotResult, hotMarkets: hotMarketResult };
       }
 
       // Mark task completed
