@@ -202,7 +202,7 @@ const PropertyManagement = () => {
   const sortedProperties = React.useMemo(() => {
     const sorted = [...allProperties].sort((a, b) => {
       let aVal: number, bVal: number;
-      if (sortField === 'deal_score') {
+      if (sortField === 'deal_probability_score') {
         aVal = a.deal_analysis?.deal_score ?? -1;
         bVal = b.deal_analysis?.deal_score ?? -1;
       } else if (sortField === 'price') {
