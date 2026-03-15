@@ -2892,6 +2892,82 @@ Tasks:
       }
     }
 
+    // ── weekly-growth-plan: 7-day growth action plan ──
+    if (action === "weekly-growth-plan") {
+      const traffic = Number(payload.traffic) || 0;
+      const listings = Number(payload.listings) || 0;
+      const agents = Number(payload.agents) || 0;
+      const leads = Number(payload.leads) || 0;
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a startup execution strategist for ASTRA, an AI-driven Indonesian property marketplace that just launched beta.
+Generate a concrete 7-day action plan. Use Indonesian language. Every action must be specific, executable, and have a clear daily assignment (Day 1-7). No generic advice.`;
+
+      const userPrompt = `Generate a 7-day growth plan based on:
+
+- Current Traffic: ${traffic} daily visitors
+- Total Listings: ${listings}
+- Active Agents: ${agents}
+- Leads Generated: ${leads}
+
+Tasks:
+1. Define the weekly focus theme
+2. Provide 7 daily growth actions (one per day, Day 1 through Day 7)
+3. Suggest 3 traffic boost tactics
+4. Suggest 3 agent onboarding actions`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "weekly_growth_plan_result",
+                description: "Return 7-day growth action plan",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    weekly_focus: { type: "string", description: "Weekly focus theme in Indonesian" },
+                    daily_growth_actions: { type: "array", items: { type: "string" }, description: "7 daily actions (Day 1-7) in Indonesian" },
+                    traffic_boost_tactics: { type: "array", items: { type: "string" }, description: "3 traffic tactics in Indonesian" },
+                    agent_onboarding_actions: { type: "array", items: { type: "string" }, description: "3 agent onboarding actions in Indonesian" },
+                  },
+                  required: ["weekly_focus", "daily_growth_actions", "traffic_boost_tactics", "agent_onboarding_actions"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "weekly_growth_plan_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI weekly growth plan failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "weekly-growth-plan", result, input: { traffic, listings, agents, leads } });
+      } catch (e) {
+        console.error("Weekly growth plan exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Weekly growth plan failed" }, 500);
+      }
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
