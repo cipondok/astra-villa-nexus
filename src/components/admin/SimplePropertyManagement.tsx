@@ -13,6 +13,7 @@ import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsAdmin } from "@/hooks/useUserRoles";
 import PropertyEditModal from "./PropertyEditModal";
+import ListingOptimizationBanner from "./ListingOptimizationBanner";
 import PropertyViewModal from "./PropertyViewModal";
 import PropertyBulkActions from "./PropertyBulkActions";
 import {
@@ -345,6 +346,9 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
 
   return (
     <div className="space-y-3">
+      {/* Listing Optimization Alerts */}
+      <ListingOptimizationBanner />
+
       {/* Header - Slim Style */}
       <div className="flex items-center justify-between">
         <div>
