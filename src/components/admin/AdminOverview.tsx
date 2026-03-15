@@ -441,6 +441,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           {/* Deal Pipeline & Revenue Intelligence */}
           <DealPipelineCard onNavigate={() => handleQuickAction('financial-management')} />
 
+          {/* Geographic Expansion Intelligence */}
+          <GeoExpansionCard onNavigate={() => handleQuickAction('ai-command-center')} />
+
           {/* AI Systems Status */}
           <Card className="border-border/30">
             <CardHeader className="p-3 pb-2">
