@@ -1991,6 +1991,99 @@ Tasks:
       }
     }
 
+    // ── unified-insight: Synthesize multi-signal strategic insight ──
+    if (action === "unified-insight") {
+      const village = normalizeText(payload.village);
+      const district = normalizeText(payload.district);
+      const city = normalizeText(payload.city);
+      const province = normalizeText(payload.province);
+      const investment_score = Number(payload.investment_score) || 0;
+      const demand_score = Number(payload.demand_score) || 0;
+      const liquidity_score = Number(payload.liquidity_score) || 0;
+      const growth_score = Number(payload.growth_score) || 0;
+      const price_score = Number(payload.price_score) || 0;
+
+      if (!city) return json({ error: "city is required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const locationStr = [village, district, city, province].filter(Boolean).join(", ");
+
+      const systemPrompt = `You are the central AI intelligence engine for a national property platform.
+Synthesize multiple property signals into a unified strategic insight.
+Use Indonesian language for key_strengths, key_risks, and strategy_recommendation.
+Be data-driven and actionable. The overall_opportunity_score should be a weighted synthesis of all input scores.`;
+
+      const userPrompt = `Synthesize these property signals:
+
+Location: ${locationStr}
+
+Scores:
+- Investment Score: ${investment_score}/100
+- Demand Score: ${demand_score}/100
+- Liquidity Score: ${liquidity_score}/100
+- Growth Score: ${growth_score}/100
+- Price Attractiveness: ${price_score}/100
+
+Tasks:
+1. Generate overall property opportunity rating (0-100)
+2. Classify opportunity level (LOW / MODERATE / STRONG / PRIME)
+3. Summarize key strengths (3 items)
+4. Summarize key risks (2-3 items)
+5. Provide strategic recommendation (buy, hold, flip, or rent focus)`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "unified_insight_result",
+                description: "Return unified strategic insight",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    overall_opportunity_score: { type: "number", description: "Overall opportunity score 0-100" },
+                    opportunity_level: { type: "string", enum: ["LOW", "MODERATE", "STRONG", "PRIME"], description: "Opportunity classification" },
+                    key_strengths: { type: "array", items: { type: "string" }, description: "3 key strengths in Indonesian" },
+                    key_risks: { type: "array", items: { type: "string" }, description: "2-3 key risks in Indonesian" },
+                    strategy_recommendation: { type: "string", description: "Strategic recommendation (buy/hold/flip/rent) with 2-3 sentence explanation in Indonesian" },
+                  },
+                  required: ["overall_opportunity_score", "opportunity_level", "key_strengths", "key_risks", "strategy_recommendation"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "unified_insight_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI unified insight failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "unified-insight", result, input: { village, district, city, province, investment_score, demand_score, liquidity_score, growth_score, price_score } });
+      } catch (e) {
+        console.error("Unified insight exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Unified insight failed" }, 500);
+      }
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
