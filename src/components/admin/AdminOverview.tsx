@@ -40,6 +40,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import AIHealthSummaryCard from "./AIHealthSummaryCard";
+import LeadIntelligenceCard from "./LeadIntelligenceCard";
 
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
