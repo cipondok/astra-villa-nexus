@@ -105,7 +105,13 @@ const ListingPerformanceOptimizerCard = React.memo(function ListingPerformanceOp
   const visibleRecs = expanded ? data.recommendations : data.recommendations.slice(0, 3);
 
   return (
-    <Card className="rounded-2xl border-border/30 overflow-hidden bg-card/80 backdrop-blur-sm">
+    <Card
+      className={cn(
+        "rounded-2xl border-border/30 overflow-hidden bg-card/80 backdrop-blur-sm",
+        onNavigate && "cursor-pointer hover:border-primary/30 hover:shadow-sm transition-all"
+      )}
+      onClick={onNavigate}
+    >
       <div className={cn(
         "h-1 bg-gradient-to-r",
         hasImmediate
