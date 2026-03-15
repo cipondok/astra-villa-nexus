@@ -34127,6 +34127,7 @@ export type Database = {
         Args: { data_type: string; data_value: string }
         Returns: string
       }
+      match_buyer_listings: { Args: { p_limit?: number }; Returns: Json }
       predict_deal_closing_timeline: {
         Args: { p_limit?: number }
         Returns: Json
