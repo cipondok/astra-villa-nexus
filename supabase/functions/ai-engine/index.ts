@@ -3761,6 +3761,49 @@ Tasks:
       }
     }
 
+    // ── spatial-ranking: Deterministic location heat ranking ──
+    if (action === "spatial-ranking") {
+      const city = normalizeText(payload.city);
+      const locations = Array.isArray(payload.location_heat_list) ? payload.location_heat_list : [];
+
+      if (!city || locations.length < 2) return json({ error: "city and at least 2 locations are required" }, 400);
+
+      // Calculate heat score per location and sort
+      const ranked = locations.map((loc: { name: string; demand_score: number; growth_score: number; price_index_score: number }) => {
+        const demand = Number(loc.demand_score) || 0;
+        const growth = Number(loc.growth_score) || 0;
+        const price = Number(loc.price_index_score) || 0;
+        const heat_score = Math.max(0, Math.min(100, Math.round(demand * 0.4 + growth * 0.35 + price * 0.25)));
+        return { name: loc.name, heat_score, demand, growth, price };
+      }).sort((a: { heat_score: number }, b: { heat_score: number }) => b.heat_score - a.heat_score);
+
+      const heat_ranking = ranked.map((r: { name: string; heat_score: number }, i: number) => ({
+        rank: i + 1,
+        location: r.name,
+        heat_score: r.heat_score,
+      }));
+
+      // Emerging = highest growth-to-demand ratio (growth outpacing demand = early stage)
+      const emerging = [...ranked].sort((a: { growth: number; demand: number }, b: { growth: number; demand: number }) =>
+        (b.growth - b.demand) - (a.growth - a.demand)
+      )[0];
+
+      // Stable = highest demand with lowest growth gap (mature, balanced)
+      const stable = [...ranked].sort((a: { demand: number; growth: number }, b: { demand: number; growth: number }) =>
+        (Math.abs(a.growth - a.demand) - Math.abs(b.growth - b.demand)) || (b.demand - a.demand)
+      )[0];
+
+      return json({
+        action: "spatial-ranking",
+        result: {
+          heat_ranking,
+          emerging_hotspot: emerging?.name || "",
+          stable_zone: stable?.name || "",
+        },
+        input: { city, location_count: locations.length },
+      });
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
