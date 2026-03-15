@@ -736,7 +736,7 @@ const PropertyManagement = () => {
                           <TableCell className="text-center">
                             <DealScoreBadge
                               score={property.deal_analysis?.deal_score ?? null}
-                              recommendation={property.deal_analysis?.deal_tag}
+                              label={property.deal_analysis?.deal_tag}
                             />
                           </TableCell>
                           <TableCell>
