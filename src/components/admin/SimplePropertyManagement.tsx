@@ -29,6 +29,13 @@ import {
   ChevronRight
 } from "lucide-react";
 import Price from "@/components/ui/Price";
+import DealScoreBadge from "./DealScoreBadge";
+
+interface DealAnalysisRow {
+  deal_score: number;
+  deal_tag: string;
+  deal_confidence: number | null;
+}
 
 interface Property {
   id: string;
