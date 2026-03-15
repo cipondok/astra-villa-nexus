@@ -33161,6 +33161,7 @@ export type Database = {
         Returns: Json
       }
       detect_market_anomalies: { Args: never; Returns: Json }
+      detect_pricing_intelligence: { Args: { p_limit?: number }; Returns: Json }
       encrypt_api_key:
         | { Args: { api_key: string; key_name: string }; Returns: string }
         | { Args: { plain_key: string }; Returns: string }

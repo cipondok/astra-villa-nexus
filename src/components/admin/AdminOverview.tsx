@@ -51,6 +51,7 @@ import JobQueueHealthCard from "./JobQueueHealthCard";
 import AIJobObservabilityPanel from "./AIJobObservabilityPanel";
 import MarketAnomalyCard from "./MarketAnomalyCard";
 import ListingPerformanceOptimizerCard from "./ListingPerformanceOptimizerCard";
+import PricingIntelligenceCard from "./PricingIntelligenceCard";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
@@ -466,6 +467,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
 
           {/* Listing Performance Optimizer */}
           <ListingPerformanceOptimizerCard onNavigate={() => onSectionChange?.("listing-optimization-center")} />
+
+          {/* Dynamic Pricing Intelligence */}
+          <PricingIntelligenceCard />
 
           {/* AI Systems Status */}
           <Card className="border-border/30">
