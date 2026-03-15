@@ -681,12 +681,12 @@ const PropertyManagement = () => {
                       <TableHead>Details</TableHead>
                       <TableHead
                         className="text-center cursor-pointer select-none hidden md:table-cell hover:bg-muted/50 transition-colors"
-                        onClick={() => handleSort('deal_score')}
+                        onClick={() => handleSort('deal_probability_score')}
                       >
                         <div className="flex items-center justify-center gap-1">
                           <TrendingUp className="h-3 w-3" />
-                          Deal Intel
-                          {sortField === 'deal_score' && (
+                          Deal Intelligence
+                          {sortField === 'deal_probability_score' && (
                             <span className="text-[10px]">{sortDir === 'desc' ? '↓' : '↑'}</span>
                           )}
                         </div>
