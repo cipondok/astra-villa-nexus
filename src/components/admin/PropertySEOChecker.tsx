@@ -4,6 +4,7 @@ import { useTitleRewrite, type TitleRewriteResponse } from '@/hooks/useTitleRewr
 import { useDescriptionRewrite, type DescriptionRewriteResponse } from '@/hooks/useDescriptionRewrite';
 import { useTrafficPrediction, type TrafficPredictionResponse } from '@/hooks/useTrafficPrediction';
 import { useInternalLinking, type InternalLinkingResponse } from '@/hooks/useInternalLinking';
+import { useLandingPageGenerator, type LandingPageResponse, type LandingPageInput } from '@/hooks/useLandingPageGenerator';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -344,6 +345,11 @@ const PropertySEOChecker = () => {
   const [descRewriteResult, setDescRewriteResult] = useState<DescriptionRewriteResponse | null>(null);
   const [trafficResult, setTrafficResult] = useState<TrafficPredictionResponse | null>(null);
   const [linkingResult, setLinkingResult] = useState<InternalLinkingResponse | null>(null);
+  const [landingPageResult, setLandingPageResult] = useState<LandingPageResponse | null>(null);
+  const [lpProvince, setLpProvince] = useState('');
+  const [lpCity, setLpCity] = useState('');
+  const [lpDistrict, setLpDistrict] = useState('');
+  const [lpVillage, setLpVillage] = useState('');
   const [autoOptThreshold, setAutoOptThreshold] = useState(70);
   
   // AI Auto-Fix state selection
@@ -393,6 +399,7 @@ const PropertySEOChecker = () => {
   const descRewrite = useDescriptionRewrite();
   const trafficPrediction = useTrafficPrediction();
   const internalLinking = useInternalLinking();
+  const landingPageGen = useLandingPageGenerator();
 
   // Reset city/area on state change, reset pages on any filter change
   useEffect(() => { setFilterCity(''); setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterState]);
@@ -803,6 +810,7 @@ const PropertySEOChecker = () => {
           <TabsTrigger value="history" className="text-xs gap-1"><TrendingUp className="h-3 w-3" />History</TabsTrigger>
           <TabsTrigger value="jobs" className="text-xs gap-1"><Loader2 className="h-3 w-3" />AI Jobs</TabsTrigger>
           <TabsTrigger value="platform-health" className="text-xs gap-1"><Sparkles className="h-3 w-3" />Platform Health</TabsTrigger>
+          <TabsTrigger value="landing-gen" className="text-xs gap-1"><FileText className="h-3 w-3" />Landing Gen</TabsTrigger>
           {currentAnalysis && <TabsTrigger value="detail" className="text-xs gap-1"><Eye className="h-3 w-3" />Detail</TabsTrigger>}
         </TabsList>
 
@@ -1054,6 +1062,147 @@ const PropertySEOChecker = () => {
         {/* ─── Platform Health Tab ─── */}
         <TabsContent value="platform-health" className="space-y-3">
           <SeoPlatformHealthTab />
+        </TabsContent>
+
+        {/* ─── Landing Page Generator Tab ─── */}
+        <TabsContent value="landing-gen" className="space-y-3">
+          <Card className="bg-card border-border">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <FileText className="h-4 w-4 text-primary" />
+                SEO Landing Page Content Generator
+              </CardTitle>
+              <CardDescription className="text-[10px]">
+                Generate structured SEO content for property location landing pages
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-3 pt-0 space-y-3">
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Province *</label>
+                  <Select value={lpProvince} onValueChange={setLpProvince}>
+                    <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Select province" /></SelectTrigger>
+                    <SelectContent>
+                      {INDONESIA_PROVINCES.map(p => (
+                        <SelectItem key={p} value={p} className="text-xs">{p}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">City *</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. Denpasar" value={lpCity} onChange={e => setLpCity(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">District</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. Kuta Selatan" value={lpDistrict} onChange={e => setLpDistrict(e.target.value)} />
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground mb-1 block">Village</label>
+                  <Input className="h-8 text-xs" placeholder="e.g. Ungasan" value={lpVillage} onChange={e => setLpVillage(e.target.value)} />
+                </div>
+              </div>
+              <Button
+                size="sm"
+                className="h-8 text-xs w-full"
+                disabled={!lpProvince || !lpCity || landingPageGen.isPending}
+                onClick={() => {
+                  landingPageGen.mutate(
+                    { province: lpProvince, city: lpCity, district: lpDistrict, village: lpVillage },
+                    { onSuccess: (data) => setLandingPageResult(data) }
+                  );
+                }}
+              >
+                {landingPageGen.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Sparkles className="h-3 w-3 mr-1" />}
+                Generate Landing Page Content
+              </Button>
+            </CardContent>
+          </Card>
+
+          {landingPageGen.isPending && (
+            <Card className="bg-card border-border">
+              <CardContent className="p-6 text-center">
+                <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                <p className="text-xs text-muted-foreground">AI is generating SEO landing page content...</p>
+                <Progress value={60} className="h-1.5 mt-3 max-w-xs mx-auto" />
+              </CardContent>
+            </Card>
+          )}
+
+          {landingPageResult && (
+            <div className="space-y-3">
+              {/* SEO Title & Meta */}
+              <Card className="bg-card border-border border-l-2 border-l-primary">
+                <CardHeader className="p-3 pb-2">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <Search className="h-4 w-4 text-primary" />
+                    Google SERP Preview
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-3 pt-0">
+                  <div className="p-3 rounded-md border border-border/50 bg-background space-y-1">
+                    <p className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">
+                      {landingPageResult.result.seo_title}
+                    </p>
+                    <p className="text-[10px] text-chart-1 font-mono">
+                      astra-villa-realty.lovable.app/properties/{lpCity.toLowerCase().replace(/\s+/g, '-')}
+                    </p>
+                    <p className="text-xs text-muted-foreground">{landingPageResult.result.meta_description}</p>
+                  </div>
+                  <div className="flex gap-2 mt-2">
+                    <span className="text-[9px] text-muted-foreground">{landingPageResult.result.seo_title.length}/65 chars</span>
+                    <span className="text-[9px] text-muted-foreground">•</span>
+                    <span className="text-[9px] text-muted-foreground">{landingPageResult.result.meta_description.length}/160 chars</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Content Sections */}
+              {[
+                { title: "📝 Intro Content", content: landingPageResult.result.intro_content, color: "chart-1" },
+                { title: "💰 Investment Potential", content: landingPageResult.result.investment_section, color: "chart-2" },
+                { title: "🏠 Rental Opportunity", content: landingPageResult.result.rental_potential_section, color: "chart-3" },
+                { title: "🌴 Lifestyle & Attractions", content: landingPageResult.result.lifestyle_section, color: "chart-4" },
+                { title: "🛣️ Infrastructure & Access", content: landingPageResult.result.infrastructure_section, color: "primary" },
+              ].map((section, i) => (
+                <Card key={i} className="bg-card border-border">
+                  <CardHeader className="p-3 pb-1">
+                    <CardTitle className="text-xs">{section.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-3 pt-0">
+                    <p className="text-[11px] text-foreground whitespace-pre-line leading-relaxed">{section.content}</p>
+                  </CardContent>
+                </Card>
+              ))}
+
+              {/* Keywords */}
+              <Card className="bg-card border-border">
+                <CardHeader className="p-3 pb-2">
+                  <CardTitle className="text-xs flex items-center gap-2">
+                    <Hash className="h-3.5 w-3.5 text-primary" /> Target Keywords
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-3 pt-0 space-y-2">
+                  <div>
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-1">Primary Keywords</p>
+                    <div className="flex flex-wrap gap-1">
+                      {landingPageResult.result.primary_keywords.map((kw, i) => (
+                        <Badge key={i} variant="default" className="text-[9px]">{kw}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-1">Secondary Keywords</p>
+                    <div className="flex flex-wrap gap-1">
+                      {landingPageResult.result.secondary_keywords.map((kw, i) => (
+                        <Badge key={i} variant="outline" className="text-[9px]">{kw}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="detail">
