@@ -508,10 +508,11 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                         />
                       </div>
                       {(property as any).deal_analysis?.deal_score != null && (
-                        <div className="absolute top-2 right-2 z-10">
+                        <div className="absolute top-1.5 right-1.5 z-20">
                           <DealScoreBadge
                             score={(property as any).deal_analysis.deal_score}
                             label={(property as any).deal_analysis.deal_tag}
+                            recommendation={(property as any).deal_analysis.deal_tag}
                             compact
                           />
                         </div>
