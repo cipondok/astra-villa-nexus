@@ -507,6 +507,14 @@ const SimplePropertyManagement = ({ onAddProperty }: SimplePropertyManagementPro
                           className="bg-background shadow-sm h-3.5 w-3.5"
                         />
                       </div>
+                      {(property as any).deal_analysis?.deal_score != null && (
+                        <div className="absolute top-1.5 right-1.5 z-10">
+                          <DealScoreBadge
+                            score={(property as any).deal_analysis.deal_score}
+                            compact
+                          />
+                        </div>
+                      )}
                       {(() => {
                         const imgSrc = (() => {
                           if (property.thumbnail_url) return property.thumbnail_url;
