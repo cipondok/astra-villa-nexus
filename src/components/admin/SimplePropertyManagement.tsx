@@ -13,6 +13,7 @@ import { useAlert } from "@/contexts/AlertContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsAdmin } from "@/hooks/useUserRoles";
 import PropertyEditModal from "./PropertyEditModal";
+import ListingOptimizationBanner from "./ListingOptimizationBanner";
 import PropertyViewModal from "./PropertyViewModal";
 import PropertyBulkActions from "./PropertyBulkActions";
 import {
