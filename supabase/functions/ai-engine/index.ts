@@ -3405,6 +3405,54 @@ Tasks:
       }
     }
 
+    // ── property-similarity: Deterministic similarity rules ──
+    if (action === "property-similarity") {
+      const price = Number(payload.price) || 0;
+      const property_type = normalizeText(payload.property_type);
+      const city = normalizeText(payload.city);
+
+      if (!price || !property_type || !city)
+        return json({ error: "price, property_type, and city are required" }, 400);
+
+      // Price similarity: ±20% for < 2B, ±15% for 2-5B, ±10% for > 5B
+      const priceBillion = price / 1_000_000_000;
+      let pctRange: number;
+      let priceLabel: string;
+      if (priceBillion < 2) { pctRange = 20; priceLabel = "budget"; }
+      else if (priceBillion <= 5) { pctRange = 15; priceLabel = "mid-range"; }
+      else { pctRange = 10; priceLabel = "premium"; }
+      const minPrice = Math.round(price * (1 - pctRange / 100));
+      const maxPrice = Math.round(price * (1 + pctRange / 100));
+
+      // Location radius: tighter for urban, wider for resort
+      const resortCities = ["bali", "lombok", "yogyakarta", "malang"];
+      const isResort = resortCities.some(r => city.toLowerCase().includes(r));
+      const radiusKm = isResort ? 15 : 8;
+
+      // Investment similarity
+      const yieldThreshold = priceBillion >= 5 ? 4 : priceBillion >= 2 ? 5 : 6;
+
+      // Lifestyle tags
+      const lifestyleTags: Record<string, string[]> = {
+        villa: ["tropical retreat", "private pool", "resort living", "airbnb ready"],
+        rumah: ["family friendly", "cluster modern", "dekat sekolah", "akses tol"],
+        apartemen: ["urban lifestyle", "sky living", "fasilitas lengkap", "transit oriented"],
+        tanah: ["kavling siap bangun", "zona berkembang", "capital gain"],
+        ruko: ["bisnis strategis", "mixed-use", "high traffic area"],
+      };
+      const typeKey = Object.keys(lifestyleTags).find(k => property_type.toLowerCase().includes(k)) || "rumah";
+      const tags = lifestyleTags[typeKey];
+
+      const result = {
+        price_similarity_rule: `Tampilkan properti ${property_type} dalam rentang harga ±${pctRange}% (Rp ${(minPrice/1e9).toFixed(2)}B – Rp ${(maxPrice/1e9).toFixed(2)}B) — kategori ${priceLabel}.`,
+        location_similarity_rule: `Cari properti serupa dalam radius ${radiusKm} km dari ${city}${isResort ? " (area wisata, radius diperluas)" : " (area urban, radius ketat)"}.`,
+        investment_similarity_rule: `Filter properti dengan rental yield ≥${yieldThreshold}% dan investment score dalam ±15 poin dari properti saat ini.`,
+        lifestyle_similarity_rule: `Match berdasarkan tag: ${tags.join(", ")} — cocokkan minimal 2 dari ${tags.length} tag untuk relevansi tinggi.`,
+      };
+
+      return json({ action: "property-similarity", result, input: { price, property_type, city } });
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
