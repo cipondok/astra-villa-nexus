@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useSeoAudit, type SeoAuditResult } from '@/hooks/useSeoAudit';
 import { useTitleRewrite, type TitleRewriteResponse } from '@/hooks/useTitleRewrite';
 import { useDescriptionRewrite, type DescriptionRewriteResponse } from '@/hooks/useDescriptionRewrite';
+import { useTrafficPrediction, type TrafficPredictionResponse } from '@/hooks/useTrafficPrediction';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
