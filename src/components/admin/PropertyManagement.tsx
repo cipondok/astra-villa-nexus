@@ -198,11 +198,29 @@ const PropertyManagement = () => {
     },
   });
 
-  // Pagination calculations
-  const totalPages = Math.ceil(allProperties.length / itemsPerPage);
+  // Sort + paginate
+  const sortedProperties = React.useMemo(() => {
+    const sorted = [...allProperties].sort((a, b) => {
+      let aVal: number, bVal: number;
+      if (sortField === 'deal_score') {
+        aVal = a.deal_analysis?.deal_score ?? -1;
+        bVal = b.deal_analysis?.deal_score ?? -1;
+      } else if (sortField === 'price') {
+        aVal = a.price ?? 0;
+        bVal = b.price ?? 0;
+      } else {
+        aVal = new Date(a.created_at || 0).getTime();
+        bVal = new Date(b.created_at || 0).getTime();
+      }
+      return sortDir === 'asc' ? aVal - bVal : bVal - aVal;
+    });
+    return sorted;
+  }, [allProperties, sortField, sortDir]);
+
+  const totalPages = Math.ceil(sortedProperties.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const properties = allProperties.slice(startIndex, endIndex);
+  const properties = sortedProperties.slice(startIndex, endIndex);
 
   // Reset to first page when filters change
   React.useEffect(() => {
