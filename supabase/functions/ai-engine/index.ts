@@ -1991,6 +1991,81 @@ Tasks:
       }
     }
 
+    // ── sales-closing: Generate persuasive closing message ──
+    if (action === "sales-closing") {
+      const buyer_profile = normalizeText(payload.buyer_profile);
+      const property_advantage = normalizeText(payload.property_advantage);
+      const negotiation_context = normalizeText(payload.negotiation_context);
+
+      if (!buyer_profile || !property_advantage) return json({ error: "buyer_profile and property_advantage are required" }, 400);
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a top-performing Indonesian property sales closer.
+Generate a persuasive closing message to encourage buyer commitment.
+Write in Indonesian, conversational WhatsApp-style tone.
+Goals: Build urgency, reinforce investment value, encourage site visit or booking fee, maintain professional friendly tone.
+Keep it short (3-5 sentences max). Do NOT use bullet points or formatting — just natural conversational text.`;
+
+      const userPrompt = `Generate a closing message for this situation:
+
+BUYER PROFILE:
+${buyer_profile}
+
+PROPERTY ADVANTAGE:
+${property_advantage}
+
+NEGOTIATION SITUATION:
+${negotiation_context || "Standard negotiation"}`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "sales_closing_result",
+                description: "Return the persuasive closing message",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    closing_message: { type: "string", description: "Short persuasive closing message in Indonesian, WhatsApp-style conversational tone, 3-5 sentences" },
+                  },
+                  required: ["closing_message"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "sales_closing_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI sales closing failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "sales-closing", result, input: { buyer_profile, property_advantage, negotiation_context } });
+      } catch (e) {
+        console.error("Sales closing exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Sales closing failed" }, 500);
+      }
+    }
+
     // ── negotiation-tactics: Suggest optimal negotiation strategy ──
     if (action === "negotiation-tactics") {
       const property_type = normalizeText(payload.property_type);
