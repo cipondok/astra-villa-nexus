@@ -49,6 +49,7 @@ import AIBatchControlPanel from "./AIBatchControlPanel";
 import AISchedulingDashboard from "./AISchedulingDashboard";
 import JobQueueHealthCard from "./JobQueueHealthCard";
 import AIJobObservabilityPanel from "./AIJobObservabilityPanel";
+import MarketAnomalyCard from "./MarketAnomalyCard";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
