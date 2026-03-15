@@ -2481,6 +2481,98 @@ Tasks:
       }
     }
 
+    // ── product-roadmap: Feature development roadmap generator ──
+    if (action === "product-roadmap") {
+      const traffic = Number(payload.traffic) || 0;
+      const listings = Number(payload.listings) || 0;
+      const agents = Number(payload.agents) || 0;
+      const leads = Number(payload.leads) || 0;
+      const revenue_stage = normalizeText(payload.revenue_stage) || "none";
+
+      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+      if (!LOVABLE_API_KEY) return json({ error: "AI service not configured" }, 500);
+
+      const systemPrompt = `You are a senior PropTech product strategist and startup scaling advisor for ASTRA, an AI-driven Indonesian property marketplace.
+
+Current AI capabilities already built:
+- AI SEO automation, investment scoring, price benchmarking, demand forecasting
+- AI liquidity prediction, growth hotspot detection, ROI projection
+- AI negotiation strategy, buyer intent detection, market report generator
+- Master property intelligence brain, deal probability predictor
+- Architecture advisor, growth diagnostics
+
+Use Indonesian language for all text fields. Be specific, data-driven, and actionable.`;
+
+      const userPrompt = `Generate a feature development roadmap based on these metrics:
+
+- Monthly Traffic: ${traffic.toLocaleString()} visitors
+- Total Listings: ${listings.toLocaleString()}
+- Active Agents: ${agents}
+- Monthly Leads: ${leads.toLocaleString()}
+- Revenue Stage: ${revenue_stage}
+
+Tasks:
+1. Identify platform maturity stage (pre-launch / beta traction / growth phase / scaling phase)
+2. Suggest top 5 priority features to build next
+3. Identify features that impact: traffic growth, conversion improvement, revenue generation
+4. Suggest 30-day, 90-day, and 12-month focus
+5. Suggest risk if feature development is delayed`;
+
+      try {
+        const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "google/gemini-3-flash-preview",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            tools: [{
+              type: "function",
+              function: {
+                name: "product_roadmap_result",
+                description: "Return product roadmap analysis",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    platform_stage: { type: "string", description: "Current maturity stage" },
+                    next_priority_features: { type: "array", items: { type: "string" }, description: "Top 5 priority features in Indonesian" },
+                    traffic_impact_features: { type: "array", items: { type: "string" }, description: "Features impacting traffic growth" },
+                    conversion_impact_features: { type: "array", items: { type: "string" }, description: "Features impacting conversion" },
+                    revenue_impact_features: { type: "array", items: { type: "string" }, description: "Features impacting revenue" },
+                    recommended_30_day_focus: { type: "string", description: "30-day focus in Indonesian" },
+                    recommended_90_day_focus: { type: "string", description: "90-day focus in Indonesian" },
+                    recommended_12_month_strategy: { type: "string", description: "12-month strategy in Indonesian" },
+                    delay_risk_warning: { type: "string", description: "Risk warning if delayed, in Indonesian" },
+                  },
+                  required: ["platform_stage", "next_priority_features", "traffic_impact_features", "conversion_impact_features", "revenue_impact_features", "recommended_30_day_focus", "recommended_90_day_focus", "recommended_12_month_strategy", "delay_risk_warning"],
+                  additionalProperties: false,
+                },
+              },
+            }],
+            tool_choice: { type: "function", function: { name: "product_roadmap_result" } },
+          }),
+        });
+
+        if (!aiResp.ok) {
+          if (aiResp.status === 429) return json({ error: "Rate limit exceeded" }, 429);
+          if (aiResp.status === 402) return json({ error: "AI credits required" }, 402);
+          return json({ error: "AI product roadmap failed" }, 500);
+        }
+
+        const aiData = await aiResp.json();
+        const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
+        if (!toolCall?.function?.arguments) return json({ error: "AI returned no structured data" }, 500);
+
+        const result = JSON.parse(toolCall.function.arguments);
+        return json({ action: "product-roadmap", result, input: { traffic, listings, agents, leads, revenue_stage } });
+      } catch (e) {
+        console.error("Product roadmap exception:", e);
+        return json({ error: e instanceof Error ? e.message : "Product roadmap failed" }, 500);
+      }
+    }
+
     // ── growth-content-plan: User acquisition content plan ──
     if (action === "growth-content-plan") {
       const city = normalizeText(payload.city);
