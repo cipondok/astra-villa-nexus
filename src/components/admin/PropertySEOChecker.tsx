@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useSeoAudit, type SeoAuditResult } from '@/hooks/useSeoAudit';
 import { useTitleRewrite, type TitleRewriteResponse } from '@/hooks/useTitleRewrite';
 import { useDescriptionRewrite, type DescriptionRewriteResponse } from '@/hooks/useDescriptionRewrite';
+import { useTrafficPrediction, type TrafficPredictionResponse } from '@/hooks/useTrafficPrediction';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -340,6 +341,7 @@ const PropertySEOChecker = () => {
   const [auditResult, setAuditResult] = useState<SeoAuditResult | null>(null);
   const [titleRewriteResult, setTitleRewriteResult] = useState<TitleRewriteResponse | null>(null);
   const [descRewriteResult, setDescRewriteResult] = useState<DescriptionRewriteResponse | null>(null);
+  const [trafficResult, setTrafficResult] = useState<TrafficPredictionResponse | null>(null);
   const [autoOptThreshold, setAutoOptThreshold] = useState(70);
   
   // AI Auto-Fix state selection
@@ -387,6 +389,7 @@ const PropertySEOChecker = () => {
   const seoAudit = useSeoAudit();
   const titleRewrite = useTitleRewrite();
   const descRewrite = useDescriptionRewrite();
+  const trafficPrediction = useTrafficPrediction();
 
   // Reset city/area on state change, reset pages on any filter change
   useEffect(() => { setFilterCity(''); setFilterArea(''); setAllPage(1); setWeakPage(1); setTopPage(1); }, [filterState]);
@@ -468,6 +471,13 @@ const PropertySEOChecker = () => {
       onSuccess: (data) => setDescRewriteResult(data),
     });
   }, [selectedPropertyId, descRewrite]);
+
+  const handleTrafficPrediction = useCallback(() => {
+    if (!selectedPropertyId) return;
+    trafficPrediction.mutate(selectedPropertyId, {
+      onSuccess: (data) => setTrafficResult(data),
+    });
+  }, [selectedPropertyId, trafficPrediction]);
 
   // Save custom keywords
   const handleSaveKeywords = useCallback(async () => {
@@ -1065,6 +1075,10 @@ const PropertySEOChecker = () => {
                         {descRewrite.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <FileText className="h-3 w-3 mr-1" />}
                         Rewrite Description
                       </Button>
+                      <Button size="sm" variant="outline" className="h-7 text-xs" onClick={handleTrafficPrediction} disabled={trafficPrediction.isPending}>
+                        {trafficPrediction.isPending ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <TrendingUp className="h-3 w-3 mr-1" />}
+                        Traffic Predict
+                      </Button>
                       <Button size="sm" className="h-7 text-xs" onClick={() => applySeo.mutate(currentAnalysis.property_id)} disabled={applySeo.isPending}>
                         <Zap className="h-3 w-3 mr-1" /> Apply SEO
                       </Button>
@@ -1606,6 +1620,116 @@ const PropertySEOChecker = () => {
                         </div>
                       </div>
                     )}
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Traffic Prediction Loading */}
+              {trafficPrediction.isPending && (
+                <Card className="bg-card border-border">
+                  <CardContent className="p-6 text-center">
+                    <Loader2 className="h-6 w-6 mx-auto animate-spin text-primary mb-2" />
+                    <p className="text-xs text-muted-foreground">AI is predicting traffic & lead potential...</p>
+                    <Progress value={55} className="h-1.5 mt-3 max-w-xs mx-auto" />
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Traffic Prediction Result */}
+              {trafficResult && (
+                <Card className="bg-card border-border border-l-2 border-l-chart-4">
+                  <CardHeader className="p-3 pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <TrendingUp className="h-4 w-4 text-chart-4" />
+                      SEO Traffic Prediction
+                    </CardTitle>
+                    <CardDescription className="text-[10px]">
+                      Organic search demand, click potential & lead forecast for {trafficResult.property_summary.title}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-3 pt-0 space-y-3">
+                    {/* Key Metrics Grid */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="p-2.5 rounded-lg border border-border/50 bg-accent/20 text-center">
+                        <p className="text-[9px] text-muted-foreground mb-0.5">🔍 Search Demand</p>
+                        <p className="text-sm font-bold text-foreground">{trafficResult.result.estimated_search_demand}</p>
+                      </div>
+                      <div className="p-2.5 rounded-lg border border-border/50 bg-accent/20 text-center">
+                        <p className="text-[9px] text-muted-foreground mb-0.5">👆 Monthly Clicks</p>
+                        <p className="text-sm font-bold text-foreground">{trafficResult.result.estimated_monthly_clicks}</p>
+                      </div>
+                      <div className="p-2.5 rounded-lg border border-border/50 bg-accent/20 text-center">
+                        <p className="text-[9px] text-muted-foreground mb-0.5">📩 Monthly Leads</p>
+                        <p className="text-sm font-bold text-foreground">{trafficResult.result.estimated_monthly_leads}</p>
+                      </div>
+                      <div className="p-2.5 rounded-lg border border-border/50 bg-accent/20 text-center">
+                        <p className="text-[9px] text-muted-foreground mb-0.5">💰 Investment Score</p>
+                        <p className={cn("text-sm font-bold", 
+                          trafficResult.result.investment_attractiveness_score >= 70 ? "text-chart-1" : 
+                          trafficResult.result.investment_attractiveness_score >= 40 ? "text-chart-4" : "text-destructive"
+                        )}>
+                          {trafficResult.result.investment_attractiveness_score}/100
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Status Badges */}
+                    <div className="flex flex-wrap gap-1.5">
+                      <Badge variant={trafficResult.result.competitive_difficulty === 'LOW' ? 'default' : trafficResult.result.competitive_difficulty === 'MEDIUM' ? 'secondary' : 'destructive'} className="text-[9px]">
+                        Competition: {trafficResult.result.competitive_difficulty}
+                      </Badge>
+                      <Badge variant={trafficResult.result.growth_trend === 'RISING' ? 'default' : trafficResult.result.growth_trend === 'STABLE' ? 'secondary' : 'destructive'} className="text-[9px]">
+                        Trend: {trafficResult.result.growth_trend}
+                      </Badge>
+                      <Badge variant="outline" className="text-[9px]">
+                        Confidence: {trafficResult.result.confidence_level}
+                      </Badge>
+                    </div>
+
+                    {/* Demand Breakdown */}
+                    {trafficResult.result.demand_breakdown && (
+                      <div className="space-y-1">
+                        <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1">
+                          <BarChart3 className="h-3 w-3" /> Demand Breakdown
+                        </p>
+                        <div className="grid grid-cols-3 gap-1.5">
+                          <div className="p-2 rounded border border-border/50 bg-muted/20 text-center">
+                            <p className="text-[8px] text-muted-foreground">🛒 Transactional</p>
+                            <p className="text-[10px] font-medium text-foreground">{trafficResult.result.demand_breakdown.transactional_searches}</p>
+                          </div>
+                          <div className="p-2 rounded border border-border/50 bg-muted/20 text-center">
+                            <p className="text-[8px] text-muted-foreground">📚 Informational</p>
+                            <p className="text-[10px] font-medium text-foreground">{trafficResult.result.demand_breakdown.informational_searches}</p>
+                          </div>
+                          <div className="p-2 rounded border border-border/50 bg-muted/20 text-center">
+                            <p className="text-[8px] text-muted-foreground">📍 Branded/Location</p>
+                            <p className="text-[10px] font-medium text-foreground">{trafficResult.result.demand_breakdown.branded_searches}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Keyword Opportunities */}
+                    {trafficResult.result.keyword_opportunities?.length > 0 && (
+                      <div className="space-y-1">
+                        <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1">
+                          <Hash className="h-3 w-3 text-chart-4" /> Keyword Opportunities
+                        </p>
+                        <div className="flex flex-wrap gap-1">
+                          {trafficResult.result.keyword_opportunities.map((kw, i) => (
+                            <Badge key={i} variant="outline" className="text-[9px] bg-chart-4/5 border-chart-4/20 text-chart-4">{kw}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Reasoning */}
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1">
+                        <Lightbulb className="h-3 w-3" /> Prediction Reasoning
+                      </p>
+                      <p className="text-[10px] text-foreground bg-accent/30 p-2 rounded-md leading-relaxed">{trafficResult.result.reasoning}</p>
+                    </div>
                   </CardContent>
                 </Card>
               )}
