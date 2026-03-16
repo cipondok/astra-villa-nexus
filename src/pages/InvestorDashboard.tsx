@@ -505,16 +505,16 @@ const InvestorDashboard = () => {
                 </Card>
               )}
               {p.weakest_performer && (
-                <Card className="bg-amber-500/5 border-amber-500/20 backdrop-blur-xl">
+                <Card className="bg-chart-4/5 border-chart-4/20 backdrop-blur-xl shadow-sm">
                   <CardContent className="p-4 flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-amber-500/10">
-                      <Eye className="w-5 h-5 text-amber-500" />
+                    <div className="p-2 rounded-lg bg-chart-4/10">
+                      <Eye className="w-5 h-5 text-chart-4" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs text-muted-foreground">Needs Attention</p>
                       <p className="text-sm font-semibold text-foreground truncate">{p.weakest_performer.title}</p>
                     </div>
-                    <span className="text-lg font-bold text-amber-500">{p.weakest_performer.roi_5y.toFixed(1)}%</span>
+                    <span className="text-lg font-black text-chart-4 drop-shadow-sm">{p.weakest_performer.roi_5y.toFixed(1)}%</span>
                   </CardContent>
                 </Card>
               )}
