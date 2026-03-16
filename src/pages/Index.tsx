@@ -86,6 +86,7 @@ const DiscoveryTrigger = lazy(() => import("@/components/ai/DiscoveryTrigger"));
 const PredictiveSearchCanvas = lazy(() => import("@/components/ai/PredictiveSearchCanvas"));
 const OpportunityRadar = lazy(() => import("@/components/ai/OpportunityRadar"));
 const AIJourneyGuide = lazy(() => import("@/components/ai/AIJourneyGuide"));
+const OpportunityStreakCards = lazy(() => import("@/components/home/OpportunityStreakCards"));
 const PWAInstallPrompt = lazy(() => import("@/components/pwa/PWAInstallPrompt"));
 
 type ViewMode = 'list' | 'grid' | 'map';
@@ -893,6 +894,15 @@ const Index = () => {
                       <LazyRender minHeight="260px" fallback={<div className="animate-pulse h-64 bg-muted rounded-xl" />}>
                         <SmartAIFeed onPropertyClick={handlePropertyClick} />
                       </LazyRender>
+                    </div>
+                  </ScrollReveal>
+
+                  {/* Opportunity Streak — Time-limited deals */}
+                  <ScrollReveal direction="up" delay={30}>
+                    <div className="mb-8">
+                      <Suspense fallback={null}>
+                        <OpportunityStreakCards />
+                      </Suspense>
                     </div>
                   </ScrollReveal>
 

@@ -11,19 +11,18 @@ export interface ImageHealthResult {
   format?: string;
 }
 
-const SUPPORTED_FORMATS = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml', 'image/avif'];
 const SLOW_THRESHOLD_MS = 5000;
 
 export function useImageHealthCheck() {
   const [results, setResults] = useState<Record<string, ImageHealthResult>>({});
   const [checking, setChecking] = useState(false);
+  const [progress, setProgress] = useState({ current: 0, total: 0 });
 
   const checkImage = useCallback((url: string): Promise<ImageHealthResult> => {
     return new Promise((resolve) => {
       const start = Date.now();
       const result: ImageHealthResult = { url, status: 'loading' };
 
-      // Detect format from URL extension
       const extMatch = url.match(/\.(\w+)(\?.*)?$/);
       if (extMatch) {
         result.format = extMatch[1].toLowerCase();
@@ -62,9 +61,10 @@ export function useImageHealthCheck() {
 
   const checkAllImages = useCallback(async (urls: string[]) => {
     setChecking(true);
+    setProgress({ current: 0, total: urls.length });
     const newResults: Record<string, ImageHealthResult> = {};
     
-    // Check in batches of 5 to avoid overwhelming the browser
+    // Check in batches of 5
     for (let i = 0; i < urls.length; i += 5) {
       const batch = urls.slice(i, i + 5);
       const batchResults = await Promise.all(batch.map(checkImage));
@@ -72,6 +72,7 @@ export function useImageHealthCheck() {
         newResults[r.url] = r;
         setResults(prev => ({ ...prev, [r.url]: r }));
       });
+      setProgress({ current: Math.min(i + 5, urls.length), total: urls.length });
     }
 
     setChecking(false);
@@ -80,7 +81,8 @@ export function useImageHealthCheck() {
 
   const clearResults = useCallback(() => {
     setResults({});
+    setProgress({ current: 0, total: 0 });
   }, []);
 
-  return { results, checking, checkImage, checkAllImages, clearResults };
+  return { results, checking, progress, checkImage, checkAllImages, clearResults };
 }
