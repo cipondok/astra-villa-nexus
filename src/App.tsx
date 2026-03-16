@@ -410,6 +410,7 @@ const AppContent = () => {
                 <Route path="/partners/benefits" element={<PartnerBenefits />} />
                 <Route path="/partners/ventures" element={<JointVentures />} />
                 <Route path="/mobile-demo" element={<MobileFirstDemo />} />
+                <Route path="/investor-demo" element={<InvestorDemo />} />
                 <Route path="/community" element={<Community />} />
                 <Route path="/community-hub" element={<CommunityHub />} />
                 <Route path="/marketplace" element={<Marketplace />} />
