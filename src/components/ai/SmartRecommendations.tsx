@@ -192,12 +192,21 @@ const SmartRecommendations = ({ limit = 4, className = "" }: SmartRecommendation
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
 
-                  {/* Match score badge */}
+                  {/* Match score badge + why recommended */}
                   {property.match_score > 0 && (
-                    <Badge className={`absolute top-1.5 left-1.5 text-[9px] font-bold border-0 gap-0.5 shadow-sm ${scoreColor(property.match_score)}`}>
-                      <TrendingUp className="h-2 w-2" />
-                      {Math.round(property.match_score)}%
-                    </Badge>
+                    <div className="absolute top-1.5 left-1.5 flex items-center gap-1">
+                      <Badge className={`text-[9px] font-bold border-0 gap-0.5 shadow-sm ${scoreColor(property.match_score)}`}>
+                        <TrendingUp className="h-2 w-2" />
+                        {Math.round(property.match_score)}%
+                      </Badge>
+                      <WhyRecommended
+                        matchScore={property.match_score}
+                        city={property.city}
+                        propertyType={property.property_type}
+                        preferredCity={userProfile?.preferred_city}
+                        preferredType={userProfile?.property_type_preference}
+                      />
+                    </div>
                   )}
 
                   {/* Price overlay */}
