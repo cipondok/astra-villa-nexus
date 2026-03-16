@@ -198,6 +198,13 @@ export const navigationSections = {
       icon: Flame,
       description: "Geo-cluster analysis — zone heat scoring, demand distribution, and emerging market detection",
       badge: "New"
+    },
+    {
+      key: "opportunity-scoring-engine",
+      label: "AI Scoring Engine",
+      icon: Zap,
+      description: "Core opportunity scoring brain — weighted composite model with ROI, demand, undervaluation, velocity, yield, and luxury",
+      badge: "New"
     }
   ],
 
