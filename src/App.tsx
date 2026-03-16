@@ -50,10 +50,10 @@ const MobileBottomTabBar = lazy(() => import('@/components/navigation/MobileBott
 const SessionExpirationHandler = lazy(() => import('@/components/SessionExpirationHandler'));
 const AuthNotificationHandler = lazy(() => import('@/components/AuthNotificationHandler'));
 
-// Route guards — small but pull in auth context chains eagerly
-import VendorOnlyRoute from '@/components/VendorOnlyRoute';
-import AgentOnlyRoute from '@/components/AgentOnlyRoute';
-import PropertyOwnerOnlyRoute from '@/components/PropertyOwnerOnlyRoute';
+// Route guards — lazy loaded since they're only used by specific routes
+const VendorOnlyRoute = lazy(() => import('@/components/VendorOnlyRoute'));
+const AgentOnlyRoute = lazy(() => import('@/components/AgentOnlyRoute'));
+const PropertyOwnerOnlyRoute = lazy(() => import('@/components/PropertyOwnerOnlyRoute'));
 
 // All pages — lazy loaded for minimum initial bundle
 const Index = lazy(() => import('@/pages/Index'));
@@ -259,7 +259,7 @@ const AppContent = () => {
       <Suspense fallback={null}><GlobalLoadingIndicator /></Suspense>
       {!isAdminRoute && <Suspense fallback={null}><Navigation /></Suspense>}
       <main className={isAdminRoute ? '' : 'pt-10 md:pt-11 lg:pt-12 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0'}>
-        <AnimatePresence mode="wait" initial={false}>
+        <AnimatePresence mode="popLayout" initial={false}>
           <PageTransition key={location.pathname}>
             <Suspense fallback={<PageLoader />}>
               <Routes location={location}>
