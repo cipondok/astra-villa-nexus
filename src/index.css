@@ -1876,3 +1876,20 @@ html, body {
   background: hsl(var(--muted-foreground) / 0.2);
   margin: 0 auto;
 }
+
+/* ═══ Admin Reduced Motion Mode ═══ */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+.reduce-motion .card-hover-lift:hover {
+  transform: none;
+}
+.reduce-motion .animate-pulse,
+.reduce-motion .animate-spin {
+  animation: none !important;
+}
