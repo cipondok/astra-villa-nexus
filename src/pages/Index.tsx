@@ -56,7 +56,7 @@ const AstraSearchPanel = lazy(() => import("@/components/AstraSearchPanel"));
 const SearchLoadingDialog = lazy(() => import("@/components/SearchLoadingDialog").then(m => ({ default: m.SearchLoadingDialog })));
 const WhatsAppInquiryDialog = lazy(() => import("@/components/property/WhatsAppInquiryDialog"));
 const AstraVillaFeatures = lazy(() => import("@/components/home/AstraVillaFeatures"));
-const AIRecommendedProperties = lazy(() => import("@/components/property/AIRecommendedProperties"));
+// AIRecommendedProperties removed — merged into AI Opportunity Zone via SmartAIFeed + SmartRecommendations
 const SmartAIFeed = lazy(() => import("@/components/home/SmartAIFeed"));
 const SmartRecommendations = lazy(() => import("@/components/ai/SmartRecommendations"));
 const BehaviorPatternBanner = lazy(() => import("@/components/ai/BehaviorPatternBanner"));
