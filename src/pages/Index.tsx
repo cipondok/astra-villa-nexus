@@ -286,7 +286,7 @@ const Index = () => {
     try {
       const results = await executeWithRetry(searchData);
       setSearchResults(results);
-      console.log('Search completed. Results:', results.length);
+      // Search completed
     } catch (error: any) {
       console.error('Search failed after retries:', error);
       const errorMessage = error?.message || 'Search failed. Please try again.';
