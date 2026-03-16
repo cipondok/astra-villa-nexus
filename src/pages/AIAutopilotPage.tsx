@@ -125,6 +125,8 @@ const AIAutopilotPage = () => {
   const navigate = useNavigate();
   const autopilot = useAIAutopilot();
   const { kpis, signals, recommendations, modules, isLoading } = autopilot;
+  const { data: workerStatus } = useAutopilotStatus();
+  const runWorkers = useRunAutopilotWorkers();
 
   const onlineModules = modules.filter(m => m.status === 'online').length;
   const systemHealth = modules.length > 0 ? Math.round((onlineModules / modules.length) * 100) : 0;
