@@ -201,9 +201,9 @@ const ninetyDayPlan = [
 // ── Career Path ──
 
 const careerPath = [
-  { level: "Digital Growth Lead", timeline: "Month 0-12", description: "Hands-on IC — build all growth channels from scratch, prove the playbook, achieve product-market-channel fit", color: "text-primary" },
-  { level: "Senior Growth Manager", timeline: "Month 12-18", description: "Expanded scope — manage 1-2 growth specialists, own full acquisition P&L, scale to 500K+ monthly traffic", color: "text-chart-1" },
-  { level: "Head of Growth", timeline: "Month 18-24", description: "Leadership — own all user acquisition, brand marketing, community, and growth engineering. Team of 4-6", color: "text-chart-3" },
+  { level: "Digital Growth Specialist", timeline: "Month 0-12", description: "Hands-on executor — build SEO, social, and paid channels from scratch. Prove the playbook and achieve product-market-channel fit", color: "text-primary" },
+  { level: "Digital Growth Lead", timeline: "Month 12-18", description: "Expanded scope — own full digital acquisition strategy, manage 1-2 junior specialists, own traffic and lead KPIs end-to-end", color: "text-chart-1" },
+  { level: "Head of Growth", timeline: "Month 18-30", description: "Leadership — own all user acquisition, content marketing, community, and growth engineering. Team of 4-6", color: "text-chart-3" },
   { level: "VP Marketing / CMO", timeline: "Year 3+", description: "Executive — own full marketing P&L, brand strategy, growth, and market positioning. Board-level reporting", color: "text-chart-4" },
 ];
 
