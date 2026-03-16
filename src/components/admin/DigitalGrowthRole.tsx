@@ -67,12 +67,12 @@ const responsibilities: ResponsibilityArea[] = [
     ],
   },
   {
-    area: "Community Growth & Engagement", icon: Users, color: "text-chart-4", bg: "bg-chart-4/10", weight: "15%",
+    area: "Traffic Analytics & Lead Tracking", icon: BarChart3, color: "text-chart-4", bg: "bg-chart-4/10", weight: "15%",
     tasks: [
-      { task: "Build and nurture WhatsApp communities for agents, investors, and property enthusiasts by city", impact: "WhatsApp groups drive 40% of agent referrals and create defensible community moats" },
-      { task: "Design and execute referral programs with tracking, incentives, and viral loop mechanics", impact: "Referral-acquired users have 2x higher retention and 3x higher LTV than paid users" },
-      { task: "Coordinate monthly webinars, market briefings, and community events", impact: "Events build brand authority and drive 15% of premium conversions" },
-      { task: "Manage email marketing automation: onboarding sequences, weekly digests, deal alerts, re-engagement campaigns", impact: "Email nurture converts 20% of dormant users back to active within 30 days" },
+      { task: "Build and maintain growth dashboards: traffic sources, conversion funnels, user cohorts, lead attribution by channel", impact: "Visibility into metrics enables data-driven decisions and proves ROI to stakeholders" },
+      { task: "Track inbound lead generation metrics: inquiry volume, agent signup rate, investor registration, lead-to-qualified conversion", impact: "Lead quality measurement prevents vanity metric traps — focus on leads that convert" },
+      { task: "Monitor user acquisition across all four segments: buyers, sellers, agents, investors — identify highest-ROI channels per segment", impact: "Each segment acquires differently — channel-segment fit analysis prevents wasted effort" },
+      { task: "Produce weekly growth reports with key metrics, insights, experiment results, and recommended next actions", impact: "Structured reporting ensures growth stays aligned with company strategy" },
     ],
   },
   {
