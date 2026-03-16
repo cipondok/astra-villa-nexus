@@ -390,6 +390,13 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
     usage: usageStats[ql.id] || ql.usage || 0
   })).slice(0, 8);
 
+  // Keyboard shortcuts for quick nav items (1–9)
+  useAdminKeyboardShortcuts({
+    items: displayQuickLinks.map(ql => ({ id: ql.id, label: ql.label })),
+    onNavigate: handleTabChange,
+    enabled: !isEditMode,
+  });
+
   const getBadgeColor = (color?: string) => {
     switch (color) {
       case 'green': return 'bg-chart-1/20 text-chart-1 border-chart-1/30';
