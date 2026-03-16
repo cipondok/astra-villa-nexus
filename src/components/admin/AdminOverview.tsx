@@ -345,6 +345,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
       <div className="grid grid-cols-12 gap-3">
         {/* Left Column - Stats & Quick Actions */}
         <div className="col-span-12 md:col-span-3 space-y-3">
+         <SectionErrorBoundary sectionName="Platform Stats">
           {/* Key Metrics */}
           <Card className="border-border/30">
             <CardHeader className="p-3 pb-2">
