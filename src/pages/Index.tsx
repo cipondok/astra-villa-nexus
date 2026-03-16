@@ -856,8 +856,8 @@ const Index = () => {
 
         {/* Property Display Section */}
         <SectionErrorBoundary sectionName="Properties" fallbackMinHeight="300px">
-        <div className="px-0 py-4 sm:py-6 space-y-4 bg-gradient-to-b from-hero-fade via-hero-fade/60 to-background">
-          <div className="w-full space-y-4">
+        <div className="px-0 py-6 sm:py-8 space-y-6 bg-gradient-to-b from-hero-fade via-hero-fade/60 to-background">
+          <div className="w-full space-y-6">
             {hasSearched ? (
               <section id="search-results-section" className="bg-primary/10 backdrop-blur-sm rounded-xl shadow-md border border-primary/15 dark:bg-primary/5 dark:border-primary/10">
                 <div className="p-3 sm:p-4 md:p-6">
