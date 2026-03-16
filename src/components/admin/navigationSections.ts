@@ -1301,6 +1301,13 @@ export const navigationSections = {
       icon: Handshake,
       description: "Strategic ecosystem partnerships — developers, agencies, banks, media, and long-term alliances",
       badge: "🤝 Partnerships"
+    },
+    {
+      key: "brand-authority",
+      label: "Brand Authority Strategy",
+      icon: Crown,
+      description: "National thought leadership positioning — content pillars, visibility, trust signals, and brand moat",
+      badge: "👑 Authority"
     }
   ],
 
