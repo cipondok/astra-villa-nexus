@@ -1,8 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Instagram, Youtube, Home, ShoppingCart, Key, UsersRound, Construction, Search, MessageSquare, Calculator, PiggyBank, HelpCircle, PhoneCall, MapPin, Glasses, UserCheck, Facebook, Twitter, Music2 } from "lucide-react";
-import AnimatedLogo from "@/components/AnimatedLogo";
-import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 import { useSocialMediaSettings } from "@/hooks/useSocialMediaSettings";
 
 interface ProfessionalFooterProps {
