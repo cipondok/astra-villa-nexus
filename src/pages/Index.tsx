@@ -43,7 +43,7 @@ import SectionErrorBoundary from "@/components/ui/SectionErrorBoundary";
 
 // Lazy load heavy components for better performance
 const ResponsiveAIChatWidget = lazy(() => import("@/components/ai/ResponsiveAIChatWidget"));
-const PropertyViewModeToggle = lazy(() => import("@/components/search/PropertyViewModeToggle"));
+const SearchResultsToolbar = lazy(() => import("@/components/search/SearchResultsToolbar"));
 const PropertyListView = lazy(() => import("@/components/search/PropertyListView"));
 const SearchPagination = lazy(() => import("@/components/search/SearchPagination"));
 const PropertyMapView = lazy(() => import("@/components/search/PropertyMapView"));
