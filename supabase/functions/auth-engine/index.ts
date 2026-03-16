@@ -439,7 +439,7 @@ serve(async (req) => {
         const browser = (params.browser as string) || '';
         const os = (params.os as string) || '';
 
-        // Upsert into user_sessions if the table exists, otherwise just acknowledge
+        // Upsert into user_sessions — update last_activity_at on heartbeat
         try {
           await supabase.from('user_sessions').upsert({
             user_id: userId,
@@ -448,8 +448,8 @@ serve(async (req) => {
             device_type: deviceType,
             browser,
             os,
-            last_active_at: new Date().toISOString(),
-            is_active: true,
+            last_activity_at: new Date().toISOString(),
+            is_current: true,
           }, { onConflict: 'user_id,device_fingerprint' });
         } catch { /* table may not exist yet */ }
 

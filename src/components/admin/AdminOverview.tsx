@@ -167,15 +167,21 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           active_sessions: number;
         }> | null)?.[0];
 
-        // Direct queries for reliable counts (RPC may return 0 due to auth context)
-        const [usersResult, propertiesResult, vendorsResult, ordersResult, sessionsResult, activeUsersResult] = await Promise.all([
+        // Direct queries for reliable counts
+        const thirtyMinAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+        const [usersResult, propertiesResult, vendorsResult, ordersResult, activeSessionsResult, activeUsers24hResult] = await Promise.all([
           supabase.from('profiles').select('id', { count: 'exact', head: true }),
           supabase.from('properties').select('id', { count: 'exact', head: true }),
           supabase.from('vendor_business_profiles').select('id', { count: 'exact', head: true }).eq('is_verified', true),
           supabase.from('orders').select('id', { count: 'exact', head: true }),
-          supabase.from('user_device_sessions').select('id', { count: 'exact', head: true }).eq('is_active', true),
-          supabase.from('activity_logs').select('id', { count: 'exact', head: true })
-            .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()),
+          // Active sessions: users with heartbeat in last 30 min
+          supabase.from('user_sessions').select('user_id', { count: 'exact', head: true })
+            .gte('last_activity_at', thirtyMinAgo),
+          // Active users in last 24h
+          supabase.from('user_sessions').select('user_id', { count: 'exact', head: true })
+            .gte('last_activity_at', twentyFourHoursAgo),
         ]);
 
         return {
@@ -183,9 +189,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           totalProperties: (propertiesResult.count ?? Number(statsData?.total_properties)) || 0,
           totalVendors: vendorsResult.count || 0,
           totalOrders: ordersResult.count || 0,
-          totalPageViews: 0, // web_analytics has stale data
-          activeUsers24h: activeUsersResult.count || 0,
-          activeSessions: (sessionsResult.count ?? Number(statsData?.active_sessions)) || 0,
+          totalPageViews: 0,
+          activeUsers24h: activeUsers24hResult.count || 0,
+          activeSessions: (activeSessionsResult.count ?? Number(statsData?.active_sessions)) || 0,
         };
       } catch {
         return { totalUsers: 0, totalProperties: 0, totalVendors: 0, totalOrders: 0, totalPageViews: 0, activeUsers24h: 0, activeSessions: 0 };
@@ -543,7 +549,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
 
           {/* Summary Cards */}
           <div className="grid grid-cols-4 gap-2">
-            <SummaryCard label="Sessions" value={platformStats?.activeSessions || 0} icon={Wifi} color="green" />
+            <SummaryCard label="Live Users" value={platformStats?.activeSessions || 0} icon={Wifi} color="green" />
             <SummaryCard label="Orders" value={platformStats?.totalOrders || 0} icon={FileText} color="blue" />
             <SummaryCard label="Response" value={`${systemHealth?.responseTime || 0}ms`} icon={Clock} color="purple" />
             <SummaryCard label="Uptime" value={`${systemHealth?.uptime || 99.9}%`} icon={CheckCircle} color="green" />
