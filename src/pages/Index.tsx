@@ -1095,7 +1095,7 @@ const Index = () => {
 
                 {/* Properties for Rent */}
                 <ScrollReveal direction="left" delay={100}>
-                <div id="rent-section" className="mb-4">
+                <div id="rent-section" className="mb-6">
                   <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
                     <PropertiesForRentSection language={language} onPropertyClick={handlePropertyClick} />
                   </LazyRender>
