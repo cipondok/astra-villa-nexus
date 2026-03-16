@@ -316,7 +316,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
   const aiAgo = useRelativeTime(aiUpdatedAt);
 
   return (
-    <div className="space-y-3 animate-in fade-in duration-300">
+    <main role="main" aria-label="Admin overview dashboard" className="space-y-3 animate-in fade-in duration-300">
       {/* Header */}
       <div className="flex items-center justify-between bg-gradient-to-r from-primary/5 via-background to-chart-1/5 rounded-xl border border-border/30 px-4 py-3">
         <div className="flex items-center gap-3">
@@ -326,8 +326,8 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           <div>
             <h1 className="text-base font-bold">Live Monitoring Dashboard</h1>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 bg-chart-1 rounded-full animate-pulse" />
+              <span className="flex items-center gap-1" role="status" aria-live="polite">
+                <span className="w-2 h-2 bg-chart-1 rounded-full animate-pulse" aria-hidden="true" />
                 Online
               </span>
               <span>•</span>
@@ -671,7 +671,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
          </SectionErrorBoundary>
         </div>
       </div>
-    </div>
+    </main>
   );
 });
 
@@ -791,7 +791,7 @@ const HealthBar = React.memo(function HealthBar({ label, value, icon: Icon, isSt
         </div>
         <span className="text-[11px] font-medium">{isStatus ? (value === 100 ? 'OK' : 'Error') : `${value}%`}</span>
       </div>
-      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+      <div className="h-1.5 bg-muted rounded-full overflow-hidden" role="progressbar" aria-valuenow={value} aria-valuemin={0} aria-valuemax={100} aria-label={`${label} health: ${value}%`}>
         <div className={`h-full ${getColor(value)} transition-all`} style={{ width: `${value}%` }} />
       </div>
     </div>

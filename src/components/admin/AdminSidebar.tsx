@@ -126,9 +126,9 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
         />
       )}
       
-      <div ref={sidebarRef} className="relative h-full flex z-40">
+      <nav ref={sidebarRef} className="relative h-full flex z-40" aria-label="Admin navigation">
         {/* Icon-only Sidebar - Compact */}
-         <div className="w-12 h-full bg-card/95 backdrop-blur-sm border-r border-border/30 flex flex-col py-2 px-1.5 shadow-lg">
+         <div className="w-12 h-full bg-card/95 backdrop-blur-sm border-r border-border/30 flex flex-col py-2 px-1.5 shadow-lg" role="menubar" aria-label="Section categories">
            {/* IMPORTANT: category list must be scrollable or bottom categories (like Features) become unreachable */}
            <ScrollArea className="flex-1">
              <div className="flex flex-col gap-0.5">
@@ -144,18 +144,22 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                  return (
                    <div key={category} className="relative">
                      {/* Icon Button */}
-                     <button
-                       onClick={() => handleCategoryClick(category)}
-                       onMouseEnter={() => setHoveredCategory(category)}
-                       onMouseLeave={() => setHoveredCategory(null)}
-                       className={cn(
-                         "w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200 group relative",
-                         isOpen
-                           ? "bg-primary text-primary-foreground shadow-md shadow-primary/30 scale-105"
-                           : isActive
-                             ? "bg-primary/15 text-primary"
-                             : "hover:bg-muted/60 text-muted-foreground hover:text-foreground hover:scale-105"
-                       )}
+                      <button
+                        onClick={() => handleCategoryClick(category)}
+                        onMouseEnter={() => setHoveredCategory(category)}
+                        onMouseLeave={() => setHoveredCategory(null)}
+                        aria-label={sectionTitles[category as keyof typeof sectionTitles]}
+                        aria-expanded={isOpen}
+                        aria-haspopup="menu"
+                        role="menuitem"
+                        className={cn(
+                          "w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200 group relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1",
+                          isOpen
+                            ? "bg-primary text-primary-foreground shadow-md shadow-primary/30 scale-105"
+                            : isActive
+                              ? "bg-primary/15 text-primary"
+                              : "hover:bg-muted/60 text-muted-foreground hover:text-foreground hover:scale-105"
+                        )}
                      >
                        <CategoryIcon className="h-4 w-4 transition-transform duration-200" />
 
@@ -188,7 +192,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
 
         {/* Flyout Panel */}
         {openCategory && openSections && (
-          <div className="absolute left-14 top-2 max-h-[calc(100%-16px)] w-52 bg-popover/98 backdrop-blur-xl rounded-xl border border-border/60 shadow-2xl z-40 animate-in slide-in-from-left-3 fade-in-0 duration-200 overflow-hidden ring-1 ring-black/5">
+          <div role="menu" aria-label={sectionTitles[openCategory as keyof typeof sectionTitles]} className="absolute left-14 top-2 max-h-[calc(100%-16px)] w-52 bg-popover/98 backdrop-blur-xl rounded-xl border border-border/60 shadow-2xl z-40 animate-in slide-in-from-left-3 fade-in-0 duration-200 overflow-hidden ring-1 ring-black/5">
             {/* Panel Header */}
             <div className="flex items-center justify-between px-3 py-2.5 border-b border-border/40 bg-muted/20">
               <div className="flex items-center gap-2">
@@ -202,7 +206,8 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
               </div>
               <button
                 onClick={() => setOpenCategory(null)}
-                className="w-5 h-5 rounded-md hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-all duration-150 hover:scale-110"
+                aria-label="Close navigation panel"
+                className="w-5 h-5 rounded-md hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-all duration-150 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               >
                 <X className="h-3 w-3" />
               </button>
@@ -230,9 +235,11 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                     <button
                       key={section.key}
                       onClick={() => handleNavClick(section.key)}
+                      role="menuitem"
+                      aria-current={isActive ? 'page' : undefined}
                       style={{ animationDelay: `${idx * 20}ms` }}
                       className={cn(
-                        "w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition-all duration-150 text-left group animate-in fade-in slide-in-from-left-1 duration-200",
+                        "w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition-all duration-150 text-left group animate-in fade-in slide-in-from-left-1 duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                         isActive
                           ? "bg-primary text-primary-foreground shadow-sm"
                           : "hover:bg-accent/60 text-foreground"
@@ -269,7 +276,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
             </ScrollArea>
           </div>
         )}
-      </div>
+      </nav>
     </>
   );
 }
