@@ -135,7 +135,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
   const { data: aiData, dataUpdatedAt: aiUpdatedAt } = useAICommandCenterData();
 
   // Fetch platform statistics
-  const { data: platformStats, isLoading: statsLoading, refetch: refetchStats } = useQuery({
+  const { data: platformStats, isLoading: statsLoading, refetch: refetchStats, dataUpdatedAt: statsUpdatedAt } = useQuery({
     queryKey: ['admin-platform-stats'],
     queryFn: async () => {
       try {
