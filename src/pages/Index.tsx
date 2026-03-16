@@ -49,7 +49,7 @@ const SearchPagination = lazy(() => import("@/components/search/SearchPagination
 const PropertyMapView = lazy(() => import("@/components/search/PropertyMapView"));
 const PropertyGridView = lazy(() => import("@/components/search/PropertyGridView"));
 const ActiveFilterPills = lazy(() => import("@/components/search/ActiveFilterPills").then(m => ({ default: m.ActiveFilterPills })));
-const PropertySlideSection = lazy(() => import("@/components/property/PropertySlideSection"));
+// PropertySlideSection removed — not used in restructured flow
 const PropertiesForSaleSection = lazy(() => import("@/components/property/PropertiesForSaleSection"));
 const PropertiesForRentSection = lazy(() => import("@/components/property/PropertiesForRentSection"));
 const AstraSearchPanel = lazy(() => import("@/components/AstraSearchPanel"));
