@@ -10,7 +10,7 @@ const SIGNAL_CONFIG: Record<string, { color: string; label: string; badge: strin
   hot: { color: 'text-red-500', label: '🔥 Hot', badge: 'bg-red-500/10 text-red-500 border-red-500/20' },
   warming: { color: 'text-orange-500', label: '📈 Warming', badge: 'bg-orange-500/10 text-orange-500 border-orange-500/20' },
   stable: { color: 'text-blue-500', label: '➡️ Stable', badge: 'bg-blue-500/10 text-blue-500 border-blue-500/20' },
-  cooling: { color: 'text-slate-400', label: '❄️ Cooling', badge: 'bg-slate-500/10 text-slate-400 border-slate-500/20' },
+  cooling: { color: 'text-muted-foreground', label: '❄️ Cooling', badge: 'bg-muted text-muted-foreground border-border' },
 };
 
 const PIE_COLORS = ['hsl(var(--primary))', 'hsl(var(--accent))', '#f59e0b', '#10b981', '#8b5cf6', '#ec4899'];

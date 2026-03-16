@@ -193,7 +193,7 @@ const MarketInsightsTab = () => {
 
               {userInsight.topCities.length > 0 && (
                 <div className="mt-2">
-                  <p className="text-[8px] text-muted-foreground mb-1 flex items-center gap-0.5">
+                  <p className="text-[10px] text-muted-foreground mb-1 flex items-center gap-0.5">
                     <MapPin className="h-2.5 w-2.5" />Top locations
                   </p>
                   <div className="flex flex-wrap gap-0.5">

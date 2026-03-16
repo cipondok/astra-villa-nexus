@@ -902,17 +902,17 @@ const PropertyDetail: React.FC = () => {
                     )}
                     <div className="flex items-center gap-1 mt-1 flex-wrap">
                       {property.province && (
-                        <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
+                        <Badge variant="outline" className="text-[10px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
                           {property.province}
                         </Badge>
                       )}
                       {property.city && (
-                        <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
+                        <Badge variant="outline" className="text-[10px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
                           {property.city}
                         </Badge>
                       )}
                       {property.district && (
-                        <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
+                        <Badge variant="outline" className="text-[10px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
                           {property.district}
                         </Badge>
                       )}
@@ -1059,7 +1059,7 @@ const PropertyDetail: React.FC = () => {
                       </div>
                       <div className="flex justify-between py-1.5 px-2 bg-muted/30 rounded-lg text-[10px] sm:text-xs items-center">
                         <span className="font-medium text-foreground">{t('propertyDetail.status')}</span>
-                        <Badge variant={property.status === 'active' ? 'default' : 'secondary'} className="h-4 text-[8px] px-1.5 rounded-md">
+                        <Badge variant={property.status === 'active' ? 'default' : 'secondary'} className="h-4 text-[10px] px-1.5 rounded-md">
                           {property.status}
                         </Badge>
                       </div>
@@ -1219,8 +1219,8 @@ const PropertyDetail: React.FC = () => {
                         <p className="text-[9px] sm:text-[10px] text-gold-primary font-medium">{property.posted_by.position}</p>
                         <div className="flex items-center gap-1 mt-0.5">
                           <Star className="h-2.5 w-2.5 fill-gold-primary text-gold-primary" />
-                          <span className="text-[9px] sm:text-[10px] font-semibold text-foreground">{property.posted_by.customer_feedback_rating}</span>
-                          <span className="text-[8px] sm:text-[9px] text-muted-foreground">({property.posted_by.customer_feedback_count})</span>
+                          <span className="text-[10px] font-semibold text-foreground">{property.posted_by.customer_feedback_rating}</span>
+                          <span className="text-[10px] text-muted-foreground">({property.posted_by.customer_feedback_count})</span>
                         </div>
                       </div>
                     </div>
