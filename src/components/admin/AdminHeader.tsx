@@ -18,6 +18,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AdminCommandPalette } from "./AdminCommandPalette";
 import { AdminBreadcrumb } from "./AdminBreadcrumb";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface AdminHeaderProps {
   activeSection: string;
