@@ -205,6 +205,11 @@ export const NeighborhoodInsights = lazyRetry(() => import("./NeighborhoodInsigh
 export const DocumentSigningHub = lazyRetry(() => import("./DocumentSigningHub"));
 export const PropertyAuctionManager = lazyRetry(() => import("./PropertyAuctionManager"));
 export const TenantScreening = lazyRetry(() => import("./TenantScreening"));
+export const AICommandCenter = lazyRetry(() => import("./AICommandCenter"));
+export const GlobalStrategyPanel = lazyRetry(() => import("./GlobalStrategyPanel"));
+export const InvestorDNAAdminPanel = lazyRetry(() => import("./InvestorDNAAdminPanel"));
+export const GlobalMacroIntelligencePanel = lazyRetry(() => import("@/pages/GlobalMacroIntelligencePage"));
+export const DealHunterAdminPanel = lazyRetry(() => import("./DealHunterAdminPanel"));
 export const OffPlanProjectManager = lazyRetry(() => import("./OffPlanProjectManager"));
 
 // ── Section render map ────────────────────────────────────────────────────────
