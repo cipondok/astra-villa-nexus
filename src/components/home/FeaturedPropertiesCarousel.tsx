@@ -248,7 +248,7 @@ export default function FeaturedPropertiesCarousel() {
                   </div>
 
                   {/* Features */}
-                  <div className="flex items-center gap-3 pt-1 border-t border-border/60">
+                  <div className="flex items-center gap-3 pt-2 border-t border-border/40">
                     {p.bedrooms != null && p.bedrooms > 0 && (
                       <div className="flex items-center gap-1 text-muted-foreground">
                         <Bed className="h-3.5 w-3.5" />
