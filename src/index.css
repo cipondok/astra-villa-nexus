@@ -1,9 +1,7 @@
 /* All @import statements MUST be at the very top */
 @import './styles/mobile-optimizations.css';
 @import './styles/mobile-first-responsive.css';
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
-/* Montserrat removed — Inter + Playfair Display cover all typography roles (see brand-identity-audit.md) */
+/* Google Fonts loaded via <link preload> in index.html — no CSS @import to avoid render-blocking */
 
 /* Force font-display:swap to prevent invisible text during font load */
 @font-face { font-family: 'Inter'; font-display: swap; }
