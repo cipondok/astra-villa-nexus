@@ -37,7 +37,7 @@ const HEAT_COLORS: Record<string, string> = {
   'Hot': 'text-orange-500 bg-orange-500/10',
   'Warm': 'text-amber-500 bg-amber-500/10',
   'Stable': 'text-blue-500 bg-blue-500/10',
-  'Cool': 'text-slate-400 bg-slate-400/10',
+  'Cool': 'text-muted-foreground bg-muted',
 };
 
 const PIE_COLORS = ['hsl(var(--primary))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))', 'hsl(var(--chart-5))'];

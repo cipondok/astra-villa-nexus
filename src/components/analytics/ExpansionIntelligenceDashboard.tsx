@@ -10,7 +10,7 @@ const READINESS_CONFIG: Record<string, { badge: string; dot: string }> = {
   Ready: { badge: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20', dot: 'bg-emerald-500' },
   'High Potential': { badge: 'bg-blue-500/10 text-blue-500 border-blue-500/20', dot: 'bg-blue-500' },
   Emerging: { badge: 'bg-amber-500/10 text-amber-500 border-amber-500/20', dot: 'bg-amber-500' },
-  Watch: { badge: 'bg-slate-500/10 text-slate-400 border-slate-500/20', dot: 'bg-slate-400' },
+  Watch: { badge: 'bg-muted text-muted-foreground border-border', dot: 'bg-muted-foreground' },
 };
 
 const ScoreBar = ({ label, value, max = 25, icon: Icon }: { label: string; value: number; max?: number; icon: typeof TrendingUp }) => (
