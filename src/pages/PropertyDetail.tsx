@@ -586,73 +586,7 @@ const PropertyDetail: React.FC = () => {
           ]}
         />
       )}
-      {/* Agent/Developer Header - Glassy Style with Membership Badge */}
-      {property?.posted_by && (
-        <div className="relative bg-gradient-to-r from-gold-primary/5 via-background to-gold-primary/5 backdrop-blur-2xl border-b border-gold-primary/15">
-          <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-2.5 sm:py-3">
-            <div className="flex items-center justify-between gap-3">
-              {/* Agent Profile - Enhanced */}
-              <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
-                <div className="relative flex-shrink-0">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-gold-primary/20 to-gold-primary/10 p-0.5 shadow-lg shadow-gold-primary/10">
-                    <img
-                      src={property.posted_by.avatar_url || "/placeholder.svg"}
-                      alt={property.posted_by.name}
-                      className="w-full h-full rounded-[10px] object-cover"
-                    />
-                  </div>
-                  <div className="absolute -bottom-1 -right-1">
-                    <UserStatusBadge status={property.posted_by.verification_status} size="sm" />
-                  </div>
-                </div>
-                
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-bold text-sm sm:text-base text-foreground truncate">
-                      {property.posted_by.name}
-                    </h3>
-                    {/* Membership Level Badge */}
-                    <UserMembershipBadge 
-                      membershipLevel={property.posted_by.user_level || 'verified'} 
-                      size="xs" 
-                      variant="pill"
-                      showIcon={true}
-                    />
-                  </div>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="bg-gold-primary/10 text-gold-primary px-2 py-0.5 rounded-md text-[10px] sm:text-xs font-medium backdrop-blur-sm">
-                      {property.posted_by.position || 'Developer'}
-                    </span>
-                    <div className="flex items-center gap-1">
-                      <Star className="h-3 w-3 fill-gold-primary text-gold-primary" />
-                      <span className="text-xs font-semibold">{property.posted_by.customer_feedback_rating}</span>
-                    </div>
-                    <span className="text-xs text-muted-foreground hidden sm:inline">• {property.posted_by.experience_years}y exp</span>
-                  </div>
-                </div>
-              </div>
-                
-              <Button 
-                size="sm"
-                className="flex-shrink-0 bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:from-gold-primary/90 hover:to-gold-primary/70 text-background border-0 h-9 px-4 text-xs font-semibold shadow-sm shadow-gold-primary/20"
-                onClick={() => {
-                  if (user && property.posted_by?.whatsapp_number) {
-                    window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, I'm interested in ${property.title}`, '_blank');
-                  } else {
-                    toast({
-                      title: t('propertyDetail.signInRequired'), 
-                      description: t('propertyDetail.signInToContact'),
-                      variant: "destructive",
-                    });
-                  }
-                }}
-              >
-                📱 Chat
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Agent info moved to sidebar only — no redundant top banner */}
 
       {/* Slim Sticky Header */}
       <div className="sticky top-0 z-50 bg-background/90 backdrop-blur-2xl border-b border-border shadow-sm">
@@ -758,7 +692,7 @@ const PropertyDetail: React.FC = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-2 sm:px-3 lg:px-6 py-2 sm:py-3 min-h-screen">
+      <div className="max-w-7xl mx-auto px-2 sm:px-3 lg:px-6 py-2 sm:py-3 min-h-screen pb-20 md:pb-3">
         
         {/* Admin Edit Form */}
         {isAdmin && isEditMode && (
@@ -925,79 +859,77 @@ const PropertyDetail: React.FC = () => {
             
             {/* Property Header - Slim Glassmorphic */}
             <Card className="border border-gold-primary/10 bg-card backdrop-blur-xl rounded-xl overflow-hidden">
-              <CardContent className="p-2 sm:p-4">
-                <div className="flex flex-col sm:flex-row items-start justify-between gap-2 sm:gap-4">
-                  <div className="flex-1 w-full">
-                    <h1 className="text-sm sm:text-xl lg:text-2xl font-bold text-foreground mb-1 leading-tight">
-                      {property.title}
-                    </h1>
-                    {/* Location Display - Slim */}
-                    <div className="flex items-start gap-1.5 mb-1.5 p-1.5 sm:p-2 bg-gold-primary/5 rounded-lg border border-gold-primary/10">
-                      <div className="w-6 h-6 rounded-md bg-gold-primary/10 flex items-center justify-center flex-shrink-0">
-                        <MapPin className="h-3 w-3 text-gold-primary" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-[10px] sm:text-xs font-medium text-foreground">{property.location}</div>
-                        {property.address && (
-                          <div className="text-[9px] sm:text-[10px] text-muted-foreground">{property.address}</div>
-                        )}
-                        <div className="flex items-center gap-1 mt-1 flex-wrap">
-                          {property.province && (
-                            <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
-                              {property.province}
-                            </Badge>
-                          )}
-                          {property.city && (
-                            <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
-                              {property.city}
-                            </Badge>
-                          )}
-                          {property.district && (
-                            <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
-                              {property.district}
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                      <Button variant="ghost" size="sm" className="h-6 w-6 p-0 flex-shrink-0 active:scale-95" title="Maps"><Navigation className="h-3 w-3 text-gold-primary" /></Button>
+              <CardContent className="p-3 sm:p-5">
+                {/* Price — hero-level prominence */}
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline gap-2 flex-wrap">
+                      <span className="text-xl sm:text-3xl lg:text-4xl font-extrabold text-gold-primary tracking-tight leading-none">
+                        {formatPrice(property.price)}
+                      </span>
+                      {property.listing_type === 'rent' && (
+                        <span className="text-xs sm:text-sm text-muted-foreground font-medium">/{t('propertyDetail.perMonth')}</span>
+                      )}
                     </div>
-                    
-                    {/* Posted Time */}
-                    <div className="flex items-center gap-1 mb-1.5 text-[9px] sm:text-[10px] text-muted-foreground">
-                      <Clock className="h-2.5 w-2.5" />
-                      <span>Posted {formatDistanceToNow(new Date(property.created_at), { addSuffix: true, locale: localeId })}</span>
-                    </div>
-                    
-                    <div className="flex flex-wrap gap-1">
-                      <Badge className={`px-1.5 py-0 h-5 text-[9px] rounded-md shadow-sm border-0 ${property.listing_type === 'sale' ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' : 'bg-gradient-to-r from-sky-500 to-blue-600 text-white'}`}>
-                        {property.listing_type === 'sale' ? t('propertyDetail.forSale') : t('propertyDetail.forRent')}
-                      </Badge>
-                      <Badge variant="outline" className="border-border/50 px-1.5 py-0 h-5 text-[9px] rounded-md bg-muted/50 text-foreground capitalize">
-                        {property.property_type}
-                      </Badge>
-                      {property.development_status !== 'completed' && (
-                        <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 px-1.5 py-0 h-5 text-[9px] rounded-md">
-                          {property.development_status === 'new_project' ? '✨ New' : '🚀 Pre-Launch'}
+                    {property.area_sqm && property.area_sqm > 0 && (
+                      <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">
+                        {formatPrice(Math.round(property.price / property.area_sqm))}/m²
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-1 flex-shrink-0">
+                    <Badge className={`px-2 py-0.5 h-6 text-[10px] sm:text-xs rounded-md shadow-sm border-0 font-semibold ${property.listing_type === 'sale' ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' : 'bg-gradient-to-r from-sky-500 to-blue-600 text-white'}`}>
+                      {property.listing_type === 'sale' ? t('propertyDetail.forSale') : t('propertyDetail.forRent')}
+                    </Badge>
+                    <Badge variant="outline" className="border-border/50 px-2 py-0.5 h-6 text-[10px] sm:text-xs rounded-md bg-muted/50 text-foreground capitalize">
+                      {property.property_type}
+                    </Badge>
+                  </div>
+                </div>
+
+                {/* Title */}
+                <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-foreground mb-2 leading-tight">
+                  {property.title}
+                </h1>
+
+                {/* Location */}
+                <div className="flex items-start gap-1.5 mb-2 p-2 bg-muted/30 rounded-lg border border-border/20">
+                  <MapPin className="h-3.5 w-3.5 text-gold-primary flex-shrink-0 mt-0.5" />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs sm:text-sm font-medium text-foreground">{property.location}</div>
+                    {property.address && (
+                      <div className="text-[10px] sm:text-xs text-muted-foreground">{property.address}</div>
+                    )}
+                    <div className="flex items-center gap-1 mt-1 flex-wrap">
+                      {property.province && (
+                        <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
+                          {property.province}
+                        </Badge>
+                      )}
+                      {property.city && (
+                        <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
+                          {property.city}
+                        </Badge>
+                      )}
+                      {property.district && (
+                        <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
+                          {property.district}
                         </Badge>
                       )}
                     </div>
-                    
-                    {/* Trust Verification Badges */}
-                    <PropertyTrustBadges property={{ id: property.id, ...property }} size="sm" maxBadges={6} />
                   </div>
-                  
-                  {/* Price Display - Slim */}
-                  <div className="w-full sm:w-auto">
-                    <div className="bg-gold-primary/5 rounded-lg p-2 sm:p-3 border border-gold-primary/15">
-                      <p className="text-[9px] sm:text-[10px] text-muted-foreground mb-0.5">{t('propertyDetail.price')}</p>
-                      <div className="text-base sm:text-2xl font-bold text-gold-primary">
-                        {formatPrice(property.price)}
-                      </div>
-                      {property.listing_type === 'rent' && (
-                        <span className="text-[9px] sm:text-xs text-muted-foreground">{t('propertyDetail.perMonth')}</span>
-                      )}
-                    </div>
-                  </div>
+                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0 flex-shrink-0 active:scale-95" title="Maps"><Navigation className="h-3 w-3 text-gold-primary" /></Button>
+                </div>
+
+                {/* Posted Time */}
+                <div className="flex items-center gap-1 mb-2 text-[10px] text-muted-foreground">
+                  <Clock className="h-3 w-3" />
+                  <span>Posted {formatDistanceToNow(new Date(property.created_at), { addSuffix: true, locale: localeId })}</span>
+                  {property.development_status !== 'completed' && (
+                    <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 px-1.5 py-0 h-4 text-[9px] rounded-md ml-1">
+                      {property.development_status === 'new_project' ? '✨ New' : '🚀 Pre-Launch'}
+                    </Badge>
+                  )}
                 </div>
 
                 {/* Property Stats - Slim Grid */}
@@ -1561,6 +1493,53 @@ const PropertyDetail: React.FC = () => {
         onClose={() => setShowAuthModal(false)}
         language="en"
       />
+
+      {/* Sticky Mobile Contact CTA */}
+      <div className="fixed bottom-0 left-0 right-0 z-[9980] md:hidden bg-card/95 backdrop-blur-xl border-t border-border/40 shadow-[0_-4px_20px_hsl(var(--foreground)/0.06)]"
+        style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}
+      >
+        <div className="flex items-center gap-2 px-3 py-2">
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-bold text-gold-primary leading-none">{formatPrice(property.price)}</div>
+            {property.listing_type === 'rent' && (
+              <span className="text-[9px] text-muted-foreground">/{t('propertyDetail.perMonth')}</span>
+            )}
+          </div>
+          <Button
+            size="sm"
+            className="bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background h-9 px-4 text-xs font-semibold shadow-sm shadow-gold-primary/20 active:scale-95 transition-transform"
+            onClick={() => {
+              if (user && property.posted_by?.whatsapp_number) {
+                window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, I'm interested in ${property.title}`, '_blank');
+              } else if (!user) {
+                setShowAuthModal(true);
+              } else {
+                toast({ title: t('propertyDetail.contactNotAvailable'), variant: "destructive" });
+              }
+            }}
+          >
+            <MessageCircle className="h-3.5 w-3.5 mr-1" />
+            WhatsApp
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-9 px-3 text-xs font-medium border-border/50 active:scale-95 transition-transform"
+            onClick={() => {
+              if (user && property.posted_by?.phone_number) {
+                window.open(`tel:${property.posted_by.phone_number}`, '_self');
+              } else if (!user) {
+                setShowAuthModal(true);
+              } else {
+                toast({ title: t('propertyDetail.contactNotAvailable'), variant: "destructive" });
+              }
+            }}
+          >
+            <Phone className="h-3.5 w-3.5 mr-1" />
+            {t('propertyDetail.call')}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
