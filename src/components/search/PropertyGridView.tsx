@@ -79,7 +79,7 @@ const PropertyGridView = ({
   }
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
       {properties.map((property) => {
         const priceInfo = formatPrice(property.price);
         const isRent = property.listing_type === 'rent';
@@ -89,7 +89,7 @@ const PropertyGridView = ({
         return (
           <Card 
             key={property.id} 
-            className="group cursor-pointer bg-card/70 backdrop-blur-md rounded-lg border border-primary/10 dark:border-primary/15 shadow-[0_2px_12px_rgba(0,0,0,0.05)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.1)] hover:border-primary/25 transition-all duration-300 overflow-hidden"
+            className="group cursor-pointer bg-card/80 backdrop-blur-md rounded-xl border border-border hover:border-primary/30 shadow-sm hover:shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.15)] hover:-translate-y-0.5 transition-all duration-300 overflow-hidden will-change-transform"
             onClick={() => onPropertyClick(property)}
           >
             {/* Image Section - Rumah123 Style */}
@@ -141,7 +141,7 @@ const PropertyGridView = ({
 
               {/* Image Count */}
               {imageCount > 1 && (
-                <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-background/60 backdrop-blur-sm text-foreground text-[9px] px-1.5 py-0.5 rounded">
+                <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-background/60 backdrop-blur-sm text-foreground text-[10px] px-1.5 py-0.5 rounded">
                   <Camera className="h-2.5 w-2.5" />
                   <span>{imageCount}</span>
                 </div>
@@ -156,78 +156,78 @@ const PropertyGridView = ({
             </div>
 
             {/* Content Section - Rumah123 Style */}
-            <CardContent className="p-2.5 sm:p-3 space-y-1.5">
+            <CardContent className="p-3 sm:p-4 space-y-2">
               {/* Price */}
-              <div className="border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-lg px-2.5 py-1.5">
-                <div className="flex items-baseline gap-1 flex-wrap">
-                  <span className="text-base sm:text-lg font-black text-primary tracking-tight leading-none">{priceInfo.main}</span>
+              <div className="border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-lg px-3 py-2">
+                <div className="flex items-baseline gap-1.5 flex-wrap">
+                  <span className="text-lg sm:text-xl font-black text-primary tracking-tight leading-none drop-shadow-sm">{priceInfo.main}</span>
                   {priceInfo.suffix && (
-                    <span className="text-[11px] sm:text-sm font-extrabold text-primary/70">{priceInfo.suffix}</span>
+                    <span className="text-xs sm:text-sm font-extrabold text-primary/70">{priceInfo.suffix}</span>
                   )}
-                  {isRent && <span className="text-[10px] text-primary/50 font-bold">/bln</span>}
+                  {isRent && <span className="text-[11px] text-primary/50 font-bold">/bln</span>}
                   {!isRent && (
-                    <span className="text-[9px] sm:text-[10px] text-muted-foreground/60 font-medium bg-muted/40 rounded-full px-1.5 py-px">≈ {formatMonthlyPayment(property.price)}</span>
+                    <span className="text-[10px] text-muted-foreground/60 font-medium bg-muted/40 rounded-full px-1.5 py-px">≈ {formatMonthlyPayment(property.price)}</span>
                   )}
                 </div>
               </div>
 
               {/* Title */}
-              <h3 className="text-[11px] sm:text-xs font-medium text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+              <h3 className="text-xs sm:text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">
                 {property.title}
               </h3>
 
               {/* Location */}
-              <div className="flex items-center gap-1 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5" title={getLocation(property)}>
+              <div className="flex items-center gap-1.5 bg-primary/5 dark:bg-primary/10 rounded-md px-2 py-1" title={getLocation(property)}>
                 <MapPin className="h-3 w-3 flex-shrink-0 text-primary/70" />
-                <span className="text-[10px] text-foreground/70 font-medium truncate">{getLocation(property)}</span>
+                <span className="text-[11px] text-foreground/70 font-medium truncate">{getLocation(property)}</span>
               </div>
 
               {/* Specs */}
-              <div className="flex items-center gap-1 pt-1.5 border-t border-primary/10">
+              <div className="flex items-center gap-1.5 pt-2 border-t border-border/60">
                 {property.bedrooms && property.bedrooms > 0 && (
-                  <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5">
+                  <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-md px-2 py-1">
                     <Bed className="h-3 w-3 text-primary/60" />
                     <span className="text-[11px] text-foreground/80 font-bold">{property.bedrooms}</span>
-                    <span className="text-[9px] text-muted-foreground/70 font-semibold">KT</span>
+                    <span className="text-[10px] text-muted-foreground/70 font-semibold">KT</span>
                   </div>
                 )}
                 {property.bathrooms && property.bathrooms > 0 && (
-                  <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5">
+                  <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-md px-2 py-1">
                     <Bath className="h-3 w-3 text-primary/60" />
                     <span className="text-[11px] text-foreground/80 font-bold">{property.bathrooms}</span>
-                    <span className="text-[9px] text-muted-foreground/70 font-semibold">KM</span>
+                    <span className="text-[10px] text-muted-foreground/70 font-semibold">KM</span>
                   </div>
                 )}
                 {property.area_sqm && (
-                  <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5">
-                    <span className="text-[9px] text-primary/60 font-bold">LB</span>
+                  <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-md px-2 py-1">
+                    <span className="text-[10px] text-primary/60 font-bold">LB</span>
                     <span className="text-[11px] text-foreground/80 font-bold">{property.area_sqm}m²</span>
                   </div>
                 )}
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-1.5 pt-1">
+              <div className="flex gap-2 pt-1.5">
                 <Button
                   size="sm"
                   variant="outline"
-                  className="h-7 w-7 p-0 flex-shrink-0"
+                  className="h-8 w-8 p-0 flex-shrink-0"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleShare(property);
                   }}
                 >
-                  <Share2 className="h-3 w-3" />
+                  <Share2 className="h-3.5 w-3.5" />
                 </Button>
                 <Button
                   size="sm"
-                  className="flex-1 h-7 text-[10px] bg-chart-1 hover:bg-chart-1/90 text-chart-1-foreground"
+                  className="flex-1 h-8 text-[11px] font-semibold bg-chart-1 hover:bg-chart-1/90 text-chart-1-foreground"
                   onClick={(e) => {
                     e.stopPropagation();
                     onContact?.(property);
                   }}
                 >
-                  <Phone className="h-3 w-3 mr-1" />
+                  <Phone className="h-3.5 w-3.5 mr-1" />
                   WhatsApp
                 </Button>
               </div>
