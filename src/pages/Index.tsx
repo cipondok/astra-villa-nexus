@@ -673,7 +673,7 @@ const Index = () => {
                    <span className="text-[10px] sm:text-xs font-semibold text-white uppercase tracking-[0.2em]">
                     {t('indexPage.aiPoweredSearch')}
                   </span>
-                  <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary animate-pulse" />
+                  <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary signal-glow" />
                 </div>
                 
                 <h1 className="text-2xl sm:text-3xl md:text-5xl font-black leading-[1.1] mb-2 text-white" style={{ textShadow: '0 2px 20px hsl(45 80% 50% / 0.3), 0 4px 8px hsl(0 0% 0% / 0.3)' }}>
