@@ -38,7 +38,8 @@ import {
   MousePointer,
   FileText,
   UserCheck,
-  ChevronRight
+  ChevronRight,
+  ChevronDown
 } from "lucide-react";
 import { motion } from "framer-motion";
 import AIHealthSummaryCard from "./AIHealthSummaryCard";
