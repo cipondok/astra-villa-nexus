@@ -1265,6 +1265,13 @@ export const navigationSections = {
       icon: Zap,
       description: "Weekly execution priorities for listing seeding, marketing funnels, agent onboarding, and monetization",
       badge: "📈 Growth"
+    },
+    {
+      key: "agent-acquisition",
+      label: "Agent Acquisition",
+      icon: UserPlus,
+      description: "Agent pipeline management — identify, contact, onboard, and activate agents across key cities",
+      badge: "🎯 Agents"
     }
   ],
 

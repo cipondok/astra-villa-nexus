@@ -1522,6 +1522,69 @@ export type Database = {
         }
         Relationships: []
       }
+      agent_acquisition_pipeline: {
+        Row: {
+          activated_at: string | null
+          agent_name: string
+          assigned_to: string | null
+          city: string
+          created_at: string
+          email: string | null
+          first_contacted_at: string | null
+          first_lead_response_at: string | null
+          first_listing_at: string | null
+          id: string
+          listing_portfolio_size: number | null
+          notes: string | null
+          phone: string | null
+          priority: string
+          source_channel: string
+          specialization: string | null
+          stage: string
+          updated_at: string
+        }
+        Insert: {
+          activated_at?: string | null
+          agent_name: string
+          assigned_to?: string | null
+          city: string
+          created_at?: string
+          email?: string | null
+          first_contacted_at?: string | null
+          first_lead_response_at?: string | null
+          first_listing_at?: string | null
+          id?: string
+          listing_portfolio_size?: number | null
+          notes?: string | null
+          phone?: string | null
+          priority?: string
+          source_channel: string
+          specialization?: string | null
+          stage?: string
+          updated_at?: string
+        }
+        Update: {
+          activated_at?: string | null
+          agent_name?: string
+          assigned_to?: string | null
+          city?: string
+          created_at?: string
+          email?: string | null
+          first_contacted_at?: string | null
+          first_lead_response_at?: string | null
+          first_listing_at?: string | null
+          id?: string
+          listing_portfolio_size?: number | null
+          notes?: string | null
+          phone?: string | null
+          priority?: string
+          source_channel?: string
+          specialization?: string | null
+          stage?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       agent_availability: {
         Row: {
           agent_id: string
