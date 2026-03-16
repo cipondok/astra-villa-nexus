@@ -875,7 +875,7 @@ const Index = () => {
                 {/* Contextual CTA after AI zone */}
                 <div className="mt-10">
                   <Suspense fallback={null}>
-                    <SectionDividerCTA icon={Crosshair} headline="Find Undervalued Deals" description="AI detects properties priced below fair market value" ctaText="Hunt Deals" ctaRoute="/deal-finder" />
+                    <SectionDividerCTA icon={Crosshair} headline="Find Undervalued Deals" description="AI detects properties priced below fair market value" ctaText="Hunt Deals" ctaRoute="/deal-finder" variant="accent" />
                   </Suspense>
                 </div>
               </section>
