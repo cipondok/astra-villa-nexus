@@ -622,13 +622,9 @@ const Index = () => {
             <Suspense fallback={null}><GoldSparkleEffect /></Suspense>
 
 
-            {/* Cinematic overlay — theme-aware gradients */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/10 to-background/80 z-[19] pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-r from-background/20 via-transparent to-background/10 z-[19] pointer-events-none" />
-            {/* Film grain texture */}
-            <div className="absolute inset-0 z-[19] pointer-events-none opacity-[0.03] mix-blend-overlay"
-              style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")' }}
-            />
+            {/* Cinematic overlay — theme-aware gradients (lightened for image vibrancy) */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/5 to-background/70 z-[19] pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-background/15 via-transparent to-background/10 z-[19] pointer-events-none" />
             {/* Shimmer light effect */}
             <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
               <div className="absolute -inset-full animate-shimmer-slide bg-gradient-to-r from-transparent via-white/[0.04] to-transparent skew-x-12" />
@@ -697,15 +693,15 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Scroll Down Indicator */}
+          {/* Scroll Down Indicator — hidden on mobile to avoid search panel overlap */}
           <button
             onClick={() => document.getElementById('featured-section')?.scrollIntoView({ behavior: 'smooth' })}
-            className="absolute bottom-2 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-1 text-white/60 hover:text-gold-primary transition-colors duration-300 pointer-events-auto animate-fade-in"
+            className="hidden sm:flex absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex-col items-center gap-1 text-white/40 hover:text-gold-primary transition-colors duration-300 pointer-events-auto animate-fade-in"
             style={{ animationDelay: '1.2s', opacity: 0, animationFillMode: 'forwards' }}
             aria-label="Scroll to content"
           >
             <span className="text-[10px] uppercase tracking-[0.3em] font-medium">{t('indexPage.explore')}</span>
-            <ChevronDown className="h-5 w-5 animate-bounce" />
+            <ChevronDown className="h-4 w-4 animate-[pulse_2s_ease-in-out_infinite]" />
           </button>
         </section>
         </SectionErrorBoundary>
