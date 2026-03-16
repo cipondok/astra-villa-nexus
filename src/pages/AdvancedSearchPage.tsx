@@ -113,6 +113,9 @@ const AdvancedSearchPage = () => {
         case 'popular':
           query = query.order('views_count', { ascending: false, nullsFirst: false });
           break;
+        case 'deal_score':
+          query = query.order('investment_score', { ascending: false, nullsFirst: false });
+          break;
         default:
           query = query.order('created_at', { ascending: false });
       }

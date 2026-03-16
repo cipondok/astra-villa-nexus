@@ -50,6 +50,8 @@ export interface BaseProperty {
   developer_certified?: boolean;
   legal_checked?: boolean;
   premium_partner?: boolean;
+  investment_score?: number;
+  owner_subscription_type?: string;
 }
 
 // For components that need additional fields

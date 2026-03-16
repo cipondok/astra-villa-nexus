@@ -118,6 +118,12 @@ const PropertyGridView = ({
                 </Badge>
               </div>
 
+              {/* AI Investment Score Badge */}
+              {(property as any).investment_score > 0 && (
+                <div className="absolute top-10 left-2 z-10">
+                  <InvestmentScoreBadge score={(property as any).investment_score} compact className="shadow-lg" />
+                </div>
+              )}
               {/* Heart & Compare Buttons */}
               <div className="absolute top-10 right-2 flex flex-col gap-1">
                 <Button
