@@ -419,6 +419,10 @@ const config: Config = {
           "0%, 100%": { opacity: "0.6", transform: "scale(1)" },
           "50%": { opacity: "1", transform: "scale(1.3)" },
         },
+        "heroZoom": {
+          "0%": { transform: "scale(1) translate(0, 0)" },
+          "100%": { transform: "scale(1.08) translate(-1%, -0.5%)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
