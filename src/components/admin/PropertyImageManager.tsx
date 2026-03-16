@@ -162,54 +162,75 @@ const PropertyImageManager = () => {
     clearSelection();
   };
 
-  // Bulk AI Generate images for all no-image properties via job queue
+  // Bulk AI Generate images directly via ai-engine (not job queue)
+  const [bulkGenProgress, setBulkGenProgress] = useState({ done: 0, succeeded: 0, failed: 0, total: 0, current: "" });
+  const bulkGenCancelRef = useRef(false);
+
   const handleBulkAIGenerate = async () => {
     setBulkAIGenerating(true);
-    try {
-      // Create batch tasks — each task processes 10 properties
-      const totalNoImages = stats.noImages;
-      const batchSize = 10;
-      const numTasks = Math.ceil(totalNoImages / batchSize);
-      
-      // Create tasks as offset-based batches
-      const tasks = Array.from({ length: Math.min(numTasks, 500) }, (_, i) => ({
-        task_type: "bulk_generate_property_images",
-        payload: { batch_size: batchSize, offset: i * batchSize },
-        status: "pending" as const,
-        retry_count: 0,
-      }));
+    bulkGenCancelRef.current = false;
+    const batchSize = 10;
+    let offset = 0;
+    let totalProcessed = 0;
+    let totalSucceeded = 0;
+    let totalFailed = 0;
 
-      const { data, error } = await supabase.functions.invoke("job-worker", {
-        body: {
-          action: "create",
-          job_type: "bulk_generate_property_images",
-          payload: { total_properties: totalNoImages, batch_size: batchSize },
-          created_by: user?.id,
-          priority: 3,
-        },
-      });
+    setBulkGenProgress({ done: 0, succeeded: 0, failed: 0, total: stats.noImages, current: "Starting..." });
 
-      if (error) throw error;
-      
-      // Insert tasks for the job
-      if (data?.jobId && tasks.length > 0) {
-        const taskRows = tasks.map(t => ({ ...t, job_id: data.jobId }));
-        // Insert in chunks of 50
-        for (let i = 0; i < taskRows.length; i += 50) {
-          await supabase.from("ai_job_tasks").insert(taskRows.slice(i, i + 50));
-        }
-        await supabase.from("ai_jobs").update({ total_tasks: tasks.length }).eq("id", data.jobId);
+    while (!bulkGenCancelRef.current) {
+      // Fetch properties without images
+      const { data: props, error: fetchErr } = await supabase
+        .from("properties")
+        .select("id, title, property_type, city, location, description")
+        .is("thumbnail_url", null)
+        .order("created_at", { ascending: false })
+        .range(offset, offset + batchSize - 1);
+
+      if (fetchErr || !props || props.length === 0) {
+        if (fetchErr) showError("Fetch Error", fetchErr.message);
+        else showSuccess("Complete", `Generated ${totalSucceeded} images. No more properties without images.`);
+        break;
       }
 
-      showSuccess(
-        "Job Queued",
-        `AI image generation started for ${Math.min(totalNoImages, 5000).toLocaleString()} properties. Track progress in AI Command Center.`
-      );
-    } catch (err: any) {
-      showError("Failed to queue job", err.message);
-    } finally {
-      setBulkAIGenerating(false);
+      for (const prop of props) {
+        if (bulkGenCancelRef.current) break;
+        totalProcessed++;
+        setBulkGenProgress(p => ({ ...p, done: totalProcessed, current: prop.title?.slice(0, 50) || prop.id }));
+
+        try {
+          const { data, error } = await supabase.functions.invoke("ai-engine", {
+            body: {
+              mode: "generate_image",
+              payload: {
+                propertyId: prop.id,
+                title: prop.title,
+                description: prop.description?.slice(0, 200),
+                propertyType: prop.property_type,
+                location: prop.location || prop.city,
+              },
+            },
+          });
+          if (error || data?.error) {
+            totalFailed++;
+          } else {
+            totalSucceeded++;
+          }
+        } catch {
+          totalFailed++;
+        }
+        setBulkGenProgress(p => ({ ...p, succeeded: totalSucceeded, failed: totalFailed }));
+        // Rate limit
+        await new Promise(r => setTimeout(r, 1500));
+      }
+
+      offset += batchSize;
+      // Pause between batches
+      if (!bulkGenCancelRef.current) await new Promise(r => setTimeout(r, 2000));
     }
+
+    setBulkAIGenerating(false);
+    queryClient.invalidateQueries({ queryKey: ["admin-property-images"] });
+    refetchStats();
   };
 
   // Bulk AI relevance check for selected properties
