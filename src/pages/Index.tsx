@@ -1106,6 +1106,11 @@ const Index = () => {
         <Suspense fallback={null}>
           <PWAInstallPrompt />
         </Suspense>
+
+        {/* Exit Intent Popup (desktop only, non-logged-in) */}
+        <Suspense fallback={null}>
+          <ExitIntentPopup />
+        </Suspense>
         
         {/* AI Search Loading Dialog */}
         <Suspense fallback={null}>
