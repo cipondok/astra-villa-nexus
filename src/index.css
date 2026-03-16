@@ -242,6 +242,13 @@ html, body {
     --titanium-light: 200 30% 94%;
     --titanium-white: 0 0% 100%;
     --samsung-blue-primary: 200 100% 48%;
+
+    /* Chart / Data-Viz Colors - Light Mode */
+    --chart-1: 142 71% 40%;   /* Green - success / positive */
+    --chart-2: 217 91% 55%;   /* Blue - info / secondary */
+    --chart-3: 38 92% 50%;    /* Amber - warning / caution */
+    --chart-4: 270 70% 55%;   /* Purple - neutral / highlight */
+    --chart-5: 346 77% 52%;   /* Rose - accent / contrast */
   }
 
   .dark {
@@ -293,6 +300,13 @@ html, body {
     --titanium-light: 210 30% 16%;
     --titanium-white: 0 0% 100%;
     --samsung-blue-primary: 200 100% 55%;
+
+    /* Chart / Data-Viz Colors - Dark Mode (boosted luminance for contrast) */
+    --chart-1: 142 71% 50%;   /* Green */
+    --chart-2: 217 91% 65%;   /* Blue */
+    --chart-3: 38 92% 58%;    /* Amber */
+    --chart-4: 270 70% 65%;   /* Purple */
+    --chart-5: 346 77% 60%;   /* Rose */
 
     /* Dark mode shadow tokens */
     --shadow-card: 0 4px 24px hsl(210 60% 3% / 0.6), 0 0 0 1px hsl(200 50% 30% / 0.12);

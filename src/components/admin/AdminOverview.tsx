@@ -324,7 +324,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
   return (
     <section aria-label="Admin overview dashboard" className="space-y-3 animate-in fade-in duration-300">
       {/* Header */}
-      <div className="flex items-center justify-between bg-gradient-to-r from-primary/5 via-background to-chart-1/5 rounded-xl border border-border/30 px-4 py-3">
+      <div className="flex items-center justify-between bg-card rounded-xl border border-border px-4 py-3">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-primary/10">
             <Monitor className="h-5 w-5 text-primary" />
@@ -334,9 +334,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <span className="flex items-center gap-1" role="status" aria-live="polite">
                 <span className="w-2 h-2 bg-chart-1 rounded-full animate-pulse" aria-hidden="true" />
-                Online
+                <span className="text-chart-1 font-medium">Online</span>
               </span>
-              <span>•</span>
+              <span className="text-border">•</span>
               <span>{new Date().toLocaleTimeString()}</span>
             </div>
           </div>
@@ -353,7 +353,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
         <div className="col-span-12 md:col-span-3 space-y-3">
          <SectionErrorBoundary sectionName="Platform Stats">
           {/* Key Metrics */}
-          <Card className="border-border/30">
+          <Card className="border-border bg-card">
             <CardHeader className="p-3 pb-2">
               <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
                 <Activity className="h-3.5 w-3.5" /> Platform Stats
@@ -370,7 +370,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           </Card>
 
           {/* Pending Actions */}
-          <Card className="border-border/30">
+          <Card className="border-border bg-card">
             <CardHeader className="p-3 pb-2">
               <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
                 <Bell className="h-3.5 w-3.5" /> Pending
@@ -395,7 +395,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           </Card>
 
           {/* Quick Nav */}
-          <Card className="border-border/30">
+          <Card className="border-border bg-card">
             <CardContent className="p-3 grid grid-cols-3 gap-2">
               {[
                 { icon: Users, label: "Users", id: "user-management" },
@@ -408,7 +408,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
                 <button
                   key={item.id}
                   onClick={() => handleQuickAction(item.id)}
-                  className="flex flex-col items-center gap-1 p-2 rounded-lg border border-border/30 hover:bg-accent/50 hover:border-primary/30 transition-all text-xs"
+                  className="flex flex-col items-center gap-1 p-2 rounded-lg border border-border hover:bg-accent/10 hover:border-primary/30 transition-all text-xs text-foreground"
                 >
                   <item.icon className="h-4 w-4 text-muted-foreground" />
                   {item.label}
@@ -423,7 +423,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
         <div className="col-span-12 md:col-span-6 space-y-3">
          <SectionErrorBoundary sectionName="Traffic & Activity">
           {/* Live Traffic Chart - Recharts */}
-          <Card className="border-border/30">
+          <Card className="border-border bg-card">
             <CardHeader className="p-3 pb-2">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
@@ -473,7 +473,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           </Card>
 
           {/* Recent Activity Feed */}
-          <Card className="border-border/30">
+          <Card className="border-border bg-card">
             <CardHeader className="p-3 pb-2">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
@@ -492,7 +492,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
                         initial={isFirstRender.current ? { opacity: 0, x: -10 } : false}
                         animate={{ opacity: 1, x: 0 }}
                         transition={isFirstRender.current ? { delay: idx * 0.05 } : { duration: 0 }}
-                        className="flex items-center gap-2 p-2 rounded-lg border border-border/20 bg-muted/20 hover:bg-muted/40 transition-colors"
+                        className="flex items-center gap-2 p-2 rounded-lg border border-border/50 bg-card hover:bg-muted/30 transition-colors"
                       >
                         <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                         <div className="flex-1 min-w-0">
@@ -537,7 +537,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
             </div>
 
             {/* System Status */}
-            <Card className="border-border/30">
+            <Card className="border-border bg-card">
               <CardHeader className="p-3 pb-2">
                 <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
                   <Server className="h-3.5 w-3.5" /> System Health
@@ -546,8 +546,8 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
               <CardContent className="p-3 pt-0 space-y-2.5">
                 <div className={`flex items-center justify-between p-2.5 rounded-lg border ${
                   systemHealth?.status === 'healthy' 
-                    ? 'bg-chart-1/5 border-chart-1/30' 
-                    : 'bg-chart-3/5 border-chart-3/30'
+                    ? 'bg-chart-1/5 border-chart-1/30 dark:bg-chart-1/10' 
+                    : 'bg-chart-3/5 border-chart-3/30 dark:bg-chart-3/10'
                 }`}>
                   <span className="text-xs font-medium">Status</span>
                   <Badge variant={systemHealth?.status === 'healthy' ? 'default' : 'destructive'} className="text-[10px] h-5 px-2">
@@ -565,7 +565,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
             </Card>
 
             {/* AI Systems Status */}
-            <Card className="border-border/30">
+            <Card className="border-border bg-card">
               <CardHeader className="p-3 pb-2">
                 <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
                   <ShieldCheck className="h-3.5 w-3.5" /> AI Systems
