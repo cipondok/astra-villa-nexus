@@ -63,6 +63,7 @@ import NationalForecastCard from "./NationalForecastCard";
 import PortfolioStrategyCard from "./PortfolioStrategyCard";
 import CapitalFlowCard from "./CapitalFlowCard";
 import MarketplaceOptimizationCard from "./MarketplaceOptimizationCard";
+import { useAICommandCenterData } from "@/hooks/useAICommandCenterData";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
