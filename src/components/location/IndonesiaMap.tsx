@@ -537,7 +537,7 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
         <div>
           <span className="text-sm font-bold text-foreground block">Peta Properti</span>
           <span className="text-[10px] text-muted-foreground hidden sm:block">
-            {showHeatmap ? 'Heatmap Mode' : 'Default Mode'}
+            {showHeatmap ? `${heatMode === 'density' ? 'Density' : heatMode === 'demand' ? 'Demand Heat' : 'Price Momentum'}` : 'Default Mode'}
             {showHotspots ? ' · Hotspots On' : ''}
           </span>
         </div>
