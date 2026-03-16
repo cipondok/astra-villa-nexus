@@ -268,7 +268,7 @@ const DigitalGrowthRole = React.memo(function DigitalGrowthRole() {
             <div>
               <CardTitle className="text-base font-bold flex items-center gap-2">
                 <TrendingUp className="h-5 w-5 text-primary" />
-                Digital Growth Lead — Role Blueprint
+                Digital Growth Specialist — Role Blueprint
               </CardTitle>
               <CardDescription className="text-[11px]">
                 Full role definition: responsibilities, KPIs, candidate profile, 90-day plan, tools, and career path
