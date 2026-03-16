@@ -511,7 +511,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
                         initial={isFirstRender.current ? { opacity: 0, x: -10 } : false}
                         animate={{ opacity: 1, x: 0 }}
                         transition={isFirstRender.current ? { delay: idx * 0.05 } : { duration: 0 }}
-                        onClick={() => handleQuickAction('activity-logs')}
+                        onClick={() => handleQuickAction('admin-activity-log')}
                         role="button"
                         tabIndex={0}
                         className="flex items-center gap-2 p-2 rounded-lg border border-border/50 bg-card hover:bg-muted/30 hover:border-primary/30 transition-colors cursor-pointer"
