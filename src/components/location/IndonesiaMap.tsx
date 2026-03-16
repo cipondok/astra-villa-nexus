@@ -439,11 +439,11 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
 
     if (showHeatmap) {
       const count = provincePropertyCounts[normalizedName] || provincePropertyCounts[provinceName] || 0;
-      return getHeatmapColor(count, isDark);
+      return getHeatColor(heatMode, normalizedName, count, isDark);
     }
     const colors = getProvinceColors(isDark);
     return colors[index % colors.length];
-  }, [showHeatmap, provincePropertyCounts, isDark, mapColors.selected]);
+  }, [showHeatmap, heatMode, provincePropertyCounts, isDark, mapColors.selected]);
 
   const getHoverFillColor = useCallback((provinceName: string, normalizedName: string, index: number, isSelected: boolean) => {
     if (isSelected) return mapColors.selected;
