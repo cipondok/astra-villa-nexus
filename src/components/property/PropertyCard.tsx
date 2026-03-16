@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, MapPin, Bed, Bath, Square, Eye, Box, Star, Clock, Calendar, TrendingUp, MessageSquare, Tag, Key, Percent, Glasses, Smartphone } from "lucide-react";
+import { Heart, MapPin, Bed, Bath, Square, Eye, Box, Star, Clock, Calendar, TrendingUp, MessageSquare, Tag, Key, Percent, Glasses } from "lucide-react";
 import Price from "@/components/ui/Price";
 import { useState } from "react";
 import PropertyDetailModal from "./PropertyDetailModal";
@@ -191,6 +191,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             <button 
               className="h-8 w-8 bg-black/30 backdrop-blur-md hover:bg-black/50 border border-white/20 rounded-full shadow-md flex items-center justify-center btn-press"
               onClick={(e) => e.stopPropagation()}
+              aria-label="Save property"
             >
               <Heart className="h-4 w-4 text-white/90" />
             </button>
@@ -200,6 +201,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               propertyPrice={price}
               propertyLocation={location}
               className="h-8 w-8 p-0 bg-black/30 backdrop-blur-md hover:bg-black/50 text-white rounded-full border border-white/20 shadow-md"
+              aria-label="Share property"
             />
           </div>
           
@@ -307,27 +309,17 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             )}
           </div>
 
-          {/* VR/AR Quick Actions */}
+          {/* VR Quick Action — AR Preview removed (non-functional, see ux-heuristic-audit.md) */}
           {(three_d_model_url || virtual_tour_url || glb_model_url || has_vr) && (
-            <div className="flex items-center gap-2 mt-2">
+            <div className="mt-2">
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="h-7 text-xs flex-1 border-primary/30 text-primary hover:bg-primary/10"
+                className="h-7 text-xs w-full border-primary/30 text-primary hover:bg-primary/10"
                 onClick={(e) => { e.stopPropagation(); handleView3D(e); }}
               >
                 <Glasses className="h-3 w-3 mr-1" />
                 VR Mode
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="h-7 text-xs flex-1 border-muted-foreground/30 text-muted-foreground cursor-not-allowed opacity-60"
-                disabled
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Smartphone className="h-3 w-3 mr-1" />
-                AR Preview
               </Button>
             </div>
           )}
