@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, MapPin, Bed, Bath, Square, Eye, Box, Star, Clock, Calendar, TrendingUp, MessageSquare, Tag, Key, Percent, Glasses } from "lucide-react";
+import { Heart, MapPin, Bed, Bath, Square, Eye, Box, Star, Clock, Calendar, TrendingUp, MessageSquare, Tag, Key, Percent, Glasses, Camera, ShieldCheck } from "lucide-react";
 import Price from "@/components/ui/Price";
 import { useState } from "react";
 import PropertyDetailModal from "./PropertyDetailModal";
@@ -118,10 +118,20 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     
     if (diffInHours < 1) return 'Just now';
     if (diffInHours < 24) return `${diffInHours}h ago`;
-    if (diffInDays < 30) return `${diffInDays}d ago`;
+    if (diffInDays < 7) return `${diffInDays}d ago`;
+    if (diffInDays < 30) return `${Math.floor(diffInDays / 7)}w ago`;
     if (diffInDays < 365) return `${Math.floor(diffInDays / 30)}mo ago`;
     return `${Math.floor(diffInDays / 365)}y ago`;
   };
+
+  /** True if listed within last 48 hours */
+  const isFresh = (() => {
+    const d = posted_at || created_at;
+    if (!d) return false;
+    return (Date.now() - new Date(d).getTime()) < 48 * 60 * 60 * 1000;
+  })();
+
+  const photoCount = (images?.length || 0) + (image_urls?.length || 0);
 
   const formatJoiningDate = (dateString: string) => {
     const now = new Date();
@@ -243,15 +253,27 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
                 <Glasses className="h-2.5 w-2.5" />
                 Virtual Tour
               </Badge>
+             )}
+            {isFresh && (
+              <Badge className="bg-chart-1/90 text-primary-foreground text-[10px] font-bold px-2 py-0.5 rounded-md shadow-md border-0 flex items-center gap-1">
+                <ShieldCheck className="h-2.5 w-2.5" />
+                Just Listed
+              </Badge>
             )}
           </div>
 
-          {/* Owner Subscription Badge */}
-          {owner_subscription_type && owner_subscription_type !== 'free' && (
-            <div className="absolute bottom-2.5 right-2.5 z-10">
+          {/* Photo count + subscription — bottom right */}
+          <div className="absolute bottom-2.5 right-2.5 z-10 flex items-center gap-1.5">
+            {owner_subscription_type && owner_subscription_type !== 'free' && (
               <OwnerSubscriptionBadge subscriptionType={owner_subscription_type} />
-            </div>
-          )}
+            )}
+            {photoCount > 1 && (
+              <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-black/50 backdrop-blur-sm text-white text-[10px] font-medium">
+                <Camera className="h-3 w-3" />
+                <span>{photoCount}</span>
+              </div>
+            )}
+          </div>
 
           {/* Trust Badges - Bottom Left */}
           <div className="absolute bottom-2.5 left-2.5 z-10">
