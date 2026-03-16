@@ -158,7 +158,7 @@ const Index = () => {
         .slice(0, 100);
     const searchTerm = sanitize(rawTerm);
 
-    console.log('Search initiated:', searchTerm, 'with filters:', searchData);
+    // Search initiated with filters
 
     let query = supabase
       .from('properties')
