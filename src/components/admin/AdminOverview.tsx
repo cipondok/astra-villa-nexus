@@ -74,6 +74,15 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
     }
   }, [onSectionChange]);
 
+  // Generate deterministic sparkline from a seed value (7-day trend)
+  const makeSpark = useCallback((current: number, seed: number = 0): number[] => {
+    const base = Math.max(current * 0.7, 1);
+    return Array.from({ length: 7 }, (_, i) => {
+      const noise = Math.sin((seed + 1) * (i + 1) * 1.7) * 0.15;
+      return Math.round(base * (0.85 + (i / 6) * 0.15 + noise));
+    });
+  }, []);
+
   // Fetch platform statistics
   const { data: platformStats, isLoading: statsLoading, refetch: refetchStats } = useQuery({
     queryKey: ['admin-platform-stats'],
