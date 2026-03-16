@@ -84,7 +84,7 @@ const SocialProofWidget = ({
         {metrics.inquiries > 0 && (
           <Badge 
             variant="secondary" 
-            className="text-[9px] px-1.5 py-0 h-4 bg-chart-1/10 text-chart-1"
+            className="text-[10px] px-1.5 py-0 h-4.5 bg-chart-1/10 text-chart-1"
           >
             <MessageSquare className="h-2.5 w-2.5 mr-0.5" />
             {metrics.inquiries}
