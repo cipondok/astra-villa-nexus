@@ -86,6 +86,7 @@ export interface AICommandCenterData {
     avgEstimatedValue: number;
     trendDirection: 'up' | 'down' | 'neutral';
   };
+  fetchedAt: string;
 }
 
 async function checkEdgeFunctionHealth(name: string): Promise<{ status: 'ok' | 'error'; latencyMs: number }> {
@@ -126,6 +127,13 @@ function groupByDay(rows: any[], dateCol: string, startIso: string, days: number
   return buckets;
 }
 
+// Helper to safely extract from Promise.allSettled results
+function settle<T>(result: PromiseSettledResult<T>, fallback: T): T {
+  return result.status === 'fulfilled' ? result.value : fallback;
+}
+
+const EMPTY_RESPONSE = { data: null, count: 0, error: null } as any;
+
 async function fetchCommandCenterData(): Promise<AICommandCenterData> {
   const now = new Date();
   const thisWeekStart = new Date(now.getTime() - 7 * 86400000).toISOString();
@@ -133,85 +141,100 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
   const thisMonthStart = new Date(now.getTime() - 30 * 86400000).toISOString();
   const lastMonthStart = new Date(now.getTime() - 60 * 86400000).toISOString();
 
-  const [
-    propertiesRes,
-    jobsRes,
-    pendingJobsRes,
-    failedJobsRes,
-    completedJobsRes,
-    seoRes,
-    roiRes,
-    searchRes,
-    recentJobLogsRes,
-    stalledJobsRes,
-    lastCompletedJobRes,
-    priceTrendRes,
-    // Historical period queries
-    propsThisWeek, propsLastWeek, propsThisMonth, propsLastMonth,
-    jobsCompThisWeek, jobsCompLastWeek, jobsCompThisMonth, jobsCompLastMonth,
-    jobsFailThisWeek, jobsFailLastWeek, jobsFailThisMonth, jobsFailLastMonth,
-    searchThisWeek, searchLastWeek, searchThisMonth, searchLastMonth,
-    // Sparkline raw data
-    sparkPropsRaw, sparkJobsCompRaw, sparkJobsFailRaw, sparkSearchRaw,
-    // Valuation data
-    valuationsRes,
-    valuationsThisWeekRes,
-    valuationsLastWeekRes,
-    roiForecastCountRes,
-    // Job throughput (14 days of completed+failed jobs with timestamps)
-    jobThroughputRes,
-    // Search volume (14 days)
-    searchVolumeRes,
-  ] = await Promise.all([
-    supabase.from('properties').select('id, investment_score, price, created_at', { count: 'exact' }),
-    supabase.from('ai_jobs').select('*').eq('status', 'running').limit(10),
-    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'pending'),
-    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'failed'),
-    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'completed'),
-    supabase.from('property_seo_analysis').select('id, seo_score, title_score, description_score, keyword_score, image_score, location_score, hashtag_score, seo_rating, property_id, last_analyzed_at, ranking_difficulty').not('seo_score', 'is', null).order('last_analyzed_at', { ascending: false }).limit(200),
-    supabase.from('property_roi_forecast').select('*').order('last_calculated', { ascending: false }).limit(20),
-    supabase.from('ai_property_queries').select('query_text, created_at').order('created_at', { ascending: false }).limit(500),
-    supabase.from('ai_job_logs').select('*').order('created_at', { ascending: false }).limit(20),
-    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'running').lt('started_at', new Date(Date.now() - 30 * 60000).toISOString()),
-    supabase.from('ai_jobs').select('completed_at').eq('status', 'completed').order('completed_at', { ascending: false }).limit(1),
-    supabase.from('properties').select('price, created_at').not('price', 'is', null).order('created_at', { ascending: true }).limit(500),
+  // Use Promise.allSettled so individual query failures don't break the entire page
+  const results = await Promise.allSettled([
+    /* 0  */ supabase.from('properties').select('id, investment_score, price, created_at', { count: 'exact' }),
+    /* 1  */ supabase.from('ai_jobs').select('*').eq('status', 'running').limit(10),
+    /* 2  */ supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'pending'),
+    /* 3  */ supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'failed'),
+    /* 4  */ supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'completed'),
+    /* 5  */ supabase.from('property_seo_analysis').select('id, seo_score, title_score, description_score, keyword_score, image_score, location_score, hashtag_score, seo_rating, property_id, last_analyzed_at, ranking_difficulty').not('seo_score', 'is', null).order('last_analyzed_at', { ascending: false }).limit(200),
+    /* 6  */ supabase.from('property_roi_forecast').select('*').order('last_calculated', { ascending: false }).limit(20),
+    /* 7  */ supabase.from('ai_property_queries').select('query_text, created_at').order('created_at', { ascending: false }).limit(500),
+    /* 8  */ supabase.from('ai_job_logs').select('*').order('created_at', { ascending: false }).limit(20),
+    /* 9  */ supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'running').lt('started_at', new Date(Date.now() - 30 * 60000).toISOString()),
+    /* 10 */ supabase.from('ai_jobs').select('completed_at').eq('status', 'completed').order('completed_at', { ascending: false }).limit(1),
+    /* 11 */ supabase.from('properties').select('price, created_at').not('price', 'is', null).order('created_at', { ascending: true }).limit(500),
     // Properties by period
-    supabase.from('properties').select('id', { count: 'exact' }).gte('created_at', thisWeekStart),
-    supabase.from('properties').select('id', { count: 'exact' }).gte('created_at', lastWeekStart).lt('created_at', thisWeekStart),
-    supabase.from('properties').select('id', { count: 'exact' }).gte('created_at', thisMonthStart),
-    supabase.from('properties').select('id', { count: 'exact' }).gte('created_at', lastMonthStart).lt('created_at', thisMonthStart),
+    /* 12 */ supabase.from('properties').select('id', { count: 'exact' }).gte('created_at', thisWeekStart),
+    /* 13 */ supabase.from('properties').select('id', { count: 'exact' }).gte('created_at', lastWeekStart).lt('created_at', thisWeekStart),
+    /* 14 */ supabase.from('properties').select('id', { count: 'exact' }).gte('created_at', thisMonthStart),
+    /* 15 */ supabase.from('properties').select('id', { count: 'exact' }).gte('created_at', lastMonthStart).lt('created_at', thisMonthStart),
     // Jobs completed by period
-    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'completed').gte('completed_at', thisWeekStart),
-    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'completed').gte('completed_at', lastWeekStart).lt('completed_at', thisWeekStart),
-    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'completed').gte('completed_at', thisMonthStart),
-    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'completed').gte('completed_at', lastMonthStart).lt('completed_at', thisMonthStart),
+    /* 16 */ supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'completed').gte('completed_at', thisWeekStart),
+    /* 17 */ supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'completed').gte('completed_at', lastWeekStart).lt('completed_at', thisWeekStart),
+    /* 18 */ supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'completed').gte('completed_at', thisMonthStart),
+    /* 19 */ supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'completed').gte('completed_at', lastMonthStart).lt('completed_at', thisMonthStart),
     // Jobs failed by period
-    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'failed').gte('created_at', thisWeekStart),
-    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'failed').gte('created_at', lastWeekStart).lt('created_at', thisWeekStart),
-    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'failed').gte('created_at', thisMonthStart),
-    supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'failed').gte('created_at', lastMonthStart).lt('created_at', thisMonthStart),
+    /* 20 */ supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'failed').gte('created_at', thisWeekStart),
+    /* 21 */ supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'failed').gte('created_at', lastWeekStart).lt('created_at', thisWeekStart),
+    /* 22 */ supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'failed').gte('created_at', thisMonthStart),
+    /* 23 */ supabase.from('ai_jobs').select('id', { count: 'exact' }).eq('status', 'failed').gte('created_at', lastMonthStart).lt('created_at', thisMonthStart),
     // Searches by period
-    supabase.from('ai_property_queries').select('id', { count: 'exact' }).gte('created_at', thisWeekStart),
-    supabase.from('ai_property_queries').select('id', { count: 'exact' }).gte('created_at', lastWeekStart).lt('created_at', thisWeekStart),
-    supabase.from('ai_property_queries').select('id', { count: 'exact' }).gte('created_at', thisMonthStart),
-    supabase.from('ai_property_queries').select('id', { count: 'exact' }).gte('created_at', lastMonthStart).lt('created_at', thisMonthStart),
+    /* 24 */ supabase.from('ai_property_queries').select('id', { count: 'exact' }).gte('created_at', thisWeekStart),
+    /* 25 */ supabase.from('ai_property_queries').select('id', { count: 'exact' }).gte('created_at', lastWeekStart).lt('created_at', thisWeekStart),
+    /* 26 */ supabase.from('ai_property_queries').select('id', { count: 'exact' }).gte('created_at', thisMonthStart),
+    /* 27 */ supabase.from('ai_property_queries').select('id', { count: 'exact' }).gte('created_at', lastMonthStart).lt('created_at', thisMonthStart),
     // Sparkline raw data (current week)
-    supabase.from('properties').select('created_at').gte('created_at', thisWeekStart).order('created_at', { ascending: true }),
-    supabase.from('ai_jobs').select('created_at').eq('status', 'completed').gte('completed_at', thisWeekStart).order('created_at', { ascending: true }),
-    supabase.from('ai_jobs').select('created_at').eq('status', 'failed').gte('created_at', thisWeekStart).order('created_at', { ascending: true }),
-    supabase.from('ai_property_queries').select('created_at').gte('created_at', thisWeekStart).order('created_at', { ascending: true }),
+    /* 28 */ supabase.from('properties').select('created_at').gte('created_at', thisWeekStart).order('created_at', { ascending: true }),
+    /* 29 */ supabase.from('ai_jobs').select('created_at').eq('status', 'completed').gte('completed_at', thisWeekStart).order('created_at', { ascending: true }),
+    /* 30 */ supabase.from('ai_jobs').select('created_at').eq('status', 'failed').gte('created_at', thisWeekStart).order('created_at', { ascending: true }),
+    /* 31 */ supabase.from('ai_property_queries').select('created_at').gte('created_at', thisWeekStart).order('created_at', { ascending: true }),
     // Valuation queries
-    supabase.from('property_valuations').select('id, confidence_score, estimated_value, market_trend, created_at, property_id', { count: 'exact' }).order('created_at', { ascending: false }).limit(50),
-    supabase.from('property_valuations').select('id', { count: 'exact' }).gte('created_at', thisWeekStart),
-    supabase.from('property_valuations').select('id', { count: 'exact' }).gte('created_at', lastWeekStart).lt('created_at', thisWeekStart),
-    supabase.from('property_roi_forecast').select('id', { count: 'exact' }),
-    // Job throughput (14 days — completed & failed with dates)
-    supabase.from('ai_jobs').select('status, job_type, completed_at, started_at, created_at').in('status', ['completed', 'failed']).gte('created_at', lastWeekStart).order('created_at', { ascending: true }).limit(500),
+    /* 32 */ supabase.from('property_valuations').select('id, confidence_score, estimated_value, market_trend, created_at, property_id', { count: 'exact' }).order('created_at', { ascending: false }).limit(50),
+    /* 33 */ supabase.from('property_valuations').select('id', { count: 'exact' }).gte('created_at', thisWeekStart),
+    /* 34 */ supabase.from('property_valuations').select('id', { count: 'exact' }).gte('created_at', lastWeekStart).lt('created_at', thisWeekStart),
+    /* 35 */ supabase.from('property_roi_forecast').select('id', { count: 'exact' }),
+    // Job throughput (14 days)
+    /* 36 */ supabase.from('ai_jobs').select('status, job_type, completed_at, started_at, created_at').in('status', ['completed', 'failed']).gte('created_at', lastWeekStart).order('created_at', { ascending: true }).limit(500),
     // Search volume (14 days)
-    supabase.from('ai_property_queries').select('query_text, created_at').gte('created_at', lastWeekStart).order('created_at', { ascending: true }).limit(1000),
+    /* 37 */ supabase.from('ai_property_queries').select('query_text, created_at').gte('created_at', lastWeekStart).order('created_at', { ascending: true }).limit(1000),
   ]);
 
-  // Run health checks in parallel
+  // Extract each result safely
+  const propertiesRes = settle(results[0], EMPTY_RESPONSE);
+  const jobsRes = settle(results[1], EMPTY_RESPONSE);
+  const pendingJobsRes = settle(results[2], EMPTY_RESPONSE);
+  const failedJobsRes = settle(results[3], EMPTY_RESPONSE);
+  const completedJobsRes = settle(results[4], EMPTY_RESPONSE);
+  const seoRes = settle(results[5], EMPTY_RESPONSE);
+  const roiRes = settle(results[6], EMPTY_RESPONSE);
+  const searchRes = settle(results[7], EMPTY_RESPONSE);
+  const recentJobLogsRes = settle(results[8], EMPTY_RESPONSE);
+  const stalledJobsRes = settle(results[9], EMPTY_RESPONSE);
+  const lastCompletedJobRes = settle(results[10], EMPTY_RESPONSE);
+  const priceTrendRes = settle(results[11], EMPTY_RESPONSE);
+
+  const propsThisWeek = settle(results[12], EMPTY_RESPONSE);
+  const propsLastWeek = settle(results[13], EMPTY_RESPONSE);
+  const propsThisMonth = settle(results[14], EMPTY_RESPONSE);
+  const propsLastMonth = settle(results[15], EMPTY_RESPONSE);
+  const jobsCompThisWeek = settle(results[16], EMPTY_RESPONSE);
+  const jobsCompLastWeek = settle(results[17], EMPTY_RESPONSE);
+  const jobsCompThisMonth = settle(results[18], EMPTY_RESPONSE);
+  const jobsCompLastMonth = settle(results[19], EMPTY_RESPONSE);
+  const jobsFailThisWeek = settle(results[20], EMPTY_RESPONSE);
+  const jobsFailLastWeek = settle(results[21], EMPTY_RESPONSE);
+  const jobsFailThisMonth = settle(results[22], EMPTY_RESPONSE);
+  const jobsFailLastMonth = settle(results[23], EMPTY_RESPONSE);
+  const searchThisWeek = settle(results[24], EMPTY_RESPONSE);
+  const searchLastWeek = settle(results[25], EMPTY_RESPONSE);
+  const searchThisMonth = settle(results[26], EMPTY_RESPONSE);
+  const searchLastMonth = settle(results[27], EMPTY_RESPONSE);
+
+  const sparkPropsRaw = settle(results[28], EMPTY_RESPONSE);
+  const sparkJobsCompRaw = settle(results[29], EMPTY_RESPONSE);
+  const sparkJobsFailRaw = settle(results[30], EMPTY_RESPONSE);
+  const sparkSearchRaw = settle(results[31], EMPTY_RESPONSE);
+
+  const valuationsRes = settle(results[32], EMPTY_RESPONSE);
+  const valuationsThisWeekRes = settle(results[33], EMPTY_RESPONSE);
+  const valuationsLastWeekRes = settle(results[34], EMPTY_RESPONSE);
+  const roiForecastCountRes = settle(results[35], EMPTY_RESPONSE);
+  const jobThroughputRes = settle(results[36], EMPTY_RESPONSE);
+  const searchVolumeRes = settle(results[37], EMPTY_RESPONSE);
+
+  // Run health checks in parallel (also with allSettled)
   const [coreHealth, jobWorkerHealth, dbHealth] = await Promise.all([
     checkEdgeFunctionHealth('core-engine'),
     checkEdgeFunctionHealth('job-worker'),
@@ -237,13 +260,13 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
 
   const forecasts = roiRes.data || [];
   const avgROI = forecasts.length > 0
-    ? forecasts.reduce((s, f) => s + (f.expected_roi || 0), 0) / forecasts.length
+    ? forecasts.reduce((s: number, f: any) => s + (f.expected_roi || 0), 0) / forecasts.length
     : 0;
 
   // Search analytics
   const searchData = searchRes.data || [];
   const queryCounts: Record<string, number> = {};
-  searchData.forEach(s => {
+  searchData.forEach((s: any) => {
     const q = (s.query_text || '').toLowerCase().trim();
     if (q) queryCounts[q] = (queryCounts[q] || 0) + 1;
   });
@@ -252,9 +275,9 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     .sort((a, b) => b.count - a.count)
     .slice(0, 10);
 
-  // Search conversion rate (queries with property-related terms / total)
+  // Search conversion rate
   const conversionTerms = ['buy', 'invest', 'villa', 'house', 'apartment', 'land', 'beli', 'rumah'];
-  const convertedSearches = searchData.filter(s => {
+  const convertedSearches = searchData.filter((s: any) => {
     const q = (s.query_text || '').toLowerCase();
     return conversionTerms.some(t => q.includes(t));
   }).length;
@@ -265,7 +288,7 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
   const monthlyPrices: Record<string, { total: number; count: number }> = {};
   priceData.forEach((p: any) => {
     if (!p.price || !p.created_at) return;
-    const month = p.created_at.slice(0, 7); // YYYY-MM
+    const month = p.created_at.slice(0, 7);
     if (!monthlyPrices[month]) monthlyPrices[month] = { total: 0, count: 0 };
     monthlyPrices[month].total += p.price;
     monthlyPrices[month].count += 1;
@@ -276,7 +299,7 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     .slice(-12);
 
   // Recent actions from job logs
-  const recentActions = (recentJobLogsRes.data || []).map(log => ({
+  const recentActions = (recentJobLogsRes.data || []).map((log: any) => ({
     id: log.id,
     message: log.message,
     level: log.level,
@@ -292,12 +315,10 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     pendingCount > 50 ? 'warning' : 'ok';
 
   // Historical KPI comparisons
-  // Avg price MoM from priceTrends
   const sortedTrends = [...priceTrends];
   const currMonthPrice = sortedTrends.length > 0 ? sortedTrends[sortedTrends.length - 1].avgPrice : 0;
   const prevMonthPrice = sortedTrends.length > 1 ? sortedTrends[sortedTrends.length - 2].avgPrice : 0;
 
-  // Build sparklines (7 days for WoW)
   const sparkProps = groupByDay(sparkPropsRaw.data || [], 'created_at', thisWeekStart, 7);
   const sparkJobsComp = groupByDay(sparkJobsCompRaw.data || [], 'created_at', thisWeekStart, 7);
   const sparkJobsFail = groupByDay(sparkJobsFailRaw.data || [], 'created_at', thisWeekStart, 7);
@@ -329,7 +350,6 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     },
     jobStatus: (() => {
       const throughputJobs = jobThroughputRes.data || [];
-      // Build throughput by day (14 days)
       const throughputByDay: Record<string, { completed: number; failed: number }> = {};
       for (let i = 0; i < 14; i++) {
         const d = new Date(now.getTime() - (13 - i) * 86400000);
@@ -434,7 +454,6 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
     })(),
     roiForecasts: forecasts,
     searchAnalytics: (() => {
-      // Volume by day (14 days)
       const searchVolData = searchVolumeRes.data || [];
       const volumeByDayMap: Record<string, number> = {};
       for (let i = 0; i < 14; i++) {
@@ -447,14 +466,13 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
       });
       const volumeByDay = Object.entries(volumeByDayMap).map(([date, searches]) => ({ date: date.slice(5), searches }));
 
-      // Category breakdown
       const categories: Record<string, number> = { buy: 0, rent: 0, invest: 0, location: 0, other: 0 };
       const catColors: Record<string, string> = {
         buy: 'hsl(var(--chart-1))', rent: 'hsl(var(--chart-2))',
         invest: 'hsl(var(--chart-3))', location: 'hsl(var(--chart-4))',
         other: 'hsl(var(--muted-foreground))',
       };
-      searchData.forEach(s => {
+      searchData.forEach((s: any) => {
         const q = (s.query_text || '').toLowerCase();
         if (/buy|beli|purchase|rumah|house|villa|apartment/.test(q)) categories.buy++;
         else if (/rent|sewa|kost|lease/.test(q)) categories.rent++;
@@ -528,6 +546,7 @@ async function fetchCommandCenterData(): Promise<AICommandCenterData> {
         trendDirection: vThisWeek > vLastWeek ? 'up' as const : vThisWeek < vLastWeek ? 'down' as const : 'neutral' as const,
       };
     })(),
+    fetchedAt: new Date().toISOString(),
   };
 }
 
