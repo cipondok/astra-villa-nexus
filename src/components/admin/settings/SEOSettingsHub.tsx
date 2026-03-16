@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import SEOAuditReport from './SEOAuditReport';
 import SeoLandingContentGenerator from './SeoLandingContentGenerator';
+import SeoLocationBlueprintGenerator from '../SeoLocationBlueprintGenerator';
 
 interface SEOSettingsHubProps {
   settings: any;
@@ -166,6 +167,7 @@ const SEOSettingsHub = ({ settings, loading, onInputChange, onSave }: SEOSetting
             <TabsTrigger value="audit" className="text-[10px] h-6 px-2 gap-1"><Sparkles className="h-2.5 w-2.5" />Audit</TabsTrigger>
             <TabsTrigger value="pages" className="text-[10px] h-6 px-2 gap-1"><Globe className="h-2.5 w-2.5" />Pages</TabsTrigger>
             <TabsTrigger value="landing-gen" className="text-[10px] h-6 px-2 gap-1"><MapPin className="h-2.5 w-2.5" />Landing</TabsTrigger>
+            <TabsTrigger value="blueprint" className="text-[10px] h-6 px-2 gap-1"><Globe className="h-2.5 w-2.5" />Blueprint</TabsTrigger>
           </TabsList>
         </div>
 
@@ -638,6 +640,11 @@ const SEOSettingsHub = ({ settings, loading, onInputChange, onSave }: SEOSetting
         {/* LANDING PAGE CONTENT GENERATOR */}
         <TabsContent value="landing-gen">
           <SeoLandingContentGenerator />
+        </TabsContent>
+
+        {/* SEO LOCATION BLUEPRINT */}
+        <TabsContent value="blueprint">
+          <SeoLocationBlueprintGenerator />
         </TabsContent>
       </Tabs>
 
