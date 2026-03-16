@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Building2, MapPin, TrendingUp, Shield } from 'lucide-react';
+import { Building2, MapPin, TrendingUp, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import verifiedShield from '@/assets/verified-shield.svg';
 
@@ -41,15 +41,15 @@ export default function SocialProofStrip() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3, duration: 0.5 }}
-      className="flex items-center justify-center gap-4 sm:gap-8 py-3 sm:py-4"
+      className="flex items-center justify-center gap-3 sm:gap-6 py-3 sm:py-4 flex-wrap"
     >
-      {/* Verified badge */}
-      <div className="hidden sm:flex items-center gap-1.5 text-[11px] text-muted-foreground font-medium">
+      {/* Verified Platform badge — visible on all viewports */}
+      <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] text-muted-foreground font-medium">
         <img src={verifiedShield} alt="" className="h-4 w-4 text-primary" aria-hidden="true" />
         <span>Verified Platform</span>
       </div>
 
-      <div className="h-4 w-px bg-border hidden sm:block" />
+      <div className="h-4 w-px bg-border" />
 
       {items.map((item) => (
         <div key={item.label} className="flex items-center gap-1.5">
@@ -58,6 +58,14 @@ export default function SocialProofStrip() {
           <span className="text-[10px] sm:text-xs text-muted-foreground">{item.label}</span>
         </div>
       ))}
+
+      <div className="h-4 w-px bg-border hidden sm:block" />
+
+      {/* Safe inquiry indicator */}
+      <div className="hidden sm:flex items-center gap-1.5 text-[11px] text-muted-foreground font-medium">
+        <Lock className="h-3.5 w-3.5 text-chart-1" />
+        <span>Secure Inquiries</span>
+      </div>
     </motion.div>
   );
 }
