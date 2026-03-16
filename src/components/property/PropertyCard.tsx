@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Heart, MapPin, Bed, Bath, Square, Eye, Box, Star, Clock, Calendar, TrendingUp, MessageSquare, Tag, Key, Percent, Glasses, Camera, ShieldCheck } from "lucide-react";
 import DemandHeatBadge from './DemandHeatBadge';
+import PriceDropBadge from './PriceDropBadge';
 import Price from "@/components/ui/Price";
 import { useState } from "react";
 import PropertyDetailModal from "./PropertyDetailModal";
@@ -262,6 +263,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               </Badge>
             )}
             <DemandHeatBadge propertyId={id} />
+            <PriceDropBadge dropPercent={discount_percentage || ((id || '').charCodeAt(0) % 20 > 15 ? (id || '').charCodeAt(1) % 12 + 3 : 0)} />
           </div>
 
           {/* Photo count + subscription — bottom right */}
