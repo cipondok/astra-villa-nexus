@@ -326,13 +326,6 @@ const Index = () => {
     }
   }, [bannerImages]);
 
-  // Auto-slide hero banner
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % bannerImages.length);
-    }, slideInterval);
-    return () => clearInterval(interval);
-  }, [bannerImages.length, slideInterval]);
   const [showShortcutsPanel, setShowShortcutsPanel] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
 
@@ -340,7 +333,6 @@ const Index = () => {
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollButton(window.pageYOffset > 300);
-      if (parallaxEnabled) setParallaxOffset(window.scrollY);
     };
     
     window.addEventListener('scroll', handleScroll, { passive: true });
