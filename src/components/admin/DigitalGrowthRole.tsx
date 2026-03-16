@@ -14,14 +14,14 @@ import { cn } from "@/lib/utils";
 // ── Role Overview ──
 
 const roleOverview = {
-  title: "Digital Growth Lead",
+  title: "Digital Growth Specialist",
   department: "Growth & Marketing",
-  reportsTo: "Founder / CEO (→ Head of Growth when hired)",
+  reportsTo: "Founder / CEO (→ Digital Growth Lead when hired)",
   location: "Jakarta (hybrid) — remote-friendly with weekly sync",
-  salary: "Rp 15-28M/month + performance bonus (up to 40% of base tied to growth KPIs)",
-  equity: "0.2-0.6% ESOP (4-year vest, 1-year cliff)",
+  salary: "Rp 10-20M/month + performance bonus (up to 35% of base tied to growth KPIs)",
+  equity: "0.1-0.3% ESOP (4-year vest, 1-year cliff)",
   startDate: "Immediate — critical growth hire",
-  missionStatement: "Own and scale the platform's digital acquisition engine — from SEO and social content to paid ads and community virality — transforming traffic into engaged users, active agents, and paying subscribers.",
+  missionStatement: "Execute and scale the platform's digital acquisition engine — coordinating SEO location page rollouts across national administrative levels, driving viral short-form property video content on TikTok/Instagram/YouTube, running performance marketing experiments, and tracking traffic analytics to efficiently acquire buyers, sellers, agents, and investors.",
 };
 
 // ── Core Responsibilities ──
@@ -37,49 +37,50 @@ interface ResponsibilityArea {
 
 const responsibilities: ResponsibilityArea[] = [
   {
-    area: "SEO & Organic Traffic Engine", icon: Search, color: "text-primary", bg: "bg-primary/10", weight: "30%",
+    area: "SEO Location Page Rollout & Google Organic", icon: Search, color: "text-primary", bg: "bg-primary/10", weight: "35%",
     tasks: [
-      { task: "Scale programmatic SEO location pages from 1,000 to 10,000+ across 15 cities — targeting 'beli rumah [lokasi]' intent", impact: "SEO drives 60% of long-term traffic at near-zero marginal cost — the primary acquisition moat" },
-      { task: "Optimize on-page SEO (meta titles, descriptions, structured data, internal linking) for all property and location pages", impact: "10% CTR improvement on 500K impressions = 50K incremental monthly visits" },
-      { task: "Build content clusters around high-intent keywords: investment guides, city market reports, property type explainers", impact: "Topical authority drives domain rating up → all pages rank higher" },
-      { task: "Monitor Google Search Console, track keyword rankings, and execute technical SEO fixes (Core Web Vitals, crawl budget)", impact: "Technical SEO issues can silently kill 30-50% of organic traffic — constant monitoring prevents this" },
-      { task: "Coordinate with engineering on SEO infrastructure: sitemap generation, canonical tags, page speed optimization", impact: "Technical foundation enables content scaling without diminishing returns" },
+      { task: "Coordinate programmatic SEO rollout across national administrative levels: province → city → kecamatan → kelurahan — targeting 'beli rumah [lokasi]' and 'rumah dijual [lokasi]' intent", impact: "SEO drives 60% of long-term traffic at near-zero marginal cost — the primary acquisition moat for buyers and investors" },
+      { task: "Optimize on-page SEO (meta titles, descriptions, JSON-LD structured data, internal linking) for all property and location pages", impact: "10% CTR improvement on 500K impressions = 50K incremental monthly visits" },
+      { task: "Build content clusters around high-intent keywords: investment guides, city market reports, property type explainers, area comparison pages", impact: "Topical authority drives domain rating up → all pages rank higher" },
+      { task: "Monitor Google Search Console daily — track keyword ranking improvements, indexing coverage, and execute technical SEO fixes (Core Web Vitals, crawl budget)", impact: "Technical SEO issues can silently kill 30-50% of organic traffic — constant monitoring prevents this" },
+      { task: "Coordinate with engineering on SEO infrastructure: sitemap generation, canonical tags, page speed optimization, hreflang for bilingual content", impact: "Technical foundation enables content scaling without diminishing returns" },
+      { task: "Track SEO indexing milestones: pages indexed, impressions, average position, CTR progression per location tier", impact: "Indexing velocity directly determines time-to-traffic for new location pages" },
     ],
   },
   {
-    area: "Social Media & Viral Content", icon: Video, color: "text-chart-1", bg: "bg-chart-1/10", weight: "25%",
+    area: "Short-Form Video & Social Growth (TikTok / IG / YouTube)", icon: Video, color: "text-chart-1", bg: "bg-chart-1/10", weight: "25%",
     tasks: [
-      { task: "Execute 13 videos/week content calendar across TikTok, Instagram Reels, and YouTube Shorts", impact: "Social content drives brand awareness and top-of-funnel traffic — 10M views/month target" },
-      { task: "Create property cinematic tours, price reveal videos, market insight breakdowns, and investment explainers", impact: "High-value content builds trust and drives signup conversions from social → platform" },
-      { task: "Build and manage creator/influencer collaboration pipeline for property content amplification", impact: "Influencer co-creation extends reach 5-10x beyond owned channels at lower CPM" },
-      { task: "Analyze content performance data: views, engagement, saves, shares, profile visits, link clicks — optimize content mix", impact: "Data-driven content optimization doubles engagement rate within 60 days" },
-      { task: "Repurpose long-form content (webinars, reports, articles) into short-form social clips", impact: "Content repurposing generates 3-5x more touchpoints from single content investment" },
+      { task: "Execute 13+ videos/week across TikTok, Instagram Reels, and YouTube Shorts — property tours, price reveals, market insights, investment explainers", impact: "Short-form video is the fastest channel for brand awareness and buyer/investor acquisition — 10M views/month target" },
+      { task: "Optimize content for each platform's algorithm: TikTok (hooks, trends, sounds), IG Reels (hashtag strategy, carousel crossover), YouTube Shorts (discovery, SEO tags)", impact: "Platform-specific optimization drives 2-3x more views vs cross-posting identical content" },
+      { task: "Build creator/influencer collaboration pipeline for property content amplification — agent co-creation, local property influencers", impact: "Influencer co-creation extends reach 5-10x beyond owned channels at lower CPM" },
+      { task: "Drive social-to-platform conversion: link-in-bio optimization, CTA testing, landing page alignment with social traffic", impact: "Social traffic without conversion is vanity — every video should have a measurable acquisition path" },
+      { task: "Analyze content performance: views, engagement, saves, shares, profile visits, link clicks — identify viral patterns and scale winning formats", impact: "Data-driven content optimization doubles engagement rate within 60 days" },
     ],
   },
   {
-    area: "Paid Acquisition & Performance Marketing", icon: MousePointer, color: "text-chart-3", bg: "bg-chart-3/10", weight: "20%",
+    area: "Performance Marketing Experiments", icon: MousePointer, color: "text-chart-3", bg: "bg-chart-3/10", weight: "15%",
     tasks: [
-      { task: "Launch and manage Google Ads campaigns targeting high-intent property search keywords across 15 cities", impact: "Paid search captures buyers with immediate purchase intent — highest conversion rate channel" },
-      { task: "Run Meta Ads (Facebook/Instagram) retargeting campaigns for property viewers and cart abandoners", impact: "Retargeting converts warm audiences at 3-5x the rate of cold traffic" },
-      { task: "Design and A/B test landing pages optimized for agent signup, investor registration, and listing inquiry conversion", impact: "10% landing page improvement = 10% more conversions at same spend" },
-      { task: "Manage overall paid budget (Rp 100-300M/month), track ROAS/CAC by channel, and reallocate based on performance", impact: "Budget optimization prevents waste and maximizes return per rupiah spent" },
+      { task: "Run paid search testing on Google Ads targeting high-intent property keywords — validate CAC before scaling", impact: "Paid search experiments identify which keywords and cities convert profitably before committing budget" },
+      { task: "Experiment with Meta Ads (Facebook/Instagram) retargeting for property viewers and agent signup abandoners", impact: "Retargeting converts warm audiences at 3-5x the rate of cold traffic" },
+      { task: "Design and A/B test landing pages optimized for buyer inquiries, agent signups, and investor registrations", impact: "10% landing page improvement = 10% more conversions at same spend" },
+      { task: "Track ROAS/CAC by channel and experiment type — kill underperformers fast, scale winners quickly", impact: "Experiment velocity matters more than budget size at early stage" },
     ],
   },
   {
-    area: "Community Growth & Engagement", icon: Users, color: "text-chart-4", bg: "bg-chart-4/10", weight: "15%",
+    area: "Traffic Analytics & Lead Tracking", icon: BarChart3, color: "text-chart-4", bg: "bg-chart-4/10", weight: "15%",
     tasks: [
-      { task: "Build and nurture WhatsApp communities for agents, investors, and property enthusiasts by city", impact: "WhatsApp groups drive 40% of agent referrals and create defensible community moats" },
-      { task: "Design and execute referral programs with tracking, incentives, and viral loop mechanics", impact: "Referral-acquired users have 2x higher retention and 3x higher LTV than paid users" },
-      { task: "Coordinate monthly webinars, market briefings, and community events", impact: "Events build brand authority and drive 15% of premium conversions" },
-      { task: "Manage email marketing automation: onboarding sequences, weekly digests, deal alerts, re-engagement campaigns", impact: "Email nurture converts 20% of dormant users back to active within 30 days" },
+      { task: "Build and maintain growth dashboards: traffic sources, conversion funnels, user cohorts, lead attribution by channel", impact: "Visibility into metrics enables data-driven decisions and proves ROI to stakeholders" },
+      { task: "Track inbound lead generation metrics: inquiry volume, agent signup rate, investor registration, lead-to-qualified conversion", impact: "Lead quality measurement prevents vanity metric traps — focus on leads that convert" },
+      { task: "Monitor user acquisition across all four segments: buyers, sellers, agents, investors — identify highest-ROI channels per segment", impact: "Each segment acquires differently — channel-segment fit analysis prevents wasted effort" },
+      { task: "Produce weekly growth reports with key metrics, insights, experiment results, and recommended next actions", impact: "Structured reporting ensures growth stays aligned with company strategy" },
     ],
   },
   {
-    area: "Analytics & Growth Experimentation", icon: LineChart, color: "text-chart-1", bg: "bg-chart-1/10", weight: "10%",
+    area: "Community & Lead Nurture", icon: Users, color: "text-chart-1", bg: "bg-chart-1/10", weight: "10%",
     tasks: [
-      { task: "Build and maintain growth dashboards: traffic sources, conversion funnels, user cohorts, revenue attribution", impact: "Visibility into metrics enables data-driven decisions instead of guesswork" },
-      { task: "Run systematic growth experiments: A/B tests on CTAs, onboarding flows, pricing pages, email subjects", impact: "10 experiments/month with 20% success rate = 2 meaningful improvements monthly compounding" },
-      { task: "Produce weekly growth reports for founder with key metrics, insights, and recommended actions", impact: "Structured reporting ensures growth stays aligned with company strategy" },
+      { task: "Build WhatsApp communities for agents and investors by city — drive referral loops and inbound leads", impact: "WhatsApp groups drive 40% of agent referrals and create defensible community moats" },
+      { task: "Manage email automation: onboarding sequences, deal alerts, weekly market digests, re-engagement campaigns", impact: "Email nurture converts 20% of dormant users back to active within 30 days" },
+      { task: "Design referral incentive mechanics for agent-to-agent and buyer-to-buyer acquisition loops", impact: "Referral-acquired users have 2x retention and 3x LTV vs paid users" },
     ],
   },
 ];
@@ -95,35 +96,35 @@ interface KPICategory {
 
 const kpiCategories: KPICategory[] = [
   {
-    category: "Traffic & Reach", icon: Globe, color: "text-primary",
+    category: "Traffic & SEO Indexing", icon: Globe, color: "text-primary",
     metrics: [
       { metric: "Monthly Organic Traffic", month3: "50K", month6: "200K", month12: "500K", weight: "20%" },
+      { metric: "SEO Pages Indexed", month3: "2,000", month6: "5,000", month12: "10,000+", weight: "10%" },
+      { metric: "Keywords in Google Top 20", month3: "200", month6: "1,000", month12: "3,000+", weight: "10%" },
+    ],
+  },
+  {
+    category: "Social Reach & Video", icon: Video, color: "text-chart-1",
+    metrics: [
       { metric: "Social Media Monthly Views", month3: "3M", month6: "10M", month12: "30M", weight: "10%" },
-      { metric: "Social Followers (all platforms)", month3: "30K", month6: "100K", month12: "300K", weight: "5%" },
+      { metric: "Social Followers (TikTok + IG + YT)", month3: "30K", month6: "100K", month12: "300K", weight: "5%" },
+      { metric: "Video-to-Platform Click Rate", month3: "2%", month6: "3.5%", month12: "5%", weight: "5%" },
     ],
   },
   {
-    category: "Acquisition & Conversion", icon: Target, color: "text-chart-1",
+    category: "Inbound Lead Generation", icon: Target, color: "text-chart-3",
     metrics: [
-      { metric: "Monthly Signups", month3: "2,000", month6: "8,000", month12: "25,000", weight: "15%" },
-      { metric: "Signup-to-Active Conversion", month3: "40%", month6: "50%", month12: "60%", weight: "10%" },
-      { metric: "Agent Signups from Digital Channels", month3: "30/mo", month6: "80/mo", month12: "150/mo", weight: "10%" },
+      { metric: "Monthly Inbound Leads (all segments)", month3: "500", month6: "2,500", month12: "8,000", weight: "15%" },
+      { metric: "Agent Signups from Digital Channels", month3: "30/mo", month6: "80/mo", month12: "150/mo", weight: "5%" },
+      { metric: "Investor Registration Rate", month3: "3%", month6: "5%", month12: "8%", weight: "5%" },
     ],
   },
   {
-    category: "Efficiency", icon: Gauge, color: "text-chart-3",
+    category: "Efficiency & ROI", icon: Gauge, color: "text-chart-4",
     metrics: [
-      { metric: "Blended CAC", month3: "Rp 120K", month6: "Rp 85K", month12: "Rp 60K", weight: "10%" },
-      { metric: "Paid Channel ROAS", month3: "3x", month6: "5x", month12: "8x", weight: "5%" },
-      { metric: "SEO Pages Indexed", month3: "2,000", month6: "5,000", month12: "10,000+", weight: "5%" },
-    ],
-  },
-  {
-    category: "Revenue Impact", icon: DollarSign, color: "text-chart-4",
-    metrics: [
-      { metric: "Growth-Attributed MRR", month3: "Rp 50M", month6: "Rp 250M", month12: "Rp 800M", weight: "10%" },
-      { metric: "Premium Conversion Rate", month3: "8%", month6: "12%", month12: "15%", weight: "5%" },
-      { metric: "Referral-Sourced Signups (%)", month3: "10%", month6: "20%", month12: "30%", weight: "5%" },
+      { metric: "Blended CAC", month3: "Rp 120K", month6: "Rp 85K", month12: "Rp 60K", weight: "5%" },
+      { metric: "Organic vs Paid Traffic Ratio", month3: "40:60", month6: "60:40", month12: "75:25", weight: "5%" },
+      { metric: "Paid Experiment Win Rate", month3: "15%", month6: "25%", month12: "30%", weight: "5%" },
     ],
   },
 ];
@@ -132,11 +133,11 @@ const kpiCategories: KPICategory[] = [
 
 const candidateProfile = {
   mustHave: [
-    { skill: "3-5 years in digital marketing / growth role at a startup or marketplace", reason: "Startup pace + marketplace dynamics require proven hands-on growth execution experience" },
-    { skill: "Demonstrated SEO expertise: keyword strategy, technical SEO, content scaling", reason: "SEO is the #1 long-term growth lever — needs someone who can execute, not just strategize" },
-    { skill: "Proficiency in Google Ads, Meta Ads, and analytics tools (GA4, Search Console, SEMrush/Ahrefs)", reason: "Paid acquisition requires tactical expertise — no time for learning curve on tools" },
-    { skill: "Content creation or management experience — especially short-form video (TikTok/Reels)", reason: "Social content is the primary brand awareness channel — must understand viral mechanics" },
-    { skill: "Data-driven mindset with ability to build dashboards, analyze funnels, and run A/B tests", reason: "Growth without measurement is just marketing spend — every action needs a number" },
+    { skill: "2-4 years in digital marketing / growth execution at a startup, marketplace, or tech company", reason: "Startup pace requires someone who's shipped campaigns and measured results — not just planned them" },
+    { skill: "Hands-on SEO execution experience: keyword research, on-page optimization, technical SEO, content scaling", reason: "SEO is the #1 growth lever — needs someone who can index pages, track rankings, and fix issues independently" },
+    { skill: "Short-form video content understanding: TikTok, IG Reels, YouTube Shorts creation or distribution", reason: "Social video is the fastest brand awareness channel — must understand viral mechanics and platform algorithms" },
+    { skill: "Proficiency in analytics tools: Google Analytics 4, Search Console, SEMrush/Ahrefs", reason: "Data-driven decision making is non-negotiable — every action needs a measurable outcome" },
+    { skill: "Experiment-oriented mindset: ability to run A/B tests, analyze results, and iterate quickly", reason: "Growth comes from velocity of experiments, not size of budget — must thrive in test-and-learn culture" },
   ],
   niceToHave: [
     "Property/PropTech industry experience — understanding of buyer journey and agent behavior",
@@ -200,9 +201,9 @@ const ninetyDayPlan = [
 // ── Career Path ──
 
 const careerPath = [
-  { level: "Digital Growth Lead", timeline: "Month 0-12", description: "Hands-on IC — build all growth channels from scratch, prove the playbook, achieve product-market-channel fit", color: "text-primary" },
-  { level: "Senior Growth Manager", timeline: "Month 12-18", description: "Expanded scope — manage 1-2 growth specialists, own full acquisition P&L, scale to 500K+ monthly traffic", color: "text-chart-1" },
-  { level: "Head of Growth", timeline: "Month 18-24", description: "Leadership — own all user acquisition, brand marketing, community, and growth engineering. Team of 4-6", color: "text-chart-3" },
+  { level: "Digital Growth Specialist", timeline: "Month 0-12", description: "Hands-on executor — build SEO, social, and paid channels from scratch. Prove the playbook and achieve product-market-channel fit", color: "text-primary" },
+  { level: "Digital Growth Lead", timeline: "Month 12-18", description: "Expanded scope — own full digital acquisition strategy, manage 1-2 junior specialists, own traffic and lead KPIs end-to-end", color: "text-chart-1" },
+  { level: "Head of Growth", timeline: "Month 18-30", description: "Leadership — own all user acquisition, content marketing, community, and growth engineering. Team of 4-6", color: "text-chart-3" },
   { level: "VP Marketing / CMO", timeline: "Year 3+", description: "Executive — own full marketing P&L, brand strategy, growth, and market positioning. Board-level reporting", color: "text-chart-4" },
 ];
 
@@ -267,7 +268,7 @@ const DigitalGrowthRole = React.memo(function DigitalGrowthRole() {
             <div>
               <CardTitle className="text-base font-bold flex items-center gap-2">
                 <TrendingUp className="h-5 w-5 text-primary" />
-                Digital Growth Lead — Role Blueprint
+                Digital Growth Specialist — Role Blueprint
               </CardTitle>
               <CardDescription className="text-[11px]">
                 Full role definition: responsibilities, KPIs, candidate profile, 90-day plan, tools, and career path
