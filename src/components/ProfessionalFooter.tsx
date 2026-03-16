@@ -1,8 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Instagram, Youtube, Home, ShoppingCart, Key, UsersRound, Construction, Search, MessageSquare, Calculator, PiggyBank, HelpCircle, PhoneCall, MapPin, Glasses, UserCheck, Facebook, Twitter, Music2 } from "lucide-react";
-import AnimatedLogo from "@/components/AnimatedLogo";
-import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 import { useSocialMediaSettings } from "@/hooks/useSocialMediaSettings";
 
 interface ProfessionalFooterProps {
@@ -129,7 +127,6 @@ const Dock = ({ items }: { items: DockItem[] }) => {
 };
 
 const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
-  const { logoUrl: footerLogoUrl } = useBrandingLogo('footerLogo');
   const { settings } = useSocialMediaSettings();
 
   const currentText = language === "en" ? {
@@ -182,37 +179,27 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
 
   return (
     <footer
-      className="w-full border-t border-gold-primary/15 backdrop-blur-xl px-4 md:px-8 py-6 transition-colors duration-200
-        bg-card/95 shadow-[0_-4px_20px_hsl(var(--gold-primary)/0.05)]"
-      style={{ contain: 'layout style', minHeight: '180px' }}
+      className="w-full border-t border-border/30 backdrop-blur-xl px-4 md:px-6 py-3 transition-colors duration-200
+        bg-card/90"
+      style={{ contain: 'layout style' }}
     >
-      {/* Logo + Dock */}
-      <div className="flex flex-col md:flex-row items-center md:items-end gap-4 mb-5">
-        <div className="flex-shrink-0 opacity-60 hidden md:block">
-          <AnimatedLogo src={footerLogoUrl} size="lg" />
-        </div>
-        <div className="w-full md:flex-1 flex justify-center">
-          <Dock items={allDockItems} />
-        </div>
+      {/* Dock — centered, compact */}
+      <div className="flex justify-center mb-2.5">
+        <Dock items={allDockItems} />
       </div>
 
-      {/* Divider */}
-      <div className="w-full max-w-md mx-auto h-px bg-gradient-to-r from-transparent via-gold-primary/20 to-transparent mb-4" />
-
-      {/* Social + Copyright */}
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
+      {/* Social + Copyright — single slim line */}
+      <div className="flex items-center justify-center gap-2.5 text-center">
         {allSocialLinks.length > 0 && (
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1">
             {allSocialLinks.map((s, i) => (
               <a
                 key={i}
                 href={getSocialHref(s)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center w-8 h-8 rounded-full
-                  bg-primary-foreground/8 border border-primary-foreground/10 text-muted-foreground
-                  hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:text-gold-primary
-                  hover:scale-110 transition-all duration-200"
+                className="inline-flex items-center justify-center w-6 h-6 rounded-full
+                  text-muted-foreground/60 hover:text-primary hover:scale-110 transition-all duration-200"
                 aria-label={s.label}
                 title={s.label}
               >
@@ -221,11 +208,11 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
             ))}
           </div>
         )}
-
-        <span className="hidden sm:inline text-border">|</span>
-
-        <span className="text-xs font-medium text-muted-foreground">
-          © {new Date().getFullYear()} {currentText.company}. {currentText.allRights}
+        {allSocialLinks.length > 0 && (
+          <span className="text-border/40">·</span>
+        )}
+        <span className="text-[10px] text-muted-foreground/60">
+          © {new Date().getFullYear()} {currentText.company}
         </span>
       </div>
     </footer>
