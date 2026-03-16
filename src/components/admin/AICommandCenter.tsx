@@ -78,19 +78,20 @@ const KPICard = ({ label, value, subValue, icon: Icon, trend, color, delay = 0 }
   trend?: 'up' | 'down' | 'neutral'; color: string; delay?: number;
 }) => (
   <motion.div
-    initial={{ opacity: 0, y: 16, scale: 0.97 }}
+    initial={{ opacity: 0, y: 12, scale: 0.98 }}
     animate={{ opacity: 1, y: 0, scale: 1 }}
-    transition={{ delay, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+    transition={{ delay, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
   >
-    <Card className="group relative overflow-hidden border-border/40 bg-card/60 backdrop-blur-xl hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5">
+    <Card className="group relative overflow-hidden border-border/40 bg-card/60 backdrop-blur-xl hover:border-primary/30 transition-all duration-300 hover:shadow-md hover:shadow-primary/5">
       <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-[0.03] group-hover:opacity-[0.06] transition-opacity`} />
-      <CardContent className="p-4 relative">
-        <div className="flex items-start justify-between mb-3">
-          <div className={`p-2 rounded-lg bg-gradient-to-br ${color} shadow-sm`}>
-            <Icon className="h-4 w-4 text-primary-foreground" />
+      <CardContent className="p-3 relative">
+        <div className="flex items-center gap-2.5 mb-2">
+          <div className={`p-1.5 rounded-md bg-gradient-to-br ${color} shadow-sm`}>
+            <Icon className="h-3.5 w-3.5 text-primary-foreground" />
           </div>
+          <p className="text-[10px] text-muted-foreground font-medium leading-tight truncate flex-1">{label}</p>
           {trend && (
-            <Badge variant="outline" className={`text-[9px] px-1.5 py-0.5 ${
+            <Badge variant="outline" className={`text-[8px] px-1 py-0 h-4 ${
               trend === 'up' ? 'text-chart-1 border-chart-1/30 bg-chart-1/5' :
               trend === 'down' ? 'text-destructive border-destructive/30 bg-destructive/5' :
               'text-muted-foreground border-border bg-muted/20'
@@ -99,9 +100,8 @@ const KPICard = ({ label, value, subValue, icon: Icon, trend, color, delay = 0 }
             </Badge>
           )}
         </div>
-        <p className="text-2xl font-bold tracking-tight text-foreground mb-0.5">{value}</p>
-        <p className="text-[11px] text-muted-foreground font-medium">{label}</p>
-        {subValue && <p className="text-[10px] text-muted-foreground/70 mt-0.5">{subValue}</p>}
+        <p className="text-lg font-bold tracking-tight text-foreground leading-none">{value}</p>
+        {subValue && <p className="text-[9px] text-muted-foreground/70 mt-1">{subValue}</p>}
       </CardContent>
     </Card>
   </motion.div>
