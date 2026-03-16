@@ -1452,6 +1452,13 @@ export const navigationSections = {
       icon: Paintbrush,
       description: "Complete design system upgrade — homepage, cards, detail page, search, brand identity, conversion UX, mobile",
       badge: "🎨 Design System"
+    },
+    {
+      key: "homepage-blueprint",
+      label: "Homepage Layout Blueprint",
+      icon: Layout,
+      description: "Premium homepage design — 7 sections, search-dominant hero, AI highlights, trust band, conversion CTAs",
+      badge: "🏠 Homepage"
     }
   ],
 
