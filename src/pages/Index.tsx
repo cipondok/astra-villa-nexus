@@ -732,6 +732,11 @@ const Index = () => {
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-8 bg-gradient-to-r from-transparent via-gold-primary/5 dark:via-gold-primary/10 to-transparent blur-xl" />
         </div>
 
+        {/* Social Proof Trust Strip */}
+        <Suspense fallback={null}>
+          <SocialProofStrip />
+        </Suspense>
+
         {/* Featured Properties Carousel */}
         <ScrollReveal direction="left" delay={100}>
         <div id="featured-section">
