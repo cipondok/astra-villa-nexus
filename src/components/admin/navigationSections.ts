@@ -1338,6 +1338,13 @@ export const navigationSections = {
       icon: MapPin,
       description: "City-by-city national expansion — 15 cities across 3 phases with activation milestones",
       badge: "🗺️ National"
+    },
+    {
+      key: "founder-branding",
+      label: "Founder Branding",
+      icon: User,
+      description: "CEO thought leadership strategy — content pillars, channel growth, trust stories, and authority roadmap",
+      badge: "👤 Personal Brand"
     }
   ],
 
