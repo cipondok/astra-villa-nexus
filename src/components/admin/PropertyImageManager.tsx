@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,6 +40,7 @@ import {
   HelpCircle,
   Wand2,
   CheckSquare,
+  StopCircle,
 } from "lucide-react";
 
 interface AIRelevanceResult {
@@ -162,54 +163,75 @@ const PropertyImageManager = () => {
     clearSelection();
   };
 
-  // Bulk AI Generate images for all no-image properties via job queue
+  // Bulk AI Generate images directly via ai-engine (not job queue)
+  const [bulkGenProgress, setBulkGenProgress] = useState({ done: 0, succeeded: 0, failed: 0, total: 0, current: "" });
+  const bulkGenCancelRef = useRef(false);
+
   const handleBulkAIGenerate = async () => {
     setBulkAIGenerating(true);
-    try {
-      // Create batch tasks — each task processes 10 properties
-      const totalNoImages = stats.noImages;
-      const batchSize = 10;
-      const numTasks = Math.ceil(totalNoImages / batchSize);
-      
-      // Create tasks as offset-based batches
-      const tasks = Array.from({ length: Math.min(numTasks, 500) }, (_, i) => ({
-        task_type: "bulk_generate_property_images",
-        payload: { batch_size: batchSize, offset: i * batchSize },
-        status: "pending" as const,
-        retry_count: 0,
-      }));
+    bulkGenCancelRef.current = false;
+    const batchSize = 10;
+    let offset = 0;
+    let totalProcessed = 0;
+    let totalSucceeded = 0;
+    let totalFailed = 0;
 
-      const { data, error } = await supabase.functions.invoke("job-worker", {
-        body: {
-          action: "create",
-          job_type: "bulk_generate_property_images",
-          payload: { total_properties: totalNoImages, batch_size: batchSize },
-          created_by: user?.id,
-          priority: 3,
-        },
-      });
+    setBulkGenProgress({ done: 0, succeeded: 0, failed: 0, total: stats.noImages, current: "Starting..." });
 
-      if (error) throw error;
-      
-      // Insert tasks for the job
-      if (data?.jobId && tasks.length > 0) {
-        const taskRows = tasks.map(t => ({ ...t, job_id: data.jobId }));
-        // Insert in chunks of 50
-        for (let i = 0; i < taskRows.length; i += 50) {
-          await supabase.from("ai_job_tasks").insert(taskRows.slice(i, i + 50));
-        }
-        await supabase.from("ai_jobs").update({ total_tasks: tasks.length }).eq("id", data.jobId);
+    while (!bulkGenCancelRef.current) {
+      // Fetch properties without images
+      const { data: props, error: fetchErr } = await supabase
+        .from("properties")
+        .select("id, title, property_type, city, location, description")
+        .is("thumbnail_url", null)
+        .order("created_at", { ascending: false })
+        .range(offset, offset + batchSize - 1);
+
+      if (fetchErr || !props || props.length === 0) {
+        if (fetchErr) showError("Fetch Error", fetchErr.message);
+        else showSuccess("Complete", `Generated ${totalSucceeded} images. No more properties without images.`);
+        break;
       }
 
-      showSuccess(
-        "Job Queued",
-        `AI image generation started for ${Math.min(totalNoImages, 5000).toLocaleString()} properties. Track progress in AI Command Center.`
-      );
-    } catch (err: any) {
-      showError("Failed to queue job", err.message);
-    } finally {
-      setBulkAIGenerating(false);
+      for (const prop of props) {
+        if (bulkGenCancelRef.current) break;
+        totalProcessed++;
+        setBulkGenProgress(p => ({ ...p, done: totalProcessed, current: prop.title?.slice(0, 50) || prop.id }));
+
+        try {
+          const { data, error } = await supabase.functions.invoke("ai-engine", {
+            body: {
+              mode: "generate_image",
+              payload: {
+                propertyId: prop.id,
+                title: prop.title,
+                description: prop.description?.slice(0, 200),
+                propertyType: prop.property_type,
+                location: prop.location || prop.city,
+              },
+            },
+          });
+          if (error || data?.error) {
+            totalFailed++;
+          } else {
+            totalSucceeded++;
+          }
+        } catch {
+          totalFailed++;
+        }
+        setBulkGenProgress(p => ({ ...p, succeeded: totalSucceeded, failed: totalFailed }));
+        // Rate limit
+        await new Promise(r => setTimeout(r, 1500));
+      }
+
+      offset += batchSize;
+      // Pause between batches
+      if (!bulkGenCancelRef.current) await new Promise(r => setTimeout(r, 2000));
     }
+
+    setBulkAIGenerating(false);
+    queryClient.invalidateQueries({ queryKey: ["admin-property-images"] });
+    queryClient.invalidateQueries({ queryKey: ["admin-property-image-stats"] });
   };
 
   // Bulk AI relevance check for selected properties
@@ -700,68 +722,116 @@ const PropertyImageManager = () => {
       </div>
 
       {/* AI Image Generation for No-Image Properties */}
-      {stats.noImages > 0 && (
+      {(stats.noImages > 0 || bulkAIGenerating) && (
         <Card className="border-chart-3/20 bg-chart-3/5">
-          <CardContent className="p-3">
+          <CardContent className="p-3 space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Wand2 className="h-4 w-4 text-chart-3" />
                 <div>
                   <span className="text-xs font-semibold">AI Image Generator</span>
                   <p className="text-[10px] text-muted-foreground">
-                    {stats.noImages.toLocaleString()} properties have no images. Generate AI photos in batches.
+                    {stats.noImages.toLocaleString()} properties have no images.
                   </p>
                 </div>
               </div>
-              <Button
-                size="sm"
-                className="h-7 text-[10px] gap-1.5"
-                onClick={handleBulkAIGenerate}
-                disabled={bulkAIGenerating}
-              >
-                {bulkAIGenerating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Wand2 className="h-3 w-3" />}
-                {bulkAIGenerating ? "Queuing..." : "Generate Images (Batch Job)"}
-              </Button>
+              <div className="flex items-center gap-2">
+                {bulkAIGenerating && (
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    className="h-7 text-[10px] gap-1.5"
+                    onClick={() => { bulkGenCancelRef.current = true; }}
+                  >
+                    <StopCircle className="h-3 w-3" /> Stop
+                  </Button>
+                )}
+                <Button
+                  size="sm"
+                  className="h-7 text-[10px] gap-1.5"
+                  onClick={handleBulkAIGenerate}
+                  disabled={bulkAIGenerating}
+                >
+                  {bulkAIGenerating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Wand2 className="h-3 w-3" />}
+                  {bulkAIGenerating ? "Generating..." : "Start Generate"}
+                </Button>
+              </div>
             </div>
+
+            {/* Live progress */}
+            {(bulkAIGenerating || bulkGenProgress.done > 0) && (
+              <div className="space-y-2">
+                <Progress value={bulkGenProgress.total > 0 ? (bulkGenProgress.done / bulkGenProgress.total) * 100 : 0} className="h-2" />
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div>
+                    <p className="text-sm font-bold text-foreground">{bulkGenProgress.done}</p>
+                    <p className="text-[9px] text-muted-foreground uppercase">Processed</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-chart-2">{bulkGenProgress.succeeded}</p>
+                    <p className="text-[9px] text-chart-2 uppercase">✓ Generated</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-destructive">{bulkGenProgress.failed}</p>
+                    <p className="text-[9px] text-destructive uppercase">✗ Failed</p>
+                  </div>
+                </div>
+                {bulkAIGenerating && bulkGenProgress.current && (
+                  <div className="flex items-center gap-1.5">
+                    <Loader2 className="h-3 w-3 animate-spin text-primary shrink-0" />
+                    <p className="text-[10px] text-muted-foreground truncate">
+                      {bulkGenProgress.current}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
 
       {/* Health Check Bar */}
       <Card className="border-primary/20 bg-primary/5">
-        <CardContent className="p-3">
-          <div className="flex items-center justify-between mb-2">
+        <CardContent className="p-3 space-y-2">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <ScanSearch className="h-4 w-4 text-primary" />
               <span className="text-xs font-semibold">Image Health Checker</span>
+              {allImageUrls.length === 0 && !healthChecking && (
+                <Badge variant="secondary" className="text-[9px] h-4">No images on this page</Badge>
+              )}
             </div>
-            <Button
-              size="sm"
-              variant="outline"
-              className="h-7 text-[10px] gap-1.5"
-              onClick={handleBulkHealthCheck}
-              disabled={healthChecking}
-            >
-              {healthChecking ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
-              {healthChecking ? "Checking..." : "Check This Page"}
-            </Button>
-            {brokenCount > 0 && (
+            <div className="flex items-center gap-2">
+              {brokenCount > 0 && (
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  className="h-7 text-[10px] gap-1.5"
+                  onClick={handleBulkDeleteBroken}
+                >
+                  <Trash2 className="h-3 w-3" />
+                  Delete Broken ({brokenCount})
+                </Button>
+              )}
               <Button
                 size="sm"
-                variant="destructive"
+                variant="outline"
                 className="h-7 text-[10px] gap-1.5"
-                onClick={handleBulkDeleteBroken}
+                onClick={handleBulkHealthCheck}
+                disabled={healthChecking || allImageUrls.length === 0}
               >
-                <Trash2 className="h-3 w-3" />
-                Delete All Broken ({brokenCount})
+                {healthChecking ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
+                {healthChecking ? `Checking ${checkedCount}/${allImageUrls.length}...` : "Check This Page"}
               </Button>
-            )}
+            </div>
           </div>
-          {checkedCount > 0 && (
+
+          {/* Progress during checking or after results */}
+          {(healthChecking || checkedCount > 0) && (
             <div className="space-y-1.5">
-              <Progress value={(checkedCount / Math.max(allImageUrls.length, 1)) * 100} className="h-1.5" />
+              <Progress value={(checkedCount / Math.max(allImageUrls.length, 1)) * 100} className="h-2" />
               <div className="flex items-center gap-3 text-[10px]">
-                <span className="flex items-center gap-1 text-chart-1">
+                <span className="flex items-center gap-1 text-chart-2">
                   <CheckCircle2 className="h-3 w-3" /> {okCount} OK
                 </span>
                 <span className="flex items-center gap-1 text-destructive">
