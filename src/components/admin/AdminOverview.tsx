@@ -646,22 +646,22 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
 
             {/* Tier 3: Secondary insights — flat */}
             <SectionErrorBoundary sectionName="Buyer-Listing Match">
-              <BuyerListingMatchCard />
+              <BuyerListingMatchCard data={aiData?.buyerListingMatch} />
             </SectionErrorBoundary>
             <SectionErrorBoundary sectionName="National Forecast">
-              <NationalForecastCard />
+              <NationalForecastCard data={aiData?.nationalForecast} />
             </SectionErrorBoundary>
             <SectionErrorBoundary sectionName="Market Cycle">
-              <MarketCyclePredictionCard />
+              <MarketCyclePredictionCard data={aiData?.marketCycle} />
             </SectionErrorBoundary>
             <SectionErrorBoundary sectionName="Capital Flow">
-              <CapitalFlowCard />
+              <CapitalFlowCard data={aiData?.capitalFlow} />
             </SectionErrorBoundary>
             <SectionErrorBoundary sectionName="Portfolio Strategy">
               <PortfolioStrategyCard />
             </SectionErrorBoundary>
             <SectionErrorBoundary sectionName="Deal Timing">
-              <DealTimingSignalCard />
+              <DealTimingSignalCard data={aiData?.dealTiming} />
             </SectionErrorBoundary>
           </div>
           )}
