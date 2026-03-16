@@ -32,7 +32,9 @@ import {
   Headphones,
   CreditCard,
   Clock,
-  TrendingUp
+  TrendingUp,
+  Zap,
+  ZapOff
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import ThemeSwitcher from "@/components/ui/theme-switcher";
