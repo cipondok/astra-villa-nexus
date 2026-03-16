@@ -292,6 +292,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
             <AgentAcquisitionDashboard />
           </Suspense>
         );
+      case "supply-expansion":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <SupplyExpansionDashboard />
+          </Suspense>
+        );
       default:
         return <AdminOverview onSectionChange={onSectionChange} />;
     }
