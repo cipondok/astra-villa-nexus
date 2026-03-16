@@ -1286,6 +1286,13 @@ export const navigationSections = {
       icon: TrendingUp,
       description: "Marketing & conversion funnel strategy to attract and retain property investors",
       badge: "📈 Investors"
+    },
+    {
+      key: "viral-content",
+      label: "Viral Content Strategy",
+      icon: Video,
+      description: "Social media content engine — formats, distribution, engagement triggers, and conversion flows",
+      badge: "🎬 Content"
     }
   ],
 
