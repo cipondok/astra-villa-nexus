@@ -60,7 +60,7 @@ export default function MobileFloatingCTA() {
   return (
     <div
       className={cn(
-        "fixed bottom-20 left-3 right-3 z-40 md:hidden",
+        "fixed bottom-[72px] left-3 right-3 z-40 md:hidden",
         "flex items-center gap-2 p-2 rounded-2xl",
         "bg-card/95 backdrop-blur-md border border-border/60 shadow-lg",
         visible ? "float-bar-enter" : "float-bar-exit"

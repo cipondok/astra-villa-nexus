@@ -37,7 +37,7 @@ const MobileFooter = () => {
         "shadow-[0_-4px_20px_hsl(var(--gold-primary)/0.06)]",
         "px-4 pt-4"
       )}
-      style={{ paddingBottom: 'calc(4rem + max(env(safe-area-inset-bottom), 8px) + 0.75rem)' }}
+      style={{ paddingBottom: 'calc(4rem + max(env(safe-area-inset-bottom), 8px) + 3.5rem)' }}
     >
       <div className="flex items-center justify-between">
         {/* Contact buttons */}
