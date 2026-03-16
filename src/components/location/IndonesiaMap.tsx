@@ -466,7 +466,7 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
       return `hsl(${h}, ${s}%, ${isDark ? Math.min(l + 15, 70) : Math.max(l - 10, 30)}%)`;
     }
     return base;
-  }, [showHeatmap, provincePropertyCounts, isDark, mapColors.selected]);
+  }, [showHeatmap, heatMode, provincePropertyCounts, isDark, mapColors.selected]);
 
   // Hotspot provinces
   const hotspotProvinces = useMemo(() => {
