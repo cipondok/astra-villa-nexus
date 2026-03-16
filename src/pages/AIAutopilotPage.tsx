@@ -10,9 +10,10 @@ import {
   Brain, Activity, TrendingUp, TrendingDown, Shield, Zap,
   Target, Eye, AlertTriangle, Flame, ArrowUpRight, ArrowDownRight,
   ChevronRight, Loader2, Radio, Cpu, BarChart3, MapPin,
-  Lightbulb, RefreshCw, DollarSign, Layers, Clock,
+  Lightbulb, RefreshCw, DollarSign, Layers, Clock, Play,
 } from 'lucide-react';
 import { useAIAutopilot, type AutopilotSignal, type AutopilotRecommendation } from '@/hooks/useAIAutopilot';
+import { useAutopilotStatus, useRunAutopilotWorkers, WORKER_NAMES } from '@/hooks/useAutopilotWorker';
 import { cn } from '@/lib/utils';
 
 const fadeIn = (d = 0) => ({
@@ -124,6 +125,8 @@ const AIAutopilotPage = () => {
   const navigate = useNavigate();
   const autopilot = useAIAutopilot();
   const { kpis, signals, recommendations, modules, isLoading } = autopilot;
+  const { data: workerStatus } = useAutopilotStatus();
+  const runWorkers = useRunAutopilotWorkers();
 
   const onlineModules = modules.filter(m => m.status === 'online').length;
   const systemHealth = modules.length > 0 ? Math.round((onlineModules / modules.length) * 100) : 0;
@@ -153,6 +156,15 @@ const AIAutopilotPage = () => {
               </div>
             </div>
             <div className="flex gap-2">
+              <Button
+                size="sm"
+                onClick={() => runWorkers.mutate({})}
+                disabled={runWorkers.isPending}
+                className="text-xs gap-1.5"
+              >
+                {runWorkers.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Play className="h-3 w-3" />}
+                Run All Workers
+              </Button>
               <Button variant="outline" size="sm" onClick={() => navigate('/portfolio-command-center')} className="text-xs gap-1.5">
                 <BarChart3 className="h-3 w-3" /> Portfolio
               </Button>
@@ -322,6 +334,78 @@ const AIAutopilotPage = () => {
                     </CardContent>
                   </Card>
 
+                  {/* Worker Controls */}
+                  <Card className="bg-card border-border/40">
+                    <CardHeader className="p-4 pb-2">
+                      <CardTitle className="text-sm flex items-center gap-2 text-foreground">
+                        <Play className="h-4 w-4 text-primary" />
+                        Background Workers
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-4 pt-0 space-y-2">
+                      {Object.entries(WORKER_NAMES).map(([key, { label, description }]) => {
+                        const lastRun = workerStatus?.workers?.find(w => w.worker_name === key);
+                        return (
+                          <div key={key} className="flex items-center gap-2 p-2 rounded-lg bg-muted/15 border border-border/20">
+                            <div className={cn('h-2 w-2 rounded-full shrink-0',
+                              lastRun?.status === 'completed' ? 'bg-chart-1' :
+                              lastRun?.status === 'failed' ? 'bg-destructive' :
+                              lastRun?.status === 'running' ? 'bg-amber-500 animate-pulse' : 'bg-muted-foreground/30'
+                            )} />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[11px] font-medium text-foreground">{label}</p>
+                              {lastRun && (
+                                <p className="text-[9px] text-muted-foreground">
+                                  {lastRun.items_processed} items • {lastRun.duration_ms}ms
+                                </p>
+                              )}
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 w-6 p-0"
+                              onClick={() => runWorkers.mutate({ workers: [key] })}
+                              disabled={runWorkers.isPending}
+                            >
+                              <Play className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        );
+                      })}
+
+                      {/* Data Coverage Stats */}
+                      {workerStatus?.property_stats && (
+                        <div className="mt-3 pt-3 border-t border-border/20 space-y-1.5">
+                          <p className="text-[10px] font-semibold text-foreground">Data Coverage</p>
+                          {[
+                            { label: 'Scored', value: workerStatus.property_stats.scored, total: workerStatus.property_stats.total_active },
+                            { label: 'Predicted', value: workerStatus.property_stats.predicted, total: workerStatus.property_stats.total_active },
+                            { label: 'Heat Mapped', value: workerStatus.property_stats.heat_mapped, total: workerStatus.property_stats.total_active },
+                          ].map(item => {
+                            const pct = item.total > 0 ? Math.round((item.value / item.total) * 100) : 0;
+                            return (
+                              <div key={item.label} className="space-y-0.5">
+                                <div className="flex justify-between text-[10px]">
+                                  <span className="text-muted-foreground">{item.label}</span>
+                                  <span className="font-mono text-foreground">{pct}%</span>
+                                </div>
+                                <Progress value={pct} className="h-1" />
+                              </div>
+                            );
+                          })}
+                          <div className="flex justify-between text-[10px] pt-1">
+                            <span className="text-muted-foreground">Clusters</span>
+                            <span className="font-mono text-foreground">{workerStatus.cluster_count}</span>
+                          </div>
+                          <div className="flex justify-between text-[10px]">
+                            <span className="text-muted-foreground">Alerts (24h)</span>
+                            <span className="font-mono text-foreground">{workerStatus.deal_alerts_24h}</span>
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
                   {/* Autopilot Status */}
                   <Card className="bg-card border-border/40">
                     <CardHeader className="p-4 pb-2">
@@ -345,10 +429,10 @@ const AIAutopilotPage = () => {
                         </div>
                       </div>
                       <div className="text-[10px] text-muted-foreground space-y-1">
-                        <p>• Continuous opportunity monitoring active</p>
+                        <p>• {Object.keys(WORKER_NAMES).length} background workers available</p>
                         <p>• Market heat signals refreshed every 60s</p>
                         <p>• Price prediction engine running in background</p>
-                        <p>• Deal hunter scanning for new opportunities</p>
+                        <p>• Deal alerts auto-generated from intelligence</p>
                       </div>
                     </CardContent>
                   </Card>
