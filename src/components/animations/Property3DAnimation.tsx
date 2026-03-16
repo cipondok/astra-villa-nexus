@@ -11,22 +11,22 @@ const Property3DAnimation = ({ className, isMobile }: Property3DAnimationProps) 
   const houseRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const container = containerRef.current;
     const house = houseRef.current;
-    
-    if (!container || !house) return;
+    if (!house) return;
 
-    // Create floating animation
+    let rafId: number;
     const floatAnimation = () => {
+      const now = Date.now();
       house.style.transform = `
-        translateY(${Math.sin(Date.now() * 0.002) * 5}px) 
-        rotateY(${Math.sin(Date.now() * 0.001) * 10}deg)
-        rotateX(${Math.cos(Date.now() * 0.0015) * 5}deg)
+        translateY(${Math.sin(now * 0.002) * 5}px) 
+        rotateY(${Math.sin(now * 0.001) * 10}deg)
+        rotateX(${Math.cos(now * 0.0015) * 5}deg)
       `;
-      requestAnimationFrame(floatAnimation);
+      rafId = requestAnimationFrame(floatAnimation);
     };
 
-    floatAnimation();
+    rafId = requestAnimationFrame(floatAnimation);
+    return () => cancelAnimationFrame(rafId);
   }, []);
 
   return (
