@@ -75,6 +75,7 @@ const AIPriceEstimatorCTA = lazy(() => import("@/components/home/AIPriceEstimato
 const EarlyInvestmentCTA = lazy(() => import("@/components/home/EarlyInvestmentCTA"));
 const SocialProofStrip = lazy(() => import("@/components/home/SocialProofStrip"));
 const SectionDividerCTA = lazy(() => import("@/components/home/SectionDividerCTA"));
+const MobileFloatingCTA = lazy(() => import("@/components/home/MobileFloatingCTA"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
