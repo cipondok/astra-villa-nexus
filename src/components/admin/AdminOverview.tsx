@@ -791,7 +791,7 @@ const HealthBar = React.memo(function HealthBar({ label, value, icon: Icon, isSt
         </div>
         <span className="text-[11px] font-medium">{isStatus ? (value === 100 ? 'OK' : 'Error') : `${value}%`}</span>
       </div>
-      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+      <div className="h-1.5 bg-muted rounded-full overflow-hidden" role="progressbar" aria-valuenow={value} aria-valuemin={0} aria-valuemax={100} aria-label={`${label} health: ${value}%`}>
         <div className={`h-full ${getColor(value)} transition-all`} style={{ width: `${value}%` }} />
       </div>
     </div>
