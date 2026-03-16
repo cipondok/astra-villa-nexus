@@ -366,7 +366,7 @@ const Properties = () => {
         opacity: 0
       }} animate={{
         opacity: 1
-      }} className={viewMode === 'grid' ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3" : "space-y-2"}>
+      }} className={viewMode === 'grid' ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" : "space-y-2"}>
             {properties.map((property, index) => <motion.div key={property.id} initial={{
           opacity: 0,
           y: 10
