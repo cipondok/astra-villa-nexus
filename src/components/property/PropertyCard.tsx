@@ -143,7 +143,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
       e.preventDefault();
       e.stopPropagation();
     }
-    console.log('PropertyCard - Opening 3D modal for property:', id);
     setShow3DModal(true);
   };
 
