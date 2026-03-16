@@ -71,8 +71,8 @@ const FacetedFilterPanel = ({
     listingType: true,
     propertyType: true,
     location: true,
-    bedrooms: false,
-    price: false,
+    bedrooms: true,
+    price: true,
     area: false
   });
 

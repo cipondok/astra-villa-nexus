@@ -113,6 +113,9 @@ const AdvancedSearchPage = () => {
         case 'popular':
           query = query.order('views_count', { ascending: false, nullsFirst: false });
           break;
+        case 'deal_score':
+          query = query.order('investment_score', { ascending: false, nullsFirst: false });
+          break;
         default:
           query = query.order('created_at', { ascending: false });
       }
@@ -321,7 +324,7 @@ const AdvancedSearchPage = () => {
               </Sheet>
 
               {/* View Mode Toggle */}
-              <div className="hidden sm:flex items-center border rounded-lg p-1">
+              <div className="flex items-center border rounded-lg p-0.5 sm:p-1">
                 <Button
                   variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
                   size="icon"
