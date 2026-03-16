@@ -324,7 +324,7 @@ const AdvancedSearchPage = () => {
               </Sheet>
 
               {/* View Mode Toggle */}
-              <div className="hidden sm:flex items-center border rounded-lg p-1">
+              <div className="flex items-center border rounded-lg p-0.5 sm:p-1">
                 <Button
                   variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
                   size="icon"
