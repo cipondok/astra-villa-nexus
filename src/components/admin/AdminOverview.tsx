@@ -460,7 +460,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
                 <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
                   <MousePointer className="h-3.5 w-3.5" /> Live Activity
                 </CardTitle>
-                <span className="text-[10px] text-muted-foreground">Auto-refresh 60s</span>
+                <span className="text-[10px] text-muted-foreground">{activityAgo ? `↻ ${activityAgo}` : 'Auto-refresh 60s'}</span>
               </div>
             </CardHeader>
             <CardContent className="p-3 pt-0">
