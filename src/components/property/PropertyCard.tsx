@@ -135,10 +135,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
       e.preventDefault();
       e.stopPropagation();
     }
-    console.log('PropertyCard - Opening detail modal for property:', id);
-    console.log('PropertyCard - Modal state before:', showDetailModal);
     setShowDetailModal(true);
-    console.log('PropertyCard - Modal state after setting to true');
   };
 
   const handleView3D = (e?: React.MouseEvent) => {
@@ -146,7 +143,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
       e.preventDefault();
       e.stopPropagation();
     }
-    console.log('PropertyCard - Opening 3D modal for property:', id);
     setShow3DModal(true);
   };
 
@@ -170,8 +166,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     posted_by: posted_by,
   };
 
-  console.log('PropertyCard - Rendering with showDetailModal:', showDetailModal);
-  console.log('PropertyCard - Rendering with show3DModal:', show3DModal);
 
   return (
     <>
@@ -213,9 +207,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           <div className="absolute top-2 left-2 flex flex-wrap gap-1.5">
             <Badge 
               className={`${listing_type === 'sale' 
-                ? 'bg-gradient-to-r from-emerald-500 to-green-600' 
-                : 'bg-gradient-to-r from-sky-500 to-blue-600'
-              } text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-md border-0 flex items-center gap-1`}
+                ? 'bg-chart-1 text-chart-1-foreground' 
+                : 'bg-primary text-primary-foreground'
+              } text-xs font-bold px-2.5 py-1 rounded-md shadow-md border-0 flex items-center gap-1`}
             >
               {listing_type === 'sale' ? <Tag className="h-3 w-3" /> : <Key className="h-3 w-3" />}
               {listing_type === 'sale' ? 'Dijual' : 'Disewa'}
@@ -231,7 +225,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               </Badge>
             )}
             {(three_d_model_url || virtual_tour_url || glb_model_url || drone_video_url || has_vr || has_360_view || has_drone_video) && (
-              <Badge className="bg-gradient-to-r from-violet-500 to-purple-600 text-white text-xs font-bold px-2 py-0.5 rounded-md shadow-md border-0 flex items-center gap-1 animate-pulse">
+              <Badge className="bg-accent text-accent-foreground text-xs font-bold px-2 py-0.5 rounded-md shadow-md border-0 flex items-center gap-1">
                 <Glasses className="h-3 w-3" />
                 Virtual Tour
               </Badge>
@@ -375,12 +369,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           property={convertedProperty}
           isOpen={showDetailModal}
           onClose={() => {
-            console.log('PropertyCard - Closing detail modal');
             setShowDetailModal(false);
           }}
           language="en"
           onView3D={() => {
-            console.log('PropertyCard - Opening 3D from detail modal');
             setShowDetailModal(false);
             setShow3DModal(true);
           }}
@@ -393,7 +385,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           property={convertedProperty}
           isOpen={show3DModal}
           onClose={() => {
-            console.log('PropertyCard - Closing 3D modal');
             setShow3DModal(false);
           }}
           language="en"

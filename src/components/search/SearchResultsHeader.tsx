@@ -33,12 +33,12 @@ interface SearchResultsHeaderProps {
 }
 
 const sortOptions = [
-  { value: 'newest', label: 'Newest First', icon: Clock },
-  { value: 'oldest', label: 'Oldest First', icon: Clock },
-  { value: 'price_asc', label: 'Price: Low to High', icon: DollarSign },
-  { value: 'price_desc', label: 'Price: High to Low', icon: DollarSign },
+  { value: 'deal_score', label: 'Best Opportunity', icon: Sparkles },
+  { value: 'newest', label: 'Newest Listings', icon: Clock },
+  { value: 'price_asc', label: 'Best Value First', icon: DollarSign },
+  { value: 'price_desc', label: 'Premium First', icon: DollarSign },
   { value: 'popular', label: 'Most Popular', icon: TrendingUp },
-  { value: 'deal_score', label: 'AI Deal Score', icon: Sparkles },
+  { value: 'oldest', label: 'Oldest First', icon: Clock },
 ];
 
 const SearchResultsHeader = ({

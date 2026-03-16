@@ -883,7 +883,7 @@ const Index = () => {
                       <h2 className="text-sm sm:text-base md:text-2xl font-bold mb-0.5 sm:mb-1 md:mb-2 bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
                         {t('indexPage.searchResults')}
                       </h2>
-                      <p className="text-[10px] sm:text-xs md:text-sm text-muted-foreground">
+                      <p className="text-xs sm:text-xs md:text-sm text-muted-foreground">
                         {isSearching ? t('indexPage.searching') : `${searchResults.length} ${t('indexPage.propertiesFound')}`}
                         {quickSearch && (
                           <span className="ml-1 sm:ml-2 text-primary font-medium">
