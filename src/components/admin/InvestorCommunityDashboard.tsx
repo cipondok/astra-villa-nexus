@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Users, Funnel, Zap, Gift, Shield, Crown, ArrowRight, CheckCircle2,
+  Users, Filter, Zap, Gift, Shield, Crown, ArrowRight, CheckCircle2,
   ChevronRight, ChevronDown, Target, TrendingUp, MessageCircle, Bell,
   BookOpen, Star, Trophy, Lock, Gem, BarChart3, Globe, Megaphone,
   Calendar, Mail, Video, FileText, Layers, Timer, Heart, Rocket,
