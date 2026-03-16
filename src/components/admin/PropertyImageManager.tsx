@@ -40,6 +40,7 @@ import {
   HelpCircle,
   Wand2,
   CheckSquare,
+  StopCircle,
 } from "lucide-react";
 
 interface AIRelevanceResult {
