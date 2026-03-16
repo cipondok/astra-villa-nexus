@@ -32,7 +32,7 @@ const ErrorManagement = () => {
   }, []);
 
   return (
-    <main className="space-y-6">
+    <section className="space-y-6">
       <header>
         <h1 className="text-2xl font-bold">Database Error Manager</h1>
         <p className="text-muted-foreground">Real-time database error monitoring and quick fixes</p>
@@ -41,7 +41,7 @@ const ErrorManagement = () => {
       <section aria-label="Database errors">
         <DatabaseErrorManager />
       </section>
-    </main>
+    </section>
   );
 };
 
