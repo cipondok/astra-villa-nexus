@@ -62,6 +62,7 @@ const HyperExecutionPlan = lazy(() => import('./HyperExecutionPlan'));
 const NinetyDayMasterPlan = lazy(() => import('./NinetyDayMasterPlan'));
 const UIUXRedesignBlueprint = lazy(() => import('./UIUXRedesignBlueprint'));
 const HomepageBlueprint = lazy(() => import('./HomepageBlueprint'));
+const UIAuditReport = lazy(() => import('./UIAuditReport'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
