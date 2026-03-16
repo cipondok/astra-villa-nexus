@@ -589,6 +589,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           </div>
 
           {/* ═══ ZONE 2: AI Intelligence ═══ */}
+          {aiLoading ? (
+            <ZoneSkeleton label="AI Intelligence" cards={5} />
+          ) : (
           <div className="space-y-3">
             <div className="flex items-center gap-2 px-1">
               <div className="h-px flex-1 bg-gradient-to-r from-primary/30 to-transparent" />
@@ -632,6 +635,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
             <PortfolioStrategyCard />
             <DealTimingSignalCard />
           </div>
+          )}
 
           {/* ═══ ZONE 3: Operations ═══ */}
           <div className="space-y-3">
