@@ -485,7 +485,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
               <ScrollArea className="h-[160px]">
                 <div className="space-y-1.5">
                   {recentActivity && recentActivity.length > 0 ? (
-                    recentActivity.map((activity: any, idx: number) => (
+                    recentActivity.map((activity, idx) => (
                       <motion.div
                         key={activity.id}
                         initial={isFirstRender.current ? { opacity: 0, x: -10 } : false}
