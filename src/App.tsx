@@ -339,6 +339,9 @@ const AppContent = () => {
                 <Route path="/portfolio-command-center" element={<ProtectedRoute />}>
                   <Route index element={<PortfolioCommandCenter />} />
                 </Route>
+                <Route path="/ai-autopilot" element={<ProtectedRoute />}>
+                  <Route index element={<AIAutopilotPage />} />
+                </Route>
                 <Route path="/portfolio-builder" element={<ProtectedRoute />}>
                   <Route index element={<PortfolioBuilderPage />} />
                 </Route>
