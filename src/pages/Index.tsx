@@ -80,6 +80,8 @@ const TrustFooterStrip = lazy(() => import("@/components/home/TrustFooterStrip")
 const WelcomeBackStrip = lazy(() => import("@/components/home/WelcomeBackStrip"));
 const RecentlyViewedStrip = lazy(() => import("@/components/home/RecentlyViewedStrip"));
 const ReferralInviteStrip = lazy(() => import("@/components/home/ReferralInviteStrip"));
+const HotspotAlertBanner = lazy(() => import("@/components/ai/HotspotAlertBanner"));
+const DiscoveryTrigger = lazy(() => import("@/components/ai/DiscoveryTrigger"));
 const PWAInstallPrompt = lazy(() => import("@/components/pwa/PWAInstallPrompt"));
 
 type ViewMode = 'list' | 'grid' | 'map';
