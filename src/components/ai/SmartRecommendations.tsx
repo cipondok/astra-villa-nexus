@@ -21,7 +21,7 @@ import {
   Brain
 } from "lucide-react";
 import { Link } from "react-router-dom";
-
+import WhyRecommended from "./WhyRecommended";
 interface SmartRecommendationsProps {
   limit?: number;
   className?: string;
