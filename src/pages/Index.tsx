@@ -1118,7 +1118,7 @@ const Index = () => {
 
                 {/* Marketplace Services */}
                 <ScrollReveal direction="right" delay={0}>
-                <div id="marketplace-services-section" className="mt-6">
+                <div id="marketplace-services-section" className="mt-8">
                   <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
                     <MarketplaceServices />
                   </LazyRender>
