@@ -51,6 +51,7 @@ const PartnershipManagerRole = lazy(() => import('./PartnershipManagerRole'));
 const DigitalGrowthRole = lazy(() => import('./DigitalGrowthRole'));
 const PropertySupplyManagerRole = lazy(() => import('./PropertySupplyManagerRole'));
 const CustomerSuccessRole = lazy(() => import('./CustomerSuccessRole'));
+const OrgChartDashboard = lazy(() => import('./OrgChartDashboard'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
@@ -394,6 +395,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return (
           <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
             <CustomerSuccessRole />
+          </Suspense>
+        );
+      case "org-chart":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <OrgChartDashboard />
           </Suspense>
         );
       default:
