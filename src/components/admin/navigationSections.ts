@@ -1308,6 +1308,13 @@ export const navigationSections = {
       icon: Crown,
       description: "National thought leadership positioning — content pillars, visibility, trust signals, and brand moat",
       badge: "👑 Authority"
+    },
+    {
+      key: "monetization-strategy",
+      label: "Monetization Strategy",
+      icon: DollarSign,
+      description: "Phased revenue rollout — listings, subscriptions, intelligence, transactions, and B2B ecosystem",
+      badge: "💰 Revenue"
     }
   ],
 
