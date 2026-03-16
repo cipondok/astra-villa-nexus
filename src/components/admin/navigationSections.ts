@@ -1423,6 +1423,13 @@ export const navigationSections = {
       icon: Send,
       description: "12-week outreach cadence — investor targeting, channel strategy, call scripts, follow-up templates",
       badge: "📧 Outreach"
+    },
+    {
+      key: "founder-daily-system",
+      label: "Founder Daily System",
+      icon: Clock,
+      description: "Structured daily execution — 7 time blocks, 34 tasks, energy mapping, accountability rules",
+      badge: "⚡ Daily"
     }
   ],
 
