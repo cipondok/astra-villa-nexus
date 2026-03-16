@@ -86,6 +86,7 @@ const DiscoveryTrigger = lazy(() => import("@/components/ai/DiscoveryTrigger"));
 const PredictiveSearchCanvas = lazy(() => import("@/components/ai/PredictiveSearchCanvas"));
 const OpportunityRadar = lazy(() => import("@/components/ai/OpportunityRadar"));
 const AIJourneyGuide = lazy(() => import("@/components/ai/AIJourneyGuide"));
+const OpportunityStreakCards = lazy(() => import("@/components/home/OpportunityStreakCards"));
 const PWAInstallPrompt = lazy(() => import("@/components/pwa/PWAInstallPrompt"));
 
 type ViewMode = 'list' | 'grid' | 'map';
