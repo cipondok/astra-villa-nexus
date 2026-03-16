@@ -486,7 +486,7 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
                 strategy={verticalListSortingStrategy}
               >
                 <div className="flex flex-wrap gap-2">
-                  {displayQuickLinks.map((link) => (
+                  {displayQuickLinks.map((link, index) => (
                     <SortableQuickNavItem
                       key={link.id}
                       link={link}
@@ -495,6 +495,7 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
                       onRemove={handleRemoveItem}
                       getBadgeColor={getBadgeColor}
                       usageStats={usageStats}
+                      shortcutKey={index < 9 ? index + 1 : undefined}
                     />
                   ))}
                 </div>
