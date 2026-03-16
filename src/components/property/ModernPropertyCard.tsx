@@ -199,8 +199,8 @@ const ModernPropertyCard = ({
 
         {/* View Icon - Center on hover */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-          <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-gold-primary/90 backdrop-blur-sm flex items-center justify-center shadow-xl shadow-gold-primary/30">
-            <Eye className="h-5 w-5 md:h-6 md:w-6 text-background" />
+          <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-primary/90 backdrop-blur-sm flex items-center justify-center shadow-xl shadow-primary/30">
+            <Eye className="h-5 w-5 md:h-6 md:w-6 text-primary-foreground" />
           </div>
         </div>
 
