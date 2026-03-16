@@ -47,13 +47,13 @@ const SocialProofWidget = ({
       watching
     });
 
-    // Simulate real-time "watching" updates
+    // Subtle "watching" updates — long interval to avoid detectable patterns
     const interval = setInterval(() => {
       setMetrics(prev => ({
         ...prev,
-        watching: Math.max(1, prev.watching + (Math.random() > 0.5 ? 1 : -1))
+        watching: Math.min(8, Math.max(1, prev.watching + (Math.random() > 0.5 ? 1 : -1)))
       }));
-    }, 30000); // Update every 30s
+    }, 120000); // Update every 2 minutes
 
     return () => clearInterval(interval);
   }, [propertyId, viewCount, inquiryCount, recentViews]);
@@ -66,7 +66,7 @@ const SocialProofWidget = ({
         {isHot && (
           <Badge 
             variant="destructive" 
-            className="text-[9px] px-1.5 py-0 h-4 bg-gradient-to-r from-destructive/80 to-destructive animate-pulse"
+            className="text-[10px] px-1.5 py-0 h-4.5 bg-gradient-to-r from-destructive/80 to-destructive signal-glow"
           >
             <Flame className="h-2.5 w-2.5 mr-0.5" />
             Hot
@@ -75,7 +75,7 @@ const SocialProofWidget = ({
         
         <Badge 
           variant="secondary" 
-          className="text-[9px] px-1.5 py-0 h-4 bg-muted/60"
+          className="text-[10px] px-1.5 py-0 h-4.5 bg-muted/60"
         >
           <Eye className="h-2.5 w-2.5 mr-0.5 text-muted-foreground" />
           {metrics.views}
@@ -84,7 +84,7 @@ const SocialProofWidget = ({
         {metrics.inquiries > 0 && (
           <Badge 
             variant="secondary" 
-            className="text-[9px] px-1.5 py-0 h-4 bg-chart-1/10 text-chart-1"
+            className="text-[10px] px-1.5 py-0 h-4.5 bg-chart-1/10 text-chart-1"
           >
             <MessageSquare className="h-2.5 w-2.5 mr-0.5" />
             {metrics.inquiries}
@@ -94,7 +94,7 @@ const SocialProofWidget = ({
         {metrics.watching > 1 && (
           <Badge 
             variant="secondary" 
-            className="text-[9px] px-1.5 py-0 h-4 bg-chart-4/10 text-chart-4"
+            className="text-[10px] px-1.5 py-0 h-4.5 bg-chart-4/10 text-chart-4"
           >
             <Users className="h-2.5 w-2.5 mr-0.5" />
             {metrics.watching} viewing
@@ -114,7 +114,7 @@ const SocialProofWidget = ({
         <div className="flex items-center gap-2">
           {isHot && (
             <div className="flex items-center gap-1 text-destructive">
-              <Flame className="h-3.5 w-3.5 animate-pulse" />
+              <Flame className="h-3.5 w-3.5 signal-glow" />
               <span className="text-[10px] font-semibold">In Demand</span>
             </div>
           )}
