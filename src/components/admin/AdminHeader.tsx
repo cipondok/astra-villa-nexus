@@ -179,7 +179,7 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
               >
                 <Bell className="h-4 w-4" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-destructive rounded-full flex items-center justify-center text-[9px] text-destructive-foreground font-bold">
+                  <span className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-destructive rounded-full flex items-center justify-center text-[10px] text-destructive-foreground font-bold">
                     <span className="absolute inset-0 rounded-full bg-destructive animate-ping opacity-60" />
                     <span className="relative">{unreadCount}</span>
                   </span>
@@ -222,7 +222,7 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
                           {n.title}
                         </p>
                         <span
-                          className={`text-[9px] px-1.5 py-0.5 rounded-full whitespace-nowrap ${priorityColor(n.priority)}`}
+                          className={`text-[10px] px-1.5 py-0.5 rounded-full whitespace-nowrap ${priorityColor(n.priority)}`}
                         >
                           {n.priority}
                         </span>
@@ -230,7 +230,7 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
                       <p className="text-[10px] text-muted-foreground line-clamp-1 mb-1">
                         {n.message}
                       </p>
-                      <span className="text-[9px] text-muted-foreground/70">
+                      <span className="text-[10px] text-muted-foreground/70">
                         {new Date(n.created_at).toLocaleString()}
                       </span>
                     </DropdownMenuItem>
