@@ -68,6 +68,7 @@ import {
   Layers,
   Megaphone,
   Flame,
+  Paintbrush,
   Heart,
   Star,
   Store,
