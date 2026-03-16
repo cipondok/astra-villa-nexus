@@ -338,7 +338,7 @@ const InvestorCommunityDashboard = React.memo(function InvestorCommunityDashboar
         <CardContent className="p-4 pt-1">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
             {[
-              { label: "Funnel Stages", value: "5", icon: Funnel, color: "text-primary" },
+              { label: "Funnel Stages", value: "5", icon: Filter, color: "text-primary" },
               { label: "Programs", value: "7", icon: Calendar, color: "text-chart-4" },
               { label: "Trust Pillars", value: "4", icon: Shield, color: "text-chart-3" },
               { label: "Community Tiers", value: "3", icon: Crown, color: "text-chart-1" },
