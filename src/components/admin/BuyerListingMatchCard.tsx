@@ -10,6 +10,7 @@ import {
 import {
   useBuyerListingMatch,
   type BuyerListingMatch,
+  type BuyerListingMatchResult,
   type MatchConfidence,
   type EngagementAction,
   type MismatchRisk,
@@ -120,8 +121,9 @@ function MatchRow({ match }: { match: BuyerListingMatch }) {
   );
 }
 
-const BuyerListingMatchCard = React.memo(function BuyerListingMatchCard() {
-  const { data, isLoading } = useBuyerListingMatch(10);
+const BuyerListingMatchCard = React.memo(function BuyerListingMatchCard({ data: externalData }: { data?: BuyerListingMatchResult | null }) {
+  const { data: hookData, isLoading } = useBuyerListingMatch(10);
+  const data = externalData ?? hookData;
   const [expanded, setExpanded] = useState(false);
 
   if (isLoading || !data) {

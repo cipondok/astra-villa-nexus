@@ -5,6 +5,7 @@ import {
   useNationalForecast,
   type PriceForecast,
   type ClimatePhase,
+  type NationalForecastResult,
 } from "@/hooks/useNationalForecast";
 import {
   TrendingUp,
@@ -59,8 +60,9 @@ function SignalBar({ label, value }: { label: string; value: number }) {
   );
 }
 
-const NationalForecastCard = React.memo(function NationalForecastCard() {
-  const { data, isLoading } = useNationalForecast();
+const NationalForecastCard = React.memo(function NationalForecastCard({ data: externalData }: { data?: NationalForecastResult | null }) {
+  const { data: hookData, isLoading } = useNationalForecast();
+  const data = externalData ?? hookData;
 
   if (isLoading || !data) {
     return (

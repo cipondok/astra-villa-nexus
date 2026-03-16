@@ -10,6 +10,7 @@ import {
 import {
   useDealTimingSignals,
   type DealTimingEntry,
+  type DealTimingResult,
   type DealSignal,
   type TimingConfidence,
 } from "@/hooks/useDealTimingSignals";
@@ -98,8 +99,9 @@ function SignalRow({ entry }: { entry: DealTimingEntry }) {
   );
 }
 
-const DealTimingSignalCard = React.memo(function DealTimingSignalCard() {
-  const { data, isLoading } = useDealTimingSignals(12);
+const DealTimingSignalCard = React.memo(function DealTimingSignalCard({ data: externalData }: { data?: DealTimingResult | null }) {
+  const { data: hookData, isLoading } = useDealTimingSignals(12);
+  const data = externalData ?? hookData;
   const [expanded, setExpanded] = useState(false);
 
   if (isLoading || !data) {
