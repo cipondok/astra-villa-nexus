@@ -19499,6 +19499,9 @@ export type Database = {
           construction_phases: Json | null
           created_at: string | null
           days_on_market: number | null
+          deal_score: number | null
+          demand_score: number | null
+          demand_trend: string | null
           description: string | null
           developer_certified: boolean
           developer_id: string | null
@@ -19508,6 +19511,7 @@ export type Database = {
           estimated_completion_date: string | null
           estimated_completion_value: number | null
           floors: number | null
+          forecast_score_3m: number | null
           furnishing: string | null
           garage_count: number | null
           glb_model_url: string | null
@@ -19520,6 +19524,7 @@ export type Database = {
           id: string
           image_urls: string[] | null
           images: string[] | null
+          inquiry_count: number | null
           investment_score: number | null
           investor_highlight: boolean | null
           is_early_bird: boolean | null
@@ -19534,9 +19539,11 @@ export type Database = {
           listing_type: string
           location: string
           longitude: number | null
+          luxury_index: number | null
           minimum_rental_days: number | null
           nearby_facilities: Json | null
           online_booking_enabled: boolean | null
+          opportunity_score: number | null
           owner_id: string
           owner_type: string | null
           ownership_verified: boolean
@@ -19551,7 +19558,10 @@ export type Database = {
           rental_periods: string[] | null
           rental_terms: Json | null
           rental_yield_percentage: number | null
+          risk_level: string | null
           roi_percentage: number | null
+          saves_count: number | null
+          score_updated_at: string | null
           seo_description: string | null
           seo_title: string | null
           sold_at: string | null
@@ -19564,6 +19574,7 @@ export type Database = {
           units_sold: number | null
           updated_at: string | null
           view_type: string | null
+          views_count: number | null
           virtual_tour_url: string | null
           wna_eligible: boolean | null
         }
@@ -19586,6 +19597,9 @@ export type Database = {
           construction_phases?: Json | null
           created_at?: string | null
           days_on_market?: number | null
+          deal_score?: number | null
+          demand_score?: number | null
+          demand_trend?: string | null
           description?: string | null
           developer_certified?: boolean
           developer_id?: string | null
@@ -19595,6 +19609,7 @@ export type Database = {
           estimated_completion_date?: string | null
           estimated_completion_value?: number | null
           floors?: number | null
+          forecast_score_3m?: number | null
           furnishing?: string | null
           garage_count?: number | null
           glb_model_url?: string | null
@@ -19607,6 +19622,7 @@ export type Database = {
           id?: string
           image_urls?: string[] | null
           images?: string[] | null
+          inquiry_count?: number | null
           investment_score?: number | null
           investor_highlight?: boolean | null
           is_early_bird?: boolean | null
@@ -19621,9 +19637,11 @@ export type Database = {
           listing_type: string
           location: string
           longitude?: number | null
+          luxury_index?: number | null
           minimum_rental_days?: number | null
           nearby_facilities?: Json | null
           online_booking_enabled?: boolean | null
+          opportunity_score?: number | null
           owner_id: string
           owner_type?: string | null
           ownership_verified?: boolean
@@ -19638,7 +19656,10 @@ export type Database = {
           rental_periods?: string[] | null
           rental_terms?: Json | null
           rental_yield_percentage?: number | null
+          risk_level?: string | null
           roi_percentage?: number | null
+          saves_count?: number | null
+          score_updated_at?: string | null
           seo_description?: string | null
           seo_title?: string | null
           sold_at?: string | null
@@ -19651,6 +19672,7 @@ export type Database = {
           units_sold?: number | null
           updated_at?: string | null
           view_type?: string | null
+          views_count?: number | null
           virtual_tour_url?: string | null
           wna_eligible?: boolean | null
         }
@@ -19673,6 +19695,9 @@ export type Database = {
           construction_phases?: Json | null
           created_at?: string | null
           days_on_market?: number | null
+          deal_score?: number | null
+          demand_score?: number | null
+          demand_trend?: string | null
           description?: string | null
           developer_certified?: boolean
           developer_id?: string | null
@@ -19682,6 +19707,7 @@ export type Database = {
           estimated_completion_date?: string | null
           estimated_completion_value?: number | null
           floors?: number | null
+          forecast_score_3m?: number | null
           furnishing?: string | null
           garage_count?: number | null
           glb_model_url?: string | null
@@ -19694,6 +19720,7 @@ export type Database = {
           id?: string
           image_urls?: string[] | null
           images?: string[] | null
+          inquiry_count?: number | null
           investment_score?: number | null
           investor_highlight?: boolean | null
           is_early_bird?: boolean | null
@@ -19708,9 +19735,11 @@ export type Database = {
           listing_type?: string
           location?: string
           longitude?: number | null
+          luxury_index?: number | null
           minimum_rental_days?: number | null
           nearby_facilities?: Json | null
           online_booking_enabled?: boolean | null
+          opportunity_score?: number | null
           owner_id?: string
           owner_type?: string | null
           ownership_verified?: boolean
@@ -19725,7 +19754,10 @@ export type Database = {
           rental_periods?: string[] | null
           rental_terms?: Json | null
           rental_yield_percentage?: number | null
+          risk_level?: string | null
           roi_percentage?: number | null
+          saves_count?: number | null
+          score_updated_at?: string | null
           seo_description?: string | null
           seo_title?: string | null
           sold_at?: string | null
@@ -19738,6 +19770,7 @@ export type Database = {
           units_sold?: number | null
           updated_at?: string | null
           view_type?: string | null
+          views_count?: number | null
           virtual_tour_url?: string | null
           wna_eligible?: boolean | null
         }
@@ -33407,6 +33440,10 @@ export type Database = {
         Args: { p_region_id: string }
         Returns: Json
       }
+      compute_opportunity_score: {
+        Args: { p_property_id: string }
+        Returns: number
+      }
       count_admin_alerts: { Args: never; Returns: number }
       count_admin_alerts_by_status: { Args: never; Returns: Json }
       count_admin_alerts_by_type: { Args: never; Returns: Json }
@@ -33758,6 +33795,7 @@ export type Database = {
       }
       get_my_property_booking_count: { Args: never; Returns: number }
       get_national_property_market_index: { Args: never; Returns: Json }
+      get_opportunity_score_stats: { Args: never; Returns: Json }
       get_own_vendor_profile_secure: {
         Args: never
         Returns: {
