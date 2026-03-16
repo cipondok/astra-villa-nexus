@@ -167,7 +167,7 @@ const PropertyNeighborhoodMap = ({ city, coordinates }: PropertyNeighborhoodMapP
       el.style.background = categoryColors[poi.category];
 
       const popup = new mapboxgl.Popup({ offset: 15, maxWidth: '200px' }).setHTML(
-        `<div class="p-1.5"><p class="font-semibold text-xs">${poi.name}</p><p class="text-[10px] text-gray-500">${categoryLabels[poi.category]} · ${poi.distance}</p></div>`
+        `<div class="p-1.5"><p class="font-semibold text-xs">${poi.name}</p><p class="text-[10px] text-muted-foreground">${categoryLabels[poi.category]} · ${poi.distance}</p></div>`
       );
 
       const marker = new mapboxgl.Marker(el).setLngLat([poi.lng, poi.lat]).setPopup(popup).addTo(map.current!);

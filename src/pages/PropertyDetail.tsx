@@ -902,17 +902,17 @@ const PropertyDetail: React.FC = () => {
                     )}
                     <div className="flex items-center gap-1 mt-1 flex-wrap">
                       {property.province && (
-                        <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
+                        <Badge variant="outline" className="text-[10px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
                           {property.province}
                         </Badge>
                       )}
                       {property.city && (
-                        <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
+                        <Badge variant="outline" className="text-[10px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
                           {property.city}
                         </Badge>
                       )}
                       {property.district && (
-                        <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
+                        <Badge variant="outline" className="text-[10px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
                           {property.district}
                         </Badge>
                       )}
