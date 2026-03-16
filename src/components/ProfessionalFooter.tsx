@@ -127,7 +127,6 @@ const Dock = ({ items }: { items: DockItem[] }) => {
 };
 
 const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
-  const { logoUrl: footerLogoUrl } = useBrandingLogo('footerLogo');
   const { settings } = useSocialMediaSettings();
 
   const currentText = language === "en" ? {
