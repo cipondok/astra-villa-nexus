@@ -33170,6 +33170,10 @@ export type Database = {
         Args: { data_type: string; healthcare_data: string }
         Returns: string
       }
+      forecast_national_market: {
+        Args: { p_lookback_days?: number }
+        Returns: Json
+      }
       format_indonesian_phone: {
         Args: { input_phone: string }
         Returns: string
