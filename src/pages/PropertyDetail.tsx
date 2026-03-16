@@ -586,73 +586,7 @@ const PropertyDetail: React.FC = () => {
           ]}
         />
       )}
-      {/* Agent/Developer Header - Glassy Style with Membership Badge */}
-      {property?.posted_by && (
-        <div className="relative bg-gradient-to-r from-gold-primary/5 via-background to-gold-primary/5 backdrop-blur-2xl border-b border-gold-primary/15">
-          <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-2.5 sm:py-3">
-            <div className="flex items-center justify-between gap-3">
-              {/* Agent Profile - Enhanced */}
-              <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
-                <div className="relative flex-shrink-0">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-gold-primary/20 to-gold-primary/10 p-0.5 shadow-lg shadow-gold-primary/10">
-                    <img
-                      src={property.posted_by.avatar_url || "/placeholder.svg"}
-                      alt={property.posted_by.name}
-                      className="w-full h-full rounded-[10px] object-cover"
-                    />
-                  </div>
-                  <div className="absolute -bottom-1 -right-1">
-                    <UserStatusBadge status={property.posted_by.verification_status} size="sm" />
-                  </div>
-                </div>
-                
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-bold text-sm sm:text-base text-foreground truncate">
-                      {property.posted_by.name}
-                    </h3>
-                    {/* Membership Level Badge */}
-                    <UserMembershipBadge 
-                      membershipLevel={property.posted_by.user_level || 'verified'} 
-                      size="xs" 
-                      variant="pill"
-                      showIcon={true}
-                    />
-                  </div>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="bg-gold-primary/10 text-gold-primary px-2 py-0.5 rounded-md text-[10px] sm:text-xs font-medium backdrop-blur-sm">
-                      {property.posted_by.position || 'Developer'}
-                    </span>
-                    <div className="flex items-center gap-1">
-                      <Star className="h-3 w-3 fill-gold-primary text-gold-primary" />
-                      <span className="text-xs font-semibold">{property.posted_by.customer_feedback_rating}</span>
-                    </div>
-                    <span className="text-xs text-muted-foreground hidden sm:inline">• {property.posted_by.experience_years}y exp</span>
-                  </div>
-                </div>
-              </div>
-                
-              <Button 
-                size="sm"
-                className="flex-shrink-0 bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:from-gold-primary/90 hover:to-gold-primary/70 text-background border-0 h-9 px-4 text-xs font-semibold shadow-sm shadow-gold-primary/20"
-                onClick={() => {
-                  if (user && property.posted_by?.whatsapp_number) {
-                    window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, I'm interested in ${property.title}`, '_blank');
-                  } else {
-                    toast({
-                      title: t('propertyDetail.signInRequired'), 
-                      description: t('propertyDetail.signInToContact'),
-                      variant: "destructive",
-                    });
-                  }
-                }}
-              >
-                📱 Chat
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Agent info moved to sidebar only — no redundant top banner */}
 
       {/* Slim Sticky Header */}
       <div className="sticky top-0 z-50 bg-background/90 backdrop-blur-2xl border-b border-border shadow-sm">
