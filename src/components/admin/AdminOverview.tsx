@@ -564,9 +564,7 @@ const MetricRow = React.memo(function MetricRow({ icon: Icon, label, value, load
       {loading ? (
         <div className="h-4 w-10 bg-muted animate-pulse rounded" />
       ) : (
-        <span className="text-sm font-bold">{value.toLocaleString()}</span>
-      )}
-    </div>
+    <span className="text-sm font-black tabular-nums">{value.toLocaleString()}</span>
   );
 });
 
