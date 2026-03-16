@@ -267,7 +267,7 @@ const ModernPropertyCard = ({
           {postedAgo && (
             <div className="flex items-center gap-0.5 text-muted-foreground shrink-0">
               <Clock className="h-2.5 w-2.5" />
-              <span className="text-[9px]">{postedAgo}</span>
+              <span className="text-[10px]">{postedAgo}</span>
             </div>
           )}
         </div>
