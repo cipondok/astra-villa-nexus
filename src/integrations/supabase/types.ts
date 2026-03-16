@@ -4490,6 +4490,42 @@ export type Database = {
         }
         Relationships: []
       }
+      autopilot_worker_runs: {
+        Row: {
+          completed_at: string | null
+          duration_ms: number | null
+          error_message: string | null
+          id: string
+          items_processed: number | null
+          metadata: Json | null
+          started_at: string | null
+          status: string | null
+          worker_name: string
+        }
+        Insert: {
+          completed_at?: string | null
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          items_processed?: number | null
+          metadata?: Json | null
+          started_at?: string | null
+          status?: string | null
+          worker_name: string
+        }
+        Update: {
+          completed_at?: string | null
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          items_processed?: number | null
+          metadata?: Json | null
+          started_at?: string | null
+          status?: string | null
+          worker_name?: string
+        }
+        Relationships: []
+      }
       b2b_api_keys: {
         Row: {
           allowed_endpoints: string[] | null
@@ -8083,6 +8119,63 @@ export type Database = {
             columns: ["resolved_by"]
             isOneToOne: false
             referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      deal_alerts: {
+        Row: {
+          alert_priority: string | null
+          alert_score: number | null
+          alert_type: string
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string | null
+          metadata: Json | null
+          property_id: string | null
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          alert_priority?: string | null
+          alert_score?: number | null
+          alert_type: string
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string | null
+          metadata?: Json | null
+          property_id?: string | null
+          title: string
+          user_id?: string | null
+        }
+        Update: {
+          alert_priority?: string | null
+          alert_score?: number | null
+          alert_type?: string
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string | null
+          metadata?: Json | null
+          property_id?: string | null
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_alerts_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deal_alerts_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -18941,6 +19034,66 @@ export type Database = {
         }
         Relationships: []
       }
+      portfolio_intelligence: {
+        Row: {
+          avg_opportunity_score: number | null
+          concentration_risk: boolean | null
+          created_at: string | null
+          forecast_growth_signal: string | null
+          id: string
+          last_analysis_at: string | null
+          opportunity_density: number | null
+          projected_roi: number | null
+          risk_score: number | null
+          strongest_asset_id: string | null
+          top_city: string | null
+          top_city_pct: number | null
+          total_properties: number | null
+          total_value: number | null
+          updated_at: string | null
+          user_id: string
+          weakest_asset_id: string | null
+        }
+        Insert: {
+          avg_opportunity_score?: number | null
+          concentration_risk?: boolean | null
+          created_at?: string | null
+          forecast_growth_signal?: string | null
+          id?: string
+          last_analysis_at?: string | null
+          opportunity_density?: number | null
+          projected_roi?: number | null
+          risk_score?: number | null
+          strongest_asset_id?: string | null
+          top_city?: string | null
+          top_city_pct?: number | null
+          total_properties?: number | null
+          total_value?: number | null
+          updated_at?: string | null
+          user_id: string
+          weakest_asset_id?: string | null
+        }
+        Update: {
+          avg_opportunity_score?: number | null
+          concentration_risk?: boolean | null
+          created_at?: string | null
+          forecast_growth_signal?: string | null
+          id?: string
+          last_analysis_at?: string | null
+          opportunity_density?: number | null
+          projected_roi?: number | null
+          risk_score?: number | null
+          strongest_asset_id?: string | null
+          top_city?: string | null
+          top_city_pct?: number | null
+          total_properties?: number | null
+          total_value?: number | null
+          updated_at?: string | null
+          user_id?: string
+          weakest_asset_id?: string | null
+        }
+        Relationships: []
+      }
       portfolio_optimizer_allocations: {
         Row: {
           adjustment_direction: string | null
@@ -19644,6 +19797,7 @@ export type Database = {
           image_urls: string[] | null
           images: string[] | null
           inquiry_count: number | null
+          investment_risk_level: string | null
           investment_score: number | null
           investor_highlight: boolean | null
           is_early_bird: boolean | null
@@ -19659,6 +19813,8 @@ export type Database = {
           location: string
           longitude: number | null
           luxury_index: number | null
+          luxury_index_score: number | null
+          market_heat_score: number | null
           minimum_rental_days: number | null
           nearby_facilities: Json | null
           online_booking_enabled: boolean | null
@@ -19752,6 +19908,7 @@ export type Database = {
           image_urls?: string[] | null
           images?: string[] | null
           inquiry_count?: number | null
+          investment_risk_level?: string | null
           investment_score?: number | null
           investor_highlight?: boolean | null
           is_early_bird?: boolean | null
@@ -19767,6 +19924,8 @@ export type Database = {
           location: string
           longitude?: number | null
           luxury_index?: number | null
+          luxury_index_score?: number | null
+          market_heat_score?: number | null
           minimum_rental_days?: number | null
           nearby_facilities?: Json | null
           online_booking_enabled?: boolean | null
@@ -19860,6 +20019,7 @@ export type Database = {
           image_urls?: string[] | null
           images?: string[] | null
           inquiry_count?: number | null
+          investment_risk_level?: string | null
           investment_score?: number | null
           investor_highlight?: boolean | null
           is_early_bird?: boolean | null
@@ -19875,6 +20035,8 @@ export type Database = {
           location?: string
           longitude?: number | null
           luxury_index?: number | null
+          luxury_index_score?: number | null
+          market_heat_score?: number | null
           minimum_rental_days?: number | null
           nearby_facilities?: Json | null
           online_booking_enabled?: boolean | null
@@ -33596,6 +33758,7 @@ export type Database = {
         Returns: number
       }
       compute_price_predictions: { Args: { p_limit?: number }; Returns: Json }
+      compute_risk_levels: { Args: { p_limit?: number }; Returns: Json }
       count_admin_alerts: { Args: never; Returns: number }
       count_admin_alerts_by_status: { Args: never; Returns: Json }
       count_admin_alerts_by_type: { Args: never; Returns: Json }
@@ -33714,6 +33877,7 @@ export type Database = {
         Args: { input_phone: string }
         Returns: string
       }
+      generate_deal_alerts: { Args: { p_limit?: number }; Returns: Json }
       generate_deal_timing_signals: {
         Args: { p_limit?: number }
         Returns: Json
@@ -33789,6 +33953,7 @@ export type Database = {
           total_count: number
         }[]
       }
+      get_autopilot_status: { Args: never; Returns: Json }
       get_available_payout_balance: {
         Args: { p_user_id: string }
         Returns: number
@@ -34861,6 +35026,7 @@ export type Database = {
         }[]
       }
       seed_agent_analytics: { Args: never; Returns: undefined }
+      sync_heat_scores_to_properties: { Args: never; Returns: Json }
       track_property_view: {
         Args: { p_property_id: string }
         Returns: undefined
