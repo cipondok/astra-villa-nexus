@@ -490,12 +490,20 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
                 <CardTitle className="text-sm flex items-center gap-1.5 text-foreground font-semibold">
                   <MousePointer className="h-4 w-4 text-chart-2" /> Live Activity
                 </CardTitle>
-                <span className="text-[10px] text-muted-foreground">{activityAgo ? `↻ ${activityAgo}` : 'Auto-refresh 60s'}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-muted-foreground">{activityAgo ? `↻ ${activityAgo}` : 'Auto-refresh 60s'}</span>
+                  <button 
+                    onClick={() => handleQuickAction('activity-logs')} 
+                    className="text-[10px] text-primary hover:underline font-medium flex items-center gap-0.5"
+                  >
+                    View All <ChevronRight className="h-3 w-3" />
+                  </button>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="p-3 pt-0">
-              <ScrollArea className="h-[160px]">
-                <div className="space-y-1.5">
+              <ScrollArea className="h-[180px]">
+                <div className="space-y-1.5 pr-2">
                   {recentActivity && recentActivity.length > 0 ? (
                     recentActivity.map((activity, idx) => (
                       <motion.div
@@ -503,11 +511,14 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
                         initial={isFirstRender.current ? { opacity: 0, x: -10 } : false}
                         animate={{ opacity: 1, x: 0 }}
                         transition={isFirstRender.current ? { delay: idx * 0.05 } : { duration: 0 }}
-                        className="flex items-center gap-2 p-2 rounded-lg border border-border/50 bg-card hover:bg-muted/30 transition-colors"
+                        onClick={() => handleQuickAction('activity-logs')}
+                        role="button"
+                        tabIndex={0}
+                        className="flex items-center gap-2 p-2 rounded-lg border border-border/50 bg-card hover:bg-muted/30 hover:border-primary/30 transition-colors cursor-pointer"
                       >
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium truncate">{activity.activity_type}</p>
+                          <p className="text-xs font-medium truncate text-foreground">{activity.activity_type}</p>
                           <p className="text-[10px] text-muted-foreground truncate">{activity.activity_description}</p>
                         </div>
                         <span className="text-[10px] text-muted-foreground whitespace-nowrap">
