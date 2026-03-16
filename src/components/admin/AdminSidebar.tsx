@@ -192,7 +192,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
 
         {/* Flyout Panel */}
         {openCategory && openSections && (
-          <div className="absolute left-14 top-2 max-h-[calc(100%-16px)] w-52 bg-popover/98 backdrop-blur-xl rounded-xl border border-border/60 shadow-2xl z-40 animate-in slide-in-from-left-3 fade-in-0 duration-200 overflow-hidden ring-1 ring-black/5">
+          <div role="menu" aria-label={sectionTitles[openCategory as keyof typeof sectionTitles]} className="absolute left-14 top-2 max-h-[calc(100%-16px)] w-52 bg-popover/98 backdrop-blur-xl rounded-xl border border-border/60 shadow-2xl z-40 animate-in slide-in-from-left-3 fade-in-0 duration-200 overflow-hidden ring-1 ring-black/5">
             {/* Panel Header */}
             <div className="flex items-center justify-between px-3 py-2.5 border-b border-border/40 bg-muted/20">
               <div className="flex items-center gap-2">
