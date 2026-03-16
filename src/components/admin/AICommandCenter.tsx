@@ -113,16 +113,18 @@ const Panel = ({ children, title, icon: Icon, action, className = '' }: {
   action?: React.ReactNode; className?: string;
 }) => (
   <Card className={`border-border/40 bg-card/60 backdrop-blur-xl overflow-hidden ${className}`}>
-    <CardHeader className="pb-3 pt-4 px-4">
+    <CardHeader className="pb-3 pt-4 px-4 border-b border-border/20">
       <div className="flex items-center justify-between">
         <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground">
-          <Icon className="h-4 w-4 text-primary" />
+          <div className="p-1 rounded-md bg-primary/10">
+            <Icon className="h-3.5 w-3.5 text-primary" />
+          </div>
           {title}
         </CardTitle>
         {action}
       </div>
     </CardHeader>
-    <CardContent className="px-4 pb-4">
+    <CardContent className="px-4 pb-4 pt-4">
       {children}
     </CardContent>
   </Card>
