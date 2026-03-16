@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { AlertTriangle, Activity, UserPlus } from 'lucide-react';
+import { AlertTriangle, Activity, UserPlus, Loader2 } from 'lucide-react';
 import AdminOverview from "./AdminOverview";
 import EnhancedUserManagement from "./EnhancedUserManagement";
 import UserUpgradeApplications from "./UserUpgradeApplications";
@@ -33,6 +33,7 @@ import ListingOptimizationCenter from "./ListingOptimizationCenter";
 // Move lazy loading outside the component to prevent re-creation on every render
 const DeepSeekDiagnostics = lazy(() => import('./DeepSeekDiagnostics'));
 const EnhancedProjectDiagnostics = lazy(() => import('./EnhancedProjectDiagnostics'));
+const LaunchRoadmapDashboard = lazy(() => import('./LaunchRoadmapDashboard'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
@@ -269,6 +270,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
               <p className="text-sm text-muted-foreground mt-4">This would show the project file structure</p>
             </div>
           </div>
+        );
+      case "launch-roadmap":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <LaunchRoadmapDashboard />
+          </Suspense>
         );
       default:
         return <AdminOverview onSectionChange={onSectionChange} />;

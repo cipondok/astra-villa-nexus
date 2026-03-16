@@ -1251,6 +1251,13 @@ export const navigationSections = {
       icon: MessagesSquare,
       description: "Forum moderation, category management, and member engagement analytics",
       badge: "New"
+    },
+    {
+      key: "launch-roadmap",
+      label: "Launch Roadmap",
+      icon: Rocket,
+      description: "6-month national launch execution plan with phased task tracking and progress monitoring",
+      badge: "🚀 Launch"
     }
   ],
 
