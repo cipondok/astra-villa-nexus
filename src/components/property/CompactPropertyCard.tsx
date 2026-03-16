@@ -307,7 +307,7 @@ const CompactPropertyCard = ({
             {/* Location */}
             <div className="flex items-center gap-0.5 mt-1 sm:mt-1.5">
               <MapPin className="h-2.5 sm:h-3 w-2.5 sm:w-3 text-white/80 flex-shrink-0" />
-              <span className="text-[9px] sm:text-[10px] md:text-xs text-white/90 truncate">{property.location}</span>
+              <span className="text-[10px] sm:text-[11px] md:text-xs text-white/90 truncate">{property.location}</span>
             </div>
 
             {/* Trust Badges */}
