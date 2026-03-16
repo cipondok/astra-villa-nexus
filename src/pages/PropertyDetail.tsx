@@ -1059,7 +1059,7 @@ const PropertyDetail: React.FC = () => {
                       </div>
                       <div className="flex justify-between py-1.5 px-2 bg-muted/30 rounded-lg text-[10px] sm:text-xs items-center">
                         <span className="font-medium text-foreground">{t('propertyDetail.status')}</span>
-                        <Badge variant={property.status === 'active' ? 'default' : 'secondary'} className="h-4 text-[8px] px-1.5 rounded-md">
+                        <Badge variant={property.status === 'active' ? 'default' : 'secondary'} className="h-4 text-[10px] px-1.5 rounded-md">
                           {property.status}
                         </Badge>
                       </div>
