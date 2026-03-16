@@ -1,5 +1,6 @@
 
 import React, { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import SectionErrorBoundary from "./shared/SectionErrorBoundary";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
