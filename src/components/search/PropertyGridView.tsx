@@ -5,6 +5,7 @@ import { MapPin, Bed, Bath, Maximize, Heart, Share2, Eye, Phone, Box, Tag, Perce
 import { cn } from "@/lib/utils";
 import PropertyComparisonButton from "@/components/property/PropertyComparisonButton";
 import SocialShareDialog from "@/components/property/SocialShareDialog";
+import InvestmentScoreBadge from "@/components/property/InvestmentScoreBadge";
 import { BaseProperty } from "@/types/property";
 import { useState } from "react";
 import { useDefaultPropertyImage } from "@/hooks/useDefaultPropertyImage";
