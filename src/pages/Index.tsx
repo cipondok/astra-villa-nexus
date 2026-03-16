@@ -306,12 +306,8 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Compute banner images - use admin config or fallback to defaults
-  const bannerImages = heroConfig?.bannerImages && heroConfig.bannerImages.length > 0
-    ? heroConfig.bannerImages
-    : [slideHero1, slideHero2, slideHero3, slideHero4, slideHero5, slideHero6, slideHero7];
-  
-  const slideInterval = (heroConfig?.autoSlideInterval || 5) * 1000;
+  // Hero background image — admin config or default
+  const heroImage = heroConfig?.bannerImages?.[0] || slideHero1;
 
   // Preload first hero banner for faster LCP
   useEffect(() => {
