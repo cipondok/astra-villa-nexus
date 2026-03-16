@@ -197,6 +197,7 @@ const VisualSearchPage = lazy(() => import('@/pages/VisualSearchPage'));
 const ListingPredictorPage = lazy(() => import('@/pages/ListingPredictorPage'));
 const MarketTrendsPage = lazy(() => import('@/pages/MarketTrendsPage'));
 const AutonomousAgentPage = lazy(() => import('@/pages/AutonomousAgentPage'));
+const AIAutopilotPage = lazy(() => import('@/pages/AIAutopilotPage'));
 const MobileHomeFeed = lazy(() => import('@/pages/mobile/MobileHomeFeed'));
 const MobilePropertyDetail = lazy(() => import('@/pages/mobile/MobilePropertyDetail'));
 const MobileInvestorDashboard = lazy(() => import('@/pages/mobile/MobileInvestorDashboard'));
