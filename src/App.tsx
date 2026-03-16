@@ -50,10 +50,10 @@ const MobileBottomTabBar = lazy(() => import('@/components/navigation/MobileBott
 const SessionExpirationHandler = lazy(() => import('@/components/SessionExpirationHandler'));
 const AuthNotificationHandler = lazy(() => import('@/components/AuthNotificationHandler'));
 
-// Route guards — small but pull in auth context chains eagerly
-import VendorOnlyRoute from '@/components/VendorOnlyRoute';
-import AgentOnlyRoute from '@/components/AgentOnlyRoute';
-import PropertyOwnerOnlyRoute from '@/components/PropertyOwnerOnlyRoute';
+// Route guards — lazy loaded since they're only used by specific routes
+const VendorOnlyRoute = lazy(() => import('@/components/VendorOnlyRoute'));
+const AgentOnlyRoute = lazy(() => import('@/components/AgentOnlyRoute'));
+const PropertyOwnerOnlyRoute = lazy(() => import('@/components/PropertyOwnerOnlyRoute'));
 
 // All pages — lazy loaded for minimum initial bundle
 const Index = lazy(() => import('@/pages/Index'));
