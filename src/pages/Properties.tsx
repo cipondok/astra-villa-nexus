@@ -582,19 +582,21 @@ const Properties = () => {
                   </Select>
 
                   {/* View Toggle */}
-                  <div className="hidden sm:flex border border-border/50 rounded-xl p-0.5 bg-card">
-                    <button
-                      onClick={() => setViewMode('grid')}
-                      className={`h-8 w-8 rounded-lg flex items-center justify-center transition-colors ${viewMode === 'grid' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
-                    >
-                      <Grid3X3 className="h-3.5 w-3.5" />
-                    </button>
-                    <button
-                      onClick={() => setViewMode('list')}
-                      className={`h-8 w-8 rounded-lg flex items-center justify-center transition-colors ${viewMode === 'list' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
-                    >
-                      <List className="h-3.5 w-3.5" />
-                    </button>
+                  <div className="flex border border-border/50 rounded-xl p-0.5 bg-card">
+                    {([
+                      { mode: 'grid' as const, icon: Grid3X3, label: 'Grid' },
+                      { mode: 'list' as const, icon: List, label: 'List' },
+                      { mode: 'map' as const, icon: Map, label: 'Map' },
+                    ]).map(({ mode, icon: Icon, label }) => (
+                      <button
+                        key={mode}
+                        onClick={() => setViewMode(mode)}
+                        aria-label={`${label} view`}
+                        className={`h-8 w-8 rounded-lg flex items-center justify-center transition-colors ${viewMode === mode ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                      >
+                        <Icon className="h-3.5 w-3.5" />
+                      </button>
+                    ))}
                   </div>
 
                   {/* Mobile Filter Sheet */}
