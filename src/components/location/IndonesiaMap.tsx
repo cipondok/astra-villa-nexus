@@ -203,15 +203,44 @@ interface IndonesiaMapProps {
 }
 
 // ── Map Legend Component ──
-const MapLegend = memo(({ isDark, showHeatmap, showHotspots }: { isDark: boolean; showHeatmap: boolean; showHotspots: boolean }) => {
+const MapLegend = memo(({ isDark, showHeatmap, showHotspots, heatMode }: { isDark: boolean; showHeatmap: boolean; showHotspots: boolean; heatMode: HeatMode }) => {
   if (!showHeatmap) return null;
-  const items = [
-    { label: 'Tidak ada', color: getHeatmapColor(0, isDark) },
-    { label: '1–50', color: getHeatmapColor(25, isDark) },
-    { label: '51–200', color: getHeatmapColor(100, isDark) },
-    { label: '201–500', color: getHeatmapColor(300, isDark) },
-    { label: '500+', color: getHeatmapColor(501, isDark) },
-  ];
+
+  const legends: Record<HeatMode, { title: string; items: { label: string; color: string }[] }> = {
+    density: {
+      title: 'Kepadatan Properti',
+      items: [
+        { label: 'Tidak ada', color: getHeatmapColor(0, isDark) },
+        { label: '1–50', color: getHeatmapColor(25, isDark) },
+        { label: '51–200', color: getHeatmapColor(100, isDark) },
+        { label: '201–500', color: getHeatmapColor(300, isDark) },
+        { label: '500+', color: getHeatmapColor(501, isDark) },
+      ],
+    },
+    demand: {
+      title: 'Demand Heat',
+      items: [
+        { label: 'None', color: getDemandHeatColor(0, isDark) },
+        { label: 'Cool (0–25)', color: getDemandHeatColor(20, isDark) },
+        { label: 'Warm (26–50)', color: getDemandHeatColor(40, isDark) },
+        { label: 'Hot (51–75)', color: getDemandHeatColor(65, isDark) },
+        { label: 'Very Hot (76+)', color: getDemandHeatColor(90, isDark) },
+      ],
+    },
+    price: {
+      title: 'Price Momentum',
+      items: [
+        { label: 'Declining', color: getPriceMomentumColor(-2, isDark) },
+        { label: 'Flat (0–3%)', color: getPriceMomentumColor(2, isDark) },
+        { label: 'Growing (3–7%)', color: getPriceMomentumColor(5, isDark) },
+        { label: 'Strong (7–12%)', color: getPriceMomentumColor(10, isDark) },
+        { label: 'Surge (12%+)', color: getPriceMomentumColor(15, isDark) },
+      ],
+    },
+  };
+
+  const current = legends[heatMode];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
@@ -219,9 +248,9 @@ const MapLegend = memo(({ isDark, showHeatmap, showHotspots }: { isDark: boolean
       exit={{ opacity: 0, y: 8 }}
       className="absolute bottom-14 sm:bottom-16 left-3 sm:left-4 z-30 bg-background/95 backdrop-blur-sm rounded-xl px-3 py-2.5 shadow-lg border border-border/60"
     >
-      <p className="text-[10px] font-bold text-foreground mb-1.5 uppercase tracking-wider">Kepadatan Properti</p>
+      <p className="text-[10px] font-bold text-foreground mb-1.5 uppercase tracking-wider">{current.title}</p>
       <div className="flex flex-col gap-1">
-        {items.map(item => (
+        {current.items.map(item => (
           <div key={item.label} className="flex items-center gap-2">
             <div className="w-4 h-3 rounded-sm border border-border/30" style={{ backgroundColor: item.color }} />
             <span className="text-[10px] text-muted-foreground">{item.label}</span>
