@@ -25677,6 +25677,99 @@ export type Database = {
         }
         Relationships: []
       }
+      supply_expansion_targets: {
+        Row: {
+          activated_at: string | null
+          city: string
+          created_at: string
+          current_agents: number
+          current_listings: number
+          demand_score: number
+          id: string
+          notes: string | null
+          priority_rank: number
+          province: string
+          sourcing_channels: Json | null
+          status: string
+          supply_gap_score: number
+          target_agents: number
+          target_listings: number
+          tier: string
+          updated_at: string
+        }
+        Insert: {
+          activated_at?: string | null
+          city: string
+          created_at?: string
+          current_agents?: number
+          current_listings?: number
+          demand_score?: number
+          id?: string
+          notes?: string | null
+          priority_rank?: number
+          province: string
+          sourcing_channels?: Json | null
+          status?: string
+          supply_gap_score?: number
+          target_agents?: number
+          target_listings?: number
+          tier: string
+          updated_at?: string
+        }
+        Update: {
+          activated_at?: string | null
+          city?: string
+          created_at?: string
+          current_agents?: number
+          current_listings?: number
+          demand_score?: number
+          id?: string
+          notes?: string | null
+          priority_rank?: number
+          province?: string
+          sourcing_channels?: Json | null
+          status?: string
+          supply_gap_score?: number
+          target_agents?: number
+          target_listings?: number
+          tier?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      supply_quality_standards: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          min_threshold: number
+          rule_category: string
+          rule_name: string
+          severity: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          min_threshold?: number
+          rule_category: string
+          rule_name: string
+          severity?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          min_threshold?: number
+          rule_category?: string
+          rule_name?: string
+          severity?: string
+        }
+        Relationships: []
+      }
       support_tickets: {
         Row: {
           assigned_to: string | null

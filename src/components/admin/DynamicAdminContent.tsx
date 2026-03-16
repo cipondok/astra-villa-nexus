@@ -36,6 +36,7 @@ const EnhancedProjectDiagnostics = lazy(() => import('./EnhancedProjectDiagnosti
 const LaunchRoadmapDashboard = lazy(() => import('./LaunchRoadmapDashboard'));
 const GrowthExecutionDashboard = lazy(() => import('./GrowthExecutionDashboard'));
 const AgentAcquisitionDashboard = lazy(() => import('./AgentAcquisitionDashboard'));
+const SupplyExpansionDashboard = lazy(() => import('./SupplyExpansionDashboard'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
@@ -289,6 +290,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return (
           <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
             <AgentAcquisitionDashboard />
+          </Suspense>
+        );
+      case "supply-expansion":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <SupplyExpansionDashboard />
           </Suspense>
         );
       default:

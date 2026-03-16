@@ -1272,6 +1272,13 @@ export const navigationSections = {
       icon: UserPlus,
       description: "Agent pipeline management — identify, contact, onboard, and activate agents across key cities",
       badge: "🎯 Agents"
+    },
+    {
+      key: "supply-expansion",
+      label: "Supply Expansion",
+      icon: Building,
+      description: "National property supply growth strategy — city prioritization, listing sourcing, and quality control",
+      badge: "📦 Supply"
     }
   ],
 
