@@ -60,6 +60,7 @@ import MarketCyclePredictionCard from "./MarketCyclePredictionCard";
 import DealTimingSignalCard from "./DealTimingSignalCard";
 import NationalForecastCard from "./NationalForecastCard";
 import PortfolioStrategyCard from "./PortfolioStrategyCard";
+import CapitalFlowCard from "./CapitalFlowCard";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
@@ -502,6 +503,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
 
           {/* Portfolio Strategy Advisor */}
           <PortfolioStrategyCard />
+
+          {/* Capital Flow Intelligence */}
+          <CapitalFlowCard />
 
           {/* AI Systems Status */}
           <Card className="border-border/30">
