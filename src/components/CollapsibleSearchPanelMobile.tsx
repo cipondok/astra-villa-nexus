@@ -126,7 +126,7 @@ export const CollapsibleSearchPanelMobile: React.FC<CollapsibleSearchPanelMobile
       </div>
       
       {/* Spacer when sticky to prevent content jump */}
-      {isSticky && <div className="h-[70px]" />}
+      {isSticky && <div className="h-[72px]" />}
     </div>
   );
 };
