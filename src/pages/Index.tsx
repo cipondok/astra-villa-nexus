@@ -77,6 +77,8 @@ const SocialProofStrip = lazy(() => import("@/components/home/SocialProofStrip")
 const SectionDividerCTA = lazy(() => import("@/components/home/SectionDividerCTA"));
 const MobileFloatingCTA = lazy(() => import("@/components/home/MobileFloatingCTA"));
 const TrustFooterStrip = lazy(() => import("@/components/home/TrustFooterStrip"));
+const WelcomeBackStrip = lazy(() => import("@/components/home/WelcomeBackStrip"));
+const RecentlyViewedStrip = lazy(() => import("@/components/home/RecentlyViewedStrip"));
 const PWAInstallPrompt = lazy(() => import("@/components/pwa/PWAInstallPrompt"));
 
 type ViewMode = 'list' | 'grid' | 'map';
@@ -826,6 +828,14 @@ const Index = () => {
                   />
                 </Suspense>
               </section>
+
+              {/* ── Welcome Back + Recently Viewed (returning users) ── */}
+              <Suspense fallback={null}>
+                <WelcomeBackStrip />
+              </Suspense>
+              <Suspense fallback={null}>
+                <RecentlyViewedStrip />
+              </Suspense>
 
               {/* ── SECTION 3: AI Opportunity Zone (merged intelligence modules) ── */}
               <section className="py-10 sm:py-14 bg-muted/30" id="ai-opportunity-zone" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 800px' }}>
