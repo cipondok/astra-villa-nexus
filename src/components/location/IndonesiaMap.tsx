@@ -276,11 +276,17 @@ const ProvinceTooltip = memo(({
   propertyCount,
   avgPrice,
   investmentScore,
+  demandHeat,
+  priceGrowth,
+  newListings,
 }: {
   provinceName: string;
   propertyCount: number;
   avgPrice?: number;
   investmentScore?: number;
+  demandHeat?: number;
+  priceGrowth?: number;
+  newListings?: number;
 }) => {
   const formatPrice = (price: number) => {
     if (price >= 1000000) return `$${(price / 1000000).toFixed(1)}M`;
@@ -294,6 +300,15 @@ const ProvinceTooltip = memo(({
     return 'text-muted-foreground';
   };
 
+  const getDemandLabel = (score: number) => {
+    if (score >= 76) return { label: 'Very Hot', cls: 'text-destructive' };
+    if (score >= 51) return { label: 'Hot', cls: 'text-chart-1' };
+    if (score >= 26) return { label: 'Warm', cls: 'text-chart-3' };
+    return { label: 'Cool', cls: 'text-muted-foreground' };
+  };
+
+  const demandInfo = demandHeat ? getDemandLabel(demandHeat) : null;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 6, scale: 0.94 }}
@@ -302,19 +317,26 @@ const ProvinceTooltip = memo(({
       transition={{ duration: 0.15, ease: 'easeOut' }}
       className="absolute top-3 left-1/2 -translate-x-1/2 z-50 pointer-events-none"
     >
-      <div className="bg-background/95 backdrop-blur-md rounded-xl px-4 py-3 shadow-xl border border-border/60 min-w-[200px]">
+      <div className="bg-background/95 backdrop-blur-md rounded-xl px-4 py-3 shadow-xl border border-border/60 min-w-[240px]">
         {/* Header */}
         <div className="flex items-center gap-2.5 mb-2">
           <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
             <MapPin className="h-4 w-4 text-primary-foreground" />
           </div>
-          <div>
+          <div className="min-w-0">
             <span className="font-bold text-foreground text-sm leading-tight block">{provinceName}</span>
-            <span className="text-[10px] text-primary font-semibold">Klik untuk detail →</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] text-primary font-semibold">Klik untuk detail →</span>
+              {(newListings ?? 0) > 0 && (
+                <span className="text-[9px] font-bold text-chart-1 bg-chart-1/10 px-1 py-0.5 rounded">
+                  +{newListings} new
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Stats grid */}
+        {/* Stats grid — row 1 */}
         <div className="grid grid-cols-3 gap-2 pt-2 border-t border-border/40">
           <div className="text-center">
             <div className="flex items-center justify-center gap-1 mb-0.5">
@@ -342,6 +364,32 @@ const ProvinceTooltip = memo(({
             <p className="text-[9px] text-muted-foreground">Skor</p>
           </div>
         </div>
+
+        {/* Stats grid — row 2: demand + price momentum */}
+        {(demandHeat || priceGrowth) ? (
+          <div className="grid grid-cols-2 gap-2 pt-1.5 mt-1.5 border-t border-border/20">
+            {demandInfo && (
+              <div className="flex items-center gap-1.5">
+                <Flame className="h-3 w-3 text-chart-1" />
+                <div>
+                  <p className={`text-[10px] font-bold ${demandInfo.cls}`}>{demandInfo.label}</p>
+                  <p className="text-[8px] text-muted-foreground">Demand {demandHeat}/100</p>
+                </div>
+              </div>
+            )}
+            {priceGrowth !== undefined && (
+              <div className="flex items-center gap-1.5">
+                <TrendingUp className={`h-3 w-3 ${priceGrowth >= 0 ? 'text-chart-2' : 'text-destructive'}`} />
+                <div>
+                  <p className={`text-[10px] font-bold ${priceGrowth >= 0 ? 'text-chart-2' : 'text-destructive'}`}>
+                    {priceGrowth >= 0 ? '+' : ''}{priceGrowth.toFixed(1)}%
+                  </p>
+                  <p className="text-[8px] text-muted-foreground">Price YoY</p>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : null}
       </div>
     </motion.div>
   );
