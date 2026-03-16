@@ -778,6 +778,9 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
             propertyCount={hoveredData.count}
             avgPrice={hoveredData.avgPrice}
             investmentScore={hoveredData.investmentScore}
+            demandHeat={hoveredData.demandHeat}
+            priceGrowth={hoveredData.priceGrowth}
+            newListings={hoveredData.newListings}
           />
         )}
       </AnimatePresence>
