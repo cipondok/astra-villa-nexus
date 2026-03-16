@@ -153,18 +153,18 @@ const PropertyGridView = ({
             </div>
 
             {/* Content */}
-            <CardContent className="p-3.5 sm:p-4 space-y-2.5">
-              {/* Price block */}
+            <CardContent className="p-3.5 sm:p-4 space-y-2">
+              {/* Price — primary focal point */}
               <div className="flex items-baseline gap-1.5 flex-wrap">
                 <span className="text-lg sm:text-xl font-black text-primary tracking-tight leading-none drop-shadow-sm">{priceInfo.main}</span>
                 {isRent && <span className="text-[11px] text-muted-foreground font-semibold">/bln</span>}
                 {!isRent && (
-                  <span className="text-[10px] text-muted-foreground font-medium">≈ {formatMonthlyPayment(property.price)}</span>
+                  <span className="text-[10px] text-muted-foreground font-medium ml-auto">≈ {formatMonthlyPayment(property.price)}</span>
                 )}
               </div>
 
               {/* Title */}
-              <h3 className="text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+              <h3 className="text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors duration-200">
                 {property.title}
               </h3>
 
@@ -175,7 +175,7 @@ const PropertyGridView = ({
               </div>
 
               {/* Specs row */}
-              <div className="flex items-center gap-3 pt-2 border-t border-border/50 text-xs text-muted-foreground">
+              <div className="flex items-center gap-3 pt-2 border-t border-border/40 text-xs text-muted-foreground">
                 {property.bedrooms && property.bedrooms > 0 && (
                   <div className="flex items-center gap-1">
                     <Bed className="h-3.5 w-3.5" />

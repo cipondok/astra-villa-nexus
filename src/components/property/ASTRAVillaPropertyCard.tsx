@@ -184,7 +184,7 @@ const ASTRAVillaPropertyCard = ({
       </PropertyImageCarousel>
 
       {/* Content Section */}
-      <div className="p-2.5 sm:p-3 space-y-1.5">
+      <div className="p-3 sm:p-3.5 space-y-2">
         {!isImageLoaded ? (
           <>
             <div className="h-8 w-full rounded-lg bg-muted animate-pulse" />
@@ -198,12 +198,12 @@ const ASTRAVillaPropertyCard = ({
           </>
         ) : (
           <>
-            {/* Price Section */}
+            {/* Price Section — dominant focal point */}
             <div className={cn(
-              "flex items-baseline gap-1 rounded-lg px-2 py-1.5 sm:px-2.5 sm:py-2 border flex-wrap",
+              "flex items-baseline gap-1.5 rounded-lg px-2.5 py-2 border flex-wrap",
               "bg-primary/5 border-primary/15"
             )}>
-              <span className="text-sm sm:text-base font-black leading-none tracking-tight text-primary drop-shadow-sm">
+              <span className="text-base sm:text-lg font-black leading-none tracking-tight text-primary drop-shadow-sm">
                 <Price amount={numPrice} short showFlag />
               </span>
               {isRent && (
