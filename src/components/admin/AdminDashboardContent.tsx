@@ -103,6 +103,7 @@ import {
   AHUCompanyChecker,
   ConciergeServiceManagement,
   SamplePropertyGenerator,
+  BulkImageGenerator,
   VerificationSystemSettings,
   AuthRegistrationSettings,
   NearbyFacilitiesSettings,
@@ -341,6 +342,7 @@ const renderSection = (
     case "media-coverage-pr":   return <MediaCoveragePR />;
     case "concierge-service":   return <ConciergeServiceManagement />;
     case "sample-property-generator": return <SamplePropertyGenerator />;
+    case "bulk-image-generator": return <BulkImageGenerator />;
     case "verification-system-settings": return <VerificationSystemSettings />;
     case "ahu-company-checker": return <AHUCompanyChecker />;
     case "auth-registration-settings": return <AuthRegistrationSettings />;

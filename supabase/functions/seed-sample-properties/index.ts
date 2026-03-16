@@ -209,19 +209,105 @@ Deno.serve(async (req) => {
     }
 
     // Bulk insert in chunks of 20 to avoid compute limits
+    const insertedIds: string[] = [];
     if (toInsert.length > 0) {
       const CHUNK = 20;
       for (let i = 0; i < toInsert.length; i += CHUNK) {
         const chunk = toInsert.slice(i, i + CHUNK);
-        const { error: insertErr, count } = await supabase
+        const { data: insertedData, error: insertErr, count } = await supabase
           .from("properties")
-          .insert(chunk, { count: "exact" });
+          .insert(chunk, { count: "exact" })
+          .select("id, title, property_type, city");
 
         if (insertErr) {
           console.error("Chunk insert error:", insertErr.message);
           errors += chunk.length;
         } else {
           created += count || chunk.length;
+          if (insertedData) {
+            insertedData.forEach((p: any) => insertedIds.push(p.id));
+          }
+        }
+      }
+    }
+
+    // Generate AI images for newly created properties (fire-and-forget, 2 at a time)
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    let imagesGenerated = 0;
+    if (LOVABLE_API_KEY && insertedIds.length > 0) {
+      // Fetch the inserted properties for image gen context
+      const { data: newProps } = await supabase
+        .from("properties")
+        .select("id, title, property_type, city, location")
+        .in("id", insertedIds.slice(0, 10)); // Limit to 10 per batch to avoid timeout
+
+      if (newProps && newProps.length > 0) {
+        const IMG_CONCURRENCY = 2;
+        for (let i = 0; i < newProps.length; i += IMG_CONCURRENCY) {
+          const imgBatch = newProps.slice(i, i + IMG_CONCURRENCY);
+          const results = await Promise.allSettled(
+            imgBatch.map(async (prop: any) => {
+              try {
+                const prompt = `Generate a professional, high-quality real estate photograph of a ${prop.property_type || "property"} in ${prop.city || "Indonesia"}. Property: "${prop.title}". Style: Professional real estate listing photo, well-lit, clean composition, architectural photography. Show the exterior or main living area. Photorealistic, no text or watermarks.`;
+
+                const aiResp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+                  method: "POST",
+                  headers: {
+                    Authorization: `Bearer ${LOVABLE_API_KEY}`,
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    model: "google/gemini-2.5-flash-image",
+                    messages: [{ role: "user", content: prompt }],
+                    modalities: ["image", "text"],
+                  }),
+                });
+
+                if (!aiResp.ok) {
+                  const errText = await aiResp.text();
+                  console.error(`AI image gen failed for ${prop.id}: ${aiResp.status}`, errText);
+                  return;
+                }
+
+                const aiData = await aiResp.json();
+                const imageDataUrl = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+                if (!imageDataUrl || !imageDataUrl.startsWith("data:image/")) return;
+
+                const base64Match = imageDataUrl.match(/^data:image\/(\w+);base64,(.+)$/);
+                if (!base64Match) return;
+
+                const ext = base64Match[1] === "jpeg" ? "jpg" : base64Match[1];
+                const binaryData = Uint8Array.from(atob(base64Match[2]), (c) => c.charCodeAt(0));
+                const fileName = `ai-generated/${prop.id}/${Date.now()}.${ext}`;
+
+                const { error: uploadErr } = await supabase.storage
+                  .from("property-images")
+                  .upload(fileName, binaryData, { contentType: `image/${base64Match[1]}`, upsert: true });
+
+                if (uploadErr) {
+                  console.error(`Upload failed for ${prop.id}:`, uploadErr);
+                  return;
+                }
+
+                const { data: { publicUrl } } = supabase.storage.from("property-images").getPublicUrl(fileName);
+
+                await supabase
+                  .from("properties")
+                  .update({ images: [publicUrl], thumbnail_url: publicUrl })
+                  .eq("id", prop.id);
+
+                return true;
+              } catch (e) {
+                console.error(`Image gen error for ${prop.id}:`, e);
+              }
+            })
+          );
+          imagesGenerated += results.filter(r => r.status === "fulfilled" && r.value).length;
+
+          // Rate limit delay
+          if (i + IMG_CONCURRENCY < newProps.length) {
+            await new Promise(r => setTimeout(r, 1500));
+          }
         }
       }
     }
@@ -248,6 +334,7 @@ Deno.serve(async (req) => {
         created,
         skipped,
         errors,
+        images_generated: imagesGenerated,
         batchProcessed: uniqueLocations.length,
         hasMore,
         nextOffset: hasMore ? nextOffset : null,
