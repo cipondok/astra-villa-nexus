@@ -280,3 +280,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.process-ai-events]
     verify_jwt = false
 
+  [functions.generate-recommendations]
+    verify_jwt = false
+
