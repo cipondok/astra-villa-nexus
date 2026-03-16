@@ -565,23 +565,35 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
               <div className="h-px flex-1 bg-gradient-to-l from-primary/30 to-transparent" />
             </div>
 
-            {/* Priority tier: elevated cards */}
-            <div className="shadow-sm rounded-lg">
+            {/* Tier 1: Active signal cards — elevated with glow */}
+            <div className="shadow-md rounded-lg border border-primary/30 ring-1 ring-primary/10">
               <AIHealthSummaryCard onNavigate={() => handleQuickAction('ai-command-center')} data={aiData?.systemHealth} />
             </div>
-            <div className="shadow-sm rounded-lg">
+            <div className="shadow-md rounded-lg border border-primary/30 ring-1 ring-primary/10">
               <LeadIntelligenceCard onNavigate={() => handleQuickAction('lead-management')} data={aiData?.leadIntelligence} />
             </div>
-            <div className="shadow-sm rounded-lg border border-primary/20">
-              <MarketIntelligenceCard onNavigate={() => handleQuickAction('ai-command-center')} />
-            </div>
-            <AgentPerformanceCard onNavigate={() => handleQuickAction('agent-management')} />
-            <DealPipelineCard onNavigate={() => handleQuickAction('financial-management')} />
-            <GeoExpansionCard onNavigate={() => handleQuickAction('ai-command-center')} />
-            <div className="border border-primary/20 rounded-lg">
+            <div className="shadow-md rounded-lg border border-primary/30 ring-1 ring-primary/10">
               <MarketAnomalyCard data={aiData?.marketAnomalies} />
             </div>
-            <InvestmentAttractivenessCard />
+
+            {/* Tier 2: Key intelligence — subtle shadow */}
+            <div className="shadow-sm rounded-lg">
+              <MarketIntelligenceCard onNavigate={() => handleQuickAction('ai-command-center')} />
+            </div>
+            <div className="shadow-sm rounded-lg">
+              <AgentPerformanceCard onNavigate={() => handleQuickAction('agent-management')} />
+            </div>
+            <div className="shadow-sm rounded-lg">
+              <DealPipelineCard onNavigate={() => handleQuickAction('financial-management')} />
+            </div>
+            <div className="shadow-sm rounded-lg">
+              <GeoExpansionCard onNavigate={() => handleQuickAction('ai-command-center')} />
+            </div>
+            <div className="shadow-sm rounded-lg">
+              <InvestmentAttractivenessCard />
+            </div>
+
+            {/* Tier 3: Secondary insights — flat */}
             <BuyerListingMatchCard />
             <NationalForecastCard />
             <MarketCyclePredictionCard />
