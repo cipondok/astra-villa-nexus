@@ -168,7 +168,7 @@ const ModernPropertyCard = ({
         {/* Top Badges */}
         <div className="absolute top-1.5 left-1.5 right-1.5 flex justify-between items-start">
           <div className="flex gap-1">
-            <Badge className="bg-gold-primary text-background text-[10px] px-1.5 py-0.5 rounded-md font-semibold">
+            <Badge className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded-md font-semibold">
               {getTypeLabel()}
             </Badge>
             {hasVirtualTour && (
