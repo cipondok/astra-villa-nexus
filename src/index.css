@@ -262,6 +262,28 @@ html, body {
     --chart-3: 38 92% 50%;    /* Amber - warning / caution */
     --chart-4: 270 70% 55%;   /* Purple - neutral / highlight */
     --chart-5: 346 77% 52%;   /* Rose - accent / contrast */
+
+    /* ═══ AI Intelligence Signal Colors ═══ */
+    --intel-blue: 217 91% 60%;
+    --intel-blue-glow: 217 91% 60%;
+    --intel-success: 160 84% 39%;
+    --intel-success-soft: 160 84% 39%;
+    --intel-warning: 38 92% 50%;
+    --intel-danger: 0 84% 60%;
+    --intel-purple: 270 70% 55%;
+
+    /* Market Heat Gradient Stops */
+    --heat-cold: 210 30% 50%;
+    --heat-cool: 200 80% 50%;
+    --heat-warm: 38 92% 50%;
+    --heat-hot: 0 84% 55%;
+    --heat-fire: 346 90% 48%;
+
+    /* Intelligence Card Elevation */
+    --intel-radius: 16px;
+    --intel-radius-lg: 20px;
+    --shadow-intel: 0 4px 20px hsl(217 91% 55% / 0.08);
+    --shadow-intel-active: 0 8px 32px hsl(217 91% 55% / 0.15), 0 0 0 1px hsl(217 91% 55% / 0.1);
   }
 
   .dark {
