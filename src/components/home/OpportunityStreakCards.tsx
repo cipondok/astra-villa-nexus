@@ -140,7 +140,7 @@ export default function OpportunityStreakCards() {
       // Fetch recently listed properties - try approved first, then fallback
       let { data } = await supabase
         .from('properties')
-        .select('id, title, price, city, location, property_type, thumbnail_url, images, created_at')
+        .select('id, title, price, city, location, property_type, thumbnail_url, images, created_at, bedrooms, bathrooms, area_sqm')
         .eq('status', 'active')
         .eq('approval_status', 'approved')
         .not('price', 'is', null)
@@ -151,7 +151,7 @@ export default function OpportunityStreakCards() {
       if (!data || data.length === 0) {
         const fallback = await supabase
           .from('properties')
-          .select('id, title, price, city, location, property_type, thumbnail_url, images, created_at')
+          .select('id, title, price, city, location, property_type, thumbnail_url, images, created_at, bedrooms, bathrooms, area_sqm')
           .eq('status', 'active')
           .not('price', 'is', null)
           .order('created_at', { ascending: false })
