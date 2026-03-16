@@ -680,9 +680,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           {/* ═══ ZONE 3: Operations ═══ */}
           <div className="space-y-3">
             <div className="flex items-center gap-2 px-1">
-              <div className="h-px flex-1 bg-gradient-to-r from-chart-3/30 to-transparent" />
-              <span className="text-[10px] font-bold uppercase tracking-widest text-chart-3/70">Operations</span>
-              <div className="h-px flex-1 bg-gradient-to-l from-chart-3/30 to-transparent" />
+              <div className="h-px flex-1 bg-gradient-to-r from-chart-3/50 to-transparent" />
+              <span className="text-[11px] font-bold uppercase tracking-widest text-chart-3">Operations</span>
+              <div className="h-px flex-1 bg-gradient-to-l from-chart-3/50 to-transparent" />
             </div>
 
             <SectionErrorBoundary sectionName="AI Batch Control">
