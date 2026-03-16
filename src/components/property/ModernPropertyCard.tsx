@@ -286,7 +286,7 @@ const ModernPropertyCard = ({
               <img 
                 src={ownerInfo.avatar_url} 
                 alt={ownerInfo.name}
-              className="w-5 h-5 rounded-full object-cover ring-1 ring-gold-primary/20"
+              className="w-5 h-5 rounded-full object-cover ring-1 ring-primary/20"
               />
             ) : (
               <div className="w-5 h-5 rounded-full bg-gradient-to-br from-gold-primary to-gold-primary/60 flex items-center justify-center">
