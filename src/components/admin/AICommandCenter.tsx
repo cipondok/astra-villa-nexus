@@ -113,16 +113,18 @@ const Panel = ({ children, title, icon: Icon, action, className = '' }: {
   action?: React.ReactNode; className?: string;
 }) => (
   <Card className={`border-border/40 bg-card/60 backdrop-blur-xl overflow-hidden ${className}`}>
-    <CardHeader className="pb-3 pt-4 px-4">
+    <CardHeader className="pb-3 pt-4 px-4 border-b border-border/20">
       <div className="flex items-center justify-between">
         <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground">
-          <Icon className="h-4 w-4 text-primary" />
+          <div className="p-1 rounded-md bg-primary/10">
+            <Icon className="h-3.5 w-3.5 text-primary" />
+          </div>
           {title}
         </CardTitle>
         {action}
       </div>
     </CardHeader>
-    <CardContent className="px-4 pb-4">
+    <CardContent className="px-4 pb-4 pt-4">
       {children}
     </CardContent>
   </Card>
@@ -270,7 +272,7 @@ const DatePickerMini = ({ label, date, onSelect }: {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 const AICommandCenter = () => {
-  const { data, isLoading, refetch } = useAICommandCenter();
+  const { data, isLoading, isError, refetch, dataUpdatedAt } = useAICommandCenter();
   const [activeNav, setActiveNav] = useState<NavSection>('overview');
   const [seoRunning, setSeoRunning] = useState(false);
   const [aiOptRunning, setAiOptRunning] = useState(false);
@@ -323,6 +325,32 @@ const AICommandCenter = () => {
     else { toast.success('AI optimization job queued successfully'); refetch(); }
     setAiOptRunning(false);
   };
+
+  // ─── Error State ───────────────────────────────────────────────────────
+  if (isError && !data) {
+    return (
+      <div className="flex gap-4 min-h-[600px]">
+        <div className="flex-1 flex items-center justify-center">
+          <Card className="border-destructive/30 bg-destructive/5 max-w-md w-full">
+            <CardContent className="p-8 text-center space-y-4">
+              <div className="mx-auto w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center">
+                <AlertTriangle className="h-6 w-6 text-destructive" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-foreground mb-1">Unable to Load AI Command Center</h3>
+                <p className="text-sm text-muted-foreground">
+                  Some data queries failed. This may be due to network issues or database connectivity.
+                </p>
+              </div>
+              <Button onClick={() => refetch()} className="gap-2">
+                <RefreshCw className="h-4 w-4" /> Retry
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   // ─── Loading State ────────────────────────────────────────────────────────
   if (isLoading || !data) {
@@ -552,6 +580,12 @@ const AICommandCenter = () => {
               <span className="relative flex h-1.5 w-1.5"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-chart-1 opacity-75" /><span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-chart-1" /></span>
               Live
             </Badge>
+            {dataUpdatedAt > 0 && (
+              <Badge variant="outline" className="text-[10px] gap-1 text-muted-foreground border-border/50">
+                <Clock className="h-3 w-3" />
+                {formatDistanceToNow(new Date(dataUpdatedAt), { addSuffix: true })}
+              </Badge>
+            )}
             <Button variant="outline" size="sm" onClick={() => refetch()} className="gap-1.5 text-xs h-8">
               <RefreshCw className="h-3 w-3" /> Refresh
             </Button>
@@ -608,8 +642,8 @@ const AICommandCenter = () => {
           >
             {/* OVERVIEW */}
             {activeNav === 'overview' && (
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <div className="lg:col-span-2 space-y-4">
+              <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+                <div className="xl:col-span-2 space-y-4">
                   {/* WoW / MoM / Custom Historical Comparison */}
                   <Panel title="Period Comparison" icon={BarChart3} action={
                     <div className="flex items-center gap-1 bg-muted/30 rounded-lg p-0.5">
@@ -796,15 +830,15 @@ const AICommandCenter = () => {
                     <Panel title="AI Job Queue" icon={Cpu}>
                       {jobPieData.length > 0 ? (
                         <div className="flex items-center gap-3">
-                          <ResponsiveContainer width={100} height={100}>
-                            <PieChart>
-                              <Pie data={jobPieData} cx="50%" cy="50%" innerRadius={28} outerRadius={44} dataKey="value" stroke="hsl(var(--background))" strokeWidth={2}>
+                          <div className="w-[100px] h-[100px] shrink-0">
+                            <PieChart width={100} height={100}>
+                              <Pie data={jobPieData} cx={50} cy={50} innerRadius={28} outerRadius={44} dataKey="value" stroke="hsl(var(--background))" strokeWidth={2}>
                                 {jobPieData.map((entry, i) => (
                                   <Cell key={i} fill={entry.fill} />
                                 ))}
                               </Pie>
                             </PieChart>
-                          </ResponsiveContainer>
+                          </div>
                           <div className="flex-1 space-y-1">
                             {jobPieData.map(item => (
                               <div key={item.name} className="flex items-center justify-between text-[11px]">
@@ -1004,16 +1038,16 @@ const AICommandCenter = () => {
                   <Panel title="SEO Rating Breakdown" icon={Gauge}>
                     {seo.ratingBreakdown.length > 0 ? (
                       <div className="flex items-center justify-center gap-6">
-                        <ResponsiveContainer width={140} height={140}>
-                          <PieChart>
-                            <Pie data={seo.ratingBreakdown} cx="50%" cy="50%" innerRadius={38} outerRadius={60} dataKey="count" stroke="hsl(var(--background))" strokeWidth={3}>
+                        <div className="w-[140px] h-[140px] shrink-0">
+                          <PieChart width={140} height={140}>
+                            <Pie data={seo.ratingBreakdown} cx={70} cy={70} innerRadius={38} outerRadius={60} dataKey="count" stroke="hsl(var(--background))" strokeWidth={3}>
                               {seo.ratingBreakdown.map((entry, i) => (
                                 <Cell key={i} fill={entry.fill} />
                               ))}
                             </Pie>
                             <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
                           </PieChart>
-                        </ResponsiveContainer>
+                        </div>
                         <div className="space-y-2">
                           {seo.ratingBreakdown.map(item => (
                             <div key={item.rating} className="flex items-center gap-2 text-xs">
@@ -1156,16 +1190,16 @@ const AICommandCenter = () => {
                   <Panel title="Job Type Breakdown" icon={Radar}>
                     {jobStatus.jobTypeBreakdown.length > 0 ? (
                       <div className="flex items-center justify-center gap-6">
-                        <ResponsiveContainer width={130} height={130}>
-                          <PieChart>
-                            <Pie data={jobStatus.jobTypeBreakdown} cx="50%" cy="50%" innerRadius={36} outerRadius={56} dataKey="count" stroke="hsl(var(--background))" strokeWidth={3}>
+                        <div className="w-[130px] h-[130px] shrink-0">
+                          <PieChart width={130} height={130}>
+                            <Pie data={jobStatus.jobTypeBreakdown} cx={65} cy={65} innerRadius={36} outerRadius={56} dataKey="count" stroke="hsl(var(--background))" strokeWidth={3}>
                               {jobStatus.jobTypeBreakdown.map((entry, i) => (
                                 <Cell key={i} fill={entry.fill} />
                               ))}
                             </Pie>
                             <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
                           </PieChart>
-                        </ResponsiveContainer>
+                        </div>
                         <div className="space-y-1.5">
                           {jobStatus.jobTypeBreakdown.map(item => (
                             <div key={item.type} className="flex items-center gap-2 text-[11px]">
@@ -1185,16 +1219,16 @@ const AICommandCenter = () => {
                   <Panel title="Status Distribution" icon={Radar}>
                     {jobPieData.length > 0 ? (
                       <div className="flex items-center justify-center gap-6">
-                        <ResponsiveContainer width={130} height={130}>
-                          <PieChart>
-                            <Pie data={jobPieData} cx="50%" cy="50%" innerRadius={36} outerRadius={56} dataKey="value" stroke="hsl(var(--background))" strokeWidth={3}>
+                        <div className="w-[130px] h-[130px] shrink-0">
+                          <PieChart width={130} height={130}>
+                            <Pie data={jobPieData} cx={65} cy={65} innerRadius={36} outerRadius={56} dataKey="value" stroke="hsl(var(--background))" strokeWidth={3}>
                               {jobPieData.map((entry, i) => (
                                 <Cell key={i} fill={entry.fill} />
                               ))}
                             </Pie>
                             <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
                           </PieChart>
-                        </ResponsiveContainer>
+                        </div>
                         <div className="space-y-1.5">
                           {jobPieData.map(item => (
                             <div key={item.name} className="flex items-center gap-2 text-[11px]">
@@ -1476,16 +1510,16 @@ const AICommandCenter = () => {
                   <Panel title="Query Categories" icon={Radar}>
                     {searchAnalytics.categoryBreakdown.length > 0 ? (
                       <div className="flex items-center justify-center gap-6">
-                        <ResponsiveContainer width={130} height={130}>
-                          <PieChart>
-                            <Pie data={searchAnalytics.categoryBreakdown} cx="50%" cy="50%" innerRadius={36} outerRadius={56} dataKey="count" stroke="hsl(var(--background))" strokeWidth={3}>
+                        <div className="w-[130px] h-[130px] shrink-0">
+                          <PieChart width={130} height={130}>
+                            <Pie data={searchAnalytics.categoryBreakdown} cx={65} cy={65} innerRadius={36} outerRadius={56} dataKey="count" stroke="hsl(var(--background))" strokeWidth={3}>
                               {searchAnalytics.categoryBreakdown.map((entry, i) => (
                                 <Cell key={i} fill={entry.fill} />
                               ))}
                             </Pie>
                             <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
                           </PieChart>
-                        </ResponsiveContainer>
+                        </div>
                         <div className="space-y-1.5">
                           {searchAnalytics.categoryBreakdown.map(item => (
                             <div key={item.category} className="flex items-center gap-2 text-[11px]">
