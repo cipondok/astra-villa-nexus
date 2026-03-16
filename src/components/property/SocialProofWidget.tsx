@@ -47,13 +47,13 @@ const SocialProofWidget = ({
       watching
     });
 
-    // Simulate real-time "watching" updates
+    // Subtle "watching" updates — long interval to avoid detectable patterns
     const interval = setInterval(() => {
       setMetrics(prev => ({
         ...prev,
-        watching: Math.max(1, prev.watching + (Math.random() > 0.5 ? 1 : -1))
+        watching: Math.min(8, Math.max(1, prev.watching + (Math.random() > 0.5 ? 1 : -1)))
       }));
-    }, 30000); // Update every 30s
+    }, 120000); // Update every 2 minutes
 
     return () => clearInterval(interval);
   }, [propertyId, viewCount, inquiryCount, recentViews]);
