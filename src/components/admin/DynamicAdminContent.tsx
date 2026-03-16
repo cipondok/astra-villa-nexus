@@ -58,6 +58,7 @@ const FounderWeeklyRoutine = lazy(() => import('./FounderWeeklyRoutine'));
 const PRLaunchStrategyDashboard = lazy(() => import('./PRLaunchStrategyDashboard'));
 const InvestorOutreachDashboard = lazy(() => import('./InvestorOutreachDashboard'));
 const FounderDailySystem = lazy(() => import('./FounderDailySystem'));
+const HyperExecutionPlan = lazy(() => import('./HyperExecutionPlan'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
