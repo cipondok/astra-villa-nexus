@@ -94,7 +94,7 @@ const SocialProofWidget = ({
         {metrics.watching > 1 && (
           <Badge 
             variant="secondary" 
-            className="text-[9px] px-1.5 py-0 h-4 bg-chart-4/10 text-chart-4"
+            className="text-[10px] px-1.5 py-0 h-4.5 bg-chart-4/10 text-chart-4"
           >
             <Users className="h-2.5 w-2.5 mr-0.5" />
             {metrics.watching} viewing
