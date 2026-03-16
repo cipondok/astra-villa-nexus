@@ -63,12 +63,12 @@ export function useBatchRefreshScores() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (limit = 200) => {
+    mutationFn: async (limit: number = 200) => {
       const { data, error } = await supabase.rpc('batch_refresh_opportunity_scores' as any, {
         p_limit: limit,
       });
       if (error) throw error;
-      return data as { updated: number; duration_ms: number; timestamp: string };
+      return data as unknown as { updated: number; duration_ms: number; timestamp: string };
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['properties'] });
