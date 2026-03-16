@@ -78,32 +78,31 @@ const KPICard = ({ label, value, subValue, icon: Icon, trend, color, delay = 0 }
   trend?: 'up' | 'down' | 'neutral'; color: string; delay?: number;
 }) => (
   <motion.div
-    initial={{ opacity: 0, y: 12, scale: 0.98 }}
-    animate={{ opacity: 1, y: 0, scale: 1 }}
-    transition={{ delay, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+    initial={{ opacity: 0, x: -8 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ delay, duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
   >
-    <Card className="group relative overflow-hidden border-border/40 bg-card/60 backdrop-blur-xl hover:border-primary/30 transition-all duration-300 hover:shadow-md hover:shadow-primary/5">
-      <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-[0.03] group-hover:opacity-[0.06] transition-opacity`} />
-      <CardContent className="p-3 relative">
-        <div className="flex items-center gap-2.5 mb-2">
-          <div className={`p-1.5 rounded-md bg-gradient-to-br ${color} shadow-sm`}>
-            <Icon className="h-3.5 w-3.5 text-primary-foreground" />
-          </div>
-          <p className="text-[10px] text-muted-foreground font-medium leading-tight truncate flex-1">{label}</p>
-          {trend && (
-            <Badge variant="outline" className={`text-[8px] px-1 py-0 h-4 ${
-              trend === 'up' ? 'text-chart-1 border-chart-1/30 bg-chart-1/5' :
-              trend === 'down' ? 'text-destructive border-destructive/30 bg-destructive/5' :
-              'text-muted-foreground border-border bg-muted/20'
-            }`}>
-              {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '—'}
-            </Badge>
-          )}
+    <div className="group flex items-center gap-2.5 px-3 py-2 rounded-lg border border-border/30 bg-card/50 backdrop-blur-sm hover:border-primary/25 transition-all duration-200">
+      <div className={`p-1 rounded-md bg-gradient-to-br ${color} shrink-0`}>
+        <Icon className="h-3 w-3 text-primary-foreground" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-[9px] text-muted-foreground font-medium leading-none truncate">{label}</p>
+        <div className="flex items-baseline gap-1.5 mt-0.5">
+          <p className="text-sm font-bold tracking-tight text-foreground leading-none">{value}</p>
+          {subValue && <span className="text-[8px] text-muted-foreground/60 truncate">{subValue}</span>}
         </div>
-        <p className="text-lg font-bold tracking-tight text-foreground leading-none">{value}</p>
-        {subValue && <p className="text-[9px] text-muted-foreground/70 mt-1">{subValue}</p>}
-      </CardContent>
-    </Card>
+      </div>
+      {trend && (
+        <span className={`text-[9px] font-semibold shrink-0 ${
+          trend === 'up' ? 'text-chart-1' :
+          trend === 'down' ? 'text-destructive' :
+          'text-muted-foreground/50'
+        }`}>
+          {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '–'}
+        </span>
+      )}
+    </div>
   </motion.div>
 );
 
@@ -583,7 +582,7 @@ const AICommandCenter = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3"
+              className="flex flex-wrap gap-2"
             >
               <KPICard label="Total Properties" value={overview.totalProperties.toLocaleString()} icon={Building2} color="from-primary to-primary/60" trend="up" delay={0} />
               <KPICard label="Avg SEO Score" value={overview.avgSeoScore.toString()} subValue={`${seo.weakListings} weak`} icon={Search} color="from-chart-1 to-chart-1/60" trend={overview.avgSeoScore > 60 ? 'up' : 'down'} delay={0.05} />
