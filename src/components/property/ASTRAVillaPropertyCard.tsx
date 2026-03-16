@@ -235,7 +235,7 @@ const ASTRAVillaPropertyCard = ({
                 <div className="flex items-center gap-0.5 text-muted-foreground">
                   <Bath className="h-3 w-3" />
                   <span className="text-[11px] font-semibold text-foreground/80">{property.bathrooms}</span>
-                  <span className="text-[9px] font-medium">KM</span>
+                  <span className="text-[10px] font-medium">KM</span>
                 </div>
               )}
               {property.land_area && (
