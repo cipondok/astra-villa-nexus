@@ -77,6 +77,7 @@ const SocialProofStrip = lazy(() => import("@/components/home/SocialProofStrip")
 const SectionDividerCTA = lazy(() => import("@/components/home/SectionDividerCTA"));
 const MobileFloatingCTA = lazy(() => import("@/components/home/MobileFloatingCTA"));
 const TrustFooterStrip = lazy(() => import("@/components/home/TrustFooterStrip"));
+const LiveActivityTicker = lazy(() => import("@/components/home/LiveActivityTicker"));
 const WelcomeBackStrip = lazy(() => import("@/components/home/WelcomeBackStrip"));
 const RecentlyViewedStrip = lazy(() => import("@/components/home/RecentlyViewedStrip"));
 const ReferralInviteStrip = lazy(() => import("@/components/home/ReferralInviteStrip"));
