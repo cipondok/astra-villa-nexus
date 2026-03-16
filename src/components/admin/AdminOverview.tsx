@@ -336,7 +336,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
 
         {/* Center Column - Activity & Traffic */}
         <div className="col-span-12 md:col-span-6 space-y-3">
-          {/* Live Traffic Chart */}
+          {/* Live Traffic Chart - Recharts */}
           <Card className="border-border/30">
             <CardHeader className="p-3 pb-2">
               <div className="flex items-center justify-between">
@@ -347,18 +347,39 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
               </div>
             </CardHeader>
             <CardContent className="p-3 pt-0">
-              <div className="flex items-end justify-between h-20 gap-1">
-                {hourlyTraffic?.map((hour, idx) => (
-                  <div key={idx} className="flex-1 flex flex-col items-center">
-                    <div 
-                      className="w-full bg-gradient-to-t from-primary/50 to-primary rounded transition-all hover:from-primary/70 hover:to-primary"
-                      style={{ height: `${Math.max((hour.count / maxTraffic) * 100, 5)}%` }}
-                      title={`${hour.count} activities`}
-                    />
-                    <span className="text-[10px] text-muted-foreground mt-1">{hour.hour}</span>
-                  </div>
-                ))}
-              </div>
+              <ResponsiveContainer width="100%" height={96}>
+                <BarChart data={hourlyTraffic || []} margin={{ top: 4, right: 0, left: -20, bottom: 0 }}>
+                  <XAxis 
+                    dataKey="hour" 
+                    tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} 
+                    axisLine={false} 
+                    tickLine={false}
+                    interval={1}
+                  />
+                  <YAxis hide />
+                  <RechartsTooltip
+                    cursor={{ fill: 'hsl(var(--accent) / 0.3)' }}
+                    contentStyle={{
+                      background: 'hsl(var(--popover))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px',
+                      fontSize: '12px',
+                      color: 'hsl(var(--popover-foreground))',
+                      padding: '6px 10px',
+                    }}
+                    formatter={(value: number) => [`${value} activities`, 'Count']}
+                    labelFormatter={(label) => `Hour: ${label}`}
+                  />
+                  <Bar dataKey="count" radius={[3, 3, 0, 0]} maxBarSize={20}>
+                    {(hourlyTraffic || []).map((entry, index) => (
+                      <Cell 
+                        key={`cell-${index}`} 
+                        fill={entry.count === maxTraffic ? 'hsl(var(--primary))' : 'hsl(var(--primary) / 0.5)'}
+                      />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
             </CardContent>
           </Card>
 
