@@ -13,7 +13,8 @@ import { navigationSections, sectionTitles } from './navigationSections';
 import {
   Search, Zap, Clock, ArrowRight, Sparkles, AlertTriangle,
   Plus, Play, BarChart3, Shield, Building, Users, FileText,
-  Loader2, TrendingUp, Globe,
+  Loader2, TrendingUp, Globe, Flame, Snowflake, Target,
+  Crown, TrendingDown, Filter,
   type LucideIcon,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -50,6 +51,7 @@ interface QuickAction {
   keywords: string[];
   section?: string;
   description?: string;
+  variant?: 'action' | 'filter';
 }
 
 const quickActions: QuickAction[] = [
@@ -59,6 +61,12 @@ const quickActions: QuickAction[] = [
   { id: 'qa-analytics', label: 'View Analytics', icon: BarChart3, keywords: ['analytics', 'stats', 'metrics', 'performance'], section: 'analytics', description: 'Platform analytics overview' },
   { id: 'qa-security', label: 'Security Monitor', icon: Shield, keywords: ['security', 'monitor', 'threats', 'audit'], section: 'security-monitoring', description: 'Real-time security status' },
   { id: 'qa-seo', label: 'SEO Dashboard', icon: Sparkles, keywords: ['seo', 'search', 'optimization', 'content'], section: 'seo-hub', description: 'SEO performance & tools' },
+];
+
+const smartFilters: QuickAction[] = [
+  { id: 'sf-elite', label: 'Show Elite Deals', icon: Crown, keywords: ['elite', 'deals', 'top', 'best', 'premium'], description: 'Properties with 85+ opportunity score', variant: 'filter' },
+  { id: 'sf-undervalued', label: 'Show Undervalued Listings', icon: Target, keywords: ['undervalued', 'cheap', 'bargain', 'below', 'value'], description: 'Below-market-price properties', variant: 'filter' },
+  { id: 'sf-hot', label: 'Show Hot Markets', icon: Flame, keywords: ['hot', 'market', 'trending', 'demand', 'surge'], description: 'High-demand locations right now', variant: 'filter' },
 ];
 
 /* ─── Flatten navigation sections ─── */
@@ -122,6 +130,21 @@ function priorityColor(priority: string): string {
   }
 }
 
+function demandTrendConfig(trend: string) {
+  switch (trend) {
+    case 'hot': return { label: 'Hot', icon: Flame, color: 'text-orange-500 bg-orange-500/10 border-orange-500/20' };
+    case 'cooling': return { label: 'Cooling', icon: Snowflake, color: 'text-blue-400 bg-blue-400/10 border-blue-400/20' };
+    default: return { label: 'Stable', icon: TrendingUp, color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20' };
+  }
+}
+
+function opportunityGrade(score: number) {
+  if (score >= 85) return { label: 'Elite', color: 'bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0' };
+  if (score >= 70) return { label: 'Strong', color: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' };
+  if (score >= 50) return { label: 'Fair', color: 'bg-muted/50 text-muted-foreground border-border/40' };
+  return null;
+}
+
 /* ─── Component ─── */
 export function AdminCommandPalette({ onSectionChange }: AdminCommandPaletteProps) {
   const [open, setOpen] = useState(false);
@@ -183,10 +206,29 @@ export function AdminCommandPalette({ onSectionChange }: AdminCommandPaletteProp
     [onSectionChange]
   );
 
+  const handleSmartFilter = useCallback(
+    (filterId: string) => {
+      switch (filterId) {
+        case 'sf-elite':
+          doSearch('elite deal');
+          setSearch('elite deal');
+          break;
+        case 'sf-undervalued':
+          doSearch('undervalued');
+          setSearch('undervalued');
+          break;
+        case 'sf-hot':
+          doSearch('hot market');
+          setSearch('hot market');
+          break;
+      }
+    },
+    [doSearch]
+  );
+
   const hasSearch = search.trim().length > 0;
   const hasLiveResults = totalResults > 0;
 
-  // Priority sections for default view
   const groupedItems = useMemo(() => {
     const groups: Record<string, FlatItem[]> = {};
     const prioritySections = ['overview', 'property-management-hub', 'user-management', 'analytics', 'ai-command-center', 'admin-alerts', 'seo-hub', 'security-monitoring'];
@@ -223,7 +265,7 @@ export function AdminCommandPalette({ onSectionChange }: AdminCommandPaletteProp
       {/* Command Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent
-          className="overflow-hidden p-0 max-w-[640px] rounded-2xl border-border/40 shadow-2xl bg-card/95 backdrop-blur-xl animate-in fade-in-0 zoom-in-95 duration-150"
+          className="overflow-hidden p-0 max-w-[680px] rounded-2xl border-border/40 shadow-2xl bg-card/95 backdrop-blur-xl animate-in fade-in-0 zoom-in-95 duration-150"
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
           <Command
@@ -270,32 +312,45 @@ export function AdminCommandPalette({ onSectionChange }: AdminCommandPaletteProp
                     {/* Properties */}
                     {liveResults.properties.length > 0 && (
                       <CommandGroup heading={`Properties · ${liveResults.properties.length}`}>
-                        {liveResults.properties.map((p) => (
-                          <CommandItem
-                            key={`prop-${p.id}`}
-                            value={`prop-${p.id}-${p.title}`}
-                            onSelect={() => handleSelect('property-management-hub')}
-                            className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer mx-1 aria-selected:bg-primary/10 aria-selected:text-primary"
-                            onMouseEnter={() => setSelectedPreview({ ...p, _type: 'property' })}
-                          >
-                            <div className="h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
-                              <Building className="h-3.5 w-3.5 text-emerald-600" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <span className="text-sm font-medium truncate block">{p.title}</span>
-                              <div className="flex items-center gap-2 text-[11px] text-muted-foreground/60">
-                                <span>{p.city}</span>
-                                <span>·</span>
-                                <span>{formatPrice(p.price)}</span>
+                        {liveResults.properties.map((p) => {
+                          const grade = opportunityGrade(p.opportunity_score);
+                          const trend = demandTrendConfig(p.demand_trend);
+                          const TrendIcon = trend.icon;
+                          return (
+                            <CommandItem
+                              key={`prop-${p.id}`}
+                              value={`prop-${p.id}-${p.title}`}
+                              onSelect={() => handleSelect('property-management-hub')}
+                              className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer mx-1 aria-selected:bg-primary/10 aria-selected:text-primary transition-all duration-100"
+                              onMouseEnter={() => setSelectedPreview({ ...p, _type: 'property' })}
+                            >
+                              <div className="h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                                <Building className="h-3.5 w-3.5 text-emerald-600" />
                               </div>
-                            </div>
-                            {p.deal_score && p.deal_score >= 70 && (
-                              <Badge className="text-[10px] px-1.5 py-0 rounded-md bg-emerald-500/10 text-emerald-600 border-emerald-500/20 font-mono flex-shrink-0">
-                                {p.deal_score}
-                              </Badge>
-                            )}
-                          </CommandItem>
-                        ))}
+                              <div className="flex-1 min-w-0">
+                                <span className="text-sm font-medium truncate block">{p.title}</span>
+                                <div className="flex items-center gap-2 text-[11px] text-muted-foreground/60">
+                                  <span>{p.city}</span>
+                                  <span>·</span>
+                                  <span>{formatPrice(p.price)}</span>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-1.5 flex-shrink-0">
+                                {/* Demand Trend */}
+                                <Badge variant="outline" className={`text-[9px] px-1 py-0 rounded-md ${trend.color} font-mono gap-0.5`}>
+                                  <TrendIcon className="h-2.5 w-2.5" />
+                                  {trend.label}
+                                </Badge>
+                                {/* Opportunity Score */}
+                                {grade && (
+                                  <Badge className={`text-[9px] px-1.5 py-0 rounded-md font-mono ${grade.color}`}>
+                                    {p.opportunity_score} · {grade.label}
+                                  </Badge>
+                                )}
+                              </div>
+                            </CommandItem>
+                          );
+                        })}
                       </CommandGroup>
                     )}
 
@@ -309,14 +364,19 @@ export function AdminCommandPalette({ onSectionChange }: AdminCommandPaletteProp
                               key={`alert-${a.id}`}
                               value={`alert-${a.id}-${a.title}`}
                               onSelect={() => handleSelect('admin-alerts')}
-                              className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer mx-1 aria-selected:bg-primary/10 aria-selected:text-primary"
+                              className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer mx-1 aria-selected:bg-primary/10 aria-selected:text-primary transition-all duration-100"
                               onMouseEnter={() => setSelectedPreview({ ...a, _type: 'alert' })}
                             >
                               <div className={`h-8 w-8 rounded-lg flex items-center justify-center flex-shrink-0 ${a.priority === 'critical' ? 'bg-destructive/10' : a.priority === 'high' ? 'bg-orange-500/10' : 'bg-muted/50'}`}>
                                 <AlertTriangle className={`h-3.5 w-3.5 ${a.priority === 'critical' ? 'text-destructive' : a.priority === 'high' ? 'text-orange-500' : 'text-muted-foreground'}`} />
                               </div>
                               <div className="flex-1 min-w-0">
-                                <span className="text-sm font-medium truncate block">{a.title}</span>
+                                <div className="flex items-center gap-1.5">
+                                  <span className="text-sm font-medium truncate">{a.title}</span>
+                                  {!a.is_read && (
+                                    <span className="h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+                                  )}
+                                </div>
                                 <span className="text-[11px] text-muted-foreground/60">{timeAgo(a.created_at)}</span>
                               </div>
                               <Badge variant="outline" className={`text-[10px] px-1.5 py-0 rounded-md font-normal flex-shrink-0 ${priorityColor(a.priority)}`}>
@@ -338,7 +398,7 @@ export function AdminCommandPalette({ onSectionChange }: AdminCommandPaletteProp
                               key={`lead-${l.id}`}
                               value={`lead-${l.id}-${l.agent_name}`}
                               onSelect={() => handleSelect('agent-pipeline')}
-                              className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer mx-1 aria-selected:bg-primary/10 aria-selected:text-primary"
+                              className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer mx-1 aria-selected:bg-primary/10 aria-selected:text-primary transition-all duration-100"
                               onMouseEnter={() => setSelectedPreview({ ...l, _type: 'lead' })}
                             >
                               <div className="h-8 w-8 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
@@ -367,7 +427,7 @@ export function AdminCommandPalette({ onSectionChange }: AdminCommandPaletteProp
                               key={`seo-${s.id}`}
                               value={`seo-${s.id}-${s.title}`}
                               onSelect={() => handleSelect('seo-hub')}
-                              className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer mx-1 aria-selected:bg-primary/10 aria-selected:text-primary"
+                              className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer mx-1 aria-selected:bg-primary/10 aria-selected:text-primary transition-all duration-100"
                               onMouseEnter={() => setSelectedPreview({ ...s, _type: 'seo_page' })}
                             >
                               <div className="h-8 w-8 rounded-lg bg-violet-500/10 flex items-center justify-center flex-shrink-0">
@@ -415,6 +475,41 @@ export function AdminCommandPalette({ onSectionChange }: AdminCommandPaletteProp
                           <ArrowRight className="h-3 w-3 text-muted-foreground/40 flex-shrink-0" />
                         </CommandItem>
                       ))}
+                    </CommandGroup>
+                    <CommandSeparator className="my-1 bg-border/20" />
+                  </>
+                )}
+
+                {/* Smart Filters — only when not searching */}
+                {!hasSearch && (
+                  <>
+                    <CommandGroup heading="Smart Filters">
+                      {smartFilters.map((sf) => {
+                        const Icon = sf.icon;
+                        return (
+                          <CommandItem
+                            key={sf.id}
+                            value={sf.id}
+                            onSelect={() => handleSmartFilter(sf.id)}
+                            className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer mx-1 aria-selected:bg-primary/10 aria-selected:text-primary"
+                            keywords={sf.keywords}
+                          >
+                            <div className="h-8 w-8 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                              <Icon className="h-3.5 w-3.5 text-amber-600" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <span className="text-sm font-medium">{sf.label}</span>
+                              {sf.description && (
+                                <p className="text-[11px] text-muted-foreground/60 truncate">{sf.description}</p>
+                              )}
+                            </div>
+                            <Badge variant="outline" className="text-[10px] px-1.5 py-0 rounded-md border-amber-500/20 text-amber-600/70 font-normal flex-shrink-0">
+                              <Filter className="h-2.5 w-2.5 mr-0.5" />
+                              Filter
+                            </Badge>
+                          </CommandItem>
+                        );
+                      })}
                     </CommandGroup>
                     <CommandSeparator className="my-1 bg-border/20" />
                   </>
@@ -523,25 +618,26 @@ export function AdminCommandPalette({ onSectionChange }: AdminCommandPaletteProp
                 {/* Quick Actions in search mode */}
                 {hasSearch && (
                   <CommandGroup heading="Quick Actions">
-                    {quickActions.map((action) => {
+                    {[...quickActions, ...smartFilters].map((action) => {
                       const Icon = action.icon;
+                      const isFilter = action.variant === 'filter';
                       return (
                         <CommandItem
                           key={action.id}
                           value={action.id}
-                          onSelect={() => handleSelect(action.id, action.section)}
+                          onSelect={() => isFilter ? handleSmartFilter(action.id) : handleSelect(action.id, action.section)}
                           className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer mx-1 aria-selected:bg-primary/10 aria-selected:text-primary"
                           keywords={action.keywords}
                         >
-                          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                            <Icon className="h-3.5 w-3.5 text-primary" />
+                          <div className={`h-8 w-8 rounded-lg flex items-center justify-center flex-shrink-0 ${isFilter ? 'bg-amber-500/10' : 'bg-primary/10'}`}>
+                            <Icon className={`h-3.5 w-3.5 ${isFilter ? 'text-amber-600' : 'text-primary'}`} />
                           </div>
                           <div className="flex-1 min-w-0">
                             <span className="text-sm font-medium">{action.label}</span>
                           </div>
-                          <Badge variant="outline" className="text-[10px] px-1.5 py-0 rounded-md border-primary/20 text-primary/70 font-normal flex-shrink-0">
-                            <Zap className="h-2.5 w-2.5 mr-0.5" />
-                            Action
+                          <Badge variant="outline" className={`text-[10px] px-1.5 py-0 rounded-md font-normal flex-shrink-0 ${isFilter ? 'border-amber-500/20 text-amber-600/70' : 'border-primary/20 text-primary/70'}`}>
+                            {isFilter ? <Filter className="h-2.5 w-2.5 mr-0.5" /> : <Zap className="h-2.5 w-2.5 mr-0.5" />}
+                            {isFilter ? 'Filter' : 'Action'}
                           </Badge>
                         </CommandItem>
                       );
@@ -552,7 +648,7 @@ export function AdminCommandPalette({ onSectionChange }: AdminCommandPaletteProp
 
               {/* ─── PREVIEW PANEL ─── */}
               {selectedPreview && hasSearch && (
-                <div className="w-[45%] border-l border-border/20 p-4 max-h-[460px] overflow-y-auto bg-muted/10 animate-in slide-in-from-right-2 duration-150">
+                <div className="w-[45%] border-l border-border/20 p-4 max-h-[460px] overflow-y-auto bg-muted/10 animate-in slide-in-from-right-2 fade-in-50 duration-200">
                   <PreviewPanel data={selectedPreview} />
                 </div>
               )}
@@ -581,7 +677,7 @@ export function AdminCommandPalette({ onSectionChange }: AdminCommandPaletteProp
                     Searching...
                   </span>
                 )}
-                <span className="text-[10px] text-muted-foreground/40 font-medium">ASTRAVILLA</span>
+                <span className="text-[10px] text-muted-foreground/40 font-medium">ASTRAVILLA Intelligence</span>
               </div>
             </div>
           </Command>
@@ -594,6 +690,9 @@ export function AdminCommandPalette({ onSectionChange }: AdminCommandPaletteProp
 /* ─── Preview Panel ─── */
 function PreviewPanel({ data }: { data: any }) {
   if (data._type === 'property') {
+    const grade = opportunityGrade(data.opportunity_score || 0);
+    const trend = demandTrendConfig(data.demand_trend || 'stable');
+    const TrendIcon = trend.icon;
     return (
       <div className="space-y-3">
         <div className="flex items-center gap-2">
@@ -601,6 +700,37 @@ function PreviewPanel({ data }: { data: any }) {
           <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">Property</span>
         </div>
         <h3 className="text-sm font-semibold leading-snug">{data.title}</h3>
+        
+        {/* Opportunity Score Hero */}
+        {data.opportunity_score > 0 && (
+          <div className="rounded-lg border border-border/20 bg-muted/20 p-2.5 space-y-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] text-muted-foreground/60 uppercase tracking-wider font-semibold">Opportunity Score</span>
+              {grade && (
+                <Badge className={`text-[9px] px-1.5 py-0 rounded-md font-mono ${grade.color}`}>
+                  {grade.label}
+                </Badge>
+              )}
+            </div>
+            <div className="flex items-end gap-2">
+              <span className="text-2xl font-bold text-primary font-mono">{data.opportunity_score}</span>
+              <span className="text-[11px] text-muted-foreground/50 pb-0.5">/100</span>
+            </div>
+            <div className="w-full bg-muted/30 rounded-full h-1.5 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-primary/60 to-primary transition-all duration-500"
+                style={{ width: `${data.opportunity_score}%` }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Demand Trend */}
+        <div className="flex items-center gap-2">
+          <TrendIcon className={`h-3.5 w-3.5 ${trend.color.split(' ')[0]}`} />
+          <span className="text-xs font-medium">{trend.label} Demand</span>
+        </div>
+
         <div className="space-y-2">
           <DetailRow label="Location" value={`${data.city}, ${data.state}`} />
           <DetailRow label="Price" value={formatPrice(data.price)} highlight />
@@ -624,6 +754,9 @@ function PreviewPanel({ data }: { data: any }) {
         <div className="flex items-center gap-2">
           <AlertTriangle className={`h-4 w-4 ${data.priority === 'critical' ? 'text-destructive' : 'text-orange-500'}`} />
           <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">Alert</span>
+          {!data.is_read && (
+            <Badge className="text-[9px] px-1 py-0 bg-primary/10 text-primary border-primary/20 rounded-md">Unread</Badge>
+          )}
         </div>
         <h3 className="text-sm font-semibold leading-snug">{data.title}</h3>
         <p className="text-xs text-muted-foreground leading-relaxed">{data.message}</p>
