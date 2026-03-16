@@ -1,5 +1,7 @@
 
 import { useState } from "react";
+import { useConnectionPing } from "@/hooks/useConnectionPing";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -30,7 +32,9 @@ import {
   Headphones,
   CreditCard,
   Clock,
-  TrendingUp
+  TrendingUp,
+  Zap,
+  ZapOff
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import ThemeSwitcher from "@/components/ui/theme-switcher";
@@ -79,8 +83,9 @@ const AdminTopMenu = ({
   const [showAlerts, setShowAlerts] = useState(false);
   const { user, profile } = useAuth();
   const queryClient = useQueryClient();
+  const { ping, status: connectionStatus } = useConnectionPing();
+  const { reducedMotion, toggle: toggleMotion } = useReducedMotion();
 
-  // Mark alert as read mutation
   const markAsReadMutation = useMutation({
     mutationFn: async (alertId: string) => {
       const { error } = await supabase
@@ -492,9 +497,16 @@ const AdminTopMenu = ({
 
               {/* Status Indicators */}
               <div className="flex items-center gap-3">
-                <Badge variant="secondary" className="bg-chart-1/10 text-chart-1 border border-chart-1/20">
+                <Badge variant="secondary" className={`${
+                  connectionStatus === 'online' ? 'bg-chart-1/10 text-chart-1 border-chart-1/20' :
+                  connectionStatus === 'slow' ? 'bg-chart-3/10 text-chart-3 border-chart-3/20' :
+                  'bg-destructive/10 text-destructive border-destructive/20'
+                } border`}>
                   <Activity className="h-3 w-3 mr-1" />
-                  Online
+                  {connectionStatus === 'online' ? 'Online' : connectionStatus === 'slow' ? 'Slow' : 'Offline'}
+                  {ping !== null && (
+                    <span className="ml-1 text-[9px] opacity-70 tabular-nums">{ping}ms</span>
+                  )}
                 </Badge>
                 <Badge variant="secondary" className="bg-chart-4/10 text-chart-4 border border-chart-4/20">
                   <Database className="h-3 w-3 mr-1" />
@@ -504,6 +516,15 @@ const AdminTopMenu = ({
                   <Shield className="h-3 w-3 mr-1" />
                   Secure
                 </Badge>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={toggleMotion}
+                  className="h-6 px-2 text-[10px] text-muted-foreground hover:text-foreground"
+                  title={reducedMotion ? 'Enable animations' : 'Reduce motion'}
+                >
+                  {reducedMotion ? <ZapOff className="h-3 w-3" /> : <Zap className="h-3 w-3" />}
+                </Button>
               </div>
             </div>
 
