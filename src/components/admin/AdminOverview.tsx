@@ -506,13 +506,22 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
               <div className="h-px flex-1 bg-gradient-to-l from-primary/30 to-transparent" />
             </div>
 
-            <AIHealthSummaryCard onNavigate={() => handleQuickAction('ai-command-center')} />
-            <LeadIntelligenceCard onNavigate={() => handleQuickAction('lead-management')} />
-            <MarketIntelligenceCard onNavigate={() => handleQuickAction('ai-command-center')} />
+            {/* Priority tier: elevated cards */}
+            <div className="shadow-sm rounded-lg">
+              <AIHealthSummaryCard onNavigate={() => handleQuickAction('ai-command-center')} />
+            </div>
+            <div className="shadow-sm rounded-lg">
+              <LeadIntelligenceCard onNavigate={() => handleQuickAction('lead-management')} />
+            </div>
+            <div className="shadow-sm rounded-lg border border-primary/20">
+              <MarketIntelligenceCard onNavigate={() => handleQuickAction('ai-command-center')} />
+            </div>
             <AgentPerformanceCard onNavigate={() => handleQuickAction('agent-management')} />
             <DealPipelineCard onNavigate={() => handleQuickAction('financial-management')} />
             <GeoExpansionCard onNavigate={() => handleQuickAction('ai-command-center')} />
-            <MarketAnomalyCard />
+            <div className="border border-primary/20 rounded-lg">
+              <MarketAnomalyCard />
+            </div>
             <InvestmentAttractivenessCard />
             <BuyerListingMatchCard />
             <NationalForecastCard />
