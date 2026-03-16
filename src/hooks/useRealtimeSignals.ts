@@ -1,0 +1,145 @@
+import { useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+import type { RealtimePostgresInsertPayload } from '@supabase/supabase-js';
+
+export interface AIEventSignal {
+  id: string;
+  event_type: string;
+  entity_type: string;
+  entity_id: string | null;
+  priority_level: string;
+  payload: Record<string, unknown>;
+  is_processed: boolean;
+  created_at: string;
+}
+
+export interface EventSignalStats {
+  priority: string;
+  pending_count: number;
+  oldest_at: string | null;
+}
+
+const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
+  property_created: { label: 'New Listing', icon: '🏠' },
+  price_changed: { label: 'Price Change', icon: '💰' },
+  status_changed: { label: 'Status Update', icon: '📋' },
+  demand_spike: { label: 'Demand Surge', icon: '🔥' },
+  portfolio_transaction: { label: 'Portfolio Event', icon: '📊' },
+  cluster_shift: { label: 'Market Shift', icon: '🌐' },
+};
+
+/** Subscribe to real-time AI event signals and auto-refresh relevant queries */
+export function useRealtimeSignals(options?: { showToasts?: boolean }) {
+  const qc = useQueryClient();
+  const showToasts = options?.showToasts ?? true;
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('ai-event-signals')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'ai_event_signals',
+        },
+        (payload: RealtimePostgresInsertPayload<AIEventSignal>) => {
+          const signal = payload.new;
+          const meta = EVENT_LABELS[signal.event_type] ?? { label: signal.event_type, icon: '⚡' };
+
+          // Invalidate relevant queries based on event type
+          if (['property_created', 'price_changed'].includes(signal.event_type)) {
+            qc.invalidateQueries({ queryKey: ['properties'] });
+            qc.invalidateQueries({ queryKey: ['opportunity-score-stats'] });
+            qc.invalidateQueries({ queryKey: ['price-prediction-stats'] });
+          }
+          if (signal.event_type === 'demand_spike') {
+            qc.invalidateQueries({ queryKey: ['market-clusters'] });
+            qc.invalidateQueries({ queryKey: ['market-heat-zones'] });
+          }
+          if (signal.event_type === 'status_changed') {
+            qc.invalidateQueries({ queryKey: ['properties'] });
+            qc.invalidateQueries({ queryKey: ['market-clusters'] });
+          }
+
+          // Always refresh signal stats and autopilot
+          qc.invalidateQueries({ queryKey: ['event-signal-stats'] });
+          qc.invalidateQueries({ queryKey: ['autopilot-status'] });
+          qc.invalidateQueries({ queryKey: ['intelligence-worker-status'] });
+
+          if (showToasts && signal.priority_level === 'critical') {
+            toast.info(`${meta.icon} ${meta.label}`, {
+              description: typeof signal.payload === 'object' && signal.payload?.city
+                ? `Intelligence signal in ${signal.payload.city}`
+                : 'New intelligence signal detected',
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [qc, showToasts]);
+}
+
+/** Fetch pending event signal statistics */
+export function useEventSignalStats() {
+  return useQuery({
+    queryKey: ['event-signal-stats'],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_event_signal_stats' as any);
+      if (error) throw error;
+      return (data ?? []) as unknown as EventSignalStats[];
+    },
+    staleTime: 15_000,
+    refetchInterval: 30_000,
+  });
+}
+
+/** Fetch recent event signals */
+export function useRecentSignals(limit = 20) {
+  return useQuery({
+    queryKey: ['recent-signals', limit],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('ai_event_signals')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(limit);
+      if (error) throw error;
+      return data as unknown as AIEventSignal[];
+    },
+    staleTime: 10_000,
+    refetchInterval: 30_000,
+  });
+}
+
+/** Manually trigger event processor */
+export function useProcessEvents() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (params?: { limit?: number; priority?: string }) => {
+      const { data, error } = await supabase.functions.invoke('process-ai-events', {
+        body: params ?? {},
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      qc.invalidateQueries({ queryKey: ['event-signal-stats'] });
+      qc.invalidateQueries({ queryKey: ['recent-signals'] });
+      qc.invalidateQueries({ queryKey: ['intelligence-worker-status'] });
+      toast.success(`Processed ${data.signals_processed} signals → ${data.workers_dispatched?.length ?? 0} workers dispatched`);
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || 'Event processing failed');
+    },
+  });
+}
+
+export { EVENT_LABELS };
