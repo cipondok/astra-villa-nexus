@@ -292,7 +292,7 @@ const CompactPropertyCard = ({
               )}
               {property.area_sqm && (
                 <div className="flex items-center gap-0.5 border border-white/20 bg-black/30 backdrop-blur-md rounded-lg px-2 sm:px-2.5 py-0.5 sm:py-1 shadow-sm">
-                  <span className="text-[8px] sm:text-[10px] text-white/70 font-bold">LB</span>
+                  <span className="text-[10px] sm:text-[10px] text-white/70 font-bold">LB</span>
                   <span className="text-[10px] sm:text-xs text-white font-bold">{property.area_sqm}m²</span>
                 </div>
               )}
