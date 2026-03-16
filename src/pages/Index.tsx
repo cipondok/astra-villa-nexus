@@ -43,7 +43,7 @@ import SectionErrorBoundary from "@/components/ui/SectionErrorBoundary";
 
 // Lazy load heavy components for better performance
 const ResponsiveAIChatWidget = lazy(() => import("@/components/ai/ResponsiveAIChatWidget"));
-const PropertyViewModeToggle = lazy(() => import("@/components/search/PropertyViewModeToggle"));
+const SearchResultsToolbar = lazy(() => import("@/components/search/SearchResultsToolbar"));
 const PropertyListView = lazy(() => import("@/components/search/PropertyListView"));
 const SearchPagination = lazy(() => import("@/components/search/SearchPagination"));
 const PropertyMapView = lazy(() => import("@/components/search/PropertyMapView"));
@@ -699,56 +699,76 @@ const Index = () => {
         <div className="w-full">
           {hasSearched ? (
             /* ── SEARCH RESULTS MODE ── */
-            <section id="search-results-section" className="py-6 sm:py-8 px-3 sm:px-4">
-              <div className="max-w-7xl mx-auto bg-card/50 rounded-xl shadow-sm border border-border/50 p-3 sm:p-4 md:p-6">
+            <section id="search-results-section" className="py-4 sm:py-6 px-3 sm:px-4">
+              <div className="max-w-7xl mx-auto">
+                {/* Filter pills */}
                 <Suspense fallback={null}>
                   <ActiveFilterPills filters={filters} onRemoveFilter={handleRemoveFilter} onClearAll={handleClearFilters} />
                 </Suspense>
-                <div className="flex items-center justify-between mb-2 sm:mb-4 md:mb-6 mt-1.5 sm:mt-2 md:mt-4">
-                  <div>
-                    <h2 className="text-sm sm:text-base md:text-2xl font-bold mb-0.5 sm:mb-1 md:mb-2 text-foreground">{t('indexPage.searchResults')}</h2>
-                    <p className="text-xs sm:text-xs md:text-sm text-muted-foreground">
-                      {isSearching ? t('indexPage.searching') : `${searchResults.length} ${t('indexPage.propertiesFound')}`}
-                      {quickSearch && <span className="ml-1 sm:ml-2 text-primary font-medium">{t('indexPage.for')} "{quickSearch}"</span>}
-                    </p>
-                  </div>
-                  <Suspense fallback={<div className="animate-pulse h-8 w-32 bg-muted rounded-lg" />}>
-                    <PropertyViewModeToggle viewMode={viewMode} onViewModeChange={(mode) => setViewMode(mode)} />
-                  </Suspense>
+
+                {/* Sticky toolbar: sort + view + count */}
+                <Suspense fallback={<div className="h-12 bg-muted/30 rounded-lg animate-pulse mt-2" />}>
+                  <SearchResultsToolbar
+                    viewMode={viewMode}
+                    onViewModeChange={(mode) => setViewMode(mode)}
+                    sortBy={filters.sortBy}
+                    onSortChange={(sort) => setFilters(prev => ({ ...prev, sortBy: sort }))}
+                    totalResults={searchResults.length}
+                    isSearching={isSearching}
+                    searchQuery={quickSearch}
+                  />
+                </Suspense>
+
+                {/* Results grid */}
+                <div className="mt-4 sm:mt-6">
+                  {isSearching && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+                      {[...Array(6)].map((_, i) => (
+                        <div key={i} className="animate-pulse rounded-xl overflow-hidden border border-border/40">
+                          <div className="aspect-[16/10] bg-muted" />
+                          <div className="p-4 space-y-3">
+                            <div className="h-5 bg-muted rounded w-2/3" />
+                            <div className="h-4 bg-muted rounded w-full" />
+                            <div className="h-3 bg-muted rounded w-1/2" />
+                            <div className="flex gap-2 pt-2">
+                              <div className="h-9 bg-muted rounded flex-1" />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {viewMode === 'grid' && !isSearching && (
+                    <Suspense fallback={<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">{[...Array(6)].map((_, i) => <div key={i} className="animate-pulse bg-muted/50 h-80 rounded-xl border border-border/40" />)}</div>}>
+                      <PropertyGridView properties={paginatedResults} onPropertyClick={handlePropertyClick} onView3D={handlePropertyClick}
+                        onSave={(property) => console.log('Save property:', property.id)}
+                        onShare={async (property) => { const success = await shareProperty({ id: property.id, title: property.title, price: property.price || 0, location: property.location || property.city || '', images: property.images }); if (success) toast.success("Property link shared!"); }}
+                        onContact={(property) => { setSelectedProperty(property); setWhatsappDialogOpen(true); }} />
+                    </Suspense>
+                  )}
+                  {viewMode === 'list' && !isSearching && (
+                    <Suspense fallback={<div className="space-y-4">{[...Array(4)].map((_, i) => <div key={i} className="animate-pulse bg-muted/50 h-32 rounded-lg border border-border/40" />)}</div>}>
+                      <PropertyListView properties={paginatedResults} onPropertyClick={handlePropertyClick} onView3D={handlePropertyClick}
+                        onSave={(property) => console.log('Save property:', property.id)}
+                        onShare={async (property) => { const success = await shareProperty({ id: property.id, title: property.title, price: property.price || 0, location: property.location || property.city || '', images: property.images }); if (success) toast.success("Property link shared!"); }}
+                        onContact={(property) => { setSelectedProperty(property); setWhatsappDialogOpen(true); }} />
+                    </Suspense>
+                  )}
+                  {viewMode === 'map' && !isSearching && (
+                    <Suspense fallback={<div className="animate-pulse h-96 bg-muted/50 rounded-xl border border-border/40" />}>
+                      <PropertyMapView properties={searchResults} onPropertyClick={handlePropertyClick} />
+                    </Suspense>
+                  )}
                 </div>
-                {isSearching && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 mb-3 md:mb-4">
-                    {[...Array(6)].map((_, i) => (
-                      <div key={i} className="animate-pulse bg-muted/50 rounded-xl h-48 sm:h-56 md:h-64 border border-border/40" style={{ animationDelay: `${i * 100}ms` }} />
-                    ))}
-                  </div>
-                )}
-                {viewMode === 'grid' && !isSearching && (
-                  <Suspense fallback={<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{[...Array(6)].map((_, i) => <div key={i} className="animate-pulse bg-muted/50 h-64 rounded-lg border border-border/40" />)}</div>}>
-                    <PropertyGridView properties={paginatedResults} onPropertyClick={handlePropertyClick} onView3D={handlePropertyClick}
-                      onSave={(property) => console.log('Save property:', property.id)}
-                      onShare={async (property) => { const success = await shareProperty({ id: property.id, title: property.title, price: property.price || 0, location: property.location || property.city || '', images: property.images }); if (success) toast.success("Property link shared!"); }}
-                      onContact={(property) => { setSelectedProperty(property); setWhatsappDialogOpen(true); }} />
-                  </Suspense>
-                )}
-                {viewMode === 'list' && !isSearching && (
-                  <Suspense fallback={<div className="space-y-4">{[...Array(4)].map((_, i) => <div key={i} className="animate-pulse bg-muted/50 h-32 rounded-lg border border-border/40" />)}</div>}>
-                    <PropertyListView properties={paginatedResults} onPropertyClick={handlePropertyClick} onView3D={handlePropertyClick}
-                      onSave={(property) => console.log('Save property:', property.id)}
-                      onShare={async (property) => { const success = await shareProperty({ id: property.id, title: property.title, price: property.price || 0, location: property.location || property.city || '', images: property.images }); if (success) toast.success("Property link shared!"); }}
-                      onContact={(property) => { setSelectedProperty(property); setWhatsappDialogOpen(true); }} />
-                  </Suspense>
-                )}
-                {viewMode === 'map' && !isSearching && (
-                  <Suspense fallback={<div className="animate-pulse h-96 bg-muted/50 rounded-lg border border-border/40" />}>
-                    <PropertyMapView properties={searchResults} onPropertyClick={handlePropertyClick} />
-                  </Suspense>
-                )}
+
+                {/* Pagination */}
                 {!isSearching && searchResults.length > RESULTS_PER_PAGE && (
-                  <Suspense fallback={null}>
-                    <SearchPagination currentPage={currentPage} totalPages={totalPages} totalCount={searchResults.length} pageSize={RESULTS_PER_PAGE}
-                      onPageChange={(page) => { setCurrentPage(page); document.getElementById('search-results-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} />
-                  </Suspense>
+                  <div className="mt-6 sm:mt-8">
+                    <Suspense fallback={null}>
+                      <SearchPagination currentPage={currentPage} totalPages={totalPages} totalCount={searchResults.length} pageSize={RESULTS_PER_PAGE}
+                        onPageChange={(page) => { setCurrentPage(page); document.getElementById('search-results-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} />
+                    </Suspense>
+                  </div>
                 )}
               </div>
             </section>
