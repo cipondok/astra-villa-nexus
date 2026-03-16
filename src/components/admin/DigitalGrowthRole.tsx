@@ -48,13 +48,13 @@ const responsibilities: ResponsibilityArea[] = [
     ],
   },
   {
-    area: "Social Media & Viral Content", icon: Video, color: "text-chart-1", bg: "bg-chart-1/10", weight: "25%",
+    area: "Short-Form Video & Social Growth (TikTok / IG / YouTube)", icon: Video, color: "text-chart-1", bg: "bg-chart-1/10", weight: "25%",
     tasks: [
-      { task: "Execute 13 videos/week content calendar across TikTok, Instagram Reels, and YouTube Shorts", impact: "Social content drives brand awareness and top-of-funnel traffic — 10M views/month target" },
-      { task: "Create property cinematic tours, price reveal videos, market insight breakdowns, and investment explainers", impact: "High-value content builds trust and drives signup conversions from social → platform" },
-      { task: "Build and manage creator/influencer collaboration pipeline for property content amplification", impact: "Influencer co-creation extends reach 5-10x beyond owned channels at lower CPM" },
-      { task: "Analyze content performance data: views, engagement, saves, shares, profile visits, link clicks — optimize content mix", impact: "Data-driven content optimization doubles engagement rate within 60 days" },
-      { task: "Repurpose long-form content (webinars, reports, articles) into short-form social clips", impact: "Content repurposing generates 3-5x more touchpoints from single content investment" },
+      { task: "Execute 13+ videos/week across TikTok, Instagram Reels, and YouTube Shorts — property tours, price reveals, market insights, investment explainers", impact: "Short-form video is the fastest channel for brand awareness and buyer/investor acquisition — 10M views/month target" },
+      { task: "Optimize content for each platform's algorithm: TikTok (hooks, trends, sounds), IG Reels (hashtag strategy, carousel crossover), YouTube Shorts (discovery, SEO tags)", impact: "Platform-specific optimization drives 2-3x more views vs cross-posting identical content" },
+      { task: "Build creator/influencer collaboration pipeline for property content amplification — agent co-creation, local property influencers", impact: "Influencer co-creation extends reach 5-10x beyond owned channels at lower CPM" },
+      { task: "Drive social-to-platform conversion: link-in-bio optimization, CTA testing, landing page alignment with social traffic", impact: "Social traffic without conversion is vanity — every video should have a measurable acquisition path" },
+      { task: "Analyze content performance: views, engagement, saves, shares, profile visits, link clicks — identify viral patterns and scale winning formats", impact: "Data-driven content optimization doubles engagement rate within 60 days" },
     ],
   },
   {
