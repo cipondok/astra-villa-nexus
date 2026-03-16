@@ -172,10 +172,9 @@ export default function FeaturedPropertiesCarousel() {
         <div
           ref={scrollRef}
           className={cn(
-            "flex gap-3 sm:gap-4 overflow-x-auto pb-2 snap-x snap-mandatory",
+            "flex gap-3 sm:gap-4 overflow-x-auto pb-3 carousel-snap",
             isDragging ? "cursor-grabbing select-none" : "cursor-grab"
           )}
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
