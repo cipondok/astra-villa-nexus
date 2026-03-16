@@ -1323,6 +1323,13 @@ export const navigationSections = {
       icon: Presentation,
       description: "Seed round pitch narrative — 11 slides with speaker notes, visuals, FAQ, and deal terms",
       badge: "🎯 Fundraising"
+    },
+    {
+      key: "investor-community",
+      label: "Investor Community",
+      icon: Users,
+      description: "Full-funnel community growth — onboarding, engagement, trust, tiers, and execution roadmap",
+      badge: "🏘️ Community"
     }
   ],
 
