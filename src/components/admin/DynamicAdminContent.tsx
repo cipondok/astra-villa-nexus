@@ -59,6 +59,7 @@ const PRLaunchStrategyDashboard = lazy(() => import('./PRLaunchStrategyDashboard
 const InvestorOutreachDashboard = lazy(() => import('./InvestorOutreachDashboard'));
 const FounderDailySystem = lazy(() => import('./FounderDailySystem'));
 const HyperExecutionPlan = lazy(() => import('./HyperExecutionPlan'));
+const NinetyDayMasterPlan = lazy(() => import('./NinetyDayMasterPlan'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
@@ -450,6 +451,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return (
           <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
             <HyperExecutionPlan />
+          </Suspense>
+        );
+      case "ninety-day-master-plan":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <NinetyDayMasterPlan />
           </Suspense>
         );
       default:
