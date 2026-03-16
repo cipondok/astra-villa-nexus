@@ -32988,6 +32988,7 @@ export type Database = {
         Returns: undefined
       }
       aggregate_filter_analytics: { Args: never; Returns: undefined }
+      analyze_portfolio_strategy: { Args: { p_user_id: string }; Returns: Json }
       award_badge: {
         Args: { p_badge_key: string; p_user_id: string }
         Returns: Json
