@@ -172,7 +172,7 @@ const PropertyGridView = ({
               </div>
 
               {/* Title */}
-              <h3 className="text-[11px] sm:text-xs font-medium text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+              <h3 className="text-xs sm:text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">
                 {property.title}
               </h3>
 
