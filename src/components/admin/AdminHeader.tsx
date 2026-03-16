@@ -222,7 +222,7 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
                           {n.title}
                         </p>
                         <span
-                          className={`text-[9px] px-1.5 py-0.5 rounded-full whitespace-nowrap ${priorityColor(n.priority)}`}
+                          className={`text-[10px] px-1.5 py-0.5 rounded-full whitespace-nowrap ${priorityColor(n.priority)}`}
                         >
                           {n.priority}
                         </span>
