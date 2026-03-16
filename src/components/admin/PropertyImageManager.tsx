@@ -230,7 +230,7 @@ const PropertyImageManager = () => {
 
     setBulkAIGenerating(false);
     queryClient.invalidateQueries({ queryKey: ["admin-property-images"] });
-    refetchStats();
+    queryClient.invalidateQueries({ queryKey: ["admin-property-image-stats"] });
   };
 
   // Bulk AI relevance check for selected properties
