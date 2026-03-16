@@ -1460,6 +1460,13 @@ export const navigationSections = {
       icon: Layout,
       description: "Premium homepage design — 7 sections, search-dominant hero, AI highlights, trust band, conversion CTAs",
       badge: "🏠 Homepage"
+    },
+    {
+      key: "ui-audit-report",
+      label: "UI/UX Audit Report",
+      icon: Eye,
+      description: "Codebase-grounded design audit — 25 findings with code evidence, fixes, and prioritized action plan",
+      badge: "🔍 Audit"
     }
   ],
 
