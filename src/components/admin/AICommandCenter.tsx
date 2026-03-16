@@ -582,7 +582,7 @@ const AICommandCenter = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3"
+              className="flex flex-wrap gap-2"
             >
               <KPICard label="Total Properties" value={overview.totalProperties.toLocaleString()} icon={Building2} color="from-primary to-primary/60" trend="up" delay={0} />
               <KPICard label="Avg SEO Score" value={overview.avgSeoScore.toString()} subValue={`${seo.weakListings} weak`} icon={Search} color="from-chart-1 to-chart-1/60" trend={overview.avgSeoScore > 60 ? 'up' : 'down'} delay={0.05} />
