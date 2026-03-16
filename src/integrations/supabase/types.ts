@@ -2028,6 +2028,60 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_exit_advisories: {
+        Row: {
+          acknowledged_at: string | null
+          advisory_type: string
+          created_at: string | null
+          id: string
+          investor_id: string | null
+          is_active: boolean | null
+          property_id: string | null
+          reasoning: string | null
+          severity: string | null
+          supporting_signals: Json | null
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          advisory_type: string
+          created_at?: string | null
+          id?: string
+          investor_id?: string | null
+          is_active?: boolean | null
+          property_id?: string | null
+          reasoning?: string | null
+          severity?: string | null
+          supporting_signals?: Json | null
+        }
+        Update: {
+          acknowledged_at?: string | null
+          advisory_type?: string
+          created_at?: string | null
+          id?: string
+          investor_id?: string | null
+          is_active?: boolean | null
+          property_id?: string | null
+          reasoning?: string | null
+          severity?: string | null
+          supporting_signals?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_exit_advisories_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_exit_advisories_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_feature_importance: {
         Row: {
           correlation_with_outcome: number | null
@@ -2218,6 +2272,72 @@ export type Database = {
           },
           {
             foreignKeyName: "ai_intelligence_cache_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_investment_recommendations: {
+        Row: {
+          action_signal: string
+          confidence_score: number | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          market_cycle_phase: string | null
+          priority_rank: number | null
+          property_id: string | null
+          reasoning: string | null
+          recommendation_type: string
+          supporting_signals: Json | null
+          timing_window: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          action_signal: string
+          confidence_score?: number | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          market_cycle_phase?: string | null
+          priority_rank?: number | null
+          property_id?: string | null
+          reasoning?: string | null
+          recommendation_type: string
+          supporting_signals?: Json | null
+          timing_window?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          action_signal?: string
+          confidence_score?: number | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          market_cycle_phase?: string | null
+          priority_rank?: number | null
+          property_id?: string | null
+          reasoning?: string | null
+          recommendation_type?: string
+          supporting_signals?: Json | null
+          timing_window?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_investment_recommendations_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_investment_recommendations_property_id_fkey"
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "public_properties"
@@ -34069,6 +34189,11 @@ export type Database = {
         Args: { error_message: string; table_name?: string }
         Returns: string
       }
+      generate_exit_advisories: { Args: never; Returns: number }
+      generate_investment_recommendations: {
+        Args: { p_limit?: number }
+        Returns: number
+      }
       generate_otp: { Args: never; Returns: string }
       generate_seo_location_blueprint: {
         Args: {
@@ -34696,6 +34821,7 @@ export type Database = {
           total_reviews: number
         }[]
       }
+      get_recommendation_stats: { Args: never; Returns: Json }
       get_safe_public_profile: {
         Args: { profile_user_id: string }
         Returns: {
