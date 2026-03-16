@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from "react";
-import { Bell, Settings, LogOut, Sun, Moon } from "lucide-react";
+import React, { useCallback, useState, useEffect } from "react";
+import { Bell, Settings, LogOut, Sun, Moon, Wifi, WifiOff, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
