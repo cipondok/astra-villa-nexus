@@ -1989,6 +1989,45 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_event_signals: {
+        Row: {
+          created_at: string | null
+          entity_id: string | null
+          entity_type: string
+          event_type: string
+          id: string
+          is_processed: boolean | null
+          payload: Json | null
+          priority_level: string
+          processed_at: string | null
+          processed_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          entity_id?: string | null
+          entity_type?: string
+          event_type: string
+          id?: string
+          is_processed?: boolean | null
+          payload?: Json | null
+          priority_level?: string
+          processed_at?: string | null
+          processed_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          entity_id?: string | null
+          entity_type?: string
+          event_type?: string
+          id?: string
+          is_processed?: boolean | null
+          payload?: Json | null
+          priority_level?: string
+          processed_at?: string | null
+          processed_by?: string | null
+        }
+        Relationships: []
+      }
       ai_feature_importance: {
         Row: {
           correlation_with_outcome: number | null
@@ -33996,6 +34035,16 @@ export type Database = {
       detect_market_anomalies: { Args: never; Returns: Json }
       detect_pricing_adjustments: { Args: { p_limit?: number }; Returns: Json }
       detect_pricing_intelligence: { Args: { p_limit?: number }; Returns: Json }
+      emit_ai_signal: {
+        Args: {
+          p_entity_id: string
+          p_entity_type: string
+          p_event_type: string
+          p_payload?: Json
+          p_priority?: string
+        }
+        Returns: string
+      }
       encrypt_api_key:
         | { Args: { api_key: string; key_name: string }; Returns: string }
         | { Args: { plain_key: string }; Returns: string }
@@ -34183,6 +34232,14 @@ export type Database = {
           district_name: string
           subdistrict_code: string
           subdistrict_name: string
+        }[]
+      }
+      get_event_signal_stats: {
+        Args: never
+        Returns: {
+          oldest_at: string
+          pending_count: number
+          priority: string
         }[]
       }
       get_full_rejection_data: {
@@ -35009,6 +35066,14 @@ export type Database = {
       predict_market_cycle_phase: {
         Args: { p_lookback_days?: number }
         Returns: Json
+      }
+      process_ai_event_batch: {
+        Args: { p_limit?: number }
+        Returns: {
+          actions_triggered: string[]
+          event_type: string
+          events_processed: number
+        }[]
       }
       process_daily_login: { Args: { p_user_id: string }; Returns: Json }
       rank_investment_attractiveness: {
