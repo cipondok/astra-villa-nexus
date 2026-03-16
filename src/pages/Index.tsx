@@ -581,7 +581,7 @@ const Index = () => {
 
 
       {/* Content Layer - full width edge-to-edge */}
-      <div className="relative z-10 min-h-screen pb-20 md:pb-4">
+      <main id="main-content" className="relative z-10 min-h-screen pb-20 md:pb-4">
         
         {/* Hero Section — Single image, left-aligned layout */}
         <SectionErrorBoundary sectionName="Hero" fallbackMinHeight="400px">
