@@ -500,6 +500,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           {/* National Market Forecast */}
           <NationalForecastCard />
 
+          {/* Portfolio Strategy Advisor */}
+          <PortfolioStrategyCard />
+
           {/* AI Systems Status */}
           <Card className="border-border/30">
             <CardHeader className="p-3 pb-2">
