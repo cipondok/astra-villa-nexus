@@ -1430,6 +1430,13 @@ export const navigationSections = {
       icon: Clock,
       description: "Structured daily execution — 7 time blocks, 34 tasks, energy mapping, accountability rules",
       badge: "⚡ Daily"
+    },
+    {
+      key: "hyper-execution-plan",
+      label: "30-Day Hyper Execution",
+      icon: Flame,
+      description: "4-week launch sprint — day-by-day tasks, KPI targets, growth trajectory, success criteria",
+      badge: "🔥 30-Day Sprint"
     }
   ],
 
