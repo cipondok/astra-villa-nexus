@@ -277,3 +277,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.analyze-investor-portfolios]
     verify_jwt = false
 
+  [functions.process-ai-events]
+    verify_jwt = false
+
