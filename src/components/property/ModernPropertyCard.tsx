@@ -293,7 +293,7 @@ const ModernPropertyCard = ({
                 {ownerInfo.type === 'company' ? (
                   <Building2 className="h-2.5 w-2.5 text-primary-foreground" />
                 ) : (
-                  <User className="h-2.5 w-2.5 text-background" />
+                  <User className="h-2.5 w-2.5 text-primary-foreground" />
                 )}
               </div>
             )}
