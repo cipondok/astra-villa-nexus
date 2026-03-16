@@ -1113,12 +1113,7 @@ const Index = () => {
                   </Suspense>
                 </ScrollReveal>
 
-                {/* Market Intelligence CTA */}
-                <ScrollReveal direction="up" delay={50}>
-                  <Suspense fallback={<div className="animate-pulse h-40 bg-muted rounded-xl max-w-5xl mx-auto" />}>
-                    <MarketIntelligenceCTA />
-                  </Suspense>
-                </ScrollReveal>
+                {/* Removed: Duplicate MarketIntelligenceCTA — SectionDividerCTA (Market Intelligence) already covers this */}
 
                 {/* Marketplace Services */}
                 <ScrollReveal direction="right" delay={0}>
