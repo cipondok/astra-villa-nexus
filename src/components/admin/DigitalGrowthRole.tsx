@@ -76,11 +76,11 @@ const responsibilities: ResponsibilityArea[] = [
     ],
   },
   {
-    area: "Analytics & Growth Experimentation", icon: LineChart, color: "text-chart-1", bg: "bg-chart-1/10", weight: "10%",
+    area: "Community & Lead Nurture", icon: Users, color: "text-chart-1", bg: "bg-chart-1/10", weight: "10%",
     tasks: [
-      { task: "Build and maintain growth dashboards: traffic sources, conversion funnels, user cohorts, revenue attribution", impact: "Visibility into metrics enables data-driven decisions instead of guesswork" },
-      { task: "Run systematic growth experiments: A/B tests on CTAs, onboarding flows, pricing pages, email subjects", impact: "10 experiments/month with 20% success rate = 2 meaningful improvements monthly compounding" },
-      { task: "Produce weekly growth reports for founder with key metrics, insights, and recommended actions", impact: "Structured reporting ensures growth stays aligned with company strategy" },
+      { task: "Build WhatsApp communities for agents and investors by city — drive referral loops and inbound leads", impact: "WhatsApp groups drive 40% of agent referrals and create defensible community moats" },
+      { task: "Manage email automation: onboarding sequences, deal alerts, weekly market digests, re-engagement campaigns", impact: "Email nurture converts 20% of dormant users back to active within 30 days" },
+      { task: "Design referral incentive mechanics for agent-to-agent and buyer-to-buyer acquisition loops", impact: "Referral-acquired users have 2x retention and 3x LTV vs paid users" },
     ],
   },
 ];
