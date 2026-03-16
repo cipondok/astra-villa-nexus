@@ -206,7 +206,8 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
               </div>
               <button
                 onClick={() => setOpenCategory(null)}
-                className="w-5 h-5 rounded-md hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-all duration-150 hover:scale-110"
+                aria-label="Close navigation panel"
+                className="w-5 h-5 rounded-md hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-all duration-150 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               >
                 <X className="h-3 w-3" />
               </button>
