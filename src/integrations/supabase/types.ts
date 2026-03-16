@@ -11607,6 +11607,39 @@ export type Database = {
           },
         ]
       }
+      intelligence_worker_runs: {
+        Row: {
+          completed_at: string | null
+          duration_ms: number | null
+          error_message: string | null
+          id: string
+          rows_affected: number | null
+          started_at: string | null
+          status: string | null
+          worker_name: string
+        }
+        Insert: {
+          completed_at?: string | null
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          rows_affected?: number | null
+          started_at?: string | null
+          status?: string | null
+          worker_name: string
+        }
+        Update: {
+          completed_at?: string | null
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          rows_affected?: number | null
+          started_at?: string | null
+          status?: string | null
+          worker_name?: string
+        }
+        Relationships: []
+      }
       investment_hotspots: {
         Row: {
           avg_investment_score: number | null
@@ -11935,6 +11968,45 @@ export type Database = {
           weight_deal_score?: number
           weight_liquidity?: number
           weight_rental_yield?: number
+        }
+        Relationships: []
+      }
+      investor_portfolio_snapshots: {
+        Row: {
+          created_at: string | null
+          forecast_growth_signal: string | null
+          id: string
+          investor_id: string
+          opportunity_density: number | null
+          projected_roi: number | null
+          risk_score: number | null
+          snapshot_date: string | null
+          total_properties: number | null
+          total_value: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          forecast_growth_signal?: string | null
+          id?: string
+          investor_id: string
+          opportunity_density?: number | null
+          projected_roi?: number | null
+          risk_score?: number | null
+          snapshot_date?: string | null
+          total_properties?: number | null
+          total_value?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          forecast_growth_signal?: string | null
+          id?: string
+          investor_id?: string
+          opportunity_density?: number | null
+          projected_roi?: number | null
+          risk_score?: number | null
+          snapshot_date?: string | null
+          total_properties?: number | null
+          total_value?: number | null
         }
         Relationships: []
       }
@@ -14149,6 +14221,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      market_clusters: {
+        Row: {
+          area: string | null
+          avg_opportunity_score: number | null
+          avg_price_per_sqm: number | null
+          center_lat: number | null
+          center_lng: number | null
+          city: string | null
+          cluster_confidence: number | null
+          created_at: string | null
+          id: string
+          market_heat_score: number | null
+          property_count: number | null
+          trend_direction: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          area?: string | null
+          avg_opportunity_score?: number | null
+          avg_price_per_sqm?: number | null
+          center_lat?: number | null
+          center_lng?: number | null
+          city?: string | null
+          cluster_confidence?: number | null
+          created_at?: string | null
+          id?: string
+          market_heat_score?: number | null
+          property_count?: number | null
+          trend_direction?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          area?: string | null
+          avg_opportunity_score?: number | null
+          avg_price_per_sqm?: number | null
+          center_lat?: number | null
+          center_lng?: number | null
+          city?: string | null
+          cluster_confidence?: number | null
+          created_at?: string | null
+          id?: string
+          market_heat_score?: number | null
+          property_count?: number | null
+          trend_direction?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       market_cycle_classifications: {
         Row: {
@@ -19772,6 +19892,7 @@ export type Database = {
           created_at: string | null
           days_on_market: number | null
           deal_score: number | null
+          demand_heat_score: number | null
           demand_score: number | null
           demand_trend: string | null
           description: string | null
@@ -19797,6 +19918,7 @@ export type Database = {
           image_urls: string[] | null
           images: string[] | null
           inquiry_count: number | null
+          inquiry_velocity: number | null
           investment_risk_level: string | null
           investment_score: number | null
           investor_highlight: boolean | null
@@ -19838,9 +19960,11 @@ export type Database = {
           property_type: string
           rental_periods: string[] | null
           rental_terms: Json | null
+          rental_yield: number | null
           rental_yield_percentage: number | null
           risk_level: string | null
           roi_percentage: number | null
+          roi_projection: number | null
           saves_count: number | null
           score_updated_at: string | null
           seo_description: string | null
@@ -19883,6 +20007,7 @@ export type Database = {
           created_at?: string | null
           days_on_market?: number | null
           deal_score?: number | null
+          demand_heat_score?: number | null
           demand_score?: number | null
           demand_trend?: string | null
           description?: string | null
@@ -19908,6 +20033,7 @@ export type Database = {
           image_urls?: string[] | null
           images?: string[] | null
           inquiry_count?: number | null
+          inquiry_velocity?: number | null
           investment_risk_level?: string | null
           investment_score?: number | null
           investor_highlight?: boolean | null
@@ -19949,9 +20075,11 @@ export type Database = {
           property_type: string
           rental_periods?: string[] | null
           rental_terms?: Json | null
+          rental_yield?: number | null
           rental_yield_percentage?: number | null
           risk_level?: string | null
           roi_percentage?: number | null
+          roi_projection?: number | null
           saves_count?: number | null
           score_updated_at?: string | null
           seo_description?: string | null
@@ -19994,6 +20122,7 @@ export type Database = {
           created_at?: string | null
           days_on_market?: number | null
           deal_score?: number | null
+          demand_heat_score?: number | null
           demand_score?: number | null
           demand_trend?: string | null
           description?: string | null
@@ -20019,6 +20148,7 @@ export type Database = {
           image_urls?: string[] | null
           images?: string[] | null
           inquiry_count?: number | null
+          inquiry_velocity?: number | null
           investment_risk_level?: string | null
           investment_score?: number | null
           investor_highlight?: boolean | null
@@ -20060,9 +20190,11 @@ export type Database = {
           property_type?: string
           rental_periods?: string[] | null
           rental_terms?: Json | null
+          rental_yield?: number | null
           rental_yield_percentage?: number | null
           risk_level?: string | null
           roi_percentage?: number | null
+          roi_projection?: number | null
           saves_count?: number | null
           score_updated_at?: string | null
           seo_description?: string | null
