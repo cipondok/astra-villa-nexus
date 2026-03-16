@@ -1293,6 +1293,13 @@ export const navigationSections = {
       icon: Video,
       description: "Social media content engine — formats, distribution, engagement triggers, and conversion flows",
       badge: "🎬 Content"
+    },
+    {
+      key: "partnership-expansion",
+      label: "Partnership Expansion",
+      icon: Handshake,
+      description: "Strategic ecosystem partnerships — developers, agencies, banks, media, and long-term alliances",
+      badge: "🤝 Partnerships"
     }
   ],
 
