@@ -601,40 +601,68 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
             </div>
 
             {/* Tier 1: Active signal cards — elevated with glow */}
-            <div className="shadow-md rounded-lg border border-primary/30 ring-1 ring-primary/10">
-              <AIHealthSummaryCard onNavigate={() => handleQuickAction('ai-command-center')} data={aiData?.systemHealth} />
-            </div>
-            <div className="shadow-md rounded-lg border border-primary/30 ring-1 ring-primary/10">
-              <LeadIntelligenceCard onNavigate={() => handleQuickAction('lead-management')} data={aiData?.leadIntelligence} />
-            </div>
-            <div className="shadow-md rounded-lg border border-primary/30 ring-1 ring-primary/10">
-              <MarketAnomalyCard data={aiData?.marketAnomalies} />
-            </div>
+            <SectionErrorBoundary sectionName="AI Health Summary">
+              <div className="shadow-md rounded-lg border border-primary/30 ring-1 ring-primary/10">
+                <AIHealthSummaryCard onNavigate={() => handleQuickAction('ai-command-center')} data={aiData?.systemHealth} />
+              </div>
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Lead Intelligence">
+              <div className="shadow-md rounded-lg border border-primary/30 ring-1 ring-primary/10">
+                <LeadIntelligenceCard onNavigate={() => handleQuickAction('lead-management')} data={aiData?.leadIntelligence} />
+              </div>
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Market Anomaly">
+              <div className="shadow-md rounded-lg border border-primary/30 ring-1 ring-primary/10">
+                <MarketAnomalyCard data={aiData?.marketAnomalies} />
+              </div>
+            </SectionErrorBoundary>
 
             {/* Tier 2: Key intelligence — subtle shadow */}
-            <div className="shadow-sm rounded-lg">
-              <MarketIntelligenceCard onNavigate={() => handleQuickAction('ai-command-center')} data={aiData?.marketIntelligence} />
-            </div>
-            <div className="shadow-sm rounded-lg">
-              <AgentPerformanceCard onNavigate={() => handleQuickAction('agent-management')} data={aiData?.agentPerformance} />
-            </div>
-            <div className="shadow-sm rounded-lg">
-              <DealPipelineCard onNavigate={() => handleQuickAction('financial-management')} data={aiData?.dealPipeline} />
-            </div>
-            <div className="shadow-sm rounded-lg">
-              <GeoExpansionCard onNavigate={() => handleQuickAction('ai-command-center')} data={aiData?.geoExpansion} />
-            </div>
-            <div className="shadow-sm rounded-lg">
-              <InvestmentAttractivenessCard />
-            </div>
+            <SectionErrorBoundary sectionName="Market Intelligence">
+              <div className="shadow-sm rounded-lg">
+                <MarketIntelligenceCard onNavigate={() => handleQuickAction('ai-command-center')} data={aiData?.marketIntelligence} />
+              </div>
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Agent Performance">
+              <div className="shadow-sm rounded-lg">
+                <AgentPerformanceCard onNavigate={() => handleQuickAction('agent-management')} data={aiData?.agentPerformance} />
+              </div>
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Deal Pipeline">
+              <div className="shadow-sm rounded-lg">
+                <DealPipelineCard onNavigate={() => handleQuickAction('financial-management')} data={aiData?.dealPipeline} />
+              </div>
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Geo Expansion">
+              <div className="shadow-sm rounded-lg">
+                <GeoExpansionCard onNavigate={() => handleQuickAction('ai-command-center')} data={aiData?.geoExpansion} />
+              </div>
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Investment Attractiveness">
+              <div className="shadow-sm rounded-lg">
+                <InvestmentAttractivenessCard />
+              </div>
+            </SectionErrorBoundary>
 
             {/* Tier 3: Secondary insights — flat */}
-            <BuyerListingMatchCard />
-            <NationalForecastCard />
-            <MarketCyclePredictionCard />
-            <CapitalFlowCard />
-            <PortfolioStrategyCard />
-            <DealTimingSignalCard />
+            <SectionErrorBoundary sectionName="Buyer-Listing Match">
+              <BuyerListingMatchCard />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="National Forecast">
+              <NationalForecastCard />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Market Cycle">
+              <MarketCyclePredictionCard />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Capital Flow">
+              <CapitalFlowCard />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Portfolio Strategy">
+              <PortfolioStrategyCard />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Deal Timing">
+              <DealTimingSignalCard />
+            </SectionErrorBoundary>
           </div>
           )}
 
@@ -646,15 +674,33 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
               <div className="h-px flex-1 bg-gradient-to-l from-chart-3/30 to-transparent" />
             </div>
 
-            <AIBatchControlPanel />
-            <AISchedulingDashboard />
-            <JobQueueHealthCard />
-            <AIJobObservabilityPanel />
-            <ListingPerformanceOptimizerCard onNavigate={() => onSectionChange?.("listing-optimization-center")} />
-            <PricingIntelligenceCard />
-            <DealClosingTimelineCard />
-            <PricingAutomationCard />
-            <MarketplaceOptimizationCard />
+            <SectionErrorBoundary sectionName="AI Batch Control">
+              <AIBatchControlPanel />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="AI Scheduling">
+              <AISchedulingDashboard />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Job Queue Health">
+              <JobQueueHealthCard />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="AI Job Observability">
+              <AIJobObservabilityPanel />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Listing Performance">
+              <ListingPerformanceOptimizerCard onNavigate={() => onSectionChange?.("listing-optimization-center")} />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Pricing Intelligence">
+              <PricingIntelligenceCard />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Deal Closing Timeline">
+              <DealClosingTimelineCard />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Pricing Automation">
+              <PricingAutomationCard />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Marketplace Optimization">
+              <MarketplaceOptimizationCard />
+            </SectionErrorBoundary>
 
             {/* Quick Actions */}
             <div className="grid grid-cols-2 gap-2">
