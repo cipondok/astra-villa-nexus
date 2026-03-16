@@ -491,16 +491,16 @@ const InvestorDashboard = () => {
           <motion.div {...fadeIn} transition={{ delay: 0.35 }}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {p.top_performer && (
-                <Card className="bg-emerald-500/5 border-emerald-500/20 backdrop-blur-xl">
+                <Card className="bg-chart-1/5 border-chart-1/20 backdrop-blur-xl shadow-sm">
                   <CardContent className="p-4 flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-emerald-500/10">
-                      <TrendingUp className="w-5 h-5 text-emerald-500" />
+                    <div className="p-2 rounded-lg bg-chart-1/10">
+                      <TrendingUp className="w-5 h-5 text-chart-1" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs text-muted-foreground">Top Performer</p>
                       <p className="text-sm font-semibold text-foreground truncate">{p.top_performer.title}</p>
                     </div>
-                    <span className="text-lg font-bold text-emerald-500">{p.top_performer.roi_5y.toFixed(1)}%</span>
+                    <span className="text-lg font-black text-chart-1 drop-shadow-sm">{p.top_performer.roi_5y.toFixed(1)}%</span>
                   </CardContent>
                 </Card>
               )}
