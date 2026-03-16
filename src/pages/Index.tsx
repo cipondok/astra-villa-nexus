@@ -693,15 +693,15 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Scroll Down Indicator */}
+          {/* Scroll Down Indicator — hidden on mobile to avoid search panel overlap */}
           <button
             onClick={() => document.getElementById('featured-section')?.scrollIntoView({ behavior: 'smooth' })}
-            className="absolute bottom-2 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-1 text-white/60 hover:text-gold-primary transition-colors duration-300 pointer-events-auto animate-fade-in"
+            className="hidden sm:flex absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex-col items-center gap-1 text-white/40 hover:text-gold-primary transition-colors duration-300 pointer-events-auto animate-fade-in"
             style={{ animationDelay: '1.2s', opacity: 0, animationFillMode: 'forwards' }}
             aria-label="Scroll to content"
           >
             <span className="text-[10px] uppercase tracking-[0.3em] font-medium">{t('indexPage.explore')}</span>
-            <ChevronDown className="h-5 w-5 animate-bounce" />
+            <ChevronDown className="h-4 w-4 animate-[pulse_2s_ease-in-out_infinite]" />
           </button>
         </section>
         </SectionErrorBoundary>
