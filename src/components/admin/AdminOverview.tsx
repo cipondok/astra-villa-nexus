@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -76,7 +76,16 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
     }
   }, [onSectionChange]);
 
-  // Fetch real 7-day trend data for sparklines
+  // Track first render for activity feed animations (P2 #9)
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      const timer = setTimeout(() => { isFirstRender.current = false; }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+
   const { data: sparkTrends } = useQuery({
     queryKey: ['admin-spark-trends-7d'],
     queryFn: async () => {
@@ -470,9 +479,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
                     recentActivity.map((activity: any, idx: number) => (
                       <motion.div
                         key={activity.id}
-                        initial={{ opacity: 0, x: -10 }}
+                        initial={isFirstRender.current ? { opacity: 0, x: -10 } : false}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: idx * 0.05 }}
+                        transition={isFirstRender.current ? { delay: idx * 0.05 } : { duration: 0 }}
                         className="flex items-center gap-2 p-2 rounded-lg border border-border/20 bg-muted/20 hover:bg-muted/40 transition-colors"
                       >
                         <div className="w-1.5 h-1.5 rounded-full bg-primary" />
