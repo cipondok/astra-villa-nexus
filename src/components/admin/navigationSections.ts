@@ -1330,6 +1330,13 @@ export const navigationSections = {
       icon: Users,
       description: "Full-funnel community growth — onboarding, engagement, trust, tiers, and execution roadmap",
       badge: "🏘️ Community"
+    },
+    {
+      key: "geo-expansion",
+      label: "Geographic Expansion",
+      icon: MapPin,
+      description: "City-by-city national expansion — 15 cities across 3 phases with activation milestones",
+      badge: "🗺️ National"
     }
   ],
 
