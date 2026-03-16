@@ -35,6 +35,7 @@ const DeepSeekDiagnostics = lazy(() => import('./DeepSeekDiagnostics'));
 const EnhancedProjectDiagnostics = lazy(() => import('./EnhancedProjectDiagnostics'));
 const LaunchRoadmapDashboard = lazy(() => import('./LaunchRoadmapDashboard'));
 const GrowthExecutionDashboard = lazy(() => import('./GrowthExecutionDashboard'));
+const AgentAcquisitionDashboard = lazy(() => import('./AgentAcquisitionDashboard'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
