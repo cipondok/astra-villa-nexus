@@ -208,13 +208,13 @@ const ModernPropertyCard = ({
         <div className="absolute bottom-0 left-0 right-0 p-2">
           {/* Price with Gradient Badge */}
           <div className="flex items-center gap-1.5 flex-wrap mb-1">
-            <div className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-gradient-to-r from-gold-primary to-gold-primary/80 shadow-lg shadow-gold-primary/30 backdrop-blur-sm">
-              <Tag className="h-3 w-3 text-background" />
-              <span className="text-background font-bold text-sm sm:text-base leading-tight">
+             <div className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-primary shadow-lg shadow-primary/30 backdrop-blur-sm">
+              <Tag className="h-3 w-3 text-primary-foreground" />
+              <span className="text-primary-foreground font-black text-sm sm:text-base leading-tight">
                 {formatPrice(property.price)}
               </span>
               {(property.listing_type === 'rent' || property.type === 'rent') && (
-                <span className="text-background/80 text-[9px] font-medium">/mo</span>
+                <span className="text-primary-foreground/80 text-[10px] font-medium">/mo</span>
               )}
             </div>
             
