@@ -255,7 +255,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         <CardContent className="p-3 sm:p-4">
           {/* Price */}
           <div className="flex items-center gap-2 mb-2">
-            <p className="text-lg sm:text-xl font-bold text-primary">
+            <p className="text-lg sm:text-xl font-black text-primary drop-shadow-sm">
               <Price amount={price} />
               {listing_type === 'rent' && (
                 <span className="text-sm font-normal text-muted-foreground ml-1">/bln</span>
