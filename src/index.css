@@ -1790,3 +1790,89 @@ html, body {
   animation: fade-in 0.3s ease-out forwards;
   animation-delay: calc(var(--stagger-index, 0) * 60ms);
 }
+
+/* ═══════════════════════════════════════════════════════
+   MOBILE NATIVE-FEEL INTERACTIONS
+   Touch-optimized motion tokens for app-like experience
+   ═══════════════════════════════════════════════════════ */
+
+/* Native-feel touch press for any tappable element on mobile */
+@media (hover: none) and (pointer: coarse) {
+  .touch-press {
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 80ms ease-out, opacity 80ms ease-out;
+  }
+  .touch-press:active {
+    transform: scale(0.96);
+    opacity: 0.85;
+  }
+
+  /* Card touch feedback — replaces hover lift on mobile */
+  .card-hover-lift:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .card-hover-lift:active {
+    transform: scale(0.98);
+    transition-duration: 80ms;
+  }
+
+  /* Overscroll rubber-band effect for scroll containers */
+  .overscroll-rubber {
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Smooth scroll-snap for horizontal carousels */
+.carousel-snap {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+.carousel-snap::-webkit-scrollbar { display: none; }
+.carousel-snap > * {
+  scroll-snap-align: start;
+}
+
+/* Scroll snap indicators — dot pagination */
+.snap-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: hsl(var(--muted-foreground) / 0.25);
+  transition: all 200ms ease-out;
+}
+.snap-dot.active {
+  width: 18px;
+  border-radius: 3px;
+  background: hsl(var(--primary));
+}
+
+/* Floating bar entrance/exit */
+@keyframes slide-up-spring {
+  0% { transform: translateY(100%); opacity: 0; }
+  60% { transform: translateY(-4%); }
+  100% { transform: translateY(0); opacity: 1; }
+}
+@keyframes slide-down-spring {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(100%); opacity: 0; }
+}
+.float-bar-enter {
+  animation: slide-up-spring 350ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+.float-bar-exit {
+  animation: slide-down-spring 250ms ease-in forwards;
+}
+
+/* Bottom sheet drag handle indicator */
+.drag-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: hsl(var(--muted-foreground) / 0.2);
+  margin: 0 auto;
+}
