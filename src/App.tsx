@@ -515,7 +515,8 @@ const AppContent = () => {
           {isMobile ? <MobileFooter /> : <ProfessionalFooter language={language} />}
         </Suspense>
       )}
-      {/* Theme toggle moved to navbar — FloatingThemeToggle removed */}
+      {/* Mobile bottom tab bar */}
+      <Suspense fallback={null}><MobileBottomTabBar /></Suspense>
     </div>
   );
 };
