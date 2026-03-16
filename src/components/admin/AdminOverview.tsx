@@ -408,7 +408,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
                 <button
                   key={item.id}
                   onClick={() => handleQuickAction(item.id)}
-                  className="flex flex-col items-center gap-1 p-2 rounded-lg border border-border/30 hover:bg-accent/50 hover:border-primary/30 transition-all text-xs"
+                  className="flex flex-col items-center gap-1 p-2 rounded-lg border border-border hover:bg-accent/10 hover:border-primary/30 transition-all text-xs text-foreground"
                 >
                   <item.icon className="h-4 w-4 text-muted-foreground" />
                   {item.label}
