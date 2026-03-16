@@ -259,3 +259,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.autopilot-worker]
     verify_jwt = false
 
+  [functions.intelligence-cron]
+    verify_jwt = false
+
