@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import SEOAuditReport from './SEOAuditReport';
 import SeoLandingContentGenerator from './SeoLandingContentGenerator';
+import SeoLocationBlueprintGenerator from '../SeoLocationBlueprintGenerator';
 
 interface SEOSettingsHubProps {
   settings: any;
