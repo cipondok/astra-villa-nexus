@@ -355,9 +355,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           {/* Key Metrics */}
           <Card className="border-border bg-card">
             <CardHeader className="p-3 pb-2">
-              <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
-                <Activity className="h-3.5 w-3.5" /> Platform Stats
-                {statsAgo && <span className="ml-auto text-[9px] font-normal normal-case tracking-normal text-muted-foreground/60">↻ {statsAgo}</span>}
+              <CardTitle className="text-sm flex items-center gap-1.5 text-foreground font-semibold">
+                <Activity className="h-4 w-4 text-primary" /> Platform Stats
+                {statsAgo && <span className="ml-auto text-[10px] font-normal text-muted-foreground">↻ {statsAgo}</span>}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 pt-0 space-y-2">
@@ -372,8 +372,8 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           {/* Pending Actions */}
           <Card className="border-border bg-card">
             <CardHeader className="p-3 pb-2">
-              <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
-                <Bell className="h-3.5 w-3.5" /> Pending
+              <CardTitle className="text-sm flex items-center gap-1.5 text-foreground font-semibold">
+                <Bell className="h-4 w-4 text-chart-3" /> Pending
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 pt-0 space-y-1.5">
@@ -426,44 +426,55 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           <Card className="border-border bg-card">
             <CardHeader className="p-3 pb-2">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
-                  <TrendingUp className="h-3.5 w-3.5" /> Traffic (12h)
+                <CardTitle className="text-sm flex items-center gap-1.5 text-foreground font-semibold">
+                  <TrendingUp className="h-4 w-4 text-primary" /> Traffic (12h)
                 </CardTitle>
                 <div className="flex items-center gap-2">
-                  {trafficAgo && <span className="text-[9px] text-muted-foreground/60">↻ {trafficAgo}</span>}
-                  <Badge variant="secondary" className="text-[10px] h-5 px-2">Live</Badge>
+                  {trafficAgo && <span className="text-[10px] text-muted-foreground">↻ {trafficAgo}</span>}
+                  <Badge variant="secondary" className="text-[10px] h-5 px-2 bg-chart-1/10 text-chart-1 border-chart-1/30">● Live</Badge>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="p-3 pt-0">
-              <ResponsiveContainer width="100%" height={96}>
-                <BarChart data={hourlyTraffic || []} margin={{ top: 4, right: 0, left: -20, bottom: 0 }}>
+              <ResponsiveContainer width="100%" height={120}>
+                <BarChart data={hourlyTraffic || []} margin={{ top: 8, right: 4, left: -16, bottom: 0 }}>
                   <XAxis 
                     dataKey="hour" 
-                    tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} 
-                    axisLine={false} 
+                    tick={{ fontSize: 11, fill: 'hsl(var(--foreground))', fontWeight: 500 }} 
+                    axisLine={{ stroke: 'hsl(var(--border))' }}
                     tickLine={false}
                     interval={1}
                   />
-                  <YAxis hide />
+                  <YAxis 
+                    tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
+                    axisLine={false}
+                    tickLine={false}
+                    width={30}
+                  />
                   <RechartsTooltip
-                    cursor={{ fill: 'hsl(var(--accent) / 0.3)' }}
+                    cursor={{ fill: 'hsl(var(--muted) / 0.5)' }}
                     contentStyle={{
                       background: 'hsl(var(--popover))',
                       border: '1px solid hsl(var(--border))',
                       borderRadius: '8px',
                       fontSize: '12px',
+                      fontWeight: 500,
                       color: 'hsl(var(--popover-foreground))',
-                      padding: '6px 10px',
+                      padding: '8px 12px',
+                      boxShadow: '0 4px 12px hsl(var(--foreground) / 0.1)',
                     }}
                     formatter={(value: number) => [`${value} activities`, 'Count']}
                     labelFormatter={(label) => `Hour: ${label}`}
                   />
-                  <Bar dataKey="count" radius={[3, 3, 0, 0]} maxBarSize={20}>
+                  <Bar dataKey="count" radius={[4, 4, 0, 0]} maxBarSize={24}>
                     {(hourlyTraffic || []).map((entry, index) => (
                       <Cell 
                         key={`cell-${index}`} 
-                        fill={entry.count === maxTraffic ? 'hsl(var(--primary))' : 'hsl(var(--primary) / 0.5)'}
+                        fill={entry.count === maxTraffic 
+                          ? 'hsl(var(--primary))' 
+                          : 'hsl(var(--primary) / 0.35)'}
+                        stroke={entry.count === maxTraffic ? 'hsl(var(--primary))' : 'transparent'}
+                        strokeWidth={1}
                       />
                     ))}
                   </Bar>
@@ -476,8 +487,8 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           <Card className="border-border bg-card">
             <CardHeader className="p-3 pb-2">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
-                  <MousePointer className="h-3.5 w-3.5" /> Live Activity
+                <CardTitle className="text-sm flex items-center gap-1.5 text-foreground font-semibold">
+                  <MousePointer className="h-4 w-4 text-chart-2" /> Live Activity
                 </CardTitle>
                 <span className="text-[10px] text-muted-foreground">{activityAgo ? `↻ ${activityAgo}` : 'Auto-refresh 60s'}</span>
               </div>
@@ -531,16 +542,16 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           {/* ═══ ZONE 1: System Health ═══ */}
           <div className="space-y-3">
             <div className="flex items-center gap-2 px-1">
-              <div className="h-px flex-1 bg-gradient-to-r from-chart-1/30 to-transparent" />
-              <span className="text-[10px] font-bold uppercase tracking-widest text-chart-1/70">System Health</span>
-              {healthAgo && <span className="text-[9px] text-muted-foreground/60">↻ {healthAgo}</span>}
+              <div className="h-px flex-1 bg-gradient-to-r from-chart-1/50 to-transparent" />
+              <span className="text-[11px] font-bold uppercase tracking-widest text-chart-1">System Health</span>
+              {healthAgo && <span className="text-[10px] text-muted-foreground">↻ {healthAgo}</span>}
             </div>
 
             {/* System Status */}
             <Card className="border-border bg-card">
               <CardHeader className="p-3 pb-2">
-                <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
-                  <Server className="h-3.5 w-3.5" /> System Health
+                <CardTitle className="text-sm flex items-center gap-1.5 text-foreground font-semibold">
+                  <Server className="h-4 w-4 text-chart-1" /> System Health
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-3 pt-0 space-y-2.5">
@@ -549,7 +560,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
                     ? 'bg-chart-1/5 border-chart-1/30 dark:bg-chart-1/10' 
                     : 'bg-chart-3/5 border-chart-3/30 dark:bg-chart-3/10'
                 }`}>
-                  <span className="text-xs font-medium">Status</span>
+                  <span className="text-xs font-medium text-foreground">Status</span>
                   <Badge variant={systemHealth?.status === 'healthy' ? 'default' : 'destructive'} className="text-[10px] h-5 px-2">
                     {systemHealth?.status === 'healthy' ? '● All Systems OK' : '⚠ Issues'}
                   </Badge>
@@ -567,8 +578,8 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
             {/* AI Systems Status */}
             <Card className="border-border bg-card">
               <CardHeader className="p-3 pb-2">
-                <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
-                  <ShieldCheck className="h-3.5 w-3.5" /> AI Systems
+                <CardTitle className="text-sm flex items-center gap-1.5 text-foreground font-semibold">
+                  <ShieldCheck className="h-4 w-4 text-chart-2" /> AI Systems
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-3 pt-0 space-y-1.5">
@@ -580,7 +591,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
                 {(systemHealth?.aiSystems.jobsPending || 0) > 0 && (
                   <div className="mt-1.5 p-2 rounded-lg bg-chart-2/5 border border-chart-2/20">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] text-muted-foreground">Queued Jobs</span>
+                      <span className="text-[10px] text-foreground">Queued Jobs</span>
                       <Badge variant="secondary" className="text-[10px] h-5">{systemHealth?.aiSystems.jobsPending}</Badge>
                     </div>
                   </div>
@@ -595,9 +606,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           ) : (
           <div className="space-y-3">
             <div className="flex items-center gap-2 px-1">
-              <div className="h-px flex-1 bg-gradient-to-r from-primary/30 to-transparent" />
-              <span className="text-[10px] font-bold uppercase tracking-widest text-primary/70">AI Intelligence</span>
-              {aiAgo && <span className="text-[9px] text-muted-foreground/60">↻ {aiAgo}</span>}
+              <div className="h-px flex-1 bg-gradient-to-r from-primary/50 to-transparent" />
+              <span className="text-[11px] font-bold uppercase tracking-widest text-primary">AI Intelligence</span>
+              {aiAgo && <span className="text-[10px] text-muted-foreground">↻ {aiAgo}</span>}
             </div>
 
             {/* Tier 1: Active signal cards — elevated with glow */}
@@ -669,9 +680,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           {/* ═══ ZONE 3: Operations ═══ */}
           <div className="space-y-3">
             <div className="flex items-center gap-2 px-1">
-              <div className="h-px flex-1 bg-gradient-to-r from-chart-3/30 to-transparent" />
-              <span className="text-[10px] font-bold uppercase tracking-widest text-chart-3/70">Operations</span>
-              <div className="h-px flex-1 bg-gradient-to-l from-chart-3/30 to-transparent" />
+              <div className="h-px flex-1 bg-gradient-to-r from-chart-3/50 to-transparent" />
+              <span className="text-[11px] font-bold uppercase tracking-widest text-chart-3">Operations</span>
+              <div className="h-px flex-1 bg-gradient-to-l from-chart-3/50 to-transparent" />
             </div>
 
             <SectionErrorBoundary sectionName="AI Batch Control">
