@@ -322,9 +322,9 @@ const ModernPropertyCard = ({
 
             {/* Rating */}
             {ownerInfo.rating && (
-              <div className="flex items-center gap-0.5 bg-gold-primary/10 px-1 py-0.5 rounded">
-                <Star className="h-2.5 w-2.5 fill-gold-primary text-gold-primary" />
-                <span className="text-[10px] font-semibold text-gold-primary">
+               <div className="flex items-center gap-0.5 bg-primary/10 px-1 py-0.5 rounded">
+                <Star className="h-2.5 w-2.5 fill-primary text-primary" />
+                <span className="text-[10px] font-semibold text-primary">
                   {ownerInfo.rating.toFixed(1)}
                 </span>
               </div>
