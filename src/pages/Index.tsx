@@ -678,7 +678,7 @@ const Index = () => {
                 
                 <h1 className="text-2xl sm:text-3xl md:text-5xl font-black leading-[1.1] mb-2 text-white" style={{ textShadow: '0 2px 20px hsl(45 80% 50% / 0.3), 0 4px 8px hsl(0 0% 0% / 0.3)' }}>
                   {personalizedHeadline?.headline || t('indexPage.findYour')}
-                </h2>
+                </h1>
                 <p className="flex text-xs sm:text-sm text-white/80 items-center justify-center gap-2 font-medium">
                   <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-gold-primary/80" />
                   {personalizedHeadline?.subtitle || t('indexPage.searchPowered')}
