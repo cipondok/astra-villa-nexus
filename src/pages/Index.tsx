@@ -840,6 +840,11 @@ const Index = () => {
                 <RecentlyViewedStrip />
               </Suspense>
 
+              {/* ── Hotspot Alert ── */}
+              <Suspense fallback={null}>
+                <HotspotAlertBanner />
+              </Suspense>
+
               {/* ── SECTION 3: AI Opportunity Zone (merged intelligence modules) ── */}
               <section className="py-10 sm:py-14 bg-muted/30" id="ai-opportunity-zone" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 800px' }}>
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
