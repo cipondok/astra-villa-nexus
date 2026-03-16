@@ -424,7 +424,7 @@ const Index = () => {
   const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
     queryKey: ['featured-properties-simple'],
     queryFn: async () => {
-      console.log('Fetching featured properties...');
+      // Fetching featured properties
       
       try {
         const { data, error } = await supabase
