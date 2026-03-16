@@ -309,18 +309,18 @@ const Index = () => {
   // Hero background image — admin config or default
   const heroImage = heroConfig?.bannerImages?.[0] || slideHero1;
 
-  // Preload first hero banner for faster LCP
+  // Preload hero image for faster LCP
   useEffect(() => {
-    if (bannerImages.length > 0) {
+    if (heroImage) {
       const link = document.createElement('link');
       link.rel = 'preload';
       link.as = 'image';
-      link.href = bannerImages[0];
+      link.href = heroImage;
       link.fetchPriority = 'high';
       document.head.appendChild(link);
       return () => { document.head.removeChild(link); };
     }
-  }, [bannerImages]);
+  }, [heroImage]);
 
   const [showShortcutsPanel, setShowShortcutsPanel] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
