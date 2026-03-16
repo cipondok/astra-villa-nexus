@@ -13,6 +13,7 @@ import {
   Lightbulb, RefreshCw, DollarSign, Layers, Clock,
 } from 'lucide-react';
 import { useAIAutopilot, type AutopilotSignal, type AutopilotRecommendation } from '@/hooks/useAIAutopilot';
+import { useAutopilotStatus, useRunAutopilotWorkers, WORKER_NAMES } from '@/hooks/useAutopilotWorker';
 import { cn } from '@/lib/utils';
 
 const fadeIn = (d = 0) => ({
