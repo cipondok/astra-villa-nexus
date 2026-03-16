@@ -1005,6 +1005,11 @@ const Index = () => {
                 </ScrollReveal>
               </section>
 
+              {/* ── Trust governance strip ── */}
+              <Suspense fallback={null}>
+                <TrustFooterStrip />
+              </Suspense>
+
               {/* ── SECTION 10: Final Conversion CTA ── */}
               <section className="py-10 sm:py-14">
                 <ScrollReveal direction="up" delay={0}>
