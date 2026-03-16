@@ -234,8 +234,8 @@ export default function FeaturedPropertiesCarousel() {
                 </div>
 
                 {/* Content */}
-                <div className="p-3 sm:p-3.5 space-y-2">
-                  <h3 className="text-sm sm:text-[15px] font-semibold text-foreground line-clamp-1 leading-snug group-hover/card:text-gold-primary transition-colors">
+                <div className="p-3 sm:p-4 space-y-2">
+                  <h3 className="text-sm sm:text-[15px] font-semibold text-foreground line-clamp-1 leading-snug group-hover/card:text-primary transition-colors">
                     {p.title}
                   </h3>
 
