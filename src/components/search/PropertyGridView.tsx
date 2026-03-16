@@ -141,7 +141,7 @@ const PropertyGridView = ({
 
               {/* Image Count */}
               {imageCount > 1 && (
-                <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-background/60 backdrop-blur-sm text-foreground text-[9px] px-1.5 py-0.5 rounded">
+                <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-background/60 backdrop-blur-sm text-foreground text-[10px] px-1.5 py-0.5 rounded">
                   <Camera className="h-2.5 w-2.5" />
                   <span>{imageCount}</span>
                 </div>
