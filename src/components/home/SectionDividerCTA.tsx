@@ -38,7 +38,12 @@ export default function SectionDividerCTA({
       <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
       <div className="relative flex justify-center px-3">
-        <div className={cn(
+        <motion.div
+          initial={{ opacity: 0, y: 12, scale: 0.97 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className={cn(
           "flex flex-col sm:flex-row items-center gap-3 sm:gap-4 px-5 sm:px-8 py-4 sm:py-5 rounded-2xl border backdrop-blur-sm transition-shadow duration-300",
           isPrimary && "bg-primary/5 border-primary/25 hover:shadow-[0_4px_20px_-4px_hsl(var(--primary)/0.15)]",
           isAccent && "bg-gold-primary/5 border-gold-primary/20 hover:shadow-[0_4px_20px_-4px_hsl(var(--gold-primary)/0.15)]",
