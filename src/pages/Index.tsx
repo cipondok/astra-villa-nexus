@@ -952,7 +952,7 @@ const Index = () => {
               <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mx-auto max-w-5xl" aria-hidden="true" />
 
               {/* ── SECTION 7: Properties for Sale & Rent ── */}
-              <section className="py-10 sm:py-14 bg-muted/20">
+              <section className="py-10 sm:py-14 bg-muted/20" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 600px' }}>
                 <div className="space-y-8">
                   <ScrollReveal direction="up" delay={0}>
                     <div id="sale-section">
