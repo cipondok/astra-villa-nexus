@@ -622,8 +622,24 @@ const Properties = () => {
               </div>
             </div>
 
-            {/* ─── Property Grid / List ─── */}
-            {isLoading ? (
+            {/* ─── Map View ─── */}
+            {viewMode === 'map' ? (
+              <Suspense fallback={
+                <div className="rounded-2xl border border-border/30 bg-card h-[calc(100vh-280px)] min-h-[400px] flex items-center justify-center">
+                  <div className="text-center">
+                    <Map className="h-8 w-8 text-primary animate-pulse mx-auto mb-2" />
+                    <p className="text-sm text-muted-foreground">Memuat peta...</p>
+                  </div>
+                </div>
+              }>
+                <div className="rounded-2xl border border-border/30 overflow-hidden h-[calc(100vh-280px)] min-h-[400px]">
+                  <PropertyListingMapView
+                    properties={filteredProperties}
+                    formatPrice={formatCurrency}
+                  />
+                </div>
+              </Suspense>
+            ) : isLoading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-5">
                 {[...Array(9)].map((_, i) => (
                   <div key={i} className="rounded-2xl border border-border/30 bg-card overflow-hidden">
