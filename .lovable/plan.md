@@ -1,45 +1,70 @@
 
+# ASTRA Villa — Platform Architecture Analysis & Roadmap
 
-## Plan: Compact System Health Widget with Expand/Collapse
+## Status: 🔄 IN PROGRESS
 
-**Problem**: The System Health zone takes up too much vertical space with two full cards (System Health + AI Systems) always expanded.
+## Current State Assessment (March 2026)
 
-**Solution**: Merge both cards into a single compact card with a mini summary view (status dot + key metrics inline) that expands to show full details on click.
+### Scale
+| Metric | Count |
+|--------|-------|
+| Pages | 120+ |
+| Components | 200+ directories |
+| Hooks | 230+ |
+| Edge Functions | 18 (consolidated from 82) |
+| Database Tables | 450+ |
+| RLS Policies | 1,000+ |
 
-### Design
+### Three-Layer Architecture ✅
+| Layer | Key Features | Status |
+|-------|-------------|--------|
+| **Public Platform** | Property browse, search, map, detail pages, AI chat, mortgage tools | ✅ Mature |
+| **Investor Intelligence** | ROI forecasts, deal finder, portfolio builder, market trends, location intel | ✅ Mature |
+| **Admin AI Command Center** | Job queue, SEO engine, valuations, health monitor, KPI alerts | ✅ Mature |
 
-**Collapsed (default)**: Single row showing:
-- Status dot (green/yellow/red) + "All Systems OK" or "Issues Detected"
-- 3 inline mini metrics: DB response, SEO score, Job queue health
-- Chevron toggle
+### Edge Function Architecture ✅
+| Router | Modes |
+|--------|-------|
+| `core-engine` | 25+ modes (investment_score, valuation, health, diagnostics, map_search) |
+| `ai-engine` | 25+ modes (descriptions, NLP, recommendations, market reports) |
+| `deal-engine` | deal_finder, alerts, negotiation, pricing, forecasts |
+| `ai-assistant` | SSE streaming chatbot, NLP search, investment advisor |
+| `notification-engine` | Email, push, campaigns |
+| `payment-engine` | Midtrans, PayPal, invoices, subscriptions |
+| `vendor-engine` | Vendor services, validation |
 
-**Expanded (on click)**: Reveals the full health bars + AI Systems service rows below the summary row, using Radix Collapsible for smooth animation.
+### AI Automation Systems ✅
+- SEO: Daily audits (3AM UTC), 6-hour auto-optimizer, property_seo_analysis tracking
+- Jobs: ai_jobs queue with claim_next_job() SKIP LOCKED, stall recovery, retry logic
+- Valuations: property_valuations with auto-recalculation
+- ROI: property_roi_forecast with 5-year projections
+- Autonomous Agent: 6-hour market scans for opportunity detection
 
-### Technical Changes
+---
 
-1. **`src/components/admin/AdminOverview.tsx`** (lines 553-612):
-   - Replace the two separate cards (System Health + AI Systems) with a single `<Card>` using `<Collapsible>`
-   - Collapsed state: compact single-row summary with status badge + 3 mini metric pills
-   - Expanded state: existing HealthBar rows + ServiceRow list
-   - Default collapsed, toggle on header click
+## Identified Gaps & Improvements
 
-2. **No new files needed** — uses existing `Collapsible` component from `src/components/ui/collapsible.tsx`
+### 🔴 Critical Performance
+1. **Map viewport debouncing** — `moveend` fires on every pan; needs 300ms debounce ✅ FIXED
+2. **Spatial indexes** — Need composite indexes on (latitude, longitude, status) ✅ FIXED
+3. **Platform health aggregation** — Real AI system status on admin overview ✅ FIXED (prev iteration)
 
-### Visual Layout
+### 🟡 Architecture Improvements
+4. **Unified health hook** — Single hook aggregating all AI subsystem health ✅ FIXED
+5. **Query deduplication** — MapBounds type duplicated across useMapSearch/useMapProperties
+6. **Large file refactoring** — PropertyDetail.tsx (1544 lines), Index.tsx (1199 lines) need splitting
 
-```text
-┌─────────────────────────────────────────┐
-│ 🟢 System Health    DB·OK  SEO·72  ▼   │  ← Collapsed (default)
-├─────────────────────────────────────────┤
-│  Database     ████████████████░░  100%  │  ← Expanded on click
-│  SEO Engine   █████████████░░░░░   72%  │
-│  Job Queue    ████████████████░░  100%  │
-│ ─────────────────────────────────────── │
-│  SEO Engine   ● operational   72% avg   │
-│  Job Worker   ● operational   0 running │
-│  Valuations   ● operational   5 total   │
-│  Database     ● operational   0 errors  │
-│  Auth         ● operational             │
-└─────────────────────────────────────────┘
-```
+### 🟢 Future Expansion Ready
+- AI deal finder ✅ Exists (/deal-finder)
+- Predictive market analytics ✅ Exists (/market-trends, /price-prediction)
+- AI recommendation engine ✅ Exists (ai-match-engine-v2)
+- Location intelligence ✅ Exists (/location-intelligence)
+- Knowledge graph ✅ Hook exists (useKnowledgeGraph)
 
+### Recommended Next Steps
+1. Add database indexes for map queries at scale
+2. Debounce map viewport changes
+3. Create unified platform health dashboard
+4. Split PropertyDetail.tsx into sub-components
+5. Add API response caching headers to edge functions
+6. Implement property search result caching with stale-while-revalidate
