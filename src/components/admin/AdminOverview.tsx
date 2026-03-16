@@ -57,6 +57,7 @@ import InvestmentAttractivenessCard from "./InvestmentAttractivenessCard";
 import BuyerListingMatchCard from "./BuyerListingMatchCard";
 import PricingAutomationCard from "./PricingAutomationCard";
 import MarketCyclePredictionCard from "./MarketCyclePredictionCard";
+import DealTimingSignalCard from "./DealTimingSignalCard";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
