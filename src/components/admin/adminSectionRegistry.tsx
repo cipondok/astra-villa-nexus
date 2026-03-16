@@ -452,6 +452,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "global-macro-intelligence": () => <GlobalMacroIntelligencePanel />,
   "deal-hunter-admin":   () => <DealHunterAdminPanel />,
   "market-heat-intelligence": () => <MarketHeatIntelligence />,
+  "opportunity-scoring-engine": () => <OpportunityScoringEngine />,
   "property-comparison-tool": () => <PropertyComparisonTool />,
 };
 
