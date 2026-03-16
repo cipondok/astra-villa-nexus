@@ -1219,16 +1219,16 @@ const AICommandCenter = () => {
                   <Panel title="Status Distribution" icon={Radar}>
                     {jobPieData.length > 0 ? (
                       <div className="flex items-center justify-center gap-6">
-                        <ResponsiveContainer width={130} height={130}>
-                          <PieChart>
-                            <Pie data={jobPieData} cx="50%" cy="50%" innerRadius={36} outerRadius={56} dataKey="value" stroke="hsl(var(--background))" strokeWidth={3}>
+                        <div className="w-[130px] h-[130px] shrink-0">
+                          <PieChart width={130} height={130}>
+                            <Pie data={jobPieData} cx={65} cy={65} innerRadius={36} outerRadius={56} dataKey="value" stroke="hsl(var(--background))" strokeWidth={3}>
                               {jobPieData.map((entry, i) => (
                                 <Cell key={i} fill={entry.fill} />
                               ))}
                             </Pie>
                             <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
                           </PieChart>
-                        </ResponsiveContainer>
+                        </div>
                         <div className="space-y-1.5">
                           {jobPieData.map(item => (
                             <div key={item.name} className="flex items-center gap-2 text-[11px]">
