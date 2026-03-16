@@ -676,7 +676,7 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
 
       {/* ── Legend ── */}
       <AnimatePresence>
-        <MapLegend isDark={isDark} showHeatmap={showHeatmap} showHotspots={showHotspots} />
+        <MapLegend isDark={isDark} showHeatmap={showHeatmap} showHotspots={showHotspots} heatMode={heatMode} />
       </AnimatePresence>
 
       {/* ── Province count badge ── */}
