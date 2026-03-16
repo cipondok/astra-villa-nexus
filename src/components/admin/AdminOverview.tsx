@@ -493,7 +493,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] text-muted-foreground">{activityAgo ? `↻ ${activityAgo}` : 'Auto-refresh 60s'}</span>
                   <button 
-                    onClick={() => handleQuickAction('activity-logs')} 
+                    onClick={() => handleQuickAction('admin-activity-log')} 
                     className="text-[10px] text-primary hover:underline font-medium flex items-center gap-0.5"
                   >
                     View All <ChevronRight className="h-3 w-3" />
