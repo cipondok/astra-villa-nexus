@@ -15,8 +15,10 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import {
   Search, MapPin, Building2, Bed, Bath, Maximize, Heart,
   Grid3X3, List, ArrowLeft, Home, X, SlidersHorizontal, RotateCcw,
-  TrendingUp, Sparkles,
+  TrendingUp, Sparkles, Map,
 } from "lucide-react";
+
+const PropertyListingMapView = lazy(() => import("@/components/property/PropertyListingMapView"));
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { formatCurrency } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
