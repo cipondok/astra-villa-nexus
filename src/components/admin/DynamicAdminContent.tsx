@@ -50,6 +50,7 @@ const HiringRoadmapDashboard = lazy(() => import('./HiringRoadmapDashboard'));
 const PartnershipManagerRole = lazy(() => import('./PartnershipManagerRole'));
 const DigitalGrowthRole = lazy(() => import('./DigitalGrowthRole'));
 const PropertySupplyManagerRole = lazy(() => import('./PropertySupplyManagerRole'));
+const CustomerSuccessRole = lazy(() => import('./CustomerSuccessRole'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
@@ -387,6 +388,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return (
           <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
             <PropertySupplyManagerRole />
+          </Suspense>
+        );
+      case "customer-success-role":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <CustomerSuccessRole />
           </Suspense>
         );
       default:

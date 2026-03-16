@@ -1373,6 +1373,13 @@ export const navigationSections = {
       icon: Building,
       description: "Supply hire blueprint — agent onboarding, developer sourcing, listing quality, marketplace liquidity, 90-day plan",
       badge: "🏗️ Supply Hire"
+    },
+    {
+      key: "customer-success-role",
+      label: "Customer Success Role",
+      icon: Heart,
+      description: "Agent support hire — onboarding guidance, re-engagement workflows, listing quality, retention KPIs, 90-day plan",
+      badge: "💚 Success Hire"
     }
   ],
 
