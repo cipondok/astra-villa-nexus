@@ -1394,6 +1394,13 @@ export const navigationSections = {
       icon: DollarSign,
       description: "6-month marketing budget — organic-first allocation, paid experiments, ROI reallocation rules",
       badge: "💰 Budget Plan"
+    },
+    {
+      key: "fundraising-readiness",
+      label: "Fundraising Readiness",
+      icon: Rocket,
+      description: "Investor readiness checklist — traction metrics, product signals, financial clarity, narrative, data room",
+      badge: "🚀 Fundraise"
     }
   ],
 

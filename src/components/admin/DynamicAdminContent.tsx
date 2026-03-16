@@ -53,6 +53,7 @@ const PropertySupplyManagerRole = lazy(() => import('./PropertySupplyManagerRole
 const CustomerSuccessRole = lazy(() => import('./CustomerSuccessRole'));
 const OrgChartDashboard = lazy(() => import('./OrgChartDashboard'));
 const MarketingBudgetDashboard = lazy(() => import('./MarketingBudgetDashboard'));
+const FundraisingReadinessDashboard = lazy(() => import('./FundraisingReadinessDashboard'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
@@ -408,6 +409,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return (
           <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
             <MarketingBudgetDashboard />
+          </Suspense>
+        );
+      case "fundraising-readiness":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <FundraisingReadinessDashboard />
           </Suspense>
         );
       default:
