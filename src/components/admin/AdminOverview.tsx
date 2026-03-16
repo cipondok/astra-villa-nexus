@@ -340,6 +340,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
             <CardHeader className="p-3 pb-2">
               <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
                 <Activity className="h-3.5 w-3.5" /> Platform Stats
+                {statsAgo && <span className="ml-auto text-[9px] font-normal normal-case tracking-normal text-muted-foreground/60">↻ {statsAgo}</span>}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 pt-0 space-y-2">
