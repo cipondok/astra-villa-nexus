@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ReactNode } from 'react';
+import { ReactNode, forwardRef } from 'react';
 
 export interface PageTransitionProps {
   children: ReactNode;
@@ -31,16 +31,21 @@ const pageVariants = {
  * Uses popLayout mode in parent AnimatePresence so the
  * exiting page is removed from flow immediately.
  */
-const PageTransition = ({ children, className }: PageTransitionProps) => (
-  <motion.div
-    variants={pageVariants}
-    initial="initial"
-    animate="animate"
-    exit="exit"
-    className={className}
-  >
-    {children}
-  </motion.div>
+const PageTransition = forwardRef<HTMLDivElement, PageTransitionProps>(
+  ({ children, className }, ref) => (
+    <motion.div
+      ref={ref}
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      className={className}
+    >
+      {children}
+    </motion.div>
+  )
 );
+
+PageTransition.displayName = 'PageTransition';
 
 export default PageTransition;
