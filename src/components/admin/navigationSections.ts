@@ -1359,6 +1359,13 @@ export const navigationSections = {
       icon: Handshake,
       description: "Complete role blueprint — responsibilities, KPIs, candidate profile, 90-day plan, and career path",
       badge: "🤝 Hiring"
+    },
+    {
+      key: "digital-growth-role",
+      label: "Digital Growth Lead Role",
+      icon: TrendingUp,
+      description: "Growth hire blueprint — SEO, social, paid ads, community, analytics with 90-day plan and career path",
+      badge: "📈 Growth Hire"
     }
   ],
 
