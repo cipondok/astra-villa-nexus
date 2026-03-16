@@ -1030,7 +1030,7 @@ const Index = () => {
 
                 {/* Smart Recommendations - Personalized Picks */}
                 <ScrollReveal direction="left" delay={0}>
-                <div className="mb-4">
+                <div className="mb-6">
                   <Suspense fallback={<div className="h-48 bg-muted/30 rounded-xl animate-pulse" />}>
                     <SmartRecommendations limit={6} className="shadow-sm" />
                   </Suspense>
