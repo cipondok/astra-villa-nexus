@@ -543,6 +543,30 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
         </div>
       </div>
 
+      {/* ── Heat Mode Switcher (below title) ── */}
+      {showHeatmap && (
+        <div className="absolute top-[60px] sm:top-[72px] left-3 sm:left-4 z-30 flex gap-1">
+          {([
+            { mode: 'density' as HeatMode, label: 'Density', icon: Building2 },
+            { mode: 'demand' as HeatMode, label: 'Demand', icon: Flame },
+            { mode: 'price' as HeatMode, label: 'Price', icon: TrendingUp },
+          ]).map(({ mode, label, icon: Icon }) => (
+            <button
+              key={mode}
+              onClick={() => setHeatMode(mode)}
+              className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold transition-all border ${
+                heatMode === mode
+                  ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                  : 'bg-background/90 backdrop-blur-sm text-muted-foreground border-border/50 hover:border-primary/30'
+              }`}
+            >
+              <Icon className="h-3 w-3" />
+              <span className="hidden sm:inline">{label}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* ── SVG Map ── */}
       <ComposableMap
         projection="geoMercator"
