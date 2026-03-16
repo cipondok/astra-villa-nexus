@@ -103,7 +103,8 @@ import {
   Handshake,
   Send,
   Presentation,
-  MapPin
+  MapPin,
+  Brain
 } from "lucide-react";
 
 export interface NavigationSection {
