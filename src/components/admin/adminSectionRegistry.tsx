@@ -205,15 +205,247 @@ export const NeighborhoodInsights = lazyRetry(() => import("./NeighborhoodInsigh
 export const DocumentSigningHub = lazyRetry(() => import("./DocumentSigningHub"));
 export const PropertyAuctionManager = lazyRetry(() => import("./PropertyAuctionManager"));
 export const TenantScreening = lazyRetry(() => import("./TenantScreening"));
+export const OffPlanProjectManager = lazyRetry(() => import("./OffPlanProjectManager"));
 
-export const AICommandCenter = lazyRetry(() => import("./AICommandCenter"));
-export const GlobalStrategyPanel = lazyRetry(() => import("./GlobalStrategyPanel"));
-export const InvestorDNAAdminPanel = lazyRetry(() => import("./InvestorDNAAdminPanel"));
-export const GlobalMacroIntelligencePanel = lazyRetry(() => import("@/pages/GlobalMacroIntelligencePage"));
-export const DealHunterAdminPanel = lazyRetry(() => import("./DealHunterAdminPanel"));
+// ── Section render map ────────────────────────────────────────────────────────
+// Maps section keys to a factory that returns JSX given an optional onSectionChange.
+// Sections with custom props are listed explicitly; all others are simple <Component />.
 
-// ─── Section labels metadata ──────────────────────────────────────────────────
-export const sectionLabels: Record<string, { label: string; category: string }> = {
+type SectionRenderer = (onSectionChange?: (s: string) => void) => React.ReactNode;
+
+export const sectionRenderMap: Record<string, SectionRenderer> = {
+  // Overview & diagnostics
+  "overview":            (sc) => <AdminOverview onSectionChange={sc} />,
+  "diagnostic":          () => <ProjectDiagnosticSystem />,
+  "project-progress":    (sc) => <LaunchReadinessDashboard onSectionChange={sc} />,
+  "launch-readiness":    (sc) => <LaunchReadinessDashboard onSectionChange={sc} />,
+
+  // User management
+  "user-management":     (sc) => <UserManagementHub onNavigate={sc} />,
+  "user-levels":         (sc) => <UserLevelManagement onNavigate={sc} />,
+  "verification-management": () => <VerificationManagement />,
+  "upgrade-applications":    () => <UserUpgradeApplications />,
+
+  // Property
+  "property-management":        () => <AdminPropertyManagement />,
+  "property-management-hub":    () => <AdminPropertyManagement />,
+  "property-management-advanced": () => <PropertyManagementAdvanced />,
+
+  // Settings
+  "system-settings":     () => <SystemSettings />,
+  "settings":            () => <SystemSettings />,
+  "smtp-settings":       () => <EmailSettings />,
+  "indonesian-payment-config": () => <IndonesianPaymentMerchantConfig />,
+  "seo-settings":        () => <SystemSettings defaultTab="seo-hub" />,
+
+  // Analytics
+  "visitor-analytics":   () => <VisitorAnalytics />,
+  "analytics":           () => <WebTrafficAnalytics />,
+  "performance-monitor": () => <PerformanceMonitor />,
+
+  // AI & Tools
+  "ai-bot-management":   () => <AIBotManagement />,
+  "ai-assistant":        () => <AIPropertyAssistant />,
+  "ai-command-center":   () => <AICommandCenter />,
+  "ai-performance":      () => <AIPerformanceDashboard />,
+  "ai-model-weights":    () => <AIModelWeightsPanel />,
+  "ai-feedback-analytics": () => <AIFeedbackAnalytics />,
+
+  // Support
+  "feedback-management": () => <FeedbackManagement />,
+  "customer-service":    () => <CustomerServiceCenter />,
+  "chat-management":     () => <LiveChatManagement />,
+  "contact-management":  () => <ContactManagement />,
+  "customer-service-control": () => <CustomerServiceControlPanel />,
+
+  // Vendors
+  "vendors-hub":         () => <VendorsHubContent />,
+  "vendor-agent-control": () => <EnhancedVendorAgentControl />,
+
+  // Content
+  "homepage-slider":     () => <HomepageSliderSettings />,
+  "carousel-settings":   () => <CarouselSettingsManager />,
+  "social-media-settings": () => <SocialMediaSettings />,
+  "content-management":  () => <ContentManagement />,
+  "search-filters":      () => <SearchFiltersManagement />,
+
+  // Billing & payments
+  "billing-management":  () => <BillingManagement />,
+  "booking-payment-settings": () => <BookingPaymentSettings />,
+  "booking-management":  () => <BookingManagement />,
+  "transaction-hub":     () => <TransactionManagementTabs />,
+  "mortgage-management": () => <MortgageManagement />,
+
+  // System
+  "database-management": () => <DatabaseTableManagement />,
+  "security-monitoring": () => <SecurityMonitoringDashboard />,
+  "report-export":       () => <ReportExportFunction />,
+  "enhanced-search":     () => <EnhancedSearchFilters />,
+  "system-reports":      () => <SystemReports />,
+  "daily-checkin":       () => <DailyCheckInManagement />,
+  "astra-token-hub":     () => <ASTRATokenHub />,
+  "tools-management":    () => <ToolsManagementDashboard />,
+  "rate-limiting":       () => <RateLimitingDashboard />,
+  "authorization-monitoring": () => <AuthorizationMonitoringSystem />,
+  "admin-alerts":        () => <AdminAlertSystem />,
+  "database-errors":     () => <DatabaseErrorManager />,
+  "error-logs":          () => <ErrorLogsTable />,
+  "error-monitoring":    () => <ErrorMonitoringDashboard />,
+  "bug-error-detection": () => <BugErrorDashboard />,
+
+  // SEO
+  "seo-management":      () => <SEOManagement />,
+  "property-seo-checker": () => <PropertySEOChecker />,
+
+  // Property extras
+  "property-3d-settings": () => <Property3DViewSettings />,
+  "property-survey-management": () => <PropertySurveyManagement />,
+  "location-management": () => <LocationManagement />,
+  "property-comparison": () => <PropertyComparison />,
+  "video-tours":         () => <VideoTourManager />,
+  "vr-tour-settings":    () => <VRTourSettings />,
+  "off-plan-manager":    () => <OffPlanProjectManager />,
+  "sample-property-generator": () => <SamplePropertyGenerator />,
+  "bulk-image-generator": () => <BulkImageGenerator />,
+
+  // Property filters
+  "property-filters":    () => <PropertyFiltersManagement filterType="all" title="All Property Filters" />,
+  "rent-filters":        () => <PropertyFiltersManagement filterType="rent" title="Rent Property Filters" description="Manage filters for rental properties" />,
+  "sale-filters":        () => <PropertyFiltersManagement filterType="sale" title="Sale Property Filters" description="Manage filters for properties for sale" />,
+  "new-project-filters": () => <PropertyFiltersManagement filterType="all" title="New Project Filters" description="Manage filters for new development projects" />,
+
+  // API & settings
+  "api-settings":        () => <APISettingsManagement />,
+  "bpjs-api-settings":   () => <BPJSAPISettings />,
+  "cookie-settings":     () => <CookieConsentSettings />,
+  "captcha-settings":    () => <CaptchaSettings />,
+  "cloudflare-settings": () => <CloudflareSettings />,
+  "nearby-facilities-settings": () => <NearbyFacilitiesSettings />,
+  "verification-system-settings": () => <VerificationSystemSettings />,
+  "auth-registration-settings": () => <AuthRegistrationSettings />,
+
+  // KYC
+  "admin-kyc-review":    () => <AdminKYCReview />,
+  "video-verification-review": () => <VideoVerificationReviewDashboard />,
+  "kyc-analytics":       () => <KYCAnalyticsDashboard />,
+  "bulk-kyc-operations": () => <BulkKYCOperations />,
+  "document-ocr":        () => <DocumentOCR />,
+
+  // UX & algorithm
+  "user-experience-tips": () => <UserExperienceTips />,
+  "algorithm-dashboard": () => <AlgorithmDashboard />,
+  "notifications-center": (sc) => <AdminNotificationsCenter onSectionChange={sc} />,
+  "project-map":         () => <ProjectMapVisualization />,
+  "testing-dashboard":   () => <TestingDashboard />,
+  "vip-analytics":       (sc) => <VIPAnalyticsDashboard onNavigate={sc} />,
+
+  // Investor settings
+  "wna-investment-settings": () => <InvestorSettingsHub initialTab="wna" />,
+  "wni-mortgage-settings":   () => <InvestorSettingsHub initialTab="wni" />,
+  "investor-analytics":      () => <InvestorSettingsHub initialTab="analytics" />,
+
+  // Design & monitoring
+  "design-system":       () => <WebsiteDesignControl />,
+  "website-design":      () => <WebsiteDesignControl />,
+  "live-monitoring":     () => <LiveMonitoringDashboard />,
+  "rental-management":   () => <AdminRentalManagement />,
+
+  // Growth & features
+  "blockchain-management": () => <AdminBlockchainManagement />,
+  "b2b-marketplace":     () => <B2BMarketplaceManagement />,
+  "partnership-programs": () => <PartnerProgramManagement />,
+  "expansion-planning":  () => <ExpansionPlanningManagement />,
+  "media-network":       () => <MediaNetworkManagement />,
+  "user-acquisition":    () => <UserAcquisitionManagement />,
+  "innovation-lab":      () => <InnovationLabManagement />,
+  "mobile-enhancements": () => <MobileEnhancementsManagement />,
+  "social-commerce":     () => <SocialCommerceManagement />,
+  "data-exchange":       () => <DataExchangeManagement />,
+  "automation-platform": () => <AutomationPlatformManagement />,
+  "team-management":     () => <TeamManagement />,
+  "viral-growth-campaigns": () => <ViralGrowthCampaigns />,
+  "media-coverage-pr":   () => <MediaCoveragePR />,
+  "concierge-service":   () => <ConciergeServiceManagement />,
+  "ahu-company-checker": () => <AHUCompanyChecker />,
+
+  // AI admin panels
+  "dom-accuracy":        () => <DOMAccuracyReport />,
+  "cron-monitor":        () => <CronJobMonitor />,
+  "weight-tuning-history": () => <WeightTuningHistory />,
+  "system-health":       () => <SystemHealthDashboard />,
+  "admin-guide":         () => <AdminGuide />,
+  "audit-trail":         () => <AuditTrailDashboard />,
+  "revenue-analytics":   () => <RevenueAnalyticsDashboard />,
+  "bulk-property-actions": () => <BulkPropertyActions />,
+  "notification-templates": () => <NotificationTemplatesManager />,
+  "user-engagement":     () => <UserEngagementAnalytics />,
+  "data-backup":         () => <DataBackupExport />,
+  "platform-changelog":  () => <PlatformChangelog />,
+  "api-usage":           () => <ApiUsageMonitor />,
+  "sla-compliance":      () => <SLAComplianceMonitor />,
+  "competitor-analysis": () => <CompetitorAnalysis />,
+  "system-announcements": () => <SystemAnnouncements />,
+  "feedback-sentiment":  () => <FeedbackSentimentAnalysis />,
+  "content-moderation":  () => <ContentModerationQueue />,
+  "ab-test-results":     () => <ABTestResults />,
+  "geo-analytics":       () => <GeoAnalytics />,
+  "scheduled-reports":   () => <ScheduledReportsManager />,
+  "property-heatmap":    () => <PropertyHeatmapAnalytics />,
+  "admin-activity-log":  () => <AdminActivityLog />,
+  "platform-health-score": () => <PlatformHealthScore />,
+  "user-funnel":         () => <UserFunnelAnalysis />,
+  "email-campaigns":     () => <EmailCampaignManager />,
+  "property-quality":    () => <PropertyQualityScore />,
+  "user-segmentation":   () => <UserSegmentation />,
+  "revenue-forecasting": () => <RevenueForecasting />,
+  "tenant-leases":       () => <TenantLeaseTracker />,
+  "support-analytics":   () => <SupportTicketAnalytics />,
+  "notification-center": () => <NotificationCenterManager />,
+  "vendor-performance":  () => <VendorPerformanceDashboard />,
+  "commission-tracker":  () => <CommissionTracker />,
+  "system-audit-trail":  () => <SystemAuditTrail />,
+  "subscription-plans":  () => <SubscriptionPlanManager />,
+  "document-verification": () => <DocumentVerificationQueue />,
+  "market-trends":       () => <MarketTrendsDashboard />,
+  "platform-feedback":   () => <PlatformFeedbackHub />,
+  "referral-program":    () => <ReferralProgramDashboard />,
+  "payment-transactions": () => <PaymentTransactionLog />,
+  "property-staging":    () => <PropertyStagingQueue />,
+  "agent-leaderboard":   () => <AgentPerformanceLeaderboard />,
+  "inventory-analytics": () => <InventoryAnalytics />,
+  "lead-scoring":        () => <LeadScoringDashboard />,
+  "compliance-reporting": () => <ComplianceReportingCenter />,
+  "customer-journey":    () => <CustomerJourneyMap />,
+  "maintenance-requests": () => <MaintenanceRequestTracker />,
+  "insurance-partners":  () => <InsurancePartnerManager />,
+  "knowledge-base":      () => <KnowledgeBaseManager />,
+  "ad-campaigns":        () => <AdCampaignManager />,
+  "workforce-scheduler": () => <WorkforceScheduler />,
+  "tax-config":          () => <TaxConfigCenter />,
+  "loyalty-program":     () => <LoyaltyProgramManager />,
+  "multi-language":      () => <MultiLanguageManager />,
+  "environmental-sustainability": () => <EnvironmentalSustainability />,
+  "contract-templates":  () => <ContractTemplateManager />,
+  "price-alerts":        () => <PriceAlertManager />,
+  "developer-portal":    () => <DeveloperPortal />,
+  "escrow-management":   () => <EscrowManagement />,
+  "affiliate-dashboard": () => <AffiliateDashboard />,
+  "chatbot-training":    () => <ChatBotTraining />,
+  "property-valuation":  () => <PropertyValuationTool />,
+  "fraud-detection":     () => <FraudDetectionDashboard />,
+  "smart-home":          () => <SmartHomeIntegration />,
+  "currency-exchange":   () => <CurrencyExchangeMonitor />,
+  "community-forum":     () => <CommunityForumManager />,
+  "neighborhood-insights": () => <NeighborhoodInsights />,
+  "document-signing":    () => <DocumentSigningHub />,
+  "property-auctions":   () => <PropertyAuctionManager />,
+  "tenant-screening":    () => <TenantScreening />,
+  "global-strategy":     () => <GlobalStrategyPanel />,
+  "investor-dna-admin":  () => <InvestorDNAAdminPanel />,
+  "global-macro-intelligence": () => <GlobalMacroIntelligencePanel />,
+  "deal-hunter-admin":   () => <DealHunterAdminPanel />,
+  "property-comparison-tool": () => <PropertyComparisonTool />,
+};
   "deal-hunter-admin": { label: "Deal Hunter Engine", category: "Investor Management" },
   "ai-command-center": { label: "AI Command Center", category: "AI & Tools" },
   "investor-dna-admin": { label: "Investor DNA Intelligence", category: "Investor Management" },
