@@ -154,23 +154,29 @@ const InvestorDashboard = () => {
         <motion.div {...fadeIn} transition={{ delay: 0.05 }}>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { label: 'Total Invested', value: totalInvested, icon: DollarSign, format: formatIDR, sub: `${p?.total_properties || 0} properties` },
-              { label: 'Projected Value (5Y)', value: projectedValue, icon: TrendingUp, format: formatIDR, sub: projectedValue > totalInvested ? `+${formatShort(projectedValue - totalInvested)}` : '—' },
-              { label: 'Blended ROI', value: blendedROI, icon: Target, format: (v: number) => `${v.toFixed(1)}%`, sub: '5-year average' },
-              { label: 'Annual Rental Income', value: annualRentalIncome, icon: Home, format: formatIDR, sub: 'Estimated gross' },
+              { label: 'Total Invested', value: totalInvested, icon: DollarSign, format: formatIDR, sub: `${p?.total_properties || 0} properties`, trend: null },
+              { label: 'Projected Value (5Y)', value: projectedValue, icon: TrendingUp, format: formatIDR, sub: projectedValue > totalInvested ? `+${formatShort(projectedValue - totalInvested)}` : '—', trend: projectedValue > totalInvested ? 'up' as const : null },
+              { label: 'Blended ROI', value: blendedROI, icon: Target, format: (v: number) => `${v.toFixed(1)}%`, sub: '5-year average', trend: blendedROI > 0 ? 'up' as const : blendedROI < 0 ? 'down' as const : null },
+              { label: 'Annual Rental Income', value: annualRentalIncome, icon: Home, format: formatIDR, sub: 'Estimated gross', trend: null },
             ].map((kpi, i) => (
-              <Card key={i} className="bg-card/60 backdrop-blur-xl border-border/50 hover:border-primary/30 transition-all">
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                    <kpi.icon className="w-4 h-4" />
-                    <span className="text-xs">{kpi.label}</span>
+              <Card key={i} className="group bg-card/60 backdrop-blur-xl border-border/50 hover:border-primary/30 shadow-sm hover:shadow-md transition-all will-change-transform">
+                <CardContent className="p-4 sm:p-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <div className="p-1.5 rounded-lg bg-primary/10 group-hover:bg-primary/15 transition-colors">
+                        <kpi.icon className="w-4 h-4 text-primary" />
+                      </div>
+                      <span className="text-xs font-medium">{kpi.label}</span>
+                    </div>
+                    {kpi.trend === 'up' && <ArrowUpRight className="w-4 h-4 text-chart-1" />}
+                    {kpi.trend === 'down' && <TrendingUp className="w-4 h-4 text-destructive rotate-180" />}
                   </div>
                   {portfolio.isLoading ? (
-                    <Skeleton className="h-7 w-32" />
+                    <Skeleton className="h-8 w-32" />
                   ) : (
                     <>
-                      <p className="text-xl font-bold text-foreground">{kpi.format(kpi.value)}</p>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">{kpi.sub}</p>
+                      <p className="text-2xl font-black text-foreground drop-shadow-sm tracking-tight">{kpi.format(kpi.value)}</p>
+                      <p className="text-[10px] text-muted-foreground/80 mt-1 font-medium">{kpi.sub}</p>
                     </>
                   )}
                 </CardContent>
@@ -237,7 +243,7 @@ const InvestorDashboard = () => {
                             <p className="text-[10px] text-muted-foreground">{rec.city || rec.location}</p>
                             <div className="flex items-center gap-2 mt-1">
                               {rec.match_score != null && (
-                                <Badge variant="secondary" className="text-[9px] h-4 px-1.5">
+                                <Badge variant="secondary" className="text-[10px] h-4 px-1.5">
                                   {Math.round(rec.match_score)}% match
                                 </Badge>
                               )}
@@ -284,13 +290,13 @@ const InvestorDashboard = () => {
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2">
                                 <p className="text-sm font-medium text-foreground">{city.city || city.name}</p>
-                                <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${heatCls}`}>{heat}</span>
+                                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${heatCls}`}>{heat}</span>
                               </div>
                               <Progress value={Math.min(100, score)} className="h-1 mt-1.5" />
                             </div>
                             <div className="text-right flex-shrink-0">
                               <p className="text-sm font-bold text-foreground">{score}</p>
-                              <p className="text-[9px] text-muted-foreground">
+                              <p className="text-[10px] text-muted-foreground">
                                 {city.growth_rate != null ? `${city.growth_rate > 0 ? '+' : ''}${city.growth_rate.toFixed(1)}%` : '—'}
                               </p>
                             </div>
@@ -458,11 +464,11 @@ const InvestorDashboard = () => {
                                 <p className="text-[10px] text-muted-foreground line-clamp-2 mt-0.5">{alert.message}</p>
                                 <div className="flex items-center gap-2 mt-1">
                                   {dealPct != null && (
-                                    <Badge variant="secondary" className="text-[8px] h-3.5 px-1">
+                                    <Badge variant="secondary" className="text-[10px] h-4 px-1.5">
                                       {dealPct.toFixed(0)}% below market
                                     </Badge>
                                   )}
-                                  <span className="text-[9px] text-muted-foreground">
+                                  <span className="text-[10px] text-muted-foreground">
                                     {new Date(alert.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                                   </span>
                                 </div>
@@ -485,30 +491,30 @@ const InvestorDashboard = () => {
           <motion.div {...fadeIn} transition={{ delay: 0.35 }}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {p.top_performer && (
-                <Card className="bg-emerald-500/5 border-emerald-500/20 backdrop-blur-xl">
+                <Card className="bg-chart-1/5 border-chart-1/20 backdrop-blur-xl shadow-sm">
                   <CardContent className="p-4 flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-emerald-500/10">
-                      <TrendingUp className="w-5 h-5 text-emerald-500" />
+                    <div className="p-2 rounded-lg bg-chart-1/10">
+                      <TrendingUp className="w-5 h-5 text-chart-1" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs text-muted-foreground">Top Performer</p>
                       <p className="text-sm font-semibold text-foreground truncate">{p.top_performer.title}</p>
                     </div>
-                    <span className="text-lg font-bold text-emerald-500">{p.top_performer.roi_5y.toFixed(1)}%</span>
+                    <span className="text-lg font-black text-chart-1 drop-shadow-sm">{p.top_performer.roi_5y.toFixed(1)}%</span>
                   </CardContent>
                 </Card>
               )}
               {p.weakest_performer && (
-                <Card className="bg-amber-500/5 border-amber-500/20 backdrop-blur-xl">
+                <Card className="bg-chart-4/5 border-chart-4/20 backdrop-blur-xl shadow-sm">
                   <CardContent className="p-4 flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-amber-500/10">
-                      <Eye className="w-5 h-5 text-amber-500" />
+                    <div className="p-2 rounded-lg bg-chart-4/10">
+                      <Eye className="w-5 h-5 text-chart-4" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs text-muted-foreground">Needs Attention</p>
                       <p className="text-sm font-semibold text-foreground truncate">{p.weakest_performer.title}</p>
                     </div>
-                    <span className="text-lg font-bold text-amber-500">{p.weakest_performer.roi_5y.toFixed(1)}%</span>
+                    <span className="text-lg font-black text-chart-4 drop-shadow-sm">{p.weakest_performer.roi_5y.toFixed(1)}%</span>
                   </CardContent>
                 </Card>
               )}
