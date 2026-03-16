@@ -96,12 +96,12 @@ const ASTRAVillaPropertyCard = ({
     <Card
       className={cn(
         "group relative overflow-hidden rounded-xl",
-        "bg-card backdrop-blur-xl",
+        "bg-card backdrop-blur-xl will-change-transform",
         property.owner_subscription_type === 'enterprise'
           ? "border border-[hsl(var(--gold-primary)/0.5)] shadow-[0_0_15px_-3px_hsl(var(--gold-primary)/0.15)]"
           : "border border-border",
-        "hover:border-gold-primary/40",
-        "shadow-sm hover:shadow-[0_8px_30px_-8px_hsl(var(--gold-primary)/0.2)]",
+        "hover:border-primary/40",
+        "shadow-sm hover:shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.2)]",
         "hover:-translate-y-1 transition-all duration-500 ease-out cursor-pointer",
         className
       )}
