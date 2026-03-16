@@ -993,7 +993,7 @@ const Index = () => {
 
                 {/* Smart AI Feed - Recommended / Trending */}
                 <ScrollReveal direction="right" delay={0}>
-                <div className="mb-4">
+                <div className="mb-6">
                   <LazyRender minHeight="280px" fallback={
                     <div className="space-y-3 p-4" style={{ minHeight: '280px' }}>
                       <div className="flex items-center gap-2">
