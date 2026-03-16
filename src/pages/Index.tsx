@@ -889,10 +889,18 @@ const Index = () => {
                     </Suspense>
                   </LazyRender>
                 </ScrollReveal>
-              </section>
 
-              {/* ── Visual breather ── */}
-              <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mx-auto max-w-5xl" aria-hidden="true" />
+                {/* Contextual CTA: Collection confidence */}
+                <Suspense fallback={null}>
+                  <SectionDividerCTA
+                    icon={Star}
+                    headline="Curated for Investors"
+                    description="Handpicked collections based on ROI potential and market timing"
+                    ctaText="View Collections"
+                    ctaRoute="/collections"
+                  />
+                </Suspense>
+              </section>
 
               {/* ── SECTION 5: Investor Path Selector ── */}
               <section className="py-8 sm:py-12 bg-muted/20">
