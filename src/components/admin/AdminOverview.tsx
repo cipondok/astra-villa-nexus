@@ -410,7 +410,10 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
                 <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
                   <TrendingUp className="h-3.5 w-3.5" /> Traffic (12h)
                 </CardTitle>
-                <Badge variant="secondary" className="text-[10px] h-5 px-2">Live</Badge>
+                <div className="flex items-center gap-2">
+                  {trafficAgo && <span className="text-[9px] text-muted-foreground/60">↻ {trafficAgo}</span>}
+                  <Badge variant="secondary" className="text-[10px] h-5 px-2">Live</Badge>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="p-3 pt-0">
