@@ -185,7 +185,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             className="w-full h-full object-cover img-hover-zoom"
             onError={(e) => { e.currentTarget.src = '/placeholder.svg'; }}
           />
-          />
           
           {/* Save Button */}
           <div className="absolute top-2 right-2 flex gap-1.5">
