@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { SEOHead } from "@/components/SEOHead";
+import { SEOHead, seoSchemas } from "@/components/SEOHead";
 import { useTranslation } from "@/i18n/useTranslation";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import PullToRefreshIndicator from "@/components/ui/PullToRefreshIndicator";
@@ -241,11 +241,25 @@ const Properties = () => {
         </div>
       </div>;
   }
+  const locationTitle = locationFilter ? `Properti di ${locationFilter}` : 'Semua Properti';
+  const locationMetaTitle = locationFilter 
+    ? `${properties.length}+ Properti di ${locationFilter} | ASTRAVILLA`
+    : t('seo.properties.title');
+
   return <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5" {...pullHandlers}>
       <SEOHead
-        title={t('seo.properties.title')}
-        description={t('seo.properties.description')}
-        keywords="properti indonesia, semua properti, jual beli properti, sewa properti indonesia"
+        title={locationMetaTitle}
+        description={locationFilter 
+          ? `Temukan ${properties.length}+ properti di ${locationFilter}. Rumah, apartemen, villa, dan tanah tersedia untuk dijual dan disewa.`
+          : t('seo.properties.description')}
+        keywords={locationFilter 
+          ? `properti ${locationFilter}, rumah ${locationFilter}, jual properti ${locationFilter}, sewa properti ${locationFilter}`
+          : "properti indonesia, semua properti, jual beli properti, sewa properti indonesia"}
+        jsonLd={locationFilter ? seoSchemas.breadcrumb([
+          { name: 'Beranda', url: '/' },
+          { name: 'Peta Lokasi', url: '/location' },
+          { name: locationFilter, url: `/properties?location=${encodeURIComponent(locationFilter)}` }
+        ]) : undefined}
       />
       <PullToRefreshIndicator
         isPulling={isPulling}
@@ -255,29 +269,41 @@ const Properties = () => {
         indicatorRotation={indicatorRotation}
         threshold={threshold}
       />
-      {/* Sub-header with location info - fixed (reliable across scroll containers) */}
-      {locationFilter && <>
-          <div className="fixed left-0 right-0 top-[40px] md:top-[44px] lg:top-[48px] z-40 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-1">
-            <div className="container mx-auto px-2 sm:px-4">
-              <div className="flex items-center justify-between gap-1">
-                <Button variant="ghost" size="sm" onClick={() => navigate('/location')} className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/20 h-5 px-1.5 text-[9px] sm:text-[10px]">
-                  <ArrowLeft className="h-2.5 w-2.5" />
-                </Button>
+      {/* Breadcrumb Navigation */}
+      {locationFilter && (
+        <nav aria-label="Breadcrumb" className="container mx-auto px-4 pt-3 pb-1">
+          <ol className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <li><a href="/" className="hover:text-primary transition-colors">Beranda</a></li>
+            <li className="text-muted-foreground/50">/</li>
+            <li><a href="/location" className="hover:text-primary transition-colors">Peta Lokasi</a></li>
+            <li className="text-muted-foreground/50">/</li>
+            <li className="text-foreground font-medium truncate max-w-[200px]">{locationFilter}</li>
+          </ol>
+        </nav>
+      )}
 
-                <div className="text-center flex-1 min-w-0">
-                  <h1 className="leading-none truncate font-medium text-[10px] sm:text-xs">
-                    Properti di {locationFilter} • {isLoading ? '...' : properties.length}
-                  </h1>
-                </div>
-
-                <Badge variant="secondary" className="bg-primary-foreground/20 text-primary-foreground border-0 px-1.5 py-0 h-5 cursor-pointer hover:bg-primary-foreground/30 text-[8px] sm:text-[10px]" onClick={handleClearLocationFilter}>
-                  <X className="h-2.5 w-2.5" />
-                </Badge>
-              </div>
+      {/* Location Header */}
+      {locationFilter && (
+        <div className="container mx-auto px-4 pb-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-base sm:text-lg font-bold text-foreground">{locationTitle}</h1>
+              <p className="text-xs text-muted-foreground">
+                {isLoading ? 'Memuat...' : `${properties.length} properti tersedia`}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={() => navigate('/location')} className="h-8 px-3 text-xs">
+                <ArrowLeft className="h-3 w-3 mr-1.5" />
+                Peta
+              </Button>
+              <Badge variant="secondary" className="cursor-pointer hover:bg-destructive/10 text-xs px-2.5 py-1" onClick={handleClearLocationFilter}>
+                {locationFilter} <X className="h-3 w-3 ml-1" />
+              </Badge>
             </div>
           </div>
-          <div aria-hidden className="h-7" />
-        </>}
+        </div>
+      )}
 
       <div className="container mx-auto px-4 py-4">
         {/* Compact Search and Filters - Glassy */}
@@ -312,7 +338,7 @@ const Properties = () => {
         </div>
 
         {/* Properties Grid/List - Compact Cards */}
-        {isLoading ? <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+        {isLoading ? <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {[...Array(10)].map((_, i) => <Card key={i} className="animate-pulse overflow-hidden glass-card border-border/30">
                 <div className="h-28 bg-muted/50"></div>
                 <CardContent className="p-2">
@@ -340,7 +366,7 @@ const Properties = () => {
         opacity: 0
       }} animate={{
         opacity: 1
-      }} className={viewMode === 'grid' ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3" : "space-y-2"}>
+      }} className={viewMode === 'grid' ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" : "space-y-2"}>
             {properties.map((property, index) => <motion.div key={property.id} initial={{
           opacity: 0,
           y: 10
@@ -354,7 +380,7 @@ const Properties = () => {
                   <div className={viewMode === 'list' ? 'w-32 flex-shrink-0' : 'relative'}>
                     <img src={getImageUrl(property)} alt={property.title} className={`object-cover ${viewMode === 'list' ? 'w-full h-full' : 'w-full h-28 sm:h-32'}`} />
                     {/* Overlay Badge */}
-                    <Badge className={`absolute top-1.5 left-1.5 text-[8px] px-1.5 py-0 h-4 ${property.listing_type === 'sale' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
+                    <Badge className={`absolute top-1.5 left-1.5 text-[10px] px-1.5 py-0.5 h-5 ${property.listing_type === 'sale' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
                       {property.listing_type === 'sale' ? 'Dijual' : 'Disewa'}
                     </Badge>
                     {/* Heart Button */}
@@ -392,7 +418,7 @@ const Properties = () => {
                       <div className="text-sm font-bold text-primary">
                         {formatCurrency(property.price)}
                       </div>
-                      <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-background/50 backdrop-blur-sm border-border/40">
+                      <Badge variant="outline" className="text-[10px] px-1.5 py-0.5 h-5 bg-background/50 backdrop-blur-sm border-border/40">
                         {property.property_type}
                       </Badge>
                     </div>
