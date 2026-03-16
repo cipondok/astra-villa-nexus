@@ -68,6 +68,7 @@ import {
   Layers,
   Megaphone,
   Flame,
+  Paintbrush,
   Heart,
   Star,
   Store,
@@ -1444,6 +1445,13 @@ export const navigationSections = {
       icon: Layers,
       description: "3-phase growth roadmap — 12 weeks, 65+ tasks, KPI targets, founder focus allocation",
       badge: "🎯 90-Day Plan"
+    },
+    {
+      key: "uiux-redesign-blueprint",
+      label: "UI/UX Redesign Blueprint",
+      icon: Paintbrush,
+      description: "Complete design system upgrade — homepage, cards, detail page, search, brand identity, conversion UX, mobile",
+      badge: "🎨 Design System"
     }
   ],
 

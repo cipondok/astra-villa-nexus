@@ -60,6 +60,7 @@ const InvestorOutreachDashboard = lazy(() => import('./InvestorOutreachDashboard
 const FounderDailySystem = lazy(() => import('./FounderDailySystem'));
 const HyperExecutionPlan = lazy(() => import('./HyperExecutionPlan'));
 const NinetyDayMasterPlan = lazy(() => import('./NinetyDayMasterPlan'));
+const UIUXRedesignBlueprint = lazy(() => import('./UIUXRedesignBlueprint'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
@@ -457,6 +458,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return (
           <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
             <NinetyDayMasterPlan />
+          </Suspense>
+        );
+      case "uiux-redesign-blueprint":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <UIUXRedesignBlueprint />
           </Suspense>
         );
       default:
