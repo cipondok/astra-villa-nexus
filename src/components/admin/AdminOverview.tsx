@@ -550,8 +550,8 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
             {/* System Status */}
             <Card className="border-border bg-card">
               <CardHeader className="p-3 pb-2">
-                <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
-                  <Server className="h-3.5 w-3.5" /> System Health
+                <CardTitle className="text-sm flex items-center gap-1.5 text-foreground font-semibold">
+                  <Server className="h-4 w-4 text-chart-1" /> System Health
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-3 pt-0 space-y-2.5">
