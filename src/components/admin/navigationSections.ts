@@ -70,6 +70,7 @@ import {
   Flame,
   Paintbrush,
   Layout,
+  Eye,
   Heart,
   Star,
   Store,
