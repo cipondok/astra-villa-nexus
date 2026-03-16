@@ -867,6 +867,15 @@ const Index = () => {
                     </div>
                   </ScrollReveal>
 
+                  {/* Predictive Search Canvas */}
+                  <ScrollReveal direction="up" delay={0}>
+                    <div className="mb-8">
+                      <Suspense fallback={null}>
+                        <PredictiveSearchCanvas />
+                      </Suspense>
+                    </div>
+                  </ScrollReveal>
+
                   {/* AI Behavior Pattern Banner */}
                   <Suspense fallback={null}>
                     <div className="mb-6">
