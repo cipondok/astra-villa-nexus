@@ -234,7 +234,7 @@ const NavButton: React.FC<{
     <div className="relative">
       <item.icon className={cn("h-5 w-5", isActive && "stroke-[2.5px]")} />
       {item.badge && item.badge > 0 && (
-        <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 flex items-center justify-center bg-destructive text-destructive-foreground text-[9px] font-bold rounded-full">
+        <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 flex items-center justify-center bg-destructive text-destructive-foreground text-[10px] font-bold rounded-full">
           {item.badge > 99 ? '99+' : item.badge}
         </span>
       )}

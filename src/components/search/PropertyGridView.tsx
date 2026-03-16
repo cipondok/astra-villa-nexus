@@ -218,7 +218,7 @@ const PropertyGridView = ({
                 <Button
                   size="sm"
                   variant="outline"
-                  className="h-8 w-8 p-0 flex-shrink-0"
+                  className="h-9 w-9 sm:h-8 sm:w-8 p-0 flex-shrink-0 min-w-[36px] min-h-[36px]"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleShare(property);
@@ -228,7 +228,7 @@ const PropertyGridView = ({
                 </Button>
                 <Button
                   size="sm"
-                  className="flex-1 h-8 text-[11px] font-semibold bg-chart-1 hover:bg-chart-1/90 text-chart-1-foreground"
+                  className="flex-1 h-9 sm:h-8 text-[11px] font-semibold bg-chart-1 hover:bg-chart-1/90 text-chart-1-foreground min-h-[36px]"
                   onClick={(e) => {
                     e.stopPropagation();
                     onContact?.(property);

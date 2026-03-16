@@ -247,22 +247,32 @@ const MobilePropertyDetail: React.FC = () => {
         )}
       </div>
 
-      {/* Bottom CTA */}
+      {/* Bottom CTA - Sticky conversion bar */}
       <div
-        className="fixed bottom-[80px] left-0 right-0 z-30 px-4 py-3 bg-background/95 backdrop-blur-xl border-t border-border/30"
-        style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 12px)' }}
+        className="fixed bottom-[72px] left-0 right-0 z-30 px-4 py-2.5 bg-background/95 backdrop-blur-xl border-t border-border/30"
       >
         <div className="flex gap-2">
           <button
             onClick={() => navigate(`/investment-assistant`)}
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-muted border border-border/40 active:scale-[0.98] transition-transform"
+            className="flex items-center justify-center gap-1.5 px-3 py-3 rounded-xl bg-muted border border-border/40 active:scale-[0.98] transition-transform min-w-[44px] min-h-[44px]"
+            aria-label="Ask AI"
           >
-            <MessageCircle className="h-4 w-4 text-gold-primary" />
-            <span className="text-sm font-medium text-foreground">Ask AI</span>
+            <MessageCircle className="h-4.5 w-4.5 text-primary" />
           </button>
-          <button className="flex-[2] flex items-center justify-center gap-2 py-3 rounded-xl bg-gold-primary active:scale-[0.98] transition-transform">
-            <Phone className="h-4 w-4 text-background" />
-            <span className="text-sm font-bold text-background">Contact Agent</span>
+          <button
+            onClick={() => {
+              const phone = '6281234567890';
+              const text = encodeURIComponent(`Hi, saya tertarik dengan properti: ${property.title}`);
+              window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
+            }}
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-[hsl(142_70%_45%)] active:scale-[0.98] transition-transform min-h-[44px]"
+          >
+            <Phone className="h-4 w-4 text-white" />
+            <span className="text-sm font-bold text-white">WhatsApp</span>
+          </button>
+          <button className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-primary active:scale-[0.98] transition-transform min-h-[44px]">
+            <Phone className="h-4 w-4 text-primary-foreground" />
+            <span className="text-sm font-bold text-primary-foreground">Call Agent</span>
           </button>
         </div>
       </div>
