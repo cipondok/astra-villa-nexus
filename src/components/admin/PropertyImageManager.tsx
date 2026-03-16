@@ -792,39 +792,46 @@ const PropertyImageManager = () => {
 
       {/* Health Check Bar */}
       <Card className="border-primary/20 bg-primary/5">
-        <CardContent className="p-3">
-          <div className="flex items-center justify-between mb-2">
+        <CardContent className="p-3 space-y-2">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <ScanSearch className="h-4 w-4 text-primary" />
               <span className="text-xs font-semibold">Image Health Checker</span>
+              {allImageUrls.length === 0 && !healthChecking && (
+                <Badge variant="secondary" className="text-[9px] h-4">No images on this page</Badge>
+              )}
             </div>
-            <Button
-              size="sm"
-              variant="outline"
-              className="h-7 text-[10px] gap-1.5"
-              onClick={handleBulkHealthCheck}
-              disabled={healthChecking}
-            >
-              {healthChecking ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
-              {healthChecking ? "Checking..." : "Check This Page"}
-            </Button>
-            {brokenCount > 0 && (
+            <div className="flex items-center gap-2">
+              {brokenCount > 0 && (
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  className="h-7 text-[10px] gap-1.5"
+                  onClick={handleBulkDeleteBroken}
+                >
+                  <Trash2 className="h-3 w-3" />
+                  Delete Broken ({brokenCount})
+                </Button>
+              )}
               <Button
                 size="sm"
-                variant="destructive"
+                variant="outline"
                 className="h-7 text-[10px] gap-1.5"
-                onClick={handleBulkDeleteBroken}
+                onClick={handleBulkHealthCheck}
+                disabled={healthChecking || allImageUrls.length === 0}
               >
-                <Trash2 className="h-3 w-3" />
-                Delete All Broken ({brokenCount})
+                {healthChecking ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
+                {healthChecking ? `Checking ${checkedCount}/${allImageUrls.length}...` : "Check This Page"}
               </Button>
-            )}
+            </div>
           </div>
-          {checkedCount > 0 && (
+
+          {/* Progress during checking or after results */}
+          {(healthChecking || checkedCount > 0) && (
             <div className="space-y-1.5">
-              <Progress value={(checkedCount / Math.max(allImageUrls.length, 1)) * 100} className="h-1.5" />
+              <Progress value={(checkedCount / Math.max(allImageUrls.length, 1)) * 100} className="h-2" />
               <div className="flex items-center gap-3 text-[10px]">
-                <span className="flex items-center gap-1 text-chart-1">
+                <span className="flex items-center gap-1 text-chart-2">
                   <CheckCircle2 className="h-3 w-3" /> {okCount} OK
                 </span>
                 <span className="flex items-center gap-1 text-destructive">
@@ -838,6 +845,7 @@ const PropertyImageManager = () => {
                 </span>
               </div>
             </div>
+          )}
           )}
         </CardContent>
       </Card>
