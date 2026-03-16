@@ -63,6 +63,7 @@ const Saved = () => {
 
   return (
     <div className="min-h-screen bg-background p-2 sm:p-4">
+      <SEOHead title="Properti Tersimpan" description="Lihat daftar properti favorit yang telah Anda simpan." noIndex />
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div 
