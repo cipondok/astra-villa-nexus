@@ -318,6 +318,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "media-coverage-pr": { label: "Media Coverage & PR", category: "Features" },
   "concierge-service": { label: "Concierge Service", category: "Features" },
   "sample-property-generator": { label: "Sample Property Generator", category: "Property System" },
+  "bulk-image-generator": { label: "Bulk AI Image Generator", category: "Property System" },
   "verification-system-settings": { label: "Verification System Settings", category: "Settings" },
   "auth-registration-settings": { label: "Auth & Registration", category: "Settings" },
   "ahu-company-checker": { label: "AHU Company Checker", category: "Verification" },

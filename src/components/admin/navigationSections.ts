@@ -354,6 +354,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "bulk-image-generator",
+      label: "Bulk AI Image Generator",
+      icon: ImageIcon,
+      description: "Generate AI images for all 313K+ properties that have no photos",
+      badge: "New"
+    },
+    {
       key: "off-plan-manager",
       label: "Off-Plan Project Manager",
       icon: Building2,
