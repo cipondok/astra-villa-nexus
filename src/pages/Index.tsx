@@ -30,6 +30,7 @@ import slideHero5 from "@/assets/home/slide-hero-5.png";
 import slideHero6 from "@/assets/home/slide-hero-6.png";
 import slideHero7 from "@/assets/home/slide-hero-7.png";
 import { cn } from "@/lib/utils";
+import { Calculator, Crosshair, BarChart3 } from "lucide-react";
 import { SearchErrorBoundary } from "@/components/search/SearchErrorBoundary";
 import { SearchPanelSkeleton } from "@/components/search/SearchSkeleton";
 import { useRetrySearch } from "@/hooks/useRetrySearch";
@@ -78,6 +79,8 @@ const TrendingROIDeals = lazy(() => import("@/components/home/TrendingROIDeals")
 const AIPriceEstimatorCTA = lazy(() => import("@/components/home/AIPriceEstimatorCTA"));
 const MarketIntelligenceCTA = lazy(() => import("@/components/home/MarketIntelligenceCTA"));
 const EarlyInvestmentCTA = lazy(() => import("@/components/home/EarlyInvestmentCTA"));
+const SocialProofStrip = lazy(() => import("@/components/home/SocialProofStrip"));
+const SectionDividerCTA = lazy(() => import("@/components/home/SectionDividerCTA"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -708,7 +711,7 @@ const Index = () => {
             style={{ animationDelay: '1.2s', opacity: 0, animationFillMode: 'forwards' }}
             aria-label="Scroll to content"
           >
-            <span className="text-[9px] uppercase tracking-[0.3em] font-medium">{t('indexPage.explore')}</span>
+            <span className="text-[10px] uppercase tracking-[0.3em] font-medium">{t('indexPage.explore')}</span>
             <ChevronDown className="h-5 w-5 animate-bounce" />
           </button>
         </section>
@@ -728,6 +731,11 @@ const Index = () => {
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-gold-primary/30 dark:via-gold-primary/40 to-transparent" />
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-8 bg-gradient-to-r from-transparent via-gold-primary/5 dark:via-gold-primary/10 to-transparent blur-xl" />
         </div>
+
+        {/* Social Proof Trust Strip */}
+        <Suspense fallback={null}>
+          <SocialProofStrip />
+        </Suspense>
 
         {/* Featured Properties Carousel */}
         <ScrollReveal direction="left" delay={100}>
@@ -1028,6 +1036,18 @@ const Index = () => {
                 </div>
                 </ScrollReveal>
 
+                {/* Mid-page CTA: AI Pricing */}
+                <Suspense fallback={null}>
+                  <SectionDividerCTA
+                    icon={Calculator}
+                    headline="Know Your Property's True Value"
+                    description="AI-powered pricing with market comparables"
+                    ctaText="Get Estimate"
+                    ctaRoute="/ai-pricing"
+                    variant="accent"
+                  />
+                </Suspense>
+
                 {/* Smart Recommendations - Personalized Picks */}
                 <ScrollReveal direction="left" delay={0}>
                 <div className="mb-6">
@@ -1045,6 +1065,17 @@ const Index = () => {
                   </Suspense>
                 </div>
                 </ScrollReveal>
+
+                {/* Mid-page CTA: Deal Finder */}
+                <Suspense fallback={null}>
+                  <SectionDividerCTA
+                    icon={Crosshair}
+                    headline="Find Undervalued Deals"
+                    description="AI detects properties priced below fair market value"
+                    ctaText="Hunt Deals"
+                    ctaRoute="/deal-finder"
+                  />
+                </Suspense>
 
                 {/* AI Recommended Properties (legacy) */}
                 <ScrollReveal direction="right" delay={0}>
@@ -1101,6 +1132,18 @@ const Index = () => {
                   </LazyRender>
                 </div>
                 </ScrollReveal>
+
+                {/* Mid-page CTA: Market Intelligence */}
+                <Suspense fallback={null}>
+                  <SectionDividerCTA
+                    icon={BarChart3}
+                    headline="Track Market Trends"
+                    description="Real-time price indices and investment analytics"
+                    ctaText="View Insights"
+                    ctaRoute="/analytics"
+                    variant="accent"
+                  />
+                </Suspense>
 
                 {/* Early Investment CTA */}
                 <ScrollReveal direction="up" delay={50}>
