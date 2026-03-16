@@ -40,6 +40,7 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
   const queryClient = useQueryClient();
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const { reducedMotion, toggle: toggleMotion } = useReducedMotion();
+  useIntelligenceSignals(true);
   
   // Real-time ping indicator
   const [pingMs, setPingMs] = useState<number | null>(null);
