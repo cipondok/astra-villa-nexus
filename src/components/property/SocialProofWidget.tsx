@@ -114,7 +114,7 @@ const SocialProofWidget = ({
         <div className="flex items-center gap-2">
           {isHot && (
             <div className="flex items-center gap-1 text-destructive">
-              <Flame className="h-3.5 w-3.5 animate-pulse" />
+              <Flame className="h-3.5 w-3.5 signal-glow" />
               <span className="text-[10px] font-semibold">In Demand</span>
             </div>
           )}
