@@ -552,66 +552,80 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
         <div className="col-span-12 md:col-span-3 space-y-3">
          <SectionErrorBoundary sectionName="AI Intelligence & Health">
           
-          {/* ═══ ZONE 1: System Health ═══ */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 px-1">
-              <div className="h-px flex-1 bg-gradient-to-r from-chart-1/50 to-transparent" />
-              <span className="text-[11px] font-bold uppercase tracking-widest text-chart-1">System Health</span>
-              {healthAgo && <span className="text-[10px] text-muted-foreground">↻ {healthAgo}</span>}
-            </div>
+           {/* ═══ ZONE 1: System Health (Compact Collapsible) ═══ */}
+           <div className="space-y-3">
+             <div className="flex items-center gap-2 px-1">
+               <div className="h-px flex-1 bg-gradient-to-r from-chart-1/50 to-transparent" />
+               <span className="text-[11px] font-bold uppercase tracking-widest text-chart-1">System Health</span>
+               {healthAgo && <span className="text-[10px] text-muted-foreground">↻ {healthAgo}</span>}
+             </div>
 
-            {/* System Status */}
-            <Card className="border-border bg-card">
-              <CardHeader className="p-3 pb-2">
-                <CardTitle className="text-sm flex items-center gap-1.5 text-foreground font-semibold">
-                  <Server className="h-4 w-4 text-chart-1" /> System Health
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-3 pt-0 space-y-2.5">
-                <div className={`flex items-center justify-between p-2.5 rounded-lg border ${
-                  systemHealth?.status === 'healthy' 
-                    ? 'bg-chart-1/5 border-chart-1/30 dark:bg-chart-1/10' 
-                    : 'bg-chart-3/5 border-chart-3/30 dark:bg-chart-3/10'
-                }`}>
-                  <span className="text-xs font-medium text-foreground">Status</span>
-                  <Badge variant={systemHealth?.status === 'healthy' ? 'default' : 'destructive'} className="text-[10px] h-5 px-2">
-                    {systemHealth?.status === 'healthy' ? '● All Systems OK' : '⚠ Issues'}
-                  </Badge>
-                </div>
-                
-                <HealthBar label="Database" value={systemHealth?.dbErrors === 0 ? 100 : 70} icon={Database} isStatus />
-                <HealthBar label="SEO Engine" value={systemHealth?.aiSystems.avgSeoScore || 0} icon={Globe} />
-                <HealthBar label="Job Queue" value={
-                  (systemHealth?.aiSystems.jobsFailed || 0) === 0 ? 100 :
-                  Math.max(100 - (systemHealth?.aiSystems.jobsFailed || 0) * 10, 20)
-                } icon={Cpu} isStatus />
-              </CardContent>
-            </Card>
+             <Collapsible>
+               <Card className="border-border bg-card overflow-hidden">
+                 {/* Compact Summary Header (always visible) */}
+                 <CollapsibleTrigger asChild>
+                   <button className="w-full p-3 flex items-center justify-between gap-2 hover:bg-muted/40 transition-colors group text-left">
+                     <div className="flex items-center gap-2 min-w-0">
+                       <div className={`h-2.5 w-2.5 rounded-full shrink-0 ${
+                         systemHealth?.status === 'healthy' ? 'bg-chart-1 shadow-[0_0_6px_hsl(var(--chart-1)/0.5)]' : 'bg-destructive shadow-[0_0_6px_hsl(var(--destructive)/0.5)]'
+                       }`} />
+                       <span className="text-sm font-semibold text-foreground truncate">
+                         {systemHealth?.status === 'healthy' ? 'All Systems OK' : 'Issues Detected'}
+                       </span>
+                     </div>
+                     <div className="flex items-center gap-1.5 shrink-0">
+                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground font-medium">
+                         DB·{systemHealth?.dbErrors === 0 ? 'OK' : `${systemHealth?.dbErrors}err`}
+                       </span>
+                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground font-medium">
+                         SEO·{systemHealth?.aiSystems.avgSeoScore || 0}
+                       </span>
+                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground font-medium">
+                         Jobs·{(systemHealth?.aiSystems.jobsFailed || 0) === 0 ? 'OK' : `${systemHealth?.aiSystems.jobsFailed}F`}
+                       </span>
+                       <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+                     </div>
+                   </button>
+                 </CollapsibleTrigger>
 
-            {/* AI Systems Status */}
-            <Card className="border-border bg-card">
-              <CardHeader className="p-3 pb-2">
-                <CardTitle className="text-sm flex items-center gap-1.5 text-foreground font-semibold">
-                  <ShieldCheck className="h-4 w-4 text-chart-2" /> AI Systems
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-3 pt-0 space-y-1.5">
-                <ServiceRow name="SEO Engine" status={systemHealth?.aiSystems.seoStatus || 'unknown'} detail={`${systemHealth?.aiSystems.avgSeoScore || 0}% avg`} />
-                <ServiceRow name="Job Worker" status={systemHealth?.aiSystems.jobStatus || 'unknown'} detail={`${systemHealth?.aiSystems.jobsRunning || 0} running`} />
-                <ServiceRow name="Valuations" status={systemHealth?.aiSystems.valuationStatus || 'unknown'} detail={`${systemHealth?.aiSystems.totalValuations || 0} total`} />
-                <ServiceRow name="Database" status={systemHealth?.dbErrors === 0 ? 'operational' : 'degraded'} detail={`${systemHealth?.dbErrors || 0} errors`} />
-                <ServiceRow name="Auth" status="operational" />
-                {(systemHealth?.aiSystems.jobsPending || 0) > 0 && (
-                  <div className="mt-1.5 p-2 rounded-lg bg-chart-2/5 border border-chart-2/20">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] text-foreground">Queued Jobs</span>
-                      <Badge variant="secondary" className="text-[10px] h-5">{systemHealth?.aiSystems.jobsPending}</Badge>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+                 {/* Expanded Details */}
+                 <CollapsibleContent>
+                   <div className="border-t border-border">
+                     {/* Health Bars */}
+                     <div className="p-3 space-y-2.5">
+                       <HealthBar label="Database" value={systemHealth?.dbErrors === 0 ? 100 : 70} icon={Database} isStatus />
+                       <HealthBar label="SEO Engine" value={systemHealth?.aiSystems.avgSeoScore || 0} icon={Globe} />
+                       <HealthBar label="Job Queue" value={
+                         (systemHealth?.aiSystems.jobsFailed || 0) === 0 ? 100 :
+                         Math.max(100 - (systemHealth?.aiSystems.jobsFailed || 0) * 10, 20)
+                       } icon={Cpu} isStatus />
+                     </div>
+
+                     {/* AI Systems Services */}
+                     <div className="border-t border-border p-3 space-y-1.5">
+                       <div className="flex items-center gap-1.5 mb-2">
+                         <ShieldCheck className="h-3.5 w-3.5 text-chart-2" />
+                         <span className="text-xs font-semibold text-foreground">AI Systems</span>
+                       </div>
+                       <ServiceRow name="SEO Engine" status={systemHealth?.aiSystems.seoStatus || 'unknown'} detail={`${systemHealth?.aiSystems.avgSeoScore || 0}% avg`} />
+                       <ServiceRow name="Job Worker" status={systemHealth?.aiSystems.jobStatus || 'unknown'} detail={`${systemHealth?.aiSystems.jobsRunning || 0} running`} />
+                       <ServiceRow name="Valuations" status={systemHealth?.aiSystems.valuationStatus || 'unknown'} detail={`${systemHealth?.aiSystems.totalValuations || 0} total`} />
+                       <ServiceRow name="Database" status={systemHealth?.dbErrors === 0 ? 'operational' : 'degraded'} detail={`${systemHealth?.dbErrors || 0} errors`} />
+                       <ServiceRow name="Auth" status="operational" />
+                       {(systemHealth?.aiSystems.jobsPending || 0) > 0 && (
+                         <div className="mt-1.5 p-2 rounded-lg bg-chart-2/5 border border-chart-2/20">
+                           <div className="flex items-center justify-between">
+                             <span className="text-[10px] text-foreground">Queued Jobs</span>
+                             <Badge variant="secondary" className="text-[10px] h-5">{systemHealth?.aiSystems.jobsPending}</Badge>
+                           </div>
+                         </div>
+                       )}
+                     </div>
+                   </div>
+                 </CollapsibleContent>
+               </Card>
+             </Collapsible>
+           </div>
 
           {/* ═══ ZONE 2: AI Intelligence ═══ */}
           {aiLoading ? (
