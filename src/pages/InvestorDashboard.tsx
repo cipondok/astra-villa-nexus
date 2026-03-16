@@ -290,7 +290,7 @@ const InvestorDashboard = () => {
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2">
                                 <p className="text-sm font-medium text-foreground">{city.city || city.name}</p>
-                                <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-medium ${heatCls}`}>{heat}</span>
+                                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${heatCls}`}>{heat}</span>
                               </div>
                               <Progress value={Math.min(100, score)} className="h-1 mt-1.5" />
                             </div>
