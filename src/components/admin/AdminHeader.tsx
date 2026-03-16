@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from "react";
-import { Bell, Settings, LogOut, Sun, Moon } from "lucide-react";
+import React, { useCallback, useState, useEffect } from "react";
+import { Bell, Settings, LogOut, Sun, Moon, Wifi, WifiOff, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -18,6 +18,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AdminCommandPalette } from "./AdminCommandPalette";
 import { AdminBreadcrumb } from "./AdminBreadcrumb";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface AdminHeaderProps {
   activeSection: string;
@@ -36,6 +38,29 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const { reducedMotion, toggle: toggleMotion } = useReducedMotion();
+  
+  // Real-time ping indicator
+  const [pingMs, setPingMs] = useState<number | null>(null);
+  const [pingStatus, setPingStatus] = useState<'ok' | 'slow' | 'offline'>('ok');
+  
+  useEffect(() => {
+    const measurePing = async () => {
+      try {
+        const start = performance.now();
+        await supabase.from('admin_alerts').select('id', { count: 'exact', head: true });
+        const ms = Math.round(performance.now() - start);
+        setPingMs(ms);
+        setPingStatus(ms < 500 ? 'ok' : ms < 2000 ? 'slow' : 'offline');
+      } catch {
+        setPingMs(null);
+        setPingStatus('offline');
+      }
+    };
+    measurePing();
+    const interval = setInterval(measurePing, 30_000);
+    return () => clearInterval(interval);
+  }, []);
 
   const { data: notifications = [] } = useQuery({
     queryKey: ["admin-notifications"],
@@ -99,6 +124,48 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
 
         {/* Actions */}
         <div className="flex items-center gap-2">
+          {/* Ping indicator */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-muted/50 border border-border/30 h-8">
+                  {pingStatus === 'ok' ? (
+                    <Wifi className="h-3 w-3 text-chart-1" />
+                  ) : pingStatus === 'slow' ? (
+                    <Wifi className="h-3 w-3 text-chart-3" />
+                  ) : (
+                    <WifiOff className="h-3 w-3 text-destructive" />
+                  )}
+                  <span className="text-[10px] tabular-nums text-muted-foreground">
+                    {pingMs !== null ? `${pingMs}ms` : '—'}
+                  </span>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs">
+                Supabase ping: {pingMs !== null ? `${pingMs}ms` : 'offline'}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          {/* Reduced Motion toggle */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={`h-8 w-8 hover:bg-primary/10 ${reducedMotion ? 'text-chart-3' : ''}`}
+                  onClick={toggleMotion}
+                >
+                  <Zap className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs">
+                {reducedMotion ? 'Animations off — click to enable' : 'Reduce motion'}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
           <AdminCommandPalette onSectionChange={onSectionChange} />
 
           {/* Notifications */}
