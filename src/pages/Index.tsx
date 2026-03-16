@@ -75,6 +75,7 @@ const AIPriceEstimatorCTA = lazy(() => import("@/components/home/AIPriceEstimato
 const EarlyInvestmentCTA = lazy(() => import("@/components/home/EarlyInvestmentCTA"));
 const SocialProofStrip = lazy(() => import("@/components/home/SocialProofStrip"));
 const SectionDividerCTA = lazy(() => import("@/components/home/SectionDividerCTA"));
+const MobileFloatingCTA = lazy(() => import("@/components/home/MobileFloatingCTA"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -798,10 +799,21 @@ const Index = () => {
                     <FeaturedPropertiesCarousel />
                   </Suspense>
                 </ScrollReveal>
-              </section>
 
-              {/* ── Visual breather ── */}
-              <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mx-auto max-w-5xl" aria-hidden="true" />
+                {/* Contextual CTA: Discovery excitement */}
+                <Suspense fallback={null}>
+                  <SectionDividerCTA
+                    icon={Search}
+                    headline="Discover More Properties"
+                    description="Browse thousands of verified listings across Indonesia"
+                    ctaText="Explore All"
+                    ctaRoute="/properties"
+                    variant="primary"
+                    secondaryText="List Yours"
+                    secondaryRoute="/post-property"
+                  />
+                </Suspense>
+              </section>
 
               {/* ── SECTION 3: AI Opportunity Zone (merged intelligence modules) ── */}
               <section className="py-10 sm:py-14 bg-muted/30" id="ai-opportunity-zone">
@@ -863,7 +875,7 @@ const Index = () => {
                 {/* Contextual CTA after AI zone */}
                 <div className="mt-10">
                   <Suspense fallback={null}>
-                    <SectionDividerCTA icon={Crosshair} headline="Find Undervalued Deals" description="AI detects properties priced below fair market value" ctaText="Hunt Deals" ctaRoute="/deal-finder" />
+                    <SectionDividerCTA icon={Crosshair} headline="Find Undervalued Deals" description="AI detects properties priced below fair market value" ctaText="Hunt Deals" ctaRoute="/deal-finder" variant="accent" />
                   </Suspense>
                 </div>
               </section>
@@ -877,10 +889,18 @@ const Index = () => {
                     </Suspense>
                   </LazyRender>
                 </ScrollReveal>
-              </section>
 
-              {/* ── Visual breather ── */}
-              <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mx-auto max-w-5xl" aria-hidden="true" />
+                {/* Contextual CTA: Collection confidence */}
+                <Suspense fallback={null}>
+                  <SectionDividerCTA
+                    icon={Star}
+                    headline="Curated for Investors"
+                    description="Handpicked collections based on ROI potential and market timing"
+                    ctaText="View Collections"
+                    ctaRoute="/collections"
+                  />
+                </Suspense>
+              </section>
 
               {/* ── SECTION 5: Investor Path Selector ── */}
               <section className="py-8 sm:py-12 bg-muted/20">
@@ -985,6 +1005,11 @@ const Index = () => {
           )}
         </div>
         </SectionErrorBoundary>
+
+        {/* Mobile floating CTA bar */}
+        <Suspense fallback={null}>
+          <MobileFloatingCTA />
+        </Suspense>
         
         {/* AI Search Loading Dialog */}
         <Suspense fallback={null}>

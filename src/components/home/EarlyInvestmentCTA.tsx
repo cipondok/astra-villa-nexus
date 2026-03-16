@@ -23,7 +23,7 @@ export default function EarlyInvestmentCTA() {
                 <div className="flex items-center gap-2 mb-2">
                   <HardHat className="h-5 w-5 text-primary" />
                   <h3 className="text-sm sm:text-base font-bold text-foreground">Early Investment Opportunities</h3>
-                  <Badge className="text-[8px] bg-primary/10 text-primary border-primary/20">New</Badge>
+                  <Badge className="text-[10px] bg-primary/10 text-primary border-primary/20">New</Badge>
                 </div>
                 <p className="text-xs text-muted-foreground mb-3">
                   Get pre-launch prices on {DEMO_PROJECTS.length} off-plan projects with avg. {avgROI}% projected ROI.
@@ -43,8 +43,8 @@ export default function EarlyInvestmentCTA() {
                       <div className="min-w-0">
                         <p className="text-[10px] font-semibold text-foreground truncate">{p.title}</p>
                         <div className="flex items-center gap-1.5">
-                          <span className="text-[9px] text-muted-foreground"><Price amount={p.startingPrice} short /></span>
-                          <span className="text-[9px] text-primary font-bold flex items-center gap-0.5">
+                          <span className="text-[10px] text-muted-foreground"><Price amount={p.startingPrice} short /></span>
+                          <span className="text-[10px] text-primary font-bold flex items-center gap-0.5">
                             <TrendingUp className="h-2.5 w-2.5" />+{p.appreciationPct}%
                           </span>
                         </div>
