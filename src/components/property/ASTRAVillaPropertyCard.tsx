@@ -212,7 +212,7 @@ const ASTRAVillaPropertyCard = ({
             </div>
 
             {/* Title */}
-            <h3 className="text-xs font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors duration-200">
+            <h3 className="text-[13px] font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors duration-200">
               {property.title}
             </h3>
 
