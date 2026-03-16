@@ -1377,7 +1377,7 @@ export const navigationSections = {
     {
       key: "customer-success-role",
       label: "Customer Success Role",
-      icon: HeartHandshake,
+      icon: Heart,
       description: "Agent support hire — onboarding guidance, re-engagement workflows, listing quality, retention KPIs, 90-day plan",
       badge: "💚 Success Hire"
     }
