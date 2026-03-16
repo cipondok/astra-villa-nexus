@@ -52,6 +52,7 @@ const DigitalGrowthRole = lazy(() => import('./DigitalGrowthRole'));
 const PropertySupplyManagerRole = lazy(() => import('./PropertySupplyManagerRole'));
 const CustomerSuccessRole = lazy(() => import('./CustomerSuccessRole'));
 const OrgChartDashboard = lazy(() => import('./OrgChartDashboard'));
+const MarketingBudgetDashboard = lazy(() => import('./MarketingBudgetDashboard'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
