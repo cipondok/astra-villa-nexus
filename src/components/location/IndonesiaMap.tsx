@@ -89,13 +89,65 @@ const provinceCoordinates: Record<string, [number, number]> = {
   'Maluku': [128.0, -3.2], 'Maluku Utara': [127.5, 1.5], 'Papua Barat': [133.0, -1.5], 'Papua': [138.0, -4.5],
 };
 
-// ── Heatmap Color Scale ──
+// ── Heat Mode Types ──
+export type HeatMode = 'density' | 'demand' | 'price';
+
+// ── Demand Heat Scores (per province, simulated) ──
+const demandHeatScores: Record<string, number> = {
+  'Bali': 94, 'DKI Jakarta': 91, 'Jawa Barat': 82, 'Jawa Timur': 78,
+  'Yogyakarta': 76, 'Banten': 72, 'Jawa Tengah': 68, 'Sulawesi Selatan': 55,
+  'Kalimantan Timur': 52, 'Sumatera Utara': 60, 'Lampung': 45, 'Riau': 40,
+  'Nusa Tenggara Barat': 65, 'Sumatera Barat': 38, 'Kalimantan Selatan': 35,
+};
+
+// ── Price Momentum (per province, % YoY change, simulated) ──
+const priceMomentum: Record<string, number> = {
+  'Bali': 12.5, 'DKI Jakarta': 3.2, 'Jawa Barat': 8.1, 'Jawa Timur': 6.5,
+  'Yogyakarta': 9.8, 'Banten': 4.3, 'Jawa Tengah': 5.0, 'Sulawesi Selatan': 7.2,
+  'Kalimantan Timur': 11.0, 'Sumatera Utara': 3.8, 'Lampung': 6.0, 'Riau': 2.5,
+  'Nusa Tenggara Barat': 14.2, 'Sumatera Barat': 4.1, 'Kalimantan Selatan': 3.0,
+};
+
+// ── New listings this week (per province, simulated) ──
+const newListingsWeek: Record<string, number> = {
+  'Bali': 42, 'DKI Jakarta': 38, 'Jawa Barat': 55, 'Jawa Timur': 35,
+  'Yogyakarta': 18, 'Banten': 22, 'Jawa Tengah': 28, 'Sulawesi Selatan': 8,
+  'Kalimantan Timur': 6, 'Sumatera Utara': 12, 'Lampung': 5, 'Riau': 4,
+  'Nusa Tenggara Barat': 15, 'Sumatera Barat': 3, 'Kalimantan Selatan': 4,
+};
+
+// ── Heatmap Color Scale — Density (original) ──
 const getHeatmapColor = (count: number, isDark: boolean): string => {
   if (count === 0) return isDark ? 'hsl(220, 15%, 22%)' : 'hsl(220, 15%, 88%)';
   if (count <= 50) return isDark ? 'hsl(210, 45%, 32%)' : 'hsl(210, 60%, 82%)';
   if (count <= 200) return isDark ? 'hsl(215, 55%, 38%)' : 'hsl(215, 65%, 68%)';
   if (count <= 500) return isDark ? 'hsl(225, 60%, 42%)' : 'hsl(225, 70%, 52%)';
   return isDark ? 'hsl(265, 60%, 48%)' : 'hsl(265, 65%, 55%)';
+};
+
+// ── Heatmap Color Scale — Demand Heat (0-100) ──
+const getDemandHeatColor = (score: number, isDark: boolean): string => {
+  if (score === 0) return isDark ? 'hsl(220, 15%, 22%)' : 'hsl(220, 15%, 88%)';
+  if (score <= 25) return isDark ? 'hsl(210, 40%, 30%)' : 'hsl(210, 55%, 82%)';  // Cool
+  if (score <= 50) return isDark ? 'hsl(45, 60%, 35%)' : 'hsl(45, 70%, 72%)';   // Warm
+  if (score <= 75) return isDark ? 'hsl(25, 70%, 38%)' : 'hsl(25, 75%, 62%)';   // Hot
+  return isDark ? 'hsl(0, 75%, 42%)' : 'hsl(0, 70%, 52%)';                      // Very Hot
+};
+
+// ── Heatmap Color Scale — Price Momentum (% change) ──
+const getPriceMomentumColor = (pct: number, isDark: boolean): string => {
+  if (pct <= 0) return isDark ? 'hsl(0, 60%, 35%)' : 'hsl(0, 55%, 70%)';        // Declining
+  if (pct <= 3) return isDark ? 'hsl(220, 15%, 22%)' : 'hsl(220, 15%, 88%)';     // Flat
+  if (pct <= 7) return isDark ? 'hsl(145, 40%, 32%)' : 'hsl(145, 50%, 72%)';     // Growing
+  if (pct <= 12) return isDark ? 'hsl(145, 55%, 38%)' : 'hsl(145, 60%, 55%)';    // Strong
+  return isDark ? 'hsl(145, 65%, 44%)' : 'hsl(145, 70%, 42%)';                   // Surge
+};
+
+// ── Unified heat color getter ──
+const getHeatColor = (mode: HeatMode, provinceName: string, count: number, isDark: boolean): string => {
+  if (mode === 'demand') return getDemandHeatColor(demandHeatScores[provinceName] || 0, isDark);
+  if (mode === 'price') return getPriceMomentumColor(priceMomentum[provinceName] || 0, isDark);
+  return getHeatmapColor(count, isDark);
 };
 
 const getHeatmapHoverColor = (count: number, isDark: boolean): string => {
