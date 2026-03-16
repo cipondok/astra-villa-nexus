@@ -454,6 +454,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "deal-hunter-admin":   () => <DealHunterAdminPanel />,
   "market-heat-intelligence": () => <MarketHeatIntelligence />,
   "opportunity-scoring-engine": () => <OpportunityScoringEngine />,
+  "price-prediction-engine": () => <PricePredictionEngine />,
   "property-comparison-tool": () => <PropertyComparisonTool />,
 };
 
