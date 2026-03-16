@@ -578,6 +578,12 @@ const AICommandCenter = () => {
               <span className="relative flex h-1.5 w-1.5"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-chart-1 opacity-75" /><span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-chart-1" /></span>
               Live
             </Badge>
+            {dataUpdatedAt > 0 && (
+              <Badge variant="outline" className="text-[10px] gap-1 text-muted-foreground border-border/50">
+                <Clock className="h-3 w-3" />
+                {formatDistanceToNow(new Date(dataUpdatedAt), { addSuffix: true })}
+              </Badge>
+            )}
             <Button variant="outline" size="sm" onClick={() => refetch()} className="gap-1.5 text-xs h-8">
               <RefreshCw className="h-3 w-3" /> Refresh
             </Button>
