@@ -69,6 +69,7 @@ import {
   Megaphone,
   Flame,
   Paintbrush,
+  Layout,
   Heart,
   Star,
   Store,
