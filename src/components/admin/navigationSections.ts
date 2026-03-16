@@ -98,6 +98,7 @@ import {
   Gavel,
   ScanEye,
   Handshake,
+  Send,
   Presentation,
   MapPin
 } from "lucide-react";
