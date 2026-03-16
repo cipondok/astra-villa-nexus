@@ -35,7 +35,7 @@ import { SearchErrorBoundary } from "@/components/search/SearchErrorBoundary";
 import { SearchPanelSkeleton } from "@/components/search/SearchSkeleton";
 import { useRetrySearch } from "@/hooks/useRetrySearch";
 import { shareProperty } from "@/utils/shareUtils";
-const GoldSparkleEffect = lazy(() => import("@/components/home/GoldSparkleEffect"));
+// GoldSparkleEffect removed from hero — single-image layout
 import { ImageSearchButton } from "@/components/search/ImageSearchButton";
 import { CommandPalette } from "@/components/ui/CommandPalette";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
