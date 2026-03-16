@@ -1036,16 +1036,16 @@ const AICommandCenter = () => {
                   <Panel title="SEO Rating Breakdown" icon={Gauge}>
                     {seo.ratingBreakdown.length > 0 ? (
                       <div className="flex items-center justify-center gap-6">
-                        <ResponsiveContainer width={140} height={140}>
-                          <PieChart>
-                            <Pie data={seo.ratingBreakdown} cx="50%" cy="50%" innerRadius={38} outerRadius={60} dataKey="count" stroke="hsl(var(--background))" strokeWidth={3}>
+                        <div className="w-[140px] h-[140px] shrink-0">
+                          <PieChart width={140} height={140}>
+                            <Pie data={seo.ratingBreakdown} cx={70} cy={70} innerRadius={38} outerRadius={60} dataKey="count" stroke="hsl(var(--background))" strokeWidth={3}>
                               {seo.ratingBreakdown.map((entry, i) => (
                                 <Cell key={i} fill={entry.fill} />
                               ))}
                             </Pie>
                             <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
                           </PieChart>
-                        </ResponsiveContainer>
+                        </div>
                         <div className="space-y-2">
                           {seo.ratingBreakdown.map(item => (
                             <div key={item.rating} className="flex items-center gap-2 text-xs">
