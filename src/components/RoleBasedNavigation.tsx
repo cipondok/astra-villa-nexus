@@ -104,7 +104,7 @@ const RoleBasedNavigation = ({
     <nav className="sticky top-0 left-0 right-0 z-50 header-ios border-b border-white/10 backdrop-blur-xl" aria-label="Main navigation">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 xl:px-16">
         <div className="flex justify-between items-center h-12">
-          <div className="flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity" onClick={handleHomeClick}>
+          <div className="flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md" onClick={handleHomeClick} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleHomeClick(); } }} tabIndex={0} role="button" aria-label="Go to homepage">
             <h1 className="text-lg font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent drop-shadow-lg">
               Astra Villa
             </h1>

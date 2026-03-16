@@ -87,7 +87,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index, variant = 'de
   };
 
   return (
-    <div onClick={handleClick} className="group cursor-pointer">
+    <div onClick={handleClick} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(); } }} tabIndex={0} role="button" className="group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-xl">
       <div className={`relative overflow-hidden rounded-xl h-full flex flex-col items-center text-center transition-all duration-300 active:scale-95 md:hover:scale-[1.04] md:hover:shadow-lg md:hover:shadow-primary/10 ${
         isHero
           ? 'border border-border/50 hover:border-gold-primary/30 p-2.5 md:p-3 bg-muted/50 backdrop-blur-md'

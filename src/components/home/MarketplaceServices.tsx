@@ -96,7 +96,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onClick }) => {
   const { t } = useTranslation();
   
   return (
-    <div onClick={onClick} className="group cursor-pointer">
+    <div onClick={onClick} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick?.(); } }} tabIndex={0} role="button" className="group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-xl">
       <div className="relative overflow-hidden rounded-xl bg-muted/50 backdrop-blur-md border border-border/50 hover:border-gold-primary/30 p-2 md:p-3 h-full flex flex-col items-center text-center transition-all duration-300 active:scale-95 md:hover:scale-[1.04] md:hover:shadow-lg md:hover:shadow-gold-primary/10">
         {/* Icon Container */}
         <div className="relative">
