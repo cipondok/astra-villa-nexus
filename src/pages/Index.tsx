@@ -121,12 +121,6 @@ const Index = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [isLoadingPanel, setIsLoadingPanel] = useState(true);
   const [isOnline, setIsOnline] = useState(true);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [parallaxOffset, setParallaxOffset] = useState(0);
-  const prefersReducedMotion = useMemo(() => 
-    typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, 
-  []);
-  const parallaxEnabled = !isMobile && !isTablet && !prefersReducedMotion;
   const { speed: connectionSpeed } = useConnectionSpeed();
   const queryClient = useQueryClient();
 
