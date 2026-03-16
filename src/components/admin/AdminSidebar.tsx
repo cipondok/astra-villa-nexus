@@ -126,9 +126,9 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
         />
       )}
       
-      <div ref={sidebarRef} className="relative h-full flex z-40">
+      <nav ref={sidebarRef} className="relative h-full flex z-40" aria-label="Admin navigation">
         {/* Icon-only Sidebar - Compact */}
-         <div className="w-12 h-full bg-card/95 backdrop-blur-sm border-r border-border/30 flex flex-col py-2 px-1.5 shadow-lg">
+         <div className="w-12 h-full bg-card/95 backdrop-blur-sm border-r border-border/30 flex flex-col py-2 px-1.5 shadow-lg" role="menubar" aria-label="Section categories">
            {/* IMPORTANT: category list must be scrollable or bottom categories (like Features) become unreachable */}
            <ScrollArea className="flex-1">
              <div className="flex flex-col gap-0.5">
