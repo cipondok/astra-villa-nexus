@@ -33157,6 +33157,10 @@ export type Database = {
         Returns: undefined
       }
       delete_user_admin: { Args: { p_user_id: string }; Returns: undefined }
+      detect_capital_flow_trends: {
+        Args: { p_lookback_days?: number }
+        Returns: Json
+      }
       detect_listing_optimizations: {
         Args: { p_limit?: number }
         Returns: Json
