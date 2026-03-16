@@ -262,3 +262,18 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.intelligence-cron]
     verify_jwt = false
 
+  [functions.compute-opportunity-scores]
+    verify_jwt = false
+
+  [functions.scan-deal-opportunities]
+    verify_jwt = false
+
+  [functions.aggregate-market-heat]
+    verify_jwt = false
+
+  [functions.predict-property-prices]
+    verify_jwt = false
+
+  [functions.analyze-investor-portfolios]
+    verify_jwt = false
+
