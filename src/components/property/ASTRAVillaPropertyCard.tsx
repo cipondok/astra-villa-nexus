@@ -203,7 +203,7 @@ const ASTRAVillaPropertyCard = ({
               "flex items-baseline gap-1 rounded-lg px-2 py-1.5 sm:px-2.5 sm:py-2 border flex-wrap",
               "bg-primary/5 border-primary/15"
             )}>
-              <span className="text-sm sm:text-base font-black leading-none tracking-tight text-primary">
+              <span className="text-sm sm:text-base font-black leading-none tracking-tight text-primary drop-shadow-sm">
                 <Price amount={numPrice} short showFlag />
               </span>
               {isRent && (
