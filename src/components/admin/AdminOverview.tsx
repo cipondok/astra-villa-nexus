@@ -64,6 +64,7 @@ import PortfolioStrategyCard from "./PortfolioStrategyCard";
 import CapitalFlowCard from "./CapitalFlowCard";
 import MarketplaceOptimizationCard from "./MarketplaceOptimizationCard";
 import { useAICommandCenterData } from "@/hooks/useAICommandCenterData";
+import { useRelativeTime } from "@/hooks/useRelativeTime";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
@@ -131,10 +132,10 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
   });
 
   // Batched AI intelligence data
-  const { data: aiData } = useAICommandCenterData();
+  const { data: aiData, dataUpdatedAt: aiUpdatedAt } = useAICommandCenterData();
 
   // Fetch platform statistics
-  const { data: platformStats, isLoading: statsLoading, refetch: refetchStats } = useQuery({
+  const { data: platformStats, isLoading: statsLoading, refetch: refetchStats, dataUpdatedAt: statsUpdatedAt } = useQuery({
     queryKey: ['admin-platform-stats'],
     queryFn: async () => {
       try {
@@ -174,7 +175,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
   });
 
   // Fetch system health + AI subsystem status
-  const { data: systemHealth } = useQuery({
+  const { data: systemHealth, dataUpdatedAt: healthUpdatedAt } = useQuery({
     queryKey: ['system-health-overview'],
     queryFn: async () => {
       const startTime = Date.now();
@@ -221,7 +222,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
   });
 
   // Fetch recent activity
-  const { data: recentActivity } = useQuery({
+  const { data: recentActivity, dataUpdatedAt: activityUpdatedAt } = useQuery({
     queryKey: ['recent-activity-logs'],
     queryFn: async () => {
       try {
@@ -264,7 +265,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
   });
 
   // Fetch hourly traffic - single batched query instead of 12 sequential calls
-  const { data: hourlyTraffic } = useQuery({
+  const { data: hourlyTraffic, dataUpdatedAt: trafficUpdatedAt } = useQuery({
     queryKey: ['hourly-traffic'],
     queryFn: async () => {
       try {
@@ -297,6 +298,12 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
   });
 
   const maxTraffic = useMemo(() => Math.max(...(hourlyTraffic?.map(h => h.count) || [1]), 1), [hourlyTraffic]);
+
+  const statsAgo = useRelativeTime(statsUpdatedAt);
+  const healthAgo = useRelativeTime(healthUpdatedAt);
+  const activityAgo = useRelativeTime(activityUpdatedAt);
+  const trafficAgo = useRelativeTime(trafficUpdatedAt);
+  const aiAgo = useRelativeTime(aiUpdatedAt);
 
   return (
     <div className="space-y-3 animate-in fade-in duration-300">
@@ -333,6 +340,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
             <CardHeader className="p-3 pb-2">
               <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
                 <Activity className="h-3.5 w-3.5" /> Platform Stats
+                {statsAgo && <span className="ml-auto text-[9px] font-normal normal-case tracking-normal text-muted-foreground/60">↻ {statsAgo}</span>}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 pt-0 space-y-2">
@@ -402,7 +410,10 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
                 <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
                   <TrendingUp className="h-3.5 w-3.5" /> Traffic (12h)
                 </CardTitle>
-                <Badge variant="secondary" className="text-[10px] h-5 px-2">Live</Badge>
+                <div className="flex items-center gap-2">
+                  {trafficAgo && <span className="text-[9px] text-muted-foreground/60">↻ {trafficAgo}</span>}
+                  <Badge variant="secondary" className="text-[10px] h-5 px-2">Live</Badge>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="p-3 pt-0">
@@ -449,7 +460,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
                 <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
                   <MousePointer className="h-3.5 w-3.5" /> Live Activity
                 </CardTitle>
-                <span className="text-[10px] text-muted-foreground">Auto-refresh 60s</span>
+                <span className="text-[10px] text-muted-foreground">{activityAgo ? `↻ ${activityAgo}` : 'Auto-refresh 60s'}</span>
               </div>
             </CardHeader>
             <CardContent className="p-3 pt-0">
@@ -501,7 +512,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
             <div className="flex items-center gap-2 px-1">
               <div className="h-px flex-1 bg-gradient-to-r from-chart-1/30 to-transparent" />
               <span className="text-[10px] font-bold uppercase tracking-widest text-chart-1/70">System Health</span>
-              <div className="h-px flex-1 bg-gradient-to-l from-chart-1/30 to-transparent" />
+              {healthAgo && <span className="text-[9px] text-muted-foreground/60">↻ {healthAgo}</span>}
             </div>
 
             {/* System Status */}
@@ -562,7 +573,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
             <div className="flex items-center gap-2 px-1">
               <div className="h-px flex-1 bg-gradient-to-r from-primary/30 to-transparent" />
               <span className="text-[10px] font-bold uppercase tracking-widest text-primary/70">AI Intelligence</span>
-              <div className="h-px flex-1 bg-gradient-to-l from-primary/30 to-transparent" />
+              {aiAgo && <span className="text-[9px] text-muted-foreground/60">↻ {aiAgo}</span>}
             </div>
 
             {/* Tier 1: Active signal cards — elevated with glow */}
