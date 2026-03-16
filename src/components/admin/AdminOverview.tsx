@@ -316,7 +316,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
   const aiAgo = useRelativeTime(aiUpdatedAt);
 
   return (
-    <div className="space-y-3 animate-in fade-in duration-300">
+    <main role="main" aria-label="Admin overview dashboard" className="space-y-3 animate-in fade-in duration-300">
       {/* Header */}
       <div className="flex items-center justify-between bg-gradient-to-r from-primary/5 via-background to-chart-1/5 rounded-xl border border-border/30 px-4 py-3">
         <div className="flex items-center gap-3">
