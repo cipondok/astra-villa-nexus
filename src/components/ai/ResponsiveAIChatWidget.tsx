@@ -1767,9 +1767,9 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
-              className="absolute -top-16 right-0 bg-primary text-primary-foreground px-4 py-2 rounded-lg shadow-lg text-sm font-medium whitespace-nowrap"
+              className="absolute -top-16 right-0 bg-primary text-primary-foreground px-4 py-2 rounded-lg shadow-lg text-sm font-medium whitespace-nowrap hidden md:block"
             >
-              Hover for quick actions
+              Tap for quick actions
               <div className="absolute -bottom-2 right-6 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-primary" />
             </motion.div>
           )}
