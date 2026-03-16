@@ -94,54 +94,58 @@ const PropertyGridView = ({
             key={property.id} 
             className={cn(
               "group cursor-pointer bg-card rounded-xl border shadow-sm overflow-hidden will-change-transform",
-              "hover:shadow-md hover:-translate-y-0.5 transition-all duration-250",
+              "hover:shadow-[0_12px_28px_-8px_hsl(var(--primary)/0.12)] hover:-translate-y-1 transition-all duration-300 ease-out",
               isHighOpportunity
-                ? "border-gold-primary/30 ring-1 ring-gold-primary/10"
+                ? "border-primary/30 ring-1 ring-primary/10"
                 : "border-border hover:border-primary/25"
             )}
             onClick={() => onPropertyClick(property)}
           >
-            {/* Image — 16:10 ratio for premium readability */}
-            <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+            {/* Image — 4:3 ratio for consistent grid alignment */}
+            <div className="relative aspect-[4/3] overflow-hidden bg-muted">
               <img
                 src={getImageUrl(property)}
                 alt={property.title}
                 loading="lazy"
-                className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                decoding="async"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
               />
               
-              {/* Top row: listing type + property type */}
-              <div className="absolute top-2.5 left-2.5 right-2.5 flex items-start justify-between">
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 pointer-events-none" />
+              
+              {/* Top row: listing type + save */}
+              <div className="absolute top-2.5 left-2.5 right-2.5 flex items-start justify-between z-10">
                 <Badge className={cn(
-                  "flex items-center gap-1 px-2 py-1 text-[10px] font-semibold rounded-md shadow-sm",
-                  isRent ? "bg-primary text-primary-foreground" : "bg-accent text-accent-foreground"
+                  "flex items-center gap-1 px-2 py-1 text-[10px] font-bold rounded-md shadow-md border-0",
+                  isRent
+                    ? "bg-gradient-to-r from-sky-500 to-blue-600 text-white"
+                    : "bg-gradient-to-r from-emerald-500 to-green-600 text-white"
                 )}>
                   <ListingIcon className="h-2.5 w-2.5" />
                   {isRent ? 'Disewa' : 'Dijual'}
                 </Badge>
 
-                <div className="flex items-center gap-1.5">
-                  <Button size="icon" variant="ghost"
-                    className={cn(
-                      "h-8 w-8 rounded-full bg-card/90 backdrop-blur-sm shadow-sm border border-border/50 min-h-[32px]",
-                      savedProperties.has(property.id) && "bg-destructive/10 border-destructive/30"
-                    )}
-                    onClick={(e) => { e.stopPropagation(); handleSave(property); }}>
-                    <Heart className={cn("h-3.5 w-3.5", savedProperties.has(property.id) ? 'fill-destructive text-destructive' : 'text-muted-foreground')} />
-                  </Button>
-                </div>
+                <Button size="icon" variant="ghost"
+                  className={cn(
+                    "h-8 w-8 rounded-full bg-black/30 backdrop-blur-md shadow-sm border border-white/20 min-h-[32px]",
+                    savedProperties.has(property.id) && "bg-destructive/20 border-destructive/30"
+                  )}
+                  onClick={(e) => { e.stopPropagation(); handleSave(property); }}>
+                  <Heart className={cn("h-3.5 w-3.5", savedProperties.has(property.id) ? 'fill-destructive text-destructive' : 'text-white/90')} />
+                </Button>
               </div>
 
-              {/* AI Investment Score — prominent badge for high scores */}
+              {/* AI Investment Score — bottom left */}
               {investmentScore > 0 && (
                 <div className="absolute bottom-2.5 left-2.5 z-10">
-                  <InvestmentScoreBadge score={investmentScore} compact className={cn("shadow-md", isHighOpportunity && "ring-1 ring-gold-primary/40")} />
+                  <InvestmentScoreBadge score={investmentScore} compact className={cn("shadow-md", isHighOpportunity && "ring-1 ring-primary/40")} />
                 </div>
               )}
 
-              {/* Image count */}
+              {/* Image count — bottom right */}
               {imageCount > 1 && (
-                <div className="absolute bottom-2.5 right-2.5 flex items-center gap-1 bg-background/70 backdrop-blur-sm text-foreground text-[10px] px-2 py-1 rounded-md">
+                <div className="absolute bottom-2.5 right-2.5 flex items-center gap-1 bg-black/40 backdrop-blur-sm text-white text-[10px] px-2 py-1 rounded-md z-10">
                   <Camera className="h-2.5 w-2.5" />
                   <span className="font-medium">{imageCount}</span>
                 </div>
@@ -149,18 +153,18 @@ const PropertyGridView = ({
             </div>
 
             {/* Content */}
-            <CardContent className="p-3.5 sm:p-4 space-y-2.5">
-              {/* Price block */}
+            <CardContent className="p-3.5 sm:p-4 space-y-2">
+              {/* Price — primary focal point */}
               <div className="flex items-baseline gap-1.5 flex-wrap">
                 <span className="text-lg sm:text-xl font-black text-primary tracking-tight leading-none drop-shadow-sm">{priceInfo.main}</span>
                 {isRent && <span className="text-[11px] text-muted-foreground font-semibold">/bln</span>}
                 {!isRent && (
-                  <span className="text-[10px] text-muted-foreground font-medium">≈ {formatMonthlyPayment(property.price)}</span>
+                  <span className="text-[10px] text-muted-foreground font-medium ml-auto">≈ {formatMonthlyPayment(property.price)}</span>
                 )}
               </div>
 
               {/* Title */}
-              <h3 className="text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+              <h3 className="text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors duration-200">
                 {property.title}
               </h3>
 
@@ -171,7 +175,7 @@ const PropertyGridView = ({
               </div>
 
               {/* Specs row */}
-              <div className="flex items-center gap-3 pt-2 border-t border-border/50 text-xs text-muted-foreground">
+              <div className="flex items-center gap-3 pt-2 border-t border-border/40 text-xs text-muted-foreground">
                 {property.bedrooms && property.bedrooms > 0 && (
                   <div className="flex items-center gap-1">
                     <Bed className="h-3.5 w-3.5" />

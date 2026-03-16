@@ -1,5 +1,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Heart, MapPin, Bed, Bath, Square, Eye, Box, Star, Clock, Calendar, TrendingUp, MessageSquare, Tag, Key, Percent, Glasses } from "lucide-react";
@@ -170,11 +171,17 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   return (
     <>
       <Card 
-        className={`group cursor-pointer overflow-hidden bg-card border card-hover-lift ${owner_subscription_type === 'enterprise' ? 'border-[hsl(var(--gold-primary)/0.5)] shadow-[0_0_15px_-3px_hsl(var(--gold-primary)/0.15)]' : 'border-border'} hover:border-gold-primary/40`} 
+        className={cn(
+          "group cursor-pointer overflow-hidden bg-card border rounded-xl will-change-transform",
+          "hover:-translate-y-1 hover:shadow-[0_12px_28px_-8px_hsl(var(--primary)/0.12)] transition-all duration-300 ease-out",
+          owner_subscription_type === 'enterprise'
+            ? 'border-[hsl(var(--gold-primary)/0.5)] shadow-[0_0_15px_-3px_hsl(var(--gold-primary)/0.15)]'
+            : 'border-border hover:border-primary/30',
+        )} 
         onClick={handleViewDetails}
       >
         {/* Image Container */}
-        <div className="relative aspect-[4/3] overflow-hidden">
+        <div className="relative aspect-[4/3] overflow-hidden bg-muted">
           <img
             src={getPropertyImage(images, thumbnail_url, image_urls)}
             alt={title}
@@ -182,14 +189,17 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             height={300}
             loading="lazy"
             decoding="async"
-            className="w-full h-full object-cover img-hover-zoom"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
             onError={(e) => { e.currentTarget.src = '/placeholder.svg'; }}
           />
           
+          {/* Gradient overlay for badge readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 pointer-events-none" />
+          
           {/* Save Button */}
-          <div className="absolute top-2 right-2 flex gap-1.5">
+          <div className="absolute top-2.5 right-2.5 flex gap-1.5 z-10">
             <button 
-              className="h-8 w-8 bg-black/30 backdrop-blur-md hover:bg-black/50 border border-white/20 rounded-full shadow-md flex items-center justify-center btn-press"
+              className="h-8 w-8 bg-black/30 backdrop-blur-md hover:bg-black/50 border border-white/20 rounded-full shadow-md flex items-center justify-center btn-press min-h-[32px]"
               onClick={(e) => e.stopPropagation()}
               aria-label="Save property"
             >
@@ -200,35 +210,37 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               propertyTitle={title}
               propertyPrice={price}
               propertyLocation={location}
-              className="h-8 w-8 p-0 bg-black/30 backdrop-blur-md hover:bg-black/50 text-white rounded-full border border-white/20 shadow-md"
+              className="h-8 w-8 p-0 bg-black/30 backdrop-blur-md hover:bg-black/50 text-white rounded-full border border-white/20 shadow-md min-h-[32px]"
               aria-label="Share property"
             />
           </div>
           
           {/* Badges */}
-          <div className="absolute top-2 left-2 flex flex-wrap gap-1.5">
+          <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5 z-10">
             <Badge 
-              className={`${listing_type === 'sale' 
-                ? 'bg-chart-1 text-chart-1-foreground' 
-                : 'bg-primary text-primary-foreground'
-              } text-xs font-bold px-2.5 py-1 rounded-md shadow-md border-0 flex items-center gap-1`}
+              className={cn(
+                "text-[10px] font-bold px-2 py-1 rounded-md shadow-md border-0 flex items-center gap-1",
+                listing_type === 'sale' 
+                  ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' 
+                  : 'bg-gradient-to-r from-sky-500 to-blue-600 text-white'
+              )}
             >
-              {listing_type === 'sale' ? <Tag className="h-3 w-3" /> : <Key className="h-3 w-3" />}
+              {listing_type === 'sale' ? <Tag className="h-2.5 w-2.5" /> : <Key className="h-2.5 w-2.5" />}
               {listing_type === 'sale' ? 'Dijual' : 'Disewa'}
             </Badge>
             {development_status === 'new_project' && (
-              <Badge className="bg-accent text-accent-foreground text-xs font-medium px-2 py-0.5 rounded">
+              <Badge className="bg-accent text-accent-foreground text-[10px] font-medium px-2 py-0.5 rounded-md">
                 New Project
               </Badge>
             )}
             {development_status === 'pre_launching' && (
-              <Badge className="bg-accent text-accent-foreground text-xs font-medium px-2 py-0.5 rounded">
+              <Badge className="bg-accent text-accent-foreground text-[10px] font-medium px-2 py-0.5 rounded-md">
                 Pre-Launch
               </Badge>
             )}
             {(three_d_model_url || virtual_tour_url || glb_model_url || drone_video_url || has_vr || has_360_view || has_drone_video) && (
-              <Badge className="bg-accent text-accent-foreground text-xs font-bold px-2 py-0.5 rounded-md shadow-md border-0 flex items-center gap-1">
-                <Glasses className="h-3 w-3" />
+              <Badge className="bg-accent text-accent-foreground text-[10px] font-bold px-2 py-0.5 rounded-md shadow-md border-0 flex items-center gap-1">
+                <Glasses className="h-2.5 w-2.5" />
                 Virtual Tour
               </Badge>
             )}
@@ -236,13 +248,13 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 
           {/* Owner Subscription Badge */}
           {owner_subscription_type && owner_subscription_type !== 'free' && (
-            <div className="absolute bottom-2 right-2 z-10">
+            <div className="absolute bottom-2.5 right-2.5 z-10">
               <OwnerSubscriptionBadge subscriptionType={owner_subscription_type} />
             </div>
           )}
 
           {/* Trust Badges - Bottom Left */}
-          <div className="absolute bottom-2 left-2">
+          <div className="absolute bottom-2.5 left-2.5 z-10">
             <PropertyTrustBadges
               property={{
                 owner_type, owner_verified, agent_verified, agency_verified,
@@ -254,29 +266,29 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         </div>
         
         {/* Content */}
-        <CardContent className="p-3 sm:p-4">
-          {/* Price */}
-          <div className="flex items-center gap-2 mb-2">
-            <p className="text-lg sm:text-xl font-black text-primary drop-shadow-sm">
+        <CardContent className="p-3.5 sm:p-4 space-y-2">
+          {/* Price — primary focal point */}
+          <div className="flex items-baseline gap-2 flex-wrap">
+            <p className="text-lg sm:text-xl font-black text-primary drop-shadow-sm tracking-tight leading-none">
               <Price amount={price} />
-              {listing_type === 'rent' && (
-                <span className="text-sm font-normal text-muted-foreground ml-1">/bln</span>
-              )}
             </p>
+            {listing_type === 'rent' && (
+              <span className="text-[11px] font-semibold text-muted-foreground">/bln</span>
+            )}
             {discount_percentage && discount_percentage > 0 && (
-              <Badge className="bg-accent text-accent-foreground text-xs font-medium px-1.5 py-0.5">
+              <Badge className="bg-accent text-accent-foreground text-[10px] font-semibold px-1.5 py-0.5">
                 -{discount_percentage}%
               </Badge>
             )}
           </div>
           
           {/* Title */}
-          <h3 className="text-sm sm:text-base font-semibold text-foreground line-clamp-1 mb-1">
+          <h3 className="text-sm sm:text-base font-semibold text-foreground line-clamp-1 leading-snug group-hover:text-primary transition-colors duration-200">
             {title}
           </h3>
           
-          {/* Location */}
-          <div className="flex items-center gap-1 text-muted-foreground mb-3">
+          {/* Location + freshness */}
+          <div className="flex items-center gap-1 text-muted-foreground">
             <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
             <span className="text-xs sm:text-sm truncate">{location}</span>
             {(created_at || posted_at) && (
@@ -287,44 +299,44 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             )}
           </div>
           
-          {/* Property Details */}
-          <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground border-t border-border pt-3">
+          {/* Property Specs */}
+          <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground pt-2 border-t border-border/40">
             {bedrooms !== undefined && bedrooms > 0 && (
               <div className="flex items-center gap-1">
                 <Bed className="h-3.5 w-3.5" />
-                <span>{bedrooms}</span>
+                <span className="font-semibold text-foreground">{bedrooms}</span>
               </div>
             )}
             {bathrooms !== undefined && bathrooms > 0 && (
               <div className="flex items-center gap-1">
                 <Bath className="h-3.5 w-3.5" />
-                <span>{bathrooms}</span>
+                <span className="font-semibold text-foreground">{bathrooms}</span>
               </div>
             )}
             {area_sqm !== undefined && area_sqm > 0 && (
               <div className="flex items-center gap-1">
                 <Square className="h-3.5 w-3.5" />
-                <span>{area_sqm}m²</span>
+                <span className="font-semibold text-foreground">{area_sqm}m²</span>
               </div>
             )}
           </div>
 
-          {/* VR Quick Action — AR Preview removed (non-functional, see ux-heuristic-audit.md) */}
+          {/* VR Quick Action */}
           {(three_d_model_url || virtual_tour_url || glb_model_url || has_vr) && (
-            <div className="mt-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="h-7 text-xs w-full border-primary/30 text-primary hover:bg-primary/10"
-                onClick={(e) => { e.stopPropagation(); handleView3D(e); }}
-              >
-                <Glasses className="h-3 w-3 mr-1" />
-                VR Mode
-              </Button>
-            </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="h-9 text-xs w-full border-primary/30 text-primary hover:bg-primary/10 min-h-[36px]"
+              onClick={(e) => { e.stopPropagation(); handleView3D(e); }}
+            >
+              <Glasses className="h-3 w-3 mr-1.5" />
+              VR Mode
+            </Button>
           )}
+
+          {/* Agent info */}
           {posted_by && (
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
+            <div className="flex items-center gap-2 pt-2 border-t border-border/40">
               {posted_by.avatar_url ? (
                 <img 
                   src={posted_by.avatar_url} 
@@ -332,13 +344,11 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
                   className="w-6 h-6 rounded-full object-cover"
                 />
               ) : (
-                <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">
+                <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[10px] font-bold">
                   {posted_by.name.charAt(0).toUpperCase()}
                 </div>
               )}
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-foreground truncate">{posted_by.name}</p>
-              </div>
+              <p className="text-xs font-medium text-foreground truncate flex-1">{posted_by.name}</p>
               {posted_by.rating && (
                 <div className="flex items-center gap-0.5">
                   <Star className="h-3 w-3 fill-chart-3 text-chart-3" />
@@ -348,14 +358,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             </div>
           )}
 
-          {/* Rating Summary - Compact */}
+          {/* Rating Summary */}
           {aggregate && aggregate.total_ratings > 0 && (
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
-              <div className="flex items-center gap-1">
-                <Star className="h-4 w-4 fill-chart-3 text-chart-3" />
-                <span className="text-sm font-semibold">{aggregate.average_rating.toFixed(1)}</span>
-              </div>
-              <span className="text-xs text-muted-foreground">({aggregate.total_ratings} reviews)</span>
+            <div className="flex items-center gap-2 pt-2 border-t border-border/40">
+              <Star className="h-3.5 w-3.5 fill-chart-3 text-chart-3" />
+              <span className="text-sm font-semibold">{aggregate.average_rating.toFixed(1)}</span>
+              <span className="text-[10px] text-muted-foreground">({aggregate.total_ratings})</span>
             </div>
           )}
         </CardContent>
