@@ -89,7 +89,7 @@ function StreakCard({ property, index }: { property: any; index: number }) {
         </p>
         <div className="flex items-center justify-between">
           <span className="text-sm font-bold text-primary">
-            <Price amount={property.price || 0} compact />
+            <Price amount={property.price || 0} />
           </span>
           <span className="text-[10px] text-muted-foreground flex items-center gap-0.5">
             <TrendingUp className="h-3 w-3" />
