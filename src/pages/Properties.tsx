@@ -338,7 +338,7 @@ const Properties = () => {
         </div>
 
         {/* Properties Grid/List - Compact Cards */}
-        {isLoading ? <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+        {isLoading ? <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {[...Array(10)].map((_, i) => <Card key={i} className="animate-pulse overflow-hidden glass-card border-border/30">
                 <div className="h-28 bg-muted/50"></div>
                 <CardContent className="p-2">
