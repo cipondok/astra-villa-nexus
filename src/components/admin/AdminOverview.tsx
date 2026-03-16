@@ -147,7 +147,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
   });
 
   // Batched AI intelligence data
-  const { data: aiData, dataUpdatedAt: aiUpdatedAt } = useAICommandCenterData();
+  const { data: aiData, dataUpdatedAt: aiUpdatedAt, isLoading: aiLoading } = useAICommandCenterData();
 
   // Fetch platform statistics
   const { data: platformStats, isLoading: statsLoading, refetch: refetchStats, dataUpdatedAt: statsUpdatedAt } = useQuery({
