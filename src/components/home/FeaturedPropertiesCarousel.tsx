@@ -187,7 +187,7 @@ export default function FeaturedPropertiesCarousel() {
               onClick={() => !isDragging && navigate(`/properties/${p.id}`)}
               className="flex-shrink-0 w-[260px] sm:w-[290px] md:w-[310px] lg:w-[330px] snap-start group/card cursor-pointer"
             >
-              <div className="relative rounded-xl overflow-hidden bg-card border border-border shadow-sm hover:shadow-xl hover:shadow-gold-primary/10 hover:border-gold-primary/40 hover:-translate-y-1 transition-all duration-300">
+              <div className="relative rounded-xl overflow-hidden bg-card border border-border shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:border-primary/30 hover:-translate-y-1 transition-all duration-300 will-change-transform">
                 {/* Image */}
                 <div className="relative aspect-[16/10] overflow-hidden">
                   <OptimizedPropertyImage
