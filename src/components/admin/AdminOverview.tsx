@@ -473,7 +473,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           </Card>
 
           {/* Recent Activity Feed */}
-          <Card className="border-border/30">
+          <Card className="border-border bg-card">
             <CardHeader className="p-3 pb-2">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
