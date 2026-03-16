@@ -828,15 +828,15 @@ const AICommandCenter = () => {
                     <Panel title="AI Job Queue" icon={Cpu}>
                       {jobPieData.length > 0 ? (
                         <div className="flex items-center gap-3">
-                          <ResponsiveContainer width={100} height={100}>
-                            <PieChart>
-                              <Pie data={jobPieData} cx="50%" cy="50%" innerRadius={28} outerRadius={44} dataKey="value" stroke="hsl(var(--background))" strokeWidth={2}>
+                          <div className="w-[100px] h-[100px] shrink-0">
+                            <PieChart width={100} height={100}>
+                              <Pie data={jobPieData} cx={50} cy={50} innerRadius={28} outerRadius={44} dataKey="value" stroke="hsl(var(--background))" strokeWidth={2}>
                                 {jobPieData.map((entry, i) => (
                                   <Cell key={i} fill={entry.fill} />
                                 ))}
                               </Pie>
                             </PieChart>
-                          </ResponsiveContainer>
+                          </div>
                           <div className="flex-1 space-y-1">
                             {jobPieData.map(item => (
                               <div key={item.name} className="flex items-center justify-between text-[11px]">
