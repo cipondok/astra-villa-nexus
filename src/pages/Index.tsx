@@ -669,7 +669,7 @@ const Index = () => {
                   "bg-gold-primary/10 backdrop-blur-md",
                   "rounded-full border border-gold-primary/25",
                 )}>
-                  <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary animate-pulse" />
+                  <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary signal-glow" />
                    <span className="text-[10px] sm:text-xs font-semibold text-white uppercase tracking-[0.2em]">
                     {t('indexPage.aiPoweredSearch')}
                   </span>
