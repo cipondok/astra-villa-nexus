@@ -59,7 +59,7 @@ export default function DealHunterHero() {
               onClick={() => navigate(`/property/${deal.property_id}`)}
             >
               <div className="flex items-center justify-between mb-2">
-                <Badge className={`text-[9px] h-4 px-1.5 ${cls.color} border-0`}>
+                <Badge className={`text-[10px] h-4 px-1.5 ${cls.color} border-0`}>
                   {cls.icon} {cls.label}
                 </Badge>
                 <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
