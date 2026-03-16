@@ -76,6 +76,7 @@ const EarlyInvestmentCTA = lazy(() => import("@/components/home/EarlyInvestmentC
 const SocialProofStrip = lazy(() => import("@/components/home/SocialProofStrip"));
 const SectionDividerCTA = lazy(() => import("@/components/home/SectionDividerCTA"));
 const MobileFloatingCTA = lazy(() => import("@/components/home/MobileFloatingCTA"));
+const PWAInstallPrompt = lazy(() => import("@/components/pwa/PWAInstallPrompt"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -118,6 +119,15 @@ const Index = () => {
   const [isOnline, setIsOnline] = useState(true);
   const { speed: connectionSpeed } = useConnectionSpeed();
   const queryClient = useQueryClient();
+
+  // Auto-refetch all queries when coming back online
+  useEffect(() => {
+    const onOnline = () => {
+      queryClient.invalidateQueries();
+    };
+    window.addEventListener('online', onOnline);
+    return () => window.removeEventListener('online', onOnline);
+  }, [queryClient]);
 
   // Pull-to-refresh for homepage
   const {
@@ -1009,6 +1019,11 @@ const Index = () => {
         {/* Mobile floating CTA bar */}
         <Suspense fallback={null}>
           <MobileFloatingCTA />
+        </Suspense>
+
+        {/* PWA install prompt */}
+        <Suspense fallback={null}>
+          <PWAInstallPrompt />
         </Suspense>
         
         {/* AI Search Loading Dialog */}
