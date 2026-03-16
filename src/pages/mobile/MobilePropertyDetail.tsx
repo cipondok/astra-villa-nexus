@@ -265,10 +265,10 @@ const MobilePropertyDetail: React.FC = () => {
               const text = encodeURIComponent(`Hi, saya tertarik dengan properti: ${property.title}`);
               window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
             }}
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-[hsl(142_70%_45%)] active:scale-[0.98] transition-transform min-h-[44px]"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-accent active:scale-[0.98] transition-transform min-h-[44px]"
           >
-            <Phone className="h-4 w-4 text-white" />
-            <span className="text-sm font-bold text-white">WhatsApp</span>
+            <Phone className="h-4 w-4 text-accent-foreground" />
+            <span className="text-sm font-bold text-accent-foreground">WhatsApp</span>
           </button>
           <button className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-primary active:scale-[0.98] transition-transform min-h-[44px]">
             <Phone className="h-4 w-4 text-primary-foreground" />
