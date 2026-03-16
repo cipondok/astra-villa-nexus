@@ -1437,6 +1437,13 @@ export const navigationSections = {
       icon: Flame,
       description: "4-week launch sprint — day-by-day tasks, KPI targets, growth trajectory, success criteria",
       badge: "🔥 30-Day Sprint"
+    },
+    {
+      key: "ninety-day-master-plan",
+      label: "90-Day Master Execution",
+      icon: Layers,
+      description: "3-phase growth roadmap — 12 weeks, 65+ tasks, KPI targets, founder focus allocation",
+      badge: "🎯 90-Day Plan"
     }
   ],
 
