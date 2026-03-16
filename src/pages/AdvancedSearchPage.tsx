@@ -388,14 +388,19 @@ const AdvancedSearchPage = () => {
 
             {/* Loading State */}
             {isLoading && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                {[...Array(6)].map((_, i) => (
-                  <Card key={i} className="animate-pulse">
-                    <div className="aspect-[4/3] bg-muted rounded-t-lg" />
-                    <CardContent className="p-4 space-y-3">
-                      <div className="h-4 bg-muted rounded w-3/4" />
-                      <div className="h-3 bg-muted rounded w-1/2" />
-                      <div className="h-3 bg-muted rounded w-2/3" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+                {[...Array(8)].map((_, i) => (
+                  <Card key={i} className="overflow-hidden rounded-xl border border-border">
+                    <div className="aspect-[4/3] bg-muted animate-pulse" />
+                    <CardContent className="p-3 sm:p-4 space-y-2.5">
+                      <div className="h-10 bg-muted rounded-lg animate-pulse" />
+                      <div className="h-4 bg-muted rounded w-3/4 animate-pulse" />
+                      <div className="h-3.5 bg-muted rounded w-1/2 animate-pulse" />
+                      <div className="flex gap-2 pt-1">
+                        <div className="h-6 w-16 bg-muted rounded-md animate-pulse" />
+                        <div className="h-6 w-16 bg-muted rounded-md animate-pulse" />
+                        <div className="h-6 w-16 bg-muted rounded-md animate-pulse" />
+                      </div>
                     </CardContent>
                   </Card>
                 ))}
