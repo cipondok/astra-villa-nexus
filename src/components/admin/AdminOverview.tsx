@@ -265,7 +265,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
   });
 
   // Fetch hourly traffic - single batched query instead of 12 sequential calls
-  const { data: hourlyTraffic } = useQuery({
+  const { data: hourlyTraffic, dataUpdatedAt: trafficUpdatedAt } = useQuery({
     queryKey: ['hourly-traffic'],
     queryFn: async () => {
       try {
