@@ -97,6 +97,7 @@ const PreLaunching = lazy(() => import('@/pages/PreLaunching'));
 const NewProjects = lazy(() => import('@/pages/NewProjects'));
 const AreaGuides = lazy(() => import('@/pages/AreaGuides'));
 const Properties = lazy(() => import('@/pages/Properties'));
+const InvestorDemo = lazy(() => import('@/pages/InvestorDemo'));
 const MyProperties = lazy(() => import('@/pages/MyProperties'));
 const Notifications = lazy(() => import('@/pages/Notifications'));
 const Users = lazy(() => import('@/pages/Users'));
@@ -409,6 +410,7 @@ const AppContent = () => {
                 <Route path="/partners/benefits" element={<PartnerBenefits />} />
                 <Route path="/partners/ventures" element={<JointVentures />} />
                 <Route path="/mobile-demo" element={<MobileFirstDemo />} />
+                <Route path="/investor-demo" element={<InvestorDemo />} />
                 <Route path="/community" element={<Community />} />
                 <Route path="/community-hub" element={<CommunityHub />} />
                 <Route path="/marketplace" element={<Marketplace />} />
