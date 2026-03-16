@@ -112,14 +112,27 @@ export default function OpportunityStreakCards() {
   const { data: deals, isLoading } = useQuery({
     queryKey: ['opportunity-streak'],
     queryFn: async () => {
-      // Fetch recently listed properties with good attributes
-      const { data } = await supabase
+      // Fetch recently listed properties - try approved first, then fallback
+      let { data } = await supabase
         .from('properties')
         .select('id, title, price, city, location, property_type, thumbnail_url, images, created_at')
         .eq('status', 'active')
+        .eq('approval_status', 'approved')
         .not('price', 'is', null)
         .order('created_at', { ascending: false })
         .limit(8);
+
+      // Fallback without approval filter
+      if (!data || data.length === 0) {
+        const fallback = await supabase
+          .from('properties')
+          .select('id, title, price, city, location, property_type, thumbnail_url, images, created_at')
+          .eq('status', 'active')
+          .not('price', 'is', null)
+          .order('created_at', { ascending: false })
+          .limit(8);
+        data = fallback.data;
+      }
 
       return data || [];
     },

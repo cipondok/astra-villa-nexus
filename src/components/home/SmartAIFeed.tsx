@@ -97,7 +97,8 @@ export default function SmartAIFeed({ onPropertyClick, className }: SmartAIFeedP
   } = useQuery({
     queryKey: ['trending-feed'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // Try with approval filter first, fallback without it
+      let { data, error } = await supabase
         .from('properties')
         .select(AI_SELECT)
         .eq('status', 'active')
@@ -105,6 +106,18 @@ export default function SmartAIFeed({ onPropertyClick, className }: SmartAIFeedP
         .not('price', 'is', null)
         .order('created_at', { ascending: false })
         .limit(24);
+      // Fallback: if no approved properties found, try without approval filter
+      if (!error && (!data || data.length === 0)) {
+        const fallback = await supabase
+          .from('properties')
+          .select(AI_SELECT)
+          .eq('status', 'active')
+          .not('price', 'is', null)
+          .order('created_at', { ascending: false })
+          .limit(24);
+        data = fallback.data;
+        error = fallback.error;
+      }
       if (error) throw error;
       return (data ?? []).map((p) => ({
         ...p,
