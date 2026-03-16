@@ -1279,6 +1279,13 @@ export const navigationSections = {
       icon: Building,
       description: "National property supply growth strategy — city prioritization, listing sourcing, and quality control",
       badge: "📦 Supply"
+    },
+    {
+      key: "investor-funnel",
+      label: "Investor Growth Funnel",
+      icon: TrendingUp,
+      description: "Marketing & conversion funnel strategy to attract and retain property investors",
+      badge: "📈 Investors"
     }
   ],
 

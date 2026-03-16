@@ -37,6 +37,7 @@ const LaunchRoadmapDashboard = lazy(() => import('./LaunchRoadmapDashboard'));
 const GrowthExecutionDashboard = lazy(() => import('./GrowthExecutionDashboard'));
 const AgentAcquisitionDashboard = lazy(() => import('./AgentAcquisitionDashboard'));
 const SupplyExpansionDashboard = lazy(() => import('./SupplyExpansionDashboard'));
+const InvestorFunnelDashboard = lazy(() => import('./InvestorFunnelDashboard'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
@@ -296,6 +297,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return (
           <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
             <SupplyExpansionDashboard />
+          </Suspense>
+        );
+      case "investor-funnel":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <InvestorFunnelDashboard />
           </Suspense>
         );
       default:
