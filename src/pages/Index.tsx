@@ -799,10 +799,21 @@ const Index = () => {
                     <FeaturedPropertiesCarousel />
                   </Suspense>
                 </ScrollReveal>
-              </section>
 
-              {/* ── Visual breather ── */}
-              <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mx-auto max-w-5xl" aria-hidden="true" />
+                {/* Contextual CTA: Discovery excitement */}
+                <Suspense fallback={null}>
+                  <SectionDividerCTA
+                    icon={Search}
+                    headline="Discover More Properties"
+                    description="Browse thousands of verified listings across Indonesia"
+                    ctaText="Explore All"
+                    ctaRoute="/properties"
+                    variant="primary"
+                    secondaryText="List Yours"
+                    secondaryRoute="/post-property"
+                  />
+                </Suspense>
+              </section>
 
               {/* ── SECTION 3: AI Opportunity Zone (merged intelligence modules) ── */}
               <section className="py-10 sm:py-14 bg-muted/30" id="ai-opportunity-zone">
