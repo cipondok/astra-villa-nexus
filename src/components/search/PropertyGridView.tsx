@@ -94,9 +94,9 @@ const PropertyGridView = ({
             key={property.id} 
             className={cn(
               "group cursor-pointer bg-card rounded-xl border shadow-sm overflow-hidden will-change-transform",
-              "hover:shadow-md hover:-translate-y-0.5 transition-all duration-250",
+              "hover:shadow-[0_12px_28px_-8px_hsl(var(--primary)/0.12)] hover:-translate-y-1 transition-all duration-300 ease-out",
               isHighOpportunity
-                ? "border-gold-primary/30 ring-1 ring-gold-primary/10"
+                ? "border-primary/30 ring-1 ring-primary/10"
                 : "border-border hover:border-primary/25"
             )}
             onClick={() => onPropertyClick(property)}
