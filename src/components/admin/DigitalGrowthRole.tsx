@@ -14,14 +14,14 @@ import { cn } from "@/lib/utils";
 // ── Role Overview ──
 
 const roleOverview = {
-  title: "Digital Growth Lead",
+  title: "Digital Growth Specialist",
   department: "Growth & Marketing",
-  reportsTo: "Founder / CEO (→ Head of Growth when hired)",
+  reportsTo: "Founder / CEO (→ Digital Growth Lead when hired)",
   location: "Jakarta (hybrid) — remote-friendly with weekly sync",
-  salary: "Rp 15-28M/month + performance bonus (up to 40% of base tied to growth KPIs)",
-  equity: "0.2-0.6% ESOP (4-year vest, 1-year cliff)",
+  salary: "Rp 10-20M/month + performance bonus (up to 35% of base tied to growth KPIs)",
+  equity: "0.1-0.3% ESOP (4-year vest, 1-year cliff)",
   startDate: "Immediate — critical growth hire",
-  missionStatement: "Own and scale the platform's digital acquisition engine — from SEO and social content to paid ads and community virality — transforming traffic into engaged users, active agents, and paying subscribers.",
+  missionStatement: "Execute and scale the platform's digital acquisition engine — coordinating SEO location page rollouts across national administrative levels, driving viral short-form property video content on TikTok/Instagram/YouTube, running performance marketing experiments, and tracking traffic analytics to efficiently acquire buyers, sellers, agents, and investors.",
 };
 
 // ── Core Responsibilities ──
