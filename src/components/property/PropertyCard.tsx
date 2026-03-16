@@ -135,10 +135,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
       e.preventDefault();
       e.stopPropagation();
     }
-    console.log('PropertyCard - Opening detail modal for property:', id);
-    console.log('PropertyCard - Modal state before:', showDetailModal);
     setShowDetailModal(true);
-    console.log('PropertyCard - Modal state after setting to true');
   };
 
   const handleView3D = (e?: React.MouseEvent) => {
