@@ -7,7 +7,7 @@ const ProtectedRoute: React.FC = () => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div role="status" aria-live="polite">Loading...</div>;
   }
 
   return user ? <Outlet /> : <Navigate to="/?auth=true" replace />;

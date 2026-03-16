@@ -48,7 +48,7 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
   const connInfo = getConnectionInfo();
 
   return (
-    <div className="bg-background text-foreground flex items-center justify-center min-h-screen">
+    <div className="bg-background text-foreground flex items-center justify-center min-h-screen" role="status" aria-live="polite" aria-label={displayMessage}>
       <motion.div 
         className="flex flex-col items-center gap-6"
         initial={{ opacity: 0, y: 20 }}
@@ -157,6 +157,8 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
         {/* Progress bar */}
         <motion.div 
           className="w-48 h-1 bg-muted/30 rounded-full overflow-hidden"
+          role="progressbar"
+          aria-label="Loading progress"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}

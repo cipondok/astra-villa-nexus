@@ -118,7 +118,7 @@ const AuthenticatedNavigation = ({
   };
 
   return (
-    <nav className="bg-background/80 backdrop-blur-2xl border-b border-gold-primary/10">
+    <nav className="bg-background/80 backdrop-blur-2xl border-b border-gold-primary/10" aria-label="Main navigation">
       <div className="max-w-screen-2xl mx-auto px-3 sm:px-4 lg:px-8 xl:px-12">
         <div className="flex items-center justify-between h-14 sm:h-16 lg:h-14">
           {/* Logo */}

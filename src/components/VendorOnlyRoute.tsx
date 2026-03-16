@@ -9,7 +9,7 @@ const VendorOnlyRoute: React.FC = () => {
   const { hasRole: isVendor, isLoading: rolesLoading } = useHasRole('vendor');
 
   if (authLoading || rolesLoading) {
-    return <div>Loading...</div>;
+    return <div role="status" aria-live="polite">Loading...</div>;
   }
 
   if (!user || !isVendor) {
