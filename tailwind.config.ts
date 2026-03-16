@@ -126,6 +126,23 @@ const config: Config = {
           4: 'hsl(var(--chart-4))',
           5: 'hsl(var(--chart-5))',
         },
+        // AI Intelligence Signal Colors
+        intel: {
+          blue: 'hsl(var(--intel-blue))',
+          'blue-glow': 'hsl(var(--intel-blue-glow))',
+          success: 'hsl(var(--intel-success))',
+          'success-soft': 'hsl(var(--intel-success-soft))',
+          warning: 'hsl(var(--intel-warning))',
+          danger: 'hsl(var(--intel-danger))',
+          purple: 'hsl(var(--intel-purple))',
+        },
+        heat: {
+          cold: 'hsl(var(--heat-cold))',
+          cool: 'hsl(var(--heat-cool))',
+          warm: 'hsl(var(--heat-warm))',
+          hot: 'hsl(var(--heat-hot))',
+          fire: 'hsl(var(--heat-fire))',
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
