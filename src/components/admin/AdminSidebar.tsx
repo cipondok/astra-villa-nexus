@@ -144,18 +144,22 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                  return (
                    <div key={category} className="relative">
                      {/* Icon Button */}
-                     <button
-                       onClick={() => handleCategoryClick(category)}
-                       onMouseEnter={() => setHoveredCategory(category)}
-                       onMouseLeave={() => setHoveredCategory(null)}
-                       className={cn(
-                         "w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200 group relative",
-                         isOpen
-                           ? "bg-primary text-primary-foreground shadow-md shadow-primary/30 scale-105"
-                           : isActive
-                             ? "bg-primary/15 text-primary"
-                             : "hover:bg-muted/60 text-muted-foreground hover:text-foreground hover:scale-105"
-                       )}
+                      <button
+                        onClick={() => handleCategoryClick(category)}
+                        onMouseEnter={() => setHoveredCategory(category)}
+                        onMouseLeave={() => setHoveredCategory(null)}
+                        aria-label={sectionTitles[category as keyof typeof sectionTitles]}
+                        aria-expanded={isOpen}
+                        aria-haspopup="menu"
+                        role="menuitem"
+                        className={cn(
+                          "w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200 group relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1",
+                          isOpen
+                            ? "bg-primary text-primary-foreground shadow-md shadow-primary/30 scale-105"
+                            : isActive
+                              ? "bg-primary/15 text-primary"
+                              : "hover:bg-muted/60 text-muted-foreground hover:text-foreground hover:scale-105"
+                        )}
                      >
                        <CategoryIcon className="h-4 w-4 transition-transform duration-200" />
 
