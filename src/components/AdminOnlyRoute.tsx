@@ -13,7 +13,7 @@ const AdminOnlyRoute: React.FC = () => {
   const { isAdmin, isLoading: rolesLoading } = useIsAdmin();
 
   if (authLoading || rolesLoading) {
-    return <div>Loading...</div>;
+    return <div role="status" aria-live="polite">Loading...</div>;
   }
 
   if (!user || !isAdmin) {

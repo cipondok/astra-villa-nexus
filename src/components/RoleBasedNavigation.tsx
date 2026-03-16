@@ -101,7 +101,7 @@ const RoleBasedNavigation = ({
   };
 
   return (
-    <nav className="sticky top-0 left-0 right-0 z-50 header-ios border-b border-white/10 backdrop-blur-xl">
+    <nav className="sticky top-0 left-0 right-0 z-50 header-ios border-b border-white/10 backdrop-blur-xl" aria-label="Main navigation">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 xl:px-16">
         <div className="flex justify-between items-center h-12">
           <div className="flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity" onClick={handleHomeClick}>

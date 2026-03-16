@@ -48,7 +48,7 @@ const LoadingPage: React.FC<LoadingPageProps> = ({
   const connInfo = getConnectionInfo();
 
   return (
-    <div className="bg-background text-foreground flex items-center justify-center min-h-screen">
+    <div className="bg-background text-foreground flex items-center justify-center min-h-screen" role="status" aria-live="polite" aria-label={displayMessage}>
       <motion.div 
         className="flex flex-col items-center gap-6"
         initial={{ opacity: 0, y: 20 }}
