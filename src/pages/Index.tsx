@@ -398,13 +398,6 @@ const Index = () => {
   // Note: Removed hardcoded admin email check for security
   // Users are redirected based on their role stored in the user_roles table
 
-  const backgroundStyle = {
-    backgroundImage: `url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1920&q=80')`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundAttachment: isMobile ? 'scroll' : 'fixed',
-  };
 
   // Generate cache key for search results
   const searchCacheKey = useMemo(() => {
