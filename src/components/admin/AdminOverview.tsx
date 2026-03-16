@@ -573,7 +573,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
             <div className="flex items-center gap-2 px-1">
               <div className="h-px flex-1 bg-gradient-to-r from-primary/30 to-transparent" />
               <span className="text-[10px] font-bold uppercase tracking-widest text-primary/70">AI Intelligence</span>
-              <div className="h-px flex-1 bg-gradient-to-l from-primary/30 to-transparent" />
+              {aiAgo && <span className="text-[9px] text-muted-foreground/60">↻ {aiAgo}</span>}
             </div>
 
             {/* Tier 1: Active signal cards — elevated with glow */}
