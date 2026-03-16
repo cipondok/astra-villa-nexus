@@ -1021,7 +1021,7 @@ const Index = () => {
 
                 {/* AI Deal Hunter — Hot deals & silent opportunities */}
                 <ScrollReveal direction="up" delay={0}>
-                <div className="mb-4">
+                <div className="mb-6">
                   <Suspense fallback={<div className="h-40 bg-muted/30 rounded-xl animate-pulse" />}>
                     <DealHunterHero />
                   </Suspense>
