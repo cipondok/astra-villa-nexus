@@ -464,11 +464,11 @@ const InvestorDashboard = () => {
                                 <p className="text-[10px] text-muted-foreground line-clamp-2 mt-0.5">{alert.message}</p>
                                 <div className="flex items-center gap-2 mt-1">
                                   {dealPct != null && (
-                                    <Badge variant="secondary" className="text-[8px] h-3.5 px-1">
+                                    <Badge variant="secondary" className="text-[10px] h-4 px-1.5">
                                       {dealPct.toFixed(0)}% below market
                                     </Badge>
                                   )}
-                                  <span className="text-[9px] text-muted-foreground">
+                                  <span className="text-[10px] text-muted-foreground">
                                     {new Date(alert.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                                   </span>
                                 </div>
