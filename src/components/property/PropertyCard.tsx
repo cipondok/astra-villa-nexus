@@ -118,10 +118,20 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     
     if (diffInHours < 1) return 'Just now';
     if (diffInHours < 24) return `${diffInHours}h ago`;
-    if (diffInDays < 30) return `${diffInDays}d ago`;
+    if (diffInDays < 7) return `${diffInDays}d ago`;
+    if (diffInDays < 30) return `${Math.floor(diffInDays / 7)}w ago`;
     if (diffInDays < 365) return `${Math.floor(diffInDays / 30)}mo ago`;
     return `${Math.floor(diffInDays / 365)}y ago`;
   };
+
+  /** True if listed within last 48 hours */
+  const isFresh = (() => {
+    const d = posted_at || created_at;
+    if (!d) return false;
+    return (Date.now() - new Date(d).getTime()) < 48 * 60 * 60 * 1000;
+  })();
+
+  const photoCount = (images?.length || 0) + (image_urls?.length || 0);
 
   const formatJoiningDate = (dateString: string) => {
     const now = new Date();
