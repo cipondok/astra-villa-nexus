@@ -542,9 +542,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           {/* ═══ ZONE 1: System Health ═══ */}
           <div className="space-y-3">
             <div className="flex items-center gap-2 px-1">
-              <div className="h-px flex-1 bg-gradient-to-r from-chart-1/30 to-transparent" />
-              <span className="text-[10px] font-bold uppercase tracking-widest text-chart-1/70">System Health</span>
-              {healthAgo && <span className="text-[9px] text-muted-foreground/60">↻ {healthAgo}</span>}
+              <div className="h-px flex-1 bg-gradient-to-r from-chart-1/50 to-transparent" />
+              <span className="text-[11px] font-bold uppercase tracking-widest text-chart-1">System Health</span>
+              {healthAgo && <span className="text-[10px] text-muted-foreground">↻ {healthAgo}</span>}
             </div>
 
             {/* System Status */}
