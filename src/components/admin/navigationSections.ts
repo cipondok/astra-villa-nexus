@@ -1408,6 +1408,13 @@ export const navigationSections = {
       icon: Calendar,
       description: "Structured weekly operating framework — time blocks, energy management, anti-burnout rituals",
       badge: "⏱️ Routine"
+    },
+    {
+      key: "pr-launch-strategy",
+      label: "PR Launch Strategy",
+      icon: Newspaper,
+      description: "4-phase PR roadmap — narrative angles, media targets, press release template, influencer amplification",
+      badge: "📰 PR Plan"
     }
   ],
 
