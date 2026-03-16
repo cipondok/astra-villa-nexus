@@ -23,19 +23,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Camera, MessageSquare, ArrowUp, Sparkles, RefreshCw, Star, ChevronDown } from "lucide-react";
 import slideHero1 from "@/assets/home/slide-hero-1.png";
-import slideHero2 from "@/assets/home/slide-hero-2.png";
-import slideHero3 from "@/assets/home/slide-hero-3.png";
-import slideHero4 from "@/assets/home/slide-hero-4.png";
-import slideHero5 from "@/assets/home/slide-hero-5.png";
-import slideHero6 from "@/assets/home/slide-hero-6.png";
-import slideHero7 from "@/assets/home/slide-hero-7.png";
 import { cn } from "@/lib/utils";
 import { Calculator, Crosshair, BarChart3 } from "lucide-react";
 import { SearchErrorBoundary } from "@/components/search/SearchErrorBoundary";
 import { SearchPanelSkeleton } from "@/components/search/SearchSkeleton";
 import { useRetrySearch } from "@/hooks/useRetrySearch";
 import { shareProperty } from "@/utils/shareUtils";
-const GoldSparkleEffect = lazy(() => import("@/components/home/GoldSparkleEffect"));
+// GoldSparkleEffect removed from hero — single-image layout
 import { ImageSearchButton } from "@/components/search/ImageSearchButton";
 import { CommandPalette } from "@/components/ui/CommandPalette";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
@@ -121,12 +115,6 @@ const Index = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [isLoadingPanel, setIsLoadingPanel] = useState(true);
   const [isOnline, setIsOnline] = useState(true);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [parallaxOffset, setParallaxOffset] = useState(0);
-  const prefersReducedMotion = useMemo(() => 
-    typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, 
-  []);
-  const parallaxEnabled = !isMobile && !isTablet && !prefersReducedMotion;
   const { speed: connectionSpeed } = useConnectionSpeed();
   const queryClient = useQueryClient();
 
@@ -312,33 +300,22 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Compute banner images - use admin config or fallback to defaults
-  const bannerImages = heroConfig?.bannerImages && heroConfig.bannerImages.length > 0
-    ? heroConfig.bannerImages
-    : [slideHero1, slideHero2, slideHero3, slideHero4, slideHero5, slideHero6, slideHero7];
-  
-  const slideInterval = (heroConfig?.autoSlideInterval || 5) * 1000;
+  // Hero background image — admin config or default
+  const heroImage = heroConfig?.bannerImages?.[0] || slideHero1;
 
-  // Preload first hero banner for faster LCP
+  // Preload hero image for faster LCP
   useEffect(() => {
-    if (bannerImages.length > 0) {
+    if (heroImage) {
       const link = document.createElement('link');
       link.rel = 'preload';
       link.as = 'image';
-      link.href = bannerImages[0];
+      link.href = heroImage;
       link.fetchPriority = 'high';
       document.head.appendChild(link);
       return () => { document.head.removeChild(link); };
     }
-  }, [bannerImages]);
+  }, [heroImage]);
 
-  // Auto-slide hero banner
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % bannerImages.length);
-    }, slideInterval);
-    return () => clearInterval(interval);
-  }, [bannerImages.length, slideInterval]);
   const [showShortcutsPanel, setShowShortcutsPanel] = useState(false);
   const imageInputRef = useRef<HTMLInputElement>(null);
 
@@ -346,7 +323,6 @@ const Index = () => {
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollButton(window.pageYOffset > 300);
-      if (parallaxEnabled) setParallaxOffset(window.scrollY);
     };
     
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -579,129 +555,97 @@ const Index = () => {
       {/* Content Layer - full width edge-to-edge */}
       <div className="relative z-10 min-h-screen pb-20 md:pb-4">
         
-        {/* Hero Banner + Search Overlay Section */}
+        {/* Hero Section — Single image, left-aligned layout */}
         <SectionErrorBoundary sectionName="Hero" fallbackMinHeight="400px">
-        <section className="relative w-full" id="hero-section">
-          {/* Hero Banner Slider */}
-          <div
-            className="w-full overflow-hidden relative"
-            style={{ 
-              height: `clamp(${heroConfig?.sliderMinHeight || 400}px, 60vw, ${heroConfig?.sliderMaxHeight || 650}px)` 
-            }}
-          >
-          {bannerImages.map((banner, index) => {
-            const isActive = currentSlide === index;
-            const isPriority = index === 0;
-            // Determine slide direction: active slides in from right, exiting slides out to left
-            const isPrev = (currentSlide === 0 ? bannerImages.length - 1 : currentSlide - 1) === index;
-            return (
-              <div
-                key={index}
-                className={cn(
-                  "absolute inset-0 transition-transform duration-[1200ms] ease-[cubic-bezier(0.25,0.46,0.45,0.94)] will-change-transform",
-                  isActive ? "translate-x-0 z-10" : isPrev ? "-translate-x-full z-[9]" : "translate-x-full z-0"
-                )}
-              >
-                <img 
-                  src={banner} 
-                  alt={`Astra Villa - Premium Property ${index + 1}`} 
-                  width={1920}
-                  height={1080}
-                  ref={(el) => { if (el && isPriority) el.setAttribute('fetchpriority', 'high'); }}
-                  loading={isPriority ? 'eager' : 'lazy'}
-                  decoding={isPriority ? 'sync' : 'async'}
-                  sizes="100vw"
-                  className="w-full h-[120%] object-cover will-change-transform transition-transform duration-100 ease-out"
-                  style={{ transform: parallaxEnabled ? `translateY(${-parallaxOffset * 0.3}px)` : undefined }}
-                />
-              </div>
-            );
-          })}
-
-            {/* Gold Sparkle Effect */}
-            <Suspense fallback={null}><GoldSparkleEffect /></Suspense>
-
-
-            {/* Cinematic overlay — theme-aware gradients (lightened for image vibrancy) */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/5 to-background/70 z-[19] pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-r from-background/15 via-transparent to-background/10 z-[19] pointer-events-none" />
-            {/* Shimmer light effect */}
-            <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
-              <div className="absolute -inset-full animate-shimmer-slide bg-gradient-to-r from-transparent via-white/[0.04] to-transparent skew-x-12" />
-            </div>
-            
-            {/* Slide indicators */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex gap-2">
-              {bannerImages.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentSlide(i)}
-                  className={cn(
-                    "h-1.5 rounded-full transition-all duration-500 ease-out",
-                    currentSlide === i 
-                      ? "bg-gold-primary w-10 shadow-[0_0_8px_hsl(var(--gold-primary)/0.5)]" 
-                      : "bg-white/40 w-6 hover:bg-white/60"
-                  )}
-                />
-              ))}
-            </div>
+        <section className="relative w-full overflow-hidden" id="hero-section"
+          style={{ height: 'clamp(500px, 80vh, 820px)', contain: 'layout' }}
+        >
+          {/* Single premium background image with slow zoom */}
+          <div className="absolute inset-0 z-0">
+            <img
+              src={heroImage}
+              alt="Premium property — ASTRAVILLA intelligent real estate"
+              width={1920}
+              height={1080}
+              fetchPriority="high"
+              loading="eager"
+              decoding="sync"
+              sizes="100vw"
+              className="w-full h-[115%] object-cover will-change-transform animate-[heroZoom_25s_ease-in-out_infinite_alternate]"
+            />
           </div>
-          
-          {/* Search Panel Overlay - positioned at bottom of slider */}
-          <div className="absolute inset-x-0 bottom-4 sm:bottom-8 z-30 flex flex-col items-center pointer-events-none max-h-[85vh] overflow-y-auto">
-            <div className="w-full max-w-4xl mx-auto px-3 sm:px-4 pointer-events-auto animate-hero-search-entry">
-              {/* Title */}
-              <div className="text-center mb-4 sm:mb-6">
-                <div className={cn(
-                  "inline-flex items-center gap-2 mb-3",
-                  "px-4 py-1.5 sm:px-6 sm:py-2",
-                  "bg-gold-primary/10 backdrop-blur-md",
-                  "rounded-full border border-gold-primary/25",
-                )}>
-                  <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary signal-glow" />
-                   <span className="text-[10px] sm:text-xs font-semibold text-white uppercase tracking-[0.2em]">
+
+          {/* Cinematic gradient overlays — lighter for image vibrancy */}
+          <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-r from-background/85 via-background/40 to-transparent" />
+          <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-background/80 via-transparent to-background/30" />
+
+          {/* Left-aligned content */}
+          <div className="relative z-10 h-full flex items-center">
+            <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="max-w-2xl space-y-6 sm:space-y-8">
+
+                {/* AI badge — subtle, single instance */}
+                <div
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-gold-primary/20 bg-background/30 backdrop-blur-sm animate-fade-in"
+                  style={{ animationDelay: '0.2s', animationFillMode: 'both' }}
+                >
+                  <Sparkles className="h-3 w-3 text-gold-primary" />
+                  <span className="text-[10px] sm:text-xs font-semibold text-foreground/90 uppercase tracking-[0.15em]">
                     {t('indexPage.aiPoweredSearch')}
                   </span>
-                  <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary signal-glow" />
                 </div>
-                
-                <h1 className="text-2xl sm:text-3xl md:text-5xl font-black leading-[1.1] mb-2 text-white" style={{ textShadow: '0 2px 20px hsl(45 80% 50% / 0.3), 0 4px 8px hsl(0 0% 0% / 0.3)' }}>
-                  {personalizedHeadline?.headline || t('indexPage.findYour')}
-                </h1>
-                <p className="flex text-xs sm:text-sm text-white/80 items-center justify-center gap-2 font-medium">
-                  <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-gold-primary/80" />
-                  {personalizedHeadline?.subtitle || t('indexPage.searchPowered')}
-                </p>
+
+                {/* Headline — strong Playfair hierarchy */}
+                <div className="space-y-3 animate-fade-in" style={{ animationDelay: '0.35s', animationFillMode: 'both' }}>
+                  <h1 className="font-playfair text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.08] text-foreground drop-shadow-sm">
+                    {personalizedHeadline?.headline || t('indexPage.findYour')}
+                  </h1>
+                  <p className="text-sm sm:text-base text-muted-foreground font-medium max-w-lg leading-relaxed">
+                    {personalizedHeadline?.subtitle || t('indexPage.searchPowered')}
+                  </p>
+                </div>
+
+                {/* Search Panel — dominant, left-aligned */}
+                <div className="animate-fade-in" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
+                  <SectionErrorBoundary sectionName="Search" fallbackMinHeight="120px">
+                    <Suspense fallback={<SearchPanelSkeleton />}>
+                      <SearchErrorBoundary>
+                        <AstraSearchPanel
+                          language={language}
+                          onSearch={(searchData) => {
+                            setQuickSearch(searchData.searchQuery || "");
+                            handleQuickSearch(searchData);
+                          }}
+                          onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
+                          resultsCount={hasSearched ? searchResults.length : undefined}
+                        />
+                      </SearchErrorBoundary>
+                    </Suspense>
+                  </SectionErrorBoundary>
+                </div>
+
+                {/* Inline trust metrics — subtle credibility cues */}
+                <div
+                  className="flex items-center gap-4 sm:gap-6 flex-wrap text-muted-foreground animate-fade-in"
+                  style={{ animationDelay: '0.7s', animationFillMode: 'both' }}
+                >
+                  <Suspense fallback={null}>
+                    <SocialProofStrip />
+                  </Suspense>
+                </div>
               </div>
-              
-              {/* Search Panel */}
-              <SectionErrorBoundary sectionName="Search" fallbackMinHeight="120px">
-              <Suspense fallback={<SearchPanelSkeleton />}>
-                <SearchErrorBoundary>
-                  <AstraSearchPanel
-                    language={language}
-                    onSearch={(searchData) => {
-                      setQuickSearch(searchData.searchQuery || "");
-                      handleQuickSearch(searchData);
-                    }}
-                    onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
-                    resultsCount={hasSearched ? searchResults.length : undefined}
-                  />
-                </SearchErrorBoundary>
-              </Suspense>
-              </SectionErrorBoundary>
             </div>
           </div>
 
-          {/* Scroll Down Indicator — hidden on mobile to avoid search panel overlap */}
+          {/* Scroll indicator — below content, gentle pulse */}
           <button
             onClick={() => document.getElementById('featured-section')?.scrollIntoView({ behavior: 'smooth' })}
-            className="hidden sm:flex absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex-col items-center gap-1 text-white/40 hover:text-gold-primary transition-colors duration-300 pointer-events-auto animate-fade-in"
-            style={{ animationDelay: '1.2s', opacity: 0, animationFillMode: 'forwards' }}
+            className="hidden sm:flex absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex-col items-center gap-1 text-muted-foreground/50 hover:text-gold-primary transition-colors duration-300 animate-fade-in"
+            style={{ animationDelay: '1s', animationFillMode: 'both' }}
             aria-label="Scroll to content"
           >
             <span className="text-[10px] uppercase tracking-[0.3em] font-medium">{t('indexPage.explore')}</span>
-            <ChevronDown className="h-4 w-4 animate-[pulse_2s_ease-in-out_infinite]" />
+            <ChevronDown className="h-4 w-4 animate-[pulse_2.5s_ease-in-out_infinite]" />
           </button>
         </section>
         </SectionErrorBoundary>
@@ -715,16 +659,10 @@ const Index = () => {
         )}
 
         {/* Gold gradient divider between hero and content */}
-        <div className="relative h-16 sm:h-20 -mt-1 overflow-hidden" aria-hidden="true">
+        <div className="relative h-12 sm:h-16 -mt-1 overflow-hidden" aria-hidden="true">
           <div className="absolute inset-0 bg-gradient-to-b from-background/0 via-background to-background" />
-          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-gold-primary/30 dark:via-gold-primary/40 to-transparent" />
-          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-8 bg-gradient-to-r from-transparent via-gold-primary/5 dark:via-gold-primary/10 to-transparent blur-xl" />
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-gold-primary/20 to-transparent" />
         </div>
-
-        {/* Social Proof Trust Strip */}
-        <Suspense fallback={null}>
-          <SocialProofStrip />
-        </Suspense>
 
         {/* Featured Properties Carousel */}
         <ScrollReveal direction="left" delay={100}>
