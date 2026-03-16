@@ -299,6 +299,12 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
 
   const maxTraffic = useMemo(() => Math.max(...(hourlyTraffic?.map(h => h.count) || [1]), 1), [hourlyTraffic]);
 
+  const statsAgo = useRelativeTime(statsUpdatedAt);
+  const healthAgo = useRelativeTime(healthUpdatedAt);
+  const activityAgo = useRelativeTime(activityUpdatedAt);
+  const trafficAgo = useRelativeTime(trafficUpdatedAt);
+  const aiAgo = useRelativeTime(aiUpdatedAt);
+
   return (
     <div className="space-y-3 animate-in fade-in duration-300">
       {/* Header */}
