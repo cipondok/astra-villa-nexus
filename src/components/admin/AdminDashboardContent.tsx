@@ -103,6 +103,7 @@ import {
   AHUCompanyChecker,
   ConciergeServiceManagement,
   SamplePropertyGenerator,
+  BulkImageGenerator,
   VerificationSystemSettings,
   AuthRegistrationSettings,
   NearbyFacilitiesSettings,
