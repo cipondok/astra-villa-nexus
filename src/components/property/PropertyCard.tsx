@@ -369,7 +369,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           property={convertedProperty}
           isOpen={showDetailModal}
           onClose={() => {
-            console.log('PropertyCard - Closing detail modal');
             setShowDetailModal(false);
           }}
           language="en"
