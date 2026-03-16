@@ -79,6 +79,7 @@ const MobileFloatingCTA = lazy(() => import("@/components/home/MobileFloatingCTA
 const TrustFooterStrip = lazy(() => import("@/components/home/TrustFooterStrip"));
 const WelcomeBackStrip = lazy(() => import("@/components/home/WelcomeBackStrip"));
 const RecentlyViewedStrip = lazy(() => import("@/components/home/RecentlyViewedStrip"));
+const ReferralInviteStrip = lazy(() => import("@/components/home/ReferralInviteStrip"));
 const PWAInstallPrompt = lazy(() => import("@/components/pwa/PWAInstallPrompt"));
 
 type ViewMode = 'list' | 'grid' | 'map';
