@@ -66,7 +66,7 @@ const MarketplaceServices = lazy(() => import("@/components/home/MarketplaceServ
 const PartnerLogosMarquee = lazy(() => import("@/components/home/PartnerLogosMarquee"));
 const TrendingSearchesWidget = lazy(() => import("@/components/home/TrendingSearchesWidget").then(m => ({ default: m.TrendingSearchesWidget })));
 const InvestorPathSelector = lazy(() => import("@/components/home/InvestorPathSelector"));
-const PropertySlideshow = lazy(() => import("@/components/PropertySlideshow"));
+// PropertySlideshow removed — not used in restructured flow
 const FeaturedPropertiesCarousel = lazy(() => import("@/components/home/FeaturedPropertiesCarousel"));
 const SmartCollectionsShowcase = lazy(() => import("@/components/home/SmartCollectionsV2"));
 const TrendingROIDeals = lazy(() => import("@/components/home/TrendingROIDeals"));
