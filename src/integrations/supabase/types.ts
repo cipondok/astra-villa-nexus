@@ -33281,6 +33281,15 @@ export type Database = {
         Returns: string
       }
       generate_otp: { Args: never; Returns: string }
+      generate_seo_location_blueprint: {
+        Args: {
+          p_city?: string
+          p_district?: string
+          p_province?: string
+          p_village?: string
+        }
+        Returns: Json
+      }
       generate_transaction_number: { Args: never; Returns: string }
       get_admin_alerts_count_by_types: {
         Args: { type_patterns: string[] }
