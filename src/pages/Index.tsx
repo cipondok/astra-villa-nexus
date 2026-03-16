@@ -1188,7 +1188,7 @@ const Index = () => {
             />
           </Suspense>
         )}
-      </div>
+      </main>
     </div>
   );
 
