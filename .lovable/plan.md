@@ -1,70 +1,54 @@
 
-# ASTRA Villa — Platform Architecture Analysis & Roadmap
+# Modern Redesign: `/properties` Page
 
-## Status: 🔄 IN PROGRESS
+## Current State
+The page is functional but uses a dense, utilitarian layout with small text, cramped cards, and a basic filter bar. It lacks the premium "Luxury Intelligence" brand feel used elsewhere in ASTRAVILLA.
 
-## Current State Assessment (March 2026)
+## Plan
 
-### Scale
-| Metric | Count |
-|--------|-------|
-| Pages | 120+ |
-| Components | 200+ directories |
-| Hooks | 230+ |
-| Edge Functions | 18 (consolidated from 82) |
-| Database Tables | 450+ |
-| RLS Policies | 1,000+ |
+### 1. Hero Search Section
+Replace the flat search bar with a modern hero-style header:
+- Large heading with Playfair Display font: "Discover Properties"
+- Frosted glass search bar with larger input (h-11), rounded-2xl
+- Listing type tabs as pill-shaped toggle buttons with smooth transitions
+- Result count displayed prominently below
 
-### Three-Layer Architecture ✅
-| Layer | Key Features | Status |
-|-------|-------------|--------|
-| **Public Platform** | Property browse, search, map, detail pages, AI chat, mortgage tools | ✅ Mature |
-| **Investor Intelligence** | ROI forecasts, deal finder, portfolio builder, market trends, location intel | ✅ Mature |
-| **Admin AI Command Center** | Job queue, SEO engine, valuations, health monitor, KPI alerts | ✅ Mature |
+### 2. Filter Panel Redesign
+- Replace collapsible filter with a sticky sidebar on desktop (lg+), slide-up sheet on mobile
+- Filter sections with clean labels, proper spacing, and rounded select inputs
+- Active filter pills styled with `bg-primary/10 border-primary/20` and smooth remove animations
+- Price range slider with real-time formatted values displayed above
 
-### Edge Function Architecture ✅
-| Router | Modes |
-|--------|-------|
-| `core-engine` | 25+ modes (investment_score, valuation, health, diagnostics, map_search) |
-| `ai-engine` | 25+ modes (descriptions, NLP, recommendations, market reports) |
-| `deal-engine` | deal_finder, alerts, negotiation, pricing, forecasts |
-| `ai-assistant` | SSE streaming chatbot, NLP search, investment advisor |
-| `notification-engine` | Email, push, campaigns |
-| `payment-engine` | Midtrans, PayPal, invoices, subscriptions |
-| `vendor-engine` | Vendor services, validation |
+### 3. Property Cards Modernization
+**Grid cards:**
+- Increase image height to `h-36 sm:h-44` with `img-hover-zoom` on hover
+- `card-hover-lift` animation (existing CSS token)
+- Rounded-xl with subtle border, `will-change-transform`
+- Gradient overlay on image bottom for listing badge readability
+- Larger title (`text-sm font-semibold`), price (`text-base font-bold`)
+- Spec chips (bed/bath/area) as mini rounded badges instead of plain text
+- Heart button with filled state animation
 
-### AI Automation Systems ✅
-- SEO: Daily audits (3AM UTC), 6-hour auto-optimizer, property_seo_analysis tracking
-- Jobs: ai_jobs queue with claim_next_job() SKIP LOCKED, stall recovery, retry logic
-- Valuations: property_valuations with auto-recalculation
-- ROI: property_roi_forecast with 5-year projections
-- Autonomous Agent: 6-hour market scans for opportunity detection
+**List cards:**
+- Horizontal layout with larger image (w-48), more spacious padding
+- Two-line description preview
 
----
+### 4. Results Toolbar
+- Sticky toolbar below header with result count (bold number), sort dropdown with icons, view toggle
+- Smooth fade-in animation on results load
 
-## Identified Gaps & Improvements
+### 5. Skeleton & Empty States
+- Modern skeleton with shimmer animation (not plain pulse)
+- Empty state with illustration-style icon, suggested actions, and trending properties link
 
-### 🔴 Critical Performance
-1. **Map viewport debouncing** — `moveend` fires on every pan; needs 300ms debounce ✅ FIXED
-2. **Spatial indexes** — Need composite indexes on (latitude, longitude, status) ✅ FIXED
-3. **Platform health aggregation** — Real AI system status on admin overview ✅ FIXED (prev iteration)
+### 6. Layout & Responsive
+- `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4` with `gap-4 sm:gap-5`
+- Proper container padding following MobileFirstLayout patterns
+- Staggered card entrance animations (existing framer-motion pattern)
 
-### 🟡 Architecture Improvements
-4. **Unified health hook** — Single hook aggregating all AI subsystem health ✅ FIXED
-5. **Query deduplication** — MapBounds type duplicated across useMapSearch/useMapProperties
-6. **Large file refactoring** — PropertyDetail.tsx (1544 lines), Index.tsx (1199 lines) need splitting
-
-### 🟢 Future Expansion Ready
-- AI deal finder ✅ Exists (/deal-finder)
-- Predictive market analytics ✅ Exists (/market-trends, /price-prediction)
-- AI recommendation engine ✅ Exists (ai-match-engine-v2)
-- Location intelligence ✅ Exists (/location-intelligence)
-- Knowledge graph ✅ Hook exists (useKnowledgeGraph)
-
-### Recommended Next Steps
-1. Add database indexes for map queries at scale
-2. Debounce map viewport changes
-3. Create unified platform health dashboard
-4. Split PropertyDetail.tsx into sub-components
-5. Add API response caching headers to edge functions
-6. Implement property search result caching with stale-while-revalidate
+### Technical Approach
+- Single file edit: `src/pages/Properties.tsx` (all UI is self-contained here)
+- Reuse existing CSS tokens: `card-hover-lift`, `img-hover-zoom`, `glass-card`
+- Reuse existing components: Badge, Button, Select, Slider, Card
+- Keep all existing filter/sort/search logic unchanged
+- Maintain Supabase query and `useMemo` filtering as-is
