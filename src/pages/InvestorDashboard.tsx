@@ -154,23 +154,29 @@ const InvestorDashboard = () => {
         <motion.div {...fadeIn} transition={{ delay: 0.05 }}>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { label: 'Total Invested', value: totalInvested, icon: DollarSign, format: formatIDR, sub: `${p?.total_properties || 0} properties` },
-              { label: 'Projected Value (5Y)', value: projectedValue, icon: TrendingUp, format: formatIDR, sub: projectedValue > totalInvested ? `+${formatShort(projectedValue - totalInvested)}` : '—' },
-              { label: 'Blended ROI', value: blendedROI, icon: Target, format: (v: number) => `${v.toFixed(1)}%`, sub: '5-year average' },
-              { label: 'Annual Rental Income', value: annualRentalIncome, icon: Home, format: formatIDR, sub: 'Estimated gross' },
+              { label: 'Total Invested', value: totalInvested, icon: DollarSign, format: formatIDR, sub: `${p?.total_properties || 0} properties`, trend: null },
+              { label: 'Projected Value (5Y)', value: projectedValue, icon: TrendingUp, format: formatIDR, sub: projectedValue > totalInvested ? `+${formatShort(projectedValue - totalInvested)}` : '—', trend: projectedValue > totalInvested ? 'up' as const : null },
+              { label: 'Blended ROI', value: blendedROI, icon: Target, format: (v: number) => `${v.toFixed(1)}%`, sub: '5-year average', trend: blendedROI > 0 ? 'up' as const : blendedROI < 0 ? 'down' as const : null },
+              { label: 'Annual Rental Income', value: annualRentalIncome, icon: Home, format: formatIDR, sub: 'Estimated gross', trend: null },
             ].map((kpi, i) => (
-              <Card key={i} className="bg-card/60 backdrop-blur-xl border-border/50 hover:border-primary/30 transition-all">
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                    <kpi.icon className="w-4 h-4" />
-                    <span className="text-xs">{kpi.label}</span>
+              <Card key={i} className="group bg-card/60 backdrop-blur-xl border-border/50 hover:border-primary/30 shadow-sm hover:shadow-md transition-all will-change-transform">
+                <CardContent className="p-4 sm:p-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <div className="p-1.5 rounded-lg bg-primary/10 group-hover:bg-primary/15 transition-colors">
+                        <kpi.icon className="w-4 h-4 text-primary" />
+                      </div>
+                      <span className="text-xs font-medium">{kpi.label}</span>
+                    </div>
+                    {kpi.trend === 'up' && <ArrowUpRight className="w-4 h-4 text-chart-1" />}
+                    {kpi.trend === 'down' && <TrendingUp className="w-4 h-4 text-destructive rotate-180" />}
                   </div>
                   {portfolio.isLoading ? (
-                    <Skeleton className="h-7 w-32" />
+                    <Skeleton className="h-8 w-32" />
                   ) : (
                     <>
-                      <p className="text-xl font-bold text-foreground">{kpi.format(kpi.value)}</p>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">{kpi.sub}</p>
+                      <p className="text-2xl font-black text-foreground drop-shadow-sm tracking-tight">{kpi.format(kpi.value)}</p>
+                      <p className="text-[10px] text-muted-foreground/80 mt-1 font-medium">{kpi.sub}</p>
                     </>
                   )}
                 </CardContent>
