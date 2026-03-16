@@ -861,7 +861,7 @@ const Index = () => {
               </Suspense>
 
               {/* ── SECTION 3: AI Opportunity Zone (merged intelligence modules) ── */}
-              <section className="py-10 sm:py-14 bg-muted/30" id="ai-opportunity-zone" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 800px' }}>
+              <section className="py-6 sm:py-10 bg-muted/30" id="ai-opportunity-zone" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 800px' }}>
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
                   {/* Zone header */}
                   <ScrollReveal direction="up" delay={0}>
