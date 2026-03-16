@@ -676,7 +676,7 @@ const Index = () => {
                   <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary animate-pulse" />
                 </div>
                 
-                <h2 className="text-2xl sm:text-3xl md:text-5xl font-black leading-[1.1] mb-2 text-white" style={{ textShadow: '0 2px 20px hsl(45 80% 50% / 0.3), 0 4px 8px hsl(0 0% 0% / 0.3)' }}>
+                <h1 className="text-2xl sm:text-3xl md:text-5xl font-black leading-[1.1] mb-2 text-white" style={{ textShadow: '0 2px 20px hsl(45 80% 50% / 0.3), 0 4px 8px hsl(0 0% 0% / 0.3)' }}>
                   {personalizedHeadline?.headline || t('indexPage.findYour')}
                 </h2>
                 <p className="flex text-xs sm:text-sm text-white/80 items-center justify-center gap-2 font-medium">
