@@ -44,6 +44,7 @@ const BrandAuthorityDashboard = lazy(() => import('./BrandAuthorityDashboard'));
 const MonetizationStrategyDashboard = lazy(() => import('./MonetizationStrategyDashboard'));
 const InvestorPitchDashboard = lazy(() => import('./InvestorPitchDashboard'));
 const InvestorCommunityDashboard = lazy(() => import('./InvestorCommunityDashboard'));
+const GeoExpansionDashboard = lazy(() => import('./GeoExpansionDashboard'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
