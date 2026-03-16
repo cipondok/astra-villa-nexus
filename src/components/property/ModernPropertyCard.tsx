@@ -289,7 +289,7 @@ const ModernPropertyCard = ({
               className="w-5 h-5 rounded-full object-cover ring-1 ring-primary/20"
               />
             ) : (
-              <div className="w-5 h-5 rounded-full bg-gradient-to-br from-gold-primary to-gold-primary/60 flex items-center justify-center">
+              <div className="w-5 h-5 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
                 {ownerInfo.type === 'company' ? (
                   <Building2 className="h-2.5 w-2.5 text-background" />
                 ) : (
