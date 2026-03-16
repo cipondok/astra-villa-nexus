@@ -96,7 +96,8 @@ import {
   Compass,
   PenTool,
   Gavel,
-  ScanEye
+  ScanEye,
+  Handshake
 } from "lucide-react";
 
 export interface NavigationSection {
