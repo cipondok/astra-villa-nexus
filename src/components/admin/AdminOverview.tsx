@@ -395,7 +395,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           </Card>
 
           {/* Quick Nav */}
-          <Card className="border-border/30">
+          <Card className="border-border bg-card">
             <CardContent className="p-3 grid grid-cols-3 gap-2">
               {[
                 { icon: Users, label: "Users", id: "user-management" },
