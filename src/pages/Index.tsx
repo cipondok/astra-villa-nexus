@@ -900,6 +900,10 @@ const Index = () => {
                       <SmartRecommendations limit={6} className="shadow-sm" />
                     </Suspense>
                   </ScrollReveal>
+                  {/* Continuous discovery trigger */}
+                  <Suspense fallback={null}>
+                    <DiscoveryTrigger className="mt-4" />
+                  </Suspense>
                 </div>
 
                 {/* Contextual CTA after AI zone */}
