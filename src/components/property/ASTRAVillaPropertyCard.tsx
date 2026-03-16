@@ -184,7 +184,7 @@ const ASTRAVillaPropertyCard = ({
       </PropertyImageCarousel>
 
       {/* Content Section */}
-      <div className="p-2 sm:p-3 space-y-2">
+      <div className="p-2.5 sm:p-3 space-y-1.5">
         {!isImageLoaded ? (
           <>
             <div className="h-8 w-full rounded-lg bg-muted animate-pulse" />
