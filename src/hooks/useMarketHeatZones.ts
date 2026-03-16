@@ -93,7 +93,7 @@ export function useComputeHeatClusters() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (minProperties = 3) => {
+    mutationFn: async (minProperties: number = 3) => {
       const { data, error } = await supabase.rpc(
         'compute_market_heat_clusters' as any,
         { p_min_properties: minProperties }
