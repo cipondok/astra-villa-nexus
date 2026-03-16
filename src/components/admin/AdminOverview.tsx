@@ -222,7 +222,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
   });
 
   // Fetch recent activity
-  const { data: recentActivity } = useQuery({
+  const { data: recentActivity, dataUpdatedAt: activityUpdatedAt } = useQuery({
     queryKey: ['recent-activity-logs'],
     queryFn: async () => {
       try {
