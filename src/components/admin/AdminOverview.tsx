@@ -628,8 +628,8 @@ const HealthBar = React.memo(function HealthBar({ label, value, icon: Icon, isSt
 }) {
   const getColor = (val: number) => {
     if (isStatus) return val === 100 ? 'bg-chart-1' : 'bg-chart-3';
-    if (val < 50) return 'bg-chart-1';
-    if (val < 80) return 'bg-chart-3';
+    if (val >= 70) return 'bg-chart-1';
+    if (val >= 40) return 'bg-chart-3';
     return 'bg-destructive';
   };
 
