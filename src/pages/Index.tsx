@@ -82,6 +82,9 @@ const RecentlyViewedStrip = lazy(() => import("@/components/home/RecentlyViewedS
 const ReferralInviteStrip = lazy(() => import("@/components/home/ReferralInviteStrip"));
 const HotspotAlertBanner = lazy(() => import("@/components/ai/HotspotAlertBanner"));
 const DiscoveryTrigger = lazy(() => import("@/components/ai/DiscoveryTrigger"));
+const PredictiveSearchCanvas = lazy(() => import("@/components/ai/PredictiveSearchCanvas"));
+const OpportunityRadar = lazy(() => import("@/components/ai/OpportunityRadar"));
+const AIJourneyGuide = lazy(() => import("@/components/ai/AIJourneyGuide"));
 const PWAInstallPrompt = lazy(() => import("@/components/pwa/PWAInstallPrompt"));
 
 type ViewMode = 'list' | 'grid' | 'map';
@@ -864,6 +867,15 @@ const Index = () => {
                     </div>
                   </ScrollReveal>
 
+                  {/* Predictive Search Canvas */}
+                  <ScrollReveal direction="up" delay={0}>
+                    <div className="mb-8">
+                      <Suspense fallback={null}>
+                        <PredictiveSearchCanvas />
+                      </Suspense>
+                    </div>
+                  </ScrollReveal>
+
                   {/* AI Behavior Pattern Banner */}
                   <Suspense fallback={null}>
                     <div className="mb-6">
@@ -890,6 +902,20 @@ const Index = () => {
                     <ScrollReveal direction="up" delay={100}>
                       <Suspense fallback={<div className="h-48 bg-muted/30 rounded-xl animate-pulse" />}>
                         <TrendingROIDeals onPropertyClick={handlePropertyClick} />
+                      </Suspense>
+                    </ScrollReveal>
+                  </div>
+
+                  {/* Opportunity Radar + AI Journey Guide — side by side */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <ScrollReveal direction="up" delay={0}>
+                      <Suspense fallback={<div className="h-64 bg-muted/30 rounded-xl animate-pulse" />}>
+                        <OpportunityRadar />
+                      </Suspense>
+                    </ScrollReveal>
+                    <ScrollReveal direction="up" delay={100}>
+                      <Suspense fallback={<div className="h-64 bg-muted/30 rounded-xl animate-pulse" />}>
+                        <AIJourneyGuide />
                       </Suspense>
                     </ScrollReveal>
                   </div>
