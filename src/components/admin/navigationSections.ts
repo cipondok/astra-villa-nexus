@@ -97,7 +97,8 @@ import {
   PenTool,
   Gavel,
   ScanEye,
-  Handshake
+  Handshake,
+  Presentation
 } from "lucide-react";
 
 export interface NavigationSection {
