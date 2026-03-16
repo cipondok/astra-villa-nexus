@@ -806,7 +806,7 @@ const Index = () => {
             ══════════════════════════════════════════════════ */
             <>
               {/* ── SECTION 2: Featured Properties ── */}
-              <section id="featured-section" className="py-8 sm:py-12">
+              <section id="featured-section" className="py-5 sm:py-8">
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={
                     <div className="py-6 max-w-7xl mx-auto px-3 sm:px-4">
@@ -861,11 +861,11 @@ const Index = () => {
               </Suspense>
 
               {/* ── SECTION 3: AI Opportunity Zone (merged intelligence modules) ── */}
-              <section className="py-10 sm:py-14 bg-muted/30" id="ai-opportunity-zone" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 800px' }}>
+              <section className="py-6 sm:py-10 bg-muted/30" id="ai-opportunity-zone" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 800px' }}>
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
                   {/* Zone header */}
                   <ScrollReveal direction="up" delay={0}>
-                    <div className="text-center mb-8 sm:mb-10">
+                    <div className="text-center mb-5 sm:mb-7">
                       <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-gold-primary/15 bg-gold-primary/5 mb-3">
                         <Sparkles className="h-3 w-3 text-gold-primary" />
                         <span className="text-[10px] sm:text-xs font-semibold text-gold-primary uppercase tracking-[0.15em]">AI Intelligence</span>
@@ -962,7 +962,7 @@ const Index = () => {
               </section>
 
               {/* ── SECTION 4: Smart Collections ── */}
-              <section className="py-10 sm:py-14" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 400px' }}>
+              <section className="py-6 sm:py-10" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 400px' }}>
                 <ScrollReveal direction="up" delay={0}>
                   <LazyRender minHeight="280px" rootMargin="400px" fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto px-3 sm:px-4" />}>
                     <Suspense fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto px-3 sm:px-4" />}>
@@ -984,7 +984,7 @@ const Index = () => {
               </section>
 
               {/* ── SECTION 5: Investor Path Selector ── */}
-              <section className="py-8 sm:py-12 bg-muted/20">
+              <section className="py-5 sm:py-8 bg-muted/20">
                 <ScrollReveal direction="up" delay={0}>
                   <LazyRender minHeight="64px" rootMargin="400px" fallback={
                     <div className="flex gap-3 justify-center py-3"><div className="animate-pulse h-16 w-36 bg-muted rounded-lg" /><div className="animate-pulse h-16 w-36 bg-muted rounded-lg" /><div className="animate-pulse h-16 w-36 bg-muted rounded-lg" /></div>
@@ -995,7 +995,7 @@ const Index = () => {
               </section>
 
               {/* ── SECTION 6: AI Tools Preview ── */}
-              <section className="py-8 sm:py-10">
+              <section className="py-5 sm:py-8">
                 <ScrollReveal direction="up" delay={0}>
                   <div className="max-w-7xl mx-auto">
                     <LazyRender minHeight="96px" rootMargin="400px" fallback={
@@ -1022,7 +1022,7 @@ const Index = () => {
               <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mx-auto max-w-5xl" aria-hidden="true" />
 
               {/* ── SECTION 7: Properties for Sale & Rent ── */}
-              <section className="py-10 sm:py-14 bg-muted/20" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 600px' }}>
+              <section className="py-6 sm:py-10 bg-muted/20" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 600px' }}>
                 <div className="space-y-8">
                   <ScrollReveal direction="up" delay={0}>
                     <div id="sale-section">
@@ -1057,7 +1057,7 @@ const Index = () => {
               </section>
 
               {/* ── SECTION 8: Marketplace Services ── */}
-              <section className="py-10 sm:py-14" id="marketplace-services-section" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 300px' }}>
+              <section className="py-6 sm:py-10" id="marketplace-services-section" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 300px' }}>
                 <ScrollReveal direction="up" delay={0}>
                   <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
                     <MarketplaceServices />
@@ -1085,7 +1085,7 @@ const Index = () => {
               </Suspense>
 
               {/* ── SECTION 10: Final Conversion CTA ── */}
-              <section className="py-10 sm:py-14">
+              <section className="py-6 sm:py-10">
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={<div className="animate-pulse h-40 bg-muted rounded-xl max-w-5xl mx-auto" />}>
                     <EarlyInvestmentCTA />

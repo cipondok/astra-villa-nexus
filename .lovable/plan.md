@@ -1,33 +1,70 @@
 
+# ASTRA Villa — Platform Architecture Analysis & Roadmap
 
-## Main Page Status Assessment
+## Status: 🔄 IN PROGRESS
 
-The homepage is currently in good shape. All 10+ sections are loading data and rendering correctly:
+## Current State Assessment (March 2026)
 
-- **Hero**: Search bar, stats (438K listings, 11 cities, 34 provinces), background imagery all working
-- **Featured Properties**: Horizontal carousel with property cards showing prices, types, and locations
-- **Hot Streak Deals**: Undervalued deals with scores and discount percentages loading correctly
-- **Opportunity Radar + AI Journey**: Both panels functional with market signals
-- **Smart Collections**: Properties loading (fallback working)
-- **Investor Path Selector**: WNI/Foreign investor cards present
-- **AI Tools Grid**: 7 tools displayed
-- **Partners + Trust**: Bank logos and verification badges showing
-- **Early Investment Opportunities**: Off-plan projects with ROI data
-- **Footer**: Slim icon dock style with social links
+### Scale
+| Metric | Count |
+|--------|-------|
+| Pages | 120+ |
+| Components | 200+ directories |
+| Hooks | 230+ |
+| Edge Functions | 18 (consolidated from 82) |
+| Database Tables | 450+ |
+| RLS Policies | 1,000+ |
 
-### No critical fixes needed right now.
+### Three-Layer Architecture ✅
+| Layer | Key Features | Status |
+|-------|-------------|--------|
+| **Public Platform** | Property browse, search, map, detail pages, AI chat, mortgage tools | ✅ Mature |
+| **Investor Intelligence** | ROI forecasts, deal finder, portfolio builder, market trends, location intel | ✅ Mature |
+| **Admin AI Command Center** | Job queue, SEO engine, valuations, health monitor, KPI alerts | ✅ Mature |
 
-If you'd like to improve further, here are potential next steps ranked by impact:
+### Edge Function Architecture ✅
+| Router | Modes |
+|--------|-------|
+| `core-engine` | 25+ modes (investment_score, valuation, health, diagnostics, map_search) |
+| `ai-engine` | 25+ modes (descriptions, NLP, recommendations, market reports) |
+| `deal-engine` | deal_finder, alerts, negotiation, pricing, forecasts |
+| `ai-assistant` | SSE streaming chatbot, NLP search, investment advisor |
+| `notification-engine` | Email, push, campaigns |
+| `payment-engine` | Midtrans, PayPal, invoices, subscriptions |
+| `vendor-engine` | Vendor services, validation |
 
-1. **Property card consistency** — The Featured Properties cards and Hot Streak cards have different visual styles (different image overlays, badge styles, info density). Unifying them would create a more polished feel.
+### AI Automation Systems ✅
+- SEO: Daily audits (3AM UTC), 6-hour auto-optimizer, property_seo_analysis tracking
+- Jobs: ai_jobs queue with claim_next_job() SKIP LOCKED, stall recovery, retry logic
+- Valuations: property_valuations with auto-recalculation
+- ROI: property_roi_forecast with 5-year projections
+- Autonomous Agent: 6-hour market scans for opportunity detection
 
-2. **Empty "0 New Today" stat** — The hero shows "0 New Today" which looks stale. Could hide this when zero or show a different metric.
+---
 
-3. **Large whitespace gaps** — There are noticeable empty spaces between some sections (e.g., between the property carousel and Discover More CTA, and between Trust section and Early Investment). Tightening spacing would improve visual flow.
+## Identified Gaps & Improvements
 
-4. **Footer icon labels** — The footer uses unlabeled icons which may be hard to navigate. Adding tiny labels or tooltips would improve usability.
+### 🔴 Critical Performance
+1. **Map viewport debouncing** — `moveend` fires on every pan; needs 300ms debounce ✅ FIXED
+2. **Spatial indexes** — Need composite indexes on (latitude, longitude, status) ✅ FIXED
+3. **Platform health aggregation** — Real AI system status on admin overview ✅ FIXED (prev iteration)
 
-5. **Dark mode toggle** — The moon icon (bottom-left) could be better positioned or integrated into the navbar.
+### 🟡 Architecture Improvements
+4. **Unified health hook** — Single hook aggregating all AI subsystem health ✅ FIXED
+5. **Query deduplication** — MapBounds type duplicated across useMapSearch/useMapProperties
+6. **Large file refactoring** — PropertyDetail.tsx (1544 lines), Index.tsx (1199 lines) need splitting
 
-Let me know which of these you'd like to tackle, or if you have a different area in mind.
+### 🟢 Future Expansion Ready
+- AI deal finder ✅ Exists (/deal-finder)
+- Predictive market analytics ✅ Exists (/market-trends, /price-prediction)
+- AI recommendation engine ✅ Exists (ai-match-engine-v2)
+- Location intelligence ✅ Exists (/location-intelligence)
+- Knowledge graph ✅ Hook exists (useKnowledgeGraph)
 
+### Recommended Next Steps
+1. Add database indexes for map queries at scale
+2. Debounce map viewport changes
+3. Create unified platform health dashboard
+4. Split PropertyDetail.tsx into sub-components
+5. Add API response caching headers to edge functions
+6. Implement property search result caching with stale-while-revalidate
