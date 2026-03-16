@@ -324,6 +324,32 @@ const AICommandCenter = () => {
     setAiOptRunning(false);
   };
 
+  // ─── Error State ───────────────────────────────────────────────────────
+  if (isError && !data) {
+    return (
+      <div className="flex gap-4 min-h-[600px]">
+        <div className="flex-1 flex items-center justify-center">
+          <Card className="border-destructive/30 bg-destructive/5 max-w-md w-full">
+            <CardContent className="p-8 text-center space-y-4">
+              <div className="mx-auto w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center">
+                <AlertTriangle className="h-6 w-6 text-destructive" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-foreground mb-1">Unable to Load AI Command Center</h3>
+                <p className="text-sm text-muted-foreground">
+                  Some data queries failed. This may be due to network issues or database connectivity.
+                </p>
+              </div>
+              <Button onClick={() => refetch()} className="gap-2">
+                <RefreshCw className="h-4 w-4" /> Retry
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   // ─── Loading State ────────────────────────────────────────────────────────
   if (isLoading || !data) {
     return (
