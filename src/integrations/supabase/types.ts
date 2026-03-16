@@ -33800,6 +33800,7 @@ export type Database = {
         Returns: undefined
       }
       aggregate_filter_analytics: { Args: never; Returns: undefined }
+      aggregate_market_clusters: { Args: never; Returns: number }
       analyze_portfolio_strategy: { Args: { p_user_id: string }; Returns: Json }
       award_badge: {
         Args: { p_badge_key: string; p_user_id: string }
@@ -33889,6 +33890,7 @@ export type Database = {
         Args: { p_property_id: string }
         Returns: number
       }
+      compute_portfolio_snapshots: { Args: never; Returns: number }
       compute_price_predictions: { Args: { p_limit?: number }; Returns: Json }
       compute_risk_levels: { Args: { p_limit?: number }; Returns: Json }
       count_admin_alerts: { Args: never; Returns: number }
@@ -34218,6 +34220,16 @@ export type Database = {
       get_geo_expansion_intelligence: { Args: never; Returns: Json }
       get_heatmap_dataset: { Args: { p_min_score?: number }; Returns: Json }
       get_image_stats: { Args: never; Returns: Json }
+      get_intelligence_worker_status: {
+        Args: never
+        Returns: {
+          last_duration_ms: number
+          last_rows_affected: number
+          last_run_at: string
+          last_status: string
+          worker_name: string
+        }[]
+      }
       get_investment_reasoning: {
         Args: { p_property_id: string }
         Returns: Json
@@ -35003,6 +35015,10 @@ export type Database = {
         Args: { p_limit?: number }
         Returns: Json
       }
+      recalc_opportunity_scores: {
+        Args: { p_batch_size?: number }
+        Returns: number
+      }
       record_profile_change: {
         Args: { changed_fields: string[]; user_id: string }
         Returns: Json
@@ -35022,6 +35038,7 @@ export type Database = {
         Args: { p_lookback_days?: number }
         Returns: Json
       }
+      scan_deal_alerts: { Args: { p_threshold?: number }; Returns: number }
       search_properties_advanced: {
         Args: {
           p_amenities?: string[]
@@ -35158,6 +35175,10 @@ export type Database = {
         }[]
       }
       seed_agent_analytics: { Args: never; Returns: undefined }
+      sync_demand_heat_scores: {
+        Args: { p_batch_size?: number }
+        Returns: number
+      }
       sync_heat_scores_to_properties: { Args: never; Returns: Json }
       track_property_view: {
         Args: { p_property_id: string }
