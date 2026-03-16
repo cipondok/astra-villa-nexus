@@ -97,7 +97,8 @@ import {
   PenTool,
   Gavel,
   ScanEye,
-  Handshake
+  Handshake,
+  Presentation
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -1315,6 +1316,13 @@ export const navigationSections = {
       icon: DollarSign,
       description: "Phased revenue rollout — listings, subscriptions, intelligence, transactions, and B2B ecosystem",
       badge: "💰 Revenue"
+    },
+    {
+      key: "investor-pitch",
+      label: "Investor Pitch Deck",
+      icon: Presentation,
+      description: "Seed round pitch narrative — 11 slides with speaker notes, visuals, FAQ, and deal terms",
+      badge: "🎯 Fundraising"
     }
   ],
 
