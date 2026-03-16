@@ -711,7 +711,7 @@ const Index = () => {
             style={{ animationDelay: '1.2s', opacity: 0, animationFillMode: 'forwards' }}
             aria-label="Scroll to content"
           >
-            <span className="text-[9px] uppercase tracking-[0.3em] font-medium">{t('indexPage.explore')}</span>
+            <span className="text-[10px] uppercase tracking-[0.3em] font-medium">{t('indexPage.explore')}</span>
             <ChevronDown className="h-5 w-5 animate-bounce" />
           </button>
         </section>
