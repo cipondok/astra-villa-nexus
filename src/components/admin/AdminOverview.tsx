@@ -578,13 +578,30 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
 });
 
 
-// Metric Row
-const MetricRow = React.memo(function MetricRow({ icon: Icon, label, value, loading, highlight }: {
+// Inline Sparkline SVG
+const Sparkline = React.memo(function Sparkline({ data, color = 'hsl(var(--primary))' }: { data: number[]; color?: string }) {
+  if (!data || data.length < 2) return null;
+  const max = Math.max(...data);
+  const min = Math.min(...data);
+  const range = max - min || 1;
+  const w = 40;
+  const h = 14;
+  const points = data.map((v, i) => `${(i / (data.length - 1)) * w},${h - ((v - min) / range) * h}`).join(' ');
+  return (
+    <svg width={w} height={h} className="inline-block ml-1.5">
+      <polyline points={points} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+});
+
+// Metric Row with sparkline
+const MetricRow = React.memo(function MetricRow({ icon: Icon, label, value, loading, highlight, sparkData }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   value: number;
   loading?: boolean;
   highlight?: boolean;
+  sparkData?: number[];
 }) {
   return (
     <div className={`flex items-center justify-between py-1 ${highlight ? 'text-chart-1' : ''}`}>
@@ -595,7 +612,10 @@ const MetricRow = React.memo(function MetricRow({ icon: Icon, label, value, load
       {loading ? (
         <div className="h-4 w-10 bg-muted animate-pulse rounded" />
       ) : (
-        <span className="text-sm font-black tabular-nums">{value.toLocaleString()}</span>
+        <div className="flex items-center">
+          {sparkData && <Sparkline data={sparkData} color={highlight ? 'hsl(var(--chart-1))' : 'hsl(var(--primary))'} />}
+          <span className="text-sm font-black tabular-nums">{value.toLocaleString()}</span>
+        </div>
       )}
     </div>
   );
