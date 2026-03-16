@@ -177,9 +177,9 @@ const PropertyGridView = ({
               </h3>
 
               {/* Location */}
-              <div className="flex items-center gap-1 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5" title={getLocation(property)}>
+              <div className="flex items-center gap-1.5 bg-primary/5 dark:bg-primary/10 rounded-md px-2 py-1" title={getLocation(property)}>
                 <MapPin className="h-3 w-3 flex-shrink-0 text-primary/70" />
-                <span className="text-[10px] text-foreground/70 font-medium truncate">{getLocation(property)}</span>
+                <span className="text-[11px] text-foreground/70 font-medium truncate">{getLocation(property)}</span>
               </div>
 
               {/* Specs */}
