@@ -1133,6 +1133,18 @@ const Index = () => {
                 </div>
                 </ScrollReveal>
 
+                {/* Mid-page CTA: Market Intelligence */}
+                <Suspense fallback={null}>
+                  <SectionDividerCTA
+                    icon={BarChart3}
+                    headline="Track Market Trends"
+                    description="Real-time price indices and investment analytics"
+                    ctaText="View Insights"
+                    ctaRoute="/analytics"
+                    variant="accent"
+                  />
+                </Suspense>
+
                 {/* Early Investment CTA */}
                 <ScrollReveal direction="up" delay={50}>
                   <Suspense fallback={<div className="animate-pulse h-40 bg-muted rounded-xl max-w-5xl mx-auto" />}>
