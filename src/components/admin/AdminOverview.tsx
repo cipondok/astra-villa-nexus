@@ -515,10 +515,12 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
             <SummaryCard label="Response" value={`${systemHealth?.responseTime || 0}ms`} icon={Clock} color="purple" />
             <SummaryCard label="Uptime" value={`${systemHealth?.uptime || 99.9}%`} icon={CheckCircle} color="green" />
           </div>
+         </SectionErrorBoundary>
         </div>
 
         {/* Right Column - Zoned Panels */}
         <div className="col-span-12 md:col-span-3 space-y-3">
+         <SectionErrorBoundary sectionName="AI Intelligence & Health">
           
           {/* ═══ ZONE 1: System Health ═══ */}
           <div className="space-y-3">
