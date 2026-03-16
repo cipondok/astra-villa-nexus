@@ -69,20 +69,23 @@ const LeftStatsColumn = React.memo(function LeftStatsColumn({
         <Card className="border-border bg-card">
           <CardContent className="p-3 grid grid-cols-3 gap-2">
             {[
-              { icon: Users, label: "Users", id: "user-management" },
-              { icon: Building2, label: "Props", id: "property-management-hub" },
-              { icon: Store, label: "Vendors", id: "vendors-hub" },
-              { icon: CreditCard, label: "Payments", id: "transaction-hub" },
-              { icon: Globe, label: "Analytics", id: "analytics" },
-              { icon: HardDrive, label: "System", id: "diagnostic" },
+              { icon: Users, label: "Users", id: "user-management", key: "1" },
+              { icon: Building2, label: "Props", id: "property-management-hub", key: "2" },
+              { icon: Store, label: "Vendors", id: "vendors-hub", key: "3" },
+              { icon: CreditCard, label: "Payments", id: "transaction-hub", key: "4" },
+              { icon: Globe, label: "Analytics", id: "analytics", key: "5" },
+              { icon: HardDrive, label: "System", id: "diagnostic", key: "6" },
             ].map((item) => (
               <button
                 key={item.id}
                 onClick={() => onQuickAction(item.id)}
-                className="flex flex-col items-center gap-1 p-2 rounded-lg border border-border hover:bg-accent/10 hover:border-primary/30 transition-all text-xs text-foreground"
+                className="group relative flex flex-col items-center gap-1 p-2 rounded-lg border border-border hover:bg-accent/10 hover:border-primary/30 transition-all text-xs text-foreground"
               >
                 <item.icon className="h-4 w-4 text-muted-foreground" />
                 {item.label}
+                <kbd className="absolute -top-1.5 -right-1.5 h-4 w-4 flex items-center justify-center rounded border border-border bg-muted text-[9px] font-mono text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
+                  {item.key}
+                </kbd>
               </button>
             ))}
           </CardContent>
