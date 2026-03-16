@@ -131,10 +131,11 @@ html[data-scroll-locked="1"] {
   touch-action: auto !important;
 }
 
-/* Also override the react-remove-scroll-bar's style injection */
+/* Also override the react-remove-scroll-bar's style injection
+   NOTE: [data-radix-scroll-area-viewport] intentionally excluded —
+   it needs its own overflow to enable ScrollArea scrolling. */
 [data-overlayscrollbars-body],
-.react-remove-scroll,
-[data-radix-scroll-area-viewport] {
+.react-remove-scroll {
   overflow: visible !important;
 }
 
