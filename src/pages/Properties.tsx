@@ -224,7 +224,7 @@ const Properties = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const locationFilter = searchParams.get('location') || '';
   const [searchQuery, setSearchQuery] = useState("");
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>('grid');
   const [filterType, setFilterType] = useState('all');
   const [propertyType, setPropertyType] = useState('all');
   const [minBedrooms, setMinBedrooms] = useState('0');
