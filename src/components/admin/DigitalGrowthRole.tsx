@@ -133,11 +133,11 @@ const kpiCategories: KPICategory[] = [
 
 const candidateProfile = {
   mustHave: [
-    { skill: "3-5 years in digital marketing / growth role at a startup or marketplace", reason: "Startup pace + marketplace dynamics require proven hands-on growth execution experience" },
-    { skill: "Demonstrated SEO expertise: keyword strategy, technical SEO, content scaling", reason: "SEO is the #1 long-term growth lever — needs someone who can execute, not just strategize" },
-    { skill: "Proficiency in Google Ads, Meta Ads, and analytics tools (GA4, Search Console, SEMrush/Ahrefs)", reason: "Paid acquisition requires tactical expertise — no time for learning curve on tools" },
-    { skill: "Content creation or management experience — especially short-form video (TikTok/Reels)", reason: "Social content is the primary brand awareness channel — must understand viral mechanics" },
-    { skill: "Data-driven mindset with ability to build dashboards, analyze funnels, and run A/B tests", reason: "Growth without measurement is just marketing spend — every action needs a number" },
+    { skill: "2-4 years in digital marketing / growth execution at a startup, marketplace, or tech company", reason: "Startup pace requires someone who's shipped campaigns and measured results — not just planned them" },
+    { skill: "Hands-on SEO execution experience: keyword research, on-page optimization, technical SEO, content scaling", reason: "SEO is the #1 growth lever — needs someone who can index pages, track rankings, and fix issues independently" },
+    { skill: "Short-form video content understanding: TikTok, IG Reels, YouTube Shorts creation or distribution", reason: "Social video is the fastest brand awareness channel — must understand viral mechanics and platform algorithms" },
+    { skill: "Proficiency in analytics tools: Google Analytics 4, Search Console, SEMrush/Ahrefs", reason: "Data-driven decision making is non-negotiable — every action needs a measurable outcome" },
+    { skill: "Experiment-oriented mindset: ability to run A/B tests, analyze results, and iterate quickly", reason: "Growth comes from velocity of experiments, not size of budget — must thrive in test-and-learn culture" },
   ],
   niceToHave: [
     "Property/PropTech industry experience — understanding of buyer journey and agent behavior",
