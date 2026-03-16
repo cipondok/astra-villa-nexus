@@ -36,7 +36,7 @@ import { DataSaverProvider } from '@/contexts/DataSaverContext';
 const Navigation = lazy(() => import('@/components/Navigation'));
 const ProfessionalFooter = lazy(() => import('@/components/ProfessionalFooter'));
 const MobileFooter = lazy(() => import('@/components/MobileFooter'));
-const InitialLoadingScreen = lazy(() => import('@/components/ui/InitialLoadingScreen'));
+import InitialLoadingScreen from '@/components/ui/InitialLoadingScreen';
 const GlobalLoadingIndicator = lazy(() => import('@/components/ui/GlobalLoadingIndicator'));
 
 
@@ -625,7 +625,7 @@ function App() {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         {isLoading && welcomeEnabled ? (
-            <Suspense fallback={null}><InitialLoadingScreen key="loading" /></Suspense>
+            <InitialLoadingScreen key="loading" />
           ) : (
             <Router key="app" future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
               <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
