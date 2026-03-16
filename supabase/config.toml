@@ -283,3 +283,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.generate-recommendations]
     verify_jwt = false
 
+  [functions.learning-engine]
+    verify_jwt = false
+
