@@ -450,6 +450,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "investor-dna-admin":  () => <InvestorDNAAdminPanel />,
   "global-macro-intelligence": () => <GlobalMacroIntelligencePanel />,
   "deal-hunter-admin":   () => <DealHunterAdminPanel />,
+  "market-heat-intelligence": () => <MarketHeatIntelligence />,
   "property-comparison-tool": () => <PropertyComparisonTool />,
 };
 
