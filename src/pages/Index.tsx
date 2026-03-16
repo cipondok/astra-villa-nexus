@@ -30,6 +30,7 @@ import slideHero5 from "@/assets/home/slide-hero-5.png";
 import slideHero6 from "@/assets/home/slide-hero-6.png";
 import slideHero7 from "@/assets/home/slide-hero-7.png";
 import { cn } from "@/lib/utils";
+import { Calculator, Crosshair, BarChart3 } from "lucide-react";
 import { SearchErrorBoundary } from "@/components/search/SearchErrorBoundary";
 import { SearchPanelSkeleton } from "@/components/search/SearchSkeleton";
 import { useRetrySearch } from "@/hooks/useRetrySearch";
