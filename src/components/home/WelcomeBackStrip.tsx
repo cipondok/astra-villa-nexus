@@ -29,12 +29,7 @@ export default function WelcomeBackStrip() {
           .select('id', { count: 'exact', head: true })
           .eq('user_id', user.id)
           .eq('event_type', 'view'),
-        supabase
-          .from('astra_token_checkins')
-          .select('streak_count')
-          .eq('user_id', user.id)
-          .order('checkin_date', { ascending: false })
-          .limit(1),
+        supabase.rpc('get_user_checkin_streak' as any, { p_user_id: user.id }).then(res => ({ data: res.data, error: res.error })).catch(() => ({ data: null, error: null })),
       ]);
 
       return {
