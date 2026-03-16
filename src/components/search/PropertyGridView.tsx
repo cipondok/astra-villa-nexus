@@ -207,27 +207,27 @@ const PropertyGridView = ({
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-1.5 pt-1">
+              <div className="flex gap-2 pt-1.5">
                 <Button
                   size="sm"
                   variant="outline"
-                  className="h-7 w-7 p-0 flex-shrink-0"
+                  className="h-8 w-8 p-0 flex-shrink-0"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleShare(property);
                   }}
                 >
-                  <Share2 className="h-3 w-3" />
+                  <Share2 className="h-3.5 w-3.5" />
                 </Button>
                 <Button
                   size="sm"
-                  className="flex-1 h-7 text-[10px] bg-chart-1 hover:bg-chart-1/90 text-chart-1-foreground"
+                  className="flex-1 h-8 text-[11px] font-semibold bg-chart-1 hover:bg-chart-1/90 text-chart-1-foreground"
                   onClick={(e) => {
                     e.stopPropagation();
                     onContact?.(property);
                   }}
                 >
-                  <Phone className="h-3 w-3 mr-1" />
+                  <Phone className="h-3.5 w-3.5 mr-1" />
                   WhatsApp
                 </Button>
               </div>
