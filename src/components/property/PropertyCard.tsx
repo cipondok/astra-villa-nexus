@@ -253,10 +253,22 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
                 <Glasses className="h-2.5 w-2.5" />
                 Virtual Tour
               </Badge>
+             )}
+            {isFresh && (
+              <Badge className="bg-chart-1/90 text-primary-foreground text-[10px] font-bold px-2 py-0.5 rounded-md shadow-md border-0 flex items-center gap-1">
+                <ShieldCheck className="h-2.5 w-2.5" />
+                Just Listed
+              </Badge>
             )}
           </div>
 
-          {/* Owner Subscription Badge */}
+          {/* Photo count — bottom right confidence cue */}
+          {photoCount > 1 && (
+            <div className="absolute bottom-2.5 right-2.5 z-10 flex items-center gap-1 px-2 py-1 rounded-md bg-black/50 backdrop-blur-sm text-white text-[10px] font-medium">
+              <Camera className="h-3 w-3" />
+              <span>{photoCount}</span>
+            </div>
+          )}
           {owner_subscription_type && owner_subscription_type !== 'free' && (
             <div className="absolute bottom-2.5 right-2.5 z-10">
               <OwnerSubscriptionBadge subscriptionType={owner_subscription_type} />
