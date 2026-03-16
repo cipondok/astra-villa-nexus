@@ -33,6 +33,7 @@ import ListingOptimizationCenter from "./ListingOptimizationCenter";
 // Move lazy loading outside the component to prevent re-creation on every render
 const DeepSeekDiagnostics = lazy(() => import('./DeepSeekDiagnostics'));
 const EnhancedProjectDiagnostics = lazy(() => import('./EnhancedProjectDiagnostics'));
+const LaunchRoadmapDashboard = lazy(() => import('./LaunchRoadmapDashboard'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
