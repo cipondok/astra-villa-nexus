@@ -641,6 +641,11 @@ const SEOSettingsHub = ({ settings, loading, onInputChange, onSave }: SEOSetting
         <TabsContent value="landing-gen">
           <SeoLandingContentGenerator />
         </TabsContent>
+
+        {/* SEO LOCATION BLUEPRINT */}
+        <TabsContent value="blueprint">
+          <SeoLocationBlueprintGenerator />
+        </TabsContent>
       </Tabs>
 
       {/* Save Button */}
