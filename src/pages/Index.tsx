@@ -120,6 +120,15 @@ const Index = () => {
   const { speed: connectionSpeed } = useConnectionSpeed();
   const queryClient = useQueryClient();
 
+  // Auto-refetch all queries when coming back online
+  useEffect(() => {
+    const onOnline = () => {
+      queryClient.invalidateQueries();
+    };
+    window.addEventListener('online', onOnline);
+    return () => window.removeEventListener('online', onOnline);
+  }, [queryClient]);
+
   // Pull-to-refresh for homepage
   const {
     isPulling, pullDistance, isRefreshing,
