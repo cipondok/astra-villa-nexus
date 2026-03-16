@@ -307,7 +307,7 @@ const ModernPropertyCard = ({
                 <VIPLevelBadge level={ownerInfo.user_level} size="xs" />
               </div>
               <div className="flex items-center gap-1 text-[9px] text-muted-foreground">
-                {ownerInfo.type && (
+                 {ownerInfo.type && (
                   <span className="capitalize">{ownerInfo.type}</span>
                 )}
                 {ownerInfo.joining_date && (
