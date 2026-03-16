@@ -440,56 +440,7 @@ const AdminDashboardContent = ({ activeSection, onSectionChange }: AdminDashboar
 
   return (
     <div className="flex-1 p-2 md:p-3 lg:p-4">
-      {/* Back navigation breadcrumb */}
-      {!isOverview && (
-        <motion.div
-          className="mb-2 md:mb-3"
-          initial={{ opacity: 0, y: -6 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <div className="flex items-center gap-1 md:gap-2 p-1.5 md:p-2 rounded-lg bg-gradient-to-r from-primary/5 via-background to-accent/5 border border-border/40 overflow-x-auto">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-6 md:h-7 px-1.5 md:px-2 gap-1 md:gap-1.5 hover:bg-primary/10 transition-all shrink-0"
-              onClick={handleBack}
-            >
-              <ArrowLeft className="h-3 w-3 md:h-3.5 md:w-3.5" />
-              <span className="text-[9px] md:text-[10px] font-medium">Back</span>
-            </Button>
-
-            <ChevronRight className="h-2.5 w-2.5 md:h-3 md:w-3 text-muted-foreground shrink-0" />
-
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-5 w-5 md:h-6 md:w-6 shrink-0 hover:bg-primary/10"
-              onClick={handleBack}
-            >
-              <Home className="h-2.5 w-2.5 md:h-3 md:w-3" />
-            </Button>
-
-            <ChevronRight className="h-2.5 w-2.5 md:h-3 md:w-3 text-muted-foreground shrink-0" />
-
-            {currentSection.category && (
-              <>
-                <Badge
-                  variant="outline"
-                  className="text-[8px] md:text-[9px] px-1 md:px-1.5 py-0.5 bg-secondary/50 border-secondary shrink-0"
-                >
-                  {currentSection.category}
-                </Badge>
-                <ChevronRight className="h-2.5 w-2.5 md:h-3 md:w-3 text-muted-foreground shrink-0" />
-              </>
-            )}
-
-            <span className="text-[10px] md:text-xs font-medium text-foreground shrink-0">
-              {currentSection.label}
-            </span>
-          </div>
-        </motion.div>
-      )}
+      {/* Breadcrumb is in AdminHeader — no duplicate here */}
 
       {/* Section content */}
       <div key={activeSection}>
