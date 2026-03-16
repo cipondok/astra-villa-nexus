@@ -1380,6 +1380,13 @@ export const navigationSections = {
       icon: Heart,
       description: "Agent support hire — onboarding guidance, re-engagement workflows, listing quality, retention KPIs, 90-day plan",
       badge: "💚 Success Hire"
+    },
+    {
+      key: "org-chart",
+      label: "Org Chart & Structure",
+      icon: Users,
+      description: "Lean startup org chart — 5 departments, phased hiring timeline, reporting structure, decision domains",
+      badge: "🏛️ Org Design"
     }
   ],
 
