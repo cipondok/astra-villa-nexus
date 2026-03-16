@@ -1007,6 +1007,11 @@ const Index = () => {
                 </ScrollReveal>
               </section>
 
+              {/* ── Referral Invite Strip ── */}
+              <Suspense fallback={null}>
+                <ReferralInviteStrip />
+              </Suspense>
+
               {/* ── SECTION 9: Partner & Social Proof ── */}
               <section className="py-6 sm:py-8 bg-muted/20">
                 <ScrollReveal direction="up" delay={0}>
