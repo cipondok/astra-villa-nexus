@@ -72,38 +72,46 @@ const PropertyGridView = ({
 
   if (properties.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="text-muted-foreground text-lg">No properties found matching your criteria</div>
-        <div className="text-sm text-muted-foreground mt-2">Try adjusting your filters</div>
+      <div className="text-center py-16">
+        <div className="text-muted-foreground text-base font-medium">No properties found</div>
+        <div className="text-sm text-muted-foreground mt-1">Try adjusting your search or filters</div>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
       {properties.map((property) => {
         const priceInfo = formatPrice(property.price);
         const isRent = property.listing_type === 'rent';
         const imageCount = property.images?.length || property.image_urls?.length || 1;
         const ListingIcon = isRent ? Key : Tag;
+        const investmentScore = (property as any).investment_score || 0;
+        const isHighOpportunity = investmentScore >= 75;
 
         return (
           <Card 
             key={property.id} 
-            className="group cursor-pointer bg-card/80 backdrop-blur-md rounded-xl border border-border hover:border-primary/30 shadow-sm hover:shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.15)] hover:-translate-y-0.5 transition-all duration-300 overflow-hidden will-change-transform"
+            className={cn(
+              "group cursor-pointer bg-card rounded-xl border shadow-sm overflow-hidden will-change-transform",
+              "hover:shadow-md hover:-translate-y-0.5 transition-all duration-250",
+              isHighOpportunity
+                ? "border-gold-primary/30 ring-1 ring-gold-primary/10"
+                : "border-border hover:border-primary/25"
+            )}
             onClick={() => onPropertyClick(property)}
           >
-            {/* Image Section - Rumah123 Style */}
-            <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+            {/* Image — 16:10 ratio for premium readability */}
+            <div className="relative aspect-[16/10] overflow-hidden bg-muted">
               <img
                 src={getImageUrl(property)}
                 alt={property.title}
                 loading="lazy"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
               />
               
-              {/* Top Badges */}
-              <div className="absolute top-2 left-2 right-2 flex items-center justify-between">
+              {/* Top row: listing type + property type */}
+              <div className="absolute top-2.5 left-2.5 right-2.5 flex items-start justify-between">
                 <Badge className={cn(
                   "flex items-center gap-1 px-2 py-1 text-[10px] font-semibold rounded-md shadow-sm",
                   isRent ? "bg-primary text-primary-foreground" : "bg-accent text-accent-foreground"
@@ -111,130 +119,93 @@ const PropertyGridView = ({
                   <ListingIcon className="h-2.5 w-2.5" />
                   {isRent ? 'Disewa' : 'Dijual'}
                 </Badge>
-                
-                <Badge className="flex items-center gap-0.5 bg-card/90 backdrop-blur-sm text-foreground text-[10px] px-1.5 py-0.5 rounded-md shadow-sm border border-border/50">
-                  <Building className="h-2.5 w-2.5" />
-                  {property.property_type ? property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1).toLowerCase() : 'Property'}
-                </Badge>
+
+                <div className="flex items-center gap-1.5">
+                  <Button size="icon" variant="ghost"
+                    className={cn(
+                      "h-8 w-8 rounded-full bg-card/90 backdrop-blur-sm shadow-sm border border-border/50 min-h-[32px]",
+                      savedProperties.has(property.id) && "bg-destructive/10 border-destructive/30"
+                    )}
+                    onClick={(e) => { e.stopPropagation(); handleSave(property); }}>
+                    <Heart className={cn("h-3.5 w-3.5", savedProperties.has(property.id) ? 'fill-destructive text-destructive' : 'text-muted-foreground')} />
+                  </Button>
+                </div>
               </div>
 
-              {/* AI Investment Score Badge */}
-              {(property as any).investment_score > 0 && (
-                <div className="absolute top-10 left-2 z-10">
-                  <InvestmentScoreBadge score={(property as any).investment_score} compact className="shadow-lg" />
+              {/* AI Investment Score — prominent badge for high scores */}
+              {investmentScore > 0 && (
+                <div className="absolute bottom-2.5 left-2.5 z-10">
+                  <InvestmentScoreBadge score={investmentScore} compact className={cn("shadow-md", isHighOpportunity && "ring-1 ring-gold-primary/40")} />
                 </div>
               )}
-              {/* Heart & Compare Buttons */}
-              <div className="absolute top-10 right-2 flex flex-col gap-1">
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className={cn(
-                    "h-7 w-7 rounded-full bg-card/90 backdrop-blur-sm hover:bg-card shadow-sm border border-border/50",
-                    savedProperties.has(property.id) && "bg-destructive/10 border-destructive/30"
-                  )}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSave(property);
-                  }}
-                >
-                  <Heart className={cn(
-                    "h-3.5 w-3.5",
-                    savedProperties.has(property.id) ? 'fill-destructive text-destructive' : 'text-muted-foreground'
-                  )} />
-                </Button>
-                <PropertyComparisonButton property={property} variant="secondary" size="sm" />
-              </div>
 
-              {/* Image Count */}
+              {/* Image count */}
               {imageCount > 1 && (
-                <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-background/60 backdrop-blur-sm text-foreground text-[10px] px-1.5 py-0.5 rounded">
+                <div className="absolute bottom-2.5 right-2.5 flex items-center gap-1 bg-background/70 backdrop-blur-sm text-foreground text-[10px] px-2 py-1 rounded-md">
                   <Camera className="h-2.5 w-2.5" />
-                  <span>{imageCount}</span>
+                  <span className="font-medium">{imageCount}</span>
                 </div>
               )}
-
-              {/* View Icon on Hover */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-background/10">
-                <div className="h-10 w-10 rounded-full bg-card/95 backdrop-blur-sm flex items-center justify-center shadow-lg">
-                  <Eye className="h-5 w-5 text-primary" />
-                </div>
-              </div>
             </div>
 
-            {/* Content Section - Rumah123 Style */}
-            <CardContent className="p-3 sm:p-4 space-y-2">
-              {/* Price */}
-              <div className="border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-lg px-3 py-2">
-                <div className="flex items-baseline gap-1.5 flex-wrap">
-                  <span className="text-lg sm:text-xl font-black text-primary tracking-tight leading-none drop-shadow-sm">{priceInfo.main}</span>
-                  {priceInfo.suffix && (
-                    <span className="text-xs sm:text-sm font-extrabold text-primary/70">{priceInfo.suffix}</span>
-                  )}
-                  {isRent && <span className="text-[11px] text-primary/50 font-bold">/bln</span>}
-                  {!isRent && (
-                    <span className="text-[10px] text-muted-foreground/60 font-medium bg-muted/40 rounded-full px-1.5 py-px">≈ {formatMonthlyPayment(property.price)}</span>
-                  )}
-                </div>
+            {/* Content */}
+            <CardContent className="p-3.5 sm:p-4 space-y-2.5">
+              {/* Price block */}
+              <div className="flex items-baseline gap-1.5 flex-wrap">
+                <span className="text-lg sm:text-xl font-black text-primary tracking-tight leading-none drop-shadow-sm">{priceInfo.main}</span>
+                {isRent && <span className="text-[11px] text-muted-foreground font-semibold">/bln</span>}
+                {!isRent && (
+                  <span className="text-[10px] text-muted-foreground font-medium">≈ {formatMonthlyPayment(property.price)}</span>
+                )}
               </div>
 
               {/* Title */}
-              <h3 className="text-xs sm:text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+              <h3 className="text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">
                 {property.title}
               </h3>
 
               {/* Location */}
-              <div className="flex items-center gap-1.5 bg-primary/5 dark:bg-primary/10 rounded-md px-2 py-1" title={getLocation(property)}>
-                <MapPin className="h-3 w-3 flex-shrink-0 text-primary/70" />
-                <span className="text-[11px] text-foreground/70 font-medium truncate">{getLocation(property)}</span>
+              <div className="flex items-center gap-1.5" title={getLocation(property)}>
+                <MapPin className="h-3 w-3 flex-shrink-0 text-muted-foreground" />
+                <span className="text-xs text-muted-foreground font-medium truncate">{getLocation(property)}</span>
               </div>
 
-              {/* Specs */}
-              <div className="flex items-center gap-1.5 pt-2 border-t border-border/60">
+              {/* Specs row */}
+              <div className="flex items-center gap-3 pt-2 border-t border-border/50 text-xs text-muted-foreground">
                 {property.bedrooms && property.bedrooms > 0 && (
-                  <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-md px-2 py-1">
-                    <Bed className="h-3 w-3 text-primary/60" />
-                    <span className="text-[11px] text-foreground/80 font-bold">{property.bedrooms}</span>
-                    <span className="text-[10px] text-muted-foreground/70 font-semibold">KT</span>
+                  <div className="flex items-center gap-1">
+                    <Bed className="h-3.5 w-3.5" />
+                    <span className="font-semibold text-foreground">{property.bedrooms}</span>
+                    <span>KT</span>
                   </div>
                 )}
                 {property.bathrooms && property.bathrooms > 0 && (
-                  <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-md px-2 py-1">
-                    <Bath className="h-3 w-3 text-primary/60" />
-                    <span className="text-[11px] text-foreground/80 font-bold">{property.bathrooms}</span>
-                    <span className="text-[10px] text-muted-foreground/70 font-semibold">KM</span>
+                  <div className="flex items-center gap-1">
+                    <Bath className="h-3.5 w-3.5" />
+                    <span className="font-semibold text-foreground">{property.bathrooms}</span>
+                    <span>KM</span>
                   </div>
                 )}
                 {property.area_sqm && (
-                  <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-md px-2 py-1">
-                    <span className="text-[10px] text-primary/60 font-bold">LB</span>
-                    <span className="text-[11px] text-foreground/80 font-bold">{property.area_sqm}m²</span>
+                  <div className="flex items-center gap-1">
+                    <Maximize className="h-3.5 w-3.5" />
+                    <span className="font-semibold text-foreground">{property.area_sqm}</span>
+                    <span>m²</span>
                   </div>
                 )}
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex gap-2 pt-1.5">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="h-9 w-9 sm:h-8 sm:w-8 p-0 flex-shrink-0 min-w-[36px] min-h-[36px]"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleShare(property);
-                  }}
-                >
+              {/* CTA row */}
+              <div className="flex gap-2 pt-1">
+                <Button size="sm" variant="outline"
+                  className="h-9 w-9 p-0 flex-shrink-0 min-w-[36px] min-h-[36px]"
+                  onClick={(e) => { e.stopPropagation(); handleShare(property); }}>
                   <Share2 className="h-3.5 w-3.5" />
                 </Button>
-                <Button
-                  size="sm"
-                  className="flex-1 h-9 sm:h-8 text-[11px] font-semibold bg-chart-1 hover:bg-chart-1/90 text-chart-1-foreground min-h-[36px]"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onContact?.(property);
-                  }}
-                >
-                  <Phone className="h-3.5 w-3.5 mr-1" />
+                <Button size="sm"
+                  className="flex-1 h-9 text-[11px] sm:text-xs font-semibold bg-chart-1 hover:bg-chart-1/90 text-chart-1-foreground min-h-[36px]"
+                  onClick={(e) => { e.stopPropagation(); onContact?.(property); }}>
+                  <Phone className="h-3.5 w-3.5 mr-1.5" />
                   WhatsApp
                 </Button>
               </div>
@@ -244,11 +215,7 @@ const PropertyGridView = ({
       })}
       
       {selectedProperty && (
-        <SocialShareDialog
-          open={shareDialogOpen}
-          onOpenChange={setShareDialogOpen}
-          property={selectedProperty}
-        />
+        <SocialShareDialog open={shareDialogOpen} onOpenChange={setShareDialogOpen} property={selectedProperty} />
       )}
     </div>
   );
