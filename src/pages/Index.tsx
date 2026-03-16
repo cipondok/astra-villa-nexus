@@ -77,6 +77,7 @@ const SocialProofStrip = lazy(() => import("@/components/home/SocialProofStrip")
 const SectionDividerCTA = lazy(() => import("@/components/home/SectionDividerCTA"));
 const MobileFloatingCTA = lazy(() => import("@/components/home/MobileFloatingCTA"));
 const TrustFooterStrip = lazy(() => import("@/components/home/TrustFooterStrip"));
+const LiveActivityTicker = lazy(() => import("@/components/home/LiveActivityTicker"));
 const WelcomeBackStrip = lazy(() => import("@/components/home/WelcomeBackStrip"));
 const RecentlyViewedStrip = lazy(() => import("@/components/home/RecentlyViewedStrip"));
 const ReferralInviteStrip = lazy(() => import("@/components/home/ReferralInviteStrip"));
@@ -680,8 +681,11 @@ const Index = () => {
         )}
 
         {/* ═══════════════════════════════════════════════════════
-            SECTION 1: Gold Divider + Error State
+            SECTION 1: Live Activity Ticker + Gold Divider
         ═══════════════════════════════════════════════════════ */}
+        <Suspense fallback={null}>
+          <LiveActivityTicker />
+        </Suspense>
         <div className="relative h-8 sm:h-12 -mt-1 overflow-hidden" aria-hidden="true">
           <div className="absolute inset-0 bg-gradient-to-b from-background/0 to-background" />
           <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold-primary/20 to-transparent" />
