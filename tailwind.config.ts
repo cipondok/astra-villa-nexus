@@ -117,7 +117,15 @@ const config: Config = {
         },
         'samsung-blue': {
           DEFAULT: 'hsl(var(--samsung-blue-primary))',
-        }
+        },
+        // Chart / Data-Viz semantic colors
+        chart: {
+          1: 'hsl(var(--chart-1))',
+          2: 'hsl(var(--chart-2))',
+          3: 'hsl(var(--chart-3))',
+          4: 'hsl(var(--chart-4))',
+          5: 'hsl(var(--chart-5))',
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
