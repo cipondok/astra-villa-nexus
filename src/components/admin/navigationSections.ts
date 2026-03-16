@@ -98,7 +98,8 @@ import {
   Gavel,
   ScanEye,
   Handshake,
-  Presentation
+  Presentation,
+  MapPin
 } from "lucide-react";
 
 export interface NavigationSection {
