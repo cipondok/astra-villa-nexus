@@ -18,10 +18,10 @@ export function useIntelligenceSignals(enabled = true) {
   const checkSignals = useCallback(async () => {
     try {
       // Check for elite opportunities
-      const { count: eliteCount } = await supabase
+      const { count: eliteCount } = await (supabase as any)
         .from('properties')
         .select('id', { count: 'exact', head: true })
-        .gte('opportunity_score' as any, 85)
+        .gte('opportunity_score', 85)
         .eq('status', 'active');
 
       if (prevEliteCountRef.current !== null && eliteCount !== null && eliteCount > prevEliteCountRef.current) {
