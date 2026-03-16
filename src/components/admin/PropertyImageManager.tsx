@@ -65,7 +65,7 @@ const PropertyImageManager = () => {
   const PAGE_SIZE = 30;
 
   // Image health checking
-  const { results: healthResults, checking: healthChecking, checkAllImages, clearResults } = useImageHealthCheck();
+  const { results: healthResults, checking: healthChecking, progress: healthProgress, checkAllImages, clearResults } = useImageHealthCheck();
   const [checkedPropertyId, setCheckedPropertyId] = useState<string | null>(null);
 
   // AI Relevance checking
