@@ -52,17 +52,20 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
     threshold: 0.1,
   });
 
+  const transitionValue = `opacity ${duration}ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms, transform ${duration}ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`;
+
   const hiddenStyle: React.CSSProperties = {
     opacity: 0,
     transform: getTransform(direction, distance),
-    transition: `opacity ${duration}ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms, transform ${duration}ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`,
+    transition: transitionValue,
     willChange: 'opacity, transform',
   };
 
   const visibleStyle: React.CSSProperties = {
     opacity: 1,
-    transform: 'translateY(0) translateX(0)',
-    transition: `opacity ${duration}ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms, transform ${duration}ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`,
+    transform: 'none',
+    transition: transitionValue,
+    /* willChange cleared after reveal to free GPU composite layers */
   };
 
   // If disabled, render children without animation wrapper styles

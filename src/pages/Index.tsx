@@ -572,7 +572,7 @@ const Index = () => {
           style={{ height: 'clamp(500px, 80vh, 820px)', contain: 'layout' }}
         >
           {/* Single premium background image with slow zoom */}
-          <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 z-0 overflow-hidden" style={{ contain: 'strict' }}>
             <img
               src={heroImage}
               alt="Premium property — ASTRAVILLA intelligent real estate"
@@ -582,7 +582,8 @@ const Index = () => {
               loading="eager"
               decoding="sync"
               sizes="100vw"
-              className="w-full h-[115%] object-cover will-change-transform animate-[heroZoom_25s_ease-in-out_infinite_alternate]"
+              className="w-full h-full object-cover animate-[heroZoom_25s_ease-in-out_infinite_alternate]"
+              style={{ willChange: 'transform' }}
             />
           </div>
 
@@ -826,7 +827,7 @@ const Index = () => {
               </section>
 
               {/* ── SECTION 3: AI Opportunity Zone (merged intelligence modules) ── */}
-              <section className="py-10 sm:py-14 bg-muted/30" id="ai-opportunity-zone">
+              <section className="py-10 sm:py-14 bg-muted/30" id="ai-opportunity-zone" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 800px' }}>
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
                   {/* Zone header */}
                   <ScrollReveal direction="up" delay={0}>
@@ -891,7 +892,7 @@ const Index = () => {
               </section>
 
               {/* ── SECTION 4: Smart Collections ── */}
-              <section className="py-10 sm:py-14">
+              <section className="py-10 sm:py-14" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 400px' }}>
                 <ScrollReveal direction="up" delay={0}>
                   <LazyRender minHeight="280px" rootMargin="400px" fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto px-3 sm:px-4" />}>
                     <Suspense fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto px-3 sm:px-4" />}>
@@ -951,7 +952,7 @@ const Index = () => {
               <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mx-auto max-w-5xl" aria-hidden="true" />
 
               {/* ── SECTION 7: Properties for Sale & Rent ── */}
-              <section className="py-10 sm:py-14 bg-muted/20">
+              <section className="py-10 sm:py-14 bg-muted/20" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 600px' }}>
                 <div className="space-y-8">
                   <ScrollReveal direction="up" delay={0}>
                     <div id="sale-section">
@@ -986,7 +987,7 @@ const Index = () => {
               </section>
 
               {/* ── SECTION 8: Marketplace Services ── */}
-              <section className="py-10 sm:py-14" id="marketplace-services-section">
+              <section className="py-10 sm:py-14" id="marketplace-services-section" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 300px' }}>
                 <ScrollReveal direction="up" delay={0}>
                   <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
                     <MarketplaceServices />
