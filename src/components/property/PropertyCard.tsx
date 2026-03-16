@@ -309,27 +309,17 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             )}
           </div>
 
-          {/* VR/AR Quick Actions */}
+          {/* VR Quick Action — AR Preview removed (non-functional, see ux-heuristic-audit.md) */}
           {(three_d_model_url || virtual_tour_url || glb_model_url || has_vr) && (
-            <div className="flex items-center gap-2 mt-2">
+            <div className="mt-2">
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="h-7 text-xs flex-1 border-primary/30 text-primary hover:bg-primary/10"
+                className="h-7 text-xs w-full border-primary/30 text-primary hover:bg-primary/10"
                 onClick={(e) => { e.stopPropagation(); handleView3D(e); }}
               >
                 <Glasses className="h-3 w-3 mr-1" />
                 VR Mode
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="h-7 text-xs flex-1 border-muted-foreground/30 text-muted-foreground cursor-not-allowed opacity-60"
-                disabled
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Smartphone className="h-3 w-3 mr-1" />
-                AR Preview
               </Button>
             </div>
           )}
