@@ -166,8 +166,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     posted_by: posted_by,
   };
 
-  console.log('PropertyCard - Rendering with showDetailModal:', showDetailModal);
-  console.log('PropertyCard - Rendering with show3DModal:', show3DModal);
 
   return (
     <>
