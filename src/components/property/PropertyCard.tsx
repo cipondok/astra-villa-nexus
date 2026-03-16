@@ -190,7 +190,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           {/* Save Button */}
           <div className="absolute top-2 right-2 flex gap-1.5">
             <button 
-              className="h-8 w-8 bg-black/30 backdrop-blur-md hover:bg-black/50 border border-white/20 rounded-full shadow-md flex items-center justify-center transition-all duration-200"
+              className="h-8 w-8 bg-black/30 backdrop-blur-md hover:bg-black/50 border border-white/20 rounded-full shadow-md flex items-center justify-center btn-press"
               onClick={(e) => e.stopPropagation()}
             >
               <Heart className="h-4 w-4 text-white/90" />
