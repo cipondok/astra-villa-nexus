@@ -14111,6 +14111,123 @@ export type Database = {
         }
         Relationships: []
       }
+      market_heat_clusters: {
+        Row: {
+          active_listings: number | null
+          avg_days_on_market: number | null
+          avg_deal_score: number | null
+          avg_demand_score: number | null
+          avg_opportunity_score: number | null
+          avg_price: number | null
+          avg_price_per_sqm: number | null
+          city: string
+          cluster_center_lat: number | null
+          cluster_center_lng: number | null
+          cluster_key: string
+          computed_at: string | null
+          cooling_count: number | null
+          cooling_risk_signals: Json | null
+          created_at: string | null
+          emerging_signals: Json | null
+          heat_label: string | null
+          heat_trend_3m: string | null
+          hot_count: number | null
+          id: string
+          market_heat_score: number | null
+          max_price: number | null
+          median_price: number | null
+          min_price: number | null
+          new_listings_30d: number | null
+          opportunity_density: number | null
+          property_count: number | null
+          stable_count: number | null
+          state: string | null
+          total_inquiries: number | null
+          total_saves: number | null
+          total_views: number | null
+          trend_confidence: number | null
+          trend_direction: string | null
+          updated_at: string | null
+          zone_status: string | null
+        }
+        Insert: {
+          active_listings?: number | null
+          avg_days_on_market?: number | null
+          avg_deal_score?: number | null
+          avg_demand_score?: number | null
+          avg_opportunity_score?: number | null
+          avg_price?: number | null
+          avg_price_per_sqm?: number | null
+          city: string
+          cluster_center_lat?: number | null
+          cluster_center_lng?: number | null
+          cluster_key: string
+          computed_at?: string | null
+          cooling_count?: number | null
+          cooling_risk_signals?: Json | null
+          created_at?: string | null
+          emerging_signals?: Json | null
+          heat_label?: string | null
+          heat_trend_3m?: string | null
+          hot_count?: number | null
+          id?: string
+          market_heat_score?: number | null
+          max_price?: number | null
+          median_price?: number | null
+          min_price?: number | null
+          new_listings_30d?: number | null
+          opportunity_density?: number | null
+          property_count?: number | null
+          stable_count?: number | null
+          state?: string | null
+          total_inquiries?: number | null
+          total_saves?: number | null
+          total_views?: number | null
+          trend_confidence?: number | null
+          trend_direction?: string | null
+          updated_at?: string | null
+          zone_status?: string | null
+        }
+        Update: {
+          active_listings?: number | null
+          avg_days_on_market?: number | null
+          avg_deal_score?: number | null
+          avg_demand_score?: number | null
+          avg_opportunity_score?: number | null
+          avg_price?: number | null
+          avg_price_per_sqm?: number | null
+          city?: string
+          cluster_center_lat?: number | null
+          cluster_center_lng?: number | null
+          cluster_key?: string
+          computed_at?: string | null
+          cooling_count?: number | null
+          cooling_risk_signals?: Json | null
+          created_at?: string | null
+          emerging_signals?: Json | null
+          heat_label?: string | null
+          heat_trend_3m?: string | null
+          hot_count?: number | null
+          id?: string
+          market_heat_score?: number | null
+          max_price?: number | null
+          median_price?: number | null
+          min_price?: number | null
+          new_listings_30d?: number | null
+          opportunity_density?: number | null
+          property_count?: number | null
+          stable_count?: number | null
+          state?: string | null
+          total_inquiries?: number | null
+          total_saves?: number | null
+          total_views?: number | null
+          trend_confidence?: number | null
+          trend_direction?: string | null
+          updated_at?: string | null
+          zone_status?: string | null
+        }
+        Relationships: []
+      }
       market_trend_factors: {
         Row: {
           avg_days_on_market: number | null
@@ -33440,6 +33557,10 @@ export type Database = {
         Args: { p_region_id: string }
         Returns: Json
       }
+      compute_market_heat_clusters: {
+        Args: { p_min_properties?: number }
+        Returns: Json
+      }
       compute_opportunity_score: {
         Args: { p_property_id: string }
         Returns: number
@@ -33767,6 +33888,7 @@ export type Database = {
         }[]
       }
       get_geo_expansion_intelligence: { Args: never; Returns: Json }
+      get_heatmap_dataset: { Args: { p_min_score?: number }; Returns: Json }
       get_image_stats: { Args: never; Returns: Json }
       get_investment_reasoning: {
         Args: { p_property_id: string }
