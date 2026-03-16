@@ -231,14 +231,14 @@ const ModernPropertyCard = ({
           
           {/* Property Stats Pills */}
           <div className="flex gap-1 flex-wrap">
-            {property.bedrooms && (
-              <div className="flex items-center gap-0.5 bg-gold-primary/20 backdrop-blur-sm text-primary-foreground px-1.5 py-0.5 rounded text-[10px]">
+             {property.bedrooms && (
+              <div className="flex items-center gap-0.5 bg-primary/20 backdrop-blur-sm text-primary-foreground px-1.5 py-0.5 rounded text-[10px]">
                 <Bed className="h-2.5 w-2.5" />
                 <span>{property.bedrooms}</span>
               </div>
             )}
             {property.bathrooms && (
-              <div className="flex items-center gap-0.5 bg-gold-primary/15 backdrop-blur-sm text-primary-foreground px-1.5 py-0.5 rounded text-[10px]">
+              <div className="flex items-center gap-0.5 bg-primary/15 backdrop-blur-sm text-primary-foreground px-1.5 py-0.5 rounded text-[10px]">
                 <Bath className="h-2.5 w-2.5" />
                 <span>{property.bathrooms}</span>
               </div>
@@ -249,7 +249,7 @@ const ModernPropertyCard = ({
                 <span>{area}m²</span>
               </div>
             )}
-            <div className="flex items-center gap-0.5 bg-gold-primary/80 backdrop-blur-sm text-background px-1.5 py-0.5 rounded text-[10px] ml-auto">
+            <div className="flex items-center gap-0.5 bg-primary/80 backdrop-blur-sm text-primary-foreground px-1.5 py-0.5 rounded text-[10px] ml-auto">
               <Star className="h-2.5 w-2.5 fill-current" />
               <span>{rating.toFixed(1)}</span>
             </div>
