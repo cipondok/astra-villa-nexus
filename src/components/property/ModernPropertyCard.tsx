@@ -261,7 +261,7 @@ const ModernPropertyCard = ({
       <div className="p-2.5 sm:p-3">
         {/* Title & Posted Time */}
         <div className="flex items-start justify-between gap-1 mb-1">
-          <h3 className="text-xs sm:text-sm font-semibold text-foreground line-clamp-1 group-hover:text-gold-primary transition-colors flex-1">
+          <h3 className="text-xs sm:text-sm font-semibold text-foreground line-clamp-1 group-hover:text-primary transition-colors flex-1">
             {property.title}
           </h3>
           {postedAgo && (
