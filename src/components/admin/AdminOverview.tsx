@@ -591,7 +591,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
                 {(systemHealth?.aiSystems.jobsPending || 0) > 0 && (
                   <div className="mt-1.5 p-2 rounded-lg bg-chart-2/5 border border-chart-2/20">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] text-muted-foreground">Queued Jobs</span>
+                      <span className="text-[10px] text-foreground">Queued Jobs</span>
                       <Badge variant="secondary" className="text-[10px] h-5">{systemHealth?.aiSystems.jobsPending}</Badge>
                     </div>
                   </div>
