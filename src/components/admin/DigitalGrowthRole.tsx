@@ -58,12 +58,12 @@ const responsibilities: ResponsibilityArea[] = [
     ],
   },
   {
-    area: "Paid Acquisition & Performance Marketing", icon: MousePointer, color: "text-chart-3", bg: "bg-chart-3/10", weight: "20%",
+    area: "Performance Marketing Experiments", icon: MousePointer, color: "text-chart-3", bg: "bg-chart-3/10", weight: "15%",
     tasks: [
-      { task: "Launch and manage Google Ads campaigns targeting high-intent property search keywords across 15 cities", impact: "Paid search captures buyers with immediate purchase intent — highest conversion rate channel" },
-      { task: "Run Meta Ads (Facebook/Instagram) retargeting campaigns for property viewers and cart abandoners", impact: "Retargeting converts warm audiences at 3-5x the rate of cold traffic" },
-      { task: "Design and A/B test landing pages optimized for agent signup, investor registration, and listing inquiry conversion", impact: "10% landing page improvement = 10% more conversions at same spend" },
-      { task: "Manage overall paid budget (Rp 100-300M/month), track ROAS/CAC by channel, and reallocate based on performance", impact: "Budget optimization prevents waste and maximizes return per rupiah spent" },
+      { task: "Run paid search testing on Google Ads targeting high-intent property keywords — validate CAC before scaling", impact: "Paid search experiments identify which keywords and cities convert profitably before committing budget" },
+      { task: "Experiment with Meta Ads (Facebook/Instagram) retargeting for property viewers and agent signup abandoners", impact: "Retargeting converts warm audiences at 3-5x the rate of cold traffic" },
+      { task: "Design and A/B test landing pages optimized for buyer inquiries, agent signups, and investor registrations", impact: "10% landing page improvement = 10% more conversions at same spend" },
+      { task: "Track ROAS/CAC by channel and experiment type — kill underperformers fast, scale winners quickly", impact: "Experiment velocity matters more than budget size at early stage" },
     ],
   },
   {
