@@ -1,6 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useDebounce } from './useDebounce';
 
 /* ─── Result Types ─── */
 export interface PropertyResult {
@@ -14,6 +13,8 @@ export interface PropertyResult {
   price: number;
   deal_score: number | null;
   demand_score: number | null;
+  opportunity_score: number;
+  demand_trend: 'hot' | 'stable' | 'cooling';
   status: string;
   created_at: string;
   result_type: 'property';
@@ -76,6 +77,26 @@ const EMPTY_RESULTS: GlobalSearchResults = {
   leads: [],
 };
 
+/* ─── Search result cache ─── */
+const searchCache = new Map<string, { data: GlobalSearchResults; ts: number }>();
+const CACHE_TTL = 60_000; // 1 min
+
+function getCached(key: string): GlobalSearchResults | null {
+  const entry = searchCache.get(key);
+  if (entry && Date.now() - entry.ts < CACHE_TTL) return entry.data;
+  if (entry) searchCache.delete(key);
+  return null;
+}
+
+function setCache(key: string, data: GlobalSearchResults) {
+  // Keep cache bounded
+  if (searchCache.size > 50) {
+    const oldest = searchCache.keys().next().value;
+    if (oldest) searchCache.delete(oldest);
+  }
+  searchCache.set(key, { data, ts: Date.now() });
+}
+
 export function useGlobalIntelligenceSearch() {
   const [results, setResults] = useState<GlobalSearchResults>(EMPTY_RESULTS);
   const [isSearching, setIsSearching] = useState(false);
@@ -93,7 +114,14 @@ export function useGlobalIntelligenceSearch() {
       return;
     }
 
-    // Abort previous in-flight request
+    // Check cache first
+    const cached = getCached(trimmed);
+    if (cached) {
+      setResults(cached);
+      setIsSearching(false);
+      return;
+    }
+
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -107,17 +135,18 @@ export function useGlobalIntelligenceSearch() {
         { p_query: trimmed, p_limit: 8 }
       );
 
-      // Stale check
       if (trimmed !== lastQueryRef.current) return;
-
       if (rpcError) throw rpcError;
 
-      setResults({
+      const parsed: GlobalSearchResults = {
         properties: (data as any)?.properties || [],
         alerts: (data as any)?.alerts || [],
         seo_pages: (data as any)?.seo_pages || [],
         leads: (data as any)?.leads || [],
-      });
+      };
+
+      setCache(trimmed, parsed);
+      setResults(parsed);
     } catch (e: any) {
       if (e?.name === 'AbortError') return;
       console.error('Global search error:', e);
