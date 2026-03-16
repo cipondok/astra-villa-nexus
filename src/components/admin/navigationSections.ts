@@ -1345,6 +1345,13 @@ export const navigationSections = {
       icon: User,
       description: "CEO thought leadership strategy — content pillars, channel growth, trust stories, and authority roadmap",
       badge: "👤 Personal Brand"
+    },
+    {
+      key: "hiring-roadmap",
+      label: "Hiring Roadmap",
+      icon: UserPlus,
+      description: "Team scaling plan — 13 roles across 3 phases with ROI rationale, salary budgets, and culture framework",
+      badge: "👥 Team"
     }
   ],
 
