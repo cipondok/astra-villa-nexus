@@ -412,149 +412,133 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           </div>
         </div>
 
-        {/* Right Column - System Health */}
+        {/* Right Column - Zoned Panels */}
         <div className="col-span-12 md:col-span-3 space-y-3">
-          {/* System Status */}
-          <Card className="border-border/30">
-            <CardHeader className="p-3 pb-2">
-              <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
-                <Server className="h-3.5 w-3.5" /> System Health
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-3 pt-0 space-y-2.5">
-      <div className={`flex items-center justify-between p-2.5 rounded-lg border ${
-                systemHealth?.status === 'healthy' 
-                  ? 'bg-chart-1/5 border-chart-1/30' 
-                  : 'bg-chart-3/5 border-chart-3/30'
-              }`}>
-                <span className="text-xs font-medium">Status</span>
-                <Badge variant={systemHealth?.status === 'healthy' ? 'default' : 'destructive'} className="text-[10px] h-5 px-2">
-                  {systemHealth?.status === 'healthy' ? '● All Systems OK' : '⚠ Issues'}
-                </Badge>
-              </div>
-              
-              <HealthBar label="Database" value={systemHealth?.dbErrors === 0 ? 100 : 70} icon={Database} isStatus />
-              <HealthBar label="SEO Engine" value={systemHealth?.aiSystems.avgSeoScore || 0} icon={Globe} />
-              <HealthBar label="Job Queue" value={
-                (systemHealth?.aiSystems.jobsFailed || 0) === 0 ? 100 :
-                Math.max(100 - (systemHealth?.aiSystems.jobsFailed || 0) * 10, 20)
-              } icon={Cpu} isStatus />
-            </CardContent>
-          </Card>
+          
+          {/* ═══ ZONE 1: System Health ═══ */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 px-1">
+              <div className="h-px flex-1 bg-gradient-to-r from-chart-1/30 to-transparent" />
+              <span className="text-[10px] font-bold uppercase tracking-widest text-chart-1/70">System Health</span>
+              <div className="h-px flex-1 bg-gradient-to-l from-chart-1/30 to-transparent" />
+            </div>
 
-          {/* AI Intelligence Health Summary */}
-          <AIHealthSummaryCard onNavigate={() => handleQuickAction('ai-command-center')} />
-
-          {/* Lead Intelligence Summary */}
-          <LeadIntelligenceCard onNavigate={() => handleQuickAction('lead-management')} />
-
-          {/* Market Intelligence Summary */}
-          <MarketIntelligenceCard onNavigate={() => handleQuickAction('ai-command-center')} />
-
-          {/* Agent Performance Intelligence */}
-          <AgentPerformanceCard onNavigate={() => handleQuickAction('agent-management')} />
-
-          {/* Deal Pipeline & Revenue Intelligence */}
-          <DealPipelineCard onNavigate={() => handleQuickAction('financial-management')} />
-
-          {/* Geographic Expansion Intelligence */}
-          <GeoExpansionCard onNavigate={() => handleQuickAction('ai-command-center')} />
-
-          {/* AI Batch Control Panel */}
-          <AIBatchControlPanel />
-
-          {/* AI Scheduling Dashboard */}
-          <AISchedulingDashboard />
-
-          {/* Job Queue Watchdog */}
-          <JobQueueHealthCard />
-
-          {/* AI Job Observability */}
-          <AIJobObservabilityPanel />
-
-          {/* Market Risk Anomaly Detector */}
-          <MarketAnomalyCard />
-
-          {/* Listing Performance Optimizer */}
-          <ListingPerformanceOptimizerCard onNavigate={() => onSectionChange?.("listing-optimization-center")} />
-
-          {/* Dynamic Pricing Intelligence */}
-          <PricingIntelligenceCard />
-
-          {/* Deal Closing Timeline Predictions */}
-          <DealClosingTimelineCard />
-
-          {/* Investment Attractiveness Ranking */}
-          <InvestmentAttractivenessCard />
-
-          {/* Buyer–Listing Matchmaking */}
-          <BuyerListingMatchCard />
-
-          {/* Autonomous Pricing Automation */}
-          <PricingAutomationCard />
-
-          {/* Market Cycle Prediction */}
-          <MarketCyclePredictionCard />
-
-          {/* Deal Timing Signals */}
-          <DealTimingSignalCard />
-
-          {/* National Market Forecast */}
-          <NationalForecastCard />
-
-          {/* Portfolio Strategy Advisor */}
-          <PortfolioStrategyCard />
-
-          {/* Capital Flow Intelligence */}
-          <CapitalFlowCard />
-
-          {/* Marketplace Optimization Loop */}
-          <MarketplaceOptimizationCard />
-
-          {/* AI Systems Status */}
-          <Card className="border-border/30">
-            <CardHeader className="p-3 pb-2">
-              <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
-                <ShieldCheck className="h-3.5 w-3.5" /> AI Systems
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-3 pt-0 space-y-1.5">
-              <ServiceRow name="SEO Engine" status={systemHealth?.aiSystems.seoStatus || 'unknown'} detail={`${systemHealth?.aiSystems.avgSeoScore || 0}% avg`} />
-              <ServiceRow name="Job Worker" status={systemHealth?.aiSystems.jobStatus || 'unknown'} detail={`${systemHealth?.aiSystems.jobsRunning || 0} running`} />
-              <ServiceRow name="Valuations" status={systemHealth?.aiSystems.valuationStatus || 'unknown'} detail={`${systemHealth?.aiSystems.totalValuations || 0} total`} />
-              <ServiceRow name="Database" status={systemHealth?.dbErrors === 0 ? 'operational' : 'degraded'} detail={`${systemHealth?.dbErrors || 0} errors`} />
-              <ServiceRow name="Auth" status="operational" />
-              {(systemHealth?.aiSystems.jobsPending || 0) > 0 && (
-                <div className="mt-1.5 p-2 rounded-lg bg-chart-2/5 border border-chart-2/20">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-muted-foreground">Queued Jobs</span>
-                    <Badge variant="secondary" className="text-[10px] h-5">{systemHealth?.aiSystems.jobsPending}</Badge>
-                  </div>
+            {/* System Status */}
+            <Card className="border-border/30">
+              <CardHeader className="p-3 pb-2">
+                <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+                  <Server className="h-3.5 w-3.5" /> System Health
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-3 pt-0 space-y-2.5">
+                <div className={`flex items-center justify-between p-2.5 rounded-lg border ${
+                  systemHealth?.status === 'healthy' 
+                    ? 'bg-chart-1/5 border-chart-1/30' 
+                    : 'bg-chart-3/5 border-chart-3/30'
+                }`}>
+                  <span className="text-xs font-medium">Status</span>
+                  <Badge variant={systemHealth?.status === 'healthy' ? 'default' : 'destructive'} className="text-[10px] h-5 px-2">
+                    {systemHealth?.status === 'healthy' ? '● All Systems OK' : '⚠ Issues'}
+                  </Badge>
                 </div>
-              )}
-            </CardContent>
-          </Card>
+                
+                <HealthBar label="Database" value={systemHealth?.dbErrors === 0 ? 100 : 70} icon={Database} isStatus />
+                <HealthBar label="SEO Engine" value={systemHealth?.aiSystems.avgSeoScore || 0} icon={Globe} />
+                <HealthBar label="Job Queue" value={
+                  (systemHealth?.aiSystems.jobsFailed || 0) === 0 ? 100 :
+                  Math.max(100 - (systemHealth?.aiSystems.jobsFailed || 0) * 10, 20)
+                } icon={Cpu} isStatus />
+              </CardContent>
+            </Card>
 
-          {/* Quick Actions */}
-          <div className="grid grid-cols-2 gap-2">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-9 text-xs gap-1.5"
-              onClick={() => handleQuickAction('ai-command-center')}
-            >
-              <Zap className="h-3.5 w-3.5" />
-              AI Center
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-9 text-xs gap-1.5"
-              onClick={() => handleQuickAction('diagnostic')}
-            >
-              <Gauge className="h-3.5 w-3.5" />
-              Diagnostics
-            </Button>
+            {/* AI Systems Status */}
+            <Card className="border-border/30">
+              <CardHeader className="p-3 pb-2">
+                <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+                  <ShieldCheck className="h-3.5 w-3.5" /> AI Systems
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-3 pt-0 space-y-1.5">
+                <ServiceRow name="SEO Engine" status={systemHealth?.aiSystems.seoStatus || 'unknown'} detail={`${systemHealth?.aiSystems.avgSeoScore || 0}% avg`} />
+                <ServiceRow name="Job Worker" status={systemHealth?.aiSystems.jobStatus || 'unknown'} detail={`${systemHealth?.aiSystems.jobsRunning || 0} running`} />
+                <ServiceRow name="Valuations" status={systemHealth?.aiSystems.valuationStatus || 'unknown'} detail={`${systemHealth?.aiSystems.totalValuations || 0} total`} />
+                <ServiceRow name="Database" status={systemHealth?.dbErrors === 0 ? 'operational' : 'degraded'} detail={`${systemHealth?.dbErrors || 0} errors`} />
+                <ServiceRow name="Auth" status="operational" />
+                {(systemHealth?.aiSystems.jobsPending || 0) > 0 && (
+                  <div className="mt-1.5 p-2 rounded-lg bg-chart-2/5 border border-chart-2/20">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] text-muted-foreground">Queued Jobs</span>
+                      <Badge variant="secondary" className="text-[10px] h-5">{systemHealth?.aiSystems.jobsPending}</Badge>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* ═══ ZONE 2: AI Intelligence ═══ */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 px-1">
+              <div className="h-px flex-1 bg-gradient-to-r from-primary/30 to-transparent" />
+              <span className="text-[10px] font-bold uppercase tracking-widest text-primary/70">AI Intelligence</span>
+              <div className="h-px flex-1 bg-gradient-to-l from-primary/30 to-transparent" />
+            </div>
+
+            <AIHealthSummaryCard onNavigate={() => handleQuickAction('ai-command-center')} />
+            <LeadIntelligenceCard onNavigate={() => handleQuickAction('lead-management')} />
+            <MarketIntelligenceCard onNavigate={() => handleQuickAction('ai-command-center')} />
+            <AgentPerformanceCard onNavigate={() => handleQuickAction('agent-management')} />
+            <DealPipelineCard onNavigate={() => handleQuickAction('financial-management')} />
+            <GeoExpansionCard onNavigate={() => handleQuickAction('ai-command-center')} />
+            <MarketAnomalyCard />
+            <InvestmentAttractivenessCard />
+            <BuyerListingMatchCard />
+            <NationalForecastCard />
+            <MarketCyclePredictionCard />
+            <CapitalFlowCard />
+            <PortfolioStrategyCard />
+            <DealTimingSignalCard />
+          </div>
+
+          {/* ═══ ZONE 3: Operations ═══ */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 px-1">
+              <div className="h-px flex-1 bg-gradient-to-r from-chart-3/30 to-transparent" />
+              <span className="text-[10px] font-bold uppercase tracking-widest text-chart-3/70">Operations</span>
+              <div className="h-px flex-1 bg-gradient-to-l from-chart-3/30 to-transparent" />
+            </div>
+
+            <AIBatchControlPanel />
+            <AISchedulingDashboard />
+            <JobQueueHealthCard />
+            <AIJobObservabilityPanel />
+            <ListingPerformanceOptimizerCard onNavigate={() => onSectionChange?.("listing-optimization-center")} />
+            <PricingIntelligenceCard />
+            <DealClosingTimelineCard />
+            <PricingAutomationCard />
+            <MarketplaceOptimizationCard />
+
+            {/* Quick Actions */}
+            <div className="grid grid-cols-2 gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-9 text-xs gap-1.5"
+                onClick={() => handleQuickAction('ai-command-center')}
+              >
+                <Zap className="h-3.5 w-3.5" />
+                AI Center
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-9 text-xs gap-1.5"
+                onClick={() => handleQuickAction('diagnostic')}
+              >
+                <Gauge className="h-3.5 w-3.5" />
+                Diagnostics
+              </Button>
+            </div>
           </div>
         </div>
       </div>
