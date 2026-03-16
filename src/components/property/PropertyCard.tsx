@@ -261,7 +261,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
                 Just Listed
               </Badge>
             )}
-            <DemandHeatBadge />
+            <DemandHeatBadge propertyId={id} />
           </div>
 
           {/* Photo count + subscription — bottom right */}
