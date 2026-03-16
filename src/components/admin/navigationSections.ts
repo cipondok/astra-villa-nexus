@@ -205,6 +205,13 @@ export const navigationSections = {
       icon: Zap,
       description: "Core opportunity scoring brain — weighted composite model with ROI, demand, undervaluation, velocity, yield, and luxury",
       badge: "New"
+    },
+    {
+      key: "price-prediction-engine",
+      label: "Price Prediction Engine",
+      icon: Brain,
+      description: "Autonomous AI valuation, price forecasting, undervaluation detection, and investor decision signals",
+      badge: "New"
     }
   ],
 
