@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Heart, MapPin, Bed, Bath, Square, Eye, Box, Star, Clock, Calendar, TrendingUp, MessageSquare, Tag, Key, Percent, Glasses, Camera, ShieldCheck } from "lucide-react";
+import DemandHeatBadge from './DemandHeatBadge';
 import Price from "@/components/ui/Price";
 import { useState } from "react";
 import PropertyDetailModal from "./PropertyDetailModal";
@@ -260,6 +261,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
                 Just Listed
               </Badge>
             )}
+            <DemandHeatBadge propertyId={id} />
           </div>
 
           {/* Photo count + subscription — bottom right */}

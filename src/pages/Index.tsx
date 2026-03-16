@@ -79,6 +79,7 @@ const MobileFloatingCTA = lazy(() => import("@/components/home/MobileFloatingCTA
 const TrustFooterStrip = lazy(() => import("@/components/home/TrustFooterStrip"));
 const WelcomeBackStrip = lazy(() => import("@/components/home/WelcomeBackStrip"));
 const RecentlyViewedStrip = lazy(() => import("@/components/home/RecentlyViewedStrip"));
+const ReferralInviteStrip = lazy(() => import("@/components/home/ReferralInviteStrip"));
 const PWAInstallPrompt = lazy(() => import("@/components/pwa/PWAInstallPrompt"));
 
 type ViewMode = 'list' | 'grid' | 'map';
@@ -1005,6 +1006,11 @@ const Index = () => {
                   </LazyRender>
                 </ScrollReveal>
               </section>
+
+              {/* ── Referral Invite Strip ── */}
+              <Suspense fallback={null}>
+                <ReferralInviteStrip />
+              </Suspense>
 
               {/* ── SECTION 9: Partner & Social Proof ── */}
               <section className="py-6 sm:py-8 bg-muted/20">
