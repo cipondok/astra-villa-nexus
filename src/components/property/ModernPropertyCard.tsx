@@ -280,7 +280,7 @@ const ModernPropertyCard = ({
 
         {/* Owner/Agent Info - Compact */}
         {ownerInfo && (
-          <div className="flex items-center gap-1.5 p-1.5 bg-gold-primary/5 rounded-lg border border-gold-primary/10">
+          <div className="flex items-center gap-1.5 p-1.5 bg-primary/5 rounded-lg border border-primary/10">
             {/* Avatar */}
             {ownerInfo.avatar_url ? (
               <img 
