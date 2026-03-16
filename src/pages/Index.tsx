@@ -1048,7 +1048,7 @@ const Index = () => {
 
                 {/* AI Recommended Properties (legacy) */}
                 <ScrollReveal direction="right" delay={0}>
-                <div className="mb-4">
+                <div className="mb-6">
                   <LazyRender minHeight="320px" fallback={
                     <div className="bg-primary/10 dark:bg-primary/5 rounded-xl shadow-sm border border-primary/15 dark:border-primary/10 p-4" style={{ minHeight: '320px' }}>
                       <div className="flex items-center gap-3 mb-4">
