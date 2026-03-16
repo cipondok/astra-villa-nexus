@@ -255,7 +255,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         <CardContent className="p-3 sm:p-4">
           {/* Price */}
           <div className="flex items-center gap-2 mb-2">
-            <p className="text-lg sm:text-xl font-bold text-primary">
+            <p className="text-lg sm:text-xl font-black text-primary drop-shadow-sm">
               <Price amount={price} />
               {listing_type === 'rent' && (
                 <span className="text-sm font-normal text-muted-foreground ml-1">/bln</span>
@@ -277,6 +277,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           <div className="flex items-center gap-1 text-muted-foreground mb-3">
             <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
             <span className="text-xs sm:text-sm truncate">{location}</span>
+            {(created_at || posted_at) && (
+              <span className="ml-auto flex items-center gap-0.5 text-[10px] text-muted-foreground flex-shrink-0">
+                <Clock className="h-3 w-3" />
+                {formatTimeAgo(posted_at || created_at!)}
+              </span>
+            )}
           </div>
           
           {/* Property Details */}
