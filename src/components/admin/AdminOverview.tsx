@@ -668,6 +668,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
               </Button>
             </div>
           </div>
+         </SectionErrorBoundary>
         </div>
       </div>
     </div>
