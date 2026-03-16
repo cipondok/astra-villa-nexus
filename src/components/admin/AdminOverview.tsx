@@ -58,6 +58,7 @@ import BuyerListingMatchCard from "./BuyerListingMatchCard";
 import PricingAutomationCard from "./PricingAutomationCard";
 import MarketCyclePredictionCard from "./MarketCyclePredictionCard";
 import DealTimingSignalCard from "./DealTimingSignalCard";
+import NationalForecastCard from "./NationalForecastCard";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
@@ -494,6 +495,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
 
           {/* Deal Timing Signals */}
           <DealTimingSignalCard />
+
+          {/* National Market Forecast */}
+          <NationalForecastCard />
 
           {/* AI Systems Status */}
           <Card className="border-border/30">
