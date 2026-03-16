@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useAdminKeyboardShortcuts } from '@/hooks/useAdminKeyboardShortcuts';
-import { useToast } from '@/hooks/use-toast';
 import {
   DndContext,
   closestCenter,
