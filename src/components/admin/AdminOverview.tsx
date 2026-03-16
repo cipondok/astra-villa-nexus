@@ -479,9 +479,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
                     recentActivity.map((activity: any, idx: number) => (
                       <motion.div
                         key={activity.id}
-                        initial={{ opacity: 0, x: -10 }}
+                        initial={isFirstRender.current ? { opacity: 0, x: -10 } : false}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: idx * 0.05 }}
+                        transition={isFirstRender.current ? { delay: idx * 0.05 } : { duration: 0 }}
                         className="flex items-center gap-2 p-2 rounded-lg border border-border/20 bg-muted/20 hover:bg-muted/40 transition-colors"
                       >
                         <div className="w-1.5 h-1.5 rounded-full bg-primary" />
