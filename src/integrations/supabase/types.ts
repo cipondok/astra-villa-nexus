@@ -33174,6 +33174,10 @@ export type Database = {
         Args: { input_phone: string }
         Returns: string
       }
+      generate_deal_timing_signals: {
+        Args: { p_limit?: number }
+        Returns: Json
+      }
       generate_error_signature: {
         Args: { error_message: string; table_name?: string }
         Returns: string
