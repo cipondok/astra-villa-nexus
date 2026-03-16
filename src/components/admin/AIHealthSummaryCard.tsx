@@ -25,10 +25,13 @@ const freshnessConfig: Record<FreshnessLevel, { color: string; dot: string }> = 
 
 interface AIHealthSummaryCardProps {
   onNavigate?: () => void;
+  /** Optional pre-fetched data from batched hook */
+  data?: AISystemHealth | null;
 }
 
-const AIHealthSummaryCard = React.memo(function AIHealthSummaryCard({ onNavigate }: AIHealthSummaryCardProps) {
-  const { data: health, isLoading } = useAISystemHealth();
+const AIHealthSummaryCard = React.memo(function AIHealthSummaryCard({ onNavigate, data: batchedData }: AIHealthSummaryCardProps) {
+  const { data: fetchedData, isLoading } = useAISystemHealth(!batchedData);
+  const health = batchedData || fetchedData;
 
   if (isLoading || !health) {
     return (

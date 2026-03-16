@@ -66,8 +66,9 @@ function AnomalyRow({ anomaly }: { anomaly: MarketAnomaly }) {
   );
 }
 
-const MarketAnomalyCard = React.memo(function MarketAnomalyCard() {
-  const { data, isLoading } = useMarketAnomalyDetector();
+const MarketAnomalyCard = React.memo(function MarketAnomalyCard({ data: batchedData }: { data?: MarketAnomalyResult | null }) {
+  const { data: fetchedData, isLoading } = useMarketAnomalyDetector(!batchedData);
+  const data = batchedData || fetchedData;
   const [expanded, setExpanded] = useState(false);
 
   if (isLoading || !data) {

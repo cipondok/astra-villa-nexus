@@ -30,10 +30,12 @@ const riskConfig = {
 
 interface LeadIntelligenceCardProps {
   onNavigate?: () => void;
+  data?: LeadIntelligenceSummary | null;
 }
 
-const LeadIntelligenceCard = React.memo(function LeadIntelligenceCard({ onNavigate }: LeadIntelligenceCardProps) {
-  const { data: intel, isLoading } = useLeadIntelligence();
+const LeadIntelligenceCard = React.memo(function LeadIntelligenceCard({ onNavigate, data: batchedData }: LeadIntelligenceCardProps) {
+  const { data: fetchedData, isLoading } = useLeadIntelligence(!batchedData);
+  const intel = batchedData || fetchedData;
 
   if (isLoading || !intel) {
     return (
