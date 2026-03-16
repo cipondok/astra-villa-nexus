@@ -61,13 +61,14 @@ interface EnhancedTreeNavigationProps {
   };
 }
 
-const SortableQuickNavItem = ({ link, isActive, onTabChange, onRemove, getBadgeColor, usageStats }: {
+const SortableQuickNavItem = ({ link, isActive, onTabChange, onRemove, getBadgeColor, usageStats, shortcutKey }: {
   link: QuickLink;
   isActive: boolean;
   onTabChange: (tab: string) => void;
   onRemove: (id: string) => void;
   getBadgeColor: (color?: string) => string;
   usageStats: Record<string, number>;
+  shortcutKey?: number;
 }) => {
   const {
     attributes,
