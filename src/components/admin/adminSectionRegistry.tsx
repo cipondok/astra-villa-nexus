@@ -125,6 +125,7 @@ export const MediaCoveragePR = lazyRetry(() => import("./MediaCoveragePR"));
 export const AHUCompanyChecker = lazyRetry(() => import("./AHUCompanyChecker"));
 export const ConciergeServiceManagement = lazyRetry(() => import("./ConciergeServiceManagement"));
 export const SamplePropertyGenerator = lazyRetry(() => import("./SamplePropertyGenerator"));
+export const BulkImageGenerator = lazyRetry(() => import("./BulkImageGenerator"));
 export const VerificationSystemSettings = lazyRetry(() => import("./settings/VerificationSystemSettings"));
 export const AuthRegistrationSettings = lazyRetry(() => import("./settings/AuthRegistrationSettings"));
 export const NearbyFacilitiesSettings = lazyRetry(() => import("./settings/NearbyFacilitiesSettings"));
