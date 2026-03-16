@@ -270,7 +270,7 @@ const DatePickerMini = ({ label, date, onSelect }: {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 const AICommandCenter = () => {
-  const { data, isLoading, refetch } = useAICommandCenter();
+  const { data, isLoading, isError, refetch, dataUpdatedAt } = useAICommandCenter();
   const [activeNav, setActiveNav] = useState<NavSection>('overview');
   const [seoRunning, setSeoRunning] = useState(false);
   const [aiOptRunning, setAiOptRunning] = useState(false);
