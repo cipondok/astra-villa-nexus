@@ -1401,6 +1401,13 @@ export const navigationSections = {
       icon: Rocket,
       description: "Investor readiness checklist — traction metrics, product signals, financial clarity, narrative, data room",
       badge: "🚀 Fundraise"
+    },
+    {
+      key: "founder-weekly-routine",
+      label: "Founder Weekly Routine",
+      icon: Calendar,
+      description: "Structured weekly operating framework — time blocks, energy management, anti-burnout rituals",
+      badge: "⏱️ Routine"
     }
   ],
 
