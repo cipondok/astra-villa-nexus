@@ -49,29 +49,29 @@ const SearchPagination = lazy(() => import("@/components/search/SearchPagination
 const PropertyMapView = lazy(() => import("@/components/search/PropertyMapView"));
 const PropertyGridView = lazy(() => import("@/components/search/PropertyGridView"));
 const ActiveFilterPills = lazy(() => import("@/components/search/ActiveFilterPills").then(m => ({ default: m.ActiveFilterPills })));
-const PropertySlideSection = lazy(() => import("@/components/property/PropertySlideSection"));
+// PropertySlideSection removed — not used in restructured flow
 const PropertiesForSaleSection = lazy(() => import("@/components/property/PropertiesForSaleSection"));
 const PropertiesForRentSection = lazy(() => import("@/components/property/PropertiesForRentSection"));
 const AstraSearchPanel = lazy(() => import("@/components/AstraSearchPanel"));
 const SearchLoadingDialog = lazy(() => import("@/components/SearchLoadingDialog").then(m => ({ default: m.SearchLoadingDialog })));
 const WhatsAppInquiryDialog = lazy(() => import("@/components/property/WhatsAppInquiryDialog"));
 const AstraVillaFeatures = lazy(() => import("@/components/home/AstraVillaFeatures"));
-const AIRecommendedProperties = lazy(() => import("@/components/property/AIRecommendedProperties"));
+// AIRecommendedProperties removed — merged into AI Opportunity Zone via SmartAIFeed + SmartRecommendations
 const SmartAIFeed = lazy(() => import("@/components/home/SmartAIFeed"));
 const SmartRecommendations = lazy(() => import("@/components/ai/SmartRecommendations"));
 const BehaviorPatternBanner = lazy(() => import("@/components/ai/BehaviorPatternBanner"));
 const DealHunterHero = lazy(() => import("@/components/home/DealHunterHero"));
-const FeaturedAdsCarousel = lazy(() => import("@/components/home/FeaturedAdsCarousel"));
+// FeaturedAdsCarousel removed — not used in restructured flow
 const MarketplaceServices = lazy(() => import("@/components/home/MarketplaceServices"));
 const PartnerLogosMarquee = lazy(() => import("@/components/home/PartnerLogosMarquee"));
 const TrendingSearchesWidget = lazy(() => import("@/components/home/TrendingSearchesWidget").then(m => ({ default: m.TrendingSearchesWidget })));
 const InvestorPathSelector = lazy(() => import("@/components/home/InvestorPathSelector"));
-const PropertySlideshow = lazy(() => import("@/components/PropertySlideshow"));
+// PropertySlideshow removed — not used in restructured flow
 const FeaturedPropertiesCarousel = lazy(() => import("@/components/home/FeaturedPropertiesCarousel"));
 const SmartCollectionsShowcase = lazy(() => import("@/components/home/SmartCollectionsV2"));
 const TrendingROIDeals = lazy(() => import("@/components/home/TrendingROIDeals"));
 const AIPriceEstimatorCTA = lazy(() => import("@/components/home/AIPriceEstimatorCTA"));
-const MarketIntelligenceCTA = lazy(() => import("@/components/home/MarketIntelligenceCTA"));
+// MarketIntelligenceCTA removed — replaced by SectionDividerCTA inline
 const EarlyInvestmentCTA = lazy(() => import("@/components/home/EarlyInvestmentCTA"));
 const SocialProofStrip = lazy(() => import("@/components/home/SocialProofStrip"));
 const SectionDividerCTA = lazy(() => import("@/components/home/SectionDividerCTA"));
@@ -658,56 +658,15 @@ const Index = () => {
           </div>
         )}
 
-        {/* Gold gradient divider between hero and content */}
-        <div className="relative h-12 sm:h-16 -mt-1 overflow-hidden" aria-hidden="true">
-          <div className="absolute inset-0 bg-gradient-to-b from-background/0 via-background to-background" />
-          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-gold-primary/20 to-transparent" />
+        {/* ═══════════════════════════════════════════════════════
+            SECTION 1: Gold Divider + Error State
+        ═══════════════════════════════════════════════════════ */}
+        <div className="relative h-8 sm:h-12 -mt-1 overflow-hidden" aria-hidden="true">
+          <div className="absolute inset-0 bg-gradient-to-b from-background/0 to-background" />
+          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold-primary/20 to-transparent" />
         </div>
 
-        {/* Featured Properties Carousel */}
-        <ScrollReveal direction="left" delay={100}>
-        <div id="featured-section">
-        <Suspense fallback={
-          <div className="py-6 sm:py-8 max-w-7xl mx-auto px-3 sm:px-4">
-            <div className="flex gap-3 overflow-hidden">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="flex-shrink-0 w-[280px] sm:w-[320px]">
-                  <div className="relative overflow-hidden h-48 bg-muted rounded-xl mb-2">
-                    <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-gold-primary/15 to-transparent" />
-                  </div>
-                  <div className="relative overflow-hidden h-4 bg-muted rounded w-3/4 mb-1">
-                    <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-gold-primary/15 to-transparent" />
-                  </div>
-                  <div className="relative overflow-hidden h-3 bg-muted rounded w-1/2">
-                    <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-gold-primary/15 to-transparent" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        }>
-          <FeaturedPropertiesCarousel />
-        </Suspense>
-        </div>
-        </ScrollReveal>
-
-        {/* AI Smart Collections */}
-        <ScrollReveal direction="right" delay={0}>
-        <LazyRender minHeight="300px" rootMargin="400px" fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto mx-3 sm:mx-4" />}>
-          <Suspense fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto mx-3 sm:mx-4" />}>
-            <SmartCollectionsShowcase />
-          </Suspense>
-        </LazyRender>
-        </ScrollReveal>
-
-        {/* AI Price Estimator CTA */}
-        <ScrollReveal direction="up" delay={50}>
-          <Suspense fallback={<div className="animate-pulse h-48 bg-muted rounded-xl max-w-5xl mx-auto mx-3 sm:mx-4" />}>
-            <AIPriceEstimatorCTA />
-          </Suspense>
-        </ScrollReveal>
-
-        {/* Error Message - Using Design Tokens */}
+        {/* Error State — always accessible */}
         {(searchError || lastError) && (
           <section className="py-2 sm:py-3">
             <div className="max-w-2xl mx-auto px-3 sm:px-4">
@@ -721,27 +680,10 @@ const Index = () => {
                   </p>
                 )}
                 <div className="flex gap-2 justify-center mt-2">
-                  <Button 
-                    onClick={() => {
-                      setSearchError(null);
-                      handleQuickSearch();
-                    }}
-                    size="sm"
-                    className="h-7 px-3 text-xs bg-primary hover:bg-primary/90"
-                  >
-                    <RefreshCw className="h-3 w-3 mr-1" />
-                    {t('indexPage.retry')}
+                  <Button onClick={() => { setSearchError(null); handleQuickSearch(); }} size="sm" className="h-7 px-3 text-xs bg-primary hover:bg-primary/90">
+                    <RefreshCw className="h-3 w-3 mr-1" />{t('indexPage.retry')}
                   </Button>
-                  <Button 
-                    onClick={() => {
-                      setSearchError(null);
-                      setSearchResults([]);
-                      setHasSearched(false);
-                    }}
-                    variant="outline"
-                    size="sm"
-                    className="h-7 px-3 text-xs"
-                  >
+                  <Button onClick={() => { setSearchError(null); setSearchResults([]); setHasSearched(false); }} variant="outline" size="sm" className="h-7 px-3 text-xs">
                     {t('indexPage.clearError')}
                   </Button>
                 </div>
@@ -750,323 +692,277 @@ const Index = () => {
           </section>
         )}
 
-        {/* AI Tools & Features */}
-        <ScrollReveal direction="right" delay={0}>
-        <div className="px-0 pt-4 sm:pt-6 bg-gradient-to-b from-hero-to via-hero-mid to-hero-end" style={{ contain: 'layout', minHeight: '120px' }}>
-          <div className="w-full">
-            <LazyRender minHeight="96px" rootMargin="400px" fallback={
-              <div className="flex gap-2 justify-center py-3" style={{ minHeight: '96px' }}>
-                <div className="flex-shrink-0 w-14 h-12 animate-pulse bg-muted rounded-lg" />
-                <div className="flex-shrink-0 w-14 h-12 animate-pulse bg-muted rounded-lg" />
-                <div className="flex-shrink-0 w-14 h-12 animate-pulse bg-muted rounded-lg" />
-                <div className="flex-shrink-0 w-14 h-12 animate-pulse bg-muted rounded-lg" />
-                <div className="flex-shrink-0 w-14 h-12 animate-pulse bg-muted rounded-lg" />
-                <div className="flex-shrink-0 w-14 h-12 animate-pulse bg-muted rounded-lg" />
-                <div className="flex-shrink-0 w-14 h-12 animate-pulse bg-muted rounded-lg" />
-                <div className="flex-shrink-0 w-14 h-12 animate-pulse bg-muted rounded-lg" />
-              </div>
-            }>
-              <AstraVillaFeatures />
-            </LazyRender>
-          </div>
-        </div>
-        </ScrollReveal>
-
-        {/* Global Investment Platform */}
-        <ScrollReveal direction="left" delay={100}>
-        <div className="px-0 pt-3 sm:pt-4 bg-gradient-to-b from-hero-end to-hero-fade" style={{ contain: 'layout', minHeight: '80px' }}>
-          <div className="w-full">
-            <LazyRender minHeight="64px" rootMargin="400px" fallback={
-              <div className="flex gap-3 justify-center py-3" style={{ minHeight: '64px' }}>
-                <div className="animate-pulse h-16 w-36 bg-muted rounded-lg" />
-                <div className="animate-pulse h-16 w-36 bg-muted rounded-lg" />
-                <div className="animate-pulse h-16 w-36 bg-muted rounded-lg" />
-              </div>
-            }>
-              <InvestorPathSelector />
-            </LazyRender>
-          </div>
-        </div>
-        </ScrollReveal>
-
-        {/* Property Display Section */}
+        {/* ═══════════════════════════════════════════════════════
+            MAIN CONTENT: Search Results or Discovery Flow
+        ═══════════════════════════════════════════════════════ */}
         <SectionErrorBoundary sectionName="Properties" fallbackMinHeight="300px">
-        <div className="px-0 py-6 sm:py-8 space-y-6 bg-gradient-to-b from-hero-fade via-hero-fade/60 to-background">
-          <div className="w-full space-y-6">
-            {hasSearched ? (
-              <section id="search-results-section" className="bg-primary/10 backdrop-blur-sm rounded-xl shadow-md border border-primary/15 dark:bg-primary/5 dark:border-primary/10">
-                <div className="p-3 sm:p-4 md:p-6">
-                  {/* Active Filter Pills */}
-                  <Suspense fallback={null}>
-                    <ActiveFilterPills
-                      filters={filters}
-                      onRemoveFilter={handleRemoveFilter}
-                      onClearAll={handleClearFilters}
-                    />
-                  </Suspense>
-                  
-                  <div className="flex items-center justify-between mb-2 sm:mb-4 md:mb-6 mt-1.5 sm:mt-2 md:mt-4">
-                    <div>
-                      <h2 className="text-sm sm:text-base md:text-2xl font-bold mb-0.5 sm:mb-1 md:mb-2 bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
-                        {t('indexPage.searchResults')}
-                      </h2>
-                      <p className="text-xs sm:text-xs md:text-sm text-muted-foreground">
-                        {isSearching ? t('indexPage.searching') : `${searchResults.length} ${t('indexPage.propertiesFound')}`}
-                        {quickSearch && (
-                          <span className="ml-1 sm:ml-2 text-primary font-medium">
-                            {t('indexPage.for')} "{quickSearch}"
-                          </span>
-                        )}
-                      </p>
-                    </div>
-                    <Suspense fallback={<div className="animate-pulse h-8 w-32 bg-muted rounded-lg" />}>
-                      <PropertyViewModeToggle 
-                        viewMode={viewMode} 
-                        onViewModeChange={(mode) => setViewMode(mode)} 
-                      />
-                    </Suspense>
-                  </div>
-                  
-                  {isSearching && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 mb-3 md:mb-4">
-                      {[...Array(6)].map((_, i) => (
-                        <div key={i} className="animate-pulse bg-muted/50 rounded-lg sm:rounded-xl h-48 sm:h-56 md:h-64 border border-border/40" 
-                          style={{ animationDelay: `${i * 100}ms` }} 
-                        />
-                      ))}
-                    </div>
-                  )}
-                  
-                  {viewMode === 'grid' && !isSearching && (
-                    <Suspense fallback={<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{[...Array(6)].map((_, i) => <div key={i} className="animate-pulse bg-muted/50 h-64 rounded-lg border border-border/40" />)}</div>}>
-                      <PropertyGridView
-                        properties={paginatedResults}
-                        onPropertyClick={handlePropertyClick}
-                      onView3D={handlePropertyClick}
-                      onSave={(property) => console.log('Save property:', property.id)}
-                      onShare={async (property) => {
-                        const success = await shareProperty({
-                          id: property.id,
-                          title: property.title,
-                          price: property.price || 0,
-                          location: property.location || property.city || '',
-                          images: property.images
-                        });
-                        if (success) {
-                          toast.success("Property link shared!");
-                        }
-                      }}
-                      onContact={(property) => {
-                        setSelectedProperty(property);
-                        setWhatsappDialogOpen(true);
-                      }}
-                    />
-                    </Suspense>
-                  )}
-
-                  {viewMode === 'list' && !isSearching && (
-                    <Suspense fallback={<div className="space-y-4">{[...Array(4)].map((_, i) => <div key={i} className="animate-pulse bg-muted/50 h-32 rounded-lg border border-border/40" />)}</div>}>
-                      <PropertyListView
-                        properties={paginatedResults}
-                        onPropertyClick={handlePropertyClick}
-                      onView3D={handlePropertyClick}
-                      onSave={(property) => console.log('Save property:', property.id)}
-                      onShare={async (property) => {
-                        const success = await shareProperty({
-                          id: property.id,
-                          title: property.title,
-                          price: property.price || 0,
-                          location: property.location || property.city || '',
-                          images: property.images
-                        });
-                        if (success) {
-                          toast.success("Property link shared!");
-                        }
-                      }}
-                      onContact={(property) => {
-                        setSelectedProperty(property);
-                        setWhatsappDialogOpen(true);
-                      }}
-                    />
-                    </Suspense>
-                  )}
-
-                  {viewMode === 'map' && !isSearching && (
-                    <Suspense fallback={<div className="animate-pulse h-96 bg-muted/50 rounded-lg border border-border/40" />}>
-                      <PropertyMapView
-                        properties={searchResults}
-                        onPropertyClick={handlePropertyClick}
-                      />
-                    </Suspense>
-                   )}
-
-                  {/* Pagination */}
-                  {!isSearching && searchResults.length > RESULTS_PER_PAGE && (
-                    <Suspense fallback={null}>
-                      <SearchPagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        totalCount={searchResults.length}
-                        pageSize={RESULTS_PER_PAGE}
-                        onPageChange={(page) => {
-                          setCurrentPage(page);
-                          document.getElementById('search-results-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }}
-                      />
-                    </Suspense>
-                  )}
-                </div>
-              </section>
-            ) : (
-              <>
-                {/* AI Behavior Pattern Banner */}
+        <div className="w-full">
+          {hasSearched ? (
+            /* ── SEARCH RESULTS MODE ── */
+            <section id="search-results-section" className="py-6 sm:py-8 px-3 sm:px-4">
+              <div className="max-w-7xl mx-auto bg-card/50 rounded-xl shadow-sm border border-border/50 p-3 sm:p-4 md:p-6">
                 <Suspense fallback={null}>
-                  <div className="mb-2 px-1">
-                    <BehaviorPatternBanner />
-                  </div>
+                  <ActiveFilterPills filters={filters} onRemoveFilter={handleRemoveFilter} onClearAll={handleClearFilters} />
                 </Suspense>
-
-                {/* Smart AI Feed - Recommended / Trending */}
-                <ScrollReveal direction="right" delay={0}>
-                <div className="mb-6">
-                  <LazyRender minHeight="280px" fallback={
-                    <div className="space-y-3 p-4" style={{ minHeight: '280px' }}>
-                      <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 bg-muted rounded-lg animate-pulse" />
-                        <div className="flex-1">
-                          <div className="h-4 bg-muted rounded w-40 mb-1.5 animate-pulse" />
-                          <div className="h-2.5 bg-muted rounded w-56 animate-pulse" />
-                        </div>
-                      </div>
+                <div className="flex items-center justify-between mb-2 sm:mb-4 md:mb-6 mt-1.5 sm:mt-2 md:mt-4">
+                  <div>
+                    <h2 className="text-sm sm:text-base md:text-2xl font-bold mb-0.5 sm:mb-1 md:mb-2 text-foreground">{t('indexPage.searchResults')}</h2>
+                    <p className="text-xs sm:text-xs md:text-sm text-muted-foreground">
+                      {isSearching ? t('indexPage.searching') : `${searchResults.length} ${t('indexPage.propertiesFound')}`}
+                      {quickSearch && <span className="ml-1 sm:ml-2 text-primary font-medium">{t('indexPage.for')} "{quickSearch}"</span>}
+                    </p>
+                  </div>
+                  <Suspense fallback={<div className="animate-pulse h-8 w-32 bg-muted rounded-lg" />}>
+                    <PropertyViewModeToggle viewMode={viewMode} onViewModeChange={(mode) => setViewMode(mode)} />
+                  </Suspense>
+                </div>
+                {isSearching && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 mb-3 md:mb-4">
+                    {[...Array(6)].map((_, i) => (
+                      <div key={i} className="animate-pulse bg-muted/50 rounded-xl h-48 sm:h-56 md:h-64 border border-border/40" style={{ animationDelay: `${i * 100}ms` }} />
+                    ))}
+                  </div>
+                )}
+                {viewMode === 'grid' && !isSearching && (
+                  <Suspense fallback={<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{[...Array(6)].map((_, i) => <div key={i} className="animate-pulse bg-muted/50 h-64 rounded-lg border border-border/40" />)}</div>}>
+                    <PropertyGridView properties={paginatedResults} onPropertyClick={handlePropertyClick} onView3D={handlePropertyClick}
+                      onSave={(property) => console.log('Save property:', property.id)}
+                      onShare={async (property) => { const success = await shareProperty({ id: property.id, title: property.title, price: property.price || 0, location: property.location || property.city || '', images: property.images }); if (success) toast.success("Property link shared!"); }}
+                      onContact={(property) => { setSelectedProperty(property); setWhatsappDialogOpen(true); }} />
+                  </Suspense>
+                )}
+                {viewMode === 'list' && !isSearching && (
+                  <Suspense fallback={<div className="space-y-4">{[...Array(4)].map((_, i) => <div key={i} className="animate-pulse bg-muted/50 h-32 rounded-lg border border-border/40" />)}</div>}>
+                    <PropertyListView properties={paginatedResults} onPropertyClick={handlePropertyClick} onView3D={handlePropertyClick}
+                      onSave={(property) => console.log('Save property:', property.id)}
+                      onShare={async (property) => { const success = await shareProperty({ id: property.id, title: property.title, price: property.price || 0, location: property.location || property.city || '', images: property.images }); if (success) toast.success("Property link shared!"); }}
+                      onContact={(property) => { setSelectedProperty(property); setWhatsappDialogOpen(true); }} />
+                  </Suspense>
+                )}
+                {viewMode === 'map' && !isSearching && (
+                  <Suspense fallback={<div className="animate-pulse h-96 bg-muted/50 rounded-lg border border-border/40" />}>
+                    <PropertyMapView properties={searchResults} onPropertyClick={handlePropertyClick} />
+                  </Suspense>
+                )}
+                {!isSearching && searchResults.length > RESULTS_PER_PAGE && (
+                  <Suspense fallback={null}>
+                    <SearchPagination currentPage={currentPage} totalPages={totalPages} totalCount={searchResults.length} pageSize={RESULTS_PER_PAGE}
+                      onPageChange={(page) => { setCurrentPage(page); document.getElementById('search-results-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} />
+                  </Suspense>
+                )}
+              </div>
+            </section>
+          ) : (
+            /* ══════════════════════════════════════════════════
+               DISCOVERY FLOW — Structured scroll journey
+            ══════════════════════════════════════════════════ */
+            <>
+              {/* ── SECTION 2: Featured Properties ── */}
+              <section id="featured-section" className="py-8 sm:py-12">
+                <ScrollReveal direction="up" delay={0}>
+                  <Suspense fallback={
+                    <div className="py-6 max-w-7xl mx-auto px-3 sm:px-4">
                       <div className="flex gap-3 overflow-hidden">
-                        {[...Array(5)].map((_, i) => (
-                          <div key={i} className="flex-shrink-0 w-[200px]">
-                            <div className="animate-pulse bg-muted h-36 rounded-xl mb-2" />
-                            <div className="animate-pulse bg-muted h-3 rounded w-3/4 mb-1" />
-                            <div className="animate-pulse bg-muted h-2.5 rounded w-1/2" />
+                        {[...Array(4)].map((_, i) => (
+                          <div key={i} className="flex-shrink-0 w-[280px] sm:w-[320px]">
+                            <div className="relative overflow-hidden h-48 bg-muted rounded-xl mb-2">
+                              <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-gold-primary/15 to-transparent" />
+                            </div>
+                            <div className="h-4 bg-muted rounded w-3/4 mb-1" />
+                            <div className="h-3 bg-muted rounded w-1/2" />
                           </div>
                         ))}
                       </div>
                     </div>
                   }>
-                    <SmartAIFeed onPropertyClick={handlePropertyClick} />
-                  </LazyRender>
-                </div>
+                    <FeaturedPropertiesCarousel />
+                  </Suspense>
                 </ScrollReveal>
+              </section>
 
-                {/* AI Deal Hunter — Hot deals & silent opportunities */}
+              {/* ── Visual breather ── */}
+              <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mx-auto max-w-5xl" aria-hidden="true" />
+
+              {/* ── SECTION 3: AI Opportunity Zone (merged intelligence modules) ── */}
+              <section className="py-10 sm:py-14 bg-muted/30" id="ai-opportunity-zone">
+                <div className="max-w-7xl mx-auto px-3 sm:px-4">
+                  {/* Zone header */}
+                  <ScrollReveal direction="up" delay={0}>
+                    <div className="text-center mb-8 sm:mb-10">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-gold-primary/15 bg-gold-primary/5 mb-3">
+                        <Sparkles className="h-3 w-3 text-gold-primary" />
+                        <span className="text-[10px] sm:text-xs font-semibold text-gold-primary uppercase tracking-[0.15em]">AI Intelligence</span>
+                      </div>
+                      <h2 className="font-playfair text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-2">
+                        Opportunity Discovery
+                      </h2>
+                      <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                        AI-curated deals, trending opportunities, and personalized picks — all in one view
+                      </p>
+                    </div>
+                  </ScrollReveal>
+
+                  {/* AI Behavior Pattern Banner */}
+                  <Suspense fallback={null}>
+                    <div className="mb-6">
+                      <BehaviorPatternBanner />
+                    </div>
+                  </Suspense>
+
+                  {/* Smart AI Feed — Recommended / Trending */}
+                  <ScrollReveal direction="up" delay={50}>
+                    <div className="mb-8">
+                      <LazyRender minHeight="260px" fallback={<div className="animate-pulse h-64 bg-muted rounded-xl" />}>
+                        <SmartAIFeed onPropertyClick={handlePropertyClick} />
+                      </LazyRender>
+                    </div>
+                  </ScrollReveal>
+
+                  {/* Deal Hunter + Trending ROI — side by side on desktop, stacked on mobile */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <ScrollReveal direction="up" delay={0}>
+                      <Suspense fallback={<div className="h-48 bg-muted/30 rounded-xl animate-pulse" />}>
+                        <DealHunterHero />
+                      </Suspense>
+                    </ScrollReveal>
+                    <ScrollReveal direction="up" delay={100}>
+                      <Suspense fallback={<div className="h-48 bg-muted/30 rounded-xl animate-pulse" />}>
+                        <TrendingROIDeals onPropertyClick={handlePropertyClick} />
+                      </Suspense>
+                    </ScrollReveal>
+                  </div>
+
+                  {/* Smart Recommendations — Personalized Picks */}
+                  <ScrollReveal direction="up" delay={0}>
+                    <Suspense fallback={<div className="h-48 bg-muted/30 rounded-xl animate-pulse" />}>
+                      <SmartRecommendations limit={6} className="shadow-sm" />
+                    </Suspense>
+                  </ScrollReveal>
+                </div>
+
+                {/* Contextual CTA after AI zone */}
+                <div className="mt-10">
+                  <Suspense fallback={null}>
+                    <SectionDividerCTA icon={Crosshair} headline="Find Undervalued Deals" description="AI detects properties priced below fair market value" ctaText="Hunt Deals" ctaRoute="/deal-finder" />
+                  </Suspense>
+                </div>
+              </section>
+
+              {/* ── SECTION 4: Smart Collections ── */}
+              <section className="py-10 sm:py-14">
                 <ScrollReveal direction="up" delay={0}>
-                <div className="mb-6">
-                  <Suspense fallback={<div className="h-40 bg-muted/30 rounded-xl animate-pulse" />}>
-                    <DealHunterHero />
-                  </Suspense>
-                </div>
-                </ScrollReveal>
-
-                {/* Removed: Duplicate SectionDividerCTA for AI Pricing — AIPriceEstimatorCTA already covers this */}
-
-                {/* Smart Recommendations - Personalized Picks */}
-                <ScrollReveal direction="left" delay={0}>
-                <div className="mb-6">
-                  <Suspense fallback={<div className="h-48 bg-muted/30 rounded-xl animate-pulse" />}>
-                    <SmartRecommendations limit={6} className="shadow-sm" />
-                  </Suspense>
-                </div>
-                </ScrollReveal>
-
-                {/* Trending & ROI Deals */}
-                <ScrollReveal direction="right" delay={0}>
-                <div className="mb-6">
-                  <Suspense fallback={<div className="h-48 bg-muted/30 rounded-xl animate-pulse" />}>
-                    <TrendingROIDeals onPropertyClick={handlePropertyClick} />
-                  </Suspense>
-                </div>
-                </ScrollReveal>
-
-                {/* Mid-page CTA: Deal Finder */}
-                <Suspense fallback={null}>
-                  <SectionDividerCTA
-                    icon={Crosshair}
-                    headline="Find Undervalued Deals"
-                    description="AI detects properties priced below fair market value"
-                    ctaText="Hunt Deals"
-                    ctaRoute="/deal-finder"
-                  />
-                </Suspense>
-
-                {/* Removed: Legacy AIRecommendedProperties — SmartAIFeed + SmartRecommendations already provide AI recommendations */}
-
-                {/* Trending Searches */}
-                <ScrollReveal direction="left" delay={100}>
-                <div>
-                  <LazyRender minHeight="0px" fallback={<div className="animate-pulse h-48 bg-muted rounded-xl" />}>
-                    <TrendingSearchesWidget 
-                      onSearchClick={(trendFilters) => {
-                        setFilters(prev => ({ ...prev, ...trendFilters }));
-                        setHasSearched(true);
-                      }}
-                    />
+                  <LazyRender minHeight="280px" rootMargin="400px" fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto px-3 sm:px-4" />}>
+                    <Suspense fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto px-3 sm:px-4" />}>
+                      <SmartCollectionsShowcase />
+                    </Suspense>
                   </LazyRender>
-                </div>
+                </ScrollReveal>
+              </section>
+
+              {/* ── Visual breather ── */}
+              <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mx-auto max-w-5xl" aria-hidden="true" />
+
+              {/* ── SECTION 5: Investor Path Selector ── */}
+              <section className="py-8 sm:py-12 bg-muted/20">
+                <ScrollReveal direction="up" delay={0}>
+                  <LazyRender minHeight="64px" rootMargin="400px" fallback={
+                    <div className="flex gap-3 justify-center py-3"><div className="animate-pulse h-16 w-36 bg-muted rounded-lg" /><div className="animate-pulse h-16 w-36 bg-muted rounded-lg" /><div className="animate-pulse h-16 w-36 bg-muted rounded-lg" /></div>
+                  }>
+                    <InvestorPathSelector />
+                  </LazyRender>
+                </ScrollReveal>
+              </section>
+
+              {/* ── SECTION 6: AI Tools Preview ── */}
+              <section className="py-8 sm:py-10">
+                <ScrollReveal direction="up" delay={0}>
+                  <div className="max-w-7xl mx-auto">
+                    <LazyRender minHeight="96px" rootMargin="400px" fallback={
+                      <div className="flex gap-2 justify-center py-3" style={{ minHeight: '96px' }}>
+                        {[...Array(6)].map((_, i) => <div key={i} className="flex-shrink-0 w-14 h-12 animate-pulse bg-muted rounded-lg" />)}
+                      </div>
+                    }>
+                      <AstraVillaFeatures />
+                    </LazyRender>
+                  </div>
                 </ScrollReveal>
 
-                {/* Properties for Sale */}
-                <ScrollReveal direction="right" delay={0}>
-                <div id="sale-section" className="mb-6">
+                {/* AI Price Estimator CTA */}
+                <div className="mt-8">
+                  <ScrollReveal direction="up" delay={50}>
+                    <Suspense fallback={<div className="animate-pulse h-48 bg-muted rounded-xl max-w-5xl mx-auto px-3 sm:px-4" />}>
+                      <AIPriceEstimatorCTA />
+                    </Suspense>
+                  </ScrollReveal>
+                </div>
+              </section>
+
+              {/* ── Visual breather ── */}
+              <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mx-auto max-w-5xl" aria-hidden="true" />
+
+              {/* ── SECTION 7: Properties for Sale & Rent ── */}
+              <section className="py-10 sm:py-14 bg-muted/20">
+                <div className="space-y-8">
+                  <ScrollReveal direction="up" delay={0}>
+                    <div id="sale-section">
+                      <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
+                        <PropertiesForSaleSection language={language} onPropertyClick={handlePropertyClick} />
+                      </LazyRender>
+                    </div>
+                  </ScrollReveal>
+
+                  <ScrollReveal direction="up" delay={50}>
+                    <div id="rent-section">
+                      <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
+                        <PropertiesForRentSection language={language} onPropertyClick={handlePropertyClick} />
+                      </LazyRender>
+                    </div>
+                  </ScrollReveal>
+
+                  {/* Trending Searches — contextual discovery after listings */}
+                  <ScrollReveal direction="up" delay={0}>
+                    <LazyRender minHeight="0px" fallback={<div className="animate-pulse h-48 bg-muted rounded-xl" />}>
+                      <TrendingSearchesWidget onSearchClick={(trendFilters) => { setFilters(prev => ({ ...prev, ...trendFilters })); setHasSearched(true); }} />
+                    </LazyRender>
+                  </ScrollReveal>
+                </div>
+
+                {/* Market Intelligence CTA */}
+                <div className="mt-8">
+                  <Suspense fallback={null}>
+                    <SectionDividerCTA icon={BarChart3} headline="Track Market Trends" description="Real-time price indices and investment analytics" ctaText="View Insights" ctaRoute="/analytics" variant="accent" />
+                  </Suspense>
+                </div>
+              </section>
+
+              {/* ── SECTION 8: Marketplace Services ── */}
+              <section className="py-10 sm:py-14" id="marketplace-services-section">
+                <ScrollReveal direction="up" delay={0}>
                   <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
-                    <PropertiesForSaleSection language={language} onPropertyClick={handlePropertyClick} />
+                    <MarketplaceServices />
                   </LazyRender>
-                </div>
                 </ScrollReveal>
+              </section>
 
-                {/* Properties for Rent */}
-                <ScrollReveal direction="left" delay={100}>
-                <div id="rent-section" className="mb-6">
-                  <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
-                    <PropertiesForRentSection language={language} onPropertyClick={handlePropertyClick} />
+              {/* ── SECTION 9: Partner & Social Proof ── */}
+              <section className="py-6 sm:py-8 bg-muted/20">
+                <ScrollReveal direction="up" delay={0}>
+                  <LazyRender minHeight="80px" fallback={null}>
+                    <PartnerLogosMarquee />
                   </LazyRender>
-                </div>
                 </ScrollReveal>
+              </section>
 
-                {/* Mid-page CTA: Market Intelligence */}
-                <Suspense fallback={null}>
-                  <SectionDividerCTA
-                    icon={BarChart3}
-                    headline="Track Market Trends"
-                    description="Real-time price indices and investment analytics"
-                    ctaText="View Insights"
-                    ctaRoute="/analytics"
-                    variant="accent"
-                  />
-                </Suspense>
-
-                {/* Early Investment CTA */}
-                <ScrollReveal direction="up" delay={50}>
+              {/* ── SECTION 10: Final Conversion CTA ── */}
+              <section className="py-10 sm:py-14">
+                <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={<div className="animate-pulse h-40 bg-muted rounded-xl max-w-5xl mx-auto" />}>
                     <EarlyInvestmentCTA />
                   </Suspense>
                 </ScrollReveal>
-
-                {/* Removed: Duplicate MarketIntelligenceCTA — SectionDividerCTA (Market Intelligence) already covers this */}
-
-                {/* Marketplace Services */}
-                <ScrollReveal direction="right" delay={0}>
-                <div id="marketplace-services-section" className="mt-8">
-                  <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
-                    <MarketplaceServices />
-                  </LazyRender>
-                </div>
-                </ScrollReveal>
-
-                {/* Partner Logos Marquee */}
-                <ScrollReveal direction="left" delay={100}>
-                <LazyRender minHeight="80px" fallback={null}>
-                  <PartnerLogosMarquee />
-                </LazyRender>
-                </ScrollReveal>
-              </>
-            )}
-          </div>
+              </section>
+            </>
+          )}
         </div>
         </SectionErrorBoundary>
         
