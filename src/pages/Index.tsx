@@ -1029,17 +1029,7 @@ const Index = () => {
                 </div>
                 </ScrollReveal>
 
-                {/* Mid-page CTA: AI Pricing */}
-                <Suspense fallback={null}>
-                  <SectionDividerCTA
-                    icon={Calculator}
-                    headline="Know Your Property's True Value"
-                    description="AI-powered pricing with market comparables"
-                    ctaText="Get Estimate"
-                    ctaRoute="/ai-pricing"
-                    variant="accent"
-                  />
-                </Suspense>
+                {/* Removed: Duplicate SectionDividerCTA for AI Pricing — AIPriceEstimatorCTA already covers this */}
 
                 {/* Smart Recommendations - Personalized Picks */}
                 <ScrollReveal direction="left" delay={0}>
