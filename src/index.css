@@ -1790,6 +1790,246 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════════════
+   AI INTELLIGENCE UI COMPONENT SYSTEM
+   Premium analytics terminal design language
+   ═══════════════════════════════════════════════════════ */
+
+/* Intelligence Card — glassmorphic panel for AI data */
+.intel-card {
+  background: linear-gradient(145deg,
+    hsl(var(--card)) 0%,
+    hsl(var(--card) / 0.95) 100%);
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--intel-radius);
+  box-shadow: var(--shadow-intel);
+  transition: box-shadow 250ms ease, border-color 250ms ease;
+}
+.intel-card:hover,
+.intel-card[data-active="true"] {
+  box-shadow: var(--shadow-intel-active);
+  border-color: hsl(var(--intel-blue) / 0.25);
+}
+.dark .intel-card {
+  background: linear-gradient(145deg,
+    hsl(210 45% 12% / 0.9) 0%,
+    hsl(200 40% 8% / 0.85) 100%);
+  border-color: hsl(var(--border));
+}
+.dark .intel-card:hover,
+.dark .intel-card[data-active="true"] {
+  border-color: hsl(var(--intel-blue) / 0.3);
+}
+
+/* Intelligence Card — Tier 1 (Active Signal, gold ring) */
+.intel-card-t1 {
+  box-shadow: var(--shadow-intel-active);
+  border-color: hsl(var(--gold-primary) / 0.3);
+}
+.dark .intel-card-t1 {
+  box-shadow: var(--shadow-intel-active), 0 0 20px hsl(var(--gold-primary) / 0.08);
+  border-color: hsl(var(--gold-primary) / 0.35);
+}
+
+/* Intelligence Card — Tier 2 (Standard intelligence) */
+.intel-card-t2 {
+  box-shadow: 0 2px 12px hsl(var(--foreground) / 0.04);
+}
+
+/* Score Ring — circular progress for opportunity/deal scores */
+.score-ring {
+  --ring-size: 64px;
+  --ring-stroke: 5px;
+  width: var(--ring-size);
+  height: var(--ring-size);
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.score-ring svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.score-ring circle {
+  fill: none;
+  stroke-width: var(--ring-stroke);
+  stroke-linecap: round;
+}
+.score-ring .ring-track {
+  stroke: hsl(var(--muted));
+}
+.score-ring .ring-fill {
+  stroke: hsl(var(--intel-blue));
+  transition: stroke-dashoffset 600ms cubic-bezier(0.33, 1, 0.68, 1);
+}
+.score-ring[data-signal="success"] .ring-fill { stroke: hsl(var(--intel-success)); }
+.score-ring[data-signal="warning"] .ring-fill { stroke: hsl(var(--intel-warning)); }
+.score-ring[data-signal="danger"] .ring-fill  { stroke: hsl(var(--intel-danger)); }
+.score-ring[data-signal="elite"] .ring-fill {
+  stroke: url(#elite-gradient);
+  filter: drop-shadow(0 0 6px hsl(var(--intel-blue) / 0.4));
+}
+
+/* Neon Progress Bar — horizontal indicator for heat/confidence */
+.neon-progress {
+  height: 6px;
+  border-radius: 3px;
+  background: hsl(var(--muted));
+  overflow: hidden;
+  position: relative;
+}
+.neon-progress .neon-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, hsl(var(--intel-blue)), hsl(var(--intel-success)));
+  transition: width 500ms cubic-bezier(0.33, 1, 0.68, 1);
+  position: relative;
+}
+.neon-progress .neon-fill::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: -2px;
+  bottom: -2px;
+  width: 12px;
+  border-radius: 50%;
+  background: hsl(var(--intel-blue));
+  box-shadow: 0 0 8px hsl(var(--intel-blue) / 0.5);
+}
+
+/* Heat Badge — colored indicator for market heat level */
+.heat-badge {
+  @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold;
+}
+.heat-badge[data-heat="cold"]  { @apply bg-heat-cold/15 text-heat-cold; }
+.heat-badge[data-heat="cool"]  { @apply bg-heat-cool/15 text-heat-cool; }
+.heat-badge[data-heat="warm"]  { @apply bg-heat-warm/15 text-heat-warm; }
+.heat-badge[data-heat="hot"]   { @apply bg-heat-hot/15 text-heat-hot; }
+.heat-badge[data-heat="fire"]  { @apply bg-heat-fire/15 text-heat-fire; }
+
+/* Signal Dot — live status indicator */
+.signal-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: relative;
+}
+.signal-dot::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  animation: signal-breathe 3s ease-in-out infinite;
+}
+.signal-dot[data-status="live"] {
+  background: hsl(var(--intel-success));
+}
+.signal-dot[data-status="live"]::after {
+  background: hsl(var(--intel-success) / 0.3);
+}
+.signal-dot[data-status="warning"] {
+  background: hsl(var(--intel-warning));
+}
+.signal-dot[data-status="warning"]::after {
+  background: hsl(var(--intel-warning) / 0.3);
+}
+.signal-dot[data-status="critical"] {
+  background: hsl(var(--intel-danger));
+}
+.signal-dot[data-status="critical"]::after {
+  background: hsl(var(--intel-danger) / 0.3);
+}
+
+/* Trend Arrow — animated direction indicator */
+.trend-arrow {
+  @apply inline-flex items-center gap-1 text-xs font-semibold;
+  transition: transform 200ms ease;
+}
+.trend-arrow[data-direction="up"] {
+  color: hsl(var(--intel-success));
+}
+.trend-arrow[data-direction="down"] {
+  color: hsl(var(--intel-danger));
+}
+.trend-arrow[data-direction="flat"] {
+  color: hsl(var(--muted-foreground));
+}
+
+/* Elite Deal Highlight — premium opportunity emphasis */
+.elite-highlight {
+  position: relative;
+  overflow: hidden;
+}
+.elite-highlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg,
+    hsl(var(--intel-blue) / 0.06) 0%,
+    hsl(var(--intel-success) / 0.04) 50%,
+    hsl(var(--gold-primary) / 0.06) 100%);
+  pointer-events: none;
+}
+.dark .elite-highlight::before {
+  background: linear-gradient(135deg,
+    hsl(var(--intel-blue) / 0.1) 0%,
+    hsl(var(--intel-success) / 0.06) 50%,
+    hsl(var(--gold-primary) / 0.08) 100%);
+}
+
+/* Intelligence Shimmer Loader — skeleton for AI computations */
+@keyframes intel-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+.intel-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: hsl(var(--muted));
+  border-radius: var(--intel-radius);
+}
+.intel-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    hsl(var(--intel-blue) / 0.08) 50%,
+    transparent 100%);
+  animation: intel-shimmer 2s ease-in-out infinite;
+}
+
+/* Command Palette Overlay — intelligence search terminal */
+.command-overlay {
+  background: hsl(var(--background) / 0.6);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+}
+.dark .command-overlay {
+  background: hsl(210 55% 5% / 0.7);
+}
+
+.command-surface {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--intel-radius-lg);
+  box-shadow: var(--shadow-intel-active);
+  max-width: 640px;
+  width: 100%;
+}
+.dark .command-surface {
+  background: linear-gradient(145deg,
+    hsl(210 45% 13% / 0.95) 0%,
+    hsl(200 40% 9% / 0.9) 100%);
+  border-color: hsl(var(--intel-blue) / 0.15);
+}
+
+/* ═══════════════════════════════════════════════════════
    STANDARDIZED INTERACTION UTILITIES
    Premium micro-interaction tokens for consistent motion
    ═══════════════════════════════════════════════════════ */
