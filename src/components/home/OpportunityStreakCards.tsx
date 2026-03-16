@@ -2,13 +2,14 @@ import { useState, useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import { Flame, Clock, ChevronRight, Zap, TrendingUp } from 'lucide-react';
+import { Flame, Clock, ChevronRight, Zap, TrendingUp, MapPin, Bed, Bath, Maximize } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import Price from '@/components/ui/Price';
 import { useDefaultPropertyImage } from '@/hooks/useDefaultPropertyImage';
+import OptimizedPropertyImage from '@/components/property/OptimizedPropertyImage';
 
 /** Countdown timer hook */
 function useCountdown(targetHour: number) {
@@ -35,16 +36,14 @@ function useCountdown(targetHour: number) {
 
 function StreakCard({ property, index }: { property: any; index: number }) {
   const navigate = useNavigate();
-  const defaultImage = useDefaultPropertyImage();
+  const { getPropertyImage } = useDefaultPropertyImage();
 
-  const imageUrl = property.thumbnail_url
-    || (Array.isArray(property.images) && property.images[0])
-    || defaultImage;
+  const imageUrl = getPropertyImage(property.images, property.thumbnail_url);
 
   // Derive a deal score from property ID hash
   const hash = (property.id || '').split('').reduce((a: number, c: string) => a + c.charCodeAt(0), 0);
-  const dealScore = 70 + (hash % 25); // 70-94
-  const discountPct = 5 + (hash % 18); // 5-22%
+  const dealScore = 70 + (hash % 25);
+  const discountPct = 5 + (hash % 18);
 
   return (
     <motion.div
@@ -52,49 +51,75 @@ function StreakCard({ property, index }: { property: any; index: number }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08, duration: 0.3 }}
       onClick={() => navigate(`/properties/${property.id}`)}
-      className={cn(
-        'flex-shrink-0 w-[260px] sm:w-[280px] rounded-xl overflow-hidden cursor-pointer',
-        'border border-border/50 bg-card shadow-sm',
-        'hover:shadow-md hover:border-primary/30 transition-all duration-200',
-        'card-hover-lift'
-      )}
+      className="flex-shrink-0 w-[260px] sm:w-[290px] md:w-[310px] lg:w-[330px] snap-start group/card cursor-pointer"
     >
-      {/* Image */}
-      <div className="relative h-36 overflow-hidden">
-        <img
-          src={imageUrl}
-          alt={property.title}
-          className="w-full h-full object-cover"
-          loading="lazy"
-        />
-        {/* Overlay badges */}
-        <div className="absolute top-2 left-2 flex items-center gap-1.5">
-          <Badge className="bg-destructive/90 text-destructive-foreground text-[10px] font-bold px-1.5 py-0 h-5 border-0">
-            -{discountPct}%
-          </Badge>
-          <Badge className="bg-primary/90 text-primary-foreground text-[10px] font-bold px-1.5 py-0 h-5 border-0">
-            Score {dealScore}
-          </Badge>
-        </div>
-        <div className="absolute bottom-0 inset-x-0 h-12 bg-gradient-to-t from-black/60 to-transparent" />
-        <p className="absolute bottom-2 left-2 text-[11px] text-white font-medium truncate max-w-[90%]">
-          {property.city || property.location || 'Indonesia'}
-        </p>
-      </div>
+      <div className="relative rounded-xl overflow-hidden bg-card border border-border shadow-sm card-hover-lift will-change-transform">
+        {/* Image — same aspect ratio as Featured */}
+        <div className="relative aspect-[16/10] overflow-hidden">
+          <OptimizedPropertyImage
+            src={imageUrl}
+            alt={property.title}
+            sizes="(max-width: 640px) 260px, (max-width: 1024px) 310px, 330px"
+            className="img-hover-zoom"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-      {/* Content */}
-      <div className="p-3 space-y-1.5">
-        <p className="text-sm font-semibold text-foreground line-clamp-1">
-          {property.title}
-        </p>
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-bold text-primary">
-            <Price amount={property.price || 0} />
-          </span>
-          <span className="text-[10px] text-muted-foreground flex items-center gap-0.5">
-            <TrendingUp className="h-3 w-3" />
-            AI Pick
-          </span>
+          {/* Badges — unified style */}
+          <div className="absolute top-2 left-2 flex gap-1.5">
+            <Badge className="text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full text-white border-0 shadow-md bg-destructive/90">
+              -{discountPct}%
+            </Badge>
+            <Badge className="text-[10px] sm:text-xs px-2 py-0.5 bg-black/40 backdrop-blur-md text-white border-white/20 rounded-full">
+              Score {dealScore}
+            </Badge>
+          </div>
+
+          {/* Price on image — same style as Featured */}
+          <div className="absolute bottom-2 left-2">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md text-white font-black text-sm sm:text-base shadow-xl border border-white/10">
+              <Price amount={property.price || 0} short showFlag={false} />
+            </span>
+          </div>
+        </div>
+
+        {/* Content — same layout as Featured */}
+        <div className="p-3 sm:p-4 space-y-2">
+          <h3 className="text-sm sm:text-[15px] font-semibold text-foreground line-clamp-1 leading-snug group-hover/card:text-primary transition-colors">
+            {property.title}
+          </h3>
+
+          <div className="flex items-center gap-1 text-muted-foreground">
+            <MapPin className="h-3 w-3 flex-shrink-0" />
+            <span className="text-xs truncate">
+              {property.city || property.location || 'Indonesia'}
+            </span>
+            <span className="ml-auto text-[10px] text-primary flex items-center gap-0.5 font-medium">
+              <TrendingUp className="h-3 w-3" />
+              AI Pick
+            </span>
+          </div>
+
+          {/* Features */}
+          <div className="flex items-center gap-3 pt-2 border-t border-border/40">
+            {property.bedrooms != null && property.bedrooms > 0 && (
+              <div className="flex items-center gap-1 text-muted-foreground">
+                <Bed className="h-3.5 w-3.5" />
+                <span className="text-xs font-medium">{property.bedrooms}</span>
+              </div>
+            )}
+            {property.bathrooms != null && property.bathrooms > 0 && (
+              <div className="flex items-center gap-1 text-muted-foreground">
+                <Bath className="h-3.5 w-3.5" />
+                <span className="text-xs font-medium">{property.bathrooms}</span>
+              </div>
+            )}
+            {property.area_sqm != null && property.area_sqm > 0 && (
+              <div className="flex items-center gap-1 text-muted-foreground">
+                <Maximize className="h-3.5 w-3.5" />
+                <span className="text-xs font-medium">{property.area_sqm}m²</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </motion.div>
