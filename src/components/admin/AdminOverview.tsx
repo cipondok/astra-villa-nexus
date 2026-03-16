@@ -75,14 +75,60 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
     }
   }, [onSectionChange]);
 
-  // Generate deterministic sparkline from a seed value (7-day trend)
-  const makeSpark = useCallback((current: number, seed: number = 0): number[] => {
-    const base = Math.max(current * 0.7, 1);
-    return Array.from({ length: 7 }, (_, i) => {
-      const noise = Math.sin((seed + 1) * (i + 1) * 1.7) * 0.15;
-      return Math.round(base * (0.85 + (i / 6) * 0.15 + noise));
-    });
-  }, []);
+  // Fetch real 7-day trend data for sparklines
+  const { data: sparkTrends } = useQuery({
+    queryKey: ['admin-spark-trends-7d'],
+    queryFn: async () => {
+      const days = Array.from({ length: 7 }, (_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - (6 - i));
+        d.setHours(0, 0, 0, 0);
+        return d;
+      });
+
+      const [usersRes, propsRes, vendorsRes, viewsRes, activeRes] = await Promise.all(
+        [
+          // Users created per day
+          Promise.all(days.map(d =>
+            supabase.from('profiles').select('id', { count: 'exact', head: true })
+              .lte('created_at', new Date(d.getTime() + 86400000).toISOString())
+              .then(r => r.count || 0)
+          )),
+          // Properties per day
+          Promise.all(days.map(d =>
+            supabase.from('properties').select('id', { count: 'exact', head: true })
+              .lte('created_at', new Date(d.getTime() + 86400000).toISOString())
+              .then(r => r.count || 0)
+          )),
+          // Vendors per day
+          Promise.all(days.map(d =>
+            supabase.from('vendor_business_profiles').select('id', { count: 'exact', head: true })
+              .eq('is_verified', true)
+              .lte('created_at', new Date(d.getTime() + 86400000).toISOString())
+              .then(r => r.count || 0)
+          )),
+          // Page views per day
+          Promise.all(days.map(d =>
+            supabase.from('web_analytics').select('id', { count: 'exact', head: true })
+              .gte('created_at', d.toISOString())
+              .lt('created_at', new Date(d.getTime() + 86400000).toISOString())
+              .then(r => r.count || 0)
+          )),
+          // Active users per day
+          Promise.all(days.map(d =>
+            supabase.from('user_activity_logs').select('id', { count: 'exact', head: true })
+              .gte('created_at', d.toISOString())
+              .lt('created_at', new Date(d.getTime() + 86400000).toISOString())
+              .then(r => r.count || 0)
+          )),
+        ]
+      );
+
+      return { users: usersRes, properties: propsRes, vendors: vendorsRes, views: viewsRes, active: activeRes };
+    },
+    staleTime: 5 * 60 * 1000,
+    refetchInterval: 5 * 60 * 1000,
+  });
 
   // Batched AI intelligence data
   const { data: aiData } = useAICommandCenterData();
