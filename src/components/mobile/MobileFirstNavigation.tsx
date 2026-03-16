@@ -10,6 +10,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNotifications } from '@/contexts/NotificationContext';
+import { haptic } from '@/utils/haptics';
 
 /**
  * Thumb-Zone Optimized Mobile Navigation
