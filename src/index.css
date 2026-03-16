@@ -242,6 +242,13 @@ html, body {
     --titanium-light: 200 30% 94%;
     --titanium-white: 0 0% 100%;
     --samsung-blue-primary: 200 100% 48%;
+
+    /* Chart / Data-Viz Colors - Light Mode */
+    --chart-1: 142 71% 40%;   /* Green - success / positive */
+    --chart-2: 217 91% 55%;   /* Blue - info / secondary */
+    --chart-3: 38 92% 50%;    /* Amber - warning / caution */
+    --chart-4: 270 70% 55%;   /* Purple - neutral / highlight */
+    --chart-5: 346 77% 52%;   /* Rose - accent / contrast */
   }
 
   .dark {
