@@ -846,7 +846,6 @@ const PropertyImageManager = () => {
               </div>
             </div>
           )}
-          )}
         </CardContent>
       </Card>
 
