@@ -285,13 +285,6 @@ const EnhancedTreeNavigation = ({ activeTab, onTabChange, headerCounts }: Enhanc
     onTabChange(tab);
   }, [onTabChange]);
 
-  // Keyboard shortcuts for quick nav items (1–9)
-  useAdminKeyboardShortcuts({
-    items: displayQuickLinks.map(ql => ({ id: ql.id, label: ql.label })),
-    onNavigate: handleTabChange,
-    enabled: !isEditMode,
-  });
-
   const getAllLinks = (nodes: TreeNode[]): TreeNode[] => {
     const links: TreeNode[] = [];
     nodes.forEach(node => {
