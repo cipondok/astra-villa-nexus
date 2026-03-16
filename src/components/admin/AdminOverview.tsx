@@ -426,44 +426,55 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           <Card className="border-border bg-card">
             <CardHeader className="p-3 pb-2">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
-                  <TrendingUp className="h-3.5 w-3.5" /> Traffic (12h)
+                <CardTitle className="text-sm flex items-center gap-1.5 text-foreground font-semibold">
+                  <TrendingUp className="h-4 w-4 text-primary" /> Traffic (12h)
                 </CardTitle>
                 <div className="flex items-center gap-2">
-                  {trafficAgo && <span className="text-[9px] text-muted-foreground/60">↻ {trafficAgo}</span>}
-                  <Badge variant="secondary" className="text-[10px] h-5 px-2">Live</Badge>
+                  {trafficAgo && <span className="text-[10px] text-muted-foreground">↻ {trafficAgo}</span>}
+                  <Badge variant="secondary" className="text-[10px] h-5 px-2 bg-chart-1/10 text-chart-1 border-chart-1/30">● Live</Badge>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="p-3 pt-0">
-              <ResponsiveContainer width="100%" height={96}>
-                <BarChart data={hourlyTraffic || []} margin={{ top: 4, right: 0, left: -20, bottom: 0 }}>
+              <ResponsiveContainer width="100%" height={120}>
+                <BarChart data={hourlyTraffic || []} margin={{ top: 8, right: 4, left: -16, bottom: 0 }}>
                   <XAxis 
                     dataKey="hour" 
-                    tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} 
-                    axisLine={false} 
+                    tick={{ fontSize: 11, fill: 'hsl(var(--foreground))', fontWeight: 500 }} 
+                    axisLine={{ stroke: 'hsl(var(--border))' }}
                     tickLine={false}
                     interval={1}
                   />
-                  <YAxis hide />
+                  <YAxis 
+                    tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
+                    axisLine={false}
+                    tickLine={false}
+                    width={30}
+                  />
                   <RechartsTooltip
-                    cursor={{ fill: 'hsl(var(--accent) / 0.3)' }}
+                    cursor={{ fill: 'hsl(var(--muted) / 0.5)' }}
                     contentStyle={{
                       background: 'hsl(var(--popover))',
                       border: '1px solid hsl(var(--border))',
                       borderRadius: '8px',
                       fontSize: '12px',
+                      fontWeight: 500,
                       color: 'hsl(var(--popover-foreground))',
-                      padding: '6px 10px',
+                      padding: '8px 12px',
+                      boxShadow: '0 4px 12px hsl(var(--foreground) / 0.1)',
                     }}
                     formatter={(value: number) => [`${value} activities`, 'Count']}
                     labelFormatter={(label) => `Hour: ${label}`}
                   />
-                  <Bar dataKey="count" radius={[3, 3, 0, 0]} maxBarSize={20}>
+                  <Bar dataKey="count" radius={[4, 4, 0, 0]} maxBarSize={24}>
                     {(hourlyTraffic || []).map((entry, index) => (
                       <Cell 
                         key={`cell-${index}`} 
-                        fill={entry.count === maxTraffic ? 'hsl(var(--primary))' : 'hsl(var(--primary) / 0.5)'}
+                        fill={entry.count === maxTraffic 
+                          ? 'hsl(var(--primary))' 
+                          : 'hsl(var(--primary) / 0.35)'}
+                        stroke={entry.count === maxTraffic ? 'hsl(var(--primary))' : 'transparent'}
+                        strokeWidth={1}
                       />
                     ))}
                   </Bar>
