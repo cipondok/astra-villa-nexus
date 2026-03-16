@@ -276,7 +276,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
             </ScrollArea>
           </div>
         )}
-      </div>
+      </nav>
     </>
   );
 }
