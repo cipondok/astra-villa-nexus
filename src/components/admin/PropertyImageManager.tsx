@@ -821,7 +821,7 @@ const PropertyImageManager = () => {
                 disabled={healthChecking || allImageUrls.length === 0}
               >
                 {healthChecking ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
-                {healthChecking ? `Checking ${checkedCount}/${allImageUrls.length}...` : "Check This Page"}
+                {healthChecking ? `Checking ${healthProgress.current}/${healthProgress.total}...` : "Check This Page"}
               </Button>
             </div>
           </div>
