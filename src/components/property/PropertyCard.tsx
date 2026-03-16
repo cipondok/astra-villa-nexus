@@ -262,18 +262,18 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             )}
           </div>
 
-          {/* Photo count — bottom right confidence cue */}
-          {photoCount > 1 && (
-            <div className="absolute bottom-2.5 right-2.5 z-10 flex items-center gap-1 px-2 py-1 rounded-md bg-black/50 backdrop-blur-sm text-white text-[10px] font-medium">
-              <Camera className="h-3 w-3" />
-              <span>{photoCount}</span>
-            </div>
-          )}
-          {owner_subscription_type && owner_subscription_type !== 'free' && (
-            <div className="absolute bottom-2.5 right-2.5 z-10">
+          {/* Photo count + subscription — bottom right */}
+          <div className="absolute bottom-2.5 right-2.5 z-10 flex items-center gap-1.5">
+            {owner_subscription_type && owner_subscription_type !== 'free' && (
               <OwnerSubscriptionBadge subscriptionType={owner_subscription_type} />
-            </div>
-          )}
+            )}
+            {photoCount > 1 && (
+              <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-black/50 backdrop-blur-sm text-white text-[10px] font-medium">
+                <Camera className="h-3 w-3" />
+                <span>{photoCount}</span>
+              </div>
+            )}
+          </div>
 
           {/* Trust Badges - Bottom Left */}
           <div className="absolute bottom-2.5 left-2.5 z-10">
