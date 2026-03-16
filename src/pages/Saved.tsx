@@ -9,6 +9,7 @@ import CompactPropertyCard from '@/components/property/CompactPropertyCard';
 import PropertyCardSkeleton from '@/components/property/PropertyCardSkeleton';
 import { useFavorites } from '@/hooks/useFavorites';
 import { motion } from 'framer-motion';
+import { SEOHead } from '@/components/SEOHead';
 
 const Saved = () => {
   const { user } = useAuth();
