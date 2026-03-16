@@ -99,8 +99,7 @@ import {
   ScanEye,
   Handshake,
   Presentation,
-  MapPin,
-  User
+  MapPin
 } from "lucide-react";
 
 export interface NavigationSection {
