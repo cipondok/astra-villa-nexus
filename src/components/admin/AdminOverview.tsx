@@ -175,7 +175,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
   });
 
   // Fetch system health + AI subsystem status
-  const { data: systemHealth } = useQuery({
+  const { data: systemHealth, dataUpdatedAt: healthUpdatedAt } = useQuery({
     queryKey: ['system-health-overview'],
     queryFn: async () => {
       const startTime = Date.now();
