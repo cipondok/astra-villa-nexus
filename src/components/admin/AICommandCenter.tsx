@@ -1510,16 +1510,16 @@ const AICommandCenter = () => {
                   <Panel title="Query Categories" icon={Radar}>
                     {searchAnalytics.categoryBreakdown.length > 0 ? (
                       <div className="flex items-center justify-center gap-6">
-                        <ResponsiveContainer width={130} height={130}>
-                          <PieChart>
-                            <Pie data={searchAnalytics.categoryBreakdown} cx="50%" cy="50%" innerRadius={36} outerRadius={56} dataKey="count" stroke="hsl(var(--background))" strokeWidth={3}>
+                        <div className="w-[130px] h-[130px] shrink-0">
+                          <PieChart width={130} height={130}>
+                            <Pie data={searchAnalytics.categoryBreakdown} cx={65} cy={65} innerRadius={36} outerRadius={56} dataKey="count" stroke="hsl(var(--background))" strokeWidth={3}>
                               {searchAnalytics.categoryBreakdown.map((entry, i) => (
                                 <Cell key={i} fill={entry.fill} />
                               ))}
                             </Pie>
                             <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
                           </PieChart>
-                        </ResponsiveContainer>
+                        </div>
                         <div className="space-y-1.5">
                           {searchAnalytics.categoryBreakdown.map(item => (
                             <div key={item.category} className="flex items-center gap-2 text-[11px]">
