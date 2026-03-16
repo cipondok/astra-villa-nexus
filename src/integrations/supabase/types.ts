@@ -19600,6 +19600,8 @@ export type Database = {
         Row: {
           advance_booking_days: number | null
           agent_id: string | null
+          ai_estimated_price: number | null
+          ai_price_confidence: number | null
           ai_staging_images: string[] | null
           approval_status: string | null
           area: string | null
@@ -19670,6 +19672,12 @@ export type Database = {
           predicted_days_to_sell: number | null
           premium_partner: boolean
           price: number | null
+          price_action_hint: string | null
+          price_forecast_12m: number | null
+          price_forecast_3m: number | null
+          price_forecast_6m: number | null
+          price_predicted_at: string | null
+          price_trend_signal: string | null
           property_features: Json | null
           property_type: string
           rental_periods: string[] | null
@@ -19690,6 +19698,8 @@ export type Database = {
           total_units: number | null
           units_sold: number | null
           updated_at: string | null
+          valuation_gap_pct: number | null
+          valuation_label: string | null
           view_type: string | null
           views_count: number | null
           virtual_tour_url: string | null
@@ -19698,6 +19708,8 @@ export type Database = {
         Insert: {
           advance_booking_days?: number | null
           agent_id?: string | null
+          ai_estimated_price?: number | null
+          ai_price_confidence?: number | null
           ai_staging_images?: string[] | null
           approval_status?: string | null
           area?: string | null
@@ -19768,6 +19780,12 @@ export type Database = {
           predicted_days_to_sell?: number | null
           premium_partner?: boolean
           price?: number | null
+          price_action_hint?: string | null
+          price_forecast_12m?: number | null
+          price_forecast_3m?: number | null
+          price_forecast_6m?: number | null
+          price_predicted_at?: string | null
+          price_trend_signal?: string | null
           property_features?: Json | null
           property_type: string
           rental_periods?: string[] | null
@@ -19788,6 +19806,8 @@ export type Database = {
           total_units?: number | null
           units_sold?: number | null
           updated_at?: string | null
+          valuation_gap_pct?: number | null
+          valuation_label?: string | null
           view_type?: string | null
           views_count?: number | null
           virtual_tour_url?: string | null
@@ -19796,6 +19816,8 @@ export type Database = {
         Update: {
           advance_booking_days?: number | null
           agent_id?: string | null
+          ai_estimated_price?: number | null
+          ai_price_confidence?: number | null
           ai_staging_images?: string[] | null
           approval_status?: string | null
           area?: string | null
@@ -19866,6 +19888,12 @@ export type Database = {
           predicted_days_to_sell?: number | null
           premium_partner?: boolean
           price?: number | null
+          price_action_hint?: string | null
+          price_forecast_12m?: number | null
+          price_forecast_3m?: number | null
+          price_forecast_6m?: number | null
+          price_predicted_at?: string | null
+          price_trend_signal?: string | null
           property_features?: Json | null
           property_type?: string
           rental_periods?: string[] | null
@@ -19886,6 +19914,8 @@ export type Database = {
           total_units?: number | null
           units_sold?: number | null
           updated_at?: string | null
+          valuation_gap_pct?: number | null
+          valuation_label?: string | null
           view_type?: string | null
           views_count?: number | null
           virtual_tour_url?: string | null
@@ -33565,6 +33595,7 @@ export type Database = {
         Args: { p_property_id: string }
         Returns: number
       }
+      compute_price_predictions: { Args: { p_limit?: number }; Returns: Json }
       count_admin_alerts: { Args: never; Returns: number }
       count_admin_alerts_by_status: { Args: never; Returns: Json }
       count_admin_alerts_by_type: { Args: never; Returns: Json }
@@ -33968,6 +33999,7 @@ export type Database = {
           total_vendors: number
         }[]
       }
+      get_price_prediction_stats: { Args: never; Returns: Json }
       get_profiles_with_roles: {
         Args: never
         Returns: {
