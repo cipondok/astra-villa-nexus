@@ -152,14 +152,14 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
   // Batched AI intelligence data
   const { data: aiData, dataUpdatedAt: aiUpdatedAt, isLoading: aiLoading } = useAICommandCenterData();
 
-  // Fetch platform statistics
+  // Fetch platform statistics — direct queries as fallback for RPC
   const { data: platformStats, isLoading: statsLoading, refetch: refetchStats, dataUpdatedAt: statsUpdatedAt } = useQuery({
     queryKey: ['admin-platform-stats'],
     queryFn: async () => {
       try {
-        const { data: platformStats } = await supabase.rpc('get_platform_stats');
-        
-        const statsData = (platformStats as Array<{
+        // Try RPC first
+        const { data: rpcData } = await supabase.rpc('get_platform_stats');
+        const statsData = (rpcData as Array<{
           total_users: number;
           total_properties: number;
           total_bookings: number;
@@ -167,29 +167,32 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           active_sessions: number;
         }> | null)?.[0];
 
-        const [vendorsResult, ordersResult, analyticsResult, activeUsersResult] = await Promise.all([
-          supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true }).eq('is_verified', true),
-          supabase.from('orders').select('*', { count: 'exact', head: true }),
-          supabase.from('web_analytics').select('*', { count: 'exact', head: true }),
-          supabase.from('user_activity_logs').select('*', { count: 'exact', head: true })
-            .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+        // Direct queries for reliable counts (RPC may return 0 due to auth context)
+        const [usersResult, propertiesResult, vendorsResult, ordersResult, sessionsResult, activeUsersResult] = await Promise.all([
+          supabase.from('profiles').select('id', { count: 'exact', head: true }),
+          supabase.from('properties').select('id', { count: 'exact', head: true }),
+          supabase.from('vendor_business_profiles').select('id', { count: 'exact', head: true }).eq('is_verified', true),
+          supabase.from('orders').select('id', { count: 'exact', head: true }),
+          supabase.from('user_device_sessions').select('id', { count: 'exact', head: true }).eq('is_active', true),
+          supabase.from('activity_logs').select('id', { count: 'exact', head: true })
+            .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()),
         ]);
 
         return {
-          totalUsers: Number(statsData?.total_users) || 0,
-          totalProperties: Number(statsData?.total_properties) || 0,
+          totalUsers: (usersResult.count ?? Number(statsData?.total_users)) || 0,
+          totalProperties: (propertiesResult.count ?? Number(statsData?.total_properties)) || 0,
           totalVendors: vendorsResult.count || 0,
           totalOrders: ordersResult.count || 0,
-          totalPageViews: analyticsResult.count || 0,
+          totalPageViews: 0, // web_analytics has stale data
           activeUsers24h: activeUsersResult.count || 0,
-          activeSessions: Number(statsData?.active_sessions) || 0,
+          activeSessions: (sessionsResult.count ?? Number(statsData?.active_sessions)) || 0,
         };
       } catch {
         return { totalUsers: 0, totalProperties: 0, totalVendors: 0, totalOrders: 0, totalPageViews: 0, activeUsers24h: 0, activeSessions: 0 };
       }
     },
     staleTime: 2 * 60 * 1000,
-    refetchInterval: 60000, // was 30s
+    refetchInterval: 60000,
   });
 
   // Fetch system health + AI subsystem status
