@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Badge } from '@/components/ui/badge';
-import { ChevronDown, ChevronRight, Menu, Star, Pin, Trash2, Edit, Plus, Check, X, Save } from 'lucide-react';
+import { ChevronDown, ChevronRight, Menu, Star, Pin, Trash2, Edit, Plus, Check, X, Save, Keyboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useAdminKeyboardShortcuts } from '@/hooks/useAdminKeyboardShortcuts';
 import { useToast } from '@/hooks/use-toast';
 import {
   DndContext,
