@@ -385,7 +385,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           property={convertedProperty}
           isOpen={show3DModal}
           onClose={() => {
-            console.log('PropertyCard - Closing 3D modal');
             setShow3DModal(false);
           }}
           language="en"
