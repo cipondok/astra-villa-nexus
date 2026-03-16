@@ -6,11 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { ImageIcon, Loader2, Play, StopCircle, AlertTriangle, CheckCircle, Zap } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ImageIcon, Loader2, Play, StopCircle, AlertTriangle, CheckCircle, Zap, RefreshCw } from "lucide-react";
 
 const BATCH_SIZE = 10;
-const CONCURRENCY = 2;
 
 export default function BulkImageGenerator() {
   const queryClient = useQueryClient();
@@ -19,18 +17,19 @@ export default function BulkImageGenerator() {
   const [succeeded, setSucceeded] = useState(0);
   const [failed, setFailed] = useState(0);
   const [currentProperty, setCurrentProperty] = useState("");
+  const [currentBatch, setCurrentBatch] = useState(0);
   const cancelRef = useRef(false);
-  const [totalOffset, setTotalOffset] = useState(0);
+  const [offset, setOffset] = useState(0);
 
   // Count properties without images
   const { data: stats, isLoading: statsLoading, refetch: refetchStats } = useQuery({
     queryKey: ["bulk-image-stats"],
     queryFn: async () => {
+      // Properties with no images and no thumbnail
       const { count: noImages } = await supabase
         .from("properties")
         .select("id", { count: "exact", head: true })
-        .or("images.is.null,images.eq.{}")
-        .is("thumbnail_url", null);
+        .or("images.is.null,thumbnail_url.is.null");
 
       const { count: total } = await supabase
         .from("properties")
@@ -48,46 +47,82 @@ export default function BulkImageGenerator() {
   const runBulkGeneration = useCallback(async () => {
     cancelRef.current = false;
     setIsRunning(true);
-    setProcessed(0);
-    setSucceeded(0);
-    setFailed(0);
-    let offset = totalOffset;
-    let batchEmpty = false;
+    let currentOffset = offset;
+    let batchNum = currentBatch;
 
-    while (!cancelRef.current && !batchEmpty) {
+    while (!cancelRef.current) {
       try {
-        const { data, error } = await supabase.functions.invoke("job-worker", {
-          body: {
-            mode: "bulk_generate_images",
-            batchSize: BATCH_SIZE,
-            offset,
-          },
-        });
+        // 1. Fetch batch of properties without images
+        const { data: properties, error: fetchErr } = await supabase
+          .from("properties")
+          .select("id, title, property_type, city, location, description")
+          .is("thumbnail_url", null)
+          .order("created_at", { ascending: false })
+          .range(currentOffset, currentOffset + BATCH_SIZE - 1);
 
-        if (error) {
-          console.error("Bulk image error:", error);
-          toast.error(`Batch error: ${error.message}`);
-          setFailed(prev => prev + 1);
-          // Continue to next offset
-          offset += BATCH_SIZE;
-          continue;
-        }
-
-        if (!data || data.processed === 0) {
-          batchEmpty = true;
-          toast.success("No more properties without images in this range!");
+        if (fetchErr) {
+          toast.error(`Fetch error: ${fetchErr.message}`);
           break;
         }
 
-        setProcessed(prev => prev + (data.total || 0));
-        setSucceeded(prev => prev + (data.processed || 0));
-        setFailed(prev => prev + ((data.total || 0) - (data.processed || 0)));
-        setCurrentProperty(`Batch at offset ${offset}`);
-        offset = data.offset + BATCH_SIZE;
-        setTotalOffset(offset);
+        if (!properties || properties.length === 0) {
+          toast.success("🎉 No more properties without images in this range!");
+          break;
+        }
 
-        // Rate limit pause between batches
-        await new Promise(r => setTimeout(r, 3000));
+        batchNum++;
+        setCurrentBatch(batchNum);
+
+        // 2. Process each property — call ai-engine generate_image
+        for (let i = 0; i < properties.length; i++) {
+          if (cancelRef.current) break;
+
+          const prop = properties[i];
+          setCurrentProperty(`${prop.title?.slice(0, 60)}...`);
+          setProcessed(prev => prev + 1);
+
+          try {
+            const { data, error } = await supabase.functions.invoke("ai-engine", {
+              body: {
+                mode: "generate_image",
+                payload: {
+                  propertyId: prop.id,
+                  title: prop.title,
+                  description: prop.description?.slice(0, 200),
+                  propertyType: prop.property_type,
+                  location: prop.location || prop.city,
+                },
+              },
+            });
+
+            if (error) {
+              console.error(`Image gen failed for ${prop.id}:`, error);
+              setFailed(prev => prev + 1);
+            } else if (data?.error) {
+              console.error(`AI error for ${prop.id}:`, data.error);
+              setFailed(prev => prev + 1);
+            } else {
+              setSucceeded(prev => prev + 1);
+            }
+          } catch (err: any) {
+            console.error(`Exception for ${prop.id}:`, err);
+            setFailed(prev => prev + 1);
+          }
+
+          // Rate limit: 1.5s between each image
+          if (i < properties.length - 1 && !cancelRef.current) {
+            await new Promise(r => setTimeout(r, 1500));
+          }
+        }
+
+        // Move to next batch
+        currentOffset += BATCH_SIZE;
+        setOffset(currentOffset);
+
+        // 3s delay between batches
+        if (!cancelRef.current) {
+          await new Promise(r => setTimeout(r, 3000));
+        }
       } catch (err: any) {
         console.error("Bulk gen error:", err);
         toast.error(err.message || "Unknown error");
@@ -96,14 +131,14 @@ export default function BulkImageGenerator() {
     }
 
     setIsRunning(false);
+    setCurrentProperty("");
     refetchStats();
     queryClient.invalidateQueries({ queryKey: ["bulk-image-stats"] });
-  }, [totalOffset, refetchStats, queryClient]);
+  }, [offset, currentBatch, refetchStats, queryClient]);
 
   const stopGeneration = () => {
     cancelRef.current = true;
-    setIsRunning(false);
-    toast.info("Stopping after current batch completes...");
+    toast.info("Stopping after current image completes...");
   };
 
   const progressPercent = stats?.noImages
@@ -120,7 +155,7 @@ export default function BulkImageGenerator() {
               Bulk AI Image Generator
             </CardTitle>
             <CardDescription>
-              Generate AI images for properties that have no photos using Lovable AI (Gemini Flash Image)
+              Generate AI images for properties without photos using Lovable AI (Gemini Flash Image)
             </CardDescription>
           </div>
           <Badge variant={isRunning ? "default" : "secondary"} className="gap-1">
@@ -152,19 +187,46 @@ export default function BulkImageGenerator() {
           </div>
         </div>
 
-        {/* Progress */}
+        {/* Live Progress */}
         {(isRunning || processed > 0) && (
-          <div className="space-y-3">
+          <div className="space-y-3 rounded-lg border border-border/50 bg-muted/20 p-4">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Session Progress</span>
-              <span className="font-medium text-foreground">
-                {succeeded} generated / {failed} failed / {processed} processed
+              <span className="text-muted-foreground font-medium">Session Progress</span>
+              <span className="font-semibold text-foreground">
+                Batch #{currentBatch}
               </span>
             </div>
-            <Progress value={progressPercent} className="h-2" />
-            {currentProperty && (
-              <p className="text-xs text-muted-foreground truncate">
-                Current: {currentProperty}
+
+            <Progress value={progressPercent} className="h-2.5" />
+
+            <div className="grid grid-cols-3 gap-3 text-center">
+              <div>
+                <p className="text-lg font-bold text-foreground">{processed}</p>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Processed</p>
+              </div>
+              <div>
+                <p className="text-lg font-bold text-chart-2">{succeeded}</p>
+                <p className="text-[10px] text-chart-2 uppercase tracking-wider">✓ Generated</p>
+              </div>
+              <div>
+                <p className="text-lg font-bold text-destructive">{failed}</p>
+                <p className="text-[10px] text-destructive uppercase tracking-wider">✗ Failed</p>
+              </div>
+            </div>
+
+            {currentProperty && isRunning && (
+              <div className="flex items-center gap-2 pt-1">
+                <Loader2 className="h-3 w-3 animate-spin text-primary shrink-0" />
+                <p className="text-xs text-muted-foreground truncate">
+                  Generating: {currentProperty}
+                </p>
+              </div>
+            )}
+
+            {/* Estimated time */}
+            {isRunning && stats?.noImages && succeeded > 0 && (
+              <p className="text-[10px] text-muted-foreground text-center pt-1">
+                ~{Math.round(((stats.noImages - succeeded) * 2.5) / 60)} minutes remaining at current pace
               </p>
             )}
           </div>
@@ -178,20 +240,19 @@ export default function BulkImageGenerator() {
           </h4>
           <ul className="text-xs text-muted-foreground space-y-1 list-disc pl-4">
             <li>Uses <strong>Lovable AI Gateway</strong> → google/gemini-2.5-flash-image to generate professional property photos</li>
-            <li>Processes {BATCH_SIZE} properties per batch, {CONCURRENCY} concurrent image generations</li>
+            <li>Processes {BATCH_SIZE} properties per batch with 1.5s delay between each image</li>
             <li>Images are uploaded to <strong>property-images</strong> storage bucket and linked to the property</li>
-            <li>Rate-limited with 3-second delays between batches to avoid API limits</li>
-            <li>You can stop and resume anytime — it picks up from the last offset</li>
-            <li>For 313K properties at ~10/batch: this will take many hours. Run in background sessions.</li>
+            <li>You can stop and resume anytime — it picks up from the last offset ({offset})</li>
+            <li>For large volumes, run over multiple sessions. Rate limits may apply.</li>
           </ul>
         </div>
 
         {/* Controls */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           {!isRunning ? (
             <Button onClick={runBulkGeneration} className="gap-2" disabled={statsLoading}>
               <Play className="h-4 w-4" />
-              {totalOffset > 0 ? `Resume (offset: ${totalOffset})` : "Start Bulk Generation"}
+              {offset > 0 ? `Resume (offset: ${offset})` : "Start Bulk Generation"}
             </Button>
           ) : (
             <Button onClick={stopGeneration} variant="destructive" className="gap-2">
@@ -200,21 +261,23 @@ export default function BulkImageGenerator() {
             </Button>
           )}
 
-          {totalOffset > 0 && !isRunning && (
+          {offset > 0 && !isRunning && (
             <Button
               variant="outline"
               onClick={() => {
-                setTotalOffset(0);
+                setOffset(0);
                 setProcessed(0);
                 setSucceeded(0);
                 setFailed(0);
+                setCurrentBatch(0);
               }}
             >
               Reset Offset
             </Button>
           )}
 
-          <Button variant="ghost" size="sm" onClick={() => refetchStats()}>
+          <Button variant="ghost" size="sm" onClick={() => refetchStats()} className="gap-1.5">
+            <RefreshCw className="h-3.5 w-3.5" />
             Refresh Stats
           </Button>
         </div>
@@ -224,7 +287,7 @@ export default function BulkImageGenerator() {
           <div className="rounded-lg border border-chart-2/20 bg-chart-2/5 p-3 flex items-center gap-2">
             <CheckCircle className="h-4 w-4 text-chart-2 shrink-0" />
             <p className="text-sm text-foreground">
-              Session complete: <strong>{succeeded}</strong> images generated, <strong>{failed}</strong> failed.
+              Session complete: <strong>{succeeded}</strong> images generated, <strong>{failed}</strong> failed out of <strong>{processed}</strong> processed.
             </p>
           </div>
         )}
