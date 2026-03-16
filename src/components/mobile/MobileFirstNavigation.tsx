@@ -60,6 +60,7 @@ const MobileFirstNavigation: React.FC = () => {
   ];
 
   const handleNavigation = useCallback((path: string) => {
+    haptic('selection');
     navigate(path);
     setIsExpanded(false);
     setShowQuickActions(false);
