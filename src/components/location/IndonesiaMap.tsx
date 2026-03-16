@@ -89,13 +89,65 @@ const provinceCoordinates: Record<string, [number, number]> = {
   'Maluku': [128.0, -3.2], 'Maluku Utara': [127.5, 1.5], 'Papua Barat': [133.0, -1.5], 'Papua': [138.0, -4.5],
 };
 
-// ── Heatmap Color Scale ──
+// ── Heat Mode Types ──
+export type HeatMode = 'density' | 'demand' | 'price';
+
+// ── Demand Heat Scores (per province, simulated) ──
+const demandHeatScores: Record<string, number> = {
+  'Bali': 94, 'DKI Jakarta': 91, 'Jawa Barat': 82, 'Jawa Timur': 78,
+  'Yogyakarta': 76, 'Banten': 72, 'Jawa Tengah': 68, 'Sulawesi Selatan': 55,
+  'Kalimantan Timur': 52, 'Sumatera Utara': 60, 'Lampung': 45, 'Riau': 40,
+  'Nusa Tenggara Barat': 65, 'Sumatera Barat': 38, 'Kalimantan Selatan': 35,
+};
+
+// ── Price Momentum (per province, % YoY change, simulated) ──
+const priceMomentum: Record<string, number> = {
+  'Bali': 12.5, 'DKI Jakarta': 3.2, 'Jawa Barat': 8.1, 'Jawa Timur': 6.5,
+  'Yogyakarta': 9.8, 'Banten': 4.3, 'Jawa Tengah': 5.0, 'Sulawesi Selatan': 7.2,
+  'Kalimantan Timur': 11.0, 'Sumatera Utara': 3.8, 'Lampung': 6.0, 'Riau': 2.5,
+  'Nusa Tenggara Barat': 14.2, 'Sumatera Barat': 4.1, 'Kalimantan Selatan': 3.0,
+};
+
+// ── New listings this week (per province, simulated) ──
+const newListingsWeek: Record<string, number> = {
+  'Bali': 42, 'DKI Jakarta': 38, 'Jawa Barat': 55, 'Jawa Timur': 35,
+  'Yogyakarta': 18, 'Banten': 22, 'Jawa Tengah': 28, 'Sulawesi Selatan': 8,
+  'Kalimantan Timur': 6, 'Sumatera Utara': 12, 'Lampung': 5, 'Riau': 4,
+  'Nusa Tenggara Barat': 15, 'Sumatera Barat': 3, 'Kalimantan Selatan': 4,
+};
+
+// ── Heatmap Color Scale — Density (original) ──
 const getHeatmapColor = (count: number, isDark: boolean): string => {
   if (count === 0) return isDark ? 'hsl(220, 15%, 22%)' : 'hsl(220, 15%, 88%)';
   if (count <= 50) return isDark ? 'hsl(210, 45%, 32%)' : 'hsl(210, 60%, 82%)';
   if (count <= 200) return isDark ? 'hsl(215, 55%, 38%)' : 'hsl(215, 65%, 68%)';
   if (count <= 500) return isDark ? 'hsl(225, 60%, 42%)' : 'hsl(225, 70%, 52%)';
   return isDark ? 'hsl(265, 60%, 48%)' : 'hsl(265, 65%, 55%)';
+};
+
+// ── Heatmap Color Scale — Demand Heat (0-100) ──
+const getDemandHeatColor = (score: number, isDark: boolean): string => {
+  if (score === 0) return isDark ? 'hsl(220, 15%, 22%)' : 'hsl(220, 15%, 88%)';
+  if (score <= 25) return isDark ? 'hsl(210, 40%, 30%)' : 'hsl(210, 55%, 82%)';  // Cool
+  if (score <= 50) return isDark ? 'hsl(45, 60%, 35%)' : 'hsl(45, 70%, 72%)';   // Warm
+  if (score <= 75) return isDark ? 'hsl(25, 70%, 38%)' : 'hsl(25, 75%, 62%)';   // Hot
+  return isDark ? 'hsl(0, 75%, 42%)' : 'hsl(0, 70%, 52%)';                      // Very Hot
+};
+
+// ── Heatmap Color Scale — Price Momentum (% change) ──
+const getPriceMomentumColor = (pct: number, isDark: boolean): string => {
+  if (pct <= 0) return isDark ? 'hsl(0, 60%, 35%)' : 'hsl(0, 55%, 70%)';        // Declining
+  if (pct <= 3) return isDark ? 'hsl(220, 15%, 22%)' : 'hsl(220, 15%, 88%)';     // Flat
+  if (pct <= 7) return isDark ? 'hsl(145, 40%, 32%)' : 'hsl(145, 50%, 72%)';     // Growing
+  if (pct <= 12) return isDark ? 'hsl(145, 55%, 38%)' : 'hsl(145, 60%, 55%)';    // Strong
+  return isDark ? 'hsl(145, 65%, 44%)' : 'hsl(145, 70%, 42%)';                   // Surge
+};
+
+// ── Unified heat color getter ──
+const getHeatColor = (mode: HeatMode, provinceName: string, count: number, isDark: boolean): string => {
+  if (mode === 'demand') return getDemandHeatColor(demandHeatScores[provinceName] || 0, isDark);
+  if (mode === 'price') return getPriceMomentumColor(priceMomentum[provinceName] || 0, isDark);
+  return getHeatmapColor(count, isDark);
 };
 
 const getHeatmapHoverColor = (count: number, isDark: boolean): string => {
@@ -151,15 +203,44 @@ interface IndonesiaMapProps {
 }
 
 // ── Map Legend Component ──
-const MapLegend = memo(({ isDark, showHeatmap, showHotspots }: { isDark: boolean; showHeatmap: boolean; showHotspots: boolean }) => {
+const MapLegend = memo(({ isDark, showHeatmap, showHotspots, heatMode }: { isDark: boolean; showHeatmap: boolean; showHotspots: boolean; heatMode: HeatMode }) => {
   if (!showHeatmap) return null;
-  const items = [
-    { label: 'Tidak ada', color: getHeatmapColor(0, isDark) },
-    { label: '1–50', color: getHeatmapColor(25, isDark) },
-    { label: '51–200', color: getHeatmapColor(100, isDark) },
-    { label: '201–500', color: getHeatmapColor(300, isDark) },
-    { label: '500+', color: getHeatmapColor(501, isDark) },
-  ];
+
+  const legends: Record<HeatMode, { title: string; items: { label: string; color: string }[] }> = {
+    density: {
+      title: 'Kepadatan Properti',
+      items: [
+        { label: 'Tidak ada', color: getHeatmapColor(0, isDark) },
+        { label: '1–50', color: getHeatmapColor(25, isDark) },
+        { label: '51–200', color: getHeatmapColor(100, isDark) },
+        { label: '201–500', color: getHeatmapColor(300, isDark) },
+        { label: '500+', color: getHeatmapColor(501, isDark) },
+      ],
+    },
+    demand: {
+      title: 'Demand Heat',
+      items: [
+        { label: 'None', color: getDemandHeatColor(0, isDark) },
+        { label: 'Cool (0–25)', color: getDemandHeatColor(20, isDark) },
+        { label: 'Warm (26–50)', color: getDemandHeatColor(40, isDark) },
+        { label: 'Hot (51–75)', color: getDemandHeatColor(65, isDark) },
+        { label: 'Very Hot (76+)', color: getDemandHeatColor(90, isDark) },
+      ],
+    },
+    price: {
+      title: 'Price Momentum',
+      items: [
+        { label: 'Declining', color: getPriceMomentumColor(-2, isDark) },
+        { label: 'Flat (0–3%)', color: getPriceMomentumColor(2, isDark) },
+        { label: 'Growing (3–7%)', color: getPriceMomentumColor(5, isDark) },
+        { label: 'Strong (7–12%)', color: getPriceMomentumColor(10, isDark) },
+        { label: 'Surge (12%+)', color: getPriceMomentumColor(15, isDark) },
+      ],
+    },
+  };
+
+  const current = legends[heatMode];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
@@ -167,9 +248,9 @@ const MapLegend = memo(({ isDark, showHeatmap, showHotspots }: { isDark: boolean
       exit={{ opacity: 0, y: 8 }}
       className="absolute bottom-14 sm:bottom-16 left-3 sm:left-4 z-30 bg-background/95 backdrop-blur-sm rounded-xl px-3 py-2.5 shadow-lg border border-border/60"
     >
-      <p className="text-[10px] font-bold text-foreground mb-1.5 uppercase tracking-wider">Kepadatan Properti</p>
+      <p className="text-[10px] font-bold text-foreground mb-1.5 uppercase tracking-wider">{current.title}</p>
       <div className="flex flex-col gap-1">
-        {items.map(item => (
+        {current.items.map(item => (
           <div key={item.label} className="flex items-center gap-2">
             <div className="w-4 h-3 rounded-sm border border-border/30" style={{ backgroundColor: item.color }} />
             <span className="text-[10px] text-muted-foreground">{item.label}</span>
@@ -195,11 +276,17 @@ const ProvinceTooltip = memo(({
   propertyCount,
   avgPrice,
   investmentScore,
+  demandHeat,
+  priceGrowth,
+  newListings,
 }: {
   provinceName: string;
   propertyCount: number;
   avgPrice?: number;
   investmentScore?: number;
+  demandHeat?: number;
+  priceGrowth?: number;
+  newListings?: number;
 }) => {
   const formatPrice = (price: number) => {
     if (price >= 1000000) return `$${(price / 1000000).toFixed(1)}M`;
@@ -213,6 +300,15 @@ const ProvinceTooltip = memo(({
     return 'text-muted-foreground';
   };
 
+  const getDemandLabel = (score: number) => {
+    if (score >= 76) return { label: 'Very Hot', cls: 'text-destructive' };
+    if (score >= 51) return { label: 'Hot', cls: 'text-chart-1' };
+    if (score >= 26) return { label: 'Warm', cls: 'text-chart-3' };
+    return { label: 'Cool', cls: 'text-muted-foreground' };
+  };
+
+  const demandInfo = demandHeat ? getDemandLabel(demandHeat) : null;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 6, scale: 0.94 }}
@@ -221,19 +317,26 @@ const ProvinceTooltip = memo(({
       transition={{ duration: 0.15, ease: 'easeOut' }}
       className="absolute top-3 left-1/2 -translate-x-1/2 z-50 pointer-events-none"
     >
-      <div className="bg-background/95 backdrop-blur-md rounded-xl px-4 py-3 shadow-xl border border-border/60 min-w-[200px]">
+      <div className="bg-background/95 backdrop-blur-md rounded-xl px-4 py-3 shadow-xl border border-border/60 min-w-[240px]">
         {/* Header */}
         <div className="flex items-center gap-2.5 mb-2">
           <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
             <MapPin className="h-4 w-4 text-primary-foreground" />
           </div>
-          <div>
+          <div className="min-w-0">
             <span className="font-bold text-foreground text-sm leading-tight block">{provinceName}</span>
-            <span className="text-[10px] text-primary font-semibold">Klik untuk detail →</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] text-primary font-semibold">Klik untuk detail →</span>
+              {(newListings ?? 0) > 0 && (
+                <span className="text-[9px] font-bold text-chart-1 bg-chart-1/10 px-1 py-0.5 rounded">
+                  +{newListings} new
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Stats grid */}
+        {/* Stats grid — row 1 */}
         <div className="grid grid-cols-3 gap-2 pt-2 border-t border-border/40">
           <div className="text-center">
             <div className="flex items-center justify-center gap-1 mb-0.5">
@@ -261,6 +364,32 @@ const ProvinceTooltip = memo(({
             <p className="text-[9px] text-muted-foreground">Skor</p>
           </div>
         </div>
+
+        {/* Stats grid — row 2: demand + price momentum */}
+        {(demandHeat || priceGrowth) ? (
+          <div className="grid grid-cols-2 gap-2 pt-1.5 mt-1.5 border-t border-border/20">
+            {demandInfo && (
+              <div className="flex items-center gap-1.5">
+                <Flame className="h-3 w-3 text-chart-1" />
+                <div>
+                  <p className={`text-[10px] font-bold ${demandInfo.cls}`}>{demandInfo.label}</p>
+                  <p className="text-[8px] text-muted-foreground">Demand {demandHeat}/100</p>
+                </div>
+              </div>
+            )}
+            {priceGrowth !== undefined && (
+              <div className="flex items-center gap-1.5">
+                <TrendingUp className={`h-3 w-3 ${priceGrowth >= 0 ? 'text-chart-2' : 'text-destructive'}`} />
+                <div>
+                  <p className={`text-[10px] font-bold ${priceGrowth >= 0 ? 'text-chart-2' : 'text-destructive'}`}>
+                    {priceGrowth >= 0 ? '+' : ''}{priceGrowth.toFixed(1)}%
+                  </p>
+                  <p className="text-[8px] text-muted-foreground">Price YoY</p>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : null}
       </div>
     </motion.div>
   );
@@ -276,6 +405,7 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
   const [isDark, setIsDark] = useState(false);
   const [showHeatmap, setShowHeatmap] = useState(true);
   const [showHotspots, setShowHotspots] = useState(false);
+  const [heatMode, setHeatMode] = useState<HeatMode>('density');
   const navigate = useNavigate();
 
   const { data: provincePropertyCounts = {} } = useProvincePropertyCounts();
@@ -357,17 +487,24 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
 
     if (showHeatmap) {
       const count = provincePropertyCounts[normalizedName] || provincePropertyCounts[provinceName] || 0;
-      return getHeatmapColor(count, isDark);
+      return getHeatColor(heatMode, normalizedName, count, isDark);
     }
     const colors = getProvinceColors(isDark);
     return colors[index % colors.length];
-  }, [showHeatmap, provincePropertyCounts, isDark, mapColors.selected]);
+  }, [showHeatmap, heatMode, provincePropertyCounts, isDark, mapColors.selected]);
 
   const getHoverFillColor = useCallback((provinceName: string, normalizedName: string, index: number, isSelected: boolean) => {
     if (isSelected) return mapColors.selected;
     if (showHeatmap) {
       const count = provincePropertyCounts[normalizedName] || provincePropertyCounts[provinceName] || 0;
-      return getHeatmapHoverColor(count, isDark);
+      // Slightly brighter version of the heat color
+      const base = getHeatColor(heatMode, normalizedName, count, isDark);
+      const m = base.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+      if (m) {
+        const [, h, s, l] = m.map(Number);
+        return `hsl(${h}, ${Math.min(s + 10, 100)}%, ${isDark ? Math.min(l + 8, 70) : Math.max(l - 8, 30)}%)`;
+      }
+      return base;
     }
     const colors = getProvinceColors(isDark);
     const base = colors[index % colors.length];
@@ -377,7 +514,7 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
       return `hsl(${h}, ${s}%, ${isDark ? Math.min(l + 15, 70) : Math.max(l - 10, 30)}%)`;
     }
     return base;
-  }, [showHeatmap, provincePropertyCounts, isDark, mapColors.selected]);
+  }, [showHeatmap, heatMode, provincePropertyCounts, isDark, mapColors.selected]);
 
   // Hotspot provinces
   const hotspotProvinces = useMemo(() => {
@@ -394,6 +531,9 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
       count: provincePropertyCounts[norm] || provincePropertyCounts[hoveredProvinceName] || 0,
       avgPrice: avgPrices[norm],
       investmentScore: investmentScores[norm],
+      demandHeat: demandHeatScores[norm] || 0,
+      priceGrowth: priceMomentum[norm] || 0,
+      newListings: newListingsWeek[norm] || 0,
     };
   }, [hoveredProvinceName, provincePropertyCounts]);
 
@@ -445,11 +585,35 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
         <div>
           <span className="text-sm font-bold text-foreground block">Peta Properti</span>
           <span className="text-[10px] text-muted-foreground hidden sm:block">
-            {showHeatmap ? 'Heatmap Mode' : 'Default Mode'}
+            {showHeatmap ? `${heatMode === 'density' ? 'Density' : heatMode === 'demand' ? 'Demand Heat' : 'Price Momentum'}` : 'Default Mode'}
             {showHotspots ? ' · Hotspots On' : ''}
           </span>
         </div>
       </div>
+
+      {/* ── Heat Mode Switcher (below title) ── */}
+      {showHeatmap && (
+        <div className="absolute top-[60px] sm:top-[72px] left-3 sm:left-4 z-30 flex gap-1">
+          {([
+            { mode: 'density' as HeatMode, label: 'Density', icon: Building2 },
+            { mode: 'demand' as HeatMode, label: 'Demand', icon: Flame },
+            { mode: 'price' as HeatMode, label: 'Price', icon: TrendingUp },
+          ]).map(({ mode, label, icon: Icon }) => (
+            <button
+              key={mode}
+              onClick={() => setHeatMode(mode)}
+              className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold transition-all border ${
+                heatMode === mode
+                  ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                  : 'bg-background/90 backdrop-blur-sm text-muted-foreground border-border/50 hover:border-primary/30'
+              }`}
+            >
+              <Icon className="h-3 w-3" />
+              <span className="hidden sm:inline">{label}</span>
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* ── SVG Map ── */}
       <ComposableMap
@@ -594,7 +758,7 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
 
       {/* ── Legend ── */}
       <AnimatePresence>
-        <MapLegend isDark={isDark} showHeatmap={showHeatmap} showHotspots={showHotspots} />
+        <MapLegend isDark={isDark} showHeatmap={showHeatmap} showHotspots={showHotspots} heatMode={heatMode} />
       </AnimatePresence>
 
       {/* ── Province count badge ── */}
@@ -614,6 +778,9 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
             propertyCount={hoveredData.count}
             avgPrice={hoveredData.avgPrice}
             investmentScore={hoveredData.investmentScore}
+            demandHeat={hoveredData.demandHeat}
+            priceGrowth={hoveredData.priceGrowth}
+            newListings={hoveredData.newListings}
           />
         )}
       </AnimatePresence>
