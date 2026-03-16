@@ -191,6 +191,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             <button 
               className="h-8 w-8 bg-black/30 backdrop-blur-md hover:bg-black/50 border border-white/20 rounded-full shadow-md flex items-center justify-center btn-press"
               onClick={(e) => e.stopPropagation()}
+              aria-label="Save property"
             >
               <Heart className="h-4 w-4 text-white/90" />
             </button>
@@ -200,6 +201,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               propertyPrice={price}
               propertyLocation={location}
               className="h-8 w-8 p-0 bg-black/30 backdrop-blur-md hover:bg-black/50 text-white rounded-full border border-white/20 shadow-md"
+              aria-label="Share property"
             />
           </div>
           
