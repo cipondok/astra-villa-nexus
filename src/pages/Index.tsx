@@ -459,7 +459,7 @@ const Index = () => {
           return [];
         }
 
-        console.log('Featured properties loaded:', data?.length || 0);
+        // Featured properties loaded
         // Transform data to match BaseProperty interface
         const transformedData = data?.map((property: any) => {
           return {
