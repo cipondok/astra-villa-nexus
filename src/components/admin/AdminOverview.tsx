@@ -324,7 +324,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
   return (
     <section aria-label="Admin overview dashboard" className="space-y-3 animate-in fade-in duration-300">
       {/* Header */}
-      <div className="flex items-center justify-between bg-gradient-to-r from-primary/5 via-background to-chart-1/5 rounded-xl border border-border/30 px-4 py-3">
+      <div className="flex items-center justify-between bg-card rounded-xl border border-border px-4 py-3">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-primary/10">
             <Monitor className="h-5 w-5 text-primary" />
