@@ -1366,6 +1366,13 @@ export const navigationSections = {
       icon: TrendingUp,
       description: "Growth hire blueprint — SEO, social, paid ads, community, analytics with 90-day plan and career path",
       badge: "📈 Growth Hire"
+    },
+    {
+      key: "property-supply-manager-role",
+      label: "Property Supply Manager Role",
+      icon: Building,
+      description: "Supply hire blueprint — agent onboarding, developer sourcing, listing quality, marketplace liquidity, 90-day plan",
+      badge: "🏗️ Supply Hire"
     }
   ],
 
