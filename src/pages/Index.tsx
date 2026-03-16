@@ -80,6 +80,8 @@ const TrustFooterStrip = lazy(() => import("@/components/home/TrustFooterStrip")
 const WelcomeBackStrip = lazy(() => import("@/components/home/WelcomeBackStrip"));
 const RecentlyViewedStrip = lazy(() => import("@/components/home/RecentlyViewedStrip"));
 const ReferralInviteStrip = lazy(() => import("@/components/home/ReferralInviteStrip"));
+const HotspotAlertBanner = lazy(() => import("@/components/ai/HotspotAlertBanner"));
+const DiscoveryTrigger = lazy(() => import("@/components/ai/DiscoveryTrigger"));
 const PWAInstallPrompt = lazy(() => import("@/components/pwa/PWAInstallPrompt"));
 
 type ViewMode = 'list' | 'grid' | 'map';
@@ -838,6 +840,11 @@ const Index = () => {
                 <RecentlyViewedStrip />
               </Suspense>
 
+              {/* ── Hotspot Alert ── */}
+              <Suspense fallback={null}>
+                <HotspotAlertBanner />
+              </Suspense>
+
               {/* ── SECTION 3: AI Opportunity Zone (merged intelligence modules) ── */}
               <section className="py-10 sm:py-14 bg-muted/30" id="ai-opportunity-zone" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 800px' }}>
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
@@ -893,6 +900,10 @@ const Index = () => {
                       <SmartRecommendations limit={6} className="shadow-sm" />
                     </Suspense>
                   </ScrollReveal>
+                  {/* Continuous discovery trigger */}
+                  <Suspense fallback={null}>
+                    <DiscoveryTrigger className="mt-4" />
+                  </Suspense>
                 </div>
 
                 {/* Contextual CTA after AI zone */}
