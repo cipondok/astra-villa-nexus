@@ -130,11 +130,6 @@ const AIAutopilotPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>AI Autopilot | ASTRA Villa</title>
-        <meta name="description" content="AI-powered real estate investment autopilot — autonomous opportunity detection, market monitoring, and portfolio optimization." />
-      </Helmet>
-
       <div className="min-h-screen bg-background">
         <div className="container mx-auto max-w-7xl px-4 py-6 space-y-6">
 
