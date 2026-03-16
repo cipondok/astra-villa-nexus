@@ -483,6 +483,9 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
       count: provincePropertyCounts[norm] || provincePropertyCounts[hoveredProvinceName] || 0,
       avgPrice: avgPrices[norm],
       investmentScore: investmentScores[norm],
+      demandHeat: demandHeatScores[norm] || 0,
+      priceGrowth: priceMomentum[norm] || 0,
+      newListings: newListingsWeek[norm] || 0,
     };
   }, [hoveredProvinceName, provincePropertyCounts]);
 
