@@ -1,8 +1,51 @@
+import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Building2, MapPin, TrendingUp, Lock } from 'lucide-react';
+import { Building2, MapPin, TrendingUp, Lock, BarChart3 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import verifiedShield from '@/assets/verified-shield.svg';
+import { cn } from '@/lib/utils';
+
+/** Animated counter that rolls up from 0 to target */
+function AnimatedCounter({ target, suffix = '', duration = 1500 }: { target: number; suffix?: string; duration?: number }) {
+  const [value, setValue] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    if (hasAnimated.current || target <= 0) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          const startTime = performance.now();
+
+          const animate = (now: number) => {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            // Ease out cubic
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setValue(Math.round(eased * target));
+            if (progress < 1) requestAnimationFrame(animate);
+          };
+
+          requestAnimationFrame(animate);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [target, duration]);
+
+  return (
+    <span ref={ref} className="tabular-nums">
+      {value.toLocaleString()}{suffix}
+    </span>
+  );
+}
 
 export default function SocialProofStrip() {
   const { data: stats } = useQuery({
@@ -31,9 +74,10 @@ export default function SocialProofStrip() {
   });
 
   const items = [
-    { icon: Building2, value: stats ? `${stats.listings.toLocaleString()}+` : '—', label: 'Active Listings' },
-    { icon: MapPin, value: stats ? `${stats.cities}` : '—', label: 'Cities' },
-    { icon: TrendingUp, value: stats ? `${stats.newToday}` : '—', label: 'New Today' },
+    { icon: Building2, value: stats?.listings || 0, suffix: '+', label: 'Listings' },
+    { icon: MapPin, value: stats?.cities || 0, suffix: '', label: 'Cities' },
+    { icon: TrendingUp, value: stats?.newToday || 0, suffix: '', label: 'New Today' },
+    { icon: BarChart3, value: 34, suffix: '', label: 'Provinces' },
   ];
 
   return (
@@ -41,11 +85,11 @@ export default function SocialProofStrip() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3, duration: 0.5 }}
-      className="flex items-center justify-center gap-3 sm:gap-6 py-3 sm:py-4 flex-wrap"
+      className="flex items-center justify-center gap-3 sm:gap-5 py-3 sm:py-4 flex-wrap"
     >
-      {/* Verified Platform badge — visible on all viewports */}
+      {/* Verified badge */}
       <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] text-muted-foreground font-medium">
-        <img src={verifiedShield} alt="" className="h-4 w-4 text-primary" aria-hidden="true" />
+        <img src={verifiedShield} alt="" className="h-4 w-4" aria-hidden="true" />
         <span>Verified Platform</span>
       </div>
 
@@ -53,15 +97,18 @@ export default function SocialProofStrip() {
 
       {items.map((item) => (
         <div key={item.label} className="flex items-center gap-1.5">
-          <item.icon className="h-3.5 w-3.5 text-gold-primary" />
-          <span className="text-sm sm:text-base font-bold text-foreground">{item.value}</span>
+          <item.icon className="h-3.5 w-3.5 text-primary" />
+          <span className="text-sm sm:text-base font-bold text-foreground">
+            {stats ? (
+              <AnimatedCounter target={item.value} suffix={item.suffix} />
+            ) : '—'}
+          </span>
           <span className="text-[10px] sm:text-xs text-muted-foreground">{item.label}</span>
         </div>
       ))}
 
       <div className="h-4 w-px bg-border hidden sm:block" />
 
-      {/* Safe inquiry indicator */}
       <div className="hidden sm:flex items-center gap-1.5 text-[11px] text-muted-foreground font-medium">
         <Lock className="h-3.5 w-3.5 text-chart-1" />
         <span>Secure Inquiries</span>
