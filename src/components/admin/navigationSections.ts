@@ -1352,6 +1352,13 @@ export const navigationSections = {
       icon: UserPlus,
       description: "Team scaling plan — 13 roles across 3 phases with ROI rationale, salary budgets, and culture framework",
       badge: "👥 Team"
+    },
+    {
+      key: "partnership-manager-role",
+      label: "Partnership Manager Role",
+      icon: Handshake,
+      description: "Complete role blueprint — responsibilities, KPIs, candidate profile, 90-day plan, and career path",
+      badge: "🤝 Hiring"
     }
   ],
 
