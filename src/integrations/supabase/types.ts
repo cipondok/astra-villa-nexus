@@ -34170,6 +34170,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      run_marketplace_optimization_cycle: {
+        Args: { p_lookback_days?: number }
+        Returns: Json
+      }
       search_properties_advanced: {
         Args: {
           p_amenities?: string[]
