@@ -460,6 +460,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
             <NinetyDayMasterPlan />
           </Suspense>
         );
+      case "uiux-redesign-blueprint":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <UIUXRedesignBlueprint />
+          </Suspense>
+        );
       default:
         return <AdminOverview onSectionChange={onSectionChange} />;
     }
