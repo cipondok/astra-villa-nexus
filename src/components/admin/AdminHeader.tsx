@@ -38,6 +38,29 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const { reducedMotion, toggle: toggleMotion } = useReducedMotion();
+  
+  // Real-time ping indicator
+  const [pingMs, setPingMs] = useState<number | null>(null);
+  const [pingStatus, setPingStatus] = useState<'ok' | 'slow' | 'offline'>('ok');
+  
+  useEffect(() => {
+    const measurePing = async () => {
+      try {
+        const start = performance.now();
+        await supabase.from('admin_alerts').select('id', { count: 'exact', head: true });
+        const ms = Math.round(performance.now() - start);
+        setPingMs(ms);
+        setPingStatus(ms < 500 ? 'ok' : ms < 2000 ? 'slow' : 'offline');
+      } catch {
+        setPingMs(null);
+        setPingStatus('offline');
+      }
+    };
+    measurePing();
+    const interval = setInterval(measurePing, 30_000);
+    return () => clearInterval(interval);
+  }, []);
 
   const { data: notifications = [] } = useQuery({
     queryKey: ["admin-notifications"],
