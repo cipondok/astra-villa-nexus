@@ -230,7 +230,7 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
                       <p className="text-[10px] text-muted-foreground line-clamp-1 mb-1">
                         {n.message}
                       </p>
-                      <span className="text-[9px] text-muted-foreground/70">
+                      <span className="text-[10px] text-muted-foreground/70">
                         {new Date(n.created_at).toLocaleString()}
                       </span>
                     </DropdownMenuItem>
