@@ -906,6 +906,20 @@ const Index = () => {
                     </ScrollReveal>
                   </div>
 
+                  {/* Opportunity Radar + AI Journey Guide — side by side */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <ScrollReveal direction="up" delay={0}>
+                      <Suspense fallback={<div className="h-64 bg-muted/30 rounded-xl animate-pulse" />}>
+                        <OpportunityRadar />
+                      </Suspense>
+                    </ScrollReveal>
+                    <ScrollReveal direction="up" delay={100}>
+                      <Suspense fallback={<div className="h-64 bg-muted/30 rounded-xl animate-pulse" />}>
+                        <AIJourneyGuide />
+                      </Suspense>
+                    </ScrollReveal>
+                  </div>
+
                   {/* Smart Recommendations — Personalized Picks */}
                   <ScrollReveal direction="up" delay={0}>
                     <Suspense fallback={<div className="h-48 bg-muted/30 rounded-xl animate-pulse" />}>
