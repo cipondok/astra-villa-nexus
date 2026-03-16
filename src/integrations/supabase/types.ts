@@ -10170,6 +10170,95 @@ export type Database = {
           },
         ]
       }
+      growth_execution_tasks: {
+        Row: {
+          category: string
+          completed_at: string | null
+          created_at: string
+          id: string
+          priority: string
+          sort_order: number
+          status: string
+          task_description: string | null
+          task_title: string
+          updated_at: string
+          week_id: string
+        }
+        Insert: {
+          category: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          priority?: string
+          sort_order?: number
+          status?: string
+          task_description?: string | null
+          task_title: string
+          updated_at?: string
+          week_id: string
+        }
+        Update: {
+          category?: string
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          priority?: string
+          sort_order?: number
+          status?: string
+          task_description?: string | null
+          task_title?: string
+          updated_at?: string
+          week_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "growth_execution_tasks_week_id_fkey"
+            columns: ["week_id"]
+            isOneToOne: false
+            referencedRelation: "growth_execution_weeks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      growth_execution_weeks: {
+        Row: {
+          created_at: string
+          focus_area: string
+          id: string
+          phase_name: string
+          phase_number: number
+          status: string
+          target_kpi: string | null
+          updated_at: string
+          week_label: string
+          week_number: number
+        }
+        Insert: {
+          created_at?: string
+          focus_area: string
+          id?: string
+          phase_name: string
+          phase_number: number
+          status?: string
+          target_kpi?: string | null
+          updated_at?: string
+          week_label: string
+          week_number: number
+        }
+        Update: {
+          created_at?: string
+          focus_area?: string
+          id?: string
+          phase_name?: string
+          phase_number?: number
+          status?: string
+          target_kpi?: string | null
+          updated_at?: string
+          week_label?: string
+          week_number?: number
+        }
+        Relationships: []
+      }
       growth_zone_signals: {
         Row: {
           capital_appreciation_horizon: string | null
