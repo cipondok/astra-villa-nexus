@@ -1258,6 +1258,13 @@ export const navigationSections = {
       icon: Rocket,
       description: "6-month national launch execution plan with phased task tracking and progress monitoring",
       badge: "🚀 Launch"
+    },
+    {
+      key: "growth-execution",
+      label: "90-Day Growth Plan",
+      icon: Zap,
+      description: "Weekly execution priorities for listing seeding, marketing funnels, agent onboarding, and monetization",
+      badge: "📈 Growth"
     }
   ],
 
