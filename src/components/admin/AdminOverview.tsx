@@ -423,7 +423,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
         <div className="col-span-12 md:col-span-6 space-y-3">
          <SectionErrorBoundary sectionName="Traffic & Activity">
           {/* Live Traffic Chart - Recharts */}
-          <Card className="border-border/30">
+          <Card className="border-border bg-card">
             <CardHeader className="p-3 pb-2">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
