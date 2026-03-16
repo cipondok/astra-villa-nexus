@@ -36,10 +36,12 @@ const distributionConfig = {
 
 interface AgentPerformanceCardProps {
   onNavigate?: () => void;
+  data?: import("@/hooks/useAgentPerformanceIntelligence").AgentPerformanceIntelligence | null;
 }
 
-const AgentPerformanceCard = React.memo(function AgentPerformanceCard({ onNavigate }: AgentPerformanceCardProps) {
-  const { data: intel, isLoading } = useAgentPerformanceIntelligence();
+const AgentPerformanceCard = React.memo(function AgentPerformanceCard({ onNavigate, data: externalData }: AgentPerformanceCardProps) {
+  const { data: hookData, isLoading } = useAgentPerformanceIntelligence(!externalData);
+  const intel = externalData ?? hookData;
 
   if (isLoading || !intel) {
     return (

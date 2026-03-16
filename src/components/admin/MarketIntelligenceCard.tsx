@@ -62,10 +62,12 @@ function MiniSparkline({ data }: { data: { name: string; score: number }[] }) {
 
 interface MarketIntelligenceCardProps {
   onNavigate?: () => void;
+  data?: import("@/hooks/useMarketIntelligence").MarketIntelligenceSummary | null;
 }
 
-const MarketIntelligenceCard = React.memo(function MarketIntelligenceCard({ onNavigate }: MarketIntelligenceCardProps) {
-  const { data: intel, isLoading } = useMarketIntelligence();
+const MarketIntelligenceCard = React.memo(function MarketIntelligenceCard({ onNavigate, data: externalData }: MarketIntelligenceCardProps) {
+  const { data: hookData, isLoading } = useMarketIntelligence(!externalData);
+  const intel = externalData ?? hookData;
 
   if (isLoading || !intel) {
     return (
