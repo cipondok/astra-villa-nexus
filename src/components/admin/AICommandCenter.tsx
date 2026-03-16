@@ -640,8 +640,8 @@ const AICommandCenter = () => {
           >
             {/* OVERVIEW */}
             {activeNav === 'overview' && (
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <div className="lg:col-span-2 space-y-4">
+              <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+                <div className="xl:col-span-2 space-y-4">
                   {/* WoW / MoM / Custom Historical Comparison */}
                   <Panel title="Period Comparison" icon={BarChart3} action={
                     <div className="flex items-center gap-1 bg-muted/30 rounded-lg p-0.5">
