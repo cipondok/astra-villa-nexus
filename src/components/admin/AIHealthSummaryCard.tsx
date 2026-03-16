@@ -30,10 +30,10 @@ interface AIHealthSummaryCardProps {
 }
 
 const AIHealthSummaryCard = React.memo(function AIHealthSummaryCard({ onNavigate, data: batchedData }: AIHealthSummaryCardProps) {
-  const { data: fetchedData, isLoading } = useAISystemHealth(!batchedData);
+  const { data: fetchedData, isLoading, isError } = useAISystemHealth(!batchedData);
   const health = batchedData || fetchedData;
 
-  if (isLoading || !health) {
+  if (isLoading && !health) {
     return (
       <Card className="rounded-2xl border-border/30 overflow-hidden">
         <div className="h-1 bg-gradient-to-r from-primary/40 via-accent/30 to-primary/40" />
@@ -42,6 +42,27 @@ const AIHealthSummaryCard = React.memo(function AIHealthSummaryCard({ onNavigate
             <div className="h-4 w-24 bg-muted animate-pulse rounded" />
             <div className="h-2 w-full bg-muted animate-pulse rounded" />
             <div className="h-2 w-3/4 bg-muted animate-pulse rounded" />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!health) {
+    return (
+      <Card className="rounded-2xl border-border/30 overflow-hidden cursor-pointer hover:border-primary/30 hover:shadow-sm" onClick={onNavigate}>
+        <div className="h-1 bg-gradient-to-r from-muted/60 via-muted/30 to-muted/60" />
+        <CardHeader className="p-3 pb-2">
+          <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+            <Brain className="h-3.5 w-3.5" /> AI System Health
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-3 pt-0">
+          <div className="flex items-center gap-2 p-2 rounded-lg border border-border/30 bg-muted/5">
+            <AlertTriangle className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+            <span className="text-[10px] text-muted-foreground">
+              {isError ? "Unable to load health data" : "No health data available yet"}
+            </span>
           </div>
         </CardContent>
       </Card>
