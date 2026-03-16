@@ -52,7 +52,7 @@ interface RightIntelligenceColumnProps {
     };
   } | undefined;
   healthAgo: string | null;
-  aiData: Record<string, unknown> | undefined;
+  aiData: any;
   aiLoading: boolean;
   aiAgo: string | null;
   onQuickAction: (section: string) => void;
