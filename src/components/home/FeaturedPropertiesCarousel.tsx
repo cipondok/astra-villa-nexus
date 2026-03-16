@@ -187,7 +187,7 @@ export default function FeaturedPropertiesCarousel() {
               onClick={() => !isDragging && navigate(`/properties/${p.id}`)}
               className="flex-shrink-0 w-[260px] sm:w-[290px] md:w-[310px] lg:w-[330px] snap-start group/card cursor-pointer"
             >
-              <div className="relative rounded-xl overflow-hidden bg-card border border-border shadow-sm hover:shadow-xl hover:shadow-gold-primary/10 hover:border-gold-primary/40 hover:-translate-y-1 transition-all duration-300">
+              <div className="relative rounded-xl overflow-hidden bg-card border border-border shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:border-primary/30 hover:-translate-y-1 transition-all duration-300 will-change-transform">
                 {/* Image */}
                 <div className="relative aspect-[16/10] overflow-hidden">
                   <OptimizedPropertyImage
@@ -234,8 +234,8 @@ export default function FeaturedPropertiesCarousel() {
                 </div>
 
                 {/* Content */}
-                <div className="p-3 sm:p-3.5 space-y-2">
-                  <h3 className="text-sm sm:text-[15px] font-semibold text-foreground line-clamp-1 leading-snug group-hover/card:text-gold-primary transition-colors">
+                <div className="p-3 sm:p-4 space-y-2">
+                  <h3 className="text-sm sm:text-[15px] font-semibold text-foreground line-clamp-1 leading-snug group-hover/card:text-primary transition-colors">
                     {p.title}
                   </h3>
 
@@ -248,7 +248,7 @@ export default function FeaturedPropertiesCarousel() {
                   </div>
 
                   {/* Features */}
-                  <div className="flex items-center gap-3 pt-1 border-t border-border/60">
+                  <div className="flex items-center gap-3 pt-2 border-t border-border/40">
                     {p.bedrooms != null && p.bedrooms > 0 && (
                       <div className="flex items-center gap-1 text-muted-foreground">
                         <Bed className="h-3.5 w-3.5" />

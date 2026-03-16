@@ -63,7 +63,7 @@ const RentalPropertyCard = ({ rental, onClick }: RentalPropertyCardProps) => {
 
   return (
     <Card
-      className="p-2.5 cursor-pointer hover:shadow-md transition-shadow active:scale-[0.99]"
+      className="p-3 cursor-pointer hover:shadow-md transition-all duration-200 active:scale-[0.99]"
       onClick={() => onClick?.(rental.id)}
     >
       {/* Header Row */}

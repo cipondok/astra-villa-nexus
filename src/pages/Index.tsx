@@ -856,8 +856,8 @@ const Index = () => {
 
         {/* Property Display Section */}
         <SectionErrorBoundary sectionName="Properties" fallbackMinHeight="300px">
-        <div className="px-0 py-4 sm:py-6 space-y-4 bg-gradient-to-b from-hero-fade via-hero-fade/60 to-background">
-          <div className="w-full space-y-4">
+        <div className="px-0 py-6 sm:py-8 space-y-6 bg-gradient-to-b from-hero-fade via-hero-fade/60 to-background">
+          <div className="w-full space-y-6">
             {hasSearched ? (
               <section id="search-results-section" className="bg-primary/10 backdrop-blur-sm rounded-xl shadow-md border border-primary/15 dark:bg-primary/5 dark:border-primary/10">
                 <div className="p-3 sm:p-4 md:p-6">
@@ -993,7 +993,7 @@ const Index = () => {
 
                 {/* Smart AI Feed - Recommended / Trending */}
                 <ScrollReveal direction="right" delay={0}>
-                <div className="mb-4">
+                <div className="mb-6">
                   <LazyRender minHeight="280px" fallback={
                     <div className="space-y-3 p-4" style={{ minHeight: '280px' }}>
                       <div className="flex items-center gap-2">
@@ -1021,7 +1021,7 @@ const Index = () => {
 
                 {/* AI Deal Hunter — Hot deals & silent opportunities */}
                 <ScrollReveal direction="up" delay={0}>
-                <div className="mb-4">
+                <div className="mb-6">
                   <Suspense fallback={<div className="h-40 bg-muted/30 rounded-xl animate-pulse" />}>
                     <DealHunterHero />
                   </Suspense>
@@ -1030,7 +1030,7 @@ const Index = () => {
 
                 {/* Smart Recommendations - Personalized Picks */}
                 <ScrollReveal direction="left" delay={0}>
-                <div className="mb-4">
+                <div className="mb-6">
                   <Suspense fallback={<div className="h-48 bg-muted/30 rounded-xl animate-pulse" />}>
                     <SmartRecommendations limit={6} className="shadow-sm" />
                   </Suspense>
@@ -1039,7 +1039,7 @@ const Index = () => {
 
                 {/* Trending & ROI Deals */}
                 <ScrollReveal direction="right" delay={0}>
-                <div className="mb-4">
+                <div className="mb-6">
                   <Suspense fallback={<div className="h-48 bg-muted/30 rounded-xl animate-pulse" />}>
                     <TrendingROIDeals onPropertyClick={handlePropertyClick} />
                   </Suspense>
@@ -1048,7 +1048,7 @@ const Index = () => {
 
                 {/* AI Recommended Properties (legacy) */}
                 <ScrollReveal direction="right" delay={0}>
-                <div className="mb-4">
+                <div className="mb-6">
                   <LazyRender minHeight="320px" fallback={
                     <div className="bg-primary/10 dark:bg-primary/5 rounded-xl shadow-sm border border-primary/15 dark:border-primary/10 p-4" style={{ minHeight: '320px' }}>
                       <div className="flex items-center gap-3 mb-4">
@@ -1086,7 +1086,7 @@ const Index = () => {
 
                 {/* Properties for Sale */}
                 <ScrollReveal direction="right" delay={0}>
-                <div id="sale-section" className="mb-4">
+                <div id="sale-section" className="mb-6">
                   <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
                     <PropertiesForSaleSection language={language} onPropertyClick={handlePropertyClick} />
                   </LazyRender>
@@ -1095,7 +1095,7 @@ const Index = () => {
 
                 {/* Properties for Rent */}
                 <ScrollReveal direction="left" delay={100}>
-                <div id="rent-section" className="mb-4">
+                <div id="rent-section" className="mb-6">
                   <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
                     <PropertiesForRentSection language={language} onPropertyClick={handlePropertyClick} />
                   </LazyRender>
@@ -1118,7 +1118,7 @@ const Index = () => {
 
                 {/* Marketplace Services */}
                 <ScrollReveal direction="right" delay={0}>
-                <div id="marketplace-services-section" className="mt-6">
+                <div id="marketplace-services-section" className="mt-8">
                   <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
                     <MarketplaceServices />
                   </LazyRender>
