@@ -35,7 +35,7 @@ export default function WelcomeBackStrip() {
       return {
         savedCount: favRes.count || 0,
         viewedCount: viewRes.count || 0,
-        streak: (streakRes.data?.[0] as any)?.streak_count || 0,
+        streak: (streakRes as any)?.data || 0,
       };
     },
     enabled: !!user?.id,
