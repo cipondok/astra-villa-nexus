@@ -170,11 +170,17 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   return (
     <>
       <Card 
-        className={`group cursor-pointer overflow-hidden bg-card border card-hover-lift ${owner_subscription_type === 'enterprise' ? 'border-[hsl(var(--gold-primary)/0.5)] shadow-[0_0_15px_-3px_hsl(var(--gold-primary)/0.15)]' : 'border-border'} hover:border-gold-primary/40`} 
+        className={cn(
+          "group cursor-pointer overflow-hidden bg-card border rounded-xl will-change-transform",
+          "hover:-translate-y-1 hover:shadow-[0_12px_28px_-8px_hsl(var(--primary)/0.12)] transition-all duration-300 ease-out",
+          owner_subscription_type === 'enterprise'
+            ? 'border-[hsl(var(--gold-primary)/0.5)] shadow-[0_0_15px_-3px_hsl(var(--gold-primary)/0.15)]'
+            : 'border-border hover:border-primary/30',
+        )} 
         onClick={handleViewDetails}
       >
         {/* Image Container */}
-        <div className="relative aspect-[4/3] overflow-hidden">
+        <div className="relative aspect-[4/3] overflow-hidden bg-muted">
           <img
             src={getPropertyImage(images, thumbnail_url, image_urls)}
             alt={title}
@@ -182,14 +188,17 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             height={300}
             loading="lazy"
             decoding="async"
-            className="w-full h-full object-cover img-hover-zoom"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
             onError={(e) => { e.currentTarget.src = '/placeholder.svg'; }}
           />
           
+          {/* Gradient overlay for badge readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 pointer-events-none" />
+          
           {/* Save Button */}
-          <div className="absolute top-2 right-2 flex gap-1.5">
+          <div className="absolute top-2.5 right-2.5 flex gap-1.5 z-10">
             <button 
-              className="h-8 w-8 bg-black/30 backdrop-blur-md hover:bg-black/50 border border-white/20 rounded-full shadow-md flex items-center justify-center btn-press"
+              className="h-8 w-8 bg-black/30 backdrop-blur-md hover:bg-black/50 border border-white/20 rounded-full shadow-md flex items-center justify-center btn-press min-h-[32px]"
               onClick={(e) => e.stopPropagation()}
               aria-label="Save property"
             >
@@ -200,35 +209,37 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               propertyTitle={title}
               propertyPrice={price}
               propertyLocation={location}
-              className="h-8 w-8 p-0 bg-black/30 backdrop-blur-md hover:bg-black/50 text-white rounded-full border border-white/20 shadow-md"
+              className="h-8 w-8 p-0 bg-black/30 backdrop-blur-md hover:bg-black/50 text-white rounded-full border border-white/20 shadow-md min-h-[32px]"
               aria-label="Share property"
             />
           </div>
           
           {/* Badges */}
-          <div className="absolute top-2 left-2 flex flex-wrap gap-1.5">
+          <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5 z-10">
             <Badge 
-              className={`${listing_type === 'sale' 
-                ? 'bg-chart-1 text-chart-1-foreground' 
-                : 'bg-primary text-primary-foreground'
-              } text-xs font-bold px-2.5 py-1 rounded-md shadow-md border-0 flex items-center gap-1`}
+              className={cn(
+                "text-[10px] font-bold px-2 py-1 rounded-md shadow-md border-0 flex items-center gap-1",
+                listing_type === 'sale' 
+                  ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' 
+                  : 'bg-gradient-to-r from-sky-500 to-blue-600 text-white'
+              )}
             >
-              {listing_type === 'sale' ? <Tag className="h-3 w-3" /> : <Key className="h-3 w-3" />}
+              {listing_type === 'sale' ? <Tag className="h-2.5 w-2.5" /> : <Key className="h-2.5 w-2.5" />}
               {listing_type === 'sale' ? 'Dijual' : 'Disewa'}
             </Badge>
             {development_status === 'new_project' && (
-              <Badge className="bg-accent text-accent-foreground text-xs font-medium px-2 py-0.5 rounded">
+              <Badge className="bg-accent text-accent-foreground text-[10px] font-medium px-2 py-0.5 rounded-md">
                 New Project
               </Badge>
             )}
             {development_status === 'pre_launching' && (
-              <Badge className="bg-accent text-accent-foreground text-xs font-medium px-2 py-0.5 rounded">
+              <Badge className="bg-accent text-accent-foreground text-[10px] font-medium px-2 py-0.5 rounded-md">
                 Pre-Launch
               </Badge>
             )}
             {(three_d_model_url || virtual_tour_url || glb_model_url || drone_video_url || has_vr || has_360_view || has_drone_video) && (
-              <Badge className="bg-accent text-accent-foreground text-xs font-bold px-2 py-0.5 rounded-md shadow-md border-0 flex items-center gap-1">
-                <Glasses className="h-3 w-3" />
+              <Badge className="bg-accent text-accent-foreground text-[10px] font-bold px-2 py-0.5 rounded-md shadow-md border-0 flex items-center gap-1">
+                <Glasses className="h-2.5 w-2.5" />
                 Virtual Tour
               </Badge>
             )}
@@ -236,13 +247,13 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 
           {/* Owner Subscription Badge */}
           {owner_subscription_type && owner_subscription_type !== 'free' && (
-            <div className="absolute bottom-2 right-2 z-10">
+            <div className="absolute bottom-2.5 right-2.5 z-10">
               <OwnerSubscriptionBadge subscriptionType={owner_subscription_type} />
             </div>
           )}
 
           {/* Trust Badges - Bottom Left */}
-          <div className="absolute bottom-2 left-2">
+          <div className="absolute bottom-2.5 left-2.5 z-10">
             <PropertyTrustBadges
               property={{
                 owner_type, owner_verified, agent_verified, agency_verified,
