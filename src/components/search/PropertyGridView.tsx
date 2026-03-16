@@ -89,7 +89,7 @@ const PropertyGridView = ({
         return (
           <Card 
             key={property.id} 
-            className="group cursor-pointer bg-card/70 backdrop-blur-md rounded-lg border border-primary/10 dark:border-primary/15 shadow-[0_2px_12px_rgba(0,0,0,0.05)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.1)] hover:border-primary/25 transition-all duration-300 overflow-hidden"
+            className="group cursor-pointer bg-card/80 backdrop-blur-md rounded-xl border border-border hover:border-primary/30 shadow-sm hover:shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.15)] hover:-translate-y-0.5 transition-all duration-300 overflow-hidden will-change-transform"
             onClick={() => onPropertyClick(property)}
           >
             {/* Image Section - Rumah123 Style */}
