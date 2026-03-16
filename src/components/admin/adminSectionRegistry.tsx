@@ -460,6 +460,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
 export const sectionLabels: Record<string, { label: string; category: string }> = {
   "deal-hunter-admin": { label: "Deal Hunter Engine", category: "Investor Management" },
   "market-heat-intelligence": { label: "Market Heat Intelligence", category: "Investor Management" },
+  "opportunity-scoring-engine": { label: "AI Scoring Engine", category: "AI & Tools" },
   "ai-command-center": { label: "AI Command Center", category: "AI & Tools" },
   "investor-dna-admin": { label: "Investor DNA Intelligence", category: "Investor Management" },
   "global-macro-intelligence": { label: "Global Macro Intelligence", category: "Investor Management" },
