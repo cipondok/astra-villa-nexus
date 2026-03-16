@@ -569,7 +569,7 @@ const Index = () => {
           {/* Single premium background image with slow zoom */}
           <div className="absolute inset-0 z-0">
             <img
-              src={bannerImages[0]}
+              src={heroImage}
               alt="Premium property — ASTRAVILLA intelligent real estate"
               width={1920}
               height={1080}
