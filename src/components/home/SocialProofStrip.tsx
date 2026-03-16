@@ -76,7 +76,10 @@ export default function SocialProofStrip() {
   const items = [
     { icon: Building2, value: stats?.listings || 0, suffix: '+', label: 'Listings' },
     { icon: MapPin, value: stats?.cities || 0, suffix: '', label: 'Cities' },
-    { icon: TrendingUp, value: stats?.newToday || 0, suffix: '', label: 'New Today' },
+    // Only show "New Today" when > 0; otherwise show Provinces count
+    ...((stats?.newToday || 0) > 0
+      ? [{ icon: TrendingUp, value: stats!.newToday, suffix: '', label: 'New Today' }]
+      : []),
     { icon: BarChart3, value: 34, suffix: '', label: 'Provinces' },
   ];
 

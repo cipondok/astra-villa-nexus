@@ -111,6 +111,10 @@ const Dock = ({ items }: { items: DockItem[] }) => {
             >
               <item.icon className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground group-hover:text-gold-primary" />
             </div>
+            {/* Tiny label */}
+            <span className="text-[7px] md:text-[8px] font-medium text-muted-foreground/50 mt-0.5 leading-none truncate max-w-[40px] md:max-w-[48px] text-center">
+              {item.label}
+            </span>
           </div>
         );
 

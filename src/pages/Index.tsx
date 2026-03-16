@@ -1085,7 +1085,7 @@ const Index = () => {
               </Suspense>
 
               {/* ── SECTION 10: Final Conversion CTA ── */}
-              <section className="py-10 sm:py-14">
+              <section className="py-6 sm:py-10">
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={<div className="animate-pulse h-40 bg-muted rounded-xl max-w-5xl mx-auto" />}>
                     <EarlyInvestmentCTA />
