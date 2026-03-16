@@ -38,10 +38,10 @@ export function useIntelligenceSignals(enabled = true) {
       if (eliteCount !== null) prevEliteCountRef.current = eliteCount;
 
       // Check for demand surges (properties trending "hot")
-      const { count: hotCount } = await supabase
+      const { count: hotCount } = await (supabase as any)
         .from('properties')
         .select('id', { count: 'exact', head: true })
-        .eq('demand_trend' as any, 'hot')
+        .eq('demand_trend', 'hot')
         .eq('status', 'active');
 
       if (hotCount && hotCount > 20) {
