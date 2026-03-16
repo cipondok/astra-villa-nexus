@@ -41,7 +41,7 @@ const ErrorManagement = () => {
       <section aria-label="Database errors">
         <DatabaseErrorManager />
       </section>
-    </main>
+    </section>
   );
 };
 
