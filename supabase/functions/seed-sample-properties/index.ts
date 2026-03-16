@@ -334,6 +334,7 @@ Deno.serve(async (req) => {
         created,
         skipped,
         errors,
+        images_generated: imagesGenerated,
         batchProcessed: uniqueLocations.length,
         hasMore,
         nextOffset: hasMore ? nextOffset : null,
