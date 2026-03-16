@@ -71,6 +71,7 @@ import ActionRow from "./overview/ActionRow";
 import SummaryCard from "./overview/SummaryCard";
 import HealthBar from "./overview/HealthBar";
 import ServiceRow from "./overview/ServiceRow";
+import ZoneSkeleton from "./overview/ZoneSkeleton";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
