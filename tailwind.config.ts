@@ -128,7 +128,7 @@ const config: Config = {
         'sf': ['SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
         'inter': ['Inter', 'system-ui', 'sans-serif'],
         'playfair': ['Playfair Display', 'serif'],
-        'montserrat': ['Montserrat', 'system-ui', 'sans-serif'],
+        /* montserrat removed — see .lovable/brand-identity-audit.md */
       },
       keyframes: {
         "accordion-down": {

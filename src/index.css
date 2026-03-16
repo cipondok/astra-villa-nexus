@@ -792,7 +792,7 @@ html, body {
   /* CTA Button Enhancement */
   .btn-cta {
     @apply inline-flex items-center justify-center gap-3 rounded-full font-bold text-sm uppercase tracking-wider cursor-pointer border-0 outline-none relative overflow-hidden z-[1];
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Inter', sans-serif;
     padding: 18px 42px;
     background: linear-gradient(135deg, hsl(var(--gold-primary)) 0%, hsl(var(--orange-primary)) 50%, hsl(var(--gold-secondary)) 100%);
     background-size: 200% 200%;
