@@ -984,7 +984,7 @@ const Index = () => {
               </section>
 
               {/* ── SECTION 5: Investor Path Selector ── */}
-              <section className="py-8 sm:py-12 bg-muted/20">
+              <section className="py-5 sm:py-8 bg-muted/20">
                 <ScrollReveal direction="up" delay={0}>
                   <LazyRender minHeight="64px" rootMargin="400px" fallback={
                     <div className="flex gap-3 justify-center py-3"><div className="animate-pulse h-16 w-36 bg-muted rounded-lg" /><div className="animate-pulse h-16 w-36 bg-muted rounded-lg" /><div className="animate-pulse h-16 w-36 bg-muted rounded-lg" /></div>
