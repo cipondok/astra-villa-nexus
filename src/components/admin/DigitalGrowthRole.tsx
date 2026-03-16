@@ -37,13 +37,14 @@ interface ResponsibilityArea {
 
 const responsibilities: ResponsibilityArea[] = [
   {
-    area: "SEO & Organic Traffic Engine", icon: Search, color: "text-primary", bg: "bg-primary/10", weight: "30%",
+    area: "SEO Location Page Rollout & Google Organic", icon: Search, color: "text-primary", bg: "bg-primary/10", weight: "35%",
     tasks: [
-      { task: "Scale programmatic SEO location pages from 1,000 to 10,000+ across 15 cities — targeting 'beli rumah [lokasi]' intent", impact: "SEO drives 60% of long-term traffic at near-zero marginal cost — the primary acquisition moat" },
-      { task: "Optimize on-page SEO (meta titles, descriptions, structured data, internal linking) for all property and location pages", impact: "10% CTR improvement on 500K impressions = 50K incremental monthly visits" },
-      { task: "Build content clusters around high-intent keywords: investment guides, city market reports, property type explainers", impact: "Topical authority drives domain rating up → all pages rank higher" },
-      { task: "Monitor Google Search Console, track keyword rankings, and execute technical SEO fixes (Core Web Vitals, crawl budget)", impact: "Technical SEO issues can silently kill 30-50% of organic traffic — constant monitoring prevents this" },
-      { task: "Coordinate with engineering on SEO infrastructure: sitemap generation, canonical tags, page speed optimization", impact: "Technical foundation enables content scaling without diminishing returns" },
+      { task: "Coordinate programmatic SEO rollout across national administrative levels: province → city → kecamatan → kelurahan — targeting 'beli rumah [lokasi]' and 'rumah dijual [lokasi]' intent", impact: "SEO drives 60% of long-term traffic at near-zero marginal cost — the primary acquisition moat for buyers and investors" },
+      { task: "Optimize on-page SEO (meta titles, descriptions, JSON-LD structured data, internal linking) for all property and location pages", impact: "10% CTR improvement on 500K impressions = 50K incremental monthly visits" },
+      { task: "Build content clusters around high-intent keywords: investment guides, city market reports, property type explainers, area comparison pages", impact: "Topical authority drives domain rating up → all pages rank higher" },
+      { task: "Monitor Google Search Console daily — track keyword ranking improvements, indexing coverage, and execute technical SEO fixes (Core Web Vitals, crawl budget)", impact: "Technical SEO issues can silently kill 30-50% of organic traffic — constant monitoring prevents this" },
+      { task: "Coordinate with engineering on SEO infrastructure: sitemap generation, canonical tags, page speed optimization, hreflang for bilingual content", impact: "Technical foundation enables content scaling without diminishing returns" },
+      { task: "Track SEO indexing milestones: pages indexed, impressions, average position, CTR progression per location tier", impact: "Indexing velocity directly determines time-to-traffic for new location pages" },
     ],
   },
   {
