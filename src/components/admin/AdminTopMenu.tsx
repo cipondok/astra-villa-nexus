@@ -83,8 +83,9 @@ const AdminTopMenu = ({
   const [showAlerts, setShowAlerts] = useState(false);
   const { user, profile } = useAuth();
   const queryClient = useQueryClient();
+  const { ping, status: connectionStatus } = useConnectionPing();
+  const { reducedMotion, toggle: toggleMotion } = useReducedMotion();
 
-  // Mark alert as read mutation
   const markAsReadMutation = useMutation({
     mutationFn: async (alertId: string) => {
       const { error } = await supabase
