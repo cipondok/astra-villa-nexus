@@ -220,7 +220,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                 key={item.name}
                 onClick={() => handleNavClick(item.path)}
                 title={item.name}
-                className="flex items-center gap-2 w-full text-left text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
+                className="flex items-center gap-2 w-full text-left text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 py-3 min-h-[44px] active:bg-muted/40 rounded-lg px-2"
               >
                 {item.icon && <item.icon className="h-4 w-4" />}
                 {item.name}
