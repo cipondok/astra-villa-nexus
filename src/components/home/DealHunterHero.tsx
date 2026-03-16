@@ -59,7 +59,7 @@ export default function DealHunterHero() {
               onClick={() => navigate(`/property/${deal.property_id}`)}
             >
               <div className="flex items-center justify-between mb-2">
-                <Badge className={`text-[9px] h-4 px-1.5 ${cls.color} border-0`}>
+                <Badge className={`text-[10px] h-4 px-1.5 ${cls.color} border-0`}>
                   {cls.icon} {cls.label}
                 </Badge>
                 <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
@@ -71,9 +71,9 @@ export default function DealHunterHero() {
               <p className="text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors">
                 {prop?.title || 'Property'}
               </p>
-              <p className="text-[10px] text-muted-foreground mb-3">{prop?.city}</p>
+              <p className="text-[11px] text-muted-foreground mb-3">{prop?.city}</p>
 
-              <div className="grid grid-cols-2 gap-2 text-[10px]">
+              <div className="grid grid-cols-2 gap-2 text-[11px]">
                 <div className="bg-muted/20 rounded-md p-1.5 text-center">
                   <p className="text-muted-foreground">Signal</p>
                   <p className="font-bold text-foreground">{deal.deal_opportunity_signal_score}</p>

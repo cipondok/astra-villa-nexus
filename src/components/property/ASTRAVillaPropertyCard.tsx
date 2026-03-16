@@ -96,12 +96,12 @@ const ASTRAVillaPropertyCard = ({
     <Card
       className={cn(
         "group relative overflow-hidden rounded-xl",
-        "bg-card backdrop-blur-xl",
+        "bg-card backdrop-blur-xl will-change-transform",
         property.owner_subscription_type === 'enterprise'
           ? "border border-[hsl(var(--gold-primary)/0.5)] shadow-[0_0_15px_-3px_hsl(var(--gold-primary)/0.15)]"
           : "border border-border",
-        "hover:border-gold-primary/40",
-        "shadow-sm hover:shadow-[0_8px_30px_-8px_hsl(var(--gold-primary)/0.2)]",
+        "hover:border-primary/40",
+        "shadow-sm hover:shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.2)]",
         "hover:-translate-y-1 transition-all duration-500 ease-out cursor-pointer",
         className
       )}
@@ -184,7 +184,7 @@ const ASTRAVillaPropertyCard = ({
       </PropertyImageCarousel>
 
       {/* Content Section */}
-      <div className="p-2 sm:p-3 space-y-2">
+      <div className="p-2.5 sm:p-3 space-y-1.5">
         {!isImageLoaded ? (
           <>
             <div className="h-8 w-full rounded-lg bg-muted animate-pulse" />
@@ -203,7 +203,7 @@ const ASTRAVillaPropertyCard = ({
               "flex items-baseline gap-1 rounded-lg px-2 py-1.5 sm:px-2.5 sm:py-2 border flex-wrap",
               "bg-primary/5 border-primary/15"
             )}>
-              <span className="text-sm sm:text-base font-black leading-none tracking-tight text-primary">
+              <span className="text-sm sm:text-base font-black leading-none tracking-tight text-primary drop-shadow-sm">
                 <Price amount={numPrice} short showFlag />
               </span>
               {isRent && (
@@ -212,7 +212,7 @@ const ASTRAVillaPropertyCard = ({
             </div>
 
             {/* Title */}
-            <h3 className="text-xs font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors duration-200">
+            <h3 className="text-[13px] font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors duration-200">
               {property.title}
             </h3>
 
@@ -228,19 +228,19 @@ const ASTRAVillaPropertyCard = ({
                 <div className="flex items-center gap-0.5 text-muted-foreground">
                   <Bed className="h-3 w-3" />
                   <span className="text-[11px] font-semibold text-foreground/80">{property.bedrooms}</span>
-                  <span className="text-[9px] font-medium">KT</span>
+                  <span className="text-[10px] font-medium">KT</span>
                 </div>
               )}
               {property.bathrooms !== undefined && Number(property.bathrooms) > 0 && (
                 <div className="flex items-center gap-0.5 text-muted-foreground">
                   <Bath className="h-3 w-3" />
                   <span className="text-[11px] font-semibold text-foreground/80">{property.bathrooms}</span>
-                  <span className="text-[9px] font-medium">KM</span>
+                  <span className="text-[10px] font-medium">KM</span>
                 </div>
               )}
               {property.land_area && (
                 <div className="flex items-center gap-0.5 text-muted-foreground">
-                  <span className="text-[8px] font-semibold">LT</span>
+                  <span className="text-[10px] font-semibold">LT</span>
                   <span className="text-[11px] font-semibold text-foreground/80">{property.land_area}m²</span>
                 </div>
               )}

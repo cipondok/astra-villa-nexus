@@ -170,7 +170,7 @@ const CompactPropertyCard = ({
 
   return (
     <>
-      <Card className="group card-hover professional-card overflow-hidden h-full flex flex-col border border-border hover:border-gold-primary/40 bg-card backdrop-blur-xl shadow-sm hover:shadow-[0_8px_30px_-8px_hsl(var(--gold-primary)/0.2)] hover:-translate-y-1 transition-all duration-400 rounded-xl relative">
+      <Card className="group card-hover professional-card overflow-hidden h-full flex flex-col border border-border hover:border-primary/40 bg-card backdrop-blur-xl shadow-sm hover:shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.2)] hover:-translate-y-1 transition-all duration-400 rounded-xl relative will-change-transform">
         {/* Image Section with Overlay Info */}
         <PropertyImageCarousel
           images={property.images?.length ? property.images : [getImageUrl()]}
@@ -280,19 +280,19 @@ const CompactPropertyCard = ({
                 <div className="flex items-center gap-0.5 border border-white/20 bg-black/30 backdrop-blur-md rounded-lg px-2 sm:px-2.5 py-0.5 sm:py-1 shadow-sm">
                   <Bed className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-white/80" />
                   <span className="text-[10px] sm:text-xs text-white font-bold">{property.bedrooms}</span>
-                  <span className="text-[8px] sm:text-[10px] text-white/70 font-bold">KT</span>
+                  <span className="text-[10px] sm:text-[10px] text-white/70 font-bold">KT</span>
                 </div>
               )}
               {property.bathrooms && property.bathrooms > 0 && (
                 <div className="flex items-center gap-0.5 border border-white/20 bg-black/30 backdrop-blur-md rounded-lg px-2 sm:px-2.5 py-0.5 sm:py-1 shadow-sm">
                   <Bath className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-white/80" />
                   <span className="text-[10px] sm:text-xs text-white font-bold">{property.bathrooms}</span>
-                  <span className="text-[8px] sm:text-[10px] text-white/70 font-bold">KM</span>
+                  <span className="text-[10px] sm:text-[10px] text-white/70 font-bold">KM</span>
                 </div>
               )}
               {property.area_sqm && (
                 <div className="flex items-center gap-0.5 border border-white/20 bg-black/30 backdrop-blur-md rounded-lg px-2 sm:px-2.5 py-0.5 sm:py-1 shadow-sm">
-                  <span className="text-[8px] sm:text-[10px] text-white/70 font-bold">LB</span>
+                  <span className="text-[10px] sm:text-[10px] text-white/70 font-bold">LB</span>
                   <span className="text-[10px] sm:text-xs text-white font-bold">{property.area_sqm}m²</span>
                 </div>
               )}
@@ -307,7 +307,7 @@ const CompactPropertyCard = ({
             {/* Location */}
             <div className="flex items-center gap-0.5 mt-1 sm:mt-1.5">
               <MapPin className="h-2.5 sm:h-3 w-2.5 sm:w-3 text-white/80 flex-shrink-0" />
-              <span className="text-[9px] sm:text-[10px] md:text-xs text-white/90 truncate">{property.location}</span>
+              <span className="text-[10px] sm:text-[11px] md:text-xs text-white/90 truncate">{property.location}</span>
             </div>
 
             {/* Trust Badges */}
