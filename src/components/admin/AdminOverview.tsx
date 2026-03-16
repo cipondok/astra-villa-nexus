@@ -353,7 +353,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
         <div className="col-span-12 md:col-span-3 space-y-3">
          <SectionErrorBoundary sectionName="Platform Stats">
           {/* Key Metrics */}
-          <Card className="border-border/30">
+          <Card className="border-border bg-card">
             <CardHeader className="p-3 pb-2">
               <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
                 <Activity className="h-3.5 w-3.5" /> Platform Stats
