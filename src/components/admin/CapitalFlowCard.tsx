@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   useCapitalFlowIntelligence,
   type CapitalFlowSignal,
+  type CapitalFlowResult,
   type FlowStrength,
   type RegionCapitalFlow,
 } from "@/hooks/useCapitalFlowIntelligence";

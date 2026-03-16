@@ -10,6 +10,7 @@ import {
 import {
   useDealTimingSignals,
   type DealTimingEntry,
+  type DealTimingResult,
   type DealSignal,
   type TimingConfidence,
 } from "@/hooks/useDealTimingSignals";

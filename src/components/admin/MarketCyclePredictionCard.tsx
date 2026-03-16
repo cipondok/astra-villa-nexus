@@ -6,6 +6,7 @@ import {
   type MacroCyclePhase,
   type CycleConfidence,
   type InvestmentSignal,
+  type MarketCyclePrediction,
 } from "@/hooks/useMarketCyclePrediction";
 import {
   TrendingUp,

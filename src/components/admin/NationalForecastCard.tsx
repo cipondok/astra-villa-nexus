@@ -5,6 +5,7 @@ import {
   useNationalForecast,
   type PriceForecast,
   type ClimatePhase,
+  type NationalForecastResult,
 } from "@/hooks/useNationalForecast";
 import {
   TrendingUp,

@@ -10,6 +10,7 @@ import {
 import {
   useBuyerListingMatch,
   type BuyerListingMatch,
+  type BuyerListingMatchResult,
   type MatchConfidence,
   type EngagementAction,
   type MismatchRisk,
