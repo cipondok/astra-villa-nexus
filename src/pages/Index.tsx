@@ -572,7 +572,7 @@ const Index = () => {
           style={{ height: 'clamp(500px, 80vh, 820px)', contain: 'layout' }}
         >
           {/* Single premium background image with slow zoom */}
-          <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 z-0 overflow-hidden" style={{ contain: 'strict' }}>
             <img
               src={heroImage}
               alt="Premium property — ASTRAVILLA intelligent real estate"
@@ -582,7 +582,8 @@ const Index = () => {
               loading="eager"
               decoding="sync"
               sizes="100vw"
-              className="w-full h-[115%] object-cover will-change-transform animate-[heroZoom_25s_ease-in-out_infinite_alternate]"
+              className="w-full h-full object-cover animate-[heroZoom_25s_ease-in-out_infinite_alternate]"
+              style={{ willChange: 'transform' }}
             />
           </div>
 
