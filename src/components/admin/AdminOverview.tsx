@@ -76,7 +76,16 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
     }
   }, [onSectionChange]);
 
-  // Fetch real 7-day trend data for sparklines
+  // Track first render for activity feed animations (P2 #9)
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      const timer = setTimeout(() => { isFirstRender.current = false; }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+
   const { data: sparkTrends } = useQuery({
     queryKey: ['admin-spark-trends-7d'],
     queryFn: async () => {
