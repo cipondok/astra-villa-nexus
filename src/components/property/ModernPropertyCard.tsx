@@ -275,7 +275,7 @@ const ModernPropertyCard = ({
         {/* Location */}
         <div className="flex items-center gap-1 text-muted-foreground mb-1.5">
           <MapPin className="h-2.5 w-2.5 flex-shrink-0" />
-          <span className="text-[10px] line-clamp-1">{getLocation()}</span>
+          <span className="text-[11px] line-clamp-1">{getLocation()}</span>
         </div>
 
         {/* Owner/Agent Info - Compact */}
