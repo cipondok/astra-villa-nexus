@@ -61,6 +61,7 @@ import DealTimingSignalCard from "./DealTimingSignalCard";
 import NationalForecastCard from "./NationalForecastCard";
 import PortfolioStrategyCard from "./PortfolioStrategyCard";
 import CapitalFlowCard from "./CapitalFlowCard";
+import MarketplaceOptimizationCard from "./MarketplaceOptimizationCard";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
