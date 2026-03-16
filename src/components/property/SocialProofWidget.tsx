@@ -75,7 +75,7 @@ const SocialProofWidget = ({
         
         <Badge 
           variant="secondary" 
-          className="text-[9px] px-1.5 py-0 h-4 bg-muted/60"
+          className="text-[10px] px-1.5 py-0 h-4.5 bg-muted/60"
         >
           <Eye className="h-2.5 w-2.5 mr-0.5 text-muted-foreground" />
           {metrics.views}
