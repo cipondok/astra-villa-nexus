@@ -79,7 +79,7 @@ function buildIndex(): FlatItem[] {
         icon: section.icon,
         category: catTitle,
         description: section.description,
-        badge: section.badge,
+        badge: (section as any).badge,
         keywords: [
           section.label.toLowerCase(),
           section.key.replace(/-/g, ' '),
