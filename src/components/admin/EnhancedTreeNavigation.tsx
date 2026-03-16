@@ -83,63 +83,81 @@ const SortableQuickNavItem = ({ link, isActive, onTabChange, onRemove, getBadgeC
   };
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={`group relative flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
-        isActive 
-          ? 'bg-primary/20 border border-primary/50 shadow-lg'
-          : 'bg-muted/50 hover:bg-muted border border-border/30'
-      }`}
-    >
-      {/* Drag Handle */}
-      <div
-        {...attributes}
-        {...listeners}
-        className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground mr-1"
-      >
-        <Menu className="h-3 w-3" />
-      </div>
+    <TooltipProvider delayDuration={400}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div
+            ref={setNodeRef}
+            style={style}
+            className={`group relative flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+              isActive 
+                ? 'bg-primary/20 border border-primary/50 shadow-lg'
+                : 'bg-muted/50 hover:bg-muted border border-border/30'
+            }`}
+          >
+            {/* Shortcut hint */}
+            {shortcutKey && (
+              <span className="absolute -top-1.5 -right-1.5 h-4 min-w-[16px] rounded bg-muted border border-border/50 text-[10px] font-mono font-semibold text-muted-foreground flex items-center justify-center px-0.5 opacity-60 group-hover:opacity-100 transition-opacity z-10">
+                {shortcutKey}
+              </span>
+            )}
 
-      {/* Link Content */}
-      <button
-        onClick={() => onTabChange(link.id)}
-        className="flex items-center gap-2"
-      >
-        <span className="text-sm">{link.icon}</span>
-        <span className="text-sm font-medium text-foreground">{link.label}</span>
-        
-        {link.count !== undefined && (
-          <Badge className={`text-xs px-1.5 py-0.5 ${getBadgeColor(link.color)}`}>
-            {link.count}
-          </Badge>
-        )}
-        
-        {link.isNew && (
-          <Badge className="text-xs px-1 py-0.5 bg-chart-4/20 text-chart-4 border-chart-4/30">
-            NEW
-          </Badge>
-        )}
-        
-        {usageStats[link.id] && (
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <Star className="h-3 w-3" />
-            <span>{usageStats[link.id]}</span>
+            {/* Drag Handle */}
+            <div
+              {...attributes}
+              {...listeners}
+              className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground mr-1"
+            >
+              <Menu className="h-3 w-3" />
+            </div>
+
+            {/* Link Content */}
+            <button
+              onClick={() => onTabChange(link.id)}
+              className="flex items-center gap-2"
+            >
+              <span className="text-sm">{link.icon}</span>
+              <span className="text-sm font-medium text-foreground">{link.label}</span>
+              
+              {link.count !== undefined && (
+                <Badge className={`text-xs px-1.5 py-0.5 ${getBadgeColor(link.color)}`}>
+                  {link.count}
+                </Badge>
+              )}
+              
+              {link.isNew && (
+                <Badge className="text-xs px-1 py-0.5 bg-chart-4/20 text-chart-4 border-chart-4/30">
+                  NEW
+                </Badge>
+              )}
+              
+              {usageStats[link.id] && (
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <Star className="h-3 w-3" />
+                  <span>{usageStats[link.id]}</span>
+                </div>
+              )}
+            </button>
+
+            {/* Remove button */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemove(link.id);
+              }}
+              className="absolute -top-1 -right-1 bg-destructive hover:bg-destructive/80 text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <X className="h-3 w-3" />
+            </button>
           </div>
+        </TooltipTrigger>
+        {shortcutKey && (
+          <TooltipContent side="bottom" className="text-xs">
+            Press <kbd className="px-1 py-0.5 rounded bg-muted border border-border font-mono text-[11px]">{shortcutKey}</kbd> to navigate
+          </TooltipContent>
         )}
-      </button>
-
-      {/* Remove button */}
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          onRemove(link.id);
-        }}
-        className="absolute -top-1 -right-1 bg-destructive hover:bg-destructive/80 text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-      >
-        <X className="h-3 w-3" />
-      </button>
-    </div>
+      </Tooltip>
+    </TooltipProvider>
   );
 };
 
