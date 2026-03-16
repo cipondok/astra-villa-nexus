@@ -78,6 +78,8 @@ const TrendingROIDeals = lazy(() => import("@/components/home/TrendingROIDeals")
 const AIPriceEstimatorCTA = lazy(() => import("@/components/home/AIPriceEstimatorCTA"));
 const MarketIntelligenceCTA = lazy(() => import("@/components/home/MarketIntelligenceCTA"));
 const EarlyInvestmentCTA = lazy(() => import("@/components/home/EarlyInvestmentCTA"));
+const SocialProofStrip = lazy(() => import("@/components/home/SocialProofStrip"));
+const SectionDividerCTA = lazy(() => import("@/components/home/SectionDividerCTA"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
