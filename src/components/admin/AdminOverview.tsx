@@ -42,6 +42,7 @@ import {
   ChevronDown
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import AIHealthSummaryCard from "./AIHealthSummaryCard";
 import LeadIntelligenceCard from "./LeadIntelligenceCard";
 import MarketIntelligenceCard from "./MarketIntelligenceCard";
