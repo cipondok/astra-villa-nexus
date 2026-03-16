@@ -36,7 +36,7 @@ import { DataSaverProvider } from '@/contexts/DataSaverContext';
 const Navigation = lazy(() => import('@/components/Navigation'));
 const ProfessionalFooter = lazy(() => import('@/components/ProfessionalFooter'));
 const MobileFooter = lazy(() => import('@/components/MobileFooter'));
-const InitialLoadingScreen = lazy(() => import('@/components/ui/InitialLoadingScreen'));
+import InitialLoadingScreen from '@/components/ui/InitialLoadingScreen';
 const GlobalLoadingIndicator = lazy(() => import('@/components/ui/GlobalLoadingIndicator'));
 
 
