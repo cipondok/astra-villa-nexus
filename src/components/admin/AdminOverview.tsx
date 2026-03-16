@@ -84,6 +84,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
     });
   }, []);
 
+  // Batched AI intelligence data
+  const { data: aiData } = useAICommandCenterData();
+
   // Fetch platform statistics
   const { data: platformStats, isLoading: statsLoading, refetch: refetchStats } = useQuery({
     queryKey: ['admin-platform-stats'],
