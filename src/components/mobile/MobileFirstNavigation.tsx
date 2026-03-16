@@ -10,6 +10,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNotifications } from '@/contexts/NotificationContext';
+import { haptic } from '@/utils/haptics';
 
 /**
  * Thumb-Zone Optimized Mobile Navigation
@@ -59,6 +60,7 @@ const MobileFirstNavigation: React.FC = () => {
   ];
 
   const handleNavigation = useCallback((path: string) => {
+    haptic('selection');
     navigate(path);
     setIsExpanded(false);
     setShowQuickActions(false);

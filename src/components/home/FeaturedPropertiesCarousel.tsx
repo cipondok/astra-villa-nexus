@@ -172,10 +172,9 @@ export default function FeaturedPropertiesCarousel() {
         <div
           ref={scrollRef}
           className={cn(
-            "flex gap-3 sm:gap-4 overflow-x-auto pb-2 snap-x snap-mandatory",
+            "flex gap-3 sm:gap-4 overflow-x-auto pb-3 carousel-snap",
             isDragging ? "cursor-grabbing select-none" : "cursor-grab"
           )}
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
@@ -187,14 +186,14 @@ export default function FeaturedPropertiesCarousel() {
               onClick={() => !isDragging && navigate(`/properties/${p.id}`)}
               className="flex-shrink-0 w-[260px] sm:w-[290px] md:w-[310px] lg:w-[330px] snap-start group/card cursor-pointer"
             >
-              <div className="relative rounded-xl overflow-hidden bg-card border border-border shadow-sm hover:shadow-xl hover:shadow-primary/10 hover:border-primary/30 hover:-translate-y-1 transition-all duration-300 will-change-transform">
+              <div className="relative rounded-xl overflow-hidden bg-card border border-border shadow-sm card-hover-lift will-change-transform">
                 {/* Image */}
                 <div className="relative aspect-[16/10] overflow-hidden">
                   <OptimizedPropertyImage
                     src={getPropertyImage(p.images, p.thumbnail_url)}
                     alt={p.title}
                     sizes="(max-width: 640px) 260px, (max-width: 1024px) 310px, 330px"
-                    className="group-hover/card:scale-110 transition-transform duration-700"
+                    className="img-hover-zoom"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
