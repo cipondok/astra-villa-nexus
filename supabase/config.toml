@@ -256,3 +256,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.portfolio-optimizer]
     verify_jwt = false
 
+  [functions.autopilot-worker]
+    verify_jwt = false
+
