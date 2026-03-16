@@ -61,6 +61,7 @@ const FounderDailySystem = lazy(() => import('./FounderDailySystem'));
 const HyperExecutionPlan = lazy(() => import('./HyperExecutionPlan'));
 const NinetyDayMasterPlan = lazy(() => import('./NinetyDayMasterPlan'));
 const UIUXRedesignBlueprint = lazy(() => import('./UIUXRedesignBlueprint'));
+const HomepageBlueprint = lazy(() => import('./HomepageBlueprint'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
