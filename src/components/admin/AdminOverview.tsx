@@ -560,7 +560,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
                     ? 'bg-chart-1/5 border-chart-1/30 dark:bg-chart-1/10' 
                     : 'bg-chart-3/5 border-chart-3/30 dark:bg-chart-3/10'
                 }`}>
-                  <span className="text-xs font-medium">Status</span>
+                  <span className="text-xs font-medium text-foreground">Status</span>
                   <Badge variant={systemHealth?.status === 'healthy' ? 'default' : 'destructive'} className="text-[10px] h-5 px-2">
                     {systemHealth?.status === 'healthy' ? '● All Systems OK' : '⚠ Issues'}
                   </Badge>
