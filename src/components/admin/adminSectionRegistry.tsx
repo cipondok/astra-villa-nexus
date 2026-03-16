@@ -210,6 +210,7 @@ export const GlobalStrategyPanel = lazyRetry(() => import("./GlobalStrategyPanel
 export const InvestorDNAAdminPanel = lazyRetry(() => import("./InvestorDNAAdminPanel"));
 export const GlobalMacroIntelligencePanel = lazyRetry(() => import("@/pages/GlobalMacroIntelligencePage"));
 export const DealHunterAdminPanel = lazyRetry(() => import("./DealHunterAdminPanel"));
+export const MarketHeatIntelligence = lazyRetry(() => import("./MarketHeatIntelligence"));
 export const OffPlanProjectManager = lazyRetry(() => import("./OffPlanProjectManager"));
 
 // ── Section render map ────────────────────────────────────────────────────────
