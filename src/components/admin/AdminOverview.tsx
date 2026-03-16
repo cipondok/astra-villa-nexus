@@ -674,15 +674,33 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
               <div className="h-px flex-1 bg-gradient-to-l from-chart-3/30 to-transparent" />
             </div>
 
-            <AIBatchControlPanel />
-            <AISchedulingDashboard />
-            <JobQueueHealthCard />
-            <AIJobObservabilityPanel />
-            <ListingPerformanceOptimizerCard onNavigate={() => onSectionChange?.("listing-optimization-center")} />
-            <PricingIntelligenceCard />
-            <DealClosingTimelineCard />
-            <PricingAutomationCard />
-            <MarketplaceOptimizationCard />
+            <SectionErrorBoundary sectionName="AI Batch Control">
+              <AIBatchControlPanel />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="AI Scheduling">
+              <AISchedulingDashboard />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Job Queue Health">
+              <JobQueueHealthCard />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="AI Job Observability">
+              <AIJobObservabilityPanel />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Listing Performance">
+              <ListingPerformanceOptimizerCard onNavigate={() => onSectionChange?.("listing-optimization-center")} />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Pricing Intelligence">
+              <PricingIntelligenceCard />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Deal Closing Timeline">
+              <DealClosingTimelineCard />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Pricing Automation">
+              <PricingAutomationCard />
+            </SectionErrorBoundary>
+            <SectionErrorBoundary sectionName="Marketplace Optimization">
+              <MarketplaceOptimizationCard />
+            </SectionErrorBoundary>
 
             {/* Quick Actions */}
             <div className="grid grid-cols-2 gap-2">
