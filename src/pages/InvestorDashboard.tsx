@@ -296,7 +296,7 @@ const InvestorDashboard = () => {
                             </div>
                             <div className="text-right flex-shrink-0">
                               <p className="text-sm font-bold text-foreground">{score}</p>
-                              <p className="text-[9px] text-muted-foreground">
+                              <p className="text-[10px] text-muted-foreground">
                                 {city.growth_rate != null ? `${city.growth_rate > 0 ? '+' : ''}${city.growth_rate.toFixed(1)}%` : '—'}
                               </p>
                             </div>
