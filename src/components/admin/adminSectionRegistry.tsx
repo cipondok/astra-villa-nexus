@@ -4,7 +4,7 @@
  * Centralises all lazy imports and section metadata for AdminDashboardContent.
  * Adding a new admin section only requires a change to this file.
  */
-import { lazy, ComponentType } from "react";
+import React, { lazy, ComponentType } from "react";
 
 // ─── Retry-aware lazy loader ──────────────────────────────────────────────────
 function lazyRetry<T extends ComponentType<any>>(
