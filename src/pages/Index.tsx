@@ -1020,6 +1020,11 @@ const Index = () => {
         <Suspense fallback={null}>
           <MobileFloatingCTA />
         </Suspense>
+
+        {/* PWA install prompt */}
+        <Suspense fallback={null}>
+          <PWAInstallPrompt />
+        </Suspense>
         
         {/* AI Search Loading Dialog */}
         <Suspense fallback={null}>
