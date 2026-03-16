@@ -156,6 +156,15 @@ const AIAutopilotPage = () => {
               </div>
             </div>
             <div className="flex gap-2">
+              <Button
+                size="sm"
+                onClick={() => runWorkers.mutate({})}
+                disabled={runWorkers.isPending}
+                className="text-xs gap-1.5"
+              >
+                {runWorkers.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Play className="h-3 w-3" />}
+                Run All Workers
+              </Button>
               <Button variant="outline" size="sm" onClick={() => navigate('/portfolio-command-center')} className="text-xs gap-1.5">
                 <BarChart3 className="h-3 w-3" /> Portfolio
               </Button>
