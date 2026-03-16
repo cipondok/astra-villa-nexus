@@ -286,11 +286,11 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 pt-0 space-y-2">
-              <MetricRow icon={Users} label="Users" value={platformStats?.totalUsers || 0} loading={statsLoading} />
-              <MetricRow icon={Building2} label="Properties" value={platformStats?.totalProperties || 0} loading={statsLoading} />
-              <MetricRow icon={Store} label="Vendors" value={platformStats?.totalVendors || 0} loading={statsLoading} />
-              <MetricRow icon={Eye} label="Page Views" value={platformStats?.totalPageViews || 0} loading={statsLoading} />
-              <MetricRow icon={Zap} label="Active (24h)" value={platformStats?.activeUsers24h || 0} highlight loading={statsLoading} />
+              <MetricRow icon={Users} label="Users" value={platformStats?.totalUsers || 0} loading={statsLoading} sparkData={makeSpark(platformStats?.totalUsers || 0, 1)} />
+              <MetricRow icon={Building2} label="Properties" value={platformStats?.totalProperties || 0} loading={statsLoading} sparkData={makeSpark(platformStats?.totalProperties || 0, 2)} />
+              <MetricRow icon={Store} label="Vendors" value={platformStats?.totalVendors || 0} loading={statsLoading} sparkData={makeSpark(platformStats?.totalVendors || 0, 3)} />
+              <MetricRow icon={Eye} label="Page Views" value={platformStats?.totalPageViews || 0} loading={statsLoading} sparkData={makeSpark(platformStats?.totalPageViews || 0, 4)} />
+              <MetricRow icon={Zap} label="Active (24h)" value={platformStats?.activeUsers24h || 0} highlight loading={statsLoading} sparkData={makeSpark(platformStats?.activeUsers24h || 0, 5)} />
             </CardContent>
           </Card>
 
