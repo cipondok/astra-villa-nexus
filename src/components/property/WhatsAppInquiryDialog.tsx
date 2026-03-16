@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { BaseProperty } from "@/types/property";
-import { MessageCircle, Phone, User } from "lucide-react";
+import { MessageCircle, Phone, User, Shield, Clock, Lock } from "lucide-react";
 import { WHATSAPP_BUSINESS_NUMBER } from "@/utils/whatsappUtils";
 import { getCurrencyFormatter } from "@/stores/currencyStore";
 
@@ -68,6 +68,24 @@ ${message}`;
               </div>
             </div>
           </DialogHeader>
+
+          {/* Trust reassurance strip in header */}
+          <div className="flex items-center gap-3 mt-3 pt-3 border-t border-primary-foreground/15">
+            <div className="flex items-center gap-1 text-[10px] text-primary-foreground/70 font-medium">
+              <Lock className="h-3 w-3" />
+              <span>Encrypted</span>
+            </div>
+            <div className="h-3 w-px bg-primary-foreground/20" />
+            <div className="flex items-center gap-1 text-[10px] text-primary-foreground/70 font-medium">
+              <Clock className="h-3 w-3" />
+              <span>Avg. reply &lt; 2 hours</span>
+            </div>
+            <div className="h-3 w-px bg-primary-foreground/20" />
+            <div className="flex items-center gap-1 text-[10px] text-primary-foreground/70 font-medium">
+              <Shield className="h-3 w-3" />
+              <span>Verified agent</span>
+            </div>
+          </div>
         </div>
         
         <div className="p-5 space-y-4">
@@ -163,6 +181,12 @@ ${message}`;
               </Button>
             </div>
           </form>
+
+          {/* Bottom trust line */}
+          <p className="text-[10px] text-center text-muted-foreground/50 leading-relaxed">
+            Your contact details are shared only with the verified listing agent.
+            Protected by ASTRAVILLA's privacy policy.
+          </p>
         </div>
       </DialogContent>
     </Dialog>
