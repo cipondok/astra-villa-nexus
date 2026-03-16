@@ -334,9 +334,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <span className="flex items-center gap-1" role="status" aria-live="polite">
                 <span className="w-2 h-2 bg-chart-1 rounded-full animate-pulse" aria-hidden="true" />
-                Online
+                <span className="text-chart-1 font-medium">Online</span>
               </span>
-              <span>•</span>
+              <span className="text-border">•</span>
               <span>{new Date().toLocaleTimeString()}</span>
             </div>
           </div>
