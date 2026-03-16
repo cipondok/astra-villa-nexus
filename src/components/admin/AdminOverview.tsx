@@ -1,5 +1,6 @@
 
 import React, { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import SectionErrorBoundary from "./shared/SectionErrorBoundary";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -344,6 +345,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
       <div className="grid grid-cols-12 gap-3">
         {/* Left Column - Stats & Quick Actions */}
         <div className="col-span-12 md:col-span-3 space-y-3">
+         <SectionErrorBoundary sectionName="Platform Stats">
           {/* Key Metrics */}
           <Card className="border-border/30">
             <CardHeader className="p-3 pb-2">
@@ -408,10 +410,12 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
               ))}
             </CardContent>
           </Card>
+         </SectionErrorBoundary>
         </div>
 
         {/* Center Column - Activity & Traffic */}
         <div className="col-span-12 md:col-span-6 space-y-3">
+         <SectionErrorBoundary sectionName="Traffic & Activity">
           {/* Live Traffic Chart - Recharts */}
           <Card className="border-border/30">
             <CardHeader className="p-3 pb-2">
@@ -511,10 +515,12 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
             <SummaryCard label="Response" value={`${systemHealth?.responseTime || 0}ms`} icon={Clock} color="purple" />
             <SummaryCard label="Uptime" value={`${systemHealth?.uptime || 99.9}%`} icon={CheckCircle} color="green" />
           </div>
+         </SectionErrorBoundary>
         </div>
 
         {/* Right Column - Zoned Panels */}
         <div className="col-span-12 md:col-span-3 space-y-3">
+         <SectionErrorBoundary sectionName="AI Intelligence & Health">
           
           {/* ═══ ZONE 1: System Health ═══ */}
           <div className="space-y-3">
@@ -662,6 +668,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
               </Button>
             </div>
           </div>
+         </SectionErrorBoundary>
         </div>
       </div>
     </div>
