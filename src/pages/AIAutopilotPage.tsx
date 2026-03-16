@@ -10,7 +10,7 @@ import {
   Brain, Activity, TrendingUp, TrendingDown, Shield, Zap,
   Target, Eye, AlertTriangle, Flame, ArrowUpRight, ArrowDownRight,
   ChevronRight, Loader2, Radio, Cpu, BarChart3, MapPin,
-  Lightbulb, RefreshCw, DollarSign, Layers, Clock,
+  Lightbulb, RefreshCw, DollarSign, Layers, Clock, Play,
 } from 'lucide-react';
 import { useAIAutopilot, type AutopilotSignal, type AutopilotRecommendation } from '@/hooks/useAIAutopilot';
 import { useAutopilotStatus, useRunAutopilotWorkers, WORKER_NAMES } from '@/hooks/useAutopilotWorker';
