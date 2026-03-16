@@ -721,29 +721,70 @@ const PropertyImageManager = () => {
       </div>
 
       {/* AI Image Generation for No-Image Properties */}
-      {stats.noImages > 0 && (
+      {(stats.noImages > 0 || bulkAIGenerating) && (
         <Card className="border-chart-3/20 bg-chart-3/5">
-          <CardContent className="p-3">
+          <CardContent className="p-3 space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Wand2 className="h-4 w-4 text-chart-3" />
                 <div>
                   <span className="text-xs font-semibold">AI Image Generator</span>
                   <p className="text-[10px] text-muted-foreground">
-                    {stats.noImages.toLocaleString()} properties have no images. Generate AI photos in batches.
+                    {stats.noImages.toLocaleString()} properties have no images.
                   </p>
                 </div>
               </div>
-              <Button
-                size="sm"
-                className="h-7 text-[10px] gap-1.5"
-                onClick={handleBulkAIGenerate}
-                disabled={bulkAIGenerating}
-              >
-                {bulkAIGenerating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Wand2 className="h-3 w-3" />}
-                {bulkAIGenerating ? "Queuing..." : "Generate Images (Batch Job)"}
-              </Button>
+              <div className="flex items-center gap-2">
+                {bulkAIGenerating && (
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    className="h-7 text-[10px] gap-1.5"
+                    onClick={() => { bulkGenCancelRef.current = true; }}
+                  >
+                    <StopCircle className="h-3 w-3" /> Stop
+                  </Button>
+                )}
+                <Button
+                  size="sm"
+                  className="h-7 text-[10px] gap-1.5"
+                  onClick={handleBulkAIGenerate}
+                  disabled={bulkAIGenerating}
+                >
+                  {bulkAIGenerating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Wand2 className="h-3 w-3" />}
+                  {bulkAIGenerating ? "Generating..." : "Start Generate"}
+                </Button>
+              </div>
             </div>
+
+            {/* Live progress */}
+            {(bulkAIGenerating || bulkGenProgress.done > 0) && (
+              <div className="space-y-2">
+                <Progress value={bulkGenProgress.total > 0 ? (bulkGenProgress.done / bulkGenProgress.total) * 100 : 0} className="h-2" />
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div>
+                    <p className="text-sm font-bold text-foreground">{bulkGenProgress.done}</p>
+                    <p className="text-[9px] text-muted-foreground uppercase">Processed</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-chart-2">{bulkGenProgress.succeeded}</p>
+                    <p className="text-[9px] text-chart-2 uppercase">✓ Generated</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-destructive">{bulkGenProgress.failed}</p>
+                    <p className="text-[9px] text-destructive uppercase">✗ Failed</p>
+                  </div>
+                </div>
+                {bulkAIGenerating && bulkGenProgress.current && (
+                  <div className="flex items-center gap-1.5">
+                    <Loader2 className="h-3 w-3 animate-spin text-primary shrink-0" />
+                    <p className="text-[10px] text-muted-foreground truncate">
+                      {bulkGenProgress.current}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
