@@ -3,12 +3,12 @@
 @import './styles/mobile-first-responsive.css';
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+/* Montserrat removed — Inter + Playfair Display cover all typography roles (see brand-identity-audit.md) */
 
 /* Force font-display:swap to prevent invisible text during font load */
 @font-face { font-family: 'Inter'; font-display: swap; }
 @font-face { font-family: 'Playfair Display'; font-display: swap; }
-@font-face { font-family: 'Montserrat'; font-display: swap; }
+/* Montserrat font-face removed — not part of brand typography system */
 
 @tailwind base;
 @tailwind components;
@@ -792,7 +792,7 @@ html, body {
   /* CTA Button Enhancement */
   .btn-cta {
     @apply inline-flex items-center justify-center gap-3 rounded-full font-bold text-sm uppercase tracking-wider cursor-pointer border-0 outline-none relative overflow-hidden z-[1];
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Inter', sans-serif;
     padding: 18px 42px;
     background: linear-gradient(135deg, hsl(var(--gold-primary)) 0%, hsl(var(--orange-primary)) 50%, hsl(var(--gold-secondary)) 100%);
     background-size: 200% 200%;
