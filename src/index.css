@@ -8,7 +8,7 @@
 /* Force font-display:swap to prevent invisible text during font load */
 @font-face { font-family: 'Inter'; font-display: swap; }
 @font-face { font-family: 'Playfair Display'; font-display: swap; }
-@font-face { font-family: 'Montserrat'; font-display: swap; }
+/* Montserrat font-face removed — not part of brand typography system */
 
 @tailwind base;
 @tailwind components;
