@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { useLeadIntelligence } from "@/hooks/useLeadIntelligence";
+import { useLeadIntelligence, type LeadIntelligenceSummary } from "@/hooks/useLeadIntelligence";
 import {
   Flame,
   Target,
@@ -30,10 +30,12 @@ const riskConfig = {
 
 interface LeadIntelligenceCardProps {
   onNavigate?: () => void;
+  data?: LeadIntelligenceSummary | null;
 }
 
-const LeadIntelligenceCard = React.memo(function LeadIntelligenceCard({ onNavigate }: LeadIntelligenceCardProps) {
-  const { data: intel, isLoading } = useLeadIntelligence();
+const LeadIntelligenceCard = React.memo(function LeadIntelligenceCard({ onNavigate, data: batchedData }: LeadIntelligenceCardProps) {
+  const { data: fetchedData, isLoading } = useLeadIntelligence(!batchedData);
+  const intel = batchedData || fetchedData;
 
   if (isLoading || !intel) {
     return (

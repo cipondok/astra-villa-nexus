@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { useMarketAnomalyDetector, type MarketAnomaly } from "@/hooks/useMarketAnomalyDetector";
+import { useMarketAnomalyDetector, type MarketAnomaly, type MarketAnomalyResult } from "@/hooks/useMarketAnomalyDetector";
 import {
   ShieldAlert,
   TrendingDown,
@@ -66,8 +66,9 @@ function AnomalyRow({ anomaly }: { anomaly: MarketAnomaly }) {
   );
 }
 
-const MarketAnomalyCard = React.memo(function MarketAnomalyCard() {
-  const { data, isLoading } = useMarketAnomalyDetector();
+const MarketAnomalyCard = React.memo(function MarketAnomalyCard({ data: batchedData }: { data?: MarketAnomalyResult | null }) {
+  const { data: fetchedData, isLoading } = useMarketAnomalyDetector(!batchedData);
+  const data = batchedData || fetchedData;
   const [expanded, setExpanded] = useState(false);
 
   if (isLoading || !data) {

@@ -88,6 +88,8 @@ const OpportunityRadar = lazy(() => import("@/components/ai/OpportunityRadar"));
 const AIJourneyGuide = lazy(() => import("@/components/ai/AIJourneyGuide"));
 const OpportunityStreakCards = lazy(() => import("@/components/home/OpportunityStreakCards"));
 const PWAInstallPrompt = lazy(() => import("@/components/pwa/PWAInstallPrompt"));
+const ExitIntentPopup = lazy(() => import("@/components/home/ExitIntentPopup"));
+const UrgencyTimerStrip = lazy(() => import("@/components/home/UrgencyTimerStrip"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -853,6 +855,11 @@ const Index = () => {
                 <HotspotAlertBanner />
               </Suspense>
 
+              {/* ── Urgency Timer ── */}
+              <Suspense fallback={null}>
+                <UrgencyTimerStrip />
+              </Suspense>
+
               {/* ── SECTION 3: AI Opportunity Zone (merged intelligence modules) ── */}
               <section className="py-10 sm:py-14 bg-muted/30" id="ai-opportunity-zone" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 800px' }}>
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
@@ -1098,6 +1105,11 @@ const Index = () => {
         {/* PWA install prompt */}
         <Suspense fallback={null}>
           <PWAInstallPrompt />
+        </Suspense>
+
+        {/* Exit Intent Popup (desktop only, non-logged-in) */}
+        <Suspense fallback={null}>
+          <ExitIntentPopup />
         </Suspense>
         
         {/* AI Search Loading Dialog */}

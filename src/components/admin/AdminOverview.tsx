@@ -63,6 +63,7 @@ import NationalForecastCard from "./NationalForecastCard";
 import PortfolioStrategyCard from "./PortfolioStrategyCard";
 import CapitalFlowCard from "./CapitalFlowCard";
 import MarketplaceOptimizationCard from "./MarketplaceOptimizationCard";
+import { useAICommandCenterData } from "@/hooks/useAICommandCenterData";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
@@ -82,6 +83,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
       return Math.round(base * (0.85 + (i / 6) * 0.15 + noise));
     });
   }, []);
+
+  // Batched AI intelligence data
+  const { data: aiData } = useAICommandCenterData();
 
   // Fetch platform statistics
   const { data: platformStats, isLoading: statsLoading, refetch: refetchStats } = useQuery({
@@ -517,10 +521,10 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
 
             {/* Priority tier: elevated cards */}
             <div className="shadow-sm rounded-lg">
-              <AIHealthSummaryCard onNavigate={() => handleQuickAction('ai-command-center')} />
+              <AIHealthSummaryCard onNavigate={() => handleQuickAction('ai-command-center')} data={aiData?.systemHealth} />
             </div>
             <div className="shadow-sm rounded-lg">
-              <LeadIntelligenceCard onNavigate={() => handleQuickAction('lead-management')} />
+              <LeadIntelligenceCard onNavigate={() => handleQuickAction('lead-management')} data={aiData?.leadIntelligence} />
             </div>
             <div className="shadow-sm rounded-lg border border-primary/20">
               <MarketIntelligenceCard onNavigate={() => handleQuickAction('ai-command-center')} />
@@ -529,7 +533,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
             <DealPipelineCard onNavigate={() => handleQuickAction('financial-management')} />
             <GeoExpansionCard onNavigate={() => handleQuickAction('ai-command-center')} />
             <div className="border border-primary/20 rounded-lg">
-              <MarketAnomalyCard />
+              <MarketAnomalyCard data={aiData?.marketAnomalies} />
             </div>
             <InvestmentAttractivenessCard />
             <BuyerListingMatchCard />

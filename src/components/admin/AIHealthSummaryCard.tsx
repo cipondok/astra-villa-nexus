@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { useAISystemHealth } from "@/hooks/useAISystemHealth";
+import { useAISystemHealth, type AISystemHealth } from "@/hooks/useAISystemHealth";
 import { Brain, Activity, Clock, CheckCircle2, AlertTriangle, XCircle, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "@/utils/dateUtils";
@@ -25,10 +25,13 @@ const freshnessConfig: Record<FreshnessLevel, { color: string; dot: string }> = 
 
 interface AIHealthSummaryCardProps {
   onNavigate?: () => void;
+  /** Optional pre-fetched data from batched hook */
+  data?: AISystemHealth | null;
 }
 
-const AIHealthSummaryCard = React.memo(function AIHealthSummaryCard({ onNavigate }: AIHealthSummaryCardProps) {
-  const { data: health, isLoading } = useAISystemHealth();
+const AIHealthSummaryCard = React.memo(function AIHealthSummaryCard({ onNavigate, data: batchedData }: AIHealthSummaryCardProps) {
+  const { data: fetchedData, isLoading } = useAISystemHealth(!batchedData);
+  const health = batchedData || fetchedData;
 
   if (isLoading || !health) {
     return (
