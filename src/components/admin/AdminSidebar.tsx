@@ -235,9 +235,11 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                     <button
                       key={section.key}
                       onClick={() => handleNavClick(section.key)}
+                      role="menuitem"
+                      aria-current={isActive ? 'page' : undefined}
                       style={{ animationDelay: `${idx * 20}ms` }}
                       className={cn(
-                        "w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition-all duration-150 text-left group animate-in fade-in slide-in-from-left-1 duration-200",
+                        "w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition-all duration-150 text-left group animate-in fade-in slide-in-from-left-1 duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                         isActive
                           ? "bg-primary text-primary-foreground shadow-sm"
                           : "hover:bg-accent/60 text-foreground"
