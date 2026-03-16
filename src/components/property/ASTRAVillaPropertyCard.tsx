@@ -228,7 +228,7 @@ const ASTRAVillaPropertyCard = ({
                 <div className="flex items-center gap-0.5 text-muted-foreground">
                   <Bed className="h-3 w-3" />
                   <span className="text-[11px] font-semibold text-foreground/80">{property.bedrooms}</span>
-                  <span className="text-[9px] font-medium">KT</span>
+                  <span className="text-[10px] font-medium">KT</span>
                 </div>
               )}
               {property.bathrooms !== undefined && Number(property.bathrooms) > 0 && (
