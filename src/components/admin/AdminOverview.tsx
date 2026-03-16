@@ -71,6 +71,7 @@ import ActionRow from "./overview/ActionRow";
 import SummaryCard from "./overview/SummaryCard";
 import HealthBar from "./overview/HealthBar";
 import ServiceRow from "./overview/ServiceRow";
+import ZoneSkeleton from "./overview/ZoneSkeleton";
 interface AdminOverviewProps {
   onSectionChange?: (section: string) => void;
 }
@@ -147,7 +148,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
   });
 
   // Batched AI intelligence data
-  const { data: aiData, dataUpdatedAt: aiUpdatedAt } = useAICommandCenterData();
+  const { data: aiData, dataUpdatedAt: aiUpdatedAt, isLoading: aiLoading } = useAICommandCenterData();
 
   // Fetch platform statistics
   const { data: platformStats, isLoading: statsLoading, refetch: refetchStats, dataUpdatedAt: statsUpdatedAt } = useQuery({
@@ -485,7 +486,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
               <ScrollArea className="h-[160px]">
                 <div className="space-y-1.5">
                   {recentActivity && recentActivity.length > 0 ? (
-                    recentActivity.map((activity: any, idx: number) => (
+                    recentActivity.map((activity, idx) => (
                       <motion.div
                         key={activity.id}
                         initial={isFirstRender.current ? { opacity: 0, x: -10 } : false}
@@ -589,6 +590,9 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           </div>
 
           {/* ═══ ZONE 2: AI Intelligence ═══ */}
+          {aiLoading ? (
+            <ZoneSkeleton label="AI Intelligence" cards={5} />
+          ) : (
           <div className="space-y-3">
             <div className="flex items-center gap-2 px-1">
               <div className="h-px flex-1 bg-gradient-to-r from-primary/30 to-transparent" />
@@ -632,6 +636,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
             <PortfolioStrategyCard />
             <DealTimingSignalCard />
           </div>
+          )}
 
           {/* ═══ ZONE 3: Operations ═══ */}
           <div className="space-y-3">
