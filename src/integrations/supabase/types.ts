@@ -2643,6 +2643,45 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_learning_events: {
+        Row: {
+          accuracy_pct: number | null
+          actual_outcome_value: number | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+          metadata: Json | null
+          performance_delta: number | null
+          predicted_value: number | null
+          prediction_type: string
+          recorded_at: string | null
+        }
+        Insert: {
+          accuracy_pct?: number | null
+          actual_outcome_value?: number | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          metadata?: Json | null
+          performance_delta?: number | null
+          predicted_value?: number | null
+          prediction_type: string
+          recorded_at?: string | null
+        }
+        Update: {
+          accuracy_pct?: number | null
+          actual_outcome_value?: number | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          metadata?: Json | null
+          performance_delta?: number | null
+          predicted_value?: number | null
+          prediction_type?: string
+          recorded_at?: string | null
+        }
+        Relationships: []
+      }
       ai_learning_snapshots: {
         Row: {
           adjustments: Json | null
@@ -3127,6 +3166,70 @@ export type Database = {
           },
         ]
       }
+      ai_recommendation_outcomes: {
+        Row: {
+          action_signal: string | null
+          confidence_at_creation: number | null
+          id: string
+          outcome_delta: number | null
+          outcome_type: string | null
+          outcome_value: number | null
+          property_id: string | null
+          recommendation_id: string | null
+          recommendation_type: string | null
+          recorded_at: string | null
+          success: boolean | null
+        }
+        Insert: {
+          action_signal?: string | null
+          confidence_at_creation?: number | null
+          id?: string
+          outcome_delta?: number | null
+          outcome_type?: string | null
+          outcome_value?: number | null
+          property_id?: string | null
+          recommendation_id?: string | null
+          recommendation_type?: string | null
+          recorded_at?: string | null
+          success?: boolean | null
+        }
+        Update: {
+          action_signal?: string | null
+          confidence_at_creation?: number | null
+          id?: string
+          outcome_delta?: number | null
+          outcome_type?: string | null
+          outcome_value?: number | null
+          property_id?: string | null
+          recommendation_id?: string | null
+          recommendation_type?: string | null
+          recorded_at?: string | null
+          success?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_recommendation_outcomes_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_recommendation_outcomes_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_recommendation_outcomes_recommendation_id_fkey"
+            columns: ["recommendation_id"]
+            isOneToOne: false
+            referencedRelation: "ai_investment_recommendations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_scheduled_jobs: {
         Row: {
           created_at: string
@@ -3441,6 +3544,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      ai_weight_config: {
+        Row: {
+          adjustment_rate: number
+          created_at: string | null
+          current_weight: number
+          effectiveness_score: number | null
+          factor_name: string
+          id: string
+          is_locked: boolean | null
+          last_adjustment: number | null
+          max_weight: number
+          min_weight: number
+          sample_size: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          adjustment_rate?: number
+          created_at?: string | null
+          current_weight?: number
+          effectiveness_score?: number | null
+          factor_name: string
+          id?: string
+          is_locked?: boolean | null
+          last_adjustment?: number | null
+          max_weight?: number
+          min_weight?: number
+          sample_size?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          adjustment_rate?: number
+          created_at?: string | null
+          current_weight?: number
+          effectiveness_score?: number | null
+          factor_name?: string
+          id?: string
+          is_locked?: boolean | null
+          last_adjustment?: number | null
+          max_weight?: number
+          min_weight?: number
+          sample_size?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       ai_weight_history: {
         Row: {
@@ -34172,6 +34320,7 @@ export type Database = {
         Args: { data_type: string; healthcare_data: string }
         Returns: string
       }
+      execute_learning_cycle: { Args: never; Returns: Json }
       forecast_national_market: {
         Args: { p_lookback_days?: number }
         Returns: Json
@@ -34417,6 +34566,7 @@ export type Database = {
         Returns: Json
       }
       get_lead_intelligence_summary: { Args: never; Returns: Json }
+      get_learning_stats: { Args: never; Returns: Json }
       get_listing_optimization_alerts: { Args: never; Returns: Json }
       get_location_stats: { Args: never; Returns: Json }
       get_market_heat_zones: {
@@ -35209,6 +35359,17 @@ export type Database = {
       recalc_opportunity_scores: {
         Args: { p_batch_size?: number }
         Returns: number
+      }
+      record_learning_event: {
+        Args: {
+          p_actual: number
+          p_entity_id: string
+          p_entity_type: string
+          p_metadata?: Json
+          p_predicted: number
+          p_prediction_type: string
+        }
+        Returns: string
       }
       record_profile_change: {
         Args: { changed_fields: string[]; user_id: string }
