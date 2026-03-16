@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { X, Clock, TrendingUp, DollarSign, ArrowUpDown } from "lucide-react";
+import { X, Clock, TrendingUp, DollarSign, ArrowUpDown, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ActiveFilter {
@@ -38,6 +38,7 @@ const sortOptions = [
   { value: 'price_asc', label: 'Price: Low to High', icon: DollarSign },
   { value: 'price_desc', label: 'Price: High to Low', icon: DollarSign },
   { value: 'popular', label: 'Most Popular', icon: TrendingUp },
+  { value: 'deal_score', label: 'AI Deal Score', icon: Sparkles },
 ];
 
 const SearchResultsHeader = ({
@@ -57,16 +58,22 @@ const SearchResultsHeader = ({
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-2">
           {isLoading ? (
-            <span className="text-sm text-muted-foreground animate-pulse">
-              Searching...
-            </span>
+            <div className="flex items-center gap-2">
+              <div className="h-5 w-5 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+              <span className="text-sm text-muted-foreground">
+                Searching...
+              </span>
+            </div>
           ) : (
             <>
-              <span className="font-semibold">
-                {totalResults.toLocaleString()} {totalResults === 1 ? 'property' : 'properties'}
+              <span className="text-lg font-bold text-foreground tabular-nums">
+                {totalResults.toLocaleString()}
+              </span>
+              <span className="text-sm text-muted-foreground">
+                {totalResults === 1 ? 'property found' : 'properties found'}
               </span>
               {searchTimeMs !== undefined && searchTimeMs > 0 && (
-                <span className="text-xs text-muted-foreground">
+                <span className="text-[11px] text-muted-foreground/60 tabular-nums">
                   ({searchTimeMs}ms)
                 </span>
               )}
@@ -77,15 +84,22 @@ const SearchResultsHeader = ({
         <div className="flex items-center gap-2">
           <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
           <Select value={sortBy} onValueChange={onSortChange}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[200px] h-9">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
               {sortOptions.map(option => (
                 <SelectItem key={option.value} value={option.value}>
                   <div className="flex items-center gap-2">
-                    <option.icon className="h-4 w-4" />
-                    {option.label}
+                    <option.icon className={cn(
+                      "h-4 w-4",
+                      option.value === 'deal_score' && "text-primary"
+                    )} />
+                    <span className={cn(
+                      option.value === 'deal_score' && "font-semibold text-primary"
+                    )}>
+                      {option.label}
+                    </span>
                   </div>
                 </SelectItem>
               ))}
@@ -97,18 +111,18 @@ const SearchResultsHeader = ({
       {/* Active filters */}
       {activeFilters.length > 0 && (
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm text-muted-foreground">Active filters:</span>
+          <span className="text-xs font-medium text-muted-foreground">Filters:</span>
           {activeFilters.map(filter => (
             <Badge
               key={filter.key}
               variant="secondary"
-              className="flex items-center gap-1 pr-1"
+              className="flex items-center gap-1 pr-1 bg-primary/10 border-primary/20 text-foreground"
             >
-              <span className="text-xs text-muted-foreground">{filter.label}:</span>
-              <span>{filter.value}</span>
+              <span className="text-[10px] text-muted-foreground font-medium">{filter.label}:</span>
+              <span className="text-[11px] font-semibold">{filter.value}</span>
               <button
                 onClick={() => onRemoveFilter(filter.key)}
-                className="ml-1 p-0.5 hover:bg-secondary-foreground/10 rounded"
+                className="ml-1 p-0.5 hover:bg-destructive/20 rounded transition-colors"
               >
                 <X className="h-3 w-3" />
               </button>
@@ -118,7 +132,7 @@ const SearchResultsHeader = ({
             variant="ghost"
             size="sm"
             onClick={onClearAllFilters}
-            className="text-xs h-7"
+            className="text-xs h-7 text-destructive hover:text-destructive hover:bg-destructive/10"
           >
             Clear all
           </Button>
