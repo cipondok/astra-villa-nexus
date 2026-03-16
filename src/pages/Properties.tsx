@@ -380,7 +380,7 @@ const Properties = () => {
                   <div className={viewMode === 'list' ? 'w-32 flex-shrink-0' : 'relative'}>
                     <img src={getImageUrl(property)} alt={property.title} className={`object-cover ${viewMode === 'list' ? 'w-full h-full' : 'w-full h-28 sm:h-32'}`} />
                     {/* Overlay Badge */}
-                    <Badge className={`absolute top-1.5 left-1.5 text-[8px] px-1.5 py-0 h-4 ${property.listing_type === 'sale' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
+                    <Badge className={`absolute top-1.5 left-1.5 text-[10px] px-1.5 py-0.5 h-5 ${property.listing_type === 'sale' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
                       {property.listing_type === 'sale' ? 'Dijual' : 'Disewa'}
                     </Badge>
                     {/* Heart Button */}
