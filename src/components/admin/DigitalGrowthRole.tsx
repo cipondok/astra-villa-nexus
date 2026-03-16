@@ -96,35 +96,35 @@ interface KPICategory {
 
 const kpiCategories: KPICategory[] = [
   {
-    category: "Traffic & Reach", icon: Globe, color: "text-primary",
+    category: "Traffic & SEO Indexing", icon: Globe, color: "text-primary",
     metrics: [
       { metric: "Monthly Organic Traffic", month3: "50K", month6: "200K", month12: "500K", weight: "20%" },
+      { metric: "SEO Pages Indexed", month3: "2,000", month6: "5,000", month12: "10,000+", weight: "10%" },
+      { metric: "Keywords in Google Top 20", month3: "200", month6: "1,000", month12: "3,000+", weight: "10%" },
+    ],
+  },
+  {
+    category: "Social Reach & Video", icon: Video, color: "text-chart-1",
+    metrics: [
       { metric: "Social Media Monthly Views", month3: "3M", month6: "10M", month12: "30M", weight: "10%" },
-      { metric: "Social Followers (all platforms)", month3: "30K", month6: "100K", month12: "300K", weight: "5%" },
+      { metric: "Social Followers (TikTok + IG + YT)", month3: "30K", month6: "100K", month12: "300K", weight: "5%" },
+      { metric: "Video-to-Platform Click Rate", month3: "2%", month6: "3.5%", month12: "5%", weight: "5%" },
     ],
   },
   {
-    category: "Acquisition & Conversion", icon: Target, color: "text-chart-1",
+    category: "Inbound Lead Generation", icon: Target, color: "text-chart-3",
     metrics: [
-      { metric: "Monthly Signups", month3: "2,000", month6: "8,000", month12: "25,000", weight: "15%" },
-      { metric: "Signup-to-Active Conversion", month3: "40%", month6: "50%", month12: "60%", weight: "10%" },
-      { metric: "Agent Signups from Digital Channels", month3: "30/mo", month6: "80/mo", month12: "150/mo", weight: "10%" },
+      { metric: "Monthly Inbound Leads (all segments)", month3: "500", month6: "2,500", month12: "8,000", weight: "15%" },
+      { metric: "Agent Signups from Digital Channels", month3: "30/mo", month6: "80/mo", month12: "150/mo", weight: "5%" },
+      { metric: "Investor Registration Rate", month3: "3%", month6: "5%", month12: "8%", weight: "5%" },
     ],
   },
   {
-    category: "Efficiency", icon: Gauge, color: "text-chart-3",
+    category: "Efficiency & ROI", icon: Gauge, color: "text-chart-4",
     metrics: [
-      { metric: "Blended CAC", month3: "Rp 120K", month6: "Rp 85K", month12: "Rp 60K", weight: "10%" },
-      { metric: "Paid Channel ROAS", month3: "3x", month6: "5x", month12: "8x", weight: "5%" },
-      { metric: "SEO Pages Indexed", month3: "2,000", month6: "5,000", month12: "10,000+", weight: "5%" },
-    ],
-  },
-  {
-    category: "Revenue Impact", icon: DollarSign, color: "text-chart-4",
-    metrics: [
-      { metric: "Growth-Attributed MRR", month3: "Rp 50M", month6: "Rp 250M", month12: "Rp 800M", weight: "10%" },
-      { metric: "Premium Conversion Rate", month3: "8%", month6: "12%", month12: "15%", weight: "5%" },
-      { metric: "Referral-Sourced Signups (%)", month3: "10%", month6: "20%", month12: "30%", weight: "5%" },
+      { metric: "Blended CAC", month3: "Rp 120K", month6: "Rp 85K", month12: "Rp 60K", weight: "5%" },
+      { metric: "Organic vs Paid Traffic Ratio", month3: "40:60", month6: "60:40", month12: "75:25", weight: "5%" },
+      { metric: "Paid Experiment Win Rate", month3: "15%", month6: "25%", month12: "30%", weight: "5%" },
     ],
   },
 ];
