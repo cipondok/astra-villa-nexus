@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { AdminCommandPalette } from "./AdminCommandPalette";
 import { AdminBreadcrumb } from "./AdminBreadcrumb";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useIntelligenceSignals } from "@/hooks/useIntelligenceSignals";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface AdminHeaderProps {
