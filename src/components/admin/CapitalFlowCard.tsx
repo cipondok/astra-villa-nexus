@@ -68,8 +68,9 @@ function RegionRow({ r }: { r: RegionCapitalFlow }) {
   );
 }
 
-const CapitalFlowCard = React.memo(function CapitalFlowCard() {
-  const { data, isLoading } = useCapitalFlowIntelligence();
+const CapitalFlowCard = React.memo(function CapitalFlowCard({ data: externalData }: { data?: CapitalFlowResult | null }) {
+  const { data: hookData, isLoading } = useCapitalFlowIntelligence();
+  const data = externalData ?? hookData;
   const [expanded, setExpanded] = useState(false);
 
   if (isLoading || !data) {

@@ -79,8 +79,9 @@ function SignalBar({ label, value, max = 100 }: { label: string; value: number; 
   );
 }
 
-const MarketCyclePredictionCard = React.memo(function MarketCyclePredictionCard() {
-  const { data, isLoading } = useMarketCyclePrediction();
+const MarketCyclePredictionCard = React.memo(function MarketCyclePredictionCard({ data: externalData }: { data?: MarketCyclePrediction | null }) {
+  const { data: hookData, isLoading } = useMarketCyclePrediction();
+  const data = externalData ?? hookData;
 
   if (isLoading || !data) {
     return (
