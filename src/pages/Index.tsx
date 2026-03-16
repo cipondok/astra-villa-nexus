@@ -1005,6 +1005,11 @@ const Index = () => {
           )}
         </div>
         </SectionErrorBoundary>
+
+        {/* Mobile floating CTA bar */}
+        <Suspense fallback={null}>
+          <MobileFloatingCTA />
+        </Suspense>
         
         {/* AI Search Loading Dialog */}
         <Suspense fallback={null}>

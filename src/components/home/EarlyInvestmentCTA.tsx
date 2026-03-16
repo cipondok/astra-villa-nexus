@@ -43,8 +43,8 @@ export default function EarlyInvestmentCTA() {
                       <div className="min-w-0">
                         <p className="text-[10px] font-semibold text-foreground truncate">{p.title}</p>
                         <div className="flex items-center gap-1.5">
-                          <span className="text-[9px] text-muted-foreground"><Price amount={p.startingPrice} short /></span>
-                          <span className="text-[9px] text-primary font-bold flex items-center gap-0.5">
+                          <span className="text-[10px] text-muted-foreground"><Price amount={p.startingPrice} short /></span>
+                          <span className="text-[10px] text-primary font-bold flex items-center gap-0.5">
                             <TrendingUp className="h-2.5 w-2.5" />+{p.appreciationPct}%
                           </span>
                         </div>
