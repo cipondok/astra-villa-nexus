@@ -101,47 +101,51 @@ const PropertyGridView = ({
             )}
             onClick={() => onPropertyClick(property)}
           >
-            {/* Image — 16:10 ratio for premium readability */}
-            <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+            {/* Image — 4:3 ratio for consistent grid alignment */}
+            <div className="relative aspect-[4/3] overflow-hidden bg-muted">
               <img
                 src={getImageUrl(property)}
                 alt={property.title}
                 loading="lazy"
-                className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                decoding="async"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
               />
               
-              {/* Top row: listing type + property type */}
-              <div className="absolute top-2.5 left-2.5 right-2.5 flex items-start justify-between">
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 pointer-events-none" />
+              
+              {/* Top row: listing type + save */}
+              <div className="absolute top-2.5 left-2.5 right-2.5 flex items-start justify-between z-10">
                 <Badge className={cn(
-                  "flex items-center gap-1 px-2 py-1 text-[10px] font-semibold rounded-md shadow-sm",
-                  isRent ? "bg-primary text-primary-foreground" : "bg-accent text-accent-foreground"
+                  "flex items-center gap-1 px-2 py-1 text-[10px] font-bold rounded-md shadow-md border-0",
+                  isRent
+                    ? "bg-gradient-to-r from-sky-500 to-blue-600 text-white"
+                    : "bg-gradient-to-r from-emerald-500 to-green-600 text-white"
                 )}>
                   <ListingIcon className="h-2.5 w-2.5" />
                   {isRent ? 'Disewa' : 'Dijual'}
                 </Badge>
 
-                <div className="flex items-center gap-1.5">
-                  <Button size="icon" variant="ghost"
-                    className={cn(
-                      "h-8 w-8 rounded-full bg-card/90 backdrop-blur-sm shadow-sm border border-border/50 min-h-[32px]",
-                      savedProperties.has(property.id) && "bg-destructive/10 border-destructive/30"
-                    )}
-                    onClick={(e) => { e.stopPropagation(); handleSave(property); }}>
-                    <Heart className={cn("h-3.5 w-3.5", savedProperties.has(property.id) ? 'fill-destructive text-destructive' : 'text-muted-foreground')} />
-                  </Button>
-                </div>
+                <Button size="icon" variant="ghost"
+                  className={cn(
+                    "h-8 w-8 rounded-full bg-black/30 backdrop-blur-md shadow-sm border border-white/20 min-h-[32px]",
+                    savedProperties.has(property.id) && "bg-destructive/20 border-destructive/30"
+                  )}
+                  onClick={(e) => { e.stopPropagation(); handleSave(property); }}>
+                  <Heart className={cn("h-3.5 w-3.5", savedProperties.has(property.id) ? 'fill-destructive text-destructive' : 'text-white/90')} />
+                </Button>
               </div>
 
-              {/* AI Investment Score — prominent badge for high scores */}
+              {/* AI Investment Score — bottom left */}
               {investmentScore > 0 && (
                 <div className="absolute bottom-2.5 left-2.5 z-10">
-                  <InvestmentScoreBadge score={investmentScore} compact className={cn("shadow-md", isHighOpportunity && "ring-1 ring-gold-primary/40")} />
+                  <InvestmentScoreBadge score={investmentScore} compact className={cn("shadow-md", isHighOpportunity && "ring-1 ring-primary/40")} />
                 </div>
               )}
 
-              {/* Image count */}
+              {/* Image count — bottom right */}
               {imageCount > 1 && (
-                <div className="absolute bottom-2.5 right-2.5 flex items-center gap-1 bg-background/70 backdrop-blur-sm text-foreground text-[10px] px-2 py-1 rounded-md">
+                <div className="absolute bottom-2.5 right-2.5 flex items-center gap-1 bg-black/40 backdrop-blur-sm text-white text-[10px] px-2 py-1 rounded-md z-10">
                   <Camera className="h-2.5 w-2.5" />
                   <span className="font-medium">{imageCount}</span>
                 </div>
