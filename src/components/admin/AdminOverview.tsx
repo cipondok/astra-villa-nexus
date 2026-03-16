@@ -372,8 +372,8 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
           {/* Pending Actions */}
           <Card className="border-border bg-card">
             <CardHeader className="p-3 pb-2">
-              <CardTitle className="text-xs flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
-                <Bell className="h-3.5 w-3.5" /> Pending
+              <CardTitle className="text-sm flex items-center gap-1.5 text-foreground font-semibold">
+                <Bell className="h-4 w-4 text-chart-3" /> Pending
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3 pt-0 space-y-1.5">
