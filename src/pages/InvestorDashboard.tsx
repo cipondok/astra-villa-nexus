@@ -243,7 +243,7 @@ const InvestorDashboard = () => {
                             <p className="text-[10px] text-muted-foreground">{rec.city || rec.location}</p>
                             <div className="flex items-center gap-2 mt-1">
                               {rec.match_score != null && (
-                                <Badge variant="secondary" className="text-[9px] h-4 px-1.5">
+                                <Badge variant="secondary" className="text-[10px] h-4 px-1.5">
                                   {Math.round(rec.match_score)}% match
                                 </Badge>
                               )}
