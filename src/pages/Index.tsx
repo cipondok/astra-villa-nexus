@@ -158,7 +158,7 @@ const Index = () => {
         .slice(0, 100);
     const searchTerm = sanitize(rawTerm);
 
-    console.log('Search initiated:', searchTerm, 'with filters:', searchData);
+    // Search initiated with filters
 
     let query = supabase
       .from('properties')
@@ -286,7 +286,7 @@ const Index = () => {
     try {
       const results = await executeWithRetry(searchData);
       setSearchResults(results);
-      console.log('Search completed. Results:', results.length);
+      // Search completed
     } catch (error: any) {
       console.error('Search failed after retries:', error);
       const errorMessage = error?.message || 'Search failed. Please try again.';
@@ -398,13 +398,6 @@ const Index = () => {
   // Note: Removed hardcoded admin email check for security
   // Users are redirected based on their role stored in the user_roles table
 
-  const backgroundStyle = {
-    backgroundImage: `url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1920&q=80')`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundAttachment: isMobile ? 'scroll' : 'fixed',
-  };
 
   // Generate cache key for search results
   const searchCacheKey = useMemo(() => {
@@ -424,7 +417,7 @@ const Index = () => {
   const { data: featuredProperties = [], isLoading: isFeaturedLoading } = useQuery({
     queryKey: ['featured-properties-simple'],
     queryFn: async () => {
-      console.log('Fetching featured properties...');
+      // Fetching featured properties
       
       try {
         const { data, error } = await supabase
@@ -459,7 +452,7 @@ const Index = () => {
           return [];
         }
 
-        console.log('Featured properties loaded:', data?.length || 0);
+        // Featured properties loaded
         // Transform data to match BaseProperty interface
         const transformedData = data?.map((property: any) => {
           return {
@@ -669,16 +662,16 @@ const Index = () => {
                   "bg-gold-primary/10 backdrop-blur-md",
                   "rounded-full border border-gold-primary/25",
                 )}>
-                  <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary animate-pulse" />
+                  <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary signal-glow" />
                    <span className="text-[10px] sm:text-xs font-semibold text-white uppercase tracking-[0.2em]">
                     {t('indexPage.aiPoweredSearch')}
                   </span>
-                  <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary animate-pulse" />
+                  <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary signal-glow" />
                 </div>
                 
-                <h2 className="text-2xl sm:text-3xl md:text-5xl font-black leading-[1.1] mb-2 text-white" style={{ textShadow: '0 2px 20px hsl(45 80% 50% / 0.3), 0 4px 8px hsl(0 0% 0% / 0.3)' }}>
+                <h1 className="text-2xl sm:text-3xl md:text-5xl font-black leading-[1.1] mb-2 text-white" style={{ textShadow: '0 2px 20px hsl(45 80% 50% / 0.3), 0 4px 8px hsl(0 0% 0% / 0.3)' }}>
                   {personalizedHeadline?.headline || t('indexPage.findYour')}
-                </h2>
+                </h1>
                 <p className="flex text-xs sm:text-sm text-white/80 items-center justify-center gap-2 font-medium">
                   <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-gold-primary/80" />
                   {personalizedHeadline?.subtitle || t('indexPage.searchPowered')}
@@ -1036,17 +1029,7 @@ const Index = () => {
                 </div>
                 </ScrollReveal>
 
-                {/* Mid-page CTA: AI Pricing */}
-                <Suspense fallback={null}>
-                  <SectionDividerCTA
-                    icon={Calculator}
-                    headline="Know Your Property's True Value"
-                    description="AI-powered pricing with market comparables"
-                    ctaText="Get Estimate"
-                    ctaRoute="/ai-pricing"
-                    variant="accent"
-                  />
-                </Suspense>
+                {/* Removed: Duplicate SectionDividerCTA for AI Pricing — AIPriceEstimatorCTA already covers this */}
 
                 {/* Smart Recommendations - Personalized Picks */}
                 <ScrollReveal direction="left" delay={0}>
@@ -1077,29 +1060,7 @@ const Index = () => {
                   />
                 </Suspense>
 
-                {/* AI Recommended Properties (legacy) */}
-                <ScrollReveal direction="right" delay={0}>
-                <div className="mb-6">
-                  <LazyRender minHeight="320px" fallback={
-                    <div className="bg-primary/10 dark:bg-primary/5 rounded-xl shadow-sm border border-primary/15 dark:border-primary/10 p-4" style={{ minHeight: '320px' }}>
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-10 h-10 bg-primary/20 rounded-lg animate-pulse" />
-                        <div className="flex-1">
-                          <div className="h-5 bg-muted rounded w-40 mb-2 animate-pulse" />
-                          <div className="h-3 bg-muted rounded w-56 animate-pulse" />
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="animate-pulse"><div className="bg-muted h-44 rounded-lg mb-2" /><div className="bg-muted h-4 rounded w-3/4 mb-1.5" /></div>
-                        <div className="animate-pulse"><div className="bg-muted h-44 rounded-lg mb-2" /><div className="bg-muted h-4 rounded w-3/4 mb-1.5" /></div>
-                        <div className="animate-pulse"><div className="bg-muted h-44 rounded-lg mb-2" /><div className="bg-muted h-4 rounded w-3/4 mb-1.5" /></div>
-                      </div>
-                    </div>
-                  }>
-                    <AIRecommendedProperties onPropertyClick={handlePropertyClick} />
-                  </LazyRender>
-                </div>
-                </ScrollReveal>
+                {/* Removed: Legacy AIRecommendedProperties — SmartAIFeed + SmartRecommendations already provide AI recommendations */}
 
                 {/* Trending Searches */}
                 <ScrollReveal direction="left" delay={100}>
@@ -1152,12 +1113,7 @@ const Index = () => {
                   </Suspense>
                 </ScrollReveal>
 
-                {/* Market Intelligence CTA */}
-                <ScrollReveal direction="up" delay={50}>
-                  <Suspense fallback={<div className="animate-pulse h-40 bg-muted rounded-xl max-w-5xl mx-auto" />}>
-                    <MarketIntelligenceCTA />
-                  </Suspense>
-                </ScrollReveal>
+                {/* Removed: Duplicate MarketIntelligenceCTA — SectionDividerCTA (Market Intelligence) already covers this */}
 
                 {/* Marketplace Services */}
                 <ScrollReveal direction="right" delay={0}>
