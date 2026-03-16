@@ -449,7 +449,14 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
     if (isSelected) return mapColors.selected;
     if (showHeatmap) {
       const count = provincePropertyCounts[normalizedName] || provincePropertyCounts[provinceName] || 0;
-      return getHeatmapHoverColor(count, isDark);
+      // Slightly brighter version of the heat color
+      const base = getHeatColor(heatMode, normalizedName, count, isDark);
+      const m = base.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+      if (m) {
+        const [, h, s, l] = m.map(Number);
+        return `hsl(${h}, ${Math.min(s + 10, 100)}%, ${isDark ? Math.min(l + 8, 70) : Math.max(l - 8, 30)}%)`;
+      }
+      return base;
     }
     const colors = getProvinceColors(isDark);
     const base = colors[index % colors.length];
