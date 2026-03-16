@@ -549,7 +549,7 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
 
           {/* Summary Cards */}
           <div className="grid grid-cols-4 gap-2">
-            <SummaryCard label="Sessions" value={platformStats?.activeSessions || 0} icon={Wifi} color="green" />
+            <SummaryCard label="Live Users" value={platformStats?.activeSessions || 0} icon={Wifi} color="green" />
             <SummaryCard label="Orders" value={platformStats?.totalOrders || 0} icon={FileText} color="blue" />
             <SummaryCard label="Response" value={`${systemHealth?.responseTime || 0}ms`} icon={Clock} color="purple" />
             <SummaryCard label="Uptime" value={`${systemHealth?.uptime || 99.9}%`} icon={CheckCircle} color="green" />
