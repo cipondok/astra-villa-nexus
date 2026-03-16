@@ -12258,6 +12258,95 @@ export type Database = {
           },
         ]
       }
+      launch_roadmap_phases: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          phase_key: string
+          phase_name: string
+          phase_order: number
+          status: string
+          target_end_date: string | null
+          target_start_date: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          phase_key: string
+          phase_name: string
+          phase_order: number
+          status?: string
+          target_end_date?: string | null
+          target_start_date?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          phase_key?: string
+          phase_name?: string
+          phase_order?: number
+          status?: string
+          target_end_date?: string | null
+          target_start_date?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      launch_roadmap_tasks: {
+        Row: {
+          assigned_to: string | null
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          phase_id: string
+          priority: string
+          sort_order: number | null
+          status: string
+          task_description: string | null
+          task_title: string
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          phase_id: string
+          priority?: string
+          sort_order?: number | null
+          status?: string
+          task_description?: string | null
+          task_title: string
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          phase_id?: string
+          priority?: string
+          sort_order?: number | null
+          status?: string
+          task_description?: string | null
+          task_title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "launch_roadmap_tasks_phase_id_fkey"
+            columns: ["phase_id"]
+            isOneToOne: false
+            referencedRelation: "launch_roadmap_phases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leaderboard_snapshots: {
         Row: {
           area: string | null
