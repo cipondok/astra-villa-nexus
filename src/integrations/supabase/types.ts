@@ -33342,6 +33342,10 @@ export type Database = {
         }
         Returns: Json
       }
+      batch_refresh_opportunity_scores: {
+        Args: { p_limit?: number }
+        Returns: Json
+      }
       calculate_level_from_xp: { Args: { p_xp: number }; Returns: number }
       calculate_tenant_score: { Args: { p_tenant_id: string }; Returns: Json }
       can_access_financial_reward_config_strict: {
@@ -33727,9 +33731,17 @@ export type Database = {
       }
       get_geo_expansion_intelligence: { Args: never; Returns: Json }
       get_image_stats: { Args: never; Returns: Json }
+      get_investment_reasoning: {
+        Args: { p_property_id: string }
+        Returns: Json
+      }
       get_lead_intelligence_summary: { Args: never; Returns: Json }
       get_listing_optimization_alerts: { Args: never; Returns: Json }
       get_location_stats: { Args: never; Returns: Json }
+      get_market_heat_zones: {
+        Args: { p_min_properties?: number }
+        Returns: Json
+      }
       get_market_intelligence_summary: { Args: never; Returns: Json }
       get_masked_api_settings: {
         Args: never

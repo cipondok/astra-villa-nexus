@@ -210,6 +210,7 @@ export const GlobalStrategyPanel = lazyRetry(() => import("./GlobalStrategyPanel
 export const InvestorDNAAdminPanel = lazyRetry(() => import("./InvestorDNAAdminPanel"));
 export const GlobalMacroIntelligencePanel = lazyRetry(() => import("@/pages/GlobalMacroIntelligencePage"));
 export const DealHunterAdminPanel = lazyRetry(() => import("./DealHunterAdminPanel"));
+export const MarketHeatIntelligence = lazyRetry(() => import("./MarketHeatIntelligence"));
 export const OffPlanProjectManager = lazyRetry(() => import("./OffPlanProjectManager"));
 
 // ── Section render map ────────────────────────────────────────────────────────
@@ -449,12 +450,14 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "investor-dna-admin":  () => <InvestorDNAAdminPanel />,
   "global-macro-intelligence": () => <GlobalMacroIntelligencePanel />,
   "deal-hunter-admin":   () => <DealHunterAdminPanel />,
+  "market-heat-intelligence": () => <MarketHeatIntelligence />,
   "property-comparison-tool": () => <PropertyComparisonTool />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
   "deal-hunter-admin": { label: "Deal Hunter Engine", category: "Investor Management" },
+  "market-heat-intelligence": { label: "Market Heat Intelligence", category: "Investor Management" },
   "ai-command-center": { label: "AI Command Center", category: "AI & Tools" },
   "investor-dna-admin": { label: "Investor DNA Intelligence", category: "Investor Management" },
   "global-macro-intelligence": { label: "Global Macro Intelligence", category: "Investor Management" },

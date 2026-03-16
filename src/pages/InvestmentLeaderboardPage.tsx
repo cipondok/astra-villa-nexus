@@ -1,10 +1,12 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Trophy, TrendingUp, Shield, ShieldAlert, ShieldCheck,
+  Trophy, TrendingUp, TrendingDown, Shield, ShieldAlert, ShieldCheck,
   MapPin, Bed, Bath, Maximize2, Search, ArrowUpDown,
   BarChart3, Target, Flame, Loader2, Star, Filter,
+  Minus, Brain, ChevronDown, ChevronUp, Sparkles,
+  type LucideIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { useInvestmentLeaderboard, useInvestmentScoreStats, LeaderboardProperty } from '@/hooks/useInvestmentScores';
+import { useInvestmentReasoning } from '@/hooks/useMarketHeatZones';
 import { cn } from '@/lib/utils';
 
 const formatPrice = (price: number) => {
@@ -33,7 +36,7 @@ const GRADE_COLORS: Record<string, string> = {
 
 const RISK_CONFIG: Record<string, { icon: typeof Shield; color: string; label: string }> = {
   low: { icon: ShieldCheck, label: 'Low Risk', color: 'text-emerald-500' },
-  medium: { icon: Shield, label: 'Medium Risk', color: 'text-amber-500' },
+  medium: { icon: Shield, label: 'Medium', color: 'text-amber-500' },
   high: { icon: ShieldAlert, label: 'High Risk', color: 'text-destructive' },
 };
 
@@ -49,7 +52,7 @@ function ScoreRing({ score, size = 56 }: { score: number; size?: number }) {
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth="4" className="stroke-muted/20" />
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth="4"
           strokeDasharray={circ} strokeDashoffset={offset}
-          strokeLinecap="round" className={color} />
+          strokeLinecap="round" className={cn(color, 'transition-all duration-700')} />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
         <span className={cn('font-bold', size > 50 ? 'text-lg' : 'text-sm',
@@ -60,7 +63,88 @@ function ScoreRing({ score, size = 56 }: { score: number; size?: number }) {
   );
 }
 
+/* ─── Trend Arrow Component ─── */
+function TrendArrow({ growth }: { growth: number }) {
+  if (growth > 3) return <TrendingUp className="h-3.5 w-3.5 text-emerald-500" />;
+  if (growth < -2) return <TrendingDown className="h-3.5 w-3.5 text-destructive" />;
+  return <Minus className="h-3 w-3 text-muted-foreground" />;
+}
+
+/* ─── AI Reasoning Panel ─── */
+function AIReasoningPanel({ propertyId }: { propertyId: string }) {
+  const { data: reasoning, isLoading } = useInvestmentReasoning(propertyId);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center gap-2 py-3 px-4 text-xs text-muted-foreground">
+        <Loader2 className="h-3 w-3 animate-spin" />
+        Generating AI analysis...
+      </div>
+    );
+  }
+
+  if (!reasoning || reasoning.error) return null;
+
+  const reasons: Array<{ factor: string; signal: string; detail: string }> = reasoning.reasoning || [];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: 'auto' }}
+      exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.2 }}
+      className="border-t border-border/20 bg-muted/10"
+    >
+      <div className="p-4 space-y-3">
+        {/* Forecast + Risk */}
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-3.5 w-3.5 text-primary" />
+            <span className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold">AI Forecast</span>
+          </div>
+          <Badge variant="outline" className={cn(
+            'text-[10px] font-mono',
+            reasoning.appreciation_forecast_pct > 5 ? 'text-emerald-500 border-emerald-500/30' :
+            reasoning.appreciation_forecast_pct < 0 ? 'text-destructive border-destructive/30' :
+            'text-amber-500 border-amber-500/30'
+          )}>
+            {reasoning.appreciation_forecast_pct > 0 ? '+' : ''}{reasoning.appreciation_forecast_pct}% appreciation
+          </Badge>
+          <Badge variant="outline" className={cn(
+            'text-[10px]',
+            reasoning.risk_level === 'low' ? 'text-emerald-500 border-emerald-500/30' :
+            reasoning.risk_level === 'high' ? 'text-destructive border-destructive/30' :
+            'text-amber-500 border-amber-500/30'
+          )}>
+            {reasoning.risk_level} risk
+          </Badge>
+        </div>
+
+        {/* Reasoning factors */}
+        {reasons.length > 0 && (
+          <div className="grid gap-1.5">
+            {reasons.map((r, i) => (
+              <div key={i} className="flex items-start gap-2 text-xs">
+                <span className={cn(
+                  'mt-0.5 h-1.5 w-1.5 rounded-full flex-shrink-0',
+                  r.signal === 'bullish' ? 'bg-emerald-500' : 'bg-destructive'
+                )} />
+                <div>
+                  <span className="font-medium text-foreground">{r.factor}</span>
+                  <span className="text-muted-foreground"> — {r.detail}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+/* ─── Leaderboard Card ─── */
 function LeaderboardCard({ property, rank, onClick }: { property: LeaderboardProperty; rank: number; onClick: () => void }) {
+  const [expanded, setExpanded] = useState(false);
   const img = property.thumbnail_url || property.images?.[0] || '/placeholder.svg';
   const risk = RISK_CONFIG[property.risk_level] || RISK_CONFIG.medium;
   const RiskIcon = risk.icon;
@@ -72,11 +156,10 @@ function LeaderboardCard({ property, rank, onClick }: { property: LeaderboardPro
       transition={{ delay: rank * 0.03 }}
     >
       <Card
-        className="overflow-hidden cursor-pointer hover:border-primary/40 hover:shadow-lg transition-all duration-300 bg-card border-border/50"
-        onClick={onClick}
+        className="overflow-hidden hover:border-primary/40 hover:shadow-lg transition-all duration-300 bg-card border-border/50"
       >
         <CardContent className="p-0">
-          <div className="flex">
+          <div className="flex cursor-pointer" onClick={onClick}>
             {/* Rank & Score */}
             <div className="flex flex-col items-center justify-center w-20 py-4 bg-muted/20 border-r border-border/30 shrink-0">
               <span className={cn(
@@ -110,11 +193,14 @@ function LeaderboardCard({ property, rank, onClick }: { property: LeaderboardPro
                 <span className="line-clamp-1">{property.city}{property.state ? `, ${property.state}` : ''}</span>
               </p>
 
-              {/* Metrics grid */}
+              {/* Metrics grid with trend arrows */}
               <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs mb-2">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">ROI</span>
-                  <span className="font-medium text-foreground">{property.roi_forecast}%</span>
+                  <span className="font-medium text-foreground flex items-center gap-1">
+                    {property.roi_forecast}%
+                    <TrendArrow growth={property.roi_forecast} />
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Yield</span>
@@ -122,8 +208,9 @@ function LeaderboardCard({ property, rank, onClick }: { property: LeaderboardPro
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Growth</span>
-                  <span className={cn('font-medium', property.growth_prediction > 0 ? 'text-emerald-500' : 'text-destructive')}>
+                  <span className={cn('font-medium flex items-center gap-1', property.growth_prediction > 0 ? 'text-emerald-500' : 'text-destructive')}>
                     {property.growth_prediction > 0 ? '+' : ''}{property.growth_prediction}%
+                    <TrendArrow growth={property.growth_prediction} />
                   </span>
                 </div>
                 <div className="flex items-center gap-1">
@@ -141,6 +228,22 @@ function LeaderboardCard({ property, rank, onClick }: { property: LeaderboardPro
               </div>
             </div>
           </div>
+
+          {/* AI Reasoning Toggle */}
+          <div className="border-t border-border/20">
+            <button
+              onClick={(e) => { e.stopPropagation(); setExpanded(!expanded); }}
+              className="w-full flex items-center justify-center gap-1.5 py-1.5 text-[10px] text-muted-foreground hover:text-primary transition-colors"
+            >
+              <Brain className="h-3 w-3" />
+              AI Analysis
+              {expanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+            </button>
+          </div>
+
+          <AnimatePresence>
+            {expanded && <AIReasoningPanel propertyId={property.property_id} />}
+          </AnimatePresence>
         </CardContent>
       </Card>
     </motion.div>
