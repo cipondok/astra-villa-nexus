@@ -76,6 +76,7 @@ const EarlyInvestmentCTA = lazy(() => import("@/components/home/EarlyInvestmentC
 const SocialProofStrip = lazy(() => import("@/components/home/SocialProofStrip"));
 const SectionDividerCTA = lazy(() => import("@/components/home/SectionDividerCTA"));
 const MobileFloatingCTA = lazy(() => import("@/components/home/MobileFloatingCTA"));
+const PWAInstallPrompt = lazy(() => import("@/components/pwa/PWAInstallPrompt"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
