@@ -546,8 +546,8 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
               <CardContent className="p-3 pt-0 space-y-2.5">
                 <div className={`flex items-center justify-between p-2.5 rounded-lg border ${
                   systemHealth?.status === 'healthy' 
-                    ? 'bg-chart-1/5 border-chart-1/30' 
-                    : 'bg-chart-3/5 border-chart-3/30'
+                    ? 'bg-chart-1/5 border-chart-1/30 dark:bg-chart-1/10' 
+                    : 'bg-chart-3/5 border-chart-3/30 dark:bg-chart-3/10'
                 }`}>
                   <span className="text-xs font-medium">Status</span>
                   <Badge variant={systemHealth?.status === 'healthy' ? 'default' : 'destructive'} className="text-[10px] h-5 px-2">
