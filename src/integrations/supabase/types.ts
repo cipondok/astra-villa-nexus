@@ -33317,6 +33317,10 @@ export type Database = {
         Args: { p_customer_response: string; p_ticket_id: string }
         Returns: boolean
       }
+      admin_global_search: {
+        Args: { p_limit?: number; p_query: string }
+        Returns: Json
+      }
       aggregate_daily_analytics: {
         Args: { target_date?: string }
         Returns: undefined
