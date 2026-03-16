@@ -1066,6 +1066,17 @@ const Index = () => {
                 </div>
                 </ScrollReveal>
 
+                {/* Mid-page CTA: Deal Finder */}
+                <Suspense fallback={null}>
+                  <SectionDividerCTA
+                    icon={Crosshair}
+                    headline="Find Undervalued Deals"
+                    description="AI detects properties priced below fair market value"
+                    ctaText="Hunt Deals"
+                    ctaRoute="/deal-finder"
+                  />
+                </Suspense>
+
                 {/* AI Recommended Properties (legacy) */}
                 <ScrollReveal direction="right" delay={0}>
                 <div className="mb-6">
