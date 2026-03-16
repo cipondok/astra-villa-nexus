@@ -77,14 +77,14 @@ export default function SectionDividerCTA({
             </p>
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-2 shrink-0">
+          {/* Actions — min 44px touch targets on mobile */}
+          <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
             {secondaryText && secondaryRoute && (
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={() => navigate(secondaryRoute)}
-                className="h-9 px-3 text-xs font-medium text-muted-foreground hover:text-foreground min-h-[36px]"
+                className="h-11 sm:h-9 px-4 sm:px-3 text-xs font-medium text-muted-foreground hover:text-foreground flex-1 sm:flex-initial min-h-[44px]"
               >
                 {secondaryText}
               </Button>
@@ -93,7 +93,7 @@ export default function SectionDividerCTA({
               size="sm"
               onClick={() => navigate(ctaRoute)}
               className={cn(
-                "h-9 sm:h-10 px-5 text-xs sm:text-sm font-semibold gap-1.5 min-h-[36px]",
+                "h-11 sm:h-10 px-6 sm:px-5 text-xs sm:text-sm font-semibold gap-1.5 flex-1 sm:flex-initial min-h-[44px]",
                 isPrimary && "bg-primary hover:bg-primary/90 text-primary-foreground shadow-md",
                 isAccent && "bg-gold-primary hover:bg-gold-primary/90 text-background shadow-md",
                 !isPrimary && !isAccent && "bg-card border border-border hover:bg-muted text-foreground",
@@ -103,7 +103,7 @@ export default function SectionDividerCTA({
               <ArrowRight className="h-3.5 w-3.5" />
             </Button>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
