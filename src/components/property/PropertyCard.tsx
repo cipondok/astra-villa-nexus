@@ -373,7 +373,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           }}
           language="en"
           onView3D={() => {
-            console.log('PropertyCard - Opening 3D from detail modal');
             setShowDetailModal(false);
             setShow3DModal(true);
           }}
