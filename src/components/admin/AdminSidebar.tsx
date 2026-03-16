@@ -225,7 +225,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
             </div>
 
             {/* Panel Content */}
-            <ScrollArea className="max-h-[300px]">
+            <ScrollArea className="max-h-[calc(100vh-200px)]">
               <div className="p-1.5 pb-2">
                 {filteredOpenSections?.length ? filteredOpenSections.map((section, idx) => {
                   const Icon = section.icon;
