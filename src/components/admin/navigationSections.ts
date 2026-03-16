@@ -1415,6 +1415,13 @@ export const navigationSections = {
       icon: Newspaper,
       description: "4-phase PR roadmap — narrative angles, media targets, press release template, influencer amplification",
       badge: "📰 PR Plan"
+    },
+    {
+      key: "investor-outreach",
+      label: "Investor Outreach Plan",
+      icon: Send,
+      description: "12-week outreach cadence — investor targeting, channel strategy, call scripts, follow-up templates",
+      badge: "📧 Outreach"
     }
   ],
 

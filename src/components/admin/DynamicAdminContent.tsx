@@ -432,6 +432,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
             <PRLaunchStrategyDashboard />
           </Suspense>
         );
+      case "investor-outreach":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <InvestorOutreachDashboard />
+          </Suspense>
+        );
       default:
         return <AdminOverview onSectionChange={onSectionChange} />;
     }
