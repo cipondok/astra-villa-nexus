@@ -1387,6 +1387,13 @@ export const navigationSections = {
       icon: Users,
       description: "Lean startup org chart — 5 departments, phased hiring timeline, reporting structure, decision domains",
       badge: "🏛️ Org Design"
+    },
+    {
+      key: "marketing-budget",
+      label: "Marketing Budget Plan",
+      icon: DollarSign,
+      description: "6-month marketing budget — organic-first allocation, paid experiments, ROI reallocation rules",
+      badge: "💰 Budget Plan"
     }
   ],
 
