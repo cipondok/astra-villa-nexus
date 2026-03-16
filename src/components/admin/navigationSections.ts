@@ -191,6 +191,13 @@ export const navigationSections = {
       icon: Target,
       description: "AI deal detection engine — scan history, opportunity breakdown by classification/tier, and manual scan trigger",
       badge: "New"
+    },
+    {
+      key: "market-heat-intelligence",
+      label: "Market Heat Intelligence",
+      icon: Flame,
+      description: "Geo-cluster analysis — zone heat scoring, demand distribution, and emerging market detection",
+      badge: "New"
     }
   ],
 
