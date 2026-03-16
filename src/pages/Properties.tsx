@@ -418,7 +418,7 @@ const Properties = () => {
                       <div className="text-sm font-bold text-primary">
                         {formatCurrency(property.price)}
                       </div>
-                      <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-background/50 backdrop-blur-sm border-border/40">
+                      <Badge variant="outline" className="text-[10px] px-1.5 py-0.5 h-5 bg-background/50 backdrop-blur-sm border-border/40">
                         {property.property_type}
                       </Badge>
                     </div>
