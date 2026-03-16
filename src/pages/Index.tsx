@@ -88,6 +88,8 @@ const OpportunityRadar = lazy(() => import("@/components/ai/OpportunityRadar"));
 const AIJourneyGuide = lazy(() => import("@/components/ai/AIJourneyGuide"));
 const OpportunityStreakCards = lazy(() => import("@/components/home/OpportunityStreakCards"));
 const PWAInstallPrompt = lazy(() => import("@/components/pwa/PWAInstallPrompt"));
+const ExitIntentPopup = lazy(() => import("@/components/home/ExitIntentPopup"));
+const UrgencyTimerStrip = lazy(() => import("@/components/home/UrgencyTimerStrip"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
