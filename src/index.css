@@ -1719,3 +1719,76 @@ html, body {
     animation-delay: 0.1s !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════
+   STANDARDIZED INTERACTION UTILITIES
+   Premium micro-interaction tokens for consistent motion
+   ═══════════════════════════════════════════════════════ */
+
+/* Card Hover Lift — use on any interactive card */
+.card-hover-lift {
+  will-change: transform;
+  transition: transform 250ms cubic-bezier(0.33, 1, 0.68, 1),
+              box-shadow 250ms cubic-bezier(0.33, 1, 0.68, 1),
+              border-color 250ms ease;
+}
+.card-hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px -8px hsl(var(--primary) / 0.12),
+              0 4px 10px -4px hsl(var(--foreground) / 0.06);
+}
+.card-hover-lift:active {
+  transform: translateY(-1px);
+  transition-duration: 100ms;
+}
+
+/* Button Press Feedback — use on all interactive buttons */
+.btn-press {
+  transition: transform 100ms ease-out, box-shadow 100ms ease-out;
+}
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* AI Signal Glow — subtle breathing for live indicators */
+@keyframes signal-breathe {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+.signal-glow {
+  animation: signal-breathe 3s ease-in-out infinite;
+}
+
+/* AI Signal Shimmer — gradient sweep for deal score badges */
+@keyframes signal-shimmer {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+.signal-shimmer {
+  background-size: 200% 100%;
+  animation: signal-shimmer 6s linear infinite;
+}
+
+/* Image Hover Zoom — use inside .group containers */
+.img-hover-zoom {
+  transition: transform 400ms cubic-bezier(0.33, 1, 0.68, 1);
+}
+.group:hover .img-hover-zoom {
+  transform: scale(1.05);
+}
+
+/* Skeleton-to-Content Crossfade */
+@keyframes skeleton-reveal {
+  from { opacity: 0; filter: blur(4px); }
+  to { opacity: 1; filter: blur(0); }
+}
+.skeleton-reveal {
+  animation: skeleton-reveal 200ms ease-out forwards;
+}
+
+/* Stagger Animation Support — set --stagger-index via style prop */
+.stagger-fade-in {
+  opacity: 0;
+  animation: fade-in 0.3s ease-out forwards;
+  animation-delay: calc(var(--stagger-index, 0) * 60ms);
+}
