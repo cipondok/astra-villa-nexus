@@ -897,6 +897,15 @@ const Index = () => {
                     </div>
                   </ScrollReveal>
 
+                  {/* Opportunity Streak — Time-limited deals */}
+                  <ScrollReveal direction="up" delay={30}>
+                    <div className="mb-8">
+                      <Suspense fallback={null}>
+                        <OpportunityStreakCards />
+                      </Suspense>
+                    </div>
+                  </ScrollReveal>
+
                   {/* Deal Hunter + Trending ROI — side by side on desktop, stacked on mobile */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                     <ScrollReveal direction="up" delay={0}>
