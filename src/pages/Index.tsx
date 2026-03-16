@@ -71,7 +71,7 @@ const FeaturedPropertiesCarousel = lazy(() => import("@/components/home/Featured
 const SmartCollectionsShowcase = lazy(() => import("@/components/home/SmartCollectionsV2"));
 const TrendingROIDeals = lazy(() => import("@/components/home/TrendingROIDeals"));
 const AIPriceEstimatorCTA = lazy(() => import("@/components/home/AIPriceEstimatorCTA"));
-const MarketIntelligenceCTA = lazy(() => import("@/components/home/MarketIntelligenceCTA"));
+// MarketIntelligenceCTA removed — replaced by SectionDividerCTA inline
 const EarlyInvestmentCTA = lazy(() => import("@/components/home/EarlyInvestmentCTA"));
 const SocialProofStrip = lazy(() => import("@/components/home/SocialProofStrip"));
 const SectionDividerCTA = lazy(() => import("@/components/home/SectionDividerCTA"));
