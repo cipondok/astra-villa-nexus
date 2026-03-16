@@ -343,6 +343,28 @@ html, body {
     --chart-4: 270 70% 65%;   /* Purple */
     --chart-5: 346 77% 60%;   /* Rose */
 
+    /* ═══ AI Intelligence Signal Colors - Dark ═══ */
+    --intel-blue: 217 91% 65%;
+    --intel-blue-glow: 217 91% 65%;
+    --intel-success: 160 84% 48%;
+    --intel-success-soft: 160 84% 48%;
+    --intel-warning: 38 92% 58%;
+    --intel-danger: 0 72% 55%;
+    --intel-purple: 270 70% 65%;
+
+    /* Market Heat Gradient Stops - Dark */
+    --heat-cold: 210 30% 35%;
+    --heat-cool: 200 80% 55%;
+    --heat-warm: 38 92% 58%;
+    --heat-hot: 0 84% 55%;
+    --heat-fire: 346 90% 55%;
+
+    /* Intelligence Card Elevation - Dark */
+    --intel-radius: 16px;
+    --intel-radius-lg: 20px;
+    --shadow-intel: 0 4px 20px hsl(210 60% 3% / 0.5), 0 0 0 1px hsl(217 91% 65% / 0.08);
+    --shadow-intel-active: 0 8px 32px hsl(210 60% 3% / 0.6), 0 0 16px hsl(217 91% 65% / 0.12), 0 0 0 1px hsl(217 91% 65% / 0.15);
+
     /* Dark mode shadow tokens */
     --shadow-card: 0 4px 24px hsl(210 60% 3% / 0.6), 0 0 0 1px hsl(200 50% 30% / 0.12);
     --shadow-card-hover: 0 8px 32px hsl(210 60% 3% / 0.7), 0 0 0 1px hsl(45 100% 60% / 0.15);
