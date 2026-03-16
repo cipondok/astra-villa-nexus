@@ -357,6 +357,7 @@ const IndonesiaMapComponent = ({ onProvinceSelect, selectedProvince, userProvinc
   const [isDark, setIsDark] = useState(false);
   const [showHeatmap, setShowHeatmap] = useState(true);
   const [showHotspots, setShowHotspots] = useState(false);
+  const [heatMode, setHeatMode] = useState<HeatMode>('density');
   const navigate = useNavigate();
 
   const { data: provincePropertyCounts = {} } = useProvincePropertyCounts();
