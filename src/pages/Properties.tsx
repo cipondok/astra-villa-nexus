@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { SEOHead, seoSchemas } from "@/components/SEOHead";
 import { useTranslation } from "@/i18n/useTranslation";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
@@ -15,8 +15,10 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import {
   Search, MapPin, Building2, Bed, Bath, Maximize, Heart,
   Grid3X3, List, ArrowLeft, Home, X, SlidersHorizontal, RotateCcw,
-  TrendingUp, Sparkles,
+  TrendingUp, Sparkles, Map,
 } from "lucide-react";
+
+const PropertyListingMapView = lazy(() => import("@/components/property/PropertyListingMapView"));
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { formatCurrency } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -222,7 +224,7 @@ const Properties = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const locationFilter = searchParams.get('location') || '';
   const [searchQuery, setSearchQuery] = useState("");
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>('grid');
   const [filterType, setFilterType] = useState('all');
   const [propertyType, setPropertyType] = useState('all');
   const [minBedrooms, setMinBedrooms] = useState('0');
@@ -580,19 +582,21 @@ const Properties = () => {
                   </Select>
 
                   {/* View Toggle */}
-                  <div className="hidden sm:flex border border-border/50 rounded-xl p-0.5 bg-card">
-                    <button
-                      onClick={() => setViewMode('grid')}
-                      className={`h-8 w-8 rounded-lg flex items-center justify-center transition-colors ${viewMode === 'grid' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
-                    >
-                      <Grid3X3 className="h-3.5 w-3.5" />
-                    </button>
-                    <button
-                      onClick={() => setViewMode('list')}
-                      className={`h-8 w-8 rounded-lg flex items-center justify-center transition-colors ${viewMode === 'list' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
-                    >
-                      <List className="h-3.5 w-3.5" />
-                    </button>
+                  <div className="flex border border-border/50 rounded-xl p-0.5 bg-card">
+                    {([
+                      { mode: 'grid' as const, icon: Grid3X3, label: 'Grid' },
+                      { mode: 'list' as const, icon: List, label: 'List' },
+                      { mode: 'map' as const, icon: Map, label: 'Map' },
+                    ]).map(({ mode, icon: Icon, label }) => (
+                      <button
+                        key={mode}
+                        onClick={() => setViewMode(mode)}
+                        aria-label={`${label} view`}
+                        className={`h-8 w-8 rounded-lg flex items-center justify-center transition-colors ${viewMode === mode ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                      >
+                        <Icon className="h-3.5 w-3.5" />
+                      </button>
+                    ))}
                   </div>
 
                   {/* Mobile Filter Sheet */}
@@ -618,8 +622,24 @@ const Properties = () => {
               </div>
             </div>
 
-            {/* ─── Property Grid / List ─── */}
-            {isLoading ? (
+            {/* ─── Map View ─── */}
+            {viewMode === 'map' ? (
+              <Suspense fallback={
+                <div className="rounded-2xl border border-border/30 bg-card h-[calc(100vh-280px)] min-h-[400px] flex items-center justify-center">
+                  <div className="text-center">
+                    <Map className="h-8 w-8 text-primary animate-pulse mx-auto mb-2" />
+                    <p className="text-sm text-muted-foreground">Memuat peta...</p>
+                  </div>
+                </div>
+              }>
+                <div className="rounded-2xl border border-border/30 overflow-hidden h-[calc(100vh-280px)] min-h-[400px]">
+                  <PropertyListingMapView
+                    properties={filteredProperties}
+                    formatPrice={formatCurrency}
+                  />
+                </div>
+              </Suspense>
+            ) : isLoading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-5">
                 {[...Array(9)].map((_, i) => (
                   <div key={i} className="rounded-2xl border border-border/30 bg-card overflow-hidden">
