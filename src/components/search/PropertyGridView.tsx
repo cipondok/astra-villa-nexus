@@ -183,24 +183,24 @@ const PropertyGridView = ({
               </div>
 
               {/* Specs */}
-              <div className="flex items-center gap-1 pt-1.5 border-t border-primary/10">
+              <div className="flex items-center gap-1.5 pt-2 border-t border-border/60">
                 {property.bedrooms && property.bedrooms > 0 && (
-                  <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5">
+                  <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-md px-2 py-1">
                     <Bed className="h-3 w-3 text-primary/60" />
                     <span className="text-[11px] text-foreground/80 font-bold">{property.bedrooms}</span>
-                    <span className="text-[9px] text-muted-foreground/70 font-semibold">KT</span>
+                    <span className="text-[10px] text-muted-foreground/70 font-semibold">KT</span>
                   </div>
                 )}
                 {property.bathrooms && property.bathrooms > 0 && (
-                  <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5">
+                  <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-md px-2 py-1">
                     <Bath className="h-3 w-3 text-primary/60" />
                     <span className="text-[11px] text-foreground/80 font-bold">{property.bathrooms}</span>
-                    <span className="text-[9px] text-muted-foreground/70 font-semibold">KM</span>
+                    <span className="text-[10px] text-muted-foreground/70 font-semibold">KM</span>
                   </div>
                 )}
                 {property.area_sqm && (
-                  <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded px-1.5 py-0.5">
-                    <span className="text-[9px] text-primary/60 font-bold">LB</span>
+                  <div className="flex items-center gap-0.5 border border-primary/15 bg-primary/5 dark:bg-primary/10 rounded-md px-2 py-1">
+                    <span className="text-[10px] text-primary/60 font-bold">LB</span>
                     <span className="text-[11px] text-foreground/80 font-bold">{property.area_sqm}m²</span>
                   </div>
                 )}
