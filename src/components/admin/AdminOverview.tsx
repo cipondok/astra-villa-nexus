@@ -604,16 +604,16 @@ const AdminOverview = React.memo(function AdminOverview({ onSectionChange }: Adm
 
             {/* Tier 2: Key intelligence — subtle shadow */}
             <div className="shadow-sm rounded-lg">
-              <MarketIntelligenceCard onNavigate={() => handleQuickAction('ai-command-center')} />
+              <MarketIntelligenceCard onNavigate={() => handleQuickAction('ai-command-center')} data={aiData?.marketIntelligence} />
             </div>
             <div className="shadow-sm rounded-lg">
-              <AgentPerformanceCard onNavigate={() => handleQuickAction('agent-management')} />
+              <AgentPerformanceCard onNavigate={() => handleQuickAction('agent-management')} data={aiData?.agentPerformance} />
             </div>
             <div className="shadow-sm rounded-lg">
-              <DealPipelineCard onNavigate={() => handleQuickAction('financial-management')} />
+              <DealPipelineCard onNavigate={() => handleQuickAction('financial-management')} data={aiData?.dealPipeline} />
             </div>
             <div className="shadow-sm rounded-lg">
-              <GeoExpansionCard onNavigate={() => handleQuickAction('ai-command-center')} />
+              <GeoExpansionCard onNavigate={() => handleQuickAction('ai-command-center')} data={aiData?.geoExpansion} />
             </div>
             <div className="shadow-sm rounded-lg">
               <InvestmentAttractivenessCard />

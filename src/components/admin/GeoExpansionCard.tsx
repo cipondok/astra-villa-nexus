@@ -28,10 +28,12 @@ const priorityConfig = {
 
 interface GeoExpansionCardProps {
   onNavigate?: () => void;
+  data?: import("@/hooks/useGeoExpansionIntelligence").GeoExpansionIntelligence | null;
 }
 
-const GeoExpansionCard = React.memo(function GeoExpansionCard({ onNavigate }: GeoExpansionCardProps) {
-  const { data: intel, isLoading } = useGeoExpansionIntelligence();
+const GeoExpansionCard = React.memo(function GeoExpansionCard({ onNavigate, data: externalData }: GeoExpansionCardProps) {
+  const { data: hookData, isLoading } = useGeoExpansionIntelligence(!externalData);
+  const intel = externalData ?? hookData;
 
   if (isLoading || !intel) {
     return (

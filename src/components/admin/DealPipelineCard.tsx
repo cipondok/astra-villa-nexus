@@ -58,10 +58,12 @@ function RevenueSparkline({ data }: { data: { d: string; revenue: number }[] }) 
 
 interface DealPipelineCardProps {
   onNavigate?: () => void;
+  data?: import("@/hooks/useDealPipelineIntelligence").DealPipelineIntelligence | null;
 }
 
-const DealPipelineCard = React.memo(function DealPipelineCard({ onNavigate }: DealPipelineCardProps) {
-  const { data: intel, isLoading } = useDealPipelineIntelligence();
+const DealPipelineCard = React.memo(function DealPipelineCard({ onNavigate, data: externalData }: DealPipelineCardProps) {
+  const { data: hookData, isLoading } = useDealPipelineIntelligence(!externalData);
+  const intel = externalData ?? hookData;
 
   if (isLoading || !intel) {
     return (
