@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { AlertTriangle, Activity, UserPlus } from 'lucide-react';
+import { AlertTriangle, Activity, UserPlus, Loader2 } from 'lucide-react';
 import AdminOverview from "./AdminOverview";
 import EnhancedUserManagement from "./EnhancedUserManagement";
 import UserUpgradeApplications from "./UserUpgradeApplications";
