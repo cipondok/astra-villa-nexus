@@ -581,6 +581,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "three-year-roadmap":         () => <ThreeYearRoadmap />,
   "founder-life-os":            () => <FounderLifeOS />,
   "success-probability-framework": () => <SuccessProbabilityFramework />,
+  "risk-mitigation-strategy": () => <RiskMitigationStrategy />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
