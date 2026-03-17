@@ -1007,7 +1007,7 @@ const Index = () => {
               </section>
 
               {/* ── SECTION 6: AI Tools Preview ── */}
-              <section className="py-5 sm:py-8">
+              <section className="py-4 sm:py-6">
                 <ScrollReveal direction="up" delay={0}>
                   <div className="max-w-7xl mx-auto">
                     <LazyRender minHeight="96px" rootMargin="400px" fallback={
