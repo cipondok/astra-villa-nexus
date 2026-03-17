@@ -226,7 +226,7 @@ const ListView: React.FC<{
 
             {/* Arrow */}
             <div className="flex justify-end">
-              <ChevronRight className={cn("h-2.5 w-2.5 transition-all duration-75", isHovered ? "text-[#f0b90b] translate-x-0.5" : "text-muted-foreground/10")} />
+              <ChevronRight className={cn("h-2.5 w-2.5 transition-all duration-75", isHovered ? "text-[#f0b90b] translate-x-0.5" : "text-muted-foreground/30")} />
             </div>
           </button>
         );
