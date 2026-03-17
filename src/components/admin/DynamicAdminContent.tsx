@@ -67,6 +67,7 @@ const HomepageBlueprint = lazy(() => import('./HomepageBlueprint'));
 const UIAuditReport = lazy(() => import('./UIAuditReport'));
 const LegalSetupRoadmap = lazy(() => import('./LegalSetupRoadmap'));
 const FinancialProjectionModel = lazy(() => import('./FinancialProjectionModel'));
+const FundraisingExitRoadmap = lazy(() => import('./FundraisingExitRoadmap'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
