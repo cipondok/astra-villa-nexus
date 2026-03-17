@@ -284,6 +284,21 @@ html, body {
     --intel-radius-lg: 20px;
     --shadow-intel: 0 4px 20px hsl(217 91% 55% / 0.08);
     --shadow-intel-active: 0 8px 32px hsl(217 91% 55% / 0.15), 0 0 0 1px hsl(217 91% 55% / 0.1);
+
+    /* ═══ Admin Dashboard Panel Tokens ═══ */
+    --panel-bg: 210 20% 96%;
+    --panel-border: 210 15% 88%;
+    --panel-hover: 210 15% 92%;
+    --panel-text: 210 30% 15%;
+    --panel-text-secondary: 210 10% 45%;
+    --panel-text-muted: 210 10% 60%;
+    --panel-accent: 45 100% 51%;
+    --panel-success: 155 72% 40%;
+    --panel-danger: 354 70% 50%;
+    --panel-warning: 45 100% 51%;
+    --panel-tooltip-bg: 210 15% 92%;
+    --panel-tooltip-border: 210 10% 82%;
+    --panel-tooltip-text: 210 10% 35%;
   }
 
   .dark {
