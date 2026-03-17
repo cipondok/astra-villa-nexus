@@ -75,6 +75,7 @@ const HiringRoadmap = lazy(() => import('./HiringRoadmap'));
 const CustomerSupportFramework = lazy(() => import('./CustomerSupportFramework'));
 const MarketplaceIntegrity = lazy(() => import('./MarketplaceIntegrity'));
 const TeamKPIFramework = lazy(() => import('./TeamKPIFramework'));
+const WeeklyLeadershipReview = lazy(() => import('./WeeklyLeadershipReview'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
