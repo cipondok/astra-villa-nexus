@@ -50,8 +50,7 @@ const PropertyMapView = lazy(() => import("@/components/search/PropertyMapView")
 const PropertyGridView = lazy(() => import("@/components/search/PropertyGridView"));
 const ActiveFilterPills = lazy(() => import("@/components/search/ActiveFilterPills").then(m => ({ default: m.ActiveFilterPills })));
 // PropertySlideSection removed — not used in restructured flow
-const PropertiesForSaleSection = lazy(() => import("@/components/property/PropertiesForSaleSection"));
-const PropertiesForRentSection = lazy(() => import("@/components/property/PropertiesForRentSection"));
+// PropertiesForSaleSection & PropertiesForRentSection removed from homepage — available at /dijual and /disewa
 const AstraSearchPanel = lazy(() => import("@/components/AstraSearchPanel"));
 const SearchLoadingDialog = lazy(() => import("@/components/SearchLoadingDialog").then(m => ({ default: m.SearchLoadingDialog })));
 const WhatsAppInquiryDialog = lazy(() => import("@/components/property/WhatsAppInquiryDialog"));
