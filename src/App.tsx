@@ -309,6 +309,9 @@ const AppContent = () => {
                   <Route path="/admin/ai-performance" element={<AIPerformanceDashboard />} />
                 </Route>
                 <Route path="/agent-dashboard" element={<AgentDashboard />} />
+                <Route path="/agent-crm" element={<ProtectedRoute />}>
+                  <Route index element={<AgentCRMDashboard />} />
+                </Route>
                 <Route path="/agent" element={<Navigate to="/agent-dashboard" replace />} />
                 <Route path="/listings" element={<Navigate to="/agent-dashboard" replace />} />
                 <Route path="/agent-listings" element={<Navigate to="/agent-dashboard" replace />} />
