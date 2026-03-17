@@ -98,7 +98,7 @@ const CategoryOverviewDashboard: React.FC<CategoryOverviewDashboardProps> = ({
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono text-muted-foreground/40 tabular-nums">
+            <span className="text-[10px] font-mono text-muted-foreground tabular-nums">
               {contentSections.length}
             </span>
             {/* View toggle */}
