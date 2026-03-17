@@ -58,6 +58,7 @@ const WhatsAppInquiryDialog = lazy(() => import("@/components/property/WhatsAppI
 const AstraVillaFeatures = lazy(() => import("@/components/home/AstraVillaFeatures"));
 // AIRecommendedProperties removed — merged into AI Opportunity Zone via SmartAIFeed + SmartRecommendations
 const SmartAIFeed = lazy(() => import("@/components/home/SmartAIFeed"));
+const AIInvestmentFeed = lazy(() => import("@/components/home/AIInvestmentFeed"));
 const SmartRecommendations = lazy(() => import("@/components/ai/SmartRecommendations"));
 const BehaviorPatternBanner = lazy(() => import("@/components/ai/BehaviorPatternBanner"));
 const DealHunterHero = lazy(() => import("@/components/home/DealHunterHero"));
@@ -899,11 +900,11 @@ const Index = () => {
                     </div>
                   </Suspense>
 
-                  {/* Smart AI Feed — Recommended / Trending */}
+                  {/* AI Investment Intelligence Feed */}
                   <ScrollReveal direction="up" delay={50}>
                     <div className="mb-8">
-                      <LazyRender minHeight="260px" fallback={<div className="animate-pulse h-64 bg-muted rounded-xl" />}>
-                        <SmartAIFeed onPropertyClick={handlePropertyClick} />
+                      <LazyRender minHeight="320px" fallback={<div className="animate-pulse h-80 bg-muted rounded-xl" />}>
+                        <AIInvestmentFeed onPropertyClick={handlePropertyClick} />
                       </LazyRender>
                     </div>
                   </ScrollReveal>
