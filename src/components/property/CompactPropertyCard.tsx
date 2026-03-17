@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { cn } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,7 @@ import { MapPin, Bed, Bath, Square, Eye, Heart, Share2, View as ViewIcon, Star, 
 import { useTranslation } from '@/i18n/useTranslation';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import PropertyDetailModal from './PropertyDetailModal';
+import OpportunityScoreRing from './OpportunityScoreRing';
 import PropertyComparisonButton from './PropertyComparisonButton';
 import PropertyImageCarousel from './PropertyImageCarousel';
 import Property3DViewModal from './Property3DViewModal';
@@ -44,6 +46,8 @@ interface CompactProperty {
   agent_verified?: boolean;
   agency_verified?: boolean;
   discount_percentage?: number;
+  opportunity_score?: number | null;
+  ai_estimated_price?: number | null;
   posted_by?: {
     id: string;
     name: string;
@@ -170,7 +174,10 @@ const CompactPropertyCard = ({
 
   return (
     <>
-      <Card className="group card-hover professional-card overflow-hidden h-full flex flex-col border border-border hover:border-primary/40 bg-card backdrop-blur-xl shadow-sm hover:shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.2)] hover:-translate-y-1 transition-all duration-400 rounded-xl relative will-change-transform">
+      <Card className={cn(
+        "group card-hover professional-card overflow-hidden h-full flex flex-col border border-border hover:border-primary/40 bg-card backdrop-blur-xl shadow-sm hover:shadow-[0_8px_30px_-8px_hsl(var(--primary)/0.2)] hover:-translate-y-1 transition-all duration-400 rounded-xl relative will-change-transform",
+        property.opportunity_score && property.opportunity_score >= 85 && "ring-1 ring-chart-2/30 hover:ring-chart-2/50 hover:shadow-[0_8px_30px_-8px_hsl(var(--chart-2)/0.25)]"
+      )}>
         {/* Image Section with Overlay Info */}
         <PropertyImageCarousel
           images={property.images?.length ? property.images : [getImageUrl()]}
@@ -201,8 +208,18 @@ const CompactPropertyCard = ({
             )}
           </div>
 
-          {/* Top Right Actions */}
-          <div className="absolute top-1.5 sm:top-2 right-1.5 sm:right-2 flex gap-1 sm:gap-1.5">
+          {/* Opportunity Score Ring - Top Right */}
+          {property.opportunity_score && property.opportunity_score > 0 && (
+            <div className="absolute top-1.5 sm:top-2 right-1.5 sm:right-2 z-10">
+              <OpportunityScoreRing score={property.opportunity_score} size={38} />
+            </div>
+          )}
+
+          {/* Top Right Actions - Below Score */}
+          <div className={cn(
+            "absolute right-1.5 sm:right-2 flex gap-1 sm:gap-1.5",
+            property.opportunity_score && property.opportunity_score > 0 ? "top-10 sm:top-11" : "top-1.5 sm:top-2"
+          )}>
             {searchImage && similarityScore && (
               <Button
                 size="sm"
@@ -257,6 +274,14 @@ const CompactPropertyCard = ({
                   <span className="text-white/80 text-[9px] sm:text-[11px] font-bold">/bln</span>
                 )}
               </div>
+
+              {/* AI Valuation Hint */}
+              {property.ai_estimated_price && property.ai_estimated_price > 0 && (
+                <div className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg bg-black/40 backdrop-blur-md border border-white/10">
+                  <TrendingUp className="h-2.5 w-2.5 text-chart-2" />
+                  <span className="text-[8px] sm:text-[9px] text-white/80 font-medium">AI fair value insight</span>
+                </div>
+              )}
 
               {/* Discount Badge */}
               {property.discount_percentage && property.discount_percentage > 0 && (
