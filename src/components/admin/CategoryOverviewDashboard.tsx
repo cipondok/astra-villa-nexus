@@ -94,11 +94,11 @@ const CategoryOverviewDashboard: React.FC<CategoryOverviewDashboardProps> = ({
             <CategoryIcon className="h-4 w-4 text-[#f0b90b]" />
             <div>
               <h1 className="text-sm font-semibold text-foreground tracking-tight">{title}</h1>
-              <p className="text-[10px] text-muted-foreground/60 mt-px">{description}</p>
+              <p className="text-[10px] text-muted-foreground mt-px">{description}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono text-muted-foreground/40 tabular-nums">
+            <span className="text-[10px] font-mono text-muted-foreground tabular-nums">
               {contentSections.length}
             </span>
             {/* View toggle */}
@@ -166,9 +166,9 @@ const ListView: React.FC<{
 }> = ({ sections, hoveredKey, setHoveredKey, onSectionChange }) => (
   <>
     <div className="grid grid-cols-[1fr_auto] sm:grid-cols-[1fr_80px_auto] px-3 py-1.5 border-b border-[hsl(var(--border)/.08)]">
-      <span className="text-[8px] font-medium uppercase tracking-[0.12em] text-muted-foreground/35">Module</span>
-      <span className="hidden sm:block text-[8px] font-medium uppercase tracking-[0.12em] text-muted-foreground/35">Status</span>
-      <span className="text-[8px] font-medium uppercase tracking-[0.12em] text-muted-foreground/35 text-right pr-1">→</span>
+      <span className="text-[8px] font-medium uppercase tracking-[0.12em] text-muted-foreground/70">Module</span>
+      <span className="hidden sm:block text-[8px] font-medium uppercase tracking-[0.12em] text-muted-foreground/70">Status</span>
+      <span className="text-[8px] font-medium uppercase tracking-[0.12em] text-muted-foreground/70 text-right pr-1">→</span>
     </div>
     <div className="divide-y divide-[hsl(var(--border)/.05)]">
       {sections.map((section) => {
@@ -192,20 +192,20 @@ const ListView: React.FC<{
           >
             {/* Module */}
             <div className="flex items-center gap-2 min-w-0">
-              <Icon className={cn("h-3 w-3 shrink-0 transition-colors", isHovered ? "text-[#f0b90b]" : "text-muted-foreground/30")} />
+              <Icon className={cn("h-3.5 w-3.5 shrink-0 transition-colors", isHovered ? "text-[#f0b90b]" : "text-muted-foreground")} />
               <div className="min-w-0">
-                <span className={cn("text-[11px] font-medium truncate block transition-colors", isHovered ? "text-foreground" : "text-foreground/70")}>
+                <span className={cn("text-[11px] font-medium truncate block transition-colors", isHovered ? "text-foreground" : "text-foreground/90")}>
                   {section.label.replace(/^[^\w]*\s/, '')}
                 </span>
-                <span className="text-[9px] text-muted-foreground/35 truncate block leading-tight">
+                <span className="text-[9px] text-muted-foreground truncate block leading-tight">
                   {section.description?.slice(0, 50)}{section.description?.length > 50 ? '…' : ''}
                 </span>
               </div>
 
               {/* Hover tooltip — positioned ABOVE */}
               {isHovered && (
-                <div className="absolute left-8 bottom-full mb-1 z-50 px-2 py-1 rounded bg-[hsl(var(--popover)/.92)] border border-[hsl(var(--border)/.12)] shadow-lg max-w-[200px] pointer-events-none animate-in fade-in duration-100">
-                  <p className="text-[8px] text-[hsl(var(--popover-foreground)/.55)] leading-relaxed">{section.description}</p>
+                <div className="absolute left-8 bottom-full mb-1 z-50 px-2.5 py-1.5 rounded bg-popover border border-border/40 shadow-xl max-w-[220px] pointer-events-none animate-in fade-in duration-100">
+                  <p className="text-[9px] text-popover-foreground/80 leading-relaxed">{section.description}</p>
                 </div>
               )}
             </div>
@@ -220,13 +220,13 @@ const ListView: React.FC<{
                   </span>
                 </>
               ) : (
-                <span className="text-[8px] text-muted-foreground/20">—</span>
+                <span className="text-[8px] text-muted-foreground/50">—</span>
               )}
             </div>
 
             {/* Arrow */}
             <div className="flex justify-end">
-              <ChevronRight className={cn("h-2.5 w-2.5 transition-all duration-75", isHovered ? "text-[#f0b90b] translate-x-0.5" : "text-muted-foreground/10")} />
+              <ChevronRight className={cn("h-2.5 w-2.5 transition-all duration-75", isHovered ? "text-[#f0b90b] translate-x-0.5" : "text-muted-foreground/30")} />
             </div>
           </button>
         );
@@ -269,25 +269,25 @@ const GridView: React.FC<{
           {/* Icon */}
           <div className={cn(
             "p-1.5 rounded-lg transition-colors",
-            isHovered ? "bg-[#f0b90b]/8" : "bg-[hsl(var(--muted)/.3)]"
+            isHovered ? "bg-[#f0b90b]/10" : "bg-muted/50"
           )}>
-            <Icon className={cn("h-4 w-4 transition-colors", isHovered ? "text-[#f0b90b]" : "text-muted-foreground/40")} />
+            <Icon className={cn("h-4 w-4 transition-colors", isHovered ? "text-[#f0b90b]" : "text-muted-foreground")} />
           </div>
 
           {/* Title */}
-          <span className={cn("text-[10px] font-medium leading-tight line-clamp-2 transition-colors", isHovered ? "text-foreground" : "text-foreground/65")}>
+          <span className={cn("text-[10px] font-medium leading-tight line-clamp-2 transition-colors", isHovered ? "text-foreground" : "text-foreground/85")}>
             {section.label.replace(/^[^\w]*\s/, '')}
           </span>
 
           {/* Short description */}
-          <span className="text-[8px] text-muted-foreground/30 leading-tight line-clamp-2 max-w-[120px]">
+          <span className="text-[8px] text-muted-foreground/70 leading-tight line-clamp-2 max-w-[120px]">
             {section.description?.slice(0, 40)}{section.description?.length > 40 ? '…' : ''}
           </span>
 
           {/* Hover tooltip — positioned ABOVE */}
           {isHovered && (
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-1 z-50 px-2 py-1 rounded bg-[hsl(var(--popover)/.92)] border border-[hsl(var(--border)/.12)] shadow-lg max-w-[180px] pointer-events-none animate-in fade-in duration-100">
-              <p className="text-[8px] text-[hsl(var(--popover-foreground)/.55)] leading-relaxed text-left">{section.description}</p>
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-1 z-50 px-2.5 py-1.5 rounded bg-popover border border-border/40 shadow-xl max-w-[200px] pointer-events-none animate-in fade-in duration-100">
+              <p className="text-[9px] text-popover-foreground/80 leading-relaxed text-left">{section.description}</p>
             </div>
           )}
         </button>
@@ -299,7 +299,7 @@ const GridView: React.FC<{
 const StatChip: React.FC<{ value: number; label: string; color: string }> = ({ value, label, color }) => (
   <div className="flex items-center gap-1.5">
     <span className="text-xs font-bold font-mono leading-none" style={{ color }}>{value}</span>
-    <span className="text-[9px] text-muted-foreground/40 leading-none">{label}</span>
+    <span className="text-[9px] text-muted-foreground leading-none">{label}</span>
   </div>
 );
 
