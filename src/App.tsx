@@ -249,6 +249,7 @@ const CloudInfrastructurePage = lazy(() => import('@/pages/CloudInfrastructurePa
 const DisasterRecoveryPage = lazy(() => import('@/pages/DisasterRecoveryPage'));
 const BehaviorAnalyticsPage = lazy(() => import('@/pages/BehaviorAnalyticsPage'));
 const AILearningFrameworkPage = lazy(() => import('@/pages/AILearningFrameworkPage'));
+const ABTestingFrameworkPage = lazy(() => import('@/pages/ABTestingFrameworkPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
