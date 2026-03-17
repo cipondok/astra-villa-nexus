@@ -823,4 +823,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "risk-mitigation-strategy": { label: "Risk Mitigation Strategy", category: "Features" },
   "ultimate-master-plan": { label: "Ultimate Master Plan", category: "Features" },
   "ninety-day-roadmap": { label: "90-Day Execution Roadmap", category: "Features" },
+  "daily-execution-plan": { label: "8-Hour Execution Plan", category: "Features" },
 };

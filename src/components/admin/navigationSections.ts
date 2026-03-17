@@ -1734,6 +1734,13 @@ export const navigationSections = {
       icon: CalendarClock,
       description: "Structured 90-day launch plan balancing product development, marketplace supply, and investor acquisition",
       badge: "🚀 90 Days"
+    },
+    {
+      key: "daily-execution-plan",
+      label: "8-Hour Execution Plan",
+      icon: Clock,
+      description: "Focused daily sprint — product improvement, marketplace supply, investor demand, strategy, and quality",
+      badge: "⏱️ Daily"
     }
   ],
 
