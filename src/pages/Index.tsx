@@ -1067,7 +1067,7 @@ const Index = () => {
               </Suspense>
 
               {/* ── SECTION 9: Partner & Social Proof ── */}
-              <section className="py-6 sm:py-8 bg-muted/20">
+              <section className="py-4 sm:py-6 bg-muted/20">
                 <ScrollReveal direction="up" delay={0}>
                   <LazyRender minHeight="80px" fallback={null}>
                     <PartnerLogosMarquee />
