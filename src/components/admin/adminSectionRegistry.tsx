@@ -270,6 +270,7 @@ export const ThreeYearRoadmap = lazyRetry(() => import("./ThreeYearRoadmap"));
 export const FounderLifeOS = lazyRetry(() => import("./FounderLifeOS"));
 export const SuccessProbabilityFramework = lazyRetry(() => import("./SuccessProbabilityFramework"));
 export const RiskMitigationStrategy = lazyRetry(() => import("./RiskMitigationStrategy"));
+export const UltimateMasterPlan = lazyRetry(() => import("./UltimateMasterPlan"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
@@ -582,6 +583,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "founder-life-os":            () => <FounderLifeOS />,
   "success-probability-framework": () => <SuccessProbabilityFramework />,
   "risk-mitigation-strategy": () => <RiskMitigationStrategy />,
+  "ultimate-master-plan": () => <UltimateMasterPlan />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -815,4 +817,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "founder-life-os": { label: "Founder Life OS", category: "Features" },
   "success-probability-framework": { label: "Success Probability Framework", category: "Features" },
   "risk-mitigation-strategy": { label: "Risk Mitigation Strategy", category: "Features" },
+  "ultimate-master-plan": { label: "Ultimate Master Plan", category: "Features" },
 };
