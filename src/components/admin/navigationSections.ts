@@ -1635,7 +1635,7 @@ export const navigationSections = {
       badge: "🎯 Fundraise"
     },
     {
-      key: "hiring-roadmap",
+      key: "hiring-roadmap-10",
       label: "Hiring Roadmap",
       icon: Users,
       description: "First 10 key hires phased across foundation, acceleration, and scale stages",
