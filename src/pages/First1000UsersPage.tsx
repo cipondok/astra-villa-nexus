@@ -358,7 +358,7 @@ export default function First1000UsersPage() {
                       During the path to 1,000 users, all referral rewards are boosted 2x. Invite 3+ active investors to unlock bonus tier.
                     </p>
                   </div>
-                  <Badge className="bg-amber-500 text-amber-50 text-xs ml-auto flex-shrink-0">2x Active</Badge>
+                  <Badge className="bg-accent text-accent-foreground text-xs ml-auto flex-shrink-0">2x Active</Badge>
                 </div>
               </CardContent>
             </Card>
