@@ -1139,7 +1139,9 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
           role: 'assistant',
           content: data.message,
           timestamp: new Date(),
-          functionCall: data.functionCall
+          functionCall: data.functionCall,
+          properties: data.recommended_properties || data.properties || undefined,
+          insights: data.insights || undefined,
         };
 
         setMessages(prev => [...prev, aiMessage]);
