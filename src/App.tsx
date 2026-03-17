@@ -579,6 +579,7 @@ const AppContent = () => {
                 </Route>
                 <Route path="/cross-border-discovery" element={<CrossBorderDiscoveryPage />} />
                 <Route path="/deal-hunter-bot" element={<DealHunterBotPage />} />
+                <Route path="/developer-campaign" element={<DeveloperCampaignPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
