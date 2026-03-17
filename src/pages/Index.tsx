@@ -919,10 +919,10 @@ const Index = () => {
               <Suspense fallback={null}>
                 <SectionDividerCTA icon={Star} headline="Curated for Investors" description="Handpicked collections based on ROI potential and market timing" ctaText="View Collections" ctaRoute="/collections" />
               </Suspense>
-              </div>
+              </SectionWrapper>
 
               {/* ── SECTION 5: Investor Path Selector ── */}
-              <div className="bg-muted/20">
+              <SectionWrapper variant="muted">
                 <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
                   <InvestorPathSelector />
                 </LazyRender>
