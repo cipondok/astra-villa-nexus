@@ -818,7 +818,7 @@ const Index = () => {
             ══════════════════════════════════════════════════ */
             <>
                {/* ── SECTION 2: Featured Properties ── */}
-              <section id="featured-section" className="py-4 sm:py-6">
+              <div id="featured-section">
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={
                     <div className="py-4 max-w-7xl mx-auto px-3 sm:px-4">
@@ -838,8 +838,6 @@ const Index = () => {
                     <FeaturedPropertiesCarousel />
                   </Suspense>
                 </ScrollReveal>
-
-                {/* Contextual CTA: Discovery excitement */}
                 <Suspense fallback={null}>
                   <SectionDividerCTA
                     icon={Search}
@@ -852,37 +850,24 @@ const Index = () => {
                     secondaryRoute="/post-property"
                   />
                 </Suspense>
-              </section>
+              </div>
 
-              {/* ── Welcome Back + Recently Viewed (returning users) ── */}
-              <Suspense fallback={null}>
-                <WelcomeBackStrip />
-              </Suspense>
-              <Suspense fallback={null}>
-                <RecentlyViewedStrip />
-              </Suspense>
+              {/* ── Contextual strips (render nothing when not applicable) ── */}
+              <Suspense fallback={null}><WelcomeBackStrip /></Suspense>
+              <Suspense fallback={null}><RecentlyViewedStrip /></Suspense>
+              <Suspense fallback={null}><HotspotAlertBanner /></Suspense>
+              <Suspense fallback={null}><UrgencyTimerStrip /></Suspense>
 
-              {/* ── Hotspot Alert ── */}
-              <Suspense fallback={null}>
-                <HotspotAlertBanner />
-              </Suspense>
-
-              {/* ── Urgency Timer ── */}
-              <Suspense fallback={null}>
-                <UrgencyTimerStrip />
-              </Suspense>
-
-              {/* ── SECTION 3: AI Opportunity Zone (merged intelligence modules) ── */}
+              {/* ── SECTION 3: AI Opportunity Zone ── */}
               <section className="py-4 sm:py-6 bg-muted/30" id="ai-opportunity-zone">
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
-                  {/* Zone header */}
                   <ScrollReveal direction="up" delay={0}>
-                    <div className="text-center mb-4 sm:mb-5">
+                    <div className="text-center mb-4">
                       <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-gold-primary/15 bg-gold-primary/5 mb-2">
                         <Sparkles className="h-3 w-3 text-gold-primary" />
                         <span className="text-[10px] sm:text-xs font-semibold text-gold-primary uppercase tracking-[0.15em]">AI Intelligence</span>
                       </div>
-                      <h2 className="font-playfair text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-1.5">
+                      <h2 className="font-playfair text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-1">
                         Opportunity Discovery
                       </h2>
                       <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto">
@@ -891,82 +876,34 @@ const Index = () => {
                     </div>
                   </ScrollReveal>
 
-                  {/* Predictive Search Canvas */}
-                  <ScrollReveal direction="up" delay={0}>
-                    <div className="mb-5">
-                      <Suspense fallback={null}>
-                        <PredictiveSearchCanvas />
-                      </Suspense>
-                    </div>
-                  </ScrollReveal>
+                  <Suspense fallback={null}><PredictiveSearchCanvas /></Suspense>
+                  <Suspense fallback={null}><BehaviorPatternBanner /></Suspense>
 
-                  {/* AI Behavior Pattern Banner */}
-                  <Suspense fallback={null}>
-                    <div className="mb-4">
-                      <BehaviorPatternBanner />
-                    </div>
-                  </Suspense>
+                  <LazyRender minHeight="0px" fallback={null}>
+                    <AIInvestmentFeed onPropertyClick={handlePropertyClick} />
+                  </LazyRender>
 
-                  {/* AI Investment Intelligence Feed */}
-                  <ScrollReveal direction="up" delay={50}>
-                    <div className="mb-5">
-                      <LazyRender minHeight="280px" fallback={<div className="animate-pulse h-72 bg-muted rounded-xl" />}>
-                        <AIInvestmentFeed onPropertyClick={handlePropertyClick} />
-                      </LazyRender>
-                    </div>
-                  </ScrollReveal>
+                  <Suspense fallback={null}><OpportunityStreakCards /></Suspense>
 
-                  {/* Opportunity Streak — Time-limited deals */}
-                  <ScrollReveal direction="up" delay={30}>
-                    <div className="mb-5">
-                      <Suspense fallback={null}>
-                        <OpportunityStreakCards />
-                      </Suspense>
-                    </div>
-                  </ScrollReveal>
-
-                  {/* Deal Hunter + Trending ROI — side by side on desktop, stacked on mobile */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-5">
-                    <ScrollReveal direction="up" delay={0}>
-                      <Suspense fallback={<div className="h-44 bg-muted/30 rounded-xl animate-pulse" />}>
-                        <DealHunterHero />
-                      </Suspense>
-                    </ScrollReveal>
-                    <ScrollReveal direction="up" delay={100}>
-                      <Suspense fallback={<div className="h-44 bg-muted/30 rounded-xl animate-pulse" />}>
-                        <TrendingROIDeals onPropertyClick={handlePropertyClick} />
-                      </Suspense>
-                    </ScrollReveal>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+                    <Suspense fallback={null}><DealHunterHero /></Suspense>
+                    <Suspense fallback={null}><TrendingROIDeals onPropertyClick={handlePropertyClick} /></Suspense>
                   </div>
 
-                  {/* Opportunity Radar + AI Journey Guide — side by side */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-5">
-                    <ScrollReveal direction="up" delay={0}>
-                      <Suspense fallback={<div className="h-56 bg-muted/30 rounded-xl animate-pulse" />}>
-                        <OpportunityRadar />
-                      </Suspense>
-                    </ScrollReveal>
-                    <ScrollReveal direction="up" delay={100}>
-                      <Suspense fallback={<div className="h-56 bg-muted/30 rounded-xl animate-pulse" />}>
-                        <AIJourneyGuide />
-                      </Suspense>
-                    </ScrollReveal>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+                    <Suspense fallback={null}><OpportunityRadar /></Suspense>
+                    <Suspense fallback={null}><AIJourneyGuide /></Suspense>
                   </div>
 
-                  {/* Smart Recommendations — Personalized Picks */}
-                  <ScrollReveal direction="up" delay={0}>
-                    <Suspense fallback={<div className="h-48 bg-muted/30 rounded-xl animate-pulse" />}>
+                  <div className="mt-4">
+                    <Suspense fallback={null}>
                       <SmartRecommendations limit={6} className="shadow-sm" />
                     </Suspense>
-                  </ScrollReveal>
-                  {/* Continuous discovery trigger */}
-                  <Suspense fallback={null}>
-                    <DiscoveryTrigger className="mt-4" />
-                  </Suspense>
+                  </div>
+                  <Suspense fallback={null}><DiscoveryTrigger className="mt-3" /></Suspense>
                 </div>
 
-                {/* Contextual CTA after AI zone */}
-                <div className="mt-6">
+                <div className="mt-4">
                   <Suspense fallback={null}>
                     <SectionDividerCTA icon={Crosshair} headline="Find Undervalued Deals" description="AI detects properties priced below fair market value" ctaText="Hunt Deals" ctaRoute="/deal-finder" variant="accent" />
                   </Suspense>
@@ -974,132 +911,72 @@ const Index = () => {
               </section>
 
               {/* ── SECTION 4: Smart Collections ── */}
-              <section className="py-4 sm:py-6">
-                <ScrollReveal direction="up" delay={0}>
-                  <LazyRender minHeight="280px" rootMargin="400px" fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto px-3 sm:px-4" />}>
-                    <Suspense fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto px-3 sm:px-4" />}>
-                      <SmartCollectionsShowcase />
-                    </Suspense>
-                  </LazyRender>
-                </ScrollReveal>
-
-                {/* Contextual CTA: Collection confidence */}
-                <Suspense fallback={null}>
-                  <SectionDividerCTA
-                    icon={Star}
-                    headline="Curated for Investors"
-                    description="Handpicked collections based on ROI potential and market timing"
-                    ctaText="View Collections"
-                    ctaRoute="/collections"
-                  />
-                </Suspense>
-              </section>
+              <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
+                <SmartCollectionsShowcase />
+              </LazyRender>
+              <Suspense fallback={null}>
+                <SectionDividerCTA icon={Star} headline="Curated for Investors" description="Handpicked collections based on ROI potential and market timing" ctaText="View Collections" ctaRoute="/collections" />
+              </Suspense>
 
               {/* ── SECTION 5: Investor Path Selector ── */}
-              <section className="py-3 sm:py-5 bg-muted/20">
-                <ScrollReveal direction="up" delay={0}>
-                  <LazyRender minHeight="64px" rootMargin="400px" fallback={
-                    <div className="flex gap-3 justify-center py-3"><div className="animate-pulse h-16 w-36 bg-muted rounded-lg" /><div className="animate-pulse h-16 w-36 bg-muted rounded-lg" /><div className="animate-pulse h-16 w-36 bg-muted rounded-lg" /></div>
-                  }>
-                    <InvestorPathSelector />
-                  </LazyRender>
-                </ScrollReveal>
-              </section>
+              <div className="bg-muted/20">
+                <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
+                  <InvestorPathSelector />
+                </LazyRender>
+              </div>
 
               {/* ── SECTION 6: AI Tools Preview ── */}
-              <section className="py-4 sm:py-6">
-                <ScrollReveal direction="up" delay={0}>
-                  <div className="max-w-7xl mx-auto">
-                    <LazyRender minHeight="96px" rootMargin="400px" fallback={
-                      <div className="flex gap-2 justify-center py-3" style={{ minHeight: '96px' }}>
-                        {[...Array(6)].map((_, i) => <div key={i} className="flex-shrink-0 w-14 h-12 animate-pulse bg-muted rounded-lg" />)}
-                      </div>
-                    }>
-                      <AstraVillaFeatures />
-                    </LazyRender>
-                  </div>
-                </ScrollReveal>
+              <div className="max-w-7xl mx-auto">
+                <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
+                  <AstraVillaFeatures />
+                </LazyRender>
+              </div>
+              <Suspense fallback={null}><AIPriceEstimatorCTA /></Suspense>
 
-                {/* AI Price Estimator CTA */}
-                <div className="mt-5">
-                  <ScrollReveal direction="up" delay={50}>
-                    <Suspense fallback={<div className="animate-pulse h-48 bg-muted rounded-xl max-w-5xl mx-auto px-3 sm:px-4" />}>
-                      <AIPriceEstimatorCTA />
-                    </Suspense>
-                  </ScrollReveal>
-                </div>
-              </section>
-
-              {/* ── Thin section divider ── */}
-              <div className="h-px bg-gradient-to-r from-transparent via-border/50 to-transparent mx-auto max-w-6xl" aria-hidden="true" />
-              {/* ── SECTION 7: Properties for Sale & Rent ── */}
-              <section className="py-4 sm:py-6 bg-muted/20">
-                <div className="max-w-7xl mx-auto px-3 sm:px-4 space-y-4">
-                  {/* Trending Searches — contextual discovery */}
-                  <ScrollReveal direction="up" delay={0}>
-                    <LazyRender minHeight="0px" fallback={<div className="animate-pulse h-40 bg-muted rounded-xl" />}>
-                      <TrendingSearchesWidget onSearchClick={(trendFilters) => { setFilters(prev => ({ ...prev, ...trendFilters })); setHasSearched(true); }} />
-                    </LazyRender>
-                  </ScrollReveal>
-                </div>
-
-                {/* Market Intelligence CTA */}
-                <div className="mt-4">
-                  <Suspense fallback={null}>
-                    <SectionDividerCTA icon={BarChart3} headline="Track Market Trends" description="Real-time price indices and investment analytics" ctaText="View Insights" ctaRoute="/analytics" variant="accent" />
-                  </Suspense>
-                </div>
-              </section>
-
-              {/* ── SECTION 8: Marketplace Services ── */}
-              <section className="py-4 sm:py-6" id="marketplace-services-section">
-                <ScrollReveal direction="up" delay={0}>
-                  <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
-                    <MarketplaceServices />
-                  </LazyRender>
-                </ScrollReveal>
-              </section>
-
-              {/* ── Referral Invite Strip ── */}
+              {/* ── Trending Searches ── */}
+              <div className="max-w-7xl mx-auto px-3 sm:px-4">
+                <LazyRender minHeight="0px" fallback={null}>
+                  <TrendingSearchesWidget onSearchClick={(trendFilters) => { setFilters(prev => ({ ...prev, ...trendFilters })); setHasSearched(true); }} />
+                </LazyRender>
+              </div>
               <Suspense fallback={null}>
-                <ReferralInviteStrip />
+                <SectionDividerCTA icon={BarChart3} headline="Track Market Trends" description="Real-time price indices and investment analytics" ctaText="View Insights" ctaRoute="/analytics" variant="accent" />
               </Suspense>
 
-              {/* ── SECTION 9: Partner & Social Proof ── */}
-              <section className="py-4 sm:py-6 bg-muted/20">
-                <ScrollReveal direction="up" delay={0}>
-                  <LazyRender minHeight="80px" fallback={null}>
-                    <PartnerLogosMarquee />
-                  </LazyRender>
-                </ScrollReveal>
-              </section>
+              {/* ── Marketplace Services ── */}
+              <LazyRender minHeight="0px" fallback={null}>
+                <MarketplaceServices />
+              </LazyRender>
+
+              <Suspense fallback={null}><ReferralInviteStrip /></Suspense>
+
+              {/* ── Partner & Social Proof ── */}
+              <div className="bg-muted/20">
+                <LazyRender minHeight="0px" fallback={null}>
+                  <PartnerLogosMarquee />
+                </LazyRender>
+              </div>
 
               {/* ── Trust governance strip ── */}
-              <Suspense fallback={null}>
-                <TrustFooterStrip />
-              </Suspense>
+              <Suspense fallback={null}><TrustFooterStrip /></Suspense>
 
               {/* ── ASTRA Villa Project Showcase ── */}
               <section className="py-6 sm:py-8 relative">
                 <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
                 <ScrollReveal direction="up" delay={0}>
-                  <LazyRender minHeight="240px" fallback={<div className="animate-pulse h-60 bg-muted rounded-xl max-w-7xl mx-auto px-4 sm:px-6" />}>
-                    <Suspense fallback={<div className="animate-pulse h-60 bg-muted rounded-xl max-w-7xl mx-auto px-4 sm:px-6" />}>
-                      <AstraProjectShowcase />
-                    </Suspense>
-                  </LazyRender>
+                  <Suspense fallback={<div className="animate-pulse h-60 bg-muted rounded-xl max-w-7xl mx-auto px-4 sm:px-6" />}>
+                    <AstraProjectShowcase />
+                  </Suspense>
                 </ScrollReveal>
                 <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
               </section>
 
-              {/* ── SECTION 10: Final Conversion CTA ── */}
-              <section className="py-4 sm:py-6">
-                <ScrollReveal direction="up" delay={0}>
-                  <Suspense fallback={<div className="animate-pulse h-40 bg-muted rounded-xl max-w-5xl mx-auto" />}>
-                    <EarlyInvestmentCTA />
-                  </Suspense>
-                </ScrollReveal>
-              </section>
+              {/* ── Final Conversion CTA ── */}
+              <div className="py-3 sm:py-4">
+                <Suspense fallback={null}>
+                  <EarlyInvestmentCTA />
+                </Suspense>
+              </div>
             </>
           )}
         </div>
