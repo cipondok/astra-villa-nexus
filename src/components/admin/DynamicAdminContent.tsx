@@ -76,6 +76,7 @@ const CustomerSupportFramework = lazy(() => import('./CustomerSupportFramework')
 const MarketplaceIntegrity = lazy(() => import('./MarketplaceIntegrity'));
 const TeamKPIFramework = lazy(() => import('./TeamKPIFramework'));
 const WeeklyLeadershipReview = lazy(() => import('./WeeklyLeadershipReview'));
+const CompanyCulturePrinciples = lazy(() => import('./CompanyCulturePrinciples'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
@@ -569,6 +570,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return (
           <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
             <WeeklyLeadershipReview />
+          </Suspense>
+        );
+      case "company-culture-principles":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <CompanyCulturePrinciples />
           </Suspense>
         );
       default:

@@ -1669,6 +1669,13 @@ export const navigationSections = {
       icon: CalendarClock,
       description: "Structured 75-min cadence for marketplace health, product progress, growth pipeline, and financial snapshot",
       badge: "📅 Cadence"
+    },
+    {
+      key: "company-culture-principles",
+      label: "Culture & Workflow Principles",
+      icon: Heart,
+      description: "Core values, execution philosophy, and operational workflow practices for the startup team",
+      badge: "💡 Culture"
     }
   ],
 
