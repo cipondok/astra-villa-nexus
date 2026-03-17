@@ -35838,6 +35838,7 @@ export type Database = {
           survey_type: string
         }[]
       }
+      get_daily_growth_metrics: { Args: never; Returns: Json }
       get_deal_pipeline_intelligence: { Args: never; Returns: Json }
       get_distinct_cities: {
         Args: { p_province_code?: string }
