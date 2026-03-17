@@ -242,6 +242,7 @@ export const OrgChartDashboard = lazyRetry(() => import("./OrgChartDashboard"));
 export const MarketingBudgetDashboard = lazyRetry(() => import("./MarketingBudgetDashboard"));
 export const FundraisingReadinessDashboard = lazyRetry(() => import("./FundraisingReadinessDashboard"));
 export const InvestorKPIDashboard = lazyRetry(() => import("./InvestorKPIDashboard"));
+export const DeveloperPartnershipFramework = lazyRetry(() => import("./DeveloperPartnershipFramework"));
 export const FounderWeeklyRoutine = lazyRetry(() => import("./FounderWeeklyRoutine"));
 export const PRLaunchStrategyDashboard = lazyRetry(() => import("./PRLaunchStrategyDashboard"));
 export const InvestorOutreachDashboard = lazyRetry(() => import("./InvestorOutreachDashboard"));
