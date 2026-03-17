@@ -119,7 +119,7 @@ export default function OfferNegotiationPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages.length]);
 
-  const myRole: SenderRole = useMemo(() => {
+  const myRole = useMemo((): string => {
     if (!user || !offer) return 'buyer';
     if (user.id === offer.agent_id) return 'agent';
     if (user.id === offer.seller_id) return 'seller';
