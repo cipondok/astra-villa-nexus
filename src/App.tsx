@@ -687,6 +687,7 @@ const AppContent = () => {
                 <Route path="/viral-growth" element={<ViralGrowthPage />} />
                 <Route path="/investor-club" element={<InvestorClubPage />} />
                 <Route path="/data-moat" element={<DataMoatPage />} />
+                <Route path="/revenue-scaling" element={<RevenueScalingPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
