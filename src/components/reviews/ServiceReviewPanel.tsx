@@ -103,7 +103,7 @@ export default function ServiceReviewPanel({ vendorId, vendorName, className }: 
     queryFn: async () => {
       const { data, error } = await supabase
         .from('vendor_reviews')
-        .select('*, profiles:customer_id!vendor_reviews_customer_id_fkey(full_name, avatar_url)')
+        .select('*, profiles!vendor_reviews_customer_id_fkey(full_name, avatar_url)')
         .eq('vendor_id', vendorId)
         .eq('is_published', true)
         .order('created_at', { ascending: false });
