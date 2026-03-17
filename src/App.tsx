@@ -577,6 +577,7 @@ const AppContent = () => {
                   <Route index element={<GlobalMacroIntelligencePage />} />
                 </Route>
                 <Route path="/cross-border-discovery" element={<CrossBorderDiscoveryPage />} />
+                <Route path="/deal-hunter-bot" element={<DealHunterBotPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
