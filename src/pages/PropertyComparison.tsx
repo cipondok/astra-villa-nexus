@@ -904,6 +904,13 @@ const PropertyComparison = () => {
               )}
             </TabsContent>
 
+            {/* ═══ AI INSIGHT TAB ═══ */}
+            <TabsContent value="ai-insight">
+              <Suspense fallback={<div className="h-[300px] flex items-center justify-center"><div className="animate-pulse text-muted-foreground">Loading AI Insight...</div></div>}>
+                <AIInvestmentInsight selectedProperties={selectedProperties} />
+              </Suspense>
+            </TabsContent>
+
             {/* ═══ AI COMPARE TAB ═══ */}
             <TabsContent value="ai-compare">
               <Suspense fallback={<div className="h-[300px] flex items-center justify-center"><div className="animate-pulse text-muted-foreground">Loading AI Compare...</div></div>}>
