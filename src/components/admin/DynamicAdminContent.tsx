@@ -83,6 +83,7 @@ const ThreeYearRoadmap = lazy(() => import('./ThreeYearRoadmap'));
 const FounderLifeOS = lazy(() => import('./FounderLifeOS'));
 const SuccessProbabilityFramework = lazy(() => import('./SuccessProbabilityFramework'));
 const RiskMitigationStrategy = lazy(() => import('./RiskMitigationStrategy'));
+const UltimateMasterPlan = lazy(() => import('./UltimateMasterPlan'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
