@@ -4007,36 +4007,63 @@ export type Database = {
       }
       articles: {
         Row: {
+          ai_generated: boolean | null
           category: string | null
           content: string
           created_at: string
+          excerpt: string | null
           id: string
           image_url: string | null
+          is_featured: boolean | null
+          is_trending: boolean | null
+          market_heat_ref: Json | null
+          publish_status: string | null
+          reading_time_min: number | null
+          related_property_ids: string[] | null
           slug: string
+          tags: string[] | null
           title: string
           updated_at: string
           user_id: string
           views_count: number | null
         }
         Insert: {
+          ai_generated?: boolean | null
           category?: string | null
           content: string
           created_at?: string
+          excerpt?: string | null
           id?: string
           image_url?: string | null
+          is_featured?: boolean | null
+          is_trending?: boolean | null
+          market_heat_ref?: Json | null
+          publish_status?: string | null
+          reading_time_min?: number | null
+          related_property_ids?: string[] | null
           slug: string
+          tags?: string[] | null
           title: string
           updated_at?: string
           user_id: string
           views_count?: number | null
         }
         Update: {
+          ai_generated?: boolean | null
           category?: string | null
           content?: string
           created_at?: string
+          excerpt?: string | null
           id?: string
           image_url?: string | null
+          is_featured?: boolean | null
+          is_trending?: boolean | null
+          market_heat_ref?: Json | null
+          publish_status?: string | null
+          reading_time_min?: number | null
+          related_property_ids?: string[] | null
           slug?: string
+          tags?: string[] | null
           title?: string
           updated_at?: string
           user_id?: string
@@ -25649,6 +25676,35 @@ export type Database = {
           role?: Database["public"]["Enums"]["user_role"]
         }
         Relationships: []
+      }
+      saved_articles: {
+        Row: {
+          article_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          article_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          article_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_articles_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       saved_search_alerts: {
         Row: {
