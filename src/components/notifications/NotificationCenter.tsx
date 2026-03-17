@@ -348,9 +348,14 @@ export default function NotificationCenter() {
             {/* Actions bar */}
             {notifications.length > 0 && (
               <div className="px-4 py-2 flex items-center justify-between border-b">
-                <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => markAllReadMutation.mutate()}>
-                  <Check className="h-3 w-3 mr-1" /> Mark all read
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => markAllReadMutation.mutate()}>
+                    <Check className="h-3 w-3 mr-1" /> Mark all read
+                  </Button>
+                  <Button variant="link" size="sm" className="text-xs h-7 text-primary p-0" onClick={() => { setIsOpen(false); window.location.href = '/notifications'; }}>
+                    View all →
+                  </Button>
+                </div>
                 <span className="text-xs text-muted-foreground">{unreadCount} unread</span>
               </div>
             )}
