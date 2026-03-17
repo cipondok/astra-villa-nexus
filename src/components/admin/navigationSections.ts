@@ -1720,6 +1720,13 @@ export const navigationSections = {
       icon: ShieldAlert,
       description: "Structured risk identification and preventive operational safeguards for startup survival",
       badge: "🛡️ Risk Ops"
+    },
+    {
+      key: "ultimate-master-plan",
+      label: "Ultimate Master Plan",
+      icon: Crown,
+      description: "Complete AI real estate intelligence platform blueprint — vision, phases, revenue, and execution system",
+      badge: "👑 Blueprint"
     }
   ],
 

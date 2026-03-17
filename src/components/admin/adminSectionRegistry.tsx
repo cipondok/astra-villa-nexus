@@ -817,4 +817,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "founder-life-os": { label: "Founder Life OS", category: "Features" },
   "success-probability-framework": { label: "Success Probability Framework", category: "Features" },
   "risk-mitigation-strategy": { label: "Risk Mitigation Strategy", category: "Features" },
+  "ultimate-master-plan": { label: "Ultimate Master Plan", category: "Features" },
 };
