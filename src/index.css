@@ -384,6 +384,21 @@ html, body {
     --shadow-card: 0 4px 24px hsl(210 60% 3% / 0.6), 0 0 0 1px hsl(200 50% 30% / 0.12);
     --shadow-card-hover: 0 8px 32px hsl(210 60% 3% / 0.7), 0 0 0 1px hsl(45 100% 60% / 0.15);
     --shadow-elevated: 0 12px 40px hsl(210 60% 3% / 0.8), 0 0 0 1px hsl(200 50% 40% / 0.15);
+
+    /* ═══ Admin Dashboard Panel Tokens - Dark ═══ */
+    --panel-bg: 220 20% 13%;
+    --panel-border: 220 15% 20%;
+    --panel-hover: 220 15% 18%;
+    --panel-text: 220 10% 92%;
+    --panel-text-secondary: 220 8% 55%;
+    --panel-text-muted: 220 8% 38%;
+    --panel-accent: 45 100% 51%;
+    --panel-success: 155 72% 50%;
+    --panel-danger: 354 70% 55%;
+    --panel-warning: 45 100% 51%;
+    --panel-tooltip-bg: 220 15% 18%;
+    --panel-tooltip-border: 220 10% 28%;
+    --panel-tooltip-text: 220 8% 72%;
   }
 
   * {
