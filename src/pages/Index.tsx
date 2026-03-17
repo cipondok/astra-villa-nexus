@@ -909,8 +909,8 @@ const Index = () => {
 
                   {/* AI Investment Intelligence Feed */}
                   <ScrollReveal direction="up" delay={50}>
-                    <div className="mb-8">
-                      <LazyRender minHeight="320px" fallback={<div className="animate-pulse h-80 bg-muted rounded-xl" />}>
+                    <div className="mb-5">
+                      <LazyRender minHeight="280px" fallback={<div className="animate-pulse h-72 bg-muted rounded-xl" />}>
                         <AIInvestmentFeed onPropertyClick={handlePropertyClick} />
                       </LazyRender>
                     </div>
