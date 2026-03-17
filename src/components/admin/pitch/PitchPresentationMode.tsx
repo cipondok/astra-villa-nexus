@@ -34,12 +34,12 @@ const slideVariants = {
   center: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
   },
   exit: (dir: number) => ({
     opacity: 0,
     x: dir > 0 ? -120 : 120,
-    transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
   }),
 };
 

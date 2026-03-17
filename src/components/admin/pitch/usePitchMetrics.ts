@@ -14,10 +14,9 @@ export function usePitchMetrics() {
   return useQuery({
     queryKey: ['pitch-live-metrics'],
     queryFn: async (): Promise<PitchMetrics> => {
-      const [propsRes, profilesRes, eliteRes, alertsRes] = await Promise.allSettled([
+      const [propsRes, profilesRes, alertsRes] = await Promise.allSettled([
         supabase.from('properties').select('id', { count: 'exact', head: true }),
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
-        supabase.from('ai_property_scores').select('id', { count: 'exact', head: true }).gte('opportunity_score', 80),
         supabase.from('admin_alerts').select('id', { count: 'exact', head: true }),
       ]);
 
