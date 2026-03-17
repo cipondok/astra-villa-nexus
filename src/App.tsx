@@ -236,6 +236,7 @@ const DeveloperCampaignPage = lazy(() => import('@/pages/DeveloperCampaignPage')
 const OwnershipLifecyclePage = lazy(() => import('@/pages/OwnershipLifecyclePage'));
 const MacroPredictionTerminal = lazy(() => import('@/pages/MacroPredictionTerminal'));
 const InvestorSocialNetwork = lazy(() => import('@/pages/InvestorSocialNetwork'));
+const VirtualPropertyExplorer = lazy(() => import('@/pages/VirtualPropertyExplorer'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
