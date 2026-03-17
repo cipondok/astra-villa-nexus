@@ -277,6 +277,7 @@ const AgentIncentivesPage = lazy(() => import('@/pages/AgentIncentivesPage'));
 const LaunchDayPage = lazy(() => import('@/pages/LaunchDayPage'));
 const DealPipelinePage = lazy(() => import('@/pages/DealPipelinePage'));
 const ContentStrategyPage = lazy(() => import('@/pages/ContentStrategyPage'));
+const DealCRMPage = lazy(() => import('@/pages/DealCRMPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -668,6 +669,7 @@ const AppContent = () => {
                 <Route path="/launch-day" element={<LaunchDayPage />} />
                 <Route path="/deal-pipeline" element={<DealPipelinePage />} />
                 <Route path="/content-strategy" element={<ContentStrategyPage />} />
+                <Route path="/deal-crm" element={<DealCRMPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
