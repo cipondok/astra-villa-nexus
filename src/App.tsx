@@ -575,6 +575,7 @@ const AppContent = () => {
                 <Route path="/global-macro-intelligence" element={<ProtectedRoute />}>
                   <Route index element={<GlobalMacroIntelligencePage />} />
                 </Route>
+                <Route path="/cross-border-discovery" element={<CrossBorderDiscoveryPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
