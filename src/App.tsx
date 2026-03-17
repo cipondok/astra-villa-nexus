@@ -95,6 +95,7 @@ const DesignSystemSettings = lazy(() => import('@/pages/admin/DesignSystemSettin
 const Services = lazy(() => import('@/pages/Services'));
 const ServiceCategory = lazy(() => import('@/pages/ServiceCategory'));
 const ServiceProviderProfile = lazy(() => import('@/pages/ServiceProviderProfile'));
+const LegalServices = lazy(() => import('@/pages/LegalServices'));
 const PreLaunching = lazy(() => import('@/pages/PreLaunching'));
 const NewProjects = lazy(() => import('@/pages/NewProjects'));
 const AreaGuides = lazy(() => import('@/pages/AreaGuides'));
@@ -277,6 +278,7 @@ const AppContent = () => {
                 <Route path="/services" element={<Services />} />
                 <Route path="/services/category/:categoryId" element={<ServiceCategory />} />
                 <Route path="/vendor/:vendorId" element={<ServiceProviderProfile />} />
+                <Route path="/legal-services" element={<LegalServices />} />
                 <Route path="/dijual" element={<Dijual />} />
                 <Route path="/buy" element={<Dijual />} />
                 <Route path="/disewa" element={<Disewa />} />
