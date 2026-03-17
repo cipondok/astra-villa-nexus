@@ -38,20 +38,21 @@ const categoryIcons: Record<string, LucideIcon> = {
   "help": HelpCircle,
 };
 
-const categoryThemes: Record<string, { header: string; active: string }> = {
-  overview: { header: "bg-primary text-primary-foreground", active: "bg-primary text-primary-foreground" },
-  transactions: { header: "bg-accent text-accent-foreground", active: "bg-accent text-accent-foreground" },
-  "astra-token": { header: "bg-secondary text-secondary-foreground", active: "bg-secondary text-secondary-foreground" },
-  tools: { header: "bg-muted text-foreground", active: "bg-primary text-primary-foreground" },
-  "core-management": { header: "bg-primary text-primary-foreground", active: "bg-primary text-primary-foreground" },
-  "customer-service": { header: "bg-accent text-accent-foreground", active: "bg-accent text-accent-foreground" },
-  "vendor-management": { header: "bg-secondary text-secondary-foreground", active: "bg-secondary text-secondary-foreground" },
-  "analytics-monitoring": { header: "bg-primary text-primary-foreground", active: "bg-primary text-primary-foreground" },
-  "content-settings": { header: "bg-accent text-accent-foreground", active: "bg-accent text-accent-foreground" },
-  "system-settings": { header: "bg-secondary text-secondary-foreground", active: "bg-secondary text-secondary-foreground" },
-  technical: { header: "bg-destructive text-destructive-foreground", active: "bg-destructive text-destructive-foreground" },
-  features: { header: "bg-primary text-primary-foreground", active: "bg-primary text-primary-foreground" },
-  help: { header: "bg-muted text-foreground", active: "bg-primary text-primary-foreground" },
+// Unified panel theme — all categories use the same sleek style
+const categoryAccent: Record<string, string> = {
+  overview: "--panel-accent",
+  transactions: "--panel-success",
+  "astra-token": "--panel-accent",
+  tools: "--panel-text-secondary",
+  "core-management": "--panel-success",
+  "customer-service": "--panel-accent",
+  "vendor-management": "--panel-success",
+  "analytics-monitoring": "--panel-accent",
+  "content-settings": "--panel-accent",
+  "system-settings": "--panel-text-secondary",
+  technical: "--panel-danger",
+  features: "--panel-accent",
+  help: "--panel-text-secondary",
 };
 
 const VISIBLE_COUNT = 6;
@@ -128,7 +129,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
   }
 
   const CategoryIcon = categoryIcons[activeCategory] || LayoutDashboard;
-  const theme = categoryThemes[activeCategory] || categoryThemes.overview;
+  const accentVar = categoryAccent[activeCategory] || "--panel-accent";
   const categoryTitle = sectionTitles[activeCategory as keyof typeof sectionTitles] || activeCategory;
 
   const visibleSections = expanded ? sortedSections : sortedSections.slice(0, VISIBLE_COUNT);
@@ -144,26 +145,25 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
         className={cn(
           "flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[10px] font-medium transition-all duration-150 whitespace-nowrap",
           isActive
-            ? cn("shadow-sm ring-1 ring-primary/20", theme.active)
-            : "hover:bg-muted/60 text-muted-foreground hover:text-foreground bg-muted/30"
+            ? "bg-[hsl(var(--panel-accent)/.12)] text-[hsl(var(--panel-accent))] ring-1 ring-[hsl(var(--panel-accent)/.2)] shadow-sm"
+            : "text-[hsl(var(--panel-text-secondary))] hover:text-[hsl(var(--panel-text))] hover:bg-[hsl(var(--panel-hover))] bg-[hsl(var(--panel-border)/.3)]"
         )}
       >
         <Icon className="h-3 w-3 shrink-0" />
         <span className="max-w-[100px] truncate">{section.label}</span>
         {'badge' in section && section.badge && (
-          <Badge
-            variant="secondary"
+          <span
             className={cn(
-              "text-[7px] px-1 py-0 h-3 leading-none",
+              "text-[7px] px-1 py-0 h-3 leading-[12px] rounded font-semibold inline-block",
               isActive
-                ? "bg-primary-foreground/25 text-primary-foreground border-0"
+                ? "bg-[hsl(var(--panel-accent)/.2)] text-[hsl(var(--panel-accent))]"
                 : String(section.badge) === 'New'
-                  ? "bg-chart-1/15 text-chart-1 border-0"
-                  : "bg-primary/10 text-primary border-0"
+                  ? "bg-[hsl(var(--panel-success)/.12)] text-[hsl(var(--panel-success))]"
+                  : "bg-[hsl(var(--panel-accent)/.1)] text-[hsl(var(--panel-accent))]"
             )}
           >
             {String(section.badge)}
-          </Badge>
+          </span>
         )}
       </button>
     );
@@ -171,14 +171,14 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
 
   return (
     <div className="mb-2 sticky top-0 z-40 animate-in fade-in slide-in-from-top-1 duration-200">
-      <div className="bg-background/95 backdrop-blur-md border border-border/40 rounded-lg overflow-hidden shadow-sm">
+      <div className="bg-[hsl(var(--panel-bg))] border border-[hsl(var(--panel-border))] rounded-lg overflow-hidden shadow-sm">
         {/* Mini Header */}
-        <div className={cn("px-3 py-1.5 flex items-center gap-2", theme.header)}>
-          <CategoryIcon className="h-3.5 w-3.5" />
-          <span className="text-[11px] font-bold tracking-wide uppercase">{categoryTitle}</span>
-          <Badge variant="secondary" className="text-[8px] px-1.5 py-0 h-3.5 bg-background/20 text-inherit border-0 ml-auto">
+        <div className="px-3 py-1.5 flex items-center gap-2 border-b border-[hsl(var(--panel-border))]" style={{ background: `hsl(var(${accentVar}) / 0.08)` }}>
+          <CategoryIcon className="h-3.5 w-3.5 text-[hsl(var(--panel-accent))]" />
+          <span className="text-[11px] font-bold tracking-wide uppercase text-[hsl(var(--panel-text))]">{categoryTitle}</span>
+          <span className="text-[8px] px-1.5 py-0 h-3.5 leading-[14px] rounded bg-[hsl(var(--panel-border)/.5)] text-[hsl(var(--panel-text-secondary))] font-medium ml-auto">
             {categorySections.length} items
-          </Badge>
+          </span>
         </div>
 
         {/* Mobile: horizontal scroll with top 6 */}
@@ -190,7 +190,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
             {hasMore && !expanded && (
               <button
                 onClick={() => setExpanded(true)}
-                className="flex items-center gap-1 px-2 py-1.5 rounded-md text-[10px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 bg-muted/30 whitespace-nowrap shrink-0 transition-colors"
+                className="flex items-center gap-1 px-2 py-1.5 rounded-md text-[10px] font-medium text-[hsl(var(--panel-text-muted))] hover:text-[hsl(var(--panel-text))] hover:bg-[hsl(var(--panel-hover))] bg-[hsl(var(--panel-border)/.3)] whitespace-nowrap shrink-0 transition-colors"
               >
                 <ChevronDown className="h-3 w-3" />
                 +{hiddenCount} more
@@ -199,7 +199,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
             {expanded && hasMore && (
               <button
                 onClick={() => setExpanded(false)}
-                className="flex items-center gap-1 px-2 py-1.5 rounded-md text-[10px] font-medium text-primary hover:bg-primary/10 whitespace-nowrap shrink-0 transition-colors"
+                className="flex items-center gap-1 px-2 py-1.5 rounded-md text-[10px] font-medium text-[hsl(var(--panel-accent))] hover:bg-[hsl(var(--panel-accent)/.1)] whitespace-nowrap shrink-0 transition-colors"
               >
                 <ChevronUp className="h-3 w-3" />
                 Less
@@ -210,7 +210,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
         </ScrollArea>
 
         {/* Desktop: show top 6, expandable */}
-        <div className="hidden md:block p-1.5 bg-muted/10">
+        <div className="hidden md:block p-1.5">
           <div className="flex flex-wrap items-center gap-1">
             {visibleSections.map((section) =>
               renderTab(section, section.key === activeSection)
@@ -218,7 +218,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
             {hasMore && !expanded && (
               <button
                 onClick={() => setExpanded(true)}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[10px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 bg-muted/20 transition-colors border border-dashed border-border/40"
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[10px] font-medium text-[hsl(var(--panel-text-muted))] hover:text-[hsl(var(--panel-text))] hover:bg-[hsl(var(--panel-hover))] bg-[hsl(var(--panel-border)/.2)] transition-colors border border-dashed border-[hsl(var(--panel-border))]"
               >
                 <ChevronDown className="h-3 w-3" />
                 +{hiddenCount} more
@@ -227,7 +227,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
             {expanded && hasMore && (
               <button
                 onClick={() => setExpanded(false)}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[10px] font-medium text-primary hover:bg-primary/10 transition-colors"
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[10px] font-medium text-[hsl(var(--panel-accent))] hover:bg-[hsl(var(--panel-accent)/.1)] transition-colors"
               >
                 <ChevronUp className="h-3 w-3" />
                 Show less
