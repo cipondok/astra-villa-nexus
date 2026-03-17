@@ -10080,6 +10080,75 @@ export type Database = {
           },
         ]
       }
+      flash_deals: {
+        Row: {
+          created_at: string
+          discount_pct: number | null
+          end_time: string
+          flash_price: number
+          id: string
+          inquiries_count: number | null
+          original_price: number
+          property_id: string
+          reason: string | null
+          saves_count: number | null
+          seller_id: string
+          start_time: string
+          status: string
+          updated_at: string
+          views_count: number | null
+        }
+        Insert: {
+          created_at?: string
+          discount_pct?: number | null
+          end_time: string
+          flash_price: number
+          id?: string
+          inquiries_count?: number | null
+          original_price: number
+          property_id: string
+          reason?: string | null
+          saves_count?: number | null
+          seller_id: string
+          start_time?: string
+          status?: string
+          updated_at?: string
+          views_count?: number | null
+        }
+        Update: {
+          created_at?: string
+          discount_pct?: number | null
+          end_time?: string
+          flash_price?: number
+          id?: string
+          inquiries_count?: number | null
+          original_price?: number
+          property_id?: string
+          reason?: string | null
+          saves_count?: number | null
+          seller_id?: string
+          start_time?: string
+          status?: string
+          updated_at?: string
+          views_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flash_deals_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flash_deals_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       foreign_investment_inquiries: {
         Row: {
           admin_response: string | null

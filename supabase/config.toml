@@ -306,3 +306,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.market-intelligence-feed]
     verify_jwt = false
+
+  [functions.auction-flash-deals]
+    verify_jwt = false
