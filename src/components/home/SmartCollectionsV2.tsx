@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSmartCollectionsV2, SmartCollectionV2, SmartCollectionProperty } from "@/hooks/useSmartCollectionsV2";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
