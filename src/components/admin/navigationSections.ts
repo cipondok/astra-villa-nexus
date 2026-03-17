@@ -106,7 +106,8 @@ import {
   MapPin,
   Brain,
   Scale,
-  PieChart
+  PieChart,
+  CalendarClock
 } from "lucide-react";
 
 export interface NavigationSection {
