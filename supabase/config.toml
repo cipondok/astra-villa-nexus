@@ -292,3 +292,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.ai-content-generator]
     verify_jwt = false
 
+  [functions.ai-image-enhance]
+    verify_jwt = false
+
