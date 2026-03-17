@@ -1611,6 +1611,13 @@ export const navigationSections = {
       icon: Rocket,
       description: "Staged capital raising milestones, signal metrics, cap table evolution, and long-term exit positioning",
       badge: "🚀 Strategy"
+    },
+    {
+      key: "founder-brand-strategy",
+      label: "Founder Brand Strategy",
+      icon: User,
+      description: "Personal brand positioning, content pillars, visibility channels, execution calendar, and authority KPIs",
+      badge: "👤 Brand"
     }
   ],
 
