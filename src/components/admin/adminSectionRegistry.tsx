@@ -262,6 +262,7 @@ export const HiringRoadmap = lazyRetry(() => import("./HiringRoadmap"));
 export const CustomerSupportFramework = lazyRetry(() => import("./CustomerSupportFramework"));
 export const MarketplaceIntegrity = lazyRetry(() => import("./MarketplaceIntegrity"));
 export const TeamKPIFramework = lazyRetry(() => import("./TeamKPIFramework"));
+export const WeeklyLeadershipReview = lazyRetry(() => import("./WeeklyLeadershipReview"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
