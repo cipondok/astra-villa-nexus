@@ -547,6 +547,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
   "homepage-blueprint":         () => <HomepageBlueprint />,
   "ui-audit-report":            () => <UIAuditReport />,
+  "legal-setup-roadmap":        () => <LegalSetupRoadmap />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
