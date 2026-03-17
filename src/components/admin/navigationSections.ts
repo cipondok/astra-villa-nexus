@@ -107,7 +107,8 @@ import {
   Brain,
   Scale,
   PieChart,
-  CalendarClock
+  CalendarClock,
+  Sunrise
 } from "lucide-react";
 
 export interface NavigationSection {
