@@ -67,5 +67,12 @@ SELECT cron.schedule(
   $$
 );
 
+-- Worker 6: Revenue Alert Check — every hour
+SELECT cron.schedule(
+  'check_revenue_alerts',
+  '0 * * * *',
+  'SELECT check_revenue_alerts()'
+);
+
 -- Verify scheduled jobs
-SELECT jobid, jobname, schedule FROM cron.job WHERE jobname LIKE 'astra_%';
+SELECT jobid, jobname, schedule FROM cron.job WHERE jobname LIKE 'astra_%' OR jobname = 'check_revenue_alerts';

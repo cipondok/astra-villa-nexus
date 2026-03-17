@@ -1,62 +1,70 @@
 
+# ASTRA Villa — Platform Architecture Analysis & Roadmap
 
-## Real-Time Revenue Alerts for Admins
+## Status: 🔄 IN PROGRESS
 
-### Approach
+## Current State Assessment (March 2026)
 
-Add a configurable revenue alert system that monitors daily revenue and commission payouts, triggering admin_alerts when thresholds are breached. Two components: a backend check (SQL function + scheduled trigger) and a frontend settings/status panel embedded in the Revenue Intelligence Dashboard.
+### Scale
+| Metric | Count |
+|--------|-------|
+| Pages | 120+ |
+| Components | 200+ directories |
+| Hooks | 230+ |
+| Edge Functions | 18 (consolidated from 82) |
+| Database Tables | 450+ |
+| RLS Policies | 1,000+ |
 
-### 1. Database: `revenue_alert_config` table + check function
+### Three-Layer Architecture ✅
+| Layer | Key Features | Status |
+|-------|-------------|--------|
+| **Public Platform** | Property browse, search, map, detail pages, AI chat, mortgage tools | ✅ Mature |
+| **Investor Intelligence** | ROI forecasts, deal finder, portfolio builder, market trends, location intel | ✅ Mature |
+| **Admin AI Command Center** | Job queue, SEO engine, valuations, health monitor, KPI alerts | ✅ Mature |
 
-**New table** `revenue_alert_config` — single-row config storing admin-defined thresholds:
-- `id` (int, default 1, primary key)
-- `daily_revenue_min` (numeric, default 0) — minimum expected daily revenue
-- `daily_commission_max` (numeric, default 0) — max commission payout budget per day
-- `rental_revenue_min` (numeric, default 0) — min daily rental revenue
-- `alert_cooldown_hours` (int, default 24) — prevent duplicate alerts within window
-- `is_enabled` (boolean, default true)
-- `updated_at` (timestamptz)
+### Edge Function Architecture ✅
+| Router | Modes |
+|--------|-------|
+| `core-engine` | 25+ modes (investment_score, valuation, health, diagnostics, map_search) |
+| `ai-engine` | 25+ modes (descriptions, NLP, recommendations, market reports) |
+| `deal-engine` | deal_finder, alerts, negotiation, pricing, forecasts |
+| `ai-assistant` | SSE streaming chatbot, NLP search, investment advisor |
+| `notification-engine` | Email, push, campaigns |
+| `payment-engine` | Midtrans, PayPal, invoices, subscriptions |
+| `vendor-engine` | Vendor services, validation |
 
-RLS: only authenticated users with admin role can read/update.
+### AI Automation Systems ✅
+- SEO: Daily audits (3AM UTC), 6-hour auto-optimizer, property_seo_analysis tracking
+- Jobs: ai_jobs queue with claim_next_job() SKIP LOCKED, stall recovery, retry logic
+- Valuations: property_valuations with auto-recalculation
+- ROI: property_roi_forecast with 5-year projections
+- Autonomous Agent: 6-hour market scans for opportunity detection
 
-**New SQL function** `check_revenue_alerts()` — SECURITY DEFINER function that:
-1. Reads thresholds from `revenue_alert_config`
-2. Queries today's totals from `payment_logs` (daily revenue), `transaction_commissions` (daily commission payouts), `rental_bookings` (daily rental revenue)
-3. Checks cooldown — skips if an alert with same type was created within `alert_cooldown_hours`
-4. Inserts into `admin_alerts` when:
-   - Daily revenue < `daily_revenue_min` → priority 'high', type 'revenue_drop'
-   - Daily commission > `daily_commission_max` → priority 'high', type 'commission_overbudget'
-   - Daily rental < `rental_revenue_min` → priority 'medium', type 'rental_revenue_low'
+---
 
-### 2. Scheduled execution
+## Identified Gaps & Improvements
 
-Add a pg_cron job (via SQL insert tool) to call `check_revenue_alerts()` every hour:
-```sql
-SELECT cron.schedule('check-revenue-alerts', '0 * * * *', 'SELECT check_revenue_alerts()');
-```
+### 🔴 Critical Performance
+1. **Map viewport debouncing** — `moveend` fires on every pan; needs 300ms debounce ✅ FIXED
+2. **Spatial indexes** — Need composite indexes on (latitude, longitude, status) ✅ FIXED
+3. **Platform health aggregation** — Real AI system status on admin overview ✅ FIXED (prev iteration)
 
-### 3. Frontend: Revenue Alerts Settings Panel
+### 🟡 Architecture Improvements
+4. **Unified health hook** — Single hook aggregating all AI subsystem health ✅ FIXED
+5. **Query deduplication** — MapBounds type duplicated across useMapSearch/useMapProperties
+6. **Large file refactoring** — PropertyDetail.tsx (1544 lines), Index.tsx (1199 lines) need splitting
 
-**New component** `RevenueAlertSettings.tsx` — a collapsible card added as a 7th tab ("Alerts") in `AdminRevenueIntelligenceDashboard.tsx`:
-- Toggle to enable/disable alerts
-- Input fields for each threshold (daily revenue min, commission max, rental min, cooldown hours)
-- Save button that upserts `revenue_alert_config`
-- Status section showing recent revenue alerts from `admin_alerts` filtered by types `revenue_drop`, `commission_overbudget`, `rental_revenue_low`
-- Real-time subscription on `admin_alerts` for these types to show live notifications via toast
+### 🟢 Future Expansion Ready
+- AI deal finder ✅ Exists (/deal-finder)
+- Predictive market analytics ✅ Exists (/market-trends, /price-prediction)
+- AI recommendation engine ✅ Exists (ai-match-engine-v2)
+- Location intelligence ✅ Exists (/location-intelligence)
+- Knowledge graph ✅ Hook exists (useKnowledgeGraph)
 
-**New hook** `useRevenueAlertConfig` — fetches/upserts `revenue_alert_config` row.
-
-### 4. Integration with existing alert system
-
-Revenue alerts flow into the existing `admin_alerts` table and appear in both:
-- The Alerts section of the admin dashboard (existing)
-- The new Revenue Alerts tab (filtered view)
-- Real-time toast notifications via existing Supabase channel subscription
-
-### Files
-- **Create**: Migration SQL — `revenue_alert_config` table + `check_revenue_alerts()` function
-- **Create**: `src/components/admin/RevenueAlertSettings.tsx`
-- **Create**: `src/hooks/useRevenueAlertConfig.ts`
-- **Modify**: `src/components/admin/AdminRevenueIntelligenceDashboard.tsx` — add Alerts tab
-- **Execute**: pg_cron schedule via SQL insert tool
-
+### Recommended Next Steps
+1. Add database indexes for map queries at scale
+2. Debounce map viewport changes
+3. Create unified platform health dashboard
+4. Split PropertyDetail.tsx into sub-components
+5. Add API response caching headers to edge functions
+6. Implement property search result caching with stale-while-revalidate
