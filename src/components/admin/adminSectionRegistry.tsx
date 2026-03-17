@@ -772,4 +772,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "legal-setup-roadmap": { label: "Legal Setup & Licensing", category: "Features" },
   "financial-projection": { label: "24-Month Financial Projection", category: "Features" },
   "fundraising-exit-roadmap": { label: "Fundraising & Exit Roadmap", category: "Features" },
+  "founder-brand-strategy": { label: "Founder Brand Strategy", category: "Features" },
 };
