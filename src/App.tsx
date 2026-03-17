@@ -667,6 +667,7 @@ const AppContent = () => {
                 <Route path="/agent-incentives" element={<AgentIncentivesPage />} />
                 <Route path="/launch-day" element={<LaunchDayPage />} />
                 <Route path="/deal-pipeline" element={<DealPipelinePage />} />
+                <Route path="/content-strategy" element={<ContentStrategyPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
