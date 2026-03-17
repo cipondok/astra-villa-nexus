@@ -79,28 +79,6 @@ const AIListingGenerator = () => {
       const token = session?.session?.access_token;
       if (!token) throw new Error('Not authenticated');
 
-      // Create a temporary property record for the AI engine
-      const { data: prop, error: insertErr } = await supabase.from('properties').insert({
-        title: `${form.property_type} in ${form.location}`,
-        property_type: form.property_type.toLowerCase(),
-        listing_type: 'sale',
-        city: form.location.split(',')[0]?.trim() || form.location,
-        state: form.location.split(',')[1]?.trim() || 'Indonesia',
-        location: form.location,
-        bedrooms: form.bedrooms ? parseInt(form.bedrooms) : null,
-        bathrooms: form.bathrooms ? parseInt(form.bathrooms) : null,
-        area_sqm: form.area_sqm ? parseInt(form.area_sqm) : null,
-        land_area_sqm: form.land_area_sqm ? parseInt(form.land_area_sqm) : null,
-        price: form.price ? parseInt(form.price.replace(/\D/g, '')) : 0,
-        features: form.features ? form.features.split(',').map(f => f.trim()) : [],
-        year_built: form.year_built ? parseInt(form.year_built) : null,
-        description: '',
-        status: 'draft',
-        user_id: user.id,
-      }).select('id').single();
-
-      if (insertErr) throw insertErr;
-
       const res = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-description-generator`,
         {
@@ -110,9 +88,30 @@ const AIListingGenerator = () => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            property_id: prop.id,
+            standalone: true,
             tone: form.tone,
-            save_results: false,
+            property_data: {
+              property_type: form.property_type.toLowerCase(),
+              listing_type: 'sale',
+              city: form.location.split(',')[0]?.trim() || form.location,
+              state: form.location.split(',')[1]?.trim() || 'Indonesia',
+              location: form.location,
+              bedrooms: form.bedrooms || null,
+              bathrooms: form.bathrooms || null,
+              area_sqm: form.area_sqm || null,
+              land_area_sqm: form.land_area_sqm || null,
+              price: form.price ? parseInt(form.price.replace(/\D/g, '')) : null,
+              features: form.features || null,
+              amenities: null,
+              year_built: form.year_built || null,
+              title: `${form.property_type} in ${form.location}`,
+              has_pool: form.features?.toLowerCase().includes('pool') || false,
+              has_garden: form.features?.toLowerCase().includes('garden') || false,
+              has_parking: form.features?.toLowerCase().includes('parking') || false,
+              has_security: form.features?.toLowerCase().includes('security') || false,
+              furnishing: null,
+              certificate_type: null,
+            },
           }),
         }
       );
@@ -133,9 +132,6 @@ const AIListingGenerator = () => {
       const data = await res.json();
       setResult(data);
       toast({ title: 'Content Generated!', description: 'Your listing content is ready.' });
-
-      // Clean up draft
-      await supabase.from('properties').delete().eq('id', prop.id);
     } catch (err: any) {
       console.error(err);
       toast({ title: 'Error', description: err.message, variant: 'destructive' });
