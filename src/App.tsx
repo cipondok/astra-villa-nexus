@@ -275,6 +275,7 @@ const FirstDealClosurePage = lazy(() => import('@/pages/FirstDealClosurePage'));
 const InvestorPresentationScript = lazy(() => import('@/pages/InvestorPresentationScript'));
 const AgentIncentivesPage = lazy(() => import('@/pages/AgentIncentivesPage'));
 const LaunchDayPage = lazy(() => import('@/pages/LaunchDayPage'));
+const DealPipelinePage = lazy(() => import('@/pages/DealPipelinePage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
