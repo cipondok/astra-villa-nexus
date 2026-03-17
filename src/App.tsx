@@ -248,6 +248,7 @@ const SecurityHardeningPage = lazy(() => import('@/pages/SecurityHardeningPage')
 const CloudInfrastructurePage = lazy(() => import('@/pages/CloudInfrastructurePage'));
 const DisasterRecoveryPage = lazy(() => import('@/pages/DisasterRecoveryPage'));
 const BehaviorAnalyticsPage = lazy(() => import('@/pages/BehaviorAnalyticsPage'));
+const UserActivationDashboard = lazy(() => import('@/pages/UserActivationDashboard'));
 const AILearningFrameworkPage = lazy(() => import('@/pages/AILearningFrameworkPage'));
 const ABTestingFrameworkPage = lazy(() => import('@/pages/ABTestingFrameworkPage'));
 const GoToMarketStrategyPage = lazy(() => import('@/pages/GoToMarketStrategyPage'));
