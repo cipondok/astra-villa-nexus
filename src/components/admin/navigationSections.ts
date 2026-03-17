@@ -1597,6 +1597,13 @@ export const navigationSections = {
       icon: Scale,
       description: "PT company structure, KBLI codes, NIB/PSE licensing, legal documents, and compliance roadmap for Indonesian proptech operations",
       badge: "⚖️ Legal"
+    },
+    {
+      key: "financial-projection",
+      label: "24-Month Financial Projection",
+      icon: Calculator,
+      description: "Revenue streams, cost structure, break-even analysis, and 3-scenario comparison for investor readiness",
+      badge: "💰 Finance"
     }
   ],
 

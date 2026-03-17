@@ -766,4 +766,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "homepage-blueprint": { label: "Homepage Layout Blueprint", category: "Features" },
   "ui-audit-report": { label: "UI/UX Audit Report", category: "Features" },
   "legal-setup-roadmap": { label: "Legal Setup & Licensing", category: "Features" },
+  "financial-projection": { label: "24-Month Financial Projection", category: "Features" },
 };
