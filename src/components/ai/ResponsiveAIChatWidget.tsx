@@ -854,7 +854,16 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
     const lowerMessage = aiMessage.toLowerCase();
     const replies: string[] = [];
 
-    if (lowerMessage.includes('propert') || lowerMessage.includes('home') || lowerMessage.includes('house')) {
+    // Investment-specific replies
+    if (lowerMessage.includes('roi') || lowerMessage.includes('yield') || lowerMessage.includes('return')) {
+      replies.push("Simulate ROI estimate", "Compare these properties");
+    }
+    
+    if (lowerMessage.includes('invest') || lowerMessage.includes('opportunit') || lowerMessage.includes('undervalued')) {
+      replies.push("Show emerging zones", "Best deals this month");
+    }
+
+    if (lowerMessage.includes('propert') || lowerMessage.includes('home') || lowerMessage.includes('house') || lowerMessage.includes('villa')) {
       replies.push("Show me properties", "More details", "Filter results");
     }
     
@@ -870,13 +879,17 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
       replies.push("Show price range", "Compare prices");
     }
     
-    if (lowerMessage.includes('location') || lowerMessage.includes('area') || lowerMessage.includes('neighborhood')) {
+    if (lowerMessage.includes('location') || lowerMessage.includes('area') || lowerMessage.includes('neighborhood') || lowerMessage.includes('bali') || lowerMessage.includes('jakarta')) {
       replies.push("See on map", "Nearby amenities");
+    }
+
+    if (lowerMessage.includes('market') || lowerMessage.includes('trend')) {
+      replies.push("Market forecast 2026", "Hot investment areas");
     }
 
     // Default replies if no specific context matched
     if (replies.length === 0) {
-      replies.push("Tell me more", "Show options", "I have a question");
+      replies.push("Tell me more", "Show investment options", "Best ROI properties");
     }
 
     // Limit to 4 suggestions max
