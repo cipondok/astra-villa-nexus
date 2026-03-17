@@ -563,6 +563,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "investor-qa-prep":           () => <InvestorQAPrep />,
   "hiring-roadmap-10":          () => <HiringRoadmap />,
   "customer-support-framework": () => <CustomerSupportFramework />,
+  "marketplace-integrity":      () => <MarketplaceIntegrity />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
