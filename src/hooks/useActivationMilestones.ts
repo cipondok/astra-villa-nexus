@@ -48,7 +48,7 @@ export function useActivationMilestones() {
 
     try {
       const { error } = await supabase
-        .from('user_activation_milestones')
+        .from('user_activation_milestones' as any)
         .upsert({
           user_id: user.id,
           milestone_type: type,
