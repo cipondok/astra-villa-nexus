@@ -258,6 +258,7 @@ export const FundraisingExitRoadmap = lazyRetry(() => import("./FundraisingExitR
 export const FounderBrandStrategy = lazyRetry(() => import("./FounderBrandStrategy"));
 export const EquityAllocationFramework = lazyRetry(() => import("./EquityAllocationFramework"));
 export const InvestorQAPrep = lazyRetry(() => import("./InvestorQAPrep"));
+export const HiringRoadmap = lazyRetry(() => import("./HiringRoadmap"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
