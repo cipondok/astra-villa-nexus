@@ -23,7 +23,7 @@ export function useActivationMilestones() {
     queryFn: async () => {
       if (!user?.id) return [];
       const { data, error } = await supabase
-        .from('user_activation_milestones')
+        .from('user_activation_milestones' as any)
         .select('milestone_type, completed_at')
         .eq('user_id', user.id);
       if (error) { console.warn('Failed to fetch milestones:', error); return []; }
