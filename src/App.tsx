@@ -467,6 +467,10 @@ const AppContent = () => {
                 <Route path="/my-rentals" element={<UserRentalDashboard />} />
                 <Route path="/my-rental-inquiries" element={<MyRentalInquiries />} />
                 <Route path="/investor-watchlist" element={<InvestorWatchlist />} />
+                <Route path="/projects/:projectId" element={<ProjectShowcase />} />
+                <Route path="/developer-dashboard" element={<ProtectedRoute />}>
+                  <Route index element={<DeveloperDashboard />} />
+                </Route>
                 <Route path="/ai-pricing" element={<AIPriceEstimator />} />
                 <Route path="/price-estimator" element={<AIPriceEstimator />} />
                 <Route path="/market-intelligence" element={<MarketIntelligence />} />
