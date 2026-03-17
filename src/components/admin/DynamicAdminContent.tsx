@@ -85,6 +85,7 @@ const SuccessProbabilityFramework = lazy(() => import('./SuccessProbabilityFrame
 const RiskMitigationStrategy = lazy(() => import('./RiskMitigationStrategy'));
 const UltimateMasterPlan = lazy(() => import('./UltimateMasterPlan'));
 const NinetyDayRoadmap = lazy(() => import('./NinetyDayRoadmap'));
+const DailyExecutionPlan = lazy(() => import('./DailyExecutionPlan'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
