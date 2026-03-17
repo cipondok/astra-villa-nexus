@@ -253,6 +253,7 @@ export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBluep
 export const HomepageBlueprint = lazyRetry(() => import("./HomepageBlueprint"));
 export const UIAuditReport = lazyRetry(() => import("./UIAuditReport"));
 export const LegalSetupRoadmap = lazyRetry(() => import("./LegalSetupRoadmap"));
+export const FinancialProjectionModel = lazyRetry(() => import("./FinancialProjectionModel"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
