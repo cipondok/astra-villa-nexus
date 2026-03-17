@@ -427,6 +427,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
             <FundraisingReadinessDashboard />
           </Suspense>
         );
+      case "investor-kpi-framework":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <InvestorKPIDashboard />
+          </Suspense>
+        );
       case "founder-weekly-routine":
         return (
           <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
