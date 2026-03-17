@@ -65,8 +65,15 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
   }, [activeSection]);
 
   const handleCategoryClick = useCallback((category: string) => {
-    setOpenCategory(prev => prev === category ? null : category);
-  }, []);
+    if (category === 'overview') {
+      onSectionChange('overview');
+      setOpenCategory(null);
+    } else {
+      // Navigate to category overview dashboard
+      onSectionChange(`${category}-overview`);
+      setOpenCategory(prev => prev === category ? null : category);
+    }
+  }, [onSectionChange]);
 
   const handleNavClick = useCallback((key: string) => {
     onSectionChange(key);
