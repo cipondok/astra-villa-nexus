@@ -34,11 +34,10 @@ export interface MortgageBank {
   id: string;
   bank_name: string;
   logo_url: string | null;
-  interest_rate_min: number | null;
-  interest_rate_max: number | null;
-  max_tenor_years: number | null;
-  min_dp_percent: number | null;
+  max_loan_term_years: number | null;
+  min_down_payment_percent: number | null;
   is_active: boolean | null;
+  description: string | null;
 }
 
 export function useMyMortgageApplications() {
@@ -65,11 +64,11 @@ export function useMortgageBanks() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('mortgage_banks')
-        .select('id, bank_name, logo_url, interest_rate_min, interest_rate_max, max_tenor_years, min_dp_percent, is_active')
+        .select('id, bank_name, logo_url, max_loan_term_years, min_down_payment_percent, is_active, description')
         .eq('is_active', true)
         .order('bank_name');
       if (error) throw error;
-      return (data || []) as MortgageBank[];
+      return (data || []) as unknown as MortgageBank[];
     },
     staleTime: 60_000,
   });
