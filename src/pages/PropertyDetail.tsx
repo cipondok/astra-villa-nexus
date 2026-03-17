@@ -77,7 +77,9 @@ import {
   CheckCircle2,
   ClipboardCheck,
   Loader2,
-  MessageCircle
+  MessageCircle,
+  Target,
+  Sparkles
 } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -95,6 +97,8 @@ import { useUserAiProfile } from '@/hooks/useUserAiProfile';
 import { usePropertyMatchScore } from '@/hooks/usePropertyMatchScore';
 const PropertyNeighborhoodInsights = lazy(() => import('@/components/property/PropertyNeighborhoodInsights'));
 const PropertyChatbot = lazy(() => import('@/components/property/PropertyChatbot'));
+const InvestorFunnelCTA = lazy(() => import('@/components/transaction/InvestorFunnelCTA'));
+const MakeOfferDialog = lazy(() => import('@/components/offers/MakeOfferDialog'));
 import { formatDistanceToNow } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 
@@ -176,6 +180,7 @@ const PropertyDetail: React.FC = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
+  const [showMobileOffer, setShowMobileOffer] = useState(false);
   
   // Initialize favorites hook with property data once available
   const { toggleFavorite, isFavorite, loading: favLoading } = useFavorites({
@@ -1150,7 +1155,37 @@ const PropertyDetail: React.FC = () => {
 
           {/* Sidebar - Slim */}
           <div className="space-y-2 sm:space-y-3">
-            
+
+            {/* Investor Funnel CTA — Primary conversion widget */}
+            <Suspense fallback={null}>
+              <InvestorFunnelCTA
+                propertyId={property.id}
+                propertyTitle={property.title}
+                propertyImage={property.images?.[0] || property.image_urls?.[0]}
+                propertyPrice={property.price}
+                sellerId={property.owner_id}
+                agentId={property.agent_id}
+                opportunityScore={(property as any).opportunity_score}
+                rentalYield={property.property_type === 'villa' ? 8.5 : property.property_type === 'apartment' ? 6.2 : 5.5}
+                priceDropPct={(property as any).price_drop_pct}
+                growthForecast={property.city?.toLowerCase().includes('bali') ? 12 : 7}
+                onWhatsAppClick={() => {
+                  if (user && property.posted_by?.whatsapp_number) {
+                    window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, I'm interested in ${property.title}`, '_blank');
+                  } else if (!user) {
+                    setShowAuthModal(true);
+                  } else {
+                    toast({ title: t('propertyDetail.contactNotAvailable'), variant: "destructive" });
+                  }
+                }}
+                onScheduleClick={() => {
+                  // Scroll to booking section or trigger dialog
+                  const bookingEl = document.querySelector('[data-booking-trigger]');
+                  bookingEl?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              />
+            </Suspense>
+
             {/* KPR Calculator */}
             {property.listing_type === 'sale' && (
               <div className="space-y-2 sm:space-y-3">
@@ -1325,6 +1360,14 @@ const PropertyDetail: React.FC = () => {
                         <div className="text-[7px] sm:text-[8px] text-muted-foreground">{t('propertyDetail.experience')}</div>
                       </div>
                     </div>
+
+                    {/* Agent Response Time Indicator */}
+                    <div className="flex items-center justify-center gap-1.5 pt-2 mt-2 border-t border-border/20">
+                      <div className="w-1.5 h-1.5 rounded-full bg-chart-2 animate-pulse" />
+                      <span className="text-[9px] text-muted-foreground">
+                        Typically responds within <strong className="text-foreground">2 hours</strong>
+                      </span>
+                    </div>
                   </div>
                 ) : (
                   <div className="space-y-2">
@@ -1494,20 +1537,54 @@ const PropertyDetail: React.FC = () => {
         language="en"
       />
 
-      {/* Sticky Mobile Contact CTA */}
+      {/* Mobile Offer Dialog */}
+      <Suspense fallback={null}>
+        <MakeOfferDialog
+          open={showMobileOffer}
+          onOpenChange={setShowMobileOffer}
+          propertyId={property.id}
+          propertyTitle={property.title}
+          propertyImage={property.images?.[0] || property.image_urls?.[0]}
+          propertyPrice={property.price}
+          sellerId={property.owner_id}
+          agentId={property.agent_id}
+          opportunityScore={(property as any).opportunity_score}
+        />
+      </Suspense>
+
+      {/* Sticky Mobile Contact CTA — Optimized funnel with Make Offer */}
       <div className="fixed bottom-0 left-0 right-0 z-[9980] md:hidden bg-card/95 backdrop-blur-xl border-t border-border/40 shadow-[0_-4px_20px_hsl(var(--foreground)/0.06)]"
         style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}
       >
-        <div className="flex items-center gap-2 px-3 py-2">
+        {/* Agent response indicator */}
+        <div className="flex items-center justify-center gap-1.5 py-1 border-b border-border/20 bg-muted/20">
+          <div className="w-1.5 h-1.5 rounded-full bg-chart-2 animate-pulse" />
+          <span className="text-[8px] text-muted-foreground">Agent responds within <strong className="text-foreground">2 hrs</strong></span>
+        </div>
+        <div className="flex items-center gap-1.5 px-3 py-2">
           <div className="flex-1 min-w-0">
             <div className="text-sm font-bold text-gold-primary leading-none">{formatPrice(property.price)}</div>
-            {property.listing_type === 'rent' && (
-              <span className="text-[9px] text-muted-foreground">/{t('propertyDetail.perMonth')}</span>
+            {(property as any).opportunity_score && (
+              <div className="flex items-center gap-1 mt-0.5">
+                <Target className="h-2.5 w-2.5 text-primary" />
+                <span className="text-[9px] font-semibold text-primary">Score {(property as any).opportunity_score}</span>
+              </div>
             )}
           </div>
           <Button
             size="sm"
-            className="bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background h-9 px-4 text-xs font-semibold shadow-sm shadow-gold-primary/20 active:scale-95 transition-transform"
+            className="h-9 px-3 text-[10px] font-semibold active:scale-95 transition-transform"
+            onClick={() => {
+              if (!user) { setShowAuthModal(true); return; }
+              setShowMobileOffer(true);
+            }}
+          >
+            <Sparkles className="h-3.5 w-3.5 mr-0.5" />
+            Offer
+          </Button>
+          <Button
+            size="sm"
+            className="bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background h-9 px-3 text-[10px] font-semibold shadow-sm shadow-gold-primary/20 active:scale-95 transition-transform"
             onClick={() => {
               if (user && property.posted_by?.whatsapp_number) {
                 window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, I'm interested in ${property.title}`, '_blank');
@@ -1518,13 +1595,13 @@ const PropertyDetail: React.FC = () => {
               }
             }}
           >
-            <MessageCircle className="h-3.5 w-3.5 mr-1" />
-            WhatsApp
+            <MessageCircle className="h-3.5 w-3.5 mr-0.5" />
+            WA
           </Button>
           <Button
             variant="outline"
             size="sm"
-            className="h-9 px-3 text-xs font-medium border-border/50 active:scale-95 transition-transform"
+            className="h-9 px-2.5 text-[10px] font-medium border-border/50 active:scale-95 transition-transform"
             onClick={() => {
               if (user && property.posted_by?.phone_number) {
                 window.open(`tel:${property.posted_by.phone_number}`, '_self');
@@ -1535,8 +1612,7 @@ const PropertyDetail: React.FC = () => {
               }
             }}
           >
-            <Phone className="h-3.5 w-3.5 mr-1" />
-            {t('propertyDetail.call')}
+            <Phone className="h-3.5 w-3.5" />
           </Button>
         </div>
       </div>
