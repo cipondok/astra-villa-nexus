@@ -587,6 +587,7 @@ const AppContent = () => {
                 <Route path="/ownership-lifecycle" element={<OwnershipLifecyclePage />} />
                 <Route path="/macro-prediction" element={<MacroPredictionTerminal />} />
                 <Route path="/investor-social" element={<InvestorSocialNetwork />} />
+                <Route path="/virtual-explorer" element={<VirtualPropertyExplorer />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
