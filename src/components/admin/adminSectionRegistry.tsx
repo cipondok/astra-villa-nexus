@@ -269,6 +269,7 @@ export const FounderMentalFramework = lazyRetry(() => import("./FounderMentalFra
 export const ThreeYearRoadmap = lazyRetry(() => import("./ThreeYearRoadmap"));
 export const FounderLifeOS = lazyRetry(() => import("./FounderLifeOS"));
 export const SuccessProbabilityFramework = lazyRetry(() => import("./SuccessProbabilityFramework"));
+export const RiskMitigationStrategy = lazyRetry(() => import("./RiskMitigationStrategy"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
