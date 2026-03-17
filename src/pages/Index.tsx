@@ -961,7 +961,7 @@ const Index = () => {
               <Suspense fallback={null}><TrustFooterStrip /></Suspense>
 
               {/* ── ASTRA Villa Project Showcase ── */}
-              <section className="py-6 sm:py-8 relative">
+              <section className="py-3 sm:py-4 relative">
                 <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={<div className="animate-pulse h-60 bg-muted rounded-xl max-w-7xl mx-auto px-4 sm:px-6" />}>
