@@ -224,6 +224,12 @@ export const navigationSections = {
 
   transactions: [
     {
+      key: "transactions-overview",
+      label: "📊 Transactions Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all transaction and payment modules"
+    },
+    {
       key: "transaction-hub",
       label: "Transaction Management",
       icon: DollarSign,
