@@ -1,6 +1,8 @@
 import React, { useState, lazy, Suspense } from 'react';
 const AIIntelligenceHealthPanel = lazy(() => import('./AIIntelligenceHealthPanel'));
 const AIReadinessBadge = lazy(() => import('../ai/AIReadinessBadge'));
+const AIEngineStatusPanel = lazy(() => import('./AIEngineStatusPanel'));
+const MarketplaceHealthDashboard = lazy(() => import('./MarketplaceHealthPanel'));
 import { useAICommandCenter, type PeriodComparison } from '@/hooks/useAICommandCenter';
 import { useCustomPeriodKPIs } from '@/hooks/useCustomPeriodKPIs';
 import { useHealthAlerts, useResolveHealthAlert, useResolveAllHealthAlerts, useTriggerHealthCheck } from '@/hooks/useHealthAlerts';
