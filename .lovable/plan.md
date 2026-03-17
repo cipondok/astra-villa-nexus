@@ -1,70 +1,37 @@
 
-# ASTRA Villa — Platform Architecture Analysis & Roadmap
 
-## Status: 🔄 IN PROGRESS
+## Mortgage & Financing Assistance Module — Enhancement Plan
 
-## Current State Assessment (March 2026)
+### Current State
+The `/mortgage-financing` page already has a working calculator (property price, DP%, interest rate, loan term, monthly payment), partner bank directory, application submission dialog, and DTI indicator. However it uses plain `<Input>` fields instead of sliders, lacks a dedicated "Need Financing Help" inquiry flow, and has no ROI/investment projection after financing cost.
 
-### Scale
-| Metric | Count |
-|--------|-------|
-| Pages | 120+ |
-| Components | 200+ directories |
-| Hooks | 230+ |
-| Edge Functions | 18 (consolidated from 82) |
-| Database Tables | 450+ |
-| RLS Policies | 1,000+ |
+### What Will Change
 
-### Three-Layer Architecture ✅
-| Layer | Key Features | Status |
-|-------|-------------|--------|
-| **Public Platform** | Property browse, search, map, detail pages, AI chat, mortgage tools | ✅ Mature |
-| **Investor Intelligence** | ROI forecasts, deal finder, portfolio builder, market trends, location intel | ✅ Mature |
-| **Admin AI Command Center** | Job queue, SEO engine, valuations, health monitor, KPI alerts | ✅ Mature |
+**1. Replace plain inputs with interactive Slider controls**
+- Property price: slider with preset range (500M–10B IDR) + manual input fallback
+- Down payment %: slider 10–50% (already exists as input, convert to Slider)
+- Interest rate: slider 3–15% with 0.1 step
+- Loan term: slider 5–30 years with 5-year steps
+- All sliders show live value labels
 
-### Edge Function Architecture ✅
-| Router | Modes |
-|--------|-------|
-| `core-engine` | 25+ modes (investment_score, valuation, health, diagnostics, map_search) |
-| `ai-engine` | 25+ modes (descriptions, NLP, recommendations, market reports) |
-| `deal-engine` | deal_finder, alerts, negotiation, pricing, forecasts |
-| `ai-assistant` | SSE streaming chatbot, NLP search, investment advisor |
-| `notification-engine` | Email, push, campaigns |
-| `payment-engine` | Midtrans, PayPal, invoices, subscriptions |
-| `vendor-engine` | Vendor services, validation |
+**2. Add "Need Financing Help?" inquiry section**
+- New card below calculator results with a CTA button
+- Opens a simplified inquiry dialog (not the full mortgage application):
+  - Income range (dropdown: <10M, 10–25M, 25–50M, 50M+)
+  - Employment type
+  - Preferred bank (optional, from partner banks list)
+  - Contact details (name, phone, email)
+- Submits to `mortgage_inquiries` table via existing `submitInquiry` from `useMortgageCalculator`
 
-### AI Automation Systems ✅
-- SEO: Daily audits (3AM UTC), 6-hour auto-optimizer, property_seo_analysis tracking
-- Jobs: ai_jobs queue with claim_next_job() SKIP LOCKED, stall recovery, retry logic
-- Valuations: property_valuations with auto-recalculation
-- ROI: property_roi_forecast with 5-year projections
-- Autonomous Agent: 6-hour market scans for opportunity detection
+**3. Add Investor Insight panel**
+- New card in the results column showing:
+  - **Affordability indicator**: color-coded gauge (Comfortable / Moderate / Stretched) based on DTI
+  - **Projected ROI after financing**: assuming a configurable rental yield (e.g. 5–8%), show net annual return = (annual rent − annual mortgage payments) / total investment × 100
+  - **Break-even timeline**: years until cumulative rental income covers down payment + fees
 
----
+### Files Modified
+- `src/pages/MortgageFinancingPage.tsx` — Replace inputs with Sliders, add financing help CTA + dialog, add investor insight card
 
-## Identified Gaps & Improvements
+### No database changes needed
+The existing `mortgage_inquiries` table and `useMortgageCalculator.submitInquiry` already handle the inquiry flow.
 
-### 🔴 Critical Performance
-1. **Map viewport debouncing** — `moveend` fires on every pan; needs 300ms debounce ✅ FIXED
-2. **Spatial indexes** — Need composite indexes on (latitude, longitude, status) ✅ FIXED
-3. **Platform health aggregation** — Real AI system status on admin overview ✅ FIXED (prev iteration)
-
-### 🟡 Architecture Improvements
-4. **Unified health hook** — Single hook aggregating all AI subsystem health ✅ FIXED
-5. **Query deduplication** — MapBounds type duplicated across useMapSearch/useMapProperties
-6. **Large file refactoring** — PropertyDetail.tsx (1544 lines), Index.tsx (1199 lines) need splitting
-
-### 🟢 Future Expansion Ready
-- AI deal finder ✅ Exists (/deal-finder)
-- Predictive market analytics ✅ Exists (/market-trends, /price-prediction)
-- AI recommendation engine ✅ Exists (ai-match-engine-v2)
-- Location intelligence ✅ Exists (/location-intelligence)
-- Knowledge graph ✅ Hook exists (useKnowledgeGraph)
-
-### Recommended Next Steps
-1. Add database indexes for map queries at scale
-2. Debounce map viewport changes
-3. Create unified platform health dashboard
-4. Split PropertyDetail.tsx into sub-components
-5. Add API response caching headers to edge functions
-6. Implement property search result caching with stale-while-revalidate
