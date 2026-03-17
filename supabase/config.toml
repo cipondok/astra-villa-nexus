@@ -286,3 +286,9 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.learning-engine]
     verify_jwt = false
 
+  [functions.ai-description-generator]
+    verify_jwt = false
+
+  [functions.ai-content-generator]
+    verify_jwt = false
+
