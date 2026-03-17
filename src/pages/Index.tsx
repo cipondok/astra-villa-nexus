@@ -1036,23 +1036,7 @@ const Index = () => {
               {/* ── SECTION 7: Properties for Sale & Rent ── */}
               <section className="py-6 sm:py-10 bg-muted/20" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 600px' }}>
                 <div className="space-y-8">
-                  <ScrollReveal direction="up" delay={0}>
-                    <div id="sale-section">
-                      <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
-                        <PropertiesForSaleSection language={language} onPropertyClick={handlePropertyClick} />
-                      </LazyRender>
-                    </div>
-                  </ScrollReveal>
-
-                  <ScrollReveal direction="up" delay={50}>
-                    <div id="rent-section">
-                      <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
-                        <PropertiesForRentSection language={language} onPropertyClick={handlePropertyClick} />
-                      </LazyRender>
-                    </div>
-                  </ScrollReveal>
-
-                  {/* Trending Searches — contextual discovery after listings */}
+                  {/* Trending Searches — contextual discovery */}
                   <ScrollReveal direction="up" delay={0}>
                     <LazyRender minHeight="0px" fallback={<div className="animate-pulse h-48 bg-muted rounded-xl" />}>
                       <TrendingSearchesWidget onSearchClick={(trendFilters) => { setFilters(prev => ({ ...prev, ...trendFilters })); setHasSearched(true); }} />
