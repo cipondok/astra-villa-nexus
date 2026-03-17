@@ -521,6 +521,12 @@ export const navigationSections = {
 
   "customer-service": [
     {
+      key: "customer-service-overview",
+      label: "📊 Support Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all customer service modules"
+    },
+    {
       key: "customer-service",
       label: "Customer Service",
       icon: Headphones,
