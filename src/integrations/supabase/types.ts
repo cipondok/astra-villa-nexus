@@ -7507,12 +7507,17 @@ export type Database = {
           agent_unread_count: number | null
           buyer_id: string
           buyer_unread_count: number | null
+          conversation_type: string
           created_at: string
           id: string
           is_archived: boolean | null
           last_message_at: string | null
           last_message_preview: string | null
+          legal_case_id: string | null
+          participant_role_a: string | null
+          participant_role_b: string | null
           property_id: string | null
+          service_booking_id: string | null
           updated_at: string
         }
         Insert: {
@@ -7520,12 +7525,17 @@ export type Database = {
           agent_unread_count?: number | null
           buyer_id: string
           buyer_unread_count?: number | null
+          conversation_type?: string
           created_at?: string
           id?: string
           is_archived?: boolean | null
           last_message_at?: string | null
           last_message_preview?: string | null
+          legal_case_id?: string | null
+          participant_role_a?: string | null
+          participant_role_b?: string | null
           property_id?: string | null
+          service_booking_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -7533,12 +7543,17 @@ export type Database = {
           agent_unread_count?: number | null
           buyer_id?: string
           buyer_unread_count?: number | null
+          conversation_type?: string
           created_at?: string
           id?: string
           is_archived?: boolean | null
           last_message_at?: string | null
           last_message_preview?: string | null
+          legal_case_id?: string | null
+          participant_role_a?: string | null
+          participant_role_b?: string | null
           property_id?: string | null
+          service_booking_id?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -7554,6 +7569,13 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversations_service_booking_id_fkey"
+            columns: ["service_booking_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_bookings"
             referencedColumns: ["id"]
           },
         ]
