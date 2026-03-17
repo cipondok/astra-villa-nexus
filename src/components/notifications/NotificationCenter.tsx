@@ -24,7 +24,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
-type NotificationType = 'price_drop' | 'new_match' | 'new_listing' | 'investment_opportunity' | 'saved_search' | 'message' | 'system';
+type NotificationType = 'price_drop' | 'new_match' | 'new_listing' | 'investment_opportunity' | 'saved_search' | 'message' | 'system' | 'elite_opportunity' | 'watchlist_update' | 'portfolio_risk' | 'offer_received' | 'negotiation_update' | 'booking_confirmation' | 'document_progress' | 'listing_approved' | 'service_request' | 'project_inquiry' | 'deal_alert';
 
 interface AppNotification {
   id: string;
@@ -42,6 +42,17 @@ const notificationIcons: Record<string, React.ReactNode> = {
   new_match: <Home className="h-4 w-4 text-primary" />,
   new_listing: <MapPin className="h-4 w-4 text-chart-1" />,
   investment_opportunity: <Sparkles className="h-4 w-4 text-chart-4" />,
+  elite_opportunity: <Sparkles className="h-4 w-4 text-chart-3" />,
+  watchlist_update: <Search className="h-4 w-4 text-chart-2" />,
+  portfolio_risk: <TrendingDown className="h-4 w-4 text-chart-3" />,
+  deal_alert: <Sparkles className="h-4 w-4 text-chart-1" />,
+  offer_received: <Bell className="h-4 w-4 text-chart-1" />,
+  negotiation_update: <Bell className="h-4 w-4 text-chart-2" />,
+  booking_confirmation: <Bell className="h-4 w-4 text-chart-1" />,
+  document_progress: <Settings className="h-4 w-4 text-chart-4" />,
+  listing_approved: <Home className="h-4 w-4 text-chart-1" />,
+  service_request: <Bell className="h-4 w-4 text-chart-5" />,
+  project_inquiry: <Home className="h-4 w-4 text-chart-3" />,
   saved_search: <Search className="h-4 w-4 text-chart-5" />,
   message: <Bell className="h-4 w-4 text-muted-foreground" />,
   system: <Settings className="h-4 w-4 text-muted-foreground" />,
@@ -52,6 +63,17 @@ const notificationColors: Record<string, string> = {
   new_match: 'border-l-primary',
   new_listing: 'border-l-chart-1',
   investment_opportunity: 'border-l-chart-4',
+  elite_opportunity: 'border-l-chart-3',
+  watchlist_update: 'border-l-chart-2',
+  portfolio_risk: 'border-l-chart-3',
+  deal_alert: 'border-l-chart-1',
+  offer_received: 'border-l-chart-1',
+  negotiation_update: 'border-l-chart-2',
+  booking_confirmation: 'border-l-chart-1',
+  document_progress: 'border-l-chart-4',
+  listing_approved: 'border-l-chart-1',
+  service_request: 'border-l-chart-5',
+  project_inquiry: 'border-l-chart-3',
   saved_search: 'border-l-chart-5',
   message: 'border-l-muted-foreground',
   system: 'border-l-muted-foreground',
