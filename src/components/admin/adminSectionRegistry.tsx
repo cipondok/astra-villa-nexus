@@ -252,6 +252,7 @@ export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
 export const HomepageBlueprint = lazyRetry(() => import("./HomepageBlueprint"));
 export const UIAuditReport = lazyRetry(() => import("./UIAuditReport"));
+export const LegalSetupRoadmap = lazyRetry(() => import("./LegalSetupRoadmap"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
