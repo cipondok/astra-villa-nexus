@@ -283,6 +283,7 @@ const AgentRetentionPage = lazy(() => import('@/pages/AgentRetentionPage'));
 const SuccessStoryPage = lazy(() => import('@/pages/SuccessStoryPage'));
 const ROICalculatorPage = lazy(() => import('@/pages/ROICalculatorPage'));
 const AgentEffectivenessPage = lazy(() => import('@/pages/AgentEffectivenessPage'));
+const ViralGrowthPage = lazy(() => import('@/pages/ViralGrowthPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -680,6 +681,7 @@ const AppContent = () => {
                 <Route path="/success-story" element={<SuccessStoryPage />} />
                 <Route path="/roi-calculator" element={<ROICalculatorPage />} />
                 <Route path="/agent-effectiveness" element={<AgentEffectivenessPage />} />
+                <Route path="/viral-growth" element={<ViralGrowthPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
