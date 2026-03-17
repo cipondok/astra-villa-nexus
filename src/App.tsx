@@ -243,6 +243,7 @@ const SchemaArchitecturePage = lazy(() => import('@/pages/SchemaArchitecturePage
 const ApiArchitecturePage = lazy(() => import('@/pages/ApiArchitecturePage'));
 const IndexingStrategyPage = lazy(() => import('@/pages/IndexingStrategyPage'));
 const RealtimeArchitecturePage = lazy(() => import('@/pages/RealtimeArchitecturePage'));
+const CronSchedulePage = lazy(() => import('@/pages/CronSchedulePage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -600,6 +601,7 @@ const AppContent = () => {
                 <Route path="/api-architecture" element={<ApiArchitecturePage />} />
                 <Route path="/indexing-strategy" element={<IndexingStrategyPage />} />
                 <Route path="/realtime-architecture" element={<RealtimeArchitecturePage />} />
+                <Route path="/cron-schedule" element={<CronSchedulePage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
