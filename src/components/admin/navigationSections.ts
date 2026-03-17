@@ -1626,6 +1626,13 @@ export const navigationSections = {
       icon: PieChart,
       description: "Cap table structure, vesting schedules, ESOP planning, dilution waterfall, and governance matrix",
       badge: "📊 Equity"
+    },
+    {
+      key: "investor-qa-prep",
+      label: "Investor Q&A Preparation",
+      icon: MessageSquare,
+      description: "Due diligence question bank with answer focus areas, key data points, and pitfalls to avoid",
+      badge: "🎯 Fundraise"
     }
   ],
 
