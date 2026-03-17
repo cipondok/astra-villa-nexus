@@ -130,6 +130,7 @@ const DigitalTwinPage = lazy(() => import('@/pages/DigitalTwinPage'));
 const VirtualStagingPage = lazy(() => import('@/pages/VirtualStagingPage'));
 const AIImageEnhancePage = lazy(() => import('@/pages/AIImageEnhancePage'));
 const PropertyVideoTourPage = lazy(() => import('@/pages/PropertyVideoTourPage'));
+const ReferralAffiliatePage = lazy(() => import('@/pages/ReferralAffiliatePage'));
 const MarketReportPage = lazy(() => import('@/pages/MarketReportPage'));
 const FraudDetectorPage = lazy(() => import('@/pages/FraudDetectorPage'));
 const AIRecommendationsPage = lazy(() => import('@/pages/AIRecommendationsPage'));
