@@ -36627,6 +36627,9 @@ export type Database = {
         | "super_admin"
         | "editor"
         | "investor"
+        | "developer"
+        | "service_provider"
+        | "legal_consultant"
       vendor_verification_status:
         | "unverified"
         | "pending_review"
@@ -36896,6 +36899,9 @@ export const Constants = {
         "super_admin",
         "editor",
         "investor",
+        "developer",
+        "service_provider",
+        "legal_consultant",
       ],
       vendor_verification_status: [
         "unverified",
