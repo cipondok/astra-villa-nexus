@@ -530,6 +530,7 @@ const AppContent = () => {
                 <Route path="/virtual-staging" element={<VirtualStagingPage />} />
                 <Route path="/ai-image-enhance" element={<AIImageEnhancePage />} />
                 <Route path="/property-video-tour" element={<PropertyVideoTourPage />} />
+                <Route path="/referral" element={<ReferralAffiliatePage />} />
                 <Route path="/market-report" element={<MarketReportPage />} />
                 <Route path="/fraud-detector" element={<FraudDetectorPage />} />
                 <Route path="/recommendations" element={<AIRecommendationsPage />} />
