@@ -254,6 +254,7 @@ const AILearningFrameworkPage = lazy(() => import('@/pages/AILearningFrameworkPa
 const ABTestingFrameworkPage = lazy(() => import('@/pages/ABTestingFrameworkPage'));
 const GoToMarketStrategyPage = lazy(() => import('@/pages/GoToMarketStrategyPage'));
 const First1000UsersPage = lazy(() => import('@/pages/First1000UsersPage'));
+const DealConversionPipelinePage = lazy(() => import('@/pages/DealConversionPipelinePage'));
 const SalesScriptsPage = lazy(() => import('@/pages/SalesScriptsPage'));
 const LiveDemoPresentationPage = lazy(() => import('@/pages/LiveDemoPresentationPage'));
 const DailyLeadGenPlanPage = lazy(() => import('@/pages/DailyLeadGenPlanPage'));
@@ -627,6 +628,7 @@ const AppContent = () => {
                 <Route path="/ab-testing" element={<ABTestingFrameworkPage />} />
                 <Route path="/go-to-market" element={<GoToMarketStrategyPage />} />
                 <Route path="/first-1000-users" element={<First1000UsersPage />} />
+                <Route path="/deal-conversion-pipeline" element={<DealConversionPipelinePage />} />
                 <Route path="/sales-scripts" element={<SalesScriptsPage />} />
                 <Route path="/live-demo" element={<LiveDemoPresentationPage />} />
                 <Route path="/daily-lead-gen" element={<DailyLeadGenPlanPage />} />
