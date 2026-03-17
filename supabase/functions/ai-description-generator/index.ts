@@ -37,11 +37,13 @@ serve(async (req) => {
     }
 
     const body = await req.json();
-    const { property_id, tone = "luxury", save_results = false, rewrite_text } = body;
+    const { property_id, tone = "luxury", save_results = false, rewrite_text, standalone = false, property_data } = body;
 
-    // Fetch property data
+    // Fetch property data from DB or use standalone payload
     let propertyData: any = null;
-    if (property_id) {
+    if (standalone && property_data) {
+      propertyData = property_data;
+    } else if (property_id) {
       const { data } = await supabase
         .from("properties")
         .select("title, property_type, listing_type, city, state, location, bedrooms, bathrooms, area_sqm, land_area_sqm, price, features, amenities, description, has_pool, has_garden, has_parking, has_security, furnishing, year_built, certificate_type")
