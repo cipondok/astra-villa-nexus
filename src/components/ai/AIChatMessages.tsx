@@ -6,10 +6,12 @@ import { Message } from "./types";
 import TypingIndicator from "./TypingIndicator";
 import MessageReactions from "./MessageReactions";
 import MessageSmartReplies from "./MessageSmartReplies";
+import ChatPropertyCard from "./ChatPropertyCard";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
+import ReactMarkdown from "react-markdown";
 
 interface AIChatMessagesProps {
   messages: Message[];
@@ -84,7 +86,44 @@ const AIChatMessages = ({ messages, isLoading, messagesEndRef, onReaction, onTog
                     <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">ASTRA AI</span>
                   </div>
                 )}
-                <div className="whitespace-pre-line">{msg.content}</div>
+
+                {/* Render markdown for assistant, plain text for user */}
+                {msg.role === 'assistant' ? (
+                  <div className="prose prose-sm dark:prose-invert max-w-none text-sm leading-relaxed [&_p]:mb-1.5 [&_ul]:my-1 [&_li]:my-0.5 [&_h1]:text-sm [&_h2]:text-xs [&_h3]:text-xs [&_strong]:text-foreground [&_a]:text-primary">
+                    <ReactMarkdown>{msg.content}</ReactMarkdown>
+                  </div>
+                ) : (
+                  <div className="whitespace-pre-line">{msg.content}</div>
+                )}
+
+                {/* Inline property cards */}
+                {msg.properties && msg.properties.length > 0 && (
+                  <div className="mt-2.5 space-y-1.5">
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-primary/70 mb-1">
+                      🏠 Recommended Properties
+                    </p>
+                    {msg.properties.slice(0, 5).map((prop, pi) => (
+                      <ChatPropertyCard key={prop.id} property={prop} index={pi} />
+                    ))}
+                    {msg.properties.length > 5 && (
+                      <p className="text-[10px] text-muted-foreground text-center mt-1">
+                        +{msg.properties.length - 5} more properties found
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* Insight badges */}
+                {msg.insights && msg.insights.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {msg.insights.map((insight, ii) => (
+                      <Badge key={ii} variant="secondary" className="text-[9px] bg-primary/10 text-primary border-0">
+                        {insight.label}: {insight.value}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+
                 {msg.functionCall && (
                   <Badge variant="secondary" className="mt-2 text-[10px]">
                     ⚡ {msg.functionCall.name}
