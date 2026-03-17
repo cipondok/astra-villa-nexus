@@ -911,12 +911,14 @@ const Index = () => {
               </section>
 
               {/* ── SECTION 4: Smart Collections ── */}
+              <div className="bg-background">
               <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
                 <SmartCollectionsShowcase />
               </LazyRender>
               <Suspense fallback={null}>
                 <SectionDividerCTA icon={Star} headline="Curated for Investors" description="Handpicked collections based on ROI potential and market timing" ctaText="View Collections" ctaRoute="/collections" />
               </Suspense>
+              </div>
 
               {/* ── SECTION 5: Investor Path Selector ── */}
               <div className="bg-muted/20">
