@@ -40,7 +40,7 @@ async function fetchDemandKPIs(): Promise<KPIMetric[]> {
     supabase.from('profiles').select('id', { count: 'exact', head: true }),
     supabase.from('activity_logs').select('user_id', { count: 'exact', head: true })
       .gte('created_at', new Date(Date.now() - 7 * 86400000).toISOString()),
-    supabase.from('watchlist_items').select('id', { count: 'exact', head: true }),
+    supabase.from('investor_watchlist_items').select('id', { count: 'exact', head: true }),
   ]);
 
   const totalUsers = totalProfiles.count ?? 0;
