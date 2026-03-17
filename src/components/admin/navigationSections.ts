@@ -1618,6 +1618,13 @@ export const navigationSections = {
       icon: User,
       description: "Personal brand positioning, content pillars, visibility channels, execution calendar, and authority KPIs",
       badge: "👤 Brand"
+    },
+    {
+      key: "equity-allocation-framework",
+      label: "Equity Allocation Framework",
+      icon: PieChart,
+      description: "Cap table structure, vesting schedules, ESOP planning, dilution waterfall, and governance matrix",
+      badge: "📊 Equity"
     }
   ],
 
