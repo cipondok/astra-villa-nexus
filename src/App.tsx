@@ -266,6 +266,7 @@ const NegotiationPsychologyPage = lazy(() => import('@/pages/NegotiationPsycholo
 const HNWInvestorStrategyPage = lazy(() => import('@/pages/HNWInvestorStrategyPage'));
 const BrandTrustStrategyPage = lazy(() => import('@/pages/BrandTrustStrategyPage'));
 const RevenueOptimizationPage = lazy(() => import('@/pages/RevenueOptimizationPage'));
+const GeographicExpansionPage = lazy(() => import('@/pages/GeographicExpansionPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -646,6 +647,7 @@ const AppContent = () => {
                 <Route path="/hnw-investor-strategy" element={<HNWInvestorStrategyPage />} />
                 <Route path="/brand-trust-strategy" element={<BrandTrustStrategyPage />} />
                 <Route path="/revenue-optimization" element={<RevenueOptimizationPage />} />
+                <Route path="/geographic-expansion" element={<GeographicExpansionPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
