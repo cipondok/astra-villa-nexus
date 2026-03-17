@@ -94,7 +94,7 @@ const CategoryOverviewDashboard: React.FC<CategoryOverviewDashboardProps> = ({
             <CategoryIcon className="h-4 w-4 text-[#f0b90b]" />
             <div>
               <h1 className="text-sm font-semibold text-foreground tracking-tight">{title}</h1>
-              <p className="text-[10px] text-muted-foreground/60 mt-px">{description}</p>
+              <p className="text-[10px] text-muted-foreground mt-px">{description}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
