@@ -94,6 +94,7 @@ const Settings = lazy(() => import('@/pages/Settings'));
 const DesignSystemSettings = lazy(() => import('@/pages/admin/DesignSystemSettings'));
 const Services = lazy(() => import('@/pages/Services'));
 const ServiceCategory = lazy(() => import('@/pages/ServiceCategory'));
+const ServiceProviderProfile = lazy(() => import('@/pages/ServiceProviderProfile'));
 const PreLaunching = lazy(() => import('@/pages/PreLaunching'));
 const NewProjects = lazy(() => import('@/pages/NewProjects'));
 const AreaGuides = lazy(() => import('@/pages/AreaGuides'));
