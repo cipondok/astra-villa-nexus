@@ -105,7 +105,8 @@ import {
   Presentation,
   MapPin,
   Brain,
-  Scale
+  Scale,
+  PieChart
 } from "lucide-react";
 
 export interface NavigationSection {
