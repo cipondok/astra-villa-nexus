@@ -257,6 +257,5 @@ export default function PriceDropDealsPage() {
           </Card>
         )}
       </div>
-    </>
   );
 }
