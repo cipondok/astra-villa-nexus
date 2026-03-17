@@ -1266,6 +1266,12 @@ export const navigationSections = {
 
   features: [
     {
+      key: "features-overview",
+      label: "📊 Features Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all feature enhancements and growth modules"
+    },
+    {
       key: "innovation-lab",
       label: "Innovation Lab",
       icon: TestTube2,
