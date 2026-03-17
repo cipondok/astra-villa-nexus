@@ -265,6 +265,7 @@ const DailyGrowthMonitorPage = lazy(() => import('@/pages/DailyGrowthMonitorPage
 const NegotiationPsychologyPage = lazy(() => import('@/pages/NegotiationPsychologyPage'));
 const HNWInvestorStrategyPage = lazy(() => import('@/pages/HNWInvestorStrategyPage'));
 const BrandTrustStrategyPage = lazy(() => import('@/pages/BrandTrustStrategyPage'));
+const RevenueOptimizationPage = lazy(() => import('@/pages/RevenueOptimizationPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
