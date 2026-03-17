@@ -253,6 +253,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "user-levels":         (sc) => <UserLevelManagement onNavigate={sc} />,
   "verification-management": () => <VerificationManagement />,
   "upgrade-applications":    () => <UserUpgradeApplications />,
+  "role-permission-management": () => <RolePermissionManager />,
 
   // Property
   "property-management":        () => <AdminPropertyManagement />,
