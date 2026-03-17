@@ -649,6 +649,7 @@ const AppContent = () => {
                 <Route path="/brand-trust-strategy" element={<BrandTrustStrategyPage />} />
                 <Route path="/revenue-optimization" element={<RevenueOptimizationPage />} />
                 <Route path="/geographic-expansion" element={<GeographicExpansionPage />} />
+                <Route path="/unicorn-positioning" element={<UnicornPositioningPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
