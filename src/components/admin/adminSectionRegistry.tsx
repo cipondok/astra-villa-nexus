@@ -796,4 +796,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "marketplace-integrity": { label: "Marketplace Integrity & QC", category: "Features" },
   "team-kpi-framework": { label: "Team KPI Framework", category: "Features" },
   "weekly-leadership-review": { label: "Weekly Leadership Review", category: "Features" },
+  "company-culture-principles": { label: "Culture & Workflow Principles", category: "Features" },
 };
