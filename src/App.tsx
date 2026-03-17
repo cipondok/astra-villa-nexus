@@ -595,6 +595,7 @@ const AppContent = () => {
                 <Route path="/product-architecture" element={<ProductArchitecturePage />} />
                 <Route path="/development-roadmap" element={<DevelopmentRoadmapPage />} />
                 <Route path="/schema-architecture" element={<SchemaArchitecturePage />} />
+                <Route path="/api-architecture" element={<ApiArchitecturePage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
