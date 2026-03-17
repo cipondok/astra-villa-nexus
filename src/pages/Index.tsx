@@ -818,7 +818,7 @@ const Index = () => {
             ══════════════════════════════════════════════════ */
             <>
                {/* ── SECTION 2: Featured Properties ── */}
-              <div id="featured-section">
+              <div id="featured-section" className="bg-background">
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={
                     <div className="py-4 max-w-7xl mx-auto px-3 sm:px-4">
