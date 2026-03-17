@@ -974,7 +974,7 @@ const Index = () => {
               </section>
 
               {/* ── SECTION 4: Smart Collections ── */}
-              <section className="py-6 sm:py-10" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 400px' }}>
+              <section className="py-4 sm:py-6">
                 <ScrollReveal direction="up" delay={0}>
                   <LazyRender minHeight="280px" rootMargin="400px" fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto px-3 sm:px-4" />}>
                     <Suspense fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto px-3 sm:px-4" />}>
