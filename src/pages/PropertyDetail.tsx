@@ -1525,20 +1525,41 @@ const PropertyDetail: React.FC = () => {
         language="en"
       />
 
-      {/* Sticky Mobile Contact CTA */}
+      {/* Sticky Mobile Contact CTA — Optimized funnel with Make Offer */}
       <div className="fixed bottom-0 left-0 right-0 z-[9980] md:hidden bg-card/95 backdrop-blur-xl border-t border-border/40 shadow-[0_-4px_20px_hsl(var(--foreground)/0.06)]"
         style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}
       >
-        <div className="flex items-center gap-2 px-3 py-2">
+        {/* Agent response indicator */}
+        <div className="flex items-center justify-center gap-1.5 py-1 border-b border-border/20 bg-muted/20">
+          <div className="w-1.5 h-1.5 rounded-full bg-chart-2 animate-pulse" />
+          <span className="text-[8px] text-muted-foreground">Agent responds within <strong className="text-foreground">2 hrs</strong></span>
+        </div>
+        <div className="flex items-center gap-1.5 px-3 py-2">
           <div className="flex-1 min-w-0">
             <div className="text-sm font-bold text-gold-primary leading-none">{formatPrice(property.price)}</div>
-            {property.listing_type === 'rent' && (
-              <span className="text-[9px] text-muted-foreground">/{t('propertyDetail.perMonth')}</span>
+            {(property as any).opportunity_score && (
+              <div className="flex items-center gap-1 mt-0.5">
+                <Target className="h-2.5 w-2.5 text-primary" />
+                <span className="text-[9px] font-semibold text-primary">Score {(property as any).opportunity_score}</span>
+              </div>
             )}
           </div>
+          <Suspense fallback={null}>
+            <MobileOfferButton
+              propertyId={property.id}
+              propertyTitle={property.title}
+              propertyImage={property.images?.[0]}
+              propertyPrice={property.price}
+              sellerId={property.owner_id}
+              agentId={property.agent_id}
+              opportunityScore={(property as any).opportunity_score}
+              user={user}
+              onAuthRequired={() => setShowAuthModal(true)}
+            />
+          </Suspense>
           <Button
             size="sm"
-            className="bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background h-9 px-4 text-xs font-semibold shadow-sm shadow-gold-primary/20 active:scale-95 transition-transform"
+            className="bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background h-9 px-3 text-[10px] font-semibold shadow-sm shadow-gold-primary/20 active:scale-95 transition-transform"
             onClick={() => {
               if (user && property.posted_by?.whatsapp_number) {
                 window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, I'm interested in ${property.title}`, '_blank');
@@ -1549,13 +1570,13 @@ const PropertyDetail: React.FC = () => {
               }
             }}
           >
-            <MessageCircle className="h-3.5 w-3.5 mr-1" />
-            WhatsApp
+            <MessageCircle className="h-3.5 w-3.5 mr-0.5" />
+            WA
           </Button>
           <Button
             variant="outline"
             size="sm"
-            className="h-9 px-3 text-xs font-medium border-border/50 active:scale-95 transition-transform"
+            className="h-9 px-2.5 text-[10px] font-medium border-border/50 active:scale-95 transition-transform"
             onClick={() => {
               if (user && property.posted_by?.phone_number) {
                 window.open(`tel:${property.posted_by.phone_number}`, '_self');
@@ -1566,8 +1587,7 @@ const PropertyDetail: React.FC = () => {
               }
             }}
           >
-            <Phone className="h-3.5 w-3.5 mr-1" />
-            {t('propertyDetail.call')}
+            <Phone className="h-3.5 w-3.5" />
           </Button>
         </div>
       </div>
