@@ -1094,7 +1094,7 @@ const Index = () => {
               </section>
 
               {/* ── SECTION 10: Final Conversion CTA ── */}
-              <section className="py-6 sm:py-10">
+              <section className="py-4 sm:py-6">
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={<div className="animate-pulse h-40 bg-muted rounded-xl max-w-5xl mx-auto" />}>
                     <EarlyInvestmentCTA />
