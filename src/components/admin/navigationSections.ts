@@ -108,7 +108,8 @@ import {
   Scale,
   PieChart,
   CalendarClock,
-  Sunrise
+  Sunrise,
+  Orbit
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -1698,6 +1699,13 @@ export const navigationSections = {
       icon: Map,
       description: "High-level milestones for product evolution, market expansion, and capital strategy across 3 years",
       badge: "🗺️ Roadmap"
+    },
+    {
+      key: "founder-life-os",
+      label: "Founder Life OS",
+      icon: Orbit,
+      description: "Holistic personal operating system — execution, strategic thinking, energy, and identity alignment",
+      badge: "⚡ Life OS"
     }
   ],
 

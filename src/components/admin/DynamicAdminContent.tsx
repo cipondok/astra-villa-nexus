@@ -80,6 +80,7 @@ const CompanyCulturePrinciples = lazy(() => import('./CompanyCulturePrinciples')
 const FounderDailyRoutine = lazy(() => import('./FounderDailyRoutine'));
 const FounderMentalFramework = lazy(() => import('./FounderMentalFramework'));
 const ThreeYearRoadmap = lazy(() => import('./ThreeYearRoadmap'));
+const FounderLifeOS = lazy(() => import('./FounderLifeOS'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
@@ -597,6 +598,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return (
           <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
             <ThreeYearRoadmap />
+          </Suspense>
+        );
+      case "founder-life-os":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <FounderLifeOS />
           </Suspense>
         );
       default:
