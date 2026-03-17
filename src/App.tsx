@@ -59,6 +59,7 @@ const PropertyOwnerOnlyRoute = lazy(() => import('@/components/PropertyOwnerOnly
 const Index = lazy(() => import('@/pages/Index'));
 const LandingPage = lazy(() => import('@/pages/LandingPage'));
 const CityInvestmentPage = lazy(() => import('@/pages/CityInvestmentPage'));
+const AIListingGenerator = lazy(() => import('@/pages/AIListingGenerator'));
 const Search = lazy(() => import('@/pages/Search'));
 const ErrorPage = lazy(() => import('@/pages/ErrorPage'));
 const Auth = lazy(() => import('@/pages/Auth'));
@@ -466,6 +467,7 @@ const AppContent = () => {
                 <Route path="/verification-center" element={<VerificationCenter />} />
                 <Route path="/ai-content-generator" element={<AIContentGenerator />} />
                 <Route path="/content-generator" element={<AIContentGenerator />} />
+                <Route path="/ai-listing-generator" element={<AIListingGenerator />} />
                 <Route path="/campaigns" element={<ViralCampaigns />} />
                 <Route path="/viral-campaigns" element={<ViralCampaigns />} />
                 <Route path="/marketing" element={<ViralCampaigns />} />
