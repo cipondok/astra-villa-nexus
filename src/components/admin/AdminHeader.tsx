@@ -168,6 +168,10 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
             </Tooltip>
           </TooltipProvider>
 
+          <Suspense fallback={null}>
+            <DemoStartButton className="gap-1.5" />
+          </Suspense>
+
           <AdminCommandPalette onSectionChange={onSectionChange} />
 
           {/* Notifications */}
