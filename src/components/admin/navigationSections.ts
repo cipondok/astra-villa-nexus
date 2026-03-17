@@ -1647,6 +1647,13 @@ export const navigationSections = {
       icon: Headphones,
       description: "Multi-channel support strategy with SLAs, escalation, and knowledge base planning",
       badge: "🎧 Support"
+    },
+    {
+      key: "marketplace-integrity",
+      label: "Marketplace Integrity & QC",
+      icon: ShieldCheck,
+      description: "Listing verification, provider monitoring, transaction integrity, and dispute resolution",
+      badge: "🛡️ Trust"
     }
   ],
 
