@@ -295,3 +295,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.ai-image-enhance]
     verify_jwt = false
 
+  [functions.property-video-gen]
+    verify_jwt = false
+

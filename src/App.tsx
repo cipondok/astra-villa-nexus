@@ -129,6 +129,7 @@ const PropertyMapSearchPage = lazy(() => import('@/pages/PropertyMapSearch'));
 const DigitalTwinPage = lazy(() => import('@/pages/DigitalTwinPage'));
 const VirtualStagingPage = lazy(() => import('@/pages/VirtualStagingPage'));
 const AIImageEnhancePage = lazy(() => import('@/pages/AIImageEnhancePage'));
+const PropertyVideoTourPage = lazy(() => import('@/pages/PropertyVideoTourPage'));
 const MarketReportPage = lazy(() => import('@/pages/MarketReportPage'));
 const FraudDetectorPage = lazy(() => import('@/pages/FraudDetectorPage'));
 const AIRecommendationsPage = lazy(() => import('@/pages/AIRecommendationsPage'));
@@ -527,6 +528,7 @@ const AppContent = () => {
                 <Route path="/digital-twin/:id" element={<DigitalTwinPage />} />
                 <Route path="/virtual-staging" element={<VirtualStagingPage />} />
                 <Route path="/ai-image-enhance" element={<AIImageEnhancePage />} />
+                <Route path="/property-video-tour" element={<PropertyVideoTourPage />} />
                 <Route path="/market-report" element={<MarketReportPage />} />
                 <Route path="/fraud-detector" element={<FraudDetectorPage />} />
                 <Route path="/recommendations" element={<AIRecommendationsPage />} />
