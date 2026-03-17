@@ -276,6 +276,7 @@ const AppContent = () => {
                 <Route path="/astra-tokens" element={<AstraTokensPage />} />
                 <Route path="/services" element={<Services />} />
                 <Route path="/services/category/:categoryId" element={<ServiceCategory />} />
+                <Route path="/vendor/:vendorId" element={<ServiceProviderProfile />} />
                 <Route path="/dijual" element={<Dijual />} />
                 <Route path="/buy" element={<Dijual />} />
                 <Route path="/disewa" element={<Disewa />} />
