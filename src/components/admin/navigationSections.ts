@@ -104,7 +104,8 @@ import {
   Send,
   Presentation,
   MapPin,
-  Brain
+  Brain,
+  Scale
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -1589,6 +1590,13 @@ export const navigationSections = {
       icon: Eye,
       description: "Codebase-grounded design audit — 25 findings with code evidence, fixes, and prioritized action plan",
       badge: "🔍 Audit"
+    },
+    {
+      key: "legal-setup-roadmap",
+      label: "Legal Setup & Licensing",
+      icon: Scale,
+      description: "PT company structure, KBLI codes, NIB/PSE licensing, legal documents, and compliance roadmap for Indonesian proptech operations",
+      badge: "⚖️ Legal"
     }
   ],
 
