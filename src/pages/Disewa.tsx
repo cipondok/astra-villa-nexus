@@ -309,9 +309,9 @@ const Disewa = () => {
                               <Clock className="h-2.5 w-2.5" /> Min {property.minimum_rental_days}hr
                             </Badge>
                           )}
-                          {property.availability_status && property.availability_status !== 'available' && (
+                          {(property as any).availability_status && (property as any).availability_status !== 'available' && (
                             <Badge variant="secondary" className="text-[9px] px-1.5 py-0 bg-destructive/10 text-destructive">
-                              {property.availability_status === 'rented' ? 'Tersewa' : property.availability_status}
+                              {(property as any).availability_status === 'rented' ? 'Tersewa' : (property as any).availability_status}
                             </Badge>
                           )}
                           {property.rental_yield_percentage && property.rental_yield_percentage > 0 && (
