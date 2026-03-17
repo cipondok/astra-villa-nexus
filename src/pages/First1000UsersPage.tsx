@@ -76,8 +76,8 @@ const CHANNELS = [
     id: 'referral',
     label: 'Referral Engine',
     icon: Share2,
-    color: 'text-amber-500',
-    bgColor: 'bg-amber-500/10',
+    color: 'text-accent-foreground',
+    bgColor: 'bg-accent/10',
     users: 16,
     target: 150,
     tactics: [
