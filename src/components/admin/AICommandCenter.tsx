@@ -1557,6 +1557,20 @@ const AICommandCenter = () => {
               </Suspense>
             )}
 
+            {/* AI ENGINE STATUS */}
+            {activeNav === 'engines' && (
+              <Suspense fallback={<div className="h-64 bg-muted animate-pulse rounded-lg" />}>
+                <AIEngineStatusPanel />
+              </Suspense>
+            )}
+
+            {/* MARKETPLACE HEALTH */}
+            {activeNav === 'marketplace' && (
+              <Suspense fallback={<div className="h-64 bg-muted animate-pulse rounded-lg" />}>
+                <MarketplaceHealthDashboard />
+              </Suspense>
+            )}
+
             {/* AI INTELLIGENCE HEALTH / READINESS SECTION */}
             {activeNav === 'ai-health' && (
               <Suspense fallback={<div className="h-64 bg-muted animate-pulse rounded-lg" />}>
