@@ -80,6 +80,7 @@ const CompanyCulturePrinciples = lazy(() => import('./CompanyCulturePrinciples')
 const FounderDailyRoutine = lazy(() => import('./FounderDailyRoutine'));
 const FounderMentalFramework = lazy(() => import('./FounderMentalFramework'));
 const ThreeYearRoadmap = lazy(() => import('./ThreeYearRoadmap'));
+const FounderLifeOS = lazy(() => import('./FounderLifeOS'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
