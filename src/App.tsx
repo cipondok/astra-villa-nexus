@@ -490,6 +490,12 @@ const AppContent = () => {
                 <Route path="/ai-search" element={<AISearchAssistantPage />} />
                 <Route path="/investment-leaderboard" element={<InvestmentLeaderboardPage />} />
                 <Route path="/price-drop-deals" element={<PriceDropDealsPage />} />
+                <Route path="/my-offers" element={<ProtectedRoute />}>
+                  <Route index element={<MyOffersPage />} />
+                </Route>
+                <Route path="/offers/:offerId" element={<ProtectedRoute />}>
+                  <Route index element={<OfferNegotiationPage />} />
+                </Route>
                 <Route path="/ai-map" element={<AIMapSearchPage />} />
                 <Route path="/map-search" element={<AIMapSearchPage />} />
                 <Route path="/property-map" element={<PropertyMapSearchPage />} />
