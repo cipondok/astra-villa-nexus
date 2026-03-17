@@ -1021,7 +1021,7 @@ const Index = () => {
                 </ScrollReveal>
 
                 {/* AI Price Estimator CTA */}
-                <div className="mt-8">
+                <div className="mt-5">
                   <ScrollReveal direction="up" delay={50}>
                     <Suspense fallback={<div className="animate-pulse h-48 bg-muted rounded-xl max-w-5xl mx-auto px-3 sm:px-4" />}>
                       <AIPriceEstimatorCTA />
