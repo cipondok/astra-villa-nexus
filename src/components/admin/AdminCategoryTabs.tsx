@@ -38,7 +38,7 @@ const categoryIcons: Record<string, LucideIcon> = {
   "help": HelpCircle,
 };
 
-// Unified panel theme — all categories use the same sleek style
+// Unified panel theme — all categories use the same sleek Astra Villa style
 const categoryAccent: Record<string, string> = {
   overview: "--panel-accent",
   transactions: "--panel-success",
@@ -47,7 +47,7 @@ const categoryAccent: Record<string, string> = {
   "core-management": "--panel-success",
   "customer-service": "--panel-accent",
   "vendor-management": "--panel-success",
-  "analytics-monitoring": "--panel-accent",
+  "analytics-monitoring": "--panel-info",
   "content-settings": "--panel-accent",
   "system-settings": "--panel-text-secondary",
   technical: "--panel-danger",
@@ -58,7 +58,6 @@ const categoryAccent: Record<string, string> = {
 const VISIBLE_COUNT = 6;
 const STORAGE_KEY = 'admin-tab-visit-history';
 
-// Get visit history from localStorage
 function getVisitHistory(): Record<string, number> {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -85,7 +84,6 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
   const [expanded, setExpanded] = useState(false);
   const [visitHistory, setVisitHistory] = useState<Record<string, number>>(getVisitHistory);
 
-  // Record visit when active section changes
   useEffect(() => {
     if (activeSection) {
       recordVisit(activeSection);
@@ -93,7 +91,6 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
     }
   }, [activeSection]);
 
-  // Find which category contains the active section
   const activeCategory = useMemo((): string | null => {
     for (const category of categories) {
       const sections = navigationSections[category as keyof typeof navigationSections];
@@ -109,7 +106,6 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
     [activeCategory]
   );
 
-  // Sort sections: active first, then by most recently visited, then the rest
   const sortedSections = useMemo(() => {
     return [...categorySections].sort((a, b) => {
       if (a.key === activeSection) return -1;
@@ -143,10 +139,10 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
         key={section.key}
         onClick={() => handleSectionClick(section.key)}
         className={cn(
-          "flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[10px] font-medium transition-all duration-150 whitespace-nowrap",
+          "flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[10px] font-medium transition-all duration-150 whitespace-nowrap border",
           isActive
-            ? "bg-[hsl(var(--panel-accent)/.12)] text-[hsl(var(--panel-accent))] ring-1 ring-[hsl(var(--panel-accent)/.2)] shadow-sm"
-            : "text-[hsl(var(--panel-text-secondary))] hover:text-[hsl(var(--panel-text))] hover:bg-[hsl(var(--panel-hover))] bg-[hsl(var(--panel-border)/.3)]"
+            ? "bg-[hsl(var(--panel-accent)/.08)] text-[hsl(var(--panel-accent))] border-[hsl(var(--panel-accent)/.25)] shadow-[0_0_8px_hsl(var(--panel-glow-accent)/.08)]"
+            : "text-[hsl(var(--panel-text-secondary))] hover:text-[hsl(var(--panel-text))] hover:bg-[hsl(var(--panel-hover))] hover:border-[hsl(var(--panel-border))] bg-[hsl(var(--panel-bg))] border-[hsl(var(--panel-border-subtle))]"
         )}
       >
         <Icon className="h-3 w-3 shrink-0" />
@@ -156,10 +152,10 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
             className={cn(
               "text-[7px] px-1 py-0 h-3 leading-[12px] rounded font-semibold inline-block",
               isActive
-                ? "bg-[hsl(var(--panel-accent)/.2)] text-[hsl(var(--panel-accent))]"
+                ? "bg-[hsl(var(--panel-accent)/.15)] text-[hsl(var(--panel-accent))]"
                 : String(section.badge) === 'New'
-                  ? "bg-[hsl(var(--panel-success)/.12)] text-[hsl(var(--panel-success))]"
-                  : "bg-[hsl(var(--panel-accent)/.1)] text-[hsl(var(--panel-accent))]"
+                  ? "bg-[hsl(var(--panel-success)/.1)] text-[hsl(var(--panel-success))]"
+                  : "bg-[hsl(var(--panel-accent)/.08)] text-[hsl(var(--panel-accent-dim))]"
             )}
           >
             {String(section.badge)}
@@ -171,14 +167,25 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
 
   return (
     <div className="mb-2 sticky top-0 z-40 animate-in fade-in slide-in-from-top-1 duration-200">
-      <div className="bg-[hsl(var(--panel-bg))] border border-[hsl(var(--panel-border))] rounded-lg overflow-hidden shadow-sm">
+      <div
+        className="bg-[hsl(var(--panel-bg))] border border-[hsl(var(--panel-border))] rounded-lg overflow-hidden"
+        style={{ boxShadow: 'var(--panel-shadow)' }}
+      >
         {/* Mini Header */}
-        <div className="px-3 py-1.5 flex items-center gap-2 border-b border-[hsl(var(--panel-border))]" style={{ background: `hsl(var(${accentVar}) / 0.08)` }}>
-          <CategoryIcon className="h-3.5 w-3.5 text-[hsl(var(--panel-accent))]" />
+        <div
+          className="px-3 py-1.5 flex items-center gap-2 border-b border-[hsl(var(--panel-border))]"
+          style={{ background: `hsl(var(${accentVar}) / 0.05)` }}
+        >
+          <div className="flex items-center justify-center w-5 h-5 rounded bg-[hsl(var(--panel-accent)/.1)] border border-[hsl(var(--panel-accent)/.15)]">
+            <CategoryIcon className="h-3 w-3 text-[hsl(var(--panel-accent))]" />
+          </div>
           <span className="text-[11px] font-bold tracking-wide uppercase text-[hsl(var(--panel-text))]">{categoryTitle}</span>
-          <span className="text-[8px] px-1.5 py-0 h-3.5 leading-[14px] rounded bg-[hsl(var(--panel-border)/.5)] text-[hsl(var(--panel-text-secondary))] font-medium ml-auto">
-            {categorySections.length} items
-          </span>
+          <div className="ml-auto flex items-center gap-1.5">
+            <span className="h-1 w-1 rounded-full bg-[hsl(var(--panel-success))] animate-pulse" />
+            <span className="text-[8px] px-1.5 py-0 h-3.5 leading-[14px] rounded bg-[hsl(var(--panel-border)/.4)] text-[hsl(var(--panel-text-muted))] font-mono">
+              {categorySections.length}
+            </span>
+          </div>
         </div>
 
         {/* Mobile: horizontal scroll with top 6 */}
@@ -190,16 +197,16 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
             {hasMore && !expanded && (
               <button
                 onClick={() => setExpanded(true)}
-                className="flex items-center gap-1 px-2 py-1.5 rounded-md text-[10px] font-medium text-[hsl(var(--panel-text-muted))] hover:text-[hsl(var(--panel-text))] hover:bg-[hsl(var(--panel-hover))] bg-[hsl(var(--panel-border)/.3)] whitespace-nowrap shrink-0 transition-colors"
+                className="flex items-center gap-1 px-2 py-1.5 rounded-md text-[10px] font-medium text-[hsl(var(--panel-text-muted))] hover:text-[hsl(var(--panel-text))] hover:bg-[hsl(var(--panel-hover))] border border-dashed border-[hsl(var(--panel-border))] whitespace-nowrap shrink-0 transition-colors"
               >
                 <ChevronDown className="h-3 w-3" />
-                +{hiddenCount} more
+                +{hiddenCount}
               </button>
             )}
             {expanded && hasMore && (
               <button
                 onClick={() => setExpanded(false)}
-                className="flex items-center gap-1 px-2 py-1.5 rounded-md text-[10px] font-medium text-[hsl(var(--panel-accent))] hover:bg-[hsl(var(--panel-accent)/.1)] whitespace-nowrap shrink-0 transition-colors"
+                className="flex items-center gap-1 px-2 py-1.5 rounded-md text-[10px] font-medium text-[hsl(var(--panel-accent))] hover:bg-[hsl(var(--panel-accent)/.08)] whitespace-nowrap shrink-0 transition-colors"
               >
                 <ChevronUp className="h-3 w-3" />
                 Less
@@ -218,7 +225,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
             {hasMore && !expanded && (
               <button
                 onClick={() => setExpanded(true)}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[10px] font-medium text-[hsl(var(--panel-text-muted))] hover:text-[hsl(var(--panel-text))] hover:bg-[hsl(var(--panel-hover))] bg-[hsl(var(--panel-border)/.2)] transition-colors border border-dashed border-[hsl(var(--panel-border))]"
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[10px] font-medium text-[hsl(var(--panel-text-muted))] hover:text-[hsl(var(--panel-text))] hover:bg-[hsl(var(--panel-hover))] border border-dashed border-[hsl(var(--panel-border))] transition-colors"
               >
                 <ChevronDown className="h-3 w-3" />
                 +{hiddenCount} more
@@ -227,7 +234,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
             {expanded && hasMore && (
               <button
                 onClick={() => setExpanded(false)}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[10px] font-medium text-[hsl(var(--panel-accent))] hover:bg-[hsl(var(--panel-accent)/.1)] transition-colors"
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[10px] font-medium text-[hsl(var(--panel-accent))] hover:bg-[hsl(var(--panel-accent)/.08)] transition-colors"
               >
                 <ChevronUp className="h-3 w-3" />
                 Show less

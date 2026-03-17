@@ -49,11 +49,11 @@ const badgeStatusMap: Record<string, StatusKey> = {
   '🎨 Design System': 'active', '🏠 Homepage': 'active', '🔍 Audit': 'active',
 };
 
-const statusAccent: Record<StatusKey, { dot: string; text: string }> = {
-  active:  { dot: 'bg-[hsl(var(--panel-success))]', text: 'text-[hsl(var(--panel-success))]' },
-  new:     { dot: 'bg-[hsl(var(--panel-accent))]', text: 'text-[hsl(var(--panel-accent))]' },
-  hot:     { dot: 'bg-[hsl(var(--panel-danger))]', text: 'text-[hsl(var(--panel-danger))]' },
-  premium: { dot: 'bg-[hsl(var(--panel-accent))]', text: 'text-[hsl(var(--panel-accent))]' },
+const statusAccent: Record<StatusKey, { dot: string; text: string; glow: string }> = {
+  active:  { dot: 'bg-[hsl(var(--panel-success))]', text: 'text-[hsl(var(--panel-success))]', glow: 'shadow-[0_0_4px_hsl(var(--panel-success)/.3)]' },
+  new:     { dot: 'bg-[hsl(var(--panel-accent))]', text: 'text-[hsl(var(--panel-accent))]', glow: 'shadow-[0_0_4px_hsl(var(--panel-accent)/.3)]' },
+  hot:     { dot: 'bg-[hsl(var(--panel-danger))]', text: 'text-[hsl(var(--panel-danger))]', glow: 'shadow-[0_0_4px_hsl(var(--panel-danger)/.3)]' },
+  premium: { dot: 'bg-[hsl(var(--panel-accent))]', text: 'text-[hsl(var(--panel-accent))]', glow: 'shadow-[0_0_4px_hsl(var(--panel-accent)/.3)]' },
 };
 
 type ViewMode = 'list' | 'grid';
@@ -88,35 +88,45 @@ const CategoryOverviewDashboard: React.FC<CategoryOverviewDashboardProps> = ({
   return (
     <div className="space-y-3 animate-in fade-in duration-200">
       {/* Header */}
-      <div className="rounded-xl bg-[hsl(var(--panel-bg))] border border-[hsl(var(--panel-border))] px-4 py-3">
+      <div
+        className="rounded-xl bg-[hsl(var(--panel-bg))] border border-[hsl(var(--panel-border))] px-4 py-3"
+        style={{ boxShadow: 'var(--panel-shadow)' }}
+      >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <CategoryIcon className="h-4 w-4 text-[hsl(var(--panel-accent))]" />
+            <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-[hsl(var(--panel-accent)/.08)] border border-[hsl(var(--panel-accent)/.18)]">
+              <CategoryIcon className="h-3.5 w-3.5 text-[hsl(var(--panel-accent))]" />
+            </div>
             <div>
               <h1 className="text-sm font-semibold text-[hsl(var(--panel-text))] tracking-tight">{title}</h1>
               <p className="text-[10px] text-[hsl(var(--panel-text-secondary))] mt-px">{description}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono text-[hsl(var(--panel-text-secondary))] tabular-nums">
+            <span className="text-[10px] font-mono text-[hsl(var(--panel-text-muted))] tabular-nums">
               {contentSections.length}
             </span>
             {/* View toggle */}
-            <div className="flex items-center border border-[hsl(var(--panel-border))] rounded-md overflow-hidden">
+            <div className="flex items-center border border-[hsl(var(--panel-border))] rounded-md overflow-hidden bg-[hsl(var(--panel-bg))]">
               <button
                 onClick={() => setViewMode('list')}
                 className={cn(
-                  "p-1 transition-colors",
-                  viewMode === 'list' ? "bg-[hsl(var(--panel-accent)/.1)] text-[hsl(var(--panel-accent))]" : "text-[hsl(var(--panel-text-muted))] hover:text-[hsl(var(--panel-text-secondary))]"
+                  "p-1 transition-all",
+                  viewMode === 'list'
+                    ? "bg-[hsl(var(--panel-accent)/.1)] text-[hsl(var(--panel-accent))] shadow-[inset_0_0_6px_hsl(var(--panel-accent)/.08)]"
+                    : "text-[hsl(var(--panel-text-muted))] hover:text-[hsl(var(--panel-text-secondary))]"
                 )}
               >
                 <List className="h-3 w-3" />
               </button>
+              <div className="w-px h-3 bg-[hsl(var(--panel-border))]" />
               <button
                 onClick={() => setViewMode('grid')}
                 className={cn(
-                  "p-1 transition-colors",
-                  viewMode === 'grid' ? "bg-[hsl(var(--panel-accent)/.1)] text-[hsl(var(--panel-accent))]" : "text-[hsl(var(--panel-text-muted))] hover:text-[hsl(var(--panel-text-secondary))]"
+                  "p-1 transition-all",
+                  viewMode === 'grid'
+                    ? "bg-[hsl(var(--panel-accent)/.1)] text-[hsl(var(--panel-accent))] shadow-[inset_0_0_6px_hsl(var(--panel-accent)/.08)]"
+                    : "text-[hsl(var(--panel-text-muted))] hover:text-[hsl(var(--panel-text-secondary))]"
                 )}
               >
                 <LayoutGrid className="h-3 w-3" />
@@ -126,7 +136,7 @@ const CategoryOverviewDashboard: React.FC<CategoryOverviewDashboardProps> = ({
         </div>
 
         {isFeatures && analytics && (
-          <div className="flex items-center gap-5 mt-2.5 pt-2.5 border-t border-[hsl(var(--panel-border))]">
+          <div className="flex items-center gap-5 mt-2.5 pt-2.5 border-t border-[hsl(var(--panel-border-subtle))]">
             <StatChip value={analytics.total} label="Total" accentVar="--panel-text-secondary" />
             <StatChip value={analytics.activeCount} label="Active" accentVar="--panel-success" />
             <StatChip value={analytics.hotCount} label="Hot" accentVar="--panel-danger" />
@@ -136,7 +146,10 @@ const CategoryOverviewDashboard: React.FC<CategoryOverviewDashboardProps> = ({
       </div>
 
       {/* Modules */}
-      <div className="rounded-xl bg-[hsl(var(--panel-bg))] border border-[hsl(var(--panel-border))] overflow-hidden">
+      <div
+        className="rounded-xl bg-[hsl(var(--panel-bg))] border border-[hsl(var(--panel-border))] overflow-hidden"
+        style={{ boxShadow: 'var(--panel-shadow)' }}
+      >
         {viewMode === 'list' ? (
           <ListView
             sections={contentSections}
@@ -165,12 +178,12 @@ const ListView: React.FC<{
   onSectionChange?: (s: string) => void;
 }> = ({ sections, hoveredKey, setHoveredKey, onSectionChange }) => (
   <>
-    <div className="grid grid-cols-[1fr_auto] sm:grid-cols-[1fr_80px_auto] px-3 py-1.5 border-b border-[hsl(var(--panel-border))]">
+    <div className="grid grid-cols-[1fr_auto] sm:grid-cols-[1fr_80px_auto] px-3 py-1.5 border-b border-[hsl(var(--panel-border))] bg-[hsl(var(--panel-hover)/.5)]">
       <span className="text-[8px] font-medium uppercase tracking-[0.12em] text-[hsl(var(--panel-text-muted))]">Module</span>
       <span className="hidden sm:block text-[8px] font-medium uppercase tracking-[0.12em] text-[hsl(var(--panel-text-muted))]">Status</span>
       <span className="text-[8px] font-medium uppercase tracking-[0.12em] text-[hsl(var(--panel-text-muted))] text-right pr-1">→</span>
     </div>
-    <div className="divide-y divide-[hsl(var(--panel-border)/.5)]">
+    <div className="divide-y divide-[hsl(var(--panel-border-subtle))]">
       {sections.map((section) => {
         const Icon = section.icon;
         const badgeText = 'badge' in section ? String(section.badge || '') : '';
@@ -186,13 +199,23 @@ const ListView: React.FC<{
             onMouseLeave={() => setHoveredKey(null)}
             className={cn(
               "relative grid grid-cols-[1fr_auto] sm:grid-cols-[1fr_80px_auto] items-center w-full text-left",
-              "px-3 py-[6px] transition-colors duration-75",
-              isHovered ? "bg-[hsl(var(--panel-hover))]" : ""
+              "px-3 py-[7px] transition-all duration-100",
+              isHovered
+                ? "bg-[hsl(var(--panel-hover))] border-l-2 border-l-[hsl(var(--panel-accent)/.6)]"
+                : "border-l-2 border-l-transparent"
             )}
+            style={isHovered ? { boxShadow: 'inset 0 0 20px hsl(var(--panel-accent) / 0.02)' } : undefined}
           >
             {/* Module */}
-            <div className="flex items-center gap-2 min-w-0">
-              <Icon className={cn("h-3.5 w-3.5 shrink-0 transition-colors", isHovered ? "text-[hsl(var(--panel-accent))]" : "text-[hsl(var(--panel-text-secondary))]")} />
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className={cn(
+                "flex items-center justify-center w-6 h-6 rounded-md shrink-0 transition-all border",
+                isHovered
+                  ? "bg-[hsl(var(--panel-accent)/.1)] border-[hsl(var(--panel-accent)/.2)]"
+                  : "bg-[hsl(var(--panel-hover)/.6)] border-[hsl(var(--panel-border-subtle))]"
+              )}>
+                <Icon className={cn("h-3 w-3 transition-colors", isHovered ? "text-[hsl(var(--panel-accent))]" : "text-[hsl(var(--panel-text-secondary))]")} />
+              </div>
               <div className="min-w-0">
                 <span className={cn("text-[11px] font-medium truncate block transition-colors", isHovered ? "text-[hsl(var(--panel-accent))]" : "text-[hsl(var(--panel-text))]")}>
                   {section.label.replace(/^[^\w]*\s/, '')}
@@ -202,19 +225,19 @@ const ListView: React.FC<{
                 </span>
               </div>
 
-              {/* Hover tooltip — positioned ABOVE */}
+              {/* Hover tooltip */}
               {isHovered && (
-                <div className="absolute left-8 bottom-full mb-1 z-50 px-2.5 py-1.5 rounded bg-[hsl(var(--panel-tooltip-bg))] border border-[hsl(var(--panel-tooltip-border))] shadow-xl max-w-[220px] pointer-events-none animate-in fade-in duration-100">
+                <div className="absolute left-10 bottom-full mb-1 z-50 px-2.5 py-1.5 rounded-md bg-[hsl(var(--panel-tooltip-bg))] border border-[hsl(var(--panel-tooltip-border))] shadow-xl max-w-[220px] pointer-events-none animate-in fade-in duration-100">
                   <p className="text-[9px] text-[hsl(var(--panel-tooltip-text))] leading-relaxed">{section.description}</p>
                 </div>
               )}
             </div>
 
             {/* Status */}
-            <div className="hidden sm:flex items-center gap-1">
+            <div className="hidden sm:flex items-center gap-1.5">
               {accent ? (
                 <>
-                  <span className={cn("w-1 h-1 rounded-full", accent.dot)} />
+                  <span className={cn("w-1.5 h-1.5 rounded-full", accent.dot, accent.glow)} />
                   <span className={cn("text-[8px] font-semibold uppercase tracking-wider", accent.text)}>
                     {badgeText.replace(/[^\w\s]/g, '').trim().split(' ')[0] || 'Live'}
                   </span>
@@ -226,7 +249,7 @@ const ListView: React.FC<{
 
             {/* Arrow */}
             <div className="flex justify-end">
-              <ChevronRight className={cn("h-2.5 w-2.5 transition-all duration-75", isHovered ? "text-[hsl(var(--panel-accent))] translate-x-0.5" : "text-[hsl(var(--panel-text-muted))]")} />
+              <ChevronRight className={cn("h-2.5 w-2.5 transition-all duration-100", isHovered ? "text-[hsl(var(--panel-accent))] translate-x-0.5" : "text-[hsl(var(--panel-text-muted))]")} />
             </div>
           </button>
         );
@@ -242,7 +265,7 @@ const GridView: React.FC<{
   setHoveredKey: (k: string | null) => void;
   onSectionChange?: (s: string) => void;
 }> = ({ sections, hoveredKey, setHoveredKey, onSectionChange }) => (
-  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-px bg-[hsl(var(--panel-border)/.4)]">
+  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-px bg-[hsl(var(--panel-border-subtle))]">
     {sections.map((section) => {
       const Icon = section.icon;
       const badgeText = 'badge' in section ? String(section.badge || '') : '';
@@ -257,19 +280,22 @@ const GridView: React.FC<{
           onMouseEnter={() => setHoveredKey(section.key)}
           onMouseLeave={() => setHoveredKey(null)}
           className={cn(
-            "relative flex flex-col items-center gap-1.5 px-2.5 py-3 text-center transition-colors duration-75",
+            "relative flex flex-col items-center gap-1.5 px-2.5 py-3 text-center transition-all duration-100",
             isHovered ? "bg-[hsl(var(--panel-hover))]" : "bg-[hsl(var(--panel-bg))]"
           )}
+          style={isHovered ? { boxShadow: 'inset 0 0 24px hsl(var(--panel-accent) / 0.03)' } : undefined}
         >
           {/* Status dot top-right */}
           {accent && (
-            <span className={cn("absolute top-1.5 right-1.5 w-1 h-1 rounded-full", accent.dot)} />
+            <span className={cn("absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full", accent.dot, accent.glow)} />
           )}
 
           {/* Icon */}
           <div className={cn(
-            "p-1.5 rounded-lg transition-colors",
-            isHovered ? "bg-[hsl(var(--panel-accent)/.1)]" : "bg-[hsl(var(--panel-border)/.6)]"
+            "p-2 rounded-lg transition-all border",
+            isHovered
+              ? "bg-[hsl(var(--panel-accent)/.08)] border-[hsl(var(--panel-accent)/.2)] shadow-[0_0_10px_hsl(var(--panel-accent)/.06)]"
+              : "bg-[hsl(var(--panel-hover)/.6)] border-[hsl(var(--panel-border-subtle))]"
           )}>
             <Icon className={cn("h-4 w-4 transition-colors", isHovered ? "text-[hsl(var(--panel-accent))]" : "text-[hsl(var(--panel-text-secondary))]")} />
           </div>
@@ -284,9 +310,9 @@ const GridView: React.FC<{
             {section.description?.slice(0, 40)}{section.description?.length > 40 ? '…' : ''}
           </span>
 
-          {/* Hover tooltip — positioned ABOVE */}
+          {/* Hover tooltip */}
           {isHovered && (
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-1 z-50 px-2.5 py-1.5 rounded bg-[hsl(var(--panel-tooltip-bg))] border border-[hsl(var(--panel-tooltip-border))] shadow-xl max-w-[200px] pointer-events-none animate-in fade-in duration-100">
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-1 z-50 px-2.5 py-1.5 rounded-md bg-[hsl(var(--panel-tooltip-bg))] border border-[hsl(var(--panel-tooltip-border))] shadow-xl max-w-[200px] pointer-events-none animate-in fade-in duration-100">
               <p className="text-[9px] text-[hsl(var(--panel-tooltip-text))] leading-relaxed text-left">{section.description}</p>
             </div>
           )}
