@@ -769,4 +769,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ui-audit-report": { label: "UI/UX Audit Report", category: "Features" },
   "legal-setup-roadmap": { label: "Legal Setup & Licensing", category: "Features" },
   "financial-projection": { label: "24-Month Financial Projection", category: "Features" },
+  "fundraising-exit-roadmap": { label: "Fundraising & Exit Roadmap", category: "Features" },
 };
