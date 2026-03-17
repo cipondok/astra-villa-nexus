@@ -926,10 +926,10 @@ const Index = () => {
                 <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
                   <InvestorPathSelector />
                 </LazyRender>
-              </div>
+              </SectionWrapper>
 
               {/* ── SECTION 6: AI Tools Preview ── */}
-              <div className="bg-background">
+              <SectionWrapper variant="default">
                 <div className="max-w-7xl mx-auto">
                   <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
                     <AstraVillaFeatures />
