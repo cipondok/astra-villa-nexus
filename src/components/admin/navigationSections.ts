@@ -1521,6 +1521,13 @@ export const navigationSections = {
       badge: "📈 Investors"
     },
     {
+      key: "developer-partnership-framework",
+      label: "Developer Partnership Framework",
+      icon: Handshake,
+      description: "Structured collaboration model — tiered partnerships, lead pipeline, revenue model, and performance metrics",
+      badge: "🤝 Partnerships"
+    },
+    {
       key: "founder-weekly-routine",
       label: "Founder Weekly Routine",
       icon: Calendar,

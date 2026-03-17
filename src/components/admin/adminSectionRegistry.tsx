@@ -242,6 +242,7 @@ export const OrgChartDashboard = lazyRetry(() => import("./OrgChartDashboard"));
 export const MarketingBudgetDashboard = lazyRetry(() => import("./MarketingBudgetDashboard"));
 export const FundraisingReadinessDashboard = lazyRetry(() => import("./FundraisingReadinessDashboard"));
 export const InvestorKPIDashboard = lazyRetry(() => import("./InvestorKPIDashboard"));
+export const DeveloperPartnershipFramework = lazyRetry(() => import("./DeveloperPartnershipFramework"));
 export const FounderWeeklyRoutine = lazyRetry(() => import("./FounderWeeklyRoutine"));
 export const PRLaunchStrategyDashboard = lazyRetry(() => import("./PRLaunchStrategyDashboard"));
 export const InvestorOutreachDashboard = lazyRetry(() => import("./InvestorOutreachDashboard"));
@@ -535,6 +536,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "marketing-budget":           () => <MarketingBudgetDashboard />,
   "fundraising-readiness":      () => <FundraisingReadinessDashboard />,
   "investor-kpi-framework":     () => <InvestorKPIDashboard />,
+  "developer-partnership-framework": () => <DeveloperPartnershipFramework />,
   "founder-weekly-routine":     () => <FounderWeeklyRoutine />,
   "pr-launch-strategy":         () => <PRLaunchStrategyDashboard />,
   "investor-outreach":          () => <InvestorOutreachDashboard />,
@@ -749,6 +751,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "marketing-budget": { label: "Marketing Budget Plan", category: "Features" },
   "fundraising-readiness": { label: "Fundraising Readiness", category: "Features" },
   "investor-kpi-framework": { label: "Investor KPI Framework", category: "Features" },
+  "developer-partnership-framework": { label: "Developer Partnership Framework", category: "Features" },
   "founder-weekly-routine": { label: "Founder Weekly Routine", category: "Features" },
   "pr-launch-strategy": { label: "PR Launch Strategy", category: "Features" },
   "investor-outreach": { label: "Investor Outreach Plan", category: "Features" },

@@ -55,6 +55,7 @@ const OrgChartDashboard = lazy(() => import('./OrgChartDashboard'));
 const MarketingBudgetDashboard = lazy(() => import('./MarketingBudgetDashboard'));
 const FundraisingReadinessDashboard = lazy(() => import('./FundraisingReadinessDashboard'));
 const InvestorKPIDashboard = lazy(() => import('./InvestorKPIDashboard'));
+const DeveloperPartnershipFramework = lazy(() => import('./DeveloperPartnershipFramework'));
 const FounderWeeklyRoutine = lazy(() => import('./FounderWeeklyRoutine'));
 const PRLaunchStrategyDashboard = lazy(() => import('./PRLaunchStrategyDashboard'));
 const InvestorOutreachDashboard = lazy(() => import('./InvestorOutreachDashboard'));
@@ -431,6 +432,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return (
           <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
             <InvestorKPIDashboard />
+          </Suspense>
+        );
+      case "developer-partnership-framework":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <DeveloperPartnershipFramework />
           </Suspense>
         );
       case "founder-weekly-routine":
