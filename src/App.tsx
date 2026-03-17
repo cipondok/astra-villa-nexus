@@ -263,6 +263,7 @@ const SocialMediaStrategyPage = lazy(() => import('@/pages/SocialMediaStrategyPa
 const FundraisingChecklistPage = lazy(() => import('@/pages/FundraisingChecklistPage'));
 const DailyGrowthMonitorPage = lazy(() => import('@/pages/DailyGrowthMonitorPage'));
 const NegotiationPsychologyPage = lazy(() => import('@/pages/NegotiationPsychologyPage'));
+const HNWInvestorStrategyPage = lazy(() => import('@/pages/HNWInvestorStrategyPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -640,6 +641,7 @@ const AppContent = () => {
                 <Route path="/fundraising-checklist" element={<FundraisingChecklistPage />} />
                 <Route path="/daily-growth-monitor" element={<DailyGrowthMonitorPage />} />
                 <Route path="/negotiation-psychology" element={<NegotiationPsychologyPage />} />
+                <Route path="/hnw-investor-strategy" element={<HNWInvestorStrategyPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
