@@ -269,9 +269,9 @@ const GridView: React.FC<{
           {/* Icon */}
           <div className={cn(
             "p-1.5 rounded-lg transition-colors",
-            isHovered ? "bg-[#f0b90b]/8" : "bg-[hsl(var(--muted)/.3)]"
+            isHovered ? "bg-[#f0b90b]/10" : "bg-muted/50"
           )}>
-            <Icon className={cn("h-4 w-4 transition-colors", isHovered ? "text-[#f0b90b]" : "text-muted-foreground/40")} />
+            <Icon className={cn("h-4 w-4 transition-colors", isHovered ? "text-[#f0b90b]" : "text-muted-foreground")} />
           </div>
 
           {/* Title */}
