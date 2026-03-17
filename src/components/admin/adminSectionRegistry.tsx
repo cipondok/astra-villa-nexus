@@ -748,6 +748,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "org-chart": { label: "Org Chart & Structure", category: "Features" },
   "marketing-budget": { label: "Marketing Budget Plan", category: "Features" },
   "fundraising-readiness": { label: "Fundraising Readiness", category: "Features" },
+  "investor-kpi-framework": { label: "Investor KPI Framework", category: "Features" },
   "founder-weekly-routine": { label: "Founder Weekly Routine", category: "Features" },
   "pr-launch-strategy": { label: "PR Launch Strategy", category: "Features" },
   "investor-outreach": { label: "Investor Outreach Plan", category: "Features" },
