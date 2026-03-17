@@ -240,6 +240,7 @@ const VirtualPropertyExplorer = lazy(() => import('@/pages/VirtualPropertyExplor
 const ProductArchitecturePage = lazy(() => import('@/pages/ProductArchitecturePage'));
 const DevelopmentRoadmapPage = lazy(() => import('@/pages/DevelopmentRoadmapPage'));
 const SchemaArchitecturePage = lazy(() => import('@/pages/SchemaArchitecturePage'));
+const ApiArchitecturePage = lazy(() => import('@/pages/ApiArchitecturePage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
