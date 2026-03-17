@@ -219,6 +219,38 @@ export const OpportunityScoringEngine = lazyRetry(() => import("./OpportunitySco
 export const PricePredictionEngine = lazyRetry(() => import("./PricePredictionEngine"));
 export const OffPlanProjectManager = lazyRetry(() => import("./OffPlanProjectManager"));
 
+// Feature Enhancement dashboards
+export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
+export const GrowthExecutionDashboard = lazyRetry(() => import("./GrowthExecutionDashboard"));
+export const AgentAcquisitionDashboard = lazyRetry(() => import("./AgentAcquisitionDashboard"));
+export const SupplyExpansionDashboard = lazyRetry(() => import("./SupplyExpansionDashboard"));
+export const InvestorFunnelDashboard = lazyRetry(() => import("./InvestorFunnelDashboard"));
+export const ViralContentDashboard = lazyRetry(() => import("./ViralContentDashboard"));
+export const PartnershipExpansionDashboard = lazyRetry(() => import("./PartnershipExpansionDashboard"));
+export const BrandAuthorityDashboard = lazyRetry(() => import("./BrandAuthorityDashboard"));
+export const MonetizationStrategyDashboard = lazyRetry(() => import("./MonetizationStrategyDashboard"));
+export const InvestorPitchDashboard = lazyRetry(() => import("./InvestorPitchDashboard"));
+export const InvestorCommunityDashboard = lazyRetry(() => import("./InvestorCommunityDashboard"));
+export const GeoExpansionDashboard = lazyRetry(() => import("./GeoExpansionDashboard"));
+export const FounderBrandingDashboard = lazyRetry(() => import("./FounderBrandingDashboard"));
+export const HiringRoadmapDashboard = lazyRetry(() => import("./HiringRoadmapDashboard"));
+export const PartnershipManagerRole = lazyRetry(() => import("./PartnershipManagerRole"));
+export const DigitalGrowthRole = lazyRetry(() => import("./DigitalGrowthRole"));
+export const PropertySupplyManagerRole = lazyRetry(() => import("./PropertySupplyManagerRole"));
+export const CustomerSuccessRole = lazyRetry(() => import("./CustomerSuccessRole"));
+export const OrgChartDashboard = lazyRetry(() => import("./OrgChartDashboard"));
+export const MarketingBudgetDashboard = lazyRetry(() => import("./MarketingBudgetDashboard"));
+export const FundraisingReadinessDashboard = lazyRetry(() => import("./FundraisingReadinessDashboard"));
+export const FounderWeeklyRoutine = lazyRetry(() => import("./FounderWeeklyRoutine"));
+export const PRLaunchStrategyDashboard = lazyRetry(() => import("./PRLaunchStrategyDashboard"));
+export const InvestorOutreachDashboard = lazyRetry(() => import("./InvestorOutreachDashboard"));
+export const FounderDailySystem = lazyRetry(() => import("./FounderDailySystem"));
+export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
+export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
+export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
+export const HomepageBlueprint = lazyRetry(() => import("./HomepageBlueprint"));
+export const UIAuditReport = lazyRetry(() => import("./UIAuditReport"));
+
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
 // Sections with custom props are listed explicitly; all others are simple <Component />.
