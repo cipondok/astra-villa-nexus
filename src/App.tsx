@@ -609,6 +609,7 @@ const AppContent = () => {
                 <Route path="/security-hardening" element={<SecurityHardeningPage />} />
                 <Route path="/cloud-infrastructure" element={<CloudInfrastructurePage />} />
                 <Route path="/disaster-recovery" element={<DisasterRecoveryPage />} />
+                <Route path="/behavior-analytics" element={<BehaviorAnalyticsPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
