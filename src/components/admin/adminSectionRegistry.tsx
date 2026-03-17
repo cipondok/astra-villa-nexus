@@ -272,6 +272,7 @@ export const SuccessProbabilityFramework = lazyRetry(() => import("./SuccessProb
 export const RiskMitigationStrategy = lazyRetry(() => import("./RiskMitigationStrategy"));
 export const UltimateMasterPlan = lazyRetry(() => import("./UltimateMasterPlan"));
 export const NinetyDayRoadmap = lazyRetry(() => import("./NinetyDayRoadmap"));
+export const DailyExecutionPlan = lazyRetry(() => import("./DailyExecutionPlan"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
