@@ -75,6 +75,7 @@ const HiringRoadmap = lazy(() => import('./HiringRoadmap'));
 const CustomerSupportFramework = lazy(() => import('./CustomerSupportFramework'));
 const MarketplaceIntegrity = lazy(() => import('./MarketplaceIntegrity'));
 const TeamKPIFramework = lazy(() => import('./TeamKPIFramework'));
+const WeeklyLeadershipReview = lazy(() => import('./WeeklyLeadershipReview'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
@@ -562,6 +563,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return (
           <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
             <TeamKPIFramework />
+          </Suspense>
+        );
+      case "weekly-leadership-review":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <WeeklyLeadershipReview />
           </Suspense>
         );
       default:
