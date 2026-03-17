@@ -559,7 +559,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "founder-brand-strategy":     () => <FounderBrandStrategy />,
   "equity-allocation-framework": () => <EquityAllocationFramework />,
   "investor-qa-prep":           () => <InvestorQAPrep />,
-  "hiring-roadmap":             () => <HiringRoadmap />,
+  "hiring-roadmap-10":          () => <HiringRoadmap />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
