@@ -62,11 +62,6 @@ export default function PriceDropDealsPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Price Drop Deals — ASTRA Villa</title>
-        <meta name="description" content="AI-powered price drop alerts and investment opportunities. Monitor property price reductions in real-time." />
-      </Helmet>
-
       <div className="container mx-auto px-4 py-8 max-w-7xl space-y-6">
         {/* Header */}
         <div>
