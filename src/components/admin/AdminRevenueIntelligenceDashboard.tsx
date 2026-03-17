@@ -406,6 +406,9 @@ export default function AdminRevenueIntelligenceDashboard() {
           <TabsTrigger value="vendor" className="text-xs">Service Marketplace</TabsTrigger>
           <TabsTrigger value="subscriptions" className="text-xs">Subscriptions</TabsTrigger>
           <TabsTrigger value="cities" className="text-xs">City Performance</TabsTrigger>
+          <TabsTrigger value="alerts" className="text-xs gap-1">
+            <Bell className="h-3 w-3" /> Alerts
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview"><OverviewTab data={data} /></TabsContent>
@@ -414,6 +417,7 @@ export default function AdminRevenueIntelligenceDashboard() {
         <TabsContent value="vendor"><VendorTab data={data} /></TabsContent>
         <TabsContent value="subscriptions"><SubscriptionTab data={data} /></TabsContent>
         <TabsContent value="cities"><CityTab data={data} /></TabsContent>
+        <TabsContent value="alerts"><RevenueAlertSettings /></TabsContent>
       </Tabs>
     </div>
   );
