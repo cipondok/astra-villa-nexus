@@ -286,6 +286,7 @@ const AgentEffectivenessPage = lazy(() => import('@/pages/AgentEffectivenessPage
 const ViralGrowthPage = lazy(() => import('@/pages/ViralGrowthPage'));
 const InvestorClubPage = lazy(() => import('@/pages/InvestorClubPage'));
 const DataMoatPage = lazy(() => import('@/pages/DataMoatPage'));
+const RevenueScalingPage = lazy(() => import('@/pages/RevenueScalingPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
