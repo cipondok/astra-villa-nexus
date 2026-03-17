@@ -229,6 +229,7 @@ const MobileInvestorDashboard = lazy(() => import('@/pages/mobile/MobileInvestor
 const MobileAIChat = lazy(() => import('@/pages/mobile/MobileAIChat'));
 const MobileAlerts = lazy(() => import('@/pages/mobile/MobileAlerts'));
 const FractionalInvestmentPage = lazy(() => import('@/pages/FractionalInvestmentPage'));
+const DeveloperDemandForecastPage = lazy(() => import('@/pages/DeveloperDemandForecastPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -316,6 +317,7 @@ const AppContent = () => {
                 <Route path="/vr-tour" element={<VRTourShowcase />} />
                 <Route path="/blockchain-verification" element={<BlockchainVerification />} />
                 <Route path="/fractional-investment" element={<FractionalInvestmentPage />} />
+                <Route path="/developer-demand-forecast" element={<DeveloperDemandForecastPage />} />
                 <Route path="/properties/:id" element={<PropertyDetail />} />
                 <Route path="/add-property" element={<AddProperty />} />
                 <Route path="/admin" element={<AdminDashboard />} />

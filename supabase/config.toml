@@ -312,3 +312,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.investment-map-explorer]
     verify_jwt = false
+
+  [functions.developer-demand-forecast]
+    verify_jwt = false
