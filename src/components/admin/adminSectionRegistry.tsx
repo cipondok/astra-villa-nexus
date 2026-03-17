@@ -260,6 +260,7 @@ export const EquityAllocationFramework = lazyRetry(() => import("./EquityAllocat
 export const InvestorQAPrep = lazyRetry(() => import("./InvestorQAPrep"));
 export const HiringRoadmap = lazyRetry(() => import("./HiringRoadmap"));
 export const CustomerSupportFramework = lazyRetry(() => import("./CustomerSupportFramework"));
+export const MarketplaceIntegrity = lazyRetry(() => import("./MarketplaceIntegrity"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
