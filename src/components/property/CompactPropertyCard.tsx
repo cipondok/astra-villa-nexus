@@ -45,6 +45,8 @@ interface CompactProperty {
   agent_verified?: boolean;
   agency_verified?: boolean;
   discount_percentage?: number;
+  opportunity_score?: number | null;
+  ai_estimated_price?: number | null;
   posted_by?: {
     id: string;
     name: string;
