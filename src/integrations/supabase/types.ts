@@ -10230,6 +10230,90 @@ export type Database = {
         }
         Relationships: []
       }
+      founder_deal_pipeline: {
+        Row: {
+          commission_estimate: number | null
+          created_at: string
+          created_by: string | null
+          deal_stage: string
+          deal_value: number | null
+          estimated_budget: number | null
+          id: string
+          investor_email: string | null
+          investor_name: string
+          investor_phone: string | null
+          last_follow_up_date: string | null
+          lost_reason: string | null
+          next_action_note: string | null
+          next_follow_up_date: string | null
+          notes: string | null
+          property_id: string | null
+          property_reference: string
+          source: string | null
+          updated_at: string
+          urgency_level: string
+        }
+        Insert: {
+          commission_estimate?: number | null
+          created_at?: string
+          created_by?: string | null
+          deal_stage?: string
+          deal_value?: number | null
+          estimated_budget?: number | null
+          id?: string
+          investor_email?: string | null
+          investor_name: string
+          investor_phone?: string | null
+          last_follow_up_date?: string | null
+          lost_reason?: string | null
+          next_action_note?: string | null
+          next_follow_up_date?: string | null
+          notes?: string | null
+          property_id?: string | null
+          property_reference: string
+          source?: string | null
+          updated_at?: string
+          urgency_level?: string
+        }
+        Update: {
+          commission_estimate?: number | null
+          created_at?: string
+          created_by?: string | null
+          deal_stage?: string
+          deal_value?: number | null
+          estimated_budget?: number | null
+          id?: string
+          investor_email?: string | null
+          investor_name?: string
+          investor_phone?: string | null
+          last_follow_up_date?: string | null
+          lost_reason?: string | null
+          next_action_note?: string | null
+          next_follow_up_date?: string | null
+          notes?: string | null
+          property_id?: string | null
+          property_reference?: string
+          source?: string | null
+          updated_at?: string
+          urgency_level?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "founder_deal_pipeline_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "founder_deal_pipeline_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fraud_patterns: {
         Row: {
           auto_reject: boolean | null
