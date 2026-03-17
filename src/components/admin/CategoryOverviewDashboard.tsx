@@ -220,7 +220,7 @@ const ListView: React.FC<{
                   </span>
                 </>
               ) : (
-                <span className="text-[8px] text-muted-foreground/20">—</span>
+                <span className="text-[8px] text-muted-foreground/50">—</span>
               )}
             </div>
 
