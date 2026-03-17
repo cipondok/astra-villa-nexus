@@ -282,6 +282,7 @@ const AppContent = () => {
             <Suspense fallback={<PageLoader />}>
               <Routes location={location}>
                 <Route path="/" element={<Index />} />
+                <Route path="/landing" element={<LandingPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
                 <Route path="/saved" element={<Saved />} />
