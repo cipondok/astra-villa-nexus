@@ -166,6 +166,7 @@ const AgentRegistration = lazy(() => import('@/pages/AgentRegistration'));
 const PropertyComparison = lazy(() => import('@/pages/PropertyComparison'));
 const PreQualificationPage = lazy(() => import('@/pages/PreQualificationPage'));
 const MessagesPage = lazy(() => import('@/pages/MessagesPage'));
+const NotificationsHub = lazy(() => import('@/pages/NotificationsHub'));
 const UserRentalDashboard = lazy(() => import('@/pages/UserRentalDashboard'));
 const AIPriceEstimator = lazy(() => import('@/pages/AIPriceEstimator'));
 const KprCalculatorPage = lazy(() => import('@/pages/KprCalculatorPage'));
