@@ -617,6 +617,12 @@ export const navigationSections = {
 
   "vendor-management": [
     {
+      key: "vendor-management-overview",
+      label: "📊 Vendors Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all vendor management modules"
+    },
+    {
       key: "vendors-hub",
       label: "Vendors Hub",
       icon: ShoppingBag,
