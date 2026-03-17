@@ -206,6 +206,8 @@ const AutonomousAgentPage = lazy(() => import('@/pages/AutonomousAgentPage'));
 const AIAutopilotPage = lazy(() => import('@/pages/AIAutopilotPage'));
 const PriceDropDealsPage = lazy(() => import('@/pages/PriceDropDealsPage'));
 const AgentCRMDashboard = lazy(() => import('@/pages/AgentCRMDashboard'));
+const OfferNegotiationPage = lazy(() => import('@/pages/OfferNegotiationPage'));
+const MyOffersPage = lazy(() => import('@/pages/MyOffersPage'));
 const MobileHomeFeed = lazy(() => import('@/pages/mobile/MobileHomeFeed'));
 const MobilePropertyDetail = lazy(() => import('@/pages/mobile/MobilePropertyDetail'));
 const MobileInvestorDashboard = lazy(() => import('@/pages/mobile/MobileInvestorDashboard'));
@@ -488,6 +490,12 @@ const AppContent = () => {
                 <Route path="/ai-search" element={<AISearchAssistantPage />} />
                 <Route path="/investment-leaderboard" element={<InvestmentLeaderboardPage />} />
                 <Route path="/price-drop-deals" element={<PriceDropDealsPage />} />
+                <Route path="/my-offers" element={<ProtectedRoute />}>
+                  <Route index element={<MyOffersPage />} />
+                </Route>
+                <Route path="/offers/:offerId" element={<ProtectedRoute />}>
+                  <Route index element={<OfferNegotiationPage />} />
+                </Route>
                 <Route path="/ai-map" element={<AIMapSearchPage />} />
                 <Route path="/map-search" element={<AIMapSearchPage />} />
                 <Route path="/property-map" element={<PropertyMapSearchPage />} />
