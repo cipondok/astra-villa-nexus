@@ -3,16 +3,17 @@ import { PortfolioProperty } from './usePortfolioManager';
 
 // ── Scenario Types ──
 export type ScenarioType = 'bull' | 'base' | 'bear' | 'hyper_growth' | 'correction';
+export type InvestmentStrategy = 'rental' | 'resale' | 'hybrid';
 
 export interface ScenarioParams {
   label: string;
   description: string;
-  appreciation_rate: number;      // annual %
-  rental_growth_rate: number;     // annual %
-  liquidity_risk: number;         // 0-100
-  vacancy_rate: number;           // %
-  exit_discount: number;          // % discount on exit
-  color: string;                  // chart color token
+  appreciation_rate: number;
+  rental_growth_rate: number;
+  liquidity_risk: number;
+  vacancy_rate: number;
+  exit_discount: number;
+  color: string;
 }
 
 export const SCENARIOS: Record<ScenarioType, ScenarioParams> = {
@@ -70,11 +71,11 @@ export const SCENARIOS: Record<ScenarioType, ScenarioParams> = {
 
 // ── Financing Config ──
 export interface FinancingConfig {
-  down_payment_pct: number;       // 0-100
-  loan_rate_annual: number;       // %
+  down_payment_pct: number;
+  loan_rate_annual: number;
   loan_term_years: number;
   refinance_at_year: number | null;
-  refinance_rate: number;         // new rate after refinance
+  refinance_rate: number;
 }
 
 export const DEFAULT_FINANCING: FinancingConfig = {
@@ -96,9 +97,10 @@ export interface YearProjection {
   net_worth: number;
   cashflow_annual: number;
   debt_service_annual: number;
-  dscr: number;                   // debt service coverage ratio
-  leverage_ratio: number;         // loan / value
+  dscr: number;
+  leverage_ratio: number;
   milestones: string[];
+  resale_net_profit: number;
 }
 
 // ── Simulation Result ──
@@ -111,13 +113,17 @@ export interface SimulationResult {
     total_rental_income: number;
     final_equity: number;
     final_net_worth: number;
-    wealth_acceleration_score: number;   // 0-100
-    risk_diversification_score: number;  // 0-100
-    capital_efficiency_score: number;    // 0-100
-    cashflow_stress_index: number;       // 0-100 (lower = healthier)
-    leverage_efficiency_score: number;   // 0-100
+    wealth_acceleration_score: number;
+    risk_diversification_score: number;
+    capital_efficiency_score: number;
+    cashflow_stress_index: number;
+    leverage_efficiency_score: number;
+    resale_net_profit: number;
+    risk_volatility: number;
   };
   advice: WealthAdvice[];
+  timingSensitivity: TimingSensitivity;
+  investmentMix: InvestmentMixRecommendation;
 }
 
 export interface WealthAdvice {
@@ -126,6 +132,35 @@ export interface WealthAdvice {
   message: string;
   impact: string;
   priority: 'high' | 'medium' | 'low';
+}
+
+export interface TimingSensitivity {
+  optimal_entry_window: string;
+  delay_cost_per_year_pct: number;
+  early_exit_penalty_pct: number;
+  peak_roi_year: number;
+  sensitivity_rating: 'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL';
+}
+
+export interface InvestmentMixRecommendation {
+  rental_allocation_pct: number;
+  resale_allocation_pct: number;
+  diversification_score: number;
+  recommended_cities: string[];
+  recommended_types: string[];
+  mix_summary: string;
+}
+
+export interface SavedScenario {
+  id: string;
+  name: string;
+  timestamp: number;
+  strategy: InvestmentStrategy;
+  scenarios: ScenarioType[];
+  financing: FinancingConfig;
+  maxYears: number;
+  investmentAmount: number;
+  results: SimulationResult[];
 }
 
 // ── Monthly payment helper ──
@@ -157,12 +192,22 @@ function runSimulation(
   scenario: ScenarioType,
   financing: FinancingConfig,
   maxYears: number,
+  strategy: InvestmentStrategy = 'hybrid',
+  investmentAmount?: number,
 ): SimulationResult {
   const params = SCENARIOS[scenario];
-  const totalPortfolioValue = properties.reduce((s, p) => s + p.price, 0);
+  const rawPortfolioValue = properties.reduce((s, p) => s + p.price, 0);
+  const totalPortfolioValue = investmentAmount && investmentAmount > 0
+    ? Math.min(investmentAmount, rawPortfolioValue)
+    : rawPortfolioValue;
+
   const avgRentalYield = properties.length > 0
     ? properties.reduce((s, p) => s + (p.rental_yield || 4.5), 0) / properties.length
     : 4.5;
+
+  // Strategy modifiers
+  const rentalMultiplier = strategy === 'rental' ? 1.0 : strategy === 'resale' ? 0.0 : 0.6;
+  const resaleMultiplier = strategy === 'resale' ? 1.0 : strategy === 'rental' ? 0.0 : 0.4;
 
   const downPayment = totalPortfolioValue * (financing.down_payment_pct / 100);
   const initialLoan = totalPortfolioValue - downPayment;
@@ -171,7 +216,6 @@ function runSimulation(
   const projections: YearProjection[] = [];
   let cumulativeRental = 0;
 
-  // Milestones tracking
   const MILESTONE_TARGETS = [
     { label: 'Rp 1B Equity', value: 1_000_000_000 },
     { label: 'Rp 5B Equity', value: 5_000_000_000 },
@@ -187,17 +231,15 @@ function runSimulation(
     const marketValue = Math.round(totalPortfolioValue * Math.pow(1 + appRate, y));
 
     const baseRental = totalPortfolioValue * (avgRentalYield / 100);
-    const rentalAnnual = Math.round(baseRental * Math.pow(1 + rentalGrowth, y) * (1 - params.vacancy_rate / 100));
+    const rentalAnnual = Math.round(baseRental * Math.pow(1 + rentalGrowth, y) * (1 - params.vacancy_rate / 100) * rentalMultiplier);
     cumulativeRental += y > 0 ? rentalAnnual : 0;
 
-    // Loan balance
     let currentRate = financing.loan_rate_annual;
     let effectiveLoan = initialLoan;
     let effectiveTerm = loanTerm;
     let yearOffset = 0;
 
     if (financing.refinance_at_year && y >= financing.refinance_at_year) {
-      // Refinanced: recalculate from refinance point
       const balanceAtRefi = Math.max(0, loanBalanceAfterYears(initialLoan, financing.loan_rate_annual, loanTerm, financing.refinance_at_year));
       effectiveLoan = balanceAtRefi;
       currentRate = financing.refinance_rate;
@@ -214,7 +256,11 @@ function runSimulation(
     const dscr = debtServiceAnnual > 0 ? rentalAnnual / debtServiceAnnual : 99;
     const leverageRatio = marketValue > 0 ? loanBal / marketValue : 0;
 
-    // Milestones
+    // Resale net profit at this year
+    const exitCosts = marketValue * (params.exit_discount / 100);
+    const taxPPh = marketValue * 0.025; // Indonesian PPh
+    const resaleNetProfit = Math.round((marketValue - exitCosts - taxPPh - loanBal - downPayment + cumulativeRental) * resaleMultiplier);
+
     const milestones: string[] = [];
     for (const m of MILESTONE_TARGETS) {
       if (!achievedMilestones.has(m.label) && equity >= m.value) {
@@ -242,19 +288,19 @@ function runSimulation(
       dscr: Math.round(dscr * 100) / 100,
       leverage_ratio: Math.round(leverageRatio * 1000) / 1000,
       milestones,
+      resale_net_profit: resaleNetProfit,
     });
   }
 
   const final = projections[projections.length - 1];
   const initial = projections[0];
-  const totalReturn = initial.market_value > 0
+  const totalReturn = initial.equity > 0
     ? ((final.net_worth - initial.equity) / initial.equity) * 100
     : 0;
 
   // Advisory logic
   const advice: WealthAdvice[] = [];
 
-  // DSCR warnings
   const lowDSCR = projections.find(p => p.year > 0 && p.dscr < 1.2 && p.dscr > 0);
   if (lowDSCR) {
     advice.push({
@@ -266,7 +312,6 @@ function runSimulation(
     });
   }
 
-  // Leverage too high
   const highLeverage = projections.find(p => p.year >= 3 && p.leverage_ratio > 0.7);
   if (highLeverage) {
     advice.push({
@@ -278,7 +323,6 @@ function runSimulation(
     });
   }
 
-  // Equity milestone acquisition suggestion
   const equityThreshold = projections.find(p => p.equity > totalPortfolioValue * 0.6 && p.year >= 3);
   if (equityThreshold) {
     advice.push({
@@ -290,7 +334,6 @@ function runSimulation(
     });
   }
 
-  // Diversification
   const uniqueCities = new Set(properties.map(p => p.city)).size;
   if (uniqueCities < 3 && properties.length >= 2) {
     advice.push({
@@ -302,7 +345,6 @@ function runSimulation(
     });
   }
 
-  // Hold recommendation for strong performers
   if (params.appreciation_rate >= 7) {
     advice.push({
       type: 'hold',
@@ -310,6 +352,26 @@ function runSimulation(
       message: `In ${params.label} scenario, holding through year 5+ maximizes compound growth.`,
       impact: `Projected ${totalReturn.toFixed(0)}% total return`,
       priority: 'low',
+    });
+  }
+
+  // Strategy-specific advice
+  if (strategy === 'rental') {
+    advice.push({
+      type: 'hold',
+      year: 3,
+      message: 'Rental strategy: Focus on occupancy optimization and tenant retention for stable cashflow.',
+      impact: `Projected rental income: ${formatB(final.rental_income_cumulative)}`,
+      priority: 'medium',
+    });
+  } else if (strategy === 'resale') {
+    const peakYear = projections.reduce((best, p) => p.resale_net_profit > best.resale_net_profit ? p : best, projections[0]);
+    advice.push({
+      type: 'sell',
+      year: peakYear.year,
+      message: `Optimal resale at year ${peakYear.year} for maximum net profit of ${formatB(peakYear.resale_net_profit)}.`,
+      impact: 'Maximizes capital appreciation return',
+      priority: 'high',
     });
   }
 
@@ -323,6 +385,56 @@ function runSimulation(
   const leverageEfficiency = Math.min(100, Math.round(
     (1 - final.leverage_ratio) * 50 + (final.dscr > 1.5 ? 50 : final.dscr > 1 ? 30 : 10)
   ));
+
+  // Risk volatility (spread between best and worst outcomes)
+  const riskVolatility = Math.min(100, Math.round(Math.abs(params.appreciation_rate) * 3 + params.liquidity_risk * 0.5));
+
+  // Timing Sensitivity
+  const peakROIYear = projections.reduce((best, p, i) => {
+    if (i === 0) return best;
+    const roi = initial.equity > 0 ? ((p.net_worth - initial.equity) / initial.equity / p.year * 100) : 0;
+    return roi > best.roi ? { year: p.year, roi } : best;
+  }, { year: maxYears, roi: 0 }).year;
+
+  const delayCost = params.appreciation_rate * 0.8;
+  const earlyExitPenalty = params.exit_discount + 2.5;
+  const sensitivityScore = delayCost + earlyExitPenalty + params.liquidity_risk * 0.3;
+  const sensitivityRating: TimingSensitivity['sensitivity_rating'] =
+    sensitivityScore > 30 ? 'CRITICAL' : sensitivityScore > 20 ? 'HIGH' : sensitivityScore > 10 ? 'MODERATE' : 'LOW';
+
+  const timingSensitivity: TimingSensitivity = {
+    optimal_entry_window: params.appreciation_rate > 5 ? 'Now – within 3 months' : params.appreciation_rate > 0 ? 'Within 6 months' : 'Wait for recovery signals',
+    delay_cost_per_year_pct: Math.round(delayCost * 10) / 10,
+    early_exit_penalty_pct: Math.round(earlyExitPenalty * 10) / 10,
+    peak_roi_year: peakROIYear,
+    sensitivity_rating: sensitivityRating,
+  };
+
+  // Investment Mix Recommendation
+  const allCities = [...new Set(properties.map(p => p.city))];
+  const allTypes = [...new Set(properties.map(p => p.property_type))];
+  const optimalRental = strategy === 'rental' ? 80 : strategy === 'resale' ? 20 : 55;
+  const optimalResale = 100 - optimalRental;
+
+  const recCities = allCities.length < 3
+    ? [...allCities, ...(allCities.includes('Bali') ? [] : ['Bali']), ...(allCities.includes('Jakarta') ? [] : ['Jakarta'])].slice(0, 4)
+    : allCities.slice(0, 4);
+  const recTypes = allTypes.length < 2
+    ? [...allTypes, ...(allTypes.includes('villa') ? [] : ['villa']), ...(allTypes.includes('apartemen') ? [] : ['apartemen'])].slice(0, 3)
+    : allTypes.slice(0, 3);
+
+  const investmentMix: InvestmentMixRecommendation = {
+    rental_allocation_pct: optimalRental,
+    resale_allocation_pct: optimalResale,
+    diversification_score: riskDiversification,
+    recommended_cities: recCities,
+    recommended_types: recTypes,
+    mix_summary: strategy === 'rental'
+      ? `Fokus pendapatan pasif: alokasikan ${optimalRental}% ke properti high-yield di ${recCities.slice(0, 2).join(' & ')}.`
+      : strategy === 'resale'
+      ? `Fokus capital gain: target properti undervalued di area high-growth untuk exit dalam ${peakROIYear} tahun.`
+      : `Strategi hybrid optimal: ${optimalRental}% rental yield + ${optimalResale}% capital appreciation di ${recCities.slice(0, 2).join(' & ')}.`,
+  };
 
   return {
     scenario,
@@ -338,8 +450,12 @@ function runSimulation(
       capital_efficiency_score: capitalEfficiency,
       cashflow_stress_index: Math.round(cashflowStress),
       leverage_efficiency_score: leverageEfficiency,
+      resale_net_profit: final.resale_net_profit,
+      risk_volatility: riskVolatility,
     },
     advice,
+    timingSensitivity,
+    investmentMix,
   };
 }
 
@@ -356,11 +472,13 @@ export function useWealthSimulator(
   selectedScenarios: ScenarioType[],
   financing: FinancingConfig,
   maxYears: number,
+  strategy: InvestmentStrategy = 'hybrid',
+  investmentAmount?: number,
 ) {
   const results = useMemo(() => {
     if (!properties || properties.length === 0) return [];
-    return selectedScenarios.map(s => runSimulation(properties, s, financing, maxYears));
-  }, [properties, selectedScenarios, financing, maxYears]);
+    return selectedScenarios.map(s => runSimulation(properties, s, financing, maxYears, strategy, investmentAmount));
+  }, [properties, selectedScenarios, financing, maxYears, strategy, investmentAmount]);
 
   return results;
 }
