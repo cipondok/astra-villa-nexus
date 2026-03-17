@@ -1,70 +1,74 @@
 
-# ASTRA Villa — Platform Architecture Analysis & Roadmap
 
-## Status: 🔄 IN PROGRESS
+## Admin Revenue Tracking & Commission Analytics Dashboard
 
-## Current State Assessment (March 2026)
+### Current State
+The admin dashboard already has:
+1. **`AdminRevenueCommissionDashboard`** — basic KPI cards from `get_admin_revenue_stats` RPC (total revenue, commissions, transactions, mortgage pipeline) — registered as `revenue-commissions`
+2. **`RevenueAnalyticsDashboard`** — daily revenue trend (AreaChart), revenue by transaction type (BarChart), status pie chart from `transaction_summary` view — registered as `revenue-analytics`
+3. **`RevenueForecasting`** and **`CommissionTracker`** — already registered in the section registry
 
-### Scale
-| Metric | Count |
-|--------|-------|
-| Pages | 120+ |
-| Components | 200+ directories |
-| Hooks | 230+ |
-| Edge Functions | 18 (consolidated from 82) |
-| Database Tables | 450+ |
-| RLS Policies | 1,000+ |
+Existing database tables available:
+- `payment_logs` — all payment transactions with amount, status, booking_id
+- `transaction_summary` — materialized view grouping by day/type
+- `affiliate_commissions` — commission tracking with status
+- `rental_bookings` — rental transactions with total_amount, booking_status
+- `vendor_bookings` — service marketplace bookings with total_amount, status
+- `user_subscriptions` — premium plan subscriptions with status, billing_cycle
+- `transaction_commissions` — commission rates and amounts per transaction
+- `properties` — city field for geographic breakdown
 
-### Three-Layer Architecture ✅
-| Layer | Key Features | Status |
-|-------|-------------|--------|
-| **Public Platform** | Property browse, search, map, detail pages, AI chat, mortgage tools | ✅ Mature |
-| **Investor Intelligence** | ROI forecasts, deal finder, portfolio builder, market trends, location intel | ✅ Mature |
-| **Admin AI Command Center** | Job queue, SEO engine, valuations, health monitor, KPI alerts | ✅ Mature |
+### Problem
+The existing dashboards are fragmented — revenue-commissions shows flat KPIs, revenue-analytics shows basic charts, but there's no unified view covering all 5 revenue streams (sales commissions, rental fees, vendor marketplace, subscriptions, developer JV). No city performance heat table or top-agent ranking exists.
 
-### Edge Function Architecture ✅
-| Router | Modes |
-|--------|-------|
-| `core-engine` | 25+ modes (investment_score, valuation, health, diagnostics, map_search) |
-| `ai-engine` | 25+ modes (descriptions, NLP, recommendations, market reports) |
-| `deal-engine` | deal_finder, alerts, negotiation, pricing, forecasts |
-| `ai-assistant` | SSE streaming chatbot, NLP search, investment advisor |
-| `notification-engine` | Email, push, campaigns |
-| `payment-engine` | Midtrans, PayPal, invoices, subscriptions |
-| `vendor-engine` | Vendor services, validation |
+### Plan
 
-### AI Automation Systems ✅
-- SEO: Daily audits (3AM UTC), 6-hour auto-optimizer, property_seo_analysis tracking
-- Jobs: ai_jobs queue with claim_next_job() SKIP LOCKED, stall recovery, retry logic
-- Valuations: property_valuations with auto-recalculation
-- ROI: property_roi_forecast with 5-year projections
-- Autonomous Agent: 6-hour market scans for opportunity detection
+**1. Create a new comprehensive `AdminRevenueIntelligenceDashboard.tsx`**
 
----
+A single unified dashboard component with tabbed sections covering all revenue streams:
 
-## Identified Gaps & Improvements
+- **Overview Tab** — Hero KPI row (Total Revenue, MRR, Commission Earned, Transaction Count, Growth %) with MoM growth badges. Below: Recharts AreaChart for 30/60/90-day revenue trend, and a Recharts stacked BarChart breaking revenue by source (sales, rental, vendor, subscription).
 
-### 🔴 Critical Performance
-1. **Map viewport debouncing** — `moveend` fires on every pan; needs 300ms debounce ✅ FIXED
-2. **Spatial indexes** — Need composite indexes on (latitude, longitude, status) ✅ FIXED
-3. **Platform health aggregation** — Real AI system status on admin overview ✅ FIXED (prev iteration)
+- **Sales Commission Tab** — Total property transaction value, commission earned, commission rate. Top 5 performing agents table (from `transaction_commissions` joined with `profiles`). Transaction volume trend.
 
-### 🟡 Architecture Improvements
-4. **Unified health hook** — Single hook aggregating all AI subsystem health ✅ FIXED
-5. **Query deduplication** — MapBounds type duplicated across useMapSearch/useMapProperties
-6. **Large file refactoring** — PropertyDetail.tsx (1544 lines), Index.tsx (1199 lines) need splitting
+- **Rental Revenue Tab** — Total rental booking revenue from `rental_bookings`, active rental contracts count, average booking value, monthly trend chart.
 
-### 🟢 Future Expansion Ready
-- AI deal finder ✅ Exists (/deal-finder)
-- Predictive market analytics ✅ Exists (/market-trends, /price-prediction)
-- AI recommendation engine ✅ Exists (ai-match-engine-v2)
-- Location intelligence ✅ Exists (/location-intelligence)
-- Knowledge graph ✅ Hook exists (useKnowledgeGraph)
+- **Service Marketplace Tab** — Total vendor bookings from `vendor_bookings`, provider earnings vs platform fee split, booking completion rate.
 
-### Recommended Next Steps
-1. Add database indexes for map queries at scale
-2. Debounce map viewport changes
-3. Create unified platform health dashboard
-4. Split PropertyDetail.tsx into sub-components
-5. Add API response caching headers to edge functions
-6. Implement property search result caching with stale-while-revalidate
+- **Subscription Revenue Tab** — Active premium subscribers count from `user_subscriptions`, MRR calculation, plan distribution donut chart, churn indicator.
+
+- **City Performance Tab** — Heat table showing revenue by city using data from `properties` + `payment_logs`. Columns: City, Transactions, Revenue, Avg Value, Growth. Color-coded rows by performance.
+
+**2. Create `get_admin_revenue_intelligence` RPC**
+
+A new SQL function (admin-only, SECURITY DEFINER) that returns all 5 revenue stream metrics in a single call:
+- Sales commissions from `transaction_commissions`
+- Rental revenue from `rental_bookings` (completed)
+- Vendor marketplace revenue from `vendor_bookings` (completed)
+- Subscription MRR from `user_subscriptions` (active)
+- Top agents by commission from `transaction_commissions` + `profiles`
+- City breakdown from `payment_logs` + `rental_bookings`
+- 30-day daily revenue series for trend chart
+
+**3. Create `useAdminRevenueIntelligence` hook**
+
+Calls the new RPC with 60s refetch interval.
+
+**4. Register in admin section registry**
+
+Replace the existing `revenue-commissions` render with the new comprehensive dashboard. Keep `revenue-analytics` as-is for backward compatibility.
+
+### Files
+- **Create**: `src/components/admin/AdminRevenueIntelligenceDashboard.tsx`
+- **Create**: `src/hooks/useAdminRevenueIntelligence.ts`
+- **Create**: Migration SQL for `get_admin_revenue_intelligence` RPC
+- **Modify**: `src/components/admin/adminSectionRegistry.tsx` — swap renderer for `revenue-commissions`
+
+### Visual Components
+- Recharts AreaChart (revenue trend)
+- Recharts stacked BarChart (by source)
+- Recharts PieChart (subscription plan distribution)
+- Heat table with color-coded rows (city performance)
+- Trend arrows and growth badges on all KPIs
+- Top agents ranked table with avatar + commission amount
+
