@@ -254,6 +254,7 @@ export const HomepageBlueprint = lazyRetry(() => import("./HomepageBlueprint"));
 export const UIAuditReport = lazyRetry(() => import("./UIAuditReport"));
 export const LegalSetupRoadmap = lazyRetry(() => import("./LegalSetupRoadmap"));
 export const FinancialProjectionModel = lazyRetry(() => import("./FinancialProjectionModel"));
+export const FundraisingExitRoadmap = lazyRetry(() => import("./FundraisingExitRoadmap"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
@@ -550,6 +551,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ui-audit-report":            () => <UIAuditReport />,
   "legal-setup-roadmap":        () => <LegalSetupRoadmap />,
   "financial-projection":       () => <FinancialProjectionModel />,
+  "fundraising-exit-roadmap":   () => <FundraisingExitRoadmap />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -767,4 +769,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ui-audit-report": { label: "UI/UX Audit Report", category: "Features" },
   "legal-setup-roadmap": { label: "Legal Setup & Licensing", category: "Features" },
   "financial-projection": { label: "24-Month Financial Projection", category: "Features" },
+  "fundraising-exit-roadmap": { label: "Fundraising & Exit Roadmap", category: "Features" },
 };

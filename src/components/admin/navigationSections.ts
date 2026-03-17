@@ -1604,6 +1604,13 @@ export const navigationSections = {
       icon: Calculator,
       description: "Revenue streams, cost structure, break-even analysis, and 3-scenario comparison for investor readiness",
       badge: "💰 Finance"
+    },
+    {
+      key: "fundraising-exit-roadmap",
+      label: "Fundraising & Exit Roadmap",
+      icon: Rocket,
+      description: "Staged capital raising milestones, signal metrics, cap table evolution, and long-term exit positioning",
+      badge: "🚀 Strategy"
     }
   ],
 
