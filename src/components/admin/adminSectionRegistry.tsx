@@ -265,6 +265,7 @@ export const TeamKPIFramework = lazyRetry(() => import("./TeamKPIFramework"));
 export const WeeklyLeadershipReview = lazyRetry(() => import("./WeeklyLeadershipReview"));
 export const CompanyCulturePrinciples = lazyRetry(() => import("./CompanyCulturePrinciples"));
 export const FounderDailyRoutine = lazyRetry(() => import("./FounderDailyRoutine"));
+export const FounderMentalFramework = lazyRetry(() => import("./FounderMentalFramework"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
