@@ -295,7 +295,7 @@ export default function First1000UsersPage() {
                               <Badge variant="outline" className={cn(
                                 'text-[8px] px-1 py-0 h-3.5',
                                 t.impact === 'high' ? 'text-chart-2 border-chart-2/30' :
-                                t.impact === 'medium' ? 'text-amber-500 border-amber-500/30' :
+                                t.impact === 'medium' ? 'text-accent-foreground border-accent/30' :
                                 'text-muted-foreground border-border'
                               )}>
                                 {t.impact} impact
