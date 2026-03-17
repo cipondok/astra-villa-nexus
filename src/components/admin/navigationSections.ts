@@ -333,6 +333,12 @@ export const navigationSections = {
 
   "core-management": [
     {
+      key: "core-management-overview",
+      label: "📊 Core Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all property and core management modules"
+    },
+    {
       key: "property-management-hub",
       label: "Property Management Hub",
       icon: Building2,
