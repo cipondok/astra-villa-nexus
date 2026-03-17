@@ -994,6 +994,12 @@ export const navigationSections = {
 
   "content-settings": [
     {
+      key: "content-settings-overview",
+      label: "📊 Content Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all content and settings modules"
+    },
+    {
       key: "carousel-settings",
       label: "Featured Properties Carousel",
       icon: ImageIcon,
