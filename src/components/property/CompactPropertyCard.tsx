@@ -208,8 +208,18 @@ const CompactPropertyCard = ({
             )}
           </div>
 
-          {/* Top Right Actions */}
-          <div className="absolute top-1.5 sm:top-2 right-1.5 sm:right-2 flex gap-1 sm:gap-1.5">
+          {/* Opportunity Score Ring - Top Right */}
+          {property.opportunity_score && property.opportunity_score > 0 && (
+            <div className="absolute top-1.5 sm:top-2 right-1.5 sm:right-2 z-10">
+              <OpportunityScoreRing score={property.opportunity_score} size={38} />
+            </div>
+          )}
+
+          {/* Top Right Actions - Below Score */}
+          <div className={cn(
+            "absolute right-1.5 sm:right-2 flex gap-1 sm:gap-1.5",
+            property.opportunity_score && property.opportunity_score > 0 ? "top-10 sm:top-11" : "top-1.5 sm:top-2"
+          )}>
             {searchImage && similarityScore && (
               <Button
                 size="sm"
