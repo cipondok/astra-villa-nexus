@@ -71,6 +71,7 @@ const FundraisingExitRoadmap = lazy(() => import('./FundraisingExitRoadmap'));
 const FounderBrandStrategy = lazy(() => import('./FounderBrandStrategy'));
 const EquityAllocationFramework = lazy(() => import('./EquityAllocationFramework'));
 const InvestorQAPrep = lazy(() => import('./InvestorQAPrep'));
+const HiringRoadmap = lazy(() => import('./HiringRoadmap'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
