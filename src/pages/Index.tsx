@@ -909,10 +909,10 @@ const Index = () => {
                     <SectionDividerCTA icon={Crosshair} headline="Find Undervalued Deals" description="AI detects properties priced below fair market value" ctaText="Hunt Deals" ctaRoute="/deal-finder" variant="accent" />
                   </Suspense>
                 </div>
-              </section>
+              </SectionWrapper>
 
               {/* ── SECTION 4: Smart Collections ── */}
-              <div className="bg-background">
+              <SectionWrapper variant="default">
               <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
                 <SmartCollectionsShowcase />
               </LazyRender>
