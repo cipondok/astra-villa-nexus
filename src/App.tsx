@@ -631,6 +631,7 @@ const AppContent = () => {
                 <Route path="/first-1000-users" element={<First1000UsersPage />} />
                 <Route path="/deal-conversion-pipeline" element={<DealConversionPipelinePage />} />
                 <Route path="/sales-scripts" element={<SalesScriptsPage />} />
+                <Route path="/agent-onboarding-scripts" element={<AgentOnboardingScriptsPage />} />
                 <Route path="/live-demo" element={<LiveDemoPresentationPage />} />
                 <Route path="/daily-lead-gen" element={<DailyLeadGenPlanPage />} />
                 <Route path="/social-media-strategy" element={<SocialMediaStrategyPage />} />
