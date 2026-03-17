@@ -467,6 +467,7 @@ const AppContent = () => {
                 <Route path="/verification-center" element={<VerificationCenter />} />
                 <Route path="/ai-content-generator" element={<AIContentGenerator />} />
                 <Route path="/content-generator" element={<AIContentGenerator />} />
+                <Route path="/ai-listing-generator" element={<AIListingGenerator />} />
                 <Route path="/campaigns" element={<ViralCampaigns />} />
                 <Route path="/viral-campaigns" element={<ViralCampaigns />} />
                 <Route path="/marketing" element={<ViralCampaigns />} />
