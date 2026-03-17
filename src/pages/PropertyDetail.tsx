@@ -1547,19 +1547,17 @@ const PropertyDetail: React.FC = () => {
               </div>
             )}
           </div>
-          <Suspense fallback={null}>
-            <MobileOfferButton
-              propertyId={property.id}
-              propertyTitle={property.title}
-              propertyImage={property.images?.[0]}
-              propertyPrice={property.price}
-              sellerId={property.owner_id}
-              agentId={property.agent_id}
-              opportunityScore={(property as any).opportunity_score}
-              user={user}
-              onAuthRequired={() => setShowAuthModal(true)}
-            />
-          </Suspense>
+          <Button
+            size="sm"
+            className="h-9 px-3 text-[10px] font-semibold active:scale-95 transition-transform"
+            onClick={() => {
+              if (!user) { setShowAuthModal(true); return; }
+              setShowMobileOffer(true);
+            }}
+          >
+            <Sparkles className="h-3.5 w-3.5 mr-0.5" />
+            Offer
+          </Button>
           <Button
             size="sm"
             className="bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background h-9 px-3 text-[10px] font-semibold shadow-sm shadow-gold-primary/20 active:scale-95 transition-transform"
