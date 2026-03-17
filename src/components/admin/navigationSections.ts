@@ -1661,6 +1661,13 @@ export const navigationSections = {
       icon: Target,
       description: "Weighted performance metrics for Engineering, AI, Marketplace, Growth, and Customer Success",
       badge: "📊 KPIs"
+    },
+    {
+      key: "weekly-leadership-review",
+      label: "Weekly Leadership Review",
+      icon: CalendarClock,
+      description: "Structured 75-min cadence for marketplace health, product progress, growth pipeline, and financial snapshot",
+      badge: "📅 Cadence"
     }
   ],
 

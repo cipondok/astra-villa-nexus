@@ -793,4 +793,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "customer-support-framework": { label: "Customer Support Framework", category: "Features" },
   "marketplace-integrity": { label: "Marketplace Integrity & QC", category: "Features" },
   "team-kpi-framework": { label: "Team KPI Framework", category: "Features" },
+  "weekly-leadership-review": { label: "Weekly Leadership Review", category: "Features" },
 };
