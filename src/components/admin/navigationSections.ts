@@ -1684,6 +1684,13 @@ export const navigationSections = {
       icon: Sunrise,
       description: "Energy-mapped daily execution routine — deep work, outreach, growth execution, and strategic reflection",
       badge: "🔥 Founder"
+    },
+    {
+      key: "founder-mental-framework",
+      label: "Founder Mental Framework",
+      icon: Brain,
+      description: "Decision principles, stress management practices, and crisis response mindset for startup leadership",
+      badge: "🧠 Mindset"
     }
   ],
 

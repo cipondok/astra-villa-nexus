@@ -802,4 +802,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "weekly-leadership-review": { label: "Weekly Leadership Review", category: "Features" },
   "company-culture-principles": { label: "Culture & Workflow Principles", category: "Features" },
   "founder-daily-routine": { label: "Founder Daily Routine", category: "Features" },
+  "founder-mental-framework": { label: "Founder Mental Framework", category: "Features" },
 };
