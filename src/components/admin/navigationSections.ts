@@ -107,7 +107,8 @@ import {
   Brain,
   Scale,
   PieChart,
-  CalendarClock
+  CalendarClock,
+  Sunrise
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -1676,6 +1677,13 @@ export const navigationSections = {
       icon: Heart,
       description: "Core values, execution philosophy, and operational workflow practices for the startup team",
       badge: "💡 Culture"
+    },
+    {
+      key: "founder-daily-routine",
+      label: "Founder Daily Routine",
+      icon: Sunrise,
+      description: "Energy-mapped daily execution routine — deep work, outreach, growth execution, and strategic reflection",
+      badge: "🔥 Founder"
     }
   ],
 

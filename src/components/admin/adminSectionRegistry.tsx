@@ -264,6 +264,7 @@ export const MarketplaceIntegrity = lazyRetry(() => import("./MarketplaceIntegri
 export const TeamKPIFramework = lazyRetry(() => import("./TeamKPIFramework"));
 export const WeeklyLeadershipReview = lazyRetry(() => import("./WeeklyLeadershipReview"));
 export const CompanyCulturePrinciples = lazyRetry(() => import("./CompanyCulturePrinciples"));
+export const FounderDailyRoutine = lazyRetry(() => import("./FounderDailyRoutine"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
@@ -570,6 +571,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "team-kpi-framework":         () => <TeamKPIFramework />,
   "weekly-leadership-review":   () => <WeeklyLeadershipReview />,
   "company-culture-principles": () => <CompanyCulturePrinciples />,
+  "founder-daily-routine":      () => <FounderDailyRoutine />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -797,4 +799,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "team-kpi-framework": { label: "Team KPI Framework", category: "Features" },
   "weekly-leadership-review": { label: "Weekly Leadership Review", category: "Features" },
   "company-culture-principles": { label: "Culture & Workflow Principles", category: "Features" },
+  "founder-daily-routine": { label: "Founder Daily Routine", category: "Features" },
 };
