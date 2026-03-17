@@ -98,6 +98,7 @@ export const VisitorAnalytics = lazyRetry(() => import("./VisitorAnalytics"));
 export const BugErrorDashboard = lazyRetry(() => import("./diagnostics/BugErrorDashboard").then((m) => ({ default: m.BugErrorDashboard })));
 export const TestingDashboard = lazyRetry(() => import("./TestingDashboard"));
 export const VIPAnalyticsDashboard = lazyRetry(() => import("./VIPAnalyticsDashboard"));
+export const RolePermissionManager = lazyRetry(() => import("./RolePermissionManager"));
 export const AdminRevenueCommissionDashboard = lazyRetry(() => import("./AdminRevenueCommissionDashboard"));
 export const AdminRevenueIntelligenceDashboard = lazyRetry(() => import("./AdminRevenueIntelligenceDashboard"));
 export const CategoryOverviewDashboard = lazyRetry(() => import("./CategoryOverviewDashboard"));
@@ -252,6 +253,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "user-levels":         (sc) => <UserLevelManagement onNavigate={sc} />,
   "verification-management": () => <VerificationManagement />,
   "upgrade-applications":    () => <UserUpgradeApplications />,
+  "role-permission-management": () => <RolePermissionManager />,
 
   // Property
   "property-management":        () => <AdminPropertyManagement />,
@@ -496,6 +498,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "user-levels": { label: "User Levels", category: "Core Management" },
   "verification-management": { label: "Verification", category: "Core Management" },
   "upgrade-applications": { label: "Upgrade Applications", category: "Core Management" },
+  "role-permission-management": { label: "Role & Permissions", category: "Core Management" },
   "property-management": { label: "Property Management", category: "Property System" },
   "property-management-hub": { label: "Properties Hub", category: "Property System" },
   "property-management-advanced": { label: "Advanced Properties", category: "Property System" },

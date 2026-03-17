@@ -25453,6 +25453,30 @@ export type Database = {
           },
         ]
       }
+      role_permissions: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          permission: string
+          role: Database["public"]["Enums"]["user_role"]
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          permission: string
+          role: Database["public"]["Enums"]["user_role"]
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          permission?: string
+          role?: Database["public"]["Enums"]["user_role"]
+        }
+        Relationships: []
+      }
       saved_search_alerts: {
         Row: {
           created_at: string
@@ -36144,6 +36168,10 @@ export type Database = {
         }[]
       }
       has_editor_access: { Args: { _user_id: string }; Returns: boolean }
+      has_permission: {
+        Args: { _permission: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["user_role"]
@@ -36627,6 +36655,9 @@ export type Database = {
         | "super_admin"
         | "editor"
         | "investor"
+        | "developer"
+        | "service_provider"
+        | "legal_consultant"
       vendor_verification_status:
         | "unverified"
         | "pending_review"
@@ -36896,6 +36927,9 @@ export const Constants = {
         "super_admin",
         "editor",
         "investor",
+        "developer",
+        "service_provider",
+        "legal_consultant",
       ],
       vendor_verification_status: [
         "unverified",
