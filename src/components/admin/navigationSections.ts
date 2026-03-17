@@ -104,7 +104,8 @@ import {
   Send,
   Presentation,
   MapPin,
-  Brain
+  Brain,
+  Scale
 } from "lucide-react";
 
 export interface NavigationSection {
