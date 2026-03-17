@@ -18009,6 +18009,47 @@ export type Database = {
           },
         ]
       }
+      offer_messages: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          message_type: string
+          metadata: Json | null
+          offer_id: string
+          sender_id: string
+          sender_role: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          message_type?: string
+          metadata?: Json | null
+          offer_id: string
+          sender_id: string
+          sender_role?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          message_type?: string
+          metadata?: Json | null
+          offer_id?: string
+          sender_id?: string
+          sender_role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offer_messages_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "property_offers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       office_locations: {
         Row: {
           address_en: string
@@ -22365,6 +22406,93 @@ export type Database = {
           },
           {
             foreignKeyName: "property_leads_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      property_offers: {
+        Row: {
+          accepted_at: string | null
+          agent_id: string | null
+          buyer_id: string
+          buyer_message: string | null
+          completed_at: string | null
+          completion_timeline: string | null
+          counter_price: number | null
+          created_at: string
+          expired_at: string | null
+          financing_method: string
+          id: string
+          metadata: Json | null
+          offer_price: number
+          property_id: string
+          property_image: string | null
+          property_original_price: number | null
+          property_title: string | null
+          rejection_reason: string | null
+          seller_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          agent_id?: string | null
+          buyer_id: string
+          buyer_message?: string | null
+          completed_at?: string | null
+          completion_timeline?: string | null
+          counter_price?: number | null
+          created_at?: string
+          expired_at?: string | null
+          financing_method?: string
+          id?: string
+          metadata?: Json | null
+          offer_price: number
+          property_id: string
+          property_image?: string | null
+          property_original_price?: number | null
+          property_title?: string | null
+          rejection_reason?: string | null
+          seller_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          agent_id?: string | null
+          buyer_id?: string
+          buyer_message?: string | null
+          completed_at?: string | null
+          completion_timeline?: string | null
+          counter_price?: number | null
+          created_at?: string
+          expired_at?: string | null
+          financing_method?: string
+          id?: string
+          metadata?: Json | null
+          offer_price?: number
+          property_id?: string
+          property_image?: string | null
+          property_original_price?: number | null
+          property_title?: string | null
+          rejection_reason?: string | null
+          seller_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_offers_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_offers_property_id_fkey"
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "public_properties"
