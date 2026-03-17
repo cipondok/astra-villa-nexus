@@ -125,7 +125,7 @@ function VillaModel({ theme }: { theme: string }) {
       <pointLight position={[-3, 3, -3]} intensity={0.3} color="#fbbf24" />
 
       {/* Main Structure */}
-      <group ref={meshRef}>
+      <group ref={groupRef}>
         {/* Base Platform */}
         <RoundedBox args={[6, 0.3, 4]} radius={0.05} position={[0, -0.15, 0]}>
           <meshStandardMaterial color="hsl(220, 15%, 20%)" roughness={0.3} metalness={0.1} />
