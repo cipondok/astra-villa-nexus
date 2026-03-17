@@ -498,6 +498,11 @@ const AppContent = () => {
                 <Route path="/offers/:offerId" element={<ProtectedRoute />}>
                   <Route index element={<OfferNegotiationPage />} />
                 </Route>
+                <Route path="/mortgage-financing" element={<ProtectedRoute />}>
+                  <Route index element={<MortgageFinancingPage />} />
+                </Route>
+                <Route path="/investment-report" element={<ProtectedRoute />}>
+                  <Route index element={<PropertyAnalyticsReportPage />} />
                 <Route path="/ai-map" element={<AIMapSearchPage />} />
                 <Route path="/map-search" element={<AIMapSearchPage />} />
                 <Route path="/property-map" element={<PropertyMapSearchPage />} />
