@@ -81,6 +81,7 @@ const FounderDailyRoutine = lazy(() => import('./FounderDailyRoutine'));
 const FounderMentalFramework = lazy(() => import('./FounderMentalFramework'));
 const ThreeYearRoadmap = lazy(() => import('./ThreeYearRoadmap'));
 const FounderLifeOS = lazy(() => import('./FounderLifeOS'));
+const SuccessProbabilityFramework = lazy(() => import('./SuccessProbabilityFramework'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
