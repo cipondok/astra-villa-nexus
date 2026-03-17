@@ -267,6 +267,7 @@ export const CompanyCulturePrinciples = lazyRetry(() => import("./CompanyCulture
 export const FounderDailyRoutine = lazyRetry(() => import("./FounderDailyRoutine"));
 export const FounderMentalFramework = lazyRetry(() => import("./FounderMentalFramework"));
 export const ThreeYearRoadmap = lazyRetry(() => import("./ThreeYearRoadmap"));
+export const FounderLifeOS = lazyRetry(() => import("./FounderLifeOS"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
