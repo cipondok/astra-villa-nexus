@@ -1,70 +1,39 @@
 
-# ASTRA Villa — Platform Architecture Analysis & Roadmap
 
-## Status: 🔄 IN PROGRESS
+## Plan: Tighten Homepage Spacing and Margins
 
-## Current State Assessment (March 2026)
+### Problem
+Multiple sections have excessive vertical padding, large margins between sections, and the SectionDividerCTA components add extra breathing room that creates a "loose" feel.
 
-### Scale
-| Metric | Count |
-|--------|-------|
-| Pages | 120+ |
-| Components | 200+ directories |
-| Hooks | 230+ |
-| Edge Functions | 18 (consolidated from 82) |
-| Database Tables | 450+ |
-| RLS Policies | 1,000+ |
+### Changes
 
-### Three-Layer Architecture ✅
-| Layer | Key Features | Status |
-|-------|-------------|--------|
-| **Public Platform** | Property browse, search, map, detail pages, AI chat, mortgage tools | ✅ Mature |
-| **Investor Intelligence** | ROI forecasts, deal finder, portfolio builder, market trends, location intel | ✅ Mature |
-| **Admin AI Command Center** | Job queue, SEO engine, valuations, health monitor, KPI alerts | ✅ Mature |
+#### 1. `src/components/home/SectionDividerCTA.tsx`
+- Reduce outer padding from `py-6 sm:py-8 my-2` to `py-3 sm:py-4 my-0`
+- Reduce inner padding from `px-5 sm:px-8 py-4 sm:py-5` to `px-4 sm:px-6 py-3 sm:py-3.5`
 
-### Edge Function Architecture ✅
-| Router | Modes |
-|--------|-------|
-| `core-engine` | 25+ modes (investment_score, valuation, health, diagnostics, map_search) |
-| `ai-engine` | 25+ modes (descriptions, NLP, recommendations, market reports) |
-| `deal-engine` | deal_finder, alerts, negotiation, pricing, forecasts |
-| `ai-assistant` | SSE streaming chatbot, NLP search, investment advisor |
-| `notification-engine` | Email, push, campaigns |
-| `payment-engine` | Midtrans, PayPal, invoices, subscriptions |
-| `vendor-engine` | Vendor services, validation |
+#### 2. `src/components/home/AIPriceEstimatorCTA.tsx`
+- Reduce section padding from `py-10 sm:py-14` to `py-5 sm:py-6`
+- Reduce inner padding from `p-6 sm:p-10 lg:p-12` to `p-5 sm:p-6 lg:p-8`
 
-### AI Automation Systems ✅
-- SEO: Daily audits (3AM UTC), 6-hour auto-optimizer, property_seo_analysis tracking
-- Jobs: ai_jobs queue with claim_next_job() SKIP LOCKED, stall recovery, retry logic
-- Valuations: property_valuations with auto-recalculation
-- ROI: property_roi_forecast with 5-year projections
-- Autonomous Agent: 6-hour market scans for opportunity detection
+#### 3. `src/components/home/EarlyInvestmentCTA.tsx`
+- Reduce section padding from `py-6 sm:py-8` to `py-3 sm:py-4`
 
----
+#### 4. `src/components/home/TrustFooterStrip.tsx`
+- Reduce padding from `py-5 sm:py-6` to `py-3 sm:py-4`
+- Reduce heading margin from `mb-4` to `mb-2.5`
+- Reduce bottom margin from `mt-4` to `mt-2.5`
 
-## Identified Gaps & Improvements
+#### 5. `src/pages/Index.tsx` (discovery flow sections)
+- Hero-to-ticker divider: reduce `h-4 sm:h-5` to `h-2 sm:h-3` (line ~704)
+- AI Opportunity Zone: reduce `py-4 sm:py-6` to `py-3 sm:py-4` (line ~862)
+- Section heading `mb-4` to `mb-3` (line ~865)
+- Grid margins `mt-4` to `mt-3` across AI zone grids (lines ~888, 893, 898)
+- ASTRA Showcase section: reduce `py-6 sm:py-8` to `py-3 sm:py-4` (line ~964)
+- Final CTA wrapper: reduce `py-3 sm:py-4` to `py-2 sm:py-3` (line ~975)
+- Investor Path bg wrapper: no extra padding needed (already tight)
 
-### 🔴 Critical Performance
-1. **Map viewport debouncing** — `moveend` fires on every pan; needs 300ms debounce ✅ FIXED
-2. **Spatial indexes** — Need composite indexes on (latitude, longitude, status) ✅ FIXED
-3. **Platform health aggregation** — Real AI system status on admin overview ✅ FIXED (prev iteration)
+#### 6. `src/components/home/PartnerLogosMarquee.tsx`
+- Review and tighten any excess vertical padding in the marquee wrapper
 
-### 🟡 Architecture Improvements
-4. **Unified health hook** — Single hook aggregating all AI subsystem health ✅ FIXED
-5. **Query deduplication** — MapBounds type duplicated across useMapSearch/useMapProperties
-6. **Large file refactoring** — PropertyDetail.tsx (1544 lines), Index.tsx (1199 lines) need splitting
+All changes are CSS-only (Tailwind classes). No logic or structural changes.
 
-### 🟢 Future Expansion Ready
-- AI deal finder ✅ Exists (/deal-finder)
-- Predictive market analytics ✅ Exists (/market-trends, /price-prediction)
-- AI recommendation engine ✅ Exists (ai-match-engine-v2)
-- Location intelligence ✅ Exists (/location-intelligence)
-- Knowledge graph ✅ Hook exists (useKnowledgeGraph)
-
-### Recommended Next Steps
-1. Add database indexes for map queries at scale
-2. Debounce map viewport changes
-3. Create unified platform health dashboard
-4. Split PropertyDetail.tsx into sub-components
-5. Add API response caching headers to edge functions
-6. Implement property search result caching with stale-while-revalidate
