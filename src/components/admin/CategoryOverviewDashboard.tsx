@@ -192,12 +192,12 @@ const ListView: React.FC<{
           >
             {/* Module */}
             <div className="flex items-center gap-2 min-w-0">
-              <Icon className={cn("h-3 w-3 shrink-0 transition-colors", isHovered ? "text-[#f0b90b]" : "text-muted-foreground/30")} />
+              <Icon className={cn("h-3.5 w-3.5 shrink-0 transition-colors", isHovered ? "text-[#f0b90b]" : "text-muted-foreground")} />
               <div className="min-w-0">
-                <span className={cn("text-[11px] font-medium truncate block transition-colors", isHovered ? "text-foreground" : "text-foreground/70")}>
+                <span className={cn("text-[11px] font-medium truncate block transition-colors", isHovered ? "text-foreground" : "text-foreground/90")}>
                   {section.label.replace(/^[^\w]*\s/, '')}
                 </span>
-                <span className="text-[9px] text-muted-foreground/35 truncate block leading-tight">
+                <span className="text-[9px] text-muted-foreground truncate block leading-tight">
                   {section.description?.slice(0, 50)}{section.description?.length > 50 ? '…' : ''}
                 </span>
               </div>
