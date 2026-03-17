@@ -6,6 +6,7 @@ import { MapPin, Bed, Bath, Square, Eye, Heart, Share2, View as ViewIcon, Star, 
 import { useTranslation } from '@/i18n/useTranslation';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import PropertyDetailModal from './PropertyDetailModal';
+import OpportunityScoreRing from './OpportunityScoreRing';
 import PropertyComparisonButton from './PropertyComparisonButton';
 import PropertyImageCarousel from './PropertyImageCarousel';
 import Property3DViewModal from './Property3DViewModal';
