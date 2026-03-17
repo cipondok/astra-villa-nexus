@@ -877,16 +877,16 @@ const Index = () => {
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
                   {/* Zone header */}
                   <ScrollReveal direction="up" delay={0}>
-                    <div className="text-center mb-5 sm:mb-7">
-                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-gold-primary/15 bg-gold-primary/5 mb-3">
+                    <div className="text-center mb-4 sm:mb-5">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-gold-primary/15 bg-gold-primary/5 mb-2">
                         <Sparkles className="h-3 w-3 text-gold-primary" />
                         <span className="text-[10px] sm:text-xs font-semibold text-gold-primary uppercase tracking-[0.15em]">AI Intelligence</span>
                       </div>
-                      <h2 className="font-playfair text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-2">
+                      <h2 className="font-playfair text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-1.5">
                         Opportunity Discovery
                       </h2>
-                      <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                        AI-curated deals, trending opportunities, and personalized picks — all in one view
+                      <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto">
+                        AI-curated deals, trending opportunities, and personalized picks
                       </p>
                     </div>
                   </ScrollReveal>
