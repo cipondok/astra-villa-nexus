@@ -1514,6 +1514,13 @@ export const navigationSections = {
       badge: "🚀 Fundraise"
     },
     {
+      key: "investor-kpi-framework",
+      label: "Investor KPI Framework",
+      icon: BarChart3,
+      description: "Track marketplace supply, investor demand, AI effectiveness, revenue, and growth momentum KPIs",
+      badge: "📈 Investors"
+    },
+    {
       key: "founder-weekly-routine",
       label: "Founder Weekly Routine",
       icon: Calendar,
