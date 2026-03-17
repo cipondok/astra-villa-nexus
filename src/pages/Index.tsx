@@ -859,10 +859,10 @@ const Index = () => {
               <Suspense fallback={null}><UrgencyTimerStrip /></Suspense>
 
               {/* ── SECTION 3: AI Opportunity Zone ── */}
-              <section className="py-4 sm:py-6 bg-muted/30" id="ai-opportunity-zone">
+              <section className="py-3 sm:py-4 bg-muted/30" id="ai-opportunity-zone">
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
                   <ScrollReveal direction="up" delay={0}>
-                    <div className="text-center mb-4">
+                    <div className="text-center mb-3">
                       <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-gold-primary/15 bg-gold-primary/5 mb-2">
                         <Sparkles className="h-3 w-3 text-gold-primary" />
                         <span className="text-[10px] sm:text-xs font-semibold text-gold-primary uppercase tracking-[0.15em]">AI Intelligence</span>
