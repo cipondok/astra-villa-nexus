@@ -18,8 +18,9 @@ import PropertyViewModeToggle from "@/components/search/PropertyViewModeToggle";
 import PropertyListView from "@/components/search/PropertyListView";
 import SearchPagination from "@/components/search/SearchPagination";
 import BackToHomeLink from "@/components/common/BackToHomeLink";
-import { MapPin, Home, Bed, Bath, Square, Heart, Zap, Calendar, User, Star, TrendingUp, ShieldCheck, Box, Globe, Loader2 } from "lucide-react";
+import { MapPin, Home, Bed, Bath, Square, Heart, Zap, Calendar, User, Star, TrendingUp, ShieldCheck, Box, Globe, Loader2, Sofa, Eye, Key, Clock } from "lucide-react";
 import { getCurrencyFormatterShort } from "@/stores/currencyStore";
+import RentalInquiryForm from "@/components/rental/RentalInquiryForm";
 
 const RESULTS_PER_PAGE = 15;
 
