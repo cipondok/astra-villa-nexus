@@ -1030,9 +1030,8 @@ const Index = () => {
                 </div>
               </section>
 
-              {/* ── Visual breather ── */}
-              <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mx-auto max-w-5xl" aria-hidden="true" />
-
+              {/* ── Thin section divider ── */}
+              <div className="h-px bg-gradient-to-r from-transparent via-border/50 to-transparent mx-auto max-w-6xl" aria-hidden="true" />
               {/* ── SECTION 7: Properties for Sale & Rent ── */}
               <section className="py-4 sm:py-6 bg-muted/20">
                 <div className="max-w-7xl mx-auto px-3 sm:px-4 space-y-4">
