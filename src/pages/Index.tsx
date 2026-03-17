@@ -1081,12 +1081,11 @@ const Index = () => {
               </Suspense>
 
               {/* ── ASTRA Villa Project Showcase ── */}
-              <section className="py-10 sm:py-16 relative" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 500px' }}>
-                {/* Subtle top/bottom borders */}
+              <section className="py-6 sm:py-8 relative">
                 <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
                 <ScrollReveal direction="up" delay={0}>
-                  <LazyRender minHeight="300px" fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto px-4 sm:px-6" />}>
-                    <Suspense fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto px-4 sm:px-6" />}>
+                  <LazyRender minHeight="240px" fallback={<div className="animate-pulse h-60 bg-muted rounded-xl max-w-7xl mx-auto px-4 sm:px-6" />}>
+                    <Suspense fallback={<div className="animate-pulse h-60 bg-muted rounded-xl max-w-7xl mx-auto px-4 sm:px-6" />}>
                       <AstraProjectShowcase />
                     </Suspense>
                   </LazyRender>
