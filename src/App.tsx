@@ -239,6 +239,7 @@ const InvestorSocialNetwork = lazy(() => import('@/pages/InvestorSocialNetwork')
 const VirtualPropertyExplorer = lazy(() => import('@/pages/VirtualPropertyExplorer'));
 const ProductArchitecturePage = lazy(() => import('@/pages/ProductArchitecturePage'));
 const DevelopmentRoadmapPage = lazy(() => import('@/pages/DevelopmentRoadmapPage'));
+const SchemaArchitecturePage = lazy(() => import('@/pages/SchemaArchitecturePage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -592,6 +593,7 @@ const AppContent = () => {
                 <Route path="/virtual-explorer" element={<VirtualPropertyExplorer />} />
                 <Route path="/product-architecture" element={<ProductArchitecturePage />} />
                 <Route path="/development-roadmap" element={<DevelopmentRoadmapPage />} />
+                <Route path="/schema-architecture" element={<SchemaArchitecturePage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
