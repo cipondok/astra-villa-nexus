@@ -127,6 +127,7 @@ function ReportCard({ report }: { report: InvestmentReport }) {
 }
 
 export default function PropertyAnalyticsReportPage() {
+  const navigate = useNavigate();
   const [searchId, setSearchId] = useState('');
   const [selectedId, setSelectedId] = useState<string | undefined>();
   const { data: report, isLoading, error } = useInvestmentReport(selectedId);
