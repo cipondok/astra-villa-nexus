@@ -208,6 +208,8 @@ const PriceDropDealsPage = lazy(() => import('@/pages/PriceDropDealsPage'));
 const AgentCRMDashboard = lazy(() => import('@/pages/AgentCRMDashboard'));
 const OfferNegotiationPage = lazy(() => import('@/pages/OfferNegotiationPage'));
 const MyOffersPage = lazy(() => import('@/pages/MyOffersPage'));
+const MortgageFinancingPage = lazy(() => import('@/pages/MortgageFinancingPage'));
+const PropertyAnalyticsReportPage = lazy(() => import('@/pages/PropertyAnalyticsReportPage'));
 const MobileHomeFeed = lazy(() => import('@/pages/mobile/MobileHomeFeed'));
 const MobilePropertyDetail = lazy(() => import('@/pages/mobile/MobilePropertyDetail'));
 const MobileInvestorDashboard = lazy(() => import('@/pages/mobile/MobileInvestorDashboard'));
