@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
-export type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin' | 'customer_service' | 'super_admin' | 'investor' | 'editor';
+export type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin' | 'customer_service' | 'super_admin' | 'investor' | 'editor' | 'developer' | 'service_provider' | 'legal_consultant';
 
 /**
  * UI-ONLY role check — used solely for conditional rendering and navigation guards.
