@@ -643,6 +643,7 @@ const AppContent = () => {
                 <Route path="/daily-growth-monitor" element={<DailyGrowthMonitorPage />} />
                 <Route path="/negotiation-psychology" element={<NegotiationPsychologyPage />} />
                 <Route path="/hnw-investor-strategy" element={<HNWInvestorStrategyPage />} />
+                <Route path="/brand-trust-strategy" element={<BrandTrustStrategyPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
