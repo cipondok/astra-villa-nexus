@@ -69,6 +69,7 @@ const LegalSetupRoadmap = lazy(() => import('./LegalSetupRoadmap'));
 const FinancialProjectionModel = lazy(() => import('./FinancialProjectionModel'));
 const FundraisingExitRoadmap = lazy(() => import('./FundraisingExitRoadmap'));
 const FounderBrandStrategy = lazy(() => import('./FounderBrandStrategy'));
+const EquityAllocationFramework = lazy(() => import('./EquityAllocationFramework'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
@@ -520,6 +521,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return (
           <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
             <FounderBrandStrategy />
+          </Suspense>
+        );
+      case "equity-allocation-framework":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <EquityAllocationFramework />
           </Suspense>
         );
       default:

@@ -256,6 +256,7 @@ export const LegalSetupRoadmap = lazyRetry(() => import("./LegalSetupRoadmap"));
 export const FinancialProjectionModel = lazyRetry(() => import("./FinancialProjectionModel"));
 export const FundraisingExitRoadmap = lazyRetry(() => import("./FundraisingExitRoadmap"));
 export const FounderBrandStrategy = lazyRetry(() => import("./FounderBrandStrategy"));
+export const EquityAllocationFramework = lazyRetry(() => import("./EquityAllocationFramework"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
@@ -554,6 +555,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "financial-projection":       () => <FinancialProjectionModel />,
   "fundraising-exit-roadmap":   () => <FundraisingExitRoadmap />,
   "founder-brand-strategy":     () => <FounderBrandStrategy />,
+  "equity-allocation-framework": () => <EquityAllocationFramework />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -773,4 +775,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "financial-projection": { label: "24-Month Financial Projection", category: "Features" },
   "fundraising-exit-roadmap": { label: "Fundraising & Exit Roadmap", category: "Features" },
   "founder-brand-strategy": { label: "Founder Brand Strategy", category: "Features" },
+  "equity-allocation-framework": { label: "Equity Allocation Framework", category: "Features" },
 };
