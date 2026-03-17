@@ -25,7 +25,7 @@ interface PriorityModule {
   status: ModuleStatus;
   icon: typeof Home;
   revenueImpact: 'high' | 'medium' | 'low';
-  userImpact: 'critical' | 'high' | 'medium';
+  userImpact: 'critical' | 'high' | 'medium' | 'low';
   effort: number; // 1-5
   dependencies?: string[];
 }
