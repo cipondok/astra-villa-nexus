@@ -32,6 +32,7 @@ import {
   type DocumentType,
   type TransactionDocument,
   type DocumentSignature,
+  type AuditEntry,
 } from '@/hooks/useTransactionDocuments';
 
 // ── Main Page ──
