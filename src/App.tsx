@@ -528,6 +528,7 @@ const AppContent = () => {
                 <Route path="/digital-twin/:id" element={<DigitalTwinPage />} />
                 <Route path="/virtual-staging" element={<VirtualStagingPage />} />
                 <Route path="/ai-image-enhance" element={<AIImageEnhancePage />} />
+                <Route path="/property-video-tour" element={<PropertyVideoTourPage />} />
                 <Route path="/market-report" element={<MarketReportPage />} />
                 <Route path="/fraud-detector" element={<FraudDetectorPage />} />
                 <Route path="/recommendations" element={<AIRecommendationsPage />} />
