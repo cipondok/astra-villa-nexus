@@ -979,7 +979,7 @@ const Index = () => {
                 <Suspense fallback={null}>
                   <EarlyInvestmentCTA />
                 </Suspense>
-              </div>
+              </SectionWrapper>
             </>
           )}
         </div>
