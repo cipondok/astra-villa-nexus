@@ -251,6 +251,7 @@ const BehaviorAnalyticsPage = lazy(() => import('@/pages/BehaviorAnalyticsPage')
 const AILearningFrameworkPage = lazy(() => import('@/pages/AILearningFrameworkPage'));
 const ABTestingFrameworkPage = lazy(() => import('@/pages/ABTestingFrameworkPage'));
 const GoToMarketStrategyPage = lazy(() => import('@/pages/GoToMarketStrategyPage'));
+const SalesScriptsPage = lazy(() => import('@/pages/SalesScriptsPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -616,6 +617,7 @@ const AppContent = () => {
                 <Route path="/ai-learning-framework" element={<AILearningFrameworkPage />} />
                 <Route path="/ab-testing" element={<ABTestingFrameworkPage />} />
                 <Route path="/go-to-market" element={<GoToMarketStrategyPage />} />
+                <Route path="/sales-scripts" element={<SalesScriptsPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
