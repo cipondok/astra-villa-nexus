@@ -22,6 +22,8 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useIntelligenceSignals } from "@/hooks/useIntelligenceSignals";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
+const DemoStartButton = lazy(() => import("./demo/DemoStartButton"));
+
 interface AdminHeaderProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
