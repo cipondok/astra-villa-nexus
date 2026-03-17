@@ -332,8 +332,8 @@ const Disewa = () => {
                             propertyId={property.id}
                             propertyTitle={property.title}
                             monthlyPrice={property.price}
-                            ownerId={property.owner_id}
-                            agentId={property.agent_id}
+                            ownerId={(property as any).owner_id}
+                            agentId={(property as any).agent_id}
                             inquiryType="viewing"
                           >
                             <Button variant="outline" size="sm" className="flex-1 h-7 text-[10px] rounded-lg gap-1 px-2">
