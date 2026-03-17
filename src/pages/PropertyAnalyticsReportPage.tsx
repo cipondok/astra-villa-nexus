@@ -166,7 +166,7 @@ export default function PropertyAnalyticsReportPage() {
               onChange={e => setSearchId(e.target.value)}
               className="text-sm"
             />
-            <Button onClick={() => setSelectedId(searchId)} disabled={!searchId}>
+            <Button onClick={() => navigate(`/investment-report/${searchId}`)} disabled={!searchId}>
               <Search className="h-4 w-4 mr-1" /> Analyze
             </Button>
           </div>
