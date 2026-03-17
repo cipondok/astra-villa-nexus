@@ -577,6 +577,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "founder-daily-routine":      () => <FounderDailyRoutine />,
   "founder-mental-framework":   () => <FounderMentalFramework />,
   "three-year-roadmap":         () => <ThreeYearRoadmap />,
+  "founder-life-os":            () => <FounderLifeOS />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
