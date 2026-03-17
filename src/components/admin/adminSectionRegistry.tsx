@@ -534,6 +534,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "org-chart":                  () => <OrgChartDashboard />,
   "marketing-budget":           () => <MarketingBudgetDashboard />,
   "fundraising-readiness":      () => <FundraisingReadinessDashboard />,
+  "investor-kpi-framework":     () => <InvestorKPIDashboard />,
   "founder-weekly-routine":     () => <FounderWeeklyRoutine />,
   "pr-launch-strategy":         () => <PRLaunchStrategyDashboard />,
   "investor-outreach":          () => <InvestorOutreachDashboard />,
