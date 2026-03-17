@@ -918,7 +918,7 @@ const Index = () => {
 
                   {/* Opportunity Streak — Time-limited deals */}
                   <ScrollReveal direction="up" delay={30}>
-                    <div className="mb-8">
+                    <div className="mb-5">
                       <Suspense fallback={null}>
                         <OpportunityStreakCards />
                       </Suspense>
