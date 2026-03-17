@@ -35268,6 +35268,7 @@ export type Database = {
           verification_status: string
         }[]
       }
+      get_admin_revenue_intelligence: { Args: never; Returns: Json }
       get_admin_revenue_stats: { Args: never; Returns: Json }
       get_agent_crm_stats: { Args: { p_agent_id: string }; Returns: Json }
       get_agent_performance_intelligence: { Args: never; Returns: Json }
