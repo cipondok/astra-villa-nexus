@@ -85,6 +85,7 @@ const SuccessProbabilityFramework = lazy(() => import('./SuccessProbabilityFrame
 const RiskMitigationStrategy = lazy(() => import('./RiskMitigationStrategy'));
 const UltimateMasterPlan = lazy(() => import('./UltimateMasterPlan'));
 const NinetyDayRoadmap = lazy(() => import('./NinetyDayRoadmap'));
+const DailyExecutionPlan = lazy(() => import('./DailyExecutionPlan'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
@@ -632,6 +633,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return (
           <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
             <NinetyDayRoadmap />
+          </Suspense>
+        );
+      case "daily-execution-plan":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <DailyExecutionPlan />
           </Suspense>
         );
       default:
