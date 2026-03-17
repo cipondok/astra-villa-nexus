@@ -236,6 +236,7 @@ const DeveloperCampaignPage = lazy(() => import('@/pages/DeveloperCampaignPage')
 const OwnershipLifecyclePage = lazy(() => import('@/pages/OwnershipLifecyclePage'));
 const MacroPredictionTerminal = lazy(() => import('@/pages/MacroPredictionTerminal'));
 const InvestorSocialNetwork = lazy(() => import('@/pages/InvestorSocialNetwork'));
+const VirtualPropertyExplorer = lazy(() => import('@/pages/VirtualPropertyExplorer'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -586,6 +587,7 @@ const AppContent = () => {
                 <Route path="/ownership-lifecycle" element={<OwnershipLifecyclePage />} />
                 <Route path="/macro-prediction" element={<MacroPredictionTerminal />} />
                 <Route path="/investor-social" element={<InvestorSocialNetwork />} />
+                <Route path="/virtual-explorer" element={<VirtualPropertyExplorer />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
