@@ -1095,6 +1095,26 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
         // Generate smart replies based on streamed content
         if (fullContent) {
           setSmartReplies(generateSmartReplies(fullContent));
+
+          // For investor-copilot: try to extract property data from JSON suffix
+          if (functionName === 'investor-copilot') {
+            try {
+              // Check if response has a JSON block with properties
+              const jsonMatch = fullContent.match(/```json\s*([\s\S]*?)```/);
+              if (jsonMatch) {
+                const parsed = JSON.parse(jsonMatch[1]);
+                if (parsed.properties?.length) {
+                  setMessages(prev =>
+                    prev.map((m, i) =>
+                      i === prev.length - 1 && m.id === aiMsgId
+                        ? { ...m, content: fullContent.replace(/```json[\s\S]*?```/, '').trim(), properties: parsed.properties }
+                        : m
+                    )
+                  );
+                }
+              }
+            } catch { /* no embedded JSON - that's fine */ }
+          }
         }
       } else {
         // Non-streaming path for other functions
