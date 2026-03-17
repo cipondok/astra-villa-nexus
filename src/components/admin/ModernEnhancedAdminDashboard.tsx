@@ -1,9 +1,13 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, lazy, Suspense } from "react";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AdminSidebar } from "./AdminSidebar";
 import AdminDashboardContent from "./AdminDashboardContent";
 import AdminHeader from "./AdminHeader";
 import { useNavigate } from "react-router-dom";
+import { DemoModeProvider } from "@/contexts/DemoModeContext";
+
+const DemoModeController = lazy(() => import("./demo/DemoModeController"));
+const DemoModeOverlay = lazy(() => import("./demo/DemoModeOverlay"));
 
 const normalizeSection = (section: string | null) => {
   if (!section) return "overview";
@@ -52,31 +56,39 @@ const ModernEnhancedAdminDashboard = () => {
   }, [activeSection]);
 
   return (
-    <SidebarProvider defaultOpen={false}>
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-background via-background to-muted/20">
-        <AdminSidebar
-          activeSection={activeSection}
-          onSectionChange={handleSectionChange}
-        />
-
-        <SidebarInset className="flex-1">
-          <AdminHeader
+    <DemoModeProvider>
+      <SidebarProvider defaultOpen={false}>
+        <div className="min-h-screen flex w-full bg-gradient-to-br from-background via-background to-muted/20">
+          <AdminSidebar
             activeSection={activeSection}
             onSectionChange={handleSectionChange}
           />
 
-          <main
-            ref={contentRef}
-            className="flex-1 animate-in fade-in slide-in-from-bottom-1 duration-300"
-          >
-            <AdminDashboardContent
+          <SidebarInset className="flex-1">
+            <AdminHeader
               activeSection={activeSection}
               onSectionChange={handleSectionChange}
             />
-          </main>
-        </SidebarInset>
-      </div>
-    </SidebarProvider>
+
+            <main
+              ref={contentRef}
+              className="flex-1 animate-in fade-in slide-in-from-bottom-1 duration-300"
+            >
+              <AdminDashboardContent
+                activeSection={activeSection}
+                onSectionChange={handleSectionChange}
+              />
+            </main>
+          </SidebarInset>
+        </div>
+
+        {/* Demo Mode overlays */}
+        <Suspense fallback={null}>
+          <DemoModeController />
+          <DemoModeOverlay />
+        </Suspense>
+      </SidebarProvider>
+    </DemoModeProvider>
   );
 };
 

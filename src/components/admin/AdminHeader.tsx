@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, lazy, Suspense } from "react";
 import { Bell, Settings, LogOut, Sun, Moon, Wifi, WifiOff, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -21,6 +21,8 @@ import { AdminBreadcrumb } from "./AdminBreadcrumb";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useIntelligenceSignals } from "@/hooks/useIntelligenceSignals";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+
+const DemoStartButton = lazy(() => import("./demo/DemoStartButton"));
 
 interface AdminHeaderProps {
   activeSection: string;
@@ -167,6 +169,10 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
+
+          <Suspense fallback={null}>
+            <DemoStartButton className="gap-1.5" />
+          </Suspense>
 
           <AdminCommandPalette onSectionChange={onSectionChange} />
 
