@@ -170,8 +170,8 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
   };
 
   return (
-    <div className="mb-2 animate-in fade-in slide-in-from-top-1 duration-200">
-      <div className="bg-background/80 backdrop-blur-sm border border-border/40 rounded-lg overflow-hidden shadow-sm">
+    <div className="mb-2 sticky top-0 z-40 animate-in fade-in slide-in-from-top-1 duration-200">
+      <div className="bg-background/95 backdrop-blur-md border border-border/40 rounded-lg overflow-hidden shadow-sm">
         {/* Mini Header */}
         <div className={cn("px-3 py-1.5 flex items-center gap-2", theme.header)}>
           <CategoryIcon className="h-3.5 w-3.5" />
