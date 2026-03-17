@@ -269,6 +269,7 @@ const RevenueOptimizationPage = lazy(() => import('@/pages/RevenueOptimizationPa
 const GeographicExpansionPage = lazy(() => import('@/pages/GeographicExpansionPage'));
 const UnicornPositioningPage = lazy(() => import('@/pages/UnicornPositioningPage'));
 const SevenDaySprintPage = lazy(() => import('@/pages/SevenDaySprintPage'));
+const LocalDominancePage = lazy(() => import('@/pages/LocalDominancePage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -652,6 +653,7 @@ const AppContent = () => {
                 <Route path="/geographic-expansion" element={<GeographicExpansionPage />} />
                 <Route path="/unicorn-positioning" element={<UnicornPositioningPage />} />
                 <Route path="/7-day-sprint" element={<SevenDaySprintPage />} />
+                <Route path="/local-dominance" element={<LocalDominancePage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
