@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Icons } from "@/components/icons";
 import AIChatMessages from "./AIChatMessages";
 import AIChatQuickActions from "./AIChatQuickActions";
+import ChatInvestmentChips from "./ChatInvestmentChips";
 import AIChatInput from "./AIChatInput";
 import TypingIndicator from "./TypingIndicator";
 import ChatButton, { ChatButtonVariant } from "./ChatButton";
@@ -853,7 +854,16 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
     const lowerMessage = aiMessage.toLowerCase();
     const replies: string[] = [];
 
-    if (lowerMessage.includes('propert') || lowerMessage.includes('home') || lowerMessage.includes('house')) {
+    // Investment-specific replies
+    if (lowerMessage.includes('roi') || lowerMessage.includes('yield') || lowerMessage.includes('return')) {
+      replies.push("Simulate ROI estimate", "Compare these properties");
+    }
+    
+    if (lowerMessage.includes('invest') || lowerMessage.includes('opportunit') || lowerMessage.includes('undervalued')) {
+      replies.push("Show emerging zones", "Best deals this month");
+    }
+
+    if (lowerMessage.includes('propert') || lowerMessage.includes('home') || lowerMessage.includes('house') || lowerMessage.includes('villa')) {
       replies.push("Show me properties", "More details", "Filter results");
     }
     
@@ -869,13 +879,17 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
       replies.push("Show price range", "Compare prices");
     }
     
-    if (lowerMessage.includes('location') || lowerMessage.includes('area') || lowerMessage.includes('neighborhood')) {
+    if (lowerMessage.includes('location') || lowerMessage.includes('area') || lowerMessage.includes('neighborhood') || lowerMessage.includes('bali') || lowerMessage.includes('jakarta')) {
       replies.push("See on map", "Nearby amenities");
+    }
+
+    if (lowerMessage.includes('market') || lowerMessage.includes('trend')) {
+      replies.push("Market forecast 2026", "Hot investment areas");
     }
 
     // Default replies if no specific context matched
     if (replies.length === 0) {
-      replies.push("Tell me more", "Show options", "I have a question");
+      replies.push("Tell me more", "Show investment options", "Best ROI properties");
     }
 
     // Limit to 4 suggestions max
@@ -919,7 +933,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
 
       const isNeighborhoodQuery = /neighborhood|area|around|walk to|safe at night|cafes nearby|near a|close to/i.test(currentMessage);
       const isNegotiationQuery = /negotiate|lower the price|deposit|rent|deal|offer|lease/i.test(currentMessage);
-      const isInvestorQuery = /\b(roi|portfolio|diversif|investment|hotspot|undervalued|rental yield|deal finder|best city|market trend|overexposed|growth potential|buy or sell|flip potential)\b/i.test(currentMessage);
+      const isInvestorQuery = /\b(roi|portfolio|diversif|investment|hotspot|undervalued|rental yield|deal finder|best city|market trend|overexposed|growth potential|buy or sell|flip potential|compare.*(?:property|properties|roi|apartment|villa)|emerging zone|best deal|simulate.*(?:roi|sell|profit)|highest.*yield|good.*invest)\b/i.test(currentMessage);
       
       let functionName: string;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1094,6 +1108,26 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
         // Generate smart replies based on streamed content
         if (fullContent) {
           setSmartReplies(generateSmartReplies(fullContent));
+
+          // For investor-copilot: try to extract property data from JSON suffix
+          if (functionName === 'investor-copilot') {
+            try {
+              // Check if response has a JSON block with properties
+              const jsonMatch = fullContent.match(/```json\s*([\s\S]*?)```/);
+              if (jsonMatch) {
+                const parsed = JSON.parse(jsonMatch[1]);
+                if (parsed.properties?.length) {
+                  setMessages(prev =>
+                    prev.map((m, i) =>
+                      i === prev.length - 1 && m.id === aiMsgId
+                        ? { ...m, content: fullContent.replace(/```json[\s\S]*?```/, '').trim(), properties: parsed.properties }
+                        : m
+                    )
+                  );
+                }
+              }
+            } catch { /* no embedded JSON - that's fine */ }
+          }
         }
       } else {
         // Non-streaming path for other functions
@@ -1118,7 +1152,9 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
           role: 'assistant',
           content: data.message,
           timestamp: new Date(),
-          functionCall: data.functionCall
+          functionCall: data.functionCall,
+          properties: data.recommended_properties || data.properties || undefined,
+          insights: data.insights || undefined,
         };
 
         setMessages(prev => [...prev, aiMessage]);
@@ -2837,6 +2873,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
 
                 {showQuickActions && messages.length <= 1 && (
                   <div className={`${isMobile ? 'px-3 pb-2' : 'px-4 pb-2'}`}>
+                    <ChatInvestmentChips onChipClick={(query) => handleSendMessage(query)} />
                     <AIChatQuickActions
                       quickActions={quickActions}
                       onActionClick={(action) => handleSendMessage(action)}
