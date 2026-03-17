@@ -948,14 +948,14 @@ const Index = () => {
               </div>
 
               {/* ── Marketplace Services ── */}
-              <LazyRender minHeight="0px" fallback={null}>
-                <MarketplaceServices />
-              </LazyRender>
-
-              <Suspense fallback={null}><ReferralInviteStrip /></Suspense>
-
-              {/* ── Partner & Social Proof ── */}
               <div className="bg-muted/20">
+                <LazyRender minHeight="0px" fallback={null}>
+                  <MarketplaceServices />
+                </LazyRender>
+
+                <Suspense fallback={null}><ReferralInviteStrip /></Suspense>
+
+                {/* ── Partner & Social Proof ── */}
                 <LazyRender minHeight="0px" fallback={null}>
                   <PartnerLogosMarquee />
                 </LazyRender>
