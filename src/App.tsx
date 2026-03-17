@@ -477,6 +477,9 @@ const AppContent = () => {
                 <Route path="/mortgage-prequalification" element={<PreQualificationPage />} />
                 <Route path="/messages" element={<MessagesPage />} />
                 <Route path="/notifications" element={<NotificationsHub />} />
+                <Route path="/documents" element={<ProtectedRoute />}>
+                  <Route index element={<DocumentManagement />} />
+                </Route>
                 <Route path="/my-rentals" element={<UserRentalDashboard />} />
                 <Route path="/my-rental-inquiries" element={<MyRentalInquiries />} />
                 <Route path="/investor-watchlist" element={<InvestorWatchlist />} />
