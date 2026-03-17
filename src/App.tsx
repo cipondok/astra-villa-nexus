@@ -98,6 +98,8 @@ const ServiceProviderProfile = lazy(() => import('@/pages/ServiceProviderProfile
 const LegalServices = lazy(() => import('@/pages/LegalServices'));
 const MyRentalInquiries = lazy(() => import('@/pages/MyRentalInquiries'));
 const InvestorWatchlist = lazy(() => import('@/pages/InvestorWatchlist'));
+const ProjectShowcase = lazy(() => import('@/pages/ProjectShowcase'));
+const DeveloperDashboard = lazy(() => import('@/pages/DeveloperDashboard'));
 const PreLaunching = lazy(() => import('@/pages/PreLaunching'));
 const NewProjects = lazy(() => import('@/pages/NewProjects'));
 const AreaGuides = lazy(() => import('@/pages/AreaGuides'));
