@@ -196,7 +196,7 @@ const ServiceProviderProfile = () => {
               )}
               {vendor.service_areas && (
                 <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-lg">
-                  <MapPin className="h-3 w-3" /> {Array.isArray(vendor.service_areas) ? vendor.service_areas.join(', ') : vendor.service_areas}
+                  <MapPin className="h-3 w-3" /> {Array.isArray(vendor.service_areas) ? vendor.service_areas.join(', ') : String(vendor.service_areas || '')}
                 </span>
               )}
             </div>
