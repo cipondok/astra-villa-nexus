@@ -166,9 +166,9 @@ const ListView: React.FC<{
 }> = ({ sections, hoveredKey, setHoveredKey, onSectionChange }) => (
   <>
     <div className="grid grid-cols-[1fr_auto] sm:grid-cols-[1fr_80px_auto] px-3 py-1.5 border-b border-[hsl(var(--border)/.08)]">
-      <span className="text-[8px] font-medium uppercase tracking-[0.12em] text-muted-foreground/35">Module</span>
-      <span className="hidden sm:block text-[8px] font-medium uppercase tracking-[0.12em] text-muted-foreground/35">Status</span>
-      <span className="text-[8px] font-medium uppercase tracking-[0.12em] text-muted-foreground/35 text-right pr-1">→</span>
+      <span className="text-[8px] font-medium uppercase tracking-[0.12em] text-muted-foreground/70">Module</span>
+      <span className="hidden sm:block text-[8px] font-medium uppercase tracking-[0.12em] text-muted-foreground/70">Status</span>
+      <span className="text-[8px] font-medium uppercase tracking-[0.12em] text-muted-foreground/70 text-right pr-1">→</span>
     </div>
     <div className="divide-y divide-[hsl(var(--border)/.05)]">
       {sections.map((section) => {
