@@ -1036,6 +1036,12 @@ export const navigationSections = {
 
   "system-settings": [
     {
+      key: "system-settings-overview",
+      label: "📊 Settings Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all system configuration modules"
+    },
+    {
       key: "system-settings",
       label: "System Settings",
       icon: Settings,
