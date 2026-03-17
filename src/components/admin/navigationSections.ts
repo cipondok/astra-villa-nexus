@@ -290,6 +290,12 @@ export const navigationSections = {
 
   tools: [
     {
+      key: "tools-overview",
+      label: "📊 Tools Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all tools and utilities"
+    },
+    {
       key: "tools-management",
       label: "Tools Management",
       icon: Wrench,
