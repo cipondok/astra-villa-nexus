@@ -266,6 +266,7 @@ export const WeeklyLeadershipReview = lazyRetry(() => import("./WeeklyLeadership
 export const CompanyCulturePrinciples = lazyRetry(() => import("./CompanyCulturePrinciples"));
 export const FounderDailyRoutine = lazyRetry(() => import("./FounderDailyRoutine"));
 export const FounderMentalFramework = lazyRetry(() => import("./FounderMentalFramework"));
+export const ThreeYearRoadmap = lazyRetry(() => import("./ThreeYearRoadmap"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
@@ -574,6 +575,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "company-culture-principles": () => <CompanyCulturePrinciples />,
   "founder-daily-routine":      () => <FounderDailyRoutine />,
   "founder-mental-framework":   () => <FounderMentalFramework />,
+  "three-year-roadmap":         () => <ThreeYearRoadmap />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -803,4 +805,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "company-culture-principles": { label: "Culture & Workflow Principles", category: "Features" },
   "founder-daily-routine": { label: "Founder Daily Routine", category: "Features" },
   "founder-mental-framework": { label: "Founder Mental Framework", category: "Features" },
+  "three-year-roadmap": { label: "3-Year Strategic Roadmap", category: "Features" },
 };

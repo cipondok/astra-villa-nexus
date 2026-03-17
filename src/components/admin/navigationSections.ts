@@ -1691,6 +1691,13 @@ export const navigationSections = {
       icon: Brain,
       description: "Decision principles, stress management practices, and crisis response mindset for startup leadership",
       badge: "🧠 Mindset"
+    },
+    {
+      key: "three-year-roadmap",
+      label: "3-Year Strategic Roadmap",
+      icon: Map,
+      description: "High-level milestones for product evolution, market expansion, and capital strategy across 3 years",
+      badge: "🗺️ Roadmap"
     }
   ],
 
