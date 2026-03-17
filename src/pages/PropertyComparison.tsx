@@ -16,7 +16,7 @@ import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import {
   ArrowLeft, X, Eye, Trash2, Check, Minus,
   Banknote, MapPin, Building, TrendingUp, School, ShoppingBag, HeartPulse, Train,
-  Trophy, Sparkles, BarChart3, Scale, Box
+  Trophy, Sparkles, BarChart3, Scale, Box, Shield
 } from 'lucide-react';
 import ShareComparisonButton from '@/components/property/ShareComparisonButton';
 import Price from '@/components/ui/Price';
