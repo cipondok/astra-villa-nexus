@@ -498,6 +498,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "user-levels": { label: "User Levels", category: "Core Management" },
   "verification-management": { label: "Verification", category: "Core Management" },
   "upgrade-applications": { label: "Upgrade Applications", category: "Core Management" },
+  "role-permission-management": { label: "Role & Permissions", category: "Core Management" },
   "property-management": { label: "Property Management", category: "Property System" },
   "property-management-hub": { label: "Properties Hub", category: "Property System" },
   "property-management-advanced": { label: "Advanced Properties", category: "Property System" },
