@@ -91,6 +91,7 @@ const OpportunityStreakCards = lazy(() => import("@/components/home/OpportunityS
 const PWAInstallPrompt = lazy(() => import("@/components/pwa/PWAInstallPrompt"));
 const ExitIntentPopup = lazy(() => import("@/components/home/ExitIntentPopup"));
 const UrgencyTimerStrip = lazy(() => import("@/components/home/UrgencyTimerStrip"));
+const AstraProjectShowcase = lazy(() => import("@/components/home/AstraProjectShowcase"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -1088,6 +1089,17 @@ const Index = () => {
               <Suspense fallback={null}>
                 <TrustFooterStrip />
               </Suspense>
+
+              {/* ── ASTRA Villa Project Showcase ── */}
+              <section className="py-8 sm:py-12 bg-muted/20" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 400px' }}>
+                <ScrollReveal direction="up" delay={0}>
+                  <LazyRender minHeight="300px" fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto px-3 sm:px-4" />}>
+                    <Suspense fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto px-3 sm:px-4" />}>
+                      <AstraProjectShowcase />
+                    </Suspense>
+                  </LazyRender>
+                </ScrollReveal>
+              </section>
 
               {/* ── SECTION 10: Final Conversion CTA ── */}
               <section className="py-6 sm:py-10">
