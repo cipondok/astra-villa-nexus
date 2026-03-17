@@ -818,7 +818,7 @@ const Index = () => {
             ══════════════════════════════════════════════════ */
             <>
                {/* ── SECTION 2: Featured Properties ── */}
-              <div id="featured-section">
+              <div id="featured-section" className="bg-background">
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={
                     <div className="py-4 max-w-7xl mx-auto px-3 sm:px-4">
@@ -859,7 +859,7 @@ const Index = () => {
               <Suspense fallback={null}><UrgencyTimerStrip /></Suspense>
 
               {/* ── SECTION 3: AI Opportunity Zone ── */}
-              <section className="py-3 sm:py-4 bg-muted/30" id="ai-opportunity-zone">
+              <section className="py-3 sm:py-4 bg-muted/20" id="ai-opportunity-zone">
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
                   <ScrollReveal direction="up" delay={0}>
                     <div className="text-center mb-3">
@@ -911,12 +911,14 @@ const Index = () => {
               </section>
 
               {/* ── SECTION 4: Smart Collections ── */}
+              <div className="bg-background">
               <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
                 <SmartCollectionsShowcase />
               </LazyRender>
               <Suspense fallback={null}>
                 <SectionDividerCTA icon={Star} headline="Curated for Investors" description="Handpicked collections based on ROI potential and market timing" ctaText="View Collections" ctaRoute="/collections" />
               </Suspense>
+              </div>
 
               {/* ── SECTION 5: Investor Path Selector ── */}
               <div className="bg-muted/20">
@@ -926,32 +928,34 @@ const Index = () => {
               </div>
 
               {/* ── SECTION 6: AI Tools Preview ── */}
-              <div className="max-w-7xl mx-auto">
-                <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
-                  <AstraVillaFeatures />
-                </LazyRender>
-              </div>
-              <Suspense fallback={null}><AIPriceEstimatorCTA /></Suspense>
+              <div className="bg-background">
+                <div className="max-w-7xl mx-auto">
+                  <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
+                    <AstraVillaFeatures />
+                  </LazyRender>
+                </div>
+                <Suspense fallback={null}><AIPriceEstimatorCTA /></Suspense>
 
-              {/* ── Trending Searches ── */}
-              <div className="max-w-7xl mx-auto px-3 sm:px-4">
-                <LazyRender minHeight="0px" fallback={null}>
-                  <TrendingSearchesWidget onSearchClick={(trendFilters) => { setFilters(prev => ({ ...prev, ...trendFilters })); setHasSearched(true); }} />
-                </LazyRender>
+                {/* ── Trending Searches ── */}
+                <div className="max-w-7xl mx-auto px-3 sm:px-4">
+                  <LazyRender minHeight="0px" fallback={null}>
+                    <TrendingSearchesWidget onSearchClick={(trendFilters) => { setFilters(prev => ({ ...prev, ...trendFilters })); setHasSearched(true); }} />
+                  </LazyRender>
+                </div>
+                <Suspense fallback={null}>
+                  <SectionDividerCTA icon={BarChart3} headline="Track Market Trends" description="Real-time price indices and investment analytics" ctaText="View Insights" ctaRoute="/analytics" variant="accent" />
+                </Suspense>
               </div>
-              <Suspense fallback={null}>
-                <SectionDividerCTA icon={BarChart3} headline="Track Market Trends" description="Real-time price indices and investment analytics" ctaText="View Insights" ctaRoute="/analytics" variant="accent" />
-              </Suspense>
 
               {/* ── Marketplace Services ── */}
-              <LazyRender minHeight="0px" fallback={null}>
-                <MarketplaceServices />
-              </LazyRender>
-
-              <Suspense fallback={null}><ReferralInviteStrip /></Suspense>
-
-              {/* ── Partner & Social Proof ── */}
               <div className="bg-muted/20">
+                <LazyRender minHeight="0px" fallback={null}>
+                  <MarketplaceServices />
+                </LazyRender>
+
+                <Suspense fallback={null}><ReferralInviteStrip /></Suspense>
+
+                {/* ── Partner & Social Proof ── */}
                 <LazyRender minHeight="0px" fallback={null}>
                   <PartnerLogosMarquee />
                 </LazyRender>
@@ -961,7 +965,7 @@ const Index = () => {
               <Suspense fallback={null}><TrustFooterStrip /></Suspense>
 
               {/* ── ASTRA Villa Project Showcase ── */}
-              <section className="py-3 sm:py-4 relative">
+              <section className="py-3 sm:py-4 relative bg-background">
                 <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={<div className="animate-pulse h-60 bg-muted rounded-xl max-w-7xl mx-auto px-4 sm:px-6" />}>
@@ -972,7 +976,7 @@ const Index = () => {
               </section>
 
               {/* ── Final Conversion CTA ── */}
-              <div className="py-2 sm:py-3">
+              <div className="py-2 sm:py-3 bg-muted/20">
                 <Suspense fallback={null}>
                   <EarlyInvestmentCTA />
                 </Suspense>
