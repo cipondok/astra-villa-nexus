@@ -185,6 +185,7 @@ const PortfolioCommandCenter = lazy(() => import('@/pages/PortfolioCommandCenter
 const PortfolioROITrackerPage = lazy(() => import('@/pages/PortfolioROITrackerPage'));
 const MarketIntelligenceFeedPage = lazy(() => import('@/pages/MarketIntelligenceFeedPage'));
 const AuctionFlashDealsPage = lazy(() => import('@/pages/AuctionFlashDealsPage'));
+const InvestmentMapExplorerPage = lazy(() => import('@/pages/InvestmentMapExplorerPage'));
 const DealFinderPage = lazy(() => import('@/pages/DealFinderPage'));
 const PricePredictionPage = lazy(() => import('@/pages/PricePredictionPage'));
 const NegotiationAssistantPage = lazy(() => import('@/pages/NegotiationAssistantPage'));
@@ -375,6 +376,7 @@ const AppContent = () => {
                 </Route>
                 <Route path="/market-intelligence-feed" element={<MarketIntelligenceFeedPage />} />
                 <Route path="/flash-deals" element={<AuctionFlashDealsPage />} />
+                <Route path="/investment-map-explorer" element={<InvestmentMapExplorerPage />} />
                 <Route path="/ai-autopilot" element={<ProtectedRoute />}>
                   <Route index element={<AIAutopilotPage />} />
                 </Route>

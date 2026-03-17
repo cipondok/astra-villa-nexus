@@ -309,3 +309,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.auction-flash-deals]
     verify_jwt = false
+
+  [functions.investment-map-explorer]
+    verify_jwt = false
