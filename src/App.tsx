@@ -679,6 +679,7 @@ const AppContent = () => {
                 <Route path="/agent-retention" element={<AgentRetentionPage />} />
                 <Route path="/success-story" element={<SuccessStoryPage />} />
                 <Route path="/roi-calculator" element={<ROICalculatorPage />} />
+                <Route path="/agent-effectiveness" element={<AgentEffectivenessPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
