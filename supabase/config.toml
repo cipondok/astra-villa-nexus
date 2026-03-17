@@ -298,3 +298,6 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.property-video-gen]
     verify_jwt = false
 
+  [functions.referral-engine]
+    verify_jwt = false
+
