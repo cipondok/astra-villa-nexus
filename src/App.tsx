@@ -619,6 +619,7 @@ const AppContent = () => {
                 <Route path="/cloud-infrastructure" element={<CloudInfrastructurePage />} />
                 <Route path="/disaster-recovery" element={<DisasterRecoveryPage />} />
                 <Route path="/behavior-analytics" element={<BehaviorAnalyticsPage />} />
+                <Route path="/user-activation" element={<UserActivationDashboard />} />
                 <Route path="/ai-learning-framework" element={<AILearningFrameworkPage />} />
                 <Route path="/ab-testing" element={<ABTestingFrameworkPage />} />
                 <Route path="/go-to-market" element={<GoToMarketStrategyPage />} />
