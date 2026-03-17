@@ -178,8 +178,8 @@ const ServiceProviderProfile = () => {
               </div>
             </div>
 
-            {vendor.about_business && (
-              <p className="text-sm text-muted-foreground mt-4 leading-relaxed">{vendor.about_business}</p>
+            {vendor.business_description && (
+              <p className="text-sm text-muted-foreground mt-4 leading-relaxed">{vendor.business_description}</p>
             )}
 
             {/* Contact Info */}
