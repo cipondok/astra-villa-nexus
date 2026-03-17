@@ -8,11 +8,13 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useVIPNotifications } from '@/hooks/useVIPNotifications';
 import { usePropertyAlerts } from '@/hooks/usePropertyAlerts';
 import { useNewListingMatcher } from '@/hooks/useNewListingMatcher';
+import { useActivationTracking } from '@/hooks/useActivationTracking';
 
 const AuthenticatedHooksInner = () => {
   useVIPNotifications();
   usePropertyAlerts();
   useNewListingMatcher();
+  useActivationTracking();
   return null;
 };
 

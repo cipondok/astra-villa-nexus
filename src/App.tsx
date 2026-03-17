@@ -45,6 +45,7 @@ const ResponsiveAIChatWidget = lazy(() => import('@/components/ai/ResponsiveAICh
 const WhatsAppInquiryButton = lazy(() => import('@/components/WhatsAppInquiryButton'));
 const FloatingThemeToggle = lazy(() => import('@/components/FloatingThemeToggle'));
 const MobileBottomTabBar = lazy(() => import('@/components/navigation/MobileBottomTabBar'));
+const OnboardingActivationBar = lazy(() => import('@/components/onboarding/OnboardingActivationBar'));
 
 // Lazy load shell handlers — none are needed for first paint
 const SessionExpirationHandler = lazy(() => import('@/components/SessionExpirationHandler'));
@@ -248,6 +249,7 @@ const SecurityHardeningPage = lazy(() => import('@/pages/SecurityHardeningPage')
 const CloudInfrastructurePage = lazy(() => import('@/pages/CloudInfrastructurePage'));
 const DisasterRecoveryPage = lazy(() => import('@/pages/DisasterRecoveryPage'));
 const BehaviorAnalyticsPage = lazy(() => import('@/pages/BehaviorAnalyticsPage'));
+const UserActivationDashboard = lazy(() => import('@/pages/UserActivationDashboard'));
 const AILearningFrameworkPage = lazy(() => import('@/pages/AILearningFrameworkPage'));
 const ABTestingFrameworkPage = lazy(() => import('@/pages/ABTestingFrameworkPage'));
 const GoToMarketStrategyPage = lazy(() => import('@/pages/GoToMarketStrategyPage'));
@@ -313,6 +315,7 @@ const AppContent = () => {
       <Suspense fallback={null}><AuthenticatedHooks /></Suspense>
       <Suspense fallback={null}><GlobalLoadingIndicator /></Suspense>
       {!isAdminRoute && <Suspense fallback={null}><Navigation /></Suspense>}
+      {!isAdminRoute && <Suspense fallback={null}><OnboardingActivationBar /></Suspense>}
       <main className={isAdminRoute ? '' : 'pt-10 md:pt-11 lg:pt-12 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0'}>
         <AnimatePresence mode="popLayout" initial={false}>
           <PageTransition key={location.pathname}>
@@ -618,6 +621,7 @@ const AppContent = () => {
                 <Route path="/cloud-infrastructure" element={<CloudInfrastructurePage />} />
                 <Route path="/disaster-recovery" element={<DisasterRecoveryPage />} />
                 <Route path="/behavior-analytics" element={<BehaviorAnalyticsPage />} />
+                <Route path="/user-activation" element={<UserActivationDashboard />} />
                 <Route path="/ai-learning-framework" element={<AILearningFrameworkPage />} />
                 <Route path="/ab-testing" element={<ABTestingFrameworkPage />} />
                 <Route path="/go-to-market" element={<GoToMarketStrategyPage />} />
