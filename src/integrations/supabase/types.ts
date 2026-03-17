@@ -23064,6 +23064,7 @@ export type Database = {
           rating: number
           report_count: number | null
           review_text: string | null
+          tag_categories: string[] | null
           title: string | null
           updated_at: string | null
           user_id: string
@@ -23084,6 +23085,7 @@ export type Database = {
           rating: number
           report_count?: number | null
           review_text?: string | null
+          tag_categories?: string[] | null
           title?: string | null
           updated_at?: string | null
           user_id: string
@@ -23104,6 +23106,7 @@ export type Database = {
           rating?: number
           report_count?: number | null
           review_text?: string | null
+          tag_categories?: string[] | null
           title?: string | null
           updated_at?: string | null
           user_id?: string
@@ -25477,6 +25480,36 @@ export type Database = {
           rental_revenue_min?: number
           updated_at?: string
           updated_by?: string | null
+        }
+        Relationships: []
+      }
+      review_photos: {
+        Row: {
+          caption: string | null
+          created_at: string | null
+          id: string
+          photo_url: string
+          review_id: string
+          review_type: string
+          user_id: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string | null
+          id?: string
+          photo_url: string
+          review_id: string
+          review_type: string
+          user_id: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string | null
+          id?: string
+          photo_url?: string
+          review_id?: string
+          review_type?: string
+          user_id?: string
         }
         Relationships: []
       }
