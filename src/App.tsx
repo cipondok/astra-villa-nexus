@@ -45,6 +45,7 @@ const ResponsiveAIChatWidget = lazy(() => import('@/components/ai/ResponsiveAICh
 const WhatsAppInquiryButton = lazy(() => import('@/components/WhatsAppInquiryButton'));
 const FloatingThemeToggle = lazy(() => import('@/components/FloatingThemeToggle'));
 const MobileBottomTabBar = lazy(() => import('@/components/navigation/MobileBottomTabBar'));
+const OnboardingActivationBar = lazy(() => import('@/components/onboarding/OnboardingActivationBar'));
 
 // Lazy load shell handlers — none are needed for first paint
 const SessionExpirationHandler = lazy(() => import('@/components/SessionExpirationHandler'));
