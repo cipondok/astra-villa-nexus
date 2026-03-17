@@ -253,6 +253,7 @@ const UserActivationDashboard = lazy(() => import('@/pages/UserActivationDashboa
 const AILearningFrameworkPage = lazy(() => import('@/pages/AILearningFrameworkPage'));
 const ABTestingFrameworkPage = lazy(() => import('@/pages/ABTestingFrameworkPage'));
 const GoToMarketStrategyPage = lazy(() => import('@/pages/GoToMarketStrategyPage'));
+const First1000UsersPage = lazy(() => import('@/pages/First1000UsersPage'));
 const SalesScriptsPage = lazy(() => import('@/pages/SalesScriptsPage'));
 const LiveDemoPresentationPage = lazy(() => import('@/pages/LiveDemoPresentationPage'));
 const DailyLeadGenPlanPage = lazy(() => import('@/pages/DailyLeadGenPlanPage'));
