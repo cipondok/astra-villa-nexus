@@ -303,3 +303,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.portfolio-roi-tracker]
     verify_jwt = false
+
+  [functions.market-intelligence-feed]
+    verify_jwt = false

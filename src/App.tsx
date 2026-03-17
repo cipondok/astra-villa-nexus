@@ -372,6 +372,9 @@ const AppContent = () => {
                 <Route path="/portfolio-roi-tracker" element={<ProtectedRoute />}>
                   <Route index element={<PortfolioROITrackerPage />} />
                 </Route>
+                <Route path="/market-intelligence" element={<MarketIntelligenceFeedPage />}>
+                  <Route index element={<MarketIntelligenceFeedPage />} />
+                </Route>
                 <Route path="/ai-autopilot" element={<ProtectedRoute />}>
                   <Route index element={<AIAutopilotPage />} />
                 </Route>
