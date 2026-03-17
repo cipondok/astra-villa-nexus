@@ -569,6 +569,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "marketplace-integrity":      () => <MarketplaceIntegrity />,
   "team-kpi-framework":         () => <TeamKPIFramework />,
   "weekly-leadership-review":   () => <WeeklyLeadershipReview />,
+  "company-culture-principles": () => <CompanyCulturePrinciples />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
