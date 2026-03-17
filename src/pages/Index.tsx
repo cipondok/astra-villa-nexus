@@ -928,22 +928,24 @@ const Index = () => {
               </div>
 
               {/* ── SECTION 6: AI Tools Preview ── */}
-              <div className="max-w-7xl mx-auto">
-                <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
-                  <AstraVillaFeatures />
-                </LazyRender>
-              </div>
-              <Suspense fallback={null}><AIPriceEstimatorCTA /></Suspense>
+              <div className="bg-background">
+                <div className="max-w-7xl mx-auto">
+                  <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
+                    <AstraVillaFeatures />
+                  </LazyRender>
+                </div>
+                <Suspense fallback={null}><AIPriceEstimatorCTA /></Suspense>
 
-              {/* ── Trending Searches ── */}
-              <div className="max-w-7xl mx-auto px-3 sm:px-4">
-                <LazyRender minHeight="0px" fallback={null}>
-                  <TrendingSearchesWidget onSearchClick={(trendFilters) => { setFilters(prev => ({ ...prev, ...trendFilters })); setHasSearched(true); }} />
-                </LazyRender>
+                {/* ── Trending Searches ── */}
+                <div className="max-w-7xl mx-auto px-3 sm:px-4">
+                  <LazyRender minHeight="0px" fallback={null}>
+                    <TrendingSearchesWidget onSearchClick={(trendFilters) => { setFilters(prev => ({ ...prev, ...trendFilters })); setHasSearched(true); }} />
+                  </LazyRender>
+                </div>
+                <Suspense fallback={null}>
+                  <SectionDividerCTA icon={BarChart3} headline="Track Market Trends" description="Real-time price indices and investment analytics" ctaText="View Insights" ctaRoute="/analytics" variant="accent" />
+                </Suspense>
               </div>
-              <Suspense fallback={null}>
-                <SectionDividerCTA icon={BarChart3} headline="Track Market Trends" description="Real-time price indices and investment analytics" ctaText="View Insights" ctaRoute="/analytics" variant="accent" />
-              </Suspense>
 
               {/* ── Marketplace Services ── */}
               <LazyRender minHeight="0px" fallback={null}>
