@@ -218,7 +218,7 @@ const Services = () => {
               <Card 
                 key={service.id} 
                 className="overflow-hidden cursor-pointer border-border bg-card hover:shadow-lg hover:border-primary/30 transition-all duration-200 group active:scale-[0.98]"
-                onClick={() => navigate(`/services/${service.id}`)}
+                onClick={() => navigate(`/vendor/${service.vendor_id}`)}
               >
                 <CardContent className="p-0">
                   {/* Service Image */}
