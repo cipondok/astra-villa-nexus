@@ -38,6 +38,9 @@ export default function SmartCollectionsV2() {
   const current = collections?.[tabIdx];
   const properties = current?.properties || [];
 
+  const hasProperties = collections && collections.length > 0 && collections.some(c => c.properties.length > 0);
+  if (!isLoading && !hasProperties) return null;
+
   return (
     <section className="py-6 sm:py-10">
       <div className="max-w-7xl mx-auto px-3 sm:px-4">
