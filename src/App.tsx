@@ -204,6 +204,7 @@ const ListingPredictorPage = lazy(() => import('@/pages/ListingPredictorPage'));
 const MarketTrendsPage = lazy(() => import('@/pages/MarketTrendsPage'));
 const AutonomousAgentPage = lazy(() => import('@/pages/AutonomousAgentPage'));
 const AIAutopilotPage = lazy(() => import('@/pages/AIAutopilotPage'));
+const PriceDropDealsPage = lazy(() => import('@/pages/PriceDropDealsPage'));
 const MobileHomeFeed = lazy(() => import('@/pages/mobile/MobileHomeFeed'));
 const MobilePropertyDetail = lazy(() => import('@/pages/mobile/MobilePropertyDetail'));
 const MobileInvestorDashboard = lazy(() => import('@/pages/mobile/MobileInvestorDashboard'));
@@ -482,6 +483,7 @@ const AppContent = () => {
                 </Route>
                 <Route path="/ai-search" element={<AISearchAssistantPage />} />
                 <Route path="/investment-leaderboard" element={<InvestmentLeaderboardPage />} />
+                <Route path="/price-drop-deals" element={<PriceDropDealsPage />} />
                 <Route path="/ai-map" element={<AIMapSearchPage />} />
                 <Route path="/map-search" element={<AIMapSearchPage />} />
                 <Route path="/property-map" element={<PropertyMapSearchPage />} />
