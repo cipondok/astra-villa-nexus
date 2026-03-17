@@ -55,6 +55,7 @@ const OrgChartDashboard = lazy(() => import('./OrgChartDashboard'));
 const MarketingBudgetDashboard = lazy(() => import('./MarketingBudgetDashboard'));
 const FundraisingReadinessDashboard = lazy(() => import('./FundraisingReadinessDashboard'));
 const InvestorKPIDashboard = lazy(() => import('./InvestorKPIDashboard'));
+const DeveloperPartnershipFramework = lazy(() => import('./DeveloperPartnershipFramework'));
 const FounderWeeklyRoutine = lazy(() => import('./FounderWeeklyRoutine'));
 const PRLaunchStrategyDashboard = lazy(() => import('./PRLaunchStrategyDashboard'));
 const InvestorOutreachDashboard = lazy(() => import('./InvestorOutreachDashboard'));
