@@ -253,6 +253,7 @@ export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBluep
 export const HomepageBlueprint = lazyRetry(() => import("./HomepageBlueprint"));
 export const UIAuditReport = lazyRetry(() => import("./UIAuditReport"));
 export const LegalSetupRoadmap = lazyRetry(() => import("./LegalSetupRoadmap"));
+export const FinancialProjectionModel = lazyRetry(() => import("./FinancialProjectionModel"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
@@ -548,6 +549,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "homepage-blueprint":         () => <HomepageBlueprint />,
   "ui-audit-report":            () => <UIAuditReport />,
   "legal-setup-roadmap":        () => <LegalSetupRoadmap />,
+  "financial-projection":       () => <FinancialProjectionModel />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -764,4 +766,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "homepage-blueprint": { label: "Homepage Layout Blueprint", category: "Features" },
   "ui-audit-report": { label: "UI/UX Audit Report", category: "Features" },
   "legal-setup-roadmap": { label: "Legal Setup & Licensing", category: "Features" },
+  "financial-projection": { label: "24-Month Financial Projection", category: "Features" },
 };

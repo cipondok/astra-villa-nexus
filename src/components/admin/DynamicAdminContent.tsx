@@ -66,6 +66,7 @@ const UIUXRedesignBlueprint = lazy(() => import('./UIUXRedesignBlueprint'));
 const HomepageBlueprint = lazy(() => import('./HomepageBlueprint'));
 const UIAuditReport = lazy(() => import('./UIAuditReport'));
 const LegalSetupRoadmap = lazy(() => import('./LegalSetupRoadmap'));
+const FinancialProjectionModel = lazy(() => import('./FinancialProjectionModel'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
@@ -499,6 +500,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return (
           <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
             <LegalSetupRoadmap />
+          </Suspense>
+        );
+      case "financial-projection":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <FinancialProjectionModel />
           </Suspense>
         );
       default:
