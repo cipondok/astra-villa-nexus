@@ -900,11 +900,11 @@ const Index = () => {
                     </div>
                   </Suspense>
 
-                  {/* Smart AI Feed — Recommended / Trending */}
+                  {/* AI Investment Intelligence Feed */}
                   <ScrollReveal direction="up" delay={50}>
                     <div className="mb-8">
-                      <LazyRender minHeight="260px" fallback={<div className="animate-pulse h-64 bg-muted rounded-xl" />}>
-                        <SmartAIFeed onPropertyClick={handlePropertyClick} />
+                      <LazyRender minHeight="320px" fallback={<div className="animate-pulse h-80 bg-muted rounded-xl" />}>
+                        <AIInvestmentFeed onPropertyClick={handlePropertyClick} />
                       </LazyRender>
                     </div>
                   </ScrollReveal>
