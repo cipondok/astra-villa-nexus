@@ -1,6 +1,7 @@
 import React, { useMemo, useState, lazy, Suspense } from 'react';
 const Smart3DCompare = lazy(() => import('@/components/comparison/Smart3DCompare'));
 const InvestmentComparePanel = lazy(() => import('@/components/property/InvestmentComparePanel'));
+const AIInvestmentInsight = lazy(() => import('@/components/comparison/AIInvestmentInsight'));
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
