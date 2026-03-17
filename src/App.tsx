@@ -286,6 +286,7 @@ const AgentEffectivenessPage = lazy(() => import('@/pages/AgentEffectivenessPage
 const ViralGrowthPage = lazy(() => import('@/pages/ViralGrowthPage'));
 const InvestorClubPage = lazy(() => import('@/pages/InvestorClubPage'));
 const DataMoatPage = lazy(() => import('@/pages/DataMoatPage'));
+const RevenueScalingPage = lazy(() => import('@/pages/RevenueScalingPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -686,6 +687,7 @@ const AppContent = () => {
                 <Route path="/viral-growth" element={<ViralGrowthPage />} />
                 <Route path="/investor-club" element={<InvestorClubPage />} />
                 <Route path="/data-moat" element={<DataMoatPage />} />
+                <Route path="/revenue-scaling" element={<RevenueScalingPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
