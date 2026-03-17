@@ -205,6 +205,7 @@ const MarketTrendsPage = lazy(() => import('@/pages/MarketTrendsPage'));
 const AutonomousAgentPage = lazy(() => import('@/pages/AutonomousAgentPage'));
 const AIAutopilotPage = lazy(() => import('@/pages/AIAutopilotPage'));
 const PriceDropDealsPage = lazy(() => import('@/pages/PriceDropDealsPage'));
+const AgentCRMDashboard = lazy(() => import('@/pages/AgentCRMDashboard'));
 const MobileHomeFeed = lazy(() => import('@/pages/mobile/MobileHomeFeed'));
 const MobilePropertyDetail = lazy(() => import('@/pages/mobile/MobilePropertyDetail'));
 const MobileInvestorDashboard = lazy(() => import('@/pages/mobile/MobileInvestorDashboard'));
@@ -308,6 +309,9 @@ const AppContent = () => {
                   <Route path="/admin/ai-performance" element={<AIPerformanceDashboard />} />
                 </Route>
                 <Route path="/agent-dashboard" element={<AgentDashboard />} />
+                <Route path="/agent-crm" element={<ProtectedRoute />}>
+                  <Route index element={<AgentCRMDashboard />} />
+                </Route>
                 <Route path="/agent" element={<Navigate to="/agent-dashboard" replace />} />
                 <Route path="/listings" element={<Navigate to="/agent-dashboard" replace />} />
                 <Route path="/agent-listings" element={<Navigate to="/agent-dashboard" replace />} />

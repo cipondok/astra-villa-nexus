@@ -1645,6 +1645,90 @@ export type Database = {
         }
         Relationships: []
       }
+      agent_crm_leads: {
+        Row: {
+          agent_id: string
+          closed_at: string | null
+          created_at: string
+          deal_probability: number | null
+          deal_value: number | null
+          follow_up_date: string | null
+          id: string
+          last_contacted_at: string | null
+          lead_email: string | null
+          lead_name: string
+          lead_phone: string | null
+          lead_source: string
+          lost_reason: string | null
+          metadata: Json | null
+          notes: string | null
+          priority: string
+          property_id: string | null
+          property_title: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          agent_id: string
+          closed_at?: string | null
+          created_at?: string
+          deal_probability?: number | null
+          deal_value?: number | null
+          follow_up_date?: string | null
+          id?: string
+          last_contacted_at?: string | null
+          lead_email?: string | null
+          lead_name: string
+          lead_phone?: string | null
+          lead_source?: string
+          lost_reason?: string | null
+          metadata?: Json | null
+          notes?: string | null
+          priority?: string
+          property_id?: string | null
+          property_title?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          agent_id?: string
+          closed_at?: string | null
+          created_at?: string
+          deal_probability?: number | null
+          deal_value?: number | null
+          follow_up_date?: string | null
+          id?: string
+          last_contacted_at?: string | null
+          lead_email?: string | null
+          lead_name?: string
+          lead_phone?: string | null
+          lead_source?: string
+          lost_reason?: string | null
+          metadata?: Json | null
+          notes?: string | null
+          priority?: string
+          property_id?: string | null
+          property_title?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_crm_leads_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agent_crm_leads_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agent_leaderboard_rewards: {
         Row: {
           agent_id: string | null
@@ -35056,6 +35140,7 @@ export type Database = {
           verification_status: string
         }[]
       }
+      get_agent_crm_stats: { Args: { p_agent_id: string }; Returns: Json }
       get_agent_performance_intelligence: { Args: never; Returns: Json }
       get_ai_health_metrics: { Args: never; Returns: Json }
       get_ai_system_health: { Args: never; Returns: Json }
