@@ -1706,6 +1706,13 @@ export const navigationSections = {
       icon: Orbit,
       description: "Holistic personal operating system — execution, strategic thinking, energy, and identity alignment",
       badge: "⚡ Life OS"
+    },
+    {
+      key: "success-probability-framework",
+      label: "Success Probability Framework",
+      icon: Activity,
+      description: "Weighted leverage factors that maximize market traction, investor confidence, and startup survival",
+      badge: "📈 Probability"
     }
   ],
 

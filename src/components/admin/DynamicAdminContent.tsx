@@ -607,6 +607,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
             <FounderLifeOS />
           </Suspense>
         );
+      case "success-probability-framework":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <SuccessProbabilityFramework />
+          </Suspense>
+        );
       default:
         return <AdminOverview onSectionChange={onSectionChange} />;
     }

@@ -811,4 +811,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "founder-mental-framework": { label: "Founder Mental Framework", category: "Features" },
   "three-year-roadmap": { label: "3-Year Strategic Roadmap", category: "Features" },
   "founder-life-os": { label: "Founder Life OS", category: "Features" },
+  "success-probability-framework": { label: "Success Probability Framework", category: "Features" },
 };
