@@ -95,6 +95,7 @@ import { useUserAiProfile } from '@/hooks/useUserAiProfile';
 import { usePropertyMatchScore } from '@/hooks/usePropertyMatchScore';
 const PropertyNeighborhoodInsights = lazy(() => import('@/components/property/PropertyNeighborhoodInsights'));
 const PropertyChatbot = lazy(() => import('@/components/property/PropertyChatbot'));
+const InvestorFunnelCTA = lazy(() => import('@/components/transaction/InvestorFunnelCTA'));
 import { formatDistanceToNow } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 
