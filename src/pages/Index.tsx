@@ -975,7 +975,7 @@ const Index = () => {
               </SectionWrapper>
 
               {/* ── Final Conversion CTA ── */}
-              <div className="py-2 sm:py-3 bg-muted/20">
+              <SectionWrapper variant="muted" className="py-2 sm:py-3">
                 <Suspense fallback={null}>
                   <EarlyInvestmentCTA />
                 </Suspense>
