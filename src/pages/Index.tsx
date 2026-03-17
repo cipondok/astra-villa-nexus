@@ -851,7 +851,7 @@ const Index = () => {
                     secondaryRoute="/post-property"
                   />
                 </Suspense>
-              </div>
+              </SectionWrapper>
 
               {/* ── Contextual strips (render nothing when not applicable) ── */}
               <Suspense fallback={null}><WelcomeBackStrip /></Suspense>
