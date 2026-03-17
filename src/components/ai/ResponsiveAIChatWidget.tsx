@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Icons } from "@/components/icons";
 import AIChatMessages from "./AIChatMessages";
 import AIChatQuickActions from "./AIChatQuickActions";
+import ChatInvestmentChips from "./ChatInvestmentChips";
 import AIChatInput from "./AIChatInput";
 import TypingIndicator from "./TypingIndicator";
 import ChatButton, { ChatButtonVariant } from "./ChatButton";
