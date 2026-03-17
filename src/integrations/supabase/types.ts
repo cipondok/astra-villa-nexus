@@ -13243,6 +13243,175 @@ export type Database = {
           },
         ]
       }
+      legal_service_documents: {
+        Row: {
+          created_at: string | null
+          document_name: string
+          document_type: string | null
+          document_url: string
+          id: string
+          notes: string | null
+          request_id: string
+          uploaded_by: string
+        }
+        Insert: {
+          created_at?: string | null
+          document_name: string
+          document_type?: string | null
+          document_url: string
+          id?: string
+          notes?: string | null
+          request_id: string
+          uploaded_by: string
+        }
+        Update: {
+          created_at?: string | null
+          document_name?: string
+          document_type?: string | null
+          document_url?: string
+          id?: string
+          notes?: string | null
+          request_id?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "legal_service_documents_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "legal_service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      legal_service_requests: {
+        Row: {
+          admin_notes: string | null
+          assigned_consultant_id: string | null
+          assigned_consultant_name: string | null
+          completed_at: string | null
+          created_at: string | null
+          description: string | null
+          fee_amount: number | null
+          fee_approved_at: string | null
+          fee_approved_by: string | null
+          fee_currency: string | null
+          id: string
+          metadata: Json | null
+          notes: string | null
+          priority: string | null
+          property_address: string | null
+          property_id: string | null
+          request_number: string
+          service_type: Database["public"]["Enums"]["legal_service_type"]
+          status: Database["public"]["Enums"]["legal_request_status"]
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          assigned_consultant_id?: string | null
+          assigned_consultant_name?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          fee_amount?: number | null
+          fee_approved_at?: string | null
+          fee_approved_by?: string | null
+          fee_currency?: string | null
+          id?: string
+          metadata?: Json | null
+          notes?: string | null
+          priority?: string | null
+          property_address?: string | null
+          property_id?: string | null
+          request_number?: string
+          service_type: Database["public"]["Enums"]["legal_service_type"]
+          status?: Database["public"]["Enums"]["legal_request_status"]
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          assigned_consultant_id?: string | null
+          assigned_consultant_name?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          fee_amount?: number | null
+          fee_approved_at?: string | null
+          fee_approved_by?: string | null
+          fee_currency?: string | null
+          id?: string
+          metadata?: Json | null
+          notes?: string | null
+          priority?: string | null
+          property_address?: string | null
+          property_id?: string | null
+          request_number?: string
+          service_type?: Database["public"]["Enums"]["legal_service_type"]
+          status?: Database["public"]["Enums"]["legal_request_status"]
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "legal_service_requests_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "legal_service_requests_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      legal_service_timeline: {
+        Row: {
+          action: string
+          created_at: string | null
+          description: string | null
+          id: string
+          metadata: Json | null
+          performed_by: string | null
+          request_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          performed_by?: string | null
+          request_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          performed_by?: string | null
+          request_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "legal_service_timeline_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "legal_service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       liquidity_absorption: {
         Row: {
           absorption_rating: string | null
@@ -35687,6 +35856,20 @@ export type Database = {
         | "tdp"
         | "domisili_usaha"
         | "izin_gangguan"
+      legal_request_status:
+        | "request_received"
+        | "document_review"
+        | "fee_quotation"
+        | "awaiting_payment"
+        | "processing"
+        | "completed"
+        | "cancelled"
+      legal_service_type:
+        | "shm_processing"
+        | "ajb_ppjb_documentation"
+        | "balik_nama"
+        | "certificate_verification"
+        | "tax_consultation"
       order_status:
         | "pending"
         | "under_review"
@@ -35937,6 +36120,22 @@ export const Constants = {
         "tdp",
         "domisili_usaha",
         "izin_gangguan",
+      ],
+      legal_request_status: [
+        "request_received",
+        "document_review",
+        "fee_quotation",
+        "awaiting_payment",
+        "processing",
+        "completed",
+        "cancelled",
+      ],
+      legal_service_type: [
+        "shm_processing",
+        "ajb_ppjb_documentation",
+        "balik_nama",
+        "certificate_verification",
+        "tax_consultation",
       ],
       order_status: [
         "pending",
