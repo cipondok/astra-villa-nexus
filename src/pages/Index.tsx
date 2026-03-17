@@ -860,7 +860,7 @@ const Index = () => {
               <Suspense fallback={null}><UrgencyTimerStrip /></Suspense>
 
               {/* ── SECTION 3: AI Opportunity Zone ── */}
-              <section className="py-3 sm:py-4 bg-muted/20" id="ai-opportunity-zone">
+              <SectionWrapper variant="muted" id="ai-opportunity-zone" className="py-3 sm:py-4">
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
                   <ScrollReveal direction="up" delay={0}>
                     <div className="text-center mb-3">
