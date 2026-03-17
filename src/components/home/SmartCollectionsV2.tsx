@@ -29,10 +29,20 @@ function getPropertyBadge(index: number, property: SmartCollectionProperty) {
 }
 
 export default function SmartCollectionsV2() {
-  const [activeTab, setActiveTab] = useState("0");
   const { data: collections, isLoading } = useSmartCollectionsV2(12);
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  const firstPopulatedIndex = useMemo(() => {
+    const idx = collections?.findIndex(c => c.properties.length > 0) ?? 0;
+    return idx >= 0 ? idx : 0;
+  }, [collections]);
+
+  const [activeTab, setActiveTab] = useState("0");
+
+  useEffect(() => {
+    setActiveTab(String(firstPopulatedIndex));
+  }, [firstPopulatedIndex]);
 
   const tabIdx = parseInt(activeTab);
   const current = collections?.[tabIdx];
