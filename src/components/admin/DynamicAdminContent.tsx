@@ -65,6 +65,7 @@ const NinetyDayMasterPlan = lazy(() => import('./NinetyDayMasterPlan'));
 const UIUXRedesignBlueprint = lazy(() => import('./UIUXRedesignBlueprint'));
 const HomepageBlueprint = lazy(() => import('./HomepageBlueprint'));
 const UIAuditReport = lazy(() => import('./UIAuditReport'));
+const LegalSetupRoadmap = lazy(() => import('./LegalSetupRoadmap'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
