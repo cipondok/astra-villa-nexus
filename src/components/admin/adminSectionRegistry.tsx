@@ -219,6 +219,38 @@ export const OpportunityScoringEngine = lazyRetry(() => import("./OpportunitySco
 export const PricePredictionEngine = lazyRetry(() => import("./PricePredictionEngine"));
 export const OffPlanProjectManager = lazyRetry(() => import("./OffPlanProjectManager"));
 
+// Feature Enhancement dashboards
+export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
+export const GrowthExecutionDashboard = lazyRetry(() => import("./GrowthExecutionDashboard"));
+export const AgentAcquisitionDashboard = lazyRetry(() => import("./AgentAcquisitionDashboard"));
+export const SupplyExpansionDashboard = lazyRetry(() => import("./SupplyExpansionDashboard"));
+export const InvestorFunnelDashboard = lazyRetry(() => import("./InvestorFunnelDashboard"));
+export const ViralContentDashboard = lazyRetry(() => import("./ViralContentDashboard"));
+export const PartnershipExpansionDashboard = lazyRetry(() => import("./PartnershipExpansionDashboard"));
+export const BrandAuthorityDashboard = lazyRetry(() => import("./BrandAuthorityDashboard"));
+export const MonetizationStrategyDashboard = lazyRetry(() => import("./MonetizationStrategyDashboard"));
+export const InvestorPitchDashboard = lazyRetry(() => import("./InvestorPitchDashboard"));
+export const InvestorCommunityDashboard = lazyRetry(() => import("./InvestorCommunityDashboard"));
+export const GeoExpansionDashboard = lazyRetry(() => import("./GeoExpansionDashboard"));
+export const FounderBrandingDashboard = lazyRetry(() => import("./FounderBrandingDashboard"));
+export const HiringRoadmapDashboard = lazyRetry(() => import("./HiringRoadmapDashboard"));
+export const PartnershipManagerRole = lazyRetry(() => import("./PartnershipManagerRole"));
+export const DigitalGrowthRole = lazyRetry(() => import("./DigitalGrowthRole"));
+export const PropertySupplyManagerRole = lazyRetry(() => import("./PropertySupplyManagerRole"));
+export const CustomerSuccessRole = lazyRetry(() => import("./CustomerSuccessRole"));
+export const OrgChartDashboard = lazyRetry(() => import("./OrgChartDashboard"));
+export const MarketingBudgetDashboard = lazyRetry(() => import("./MarketingBudgetDashboard"));
+export const FundraisingReadinessDashboard = lazyRetry(() => import("./FundraisingReadinessDashboard"));
+export const FounderWeeklyRoutine = lazyRetry(() => import("./FounderWeeklyRoutine"));
+export const PRLaunchStrategyDashboard = lazyRetry(() => import("./PRLaunchStrategyDashboard"));
+export const InvestorOutreachDashboard = lazyRetry(() => import("./InvestorOutreachDashboard"));
+export const FounderDailySystem = lazyRetry(() => import("./FounderDailySystem"));
+export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
+export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
+export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
+export const HomepageBlueprint = lazyRetry(() => import("./HomepageBlueprint"));
+export const UIAuditReport = lazyRetry(() => import("./UIAuditReport"));
+
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
 // Sections with custom props are listed explicitly; all others are simple <Component />.
@@ -478,6 +510,38 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "opportunity-scoring-engine": () => <OpportunityScoringEngine />,
   "price-prediction-engine": () => <PricePredictionEngine />,
   "property-comparison-tool": () => <PropertyComparisonTool />,
+
+  // Feature Enhancement dashboards
+  "launch-roadmap":             () => <LaunchRoadmapDashboard />,
+  "growth-execution":           () => <GrowthExecutionDashboard />,
+  "agent-acquisition":          () => <AgentAcquisitionDashboard />,
+  "supply-expansion":           () => <SupplyExpansionDashboard />,
+  "investor-funnel":            () => <InvestorFunnelDashboard />,
+  "viral-content":              () => <ViralContentDashboard />,
+  "partnership-expansion":      () => <PartnershipExpansionDashboard />,
+  "brand-authority":            () => <BrandAuthorityDashboard />,
+  "monetization-strategy":      () => <MonetizationStrategyDashboard />,
+  "investor-pitch":             () => <InvestorPitchDashboard />,
+  "investor-community":         () => <InvestorCommunityDashboard />,
+  "geo-expansion":              () => <GeoExpansionDashboard />,
+  "founder-branding":           () => <FounderBrandingDashboard />,
+  "hiring-roadmap":             () => <HiringRoadmapDashboard />,
+  "partnership-manager-role":   () => <PartnershipManagerRole />,
+  "digital-growth-role":        () => <DigitalGrowthRole />,
+  "property-supply-manager-role": () => <PropertySupplyManagerRole />,
+  "customer-success-role":      () => <CustomerSuccessRole />,
+  "org-chart":                  () => <OrgChartDashboard />,
+  "marketing-budget":           () => <MarketingBudgetDashboard />,
+  "fundraising-readiness":      () => <FundraisingReadinessDashboard />,
+  "founder-weekly-routine":     () => <FounderWeeklyRoutine />,
+  "pr-launch-strategy":         () => <PRLaunchStrategyDashboard />,
+  "investor-outreach":          () => <InvestorOutreachDashboard />,
+  "founder-daily-system":       () => <FounderDailySystem />,
+  "hyper-execution-plan":       () => <HyperExecutionPlan />,
+  "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
+  "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
+  "homepage-blueprint":         () => <HomepageBlueprint />,
+  "ui-audit-report":            () => <UIAuditReport />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -660,4 +724,35 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "affiliate-dashboard": { label: "Affiliate Program", category: "Marketing" },
   "chatbot-training": { label: "Chatbot Training", category: "AI & Tools" },
   "property-valuation": { label: "Property Valuation", category: "Property System" },
+  // Feature Enhancement dashboards
+  "launch-roadmap": { label: "Launch Roadmap", category: "Features" },
+  "growth-execution": { label: "90-Day Growth Plan", category: "Features" },
+  "agent-acquisition": { label: "Agent Acquisition", category: "Features" },
+  "supply-expansion": { label: "Supply Expansion", category: "Features" },
+  "investor-funnel": { label: "Investor Growth Funnel", category: "Features" },
+  "viral-content": { label: "Viral Content Strategy", category: "Features" },
+  "partnership-expansion": { label: "Partnership Expansion", category: "Features" },
+  "brand-authority": { label: "Brand Authority Strategy", category: "Features" },
+  "monetization-strategy": { label: "Monetization Strategy", category: "Features" },
+  "investor-pitch": { label: "Investor Pitch Deck", category: "Features" },
+  "investor-community": { label: "Investor Community", category: "Features" },
+  "geo-expansion": { label: "Geographic Expansion", category: "Features" },
+  "founder-branding": { label: "Founder Branding", category: "Features" },
+  "hiring-roadmap": { label: "Hiring Roadmap", category: "Features" },
+  "partnership-manager-role": { label: "Partnership Manager Role", category: "Features" },
+  "digital-growth-role": { label: "Digital Growth Lead Role", category: "Features" },
+  "property-supply-manager-role": { label: "Property Supply Manager Role", category: "Features" },
+  "customer-success-role": { label: "Customer Success Role", category: "Features" },
+  "org-chart": { label: "Org Chart & Structure", category: "Features" },
+  "marketing-budget": { label: "Marketing Budget Plan", category: "Features" },
+  "fundraising-readiness": { label: "Fundraising Readiness", category: "Features" },
+  "founder-weekly-routine": { label: "Founder Weekly Routine", category: "Features" },
+  "pr-launch-strategy": { label: "PR Launch Strategy", category: "Features" },
+  "investor-outreach": { label: "Investor Outreach Plan", category: "Features" },
+  "founder-daily-system": { label: "Founder Daily System", category: "Features" },
+  "hyper-execution-plan": { label: "30-Day Hyper Execution", category: "Features" },
+  "ninety-day-master-plan": { label: "90-Day Master Execution", category: "Features" },
+  "uiux-redesign-blueprint": { label: "UI/UX Redesign Blueprint", category: "Features" },
+  "homepage-blueprint": { label: "Homepage Layout Blueprint", category: "Features" },
+  "ui-audit-report": { label: "UI/UX Audit Report", category: "Features" },
 };
