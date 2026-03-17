@@ -1034,18 +1034,18 @@ const Index = () => {
               <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mx-auto max-w-5xl" aria-hidden="true" />
 
               {/* ── SECTION 7: Properties for Sale & Rent ── */}
-              <section className="py-6 sm:py-10 bg-muted/20" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 600px' }}>
-                <div className="space-y-8">
+              <section className="py-4 sm:py-6 bg-muted/20">
+                <div className="max-w-7xl mx-auto px-3 sm:px-4 space-y-4">
                   {/* Trending Searches — contextual discovery */}
                   <ScrollReveal direction="up" delay={0}>
-                    <LazyRender minHeight="0px" fallback={<div className="animate-pulse h-48 bg-muted rounded-xl" />}>
+                    <LazyRender minHeight="0px" fallback={<div className="animate-pulse h-40 bg-muted rounded-xl" />}>
                       <TrendingSearchesWidget onSearchClick={(trendFilters) => { setFilters(prev => ({ ...prev, ...trendFilters })); setHasSearched(true); }} />
                     </LazyRender>
                   </ScrollReveal>
                 </div>
 
                 {/* Market Intelligence CTA */}
-                <div className="mt-8">
+                <div className="mt-4">
                   <Suspense fallback={null}>
                     <SectionDividerCTA icon={BarChart3} headline="Track Market Trends" description="Real-time price indices and investment analytics" ctaText="View Insights" ctaRoute="/analytics" variant="accent" />
                   </Suspense>
