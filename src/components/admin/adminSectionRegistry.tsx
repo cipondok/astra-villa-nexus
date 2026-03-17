@@ -230,6 +230,22 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "project-progress":    (sc) => <LaunchReadinessDashboard onSectionChange={sc} />,
   "launch-readiness":    (sc) => <LaunchReadinessDashboard onSectionChange={sc} />,
 
+  // Category overview dashboards
+  "investor-management-overview":  (sc) => <CategoryOverviewDashboard category="investor-management" onSectionChange={sc} />,
+  "transactions-overview":         (sc) => <CategoryOverviewDashboard category="transactions" onSectionChange={sc} />,
+  "astra-token-overview":          (sc) => <CategoryOverviewDashboard category="astra-token" onSectionChange={sc} />,
+  "tools-overview":                (sc) => <CategoryOverviewDashboard category="tools" onSectionChange={sc} />,
+  "core-management-overview":      (sc) => <CategoryOverviewDashboard category="core-management" onSectionChange={sc} />,
+  "customer-service-overview":     (sc) => <CategoryOverviewDashboard category="customer-service" onSectionChange={sc} />,
+  "user-management-overview":      (sc) => <CategoryOverviewDashboard category="user-management" onSectionChange={sc} />,
+  "vendor-management-overview":    (sc) => <CategoryOverviewDashboard category="vendor-management" onSectionChange={sc} />,
+  "analytics-monitoring-overview": (sc) => <CategoryOverviewDashboard category="analytics-monitoring" onSectionChange={sc} />,
+  "content-settings-overview":     (sc) => <CategoryOverviewDashboard category="content-settings" onSectionChange={sc} />,
+  "system-settings-overview":      (sc) => <CategoryOverviewDashboard category="system-settings" onSectionChange={sc} />,
+  "technical-overview":            (sc) => <CategoryOverviewDashboard category="technical" onSectionChange={sc} />,
+  "features-overview":             (sc) => <CategoryOverviewDashboard category="features" onSectionChange={sc} />,
+  "help-overview":                 (sc) => <CategoryOverviewDashboard category="help" onSectionChange={sc} />,
+
   // User management
   "user-management":     (sc) => <UserManagementHub onNavigate={sc} />,
   "user-levels":         (sc) => <UserLevelManagement onNavigate={sc} />,
