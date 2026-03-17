@@ -9,7 +9,7 @@ const AIPriceEstimatorCTA = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="py-10 sm:py-14 px-3 sm:px-4">
+    <section className="py-5 sm:py-6 px-3 sm:px-4">
       <div className="max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -21,7 +21,7 @@ const AIPriceEstimatorCTA = () => {
           <div className="absolute -top-24 -right-24 w-64 h-64 bg-gold-primary/10 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="relative z-10 p-6 sm:p-10 lg:p-12 flex flex-col lg:flex-row items-center gap-6 lg:gap-10">
+          <div className="relative z-10 p-5 sm:p-6 lg:p-8 flex flex-col lg:flex-row items-center gap-6 lg:gap-10">
             <div className="flex-1 text-center lg:text-left space-y-4">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gold-primary/15 border border-gold-primary/25 text-gold-primary text-xs font-semibold">
                 <Sparkles className="h-3.5 w-3.5" />

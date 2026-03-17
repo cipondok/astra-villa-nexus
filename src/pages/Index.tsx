@@ -701,7 +701,7 @@ const Index = () => {
         <Suspense fallback={null}>
           <LiveActivityTicker />
         </Suspense>
-        <div className="relative h-4 sm:h-5 overflow-hidden" aria-hidden="true">
+        <div className="relative h-2 sm:h-3 overflow-hidden" aria-hidden="true">
           <div className="absolute inset-0 bg-gradient-to-b from-background/0 to-background" />
           <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold-primary/15 to-transparent" />
         </div>
@@ -859,10 +859,10 @@ const Index = () => {
               <Suspense fallback={null}><UrgencyTimerStrip /></Suspense>
 
               {/* ── SECTION 3: AI Opportunity Zone ── */}
-              <section className="py-4 sm:py-6 bg-muted/30" id="ai-opportunity-zone">
+              <section className="py-3 sm:py-4 bg-muted/30" id="ai-opportunity-zone">
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
                   <ScrollReveal direction="up" delay={0}>
-                    <div className="text-center mb-4">
+                    <div className="text-center mb-3">
                       <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-gold-primary/15 bg-gold-primary/5 mb-2">
                         <Sparkles className="h-3 w-3 text-gold-primary" />
                         <span className="text-[10px] sm:text-xs font-semibold text-gold-primary uppercase tracking-[0.15em]">AI Intelligence</span>
@@ -885,17 +885,17 @@ const Index = () => {
 
                   <Suspense fallback={null}><OpportunityStreakCards /></Suspense>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-3">
                     <Suspense fallback={null}><DealHunterHero /></Suspense>
                     <Suspense fallback={null}><TrendingROIDeals onPropertyClick={handlePropertyClick} /></Suspense>
                   </div>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-3">
                     <Suspense fallback={null}><OpportunityRadar /></Suspense>
                     <Suspense fallback={null}><AIJourneyGuide /></Suspense>
                   </div>
 
-                  <div className="mt-4">
+                  <div className="mt-3">
                     <Suspense fallback={null}>
                       <SmartRecommendations limit={6} className="shadow-sm" />
                     </Suspense>
@@ -961,7 +961,7 @@ const Index = () => {
               <Suspense fallback={null}><TrustFooterStrip /></Suspense>
 
               {/* ── ASTRA Villa Project Showcase ── */}
-              <section className="py-6 sm:py-8 relative">
+              <section className="py-3 sm:py-4 relative">
                 <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={<div className="animate-pulse h-60 bg-muted rounded-xl max-w-7xl mx-auto px-4 sm:px-6" />}>
@@ -972,7 +972,7 @@ const Index = () => {
               </section>
 
               {/* ── Final Conversion CTA ── */}
-              <div className="py-3 sm:py-4">
+              <div className="py-2 sm:py-3">
                 <Suspense fallback={null}>
                   <EarlyInvestmentCTA />
                 </Suspense>

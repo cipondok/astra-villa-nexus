@@ -13,7 +13,7 @@ export default function EarlyInvestmentCTA() {
   const avgROI = Math.round(DEMO_PROJECTS.reduce((s, p) => s + p.appreciationPct, 0) / DEMO_PROJECTS.length);
 
   return (
-    <section className="py-6 sm:py-8 px-3 sm:px-4">
+    <section className="py-3 sm:py-4 px-3 sm:px-4">
       <div className="max-w-7xl mx-auto">
         <Card className="border-primary/15 bg-gradient-to-r from-primary/5 via-card to-primary/5 overflow-hidden">
           <CardContent className="p-4 sm:p-6">

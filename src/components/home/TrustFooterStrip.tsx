@@ -35,9 +35,9 @@ export default function TrustFooterStrip({ className }: { className?: string }) 
       "w-full border-t border-border/40 bg-muted/20",
       className
     )}>
-      <div className="max-w-7xl mx-auto px-4 py-5 sm:py-6">
+      <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4">
         {/* Heading */}
-        <p className="text-center text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-[0.15em] mb-4">
+        <p className="text-center text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-[0.15em] mb-2.5">
           Your protection, our standard
         </p>
 
@@ -59,7 +59,7 @@ export default function TrustFooterStrip({ className }: { className?: string }) 
         </div>
 
         {/* Legal microcopy */}
-        <p className="text-center text-[10px] text-muted-foreground/60 mt-4 max-w-lg mx-auto leading-relaxed">
+        <p className="text-center text-[10px] text-muted-foreground/60 mt-2.5 max-w-lg mx-auto leading-relaxed">
           ASTRAVILLA operates in compliance with Indonesian property transaction regulations.
           All listing data is independently verified and AI-audited for accuracy.
         </p>
