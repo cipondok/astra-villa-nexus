@@ -358,13 +358,8 @@ const ProjectDetailPanel = ({ project }: { project: DeveloperProject }) => {
                         {u.building_area_sqm && <span>{u.building_area_sqm}m²</span>}
                       </div>
                     </div>
-                    <Select defaultValue={u.status} onValueChange={v => {
-                      const { useUpdateProjectUnit } = require('@/hooks/useDeveloperProjects');
-                      // Quick inline status change
-                      (async () => {
-                        const { supabase } = await import('@/integrations/supabase/client');
-                        await (supabase as any).from('project_units').update({ status: v }).eq('id', u.id);
-                      })();
+                    <Select defaultValue={u.status} onValueChange={async (v) => {
+                      await (supabase as any).from('project_units').update({ status: v }).eq('id', u.id);
                     }}>
                       <SelectTrigger className="h-7 w-24 text-[9px] rounded-lg">
                         <SelectValue />
