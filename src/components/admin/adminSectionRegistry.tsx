@@ -268,6 +268,7 @@ export const FounderDailyRoutine = lazyRetry(() => import("./FounderDailyRoutine
 export const FounderMentalFramework = lazyRetry(() => import("./FounderMentalFramework"));
 export const ThreeYearRoadmap = lazyRetry(() => import("./ThreeYearRoadmap"));
 export const FounderLifeOS = lazyRetry(() => import("./FounderLifeOS"));
+export const SuccessProbabilityFramework = lazyRetry(() => import("./SuccessProbabilityFramework"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
@@ -578,6 +579,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "founder-mental-framework":   () => <FounderMentalFramework />,
   "three-year-roadmap":         () => <ThreeYearRoadmap />,
   "founder-life-os":            () => <FounderLifeOS />,
+  "success-probability-framework": () => <SuccessProbabilityFramework />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -809,4 +811,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "founder-mental-framework": { label: "Founder Mental Framework", category: "Features" },
   "three-year-roadmap": { label: "3-Year Strategic Roadmap", category: "Features" },
   "founder-life-os": { label: "Founder Life OS", category: "Features" },
+  "success-probability-framework": { label: "Success Probability Framework", category: "Features" },
 };
