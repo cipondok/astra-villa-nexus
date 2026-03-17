@@ -1529,6 +1529,21 @@ const PropertyDetail: React.FC = () => {
         language="en"
       />
 
+      {/* Mobile Offer Dialog */}
+      <Suspense fallback={null}>
+        <MakeOfferDialog
+          open={showMobileOffer}
+          onOpenChange={setShowMobileOffer}
+          propertyId={property.id}
+          propertyTitle={property.title}
+          propertyImage={property.images?.[0] || property.image_urls?.[0]}
+          propertyPrice={property.price}
+          sellerId={property.owner_id}
+          agentId={property.agent_id}
+          opportunityScore={(property as any).opportunity_score}
+        />
+      </Suspense>
+
       {/* Sticky Mobile Contact CTA — Optimized funnel with Make Offer */}
       <div className="fixed bottom-0 left-0 right-0 z-[9980] md:hidden bg-card/95 backdrop-blur-xl border-t border-border/40 shadow-[0_-4px_20px_hsl(var(--foreground)/0.06)]"
         style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}
