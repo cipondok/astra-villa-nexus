@@ -348,10 +348,10 @@ export default function First1000UsersPage() {
             </div>
 
             {/* Referral multiplier */}
-            <Card className="border border-amber-500/15 bg-amber-500/5">
+            <Card className="border border-accent/15 bg-accent/5">
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <Trophy className="h-8 w-8 text-amber-500" />
+                  <Trophy className="h-8 w-8 text-accent-foreground" />
                   <div>
                     <p className="text-sm font-bold text-foreground">Growth Phase Referral Multiplier</p>
                     <p className="text-[11px] text-muted-foreground">
