@@ -152,6 +152,12 @@ export const navigationSections = {
 
   "investor-management": [
     {
+      key: "investor-management-overview",
+      label: "📊 Investor Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all investor management modules"
+    },
+    {
       key: "wna-investment-settings",
       label: "WNA Investment Settings",
       icon: Plane,
