@@ -27,7 +27,7 @@ export function useActivationMilestones() {
         .select('milestone_type, completed_at')
         .eq('user_id', user.id);
       if (error) { console.warn('Failed to fetch milestones:', error); return []; }
-      return (data || []) as MilestoneRecord[];
+      return (data || []) as unknown as MilestoneRecord[];
     },
     enabled: !!user?.id,
     staleTime: 5 * 60_000,
