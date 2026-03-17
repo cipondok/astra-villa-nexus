@@ -38,20 +38,21 @@ const categoryIcons: Record<string, LucideIcon> = {
   "help": HelpCircle,
 };
 
-const categoryThemes: Record<string, { header: string; active: string }> = {
-  overview: { header: "bg-primary text-primary-foreground", active: "bg-primary text-primary-foreground" },
-  transactions: { header: "bg-accent text-accent-foreground", active: "bg-accent text-accent-foreground" },
-  "astra-token": { header: "bg-secondary text-secondary-foreground", active: "bg-secondary text-secondary-foreground" },
-  tools: { header: "bg-muted text-foreground", active: "bg-primary text-primary-foreground" },
-  "core-management": { header: "bg-primary text-primary-foreground", active: "bg-primary text-primary-foreground" },
-  "customer-service": { header: "bg-accent text-accent-foreground", active: "bg-accent text-accent-foreground" },
-  "vendor-management": { header: "bg-secondary text-secondary-foreground", active: "bg-secondary text-secondary-foreground" },
-  "analytics-monitoring": { header: "bg-primary text-primary-foreground", active: "bg-primary text-primary-foreground" },
-  "content-settings": { header: "bg-accent text-accent-foreground", active: "bg-accent text-accent-foreground" },
-  "system-settings": { header: "bg-secondary text-secondary-foreground", active: "bg-secondary text-secondary-foreground" },
-  technical: { header: "bg-destructive text-destructive-foreground", active: "bg-destructive text-destructive-foreground" },
-  features: { header: "bg-primary text-primary-foreground", active: "bg-primary text-primary-foreground" },
-  help: { header: "bg-muted text-foreground", active: "bg-primary text-primary-foreground" },
+// Unified panel theme — all categories use the same sleek style
+const categoryAccent: Record<string, string> = {
+  overview: "--panel-accent",
+  transactions: "--panel-success",
+  "astra-token": "--panel-accent",
+  tools: "--panel-text-secondary",
+  "core-management": "--panel-success",
+  "customer-service": "--panel-accent",
+  "vendor-management": "--panel-success",
+  "analytics-monitoring": "--panel-accent",
+  "content-settings": "--panel-accent",
+  "system-settings": "--panel-text-secondary",
+  technical: "--panel-danger",
+  features: "--panel-accent",
+  help: "--panel-text-secondary",
 };
 
 const VISIBLE_COUNT = 6;
