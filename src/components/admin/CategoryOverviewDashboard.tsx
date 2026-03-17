@@ -286,8 +286,8 @@ const GridView: React.FC<{
 
           {/* Hover tooltip — positioned ABOVE */}
           {isHovered && (
-            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-1 z-50 px-2 py-1 rounded bg-[hsl(var(--popover)/.92)] border border-[hsl(var(--border)/.12)] shadow-lg max-w-[180px] pointer-events-none animate-in fade-in duration-100">
-              <p className="text-[8px] text-[hsl(var(--popover-foreground)/.55)] leading-relaxed text-left">{section.description}</p>
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-1 z-50 px-2.5 py-1.5 rounded bg-popover border border-border/40 shadow-xl max-w-[200px] pointer-events-none animate-in fade-in duration-100">
+              <p className="text-[9px] text-popover-foreground/80 leading-relaxed text-left">{section.description}</p>
             </div>
           )}
         </button>
