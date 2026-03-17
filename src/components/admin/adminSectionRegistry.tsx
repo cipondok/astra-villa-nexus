@@ -549,6 +549,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "homepage-blueprint":         () => <HomepageBlueprint />,
   "ui-audit-report":            () => <UIAuditReport />,
   "legal-setup-roadmap":        () => <LegalSetupRoadmap />,
+  "financial-projection":       () => <FinancialProjectionModel />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
