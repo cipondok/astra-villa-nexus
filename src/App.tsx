@@ -619,6 +619,7 @@ const AppContent = () => {
                 <Route path="/ab-testing" element={<ABTestingFrameworkPage />} />
                 <Route path="/go-to-market" element={<GoToMarketStrategyPage />} />
                 <Route path="/sales-scripts" element={<SalesScriptsPage />} />
+                <Route path="/live-demo" element={<LiveDemoPresentationPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
