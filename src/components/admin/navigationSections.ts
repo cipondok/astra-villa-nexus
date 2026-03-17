@@ -1713,6 +1713,13 @@ export const navigationSections = {
       icon: Activity,
       description: "Weighted leverage factors that maximize market traction, investor confidence, and startup survival",
       badge: "📈 Probability"
+    },
+    {
+      key: "risk-mitigation-strategy",
+      label: "Risk Mitigation Strategy",
+      icon: ShieldAlert,
+      description: "Structured risk identification and preventive operational safeguards for startup survival",
+      badge: "🛡️ Risk Ops"
     }
   ],
 

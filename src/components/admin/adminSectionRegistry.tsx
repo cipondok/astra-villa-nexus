@@ -269,6 +269,7 @@ export const FounderMentalFramework = lazyRetry(() => import("./FounderMentalFra
 export const ThreeYearRoadmap = lazyRetry(() => import("./ThreeYearRoadmap"));
 export const FounderLifeOS = lazyRetry(() => import("./FounderLifeOS"));
 export const SuccessProbabilityFramework = lazyRetry(() => import("./SuccessProbabilityFramework"));
+export const RiskMitigationStrategy = lazyRetry(() => import("./RiskMitigationStrategy"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
@@ -580,6 +581,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "three-year-roadmap":         () => <ThreeYearRoadmap />,
   "founder-life-os":            () => <FounderLifeOS />,
   "success-probability-framework": () => <SuccessProbabilityFramework />,
+  "risk-mitigation-strategy": () => <RiskMitigationStrategy />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -812,4 +814,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "three-year-roadmap": { label: "3-Year Strategic Roadmap", category: "Features" },
   "founder-life-os": { label: "Founder Life OS", category: "Features" },
   "success-probability-framework": { label: "Success Probability Framework", category: "Features" },
+  "risk-mitigation-strategy": { label: "Risk Mitigation Strategy", category: "Features" },
 };

@@ -82,6 +82,7 @@ const FounderMentalFramework = lazy(() => import('./FounderMentalFramework'));
 const ThreeYearRoadmap = lazy(() => import('./ThreeYearRoadmap'));
 const FounderLifeOS = lazy(() => import('./FounderLifeOS'));
 const SuccessProbabilityFramework = lazy(() => import('./SuccessProbabilityFramework'));
+const RiskMitigationStrategy = lazy(() => import('./RiskMitigationStrategy'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
@@ -611,6 +612,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return (
           <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
             <SuccessProbabilityFramework />
+          </Suspense>
+        );
+      case "risk-mitigation-strategy":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <RiskMitigationStrategy />
           </Suspense>
         );
       default:
