@@ -301,3 +301,5 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.referral-engine]
     verify_jwt = false
 
+  [functions.portfolio-roi-tracker]
+    verify_jwt = false
