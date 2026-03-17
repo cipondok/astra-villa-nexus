@@ -790,4 +790,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "hiring-roadmap-10": { label: "First 10 Hires Roadmap", category: "Features" },
   "customer-support-framework": { label: "Customer Support Framework", category: "Features" },
   "marketplace-integrity": { label: "Marketplace Integrity & QC", category: "Features" },
+  "team-kpi-framework": { label: "Team KPI Framework", category: "Features" },
 };

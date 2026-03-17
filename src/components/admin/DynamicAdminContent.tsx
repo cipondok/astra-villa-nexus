@@ -558,6 +558,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
             <MarketplaceIntegrity />
           </Suspense>
         );
+      case "team-kpi-framework":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <TeamKPIFramework />
+          </Suspense>
+        );
       default:
         return <AdminOverview onSectionChange={onSectionChange} />;
     }
