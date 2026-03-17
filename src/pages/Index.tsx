@@ -817,11 +817,11 @@ const Index = () => {
                DISCOVERY FLOW — Structured scroll journey
             ══════════════════════════════════════════════════ */
             <>
-              {/* ── SECTION 2: Featured Properties ── */}
-              <section id="featured-section" className="py-5 sm:py-8">
+               {/* ── SECTION 2: Featured Properties ── */}
+              <section id="featured-section" className="py-4 sm:py-6">
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={
-                    <div className="py-6 max-w-7xl mx-auto px-3 sm:px-4">
+                    <div className="py-4 max-w-7xl mx-auto px-3 sm:px-4">
                       <div className="flex gap-3 overflow-hidden">
                         {[...Array(4)].map((_, i) => (
                           <div key={i} className="flex-shrink-0 w-[280px] sm:w-[320px]">
