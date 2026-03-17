@@ -663,6 +663,7 @@ const AppContent = () => {
                 <Route path="/first-deal-closure" element={<FirstDealClosurePage />} />
                 <Route path="/investor-script" element={<InvestorPresentationScript />} />
                 <Route path="/agent-incentives" element={<AgentIncentivesPage />} />
+                <Route path="/launch-day" element={<LaunchDayPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
