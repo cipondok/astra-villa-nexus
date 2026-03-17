@@ -1,30 +1,20 @@
-import React, { useMemo } from 'react';
-import { navigationSections, sectionTitles, type NavigationSection } from './navigationSections';
+import React, { useMemo, useState } from 'react';
+import { navigationSections, sectionTitles } from './navigationSections';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import {
   LayoutDashboard, Users, Building2, Wrench, Settings, Cpu, Coins,
   Headphones, ShoppingBag, BarChart3, DollarSign, Globe, Palette, Sparkles,
-  ArrowRight, TrendingUp, Zap, Layers, CheckCircle2, Clock, AlertCircle,
+  TrendingUp, Zap, Layers, ChevronRight,
   type LucideIcon,
 } from 'lucide-react';
 
 const categoryIcons: Record<string, LucideIcon> = {
-  "overview": LayoutDashboard,
-  "investor-management": Globe,
-  "transactions": DollarSign,
-  "astra-token": Coins,
-  "tools": Wrench,
-  "core-management": Building2,
-  "customer-service": Headphones,
-  "user-management": Users,
-  "vendor-management": ShoppingBag,
-  "analytics-monitoring": BarChart3,
-  "content-settings": Palette,
-  "system-settings": Settings,
-  "technical": Cpu,
-  "features": Sparkles,
-  "help": LayoutDashboard,
+  "overview": LayoutDashboard, "investor-management": Globe, "transactions": DollarSign,
+  "astra-token": Coins, "tools": Wrench, "core-management": Building2,
+  "customer-service": Headphones, "user-management": Users, "vendor-management": ShoppingBag,
+  "analytics-monitoring": BarChart3, "content-settings": Palette, "system-settings": Settings,
+  "technical": Cpu, "features": Sparkles, "help": LayoutDashboard,
 };
 
 const categoryDescriptions: Record<string, string> = {
@@ -44,48 +34,34 @@ const categoryDescriptions: Record<string, string> = {
   "help": "Help articles, documentation, changelogs, and system announcements.",
 };
 
-// Badge → status category mapping
-const badgeStatusMap: Record<string, 'active' | 'new' | 'hot' | 'premium'> = {
-  'New': 'new',
-  '🔥 Hot': 'hot',
-  'Premium': 'premium',
-  '🚀 Launch': 'active',
-  '📈 Growth': 'active',
-  '🎯 Agents': 'active',
-  '📦 Supply': 'active',
-  '📈 Investors': 'active',
-  '🎬 Content': 'active',
-  '🤝 Partnerships': 'active',
-  '👑 Authority': 'active',
-  '💰 Revenue': 'active',
-  '🎯 Fundraising': 'active',
-  '🏘️ Community': 'active',
-  '🗺️ National': 'active',
-  '👤 Personal Brand': 'active',
-  '👥 Team': 'active',
-  '🤝 Hiring': 'active',
-  '📈 Growth Hire': 'active',
-  '🏗️ Supply Hire': 'active',
-  '💚 Success Hire': 'active',
-  '🏛️ Org Design': 'active',
-  '💰 Budget Plan': 'active',
-  '🚀 Fundraise': 'active',
-  '⏱️ Routine': 'active',
-  '📰 PR Plan': 'active',
-  '📧 Outreach': 'active',
-  '⚡ Daily': 'active',
-  '🔥 30-Day Sprint': 'hot',
-  '🎯 90-Day Plan': 'active',
-  '🎨 Design System': 'active',
-  '🏠 Homepage': 'active',
-  '🔍 Audit': 'active',
+type StatusKey = 'active' | 'new' | 'hot' | 'premium';
+
+const badgeStatusMap: Record<string, StatusKey> = {
+  'New': 'new', '🔥 Hot': 'hot', 'Premium': 'premium',
+  '🚀 Launch': 'active', '📈 Growth': 'active', '🎯 Agents': 'active',
+  '📦 Supply': 'active', '📈 Investors': 'active', '🎬 Content': 'active',
+  '🤝 Partnerships': 'active', '👑 Authority': 'active', '💰 Revenue': 'active',
+  '🎯 Fundraising': 'active', '🏘️ Community': 'active', '🗺️ National': 'active',
+  '👤 Personal Brand': 'active', '👥 Team': 'active', '🤝 Hiring': 'active',
+  '📈 Growth Hire': 'active', '🏗️ Supply Hire': 'active', '💚 Success Hire': 'active',
+  '🏛️ Org Design': 'active', '💰 Budget Plan': 'active', '🚀 Fundraise': 'active',
+  '⏱️ Routine': 'active', '📰 PR Plan': 'active', '📧 Outreach': 'active',
+  '⚡ Daily': 'active', '🔥 30-Day Sprint': 'hot', '🎯 90-Day Plan': 'active',
+  '🎨 Design System': 'active', '🏠 Homepage': 'active', '🔍 Audit': 'active',
 };
 
-const statusColors = {
-  active: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
-  new: 'bg-primary/10 text-primary border-primary/20',
-  hot: 'bg-orange-500/10 text-orange-600 border-orange-500/20',
-  premium: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
+const statusDot: Record<StatusKey, string> = {
+  active: 'bg-emerald-500',
+  new: 'bg-primary',
+  hot: 'bg-orange-500',
+  premium: 'bg-amber-500',
+};
+
+const statusBadgeStyle: Record<StatusKey, string> = {
+  active: 'bg-emerald-500/8 text-emerald-600 dark:text-emerald-400',
+  new: 'bg-primary/8 text-primary',
+  hot: 'bg-orange-500/8 text-orange-600 dark:text-orange-400',
+  premium: 'bg-amber-500/8 text-amber-600 dark:text-amber-400',
 };
 
 interface CategoryOverviewDashboardProps {
@@ -102,104 +78,118 @@ const CategoryOverviewDashboard: React.FC<CategoryOverviewDashboardProps> = ({
   const CategoryIcon = categoryIcons[category] || LayoutDashboard;
   const description = categoryDescriptions[category] || '';
   const isFeatures = category === 'features';
+  const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
-  // Filter out the overview item
   const contentSections = sections.filter(s => !s.key.endsWith('-overview'));
 
-  // Analytics for features category
   const analytics = useMemo(() => {
     if (!isFeatures) return null;
     const badges = contentSections.map(s => ('badge' in s ? String(s.badge || '') : ''));
     const newCount = badges.filter(b => b === 'New').length;
     const hotCount = badges.filter(b => b.includes('🔥')).length;
     const premiumCount = badges.filter(b => b === 'Premium').length;
-    const activeCount = contentSections.length - newCount;
-    return { total: contentSections.length, newCount, hotCount, premiumCount, activeCount };
+    return { total: contentSections.length, newCount, hotCount, premiumCount, activeCount: contentSections.length - newCount };
   }, [isFeatures, contentSections]);
 
   return (
-    <div className="space-y-5 animate-in fade-in duration-300">
-      {/* Modern Header */}
-      <div className="relative overflow-hidden rounded-xl border border-border/40 bg-gradient-to-br from-card via-card to-primary/[0.03] p-5">
-        <div className="absolute top-0 right-0 w-48 h-48 bg-primary/[0.03] rounded-full -translate-y-1/2 translate-x-1/2" />
-        <div className="relative flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="p-2.5 rounded-lg bg-primary/10 border border-primary/20">
-              <CategoryIcon className="h-5 w-5 text-primary" />
+    <div className="space-y-4 animate-in fade-in duration-300">
+      {/* Header */}
+      <div className="relative overflow-hidden rounded-xl border border-border/30 bg-gradient-to-r from-card via-card to-primary/[0.02] px-5 py-4">
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/[0.04] rounded-full blur-2xl" />
+        <div className="relative flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/15">
+              <CategoryIcon className="h-4 w-4 text-primary" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-foreground tracking-tight">{title}</h1>
-              {description && (
-                <p className="text-xs text-muted-foreground mt-0.5 max-w-xl leading-relaxed">{description}</p>
-              )}
+              <h1 className="text-base font-bold text-foreground tracking-tight">{title}</h1>
+              <p className="text-[11px] text-muted-foreground mt-0.5 max-w-md">{description}</p>
             </div>
           </div>
-          <Badge variant="outline" className="text-[10px] font-mono border-border/60 shrink-0">
+          <span className="text-[10px] font-mono text-muted-foreground/70 tabular-nums shrink-0">
             {contentSections.length} modules
-          </Badge>
+          </span>
         </div>
 
-        {/* Feature Analytics Strip */}
         {isFeatures && analytics && (
-          <div className="relative grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-border/30">
-            <AnalyticChip icon={Layers} label="Total Modules" value={analytics.total} color="text-primary" />
-            <AnalyticChip icon={Zap} label="Active" value={analytics.activeCount} color="text-emerald-500" />
-            <AnalyticChip icon={TrendingUp} label="Hot Priority" value={analytics.hotCount} color="text-orange-500" />
-            <AnalyticChip icon={Sparkles} label="New" value={analytics.newCount} color="text-primary" />
+          <div className="relative flex items-center gap-6 mt-3 pt-3 border-t border-border/20">
+            <StatPill icon={Layers} value={analytics.total} label="Total" />
+            <StatPill icon={Zap} value={analytics.activeCount} label="Active" color="text-emerald-500" />
+            <StatPill icon={TrendingUp} value={analytics.hotCount} label="Hot" color="text-orange-500" />
+            <StatPill icon={Sparkles} value={analytics.newCount} label="New" color="text-primary" />
+            {analytics.premiumCount > 0 && (
+              <StatPill icon={Coins} value={analytics.premiumCount} label="Premium" color="text-amber-500" />
+            )}
           </div>
         )}
       </div>
 
-      {/* Slim Section Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+      {/* Module Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1.5">
         {contentSections.map((section, idx) => {
           const Icon = section.icon;
           const badgeText = 'badge' in section ? String(section.badge || '') : '';
           const status = badgeStatusMap[badgeText] || (badgeText ? 'active' : undefined);
+          const isHovered = hoveredKey === section.key;
 
           return (
             <button
               key={section.key}
               onClick={() => onSectionChange?.(section.key)}
+              onMouseEnter={() => setHoveredKey(section.key)}
+              onMouseLeave={() => setHoveredKey(null)}
               className={cn(
-                "group relative flex items-center gap-3 px-3 py-2.5 rounded-lg border border-border/30 bg-card/60",
-                "text-left transition-all duration-200 w-full",
-                "hover:bg-primary/[0.04] hover:border-primary/25 hover:shadow-sm",
-                "animate-in fade-in slide-in-from-bottom-1"
+                "group relative flex items-center gap-2.5 pl-2.5 pr-2 py-2 rounded-lg w-full text-left",
+                "border border-transparent transition-all duration-150",
+                "hover:bg-accent/50 hover:border-border/40",
+                "animate-in fade-in"
               )}
-              style={{ animationDelay: `${idx * 20}ms` }}
+              style={{ animationDelay: `${Math.min(idx * 15, 400)}ms` }}
             >
+              {/* Status dot */}
+              {status && (
+                <span className={cn("absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3 rounded-r-full transition-all", statusDot[status], isHovered ? 'h-5 opacity-100' : 'opacity-60')} />
+              )}
+
               {/* Icon */}
               <div className={cn(
-                "p-1.5 rounded-md border transition-colors shrink-0",
-                "bg-muted/40 border-border/30",
-                "group-hover:bg-primary/10 group-hover:border-primary/20"
+                "p-1 rounded-md transition-colors shrink-0",
+                "group-hover:bg-primary/10"
               )}>
-                <Icon className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
+                <Icon className="h-3.5 w-3.5 text-muted-foreground/70 group-hover:text-primary transition-colors" />
               </div>
 
-              {/* Content */}
-              <div className="flex-1 min-w-0">
+              {/* Label + hover tooltip */}
+              <div className="flex-1 min-w-0 relative">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xs font-semibold text-foreground truncate">
+                  <span className="text-[11px] font-medium text-foreground/90 group-hover:text-foreground truncate leading-tight">
                     {section.label.replace(/^[^\w]*\s/, '')}
                   </span>
                   {status && (
                     <span className={cn(
-                      "inline-flex items-center text-[8px] font-medium px-1.5 py-0.5 rounded-full border leading-none shrink-0",
-                      statusColors[status]
+                      "text-[7px] font-semibold uppercase tracking-wider px-1 py-px rounded shrink-0 leading-none",
+                      statusBadgeStyle[status]
                     )}>
-                      {badgeText.replace(/[^\w\s]/g, '').trim() || 'Active'}
+                      {badgeText.replace(/[^\w\s]/g, '').trim().split(' ')[0] || 'Live'}
                     </span>
                   )}
                 </div>
-                <p className="text-[10px] text-muted-foreground truncate mt-0.5 leading-snug">
-                  {section.description}
-                </p>
+
+                {/* Hover description tooltip */}
+                {isHovered && (
+                  <div className="absolute left-0 top-full mt-1 z-30 px-2.5 py-1.5 rounded-md bg-popover border border-border/60 shadow-lg max-w-[220px] animate-in fade-in zoom-in-95 duration-150">
+                    <p className="text-[10px] text-muted-foreground leading-relaxed">
+                      {section.description}
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Arrow */}
-              <ArrowRight className="h-3 w-3 text-muted-foreground/30 group-hover:text-primary/60 group-hover:translate-x-0.5 transition-all shrink-0" />
+              <ChevronRight className={cn(
+                "h-3 w-3 shrink-0 transition-all duration-150",
+                isHovered ? "text-primary/70 translate-x-0.5" : "text-transparent"
+              )} />
             </button>
           );
         })}
@@ -208,21 +198,13 @@ const CategoryOverviewDashboard: React.FC<CategoryOverviewDashboardProps> = ({
   );
 };
 
-// Small analytics chip component
-const AnalyticChip: React.FC<{
-  icon: LucideIcon;
-  label: string;
-  value: number;
-  color: string;
-}> = ({ icon: Icon, label, value, color }) => (
-  <div className="flex items-center gap-2.5">
-    <div className="p-1.5 rounded-md bg-muted/50 border border-border/30">
-      <Icon className={cn("h-3.5 w-3.5", color)} />
-    </div>
-    <div>
-      <p className="text-sm font-bold text-foreground font-mono leading-none">{value}</p>
-      <p className="text-[10px] text-muted-foreground leading-none mt-0.5">{label}</p>
-    </div>
+const StatPill: React.FC<{ icon: LucideIcon; value: number; label: string; color?: string }> = ({
+  icon: Icon, value, label, color = 'text-foreground',
+}) => (
+  <div className="flex items-center gap-1.5">
+    <Icon className={cn("h-3 w-3", color)} />
+    <span className={cn("text-xs font-bold font-mono leading-none", color)}>{value}</span>
+    <span className="text-[10px] text-muted-foreground/60 leading-none">{label}</span>
   </div>
 );
 
