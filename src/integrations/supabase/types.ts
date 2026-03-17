@@ -12371,6 +12371,124 @@ export type Database = {
         }
         Relationships: []
       }
+      investor_watchlist_categories: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          sort_order: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          sort_order?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          sort_order?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      investor_watchlist_items: {
+        Row: {
+          ai_recommendation: string | null
+          alert_count: number | null
+          category_id: string | null
+          created_at: string
+          has_new_alert: boolean | null
+          id: string
+          last_alert_at: string | null
+          last_price: number | null
+          last_score: number | null
+          notes: string | null
+          price_at_add: number | null
+          price_change_pct: number | null
+          property_id: string
+          score_at_add: number | null
+          score_change: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_recommendation?: string | null
+          alert_count?: number | null
+          category_id?: string | null
+          created_at?: string
+          has_new_alert?: boolean | null
+          id?: string
+          last_alert_at?: string | null
+          last_price?: number | null
+          last_score?: number | null
+          notes?: string | null
+          price_at_add?: number | null
+          price_change_pct?: number | null
+          property_id: string
+          score_at_add?: number | null
+          score_change?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_recommendation?: string | null
+          alert_count?: number | null
+          category_id?: string | null
+          created_at?: string
+          has_new_alert?: boolean | null
+          id?: string
+          last_alert_at?: string | null
+          last_price?: number | null
+          last_score?: number | null
+          notes?: string | null
+          price_at_add?: number | null
+          price_change_pct?: number | null
+          property_id?: string
+          score_at_add?: number | null
+          score_change?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_watchlist_items_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "investor_watchlist_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "investor_watchlist_items_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "investor_watchlist_items_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invoices: {
         Row: {
           booking_id: string
