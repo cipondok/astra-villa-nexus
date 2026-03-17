@@ -585,12 +585,12 @@ const Index = () => {
       {/* Content Layer - full width edge-to-edge */}
       <main id="main-content" className="relative z-10 min-h-screen pb-20 md:pb-4">
         
-        {/* Hero Section — Single image, left-aligned layout */}
+        {/* Hero Section — Cinematic single-image, left-aligned layout */}
         <SectionErrorBoundary sectionName="Hero" fallbackMinHeight="400px">
         <section className="relative w-full overflow-hidden" id="hero-section"
-          style={{ height: 'clamp(500px, 80vh, 820px)', contain: 'layout' }}
+          style={{ height: 'clamp(520px, 85vh, 880px)', contain: 'layout' }}
         >
-          {/* Single premium background image with slow zoom */}
+          {/* Premium background image with slow zoom */}
           <div className="absolute inset-0 z-0 overflow-hidden" style={{ contain: 'strict' }}>
             <img
               src={heroImage}
@@ -606,37 +606,44 @@ const Index = () => {
             />
           </div>
 
-          {/* Cinematic gradient overlays — lighter for image vibrancy */}
-          <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-r from-background/85 via-background/40 to-transparent" />
-          <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-background/80 via-transparent to-background/30" />
+          {/* Cinematic gradient overlays — refined for depth */}
+          <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-r from-background/90 via-background/50 to-transparent" />
+          <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-background via-transparent to-background/20" />
+          {/* Subtle noise texture for depth */}
+          <div className="absolute inset-0 z-[1] pointer-events-none opacity-[0.015]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")' }} />
 
           {/* Left-aligned content */}
           <div className="relative z-10 h-full flex items-center">
             <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="max-w-2xl space-y-6 sm:space-y-8">
+              <div className="max-w-2xl space-y-5 sm:space-y-7">
 
-                {/* AI badge — subtle, single instance */}
+                {/* AI badge */}
                 <div
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-gold-primary/20 bg-background/30 backdrop-blur-sm animate-fade-in"
+                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gold-primary/25 bg-background/20 backdrop-blur-sm animate-fade-in"
                   style={{ animationDelay: '0.2s', animationFillMode: 'both' }}
                 >
-                  <Sparkles className="h-3 w-3 text-gold-primary" />
-                  <span className="text-[10px] sm:text-xs font-semibold text-foreground/90 uppercase tracking-[0.15em]">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold-primary opacity-60" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-gold-primary" />
+                  </span>
+                  <span className="text-[10px] sm:text-xs font-semibold text-foreground/90 uppercase tracking-[0.2em]">
                     {t('indexPage.aiPoweredSearch')}
                   </span>
                 </div>
 
                 {/* Headline — strong Playfair hierarchy */}
-                <div className="space-y-3 animate-fade-in" style={{ animationDelay: '0.35s', animationFillMode: 'both' }}>
-                  <h1 className="font-playfair text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.08] text-foreground drop-shadow-sm">
+                <div className="space-y-4 animate-fade-in" style={{ animationDelay: '0.35s', animationFillMode: 'both' }}>
+                  <h1 className="font-playfair text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold leading-[1.06] text-foreground">
                     {personalizedHeadline?.headline || t('indexPage.findYour')}
                   </h1>
-                  <p className="text-sm sm:text-base text-muted-foreground font-medium max-w-lg leading-relaxed">
+                  {/* Intelligence Line accent */}
+                  <div className="w-16 h-0.5 bg-gradient-to-r from-gold-primary to-gold-primary/0 rounded-full" />
+                  <p className="text-sm sm:text-base text-muted-foreground/90 font-medium max-w-lg leading-relaxed">
                     {personalizedHeadline?.subtitle || t('indexPage.searchPowered')}
                   </p>
                 </div>
 
-                {/* Search Panel — dominant, left-aligned */}
+                {/* Search Panel */}
                 <div className="animate-fade-in" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
                   <SectionErrorBoundary sectionName="Search" fallbackMinHeight="120px">
                     <Suspense fallback={<SearchPanelSkeleton />}>
@@ -655,7 +662,7 @@ const Index = () => {
                   </SectionErrorBoundary>
                 </div>
 
-                {/* Inline trust metrics — subtle credibility cues */}
+                {/* Trust metrics */}
                 <div
                   className="flex items-center gap-4 sm:gap-6 flex-wrap text-muted-foreground animate-fade-in"
                   style={{ animationDelay: '0.7s', animationFillMode: 'both' }}
@@ -668,10 +675,10 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Scroll indicator — below content, gentle pulse */}
+          {/* Scroll indicator */}
           <button
             onClick={() => document.getElementById('featured-section')?.scrollIntoView({ behavior: 'smooth' })}
-            className="hidden sm:flex absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex-col items-center gap-1 text-muted-foreground/50 hover:text-gold-primary transition-colors duration-300 animate-fade-in"
+            className="hidden sm:flex absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex-col items-center gap-1.5 text-muted-foreground/40 hover:text-gold-primary transition-colors duration-300 animate-fade-in"
             style={{ animationDelay: '1s', animationFillMode: 'both' }}
             aria-label="Scroll to content"
           >
@@ -690,14 +697,14 @@ const Index = () => {
         )}
 
         {/* ═══════════════════════════════════════════════════════
-            SECTION 1: Live Activity Ticker + Gold Divider
+            SECTION 1: Live Activity Ticker + Refined Divider
         ═══════════════════════════════════════════════════════ */}
         <Suspense fallback={null}>
           <LiveActivityTicker />
         </Suspense>
-        <div className="relative h-8 sm:h-12 -mt-1 overflow-hidden" aria-hidden="true">
+        <div className="relative h-6 sm:h-8 overflow-hidden" aria-hidden="true">
           <div className="absolute inset-0 bg-gradient-to-b from-background/0 to-background" />
-          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold-primary/20 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold-primary/15 to-transparent" />
         </div>
 
         {/* Error State — always accessible */}
