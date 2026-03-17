@@ -2838,6 +2838,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
 
                 {showQuickActions && messages.length <= 1 && (
                   <div className={`${isMobile ? 'px-3 pb-2' : 'px-4 pb-2'}`}>
+                    <ChatInvestmentChips onChipClick={(query) => handleSendMessage(query)} />
                     <AIChatQuickActions
                       quickActions={quickActions}
                       onActionClick={(action) => handleSendMessage(action)}
