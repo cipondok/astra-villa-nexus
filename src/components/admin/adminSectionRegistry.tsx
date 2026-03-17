@@ -259,6 +259,7 @@ export const FounderBrandStrategy = lazyRetry(() => import("./FounderBrandStrate
 export const EquityAllocationFramework = lazyRetry(() => import("./EquityAllocationFramework"));
 export const InvestorQAPrep = lazyRetry(() => import("./InvestorQAPrep"));
 export const HiringRoadmap = lazyRetry(() => import("./HiringRoadmap"));
+export const CustomerSupportFramework = lazyRetry(() => import("./CustomerSupportFramework"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
@@ -560,6 +561,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "equity-allocation-framework": () => <EquityAllocationFramework />,
   "investor-qa-prep":           () => <InvestorQAPrep />,
   "hiring-roadmap-10":          () => <HiringRoadmap />,
+  "customer-support-framework": () => <CustomerSupportFramework />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -782,4 +784,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "equity-allocation-framework": { label: "Equity Allocation Framework", category: "Features" },
   "investor-qa-prep": { label: "Investor Q&A Preparation", category: "Features" },
   "hiring-roadmap-10": { label: "First 10 Hires Roadmap", category: "Features" },
+  "customer-support-framework": { label: "Customer Support Framework", category: "Features" },
 };
