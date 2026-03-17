@@ -50,10 +50,10 @@ const badgeStatusMap: Record<string, StatusKey> = {
 };
 
 const statusAccent: Record<StatusKey, { dot: string; text: string }> = {
-  active:  { dot: 'bg-[#0ecb81]', text: 'text-[#0ecb81]' },
-  new:     { dot: 'bg-[#f0b90b]', text: 'text-[#f0b90b]' },
-  hot:     { dot: 'bg-[#f6465d]', text: 'text-[#f6465d]' },
-  premium: { dot: 'bg-[#f0b90b]', text: 'text-[#f0b90b]' },
+  active:  { dot: 'bg-[hsl(var(--panel-success))]', text: 'text-[hsl(var(--panel-success))]' },
+  new:     { dot: 'bg-[hsl(var(--panel-accent))]', text: 'text-[hsl(var(--panel-accent))]' },
+  hot:     { dot: 'bg-[hsl(var(--panel-danger))]', text: 'text-[hsl(var(--panel-danger))]' },
+  premium: { dot: 'bg-[hsl(var(--panel-accent))]', text: 'text-[hsl(var(--panel-accent))]' },
 };
 
 type ViewMode = 'list' | 'grid';
