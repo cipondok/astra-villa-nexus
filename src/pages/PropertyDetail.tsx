@@ -1151,7 +1151,37 @@ const PropertyDetail: React.FC = () => {
 
           {/* Sidebar - Slim */}
           <div className="space-y-2 sm:space-y-3">
-            
+
+            {/* Investor Funnel CTA — Primary conversion widget */}
+            <Suspense fallback={null}>
+              <InvestorFunnelCTA
+                propertyId={property.id}
+                propertyTitle={property.title}
+                propertyImage={property.images?.[0] || property.image_urls?.[0]}
+                propertyPrice={property.price}
+                sellerId={property.owner_id}
+                agentId={property.agent_id}
+                opportunityScore={(property as any).opportunity_score}
+                rentalYield={property.property_type === 'villa' ? 8.5 : property.property_type === 'apartment' ? 6.2 : 5.5}
+                priceDropPct={(property as any).price_drop_pct}
+                growthForecast={property.city?.toLowerCase().includes('bali') ? 12 : 7}
+                onWhatsAppClick={() => {
+                  if (user && property.posted_by?.whatsapp_number) {
+                    window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, I'm interested in ${property.title}`, '_blank');
+                  } else if (!user) {
+                    setShowAuthModal(true);
+                  } else {
+                    toast({ title: t('propertyDetail.contactNotAvailable'), variant: "destructive" });
+                  }
+                }}
+                onScheduleClick={() => {
+                  // Scroll to booking section or trigger dialog
+                  const bookingEl = document.querySelector('[data-booking-trigger]');
+                  bookingEl?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              />
+            </Suspense>
+
             {/* KPR Calculator */}
             {property.listing_type === 'sale' && (
               <div className="space-y-2 sm:space-y-3">
