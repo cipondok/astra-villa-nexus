@@ -933,7 +933,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
 
       const isNeighborhoodQuery = /neighborhood|area|around|walk to|safe at night|cafes nearby|near a|close to/i.test(currentMessage);
       const isNegotiationQuery = /negotiate|lower the price|deposit|rent|deal|offer|lease/i.test(currentMessage);
-      const isInvestorQuery = /\b(roi|portfolio|diversif|investment|hotspot|undervalued|rental yield|deal finder|best city|market trend|overexposed|growth potential|buy or sell|flip potential)\b/i.test(currentMessage);
+      const isInvestorQuery = /\b(roi|portfolio|diversif|investment|hotspot|undervalued|rental yield|deal finder|best city|market trend|overexposed|growth potential|buy or sell|flip potential|compare.*(?:property|properties|roi|apartment|villa)|emerging zone|best deal|simulate.*(?:roi|sell|profit)|highest.*yield|good.*invest)\b/i.test(currentMessage);
       
       let functionName: string;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
