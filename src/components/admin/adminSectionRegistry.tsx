@@ -551,6 +551,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "vip-analytics": { label: "VIP Analytics", category: "Analytics" },
   "transaction-hub": { label: "Transaction Management", category: "Transactions" },
   "mortgage-management": { label: "Mortgage Management", category: "Transactions" },
+  "revenue-commissions": { label: "Revenue & Commissions", category: "Transactions" },
   "blockchain-management": { label: "Blockchain Management", category: "Transactions" },
   "b2b-marketplace": { label: "B2B Data Marketplace", category: "Transactions" },
   "partnership-programs": { label: "Partnership Programs", category: "Transactions" },
