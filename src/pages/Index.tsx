@@ -885,17 +885,17 @@ const Index = () => {
 
                   <Suspense fallback={null}><OpportunityStreakCards /></Suspense>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-3">
                     <Suspense fallback={null}><DealHunterHero /></Suspense>
                     <Suspense fallback={null}><TrendingROIDeals onPropertyClick={handlePropertyClick} /></Suspense>
                   </div>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-3">
                     <Suspense fallback={null}><OpportunityRadar /></Suspense>
                     <Suspense fallback={null}><AIJourneyGuide /></Suspense>
                   </div>
 
-                  <div className="mt-4">
+                  <div className="mt-3">
                     <Suspense fallback={null}>
                       <SmartRecommendations limit={6} className="shadow-sm" />
                     </Suspense>
