@@ -58,6 +58,7 @@ const WhatsAppInquiryDialog = lazy(() => import("@/components/property/WhatsAppI
 const AstraVillaFeatures = lazy(() => import("@/components/home/AstraVillaFeatures"));
 // AIRecommendedProperties removed — merged into AI Opportunity Zone via SmartAIFeed + SmartRecommendations
 const SmartAIFeed = lazy(() => import("@/components/home/SmartAIFeed"));
+const AIInvestmentFeed = lazy(() => import("@/components/home/AIInvestmentFeed"));
 const SmartRecommendations = lazy(() => import("@/components/ai/SmartRecommendations"));
 const BehaviorPatternBanner = lazy(() => import("@/components/ai/BehaviorPatternBanner"));
 const DealHunterHero = lazy(() => import("@/components/home/DealHunterHero"));
