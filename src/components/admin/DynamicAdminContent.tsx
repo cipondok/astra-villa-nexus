@@ -84,6 +84,7 @@ const FounderLifeOS = lazy(() => import('./FounderLifeOS'));
 const SuccessProbabilityFramework = lazy(() => import('./SuccessProbabilityFramework'));
 const RiskMitigationStrategy = lazy(() => import('./RiskMitigationStrategy'));
 const UltimateMasterPlan = lazy(() => import('./UltimateMasterPlan'));
+const NinetyDayRoadmap = lazy(() => import('./NinetyDayRoadmap'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
