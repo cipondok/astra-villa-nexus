@@ -417,6 +417,15 @@ const PropertyDetailModal = ({
                       className="flex-1"
                     />
                   </div>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="w-full border-primary/30 text-primary hover:bg-primary/10"
+                    onClick={() => navigate(`/investment-report/${property.id}`)}
+                  >
+                    <BarChart3 className="h-5 w-5 mr-2" />
+                    Generate Investment Report
+                  </Button>
                 </div>
               </div>
 

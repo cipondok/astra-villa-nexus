@@ -181,7 +181,7 @@ export default function PropertyAnalyticsReportPage() {
             {recentProperties.map((p: any) => (
               <Card
                 key={p.id}
-                onClick={() => { setSelectedId(p.id); setSearchId(p.id); }}
+                onClick={() => navigate(`/investment-report/${p.id}`)}
                 className="bg-card/80 border-border/50 cursor-pointer hover:shadow-md hover:scale-[1.01] transition-all"
               >
                 <CardContent className="p-3">
