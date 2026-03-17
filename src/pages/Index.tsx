@@ -1053,7 +1053,7 @@ const Index = () => {
               </section>
 
               {/* ── SECTION 8: Marketplace Services ── */}
-              <section className="py-6 sm:py-10" id="marketplace-services-section" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 300px' }}>
+              <section className="py-4 sm:py-6" id="marketplace-services-section">
                 <ScrollReveal direction="up" delay={0}>
                   <LazyRender minHeight="224px" fallback={<div className="animate-pulse h-56 bg-muted rounded-xl" />}>
                     <MarketplaceServices />
