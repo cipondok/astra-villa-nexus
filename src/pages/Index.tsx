@@ -39,6 +39,7 @@ import { StickyHeaderSearch } from "@/components/search/StickyHeaderSearch";
 import LazyRender from "@/components/LazyRender";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import SectionErrorBoundary from "@/components/ui/SectionErrorBoundary";
+import SectionWrapper from "@/components/ui/SectionWrapper";
 
 
 // Lazy load heavy components for better performance
