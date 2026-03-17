@@ -253,6 +253,7 @@ const ABTestingFrameworkPage = lazy(() => import('@/pages/ABTestingFrameworkPage
 const GoToMarketStrategyPage = lazy(() => import('@/pages/GoToMarketStrategyPage'));
 const SalesScriptsPage = lazy(() => import('@/pages/SalesScriptsPage'));
 const LiveDemoPresentationPage = lazy(() => import('@/pages/LiveDemoPresentationPage'));
+const DailyLeadGenPlanPage = lazy(() => import('@/pages/DailyLeadGenPlanPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -620,6 +621,7 @@ const AppContent = () => {
                 <Route path="/go-to-market" element={<GoToMarketStrategyPage />} />
                 <Route path="/sales-scripts" element={<SalesScriptsPage />} />
                 <Route path="/live-demo" element={<LiveDemoPresentationPage />} />
+                <Route path="/daily-lead-gen" element={<DailyLeadGenPlanPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
