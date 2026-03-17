@@ -152,6 +152,12 @@ export const navigationSections = {
 
   "investor-management": [
     {
+      key: "investor-management-overview",
+      label: "📊 Investor Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all investor management modules"
+    },
+    {
       key: "wna-investment-settings",
       label: "WNA Investment Settings",
       icon: Plane,
@@ -218,6 +224,12 @@ export const navigationSections = {
 
   transactions: [
     {
+      key: "transactions-overview",
+      label: "📊 Transactions Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all transaction and payment modules"
+    },
+    {
       key: "transaction-hub",
       label: "Transaction Management",
       icon: DollarSign,
@@ -263,6 +275,12 @@ export const navigationSections = {
 
   "astra-token": [
     {
+      key: "astra-token-overview",
+      label: "📊 Token Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — ASTRA token management overview"
+    },
+    {
       key: "astra-token-hub",
       label: "ASTRA Token Hub",
       icon: Coins,
@@ -271,6 +289,12 @@ export const navigationSections = {
   ],
 
   tools: [
+    {
+      key: "tools-overview",
+      label: "📊 Tools Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all tools and utilities"
+    },
     {
       key: "tools-management",
       label: "Tools Management",
@@ -308,6 +332,12 @@ export const navigationSections = {
   ],
 
   "core-management": [
+    {
+      key: "core-management-overview",
+      label: "📊 Core Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all property and core management modules"
+    },
     {
       key: "property-management-hub",
       label: "Property Management Hub",
@@ -491,6 +521,12 @@ export const navigationSections = {
 
   "customer-service": [
     {
+      key: "customer-service-overview",
+      label: "📊 Support Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all customer service modules"
+    },
+    {
       key: "customer-service",
       label: "Customer Service",
       icon: Headphones,
@@ -512,6 +548,12 @@ export const navigationSections = {
   ],
 
   "user-management": [
+    {
+      key: "user-management-overview",
+      label: "📊 Users Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all user management and KYC modules"
+    },
     {
       key: "user-management",
       label: "User Management",
@@ -575,6 +617,12 @@ export const navigationSections = {
 
   "vendor-management": [
     {
+      key: "vendor-management-overview",
+      label: "📊 Vendors Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all vendor management modules"
+    },
+    {
       key: "vendors-hub",
       label: "Vendors Hub",
       icon: ShoppingBag,
@@ -583,6 +631,12 @@ export const navigationSections = {
   ],
 
   "analytics-monitoring": [
+    {
+      key: "analytics-monitoring-overview",
+      label: "📊 Analytics Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all analytics and monitoring modules"
+    },
     {
       key: "vip-analytics",
       label: "VIP Analytics",
@@ -940,6 +994,12 @@ export const navigationSections = {
 
   "content-settings": [
     {
+      key: "content-settings-overview",
+      label: "📊 Content Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all content and settings modules"
+    },
+    {
       key: "carousel-settings",
       label: "Featured Properties Carousel",
       icon: ImageIcon,
@@ -975,6 +1035,12 @@ export const navigationSections = {
   ],
 
   "system-settings": [
+    {
+      key: "system-settings-overview",
+      label: "📊 Settings Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all system configuration modules"
+    },
     {
       key: "system-settings",
       label: "System Settings",
@@ -1071,6 +1137,12 @@ export const navigationSections = {
   ],
 
   technical: [
+    {
+      key: "technical-overview",
+      label: "📊 Technical Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all technical and infrastructure modules"
+    },
     {
       key: "bug-error-detection",
       label: "Bug & Error Detection",
@@ -1193,6 +1265,12 @@ export const navigationSections = {
   ],
 
   features: [
+    {
+      key: "features-overview",
+      label: "📊 Features Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all feature enhancements and growth modules"
+    },
     {
       key: "innovation-lab",
       label: "Innovation Lab",
@@ -1501,6 +1579,12 @@ export const navigationSections = {
   ],
 
   help: [
+    {
+      key: "help-overview",
+      label: "📊 Help Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all help and documentation modules"
+    },
     {
       key: "admin-guide",
       label: "Admin Guide & Documentation",

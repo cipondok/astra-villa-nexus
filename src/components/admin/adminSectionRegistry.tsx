@@ -99,6 +99,7 @@ export const BugErrorDashboard = lazyRetry(() => import("./diagnostics/BugErrorD
 export const TestingDashboard = lazyRetry(() => import("./TestingDashboard"));
 export const VIPAnalyticsDashboard = lazyRetry(() => import("./VIPAnalyticsDashboard"));
 export const AdminRevenueCommissionDashboard = lazyRetry(() => import("./AdminRevenueCommissionDashboard"));
+export const CategoryOverviewDashboard = lazyRetry(() => import("./CategoryOverviewDashboard"));
 export const BookingManagement = lazyRetry(() => import("./BookingManagement"));
 export const AdminRentalManagement = lazyRetry(() => import("./AdminRentalManagement"));
 export const TransactionManagementTabs = lazyRetry(() => import("./TransactionManagementTabs"));
@@ -228,6 +229,22 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "diagnostic":          () => <ProjectDiagnosticSystem />,
   "project-progress":    (sc) => <LaunchReadinessDashboard onSectionChange={sc} />,
   "launch-readiness":    (sc) => <LaunchReadinessDashboard onSectionChange={sc} />,
+
+  // Category overview dashboards
+  "investor-management-overview":  (sc) => <CategoryOverviewDashboard category="investor-management" onSectionChange={sc} />,
+  "transactions-overview":         (sc) => <CategoryOverviewDashboard category="transactions" onSectionChange={sc} />,
+  "astra-token-overview":          (sc) => <CategoryOverviewDashboard category="astra-token" onSectionChange={sc} />,
+  "tools-overview":                (sc) => <CategoryOverviewDashboard category="tools" onSectionChange={sc} />,
+  "core-management-overview":      (sc) => <CategoryOverviewDashboard category="core-management" onSectionChange={sc} />,
+  "customer-service-overview":     (sc) => <CategoryOverviewDashboard category="customer-service" onSectionChange={sc} />,
+  "user-management-overview":      (sc) => <CategoryOverviewDashboard category="user-management" onSectionChange={sc} />,
+  "vendor-management-overview":    (sc) => <CategoryOverviewDashboard category="vendor-management" onSectionChange={sc} />,
+  "analytics-monitoring-overview": (sc) => <CategoryOverviewDashboard category="analytics-monitoring" onSectionChange={sc} />,
+  "content-settings-overview":     (sc) => <CategoryOverviewDashboard category="content-settings" onSectionChange={sc} />,
+  "system-settings-overview":      (sc) => <CategoryOverviewDashboard category="system-settings" onSectionChange={sc} />,
+  "technical-overview":            (sc) => <CategoryOverviewDashboard category="technical" onSectionChange={sc} />,
+  "features-overview":             (sc) => <CategoryOverviewDashboard category="features" onSectionChange={sc} />,
+  "help-overview":                 (sc) => <CategoryOverviewDashboard category="help" onSectionChange={sc} />,
 
   // User management
   "user-management":     (sc) => <UserManagementHub onNavigate={sc} />,
