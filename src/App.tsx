@@ -653,6 +653,7 @@ const AppContent = () => {
                 <Route path="/geographic-expansion" element={<GeographicExpansionPage />} />
                 <Route path="/unicorn-positioning" element={<UnicornPositioningPage />} />
                 <Route path="/7-day-sprint" element={<SevenDaySprintPage />} />
+                <Route path="/local-dominance" element={<LocalDominancePage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
