@@ -61,7 +61,6 @@ export default function PriceDropDealsPage() {
   }, [deals, tierFilter, citySearch, sortBy, minScore]);
 
   return (
-    <>
       <div className="container mx-auto px-4 py-8 max-w-7xl space-y-6">
         {/* Header */}
         <div>
