@@ -73,6 +73,7 @@ const EquityAllocationFramework = lazy(() => import('./EquityAllocationFramework
 const InvestorQAPrep = lazy(() => import('./InvestorQAPrep'));
 const HiringRoadmap = lazy(() => import('./HiringRoadmap'));
 const CustomerSupportFramework = lazy(() => import('./CustomerSupportFramework'));
+const MarketplaceIntegrity = lazy(() => import('./MarketplaceIntegrity'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
@@ -548,6 +549,12 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return (
           <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
             <CustomerSupportFramework />
+          </Suspense>
+        );
+      case "marketplace-integrity":
+        return (
+          <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+            <MarketplaceIntegrity />
           </Suspense>
         );
       default:
