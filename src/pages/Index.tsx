@@ -946,10 +946,10 @@ const Index = () => {
                 <Suspense fallback={null}>
                   <SectionDividerCTA icon={BarChart3} headline="Track Market Trends" description="Real-time price indices and investment analytics" ctaText="View Insights" ctaRoute="/analytics" variant="accent" />
                 </Suspense>
-              </div>
+              </SectionWrapper>
 
               {/* ── Marketplace Services ── */}
-              <div className="bg-muted/20">
+              <SectionWrapper variant="muted">
                 <LazyRender minHeight="0px" fallback={null}>
                   <MarketplaceServices />
                 </LazyRender>
