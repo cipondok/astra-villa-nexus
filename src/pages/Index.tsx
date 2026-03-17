@@ -1098,14 +1098,17 @@ const Index = () => {
               </Suspense>
 
               {/* ── ASTRA Villa Project Showcase ── */}
-              <section className="py-8 sm:py-12 bg-muted/20" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 400px' }}>
+              <section className="py-10 sm:py-16 relative" style={{ contentVisibility: 'auto', containIntrinsicSize: 'auto 500px' }}>
+                {/* Subtle top/bottom borders */}
+                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
                 <ScrollReveal direction="up" delay={0}>
-                  <LazyRender minHeight="300px" fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto px-3 sm:px-4" />}>
-                    <Suspense fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto px-3 sm:px-4" />}>
+                  <LazyRender minHeight="300px" fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto px-4 sm:px-6" />}>
+                    <Suspense fallback={<div className="animate-pulse h-72 bg-muted rounded-xl max-w-7xl mx-auto px-4 sm:px-6" />}>
                       <AstraProjectShowcase />
                     </Suspense>
                   </LazyRender>
                 </ScrollReveal>
+                <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
               </section>
 
               {/* ── SECTION 10: Final Conversion CTA ── */}
