@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { navigationSections, sectionTitles } from './navigationSections';
-import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import {
   LayoutDashboard, Users, Building2, Wrench, Settings, Cpu, Coins,
@@ -50,18 +49,12 @@ const badgeStatusMap: Record<string, StatusKey> = {
   '🎨 Design System': 'active', '🏠 Homepage': 'active', '🔍 Audit': 'active',
 };
 
-const statusDot: Record<StatusKey, string> = {
-  active: 'bg-emerald-500',
-  new: 'bg-primary',
-  hot: 'bg-orange-500',
-  premium: 'bg-amber-500',
-};
-
-const statusBadgeStyle: Record<StatusKey, string> = {
-  active: 'bg-emerald-500/8 text-emerald-600 dark:text-emerald-400',
-  new: 'bg-primary/8 text-primary',
-  hot: 'bg-orange-500/8 text-orange-600 dark:text-orange-400',
-  premium: 'bg-amber-500/8 text-amber-600 dark:text-amber-400',
+// Accent colors per status — dark-theme exchange style
+const statusAccent: Record<StatusKey, { dot: string; text: string; bg: string }> = {
+  active:  { dot: 'bg-[#0ecb81]', text: 'text-[#0ecb81]', bg: 'bg-[#0ecb81]/8' },
+  new:     { dot: 'bg-[#f0b90b]', text: 'text-[#f0b90b]', bg: 'bg-[#f0b90b]/8' },
+  hot:     { dot: 'bg-[#f6465d]', text: 'text-[#f6465d]', bg: 'bg-[#f6465d]/8' },
+  premium: { dot: 'bg-[#f0b90b]', text: 'text-[#f0b90b]', bg: 'bg-[#f0b90b]/8' },
 };
 
 interface CategoryOverviewDashboardProps {
@@ -92,119 +85,120 @@ const CategoryOverviewDashboard: React.FC<CategoryOverviewDashboardProps> = ({
   }, [isFeatures, contentSections]);
 
   return (
-    <div className="space-y-4 animate-in fade-in duration-300">
-      {/* Header */}
-      <div className="relative overflow-hidden rounded-xl border border-border/30 bg-gradient-to-r from-card via-card to-primary/[0.02] px-5 py-4">
-        <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/[0.04] rounded-full blur-2xl" />
-        <div className="relative flex items-center justify-between">
+    <div className="space-y-3 animate-in fade-in duration-200">
+      {/* Header bar */}
+      <div className="rounded-xl bg-[hsl(var(--card))] border border-[hsl(var(--border)/.15)] px-4 py-3">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/15">
-              <CategoryIcon className="h-4 w-4 text-primary" />
-            </div>
+            <CategoryIcon className="h-4 w-4 text-[#f0b90b]" />
             <div>
-              <h1 className="text-base font-bold text-foreground tracking-tight">{title}</h1>
-              <p className="text-[11px] text-muted-foreground mt-0.5 max-w-md">{description}</p>
+              <h1 className="text-sm font-semibold text-foreground tracking-tight">{title}</h1>
+              <p className="text-[10px] text-muted-foreground/60 mt-px">{description}</p>
             </div>
           </div>
-          <span className="text-[10px] font-mono text-muted-foreground/70 tabular-nums shrink-0">
+          <span className="text-[10px] font-mono text-muted-foreground/50 tabular-nums">
             {contentSections.length} modules
           </span>
         </div>
 
         {isFeatures && analytics && (
-          <div className="relative flex items-center gap-6 mt-3 pt-3 border-t border-border/20">
-            <StatPill icon={Layers} value={analytics.total} label="Total" />
-            <StatPill icon={Zap} value={analytics.activeCount} label="Active" color="text-emerald-500" />
-            <StatPill icon={TrendingUp} value={analytics.hotCount} label="Hot" color="text-orange-500" />
-            <StatPill icon={Sparkles} value={analytics.newCount} label="New" color="text-primary" />
-            {analytics.premiumCount > 0 && (
-              <StatPill icon={Coins} value={analytics.premiumCount} label="Premium" color="text-amber-500" />
-            )}
+          <div className="flex items-center gap-5 mt-2.5 pt-2.5 border-t border-[hsl(var(--border)/.1)]">
+            <StatChip value={analytics.total} label="Total" color="#848e9c" />
+            <StatChip value={analytics.activeCount} label="Active" color="#0ecb81" />
+            <StatChip value={analytics.hotCount} label="Hot" color="#f6465d" />
+            <StatChip value={analytics.newCount} label="New" color="#f0b90b" />
           </div>
         )}
       </div>
 
-      {/* Module Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1.5">
-        {contentSections.map((section, idx) => {
-          const Icon = section.icon;
-          const badgeText = 'badge' in section ? String(section.badge || '') : '';
-          const status = badgeStatusMap[badgeText] || (badgeText ? 'active' : undefined);
-          const isHovered = hoveredKey === section.key;
+      {/* Module Grid — compact exchange-style rows */}
+      <div className="rounded-xl bg-[hsl(var(--card))] border border-[hsl(var(--border)/.15)] overflow-hidden">
+        {/* Column header */}
+        <div className="grid grid-cols-[1fr_auto] sm:grid-cols-[1fr_1fr_auto] px-3 py-1.5 border-b border-[hsl(var(--border)/.08)]">
+          <span className="text-[9px] font-medium uppercase tracking-widest text-muted-foreground/40">Module</span>
+          <span className="hidden sm:block text-[9px] font-medium uppercase tracking-widest text-muted-foreground/40">Status</span>
+          <span className="text-[9px] font-medium uppercase tracking-widest text-muted-foreground/40 text-right">Action</span>
+        </div>
 
-          return (
-            <button
-              key={section.key}
-              onClick={() => onSectionChange?.(section.key)}
-              onMouseEnter={() => setHoveredKey(section.key)}
-              onMouseLeave={() => setHoveredKey(null)}
-              className={cn(
-                "group relative flex items-center gap-2.5 pl-2.5 pr-2 py-2 rounded-lg w-full text-left",
-                "border border-transparent transition-all duration-150",
-                "hover:bg-accent/50 hover:border-border/40",
-                "animate-in fade-in"
-              )}
-              style={{ animationDelay: `${Math.min(idx * 15, 400)}ms` }}
-            >
-              {/* Status dot */}
-              {status && (
-                <span className={cn("absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3 rounded-r-full transition-all", statusDot[status], isHovered ? 'h-5 opacity-100' : 'opacity-60')} />
-              )}
+        {/* Rows */}
+        <div className="divide-y divide-[hsl(var(--border)/.06)]">
+          {contentSections.map((section) => {
+            const Icon = section.icon;
+            const badgeText = 'badge' in section ? String(section.badge || '') : '';
+            const status = badgeStatusMap[badgeText] || (badgeText ? 'active' : undefined);
+            const accent = status ? statusAccent[status] : null;
+            const isHovered = hoveredKey === section.key;
 
-              {/* Icon */}
-              <div className={cn(
-                "p-1 rounded-md transition-colors shrink-0",
-                "group-hover:bg-primary/10"
-              )}>
-                <Icon className="h-3.5 w-3.5 text-muted-foreground/70 group-hover:text-primary transition-colors" />
-              </div>
-
-              {/* Label + hover tooltip */}
-              <div className="flex-1 min-w-0 relative">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[11px] font-medium text-foreground/90 group-hover:text-foreground truncate leading-tight">
+            return (
+              <button
+                key={section.key}
+                onClick={() => onSectionChange?.(section.key)}
+                onMouseEnter={() => setHoveredKey(section.key)}
+                onMouseLeave={() => setHoveredKey(null)}
+                className={cn(
+                  "grid grid-cols-[1fr_auto] sm:grid-cols-[1fr_1fr_auto] items-center gap-2 w-full text-left",
+                  "px-3 py-[7px] transition-colors duration-100",
+                  isHovered ? "bg-[hsl(var(--foreground)/.03)]" : "bg-transparent"
+                )}
+              >
+                {/* Module name */}
+                <div className="flex items-center gap-2 min-w-0 relative">
+                  <Icon className={cn(
+                    "h-3.5 w-3.5 shrink-0 transition-colors",
+                    isHovered ? "text-[#f0b90b]" : "text-muted-foreground/40"
+                  )} />
+                  <span className={cn(
+                    "text-[11px] font-medium truncate transition-colors",
+                    isHovered ? "text-foreground" : "text-foreground/75"
+                  )}>
                     {section.label.replace(/^[^\w]*\s/, '')}
                   </span>
-                  {status && (
-                    <span className={cn(
-                      "text-[7px] font-semibold uppercase tracking-wider px-1 py-px rounded shrink-0 leading-none",
-                      statusBadgeStyle[status]
-                    )}>
-                      {badgeText.replace(/[^\w\s]/g, '').trim().split(' ')[0] || 'Live'}
-                    </span>
+
+                  {/* Hover tooltip */}
+                  {isHovered && (
+                    <div className="absolute left-6 top-full mt-1 z-50 px-2.5 py-1.5 rounded bg-[hsl(var(--popover))] border border-[hsl(var(--border)/.3)] shadow-xl max-w-[200px] animate-in fade-in zoom-in-95 duration-100">
+                      <p className="text-[9px] text-[hsl(var(--popover-foreground)/.7)] leading-relaxed">
+                        {section.description}
+                      </p>
+                    </div>
                   )}
                 </div>
 
-                {/* Hover description tooltip */}
-                {isHovered && (
-                  <div className="absolute left-0 top-full mt-1 z-30 px-2.5 py-1.5 rounded-md bg-popover border border-border/60 shadow-lg max-w-[220px] animate-in fade-in zoom-in-95 duration-150">
-                    <p className="text-[10px] text-muted-foreground leading-relaxed">
-                      {section.description}
-                    </p>
-                  </div>
-                )}
-              </div>
+                {/* Status */}
+                <div className="hidden sm:flex items-center gap-1.5">
+                  {accent && (
+                    <>
+                      <span className={cn("w-1.5 h-1.5 rounded-full", accent.dot)} />
+                      <span className={cn("text-[9px] font-semibold uppercase tracking-wider leading-none", accent.text)}>
+                        {badgeText.replace(/[^\w\s]/g, '').trim().split(' ')[0] || 'Live'}
+                      </span>
+                    </>
+                  )}
+                  {!accent && (
+                    <span className="text-[9px] text-muted-foreground/30">—</span>
+                  )}
+                </div>
 
-              {/* Arrow */}
-              <ChevronRight className={cn(
-                "h-3 w-3 shrink-0 transition-all duration-150",
-                isHovered ? "text-primary/70 translate-x-0.5" : "text-transparent"
-              )} />
-            </button>
-          );
-        })}
+                {/* Action arrow */}
+                <div className="flex justify-end">
+                  <ChevronRight className={cn(
+                    "h-3 w-3 transition-all duration-100",
+                    isHovered ? "text-[#f0b90b] translate-x-0.5" : "text-muted-foreground/15"
+                  )} />
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
 };
 
-const StatPill: React.FC<{ icon: LucideIcon; value: number; label: string; color?: string }> = ({
-  icon: Icon, value, label, color = 'text-foreground',
-}) => (
+const StatChip: React.FC<{ value: number; label: string; color: string }> = ({ value, label, color }) => (
   <div className="flex items-center gap-1.5">
-    <Icon className={cn("h-3 w-3", color)} />
-    <span className={cn("text-xs font-bold font-mono leading-none", color)}>{value}</span>
-    <span className="text-[10px] text-muted-foreground/60 leading-none">{label}</span>
+    <span className="text-xs font-bold font-mono leading-none" style={{ color }}>{value}</span>
+    <span className="text-[9px] text-muted-foreground/40 leading-none">{label}</span>
   </div>
 );
 
