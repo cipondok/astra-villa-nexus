@@ -33,7 +33,7 @@ export default function SectionDividerCTA({
   const isAccent = variant === 'accent';
 
   return (
-    <div className="relative py-6 sm:py-8 my-2">
+    <div className="relative py-3 sm:py-4 my-0">
       {/* Divider line */}
       <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
