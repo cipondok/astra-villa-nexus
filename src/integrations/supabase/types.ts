@@ -29833,6 +29833,30 @@ export type Database = {
         }
         Relationships: []
       }
+      user_activation_milestones: {
+        Row: {
+          completed_at: string
+          id: string
+          metadata: Json | null
+          milestone_type: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          id?: string
+          metadata?: Json | null
+          milestone_type: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          id?: string
+          metadata?: Json | null
+          milestone_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_activity_logs: {
         Row: {
           activity_type: string
@@ -35692,6 +35716,10 @@ export type Database = {
         Returns: Json
       }
       generate_transaction_number: { Args: never; Returns: string }
+      get_activation_dashboard_stats: {
+        Args: { days_back?: number }
+        Returns: Json
+      }
       get_admin_alerts_count_by_types: {
         Args: { type_patterns: string[] }
         Returns: number
