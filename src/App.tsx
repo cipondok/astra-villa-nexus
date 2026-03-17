@@ -96,6 +96,7 @@ const Services = lazy(() => import('@/pages/Services'));
 const ServiceCategory = lazy(() => import('@/pages/ServiceCategory'));
 const ServiceProviderProfile = lazy(() => import('@/pages/ServiceProviderProfile'));
 const LegalServices = lazy(() => import('@/pages/LegalServices'));
+const MyRentalInquiries = lazy(() => import('@/pages/MyRentalInquiries'));
 const PreLaunching = lazy(() => import('@/pages/PreLaunching'));
 const NewProjects = lazy(() => import('@/pages/NewProjects'));
 const AreaGuides = lazy(() => import('@/pages/AreaGuides'));
@@ -461,6 +462,7 @@ const AppContent = () => {
                 <Route path="/mortgage-prequalification" element={<PreQualificationPage />} />
                 <Route path="/messages" element={<MessagesPage />} />
                 <Route path="/my-rentals" element={<UserRentalDashboard />} />
+                <Route path="/my-rental-inquiries" element={<MyRentalInquiries />} />
                 <Route path="/ai-pricing" element={<AIPriceEstimator />} />
                 <Route path="/price-estimator" element={<AIPriceEstimator />} />
                 <Route path="/market-intelligence" element={<MarketIntelligence />} />

@@ -18,8 +18,9 @@ import PropertyViewModeToggle from "@/components/search/PropertyViewModeToggle";
 import PropertyListView from "@/components/search/PropertyListView";
 import SearchPagination from "@/components/search/SearchPagination";
 import BackToHomeLink from "@/components/common/BackToHomeLink";
-import { MapPin, Home, Bed, Bath, Square, Heart, Zap, Calendar, User, Star, TrendingUp, ShieldCheck, Box, Globe, Loader2 } from "lucide-react";
+import { MapPin, Home, Bed, Bath, Square, Heart, Zap, Calendar, User, Star, TrendingUp, ShieldCheck, Box, Globe, Loader2, Sofa, Eye, Key, Clock } from "lucide-react";
 import { getCurrencyFormatterShort } from "@/stores/currencyStore";
+import RentalInquiryForm from "@/components/rental/RentalInquiryForm";
 
 const RESULTS_PER_PAGE = 15;
 
@@ -287,15 +288,70 @@ const Disewa = () => {
                           </span>
                         </p>
                         <h3 className="text-xs sm:text-sm font-semibold text-foreground line-clamp-1 mb-1">{property.title}</h3>
-                        <div className="flex items-center gap-1 text-muted-foreground mb-2">
+                        <div className="flex items-center gap-1 text-muted-foreground mb-1.5">
                           <MapPin className="h-3 w-3 flex-shrink-0" />
                           <span className="text-[11px] truncate">{property.city || property.location}</span>
+                        </div>
+                        {/* Rental-specific tags */}
+                        <div className="flex flex-wrap gap-1 mb-2">
+                          {property.furnishing && property.furnishing !== 'unfurnished' && (
+                            <Badge variant="secondary" className="text-[9px] px-1.5 py-0 gap-0.5 bg-chart-3/10 text-chart-3 border-chart-3/20">
+                              <Sofa className="h-2.5 w-2.5" /> {property.furnishing === 'fully_furnished' ? 'Furnished' : 'Semi'}
+                            </Badge>
+                          )}
+                          {property.furnishing === 'unfurnished' && (
+                            <Badge variant="secondary" className="text-[9px] px-1.5 py-0 bg-muted text-muted-foreground">
+                              Unfurnished
+                            </Badge>
+                          )}
+                          {property.minimum_rental_days && property.minimum_rental_days > 0 && (
+                            <Badge variant="secondary" className="text-[9px] px-1.5 py-0 gap-0.5">
+                              <Clock className="h-2.5 w-2.5" /> Min {property.minimum_rental_days}hr
+                            </Badge>
+                          )}
+                          {(property as any).availability_status && (property as any).availability_status !== 'available' && (
+                            <Badge variant="secondary" className="text-[9px] px-1.5 py-0 bg-destructive/10 text-destructive">
+                              {(property as any).availability_status === 'rented' ? 'Tersewa' : (property as any).availability_status}
+                            </Badge>
+                          )}
+                          {property.rental_yield_percentage && property.rental_yield_percentage > 0 && (
+                            <Badge variant="secondary" className="text-[9px] px-1.5 py-0 gap-0.5 bg-chart-1/10 text-chart-1">
+                              <TrendingUp className="h-2.5 w-2.5" /> Yield {property.rental_yield_percentage}%
+                            </Badge>
+                          )}
                         </div>
                         <div className="flex items-center gap-2.5 text-[11px] text-muted-foreground border-t border-border pt-2">
                           {property.bedrooms > 0 && <div className="flex items-center gap-0.5"><Bed className="h-3 w-3" />{property.bedrooms}</div>}
                           {property.bathrooms > 0 && <div className="flex items-center gap-0.5"><Bath className="h-3 w-3" />{property.bathrooms}</div>}
                           {property.area_sqm > 0 && <div className="flex items-center gap-0.5"><Square className="h-3 w-3" />{property.area_sqm}m²</div>}
                           {property.land_area_sqm > 0 && <div className="text-[10px] text-muted-foreground">LT:{property.land_area_sqm}m²</div>}
+                        </div>
+                        {/* Action Buttons */}
+                        <div className="flex gap-1.5 mt-2" onClick={e => e.stopPropagation()}>
+                          <RentalInquiryForm
+                            propertyId={property.id}
+                            propertyTitle={property.title}
+                            monthlyPrice={property.price}
+                            ownerId={(property as any).owner_id}
+                            agentId={(property as any).agent_id}
+                            inquiryType="viewing"
+                          >
+                            <Button variant="outline" size="sm" className="flex-1 h-7 text-[10px] rounded-lg gap-1 px-2">
+                              <Eye className="h-3 w-3" /> Viewing
+                            </Button>
+                          </RentalInquiryForm>
+                          <RentalInquiryForm
+                            propertyId={property.id}
+                            propertyTitle={property.title}
+                            monthlyPrice={property.price}
+                            ownerId={(property as any).owner_id}
+                            agentId={(property as any).agent_id}
+                            inquiryType="booking"
+                          >
+                            <Button size="sm" className="flex-1 h-7 text-[10px] rounded-lg gap-1 px-2">
+                              <Key className="h-3 w-3" /> Sewa
+                            </Button>
+                          </RentalInquiryForm>
                         </div>
                       </CardContent>
                     </Card>
