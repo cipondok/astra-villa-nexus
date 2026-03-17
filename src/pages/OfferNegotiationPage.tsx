@@ -132,7 +132,7 @@ export default function OfferNegotiationPage() {
 
   const handleSend = () => {
     if (!newMessage.trim() || !offerId) return;
-    sendMessage.mutate({ offerId, message: newMessage.trim(), senderRole: myRole });
+    sendMessage.mutate({ offerId, message: newMessage.trim(), senderRole: myRole as SenderRole });
     setNewMessage('');
   };
 
