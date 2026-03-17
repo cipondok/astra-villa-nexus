@@ -77,7 +77,9 @@ import {
   CheckCircle2,
   ClipboardCheck,
   Loader2,
-  MessageCircle
+  MessageCircle,
+  Target,
+  Sparkles
 } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
