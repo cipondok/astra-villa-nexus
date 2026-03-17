@@ -1138,6 +1138,12 @@ export const navigationSections = {
 
   technical: [
     {
+      key: "technical-overview",
+      label: "📊 Technical Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all technical and infrastructure modules"
+    },
+    {
       key: "bug-error-detection",
       label: "Bug & Error Detection",
       icon: Bug,
