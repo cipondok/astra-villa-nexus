@@ -1644,7 +1644,7 @@ export const navigationSections = {
     {
       key: "customer-support-framework",
       label: "Customer Support Framework",
-      icon: HeadphonesIcon,
+      icon: Headphones,
       description: "Multi-channel support strategy with SLAs, escalation, and knowledge base planning",
       badge: "🎧 Support"
     }
