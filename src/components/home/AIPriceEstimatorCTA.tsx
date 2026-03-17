@@ -9,7 +9,7 @@ const AIPriceEstimatorCTA = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="py-10 sm:py-14 px-3 sm:px-4">
+    <section className="py-5 sm:py-6 px-3 sm:px-4">
       <div className="max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
