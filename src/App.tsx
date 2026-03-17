@@ -94,6 +94,7 @@ const Settings = lazy(() => import('@/pages/Settings'));
 const DesignSystemSettings = lazy(() => import('@/pages/admin/DesignSystemSettings'));
 const Services = lazy(() => import('@/pages/Services'));
 const ServiceCategory = lazy(() => import('@/pages/ServiceCategory'));
+const ServiceProviderProfile = lazy(() => import('@/pages/ServiceProviderProfile'));
 const PreLaunching = lazy(() => import('@/pages/PreLaunching'));
 const NewProjects = lazy(() => import('@/pages/NewProjects'));
 const AreaGuides = lazy(() => import('@/pages/AreaGuides'));
@@ -275,6 +276,7 @@ const AppContent = () => {
                 <Route path="/astra-tokens" element={<AstraTokensPage />} />
                 <Route path="/services" element={<Services />} />
                 <Route path="/services/category/:categoryId" element={<ServiceCategory />} />
+                <Route path="/vendor/:vendorId" element={<ServiceProviderProfile />} />
                 <Route path="/dijual" element={<Dijual />} />
                 <Route path="/buy" element={<Dijual />} />
                 <Route path="/disewa" element={<Disewa />} />

@@ -25465,6 +25465,97 @@ export type Database = {
           },
         ]
       }
+      service_quotation_requests: {
+        Row: {
+          attachments: Json | null
+          budget_max: number | null
+          budget_min: number | null
+          created_at: string | null
+          customer_id: string
+          description: string
+          id: string
+          preferred_date: string | null
+          preferred_time: string | null
+          property_id: string | null
+          service_address: string | null
+          service_id: string | null
+          status: string | null
+          title: string
+          updated_at: string | null
+          urgency: string | null
+          vendor_id: string
+          vendor_quote_amount: number | null
+          vendor_quote_notes: string | null
+          vendor_quoted_at: string | null
+        }
+        Insert: {
+          attachments?: Json | null
+          budget_max?: number | null
+          budget_min?: number | null
+          created_at?: string | null
+          customer_id: string
+          description: string
+          id?: string
+          preferred_date?: string | null
+          preferred_time?: string | null
+          property_id?: string | null
+          service_address?: string | null
+          service_id?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string | null
+          urgency?: string | null
+          vendor_id: string
+          vendor_quote_amount?: number | null
+          vendor_quote_notes?: string | null
+          vendor_quoted_at?: string | null
+        }
+        Update: {
+          attachments?: Json | null
+          budget_max?: number | null
+          budget_min?: number | null
+          created_at?: string | null
+          customer_id?: string
+          description?: string
+          id?: string
+          preferred_date?: string | null
+          preferred_time?: string | null
+          property_id?: string | null
+          service_address?: string | null
+          service_id?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+          urgency?: string | null
+          vendor_id?: string
+          vendor_quote_amount?: number | null
+          vendor_quote_notes?: string | null
+          vendor_quoted_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_quotation_requests_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_quotation_requests_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_quotation_requests_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       share_analytics: {
         Row: {
           created_at: string
