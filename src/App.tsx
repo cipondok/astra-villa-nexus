@@ -691,6 +691,7 @@ const AppContent = () => {
                 <Route path="/data-moat" element={<DataMoatPage />} />
                 <Route path="/revenue-scaling" element={<RevenueScalingPage />} />
                 <Route path="/city-expansion" element={<CityExpansionPage />} />
+                <Route path="/ecosystem-partnerships" element={<EcosystemPartnershipsPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
