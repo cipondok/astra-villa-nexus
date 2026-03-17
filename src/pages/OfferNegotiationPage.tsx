@@ -33,7 +33,8 @@ function OfferTimeline({ currentStatus }: { currentStatus: OfferStatus }) {
   return (
     <div className="flex items-center gap-1 overflow-x-auto pb-2">
       {TIMELINE_STEPS.map((step, i) => {
-        const isActive = !isTerminal && currentStep >= step.status === 'submitted' ? 1 : TIMELINE_STEPS.findIndex(s => s.status === currentStatus) >= i ? true : false;
+        const stepIndex = TIMELINE_STEPS.findIndex(s => s.status === currentStatus);
+        const isActive = !isTerminal && stepIndex >= i;
         const isCurrent = step.status === currentStatus || (currentStatus === 'counter_offer' && step.status === 'seller_reviewing');
         return (
           <div key={step.status} className="flex items-center gap-1 shrink-0">
