@@ -299,7 +299,7 @@ const GridView: React.FC<{
 const StatChip: React.FC<{ value: number; label: string; color: string }> = ({ value, label, color }) => (
   <div className="flex items-center gap-1.5">
     <span className="text-xs font-bold font-mono leading-none" style={{ color }}>{value}</span>
-    <span className="text-[9px] text-muted-foreground/40 leading-none">{label}</span>
+    <span className="text-[9px] text-muted-foreground leading-none">{label}</span>
   </div>
 );
 
