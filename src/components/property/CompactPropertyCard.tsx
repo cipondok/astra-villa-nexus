@@ -281,7 +281,7 @@ const CompactPropertyCard = ({
                   <TrendingUp className="h-2.5 w-2.5 text-chart-2" />
                   <span className="text-[8px] sm:text-[9px] text-white/80 font-medium">AI fair value insight</span>
                 </div>
-              )
+              )}
 
               {/* Discount Badge */}
               {property.discount_percentage && property.discount_percentage > 0 && (
