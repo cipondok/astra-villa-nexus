@@ -902,7 +902,7 @@ const Index = () => {
 
                   {/* AI Behavior Pattern Banner */}
                   <Suspense fallback={null}>
-                    <div className="mb-6">
+                    <div className="mb-4">
                       <BehaviorPatternBanner />
                     </div>
                   </Suspense>
