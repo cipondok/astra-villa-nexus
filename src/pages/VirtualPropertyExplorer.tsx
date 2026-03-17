@@ -108,10 +108,10 @@ const MASTERPLAN_UNITS = [
 
 // ─── 3D Components ───────────────────────────────────────────────────
 function VillaModel({ theme }: { theme: string }) {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const groupRef = useRef<THREE.Group>(null);
   useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y = state.clock.elapsedTime * 0.08;
+    if (groupRef.current) {
+      groupRef.current.rotation.y = state.clock.elapsedTime * 0.08;
     }
   });
 
