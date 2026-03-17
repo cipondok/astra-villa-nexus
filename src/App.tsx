@@ -210,6 +210,7 @@ const OfferNegotiationPage = lazy(() => import('@/pages/OfferNegotiationPage'));
 const MyOffersPage = lazy(() => import('@/pages/MyOffersPage'));
 const MortgageFinancingPage = lazy(() => import('@/pages/MortgageFinancingPage'));
 const PropertyAnalyticsReportPage = lazy(() => import('@/pages/PropertyAnalyticsReportPage'));
+const InvestmentReportPage = lazy(() => import('@/pages/InvestmentReportPage'));
 const MobileHomeFeed = lazy(() => import('@/pages/mobile/MobileHomeFeed'));
 const MobilePropertyDetail = lazy(() => import('@/pages/mobile/MobilePropertyDetail'));
 const MobileInvestorDashboard = lazy(() => import('@/pages/mobile/MobileInvestorDashboard'));
@@ -503,6 +504,9 @@ const AppContent = () => {
                 </Route>
                 <Route path="/investment-report" element={<ProtectedRoute />}>
                   <Route index element={<PropertyAnalyticsReportPage />} />
+                </Route>
+                <Route path="/investment-report/:propertyId" element={<ProtectedRoute />}>
+                  <Route index element={<InvestmentReportPage />} />
                 </Route>
                 <Route path="/ai-map" element={<AIMapSearchPage />} />
                 <Route path="/map-search" element={<AIMapSearchPage />} />

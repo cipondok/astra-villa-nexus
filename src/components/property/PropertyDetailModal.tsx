@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { X, MapPin, Bed, Bath, Square, Car, Home, Eye, Share2, Heart, Phone, MessageSquare, User, Calendar, Tag, Key, Image as ImageIcon, Video, Sparkles, ChevronLeft, ChevronRight, Play, Pause, Maximize2 } from "lucide-react";
+import { X, MapPin, Bed, Bath, Square, Car, Home, Eye, Share2, Heart, Phone, MessageSquare, User, Calendar, Tag, Key, Image as ImageIcon, Video, Sparkles, ChevronLeft, ChevronRight, Play, Pause, Maximize2, BarChart3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BaseProperty } from "@/types/property";
 import ScheduleSurveyModal from "@/components/ScheduleSurveyModal";
@@ -417,6 +417,15 @@ const PropertyDetailModal = ({
                       className="flex-1"
                     />
                   </div>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="w-full border-primary/30 text-primary hover:bg-primary/10"
+                    onClick={() => navigate(`/investment-report/${property.id}`)}
+                  >
+                    <BarChart3 className="h-5 w-5 mr-2" />
+                    Generate Investment Report
+                  </Button>
                 </div>
               </div>
 

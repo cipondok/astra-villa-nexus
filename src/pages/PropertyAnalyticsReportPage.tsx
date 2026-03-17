@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useInvestmentReport, type InvestmentReport } from '@/hooks/useInvestmentReport';
@@ -126,6 +127,7 @@ function ReportCard({ report }: { report: InvestmentReport }) {
 }
 
 export default function PropertyAnalyticsReportPage() {
+  const navigate = useNavigate();
   const [searchId, setSearchId] = useState('');
   const [selectedId, setSelectedId] = useState<string | undefined>();
   const { data: report, isLoading, error } = useInvestmentReport(selectedId);
@@ -164,7 +166,7 @@ export default function PropertyAnalyticsReportPage() {
               onChange={e => setSearchId(e.target.value)}
               className="text-sm"
             />
-            <Button onClick={() => setSelectedId(searchId)} disabled={!searchId}>
+            <Button onClick={() => navigate(`/investment-report/${searchId}`)} disabled={!searchId}>
               <Search className="h-4 w-4 mr-1" /> Analyze
             </Button>
           </div>
@@ -179,7 +181,7 @@ export default function PropertyAnalyticsReportPage() {
             {recentProperties.map((p: any) => (
               <Card
                 key={p.id}
-                onClick={() => { setSelectedId(p.id); setSearchId(p.id); }}
+                onClick={() => navigate(`/investment-report/${p.id}`)}
                 className="bg-card/80 border-border/50 cursor-pointer hover:shadow-md hover:scale-[1.01] transition-all"
               >
                 <CardContent className="p-3">
