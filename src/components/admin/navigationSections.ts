@@ -275,6 +275,12 @@ export const navigationSections = {
 
   "astra-token": [
     {
+      key: "astra-token-overview",
+      label: "📊 Token Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — ASTRA token management overview"
+    },
+    {
       key: "astra-token-hub",
       label: "ASTRA Token Hub",
       icon: Coins,
