@@ -555,6 +555,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "financial-projection":       () => <FinancialProjectionModel />,
   "fundraising-exit-roadmap":   () => <FundraisingExitRoadmap />,
   "founder-brand-strategy":     () => <FounderBrandStrategy />,
+  "equity-allocation-framework": () => <EquityAllocationFramework />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
