@@ -585,6 +585,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "success-probability-framework": () => <SuccessProbabilityFramework />,
   "risk-mitigation-strategy": () => <RiskMitigationStrategy />,
   "ultimate-master-plan": () => <UltimateMasterPlan />,
+  "ninety-day-roadmap": () => <NinetyDayRoadmap />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
