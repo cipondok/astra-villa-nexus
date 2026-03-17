@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef, lazy, Suspense } from "react";
 import { SEOHead, seoSchemas } from "@/components/SEOHead";
 import { useTranslation } from "@/i18n/useTranslation";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
@@ -11,14 +11,18 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import {
   Search, MapPin, Building2, Bed, Bath, Maximize, Heart,
-  Grid3X3, List, ArrowLeft, Home, X, SlidersHorizontal, RotateCcw,
-  TrendingUp, Sparkles, Map,
+  Grid3X3, List, Home, X, SlidersHorizontal, RotateCcw,
+  TrendingUp, Sparkles, Map, Clock, Zap, Star, History,
 } from "lucide-react";
 
 const PropertyListingMapView = lazy(() => import("@/components/property/PropertyListingMapView"));
+import OpportunityScoreRing from "@/components/property/OpportunityScoreRing";
+import DemandHeatLabel from "@/components/property/DemandHeatLabel";
+import { useSearchSuggestions, type SearchSuggestion } from "@/hooks/useSearchSuggestions";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { formatCurrency } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -42,6 +46,13 @@ interface Property {
   image_urls: string[];
   status: string;
   created_at: string;
+  opportunity_score: number | null;
+  deal_score: number | null;
+  demand_heat_score: number | null;
+  rental_yield: number | null;
+  rental_yield_percentage: number | null;
+  roi_percentage: number | null;
+  investment_score: number | null;
 }
 
 // Province name mapping (Indonesian to English)
@@ -103,9 +114,11 @@ const BEDROOM_OPTIONS = [
 ];
 
 const SORT_OPTIONS = [
+  { value: 'opportunity', label: '✨ Best Opportunity', icon: Star },
   { value: 'newest', label: 'Terbaru', icon: Sparkles },
   { value: 'price_asc', label: 'Harga Terendah', icon: TrendingUp },
   { value: 'price_desc', label: 'Harga Tertinggi', icon: TrendingUp },
+  { value: 'yield_desc', label: 'Yield Tertinggi', icon: Zap },
   { value: 'area_desc', label: 'Luas Terbesar', icon: Maximize },
 ];
 
@@ -119,9 +132,24 @@ const FilterPanelContent = ({
   priceRange, setPriceRange,
   minArea, setMinArea,
   maxArea, setMaxArea,
+  eliteOnly, setEliteOnly,
+  minYield, setMinYield,
+  minROI, setMinROI,
   resetFilters,
 }: any) => (
   <div className="space-y-6">
+    {/* Elite Deal Toggle */}
+    <div className="flex items-center justify-between p-3 rounded-xl bg-primary/5 border border-primary/10">
+      <div className="flex items-center gap-2">
+        <Star className="h-4 w-4 text-primary" />
+        <div>
+          <p className="text-xs font-semibold text-foreground">Elite Deals Only</p>
+          <p className="text-[10px] text-muted-foreground">Score ≥ 85</p>
+        </div>
+      </div>
+      <Switch checked={eliteOnly} onCheckedChange={setEliteOnly} />
+    </div>
+
     {/* Property Type */}
     <div className="space-y-2">
       <label className="text-xs font-semibold text-foreground tracking-wide">Tipe Properti</label>
@@ -187,6 +215,40 @@ const FilterPanelContent = ({
       />
     </div>
 
+    {/* Min Rental Yield */}
+    <div className="space-y-2">
+      <label className="text-xs font-semibold text-foreground tracking-wide">Min Rental Yield (%)</label>
+      <Select value={minYield} onValueChange={setMinYield}>
+        <SelectTrigger className="h-10 text-sm rounded-xl border-border/50 bg-muted/30">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="0" className="text-sm">Semua</SelectItem>
+          <SelectItem value="3" className="text-sm">3%+</SelectItem>
+          <SelectItem value="5" className="text-sm">5%+</SelectItem>
+          <SelectItem value="8" className="text-sm">8%+</SelectItem>
+          <SelectItem value="10" className="text-sm">10%+</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+
+    {/* Min ROI */}
+    <div className="space-y-2">
+      <label className="text-xs font-semibold text-foreground tracking-wide">Min ROI Potential (%)</label>
+      <Select value={minROI} onValueChange={setMinROI}>
+        <SelectTrigger className="h-10 text-sm rounded-xl border-border/50 bg-muted/30">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="0" className="text-sm">Semua</SelectItem>
+          <SelectItem value="5" className="text-sm">5%+</SelectItem>
+          <SelectItem value="10" className="text-sm">10%+</SelectItem>
+          <SelectItem value="15" className="text-sm">15%+</SelectItem>
+          <SelectItem value="20" className="text-sm">20%+</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+
     {/* Area */}
     <div className="grid grid-cols-2 gap-3">
       <div className="space-y-2">
@@ -224,6 +286,7 @@ const Properties = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const locationFilter = searchParams.get('location') || '';
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>('grid');
   const [filterType, setFilterType] = useState('all');
   const [propertyType, setPropertyType] = useState('all');
@@ -232,8 +295,36 @@ const Properties = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, MAX_PRICE]);
   const [minArea, setMinArea] = useState('');
   const [maxArea, setMaxArea] = useState('');
-  const [sortBy, setSortBy] = useState('newest');
+  const [sortBy, setSortBy] = useState('opportunity');
+  const [eliteOnly, setEliteOnly] = useState(false);
+  const [minYield, setMinYield] = useState('0');
+  const [minROI, setMinROI] = useState('0');
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const suggestionsRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  const { addRecentSearch, getSuggestions, clearRecentSearches } = useSearchSuggestions();
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedQuery(searchQuery), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Close suggestions on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (suggestionsRef.current && !suggestionsRef.current.contains(e.target as Node) &&
+          searchInputRef.current && !searchInputRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const suggestions = useMemo(() => getSuggestions(searchQuery), [getSuggestions, searchQuery]);
 
   const activeFilterCount = [
     propertyType !== 'all',
@@ -241,6 +332,9 @@ const Properties = () => {
     minBathrooms !== '0',
     priceRange[0] > 0 || priceRange[1] < MAX_PRICE,
     !!minArea || !!maxArea,
+    eliteOnly,
+    minYield !== '0',
+    minROI !== '0',
   ].filter(Boolean).length;
 
   const resetFilters = () => {
@@ -250,9 +344,12 @@ const Properties = () => {
     setPriceRange([0, MAX_PRICE]);
     setMinArea('');
     setMaxArea('');
-    setSortBy('newest');
+    setSortBy('opportunity');
     setFilterType('all');
     setSearchQuery('');
+    setEliteOnly(false);
+    setMinYield('0');
+    setMinROI('0');
   };
 
   const getSearchTerms = (provinceName: string): string[] => {
@@ -266,6 +363,19 @@ const Properties = () => {
     }
   }, [locationFilter]);
 
+  const handleSearchSubmit = useCallback(() => {
+    if (searchQuery.trim()) {
+      addRecentSearch(searchQuery.trim());
+      setShowSuggestions(false);
+    }
+  }, [searchQuery, addRecentSearch]);
+
+  const handleSuggestionClick = useCallback((suggestion: SearchSuggestion) => {
+    setSearchQuery(suggestion.text);
+    addRecentSearch(suggestion.text);
+    setShowSuggestions(false);
+  }, [addRecentSearch]);
+
   const {
     data: properties = [],
     isLoading,
@@ -276,7 +386,7 @@ const Properties = () => {
     queryFn: async () => {
       let query = supabase
         .from('properties')
-        .select('*')
+        .select('id, title, description, price, property_type, listing_type, location, city, area, state, bedrooms, bathrooms, area_sqm, images, image_urls, status, created_at, opportunity_score, deal_score, demand_heat_score, rental_yield, rental_yield_percentage, roi_percentage, investment_score')
         .order('created_at', { ascending: false })
         .limit(200);
 
@@ -306,16 +416,20 @@ const Properties = () => {
 
   const filteredProperties = useMemo(() => {
     let result = [...properties];
-    if (searchQuery && !locationFilter) {
-      const q = searchQuery.toLowerCase();
+
+    // Text search (debounced)
+    if (debouncedQuery && !locationFilter) {
+      const q = debouncedQuery.toLowerCase();
       result = result.filter(
         (p) =>
           p.title?.toLowerCase().includes(q) ||
           p.location?.toLowerCase().includes(q) ||
           p.city?.toLowerCase().includes(q) ||
-          p.property_type?.toLowerCase().includes(q)
+          p.property_type?.toLowerCase().includes(q) ||
+          p.area?.toLowerCase().includes(q)
       );
     }
+
     if (propertyType !== 'all') result = result.filter((p) => p.property_type?.toLowerCase() === propertyType);
     if (minBedrooms !== '0') result = result.filter((p) => p.bedrooms >= Number(minBedrooms));
     if (minBathrooms !== '0') result = result.filter((p) => p.bathrooms >= Number(minBathrooms));
@@ -324,14 +438,22 @@ const Properties = () => {
     if (minArea) result = result.filter((p) => p.area_sqm >= Number(minArea));
     if (maxArea) result = result.filter((p) => p.area_sqm <= Number(maxArea));
 
+    // Investment filters
+    if (eliteOnly) result = result.filter((p) => (p.opportunity_score || 0) >= 85);
+    if (minYield !== '0') result = result.filter((p) => (p.rental_yield_percentage || p.rental_yield || 0) >= Number(minYield));
+    if (minROI !== '0') result = result.filter((p) => (p.roi_percentage || 0) >= Number(minROI));
+
+    // Sorting
     switch (sortBy) {
+      case 'opportunity': result.sort((a, b) => (b.opportunity_score || 0) - (a.opportunity_score || 0)); break;
       case 'price_asc': result.sort((a, b) => (a.price || 0) - (b.price || 0)); break;
       case 'price_desc': result.sort((a, b) => (b.price || 0) - (a.price || 0)); break;
+      case 'yield_desc': result.sort((a, b) => (b.rental_yield_percentage || b.rental_yield || 0) - (a.rental_yield_percentage || a.rental_yield || 0)); break;
       case 'area_desc': result.sort((a, b) => (b.area_sqm || 0) - (a.area_sqm || 0)); break;
       default: break;
     }
     return result;
-  }, [properties, searchQuery, locationFilter, propertyType, minBedrooms, minBathrooms, priceRange, minArea, maxArea, sortBy]);
+  }, [properties, debouncedQuery, locationFilter, propertyType, minBedrooms, minBathrooms, priceRange, minArea, maxArea, sortBy, eliteOnly, minYield, minROI]);
 
   const handlePropertyClick = (propertyId: string) => navigate(`/properties/${propertyId}`);
   const handleClearLocationFilter = () => { setSearchParams({}); setSearchQuery(''); };
@@ -357,6 +479,9 @@ const Properties = () => {
     priceRange, setPriceRange,
     minArea, setMinArea,
     maxArea, setMaxArea,
+    eliteOnly, setEliteOnly,
+    minYield, setMinYield,
+    minROI, setMinROI,
     resetFilters,
   };
 
@@ -450,6 +575,7 @@ const Properties = () => {
               </h1>
               <p className="text-sm text-muted-foreground mt-1">
                 {isLoading ? 'Memuat...' : `${filteredProperties.length} properti tersedia`}
+                {eliteOnly && ' · Elite Deals Only ⭐'}
               </p>
             </div>
             {locationFilter && (
@@ -463,15 +589,59 @@ const Properties = () => {
             )}
           </div>
 
-          {/* Search Bar */}
+          {/* Search Bar with Suggestions */}
           <div className="relative max-w-2xl">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
+              ref={searchInputRef}
               placeholder="Cari properti, lokasi, atau tipe..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setShowSuggestions(true)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleSearchSubmit();
+                if (e.key === 'Escape') setShowSuggestions(false);
+              }}
               className="pl-11 h-11 sm:h-12 text-sm rounded-2xl border-border/50 bg-card shadow-sm focus-visible:ring-primary/30"
             />
+
+            {/* Suggestions Dropdown */}
+            <AnimatePresence>
+              {showSuggestions && suggestions.length > 0 && (
+                <motion.div
+                  ref={suggestionsRef}
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute top-full left-0 right-0 mt-1.5 bg-card border border-border/50 rounded-xl shadow-lg overflow-hidden z-30"
+                >
+                  {!searchQuery && suggestions.length > 0 && (
+                    <div className="flex items-center justify-between px-3 py-2 border-b border-border/30">
+                      <span className="text-[11px] font-medium text-muted-foreground flex items-center gap-1">
+                        <History className="h-3 w-3" /> Pencarian Terakhir
+                      </span>
+                      <button onClick={clearRecentSearches} className="text-[11px] text-muted-foreground hover:text-destructive transition-colors">
+                        Hapus
+                      </button>
+                    </div>
+                  )}
+                  {suggestions.map((s, i) => (
+                    <button
+                      key={`${s.type}-${s.text}-${i}`}
+                      onClick={() => handleSuggestionClick(s)}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-muted/50 transition-colors text-sm"
+                    >
+                      {s.type === 'recent' && <Clock className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />}
+                      {s.type === 'city' && <MapPin className="h-3.5 w-3.5 text-primary flex-shrink-0" />}
+                      {s.type === 'type' && <Building2 className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />}
+                      <span className="text-foreground">{s.text}</span>
+                      <span className="ml-auto text-[10px] text-muted-foreground capitalize">{s.type === 'recent' ? '' : s.type}</span>
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Listing Type Pills */}
@@ -531,6 +701,11 @@ const Properties = () => {
                   {/* Active filter pills inline */}
                   {activeFilterCount > 0 && (
                     <div className="flex items-center gap-1.5">
+                      {eliteOnly && (
+                        <Badge variant="secondary" className="text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 cursor-pointer hover:bg-primary/20 whitespace-nowrap" onClick={() => setEliteOnly(false)}>
+                          ⭐ Elite <X className="h-2.5 w-2.5 ml-1" />
+                        </Badge>
+                      )}
                       {propertyType !== 'all' && (
                         <Badge variant="secondary" className="text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 cursor-pointer hover:bg-primary/20 whitespace-nowrap" onClick={() => setPropertyType('all')}>
                           {PROPERTY_TYPES.find((p) => p.value === propertyType)?.label} <X className="h-2.5 w-2.5 ml-1" />
@@ -541,14 +716,9 @@ const Properties = () => {
                           {minBedrooms}+ KT <X className="h-2.5 w-2.5 ml-1" />
                         </Badge>
                       )}
-                      {minBathrooms !== '0' && (
-                        <Badge variant="secondary" className="text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 cursor-pointer hover:bg-primary/20 whitespace-nowrap" onClick={() => setMinBathrooms('0')}>
-                          {minBathrooms}+ KM <X className="h-2.5 w-2.5 ml-1" />
-                        </Badge>
-                      )}
-                      {(priceRange[0] > 0 || priceRange[1] < MAX_PRICE) && (
-                        <Badge variant="secondary" className="text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 cursor-pointer hover:bg-primary/20 whitespace-nowrap" onClick={() => setPriceRange([0, MAX_PRICE])}>
-                          Harga <X className="h-2.5 w-2.5 ml-1" />
+                      {minYield !== '0' && (
+                        <Badge variant="secondary" className="text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 cursor-pointer hover:bg-primary/20 whitespace-nowrap" onClick={() => setMinYield('0')}>
+                          Yield {minYield}%+ <X className="h-2.5 w-2.5 ml-1" />
                         </Badge>
                       )}
                       {activeFilterCount > 1 && (
@@ -563,7 +733,7 @@ const Properties = () => {
                 {/* Right: Sort + View + Mobile Filter */}
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="h-9 w-[140px] sm:w-[160px] text-xs sm:text-sm rounded-xl border-border/50 bg-card">
+                    <SelectTrigger className="h-9 w-[160px] sm:w-[180px] text-xs sm:text-sm rounded-xl border-border/50 bg-card">
                       <div className="flex items-center gap-1.5 truncate">
                         <currentSort.icon className="h-3 w-3 text-muted-foreground flex-shrink-0" />
                         <SelectValue />
@@ -640,7 +810,8 @@ const Properties = () => {
                 </div>
               </Suspense>
             ) : isLoading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-5">
+              /* ─── Skeleton Loading ─── */
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
                 {[...Array(9)].map((_, i) => (
                   <div key={i} className="rounded-2xl border border-border/30 bg-card overflow-hidden">
                     <div className="h-44 bg-muted/40 relative overflow-hidden">
@@ -708,7 +879,6 @@ const Properties = () => {
                             className="w-full h-full object-cover img-hover-zoom"
                             loading="lazy"
                           />
-                          {/* Gradient overlay */}
                           <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/40 to-transparent" />
 
                           {/* Listing badge */}
@@ -720,9 +890,14 @@ const Properties = () => {
                             {property.listing_type === 'sale' ? 'Dijual' : 'Disewa'}
                           </Badge>
 
+                          {/* Opportunity Score Ring */}
+                          <div className="absolute top-2.5 right-2.5">
+                            <OpportunityScoreRing score={property.opportunity_score} size={42} />
+                          </div>
+
                           {/* Heart */}
                           <button
-                            className="absolute top-3 right-3 h-8 w-8 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center hover:bg-background/90 transition-colors btn-press"
+                            className="absolute bottom-3 right-3 h-8 w-8 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center hover:bg-background/90 transition-colors btn-press"
                             onClick={(e) => e.stopPropagation()}
                           >
                             <Heart className="h-4 w-4 text-foreground/70" />
@@ -747,7 +922,7 @@ const Properties = () => {
                             <span className="text-xs line-clamp-1">{property.location}</span>
                           </div>
 
-                          {/* Spec chips */}
+                          {/* Spec chips + intelligence badges */}
                           <div className="flex items-center gap-1.5 flex-wrap">
                             {property.bedrooms > 0 && (
                               <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground bg-muted/50 px-2 py-1 rounded-full">
@@ -764,16 +939,35 @@ const Properties = () => {
                                 <Maximize className="h-3 w-3" /> {property.area_sqm}m²
                               </span>
                             )}
-                            <Badge variant="outline" className="text-[10px] px-2 py-0.5 rounded-full ml-auto border-border/40">
-                              {property.property_type}
-                            </Badge>
+                            <DemandHeatLabel score={property.demand_heat_score} compact />
                           </div>
+
+                          {/* Investment metrics row */}
+                          {((property.rental_yield_percentage || property.rental_yield) || property.roi_percentage) && (
+                            <div className="flex items-center gap-2 mt-2 pt-2 border-t border-border/20">
+                              {(property.rental_yield_percentage || property.rental_yield) ? (
+                                <span className="text-[11px] font-medium text-chart-2">
+                                  Yield {(property.rental_yield_percentage || property.rental_yield || 0).toFixed(1)}%
+                                </span>
+                              ) : null}
+                              {property.roi_percentage ? (
+                                <span className="text-[11px] font-medium text-primary">
+                                  ROI {property.roi_percentage.toFixed(1)}%
+                                </span>
+                              ) : null}
+                              {(property.opportunity_score || 0) >= 85 && (
+                                <Badge className="ml-auto text-[9px] px-1.5 py-0 rounded-md bg-chart-2/15 text-chart-2 border-chart-2/20" variant="outline">
+                                  Elite
+                                </Badge>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </div>
                     ) : (
                       /* ─── List Card ─── */
                       <div
-                        className="group flex rounded-2xl border border-border/30 bg-card overflow-hidden cursor-pointer card-hover-lift will-change-transform"
+                        className="group flex rounded-2xl border border-border/30 bg-card overflow-hidden cursor-pointer card-hover-lift will-change-transform relative"
                         onClick={() => handlePropertyClick(property.id)}
                       >
                         <div className="relative w-40 sm:w-48 flex-shrink-0 overflow-hidden">
@@ -792,14 +986,14 @@ const Properties = () => {
                           </Badge>
                         </div>
                         <div className="flex-1 p-4 flex flex-col justify-center">
-                          <h3 className="text-sm sm:text-base font-semibold text-foreground line-clamp-1 mb-1">{property.title}</h3>
+                          <div className="flex items-start justify-between gap-2 mb-1">
+                            <h3 className="text-sm sm:text-base font-semibold text-foreground line-clamp-1">{property.title}</h3>
+                            <OpportunityScoreRing score={property.opportunity_score} size={36} />
+                          </div>
                           <div className="flex items-center text-muted-foreground mb-2">
                             <MapPin className="h-3 w-3 mr-1 flex-shrink-0 text-primary/60" />
                             <span className="text-xs line-clamp-1">{property.location}</span>
                           </div>
-                          {property.description && (
-                            <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{property.description}</p>
-                          )}
                           <div className="flex items-center gap-2 mb-2">
                             {property.bedrooms > 0 && (
                               <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground bg-muted/50 px-2 py-1 rounded-full">
@@ -816,8 +1010,16 @@ const Properties = () => {
                                 <Maximize className="h-3 w-3" /> {property.area_sqm}m²
                               </span>
                             )}
+                            <DemandHeatLabel score={property.demand_heat_score} />
                           </div>
-                          <p className="text-base font-black text-primary drop-shadow-sm">{formatCurrency(property.price)}</p>
+                          <div className="flex items-center gap-3">
+                            <p className="text-base font-black text-primary">{formatCurrency(property.price)}</p>
+                            {(property.rental_yield_percentage || property.rental_yield) ? (
+                              <span className="text-[11px] font-medium text-chart-2">
+                                Yield {(property.rental_yield_percentage || property.rental_yield || 0).toFixed(1)}%
+                              </span>
+                            ) : null}
+                          </div>
                         </div>
                         <button
                           className="absolute top-3 right-3 h-8 w-8 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center hover:bg-background/90 transition-colors btn-press"
