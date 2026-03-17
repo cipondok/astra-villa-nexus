@@ -167,6 +167,7 @@ const PropertyComparison = lazy(() => import('@/pages/PropertyComparison'));
 const PreQualificationPage = lazy(() => import('@/pages/PreQualificationPage'));
 const MessagesPage = lazy(() => import('@/pages/MessagesPage'));
 const NotificationsHub = lazy(() => import('@/pages/NotificationsHub'));
+const DocumentManagement = lazy(() => import('@/pages/DocumentManagement'));
 const UserRentalDashboard = lazy(() => import('@/pages/UserRentalDashboard'));
 const AIPriceEstimator = lazy(() => import('@/pages/AIPriceEstimator'));
 const KprCalculatorPage = lazy(() => import('@/pages/KprCalculatorPage'));
@@ -476,6 +477,9 @@ const AppContent = () => {
                 <Route path="/mortgage-prequalification" element={<PreQualificationPage />} />
                 <Route path="/messages" element={<MessagesPage />} />
                 <Route path="/notifications" element={<NotificationsHub />} />
+                <Route path="/documents" element={<ProtectedRoute />}>
+                  <Route index element={<DocumentManagement />} />
+                </Route>
                 <Route path="/my-rentals" element={<UserRentalDashboard />} />
                 <Route path="/my-rental-inquiries" element={<MyRentalInquiries />} />
                 <Route path="/investor-watchlist" element={<InvestorWatchlist />} />

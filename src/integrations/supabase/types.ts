@@ -9008,6 +9008,50 @@ export type Database = {
         }
         Relationships: []
       }
+      document_audit_trail: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          document_id: string
+          id: string
+          ip_address: string | null
+          performed_by: string | null
+          performer_name: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          document_id: string
+          id?: string
+          ip_address?: string | null
+          performed_by?: string | null
+          performer_name?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          document_id?: string
+          id?: string
+          ip_address?: string | null
+          performed_by?: string | null
+          performer_name?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_audit_trail_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "transaction_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       document_requirements: {
         Row: {
           accepted_formats: string[] | null
@@ -9052,6 +9096,80 @@ export type Database = {
           vendor_type?: string
         }
         Relationships: []
+      }
+      document_signatures: {
+        Row: {
+          created_at: string
+          document_id: string
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          notes: string | null
+          sign_order: number
+          signature_data: string | null
+          signature_image_url: string | null
+          signed_at: string | null
+          signer_email: string | null
+          signer_id: string
+          signer_name: string | null
+          signer_role: string
+          status: string
+          updated_at: string
+          user_agent: string | null
+          verification_code: string | null
+          verified_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          document_id: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          notes?: string | null
+          sign_order?: number
+          signature_data?: string | null
+          signature_image_url?: string | null
+          signed_at?: string | null
+          signer_email?: string | null
+          signer_id: string
+          signer_name?: string | null
+          signer_role?: string
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+          verification_code?: string | null
+          verified_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          document_id?: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          notes?: string | null
+          sign_order?: number
+          signature_data?: string | null
+          signature_image_url?: string | null
+          signed_at?: string | null
+          signer_email?: string | null
+          signer_id?: string
+          signer_name?: string | null
+          signer_role?: string
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+          verification_code?: string | null
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_signatures_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "transaction_documents"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       email_logs: {
         Row: {
@@ -28988,6 +29106,109 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      transaction_documents: {
+        Row: {
+          booking_id: string | null
+          completed_at: string | null
+          created_at: string
+          current_signer_index: number | null
+          description: string | null
+          document_number: string
+          document_type: string
+          expires_at: string | null
+          file_name: string
+          file_size: number | null
+          file_url: string
+          id: string
+          legal_request_id: string | null
+          metadata: Json | null
+          mime_type: string | null
+          offer_id: string | null
+          property_id: string | null
+          requires_signature: boolean
+          signature_order: Json | null
+          status: string
+          title: string
+          updated_at: string
+          uploaded_by: string
+          version: number
+        }
+        Insert: {
+          booking_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          current_signer_index?: number | null
+          description?: string | null
+          document_number?: string
+          document_type?: string
+          expires_at?: string | null
+          file_name: string
+          file_size?: number | null
+          file_url: string
+          id?: string
+          legal_request_id?: string | null
+          metadata?: Json | null
+          mime_type?: string | null
+          offer_id?: string | null
+          property_id?: string | null
+          requires_signature?: boolean
+          signature_order?: Json | null
+          status?: string
+          title: string
+          updated_at?: string
+          uploaded_by: string
+          version?: number
+        }
+        Update: {
+          booking_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          current_signer_index?: number | null
+          description?: string | null
+          document_number?: string
+          document_type?: string
+          expires_at?: string | null
+          file_name?: string
+          file_size?: number | null
+          file_url?: string
+          id?: string
+          legal_request_id?: string | null
+          metadata?: Json | null
+          mime_type?: string | null
+          offer_id?: string | null
+          property_id?: string | null
+          requires_signature?: boolean
+          signature_order?: Json | null
+          status?: string
+          title?: string
+          updated_at?: string
+          uploaded_by?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transaction_documents_legal_request_id_fkey"
+            columns: ["legal_request_id"]
+            isOneToOne: false
+            referencedRelation: "legal_service_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_documents_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_documents_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       transaction_logs: {
         Row: {
