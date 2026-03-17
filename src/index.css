@@ -285,20 +285,28 @@ html, body {
     --shadow-intel: 0 4px 20px hsl(217 91% 55% / 0.08);
     --shadow-intel-active: 0 8px 32px hsl(217 91% 55% / 0.15), 0 0 0 1px hsl(217 91% 55% / 0.1);
 
-    /* ═══ Admin Dashboard Panel Tokens ═══ */
-    --panel-bg: 210 20% 96%;
-    --panel-border: 210 15% 88%;
-    --panel-hover: 210 15% 92%;
-    --panel-text: 210 30% 15%;
-    --panel-text-secondary: 210 10% 45%;
-    --panel-text-muted: 210 10% 60%;
-    --panel-accent: 45 100% 51%;
-    --panel-success: 155 72% 40%;
-    --panel-danger: 354 70% 50%;
-    --panel-warning: 45 100% 51%;
-    --panel-tooltip-bg: 210 15% 92%;
-    --panel-tooltip-border: 210 10% 82%;
-    --panel-tooltip-text: 210 10% 35%;
+    /* ═══ Astra Villa Admin Panel Tokens ═══ */
+    --panel-bg: 220 16% 97%;
+    --panel-bg-elevated: 220 14% 99%;
+    --panel-border: 220 13% 86%;
+    --panel-border-subtle: 220 10% 91%;
+    --panel-hover: 220 14% 94%;
+    --panel-active: 220 12% 91%;
+    --panel-text: 220 25% 12%;
+    --panel-text-secondary: 220 10% 42%;
+    --panel-text-muted: 220 8% 58%;
+    --panel-accent: 43 96% 50%;
+    --panel-accent-dim: 43 80% 44%;
+    --panel-success: 152 69% 38%;
+    --panel-danger: 350 65% 48%;
+    --panel-warning: 38 92% 50%;
+    --panel-info: 210 80% 52%;
+    --panel-tooltip-bg: 220 20% 18%;
+    --panel-tooltip-border: 220 15% 28%;
+    --panel-tooltip-text: 220 8% 88%;
+    --panel-glow-accent: 43 96% 50%;
+    --panel-shadow: 0 1px 3px hsl(220 20% 12% / 0.06), 0 0 0 1px hsl(220 13% 86% / 0.8);
+    --panel-shadow-hover: 0 4px 12px hsl(220 20% 12% / 0.08), 0 0 0 1px hsl(43 96% 50% / 0.15);
   }
 
   .dark {
