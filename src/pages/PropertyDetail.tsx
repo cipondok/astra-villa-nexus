@@ -179,6 +179,7 @@ const PropertyDetail: React.FC = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
+  const [showMobileOffer, setShowMobileOffer] = useState(false);
   
   // Initialize favorites hook with property data once available
   const { toggleFavorite, isFavorite, loading: favLoading } = useFavorites({
