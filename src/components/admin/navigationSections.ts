@@ -549,6 +549,12 @@ export const navigationSections = {
 
   "user-management": [
     {
+      key: "user-management-overview",
+      label: "📊 Users Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all user management and KYC modules"
+    },
+    {
       key: "user-management",
       label: "User Management",
       icon: Users,
