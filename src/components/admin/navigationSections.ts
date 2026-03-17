@@ -632,6 +632,12 @@ export const navigationSections = {
 
   "analytics-monitoring": [
     {
+      key: "analytics-monitoring-overview",
+      label: "📊 Analytics Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all analytics and monitoring modules"
+    },
+    {
       key: "vip-analytics",
       label: "VIP Analytics",
       icon: Gem,
