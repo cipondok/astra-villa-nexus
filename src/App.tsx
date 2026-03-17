@@ -677,6 +677,7 @@ const AppContent = () => {
                 <Route path="/follow-up-templates" element={<FollowUpTemplatesPage />} />
                 <Route path="/agent-retention" element={<AgentRetentionPage />} />
                 <Route path="/success-story" element={<SuccessStoryPage />} />
+                <Route path="/roi-calculator" element={<ROICalculatorPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
