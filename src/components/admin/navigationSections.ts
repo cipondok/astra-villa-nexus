@@ -1640,6 +1640,13 @@ export const navigationSections = {
       icon: Users,
       description: "First 10 key hires phased across foundation, acceleration, and scale stages",
       badge: "👥 Team"
+    },
+    {
+      key: "customer-support-framework",
+      label: "Customer Support Framework",
+      icon: HeadphonesIcon,
+      description: "Multi-channel support strategy with SLAs, escalation, and knowledge base planning",
+      badge: "🎧 Support"
     }
   ],
 

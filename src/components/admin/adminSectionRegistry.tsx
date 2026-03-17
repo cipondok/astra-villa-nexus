@@ -784,4 +784,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "equity-allocation-framework": { label: "Equity Allocation Framework", category: "Features" },
   "investor-qa-prep": { label: "Investor Q&A Preparation", category: "Features" },
   "hiring-roadmap-10": { label: "First 10 Hires Roadmap", category: "Features" },
+  "customer-support-framework": { label: "Customer Support Framework", category: "Features" },
 };
