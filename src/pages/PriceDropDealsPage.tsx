@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { TrendingDown, Flame, Target, AlertTriangle, Search, ArrowUpDown, Bookmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+
 
 function formatPrice(v: number) {
   if (v >= 1e9) return `Rp ${(v / 1e9).toFixed(1)}M`;

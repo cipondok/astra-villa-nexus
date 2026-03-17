@@ -35307,6 +35307,30 @@ export type Database = {
           total_vendors: number
         }[]
       }
+      get_price_drop_deals: {
+        Args: {
+          p_city?: string
+          p_limit?: number
+          p_min_drop_pct?: number
+          p_min_score?: number
+        }
+        Returns: {
+          ai_undervaluation: string
+          alert_tier: string
+          changed_at: string
+          city: string
+          demand_heat_score: number
+          drop_percentage: number
+          investment_score: number
+          new_price: number
+          old_price: number
+          opportunity_score: number
+          property_id: string
+          property_image: string
+          property_title: string
+          rental_yield: number
+        }[]
+      }
       get_price_prediction_stats: { Args: never; Returns: Json }
       get_profiles_with_roles: {
         Args: never
