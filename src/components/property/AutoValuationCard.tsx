@@ -1,13 +1,21 @@
+import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { 
-  Calculator, TrendingUp, TrendingDown, Minus, RefreshCw, Loader2, BarChart3
+  Calculator, TrendingUp, TrendingDown, Minus, RefreshCw, Loader2, BarChart3,
+  ArrowUpRight, FileText, Sparkles
 } from 'lucide-react';
 import { useCalculatePropertyValue } from '@/hooks/useCalculatePropertyValue';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import { cn } from '@/lib/utils';
+import {
+  AreaChart, Area, ResponsiveContainer, YAxis
+} from 'recharts';
 
 interface AutoValuationCardProps {
   propertyId: string;
@@ -15,8 +23,26 @@ interface AutoValuationCardProps {
 }
 
 export function AutoValuationCard({ propertyId, currentPrice }: AutoValuationCardProps) {
+  const navigate = useNavigate();
   const { calculate, isCalculating, result, latestValuation, isLoadingLatest } = useCalculatePropertyValue(propertyId);
   const formatPrice = getCurrencyFormatterShort();
+
+  // Fetch mini price history for sparkline
+  const { data: priceHistory = [] } = useQuery({
+    queryKey: ['valuation-sparkline', propertyId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('property_price_history')
+        .select('new_price, changed_at')
+        .eq('property_id', propertyId)
+        .order('changed_at', { ascending: true })
+        .limit(12);
+      if (error) throw error;
+      return (data || []).map(d => ({ price: d.new_price, date: d.changed_at }));
+    },
+    enabled: !!propertyId,
+    staleTime: 10 * 60 * 1000,
+  });
 
   // Use live result or stored valuation
   const valuation = result || (latestValuation ? {
@@ -27,6 +53,29 @@ export function AutoValuationCard({ propertyId, currentPrice }: AutoValuationCar
     price_range_low: latestValuation.price_range_low ?? 0,
     price_range_high: latestValuation.price_range_high ?? 0,
   } : null);
+
+  // Appreciation outlook
+  const appreciation = useMemo(() => {
+    if (!valuation) return null;
+    const gap = valuation.estimated_value - currentPrice;
+    const gapPct = currentPrice > 0 ? (gap / currentPrice) * 100 : 0;
+    const trend = valuation.market_trend;
+
+    let outlook: 'STRONG_GROWTH' | 'MODERATE_GROWTH' | 'STABLE' | 'DECLINING';
+    if (trend === 'rising' && gapPct > 5) outlook = 'STRONG_GROWTH';
+    else if (trend === 'rising' || gapPct > 2) outlook = 'MODERATE_GROWTH';
+    else if (trend === 'declining' || gapPct < -10) outlook = 'DECLINING';
+    else outlook = 'STABLE';
+
+    return { outlook, gapPct };
+  }, [valuation, currentPrice]);
+
+  const outlookConfig = {
+    STRONG_GROWTH: { label: 'Strong Growth', color: 'text-chart-1 bg-chart-1/10 border-chart-1/20', icon: TrendingUp },
+    MODERATE_GROWTH: { label: 'Moderate Growth', color: 'text-primary bg-primary/10 border-primary/20', icon: ArrowUpRight },
+    STABLE: { label: 'Stable', color: 'text-muted-foreground bg-muted border-border', icon: Minus },
+    DECLINING: { label: 'Declining', color: 'text-destructive bg-destructive/10 border-destructive/20', icon: TrendingDown },
+  };
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
@@ -47,6 +96,13 @@ export function AutoValuationCard({ propertyId, currentPrice }: AutoValuationCar
   const priceDiff = valuation && currentPrice > 0
     ? ((valuation.estimated_value - currentPrice) / currentPrice * 100).toFixed(1)
     : null;
+
+  // Sparkline color
+  const sparkColor = valuation?.market_trend === 'rising'
+    ? 'hsl(var(--chart-1))'
+    : valuation?.market_trend === 'declining'
+    ? 'hsl(var(--destructive))'
+    : 'hsl(var(--primary))';
 
   return (
     <Card className="border border-primary/15 bg-card overflow-hidden">
@@ -85,16 +141,56 @@ export function AutoValuationCard({ propertyId, currentPrice }: AutoValuationCar
               )}
             </div>
 
-            {/* Price Comparison */}
+            {/* Price Comparison (Valuation Gap) */}
             {priceDiff && (
               <div className="flex items-center justify-between p-2.5 bg-muted/50 rounded-lg text-xs">
-                <span className="text-muted-foreground">vs. Listed Price</span>
+                <span className="text-muted-foreground">Valuation Gap vs. Listed</span>
                 <span className={cn(
                   "font-semibold",
                   Number(priceDiff) > 0 ? "text-chart-1" : Number(priceDiff) < 0 ? "text-destructive" : "text-muted-foreground"
                 )}>
                   {Number(priceDiff) > 0 ? '+' : ''}{priceDiff}%
+                  {Number(priceDiff) > 5 && ' 🔥'}
                 </span>
+              </div>
+            )}
+
+            {/* Appreciation Outlook */}
+            {appreciation && (
+              <div className={cn("flex items-center gap-2 p-2.5 rounded-lg border text-xs", outlookConfig[appreciation.outlook].color)}>
+                {(() => { const Icon = outlookConfig[appreciation.outlook].icon; return <Icon className="h-3.5 w-3.5 shrink-0" />; })()}
+                <div className="flex-1">
+                  <span className="font-semibold">{outlookConfig[appreciation.outlook].label}</span>
+                  <span className="opacity-70 ml-1">Appreciation Outlook</span>
+                </div>
+              </div>
+            )}
+
+            {/* Mini Price Trend Sparkline */}
+            {priceHistory.length >= 2 && (
+              <div className="space-y-1">
+                <p className="text-[10px] text-muted-foreground font-medium">Price History</p>
+                <div className="h-[48px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={priceHistory}>
+                      <defs>
+                        <linearGradient id={`spark-${propertyId}`} x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor={sparkColor} stopOpacity={0.3} />
+                          <stop offset="95%" stopColor={sparkColor} stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <YAxis hide domain={['dataMin', 'dataMax']} />
+                      <Area
+                        type="monotone"
+                        dataKey="price"
+                        stroke={sparkColor}
+                        fill={`url(#spark-${propertyId})`}
+                        strokeWidth={1.5}
+                        dot={false}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             )}
 
@@ -126,27 +222,39 @@ export function AutoValuationCard({ propertyId, currentPrice }: AutoValuationCar
               </div>
             )}
 
-            {/* Recalculate */}
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full text-xs"
-              onClick={() => calculate(propertyId)}
-              disabled={isCalculating}
-            >
-              {isCalculating ? (
-                <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
-              ) : (
-                <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
-              )}
-              Recalculate Valuation
-            </Button>
+            {/* Actions */}
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1 text-xs"
+                onClick={() => calculate(propertyId)}
+                disabled={isCalculating}
+              >
+                {isCalculating ? (
+                  <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                ) : (
+                  <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
+                )}
+                Recalculate
+              </Button>
+              <Button
+                variant="default"
+                size="sm"
+                className="flex-1 text-xs"
+                onClick={() => navigate('/ai-property-valuation')}
+              >
+                <FileText className="h-3.5 w-3.5 mr-1.5" />
+                Deep Report
+              </Button>
+            </div>
           </>
         ) : (
           /* No valuation yet */
           <div className="text-center space-y-3 py-2">
+            <Sparkles className="h-8 w-8 text-primary/40 mx-auto" />
             <p className="text-xs text-muted-foreground">
-              Get an instant AI-powered market valuation based on comparable listings.
+              Get an instant AI-powered market valuation with appreciation outlook and comparable analysis.
             </p>
             <Button
               onClick={() => calculate(propertyId)}
