@@ -98,6 +98,8 @@ const ServiceProviderProfile = lazy(() => import('@/pages/ServiceProviderProfile
 const LegalServices = lazy(() => import('@/pages/LegalServices'));
 const MyRentalInquiries = lazy(() => import('@/pages/MyRentalInquiries'));
 const InvestorWatchlist = lazy(() => import('@/pages/InvestorWatchlist'));
+const ProjectShowcase = lazy(() => import('@/pages/ProjectShowcase'));
+const DeveloperDashboard = lazy(() => import('@/pages/DeveloperDashboard'));
 const PreLaunching = lazy(() => import('@/pages/PreLaunching'));
 const NewProjects = lazy(() => import('@/pages/NewProjects'));
 const AreaGuides = lazy(() => import('@/pages/AreaGuides'));
@@ -465,6 +467,10 @@ const AppContent = () => {
                 <Route path="/my-rentals" element={<UserRentalDashboard />} />
                 <Route path="/my-rental-inquiries" element={<MyRentalInquiries />} />
                 <Route path="/investor-watchlist" element={<InvestorWatchlist />} />
+                <Route path="/projects/:projectId" element={<ProjectShowcase />} />
+                <Route path="/developer-dashboard" element={<ProtectedRoute />}>
+                  <Route index element={<DeveloperDashboard />} />
+                </Route>
                 <Route path="/ai-pricing" element={<AIPriceEstimator />} />
                 <Route path="/price-estimator" element={<AIPriceEstimator />} />
                 <Route path="/market-intelligence" element={<MarketIntelligence />} />

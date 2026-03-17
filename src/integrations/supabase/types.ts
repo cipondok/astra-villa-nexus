@@ -8761,6 +8761,147 @@ export type Database = {
           },
         ]
       }
+      developer_projects: {
+        Row: {
+          ai_demand_label: string | null
+          ai_demand_score: number | null
+          ai_investment_grade: string | null
+          ai_rental_yield: number | null
+          ai_roi_5y: number | null
+          amenities: string[] | null
+          available_units: number | null
+          city: string
+          commission_rate: number | null
+          concept: string | null
+          created_at: string
+          description: string | null
+          developer_id: string
+          developer_logo_url: string | null
+          developer_name: string | null
+          district: string | null
+          early_investor_access: boolean | null
+          expected_completion_date: string | null
+          facilities: Json | null
+          full_address: string | null
+          gallery_images: string[] | null
+          hero_images: string[] | null
+          id: string
+          is_featured: boolean | null
+          is_published: boolean | null
+          latitude: number | null
+          launch_date: string | null
+          launch_phase: string | null
+          longitude: number | null
+          masterplan_images: string[] | null
+          nearby_landmarks: Json | null
+          price_range_max: number | null
+          price_range_min: number | null
+          project_name: string
+          project_score: number | null
+          property_type: string | null
+          province: string | null
+          reserved_units: number | null
+          sold_units: number | null
+          total_leads: number | null
+          total_units: number | null
+          total_views: number | null
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          ai_demand_label?: string | null
+          ai_demand_score?: number | null
+          ai_investment_grade?: string | null
+          ai_rental_yield?: number | null
+          ai_roi_5y?: number | null
+          amenities?: string[] | null
+          available_units?: number | null
+          city: string
+          commission_rate?: number | null
+          concept?: string | null
+          created_at?: string
+          description?: string | null
+          developer_id: string
+          developer_logo_url?: string | null
+          developer_name?: string | null
+          district?: string | null
+          early_investor_access?: boolean | null
+          expected_completion_date?: string | null
+          facilities?: Json | null
+          full_address?: string | null
+          gallery_images?: string[] | null
+          hero_images?: string[] | null
+          id?: string
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          latitude?: number | null
+          launch_date?: string | null
+          launch_phase?: string | null
+          longitude?: number | null
+          masterplan_images?: string[] | null
+          nearby_landmarks?: Json | null
+          price_range_max?: number | null
+          price_range_min?: number | null
+          project_name: string
+          project_score?: number | null
+          property_type?: string | null
+          province?: string | null
+          reserved_units?: number | null
+          sold_units?: number | null
+          total_leads?: number | null
+          total_units?: number | null
+          total_views?: number | null
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          ai_demand_label?: string | null
+          ai_demand_score?: number | null
+          ai_investment_grade?: string | null
+          ai_rental_yield?: number | null
+          ai_roi_5y?: number | null
+          amenities?: string[] | null
+          available_units?: number | null
+          city?: string
+          commission_rate?: number | null
+          concept?: string | null
+          created_at?: string
+          description?: string | null
+          developer_id?: string
+          developer_logo_url?: string | null
+          developer_name?: string | null
+          district?: string | null
+          early_investor_access?: boolean | null
+          expected_completion_date?: string | null
+          facilities?: Json | null
+          full_address?: string | null
+          gallery_images?: string[] | null
+          hero_images?: string[] | null
+          id?: string
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          latitude?: number | null
+          launch_date?: string | null
+          launch_phase?: string | null
+          longitude?: number | null
+          masterplan_images?: string[] | null
+          nearby_landmarks?: Json | null
+          price_range_max?: number | null
+          price_range_min?: number | null
+          project_name?: string
+          project_score?: number | null
+          property_type?: string | null
+          province?: string | null
+          reserved_units?: number | null
+          sold_units?: number | null
+          total_leads?: number | null
+          total_units?: number | null
+          total_views?: number | null
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
       document_requirements: {
         Row: {
           accepted_formats: string[] | null
@@ -20459,6 +20600,154 @@ export type Database = {
             columns: ["user_level_id"]
             isOneToOne: false
             referencedRelation: "user_levels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_leads: {
+        Row: {
+          budget_range: string | null
+          contacted_at: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          intent: string | null
+          message: string | null
+          notes: string | null
+          phone: string | null
+          preferred_unit_type: string | null
+          project_id: string
+          source: string | null
+          status: string | null
+          updated_at: string
+          user_id: string | null
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+        }
+        Insert: {
+          budget_range?: string | null
+          contacted_at?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          intent?: string | null
+          message?: string | null
+          notes?: string | null
+          phone?: string | null
+          preferred_unit_type?: string | null
+          project_id: string
+          source?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Update: {
+          budget_range?: string | null
+          contacted_at?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          intent?: string | null
+          message?: string | null
+          notes?: string | null
+          phone?: string | null
+          preferred_unit_type?: string | null
+          project_id?: string
+          source?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string | null
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_leads_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "developer_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_units: {
+        Row: {
+          bathrooms: number | null
+          bedrooms: number | null
+          building_area_sqm: number | null
+          created_at: string
+          features: string[] | null
+          floor_level: number | null
+          floor_plan_url: string | null
+          id: string
+          land_area_sqm: number | null
+          price: number
+          project_id: string
+          reserved_at: string | null
+          reserved_by: string | null
+          sort_order: number | null
+          status: string | null
+          unit_name: string
+          unit_type: string
+          updated_at: string
+          view_direction: string | null
+        }
+        Insert: {
+          bathrooms?: number | null
+          bedrooms?: number | null
+          building_area_sqm?: number | null
+          created_at?: string
+          features?: string[] | null
+          floor_level?: number | null
+          floor_plan_url?: string | null
+          id?: string
+          land_area_sqm?: number | null
+          price: number
+          project_id: string
+          reserved_at?: string | null
+          reserved_by?: string | null
+          sort_order?: number | null
+          status?: string | null
+          unit_name: string
+          unit_type: string
+          updated_at?: string
+          view_direction?: string | null
+        }
+        Update: {
+          bathrooms?: number | null
+          bedrooms?: number | null
+          building_area_sqm?: number | null
+          created_at?: string
+          features?: string[] | null
+          floor_level?: number | null
+          floor_plan_url?: string | null
+          id?: string
+          land_area_sqm?: number | null
+          price?: number
+          project_id?: string
+          reserved_at?: string | null
+          reserved_by?: string | null
+          sort_order?: number | null
+          status?: string | null
+          unit_name?: string
+          unit_type?: string
+          updated_at?: string
+          view_direction?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_units_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "developer_projects"
             referencedColumns: ["id"]
           },
         ]
