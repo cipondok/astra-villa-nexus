@@ -284,7 +284,7 @@ function RolePermissionsMatrix() {
       const { error } = await supabase
         .from('role_permissions')
         .delete()
-        .eq('role', role)
+        .eq('role', role as any)
         .eq('permission', permission);
       if (error) throw error;
     },
