@@ -763,4 +763,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "uiux-redesign-blueprint": { label: "UI/UX Redesign Blueprint", category: "Features" },
   "homepage-blueprint": { label: "Homepage Layout Blueprint", category: "Features" },
   "ui-audit-report": { label: "UI/UX Audit Report", category: "Features" },
+  "legal-setup-roadmap": { label: "Legal Setup & Licensing", category: "Features" },
 };
