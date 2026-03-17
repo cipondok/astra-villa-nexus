@@ -215,10 +215,14 @@ export default function NotificationCenter() {
   const filterOptions = [
     { type: null, label: 'All' },
     { type: 'price_drop', label: 'Price Drops' },
+    { type: 'elite_opportunity', label: 'Elite Deals' },
+    { type: 'deal_alert', label: 'Deal Alerts' },
+    { type: 'watchlist_update', label: 'Watchlist' },
+    { type: 'portfolio_risk', label: 'Portfolio Risk' },
+    { type: 'offer_received', label: 'Offers' },
     { type: 'new_listing', label: 'New Listings' },
     { type: 'investment_opportunity', label: 'Investment' },
     { type: 'saved_search', label: 'Saved Searches' },
-    { type: 'new_match', label: 'Matches' },
   ];
 
   const prefItems = [
