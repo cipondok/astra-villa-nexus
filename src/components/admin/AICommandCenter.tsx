@@ -1,6 +1,8 @@
 import React, { useState, lazy, Suspense } from 'react';
 const AIIntelligenceHealthPanel = lazy(() => import('./AIIntelligenceHealthPanel'));
 const AIReadinessBadge = lazy(() => import('../ai/AIReadinessBadge'));
+const AIEngineStatusPanel = lazy(() => import('./AIEngineStatusPanel'));
+const MarketplaceHealthDashboard = lazy(() => import('./MarketplaceHealthPanel'));
 import { useAICommandCenter, type PeriodComparison } from '@/hooks/useAICommandCenter';
 import { useCustomPeriodKPIs } from '@/hooks/useCustomPeriodKPIs';
 import { useHealthAlerts, useResolveHealthAlert, useResolveAllHealthAlerts, useTriggerHealthCheck } from '@/hooks/useHealthAlerts';
@@ -48,10 +50,12 @@ const formatIDR = (v: number) => {
   return `Rp ${v.toLocaleString()}`;
 };
 
-type NavSection = 'overview' | 'seo' | 'jobs' | 'scheduler' | 'investment' | 'valuations' | 'search' | 'health' | 'market-intel' | 'ai-health';
+type NavSection = 'overview' | 'engines' | 'marketplace' | 'seo' | 'jobs' | 'scheduler' | 'investment' | 'valuations' | 'search' | 'health' | 'market-intel' | 'ai-health';
 
 const NAV_ITEMS: { id: NavSection; label: string; icon: React.ElementType }[] = [
   { id: 'overview', label: 'Overview', icon: Gauge },
+  { id: 'engines', label: 'Engine Status', icon: Cpu },
+  { id: 'marketplace', label: 'Marketplace', icon: Activity },
   { id: 'ai-health', label: 'AI Readiness', icon: Brain },
   { id: 'seo', label: 'SEO Engine', icon: Search },
   { id: 'jobs', label: 'Job Queue', icon: Cpu },
@@ -1550,6 +1554,20 @@ const AICommandCenter = () => {
             {activeNav === 'market-intel' && (
               <Suspense fallback={<div className="h-64 bg-muted animate-pulse rounded-lg" />}>
                 <MarketIntelligencePanel />
+              </Suspense>
+            )}
+
+            {/* AI ENGINE STATUS */}
+            {activeNav === 'engines' && (
+              <Suspense fallback={<div className="h-64 bg-muted animate-pulse rounded-lg" />}>
+                <AIEngineStatusPanel />
+              </Suspense>
+            )}
+
+            {/* MARKETPLACE HEALTH */}
+            {activeNav === 'marketplace' && (
+              <Suspense fallback={<div className="h-64 bg-muted animate-pulse rounded-lg" />}>
+                <MarketplaceHealthDashboard />
               </Suspense>
             )}
 
