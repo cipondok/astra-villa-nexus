@@ -261,6 +261,7 @@ export const InvestorQAPrep = lazyRetry(() => import("./InvestorQAPrep"));
 export const HiringRoadmap = lazyRetry(() => import("./HiringRoadmap"));
 export const CustomerSupportFramework = lazyRetry(() => import("./CustomerSupportFramework"));
 export const MarketplaceIntegrity = lazyRetry(() => import("./MarketplaceIntegrity"));
+export const TeamKPIFramework = lazyRetry(() => import("./TeamKPIFramework"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
@@ -564,6 +565,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "hiring-roadmap-10":          () => <HiringRoadmap />,
   "customer-support-framework": () => <CustomerSupportFramework />,
   "marketplace-integrity":      () => <MarketplaceIntegrity />,
+  "team-kpi-framework":         () => <TeamKPIFramework />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -788,4 +790,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "hiring-roadmap-10": { label: "First 10 Hires Roadmap", category: "Features" },
   "customer-support-framework": { label: "Customer Support Framework", category: "Features" },
   "marketplace-integrity": { label: "Marketplace Integrity & QC", category: "Features" },
+  "team-kpi-framework": { label: "Team KPI Framework", category: "Features" },
 };

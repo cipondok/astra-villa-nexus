@@ -1654,6 +1654,13 @@ export const navigationSections = {
       icon: ShieldCheck,
       description: "Listing verification, provider monitoring, transaction integrity, and dispute resolution",
       badge: "🛡️ Trust"
+    },
+    {
+      key: "team-kpi-framework",
+      label: "Team KPI Framework",
+      icon: Target,
+      description: "Weighted performance metrics for Engineering, AI, Marketplace, Growth, and Customer Success",
+      badge: "📊 KPIs"
     }
   ],
 
