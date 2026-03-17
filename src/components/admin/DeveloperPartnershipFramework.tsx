@@ -215,9 +215,9 @@ const DeveloperPartnershipFramework: React.FC = () => {
                 key={tier.name}
                 className={cn(
                   "bg-[hsl(var(--panel-bg))] p-4 transition-all cursor-pointer",
-                  isExpanded && "ring-1 ring-inset",
+                  isExpanded && "ring-1 ring-[hsl(var(--panel-accent)/.3)]",
                 )}
-                style={isExpanded ? { ringColor: `hsl(var(${tier.color}) / 0.3)`, background: `hsl(var(${tier.color}) / 0.02)` } : undefined}
+                style={isExpanded ? { background: `hsl(var(${tier.color}) / 0.02)` } : undefined}
                 onClick={() => setExpandedTier(isExpanded ? null : i)}
               >
                 {/* Tier header */}
