@@ -98,6 +98,7 @@ export const VisitorAnalytics = lazyRetry(() => import("./VisitorAnalytics"));
 export const BugErrorDashboard = lazyRetry(() => import("./diagnostics/BugErrorDashboard").then((m) => ({ default: m.BugErrorDashboard })));
 export const TestingDashboard = lazyRetry(() => import("./TestingDashboard"));
 export const VIPAnalyticsDashboard = lazyRetry(() => import("./VIPAnalyticsDashboard"));
+export const AdminRevenueCommissionDashboard = lazyRetry(() => import("./AdminRevenueCommissionDashboard"));
 export const BookingManagement = lazyRetry(() => import("./BookingManagement"));
 export const AdminRentalManagement = lazyRetry(() => import("./AdminRentalManagement"));
 export const TransactionManagementTabs = lazyRetry(() => import("./TransactionManagementTabs"));
@@ -283,6 +284,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "booking-management":  () => <BookingManagement />,
   "transaction-hub":     () => <TransactionManagementTabs />,
   "mortgage-management": () => <MortgageManagement />,
+  "revenue-commissions": () => <AdminRevenueCommissionDashboard />,
 
   // System
   "database-management": () => <DatabaseTableManagement />,
@@ -549,6 +551,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "vip-analytics": { label: "VIP Analytics", category: "Analytics" },
   "transaction-hub": { label: "Transaction Management", category: "Transactions" },
   "mortgage-management": { label: "Mortgage Management", category: "Transactions" },
+  "revenue-commissions": { label: "Revenue & Commissions", category: "Transactions" },
   "blockchain-management": { label: "Blockchain Management", category: "Transactions" },
   "b2b-marketplace": { label: "B2B Data Marketplace", category: "Transactions" },
   "partnership-programs": { label: "Partnership Programs", category: "Transactions" },
