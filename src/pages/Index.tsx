@@ -972,7 +972,7 @@ const Index = () => {
               </section>
 
               {/* ── Final Conversion CTA ── */}
-              <div className="py-3 sm:py-4">
+              <div className="py-2 sm:py-3">
                 <Suspense fallback={null}>
                   <EarlyInvestmentCTA />
                 </Suspense>

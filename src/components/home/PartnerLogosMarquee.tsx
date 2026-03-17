@@ -88,7 +88,7 @@ export default function PartnerLogosMarquee() {
   );
 
   return (
-    <section className="w-full py-6 mt-4 overflow-hidden">
+    <section className="w-full py-4 mt-2 overflow-hidden">
       <p className="text-center text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">
         {t('indexPage.trustedPartners')}
       </p>

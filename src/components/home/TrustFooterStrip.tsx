@@ -59,7 +59,7 @@ export default function TrustFooterStrip({ className }: { className?: string }) 
         </div>
 
         {/* Legal microcopy */}
-        <p className="text-center text-[10px] text-muted-foreground/60 mt-4 max-w-lg mx-auto leading-relaxed">
+        <p className="text-center text-[10px] text-muted-foreground/60 mt-2.5 max-w-lg mx-auto leading-relaxed">
           ASTRAVILLA operates in compliance with Indonesian property transaction regulations.
           All listing data is independently verified and AI-audited for accuracy.
         </p>
