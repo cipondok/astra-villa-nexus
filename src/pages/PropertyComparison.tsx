@@ -1,6 +1,7 @@
 import React, { useMemo, useState, lazy, Suspense } from 'react';
 const Smart3DCompare = lazy(() => import('@/components/comparison/Smart3DCompare'));
 const InvestmentComparePanel = lazy(() => import('@/components/property/InvestmentComparePanel'));
+const AIInvestmentInsight = lazy(() => import('@/components/comparison/AIInvestmentInsight'));
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,7 +16,7 @@ import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 import {
   ArrowLeft, X, Eye, Trash2, Check, Minus,
   Banknote, MapPin, Building, TrendingUp, School, ShoppingBag, HeartPulse, Train,
-  Trophy, Sparkles, BarChart3, Scale, Box
+  Trophy, Sparkles, BarChart3, Scale, Box, Shield
 } from 'lucide-react';
 import ShareComparisonButton from '@/components/property/ShareComparisonButton';
 import Price from '@/components/ui/Price';
@@ -337,7 +338,7 @@ const PropertyComparison = () => {
         {/* Tabs */}
         <motion.div {...fadeUp} transition={{ delay: 0.1 }}>
           <Tabs defaultValue="specs" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-7 lg:w-auto lg:inline-grid bg-muted/50 backdrop-blur-sm border border-border/50">
+            <TabsList className="grid w-full grid-cols-8 lg:w-auto lg:inline-grid bg-muted/50 backdrop-blur-sm border border-border/50">
               <TabsTrigger value="specs" className="gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/10 data-[state=active]:to-yellow-400/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
                 <Building className="h-4 w-4" />Specs
               </TabsTrigger>
@@ -352,6 +353,9 @@ const PropertyComparison = () => {
               </TabsTrigger>
               <TabsTrigger value="investment" className="gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/10 data-[state=active]:to-yellow-400/10 data-[state=active]:text-amber-700 dark:data-[state=active]:text-amber-400">
                 <TrendingUp className="h-4 w-4" />Invest
+              </TabsTrigger>
+              <TabsTrigger value="ai-insight" className="gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/10 data-[state=active]:to-chart-2/10 data-[state=active]:text-primary">
+                <Shield className="h-4 w-4" />AI Insight
               </TabsTrigger>
               <TabsTrigger value="ai-compare" className="gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500/10 data-[state=active]:to-amber-400/10 data-[state=active]:text-emerald-700 dark:data-[state=active]:text-emerald-400">
                 <Sparkles className="h-4 w-4" />AI Compare
@@ -898,6 +902,13 @@ const PropertyComparison = () => {
                   </CardContent>
                 </Card>
               )}
+            </TabsContent>
+
+            {/* ═══ AI INSIGHT TAB ═══ */}
+            <TabsContent value="ai-insight">
+              <Suspense fallback={<div className="h-[300px] flex items-center justify-center"><div className="animate-pulse text-muted-foreground">Loading AI Insight...</div></div>}>
+                <AIInvestmentInsight selectedProperties={selectedProperties} />
+              </Suspense>
             </TabsContent>
 
             {/* ═══ AI COMPARE TAB ═══ */}
