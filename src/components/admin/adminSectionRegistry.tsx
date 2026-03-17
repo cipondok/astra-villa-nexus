@@ -283,6 +283,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "booking-management":  () => <BookingManagement />,
   "transaction-hub":     () => <TransactionManagementTabs />,
   "mortgage-management": () => <MortgageManagement />,
+  "revenue-commissions": () => <AdminRevenueCommissionDashboard />,
 
   // System
   "database-management": () => <DatabaseTableManagement />,
