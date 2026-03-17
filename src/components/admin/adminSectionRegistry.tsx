@@ -573,6 +573,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "weekly-leadership-review":   () => <WeeklyLeadershipReview />,
   "company-culture-principles": () => <CompanyCulturePrinciples />,
   "founder-daily-routine":      () => <FounderDailyRoutine />,
+  "founder-mental-framework":   () => <FounderMentalFramework />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
