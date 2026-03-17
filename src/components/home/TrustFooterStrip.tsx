@@ -35,9 +35,9 @@ export default function TrustFooterStrip({ className }: { className?: string }) 
       "w-full border-t border-border/40 bg-muted/20",
       className
     )}>
-      <div className="max-w-7xl mx-auto px-4 py-5 sm:py-6">
+      <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4">
         {/* Heading */}
-        <p className="text-center text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-[0.15em] mb-4">
+        <p className="text-center text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-[0.15em] mb-2.5">
           Your protection, our standard
         </p>
 
