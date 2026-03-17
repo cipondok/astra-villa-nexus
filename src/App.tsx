@@ -256,6 +256,7 @@ const GoToMarketStrategyPage = lazy(() => import('@/pages/GoToMarketStrategyPage
 const First1000UsersPage = lazy(() => import('@/pages/First1000UsersPage'));
 const DealConversionPipelinePage = lazy(() => import('@/pages/DealConversionPipelinePage'));
 const SalesScriptsPage = lazy(() => import('@/pages/SalesScriptsPage'));
+const AgentOnboardingScriptsPage = lazy(() => import('@/pages/AgentOnboardingScriptsPage'));
 const LiveDemoPresentationPage = lazy(() => import('@/pages/LiveDemoPresentationPage'));
 const DailyLeadGenPlanPage = lazy(() => import('@/pages/DailyLeadGenPlanPage'));
 const SocialMediaStrategyPage = lazy(() => import('@/pages/SocialMediaStrategyPage'));
@@ -630,6 +631,7 @@ const AppContent = () => {
                 <Route path="/first-1000-users" element={<First1000UsersPage />} />
                 <Route path="/deal-conversion-pipeline" element={<DealConversionPipelinePage />} />
                 <Route path="/sales-scripts" element={<SalesScriptsPage />} />
+                <Route path="/agent-onboarding-scripts" element={<AgentOnboardingScriptsPage />} />
                 <Route path="/live-demo" element={<LiveDemoPresentationPage />} />
                 <Route path="/daily-lead-gen" element={<DailyLeadGenPlanPage />} />
                 <Route path="/social-media-strategy" element={<SocialMediaStrategyPage />} />
