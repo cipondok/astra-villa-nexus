@@ -1633,6 +1633,13 @@ export const navigationSections = {
       icon: MessageSquare,
       description: "Due diligence question bank with answer focus areas, key data points, and pitfalls to avoid",
       badge: "🎯 Fundraise"
+    },
+    {
+      key: "hiring-roadmap",
+      label: "Hiring Roadmap",
+      icon: Users,
+      description: "First 10 key hires phased across foundation, acceleration, and scale stages",
+      badge: "👥 Team"
     }
   ],
 

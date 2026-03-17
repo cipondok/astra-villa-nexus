@@ -781,4 +781,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "founder-brand-strategy": { label: "Founder Brand Strategy", category: "Features" },
   "equity-allocation-framework": { label: "Equity Allocation Framework", category: "Features" },
   "investor-qa-prep": { label: "Investor Q&A Preparation", category: "Features" },
+  "hiring-roadmap": { label: "Hiring Roadmap", category: "Features" },
 };
