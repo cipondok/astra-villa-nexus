@@ -1,9 +1,13 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, lazy, Suspense } from "react";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AdminSidebar } from "./AdminSidebar";
 import AdminDashboardContent from "./AdminDashboardContent";
 import AdminHeader from "./AdminHeader";
 import { useNavigate } from "react-router-dom";
+import { DemoModeProvider } from "@/contexts/DemoModeContext";
+
+const DemoModeController = lazy(() => import("./demo/DemoModeController"));
+const DemoModeOverlay = lazy(() => import("./demo/DemoModeOverlay"));
 
 const normalizeSection = (section: string | null) => {
   if (!section) return "overview";
