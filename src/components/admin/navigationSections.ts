@@ -1580,6 +1580,12 @@ export const navigationSections = {
 
   help: [
     {
+      key: "help-overview",
+      label: "📊 Help Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all help and documentation modules"
+    },
+    {
       key: "admin-guide",
       label: "Admin Guide & Documentation",
       icon: HelpCircle,
