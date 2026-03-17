@@ -317,6 +317,7 @@ const AppContent = () => {
                 <Route path="/vr-tour" element={<VRTourShowcase />} />
                 <Route path="/blockchain-verification" element={<BlockchainVerification />} />
                 <Route path="/fractional-investment" element={<FractionalInvestmentPage />} />
+                <Route path="/developer-demand-forecast" element={<DeveloperDemandForecastPage />} />
                 <Route path="/properties/:id" element={<PropertyDetail />} />
                 <Route path="/add-property" element={<AddProperty />} />
                 <Route path="/admin" element={<AdminDashboard />} />
