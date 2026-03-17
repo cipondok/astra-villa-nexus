@@ -315,6 +315,7 @@ const AppContent = () => {
                 <Route path="/3d-showcase" element={<Navigate to="/vr-tour" replace />} />
                 <Route path="/vr-tour" element={<VRTourShowcase />} />
                 <Route path="/blockchain-verification" element={<BlockchainVerification />} />
+                <Route path="/fractional-investment" element={<FractionalInvestmentPage />} />
                 <Route path="/properties/:id" element={<PropertyDetail />} />
                 <Route path="/add-property" element={<AddProperty />} />
                 <Route path="/admin" element={<AdminDashboard />} />
