@@ -820,4 +820,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "success-probability-framework": { label: "Success Probability Framework", category: "Features" },
   "risk-mitigation-strategy": { label: "Risk Mitigation Strategy", category: "Features" },
   "ultimate-master-plan": { label: "Ultimate Master Plan", category: "Features" },
+  "ninety-day-roadmap": { label: "90-Day Execution Roadmap", category: "Features" },
 };

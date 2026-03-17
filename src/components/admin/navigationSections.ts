@@ -1727,6 +1727,13 @@ export const navigationSections = {
       icon: Crown,
       description: "Complete AI real estate intelligence platform blueprint — vision, phases, revenue, and execution system",
       badge: "👑 Blueprint"
+    },
+    {
+      key: "ninety-day-roadmap",
+      label: "90-Day Execution Roadmap",
+      icon: CalendarClock,
+      description: "Structured 90-day launch plan balancing product development, marketplace supply, and investor acquisition",
+      badge: "🚀 90 Days"
     }
   ],
 
