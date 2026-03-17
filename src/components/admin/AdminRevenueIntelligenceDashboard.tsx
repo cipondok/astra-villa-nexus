@@ -7,8 +7,9 @@ import { useCurrencyStore, CURRENCY_META } from '@/stores/currencyStore';
 import {
   TrendingUp, TrendingDown, DollarSign, Users, Building2,
   ShoppingBag, CreditCard, MapPin, Award, Loader2, BarChart3,
-  Activity, ArrowUpRight, ArrowDownRight, Minus
+  Activity, ArrowUpRight, ArrowDownRight, Minus, Bell
 } from 'lucide-react';
+import RevenueAlertSettings from './RevenueAlertSettings';
 import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
