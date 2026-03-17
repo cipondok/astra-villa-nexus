@@ -231,6 +231,7 @@ const MobileAlerts = lazy(() => import('@/pages/mobile/MobileAlerts'));
 const FractionalInvestmentPage = lazy(() => import('@/pages/FractionalInvestmentPage'));
 const DeveloperDemandForecastPage = lazy(() => import('@/pages/DeveloperDemandForecastPage'));
 const CrossBorderDiscoveryPage = lazy(() => import('@/pages/CrossBorderDiscoveryPage'));
+const DealHunterBotPage = lazy(() => import('@/pages/DealHunterBotPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
