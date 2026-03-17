@@ -275,6 +275,14 @@ const CompactPropertyCard = ({
                 )}
               </div>
 
+              {/* AI Valuation Hint */}
+              {property.ai_estimated_price && property.ai_estimated_price > 0 && (
+                <div className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg bg-black/40 backdrop-blur-md border border-white/10">
+                  <TrendingUp className="h-2.5 w-2.5 text-chart-2" />
+                  <span className="text-[8px] sm:text-[9px] text-white/80 font-medium">AI fair value insight</span>
+                </div>
+              )
+
               {/* Discount Badge */}
               {property.discount_percentage && property.discount_percentage > 0 && (
                 <div className="inline-flex items-center gap-0.5 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg bg-destructive shadow-lg shadow-destructive/30 animate-pulse ring-1 ring-destructive-foreground/30">
