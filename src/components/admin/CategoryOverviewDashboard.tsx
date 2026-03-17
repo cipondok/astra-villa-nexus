@@ -275,7 +275,7 @@ const GridView: React.FC<{
           </div>
 
           {/* Title */}
-          <span className={cn("text-[10px] font-medium leading-tight line-clamp-2 transition-colors", isHovered ? "text-foreground" : "text-foreground/65")}>
+          <span className={cn("text-[10px] font-medium leading-tight line-clamp-2 transition-colors", isHovered ? "text-foreground" : "text-foreground/85")}>
             {section.label.replace(/^[^\w]*\s/, '')}
           </span>
 
