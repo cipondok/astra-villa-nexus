@@ -91,6 +91,7 @@ const OpportunityStreakCards = lazy(() => import("@/components/home/OpportunityS
 const PWAInstallPrompt = lazy(() => import("@/components/pwa/PWAInstallPrompt"));
 const ExitIntentPopup = lazy(() => import("@/components/home/ExitIntentPopup"));
 const UrgencyTimerStrip = lazy(() => import("@/components/home/UrgencyTimerStrip"));
+const AstraProjectShowcase = lazy(() => import("@/components/home/AstraProjectShowcase"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
