@@ -78,6 +78,7 @@ const TeamKPIFramework = lazy(() => import('./TeamKPIFramework'));
 const WeeklyLeadershipReview = lazy(() => import('./WeeklyLeadershipReview'));
 const CompanyCulturePrinciples = lazy(() => import('./CompanyCulturePrinciples'));
 const FounderDailyRoutine = lazy(() => import('./FounderDailyRoutine'));
+const FounderMentalFramework = lazy(() => import('./FounderMentalFramework'));
 
 interface DynamicAdminContentProps {
   activeSection: string;
