@@ -960,7 +960,7 @@ const Index = () => {
                 <LazyRender minHeight="0px" fallback={null}>
                   <PartnerLogosMarquee />
                 </LazyRender>
-              </div>
+              </SectionWrapper>
 
               {/* ── Trust governance strip ── */}
               <Suspense fallback={null}><TrustFooterStrip /></Suspense>
