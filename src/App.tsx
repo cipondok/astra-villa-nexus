@@ -57,6 +57,7 @@ const PropertyOwnerOnlyRoute = lazy(() => import('@/components/PropertyOwnerOnly
 
 // All pages — lazy loaded for minimum initial bundle
 const Index = lazy(() => import('@/pages/Index'));
+const LandingPage = lazy(() => import('@/pages/LandingPage'));
 const Search = lazy(() => import('@/pages/Search'));
 const ErrorPage = lazy(() => import('@/pages/ErrorPage'));
 const Auth = lazy(() => import('@/pages/Auth'));
