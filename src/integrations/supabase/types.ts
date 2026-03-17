@@ -35268,6 +35268,7 @@ export type Database = {
           verification_status: string
         }[]
       }
+      get_admin_revenue_stats: { Args: never; Returns: Json }
       get_agent_crm_stats: { Args: { p_agent_id: string }; Returns: Json }
       get_agent_performance_intelligence: { Args: never; Returns: Json }
       get_ai_health_metrics: { Args: never; Returns: Json }
@@ -35652,6 +35653,10 @@ export type Database = {
           updated_at: string
           virtual_tour_url: string
         }[]
+      }
+      get_property_investment_report: {
+        Args: { p_property_id: string }
+        Returns: Json
       }
       get_property_statistics_secure: { Args: never; Returns: Json }
       get_property_survey_bookings_for_owner: {
