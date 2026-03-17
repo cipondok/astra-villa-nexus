@@ -98,6 +98,7 @@ export const VisitorAnalytics = lazyRetry(() => import("./VisitorAnalytics"));
 export const BugErrorDashboard = lazyRetry(() => import("./diagnostics/BugErrorDashboard").then((m) => ({ default: m.BugErrorDashboard })));
 export const TestingDashboard = lazyRetry(() => import("./TestingDashboard"));
 export const VIPAnalyticsDashboard = lazyRetry(() => import("./VIPAnalyticsDashboard"));
+export const RolePermissionManager = lazyRetry(() => import("./RolePermissionManager"));
 export const AdminRevenueCommissionDashboard = lazyRetry(() => import("./AdminRevenueCommissionDashboard"));
 export const AdminRevenueIntelligenceDashboard = lazyRetry(() => import("./AdminRevenueIntelligenceDashboard"));
 export const CategoryOverviewDashboard = lazyRetry(() => import("./CategoryOverviewDashboard"));
