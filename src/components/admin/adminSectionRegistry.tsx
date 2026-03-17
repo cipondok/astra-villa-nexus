@@ -99,6 +99,7 @@ export const BugErrorDashboard = lazyRetry(() => import("./diagnostics/BugErrorD
 export const TestingDashboard = lazyRetry(() => import("./TestingDashboard"));
 export const VIPAnalyticsDashboard = lazyRetry(() => import("./VIPAnalyticsDashboard"));
 export const AdminRevenueCommissionDashboard = lazyRetry(() => import("./AdminRevenueCommissionDashboard"));
+export const AdminRevenueIntelligenceDashboard = lazyRetry(() => import("./AdminRevenueIntelligenceDashboard"));
 export const CategoryOverviewDashboard = lazyRetry(() => import("./CategoryOverviewDashboard"));
 export const BookingManagement = lazyRetry(() => import("./BookingManagement"));
 export const AdminRentalManagement = lazyRetry(() => import("./AdminRentalManagement"));
