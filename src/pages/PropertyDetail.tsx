@@ -1360,6 +1360,14 @@ const PropertyDetail: React.FC = () => {
                         <div className="text-[7px] sm:text-[8px] text-muted-foreground">{t('propertyDetail.experience')}</div>
                       </div>
                     </div>
+
+                    {/* Agent Response Time Indicator */}
+                    <div className="flex items-center justify-center gap-1.5 pt-2 mt-2 border-t border-border/20">
+                      <div className="w-1.5 h-1.5 rounded-full bg-chart-2 animate-pulse" />
+                      <span className="text-[9px] text-muted-foreground">
+                        Typically responds within <strong className="text-foreground">2 hours</strong>
+                      </span>
+                    </div>
                   </div>
                 ) : (
                   <div className="space-y-2">
