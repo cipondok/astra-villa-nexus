@@ -96,6 +96,7 @@ const Services = lazy(() => import('@/pages/Services'));
 const ServiceCategory = lazy(() => import('@/pages/ServiceCategory'));
 const ServiceProviderProfile = lazy(() => import('@/pages/ServiceProviderProfile'));
 const LegalServices = lazy(() => import('@/pages/LegalServices'));
+const MyRentalInquiries = lazy(() => import('@/pages/MyRentalInquiries'));
 const PreLaunching = lazy(() => import('@/pages/PreLaunching'));
 const NewProjects = lazy(() => import('@/pages/NewProjects'));
 const AreaGuides = lazy(() => import('@/pages/AreaGuides'));
