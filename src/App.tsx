@@ -232,6 +232,7 @@ const FractionalInvestmentPage = lazy(() => import('@/pages/FractionalInvestment
 const DeveloperDemandForecastPage = lazy(() => import('@/pages/DeveloperDemandForecastPage'));
 const CrossBorderDiscoveryPage = lazy(() => import('@/pages/CrossBorderDiscoveryPage'));
 const DealHunterBotPage = lazy(() => import('@/pages/DealHunterBotPage'));
+const DeveloperCampaignPage = lazy(() => import('@/pages/DeveloperCampaignPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -578,6 +579,7 @@ const AppContent = () => {
                 </Route>
                 <Route path="/cross-border-discovery" element={<CrossBorderDiscoveryPage />} />
                 <Route path="/deal-hunter-bot" element={<DealHunterBotPage />} />
+                <Route path="/developer-campaign" element={<DeveloperCampaignPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
