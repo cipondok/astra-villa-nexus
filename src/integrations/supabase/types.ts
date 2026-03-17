@@ -25307,6 +25307,39 @@ export type Database = {
           },
         ]
       }
+      revenue_alert_config: {
+        Row: {
+          alert_cooldown_hours: number
+          daily_commission_max: number
+          daily_revenue_min: number
+          id: number
+          is_enabled: boolean
+          rental_revenue_min: number
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          alert_cooldown_hours?: number
+          daily_commission_max?: number
+          daily_revenue_min?: number
+          id?: number
+          is_enabled?: boolean
+          rental_revenue_min?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          alert_cooldown_hours?: number
+          daily_commission_max?: number
+          daily_revenue_min?: number
+          id?: number
+          is_enabled?: boolean
+          rental_revenue_min?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       review_reports: {
         Row: {
           admin_notes: string | null
@@ -35046,6 +35079,7 @@ export type Database = {
       check_financial_admin_access: { Args: never; Returns: boolean }
       check_ip_rate_limit: { Args: { p_ip_address: unknown }; Returns: boolean }
       check_is_admin: { Args: never; Returns: boolean }
+      check_revenue_alerts: { Args: never; Returns: undefined }
       check_super_admin_access: { Args: never; Returns: boolean }
       check_super_admin_email: { Args: never; Returns: boolean }
       check_user_reward_eligibility: {
