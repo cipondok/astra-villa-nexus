@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Bell, BellOff, Settings, Check, X, Trash2, 
   TrendingDown, Home, MapPin, Sparkles, Search,
