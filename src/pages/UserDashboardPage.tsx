@@ -345,7 +345,7 @@ const UserDashboardPage = () => {
 
         {/* Dashboard Tabs - Slim */}
         <Tabs defaultValue="overview" className="space-y-2">
-          <TabsList className="grid w-full grid-cols-9 h-8 bg-gold-primary/5 backdrop-blur-xl p-0.5 border border-gold-primary/10">
+          <TabsList className="grid w-full grid-cols-10 h-8 bg-gold-primary/5 backdrop-blur-xl p-0.5 border border-gold-primary/10">
              <TabsTrigger value="overview" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-gold-primary data-[state=active]:text-background data-[state=active]:shadow-sm">
                <Home className="h-3 w-3" />
                <span className="hidden sm:inline">Overview</span>
@@ -377,6 +377,10 @@ const UserDashboardPage = () => {
               <TabsTrigger value="insights" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-gold-primary data-[state=active]:text-background data-[state=active]:shadow-sm">
                 <BarChart3 className="h-3 w-3" />
                 <span className="hidden sm:inline">Insights</span>
+              </TabsTrigger>
+              <TabsTrigger value="retention" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-gold-primary data-[state=active]:text-background data-[state=active]:shadow-sm">
+                <Activity className="h-3 w-3" />
+                <span className="hidden sm:inline">Retention</span>
               </TabsTrigger>
               <TabsTrigger value="rewards" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-gold-primary data-[state=active]:text-background data-[state=active]:shadow-sm">
                 <Zap className="h-3 w-3" />
