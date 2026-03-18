@@ -220,6 +220,7 @@ export const ImageSearchButton = ({
             disabled={isSearching}
             className="p-1 flex items-center justify-center transition-colors disabled:opacity-50 relative group"
             title={isSearching ? "Searching..." : "Change Image"}
+            aria-label={isSearching ? "Searching for similar properties" : "Change search image"}
           >
             {isSearching ? (
               <Loader2 className="h-5 w-5 text-primary animate-spin" />
