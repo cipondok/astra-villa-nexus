@@ -407,6 +407,7 @@ const AppContent = () => {
                 <Route path="/admin/design-system" element={<DesignSystemSettings />} />
                 <Route element={<AdminOnlyRoute />}>
                   <Route path="/admin/ai-performance" element={<AIPerformanceDashboard />} />
+                  <Route path="/admin/listing-review" element={<AdminListingReview />} />
                 </Route>
                 <Route path="/agent-dashboard" element={<AgentDashboard />} />
                 <Route path="/agent-crm" element={<ProtectedRoute />}>
