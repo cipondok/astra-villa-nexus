@@ -847,8 +847,8 @@ const PropertyDetail: React.FC = () => {
           </Card>
         )}
         
-        {/* Image Gallery */}
-        <div className="mb-2 -mx-2 sm:mx-0">
+        {/* Hero Image Gallery with Floating Opportunity Score */}
+        <div className="mb-2 -mx-2 sm:mx-0 relative">
           <EnhancedImageGallery
             images={property.images?.length ? property.images : (property.image_urls?.length ? property.image_urls : [])}
             title={property.title}
@@ -860,7 +860,20 @@ const PropertyDetail: React.FC = () => {
             areaSqm={property.area_sqm}
             location={property.location}
           />
+          {/* Floating Opportunity Score Overlay */}
+          <HeroOpportunityOverlay
+            opportunityScore={(property as any).opportunity_score}
+            aiEstimatedPrice={(property as any).ai_estimated_price}
+            currentPrice={property.price}
+          />
         </div>
+
+        {/* Urgency Signals — social proof immediately after gallery */}
+        <PropertyUrgencySignals
+          propertyId={property.id}
+          createdAt={property.created_at}
+          className="mb-2 px-1"
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4">
           {/* Main Content */}
