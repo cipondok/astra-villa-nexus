@@ -7,6 +7,7 @@ import { useMarketingPerformance, type DailyTrend } from '@/hooks/useMarketingPe
 const ViralCoefficientPanel = lazy(() => import('@/components/marketing/ViralCoefficientPanel'));
 const TransactionLiquidityPanel = lazy(() => import('@/components/marketing/TransactionLiquidityPanel'));
 const DealVelocityPanel = lazy(() => import('@/components/marketing/DealVelocityPanel'));
+const NorthStarPanel = lazy(() => import('@/components/marketing/NorthStarPanel'));
 import { motion } from 'framer-motion';
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
