@@ -37,8 +37,10 @@ import { UserProfileHeader } from "@/components/user/UserProfileHeader";
 import { StickyHeaderSearch } from "@/components/search/StickyHeaderSearch";
 import LazyRender from "@/components/LazyRender";
 import ScrollReveal from "@/components/ui/ScrollReveal";
+import StaggeredReveal from "@/components/ui/StaggeredReveal";
 import SectionErrorBoundary from "@/components/ui/SectionErrorBoundary";
 import SectionWrapper from "@/components/ui/SectionWrapper";
+import { useParallax } from "@/hooks/useParallax";
 
 
 // Lazy load heavy components for better performance
