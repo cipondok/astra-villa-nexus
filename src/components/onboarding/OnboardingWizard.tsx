@@ -138,6 +138,8 @@ const OnboardingWizard = ({ isOpen, onClose, initialUserType }: OnboardingWizard
         return ["25 ASTRA Tokens", "KPR Calculator Access", "AI Property Assistant"];
       case "renter":
         return ["25 ASTRA Tokens", "Priority Viewing", "Quick Apply Profile"];
+      case "investor":
+        return ["50 ASTRA Tokens", "AI Portfolio Dashboard", "Smart Deal Alerts"];
       default:
         return [];
     }
