@@ -152,12 +152,27 @@ const AnalyticsPanel = memo<{
                             className="h-3 w-3 rounded border-border accent-primary"
                           />
                           <span className="text-xs font-semibold text-foreground truncate">{zone.city}</span>
+                          {zone.trend_signal === 'rising' && <TrendingUp className="h-2.5 w-2.5 text-chart-2 shrink-0" />}
+                          {zone.trend_signal === 'declining' && <TrendingDown className="h-2.5 w-2.5 text-destructive shrink-0" />}
                         </div>
                         <div className="flex items-center gap-2 mt-1">
                           <Badge variant="outline" className={cn("text-[9px] px-1.5 py-0", badge.className)}>
                             {badge.label}
                           </Badge>
                           <span className="text-[10px] text-muted-foreground">{zone.count} listings</span>
+                        </div>
+                        {/* Rental yield + price growth row */}
+                        <div className="flex items-center gap-3 mt-1">
+                          {zone.avg_rental_yield != null && (
+                            <span className="text-[9px] text-muted-foreground flex items-center gap-0.5">
+                              <DollarSign className="h-2.5 w-2.5" />Yield {zone.avg_rental_yield.toFixed(1)}%
+                            </span>
+                          )}
+                          {zone.price_growth_pct != null && (
+                            <span className={cn("text-[9px] flex items-center gap-0.5", zone.price_growth_pct >= 0 ? "text-chart-2" : "text-destructive")}>
+                              <Activity className="h-2.5 w-2.5" />{zone.price_growth_pct >= 0 ? '+' : ''}{zone.price_growth_pct.toFixed(1)}%
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div className="text-right shrink-0">
