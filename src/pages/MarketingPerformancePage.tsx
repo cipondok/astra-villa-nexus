@@ -241,6 +241,7 @@ export default function MarketingPerformancePage() {
             <TabsTrigger value="velocity">Deal Velocity</TabsTrigger>
             <TabsTrigger value="viral">Viral Growth</TabsTrigger>
             <TabsTrigger value="northstar">⭐ North Star</TabsTrigger>
+            <TabsTrigger value="ltv">Investor LTV</TabsTrigger>
           </TabsList>
 
           <TabsContent value="trends">
