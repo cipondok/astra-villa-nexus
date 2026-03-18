@@ -99,6 +99,8 @@ import { usePropertyMatchScore } from '@/hooks/usePropertyMatchScore';
 const PropertyNeighborhoodInsights = lazy(() => import('@/components/property/PropertyNeighborhoodInsights'));
 const PropertyChatbot = lazy(() => import('@/components/property/PropertyChatbot'));
 const InvestorFunnelCTA = lazy(() => import('@/components/transaction/InvestorFunnelCTA'));
+import HeroOpportunityOverlay from '@/components/property/HeroOpportunityOverlay';
+import PropertyUrgencySignals from '@/components/property/PropertyUrgencySignals';
 const MakeOfferDialog = lazy(() => import('@/components/offers/MakeOfferDialog'));
 const PropertyInvestmentDashboard = lazy(() => import('@/components/property/PropertyInvestmentDashboard'));
 import { formatDistanceToNow } from 'date-fns';
@@ -845,8 +847,8 @@ const PropertyDetail: React.FC = () => {
           </Card>
         )}
         
-        {/* Image Gallery */}
-        <div className="mb-2 -mx-2 sm:mx-0">
+        {/* Hero Image Gallery with Floating Opportunity Score */}
+        <div className="mb-2 -mx-2 sm:mx-0 relative">
           <EnhancedImageGallery
             images={property.images?.length ? property.images : (property.image_urls?.length ? property.image_urls : [])}
             title={property.title}
@@ -858,7 +860,20 @@ const PropertyDetail: React.FC = () => {
             areaSqm={property.area_sqm}
             location={property.location}
           />
+          {/* Floating Opportunity Score Overlay */}
+          <HeroOpportunityOverlay
+            opportunityScore={(property as any).opportunity_score}
+            aiEstimatedPrice={(property as any).ai_estimated_price}
+            currentPrice={property.price}
+          />
         </div>
+
+        {/* Urgency Signals — social proof immediately after gallery */}
+        <PropertyUrgencySignals
+          propertyId={property.id}
+          createdAt={property.created_at}
+          className="mb-2 px-1"
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4">
           {/* Main Content */}
@@ -1090,6 +1105,18 @@ const PropertyDetail: React.FC = () => {
                 </Tabs>
               </CardContent>
             </Card>
+            </ScrollReveal>
+
+            {/* ─── INVESTMENT INSIGHT PANEL ─── Promoted to position #2 for conversion */}
+            <ScrollReveal direction="up" delay={80}>
+              <Suspense fallback={null}>
+                <PropertyInvestmentDashboard
+                  propertyId={property.id}
+                  currentPrice={property.price}
+                  city={property.city}
+                  propertyType={property.property_type}
+                />
+              </Suspense>
             </ScrollReveal>
 
             {/* Neighborhood Insights */}
@@ -1411,15 +1438,7 @@ const PropertyDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* AI Property Valuation & ROI Forecast — Investment Dashboard */}
-        <Suspense fallback={null}>
-          <PropertyInvestmentDashboard
-            propertyId={property.id}
-            currentPrice={property.price}
-            city={property.city}
-            propertyType={property.property_type}
-          />
-        </Suspense>
+        {/* Investment Dashboard moved up into main content column for prominence */}
 
         {/* Reviews Section */}
         <ScrollReveal direction="up" delay={0}>
