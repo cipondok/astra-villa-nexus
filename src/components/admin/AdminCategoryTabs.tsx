@@ -145,7 +145,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
         {'badge' in section && section.badge && (
           <span
             className={cn(
-              "text-[7px] px-1 py-0 h-3 leading-[12px] rounded font-semibold inline-block",
+              "text-[8px] px-1 py-0 h-3 leading-[12px] rounded font-semibold inline-block",
               isActive
                 ? "bg-[hsl(var(--panel-accent)/.15)] text-[hsl(var(--panel-accent))]"
                 : String(section.badge) === 'New'
@@ -161,7 +161,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
   };
 
   return (
-    <div className="mb-2 sticky top-0 z-40 animate-in fade-in slide-in-from-top-1 duration-200">
+    <div className="mb-2 sticky top-0 z-30 animate-in fade-in slide-in-from-top-1 duration-200">
       <div
         className="bg-[hsl(var(--panel-bg))] border border-[hsl(var(--panel-border))] rounded-lg overflow-hidden"
         style={{ boxShadow: 'var(--panel-shadow)' }}
@@ -177,7 +177,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
           <span className="text-[11px] font-bold tracking-wide uppercase text-[hsl(var(--panel-text))]">{categoryTitle}</span>
           <div className="ml-auto flex items-center gap-1.5">
             <span className="h-1 w-1 rounded-full bg-[hsl(var(--panel-success))] animate-pulse" />
-            <span className="text-[8px] px-1.5 py-0 h-3.5 leading-[14px] rounded bg-[hsl(var(--panel-border)/.4)] text-[hsl(var(--panel-text-muted))] font-mono">
+            <span className="text-[9px] px-1.5 py-0 h-3.5 leading-[14px] rounded bg-[hsl(var(--panel-border)/.4)] text-[hsl(var(--panel-text-secondary))] font-mono">
               {categorySections.length}
             </span>
           </div>

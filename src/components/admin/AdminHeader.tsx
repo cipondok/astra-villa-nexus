@@ -187,7 +187,7 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
               >
                 <Bell className="h-4 w-4" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-destructive rounded-full flex items-center justify-center text-[10px] text-destructive-foreground font-bold">
+                  <span className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-destructive rounded-full flex items-center justify-center text-[10px] text-destructive-foreground font-bold overflow-hidden">
                     <span className="absolute inset-0 rounded-full bg-destructive animate-ping opacity-60" />
                     <span className="relative">{unreadCount}</span>
                   </span>

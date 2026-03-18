@@ -18,7 +18,7 @@ export const AdminBreadcrumb = React.memo(function AdminBreadcrumb({ activeSecti
       const found = sections?.find((s) => s.key === activeSection);
       if (found) {
         categoryName = sectionTitles[category as keyof typeof sectionTitles];
-        categoryFirstSection = sections?.[0]?.key || '';
+        categoryFirstSection = `${category}-overview`;
         sectionInfo = found;
         break;
       }

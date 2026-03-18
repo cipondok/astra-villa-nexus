@@ -181,7 +181,7 @@ const ListView: React.FC<{
     <div className="grid grid-cols-[1fr_auto] sm:grid-cols-[1fr_80px_auto] px-3 py-1.5 border-b border-[hsl(var(--panel-border))] bg-[hsl(var(--panel-hover)/.5)]">
       <span className="text-[8px] font-medium uppercase tracking-[0.12em] text-[hsl(var(--panel-text-muted))]">Module</span>
       <span className="hidden sm:block text-[8px] font-medium uppercase tracking-[0.12em] text-[hsl(var(--panel-text-muted))]">Status</span>
-      <span className="text-[8px] font-medium uppercase tracking-[0.12em] text-[hsl(var(--panel-text-muted))] text-right pr-1">→</span>
+      <span className="text-[8px] font-medium uppercase tracking-[0.12em] text-[hsl(var(--panel-text-muted))] text-right pr-1">Action</span>
     </div>
     <div className="divide-y divide-[hsl(var(--panel-border-subtle))]">
       {sections.map((section) => {
@@ -306,7 +306,7 @@ const GridView: React.FC<{
           </span>
 
           {/* Short description */}
-          <span className="text-[8px] text-[hsl(var(--panel-text-muted))] leading-tight line-clamp-2 max-w-[120px]">
+          <span className="text-[8px] text-[hsl(var(--panel-text-muted))] leading-tight line-clamp-2 max-w-[140px]">
             {section.description?.slice(0, 40)}{section.description?.length > 40 ? '…' : ''}
           </span>
 
