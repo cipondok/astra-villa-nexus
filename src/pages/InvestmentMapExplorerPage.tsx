@@ -28,6 +28,7 @@ import {
   Layers,
   MapPin,
   TrendingUp,
+  TrendingDown,
   Flame,
   BarChart3,
   X,
@@ -41,6 +42,10 @@ import {
   ArrowLeftRight,
   Eye,
   Sparkles,
+  Clock,
+  Calendar,
+  DollarSign,
+  Activity,
 } from "lucide-react";
 
 const MAPBOX_TOKEN = "pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbTN1eGo4eXAwMWV4MnFzYTNwaTgzZnN0In0.JfxWbLcAYW83y5b-A5hLUQ";
