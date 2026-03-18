@@ -42,8 +42,7 @@ export default function CompanyDashboardPage() {
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="h-40 rounded-xl bg-muted/30 animate-pulse" />
           ))}
-        </div>
-      </>
+      </div>
     );
   }
 
