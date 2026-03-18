@@ -20,6 +20,7 @@ import { BaseProperty } from '@/types/property';
 import PropertyTrustBadges from './PropertyTrustBadges';
 import UserStatusBadge from '@/components/ui/UserStatusBadge';
 import SharePropertyButton from './SharePropertyButton';
+import OpportunityShareModal from './OpportunityShareModal';
 import VIPLevelBadge from '@/components/ui/VIPLevelBadge';
 
 interface CompactProperty {
