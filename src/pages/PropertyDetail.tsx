@@ -100,6 +100,7 @@ const PropertyNeighborhoodInsights = lazy(() => import('@/components/property/Pr
 const PropertyChatbot = lazy(() => import('@/components/property/PropertyChatbot'));
 const InvestorFunnelCTA = lazy(() => import('@/components/transaction/InvestorFunnelCTA'));
 const MakeOfferDialog = lazy(() => import('@/components/offers/MakeOfferDialog'));
+const PropertyInvestmentDashboard = lazy(() => import('@/components/property/PropertyInvestmentDashboard'));
 import { formatDistanceToNow } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 
