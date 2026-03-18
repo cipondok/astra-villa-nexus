@@ -114,7 +114,7 @@ export function useInvestorLTV() {
       // Build per-user commission map
       const userMap = new Map<string, { revenue: number; deals: number; firstDeal: string }>();
       for (const c of commissions) {
-        const uid = c.agent_id;
+        const uid = c.seller_id;
         if (!uid) continue;
         const existing = userMap.get(uid) || { revenue: 0, deals: 0, firstDeal: c.created_at };
         existing.revenue += c.commission_amount || 0;
