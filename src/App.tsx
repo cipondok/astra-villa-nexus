@@ -291,6 +291,7 @@ const CityExpansionPage = lazy(() => import('@/pages/CityExpansionPage'));
 const EcosystemPartnershipsPage = lazy(() => import('@/pages/EcosystemPartnershipsPage'));
 const MarketingPerformancePage = lazy(() => import('@/pages/MarketingPerformancePage'));
 const CompanyDashboardPage = lazy(() => import('@/pages/CompanyDashboardPage'));
+const ExecutiveKPIsPage = lazy(() => import('@/pages/ExecutiveKPIsPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -669,6 +670,7 @@ const AppContent = () => {
                 <Route path="/daily-growth-monitor" element={<DailyGrowthMonitorPage />} />
                 <Route path="/marketing-performance" element={<MarketingPerformancePage />} />
                 <Route path="/company-dashboard" element={<CompanyDashboardPage />} />
+                <Route path="/executive-kpis" element={<ExecutiveKPIsPage />} />
                 <Route path="/negotiation-psychology" element={<NegotiationPsychologyPage />} />
                 <Route path="/hnw-investor-strategy" element={<HNWInvestorStrategyPage />} />
                 <Route path="/brand-trust-strategy" element={<BrandTrustStrategyPage />} />
