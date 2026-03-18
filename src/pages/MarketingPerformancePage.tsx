@@ -236,6 +236,7 @@ export default function MarketingPerformancePage() {
             <TabsTrigger value="channels">Channel Breakdown</TabsTrigger>
             <TabsTrigger value="spend">Budget Allocation</TabsTrigger>
             <TabsTrigger value="liquidity">Transaction Liquidity</TabsTrigger>
+            <TabsTrigger value="velocity">Deal Velocity</TabsTrigger>
             <TabsTrigger value="viral">Viral Growth</TabsTrigger>
           </TabsList>
 
