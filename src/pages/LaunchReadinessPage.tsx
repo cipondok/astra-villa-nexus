@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { RadialBarChart, RadialBar, ResponsiveContainer } from 'recharts';
-import { useLaunchReadiness, type CheckSection, type CheckItem, type CheckStatus } from '@/hooks/useLaunchReadiness';
+import { useLaunchChecklist, type CheckSection, type CheckItem, type CheckStatus } from '@/hooks/useLaunchChecklist';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { useState } from 'react';
