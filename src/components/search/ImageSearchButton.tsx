@@ -190,6 +190,7 @@ export const ImageSearchButton = ({
           disabled={isSearching}
           className="p-1 flex items-center justify-center transition-colors disabled:opacity-50 relative group"
           title="Image Search"
+          aria-label="Search by image"
         >
           <Camera className="h-5 w-5 text-primary dark:text-primary" />
           {showPulse && (
