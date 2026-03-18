@@ -1438,15 +1438,7 @@ const PropertyDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* AI Property Valuation & ROI Forecast — Investment Dashboard */}
-        <Suspense fallback={null}>
-          <PropertyInvestmentDashboard
-            propertyId={property.id}
-            currentPrice={property.price}
-            city={property.city}
-            propertyType={property.property_type}
-          />
-        </Suspense>
+        {/* Investment Dashboard moved up into main content column for prominence */}
 
         {/* Reviews Section */}
         <ScrollReveal direction="up" delay={0}>
