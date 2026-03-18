@@ -466,6 +466,28 @@ const FilterBar = memo<{
         </div>
       </div>
 
+      {/* Trend view toggle */}
+      <div className="flex gap-1 bg-background/90 backdrop-blur-xl rounded-lg border border-border/50 p-1 shadow-lg">
+        <Button
+          variant={filters.trend_view !== 'long_term' ? "default" : "ghost"}
+          size="sm"
+          className="h-7 text-[10px] gap-1 px-2"
+          onClick={() => setFilters({ ...filters, trend_view: 'short_term' })}
+        >
+          <Clock className="h-3 w-3" />
+          <span className="hidden sm:inline">Short-Term</span>
+        </Button>
+        <Button
+          variant={filters.trend_view === 'long_term' ? "default" : "ghost"}
+          size="sm"
+          className="h-7 text-[10px] gap-1 px-2"
+          onClick={() => setFilters({ ...filters, trend_view: 'long_term' })}
+        >
+          <Calendar className="h-3 w-3" />
+          <span className="hidden sm:inline">Long-Term</span>
+        </Button>
+      </div>
+
       {/* Filter toggle */}
       <Button
         variant="secondary"
