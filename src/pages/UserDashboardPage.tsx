@@ -373,10 +373,14 @@ const UserDashboardPage = () => {
                <Share2 className="h-3 w-3" />
                <span className="hidden sm:inline">Referrals</span>
              </TabsTrigger>
-             <TabsTrigger value="insights" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-gold-primary data-[state=active]:text-background data-[state=active]:shadow-sm">
-               <BarChart3 className="h-3 w-3" />
-               <span className="hidden sm:inline">Insights</span>
-             </TabsTrigger>
+              <TabsTrigger value="insights" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-gold-primary data-[state=active]:text-background data-[state=active]:shadow-sm">
+                <BarChart3 className="h-3 w-3" />
+                <span className="hidden sm:inline">Insights</span>
+              </TabsTrigger>
+              <TabsTrigger value="rewards" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-gold-primary data-[state=active]:text-background data-[state=active]:shadow-sm">
+                <Zap className="h-3 w-3" />
+                <span className="hidden sm:inline">Rewards</span>
+              </TabsTrigger>
            </TabsList>
 
           <TabsContent value="overview" className="space-y-2 mt-2">
