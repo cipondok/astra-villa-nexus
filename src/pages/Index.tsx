@@ -537,6 +537,9 @@ const Index = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Parallax for hero background
+  const { ref: parallaxRef, offset: parallaxOffset } = useParallax(0.35);
+
   // Mobile-first responsive layout wrapper
   const content = (
     <div className="min-h-screen w-full overflow-x-hidden text-foreground relative bg-background" {...pullHandlers}>
