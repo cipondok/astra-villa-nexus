@@ -41,7 +41,7 @@ const CenterActivityColumn = React.memo(function CenterActivityColumn({
   }, []);
 
   return (
-    <div className="col-span-12 md:col-span-6 space-y-3">
+    <div className="col-span-12 md:col-span-5 space-y-3">
       <SectionErrorBoundary sectionName="Traffic & Activity">
         {/* Live Traffic Chart */}
         <Card className="border-border bg-card">

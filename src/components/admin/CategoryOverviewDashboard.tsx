@@ -306,7 +306,7 @@ const GridView: React.FC<{
           </span>
 
           {/* Short description */}
-          <span className="text-[8px] text-[hsl(var(--panel-text-muted))] leading-tight line-clamp-2 max-w-[120px]">
+          <span className="text-[8px] text-[hsl(var(--panel-text-muted))] leading-tight line-clamp-2 max-w-[140px]">
             {section.description?.slice(0, 40)}{section.description?.length > 40 ? '…' : ''}
           </span>
 
