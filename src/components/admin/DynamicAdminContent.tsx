@@ -23,6 +23,7 @@ import PaymentGatewaySetup from "./PaymentGatewaySetup";
 import AdminPropertyManagement from "./AdminPropertyManagement";
 import LocationManagement from "./LocationManagement";
 import SystemToolsDashboard from "./SystemToolsDashboard";
+import SystemErrorSettings from "./SystemErrorSettings";
 import MediaGallery from "./MediaGallery";
 import TransactionManagementTabs from "./TransactionManagementTabs";
 import WelcomeScreenSettings from "./WelcomeScreenSettings";
@@ -174,6 +175,8 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return <SystemToolsDashboard />;
       case "error-logs":
         return <SystemToolsDashboard />;
+      case "system-error-settings":
+        return <SystemErrorSettings />;
       case "image-optimization":
         return <ImageOptimizationPanel />;
       case "welcome-screen-settings":
