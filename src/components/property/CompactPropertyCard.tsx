@@ -253,12 +253,14 @@ const CompactPropertyCard = ({
                 <ViewIcon className="h-3 sm:h-3.5 w-3 sm:w-3.5" />
               </Button>
             )}
-            <SharePropertyButton
-              propertyId={property.id}
-              propertyTitle={property.title}
-              propertyPrice={property.price}
-              propertyLocation={property.location}
-            />
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-6 w-6 sm:h-7 sm:w-7 p-0 bg-black/30 backdrop-blur-md hover:bg-black/50 text-white rounded-full border border-white/20"
+              onClick={(e) => { e.stopPropagation(); setShowShareModal(true); }}
+            >
+              <Share2 className="h-3 sm:h-3.5 w-3 sm:w-3.5" />
+            </Button>
             <PropertyComparisonButton property={convertedProperty} />
           </div>
 
