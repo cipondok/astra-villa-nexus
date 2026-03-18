@@ -17,8 +17,6 @@ import {
   FileText,
   HelpCircle,
   DollarSign,
-  ChevronDown,
-  ChevronUp,
   type LucideIcon 
 } from 'lucide-react';
 
@@ -55,7 +53,7 @@ const categoryAccent: Record<string, string> = {
   help: "--panel-text-secondary",
 };
 
-const VISIBLE_COUNT = 6;
+const VISIBLE_COUNT = Infinity;
 const STORAGE_KEY = 'admin-tab-visit-history';
 
 function getVisitHistory(): Record<string, number> {
@@ -81,7 +79,6 @@ interface AdminCategoryTabsProps {
 }
 
 export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCategoryTabsProps) {
-  const [expanded, setExpanded] = useState(false);
   const [visitHistory, setVisitHistory] = useState<Record<string, number>>(getVisitHistory);
 
   useEffect(() => {
@@ -128,9 +125,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
   const accentVar = categoryAccent[activeCategory] || "--panel-accent";
   const categoryTitle = sectionTitles[activeCategory as keyof typeof sectionTitles] || activeCategory;
 
-  const visibleSections = expanded ? sortedSections : sortedSections.slice(0, VISIBLE_COUNT);
-  const hiddenCount = sortedSections.length - VISIBLE_COUNT;
-  const hasMore = sortedSections.length > VISIBLE_COUNT;
+  const visibleSections = sortedSections;
 
   const renderTab = (section: typeof categorySections[0], isActive: boolean) => {
     const Icon = section.icon;
@@ -188,57 +183,21 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
           </div>
         </div>
 
-        {/* Mobile: horizontal scroll with top 6 */}
+        {/* Mobile: horizontal scroll */}
         <ScrollArea className="w-full md:hidden">
           <div className="flex items-center gap-1 p-1.5">
             {visibleSections.map((section) =>
               renderTab(section, section.key === activeSection)
             )}
-            {hasMore && !expanded && (
-              <button
-                onClick={() => setExpanded(true)}
-                className="flex items-center gap-1 px-2 py-1.5 rounded-md text-[10px] font-medium text-[hsl(var(--panel-text-muted))] hover:text-[hsl(var(--panel-text))] hover:bg-[hsl(var(--panel-hover))] border border-dashed border-[hsl(var(--panel-border))] whitespace-nowrap shrink-0 transition-colors"
-              >
-                <ChevronDown className="h-3 w-3" />
-                +{hiddenCount}
-              </button>
-            )}
-            {expanded && hasMore && (
-              <button
-                onClick={() => setExpanded(false)}
-                className="flex items-center gap-1 px-2 py-1.5 rounded-md text-[10px] font-medium text-[hsl(var(--panel-accent))] hover:bg-[hsl(var(--panel-accent)/.08)] whitespace-nowrap shrink-0 transition-colors"
-              >
-                <ChevronUp className="h-3 w-3" />
-                Less
-              </button>
-            )}
           </div>
           <ScrollBar orientation="horizontal" className="h-1" />
         </ScrollArea>
 
-        {/* Desktop: show top 6, expandable */}
+        {/* Desktop: all tabs wrapped */}
         <div className="hidden md:block p-1.5">
           <div className="flex flex-wrap items-center gap-1">
             {visibleSections.map((section) =>
               renderTab(section, section.key === activeSection)
-            )}
-            {hasMore && !expanded && (
-              <button
-                onClick={() => setExpanded(true)}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[10px] font-medium text-[hsl(var(--panel-text-muted))] hover:text-[hsl(var(--panel-text))] hover:bg-[hsl(var(--panel-hover))] border border-dashed border-[hsl(var(--panel-border))] transition-colors"
-              >
-                <ChevronDown className="h-3 w-3" />
-                +{hiddenCount} more
-              </button>
-            )}
-            {expanded && hasMore && (
-              <button
-                onClick={() => setExpanded(false)}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[10px] font-medium text-[hsl(var(--panel-accent))] hover:bg-[hsl(var(--panel-accent)/.08)] transition-colors"
-              >
-                <ChevronUp className="h-3 w-3" />
-                Show less
-              </button>
             )}
           </div>
         </div>
