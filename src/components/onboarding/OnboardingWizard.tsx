@@ -25,6 +25,7 @@ import LandlordOnboarding from "./flows/LandlordOnboarding";
 import AgentOnboarding from "./flows/AgentOnboarding";
 import BuyerOnboarding from "./flows/BuyerOnboarding";
 import RenterOnboarding from "./flows/RenterOnboarding";
+import InvestorOnboarding from "./flows/InvestorOnboarding";
 import OnboardingComplete from "./OnboardingComplete";
 
 export type UserType = "homeowner" | "landlord" | "agent" | "buyer" | "renter" | null;
