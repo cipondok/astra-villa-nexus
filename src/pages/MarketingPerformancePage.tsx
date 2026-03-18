@@ -233,6 +233,7 @@ export default function MarketingPerformancePage() {
             <TabsTrigger value="trends">Performance Trends</TabsTrigger>
             <TabsTrigger value="channels">Channel Breakdown</TabsTrigger>
             <TabsTrigger value="spend">Budget Allocation</TabsTrigger>
+            <TabsTrigger value="viral">Viral Growth</TabsTrigger>
           </TabsList>
 
           <TabsContent value="trends">
