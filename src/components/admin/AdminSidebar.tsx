@@ -69,8 +69,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
       onSectionChange('overview');
       setOpenCategory(null);
     } else {
-      // Navigate to category overview dashboard
-      onSectionChange(`${category}-overview`);
+      // Only toggle the flyout — don't navigate yet
       setOpenCategory(prev => prev === category ? null : category);
     }
   }, [onSectionChange]);
