@@ -1019,6 +1019,7 @@ const PropertyDetail: React.FC = () => {
                   />
                 </div>
               </CardContent>
+            </Card>
             </ScrollReveal>
 
             {/* Property Details Tabs - Slim */}
