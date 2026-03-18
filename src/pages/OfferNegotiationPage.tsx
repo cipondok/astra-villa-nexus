@@ -480,7 +480,7 @@ export default function OfferNegotiationPage() {
             {offer.counter_price && (
               <div className="flex items-center justify-between">
                 <span className="text-xs text-muted-foreground">Counter Price</span>
-                <span className="text-sm font-bold text-purple-500">{formatPrice(offer.counter_price)}</span>
+                <span className="text-sm font-bold text-accent-foreground">{formatPrice(offer.counter_price)}</span>
               </div>
             )}
             {offer.property_original_price && (
