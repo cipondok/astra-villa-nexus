@@ -147,7 +147,7 @@ const Navigation = () => {
         style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
       >
         <div className="w-full mx-auto px-1.5 sm:px-3 lg:px-4">
-          <div className="flex items-center justify-between gap-2 h-12 md:h-13 lg:h-14">
+          <div className={cn("flex items-center justify-between gap-2 transition-all duration-700", scrolled && pastHero ? "h-11 md:h-12 lg:h-13" : "h-12 md:h-13 lg:h-14")}>
             {/* Logo */}
             <div className="flex items-center cursor-pointer group flex-shrink-0 -ml-1" onClick={() => navigate('/')}>
               {hasCustomLogo ? (
