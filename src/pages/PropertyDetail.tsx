@@ -99,6 +99,8 @@ import { usePropertyMatchScore } from '@/hooks/usePropertyMatchScore';
 const PropertyNeighborhoodInsights = lazy(() => import('@/components/property/PropertyNeighborhoodInsights'));
 const PropertyChatbot = lazy(() => import('@/components/property/PropertyChatbot'));
 const InvestorFunnelCTA = lazy(() => import('@/components/transaction/InvestorFunnelCTA'));
+import HeroOpportunityOverlay from '@/components/property/HeroOpportunityOverlay';
+import PropertyUrgencySignals from '@/components/property/PropertyUrgencySignals';
 const MakeOfferDialog = lazy(() => import('@/components/offers/MakeOfferDialog'));
 const PropertyInvestmentDashboard = lazy(() => import('@/components/property/PropertyInvestmentDashboard'));
 import { formatDistanceToNow } from 'date-fns';
