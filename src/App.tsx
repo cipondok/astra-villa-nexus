@@ -295,6 +295,7 @@ const ExecutiveKPIsPage = lazy(() => import('@/pages/ExecutiveKPIsPage'));
 const ScalingRoadmapPage = lazy(() => import('@/pages/ScalingRoadmapPage'));
 const ExecutionRoadmapPage = lazy(() => import('@/pages/ExecutionRoadmapPage'));
 const FeaturePrioritizationPage = lazy(() => import('@/pages/FeaturePrioritizationPage'));
+const LaunchReadinessPage = lazy(() => import('@/pages/LaunchReadinessPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
