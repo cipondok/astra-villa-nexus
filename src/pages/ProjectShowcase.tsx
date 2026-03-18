@@ -486,16 +486,24 @@ const ProjectShowcase = () => {
           </TabsContent>
         </Tabs>
 
-        {/* CTA */}
+        {/* Sticky Dual CTA */}
         <div className="sticky bottom-0 bg-background/95 backdrop-blur-sm border-t border-border/40 p-4 -mx-4">
-          <div className="flex gap-2 max-w-4xl mx-auto">
-            <div className="flex-1">
+          <div className="flex gap-2 max-w-4xl mx-auto items-center">
+            <div className="flex-1 min-w-0">
               <p className="text-[10px] text-muted-foreground">Mulai dari</p>
               <p className="text-base font-bold text-primary">
                 {project.price_range_min ? formatIDR(project.price_range_min) : '—'}
               </p>
             </div>
-            <div className="w-48">
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-xl h-10 text-[11px] gap-1.5 border-primary/30 text-primary hover:bg-primary/5 shrink-0"
+              onClick={() => navigate(`/schedule-viewing?project=${project.id}`)}
+            >
+              <CalendarClock className="h-3.5 w-3.5" /> Consultation
+            </Button>
+            <div className="w-40 shrink-0">
               <RegisterInterestForm project={project} />
             </div>
           </div>
