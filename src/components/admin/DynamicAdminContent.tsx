@@ -175,6 +175,8 @@ const DynamicAdminContent = ({ activeSection, onSectionChange }: DynamicAdminCon
         return <SystemToolsDashboard />;
       case "error-logs":
         return <SystemToolsDashboard />;
+      case "system-error-settings":
+        return <SystemErrorSettings />;
       case "image-optimization":
         return <ImageOptimizationPanel />;
       case "welcome-screen-settings":
