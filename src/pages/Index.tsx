@@ -72,6 +72,9 @@ const AnimatedStatsCounter = lazy(() => import("@/components/home/AnimatedStatsC
 const TestimonialsCarousel = lazy(() => import("@/components/home/TestimonialsCarousel"));
 const MapPreviewTeaser = lazy(() => import("@/components/home/MapPreviewTeaser"));
 const NewsletterBanner = lazy(() => import("@/components/home/NewsletterBanner"));
+const QuickActionsRow = lazy(() => import("@/components/home/QuickActionsRow"));
+const MarketHeatHighlight = lazy(() => import("@/components/home/MarketHeatHighlight"));
+const AIInvestmentFeed = lazy(() => import("@/components/home/AIInvestmentFeed"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -796,24 +799,17 @@ const Index = () => {
                DISCOVERY FLOW — Structured scroll journey
             ══════════════════════════════════════════════════ */
             <>
-              {/* ── SECTION 1: ASTRA Project Showcase (flagship) ── */}
-              <SectionWrapper variant="accent" className="py-3 sm:py-4" id="featured-section">
-                <ScrollReveal direction="up" delay={0}>
-                  <Suspense fallback={<div className="animate-pulse h-60 bg-muted rounded-xl max-w-7xl mx-auto px-4 sm:px-6" />}>
-                    <AstraProjectShowcase />
+              {/* ── SECTION 1: Quick Actions Row — Immediate engagement shortcuts ── */}
+              <SectionWrapper variant="default" className="py-2 sm:py-3" id="featured-section">
+                <div className="max-w-7xl mx-auto px-3 sm:px-4">
+                  <Suspense fallback={null}>
+                    <QuickActionsRow />
                   </Suspense>
-                </ScrollReveal>
+                </div>
               </SectionWrapper>
 
-              {/* ── Stats Counter Strip ── */}
-              <SectionWrapper variant="default">
-                <Suspense fallback={null}>
-                  <AnimatedStatsCounter />
-                </Suspense>
-              </SectionWrapper>
-
-              {/* ── SECTION 2: Featured Properties Carousel ── */}
-              <SectionWrapper variant="muted">
+              {/* ── SECTION 2: Elite Opportunity Carousel — Premium listings ── */}
+              <SectionWrapper variant="muted" className="py-3 sm:py-4">
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={
                     <div className="py-4 max-w-7xl mx-auto px-3 sm:px-4">
@@ -835,7 +831,38 @@ const Index = () => {
                 </ScrollReveal>
               </SectionWrapper>
 
-              {/* ── SECTION 3: AI Opportunity Zone (simplified) ── */}
+              {/* ── SECTION 3: Market Heat + ASTRA Showcase (side-by-side on desktop) ── */}
+              <SectionWrapper variant="default" className="py-3 sm:py-4">
+                <div className="max-w-7xl mx-auto px-3 sm:px-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+                    {/* Market Heat Highlight — compact insight card */}
+                    <div className="lg:col-span-2">
+                      <ScrollReveal direction="left" delay={0}>
+                        <Suspense fallback={<div className="h-48 bg-muted/50 rounded-2xl animate-pulse" />}>
+                          <MarketHeatHighlight />
+                        </Suspense>
+                      </ScrollReveal>
+                    </div>
+                    {/* ASTRA Project Showcase */}
+                    <div className="lg:col-span-3">
+                      <ScrollReveal direction="right" delay={50}>
+                        <Suspense fallback={<div className="animate-pulse h-48 bg-muted rounded-xl" />}>
+                          <AstraProjectShowcase />
+                        </Suspense>
+                      </ScrollReveal>
+                    </div>
+                  </div>
+                </div>
+              </SectionWrapper>
+
+              {/* ── Stats Counter Strip ── */}
+              <SectionWrapper variant="muted">
+                <Suspense fallback={null}>
+                  <AnimatedStatsCounter />
+                </Suspense>
+              </SectionWrapper>
+
+              {/* ── SECTION 4: Personalized AI Feed — Sorted by opportunity score + DNA match ── */}
               <SectionWrapper variant="default" id="ai-opportunity-zone" className="py-3 sm:py-4">
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
                   <ScrollReveal direction="up" delay={0}>
@@ -845,10 +872,10 @@ const Index = () => {
                         <span className="text-[10px] sm:text-xs font-semibold text-gold-primary uppercase tracking-[0.15em]">AI Intelligence</span>
                       </div>
                       <h2 className="font-playfair text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-1">
-                        Opportunity Discovery
+                        Your Investment Feed
                       </h2>
                       <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto">
-                        AI-curated deals, trending opportunities, and personalized picks
+                        Personalized opportunities ranked by AI scoring and your investor profile
                       </p>
                     </div>
                   </ScrollReveal>
@@ -858,7 +885,7 @@ const Index = () => {
                     <Suspense fallback={null}><TrendingROIDeals onPropertyClick={handlePropertyClick} /></Suspense>
                   </StaggeredReveal>
 
-                  <div className="mt-3">
+                  <div className="mt-4">
                     <Suspense fallback={null}>
                       <SmartRecommendations limit={6} className="shadow-sm" />
                     </Suspense>
@@ -875,7 +902,7 @@ const Index = () => {
                 </ScrollReveal>
               </SectionWrapper>
 
-              {/* ── SECTION 4: Smart Collections ── */}
+              {/* ── SECTION 5: Smart Collections ── */}
               <SectionWrapper variant="default">
                 <ScrollReveal direction="up" delay={0}>
                   <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
@@ -884,7 +911,7 @@ const Index = () => {
                 </ScrollReveal>
               </SectionWrapper>
 
-              {/* ── SECTION 5: Investor Path + AI Tools (combined) ── */}
+              {/* ── SECTION 6: Investor Path + AI Tools ── */}
               <SectionWrapper variant="muted">
                 <ScrollReveal direction="up" delay={0}>
                   <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
@@ -909,7 +936,7 @@ const Index = () => {
                 </ScrollReveal>
               </SectionWrapper>
 
-              {/* ── SECTION 6: Why ASTRA — Trust Value Props ── */}
+              {/* ── SECTION 7: Why ASTRA — Trust Value Props ── */}
               <SectionWrapper variant="muted">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
                   <ScrollReveal direction="up" delay={0}>
@@ -942,7 +969,7 @@ const Index = () => {
                 </Suspense>
               </SectionWrapper>
 
-              {/* ── SECTION 7: Final CTA + Trust Footer ── */}
+              {/* ── SECTION 8: Final CTA + Trust Footer ── */}
               <SectionWrapper variant="muted" className="py-2 sm:py-3">
                 <Suspense fallback={null}>
                   <EarlyInvestmentCTA />
