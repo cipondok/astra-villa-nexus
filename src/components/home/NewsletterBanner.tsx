@@ -60,15 +60,15 @@ export default function NewsletterBanner() {
                   <span>You're subscribed!</span>
                 </motion.div>
               ) : (
-                <form onSubmit={handleSubmit} className="flex gap-2">
+                <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                   <Input
                     type="email"
                     placeholder="your@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-10 text-sm bg-background/60 border-border/50 min-w-[200px]"
+                    className="h-10 text-sm bg-background/60 border-border/50 w-full sm:min-w-[200px]"
                   />
-                  <Button type="submit" className="h-10 px-4 text-xs font-semibold gap-1 shrink-0">
+                  <Button type="submit" className="h-10 px-4 text-xs font-semibold gap-1 shrink-0 w-full sm:w-auto">
                     Subscribe
                     <ArrowRight className="h-3.5 w-3.5" />
                   </Button>
