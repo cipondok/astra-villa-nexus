@@ -19,6 +19,22 @@ interface UserTypeSelectorProps {
 
 const userTypes = [
   {
+    id: "investor" as UserType,
+    title: "Property Investor",
+    subtitle: "I'm looking for investment opportunities",
+    icon: TrendingUp,
+    color: "from-primary to-primary/70",
+    reward: "AI Portfolio + 50 ASTRA"
+  },
+  {
+    id: "buyer" as UserType,
+    title: "Buying Property",
+    subtitle: "I'm looking to buy a home",
+    icon: Search,
+    color: "from-chart-3 to-chart-3/70",
+    reward: "AI Property Assistant"
+  },
+  {
     id: "homeowner" as UserType,
     title: "Selling Property",
     subtitle: "I want to sell my home",
@@ -43,19 +59,11 @@ const userTypes = [
     reward: "100 ASTRA + Verified Badge"
   },
   {
-    id: "buyer" as UserType,
-    title: "Buying Property",
-    subtitle: "I'm looking to buy",
-    icon: Search,
-    color: "from-chart-3 to-chart-3/70",
-    reward: "AI Property Assistant"
-  },
-  {
     id: "renter" as UserType,
     title: "Looking to Rent",
     subtitle: "I need a rental",
     icon: Key,
-    color: "from-primary to-primary/70",
+    color: "from-chart-5 to-chart-5/70",
     reward: "Priority Viewing"
   }
 ];
