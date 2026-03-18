@@ -906,7 +906,7 @@ const Index = () => {
                     <h2 className="font-playfair text-lg sm:text-xl md:text-2xl font-bold text-foreground text-center mb-6">
                       Why Choose ASTRA
                     </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-8">
+                    <StaggeredReveal staggerDelay={120} direction="up" className="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-8">
                       {[
                         { icon: Sparkles, title: 'AI-Powered Scoring', desc: 'Every property scored by AI for investment potential, risk, and fair market value.' },
                         { icon: Search, title: 'Verified Listings', desc: 'All properties reviewed and verified before publication — no fake listings.' },
@@ -920,7 +920,7 @@ const Index = () => {
                           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-[260px]">{item.desc}</p>
                         </div>
                       ))}
-                    </div>
+                    </StaggeredReveal>
                   </ScrollReveal>
                 </div>
               </SectionWrapper>
