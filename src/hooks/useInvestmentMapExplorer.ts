@@ -54,6 +54,9 @@ export interface MapZone {
   lat: number;
   lng: number;
   classification: "hot_investment" | "growing" | "stable";
+  avg_rental_yield?: number;
+  price_growth_pct?: number;
+  trend_signal?: 'rising' | 'stable' | 'declining';
 }
 
 export interface ZoneStats {
