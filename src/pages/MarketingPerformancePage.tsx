@@ -405,6 +405,12 @@ export default function MarketingPerformancePage() {
               <InvestorLTVPanel />
             </Suspense>
           </TabsContent>
+
+          <TabsContent value="revenue">
+            <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>}>
+              <RevenueExpansionPanel />
+            </Suspense>
+          </TabsContent>
         </Tabs>
       </div>
     </>
