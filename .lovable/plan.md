@@ -1,70 +1,60 @@
 
-# ASTRA Villa — Platform Architecture Analysis & Roadmap
 
-## Status: 🔄 IN PROGRESS
+# Admin Panel Style Issues Audit & Fix Plan
 
-## Current State Assessment (March 2026)
+## Issues Found
 
-### Scale
-| Metric | Count |
-|--------|-------|
-| Pages | 120+ |
-| Components | 200+ directories |
-| Hooks | 230+ |
-| Edge Functions | 18 (consolidated from 82) |
-| Database Tables | 450+ |
-| RLS Policies | 1,000+ |
+### 1. AdminCategoryTabs: `text-[7px]` badge — below minimum readability
+**File**: `src/components/admin/AdminCategoryTabs.tsx` line 148
+Badge text uses `text-[7px]` which is below even the admin minimum of `text-[8px]`.
+**Fix**: Change to `text-[8px]`.
 
-### Three-Layer Architecture ✅
-| Layer | Key Features | Status |
-|-------|-------------|--------|
-| **Public Platform** | Property browse, search, map, detail pages, AI chat, mortgage tools | ✅ Mature |
-| **Investor Intelligence** | ROI forecasts, deal finder, portfolio builder, market trends, location intel | ✅ Mature |
-| **Admin AI Command Center** | Job queue, SEO engine, valuations, health monitor, KPI alerts | ✅ Mature |
+### 2. AdminCategoryTabs: `text-[8px]` count badge in header — lacks contrast
+**File**: `src/components/admin/AdminCategoryTabs.tsx` line 180
+The section count uses `text-[8px]` with `text-[hsl(var(--panel-text-muted))]` on a muted background, making it nearly invisible.
+**Fix**: Bump to `text-[9px]` and use `--panel-text-secondary` for better readability.
 
-### Edge Function Architecture ✅
-| Router | Modes |
-|--------|-------|
-| `core-engine` | 25+ modes (investment_score, valuation, health, diagnostics, map_search) |
-| `ai-engine` | 25+ modes (descriptions, NLP, recommendations, market reports) |
-| `deal-engine` | deal_finder, alerts, negotiation, pricing, forecasts |
-| `ai-assistant` | SSE streaming chatbot, NLP search, investment advisor |
-| `notification-engine` | Email, push, campaigns |
-| `payment-engine` | Midtrans, PayPal, invoices, subscriptions |
-| `vendor-engine` | Vendor services, validation |
+### 3. CategoryOverviewDashboard: Grid description `text-[8px]` clipping
+**File**: `src/components/admin/CategoryOverviewDashboard.tsx` line 309
+Grid card descriptions use `text-[8px]` which is acceptable for admin but combined with `max-w-[120px]` and `line-clamp-2` causes aggressive clipping on shorter viewports.
+**Fix**: Increase `max-w` to `[140px]` for better utilization.
 
-### AI Automation Systems ✅
-- SEO: Daily audits (3AM UTC), 6-hour auto-optimizer, property_seo_analysis tracking
-- Jobs: ai_jobs queue with claim_next_job() SKIP LOCKED, stall recovery, retry logic
-- Valuations: property_valuations with auto-recalculation
-- ROI: property_roi_forecast with 5-year projections
-- Autonomous Agent: 6-hour market scans for opportunity detection
+### 4. CategoryOverviewDashboard: ListView header `text-[8px]` column labels
+**File**: `src/components/admin/CategoryOverviewDashboard.tsx` line 182-184
+Column headers ("Module", "Status", "→") use `text-[8px]` — acceptable but the arrow column header "→" is confusing and non-semantic.
+**Fix**: Replace "→" with "Action" for clarity.
+
+### 5. AdminCategoryTabs: Sticky `z-40` conflicts with sidebar `z-[9999]`
+**File**: `src/components/admin/AdminCategoryTabs.tsx` line 164
+The tabs bar is `sticky top-0 z-40`. When the sidebar flyout is open, the tabs can peek through the backdrop overlay (z-[9998]) on some scroll positions since the main content area has its own stacking context.
+**Fix**: Lower to `z-30` or ensure it sits below the backdrop.
+
+### 6. AdminHeader: Notification ping animation stacks
+**File**: `src/components/admin/AdminHeader.tsx` line 191
+The `animate-ping` span on the notification badge creates an ever-expanding ring. When combined with the `absolute` positioned badge, it overflows the button bounds and can overlap adjacent header icons.
+**Fix**: Add `overflow-hidden` to the badge container span (line 190).
+
+### 7. AdminBreadcrumb: Category click navigates to first section instead of overview
+**File**: `src/components/admin/AdminBreadcrumb.tsx` line 21, 31
+When clicking the category name in the breadcrumb, it navigates to `sections?.[0]?.key` (the first sub-section) rather than the category overview. This is inconsistent with the sidebar which navigates to `{category}-overview`.
+**Fix**: Change `categoryFirstSection` to use `${category}-overview` pattern.
+
+### 8. Overview 3-column grid: Left column `col-span-3` too narrow on md breakpoint
+**File**: `src/components/admin/overview/LeftStatsColumn.tsx` line 36
+At `md` breakpoint (768px), `col-span-3` out of 12 = 25% width ≈ 192px. MetricRow labels and sparklines get cramped.
+**Fix**: Change to `md:col-span-4` and adjust center to `md:col-span-5` for better balance.
 
 ---
 
-## Identified Gaps & Improvements
+## Implementation Summary
 
-### 🔴 Critical Performance
-1. **Map viewport debouncing** — `moveend` fires on every pan; needs 300ms debounce ✅ FIXED
-2. **Spatial indexes** — Need composite indexes on (latitude, longitude, status) ✅ FIXED
-3. **Platform health aggregation** — Real AI system status on admin overview ✅ FIXED (prev iteration)
+| File | Change |
+|------|--------|
+| `AdminCategoryTabs.tsx` | Fix `text-[7px]` → `text-[8px]`, improve count badge contrast, lower sticky z-index |
+| `CategoryOverviewDashboard.tsx` | Widen grid description max-w, clarify "→" column header |
+| `AdminHeader.tsx` | Add `overflow-hidden` to notification badge container |
+| `AdminBreadcrumb.tsx` | Fix category click to use `{category}-overview` pattern |
+| `LeftStatsColumn.tsx` + `CenterActivityColumn.tsx` | Rebalance column spans for md breakpoint |
 
-### 🟡 Architecture Improvements
-4. **Unified health hook** — Single hook aggregating all AI subsystem health ✅ FIXED
-5. **Query deduplication** — MapBounds type duplicated across useMapSearch/useMapProperties
-6. **Large file refactoring** — PropertyDetail.tsx (1544 lines), Index.tsx (1199 lines) need splitting
+All changes are CSS/layout-only except the breadcrumb navigation fix. No new components or dependencies needed.
 
-### 🟢 Future Expansion Ready
-- AI deal finder ✅ Exists (/deal-finder)
-- Predictive market analytics ✅ Exists (/market-trends, /price-prediction)
-- AI recommendation engine ✅ Exists (ai-match-engine-v2)
-- Location intelligence ✅ Exists (/location-intelligence)
-- Knowledge graph ✅ Hook exists (useKnowledgeGraph)
-
-### Recommended Next Steps
-1. Add database indexes for map queries at scale
-2. Debounce map viewport changes
-3. Create unified platform health dashboard
-4. Split PropertyDetail.tsx into sub-components
-5. Add API response caching headers to edge functions
-6. Implement property search result caching with stale-while-revalidate
