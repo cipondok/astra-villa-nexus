@@ -161,7 +161,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
   };
 
   return (
-    <div className="mb-2 sticky top-0 z-40 animate-in fade-in slide-in-from-top-1 duration-200">
+    <div className="mb-2 sticky top-0 z-30 animate-in fade-in slide-in-from-top-1 duration-200">
       <div
         className="bg-[hsl(var(--panel-bg))] border border-[hsl(var(--panel-border))] rounded-lg overflow-hidden"
         style={{ boxShadow: 'var(--panel-shadow)' }}
