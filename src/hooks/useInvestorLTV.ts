@@ -100,7 +100,7 @@ export function useInvestorLTV() {
       const [commissionsRes, profilesRes] = await Promise.all([
         supabase
           .from('transaction_commissions')
-          .select('agent_id, commission_amount, created_at')
+          .select('seller_id, commission_amount, created_at')
           .limit(1000),
         supabase
           .from('profiles')
