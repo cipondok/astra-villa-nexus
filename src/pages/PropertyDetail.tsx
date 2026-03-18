@@ -1422,23 +1422,29 @@ const PropertyDetail: React.FC = () => {
         </Suspense>
 
         {/* Reviews Section */}
-        <div className="mt-6 sm:mt-8">
-          <PropertyReviews propertyId={property.id} />
-        </div>
+        <ScrollReveal direction="up" delay={0}>
+          <div className="mt-6 sm:mt-8">
+            <PropertyReviews propertyId={property.id} />
+          </div>
+        </ScrollReveal>
 
         {/* Market Intelligence Context */}
-        <div className="mt-4 sm:mt-6">
-          <Suspense fallback={null}>
-            <MarketContextCard city={property.city} currentPrice={property.price} />
-          </Suspense>
-        </div>
+        <ScrollReveal direction="up" delay={100}>
+          <div className="mt-4 sm:mt-6">
+            <Suspense fallback={null}>
+              <MarketContextCard city={property.city} currentPrice={property.price} />
+            </Suspense>
+          </div>
+        </ScrollReveal>
 
         {/* Investment Insights */}
-        <div className="mt-4 sm:mt-6">
-          <Suspense fallback={null}>
-            <PropertyInvestmentInsights propertyId={property.id} />
-          </Suspense>
-        </div>
+        <ScrollReveal direction="up" delay={100}>
+          <div className="mt-4 sm:mt-6">
+            <Suspense fallback={null}>
+              <PropertyInvestmentInsights propertyId={property.id} />
+            </Suspense>
+          </div>
+        </ScrollReveal>
 
         {/* Similar Properties & Nearby Investments */}
         <div className="mt-4 sm:mt-8 grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
