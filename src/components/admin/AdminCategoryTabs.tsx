@@ -17,8 +17,6 @@ import {
   FileText,
   HelpCircle,
   DollarSign,
-  ChevronDown,
-  ChevronUp,
   type LucideIcon 
 } from 'lucide-react';
 
