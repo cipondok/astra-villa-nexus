@@ -51,12 +51,6 @@ export default function CompanyDashboardPage() {
   const { marketplace: mkt, revenue: rev, growth: grw, operations: ops } = data;
 
   return (
-    <>
-      <Helmet>
-        <title>Company Dashboard | ASTRA Villa</title>
-        <meta name="description" content="Real-time company operating dashboard for ASTRA Villa leadership team" />
-      </Helmet>
-
       <div className="min-h-screen bg-background p-4 md:p-6 max-w-[1400px] mx-auto space-y-5">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between">
