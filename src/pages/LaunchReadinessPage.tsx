@@ -36,7 +36,7 @@ const GO_CONFIG = {
 };
 
 export default function LaunchReadinessPage() {
-  const { data, isLoading, refetch, dataUpdatedAt } = useLaunchReadiness();
+  const { data, isLoading, refetch, dataUpdatedAt } = useLaunchChecklist();
 
   if (isLoading) {
     return (
