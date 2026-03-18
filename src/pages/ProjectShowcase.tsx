@@ -16,6 +16,7 @@ import {
   ArrowLeft, MapPin, Building2, Calendar, Clock, Bed, Bath, Square, Users,
   Sparkles, TrendingUp, Rocket, Eye, Star, CheckCircle, Lock, AlertTriangle,
   ChevronRight, Home, Loader2, Send, Phone, Mail, User, DollarSign,
+  BarChart3, Percent, Layers, Shield, ArrowUpRight, CalendarClock,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { format, differenceInDays, isPast, isFuture } from 'date-fns';
