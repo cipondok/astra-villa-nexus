@@ -1,4 +1,5 @@
 import React, { useState, lazy, Suspense } from 'react';
+import { cn } from '@/lib/utils';
 import { usePortfolioROITracker, useSellSimulation, type PropertyROIAnalytics, type SellSimulation } from '@/hooks/usePortfolioROITracker';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
