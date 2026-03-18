@@ -1090,6 +1090,7 @@ const PropertyDetail: React.FC = () => {
                 </Tabs>
               </CardContent>
             </Card>
+            </ScrollReveal>
 
             {/* Neighborhood Insights */}
             <Suspense fallback={<div className="h-40 flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-gold-primary" /></div>}>
