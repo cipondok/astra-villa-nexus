@@ -670,6 +670,7 @@ const AppContent = () => {
                 <Route path="/daily-growth-monitor" element={<DailyGrowthMonitorPage />} />
                 <Route path="/marketing-performance" element={<MarketingPerformancePage />} />
                 <Route path="/company-dashboard" element={<CompanyDashboardPage />} />
+                <Route path="/executive-kpis" element={<ExecutiveKPIsPage />} />
                 <Route path="/negotiation-psychology" element={<NegotiationPsychologyPage />} />
                 <Route path="/hnw-investor-strategy" element={<HNWInvestorStrategyPage />} />
                 <Route path="/brand-trust-strategy" element={<BrandTrustStrategyPage />} />
