@@ -136,16 +136,18 @@ const Navigation = () => {
     <>
       <nav 
         className={cn(
-          "fixed top-0 left-0 right-0 w-full z-[10000] transition-all duration-500 ease-out",
+          "fixed top-0 left-0 right-0 w-full z-[10000] transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
           isHomePage && !scrolled
             ? "bg-transparent border-b border-white/10 shadow-none"
-            : "bg-background/80 backdrop-blur-2xl border-b border-gold-primary/10 shadow-sm",
-          "h-12 md:h-13 lg:h-14"
+            : scrolled && pastHero
+              ? "bg-background/95 backdrop-blur-2xl border-b border-gold-primary/15 shadow-lg shadow-background/10"
+              : "bg-background/80 backdrop-blur-2xl border-b border-gold-primary/10 shadow-sm",
+          scrolled && pastHero ? "h-11 md:h-12 lg:h-13" : "h-12 md:h-13 lg:h-14"
         )} 
         style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
       >
         <div className="w-full mx-auto px-1.5 sm:px-3 lg:px-4">
-          <div className="flex items-center justify-between gap-2 h-12 md:h-13 lg:h-14">
+          <div className={cn("flex items-center justify-between gap-2 transition-all duration-700", scrolled && pastHero ? "h-11 md:h-12 lg:h-13" : "h-12 md:h-13 lg:h-14")}>
             {/* Logo */}
             <div className="flex items-center cursor-pointer group flex-shrink-0 -ml-1" onClick={() => navigate('/')}>
               {hasCustomLogo ? (

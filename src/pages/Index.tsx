@@ -37,8 +37,10 @@ import { UserProfileHeader } from "@/components/user/UserProfileHeader";
 import { StickyHeaderSearch } from "@/components/search/StickyHeaderSearch";
 import LazyRender from "@/components/LazyRender";
 import ScrollReveal from "@/components/ui/ScrollReveal";
+import StaggeredReveal from "@/components/ui/StaggeredReveal";
 import SectionErrorBoundary from "@/components/ui/SectionErrorBoundary";
 import SectionWrapper from "@/components/ui/SectionWrapper";
+import { useParallax } from "@/hooks/useParallax";
 
 
 // Lazy load heavy components for better performance
@@ -535,6 +537,9 @@ const Index = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Parallax for hero background
+  const { ref: parallaxRef, offset: parallaxOffset } = useParallax(0.35);
+
   // Mobile-first responsive layout wrapper
   const content = (
     <div className="min-h-screen w-full overflow-x-hidden text-foreground relative bg-background" {...pullHandlers}>
@@ -568,8 +573,8 @@ const Index = () => {
         <section className="relative w-full overflow-hidden" id="hero-section"
           style={{ height: 'clamp(520px, 85vh, 880px)', contain: 'layout' }}
         >
-          {/* Premium background image with slow zoom */}
-          <div className="absolute inset-0 z-0 overflow-hidden" style={{ contain: 'strict' }}>
+          {/* Premium background image with parallax + slow zoom */}
+          <div ref={parallaxRef} className="absolute inset-0 z-0 overflow-hidden" style={{ contain: 'strict' }}>
             <img
               src={heroImage}
               alt="Premium property — ASTRAVILLA intelligent real estate"
@@ -580,7 +585,7 @@ const Index = () => {
               decoding="sync"
               sizes="100vw"
               className="w-full h-full object-cover animate-[heroZoom_25s_ease-in-out_infinite_alternate]"
-              style={{ willChange: 'transform' }}
+              style={{ willChange: 'transform', transform: `translateY(${parallaxOffset}px) scale(1.1)` }}
             />
           </div>
 
@@ -848,10 +853,10 @@ const Index = () => {
                     </div>
                   </ScrollReveal>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <StaggeredReveal staggerDelay={150} direction="up" className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <Suspense fallback={null}><DealHunterHero /></Suspense>
                     <Suspense fallback={null}><TrendingROIDeals onPropertyClick={handlePropertyClick} /></Suspense>
-                  </div>
+                  </StaggeredReveal>
 
                   <div className="mt-3">
                     <Suspense fallback={null}>
@@ -863,35 +868,45 @@ const Index = () => {
 
               {/* ── Interactive Map Preview ── */}
               <SectionWrapper variant="muted">
-                <Suspense fallback={null}>
-                  <MapPreviewTeaser />
-                </Suspense>
+                <ScrollReveal direction="up" delay={0}>
+                  <Suspense fallback={null}>
+                    <MapPreviewTeaser />
+                  </Suspense>
+                </ScrollReveal>
               </SectionWrapper>
 
               {/* ── SECTION 4: Smart Collections ── */}
               <SectionWrapper variant="default">
-                <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
-                  <SmartCollectionsShowcase />
-                </LazyRender>
+                <ScrollReveal direction="up" delay={0}>
+                  <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
+                    <SmartCollectionsShowcase />
+                  </LazyRender>
+                </ScrollReveal>
               </SectionWrapper>
 
               {/* ── SECTION 5: Investor Path + AI Tools (combined) ── */}
               <SectionWrapper variant="muted">
-                <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
-                  <InvestorPathSelector />
-                </LazyRender>
-                <div className="max-w-7xl mx-auto mt-4">
+                <ScrollReveal direction="up" delay={0}>
                   <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
-                    <AstraVillaFeatures />
+                    <InvestorPathSelector />
                   </LazyRender>
+                </ScrollReveal>
+                <div className="max-w-7xl mx-auto mt-4">
+                  <ScrollReveal direction="up" delay={100}>
+                    <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
+                      <AstraVillaFeatures />
+                    </LazyRender>
+                  </ScrollReveal>
                 </div>
               </SectionWrapper>
 
               {/* ── Testimonials ── */}
               <SectionWrapper variant="default">
-                <Suspense fallback={null}>
-                  <TestimonialsCarousel />
-                </Suspense>
+                <ScrollReveal direction="up" delay={0}>
+                  <Suspense fallback={null}>
+                    <TestimonialsCarousel />
+                  </Suspense>
+                </ScrollReveal>
               </SectionWrapper>
 
               {/* ── SECTION 6: Why ASTRA — Trust Value Props ── */}
@@ -901,7 +916,7 @@ const Index = () => {
                     <h2 className="font-playfair text-lg sm:text-xl md:text-2xl font-bold text-foreground text-center mb-6">
                       Why Choose ASTRA
                     </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-8">
+                    <StaggeredReveal staggerDelay={120} direction="up" className="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-8">
                       {[
                         { icon: Sparkles, title: 'AI-Powered Scoring', desc: 'Every property scored by AI for investment potential, risk, and fair market value.' },
                         { icon: Search, title: 'Verified Listings', desc: 'All properties reviewed and verified before publication — no fake listings.' },
@@ -915,7 +930,7 @@ const Index = () => {
                           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-[260px]">{item.desc}</p>
                         </div>
                       ))}
-                    </div>
+                    </StaggeredReveal>
                   </ScrollReveal>
                 </div>
               </SectionWrapper>
