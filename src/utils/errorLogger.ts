@@ -85,6 +85,27 @@ export async function logAPIError(
 }
 
 /**
+ * Log a 404 error — classified as "both" (client + all errors view)
+ */
+export async function log404Error(
+  url: string,
+  referrerUrl?: string
+) {
+  await logError({
+    error_type: '404',
+    error_message: `Page not found: ${url}`,
+    page_url: url,
+    component_name: '404Handler',
+    severity: 'low',
+    metadata: {
+      classification: 'both', // appears in both client errors and all errors
+      referrer_url: referrerUrl || (typeof document !== 'undefined' ? document.referrer : null),
+      timestamp: new Date().toISOString()
+    }
+  });
+}
+
+/**
  * Log a component error
  */
 export async function logComponentError(
@@ -103,4 +124,28 @@ export async function logComponentError(
       timestamp: new Date().toISOString()
     }
   });
+}
+
+/**
+ * Create a chat-linked error reference for support threads.
+ * Returns an error reference object that can be shared in chat.
+ */
+export function createChatErrorReference(errorLog: {
+  id: string;
+  error_type: string;
+  error_message: string;
+  severity?: string;
+  page_url?: string;
+  created_at?: string;
+}) {
+  return {
+    type: 'error_reference',
+    error_id: errorLog.id,
+    error_type: errorLog.error_type,
+    summary: errorLog.error_message?.slice(0, 120),
+    severity: errorLog.severity || 'medium',
+    page_url: errorLog.page_url,
+    timestamp: errorLog.created_at || new Date().toISOString(),
+    link: `/admin-dashboard?section=bug-error-detection&error_id=${errorLog.id}`,
+  };
 }
