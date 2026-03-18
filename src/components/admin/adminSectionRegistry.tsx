@@ -64,6 +64,7 @@ export const VendorsHubContent = lazyRetry(() => import("./VendorsHubContent"));
 export const EnhancedVendorAgentControl = lazyRetry(() => import("./EnhancedVendorAgentControl"));
 export const AuthorizationMonitoringSystem = lazyRetry(() => import("./AuthorizationMonitoringSystem"));
 export const AdminAlertSystem = lazyRetry(() => import("./AdminAlertSystem"));
+export const SystemErrorSettings = lazyRetry(() => import("./SystemErrorSettings"));
 export const CustomerServiceControlPanel = lazyRetry(() => import("./CustomerServiceControlPanel"));
 export const DatabaseErrorManager = lazyRetry(() => import("./cs-tools/DatabaseErrorManager"));
 export const Property3DViewSettings = lazyRetry(() => import("./Property3DViewSettings"));
