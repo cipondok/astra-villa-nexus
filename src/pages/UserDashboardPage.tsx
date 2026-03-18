@@ -534,6 +534,12 @@ const UserDashboardPage = () => {
             <ReferralDashboardTab />
           </TabsContent>
 
+          <TabsContent value="retention" className="space-y-2 mt-2">
+            <Suspense fallback={<div className="flex justify-center py-8"><div className="animate-spin rounded-full h-5 w-5 border-2 border-primary/20 border-t-primary" /></div>}>
+              <RetentionIntelligencePanel />
+            </Suspense>
+          </TabsContent>
+
           <TabsContent value="rewards" className="space-y-2 mt-2">
             <Suspense fallback={<div className="flex justify-center py-8"><div className="animate-spin rounded-full h-5 w-5 border-2 border-primary/20 border-t-primary" /></div>}>
               <InvestorEngagementPanel variant="full" />
