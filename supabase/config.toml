@@ -315,3 +315,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.developer-demand-forecast]
     verify_jwt = false
+
+  [functions.sitemap]
+    verify_jwt = false
