@@ -296,6 +296,7 @@ const ScalingRoadmapPage = lazy(() => import('@/pages/ScalingRoadmapPage'));
 const ExecutionRoadmapPage = lazy(() => import('@/pages/ExecutionRoadmapPage'));
 const FeaturePrioritizationPage = lazy(() => import('@/pages/FeaturePrioritizationPage'));
 const LaunchReadinessPage = lazy(() => import('@/pages/LaunchReadinessPage'));
+const First30DaysPage = lazy(() => import('@/pages/First30DaysPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -679,6 +680,7 @@ const AppContent = () => {
                 <Route path="/execution-roadmap" element={<ExecutionRoadmapPage />} />
                 <Route path="/feature-prioritization" element={<FeaturePrioritizationPage />} />
                 <Route path="/launch-readiness" element={<LaunchReadinessPage />} />
+                <Route path="/first-30-days" element={<First30DaysPage />} />
                 <Route path="/negotiation-psychology" element={<NegotiationPsychologyPage />} />
                 <Route path="/hnw-investor-strategy" element={<HNWInvestorStrategyPage />} />
                 <Route path="/brand-trust-strategy" element={<BrandTrustStrategyPage />} />
