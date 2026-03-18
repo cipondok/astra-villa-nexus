@@ -666,6 +666,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "bulk-kyc-operations": { label: "Bulk KYC", category: "Verification" },
   "document-ocr": { label: "Document OCR", category: "Verification" },
   "error-logs": { label: "Error Logs", category: "System" },
+  "system-error-settings": { label: "Error Settings", category: "System" },
   "user-experience-tips": { label: "UX Tips", category: "Content" },
   "algorithm-dashboard": { label: "Algorithm Dashboard", category: "Analytics" },
   "notifications-center": { label: "Notifications Center", category: "System" },
