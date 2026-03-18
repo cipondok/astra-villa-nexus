@@ -573,8 +573,8 @@ const Index = () => {
         <section className="relative w-full overflow-hidden" id="hero-section"
           style={{ height: 'clamp(520px, 85vh, 880px)', contain: 'layout' }}
         >
-          {/* Premium background image with slow zoom */}
-          <div className="absolute inset-0 z-0 overflow-hidden" style={{ contain: 'strict' }}>
+          {/* Premium background image with parallax + slow zoom */}
+          <div ref={parallaxRef} className="absolute inset-0 z-0 overflow-hidden" style={{ contain: 'strict' }}>
             <img
               src={heroImage}
               alt="Premium property — ASTRAVILLA intelligent real estate"
@@ -585,7 +585,7 @@ const Index = () => {
               decoding="sync"
               sizes="100vw"
               className="w-full h-full object-cover animate-[heroZoom_25s_ease-in-out_infinite_alternate]"
-              style={{ willChange: 'transform' }}
+              style={{ willChange: 'transform', transform: `translateY(${parallaxOffset}px) scale(1.1)` }}
             />
           </div>
 
