@@ -22,7 +22,7 @@ export default function NewsletterBanner() {
     }
     setLoading(true);
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('newsletter_subscribers')
         .insert({ email: email.trim().toLowerCase() });
 
