@@ -8,7 +8,8 @@ import {
   Search, 
   Key,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  TrendingUp
 } from "lucide-react";
 import { UserType } from "./OnboardingWizard";
 
