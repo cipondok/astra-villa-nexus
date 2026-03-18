@@ -376,6 +376,12 @@ export default function MarketingPerformancePage() {
             </Suspense>
           </TabsContent>
 
+          <TabsContent value="velocity">
+            <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>}>
+              <DealVelocityPanel period={period} />
+            </Suspense>
+          </TabsContent>
+
           <TabsContent value="viral">
             <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>}>
               <ViralCoefficientPanel period={period} />
