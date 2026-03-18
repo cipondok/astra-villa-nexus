@@ -55,7 +55,7 @@ const categoryAccent: Record<string, string> = {
   help: "--panel-text-secondary",
 };
 
-const VISIBLE_COUNT = 6;
+const VISIBLE_COUNT = Infinity;
 const STORAGE_KEY = 'admin-tab-visit-history';
 
 function getVisitHistory(): Record<string, number> {
