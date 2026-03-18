@@ -68,6 +68,9 @@ export interface ZoneStats {
   elite_opportunities: number;
   type_distribution: Record<string, number>;
   classification: string;
+  avg_rental_yield?: number;
+  price_growth_3m?: number;
+  price_growth_12m?: number;
 }
 
 export interface ZoneComparison {
