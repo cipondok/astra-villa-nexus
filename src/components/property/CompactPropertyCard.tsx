@@ -492,6 +492,22 @@ const CompactPropertyCard = ({
           similarityBreakdown={similarityBreakdown}
         />
       )}
+
+      {/* Opportunity Share Modal */}
+      <OpportunityShareModal
+        open={showShareModal}
+        onOpenChange={setShowShareModal}
+        property={{
+          id: property.id,
+          title: property.title,
+          price: property.price,
+          location: property.location,
+          image_url: property.images?.[0] || property.image_url,
+          opportunity_score: property.opportunity_score,
+          bedrooms: property.bedrooms,
+          land_area: property.land_area,
+        }}
+      />
     </>
   );
 };
