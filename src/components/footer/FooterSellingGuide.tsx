@@ -42,7 +42,7 @@ const FooterSellingGuide = ({ onLinkClick }: FooterSellingGuideProps) => {
                   onClick={() => onLinkClick(link.path, t(`footerSelling.${link.key}`))}
                   className="text-muted-foreground hover:text-gold-primary transition-colors text-sm text-left flex items-center gap-2 w-full"
                 >
-                  <link.Icon className="h-3 w-3" />
+                  <link.Icon className="h-3 w-3" aria-hidden="true" />
                   {t(`footerSelling.${link.key}`)}
                 </button>
               </li>

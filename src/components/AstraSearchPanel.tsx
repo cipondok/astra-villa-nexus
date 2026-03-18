@@ -3144,6 +3144,7 @@ const AstraSearchPanel = ({
               }} 
               className="p-1 flex items-center justify-center transition-colors relative group"
               title="Filters"
+              aria-label={`Filters${getActiveFiltersCount() > 0 ? ` (${getActiveFiltersCount()} active)` : ''}`}
             >
               <SlidersHorizontal className="h-5 w-5 text-primary dark:text-primary" />
               {getActiveFiltersCount() > 0 && (

@@ -190,6 +190,7 @@ export const ImageSearchButton = ({
           disabled={isSearching}
           className="p-1 flex items-center justify-center transition-colors disabled:opacity-50 relative group"
           title="Image Search"
+          aria-label="Search by image"
         >
           <Camera className="h-5 w-5 text-primary dark:text-primary" />
           {showPulse && (
@@ -219,6 +220,7 @@ export const ImageSearchButton = ({
             disabled={isSearching}
             className="p-1 flex items-center justify-center transition-colors disabled:opacity-50 relative group"
             title={isSearching ? "Searching..." : "Change Image"}
+            aria-label={isSearching ? "Searching for similar properties" : "Change search image"}
           >
             {isSearching ? (
               <Loader2 className="h-5 w-5 text-primary animate-spin" />
@@ -236,6 +238,7 @@ export const ImageSearchButton = ({
             disabled={isSearching}
             className="p-0 h-7 w-7 flex items-center justify-center rounded-md text-destructive hover:bg-destructive/10 transition-all disabled:opacity-50 relative group"
             title="Clear"
+            aria-label="Clear image search"
           >
             <X className="h-3.5 w-3.5" />
             <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md bg-foreground text-background border border-foreground/20 shadow-lg px-2 py-1 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-[100000]">
