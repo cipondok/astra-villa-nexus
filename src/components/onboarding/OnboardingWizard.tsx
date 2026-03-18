@@ -207,6 +207,8 @@ const OnboardingWizard = ({ isOpen, onClose, initialUserType }: OnboardingWizard
         return <BuyerOnboarding {...flowProps} />;
       case "renter":
         return <RenterOnboarding {...flowProps} />;
+      case "investor":
+        return <InvestorOnboarding {...flowProps} />;
       default:
         return null;
     }
