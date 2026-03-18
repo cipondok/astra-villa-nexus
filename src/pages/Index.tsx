@@ -72,6 +72,9 @@ const AnimatedStatsCounter = lazy(() => import("@/components/home/AnimatedStatsC
 const TestimonialsCarousel = lazy(() => import("@/components/home/TestimonialsCarousel"));
 const MapPreviewTeaser = lazy(() => import("@/components/home/MapPreviewTeaser"));
 const NewsletterBanner = lazy(() => import("@/components/home/NewsletterBanner"));
+const QuickActionsRow = lazy(() => import("@/components/home/QuickActionsRow"));
+const MarketHeatHighlight = lazy(() => import("@/components/home/MarketHeatHighlight"));
+const AIInvestmentFeed = lazy(() => import("@/components/home/AIInvestmentFeed"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
