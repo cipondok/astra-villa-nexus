@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo, lazy, Suspense } from 'react';
 const InvestorEngagementPanel = lazy(() => import('@/components/gamification/InvestorEngagementPanel'));
+const RetentionIntelligencePanel = lazy(() => import('@/components/retention/RetentionIntelligencePanel'));
 import AstraWalletPopup from '@/components/dashboard/AstraWalletPopup';
 import AIBuyerPersona from '@/components/property/AIBuyerPersona';
 import SmartRecommendations from '@/components/ai/SmartRecommendations';
@@ -344,7 +345,7 @@ const UserDashboardPage = () => {
 
         {/* Dashboard Tabs - Slim */}
         <Tabs defaultValue="overview" className="space-y-2">
-          <TabsList className="grid w-full grid-cols-9 h-8 bg-gold-primary/5 backdrop-blur-xl p-0.5 border border-gold-primary/10">
+          <TabsList className="grid w-full grid-cols-10 h-8 bg-gold-primary/5 backdrop-blur-xl p-0.5 border border-gold-primary/10">
              <TabsTrigger value="overview" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-gold-primary data-[state=active]:text-background data-[state=active]:shadow-sm">
                <Home className="h-3 w-3" />
                <span className="hidden sm:inline">Overview</span>
@@ -376,6 +377,10 @@ const UserDashboardPage = () => {
               <TabsTrigger value="insights" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-gold-primary data-[state=active]:text-background data-[state=active]:shadow-sm">
                 <BarChart3 className="h-3 w-3" />
                 <span className="hidden sm:inline">Insights</span>
+              </TabsTrigger>
+              <TabsTrigger value="retention" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-gold-primary data-[state=active]:text-background data-[state=active]:shadow-sm">
+                <Activity className="h-3 w-3" />
+                <span className="hidden sm:inline">Retention</span>
               </TabsTrigger>
               <TabsTrigger value="rewards" className="flex items-center gap-1 text-[9px] data-[state=active]:bg-gold-primary data-[state=active]:text-background data-[state=active]:shadow-sm">
                 <Zap className="h-3 w-3" />
@@ -527,6 +532,12 @@ const UserDashboardPage = () => {
 
           <TabsContent value="referrals" className="space-y-2 mt-2">
             <ReferralDashboardTab />
+          </TabsContent>
+
+          <TabsContent value="retention" className="space-y-2 mt-2">
+            <Suspense fallback={<div className="flex justify-center py-8"><div className="animate-spin rounded-full h-5 w-5 border-2 border-primary/20 border-t-primary" /></div>}>
+              <RetentionIntelligencePanel />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="rewards" className="space-y-2 mt-2">
