@@ -272,8 +272,7 @@ export default function CompanyDashboardPage() {
             </CardContent>
           </Card>
         </Section>
-      </div>
-    </>
+    </div>
   );
 }
 
