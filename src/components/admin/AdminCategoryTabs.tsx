@@ -186,57 +186,21 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
           </div>
         </div>
 
-        {/* Mobile: horizontal scroll with top 6 */}
+        {/* Mobile: horizontal scroll */}
         <ScrollArea className="w-full md:hidden">
           <div className="flex items-center gap-1 p-1.5">
             {visibleSections.map((section) =>
               renderTab(section, section.key === activeSection)
             )}
-            {hasMore && !expanded && (
-              <button
-                onClick={() => setExpanded(true)}
-                className="flex items-center gap-1 px-2 py-1.5 rounded-md text-[10px] font-medium text-[hsl(var(--panel-text-muted))] hover:text-[hsl(var(--panel-text))] hover:bg-[hsl(var(--panel-hover))] border border-dashed border-[hsl(var(--panel-border))] whitespace-nowrap shrink-0 transition-colors"
-              >
-                <ChevronDown className="h-3 w-3" />
-                +{hiddenCount}
-              </button>
-            )}
-            {expanded && hasMore && (
-              <button
-                onClick={() => setExpanded(false)}
-                className="flex items-center gap-1 px-2 py-1.5 rounded-md text-[10px] font-medium text-[hsl(var(--panel-accent))] hover:bg-[hsl(var(--panel-accent)/.08)] whitespace-nowrap shrink-0 transition-colors"
-              >
-                <ChevronUp className="h-3 w-3" />
-                Less
-              </button>
-            )}
           </div>
           <ScrollBar orientation="horizontal" className="h-1" />
         </ScrollArea>
 
-        {/* Desktop: show top 6, expandable */}
+        {/* Desktop: all tabs wrapped */}
         <div className="hidden md:block p-1.5">
           <div className="flex flex-wrap items-center gap-1">
             {visibleSections.map((section) =>
               renderTab(section, section.key === activeSection)
-            )}
-            {hasMore && !expanded && (
-              <button
-                onClick={() => setExpanded(true)}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[10px] font-medium text-[hsl(var(--panel-text-muted))] hover:text-[hsl(var(--panel-text))] hover:bg-[hsl(var(--panel-hover))] border border-dashed border-[hsl(var(--panel-border))] transition-colors"
-              >
-                <ChevronDown className="h-3 w-3" />
-                +{hiddenCount} more
-              </button>
-            )}
-            {expanded && hasMore && (
-              <button
-                onClick={() => setExpanded(false)}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[10px] font-medium text-[hsl(var(--panel-accent))] hover:bg-[hsl(var(--panel-accent)/.08)] transition-colors"
-              >
-                <ChevronUp className="h-3 w-3" />
-                Show less
-              </button>
             )}
           </div>
         </div>
