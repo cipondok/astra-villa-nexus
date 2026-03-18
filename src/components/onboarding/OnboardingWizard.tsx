@@ -25,9 +25,10 @@ import LandlordOnboarding from "./flows/LandlordOnboarding";
 import AgentOnboarding from "./flows/AgentOnboarding";
 import BuyerOnboarding from "./flows/BuyerOnboarding";
 import RenterOnboarding from "./flows/RenterOnboarding";
+import InvestorOnboarding from "./flows/InvestorOnboarding";
 import OnboardingComplete from "./OnboardingComplete";
 
-export type UserType = "homeowner" | "landlord" | "agent" | "buyer" | "renter" | null;
+export type UserType = "homeowner" | "landlord" | "agent" | "buyer" | "renter" | "investor" | null;
 
 export interface OnboardingData {
   userType: UserType;
@@ -48,10 +49,12 @@ const OnboardingWizard = ({ isOpen, onClose, initialUserType }: OnboardingWizard
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   
+  const getTotalSteps = (type: UserType) => type === 'investor' ? 4 : 3;
+
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({
     userType: initialUserType || null,
     step: 0,
-    totalSteps: 3,
+    totalSteps: getTotalSteps(initialUserType || null),
     formData: {},
     completedActions: [],
     rewards: []
@@ -135,6 +138,8 @@ const OnboardingWizard = ({ isOpen, onClose, initialUserType }: OnboardingWizard
         return ["25 ASTRA Tokens", "KPR Calculator Access", "AI Property Assistant"];
       case "renter":
         return ["25 ASTRA Tokens", "Priority Viewing", "Quick Apply Profile"];
+      case "investor":
+        return ["50 ASTRA Tokens", "AI Portfolio Dashboard", "Smart Deal Alerts"];
       default:
         return [];
     }
@@ -177,7 +182,7 @@ const OnboardingWizard = ({ isOpen, onClose, initialUserType }: OnboardingWizard
     if (!onboardingData.userType) {
       return (
         <UserTypeSelector 
-          onSelect={(type) => updateData({ userType: type, step: 0 })}
+          onSelect={(type) => updateData({ userType: type, step: 0, totalSteps: getTotalSteps(type) })}
         />
       );
     }
@@ -202,6 +207,8 @@ const OnboardingWizard = ({ isOpen, onClose, initialUserType }: OnboardingWizard
         return <BuyerOnboarding {...flowProps} />;
       case "renter":
         return <RenterOnboarding {...flowProps} />;
+      case "investor":
+        return <InvestorOnboarding {...flowProps} />;
       default:
         return null;
     }

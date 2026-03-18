@@ -36,6 +36,11 @@ const OnboardingComplete = ({ userType, rewards, onAction }: OnboardingCompleteP
           { label: "Start Adding Listings", action: "add-property", icon: Plus, primary: true },
           { label: "View Agent Dashboard", action: "dashboard", icon: Home }
         ];
+      case "investor":
+        return [
+          { label: "Explore Elite Deals", action: "explore", icon: Search, primary: true },
+          { label: "View AI Dashboard", action: "dashboard", icon: Home }
+        ];
       case "buyer":
       case "renter":
         return [
