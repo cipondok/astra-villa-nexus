@@ -596,7 +596,7 @@ const PropertyDetail: React.FC = () => {
       {/* Agent info moved to sidebar only — no redundant top banner */}
 
       {/* Slim Sticky Header */}
-      <div className="sticky top-0 z-50 bg-background/90 backdrop-blur-2xl border-b border-border shadow-sm">
+      <div className="sticky top-0 z-50 bg-background/90 backdrop-blur-2xl border-b border-border/50 shadow-sm transition-all duration-500">
         <div className="max-w-7xl mx-auto px-2 sm:px-4">
           <div className="flex items-center justify-between h-10">
             <div className="flex items-center gap-1">
