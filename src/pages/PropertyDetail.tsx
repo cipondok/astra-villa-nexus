@@ -1019,7 +1019,7 @@ const PropertyDetail: React.FC = () => {
                   />
                 </div>
               </CardContent>
-            </Card>
+            </ScrollReveal>
 
             {/* Property Details Tabs - Slim */}
             <Card className="border border-gold-primary/10 bg-card backdrop-blur-xl rounded-xl overflow-hidden">
