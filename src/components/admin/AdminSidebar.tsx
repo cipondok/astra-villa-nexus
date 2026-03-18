@@ -198,9 +198,13 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
 
         {/* Flyout Panel */}
         {openCategory && openSections && (
-          <div role="menu" aria-label={sectionTitles[openCategory as keyof typeof sectionTitles]} className="absolute left-14 top-2 max-h-[calc(100%-16px)] w-52 bg-popover/98 backdrop-blur-xl rounded-xl border border-border/60 shadow-2xl z-40 animate-in slide-in-from-left-3 fade-in-0 duration-200 overflow-hidden ring-1 ring-black/5">
+          <div 
+            role="menu" 
+            aria-label={sectionTitles[openCategory as keyof typeof sectionTitles]} 
+            className="absolute left-14 top-2 max-h-[calc(100%-16px)] w-56 bg-popover/98 backdrop-blur-xl rounded-xl border border-border/50 shadow-2xl z-50 animate-in slide-in-from-left-3 fade-in-0 duration-200 overflow-hidden flex flex-col ring-1 ring-black/5"
+          >
             {/* Panel Header */}
-            <div className="flex items-center justify-between px-3 py-2.5 border-b border-border/40 bg-muted/20">
+            <div className="flex items-center justify-between px-3 py-2.5 border-b border-border/30 bg-muted/30 shrink-0">
               <div className="flex items-center gap-2">
                 {(() => {
                   const CategoryIcon = categoryIcons[openCategory] || LayoutDashboard;
@@ -220,7 +224,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
             </div>
 
             {/* Quick search within category */}
-            <div className="px-2.5 py-2 border-b border-border/30">
+            <div className="px-2.5 py-2 border-b border-border/20 shrink-0">
               <Input
                 value={flyoutQuery}
                 onChange={(e) => setFlyoutQuery(e.target.value)}
@@ -230,9 +234,36 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
               />
             </div>
 
-            {/* Panel Content */}
-            <ScrollArea className="max-h-[calc(100vh-180px)]">
-              <div className="p-1.5 pb-2">
+            {/* Panel Content — scrollable list */}
+            <ScrollArea className="flex-1 min-h-0">
+              <div className="p-1.5 pb-2 space-y-0.5">
+                {/* Category overview link */}
+                <button
+                  onClick={() => handleNavClick(`${openCategory}-overview`)}
+                  role="menuitem"
+                  aria-current={activeSection === `${openCategory}-overview` ? 'page' : undefined}
+                  className={cn(
+                    "w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition-all duration-150 text-left group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                    activeSection === `${openCategory}-overview`
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "hover:bg-accent/60 text-foreground"
+                  )}
+                >
+                  <LayoutDashboard className={cn(
+                    "h-3.5 w-3.5 shrink-0",
+                    activeSection === `${openCategory}-overview` ? "text-primary-foreground" : "text-primary"
+                  )} />
+                  <span className={cn(
+                    "text-[11px] truncate flex-1 font-semibold",
+                    activeSection === `${openCategory}-overview` ? "text-primary-foreground" : "text-foreground"
+                  )}>
+                    Overview
+                  </span>
+                </button>
+
+                {/* Divider */}
+                <div className="h-px bg-border/30 mx-2 my-1" />
+
                 {filteredOpenSections?.length ? filteredOpenSections.map((section, idx) => {
                   const Icon = section.icon;
                   const isActive = section.key === activeSection;
