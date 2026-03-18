@@ -868,35 +868,45 @@ const Index = () => {
 
               {/* ── Interactive Map Preview ── */}
               <SectionWrapper variant="muted">
-                <Suspense fallback={null}>
-                  <MapPreviewTeaser />
-                </Suspense>
+                <ScrollReveal direction="up" delay={0}>
+                  <Suspense fallback={null}>
+                    <MapPreviewTeaser />
+                  </Suspense>
+                </ScrollReveal>
               </SectionWrapper>
 
               {/* ── SECTION 4: Smart Collections ── */}
               <SectionWrapper variant="default">
-                <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
-                  <SmartCollectionsShowcase />
-                </LazyRender>
+                <ScrollReveal direction="up" delay={0}>
+                  <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
+                    <SmartCollectionsShowcase />
+                  </LazyRender>
+                </ScrollReveal>
               </SectionWrapper>
 
               {/* ── SECTION 5: Investor Path + AI Tools (combined) ── */}
               <SectionWrapper variant="muted">
-                <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
-                  <InvestorPathSelector />
-                </LazyRender>
-                <div className="max-w-7xl mx-auto mt-4">
+                <ScrollReveal direction="up" delay={0}>
                   <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
-                    <AstraVillaFeatures />
+                    <InvestorPathSelector />
                   </LazyRender>
+                </ScrollReveal>
+                <div className="max-w-7xl mx-auto mt-4">
+                  <ScrollReveal direction="up" delay={100}>
+                    <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
+                      <AstraVillaFeatures />
+                    </LazyRender>
+                  </ScrollReveal>
                 </div>
               </SectionWrapper>
 
               {/* ── Testimonials ── */}
               <SectionWrapper variant="default">
-                <Suspense fallback={null}>
-                  <TestimonialsCarousel />
-                </Suspense>
+                <ScrollReveal direction="up" delay={0}>
+                  <Suspense fallback={null}>
+                    <TestimonialsCarousel />
+                  </Suspense>
+                </ScrollReveal>
               </SectionWrapper>
 
               {/* ── SECTION 6: Why ASTRA — Trust Value Props ── */}
