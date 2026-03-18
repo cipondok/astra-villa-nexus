@@ -683,7 +683,7 @@ export default function OfferNegotiationPage() {
         <DialogContent className="max-w-sm">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <RefreshCw className="h-4 w-4 text-purple-500" /> Submit Counter Offer
+              <RefreshCw className="h-4 w-4 text-chart-5" /> Submit Counter Offer
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
