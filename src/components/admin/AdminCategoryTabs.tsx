@@ -145,7 +145,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
         {'badge' in section && section.badge && (
           <span
             className={cn(
-              "text-[7px] px-1 py-0 h-3 leading-[12px] rounded font-semibold inline-block",
+              "text-[8px] px-1 py-0 h-3 leading-[12px] rounded font-semibold inline-block",
               isActive
                 ? "bg-[hsl(var(--panel-accent)/.15)] text-[hsl(var(--panel-accent))]"
                 : String(section.badge) === 'New'
