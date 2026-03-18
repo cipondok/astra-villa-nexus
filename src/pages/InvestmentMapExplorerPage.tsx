@@ -244,6 +244,24 @@ const ZoneDetailDrawer = memo<{
                     </div>
                   ))}
                 </div>
+                {/* Rental Yield & Price Growth */}
+                <div className="grid grid-cols-3 gap-3 mt-3">
+                  <div className="text-center p-2 rounded-lg bg-muted/30">
+                    <DollarSign className="h-3.5 w-3.5 mx-auto text-chart-2 mb-1" />
+                    <div className="text-sm font-bold text-foreground">{stats.avg_rental_yield != null ? `${stats.avg_rental_yield.toFixed(1)}%` : '—'}</div>
+                    <div className="text-[9px] text-muted-foreground">Rental Yield</div>
+                  </div>
+                  <div className="text-center p-2 rounded-lg bg-muted/30">
+                    <Clock className="h-3.5 w-3.5 mx-auto text-chart-4 mb-1" />
+                    <div className={cn("text-sm font-bold", (stats.price_growth_3m ?? 0) >= 0 ? "text-chart-2" : "text-destructive")}>{stats.price_growth_3m != null ? `${stats.price_growth_3m >= 0 ? '+' : ''}${stats.price_growth_3m.toFixed(1)}%` : '—'}</div>
+                    <div className="text-[9px] text-muted-foreground">3M Growth</div>
+                  </div>
+                  <div className="text-center p-2 rounded-lg bg-muted/30">
+                    <Calendar className="h-3.5 w-3.5 mx-auto text-primary mb-1" />
+                    <div className={cn("text-sm font-bold", (stats.price_growth_12m ?? 0) >= 0 ? "text-chart-2" : "text-destructive")}>{stats.price_growth_12m != null ? `${stats.price_growth_12m >= 0 ? '+' : ''}${stats.price_growth_12m.toFixed(1)}%` : '—'}</div>
+                    <div className="text-[9px] text-muted-foreground">12M Growth</div>
+                  </div>
+                </div>
                 <div className="mt-3">
                   <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Avg Price</p>
                   <p className="text-sm font-bold text-primary">{formatPrice(stats.avg_price)}</p>
