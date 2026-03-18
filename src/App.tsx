@@ -299,6 +299,7 @@ const LaunchReadinessPage = lazy(() => import('@/pages/LaunchReadinessPage'));
 const First30DaysPage = lazy(() => import('@/pages/First30DaysPage'));
 const First10DealsPage = lazy(() => import('@/pages/First10DealsPage'));
 const MarketDominancePage = lazy(() => import('@/pages/MarketDominancePage'));
+const FounderSchedulePage = lazy(() => import('@/pages/FounderSchedulePage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
