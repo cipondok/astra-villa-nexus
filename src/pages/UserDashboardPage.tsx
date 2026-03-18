@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo, lazy, Suspense } from 'react';
 const InvestorEngagementPanel = lazy(() => import('@/components/gamification/InvestorEngagementPanel'));
+const RetentionIntelligencePanel = lazy(() => import('@/components/retention/RetentionIntelligencePanel'));
 import AstraWalletPopup from '@/components/dashboard/AstraWalletPopup';
 import AIBuyerPersona from '@/components/property/AIBuyerPersona';
 import SmartRecommendations from '@/components/ai/SmartRecommendations';
