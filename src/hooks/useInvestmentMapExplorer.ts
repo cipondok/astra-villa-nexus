@@ -15,6 +15,7 @@ export interface MapFilters {
   max_price?: number;
   bedrooms?: number;
   min_score?: number;
+  trend_view?: 'short_term' | 'long_term';
 }
 
 export interface MapProperty {
@@ -53,6 +54,9 @@ export interface MapZone {
   lat: number;
   lng: number;
   classification: "hot_investment" | "growing" | "stable";
+  avg_rental_yield?: number;
+  price_growth_pct?: number;
+  trend_signal?: 'rising' | 'stable' | 'declining';
 }
 
 export interface ZoneStats {
@@ -64,6 +68,9 @@ export interface ZoneStats {
   elite_opportunities: number;
   type_distribution: Record<string, number>;
   classification: string;
+  avg_rental_yield?: number;
+  price_growth_3m?: number;
+  price_growth_12m?: number;
 }
 
 export interface ZoneComparison {

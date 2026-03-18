@@ -28,6 +28,7 @@ import {
   Layers,
   MapPin,
   TrendingUp,
+  TrendingDown,
   Flame,
   BarChart3,
   X,
@@ -41,6 +42,10 @@ import {
   ArrowLeftRight,
   Eye,
   Sparkles,
+  Clock,
+  Calendar,
+  DollarSign,
+  Activity,
 } from "lucide-react";
 
 const MAPBOX_TOKEN = "pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbTN1eGo4eXAwMWV4MnFzYTNwaTgzZnN0In0.JfxWbLcAYW83y5b-A5hLUQ";
@@ -147,12 +152,27 @@ const AnalyticsPanel = memo<{
                             className="h-3 w-3 rounded border-border accent-primary"
                           />
                           <span className="text-xs font-semibold text-foreground truncate">{zone.city}</span>
+                          {zone.trend_signal === 'rising' && <TrendingUp className="h-2.5 w-2.5 text-chart-2 shrink-0" />}
+                          {zone.trend_signal === 'declining' && <TrendingDown className="h-2.5 w-2.5 text-destructive shrink-0" />}
                         </div>
                         <div className="flex items-center gap-2 mt-1">
                           <Badge variant="outline" className={cn("text-[9px] px-1.5 py-0", badge.className)}>
                             {badge.label}
                           </Badge>
                           <span className="text-[10px] text-muted-foreground">{zone.count} listings</span>
+                        </div>
+                        {/* Rental yield + price growth row */}
+                        <div className="flex items-center gap-3 mt-1">
+                          {zone.avg_rental_yield != null && (
+                            <span className="text-[9px] text-muted-foreground flex items-center gap-0.5">
+                              <DollarSign className="h-2.5 w-2.5" />Yield {zone.avg_rental_yield.toFixed(1)}%
+                            </span>
+                          )}
+                          {zone.price_growth_pct != null && (
+                            <span className={cn("text-[9px] flex items-center gap-0.5", zone.price_growth_pct >= 0 ? "text-chart-2" : "text-destructive")}>
+                              <Activity className="h-2.5 w-2.5" />{zone.price_growth_pct >= 0 ? '+' : ''}{zone.price_growth_pct.toFixed(1)}%
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div className="text-right shrink-0">
@@ -223,6 +243,24 @@ const ZoneDetailDrawer = memo<{
                       <div className="text-[9px] text-muted-foreground">{kpi.label}</div>
                     </div>
                   ))}
+                </div>
+                {/* Rental Yield & Price Growth */}
+                <div className="grid grid-cols-3 gap-3 mt-3">
+                  <div className="text-center p-2 rounded-lg bg-muted/30">
+                    <DollarSign className="h-3.5 w-3.5 mx-auto text-chart-2 mb-1" />
+                    <div className="text-sm font-bold text-foreground">{stats.avg_rental_yield != null ? `${stats.avg_rental_yield.toFixed(1)}%` : '—'}</div>
+                    <div className="text-[9px] text-muted-foreground">Rental Yield</div>
+                  </div>
+                  <div className="text-center p-2 rounded-lg bg-muted/30">
+                    <Clock className="h-3.5 w-3.5 mx-auto text-chart-4 mb-1" />
+                    <div className={cn("text-sm font-bold", (stats.price_growth_3m ?? 0) >= 0 ? "text-chart-2" : "text-destructive")}>{stats.price_growth_3m != null ? `${stats.price_growth_3m >= 0 ? '+' : ''}${stats.price_growth_3m.toFixed(1)}%` : '—'}</div>
+                    <div className="text-[9px] text-muted-foreground">3M Growth</div>
+                  </div>
+                  <div className="text-center p-2 rounded-lg bg-muted/30">
+                    <Calendar className="h-3.5 w-3.5 mx-auto text-primary mb-1" />
+                    <div className={cn("text-sm font-bold", (stats.price_growth_12m ?? 0) >= 0 ? "text-chart-2" : "text-destructive")}>{stats.price_growth_12m != null ? `${stats.price_growth_12m >= 0 ? '+' : ''}${stats.price_growth_12m.toFixed(1)}%` : '—'}</div>
+                    <div className="text-[9px] text-muted-foreground">12M Growth</div>
+                  </div>
                 </div>
                 <div className="mt-3">
                   <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Avg Price</p>
@@ -426,6 +464,28 @@ const FilterBar = memo<{
           <Switch checked={showHeat} onCheckedChange={setShowHeat} className="h-4 w-7" />
           <Label className="text-[10px] text-muted-foreground">Heat</Label>
         </div>
+      </div>
+
+      {/* Trend view toggle */}
+      <div className="flex gap-1 bg-background/90 backdrop-blur-xl rounded-lg border border-border/50 p-1 shadow-lg">
+        <Button
+          variant={filters.trend_view !== 'long_term' ? "default" : "ghost"}
+          size="sm"
+          className="h-7 text-[10px] gap-1 px-2"
+          onClick={() => setFilters({ ...filters, trend_view: 'short_term' })}
+        >
+          <Clock className="h-3 w-3" />
+          <span className="hidden sm:inline">Short-Term</span>
+        </Button>
+        <Button
+          variant={filters.trend_view === 'long_term' ? "default" : "ghost"}
+          size="sm"
+          className="h-7 text-[10px] gap-1 px-2"
+          onClick={() => setFilters({ ...filters, trend_view: 'long_term' })}
+        >
+          <Calendar className="h-3 w-3" />
+          <span className="hidden sm:inline">Long-Term</span>
+        </Button>
       </div>
 
       {/* Filter toggle */}
