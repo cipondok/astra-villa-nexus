@@ -132,7 +132,7 @@ export function useRetentionEngine() {
       const d60 = new Date(now.getTime() - 60 * 86400000).toISOString();
 
       // Parallel queries
-      const [behaviorRes, behavior60Res, savedRes, alertsRes] = await Promise.all([
+      const [behaviorRes, behavior60Res, alertsRes] = await Promise.all([
         supabase
           .from('ai_behavior_tracking')
           .select('created_at', { count: 'exact', head: false })
@@ -146,16 +146,19 @@ export function useRetentionEngine() {
           .gte('created_at', d60)
           .lt('created_at', d30),
         supabase
-          .from('saved_properties')
-          .select('id', { count: 'exact', head: true })
-          .eq('user_id', user.id)
-          .gte('created_at', d30),
-        supabase
           .from('property_alerts')
-          .select('id, is_active', { count: 'exact', head: false })
+          .select('id, created_at', { count: 'exact', head: false })
           .eq('user_id', user.id)
           .limit(100),
       ]);
+
+      // Watchlist: use ai_behavior_tracking save events
+      const savedEventsRes = await supabase
+        .from('ai_behavior_tracking')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('event_type', 'save')
+        .gte('created_at', d30);
 
       const current30d = behaviorRes.count || 0;
       const previous30d = behavior60Res.count || 0;
