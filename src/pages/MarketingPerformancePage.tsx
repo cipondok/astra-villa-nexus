@@ -7,6 +7,7 @@ import { useMarketingPerformance, type DailyTrend } from '@/hooks/useMarketingPe
 const ViralCoefficientPanel = lazy(() => import('@/components/marketing/ViralCoefficientPanel'));
 const TransactionLiquidityPanel = lazy(() => import('@/components/marketing/TransactionLiquidityPanel'));
 const DealVelocityPanel = lazy(() => import('@/components/marketing/DealVelocityPanel'));
+const NorthStarPanel = lazy(() => import('@/components/marketing/NorthStarPanel'));
 import { motion } from 'framer-motion';
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -231,13 +232,14 @@ export default function MarketingPerformancePage() {
 
         {/* Charts */}
         <Tabs defaultValue="trends" className="space-y-4">
-          <TabsList className="bg-muted/50">
+          <TabsList className="bg-muted/50 flex-wrap h-auto gap-1">
             <TabsTrigger value="trends">Performance Trends</TabsTrigger>
             <TabsTrigger value="channels">Channel Breakdown</TabsTrigger>
             <TabsTrigger value="spend">Budget Allocation</TabsTrigger>
             <TabsTrigger value="liquidity">Transaction Liquidity</TabsTrigger>
             <TabsTrigger value="velocity">Deal Velocity</TabsTrigger>
             <TabsTrigger value="viral">Viral Growth</TabsTrigger>
+            <TabsTrigger value="northstar">⭐ North Star</TabsTrigger>
           </TabsList>
 
           <TabsContent value="trends">
@@ -385,6 +387,12 @@ export default function MarketingPerformancePage() {
           <TabsContent value="viral">
             <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>}>
               <ViralCoefficientPanel period={period} />
+            </Suspense>
+          </TabsContent>
+
+          <TabsContent value="northstar">
+            <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>}>
+              <NorthStarPanel period={period} />
             </Suspense>
           </TabsContent>
         </Tabs>
