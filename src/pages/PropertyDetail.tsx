@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef, useMemo, lazy, Suspense } from 'react';
+import ScrollReveal from '@/components/ui/ScrollReveal';
 import { useUserBehaviorAnalytics } from '@/hooks/useUserBehaviorAnalytics';
 import { useTranslation } from '@/i18n/useTranslation';
 import { SEOHead, seoSchemas } from '@/components/SEOHead';
@@ -99,6 +100,7 @@ const PropertyNeighborhoodInsights = lazy(() => import('@/components/property/Pr
 const PropertyChatbot = lazy(() => import('@/components/property/PropertyChatbot'));
 const InvestorFunnelCTA = lazy(() => import('@/components/transaction/InvestorFunnelCTA'));
 const MakeOfferDialog = lazy(() => import('@/components/offers/MakeOfferDialog'));
+const PropertyInvestmentDashboard = lazy(() => import('@/components/property/PropertyInvestmentDashboard'));
 import { formatDistanceToNow } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 
@@ -594,7 +596,7 @@ const PropertyDetail: React.FC = () => {
       {/* Agent info moved to sidebar only — no redundant top banner */}
 
       {/* Slim Sticky Header */}
-      <div className="sticky top-0 z-50 bg-background/90 backdrop-blur-2xl border-b border-border shadow-sm">
+      <div className="sticky top-0 z-50 bg-background/90 backdrop-blur-2xl border-b border-border/50 shadow-sm transition-all duration-500">
         <div className="max-w-7xl mx-auto px-2 sm:px-4">
           <div className="flex items-center justify-between h-10">
             <div className="flex items-center gap-1">
@@ -861,6 +863,7 @@ const PropertyDetail: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-2 sm:space-y-3">
+            <ScrollReveal direction="up" delay={0}>
             
             {/* Property Header - Slim Glassmorphic */}
             <Card className="border border-gold-primary/10 bg-card backdrop-blur-xl rounded-xl overflow-hidden">
@@ -1017,8 +1020,10 @@ const PropertyDetail: React.FC = () => {
                 </div>
               </CardContent>
             </Card>
+            </ScrollReveal>
 
             {/* Property Details Tabs - Slim */}
+            <ScrollReveal direction="up" delay={100}>
             <Card className="border border-gold-primary/10 bg-card backdrop-blur-xl rounded-xl overflow-hidden">
               <CardContent className="p-2 sm:p-4">
                 <Tabs defaultValue="description" className="w-full">
@@ -1085,6 +1090,7 @@ const PropertyDetail: React.FC = () => {
                 </Tabs>
               </CardContent>
             </Card>
+            </ScrollReveal>
 
             {/* Neighborhood Insights */}
             <Suspense fallback={<div className="h-40 flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-gold-primary" /></div>}>
@@ -1405,33 +1411,40 @@ const PropertyDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* AI Property Valuation & ROI Forecast */}
-        <div className="mt-6 sm:mt-8 grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-          <AutoValuationCard propertyId={property.id} currentPrice={property.price} />
-          <ROIForecastCard propertyId={property.id} currentPrice={property.price} />
-          <Suspense fallback={null}>
-            <PropertyLiquidityWidget city={property.city} propertyType={property.property_type} />
-          </Suspense>
-        </div>
+        {/* AI Property Valuation & ROI Forecast — Investment Dashboard */}
+        <Suspense fallback={null}>
+          <PropertyInvestmentDashboard
+            propertyId={property.id}
+            currentPrice={property.price}
+            city={property.city}
+            propertyType={property.property_type}
+          />
+        </Suspense>
 
         {/* Reviews Section */}
-        <div className="mt-6 sm:mt-8">
-          <PropertyReviews propertyId={property.id} />
-        </div>
+        <ScrollReveal direction="up" delay={0}>
+          <div className="mt-6 sm:mt-8">
+            <PropertyReviews propertyId={property.id} />
+          </div>
+        </ScrollReveal>
 
         {/* Market Intelligence Context */}
-        <div className="mt-4 sm:mt-6">
-          <Suspense fallback={null}>
-            <MarketContextCard city={property.city} currentPrice={property.price} />
-          </Suspense>
-        </div>
+        <ScrollReveal direction="up" delay={100}>
+          <div className="mt-4 sm:mt-6">
+            <Suspense fallback={null}>
+              <MarketContextCard city={property.city} currentPrice={property.price} />
+            </Suspense>
+          </div>
+        </ScrollReveal>
 
         {/* Investment Insights */}
-        <div className="mt-4 sm:mt-6">
-          <Suspense fallback={null}>
-            <PropertyInvestmentInsights propertyId={property.id} />
-          </Suspense>
-        </div>
+        <ScrollReveal direction="up" delay={100}>
+          <div className="mt-4 sm:mt-6">
+            <Suspense fallback={null}>
+              <PropertyInvestmentInsights propertyId={property.id} />
+            </Suspense>
+          </div>
+        </ScrollReveal>
 
         {/* Similar Properties & Nearby Investments */}
         <div className="mt-4 sm:mt-8 grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
@@ -1553,11 +1566,11 @@ const PropertyDetail: React.FC = () => {
       </Suspense>
 
       {/* Sticky Mobile Contact CTA — Optimized funnel with Make Offer */}
-      <div className="fixed bottom-0 left-0 right-0 z-[9980] md:hidden bg-card/95 backdrop-blur-xl border-t border-border/40 shadow-[0_-4px_20px_hsl(var(--foreground)/0.06)]"
+      <div className="fixed bottom-0 left-0 right-0 z-[9980] md:hidden bg-card/95 backdrop-blur-2xl border-t border-gold-primary/10 shadow-[0_-8px_30px_hsl(var(--foreground)/0.08)]"
         style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}
       >
         {/* Agent response indicator */}
-        <div className="flex items-center justify-center gap-1.5 py-1 border-b border-border/20 bg-muted/20">
+        <div className="flex items-center justify-center gap-1.5 py-1.5 border-b border-border/10 bg-gradient-to-r from-muted/30 via-gold-primary/5 to-muted/30">
           <div className="w-1.5 h-1.5 rounded-full bg-chart-2 animate-pulse" />
           <span className="text-[8px] text-muted-foreground">Agent responds within <strong className="text-foreground">2 hrs</strong></span>
         </div>
