@@ -71,7 +71,38 @@ export interface LeaderboardEntry {
 export const LEVEL_TITLES = {
   agent: ['Rookie Agent', 'Rising Star', 'Property Scout', 'Deal Maker', 'Top Performer', 'Elite Agent', 'Master Broker', 'Platinum Agent', 'Diamond Agent', 'Legend'],
   homeowner: ['New Seller', 'Active Seller', 'Market Player', 'Savvy Owner', 'Power Seller', 'Market Expert', 'Portfolio Pro', 'Elite Owner', 'Diamond Seller', 'Mogul'],
-  searcher: ['Browser', 'Explorer', 'Home Hunter', 'Serious Buyer', 'VIP Searcher', 'Property Expert', 'Dream Finder', 'Platinum Member', 'Diamond Hunter', 'Tycoon']
+  searcher: ['Explorer Investor', 'Market Observer', 'Deal Seeker', 'Strategic Investor', 'Portfolio Builder', 'Market Analyst', 'Elite Opportunity Hunter', 'Platinum Investor', 'Diamond Strategist', 'Investment Legend'],
+  investor: ['Explorer Investor', 'Market Observer', 'Deal Seeker', 'Strategic Investor', 'Portfolio Builder', 'Market Analyst', 'Elite Opportunity Hunter', 'Platinum Investor', 'Diamond Strategist', 'Investment Legend']
+};
+
+// Investor-specific XP point values for activity tracking
+export const INVESTOR_XP_ACTIONS = {
+  save_opportunity: { xp: 10, label: 'Saved investment opportunity' },
+  complete_roi_simulation: { xp: 15, label: 'Completed ROI simulation' },
+  read_market_insight: { xp: 8, label: 'Read market insight article' },
+  complete_learning_action: { xp: 20, label: 'Completed market learning' },
+  referral_sent: { xp: 25, label: 'Sent referral invitation' },
+  referral_converted: { xp: 100, label: 'Referral converted to signup' },
+  watchlist_review: { xp: 5, label: 'Reviewed watchlist portfolio' },
+  property_inquiry: { xp: 15, label: 'Submitted property inquiry' },
+  ai_recommendation_explored: { xp: 10, label: 'Explored AI recommendation' },
+  price_alert_set: { xp: 8, label: 'Set price alert' },
+  portfolio_analysis: { xp: 20, label: 'Ran portfolio analysis' },
+  social_share: { xp: 12, label: 'Shared opportunity socially' },
+} as const;
+
+// Tier reward descriptions
+export const INVESTOR_TIER_REWARDS: Record<number, { benefits: string[]; unlockLabel: string }> = {
+  1: { unlockLabel: 'Explorer Investor', benefits: ['Basic property search', 'Standard recommendations'] },
+  2: { unlockLabel: 'Market Observer', benefits: ['Priority price drop alerts', 'Weekly market digest'] },
+  3: { unlockLabel: 'Deal Seeker', benefits: ['3 extra watchlist slots', 'Demand heatmap access'] },
+  4: { unlockLabel: 'Strategic Investor', benefits: ['Enhanced ROI projections (5yr)', 'Neighborhood analytics'] },
+  5: { unlockLabel: 'Portfolio Builder', benefits: ['Portfolio risk analysis', 'Early access to new listings'] },
+  6: { unlockLabel: 'Market Analyst', benefits: ['AI-powered market reports', 'Comparative analytics'] },
+  7: { unlockLabel: 'Elite Opportunity Hunter', benefits: ['Priority elite deal alerts', 'Exclusive insight reports'] },
+  8: { unlockLabel: 'Platinum Investor', benefits: ['VIP agent matching', '1-on-1 investment consultations'] },
+  9: { unlockLabel: 'Diamond Strategist', benefits: ['Private deal access', 'Advanced hedging insights'] },
+  10: { unlockLabel: 'Investment Legend', benefits: ['All premium features unlocked', 'Legend status badge'] },
 };
 
 // XP thresholds for each level

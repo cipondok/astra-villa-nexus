@@ -6,3 +6,4 @@ export { default as DailyLoginReward } from './DailyLoginReward';
 export { default as UserStatusBadge } from './UserStatusBadge';
 export { default as AchievementShare } from './AchievementShare';
 export { default as GamificationHub } from './GamificationHub';
+export { default as InvestorEngagementPanel } from './InvestorEngagementPanel';
