@@ -1162,6 +1162,13 @@ export const navigationSections = {
       description: "Monitor 404 errors and other page errors with IP tracking"
     },
     {
+      key: "system-error-settings",
+      label: "Error Settings",
+      icon: Settings,
+      description: "Configure error classification (404/5xx), alert thresholds, logging, and chat error linking",
+      badge: "New"
+    },
+    {
       key: "database-errors",
       label: "Database Errors",
       icon: DatabaseZap,
