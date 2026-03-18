@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useMarketingPerformance, type DailyTrend } from '@/hooks/useMarketingPerformance';
 
 const ViralCoefficientPanel = lazy(() => import('@/components/marketing/ViralCoefficientPanel'));
+const TransactionLiquidityPanel = lazy(() => import('@/components/marketing/TransactionLiquidityPanel'));
 import { motion } from 'framer-motion';
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
