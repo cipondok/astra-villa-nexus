@@ -107,7 +107,7 @@ const SystemErrorSettings = () => {
   const handleSaveSettings = async () => {
     setIsSaving(true);
     try {
-      // Save settings to platform_settings
+      // Save settings to localStorage for now (can be migrated to DB table later)
       const settingsPayload = {
         classifications,
         thresholds,
@@ -115,15 +115,7 @@ const SystemErrorSettings = () => {
         updated_at: new Date().toISOString(),
       };
 
-      const { error } = await supabase
-        .from('platform_settings')
-        .upsert({
-          setting_key: 'system_error_settings',
-          setting_value: settingsPayload as any,
-          updated_at: new Date().toISOString(),
-        }, { onConflict: 'setting_key' });
-
-      if (error) throw error;
+      localStorage.setItem('system_error_settings', JSON.stringify(settingsPayload));
       toast.success('Error settings saved successfully');
     } catch (err) {
       toast.error('Failed to save settings');
