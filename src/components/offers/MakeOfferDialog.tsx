@@ -5,9 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { DollarSign, TrendingDown, TrendingUp, Minus, CheckCircle2, Clock, Sparkles, ArrowRight } from 'lucide-react';
+import { DollarSign, TrendingDown, TrendingUp, Minus, CheckCircle2, Clock, Sparkles, ArrowRight, ArrowLeft, Shield, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 function formatPrice(v: number) {
   if (v >= 1e9) return `Rp ${(v / 1e9).toFixed(1)}M`;
@@ -16,6 +16,7 @@ function formatPrice(v: number) {
 }
 
 type CompetitiveTier = 'below' | 'aligned' | 'premium';
+type Step = 'form' | 'review' | 'success';
 
 function getCompetitiveTier(offerPrice: number, listPrice: number): CompetitiveTier {
   const ratio = offerPrice / listPrice;
@@ -24,31 +25,40 @@ function getCompetitiveTier(offerPrice: number, listPrice: number): CompetitiveT
   return 'premium';
 }
 
-const tierConfig: Record<CompetitiveTier, { label: string; description: string; icon: typeof TrendingDown; colorClass: string; bgClass: string; borderClass: string }> = {
+const tierConfig: Record<CompetitiveTier, { label: string; description: string; icon: typeof TrendingDown; colorClass: string; bgClass: string; borderClass: string; acceptance: string }> = {
   below: {
     label: 'Below Market',
     description: 'Aggressive offer — may need negotiation rounds',
     icon: TrendingDown,
-    colorClass: 'text-amber-500',
-    bgClass: 'bg-amber-500/10',
-    borderClass: 'border-amber-500/20',
+    colorClass: 'text-chart-4',
+    bgClass: 'bg-chart-4/10',
+    borderClass: 'border-chart-4/20',
+    acceptance: '~35% acceptance rate',
   },
   aligned: {
     label: 'Market Aligned',
     description: 'Strong competitive position — high acceptance probability',
     icon: Minus,
-    colorClass: 'text-emerald-500',
-    bgClass: 'bg-emerald-500/10',
-    borderClass: 'border-emerald-500/20',
+    colorClass: 'text-chart-2',
+    bgClass: 'bg-chart-2/10',
+    borderClass: 'border-chart-2/20',
+    acceptance: '~78% acceptance rate',
   },
   premium: {
     label: 'Premium Offer',
     description: 'Above market — signals serious buyer intent',
     icon: TrendingUp,
-    colorClass: 'text-blue-500',
-    bgClass: 'bg-blue-500/10',
-    borderClass: 'border-blue-500/20',
+    colorClass: 'text-primary',
+    bgClass: 'bg-primary/10',
+    borderClass: 'border-primary/20',
+    acceptance: '~92% acceptance rate',
   },
+};
+
+const financingLabels: Record<string, string> = {
+  cash: '💵 Cash',
+  mortgage: '🏦 Mortgage / KPR',
+  mixed: '🔀 Mixed',
 };
 
 interface MakeOfferDialogProps {
@@ -67,7 +77,7 @@ export default function MakeOfferDialog({
   open, onOpenChange, propertyId, propertyTitle, propertyImage, propertyPrice, sellerId, agentId, opportunityScore,
 }: MakeOfferDialogProps) {
   const createOffer = useCreateOffer();
-  const [submitted, setSubmitted] = useState(false);
+  const [step, setStep] = useState<Step>('form');
   const [form, setForm] = useState({
     offer_price: propertyPrice ? Math.round(propertyPrice * 0.9) : 0,
     financing_method: 'cash' as FinancingMethod,
@@ -86,10 +96,15 @@ export default function MakeOfferDialog({
 
   const aiEstimate = useMemo(() => {
     if (!propertyPrice) return null;
-    // Simulated AI FMV — slightly below list to reflect market intelligence
     const factor = opportunityScore && opportunityScore > 70 ? 0.95 : 0.97;
     return Math.round(propertyPrice * factor);
   }, [propertyPrice, opportunityScore]);
+
+  // Suggested offer range
+  const suggestedRange = useMemo(() => {
+    if (!propertyPrice) return null;
+    return { low: Math.round(propertyPrice * 0.85), high: Math.round(propertyPrice * 0.98) };
+  }, [propertyPrice]);
 
   const handleSubmit = () => {
     if (form.offer_price <= 0) return;
@@ -106,38 +121,48 @@ export default function MakeOfferDialog({
       property_original_price: propertyPrice,
     };
     createOffer.mutate(input, {
-      onSuccess: () => setSubmitted(true),
+      onSuccess: () => setStep('success'),
     });
   };
 
   const handleClose = () => {
     onOpenChange(false);
-    // Reset after animation
-    setTimeout(() => setSubmitted(false), 300);
+    setTimeout(() => {
+      setStep('form');
+    }, 300);
   };
 
   const currentTier = tier ? tierConfig[tier] : null;
 
+  const slideVariants = {
+    enter: (dir: number) => ({ x: dir > 0 ? 40 : -40, opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (dir: number) => ({ x: dir > 0 ? -40 : 40, opacity: 0 }),
+  };
+
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-md p-0 overflow-hidden bg-background border-border">
-        <AnimatePresence mode="wait">
-          {submitted ? (
-            /* ── Success State ── */
+        <AnimatePresence mode="wait" custom={step === 'form' ? -1 : 1}>
+          {step === 'success' ? (
+            /* ── SUCCESS ── */
             <motion.div
               key="success"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
+              custom={1}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.25 }}
               className="p-6 flex flex-col items-center text-center gap-4"
             >
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.1 }}
-                className="w-16 h-16 rounded-full bg-emerald-500/15 flex items-center justify-center"
+                className="w-16 h-16 rounded-full bg-chart-2/15 flex items-center justify-center"
               >
-                <CheckCircle2 className="h-8 w-8 text-emerald-500" />
+                <CheckCircle2 className="h-8 w-8 text-chart-2" />
               </motion.div>
 
               <div>
@@ -166,13 +191,116 @@ export default function MakeOfferDialog({
                 </Button>
               </div>
             </motion.div>
+
+          ) : step === 'review' ? (
+            /* ── REVIEW SUMMARY ── */
+            <motion.div
+              key="review"
+              custom={1}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.25 }}
+              className="p-6 space-y-4"
+            >
+              <DialogHeader className="p-0">
+                <DialogTitle className="flex items-center gap-2 text-base">
+                  <FileText className="h-5 w-5 text-primary" />
+                  Review Your Offer
+                </DialogTitle>
+              </DialogHeader>
+
+              {/* Property recap */}
+              {propertyTitle && (
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/50">
+                  {propertyImage && (
+                    <img src={propertyImage} alt="" className="w-14 h-14 rounded-lg object-cover" />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">{propertyTitle}</p>
+                    {propertyPrice && (
+                      <p className="text-xs text-muted-foreground">Listed: <span className="font-semibold text-foreground">{formatPrice(propertyPrice)}</span></p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Summary details */}
+              <div className="rounded-xl border border-border/60 divide-y divide-border/40 overflow-hidden">
+                <div className="flex items-center justify-between px-4 py-2.5">
+                  <span className="text-xs text-muted-foreground">Your Offer</span>
+                  <span className="text-sm font-bold text-foreground">{formatPrice(form.offer_price)}</span>
+                </div>
+                {discount !== 0 && (
+                  <div className="flex items-center justify-between px-4 py-2.5">
+                    <span className="text-xs text-muted-foreground">vs. Asking Price</span>
+                    <span className={cn('text-xs font-semibold', discount > 0 ? 'text-chart-2' : 'text-chart-4')}>
+                      {discount > 0 ? `${discount}% below` : `${Math.abs(discount)}% above`}
+                    </span>
+                  </div>
+                )}
+                <div className="flex items-center justify-between px-4 py-2.5">
+                  <span className="text-xs text-muted-foreground">Financing</span>
+                  <span className="text-xs font-medium text-foreground">{financingLabels[form.financing_method] || form.financing_method}</span>
+                </div>
+                <div className="flex items-center justify-between px-4 py-2.5">
+                  <span className="text-xs text-muted-foreground">Timeline</span>
+                  <span className="text-xs font-medium text-foreground">{form.completion_timeline}</span>
+                </div>
+                {form.buyer_message && (
+                  <div className="px-4 py-2.5">
+                    <span className="text-xs text-muted-foreground block mb-1">Your Message</span>
+                    <p className="text-xs text-foreground leading-relaxed">{form.buyer_message}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* AI Competitiveness recap */}
+              {currentTier && (
+                <div className={cn('flex items-center gap-3 p-3 rounded-lg border', currentTier.bgClass, currentTier.borderClass)}>
+                  <div className={cn('w-9 h-9 rounded-full flex items-center justify-center shrink-0', currentTier.bgClass, 'border', currentTier.borderClass)}>
+                    <currentTier.icon className={cn('h-4 w-4', currentTier.colorClass)} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className={cn('text-xs font-semibold', currentTier.colorClass)}>{currentTier.label}</p>
+                    <p className="text-[10px] text-muted-foreground">{currentTier.acceptance}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Trust note */}
+              <div className="flex items-start gap-2 px-1">
+                <Shield className="h-3.5 w-3.5 text-muted-foreground shrink-0 mt-0.5" />
+                <p className="text-[10px] text-muted-foreground leading-relaxed">
+                  Your offer is non-binding until a formal agreement is signed. All negotiations are private between you and the seller/agent.
+                </p>
+              </div>
+
+              <DialogFooter className="p-0 gap-2">
+                <Button variant="outline" onClick={() => setStep('form')} className="gap-1.5">
+                  <ArrowLeft className="h-3.5 w-3.5" /> Edit
+                </Button>
+                <Button
+                  onClick={handleSubmit}
+                  disabled={createOffer.isPending}
+                  className="gap-1.5 flex-1"
+                >
+                  {createOffer.isPending ? 'Submitting…' : 'Confirm & Submit'}
+                </Button>
+              </DialogFooter>
+            </motion.div>
+
           ) : (
-            /* ── Offer Form ── */
+            /* ── OFFER FORM ── */
             <motion.div
               key="form"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0, x: -20 }}
+              custom={-1}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.25 }}
               className="p-6 space-y-4"
             >
               <DialogHeader className="p-0">
@@ -207,22 +335,29 @@ export default function MakeOfferDialog({
                   onChange={e => setForm(f => ({ ...f, offer_price: Number(e.target.value) }))}
                   className="mt-1"
                 />
-                {discount > 0 && (
-                  <p className="text-[10px] text-emerald-500 mt-1">{discount}% below asking price</p>
-                )}
-                {discount < 0 && (
-                  <p className="text-[10px] text-amber-500 mt-1">{Math.abs(discount)}% above asking price</p>
-                )}
+                <div className="flex items-center justify-between mt-1">
+                  {discount > 0 && (
+                    <p className="text-[10px] text-chart-2">{discount}% below asking price</p>
+                  )}
+                  {discount < 0 && (
+                    <p className="text-[10px] text-chart-4">{Math.abs(discount)}% above asking price</p>
+                  )}
+                  {discount === 0 && <span />}
+                  {suggestedRange && (
+                    <p className="text-[10px] text-muted-foreground">
+                      Typical: {formatPrice(suggestedRange.low)} – {formatPrice(suggestedRange.high)}
+                    </p>
+                  )}
+                </div>
               </div>
 
-              {/* ── AI Guidance Panel ── */}
+              {/* AI Guidance Panel */}
               {propertyPrice && form.offer_price > 0 && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   className="rounded-lg border border-border/50 overflow-hidden"
                 >
-                  {/* AI Valuation Hint */}
                   {aiEstimate && (
                     <div className="px-3 py-2 bg-muted/20 border-b border-border/30 flex items-center gap-2">
                       <Sparkles className="h-3.5 w-3.5 text-primary" />
@@ -232,14 +367,13 @@ export default function MakeOfferDialog({
                     </div>
                   )}
 
-                  {/* Competitiveness Indicator */}
                   {currentTier && (
-                    <div className={`px-3 py-2.5 flex items-center gap-3 ${currentTier.bgClass}`}>
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentTier.bgClass} border ${currentTier.borderClass}`}>
-                        <currentTier.icon className={`h-4 w-4 ${currentTier.colorClass}`} />
+                    <div className={cn('px-3 py-2.5 flex items-center gap-3', currentTier.bgClass)}>
+                      <div className={cn('w-8 h-8 rounded-full flex items-center justify-center border', currentTier.bgClass, currentTier.borderClass)}>
+                        <currentTier.icon className={cn('h-4 w-4', currentTier.colorClass)} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className={`text-xs font-semibold ${currentTier.colorClass}`}>{currentTier.label}</p>
+                        <p className={cn('text-xs font-semibold', currentTier.colorClass)}>{currentTier.label}</p>
                         <p className="text-[10px] text-muted-foreground leading-tight">{currentTier.description}</p>
                       </div>
                     </div>
@@ -291,8 +425,12 @@ export default function MakeOfferDialog({
 
               <DialogFooter className="p-0 gap-2">
                 <Button variant="outline" onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleSubmit} disabled={createOffer.isPending || form.offer_price <= 0} className="gap-1.5">
-                  {createOffer.isPending ? 'Submitting…' : 'Submit Offer'}
+                <Button
+                  onClick={() => setStep('review')}
+                  disabled={form.offer_price <= 0}
+                  className="gap-1.5"
+                >
+                  Review Offer <ArrowRight className="h-3.5 w-3.5" />
                 </Button>
               </DialogFooter>
             </motion.div>
