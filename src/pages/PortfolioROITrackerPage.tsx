@@ -356,6 +356,78 @@ export default function PortfolioROITrackerPage() {
         </CardContent>
       </Card>
 
+      {/* Opportunity Upgrade Signals */}
+      {(() => {
+        const signals = props
+          .filter(p => p.opportunity_score >= 70 || p.opportunity_trend === 'rising')
+          .sort((a, b) => b.opportunity_score - a.opportunity_score)
+          .slice(0, 5);
+
+        if (signals.length === 0) return null;
+
+        return (
+          <Card className="border-border/50 bg-card/80 overflow-hidden">
+            <div className="h-0.5 w-full bg-gradient-to-r from-chart-2 via-primary to-chart-4" />
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Zap className="h-4 w-4 text-chart-2" /> Opportunity Upgrade Signals
+                <Badge variant="secondary" className="text-[9px] ml-1">{signals.length} active</Badge>
+              </CardTitle>
+              <p className="text-xs text-muted-foreground">Properties showing improved scores or rising market momentum</p>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {signals.map((s, i) => {
+                const isElite = s.opportunity_score >= 85;
+                const isRising = s.opportunity_trend === 'rising';
+                return (
+                  <motion.div
+                    key={s.id}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    className={cn(
+                      'flex items-center gap-3 rounded-lg border p-3 transition-colors',
+                      isElite
+                        ? 'border-chart-2/30 bg-chart-2/[0.04]'
+                        : 'border-border/50 bg-accent/10 hover:bg-accent/20',
+                    )}
+                  >
+                    {s.thumbnail_url ? (
+                      <img src={s.thumbnail_url} alt="" className="h-9 w-9 rounded-lg object-cover flex-shrink-0" />
+                    ) : (
+                      <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <Home className="h-4 w-4 text-primary" />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <p className="text-xs font-semibold text-foreground truncate">{s.title}</p>
+                        {isElite && (
+                          <Badge className="text-[7px] px-1 py-0 h-3.5 bg-chart-2/15 text-chart-2 border border-chart-2/30">
+                            ELITE
+                          </Badge>
+                        )}
+                      </div>
+                      <p className="text-[10px] text-muted-foreground">
+                        {s.city} · Score {s.opportunity_score}/100
+                        {isRising && ' · Trend ↑ Rising'}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <div className="text-right">
+                        <p className="text-xs font-bold text-foreground">{s.opportunity_score}</p>
+                        <p className="text-[9px] text-muted-foreground">score</p>
+                      </div>
+                      {isRising && <ArrowUpRight className="h-4 w-4 text-chart-2" />}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </CardContent>
+          </Card>
+        );
+      })()}
+
       {/* Property Panels */}
       <div>
         <h2 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
