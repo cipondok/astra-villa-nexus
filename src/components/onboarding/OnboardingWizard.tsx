@@ -28,7 +28,7 @@ import RenterOnboarding from "./flows/RenterOnboarding";
 import InvestorOnboarding from "./flows/InvestorOnboarding";
 import OnboardingComplete from "./OnboardingComplete";
 
-export type UserType = "homeowner" | "landlord" | "agent" | "buyer" | "renter" | null;
+export type UserType = "homeowner" | "landlord" | "agent" | "buyer" | "renter" | "investor" | null;
 
 export interface OnboardingData {
   userType: UserType;
