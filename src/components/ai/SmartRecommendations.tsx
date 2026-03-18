@@ -49,7 +49,8 @@ const SmartRecommendations = ({ limit = 4, className = "" }: SmartRecommendation
 
   // ── Data sources for ranking context ──
   const { data: investorDNA } = useInvestorDNA();
-  const { data: watchlistIds = [] } = useWatchlistPropertyIds();
+  const { data: watchlistSet } = useWatchlistPropertyIds();
+  const watchlistIds = watchlistSet ? Array.from(watchlistSet as Set<string>) : [];
 
   // Fetch browsing history for behavioral signals
   const { data: browsingHistory = [] } = useQuery<BrowsingSignal[]>({
