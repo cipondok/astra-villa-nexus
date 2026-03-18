@@ -181,10 +181,10 @@ export function useRetentionEngine() {
         avgGap = 30 / daysList.length;
       }
 
-      // Alert response rate
+      // Alert response rate: ratio of recent alerts (created in last 30d) to total
       const totalAlerts = alertsRes.count || 0;
-      const activeAlerts = (alertsRes.data || []).filter(a => a.is_active).length;
-      const alertResponseRate = totalAlerts > 0 ? Math.round((activeAlerts / totalAlerts) * 100) : 50;
+      const recentAlerts = (alertsRes.data || []).filter(a => new Date(a.created_at) > new Date(d30)).length;
+      const alertResponseRate = totalAlerts > 0 ? Math.round((recentAlerts / totalAlerts) * 100) : 50;
 
       const signals: RetentionSignals = {
         browsing_frequency: current30d,
