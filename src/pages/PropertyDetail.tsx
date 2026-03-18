@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef, useMemo, lazy, Suspense } from 'react';
+import ScrollReveal from '@/components/ui/ScrollReveal';
 import { useUserBehaviorAnalytics } from '@/hooks/useUserBehaviorAnalytics';
 import { useTranslation } from '@/i18n/useTranslation';
 import { SEOHead, seoSchemas } from '@/components/SEOHead';
