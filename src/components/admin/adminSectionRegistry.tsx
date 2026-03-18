@@ -64,6 +64,7 @@ export const VendorsHubContent = lazyRetry(() => import("./VendorsHubContent"));
 export const EnhancedVendorAgentControl = lazyRetry(() => import("./EnhancedVendorAgentControl"));
 export const AuthorizationMonitoringSystem = lazyRetry(() => import("./AuthorizationMonitoringSystem"));
 export const AdminAlertSystem = lazyRetry(() => import("./AdminAlertSystem"));
+export const SystemErrorSettings = lazyRetry(() => import("./SystemErrorSettings"));
 export const CustomerServiceControlPanel = lazyRetry(() => import("./CustomerServiceControlPanel"));
 export const DatabaseErrorManager = lazyRetry(() => import("./cs-tools/DatabaseErrorManager"));
 export const Property3DViewSettings = lazyRetry(() => import("./Property3DViewSettings"));
@@ -377,6 +378,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "error-logs":          () => <ErrorLogsTable />,
   "error-monitoring":    () => <ErrorMonitoringDashboard />,
   "bug-error-detection": () => <BugErrorDashboard />,
+  "system-error-settings": () => <SystemErrorSettings />,
 
   // SEO
   "seo-management":      () => <SEOManagement />,
@@ -664,6 +666,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "bulk-kyc-operations": { label: "Bulk KYC", category: "Verification" },
   "document-ocr": { label: "Document OCR", category: "Verification" },
   "error-logs": { label: "Error Logs", category: "System" },
+  "system-error-settings": { label: "Error Settings", category: "System" },
   "user-experience-tips": { label: "UX Tips", category: "Content" },
   "algorithm-dashboard": { label: "Algorithm Dashboard", category: "Analytics" },
   "notifications-center": { label: "Notifications Center", category: "System" },
