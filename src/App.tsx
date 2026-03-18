@@ -289,6 +289,7 @@ const DataMoatPage = lazy(() => import('@/pages/DataMoatPage'));
 const RevenueScalingPage = lazy(() => import('@/pages/RevenueScalingPage'));
 const CityExpansionPage = lazy(() => import('@/pages/CityExpansionPage'));
 const EcosystemPartnershipsPage = lazy(() => import('@/pages/EcosystemPartnershipsPage'));
+const MarketingPerformancePage = lazy(() => import('@/pages/MarketingPerformancePage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
