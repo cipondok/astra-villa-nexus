@@ -74,7 +74,7 @@ function DealProgressStepper({
   // Map current status to stage index
   const activeStageIndex = isTerminal
     ? -1
-    : DEAL_STAGES.findIndex(s => s.statuses.includes(currentStatus));
+    : DEAL_STAGES.findIndex(s => (s.statuses as readonly string[]).includes(currentStatus));
 
   return (
     <div className="space-y-3">
