@@ -50,47 +50,22 @@ const SearchPagination = lazy(() => import("@/components/search/SearchPagination
 const PropertyMapView = lazy(() => import("@/components/search/PropertyMapView"));
 const PropertyGridView = lazy(() => import("@/components/search/PropertyGridView"));
 const ActiveFilterPills = lazy(() => import("@/components/search/ActiveFilterPills").then(m => ({ default: m.ActiveFilterPills })));
-// PropertySlideSection removed — not used in restructured flow
-// PropertiesForSaleSection & PropertiesForRentSection removed from homepage — available at /dijual and /disewa
 const AstraSearchPanel = lazy(() => import("@/components/AstraSearchPanel"));
 const SearchLoadingDialog = lazy(() => import("@/components/SearchLoadingDialog").then(m => ({ default: m.SearchLoadingDialog })));
 const WhatsAppInquiryDialog = lazy(() => import("@/components/property/WhatsAppInquiryDialog"));
 const AstraVillaFeatures = lazy(() => import("@/components/home/AstraVillaFeatures"));
-// AIRecommendedProperties removed — merged into AI Opportunity Zone via SmartAIFeed + SmartRecommendations
-const SmartAIFeed = lazy(() => import("@/components/home/SmartAIFeed"));
-const AIInvestmentFeed = lazy(() => import("@/components/home/AIInvestmentFeed"));
 const SmartRecommendations = lazy(() => import("@/components/ai/SmartRecommendations"));
-const BehaviorPatternBanner = lazy(() => import("@/components/ai/BehaviorPatternBanner"));
 const DealHunterHero = lazy(() => import("@/components/home/DealHunterHero"));
-// FeaturedAdsCarousel removed — not used in restructured flow
-const MarketplaceServices = lazy(() => import("@/components/home/MarketplaceServices"));
-const PartnerLogosMarquee = lazy(() => import("@/components/home/PartnerLogosMarquee"));
-const TrendingSearchesWidget = lazy(() => import("@/components/home/TrendingSearchesWidget").then(m => ({ default: m.TrendingSearchesWidget })));
 const InvestorPathSelector = lazy(() => import("@/components/home/InvestorPathSelector"));
-// PropertySlideshow removed — not used in restructured flow
 const FeaturedPropertiesCarousel = lazy(() => import("@/components/home/FeaturedPropertiesCarousel"));
 const SmartCollectionsShowcase = lazy(() => import("@/components/home/SmartCollectionsV2"));
 const TrendingROIDeals = lazy(() => import("@/components/home/TrendingROIDeals"));
-const AIPriceEstimatorCTA = lazy(() => import("@/components/home/AIPriceEstimatorCTA"));
-// MarketIntelligenceCTA removed — replaced by SectionDividerCTA inline
 const EarlyInvestmentCTA = lazy(() => import("@/components/home/EarlyInvestmentCTA"));
 const SocialProofStrip = lazy(() => import("@/components/home/SocialProofStrip"));
-const SectionDividerCTA = lazy(() => import("@/components/home/SectionDividerCTA"));
 const MobileFloatingCTA = lazy(() => import("@/components/home/MobileFloatingCTA"));
 const TrustFooterStrip = lazy(() => import("@/components/home/TrustFooterStrip"));
-const LiveActivityTicker = lazy(() => import("@/components/home/LiveActivityTicker"));
-const WelcomeBackStrip = lazy(() => import("@/components/home/WelcomeBackStrip"));
-const RecentlyViewedStrip = lazy(() => import("@/components/home/RecentlyViewedStrip"));
-const ReferralInviteStrip = lazy(() => import("@/components/home/ReferralInviteStrip"));
-const HotspotAlertBanner = lazy(() => import("@/components/ai/HotspotAlertBanner"));
-const DiscoveryTrigger = lazy(() => import("@/components/ai/DiscoveryTrigger"));
-const PredictiveSearchCanvas = lazy(() => import("@/components/ai/PredictiveSearchCanvas"));
-const OpportunityRadar = lazy(() => import("@/components/ai/OpportunityRadar"));
-const AIJourneyGuide = lazy(() => import("@/components/ai/AIJourneyGuide"));
-const OpportunityStreakCards = lazy(() => import("@/components/home/OpportunityStreakCards"));
 const PWAInstallPrompt = lazy(() => import("@/components/pwa/PWAInstallPrompt"));
 const ExitIntentPopup = lazy(() => import("@/components/home/ExitIntentPopup"));
-const UrgencyTimerStrip = lazy(() => import("@/components/home/UrgencyTimerStrip"));
 const AstraProjectShowcase = lazy(() => import("@/components/home/AstraProjectShowcase"));
 
 type ViewMode = 'list' | 'grid' | 'map';
