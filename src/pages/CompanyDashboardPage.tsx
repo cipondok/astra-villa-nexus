@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import { motion } from 'framer-motion';
 import { motion } from 'framer-motion';
 import {
   Building2, Users, MessageSquare, FileText, DollarSign, TrendingUp,
