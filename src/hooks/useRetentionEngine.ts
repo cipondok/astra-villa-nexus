@@ -162,7 +162,7 @@ export function useRetentionEngine() {
 
       const current30d = behaviorRes.count || 0;
       const previous30d = behavior60Res.count || 0;
-      const watchlistUpdates = savedRes.count || 0;
+      const watchlistUpdates = savedEventsRes.count || 0;
 
       // Compute session gaps from behavior timestamps
       const timestamps = (behaviorRes.data || [])
