@@ -365,6 +365,12 @@ export default function MarketingPerformancePage() {
               </Card>
             </div>
           </TabsContent>
+
+          <TabsContent value="viral">
+            <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>}>
+              <ViralCoefficientPanel period={period} />
+            </Suspense>
+          </TabsContent>
         </Tabs>
       </div>
     </>
