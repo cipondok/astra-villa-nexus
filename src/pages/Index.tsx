@@ -66,6 +66,10 @@ const TrustFooterStrip = lazy(() => import("@/components/home/TrustFooterStrip")
 const PWAInstallPrompt = lazy(() => import("@/components/pwa/PWAInstallPrompt"));
 const ExitIntentPopup = lazy(() => import("@/components/home/ExitIntentPopup"));
 const AstraProjectShowcase = lazy(() => import("@/components/home/AstraProjectShowcase"));
+const AnimatedStatsCounter = lazy(() => import("@/components/home/AnimatedStatsCounter"));
+const TestimonialsCarousel = lazy(() => import("@/components/home/TestimonialsCarousel"));
+const MapPreviewTeaser = lazy(() => import("@/components/home/MapPreviewTeaser"));
+const NewsletterBanner = lazy(() => import("@/components/home/NewsletterBanner"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
@@ -796,8 +800,15 @@ const Index = () => {
                 </ScrollReveal>
               </SectionWrapper>
 
-              {/* ── SECTION 2: Featured Properties Carousel ── */}
+              {/* ── Stats Counter Strip ── */}
               <SectionWrapper variant="default">
+                <Suspense fallback={null}>
+                  <AnimatedStatsCounter />
+                </Suspense>
+              </SectionWrapper>
+
+              {/* ── SECTION 2: Featured Properties Carousel ── */}
+              <SectionWrapper variant="muted">
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={
                     <div className="py-4 max-w-7xl mx-auto px-3 sm:px-4">
@@ -820,7 +831,7 @@ const Index = () => {
               </SectionWrapper>
 
               {/* ── SECTION 3: AI Opportunity Zone (simplified) ── */}
-              <SectionWrapper variant="muted" id="ai-opportunity-zone" className="py-3 sm:py-4">
+              <SectionWrapper variant="default" id="ai-opportunity-zone" className="py-3 sm:py-4">
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
                   <ScrollReveal direction="up" delay={0}>
                     <div className="text-center mb-3">
@@ -850,6 +861,13 @@ const Index = () => {
                 </div>
               </SectionWrapper>
 
+              {/* ── Interactive Map Preview ── */}
+              <SectionWrapper variant="muted">
+                <Suspense fallback={null}>
+                  <MapPreviewTeaser />
+                </Suspense>
+              </SectionWrapper>
+
               {/* ── SECTION 4: Smart Collections ── */}
               <SectionWrapper variant="default">
                 <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
@@ -869,8 +887,15 @@ const Index = () => {
                 </div>
               </SectionWrapper>
 
-              {/* ── SECTION 6: Why ASTRA — Trust Value Props ── */}
+              {/* ── Testimonials ── */}
               <SectionWrapper variant="default">
+                <Suspense fallback={null}>
+                  <TestimonialsCarousel />
+                </Suspense>
+              </SectionWrapper>
+
+              {/* ── SECTION 6: Why ASTRA — Trust Value Props ── */}
+              <SectionWrapper variant="muted">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
                   <ScrollReveal direction="up" delay={0}>
                     <h2 className="font-playfair text-lg sm:text-xl md:text-2xl font-bold text-foreground text-center mb-6">
@@ -893,6 +918,13 @@ const Index = () => {
                     </div>
                   </ScrollReveal>
                 </div>
+              </SectionWrapper>
+
+              {/* ── Newsletter / CTA Banner ── */}
+              <SectionWrapper variant="default">
+                <Suspense fallback={null}>
+                  <NewsletterBanner />
+                </Suspense>
               </SectionWrapper>
 
               {/* ── SECTION 7: Final CTA + Trust Footer ── */}
