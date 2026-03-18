@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { MapPin, Flame, TrendingUp, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const hotspots = [
   { name: 'Jakarta Selatan', growth: '+12%', type: 'hotspot' as const },
@@ -13,23 +14,33 @@ const hotspots = [
   { name: 'Tangerang Selatan', growth: '+6%', type: 'rising' as const },
 ];
 
+const dotPositions = [
+  { top: '30%', left: '55%', city: 'Jakarta Selatan' },
+  { top: '45%', left: '35%', city: 'Bali — Ubud' },
+  { top: '60%', left: '65%', city: 'Bandung' },
+  { top: '25%', left: '70%', city: 'Surabaya' },
+  { top: '70%', left: '45%', city: 'Yogyakarta' },
+];
+
 export default function MapPreviewTeaser() {
   const navigate = useNavigate();
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-60px' });
 
   return (
-    <div ref={ref} className="w-full py-6 sm:py-8">
+    <div ref={ref} className="w-full py-6 sm:py-8" id="hotspots">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="relative overflow-hidden rounded-2xl border border-border/40 bg-card/60 backdrop-blur-sm"
+          role="region"
+          aria-label="Property investment hotspots map"
         >
           <div className="flex flex-col sm:flex-row">
             {/* Left — visual map placeholder with gradient */}
-            <div className="relative w-full sm:w-1/2 min-h-[200px] sm:min-h-[280px] bg-gradient-to-br from-primary/5 via-chart-4/5 to-primary/10 overflow-hidden">
+            <div className="relative w-full sm:w-1/2 min-h-[200px] sm:min-h-[280px] bg-gradient-to-br from-primary/5 via-chart-4/5 to-primary/10 overflow-hidden" aria-hidden="true">
               {/* Decorative grid dots */}
               <div
                 className="absolute inset-0 opacity-10"
@@ -38,28 +49,31 @@ export default function MapPreviewTeaser() {
                   backgroundSize: '24px 24px',
                 }}
               />
-              {/* Pulsing hotspot dots */}
-              {[
-                { top: '30%', left: '55%' },
-                { top: '45%', left: '35%' },
-                { top: '60%', left: '65%' },
-                { top: '25%', left: '70%' },
-                { top: '70%', left: '45%' },
-              ].map((pos, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute"
-                  style={{ top: pos.top, left: pos.left }}
-                  initial={{ scale: 0 }}
-                  animate={inView ? { scale: 1 } : {}}
-                  transition={{ delay: 0.3 + i * 0.1, duration: 0.4 }}
-                >
-                  <span className="relative flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold-primary opacity-40" />
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-gold-primary shadow-lg shadow-gold-primary/30" />
-                  </span>
-                </motion.div>
-              ))}
+              {/* Pulsing hotspot dots with tooltips */}
+              <TooltipProvider delayDuration={200}>
+                {dotPositions.map((pos, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute"
+                    style={{ top: pos.top, left: pos.left }}
+                    initial={{ scale: 0 }}
+                    animate={inView ? { scale: 1 } : {}}
+                    transition={{ delay: 0.3 + i * 0.1, duration: 0.4 }}
+                  >
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="relative flex h-3 w-3 cursor-pointer">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold-primary opacity-40" />
+                          <span className="relative inline-flex rounded-full h-3 w-3 bg-gold-primary shadow-lg shadow-gold-primary/30" />
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="text-xs font-medium">
+                        {pos.city}
+                      </TooltipContent>
+                    </Tooltip>
+                  </motion.div>
+                ))}
+              </TooltipProvider>
               {/* Center icon */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="p-4 rounded-full bg-background/40 backdrop-blur-sm border border-primary/15">
@@ -72,7 +86,7 @@ export default function MapPreviewTeaser() {
             <div className="flex-1 p-5 sm:p-6 flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <Flame className="h-4 w-4 text-gold-primary" />
+                  <Flame className="h-4 w-4 text-gold-primary" aria-hidden="true" />
                   <h3 className="font-playfair text-base sm:text-lg font-bold text-foreground">
                     Property Hotspots
                   </h3>
@@ -80,7 +94,7 @@ export default function MapPreviewTeaser() {
                 <p className="text-xs text-muted-foreground mb-4">
                   AI-detected high-growth areas across Indonesia
                 </p>
-                <div className="grid grid-cols-1 gap-2">
+                <div className="grid grid-cols-1 gap-2" role="list">
                   {hotspots.map((h, i) => (
                     <motion.div
                       key={h.name}
@@ -88,13 +102,14 @@ export default function MapPreviewTeaser() {
                       animate={inView ? { opacity: 1, x: 0 } : {}}
                       transition={{ delay: 0.4 + i * 0.08, duration: 0.35 }}
                       className="flex items-center justify-between py-1.5 px-3 rounded-lg bg-muted/30 border border-border/20"
+                      role="listitem"
                     >
                       <div className="flex items-center gap-2">
-                        <div className={`w-1.5 h-1.5 rounded-full ${h.type === 'hotspot' ? 'bg-gold-primary' : 'bg-chart-4'}`} />
+                        <div className={`w-1.5 h-1.5 rounded-full ${h.type === 'hotspot' ? 'bg-gold-primary' : 'bg-chart-4'}`} aria-hidden="true" />
                         <span className="text-xs font-medium text-foreground">{h.name}</span>
                       </div>
                       <div className="flex items-center gap-1 text-xs font-semibold text-chart-4">
-                        <TrendingUp className="h-3 w-3" />
+                        <TrendingUp className="h-3 w-3" aria-hidden="true" />
                         {h.growth}
                       </div>
                     </motion.div>
