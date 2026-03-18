@@ -192,7 +192,7 @@ function MessageBubble({ msg, isOwn }: { msg: OfferMessage; isOwn: boolean }) {
         <div className={cn(
           'px-3 py-1.5 rounded-full border text-[10px] flex items-center gap-1.5',
           isCounter
-            ? 'bg-purple-500/10 border-purple-500/20 text-purple-600'
+            ? 'bg-accent/10 border-accent/20 text-accent-foreground'
             : 'bg-muted/30 border-border/30 text-muted-foreground'
         )}>
           {isCounter ? <RefreshCw className="h-3 w-3" /> : <Clock className="h-3 w-3" />}
