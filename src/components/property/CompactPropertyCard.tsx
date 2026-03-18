@@ -97,6 +97,7 @@ const CompactPropertyCard = ({
   const [show3DModal, setShow3DModal] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [showComparisonModal, setShowComparisonModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const [isLiked, setIsLiked] = useState(isSaved);
 
   const { aggregate } = usePropertyRatings(property.id);
