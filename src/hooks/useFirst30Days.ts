@@ -105,10 +105,10 @@ export function useFirst30Days(enabled = true) {
     queryFn: async (): Promise<First30DaysPlan> => {
       // Fetch live signals for auto-check enrichment
       const [propertiesRes, profilesRes, offersRes, contentRes] = await Promise.all([
-        supabase.from('properties').select('id', { count: 'exact', head: true }),
-        supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('account_type', 'agent'),
-        supabase.from('offers').select('id', { count: 'exact', head: true }),
-        supabase.from('acquisition_seo_content').select('id', { count: 'exact', head: true }).eq('status', 'published'),
+        (supabase as any).from('properties').select('id', { count: 'exact', head: true }),
+        (supabase as any).from('profiles').select('id', { count: 'exact', head: true }).eq('account_type', 'agent'),
+        (supabase as any).from('offers').select('id', { count: 'exact', head: true }),
+        (supabase as any).from('acquisition_seo_content').select('id', { count: 'exact', head: true }).eq('status', 'published'),
       ]);
 
       const liveListings = propertiesRes.count ?? 0;
