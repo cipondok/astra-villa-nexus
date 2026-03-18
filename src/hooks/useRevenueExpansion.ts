@@ -180,8 +180,8 @@ export function useRevenueExpansion() {
         supabase.from('user_subscriptions').select('id', { count: 'exact', head: true }).eq('status', 'active'),
         supabase.from('user_subscriptions').select('id', { count: 'exact', head: true }).eq('status', 'active'), // simplified
         // Service marketplace (vendor service requests as proxy)
-        supabase.from('vendor_service_requests').select('id', { count: 'exact', head: true }).gte('created_at', d30),
-        supabase.from('vendor_service_requests').select('id', { count: 'exact', head: true }).gte('created_at', d60).lt('created_at', d30),
+        supabase.from('vendor_services').select('id', { count: 'exact', head: true }).gte('created_at', d30),
+        supabase.from('vendor_services').select('id', { count: 'exact', head: true }).gte('created_at', d60).lt('created_at', d30),
         // Volume
         supabase.from('property_offers').select('id', { count: 'exact', head: true })
           .gte('created_at', d30).in('status', ['accepted', 'completed']),
