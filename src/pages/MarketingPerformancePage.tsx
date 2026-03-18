@@ -6,6 +6,7 @@ import { useMarketingPerformance, type DailyTrend } from '@/hooks/useMarketingPe
 
 const ViralCoefficientPanel = lazy(() => import('@/components/marketing/ViralCoefficientPanel'));
 const TransactionLiquidityPanel = lazy(() => import('@/components/marketing/TransactionLiquidityPanel'));
+const DealVelocityPanel = lazy(() => import('@/components/marketing/DealVelocityPanel'));
 import { motion } from 'framer-motion';
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -235,6 +236,7 @@ export default function MarketingPerformancePage() {
             <TabsTrigger value="channels">Channel Breakdown</TabsTrigger>
             <TabsTrigger value="spend">Budget Allocation</TabsTrigger>
             <TabsTrigger value="liquidity">Transaction Liquidity</TabsTrigger>
+            <TabsTrigger value="velocity">Deal Velocity</TabsTrigger>
             <TabsTrigger value="viral">Viral Growth</TabsTrigger>
           </TabsList>
 
@@ -371,6 +373,12 @@ export default function MarketingPerformancePage() {
           <TabsContent value="liquidity">
             <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>}>
               <TransactionLiquidityPanel period={period} />
+            </Suspense>
+          </TabsContent>
+
+          <TabsContent value="velocity">
+            <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>}>
+              <DealVelocityPanel period={period} />
             </Suspense>
           </TabsContent>
 
