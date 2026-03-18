@@ -15,6 +15,7 @@ export interface MapFilters {
   max_price?: number;
   bedrooms?: number;
   min_score?: number;
+  trend_view?: 'short_term' | 'long_term';
 }
 
 export interface MapProperty {
