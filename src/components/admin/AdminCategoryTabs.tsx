@@ -128,9 +128,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
   const accentVar = categoryAccent[activeCategory] || "--panel-accent";
   const categoryTitle = sectionTitles[activeCategory as keyof typeof sectionTitles] || activeCategory;
 
-  const visibleSections = expanded ? sortedSections : sortedSections.slice(0, VISIBLE_COUNT);
-  const hiddenCount = sortedSections.length - VISIBLE_COUNT;
-  const hasMore = sortedSections.length > VISIBLE_COUNT;
+  const visibleSections = sortedSections;
 
   const renderTab = (section: typeof categorySections[0], isActive: boolean) => {
     const Icon = section.icon;
