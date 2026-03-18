@@ -378,6 +378,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "error-logs":          () => <ErrorLogsTable />,
   "error-monitoring":    () => <ErrorMonitoringDashboard />,
   "bug-error-detection": () => <BugErrorDashboard />,
+  "system-error-settings": () => <SystemErrorSettings />,
 
   // SEO
   "seo-management":      () => <SEOManagement />,
