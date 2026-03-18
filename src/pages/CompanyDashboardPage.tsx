@@ -38,9 +38,7 @@ export default function CompanyDashboardPage() {
 
   if (isLoading) {
     return (
-      <>
-        <Helmet><title>Company Dashboard | ASTRA Villa</title></Helmet>
-        <div className="min-h-screen bg-background p-4 md:p-6 space-y-4">
+      <div className="min-h-screen bg-background p-4 md:p-6 space-y-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="h-40 rounded-xl bg-muted/30 animate-pulse" />
           ))}
