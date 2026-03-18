@@ -127,12 +127,12 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
       {/* Backdrop overlay when flyout is open */}
       {openCategory && (
         <div 
-          className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-30 animate-in fade-in-0 duration-200"
+          className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[9998] animate-in fade-in-0 duration-200"
           onClick={() => setOpenCategory(null)}
         />
       )}
       
-      <nav ref={sidebarRef} className="relative h-full flex z-40" aria-label="Admin navigation">
+      <nav ref={sidebarRef} className="relative h-full flex z-[9999]" aria-label="Admin navigation">
         {/* Icon-only Sidebar - Compact */}
          <div className="w-12 h-full bg-card/95 backdrop-blur-sm border-r border-border/30 flex flex-col py-2 px-1.5 shadow-lg" role="menubar" aria-label="Section categories">
            {/* IMPORTANT: category list must be scrollable or bottom categories (like Features) become unreachable */}
