@@ -1107,6 +1107,18 @@ const PropertyDetail: React.FC = () => {
             </Card>
             </ScrollReveal>
 
+            {/* ─── INVESTMENT INSIGHT PANEL ─── Promoted to position #2 for conversion */}
+            <ScrollReveal direction="up" delay={80}>
+              <Suspense fallback={null}>
+                <PropertyInvestmentDashboard
+                  propertyId={property.id}
+                  currentPrice={property.price}
+                  city={property.city}
+                  propertyType={property.property_type}
+                />
+              </Suspense>
+            </ScrollReveal>
+
             {/* Neighborhood Insights */}
             <Suspense fallback={<div className="h-40 flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-gold-primary" /></div>}>
               <PropertyNeighborhoodInsights
