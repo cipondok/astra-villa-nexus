@@ -49,10 +49,12 @@ const OnboardingWizard = ({ isOpen, onClose, initialUserType }: OnboardingWizard
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   
+  const getTotalSteps = (type: UserType) => type === 'investor' ? 4 : 3;
+
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({
     userType: initialUserType || null,
     step: 0,
-    totalSteps: 3,
+    totalSteps: getTotalSteps(initialUserType || null),
     formData: {},
     completedActions: [],
     rewards: []
