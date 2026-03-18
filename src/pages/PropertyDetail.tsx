@@ -1406,14 +1406,15 @@ const PropertyDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* AI Property Valuation & ROI Forecast */}
-        <div className="mt-6 sm:mt-8 grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-          <AutoValuationCard propertyId={property.id} currentPrice={property.price} />
-          <ROIForecastCard propertyId={property.id} currentPrice={property.price} />
-          <Suspense fallback={null}>
-            <PropertyLiquidityWidget city={property.city} propertyType={property.property_type} />
-          </Suspense>
-        </div>
+        {/* AI Property Valuation & ROI Forecast — Investment Dashboard */}
+        <Suspense fallback={null}>
+          <PropertyInvestmentDashboard
+            propertyId={property.id}
+            currentPrice={property.price}
+            city={property.city}
+            propertyType={property.property_type}
+          />
+        </Suspense>
 
         {/* Reviews Section */}
         <div className="mt-6 sm:mt-8">
