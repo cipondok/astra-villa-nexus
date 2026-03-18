@@ -66,6 +66,10 @@ const TrustFooterStrip = lazy(() => import("@/components/home/TrustFooterStrip")
 const PWAInstallPrompt = lazy(() => import("@/components/pwa/PWAInstallPrompt"));
 const ExitIntentPopup = lazy(() => import("@/components/home/ExitIntentPopup"));
 const AstraProjectShowcase = lazy(() => import("@/components/home/AstraProjectShowcase"));
+const AnimatedStatsCounter = lazy(() => import("@/components/home/AnimatedStatsCounter"));
+const TestimonialsCarousel = lazy(() => import("@/components/home/TestimonialsCarousel"));
+const MapPreviewTeaser = lazy(() => import("@/components/home/MapPreviewTeaser"));
+const NewsletterBanner = lazy(() => import("@/components/home/NewsletterBanner"));
 
 type ViewMode = 'list' | 'grid' | 'map';
 
