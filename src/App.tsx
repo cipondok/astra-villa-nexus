@@ -72,6 +72,7 @@ const AdminAnalytics = lazy(() => import('@/pages/AdminAnalytics'));
 const ProvinceProperties = lazy(() => import('@/pages/ProvinceProperties'));
 const LocationAnalyticsDashboard = lazy(() => import('@/pages/LocationAnalyticsDashboard'));
 const AIPerformanceDashboard = lazy(() => import('@/components/admin/AIPerformanceDashboard'));
+const AdminListingReview = lazy(() => import('@/pages/AdminListingReview'));
 const AgentDashboard = lazy(() => import('@/pages/AgentDashboard'));
 const VendorDashboard = lazy(() => import('@/pages/VendorDashboard'));
 const PropertyOwnerDashboard = lazy(() => import('@/pages/PropertyOwnerDashboard'));
