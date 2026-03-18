@@ -232,7 +232,7 @@ export default function MarketingPerformancePage() {
 
         {/* Charts */}
         <Tabs defaultValue="trends" className="space-y-4">
-          <TabsList className="bg-muted/50">
+          <TabsList className="bg-muted/50 flex-wrap h-auto gap-1">
             <TabsTrigger value="trends">Performance Trends</TabsTrigger>
             <TabsTrigger value="channels">Channel Breakdown</TabsTrigger>
             <TabsTrigger value="spend">Budget Allocation</TabsTrigger>
