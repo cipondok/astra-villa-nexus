@@ -1,70 +1,44 @@
 
-# ASTRA Villa — Platform Architecture Analysis & Roadmap
 
-## Status: 🔄 IN PROGRESS
+## Plan: Polish, Backend Integration, SEO & Accessibility
 
-## Current State Assessment (March 2026)
+### 1. Backend Integration — Newsletter Subscriber Storage
 
-### Scale
-| Metric | Count |
-|--------|-------|
-| Pages | 120+ |
-| Components | 200+ directories |
-| Hooks | 230+ |
-| Edge Functions | 18 (consolidated from 82) |
-| Database Tables | 450+ |
-| RLS Policies | 1,000+ |
+Connect the `NewsletterBanner` form to Supabase so emails are persisted:
 
-### Three-Layer Architecture ✅
-| Layer | Key Features | Status |
-|-------|-------------|--------|
-| **Public Platform** | Property browse, search, map, detail pages, AI chat, mortgage tools | ✅ Mature |
-| **Investor Intelligence** | ROI forecasts, deal finder, portfolio builder, market trends, location intel | ✅ Mature |
-| **Admin AI Command Center** | Job queue, SEO engine, valuations, health monitor, KPI alerts | ✅ Mature |
+- **Create migration**: New `newsletter_subscribers` table (`id`, `email` unique, `subscribed_at`, `source` default `'homepage'`). Enable RLS with an anon insert policy (public signup) and admin-only select.
+- **Update `NewsletterBanner.tsx`**: Import supabase client, insert email on submit, handle duplicate gracefully (upsert or catch unique violation), keep existing toast UX.
 
-### Edge Function Architecture ✅
-| Router | Modes |
-|--------|-------|
-| `core-engine` | 25+ modes (investment_score, valuation, health, diagnostics, map_search) |
-| `ai-engine` | 25+ modes (descriptions, NLP, recommendations, market reports) |
-| `deal-engine` | deal_finder, alerts, negotiation, pricing, forecasts |
-| `ai-assistant` | SSE streaming chatbot, NLP search, investment advisor |
-| `notification-engine` | Email, push, campaigns |
-| `payment-engine` | Midtrans, PayPal, invoices, subscriptions |
-| `vendor-engine` | Vendor services, validation |
+### 2. SEO & Accessibility Improvements
 
-### AI Automation Systems ✅
-- SEO: Daily audits (3AM UTC), 6-hour auto-optimizer, property_seo_analysis tracking
-- Jobs: ai_jobs queue with claim_next_job() SKIP LOCKED, stall recovery, retry logic
-- Valuations: property_valuations with auto-recalculation
-- ROI: property_roi_forecast with 5-year projections
-- Autonomous Agent: 6-hour market scans for opportunity detection
+**Accessibility across homepage sections:**
 
----
+- **TestimonialsCarousel**: Add `aria-label` to nav buttons (`"Previous testimonial"`, `"Next testimonial"`), `role="region"` + `aria-roledescription="carousel"` on wrapper, `aria-live="polite"` on active slide.
+- **AnimatedStatsCounter**: Add `role="list"` on container, `role="listitem"` on each stat, `aria-label` with readable text (e.g., "12,500+ Properties Listed").
+- **MapPreviewTeaser**: Add `aria-label` on hotspot dots (decorative → `aria-hidden="true"`), proper `alt` on any images.
+- **NewsletterBanner**: Add `aria-label="Newsletter signup"` on the form, proper `label` or `aria-label` on the email input.
 
-## Identified Gaps & Improvements
+**SEO enhancements on Index page:**
 
-### 🔴 Critical Performance
-1. **Map viewport debouncing** — `moveend` fires on every pan; needs 300ms debounce ✅ FIXED
-2. **Spatial indexes** — Need composite indexes on (latitude, longitude, status) ✅ FIXED
-3. **Platform health aggregation** — Real AI system status on admin overview ✅ FIXED (prev iteration)
+- Add `seoSchemas.organization()` and `seoSchemas.searchAction()` JSON-LD to the homepage `<SEOHead>` (currently may only have basic meta).
+- Add descriptive `id` attributes to major homepage sections for anchor linking and crawlability.
 
-### 🟡 Architecture Improvements
-4. **Unified health hook** — Single hook aggregating all AI subsystem health ✅ FIXED
-5. **Query deduplication** — MapBounds type duplicated across useMapSearch/useMapProperties
-6. **Large file refactoring** — PropertyDetail.tsx (1544 lines), Index.tsx (1199 lines) need splitting
+### 3. Polish Existing Features
 
-### 🟢 Future Expansion Ready
-- AI deal finder ✅ Exists (/deal-finder)
-- Predictive market analytics ✅ Exists (/market-trends, /price-prediction)
-- AI recommendation engine ✅ Exists (ai-match-engine-v2)
-- Location intelligence ✅ Exists (/location-intelligence)
-- Knowledge graph ✅ Hook exists (useKnowledgeGraph)
+- **TestimonialsCarousel**: Add swipe gesture support on mobile (touch events or framer-motion drag), auto-play with pause on hover.
+- **AnimatedStatsCounter**: Use `Intl.NumberFormat` for locale-aware formatting instead of manual K suffix logic.
+- **MapPreviewTeaser**: Add subtle hover tooltips on hotspot dots showing city name.
+- **NewsletterBanner**: Add loading state on submit button while Supabase insert is in progress.
 
-### Recommended Next Steps
-1. Add database indexes for map queries at scale
-2. Debounce map viewport changes
-3. Create unified platform health dashboard
-4. Split PropertyDetail.tsx into sub-components
-5. Add API response caching headers to edge functions
-6. Implement property search result caching with stale-while-revalidate
+### Technical Summary
+
+| Area | Files Changed |
+|------|--------------|
+| Migration | New SQL: `newsletter_subscribers` table |
+| Newsletter backend | `src/components/home/NewsletterBanner.tsx` |
+| Accessibility | `TestimonialsCarousel.tsx`, `AnimatedStatsCounter.tsx`, `MapPreviewTeaser.tsx`, `NewsletterBanner.tsx` |
+| SEO | `src/pages/Index.tsx` (JSON-LD schemas) |
+| Polish | Same 4 home components above |
+
+All changes are additive and non-breaking. The migration creates a new table with no impact on existing data.
+
