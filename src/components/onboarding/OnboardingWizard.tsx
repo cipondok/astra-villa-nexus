@@ -182,7 +182,7 @@ const OnboardingWizard = ({ isOpen, onClose, initialUserType }: OnboardingWizard
     if (!onboardingData.userType) {
       return (
         <UserTypeSelector 
-          onSelect={(type) => updateData({ userType: type, step: 0 })}
+          onSelect={(type) => updateData({ userType: type, step: 0, totalSteps: getTotalSteps(type) })}
         />
       );
     }
