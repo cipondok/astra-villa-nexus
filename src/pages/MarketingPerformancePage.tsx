@@ -8,6 +8,7 @@ const ViralCoefficientPanel = lazy(() => import('@/components/marketing/ViralCoe
 const TransactionLiquidityPanel = lazy(() => import('@/components/marketing/TransactionLiquidityPanel'));
 const DealVelocityPanel = lazy(() => import('@/components/marketing/DealVelocityPanel'));
 const NorthStarPanel = lazy(() => import('@/components/marketing/NorthStarPanel'));
+const InvestorLTVPanel = lazy(() => import('@/components/marketing/InvestorLTVPanel'));
 import { motion } from 'framer-motion';
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -240,6 +241,7 @@ export default function MarketingPerformancePage() {
             <TabsTrigger value="velocity">Deal Velocity</TabsTrigger>
             <TabsTrigger value="viral">Viral Growth</TabsTrigger>
             <TabsTrigger value="northstar">⭐ North Star</TabsTrigger>
+            <TabsTrigger value="ltv">Investor LTV</TabsTrigger>
           </TabsList>
 
           <TabsContent value="trends">
@@ -393,6 +395,12 @@ export default function MarketingPerformancePage() {
           <TabsContent value="northstar">
             <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>}>
               <NorthStarPanel period={period} />
+            </Suspense>
+          </TabsContent>
+
+          <TabsContent value="ltv">
+            <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>}>
+              <InvestorLTVPanel />
             </Suspense>
           </TabsContent>
         </Tabs>
