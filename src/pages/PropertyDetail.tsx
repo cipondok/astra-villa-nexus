@@ -1023,6 +1023,7 @@ const PropertyDetail: React.FC = () => {
             </ScrollReveal>
 
             {/* Property Details Tabs - Slim */}
+            <ScrollReveal direction="up" delay={100}>
             <Card className="border border-gold-primary/10 bg-card backdrop-blur-xl rounded-xl overflow-hidden">
               <CardContent className="p-2 sm:p-4">
                 <Tabs defaultValue="description" className="w-full">
