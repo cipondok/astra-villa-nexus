@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useMarketingPerformance, type DailyTrend } from '@/hooks/useMarketingPerformance';
+
+const ViralCoefficientPanel = lazy(() => import('@/components/marketing/ViralCoefficientPanel'));
 import { motion } from 'framer-motion';
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -231,6 +233,7 @@ export default function MarketingPerformancePage() {
             <TabsTrigger value="trends">Performance Trends</TabsTrigger>
             <TabsTrigger value="channels">Channel Breakdown</TabsTrigger>
             <TabsTrigger value="spend">Budget Allocation</TabsTrigger>
+            <TabsTrigger value="viral">Viral Growth</TabsTrigger>
           </TabsList>
 
           <TabsContent value="trends">
@@ -361,6 +364,12 @@ export default function MarketingPerformancePage() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          <TabsContent value="viral">
+            <Suspense fallback={<div className="flex items-center justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>}>
+              <ViralCoefficientPanel period={period} />
+            </Suspense>
           </TabsContent>
         </Tabs>
       </div>
