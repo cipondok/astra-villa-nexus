@@ -133,11 +133,13 @@ const SmartRecommendations = ({ limit = 4, className = "" }: SmartRecommendation
       const results = data?.results || [];
       if (results.length > 0 && results[0].property_id && !results[0].title) {
         const ids = results.map((r: any) => r.property_id);
-        const scoreMap = new Map(results.map((r: any) => [r.property_id, {
-          match_score: r.match_score || r.ai_match_score_v2 || 0,
-          opportunity_score: r.opportunity_score || 0,
-          demand_heat_score: r.demand_heat_score || 0,
-        }]));
+        const scoreMap = new Map<string, { match_score: number; opportunity_score: number; demand_heat_score: number }>(
+          results.map((r: any) => [r.property_id, {
+            match_score: r.match_score || r.ai_match_score_v2 || 0,
+            opportunity_score: r.opportunity_score || 0,
+            demand_heat_score: r.demand_heat_score || 0,
+          }])
+        );
         const { data: props } = await supabase
           .from('properties')
           .select('id, title, city, location, price, property_type, images, thumbnail_url, bedrooms, bathrooms, area_sqm, opportunity_score, demand_heat_score')
