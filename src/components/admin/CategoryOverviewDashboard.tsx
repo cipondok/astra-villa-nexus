@@ -72,7 +72,7 @@ const CategoryOverviewDashboard: React.FC<CategoryOverviewDashboardProps> = ({
   const description = categoryDescriptions[category] || '';
   const isFeatures = category === 'features';
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
 
   const contentSections = sections.filter(s => !s.key.endsWith('-overview'));
 
