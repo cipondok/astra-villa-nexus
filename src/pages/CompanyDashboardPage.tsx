@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import { motion } from 'framer-motion';
 import {
   Building2, Users, MessageSquare, FileText, DollarSign, TrendingUp,
   TrendingDown, Minus, Crown, UserPlus, Share2, Clock, Shield,
