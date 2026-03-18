@@ -304,6 +304,7 @@ const EnergyOptimizationPage = lazy(() => import('@/pages/EnergyOptimizationPage
 const DecisionPrioritizationPage = lazy(() => import('@/pages/DecisionPrioritizationPage'));
 const ResilienceFrameworkPage = lazy(() => import('@/pages/ResilienceFrameworkPage'));
 const NegotiationMindsetPage = lazy(() => import('@/pages/NegotiationMindsetPage'));
+const VisionFrameworkPage = lazy(() => import('@/pages/VisionFrameworkPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
