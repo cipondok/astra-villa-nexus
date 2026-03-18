@@ -82,7 +82,6 @@ interface AdminCategoryTabsProps {
 
 export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCategoryTabsProps) {
   const [visitHistory, setVisitHistory] = useState<Record<string, number>>(getVisitHistory);
-  const [visitHistory, setVisitHistory] = useState<Record<string, number>>(getVisitHistory);
 
   useEffect(() => {
     if (activeSection) {
