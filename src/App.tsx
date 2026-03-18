@@ -684,6 +684,7 @@ const AppContent = () => {
                 <Route path="/launch-readiness" element={<LaunchReadinessPage />} />
                 <Route path="/first-30-days" element={<First30DaysPage />} />
                 <Route path="/first-10-deals" element={<First10DealsPage />} />
+                <Route path="/market-dominance" element={<MarketDominancePage />} />
                 <Route path="/negotiation-psychology" element={<NegotiationPsychologyPage />} />
                 <Route path="/hnw-investor-strategy" element={<HNWInvestorStrategyPage />} />
                 <Route path="/brand-trust-strategy" element={<BrandTrustStrategyPage />} />
