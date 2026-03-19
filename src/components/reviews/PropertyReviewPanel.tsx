@@ -23,6 +23,12 @@ const TAG_CATEGORIES = [
   { key: 'build_quality', label: 'Build Quality', icon: Hammer, color: 'bg-primary/15 text-primary border-primary/30' },
 ] as const;
 
+const SUB_CRITERIA = [
+  { key: 'rating_condition', label: 'Property Condition' },
+  { key: 'rating_agent', label: 'Agent Quality' },
+  { key: 'rating_investment', label: 'Investment Alignment' },
+] as const;
+
 interface PropertyReviewPanelProps {
   propertyId: string;
   className?: string;
