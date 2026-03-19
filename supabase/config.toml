@@ -342,3 +342,7 @@ verify_jwt = false
 
 [functions.initiate-escrow]
 verify_jwt = false
+
+[functions.recompute-liquidity]
+verify_jwt = false
+
