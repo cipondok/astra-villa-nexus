@@ -14526,6 +14526,375 @@ export type Database = {
         }
         Relationships: []
       }
+      gccf_allocation_councils: {
+        Row: {
+          ai_advisor_weight: number
+          ai_recommendation_acceptance_pct: number
+          alignment_with_prosperity_goals_pct: number
+          avg_decision_time_days: number
+          conflict_of_interest_checks: boolean
+          council_name: string
+          council_type: string
+          created_at: string
+          decisions_made: number
+          id: string
+          institutional_members: number
+          is_active: boolean
+          last_session_at: string | null
+          next_session_at: string | null
+          portfolio_return_pct: number
+          public_sector_members: number
+          region: string
+          risk_adjusted_return: number
+          total_capital_governed_usd: number
+          transparency_level: string
+          updated_at: string
+          voting_mechanism: string
+        }
+        Insert: {
+          ai_advisor_weight?: number
+          ai_recommendation_acceptance_pct?: number
+          alignment_with_prosperity_goals_pct?: number
+          avg_decision_time_days?: number
+          conflict_of_interest_checks?: boolean
+          council_name: string
+          council_type: string
+          created_at?: string
+          decisions_made?: number
+          id?: string
+          institutional_members?: number
+          is_active?: boolean
+          last_session_at?: string | null
+          next_session_at?: string | null
+          portfolio_return_pct?: number
+          public_sector_members?: number
+          region: string
+          risk_adjusted_return?: number
+          total_capital_governed_usd?: number
+          transparency_level?: string
+          updated_at?: string
+          voting_mechanism?: string
+        }
+        Update: {
+          ai_advisor_weight?: number
+          ai_recommendation_acceptance_pct?: number
+          alignment_with_prosperity_goals_pct?: number
+          avg_decision_time_days?: number
+          conflict_of_interest_checks?: boolean
+          council_name?: string
+          council_type?: string
+          created_at?: string
+          decisions_made?: number
+          id?: string
+          institutional_members?: number
+          is_active?: boolean
+          last_session_at?: string | null
+          next_session_at?: string | null
+          portfolio_return_pct?: number
+          public_sector_members?: number
+          region?: string
+          risk_adjusted_return?: number
+          total_capital_governed_usd?: number
+          transparency_level?: string
+          updated_at?: string
+          voting_mechanism?: string
+        }
+        Relationships: []
+      }
+      gccf_crisis_protocol: {
+        Row: {
+          activated_at: string | null
+          affected_countries: string[]
+          affected_region: string
+          capital_protection_actions: string[]
+          computed_at: string
+          contagion_risk_pct: number
+          created_at: string
+          crisis_type: string
+          detection_confidence: number
+          estimated_recovery_months: number | null
+          financial_resilience_score: number
+          id: string
+          leading_indicators: Json
+          liquidity_injection_needed_usd: number
+          protocol_status: string
+          recommended_redistribution: Json
+          resolved_at: string | null
+          response_effectiveness_score: number | null
+          severity_level: string
+          systemic_importance_score: number
+          trigger_threshold_breached: boolean
+        }
+        Insert: {
+          activated_at?: string | null
+          affected_countries?: string[]
+          affected_region: string
+          capital_protection_actions?: string[]
+          computed_at?: string
+          contagion_risk_pct?: number
+          created_at?: string
+          crisis_type: string
+          detection_confidence?: number
+          estimated_recovery_months?: number | null
+          financial_resilience_score?: number
+          id?: string
+          leading_indicators?: Json
+          liquidity_injection_needed_usd?: number
+          protocol_status?: string
+          recommended_redistribution?: Json
+          resolved_at?: string | null
+          response_effectiveness_score?: number | null
+          severity_level?: string
+          systemic_importance_score?: number
+          trigger_threshold_breached?: boolean
+        }
+        Update: {
+          activated_at?: string | null
+          affected_countries?: string[]
+          affected_region?: string
+          capital_protection_actions?: string[]
+          computed_at?: string
+          contagion_risk_pct?: number
+          created_at?: string
+          crisis_type?: string
+          detection_confidence?: number
+          estimated_recovery_months?: number | null
+          financial_resilience_score?: number
+          id?: string
+          leading_indicators?: Json
+          liquidity_injection_needed_usd?: number
+          protocol_status?: string
+          recommended_redistribution?: Json
+          resolved_at?: string | null
+          response_effectiveness_score?: number | null
+          severity_level?: string
+          systemic_importance_score?: number
+          trigger_threshold_breached?: boolean
+        }
+        Relationships: []
+      }
+      gccf_ethical_allocation: {
+        Row: {
+          biodiversity_risk_flag: boolean
+          capital_flow_fairness_index: number
+          carbon_intensity_per_investment: number
+          city: string | null
+          climate_resilience_investment_pct: number
+          computed_at: string
+          country: string
+          created_at: string
+          environmental_impact_score: number
+          ethical_composite_score: number
+          ethical_tier: string
+          green_building_adoption_pct: number
+          housing_affordability_preservation: boolean
+          id: string
+          intergenerational_fairness_score: number
+          regional_development_balance_score: number
+          remediation_actions: Json
+          rural_urban_investment_ratio: number
+          sovereign_wealth_preservation_pct: number
+          underserved_area_allocation_pct: number
+          violation_details: Json
+          violations_detected: number
+          youth_wealth_access_score: number
+        }
+        Insert: {
+          biodiversity_risk_flag?: boolean
+          capital_flow_fairness_index?: number
+          carbon_intensity_per_investment?: number
+          city?: string | null
+          climate_resilience_investment_pct?: number
+          computed_at?: string
+          country: string
+          created_at?: string
+          environmental_impact_score?: number
+          ethical_composite_score?: number
+          ethical_tier?: string
+          green_building_adoption_pct?: number
+          housing_affordability_preservation?: boolean
+          id?: string
+          intergenerational_fairness_score?: number
+          regional_development_balance_score?: number
+          remediation_actions?: Json
+          rural_urban_investment_ratio?: number
+          sovereign_wealth_preservation_pct?: number
+          underserved_area_allocation_pct?: number
+          violation_details?: Json
+          violations_detected?: number
+          youth_wealth_access_score?: number
+        }
+        Update: {
+          biodiversity_risk_flag?: boolean
+          capital_flow_fairness_index?: number
+          carbon_intensity_per_investment?: number
+          city?: string | null
+          climate_resilience_investment_pct?: number
+          computed_at?: string
+          country?: string
+          created_at?: string
+          environmental_impact_score?: number
+          ethical_composite_score?: number
+          ethical_tier?: string
+          green_building_adoption_pct?: number
+          housing_affordability_preservation?: boolean
+          id?: string
+          intergenerational_fairness_score?: number
+          regional_development_balance_score?: number
+          remediation_actions?: Json
+          rural_urban_investment_ratio?: number
+          sovereign_wealth_preservation_pct?: number
+          underserved_area_allocation_pct?: number
+          violation_details?: Json
+          violations_detected?: number
+          youth_wealth_access_score?: number
+        }
+        Relationships: []
+      }
+      gccf_inclusive_participation: {
+        Row: {
+          active_micro_investors: number
+          avg_micro_return_pct: number
+          computed_at: string
+          country: string
+          created_at: string
+          cross_border_participation_pct: number
+          diaspora_investment_volume_usd: number
+          digital_access_pct: number
+          emerging_market_readiness_score: number
+          financial_literacy_index: number
+          id: string
+          inclusion_composite_score: number
+          inclusion_tier: string
+          micro_ownership_enabled: boolean
+          micro_portfolio_total_usd: number
+          min_investment_threshold_usd: number
+          mobile_first_investors_pct: number
+          new_investor_onboarding_monthly: number
+          region: string
+          regulatory_barrier_index: number
+          wealth_creation_per_capita_usd: number
+          wealth_gini_impact: number
+        }
+        Insert: {
+          active_micro_investors?: number
+          avg_micro_return_pct?: number
+          computed_at?: string
+          country: string
+          created_at?: string
+          cross_border_participation_pct?: number
+          diaspora_investment_volume_usd?: number
+          digital_access_pct?: number
+          emerging_market_readiness_score?: number
+          financial_literacy_index?: number
+          id?: string
+          inclusion_composite_score?: number
+          inclusion_tier?: string
+          micro_ownership_enabled?: boolean
+          micro_portfolio_total_usd?: number
+          min_investment_threshold_usd?: number
+          mobile_first_investors_pct?: number
+          new_investor_onboarding_monthly?: number
+          region: string
+          regulatory_barrier_index?: number
+          wealth_creation_per_capita_usd?: number
+          wealth_gini_impact?: number
+        }
+        Update: {
+          active_micro_investors?: number
+          avg_micro_return_pct?: number
+          computed_at?: string
+          country?: string
+          created_at?: string
+          cross_border_participation_pct?: number
+          diaspora_investment_volume_usd?: number
+          digital_access_pct?: number
+          emerging_market_readiness_score?: number
+          financial_literacy_index?: number
+          id?: string
+          inclusion_composite_score?: number
+          inclusion_tier?: string
+          micro_ownership_enabled?: boolean
+          micro_portfolio_total_usd?: number
+          min_investment_threshold_usd?: number
+          mobile_first_investors_pct?: number
+          new_investor_onboarding_monthly?: number
+          region?: string
+          regulatory_barrier_index?: number
+          wealth_creation_per_capita_usd?: number
+          wealth_gini_impact?: number
+        }
+        Relationships: []
+      }
+      gccf_transparency_grid: {
+        Row: {
+          aml_compliance_score: number
+          beneficial_ownership_visibility_pct: number
+          computed_at: string
+          created_at: string
+          data_quality_grade: string
+          estimated_gap_closure_years: number | null
+          flow_direction: string
+          flow_velocity_change_pct: number
+          flow_volume_usd: number
+          geographic_concentration_risk: number
+          id: string
+          infra_funding_gap_usd: number
+          infra_gap_severity: string
+          reporting_frequency: string
+          sector: string
+          sector_concentration_hhi: number
+          single_entity_dominance_pct: number
+          source_country: string
+          target_country: string
+          transparency_score: number
+        }
+        Insert: {
+          aml_compliance_score?: number
+          beneficial_ownership_visibility_pct?: number
+          computed_at?: string
+          created_at?: string
+          data_quality_grade?: string
+          estimated_gap_closure_years?: number | null
+          flow_direction?: string
+          flow_velocity_change_pct?: number
+          flow_volume_usd?: number
+          geographic_concentration_risk?: number
+          id?: string
+          infra_funding_gap_usd?: number
+          infra_gap_severity?: string
+          reporting_frequency?: string
+          sector: string
+          sector_concentration_hhi?: number
+          single_entity_dominance_pct?: number
+          source_country: string
+          target_country: string
+          transparency_score?: number
+        }
+        Update: {
+          aml_compliance_score?: number
+          beneficial_ownership_visibility_pct?: number
+          computed_at?: string
+          created_at?: string
+          data_quality_grade?: string
+          estimated_gap_closure_years?: number | null
+          flow_direction?: string
+          flow_velocity_change_pct?: number
+          flow_volume_usd?: number
+          geographic_concentration_risk?: number
+          id?: string
+          infra_funding_gap_usd?: number
+          infra_gap_severity?: string
+          reporting_frequency?: string
+          sector?: string
+          sector_concentration_hhi?: number
+          single_entity_dominance_pct?: number
+          source_country?: string
+          target_country?: string
+          transparency_score?: number
+        }
+        Relationships: []
+      }
       generated_functions: {
         Row: {
           complexity: string | null

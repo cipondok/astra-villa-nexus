@@ -417,3 +417,6 @@ verify_jwt = false
 
 [functions.post-scarcity-economy]
 verify_jwt = false
+
+[functions.capital-governance-framework]
+verify_jwt = false
