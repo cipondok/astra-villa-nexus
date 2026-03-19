@@ -123,6 +123,7 @@ const AutonomousGlobalPropertyExchange = lazy(() => import('@/pages/AutonomousGl
 const RealEstateIntelligenceOS = lazy(() => import('@/pages/RealEstateIntelligenceOS'));
 const WealthUniverseEngine = lazy(() => import('@/pages/WealthUniverseEngine'));
 const GlobalInvestorNetworkAI = lazy(() => import('@/pages/GlobalInvestorNetworkAI'));
+const SelfOptimizingEcosystem = lazy(() => import('@/pages/SelfOptimizingEcosystem'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
