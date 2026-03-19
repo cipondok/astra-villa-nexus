@@ -352,3 +352,6 @@ verify_jwt = false
 [functions.liquidity-flywheel]
 verify_jwt = false
 
+[functions.vendor-marketplace-engine]
+verify_jwt = false
+
