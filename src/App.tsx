@@ -673,6 +673,7 @@ const AppContent = () => {
                 <Route path="/global-predictive-analytics" element={<GlobalPredictiveAnalyticsPage />} />
                 <Route path="/virtual-explorer" element={<VirtualPropertyExplorer />} />
                 <Route path="/product-architecture" element={<ProductArchitecturePage />} />
+                <Route path="/superapp-blueprint" element={<SuperappBlueprintPage />} />
                 <Route path="/development-roadmap" element={<DevelopmentRoadmapPage />} />
                 <Route path="/schema-architecture" element={<SchemaArchitecturePage />} />
                 <Route path="/api-architecture" element={<ApiArchitecturePage />} />
