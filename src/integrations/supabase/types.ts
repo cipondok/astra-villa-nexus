@@ -28807,6 +28807,441 @@ export type Database = {
         }
         Relationships: []
       }
+      reos_api_registry: {
+        Row: {
+          api_name: string
+          api_version: string
+          avg_latency_ms: number
+          consumer_type: string
+          created_at: string
+          description: string | null
+          domain: string
+          endpoint_pattern: string
+          error_rate_pct: number
+          id: string
+          is_public: boolean
+          monthly_price_usd: number | null
+          pricing_tier: string
+          rate_limit_rpm: number
+          requires_auth: boolean
+          sample_response: Json | null
+          total_calls: number
+          total_consumers: number
+          updated_at: string
+          uptime_pct: number
+        }
+        Insert: {
+          api_name: string
+          api_version?: string
+          avg_latency_ms?: number
+          consumer_type?: string
+          created_at?: string
+          description?: string | null
+          domain: string
+          endpoint_pattern?: string
+          error_rate_pct?: number
+          id?: string
+          is_public?: boolean
+          monthly_price_usd?: number | null
+          pricing_tier?: string
+          rate_limit_rpm?: number
+          requires_auth?: boolean
+          sample_response?: Json | null
+          total_calls?: number
+          total_consumers?: number
+          updated_at?: string
+          uptime_pct?: number
+        }
+        Update: {
+          api_name?: string
+          api_version?: string
+          avg_latency_ms?: number
+          consumer_type?: string
+          created_at?: string
+          description?: string | null
+          domain?: string
+          endpoint_pattern?: string
+          error_rate_pct?: number
+          id?: string
+          is_public?: boolean
+          monthly_price_usd?: number | null
+          pricing_tier?: string
+          rate_limit_rpm?: number
+          requires_auth?: boolean
+          sample_response?: Json | null
+          total_calls?: number
+          total_consumers?: number
+          updated_at?: string
+          uptime_pct?: number
+        }
+        Relationships: []
+      }
+      reos_capital_flow_routes: {
+        Row: {
+          arbitrage_opportunity_score: number
+          avg_ticket_size: number
+          capital_volume: number
+          created_at: string
+          destination_market: string
+          flow_direction: string | null
+          flow_velocity: number
+          id: string
+          last_routed_at: string
+          liquidity_ratio: number
+          recommended_allocation_pct: number | null
+          risk_differential: number
+          route_status: string
+          source_market: string
+          transaction_count: number
+          updated_at: string
+          yield_gradient: number
+        }
+        Insert: {
+          arbitrage_opportunity_score?: number
+          avg_ticket_size?: number
+          capital_volume?: number
+          created_at?: string
+          destination_market: string
+          flow_direction?: string | null
+          flow_velocity?: number
+          id?: string
+          last_routed_at?: string
+          liquidity_ratio?: number
+          recommended_allocation_pct?: number | null
+          risk_differential?: number
+          route_status?: string
+          source_market: string
+          transaction_count?: number
+          updated_at?: string
+          yield_gradient?: number
+        }
+        Update: {
+          arbitrage_opportunity_score?: number
+          avg_ticket_size?: number
+          capital_volume?: number
+          created_at?: string
+          destination_market?: string
+          flow_direction?: string | null
+          flow_velocity?: number
+          id?: string
+          last_routed_at?: string
+          liquidity_ratio?: number
+          recommended_allocation_pct?: number | null
+          risk_differential?: number
+          route_status?: string
+          source_market?: string
+          transaction_count?: number
+          updated_at?: string
+          yield_gradient?: number
+        }
+        Relationships: []
+      }
+      reos_event_stream: {
+        Row: {
+          created_at: string
+          event_domain: string
+          event_type: string
+          expires_at: string | null
+          id: string
+          payload: Json
+          priority: string
+          processed_at: string | null
+          processed_by: string | null
+          processing_latency_ms: number | null
+          source_market: string | null
+          source_module: string
+          status: string
+          target_modules: string[] | null
+        }
+        Insert: {
+          created_at?: string
+          event_domain: string
+          event_type: string
+          expires_at?: string | null
+          id?: string
+          payload?: Json
+          priority?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          processing_latency_ms?: number | null
+          source_market?: string | null
+          source_module: string
+          status?: string
+          target_modules?: string[] | null
+        }
+        Update: {
+          created_at?: string
+          event_domain?: string
+          event_type?: string
+          expires_at?: string | null
+          id?: string
+          payload?: Json
+          priority?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          processing_latency_ms?: number | null
+          source_market?: string | null
+          source_module?: string
+          status?: string
+          target_modules?: string[] | null
+        }
+        Relationships: []
+      }
+      reos_infrastructure_topology: {
+        Row: {
+          active_connections: number | null
+          availability_zone: string | null
+          city: string
+          cloud_provider: string | null
+          country_code: string
+          cpu_utilization_pct: number | null
+          created_at: string
+          data_freshness_seconds: number | null
+          health_status: string
+          id: string
+          intelligence_coverage_pct: number | null
+          last_sync_at: string
+          memory_utilization_pct: number | null
+          models_deployed: string[] | null
+          node_type: string
+          p50_latency_ms: number | null
+          p99_latency_ms: number | null
+          region_code: string
+          replication_lag_ms: number | null
+          storage_utilization_pct: number | null
+          throughput_rps: number | null
+          updated_at: string
+        }
+        Insert: {
+          active_connections?: number | null
+          availability_zone?: string | null
+          city?: string
+          cloud_provider?: string | null
+          country_code?: string
+          cpu_utilization_pct?: number | null
+          created_at?: string
+          data_freshness_seconds?: number | null
+          health_status?: string
+          id?: string
+          intelligence_coverage_pct?: number | null
+          last_sync_at?: string
+          memory_utilization_pct?: number | null
+          models_deployed?: string[] | null
+          node_type?: string
+          p50_latency_ms?: number | null
+          p99_latency_ms?: number | null
+          region_code: string
+          replication_lag_ms?: number | null
+          storage_utilization_pct?: number | null
+          throughput_rps?: number | null
+          updated_at?: string
+        }
+        Update: {
+          active_connections?: number | null
+          availability_zone?: string | null
+          city?: string
+          cloud_provider?: string | null
+          country_code?: string
+          cpu_utilization_pct?: number | null
+          created_at?: string
+          data_freshness_seconds?: number | null
+          health_status?: string
+          id?: string
+          intelligence_coverage_pct?: number | null
+          last_sync_at?: string
+          memory_utilization_pct?: number | null
+          models_deployed?: string[] | null
+          node_type?: string
+          p50_latency_ms?: number | null
+          p99_latency_ms?: number | null
+          region_code?: string
+          replication_lag_ms?: number | null
+          storage_utilization_pct?: number | null
+          throughput_rps?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      reos_market_intelligence_kernel: {
+        Row: {
+          capital_concentration_index: number | null
+          city: string
+          country_code: string
+          created_at: string
+          cross_border_capital_pct: number | null
+          currency_strength_index: number | null
+          digital_adoption_rate: number | null
+          fdi_inflow_index: number | null
+          gdp_growth_rate: number | null
+          id: string
+          inflation_rate: number | null
+          infrastructure_spend_index: number | null
+          interest_rate: number | null
+          investor_inflow_velocity: number | null
+          last_ingested_at: string
+          market_attractiveness_score: number
+          market_code: string
+          market_phase: string | null
+          median_price_psm: number | null
+          population_growth_rate: number | null
+          price_momentum_30d: number | null
+          price_volatility: number | null
+          pricing_inefficiency_cluster_count: number | null
+          risk_tier: string | null
+          updated_at: string
+          urbanization_velocity: number | null
+        }
+        Insert: {
+          capital_concentration_index?: number | null
+          city?: string
+          country_code?: string
+          created_at?: string
+          cross_border_capital_pct?: number | null
+          currency_strength_index?: number | null
+          digital_adoption_rate?: number | null
+          fdi_inflow_index?: number | null
+          gdp_growth_rate?: number | null
+          id?: string
+          inflation_rate?: number | null
+          infrastructure_spend_index?: number | null
+          interest_rate?: number | null
+          investor_inflow_velocity?: number | null
+          last_ingested_at?: string
+          market_attractiveness_score?: number
+          market_code: string
+          market_phase?: string | null
+          median_price_psm?: number | null
+          population_growth_rate?: number | null
+          price_momentum_30d?: number | null
+          price_volatility?: number | null
+          pricing_inefficiency_cluster_count?: number | null
+          risk_tier?: string | null
+          updated_at?: string
+          urbanization_velocity?: number | null
+        }
+        Update: {
+          capital_concentration_index?: number | null
+          city?: string
+          country_code?: string
+          created_at?: string
+          cross_border_capital_pct?: number | null
+          currency_strength_index?: number | null
+          digital_adoption_rate?: number | null
+          fdi_inflow_index?: number | null
+          gdp_growth_rate?: number | null
+          id?: string
+          inflation_rate?: number | null
+          infrastructure_spend_index?: number | null
+          interest_rate?: number | null
+          investor_inflow_velocity?: number | null
+          last_ingested_at?: string
+          market_attractiveness_score?: number
+          market_code?: string
+          market_phase?: string | null
+          median_price_psm?: number | null
+          population_growth_rate?: number | null
+          price_momentum_30d?: number | null
+          price_volatility?: number | null
+          pricing_inefficiency_cluster_count?: number | null
+          risk_tier?: string | null
+          updated_at?: string
+          urbanization_velocity?: number | null
+        }
+        Relationships: []
+      }
+      reos_property_graph_edges: {
+        Row: {
+          attributes: Json | null
+          created_at: string
+          edge_type: string
+          id: string
+          source_node_id: string
+          target_node_id: string
+          weight: number
+        }
+        Insert: {
+          attributes?: Json | null
+          created_at?: string
+          edge_type: string
+          id?: string
+          source_node_id: string
+          target_node_id: string
+          weight?: number
+        }
+        Update: {
+          attributes?: Json | null
+          created_at?: string
+          edge_type?: string
+          id?: string
+          source_node_id?: string
+          target_node_id?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reos_property_graph_edges_source_node_id_fkey"
+            columns: ["source_node_id"]
+            isOneToOne: false
+            referencedRelation: "reos_property_graph_nodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reos_property_graph_edges_target_node_id_fkey"
+            columns: ["target_node_id"]
+            isOneToOne: false
+            referencedRelation: "reos_property_graph_nodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reos_property_graph_nodes: {
+        Row: {
+          attributes: Json
+          betweenness_centrality: number | null
+          cluster_id: string | null
+          created_at: string
+          degree_centrality: number | null
+          entity_id: string
+          id: string
+          is_hub: boolean
+          label: string
+          market_code: string | null
+          node_type: string
+          pagerank: number | null
+          updated_at: string
+        }
+        Insert: {
+          attributes?: Json
+          betweenness_centrality?: number | null
+          cluster_id?: string | null
+          created_at?: string
+          degree_centrality?: number | null
+          entity_id: string
+          id?: string
+          is_hub?: boolean
+          label?: string
+          market_code?: string | null
+          node_type: string
+          pagerank?: number | null
+          updated_at?: string
+        }
+        Update: {
+          attributes?: Json
+          betweenness_centrality?: number | null
+          cluster_id?: string | null
+          created_at?: string
+          degree_centrality?: number | null
+          entity_id?: string
+          id?: string
+          is_hub?: boolean
+          label?: string
+          market_code?: string | null
+          node_type?: string
+          pagerank?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       report_automation_config: {
         Row: {
           ai_insights_enabled: boolean | null
