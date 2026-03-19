@@ -86,10 +86,10 @@ function getDemandLevel(form: FormData): { level: string; percent: number; color
   const hotLocations = ['Canggu', 'Seminyak', 'Uluwatu', 'Ubud'];
   const isHot = hotLocations.some(l => form.location.includes(l));
 
-  if (isHot && yld >= 10) return { level: 'Very High', percent: 92, color: 'bg-emerald-500' };
-  if (isHot || yld >= 8) return { level: 'High', percent: 75, color: 'bg-emerald-500' };
-  if (hasLocation && yld > 0) return { level: 'Moderate', percent: 55, color: 'bg-amber-500' };
-  if (hasLocation) return { level: 'Growing', percent: 35, color: 'bg-amber-500' };
+  if (isHot && yld >= 10) return { level: 'Very High', percent: 92, color: 'bg-primary' };
+  if (isHot || yld >= 8) return { level: 'High', percent: 75, color: 'bg-primary' };
+  if (hasLocation && yld > 0) return { level: 'Moderate', percent: 55, color: 'bg-warning' };
+  if (hasLocation) return { level: 'Growing', percent: 35, color: 'bg-warning' };
   return { level: 'Awaiting data', percent: 10, color: 'bg-muted-foreground' };
 }
 
