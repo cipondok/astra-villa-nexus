@@ -454,6 +454,7 @@ const AppContent = () => {
                 <Route path="/wealth-advisor" element={<AIWealthAdvisor />} />
                 <Route path="/global-exchange" element={<AutonomousGlobalPropertyExchange />} />
                 <Route path="/intelligence-os" element={<RealEstateIntelligenceOS />} />
+                <Route path="/wealth-universe" element={<WealthUniverseEngine />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
