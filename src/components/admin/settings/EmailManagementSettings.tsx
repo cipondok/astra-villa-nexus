@@ -41,6 +41,8 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
 
+const EmailMonitoringDashboard = lazy(() => import('@/components/admin/EmailMonitoringDashboard'));
+
 interface EmailSettings {
   // SMTP/Resend Config
   provider: 'resend' | 'smtp';
