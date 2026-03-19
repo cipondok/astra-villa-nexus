@@ -12,15 +12,17 @@ import { Separator } from '@/components/ui/separator';
 import { Slider } from '@/components/ui/slider';
 import { useSmartPricing, SmartPricingResult, PricingFactor } from '@/hooks/useSmartPricing';
 import { toast } from 'sonner';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, TrendingUp, TrendingDown, Minus, DollarSign,
   BarChart3, Clock, Zap, Target, AlertTriangle, CheckCircle2,
   XCircle, Loader2, Sparkles, ThermometerSun, ArrowUpRight, ArrowDownRight,
-  Gauge, SlidersHorizontal, Star
+  Gauge, SlidersHorizontal, Star, Bell, Users, Activity, Eye,
+  ChevronRight, Shield, Megaphone
 } from 'lucide-react';
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, ReferenceLine
+  Tooltip, ResponsiveContainer, ReferenceLine, LineChart, Line, ComposedChart
 } from 'recharts';
 
 const formatIDR = (v: number) => `IDR ${v.toLocaleString('id-ID')}`;
