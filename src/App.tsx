@@ -426,6 +426,7 @@ const AppContent = () => {
                 <Route path="/global-expansion" element={<GlobalExpansionSimulator />} />
                 <Route path="/property-tokenization" element={<PropertyTokenizationHub />} />
                 <Route path="/market-cycle" element={<MarketCyclePredictionEngine />} />
+                <Route path="/cross-border-gateway" element={<CrossBorderInvestorGateway />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
