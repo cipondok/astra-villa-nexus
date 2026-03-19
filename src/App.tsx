@@ -110,6 +110,7 @@ const MarketCyclePredictionEngine = lazy(() => import('@/pages/MarketCyclePredic
 const CrossBorderInvestorGateway = lazy(() => import('@/pages/CrossBorderInvestorGateway'));
 const AutonomousAcquisitionEngine = lazy(() => import('@/pages/AutonomousAcquisitionEngine'));
 const GlobalDealFlowNetwork = lazy(() => import('@/pages/GlobalDealFlowNetwork'));
+const HedgeFundMode = lazy(() => import('@/pages/HedgeFundMode'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
