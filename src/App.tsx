@@ -87,6 +87,7 @@ const InvestorLandingPage = lazy(() => import('@/pages/InvestorLandingPage'));
 const DealRoom = lazy(() => import('@/pages/DealRoom'));
 const LaunchCommandCenter = lazy(() => import('@/pages/LaunchCommandCenter'));
 const PropertyDeepAnalysis = lazy(() => import('@/pages/PropertyDeepAnalysis'));
+const InvestorOnboardingWizard = lazy(() => import('@/pages/InvestorOnboardingWizard'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
