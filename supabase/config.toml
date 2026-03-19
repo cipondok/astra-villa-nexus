@@ -426,3 +426,6 @@ verify_jwt = false
 
 [functions.founder-immortality-engine]
 verify_jwt = false
+
+[functions.multiplanet-expansion]
+verify_jwt = false
