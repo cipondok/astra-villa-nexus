@@ -355,3 +355,6 @@ verify_jwt = false
 [functions.vendor-marketplace-engine]
 verify_jwt = false
 
+[functions.vendor-revenue-flywheel]
+verify_jwt = false
+
