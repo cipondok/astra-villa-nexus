@@ -4295,6 +4295,381 @@ export type Database = {
           },
         ]
       }
+      apin_deal_routing: {
+        Row: {
+          accepted_by: string[]
+          asset_class: string
+          city: string
+          country: string
+          created_at: string
+          deal_id: string
+          deal_type: string
+          deal_value_usd: number
+          executed_at: string | null
+          execution_price_usd: number | null
+          expected_roi_pct: number
+          id: string
+          market_timing_score: number
+          matched_investor_count: number
+          optimal_entry_window: Json | null
+          optimal_exit_months: number | null
+          post_execution_roi_pct: number | null
+          risk_level: string
+          routed_to_investors: string[]
+          routing_algorithm_version: string
+          routing_confidence: number
+          routing_status: string
+          time_window_hours: number
+          urgency_score: number
+        }
+        Insert: {
+          accepted_by?: string[]
+          asset_class?: string
+          city: string
+          country?: string
+          created_at?: string
+          deal_id: string
+          deal_type: string
+          deal_value_usd?: number
+          executed_at?: string | null
+          execution_price_usd?: number | null
+          expected_roi_pct?: number
+          id?: string
+          market_timing_score?: number
+          matched_investor_count?: number
+          optimal_entry_window?: Json | null
+          optimal_exit_months?: number | null
+          post_execution_roi_pct?: number | null
+          risk_level?: string
+          routed_to_investors?: string[]
+          routing_algorithm_version?: string
+          routing_confidence?: number
+          routing_status?: string
+          time_window_hours?: number
+          urgency_score?: number
+        }
+        Update: {
+          accepted_by?: string[]
+          asset_class?: string
+          city?: string
+          country?: string
+          created_at?: string
+          deal_id?: string
+          deal_type?: string
+          deal_value_usd?: number
+          executed_at?: string | null
+          execution_price_usd?: number | null
+          expected_roi_pct?: number
+          id?: string
+          market_timing_score?: number
+          matched_investor_count?: number
+          optimal_entry_window?: Json | null
+          optimal_exit_months?: number | null
+          post_execution_roi_pct?: number | null
+          risk_level?: string
+          routed_to_investors?: string[]
+          routing_algorithm_version?: string
+          routing_confidence?: number
+          routing_status?: string
+          time_window_hours?: number
+          urgency_score?: number
+        }
+        Relationships: []
+      }
+      apin_investor_graph: {
+        Row: {
+          activity_velocity: number
+          available_capital_usd: number
+          avg_deal_size_usd: number
+          capital_deployment_momentum: number
+          capital_pool_usd: number
+          city: string | null
+          cluster_id: string | null
+          co_investment_count: number
+          computed_at: string
+          country: string
+          created_at: string
+          deployed_capital_usd: number
+          geographic_exposure: Json
+          id: string
+          influence_score: number
+          investor_id: string
+          investor_type: string
+          last_transaction_at: string | null
+          lifetime_roi_pct: number
+          network_centrality_score: number
+          preferred_asset_classes: string[]
+          risk_tolerance: string
+          total_transactions: number
+          win_rate_pct: number
+        }
+        Insert: {
+          activity_velocity?: number
+          available_capital_usd?: number
+          avg_deal_size_usd?: number
+          capital_deployment_momentum?: number
+          capital_pool_usd?: number
+          city?: string | null
+          cluster_id?: string | null
+          co_investment_count?: number
+          computed_at?: string
+          country?: string
+          created_at?: string
+          deployed_capital_usd?: number
+          geographic_exposure?: Json
+          id?: string
+          influence_score?: number
+          investor_id: string
+          investor_type?: string
+          last_transaction_at?: string | null
+          lifetime_roi_pct?: number
+          network_centrality_score?: number
+          preferred_asset_classes?: string[]
+          risk_tolerance?: string
+          total_transactions?: number
+          win_rate_pct?: number
+        }
+        Update: {
+          activity_velocity?: number
+          available_capital_usd?: number
+          avg_deal_size_usd?: number
+          capital_deployment_momentum?: number
+          capital_pool_usd?: number
+          city?: string | null
+          cluster_id?: string | null
+          co_investment_count?: number
+          computed_at?: string
+          country?: string
+          created_at?: string
+          deployed_capital_usd?: number
+          geographic_exposure?: Json
+          id?: string
+          influence_score?: number
+          investor_id?: string
+          investor_type?: string
+          last_transaction_at?: string | null
+          lifetime_roi_pct?: number
+          network_centrality_score?: number
+          preferred_asset_classes?: string[]
+          risk_tolerance?: string
+          total_transactions?: number
+          win_rate_pct?: number
+        }
+        Relationships: []
+      }
+      apin_learning_loop: {
+        Row: {
+          accuracy_delta: number
+          allocation_strategy_version: string
+          anomalies_detected: number
+          capital_efficiency_delta: number
+          capital_efficiency_score: number
+          computed_at: string
+          created_at: string
+          cycle_duration_ms: number | null
+          cycle_type: string
+          global_sharpe_ratio: number | null
+          global_sortino_ratio: number | null
+          id: string
+          learning_cycle_id: string
+          market_regime_detected: string | null
+          max_drawdown_pct: number | null
+          prediction_accuracy_after: number
+          prediction_accuracy_before: number
+          top_learnings: Json
+          transactions_analyzed: number
+          weights_adjusted: Json
+        }
+        Insert: {
+          accuracy_delta?: number
+          allocation_strategy_version?: string
+          anomalies_detected?: number
+          capital_efficiency_delta?: number
+          capital_efficiency_score?: number
+          computed_at?: string
+          created_at?: string
+          cycle_duration_ms?: number | null
+          cycle_type: string
+          global_sharpe_ratio?: number | null
+          global_sortino_ratio?: number | null
+          id?: string
+          learning_cycle_id: string
+          market_regime_detected?: string | null
+          max_drawdown_pct?: number | null
+          prediction_accuracy_after?: number
+          prediction_accuracy_before?: number
+          top_learnings?: Json
+          transactions_analyzed?: number
+          weights_adjusted?: Json
+        }
+        Update: {
+          accuracy_delta?: number
+          allocation_strategy_version?: string
+          anomalies_detected?: number
+          capital_efficiency_delta?: number
+          capital_efficiency_score?: number
+          computed_at?: string
+          created_at?: string
+          cycle_duration_ms?: number | null
+          cycle_type?: string
+          global_sharpe_ratio?: number | null
+          global_sortino_ratio?: number | null
+          id?: string
+          learning_cycle_id?: string
+          market_regime_detected?: string | null
+          max_drawdown_pct?: number | null
+          prediction_accuracy_after?: number
+          prediction_accuracy_before?: number
+          top_learnings?: Json
+          transactions_analyzed?: number
+          weights_adjusted?: Json
+        }
+        Relationships: []
+      }
+      apin_liquidity_amplification: {
+        Row: {
+          active_corridors: Json
+          amplification_factor: number
+          avg_settlement_hours: number
+          breakeven_velocity: number | null
+          city: string
+          computed_at: string
+          country: string
+          created_at: string
+          cross_border_friction_score: number
+          cross_border_volume_usd: number
+          emerging_market_participation_pct: number
+          flywheel_stage: string
+          fx_hedging_cost_pct: number
+          id: string
+          liquidity_depth_score: number
+          network_effect_multiplier: number
+          new_investor_onboarding_rate: number
+          projected_volume_90d_usd: number | null
+          retail_to_institutional_ratio: number
+          transaction_velocity_30d: number
+          velocity_acceleration: number
+        }
+        Insert: {
+          active_corridors?: Json
+          amplification_factor?: number
+          avg_settlement_hours?: number
+          breakeven_velocity?: number | null
+          city: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          cross_border_friction_score?: number
+          cross_border_volume_usd?: number
+          emerging_market_participation_pct?: number
+          flywheel_stage?: string
+          fx_hedging_cost_pct?: number
+          id?: string
+          liquidity_depth_score?: number
+          network_effect_multiplier?: number
+          new_investor_onboarding_rate?: number
+          projected_volume_90d_usd?: number | null
+          retail_to_institutional_ratio?: number
+          transaction_velocity_30d?: number
+          velocity_acceleration?: number
+        }
+        Update: {
+          active_corridors?: Json
+          amplification_factor?: number
+          avg_settlement_hours?: number
+          breakeven_velocity?: number | null
+          city?: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          cross_border_friction_score?: number
+          cross_border_volume_usd?: number
+          emerging_market_participation_pct?: number
+          flywheel_stage?: string
+          fx_hedging_cost_pct?: number
+          id?: string
+          liquidity_depth_score?: number
+          network_effect_multiplier?: number
+          new_investor_onboarding_rate?: number
+          projected_volume_90d_usd?: number | null
+          retail_to_institutional_ratio?: number
+          transaction_velocity_30d?: number
+          velocity_acceleration?: number
+        }
+        Relationships: []
+      }
+      apin_market_leadership: {
+        Row: {
+          active_investor_count: number
+          api_consumer_count: number
+          computed_at: string
+          created_at: string
+          data_coverage_pct: number
+          data_moat_depth_years: number
+          estimated_phase_transition_months: number | null
+          evolution_phase: string
+          government_data_agreements: number
+          id: string
+          institutional_partner_count: number
+          intelligence_dependency_score: number
+          market_share_pct: number
+          network_lock_in_score: number
+          next_phase_trigger: string | null
+          phase_confidence: number
+          pricing_authority_score: number
+          region: string
+          regulatory_partnerships: number
+          switching_cost_index: number
+          total_network_aum_usd: number
+        }
+        Insert: {
+          active_investor_count?: number
+          api_consumer_count?: number
+          computed_at?: string
+          created_at?: string
+          data_coverage_pct?: number
+          data_moat_depth_years?: number
+          estimated_phase_transition_months?: number | null
+          evolution_phase?: string
+          government_data_agreements?: number
+          id?: string
+          institutional_partner_count?: number
+          intelligence_dependency_score?: number
+          market_share_pct?: number
+          network_lock_in_score?: number
+          next_phase_trigger?: string | null
+          phase_confidence?: number
+          pricing_authority_score?: number
+          region: string
+          regulatory_partnerships?: number
+          switching_cost_index?: number
+          total_network_aum_usd?: number
+        }
+        Update: {
+          active_investor_count?: number
+          api_consumer_count?: number
+          computed_at?: string
+          created_at?: string
+          data_coverage_pct?: number
+          data_moat_depth_years?: number
+          estimated_phase_transition_months?: number | null
+          evolution_phase?: string
+          government_data_agreements?: number
+          id?: string
+          institutional_partner_count?: number
+          intelligence_dependency_score?: number
+          market_share_pct?: number
+          network_lock_in_score?: number
+          next_phase_trigger?: string | null
+          phase_confidence?: number
+          pricing_authority_score?: number
+          region?: string
+          regulatory_partnerships?: number
+          switching_cost_index?: number
+          total_network_aum_usd?: number
+        }
+        Relationships: []
+      }
       approved_service_names: {
         Row: {
           category_id: string | null

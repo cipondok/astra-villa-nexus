@@ -411,3 +411,6 @@ verify_jwt = false
 
 [functions.civilization-economic-os]
 verify_jwt = false
+
+[functions.planetary-investment-network]
+verify_jwt = false
