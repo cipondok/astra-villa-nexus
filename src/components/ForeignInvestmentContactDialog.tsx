@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { emailService } from "@/services/emailService";
 import { Loader2 } from "lucide-react";
 import { useTranslation } from "@/i18n/useTranslation";
 
