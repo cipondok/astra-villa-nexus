@@ -367,3 +367,5 @@ verify_jwt = false
 [functions.deal-dominance-engine]
 verify_jwt = false
 
+[functions.pricing-intelligence-engine]
+verify_jwt = false

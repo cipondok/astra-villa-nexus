@@ -38,6 +38,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   bubble_risk_critical: { label: 'Bubble Alert', icon: '🫧' },
   deal_dominance_engine_cycle: { label: 'Deal Dominance', icon: '👑' },
   deal_dominance_achieved: { label: 'Dominant Listing', icon: '🏆' },
+  pricing_intelligence_engine_cycle: { label: 'Pricing Engine', icon: '📊' },
+  pricing_inefficiency_detected: { label: 'Price Alert', icon: '📉' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
