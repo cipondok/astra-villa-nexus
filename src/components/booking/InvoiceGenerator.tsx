@@ -136,26 +136,25 @@ const InvoiceGenerator = ({ invoiceData, onPaymentInitiate }: InvoiceGeneratorPr
 
   const handleSendEmail = async () => {
     try {
-      const response = await fetch('/api/send-invoice-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const { sendEmail } = await import("@/services/emailService");
+      const result = await sendEmail({
+        to: invoiceData.customer.email,
+        subject: `Invoice #${invoiceData.invoiceNumber}`,
+        template: 'general',
+        variables: {
+          message: `Your invoice #${invoiceData.invoiceNumber} for ${invoiceData.property.title} is attached. Total: Rp ${invoiceData.totalAmount.toLocaleString('id-ID')}`,
         },
-        body: JSON.stringify({
-          invoiceData,
-          recipientEmail: invoiceData.customer.email
-        })
       });
 
-      if (response.ok) {
+      if (result.success) {
         toast({
           title: "Email Sent",
           description: "Invoice berhasil dikirim ke email customer",
         });
       } else {
-        throw new Error('Failed to send email');
+        throw new Error(result.error || 'Failed to send email');
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Email Failed",
         description: "Gagal mengirim invoice ke email",
