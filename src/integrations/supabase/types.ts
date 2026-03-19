@@ -14910,6 +14910,63 @@ export type Database = {
         }
         Relationships: []
       }
+      intergenerational_asset_predictor: {
+        Row: {
+          city: string
+          compound_growth_10y: number | null
+          compound_growth_25y: number | null
+          compound_growth_5y: number | null
+          computed_at: string
+          country: string
+          created_at: string
+          district: string | null
+          district_resilience_score: number | null
+          generational_wealth_score: number | null
+          id: string
+          inflation_hedge_effectiveness: number | null
+          macro_preservation_index: number | null
+          model_confidence: number | null
+          projected_value_multiplier_10y: number | null
+          wealth_preservation_tier: string | null
+        }
+        Insert: {
+          city: string
+          compound_growth_10y?: number | null
+          compound_growth_25y?: number | null
+          compound_growth_5y?: number | null
+          computed_at?: string
+          country?: string
+          created_at?: string
+          district?: string | null
+          district_resilience_score?: number | null
+          generational_wealth_score?: number | null
+          id?: string
+          inflation_hedge_effectiveness?: number | null
+          macro_preservation_index?: number | null
+          model_confidence?: number | null
+          projected_value_multiplier_10y?: number | null
+          wealth_preservation_tier?: string | null
+        }
+        Update: {
+          city?: string
+          compound_growth_10y?: number | null
+          compound_growth_25y?: number | null
+          compound_growth_5y?: number | null
+          computed_at?: string
+          country?: string
+          created_at?: string
+          district?: string | null
+          district_resilience_score?: number | null
+          generational_wealth_score?: number | null
+          id?: string
+          inflation_hedge_effectiveness?: number | null
+          macro_preservation_index?: number | null
+          model_confidence?: number | null
+          projected_value_multiplier_10y?: number | null
+          wealth_preservation_tier?: string | null
+        }
+        Relationships: []
+      }
       investment_hotspots: {
         Row: {
           avg_investment_score: number | null
@@ -40880,6 +40937,210 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      wealth_concentration_heatmap: {
+        Row: {
+          asset_density_per_sqkm: number | null
+          city: string
+          cluster_signals: Json | null
+          computed_at: string
+          concentration_tier: string | null
+          country: string
+          created_at: string
+          district: string | null
+          emerging_cluster: boolean | null
+          id: string
+          luxury_demand_index: number | null
+          total_asset_value_usd: number | null
+          uhnw_resident_estimate: number | null
+          wealth_accumulation_velocity: number | null
+        }
+        Insert: {
+          asset_density_per_sqkm?: number | null
+          city: string
+          cluster_signals?: Json | null
+          computed_at?: string
+          concentration_tier?: string | null
+          country?: string
+          created_at?: string
+          district?: string | null
+          emerging_cluster?: boolean | null
+          id?: string
+          luxury_demand_index?: number | null
+          total_asset_value_usd?: number | null
+          uhnw_resident_estimate?: number | null
+          wealth_accumulation_velocity?: number | null
+        }
+        Update: {
+          asset_density_per_sqkm?: number | null
+          city?: string
+          cluster_signals?: Json | null
+          computed_at?: string
+          concentration_tier?: string | null
+          country?: string
+          created_at?: string
+          district?: string | null
+          emerging_cluster?: boolean | null
+          id?: string
+          luxury_demand_index?: number | null
+          total_asset_value_usd?: number | null
+          uhnw_resident_estimate?: number | null
+          wealth_accumulation_velocity?: number | null
+        }
+        Relationships: []
+      }
+      wealth_creation_index: {
+        Row: {
+          absorption_rate: number | null
+          capital_appreciation_rate: number | null
+          city: string
+          computed_at: string
+          country: string
+          created_at: string
+          district: string | null
+          id: string
+          liquidity_adjusted_roi: number | null
+          price_momentum: number | null
+          rental_yield_stability: number | null
+          time_to_exit_months: number | null
+          wealth_creation_score: number
+          wealth_tier: string | null
+          yoy_change_pct: number | null
+        }
+        Insert: {
+          absorption_rate?: number | null
+          capital_appreciation_rate?: number | null
+          city: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          district?: string | null
+          id?: string
+          liquidity_adjusted_roi?: number | null
+          price_momentum?: number | null
+          rental_yield_stability?: number | null
+          time_to_exit_months?: number | null
+          wealth_creation_score?: number
+          wealth_tier?: string | null
+          yoy_change_pct?: number | null
+        }
+        Update: {
+          absorption_rate?: number | null
+          capital_appreciation_rate?: number | null
+          city?: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          district?: string | null
+          id?: string
+          liquidity_adjusted_roi?: number | null
+          price_momentum?: number | null
+          rental_yield_stability?: number | null
+          time_to_exit_months?: number | null
+          wealth_creation_score?: number
+          wealth_tier?: string | null
+          yoy_change_pct?: number | null
+        }
+        Relationships: []
+      }
+      wealth_flow_observatory: {
+        Row: {
+          confidence_score: number | null
+          created_at: string
+          destination_city: string | null
+          destination_country: string
+          detected_at: string
+          expires_at: string | null
+          flow_type: string
+          flow_velocity: number | null
+          flow_volume_usd: number | null
+          id: string
+          origin_country: string | null
+          signal_sources: Json | null
+          trend_direction: string | null
+        }
+        Insert: {
+          confidence_score?: number | null
+          created_at?: string
+          destination_city?: string | null
+          destination_country?: string
+          detected_at?: string
+          expires_at?: string | null
+          flow_type: string
+          flow_velocity?: number | null
+          flow_volume_usd?: number | null
+          id?: string
+          origin_country?: string | null
+          signal_sources?: Json | null
+          trend_direction?: string | null
+        }
+        Update: {
+          confidence_score?: number | null
+          created_at?: string
+          destination_city?: string | null
+          destination_country?: string
+          detected_at?: string
+          expires_at?: string | null
+          flow_type?: string
+          flow_velocity?: number | null
+          flow_volume_usd?: number | null
+          id?: string
+          origin_country?: string | null
+          signal_sources?: Json | null
+          trend_direction?: string | null
+        }
+        Relationships: []
+      }
+      wealth_risk_radar: {
+        Row: {
+          alert_status: string | null
+          city: string
+          country: string
+          created_at: string
+          detected_at: string
+          district: string | null
+          id: string
+          mitigation_strategy: string | null
+          potential_impact_pct: number | null
+          resolved_at: string | null
+          risk_indicators: Json | null
+          risk_probability: number | null
+          risk_severity: number
+          risk_type: string
+        }
+        Insert: {
+          alert_status?: string | null
+          city: string
+          country?: string
+          created_at?: string
+          detected_at?: string
+          district?: string | null
+          id?: string
+          mitigation_strategy?: string | null
+          potential_impact_pct?: number | null
+          resolved_at?: string | null
+          risk_indicators?: Json | null
+          risk_probability?: number | null
+          risk_severity?: number
+          risk_type: string
+        }
+        Update: {
+          alert_status?: string | null
+          city?: string
+          country?: string
+          created_at?: string
+          detected_at?: string
+          district?: string | null
+          id?: string
+          mitigation_strategy?: string | null
+          potential_impact_pct?: number | null
+          resolved_at?: string | null
+          risk_indicators?: Json | null
+          risk_probability?: number | null
+          risk_severity?: number
+          risk_type?: string
+        }
+        Relationships: []
       }
       web_analytics: {
         Row: {
