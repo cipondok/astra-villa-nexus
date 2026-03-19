@@ -111,6 +111,7 @@ const CrossBorderInvestorGateway = lazy(() => import('@/pages/CrossBorderInvesto
 const AutonomousAcquisitionEngine = lazy(() => import('@/pages/AutonomousAcquisitionEngine'));
 const GlobalDealFlowNetwork = lazy(() => import('@/pages/GlobalDealFlowNetwork'));
 const HedgeFundMode = lazy(() => import('@/pages/HedgeFundMode'));
+const UrbanGrowthSimulator = lazy(() => import('@/pages/UrbanGrowthSimulator'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
@@ -433,6 +434,7 @@ const AppContent = () => {
                 <Route path="/autonomous-acquisition" element={<AutonomousAcquisitionEngine />} />
                 <Route path="/global-deal-flow" element={<GlobalDealFlowNetwork />} />
                 <Route path="/hedge-fund-mode" element={<HedgeFundMode />} />
+                <Route path="/urban-growth-simulator" element={<UrbanGrowthSimulator />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
