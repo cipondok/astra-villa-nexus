@@ -92,6 +92,7 @@ const InvestorReferralEngine = lazy(() => import('@/pages/InvestorReferralEngine
 const MarketIntelligenceHeatmap = lazy(() => import('@/pages/MarketIntelligenceHeatmap'));
 const SmartDealMatching = lazy(() => import('@/pages/SmartDealMatching'));
 const InvestorIntelligenceReports = lazy(() => import('@/pages/InvestorIntelligenceReports'));
+const LiquidityForecastEngine = lazy(() => import('@/pages/LiquidityForecastEngine'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
