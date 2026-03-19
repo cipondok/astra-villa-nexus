@@ -648,6 +648,11 @@ const SEOSettingsHub = ({ settings, loading, onInputChange, onSave }: SEOSetting
         <TabsContent value="blueprint">
           <SeoLocationBlueprintGenerator />
         </TabsContent>
+
+        {/* AUTOMATED CONTENT PIPELINE */}
+        <TabsContent value="pipeline">
+          <SeoContentPipelineDashboard />
+        </TabsContent>
       </Tabs>
 
       {/* Save Button */}
