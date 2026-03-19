@@ -82,6 +82,7 @@ const CustomerServiceDashboardPage = lazy(() => import('@/pages/CustomerServiceD
 const UserDashboardPage = lazy(() => import('@/pages/UserDashboardPage'));
 // ThreeDShowcase removed - consolidated into VR Tour
 const AddProperty = lazy(() => import('@/pages/AddProperty'));
+const SubmitPropertyListing = lazy(() => import('@/pages/SubmitPropertyListing'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
@@ -405,6 +406,7 @@ const AppContent = () => {
                 <Route path="/developer-demand-forecast" element={<DeveloperDemandForecastPage />} />
                 <Route path="/properties/:id" element={<PropertyDetail />} />
                 <Route path="/add-property" element={<AddProperty />} />
+                <Route path="/submit-listing" element={<SubmitPropertyListing />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 <Route path="/dashboard/admin" element={<AdminDashboard />} />
