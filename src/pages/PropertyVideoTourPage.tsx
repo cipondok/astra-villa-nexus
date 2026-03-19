@@ -515,7 +515,90 @@ export default function PropertyVideoTourPage() {
                 </CardContent>
               </Card>
 
-              {/* Property Info */}
+              {/* Output Format */}
+              <Card className="border-border/50">
+                <CardContent className="p-4 space-y-3">
+                  <Label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                    <Clapperboard className="h-3.5 w-3.5" /> Output Format
+                  </Label>
+                  <div className="space-y-2">
+                    {OUTPUT_FORMATS.map((fmt) => (
+                      <button
+                        key={fmt.id}
+                        onClick={() => setOutputFormat(fmt.id)}
+                        className={cn(
+                          "w-full flex items-start gap-3 p-3 rounded-xl border text-left transition-all",
+                          outputFormat === fmt.id
+                            ? "border-primary/50 bg-primary/5 shadow-sm"
+                            : "border-border/40 hover:border-border hover:bg-muted/30"
+                        )}
+                      >
+                        <div className={cn(
+                          "p-2 rounded-lg bg-gradient-to-br",
+                          fmt.gradient,
+                          outputFormat === fmt.id ? "text-primary" : "text-muted-foreground"
+                        )}>
+                          {fmt.icon}
+                        </div>
+                        <div>
+                          <p className={cn("text-sm font-medium", outputFormat === fmt.id ? "text-primary" : "text-foreground")}>
+                            {fmt.label}
+                          </p>
+                          <p className="text-[11px] text-muted-foreground">{fmt.desc}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Voiceover Script */}
+              <Card className="border-border/50">
+                <CardContent className="p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                      <Mic className="h-3.5 w-3.5" /> Voiceover Script
+                    </Label>
+                    <Badge variant="outline" className="text-[9px]">AI Suggested</Badge>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">
+                    Generate a narration script based on property details and selected format.
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full text-xs gap-2"
+                    onClick={generateVoiceoverScript}
+                    disabled={isGeneratingScript || (!title && !location)}
+                  >
+                    {isGeneratingScript ? (
+                      <><Loader2 className="h-3 w-3 animate-spin" /> Generating Script...</>
+                    ) : (
+                      <><FileText className="h-3 w-3" /> Generate Script</>
+                    )}
+                  </Button>
+                  {voiceoverScript && (
+                    <div className="space-y-2">
+                      <div className="p-3 rounded-lg bg-muted/30 border border-border/30 text-[11px] text-foreground leading-relaxed whitespace-pre-wrap max-h-[200px] overflow-y-auto">
+                        {voiceoverScript}
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-[10px] h-6 gap-1.5"
+                        onClick={copyScript}
+                      >
+                        {scriptCopied ? (
+                          <><CheckCircle2 className="h-3 w-3 text-chart-3" /> Copied</>
+                        ) : (
+                          <><Copy className="h-3 w-3" /> Copy Script</>
+                        )}
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
               <Card className="border-border/50">
                 <CardContent className="p-4 space-y-3">
                   <Label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
