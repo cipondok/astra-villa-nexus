@@ -432,3 +432,6 @@ verify_jwt = false
 
 [functions.wealth-coevolution]
 verify_jwt = false
+
+[functions.market-reality-distortion]
+verify_jwt = false
