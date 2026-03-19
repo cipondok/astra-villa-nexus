@@ -423,3 +423,6 @@ verify_jwt = false
 
 [functions.prosperity-optimization-protocol]
 verify_jwt = false
+
+[functions.founder-immortality-engine]
+verify_jwt = false

@@ -78,6 +78,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   gccf_governance_cycle: { label: 'Capital Governance', icon: '🏛️' },
   ppop_prosperity_acceleration: { label: 'Prosperity Surge', icon: '🌟' },
   ppop_protocol_cycle: { label: 'Prosperity Engine', icon: '🌍' },
+  afiba_governance_override: { label: 'Founder AI Override', icon: '🧬' },
+  afiba_engine_cycle: { label: 'Immortality Engine', icon: '♾️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
