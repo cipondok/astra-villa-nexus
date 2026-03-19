@@ -146,7 +146,7 @@ Deno.serve(async (req) => {
           from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
           sender_domain: SENDER_DOMAIN,
           subject: emailSubject,
-          html: emailHtml,
+          html: htmlWithUnsub,
           text: emailText,
           purpose: 'transactional',
           label: template || 'custom',
