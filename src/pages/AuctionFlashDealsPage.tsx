@@ -249,8 +249,19 @@ function AuctionCard({ auction, index }: { auction: AuctionListing; index: numbe
                           <p className="text-lg font-bold text-foreground">{formatIDR(minBid)}</p>
                         </div>
                       </div>
+
+                      {/* Competitiveness Indicator */}
+                      {bidAmount && Number(bidAmount) > 0 && (
+                        <BidCompetitivenessIndicator
+                          proposedBid={Number(bidAmount)}
+                          currentBid={auction.current_bid}
+                          startingPrice={auction.starting_price}
+                          minimumIncrement={auction.minimum_increment}
+                          totalBids={auction.bid_count}
+                        />
+                      )}
+
                       <div>
-                        <label className="text-xs text-muted-foreground mb-1 block">Your Bid (IDR)</label>
                         <Input
                           type="number"
                           placeholder={String(minBid)}
