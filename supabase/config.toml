@@ -369,3 +369,6 @@ verify_jwt = false
 
 [functions.pricing-intelligence-engine]
 verify_jwt = false
+
+[functions.network-effect-engine]
+verify_jwt = false

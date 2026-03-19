@@ -6807,6 +6807,72 @@ export type Database = {
           },
         ]
       }
+      city_network_density: {
+        Row: {
+          active_agents: number | null
+          active_investors: number | null
+          active_listings: number | null
+          active_vendors: number | null
+          city: string
+          created_at: string | null
+          deal_activity_frequency_score: number | null
+          deals_30d: number | null
+          density_tier: string | null
+          id: string
+          investor_concentration_score: number | null
+          last_computed_at: string | null
+          metcalfe_value_proxy: number | null
+          network_density_score: number | null
+          referral_propagation_velocity: number | null
+          referrals_30d: number | null
+          scoring_inputs: Json | null
+          updated_at: string | null
+          vendor_service_depth_score: number | null
+        }
+        Insert: {
+          active_agents?: number | null
+          active_investors?: number | null
+          active_listings?: number | null
+          active_vendors?: number | null
+          city: string
+          created_at?: string | null
+          deal_activity_frequency_score?: number | null
+          deals_30d?: number | null
+          density_tier?: string | null
+          id?: string
+          investor_concentration_score?: number | null
+          last_computed_at?: string | null
+          metcalfe_value_proxy?: number | null
+          network_density_score?: number | null
+          referral_propagation_velocity?: number | null
+          referrals_30d?: number | null
+          scoring_inputs?: Json | null
+          updated_at?: string | null
+          vendor_service_depth_score?: number | null
+        }
+        Update: {
+          active_agents?: number | null
+          active_investors?: number | null
+          active_listings?: number | null
+          active_vendors?: number | null
+          city?: string
+          created_at?: string | null
+          deal_activity_frequency_score?: number | null
+          deals_30d?: number | null
+          density_tier?: string | null
+          id?: string
+          investor_concentration_score?: number | null
+          last_computed_at?: string | null
+          metcalfe_value_proxy?: number | null
+          network_density_score?: number | null
+          referral_propagation_velocity?: number | null
+          referrals_30d?: number | null
+          scoring_inputs?: Json | null
+          updated_at?: string | null
+          vendor_service_depth_score?: number | null
+        }
+        Relationships: []
+      }
       cloudflare_audit_log: {
         Row: {
           action: string
@@ -11375,6 +11441,63 @@ export type Database = {
           },
         ]
       }
+      flywheel_sync_state: {
+        Row: {
+          acceleration_trend: string | null
+          bottleneck_action: string | null
+          capital_engine_health: number | null
+          city: string
+          created_at: string | null
+          deal_dominance_health: number | null
+          engine_states: Json | null
+          estimated_singularity_months: number | null
+          flywheel_rpm: number | null
+          id: string
+          last_synced_at: string | null
+          network_density_health: number | null
+          pricing_engine_health: number | null
+          sync_score: number | null
+          vendor_engine_health: number | null
+          weakest_link: string | null
+        }
+        Insert: {
+          acceleration_trend?: string | null
+          bottleneck_action?: string | null
+          capital_engine_health?: number | null
+          city: string
+          created_at?: string | null
+          deal_dominance_health?: number | null
+          engine_states?: Json | null
+          estimated_singularity_months?: number | null
+          flywheel_rpm?: number | null
+          id?: string
+          last_synced_at?: string | null
+          network_density_health?: number | null
+          pricing_engine_health?: number | null
+          sync_score?: number | null
+          vendor_engine_health?: number | null
+          weakest_link?: string | null
+        }
+        Update: {
+          acceleration_trend?: string | null
+          bottleneck_action?: string | null
+          capital_engine_health?: number | null
+          city?: string
+          created_at?: string | null
+          deal_dominance_health?: number | null
+          engine_states?: Json | null
+          estimated_singularity_months?: number | null
+          flywheel_rpm?: number | null
+          id?: string
+          last_synced_at?: string | null
+          network_density_health?: number | null
+          pricing_engine_health?: number | null
+          sync_score?: number | null
+          vendor_engine_health?: number | null
+          weakest_link?: string | null
+        }
+        Relationships: []
+      }
       foreign_investment_inquiries: {
         Row: {
           admin_response: string | null
@@ -15935,6 +16058,63 @@ export type Database = {
           optimal_hold_months?: number | null
           peak_liquidity_month?: number | null
           property_type?: string
+        }
+        Relationships: []
+      }
+      liquidity_lock_in_metrics: {
+        Row: {
+          activity_to_roi_correlation: number | null
+          avg_days_to_close: number | null
+          avg_investor_roi_pct: number | null
+          capital_inflow_trend: string | null
+          capital_to_closure_correlation: number | null
+          city: string
+          created_at: string | null
+          flywheel_momentum_score: number | null
+          id: string
+          insights: Json | null
+          last_computed_at: string | null
+          lock_in_strength: number | null
+          lock_in_tier: string | null
+          portfolio_depth_avg: number | null
+          repeat_investor_pct: number | null
+          roi_to_capital_correlation: number | null
+        }
+        Insert: {
+          activity_to_roi_correlation?: number | null
+          avg_days_to_close?: number | null
+          avg_investor_roi_pct?: number | null
+          capital_inflow_trend?: string | null
+          capital_to_closure_correlation?: number | null
+          city: string
+          created_at?: string | null
+          flywheel_momentum_score?: number | null
+          id?: string
+          insights?: Json | null
+          last_computed_at?: string | null
+          lock_in_strength?: number | null
+          lock_in_tier?: string | null
+          portfolio_depth_avg?: number | null
+          repeat_investor_pct?: number | null
+          roi_to_capital_correlation?: number | null
+        }
+        Update: {
+          activity_to_roi_correlation?: number | null
+          avg_days_to_close?: number | null
+          avg_investor_roi_pct?: number | null
+          capital_inflow_trend?: string | null
+          capital_to_closure_correlation?: number | null
+          city?: string
+          created_at?: string | null
+          flywheel_momentum_score?: number | null
+          id?: string
+          insights?: Json | null
+          last_computed_at?: string | null
+          lock_in_strength?: number | null
+          lock_in_tier?: string | null
+          portfolio_depth_avg?: number | null
+          repeat_investor_pct?: number | null
+          roi_to_capital_correlation?: number | null
         }
         Relationships: []
       }
@@ -22486,6 +22666,75 @@ export type Database = {
           min_commission?: number | null
           transaction_type?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      platform_dependency_index: {
+        Row: {
+          active_offers: number | null
+          churn_risk_pct: number | null
+          created_at: string | null
+          data_moat_depth: number | null
+          deals_completed: number | null
+          dependency_score: number | null
+          dependency_tier: string | null
+          engagement_stickiness_score: number | null
+          id: string
+          last_computed_at: string | null
+          portfolio_integration_depth: number | null
+          properties_managed: number | null
+          retention_actions: Json | null
+          switching_cost_score: number | null
+          total_actions_30d: number | null
+          total_sessions_30d: number | null
+          updated_at: string | null
+          user_id: string
+          user_role: string | null
+          watchlist_size: number | null
+        }
+        Insert: {
+          active_offers?: number | null
+          churn_risk_pct?: number | null
+          created_at?: string | null
+          data_moat_depth?: number | null
+          deals_completed?: number | null
+          dependency_score?: number | null
+          dependency_tier?: string | null
+          engagement_stickiness_score?: number | null
+          id?: string
+          last_computed_at?: string | null
+          portfolio_integration_depth?: number | null
+          properties_managed?: number | null
+          retention_actions?: Json | null
+          switching_cost_score?: number | null
+          total_actions_30d?: number | null
+          total_sessions_30d?: number | null
+          updated_at?: string | null
+          user_id: string
+          user_role?: string | null
+          watchlist_size?: number | null
+        }
+        Update: {
+          active_offers?: number | null
+          churn_risk_pct?: number | null
+          created_at?: string | null
+          data_moat_depth?: number | null
+          deals_completed?: number | null
+          dependency_score?: number | null
+          dependency_tier?: string | null
+          engagement_stickiness_score?: number | null
+          id?: string
+          last_computed_at?: string | null
+          portfolio_integration_depth?: number | null
+          properties_managed?: number | null
+          retention_actions?: Json | null
+          switching_cost_score?: number | null
+          total_actions_30d?: number | null
+          total_sessions_30d?: number | null
+          updated_at?: string | null
+          user_id?: string
+          user_role?: string | null
+          watchlist_size?: number | null
         }
         Relationships: []
       }
@@ -38479,6 +38728,66 @@ export type Database = {
           total_participants?: number | null
           total_rewards_distributed?: number | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      viral_growth_multipliers: {
+        Row: {
+          city: string
+          compounding_growth_rate: number | null
+          created_at: string | null
+          id: string
+          k_factor: number | null
+          last_computed_at: string | null
+          multiplier_tier: string | null
+          organic_to_referred_ratio: number | null
+          period_month: string
+          projected_users_30d: number | null
+          projected_users_90d: number | null
+          referral_conversion_rate: number | null
+          reward_roi: number | null
+          tier_1_referrals: number | null
+          tier_2_referrals: number | null
+          tier_3_referrals: number | null
+          viral_cycle_time_days: number | null
+        }
+        Insert: {
+          city: string
+          compounding_growth_rate?: number | null
+          created_at?: string | null
+          id?: string
+          k_factor?: number | null
+          last_computed_at?: string | null
+          multiplier_tier?: string | null
+          organic_to_referred_ratio?: number | null
+          period_month: string
+          projected_users_30d?: number | null
+          projected_users_90d?: number | null
+          referral_conversion_rate?: number | null
+          reward_roi?: number | null
+          tier_1_referrals?: number | null
+          tier_2_referrals?: number | null
+          tier_3_referrals?: number | null
+          viral_cycle_time_days?: number | null
+        }
+        Update: {
+          city?: string
+          compounding_growth_rate?: number | null
+          created_at?: string | null
+          id?: string
+          k_factor?: number | null
+          last_computed_at?: string | null
+          multiplier_tier?: string | null
+          organic_to_referred_ratio?: number | null
+          period_month?: string
+          projected_users_30d?: number | null
+          projected_users_90d?: number | null
+          referral_conversion_rate?: number | null
+          reward_roi?: number | null
+          tier_1_referrals?: number | null
+          tier_2_referrals?: number | null
+          tier_3_referrals?: number | null
+          viral_cycle_time_days?: number | null
         }
         Relationships: []
       }

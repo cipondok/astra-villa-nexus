@@ -40,6 +40,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   deal_dominance_achieved: { label: 'Dominant Listing', icon: '🏆' },
   pricing_intelligence_engine_cycle: { label: 'Pricing Engine', icon: '📊' },
   pricing_inefficiency_detected: { label: 'Price Alert', icon: '📉' },
+  network_effect_engine_cycle: { label: 'Network Engine', icon: '🕸️' },
+  network_critical_mass_reached: { label: 'Critical Mass!', icon: '💥' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
