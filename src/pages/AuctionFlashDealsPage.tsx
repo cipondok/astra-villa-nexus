@@ -292,6 +292,9 @@ function AuctionCard({ auction, index }: { auction: AuctionListing; index: numbe
                         <Clock className="h-3 w-3" />
                         <span>Time remaining: <CountdownTimer endTime={auction.end_time} compact /></span>
                       </div>
+                      <p className="text-[9px] text-center text-muted-foreground">
+                        🔒 Bidder identities are anonymized. Bids within 5 min of closing extend the auction.
+                      </p>
                     </div>
                   </DialogContent>
                 </Dialog>
