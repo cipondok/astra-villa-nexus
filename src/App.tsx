@@ -444,6 +444,7 @@ const AppContent = () => {
                 <Route path="/macro-radar" element={<RealEstateMacroRadar />} />
                 <Route path="/investor-behavior-prediction" element={<InvestorBehaviorPrediction />} />
                 <Route path="/operations-brain" element={<MarketplaceOperationsBrain />} />
+                <Route path="/valuation-core" element={<SelfLearningValuationCore />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
