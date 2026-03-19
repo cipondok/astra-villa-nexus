@@ -153,6 +153,7 @@ const AIPropertyValuationPage = lazy(() => import('@/pages/AIPropertyValuationPa
 const AITenantMatchingPage = lazy(() => import('@/pages/AITenantMatchingPage'));
 const AISmartPricingPage = lazy(() => import('@/pages/AISmartPricingPage'));
 const MLValuationEnginePage = lazy(() => import('@/pages/MLValuationEnginePage'));
+const InvestmentScenarioSimulatorPage = lazy(() => import('@/pages/InvestmentScenarioSimulatorPage'));
 const AIDocumentGeneratorPage = lazy(() => import('@/pages/AIDocumentGeneratorPage'));
 const RentalYieldOptimizerPage = lazy(() => import('@/pages/RentalYieldOptimizerPage'));
 const WealthSimulatorPage = lazy(() => import('@/pages/WealthSimulatorPage'));
