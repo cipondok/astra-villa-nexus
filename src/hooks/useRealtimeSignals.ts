@@ -46,6 +46,10 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   superapp_orchestrator_cycle: { label: 'SuperApp Engine', icon: '🏗️' },
   fund_rebalance_alert: { label: 'Fund Rebalance', icon: '⚖️' },
   fund_engine_cycle: { label: 'Fund Engine', icon: '🏛️' },
+  reos_intelligence_critical: { label: 'RE-OS Intel', icon: '🌍' },
+  reos_transaction_critical: { label: 'RE-OS Transaction', icon: '⚡' },
+  reos_capital_critical: { label: 'RE-OS Capital', icon: '💸' },
+  reos_infrastructure_critical: { label: 'RE-OS Infra', icon: '🖥️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
