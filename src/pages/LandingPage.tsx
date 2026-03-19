@@ -6,6 +6,7 @@ const LandingBenefits = lazy(() => import('@/components/landing/LandingBenefits'
 const LandingFeatured = lazy(() => import('@/components/landing/LandingFeatured'));
 const LandingDeveloper = lazy(() => import('@/components/landing/LandingDeveloper'));
 const LandingServices = lazy(() => import('@/components/landing/LandingServices'));
+const LandingTrustProof = lazy(() => import('@/components/landing/LandingTrustProof'));
 const LandingLeadCapture = lazy(() => import('@/components/landing/LandingLeadCapture'));
 const LandingFooter = lazy(() => import('@/components/landing/LandingFooter'));
 
@@ -30,6 +31,7 @@ const LandingPage = () => {
         <Suspense fallback={<SectionLoader />}><LandingFeatured /></Suspense>
         <Suspense fallback={<SectionLoader />}><LandingDeveloper /></Suspense>
         <Suspense fallback={<SectionLoader />}><LandingServices /></Suspense>
+        <Suspense fallback={<SectionLoader />}><LandingTrustProof /></Suspense>
         <Suspense fallback={<SectionLoader />}><LandingLeadCapture /></Suspense>
         <Suspense fallback={<SectionLoader />}><LandingFooter /></Suspense>
       </div>
