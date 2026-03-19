@@ -441,3 +441,6 @@ verify_jwt = false
 
 [functions.category-killer-engine]
 verify_jwt = false
+
+[functions.competitive-extinction-engine]
+verify_jwt = false
