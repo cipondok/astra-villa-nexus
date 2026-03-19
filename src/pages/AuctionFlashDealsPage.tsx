@@ -123,7 +123,7 @@ function FlashDealCard({ deal, index }: { deal: FlashDeal; index: number }) {
                   <Badge variant="outline" className="text-[9px] px-1.5">{p?.property_type}</Badge>
                   <Badge variant="outline" className="text-[9px] px-1.5 flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" /> {p?.city}</Badge>
                   {p?.investment_score > 70 && (
-                    <Badge className="bg-emerald-500/15 text-emerald-600 border-emerald-500/30 text-[9px] gap-0.5">
+                    <Badge className="bg-chart-2/15 text-chart-2 border-chart-2/30 text-[9px] gap-0.5">
                       <Sparkles className="h-2.5 w-2.5" /> Score {p.investment_score}
                     </Badge>
                   )}
