@@ -372,3 +372,6 @@ verify_jwt = false
 
 [functions.network-effect-engine]
 verify_jwt = false
+
+[functions.superapp-orchestrator]
+verify_jwt = false

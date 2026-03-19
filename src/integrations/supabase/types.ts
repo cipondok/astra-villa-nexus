@@ -4238,6 +4238,108 @@ export type Database = {
         }
         Relationships: []
       }
+      asset_lifecycle_tracker: {
+        Row: {
+          acquisition_costs: number | null
+          acquisition_date: string | null
+          acquisition_price: number | null
+          ai_recommendation: string | null
+          cap_rate: number | null
+          cash_on_cash_return: number | null
+          created_at: string
+          current_valuation: number | null
+          exit_price_estimate: number | null
+          holding_period_months: number | null
+          id: string
+          lease_expiry_date: string | null
+          lifecycle_health_score: number
+          lifecycle_phase: string
+          monthly_rental_income: number | null
+          next_milestone: string | null
+          occupancy_rate: number | null
+          optimal_exit_window: string | null
+          owner_id: string
+          property_id: string | null
+          renovation_budget: number | null
+          renovation_completion_pct: number | null
+          renovation_spent: number | null
+          total_roi_pct: number | null
+          unrealized_gain_pct: number | null
+          updated_at: string
+        }
+        Insert: {
+          acquisition_costs?: number | null
+          acquisition_date?: string | null
+          acquisition_price?: number | null
+          ai_recommendation?: string | null
+          cap_rate?: number | null
+          cash_on_cash_return?: number | null
+          created_at?: string
+          current_valuation?: number | null
+          exit_price_estimate?: number | null
+          holding_period_months?: number | null
+          id?: string
+          lease_expiry_date?: string | null
+          lifecycle_health_score?: number
+          lifecycle_phase?: string
+          monthly_rental_income?: number | null
+          next_milestone?: string | null
+          occupancy_rate?: number | null
+          optimal_exit_window?: string | null
+          owner_id: string
+          property_id?: string | null
+          renovation_budget?: number | null
+          renovation_completion_pct?: number | null
+          renovation_spent?: number | null
+          total_roi_pct?: number | null
+          unrealized_gain_pct?: number | null
+          updated_at?: string
+        }
+        Update: {
+          acquisition_costs?: number | null
+          acquisition_date?: string | null
+          acquisition_price?: number | null
+          ai_recommendation?: string | null
+          cap_rate?: number | null
+          cash_on_cash_return?: number | null
+          created_at?: string
+          current_valuation?: number | null
+          exit_price_estimate?: number | null
+          holding_period_months?: number | null
+          id?: string
+          lease_expiry_date?: string | null
+          lifecycle_health_score?: number
+          lifecycle_phase?: string
+          monthly_rental_income?: number | null
+          next_milestone?: string | null
+          occupancy_rate?: number | null
+          optimal_exit_window?: string | null
+          owner_id?: string
+          property_id?: string | null
+          renovation_budget?: number | null
+          renovation_completion_pct?: number | null
+          renovation_spent?: number | null
+          total_roi_pct?: number | null
+          unrealized_gain_pct?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_lifecycle_tracker_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "asset_lifecycle_tracker_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       astra_daily_checkins: {
         Row: {
           bonus_multiplier: number | null
@@ -14851,6 +14953,93 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      investor_wealth_intelligence: {
+        Row: {
+          asset_type_concentration_risk: number
+          break_even_months: number | null
+          cashflow_growth_rate: number
+          created_at: string
+          fire_number_progress_pct: number
+          geographic_concentration_risk: number
+          id: string
+          last_computed_at: string
+          leverage_ratio: number
+          opportunity_pipeline_count: number
+          portfolio_risk_score: number
+          projected_annual_cashflow: number
+          risk_narrative: string | null
+          rotation_confidence: number
+          rotation_signal: string | null
+          target_allocation: Json | null
+          top_recommendation: string | null
+          total_assets: number
+          total_monthly_cashflow: number
+          total_portfolio_value: number
+          updated_at: string
+          user_id: string
+          vacancy_risk: number
+          wealth_trajectory_12m: number
+          wealth_trajectory_36m: number
+          weighted_avg_cap_rate: number
+        }
+        Insert: {
+          asset_type_concentration_risk?: number
+          break_even_months?: number | null
+          cashflow_growth_rate?: number
+          created_at?: string
+          fire_number_progress_pct?: number
+          geographic_concentration_risk?: number
+          id?: string
+          last_computed_at?: string
+          leverage_ratio?: number
+          opportunity_pipeline_count?: number
+          portfolio_risk_score?: number
+          projected_annual_cashflow?: number
+          risk_narrative?: string | null
+          rotation_confidence?: number
+          rotation_signal?: string | null
+          target_allocation?: Json | null
+          top_recommendation?: string | null
+          total_assets?: number
+          total_monthly_cashflow?: number
+          total_portfolio_value?: number
+          updated_at?: string
+          user_id: string
+          vacancy_risk?: number
+          wealth_trajectory_12m?: number
+          wealth_trajectory_36m?: number
+          weighted_avg_cap_rate?: number
+        }
+        Update: {
+          asset_type_concentration_risk?: number
+          break_even_months?: number | null
+          cashflow_growth_rate?: number
+          created_at?: string
+          fire_number_progress_pct?: number
+          geographic_concentration_risk?: number
+          id?: string
+          last_computed_at?: string
+          leverage_ratio?: number
+          opportunity_pipeline_count?: number
+          portfolio_risk_score?: number
+          projected_annual_cashflow?: number
+          risk_narrative?: string | null
+          rotation_confidence?: number
+          rotation_signal?: string | null
+          target_allocation?: Json | null
+          top_recommendation?: string | null
+          total_assets?: number
+          total_monthly_cashflow?: number
+          total_portfolio_value?: number
+          updated_at?: string
+          user_id?: string
+          vacancy_risk?: number
+          wealth_trajectory_12m?: number
+          wealth_trajectory_36m?: number
+          weighted_avg_cap_rate?: number
+        }
+        Relationships: []
       }
       invoices: {
         Row: {
@@ -30650,6 +30839,381 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      superapp_discovery_index: {
+        Row: {
+          behavioral_cluster: string
+          city: string
+          created_at: string
+          cross_market_arbitrage_score: number
+          deal_gravity_score: number
+          discovery_rank: number
+          discovery_tier: string
+          district: string
+          id: string
+          investor_demand_intensity: number
+          last_recomputed_at: string
+          liquidity_momentum: number
+          price_inefficiency_signal: number
+          property_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          behavioral_cluster?: string
+          city?: string
+          created_at?: string
+          cross_market_arbitrage_score?: number
+          deal_gravity_score?: number
+          discovery_rank?: number
+          discovery_tier?: string
+          district?: string
+          id?: string
+          investor_demand_intensity?: number
+          last_recomputed_at?: string
+          liquidity_momentum?: number
+          price_inefficiency_signal?: number
+          property_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          behavioral_cluster?: string
+          city?: string
+          created_at?: string
+          cross_market_arbitrage_score?: number
+          deal_gravity_score?: number
+          discovery_rank?: number
+          discovery_tier?: string
+          district?: string
+          id?: string
+          investor_demand_intensity?: number
+          last_recomputed_at?: string
+          liquidity_momentum?: number
+          price_inefficiency_signal?: number
+          property_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "superapp_discovery_index_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "superapp_discovery_index_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      superapp_identity: {
+        Row: {
+          active_pipelines: number
+          avatar_url: string | null
+          created_at: string
+          display_name: string
+          engagement_streak_days: number
+          id: string
+          is_agent: boolean
+          is_developer: boolean
+          is_investor: boolean
+          is_property_owner: boolean
+          is_vendor: boolean
+          last_discovery_at: string | null
+          last_service_request_at: string | null
+          last_transaction_at: string | null
+          loyalty_points: number
+          loyalty_tier: string
+          platform_tenure_days: number
+          primary_role: string
+          switching_cost_index: number
+          total_portfolio_value: number
+          total_transactions: number
+          trust_score: number
+          updated_at: string
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          active_pipelines?: number
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string
+          engagement_streak_days?: number
+          id?: string
+          is_agent?: boolean
+          is_developer?: boolean
+          is_investor?: boolean
+          is_property_owner?: boolean
+          is_vendor?: boolean
+          last_discovery_at?: string | null
+          last_service_request_at?: string | null
+          last_transaction_at?: string | null
+          loyalty_points?: number
+          loyalty_tier?: string
+          platform_tenure_days?: number
+          primary_role?: string
+          switching_cost_index?: number
+          total_portfolio_value?: number
+          total_transactions?: number
+          trust_score?: number
+          updated_at?: string
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          active_pipelines?: number
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string
+          engagement_streak_days?: number
+          id?: string
+          is_agent?: boolean
+          is_developer?: boolean
+          is_investor?: boolean
+          is_property_owner?: boolean
+          is_vendor?: boolean
+          last_discovery_at?: string | null
+          last_service_request_at?: string | null
+          last_transaction_at?: string | null
+          loyalty_points?: number
+          loyalty_tier?: string
+          platform_tenure_days?: number
+          primary_role?: string
+          switching_cost_index?: number
+          total_portfolio_value?: number
+          total_transactions?: number
+          trust_score?: number
+          updated_at?: string
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
+      superapp_orchestration_state: {
+        Row: {
+          active_users_in_module: number
+          bottleneck_detected: boolean
+          bottleneck_reason: string | null
+          city: string
+          created_at: string
+          downstream_modules: string[] | null
+          error_rate: number
+          health_score: number
+          id: string
+          last_sync_at: string
+          lifecycle_coverage_pct: number
+          module_name: string
+          sync_latency_ms: number
+          throughput_rpm: number
+          updated_at: string
+          upstream_modules: string[] | null
+        }
+        Insert: {
+          active_users_in_module?: number
+          bottleneck_detected?: boolean
+          bottleneck_reason?: string | null
+          city?: string
+          created_at?: string
+          downstream_modules?: string[] | null
+          error_rate?: number
+          health_score?: number
+          id?: string
+          last_sync_at?: string
+          lifecycle_coverage_pct?: number
+          module_name: string
+          sync_latency_ms?: number
+          throughput_rpm?: number
+          updated_at?: string
+          upstream_modules?: string[] | null
+        }
+        Update: {
+          active_users_in_module?: number
+          bottleneck_detected?: boolean
+          bottleneck_reason?: string | null
+          city?: string
+          created_at?: string
+          downstream_modules?: string[] | null
+          error_rate?: number
+          health_score?: number
+          id?: string
+          last_sync_at?: string
+          lifecycle_coverage_pct?: number
+          module_name?: string
+          sync_latency_ms?: number
+          throughput_rpm?: number
+          updated_at?: string
+          upstream_modules?: string[] | null
+        }
+        Relationships: []
+      }
+      superapp_service_hub: {
+        Row: {
+          completed_at: string | null
+          completion_rating: number | null
+          created_at: string
+          final_price: number | null
+          id: string
+          platform_fee_amount: number | null
+          platform_fee_pct: number | null
+          property_id: string | null
+          quality_score: number | null
+          quoted_at: string | null
+          quoted_price: number | null
+          requested_at: string
+          requester_id: string
+          service_type: string
+          service_vertical: string
+          started_at: string | null
+          status: string
+          updated_at: string
+          vendor_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          completion_rating?: number | null
+          created_at?: string
+          final_price?: number | null
+          id?: string
+          platform_fee_amount?: number | null
+          platform_fee_pct?: number | null
+          property_id?: string | null
+          quality_score?: number | null
+          quoted_at?: string | null
+          quoted_price?: number | null
+          requested_at?: string
+          requester_id: string
+          service_type?: string
+          service_vertical: string
+          started_at?: string | null
+          status?: string
+          updated_at?: string
+          vendor_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          completion_rating?: number | null
+          created_at?: string
+          final_price?: number | null
+          id?: string
+          platform_fee_amount?: number | null
+          platform_fee_pct?: number | null
+          property_id?: string | null
+          quality_score?: number | null
+          quoted_at?: string | null
+          quoted_price?: number | null
+          requested_at?: string
+          requester_id?: string
+          service_type?: string
+          service_vertical?: string
+          started_at?: string | null
+          status?: string
+          updated_at?: string
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "superapp_service_hub_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "superapp_service_hub_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      superapp_transaction_pipeline: {
+        Row: {
+          actual_close_date: string | null
+          agent_id: string | null
+          buyer_id: string
+          close_probability: number
+          commission_amount: number | null
+          commission_rate: number | null
+          created_at: string
+          escrow_amount: number | null
+          escrow_status: string | null
+          expected_close_date: string | null
+          id: string
+          legal_verification_status: string | null
+          pipeline_stage: string
+          property_id: string | null
+          recommended_action: string | null
+          seller_id: string | null
+          stage_entered_at: string
+          updated_at: string
+          urgency_score: number
+          viewing_scheduled_at: string | null
+        }
+        Insert: {
+          actual_close_date?: string | null
+          agent_id?: string | null
+          buyer_id: string
+          close_probability?: number
+          commission_amount?: number | null
+          commission_rate?: number | null
+          created_at?: string
+          escrow_amount?: number | null
+          escrow_status?: string | null
+          expected_close_date?: string | null
+          id?: string
+          legal_verification_status?: string | null
+          pipeline_stage?: string
+          property_id?: string | null
+          recommended_action?: string | null
+          seller_id?: string | null
+          stage_entered_at?: string
+          updated_at?: string
+          urgency_score?: number
+          viewing_scheduled_at?: string | null
+        }
+        Update: {
+          actual_close_date?: string | null
+          agent_id?: string | null
+          buyer_id?: string
+          close_probability?: number
+          commission_amount?: number | null
+          commission_rate?: number | null
+          created_at?: string
+          escrow_amount?: number | null
+          escrow_status?: string | null
+          expected_close_date?: string | null
+          id?: string
+          legal_verification_status?: string | null
+          pipeline_stage?: string
+          property_id?: string | null
+          recommended_action?: string | null
+          seller_id?: string | null
+          stage_entered_at?: string
+          updated_at?: string
+          urgency_score?: number
+          viewing_scheduled_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "superapp_transaction_pipeline_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "superapp_transaction_pipeline_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       supply_acquisition_targets: {
         Row: {
