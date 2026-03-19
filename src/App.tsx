@@ -126,6 +126,7 @@ const GlobalInvestorNetworkAI = lazy(() => import('@/pages/GlobalInvestorNetwork
 const SelfOptimizingEcosystem = lazy(() => import('@/pages/SelfOptimizingEcosystem'));
 const InvestorAcquisitionFunnel = lazy(() => import('@/pages/InvestorAcquisitionFunnel'));
 const ListingSEOTrafficEngine = lazy(() => import('@/pages/ListingSEOTrafficEngine'));
+const PropertyContentEngine = lazy(() => import('@/pages/PropertyContentEngine'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
