@@ -586,10 +586,10 @@ const EmailManagementSettings: React.FC = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5 h-8">
+        <TabsList className="grid w-full grid-cols-6 h-8">
           <TabsTrigger value="config" className="text-[10px] h-7 gap-1">
             <Settings2 className="h-3 w-3" />
-            Configuration
+            Config
           </TabsTrigger>
           <TabsTrigger value="branding" className="text-[10px] h-7 gap-1">
             <Palette className="h-3 w-3" />
@@ -602,6 +602,10 @@ const EmailManagementSettings: React.FC = () => {
           <TabsTrigger value="schedules" className="text-[10px] h-7 gap-1">
             <Clock className="h-3 w-3" />
             Schedules
+          </TabsTrigger>
+          <TabsTrigger value="monitoring" className="text-[10px] h-7 gap-1">
+            <Bell className="h-3 w-3" />
+            Monitoring
           </TabsTrigger>
           <TabsTrigger value="preview" className="text-[10px] h-7 gap-1">
             <Eye className="h-3 w-3" />
