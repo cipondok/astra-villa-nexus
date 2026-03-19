@@ -110,12 +110,12 @@ export function useIntelligenceMonitor() {
       };
 
       // ── Market Heat Intelligence ──
-      const { data: heatCache } = await supabase
+      const { data: heatCache } = await (supabase
         .from('ai_intelligence_cache')
         .select('data, updated_at')
         .eq('intelligence_type', 'market_heat')
         .order('updated_at', { ascending: false })
-        .limit(50);
+        .limit(50) as any);
 
       const cityHeatMap = new Map<string, { scores: number[]; listings: number }>();
       (heatCache || []).forEach((h: any) => {
