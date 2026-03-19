@@ -23759,6 +23759,387 @@ export type Database = {
           },
         ]
       }
+      pate_custody_records: {
+        Row: {
+          aml_cleared: boolean | null
+          asset_id: string
+          created_at: string | null
+          custodian_name: string
+          custodian_type: string
+          custody_status: string
+          fraud_flags: Json | null
+          fraud_risk_score: number | null
+          holder_id: string
+          id: string
+          jurisdiction: string | null
+          kyc_verified: boolean | null
+          last_audit_at: string | null
+          locked_balance: number | null
+          token_balance: number
+          updated_at: string | null
+          valuation_at_custody: number | null
+          verification_oracle_hash: string | null
+        }
+        Insert: {
+          aml_cleared?: boolean | null
+          asset_id: string
+          created_at?: string | null
+          custodian_name: string
+          custodian_type?: string
+          custody_status?: string
+          fraud_flags?: Json | null
+          fraud_risk_score?: number | null
+          holder_id: string
+          id?: string
+          jurisdiction?: string | null
+          kyc_verified?: boolean | null
+          last_audit_at?: string | null
+          locked_balance?: number | null
+          token_balance?: number
+          updated_at?: string | null
+          valuation_at_custody?: number | null
+          verification_oracle_hash?: string | null
+        }
+        Update: {
+          aml_cleared?: boolean | null
+          asset_id?: string
+          created_at?: string | null
+          custodian_name?: string
+          custodian_type?: string
+          custody_status?: string
+          fraud_flags?: Json | null
+          fraud_risk_score?: number | null
+          holder_id?: string
+          id?: string
+          jurisdiction?: string | null
+          kyc_verified?: boolean | null
+          last_audit_at?: string | null
+          locked_balance?: number | null
+          token_balance?: number
+          updated_at?: string | null
+          valuation_at_custody?: number | null
+          verification_oracle_hash?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pate_custody_records_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "pate_tokenized_assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pate_financial_products: {
+        Row: {
+          collateral_ratio: number | null
+          created_at: string | null
+          current_nav: number | null
+          id: string
+          inception_date: string | null
+          interest_rate_pct: number | null
+          is_active: boolean | null
+          maturity_months: number | null
+          max_drawdown_pct: number | null
+          max_leverage: number | null
+          metadata: Json | null
+          notional_value_usd: number | null
+          participants_count: number | null
+          performance_ytd_pct: number | null
+          product_name: string
+          product_type: string
+          regulatory_status: string | null
+          risk_tier: string | null
+          sharpe_ratio: number | null
+          underlying_assets: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          collateral_ratio?: number | null
+          created_at?: string | null
+          current_nav?: number | null
+          id?: string
+          inception_date?: string | null
+          interest_rate_pct?: number | null
+          is_active?: boolean | null
+          maturity_months?: number | null
+          max_drawdown_pct?: number | null
+          max_leverage?: number | null
+          metadata?: Json | null
+          notional_value_usd?: number | null
+          participants_count?: number | null
+          performance_ytd_pct?: number | null
+          product_name: string
+          product_type: string
+          regulatory_status?: string | null
+          risk_tier?: string | null
+          sharpe_ratio?: number | null
+          underlying_assets?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          collateral_ratio?: number | null
+          created_at?: string | null
+          current_nav?: number | null
+          id?: string
+          inception_date?: string | null
+          interest_rate_pct?: number | null
+          is_active?: boolean | null
+          maturity_months?: number | null
+          max_drawdown_pct?: number | null
+          max_leverage?: number | null
+          metadata?: Json | null
+          notional_value_usd?: number | null
+          participants_count?: number | null
+          performance_ytd_pct?: number | null
+          product_name?: string
+          product_type?: string
+          regulatory_status?: string | null
+          risk_tier?: string | null
+          sharpe_ratio?: number | null
+          underlying_assets?: string[] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      pate_order_book: {
+        Row: {
+          ai_spread_adjustment: number | null
+          asset_id: string
+          avg_fill_price: number | null
+          cancelled_at: string | null
+          created_at: string | null
+          cross_border: boolean | null
+          expires_at: string | null
+          filled_at: string | null
+          filled_quantity: number | null
+          id: string
+          investor_id: string
+          order_type: string
+          price_per_token: number
+          quantity: number
+          source_currency: string | null
+          status: string
+          total_value: number
+          updated_at: string | null
+          volatility_dampener_active: boolean | null
+        }
+        Insert: {
+          ai_spread_adjustment?: number | null
+          asset_id: string
+          avg_fill_price?: number | null
+          cancelled_at?: string | null
+          created_at?: string | null
+          cross_border?: boolean | null
+          expires_at?: string | null
+          filled_at?: string | null
+          filled_quantity?: number | null
+          id?: string
+          investor_id: string
+          order_type: string
+          price_per_token: number
+          quantity: number
+          source_currency?: string | null
+          status?: string
+          total_value: number
+          updated_at?: string | null
+          volatility_dampener_active?: boolean | null
+        }
+        Update: {
+          ai_spread_adjustment?: number | null
+          asset_id?: string
+          avg_fill_price?: number | null
+          cancelled_at?: string | null
+          created_at?: string | null
+          cross_border?: boolean | null
+          expires_at?: string | null
+          filled_at?: string | null
+          filled_quantity?: number | null
+          id?: string
+          investor_id?: string
+          order_type?: string
+          price_per_token?: number
+          quantity?: number
+          source_currency?: string | null
+          status?: string
+          total_value?: number
+          updated_at?: string | null
+          volatility_dampener_active?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pate_order_book_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "pate_tokenized_assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pate_tokenized_assets: {
+        Row: {
+          annual_yield_pct: number | null
+          asset_valuation_usd: number
+          circulating_supply: number
+          compliance_status: string
+          created_at: string | null
+          current_holders: number | null
+          fractionalization_ratio: number | null
+          id: string
+          is_trading_active: boolean | null
+          is_verified: boolean | null
+          jurisdiction: string
+          last_valuation_at: string | null
+          legal_wrapper: string | null
+          max_holders: number | null
+          metadata: Json | null
+          min_investment_usd: number | null
+          price_per_token: number
+          property_id: string | null
+          revenue_distribution_model: string | null
+          smart_contract_address: string | null
+          token_name: string
+          token_symbol: string
+          total_supply: number
+          updated_at: string | null
+        }
+        Insert: {
+          annual_yield_pct?: number | null
+          asset_valuation_usd?: number
+          circulating_supply?: number
+          compliance_status?: string
+          created_at?: string | null
+          current_holders?: number | null
+          fractionalization_ratio?: number | null
+          id?: string
+          is_trading_active?: boolean | null
+          is_verified?: boolean | null
+          jurisdiction?: string
+          last_valuation_at?: string | null
+          legal_wrapper?: string | null
+          max_holders?: number | null
+          metadata?: Json | null
+          min_investment_usd?: number | null
+          price_per_token?: number
+          property_id?: string | null
+          revenue_distribution_model?: string | null
+          smart_contract_address?: string | null
+          token_name: string
+          token_symbol: string
+          total_supply?: number
+          updated_at?: string | null
+        }
+        Update: {
+          annual_yield_pct?: number | null
+          asset_valuation_usd?: number
+          circulating_supply?: number
+          compliance_status?: string
+          created_at?: string | null
+          current_holders?: number | null
+          fractionalization_ratio?: number | null
+          id?: string
+          is_trading_active?: boolean | null
+          is_verified?: boolean | null
+          jurisdiction?: string
+          last_valuation_at?: string | null
+          legal_wrapper?: string | null
+          max_holders?: number | null
+          metadata?: Json | null
+          min_investment_usd?: number | null
+          price_per_token?: number
+          property_id?: string | null
+          revenue_distribution_model?: string | null
+          smart_contract_address?: string | null
+          token_name?: string
+          token_symbol?: string
+          total_supply?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pate_tokenized_assets_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pate_tokenized_assets_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pate_yield_streams: {
+        Row: {
+          asset_id: string
+          computed_at: string | null
+          created_at: string | null
+          distributed_amount: number | null
+          distributed_at: string | null
+          distribution_status: string | null
+          id: string
+          net_yield_after_fees: number | null
+          period_end: string
+          period_start: string
+          platform_fee_pct: number | null
+          recipients_count: number | null
+          secondary_market_bonus_pct: number | null
+          stream_type: string
+          token_reprice_delta: number | null
+          total_yield_usd: number
+          yield_per_token: number | null
+        }
+        Insert: {
+          asset_id: string
+          computed_at?: string | null
+          created_at?: string | null
+          distributed_amount?: number | null
+          distributed_at?: string | null
+          distribution_status?: string | null
+          id?: string
+          net_yield_after_fees?: number | null
+          period_end: string
+          period_start: string
+          platform_fee_pct?: number | null
+          recipients_count?: number | null
+          secondary_market_bonus_pct?: number | null
+          stream_type: string
+          token_reprice_delta?: number | null
+          total_yield_usd?: number
+          yield_per_token?: number | null
+        }
+        Update: {
+          asset_id?: string
+          computed_at?: string | null
+          created_at?: string | null
+          distributed_amount?: number | null
+          distributed_at?: string | null
+          distribution_status?: string | null
+          id?: string
+          net_yield_after_fees?: number | null
+          period_end?: string
+          period_start?: string
+          platform_fee_pct?: number | null
+          recipients_count?: number | null
+          secondary_market_bonus_pct?: number | null
+          stream_type?: string
+          token_reprice_delta?: number | null
+          total_yield_usd?: number
+          yield_per_token?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pate_yield_streams_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "pate_tokenized_assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payment_automation_settings: {
         Row: {
           auto_generate_invoices: boolean | null
