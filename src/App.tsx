@@ -155,6 +155,7 @@ const AISmartPricingPage = lazy(() => import('@/pages/AISmartPricingPage'));
 const MLValuationEnginePage = lazy(() => import('@/pages/MLValuationEnginePage'));
 const InvestmentScenarioSimulatorPage = lazy(() => import('@/pages/InvestmentScenarioSimulatorPage'));
 const InstitutionalAnalyticsPage = lazy(() => import('@/pages/InstitutionalAnalyticsPage'));
+const OpportunityDiscoveryEnginePage = lazy(() => import('@/pages/OpportunityDiscoveryEnginePage'));
 const AIDocumentGeneratorPage = lazy(() => import('@/pages/AIDocumentGeneratorPage'));
 const RentalYieldOptimizerPage = lazy(() => import('@/pages/RentalYieldOptimizerPage'));
 const WealthSimulatorPage = lazy(() => import('@/pages/WealthSimulatorPage'));
@@ -648,6 +649,9 @@ const AppContent = () => {
                 <Route path="/ml-valuation-engine" element={<MLValuationEnginePage />} />
                 <Route path="/investment-scenario-simulator" element={<InvestmentScenarioSimulatorPage />} />
                 <Route path="/institutional-analytics" element={<InstitutionalAnalyticsPage />} />
+                <Route path="/opportunity-discovery-engine" element={<ProtectedRoute />}>
+                  <Route index element={<OpportunityDiscoveryEnginePage />} />
+                </Route>
                 <Route path="/ai-document-generator" element={<AIDocumentGeneratorPage />} />
                 <Route path="/rental-yield-optimizer" element={<ProtectedRoute />}>
                   <Route index element={<RentalYieldOptimizerPage />} />
