@@ -103,6 +103,7 @@ const ExitStrategyPlanner = lazy(() => import('@/pages/ExitStrategyPlanner'));
 const DemandSentimentAnalyzer = lazy(() => import('@/pages/DemandSentimentAnalyzer'));
 const CapitalAllocationOptimizer = lazy(() => import('@/pages/CapitalAllocationOptimizer'));
 const DealSyndicationHub = lazy(() => import('@/pages/DealSyndicationHub'));
+const GrowthIntelligenceBrain = lazy(() => import('@/pages/GrowthIntelligenceBrain'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
