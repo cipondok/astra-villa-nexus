@@ -9453,6 +9453,27 @@ export type Database = {
         }
         Relationships: []
       }
+      email_unsubscribe_tokens: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          token?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          token?: string
+        }
+        Relationships: []
+      }
       error_logs: {
         Row: {
           component_name: string | null
@@ -28755,6 +28776,30 @@ export type Database = {
           },
         ]
       }
+      suppressed_emails: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          reason: string
+          source: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          reason?: string
+          source?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          reason?: string
+          source?: string | null
+        }
+        Relationships: []
+      }
       syndicated_listings: {
         Row: {
           agent_id: string | null
@@ -37370,6 +37415,7 @@ export type Database = {
         }[]
       }
       get_total_user_count: { Args: never; Returns: number }
+      get_unsubscribe_token: { Args: { p_email: string }; Returns: string }
       get_user_financial_summary: {
         Args: { p_user_id?: string }
         Returns: Json
@@ -37540,6 +37586,7 @@ export type Database = {
         Returns: boolean
       }
       is_current_user_admin: { Args: never; Returns: boolean }
+      is_email_suppressed: { Args: { p_email: string }; Returns: boolean }
       is_ip_blocked: { Args: { check_ip: string }; Returns: boolean }
       is_ip_whitelisted: { Args: { check_ip: string }; Returns: boolean }
       is_owner: { Args: { _user_id: string }; Returns: boolean }
