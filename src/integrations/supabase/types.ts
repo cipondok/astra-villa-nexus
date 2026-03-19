@@ -24670,6 +24670,261 @@ export type Database = {
           },
         ]
       }
+      mpeem_capital_flows: {
+        Row: {
+          computed_at: string
+          created_at: string
+          cross_planet_hedge_ratio: number | null
+          destination_planet: string
+          diversification_index: number | null
+          flow_type: string
+          flow_velocity: number | null
+          flow_volume_usd: number | null
+          id: string
+          latency_seconds: number | null
+          origin_planet: string
+          risk_adjusted_return: number | null
+          settlement_mechanism: string | null
+          transaction_protocol: string | null
+        }
+        Insert: {
+          computed_at?: string
+          created_at?: string
+          cross_planet_hedge_ratio?: number | null
+          destination_planet?: string
+          diversification_index?: number | null
+          flow_type?: string
+          flow_velocity?: number | null
+          flow_volume_usd?: number | null
+          id?: string
+          latency_seconds?: number | null
+          origin_planet?: string
+          risk_adjusted_return?: number | null
+          settlement_mechanism?: string | null
+          transaction_protocol?: string | null
+        }
+        Update: {
+          computed_at?: string
+          created_at?: string
+          cross_planet_hedge_ratio?: number | null
+          destination_planet?: string
+          diversification_index?: number | null
+          flow_type?: string
+          flow_velocity?: number | null
+          flow_volume_usd?: number | null
+          id?: string
+          latency_seconds?: number | null
+          origin_planet?: string
+          risk_adjusted_return?: number | null
+          settlement_mechanism?: string | null
+          transaction_protocol?: string | null
+        }
+        Relationships: []
+      }
+      mpeem_expansion_flywheel: {
+        Row: {
+          breakthroughs_unlocked: number | null
+          civilization_stage: string | null
+          computed_at: string
+          created_at: string
+          cycle_id: string
+          decade_span: string | null
+          flywheel_momentum: number | null
+          frontier_market_cap_usd: number | null
+          global_wealth_expansion_usd: number | null
+          id: string
+          investment_multiplier: number | null
+          new_asset_classes_created: number | null
+          tech_acceleration_index: number | null
+        }
+        Insert: {
+          breakthroughs_unlocked?: number | null
+          civilization_stage?: string | null
+          computed_at?: string
+          created_at?: string
+          cycle_id: string
+          decade_span?: string | null
+          flywheel_momentum?: number | null
+          frontier_market_cap_usd?: number | null
+          global_wealth_expansion_usd?: number | null
+          id?: string
+          investment_multiplier?: number | null
+          new_asset_classes_created?: number | null
+          tech_acceleration_index?: number | null
+        }
+        Update: {
+          breakthroughs_unlocked?: number | null
+          civilization_stage?: string | null
+          computed_at?: string
+          created_at?: string
+          cycle_id?: string
+          decade_span?: string | null
+          flywheel_momentum?: number | null
+          frontier_market_cap_usd?: number | null
+          global_wealth_expansion_usd?: number | null
+          id?: string
+          investment_multiplier?: number | null
+          new_asset_classes_created?: number | null
+          tech_acceleration_index?: number | null
+        }
+        Relationships: []
+      }
+      mpeem_frontier_growth: {
+        Row: {
+          anchor_industries: Json | null
+          colony_name: string
+          computed_at: string
+          created_at: string
+          economic_clustering_score: number | null
+          growth_phase: string | null
+          id: string
+          infrastructure_lifecycle_years: number | null
+          migration_velocity: number | null
+          planet: string
+          projected_population_25y: number | null
+          projected_population_5y: number | null
+          self_sufficiency_index: number | null
+          urban_density_target: number | null
+        }
+        Insert: {
+          anchor_industries?: Json | null
+          colony_name: string
+          computed_at?: string
+          created_at?: string
+          economic_clustering_score?: number | null
+          growth_phase?: string | null
+          id?: string
+          infrastructure_lifecycle_years?: number | null
+          migration_velocity?: number | null
+          planet?: string
+          projected_population_25y?: number | null
+          projected_population_5y?: number | null
+          self_sufficiency_index?: number | null
+          urban_density_target?: number | null
+        }
+        Update: {
+          anchor_industries?: Json | null
+          colony_name?: string
+          computed_at?: string
+          created_at?: string
+          economic_clustering_score?: number | null
+          growth_phase?: string | null
+          id?: string
+          infrastructure_lifecycle_years?: number | null
+          migration_velocity?: number | null
+          planet?: string
+          projected_population_25y?: number | null
+          projected_population_5y?: number | null
+          self_sufficiency_index?: number | null
+          urban_density_target?: number | null
+        }
+        Relationships: []
+      }
+      mpeem_infrastructure_investment: {
+        Row: {
+          capital_allocated_usd: number | null
+          computed_at: string
+          construction_phase: string | null
+          created_at: string
+          estimated_roi_decade: number | null
+          habitat_name: string
+          habitat_type: string
+          id: string
+          infrastructure_class: string | null
+          operational_readiness: number | null
+          planet: string
+          population_capacity: number | null
+          productivity_signal: number | null
+          resource_extraction_value: number | null
+          risk_tier: string | null
+        }
+        Insert: {
+          capital_allocated_usd?: number | null
+          computed_at?: string
+          construction_phase?: string | null
+          created_at?: string
+          estimated_roi_decade?: number | null
+          habitat_name: string
+          habitat_type?: string
+          id?: string
+          infrastructure_class?: string | null
+          operational_readiness?: number | null
+          planet?: string
+          population_capacity?: number | null
+          productivity_signal?: number | null
+          resource_extraction_value?: number | null
+          risk_tier?: string | null
+        }
+        Update: {
+          capital_allocated_usd?: number | null
+          computed_at?: string
+          construction_phase?: string | null
+          created_at?: string
+          estimated_roi_decade?: number | null
+          habitat_name?: string
+          habitat_type?: string
+          id?: string
+          infrastructure_class?: string | null
+          operational_readiness?: number | null
+          planet?: string
+          population_capacity?: number | null
+          productivity_signal?: number | null
+          resource_extraction_value?: number | null
+          risk_tier?: string | null
+        }
+        Relationships: []
+      }
+      mpeem_property_rights: {
+        Row: {
+          computed_at: string
+          created_at: string
+          dispute_resolution_protocol: string | null
+          governance_framework: Json | null
+          id: string
+          infrastructure_share_pct: number | null
+          jurisdiction_model: string
+          legal_recognition_status: string | null
+          ownership_structure: string | null
+          planet: string
+          shared_pool_contributors: number | null
+          tokenized_claim_id: string | null
+          total_claim_value_usd: number | null
+          zone_name: string
+        }
+        Insert: {
+          computed_at?: string
+          created_at?: string
+          dispute_resolution_protocol?: string | null
+          governance_framework?: Json | null
+          id?: string
+          infrastructure_share_pct?: number | null
+          jurisdiction_model?: string
+          legal_recognition_status?: string | null
+          ownership_structure?: string | null
+          planet?: string
+          shared_pool_contributors?: number | null
+          tokenized_claim_id?: string | null
+          total_claim_value_usd?: number | null
+          zone_name: string
+        }
+        Update: {
+          computed_at?: string
+          created_at?: string
+          dispute_resolution_protocol?: string | null
+          governance_framework?: Json | null
+          id?: string
+          infrastructure_share_pct?: number | null
+          jurisdiction_model?: string
+          legal_recognition_status?: string | null
+          ownership_structure?: string | null
+          planet?: string
+          shared_pool_contributors?: number | null
+          tokenized_claim_id?: string | null
+          total_claim_value_usd?: number | null
+          zone_name?: string
+        }
+        Relationships: []
+      }
       negotiation_intelligence: {
         Row: {
           avg_counter_offer_discount_pct: number | null
