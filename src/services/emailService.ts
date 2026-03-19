@@ -11,7 +11,7 @@ interface SendEmailOptions {
 
 export async function sendEmail(options: SendEmailOptions): Promise<{ success: boolean; error?: string }> {
   try {
-    const { data, error } = await supabase.functions.invoke('send-email', {
+    const { data, error } = await supabase.functions.invoke('send-transactional-email', {
       body: options,
     });
 
@@ -22,14 +22,13 @@ export async function sendEmail(options: SendEmailOptions): Promise<{ success: b
 
     return { success: data?.success ?? true };
   } catch (err: any) {
-    console.error('Error invoking send-email function:', err);
+    console.error('Error invoking send-transactional-email function:', err);
     return { success: false, error: err.message };
   }
 }
 
 // Convenience functions for common email types
 export const emailService = {
-  // Send booking confirmation
   async sendBookingConfirmation(
     email: string,
     variables: {
@@ -40,14 +39,9 @@ export const emailService = {
       property_address: string;
     }
   ) {
-    return sendEmail({
-      to: email,
-      template: 'booking_confirmation',
-      variables,
-    });
+    return sendEmail({ to: email, template: 'booking_confirmation', variables });
   },
 
-  // Send booking cancellation
   async sendBookingCancellation(
     email: string,
     variables: {
@@ -57,14 +51,9 @@ export const emailService = {
       cancellation_reason: string;
     }
   ) {
-    return sendEmail({
-      to: email,
-      template: 'booking_cancelled',
-      variables,
-    });
+    return sendEmail({ to: email, template: 'booking_cancelled', variables });
   },
 
-  // Send new review notification
   async sendNewReviewNotification(
     email: string,
     variables: {
@@ -75,14 +64,9 @@ export const emailService = {
       review_text: string;
     }
   ) {
-    return sendEmail({
-      to: email,
-      template: 'new_review',
-      variables,
-    });
+    return sendEmail({ to: email, template: 'new_review', variables });
   },
 
-  // Send verification approved
   async sendVerificationApproved(
     email: string,
     variables: {
@@ -90,14 +74,9 @@ export const emailService = {
       verification_type: string;
     }
   ) {
-    return sendEmail({
-      to: email,
-      template: 'verification_approved',
-      variables,
-    });
+    return sendEmail({ to: email, template: 'verification_approved', variables });
   },
 
-  // Send VIP upgrade confirmation
   async sendVIPUpgradeConfirmation(
     email: string,
     variables: {
@@ -106,14 +85,9 @@ export const emailService = {
       benefits_list: string;
     }
   ) {
-    return sendEmail({
-      to: email,
-      template: 'vip_upgrade',
-      variables,
-    });
+    return sendEmail({ to: email, template: 'general', variables: { message: `Congratulations ${variables.user_name}! You've been upgraded to ${variables.membership_level}. Benefits: ${variables.benefits_list}` }, subject: `VIP Upgrade: ${variables.membership_level}` });
   },
 
-  // Send foreign investment inquiry confirmation
   async sendForeignInvestmentInquiry(
     email: string,
     variables: {
@@ -123,14 +97,9 @@ export const emailService = {
       investor_country: string;
     }
   ) {
-    return sendEmail({
-      to: email,
-      template: 'foreign_investment_inquiry',
-      variables,
-    });
+    return sendEmail({ to: email, template: 'foreign_investment_inquiry', variables: { user_name: variables.user_name, inquiry_type: variables.investment_type, message: `Investment inquiry for ${variables.property_title} from ${variables.investor_country}` } });
   },
 
-  // Send admin notification for new property listing
   async sendAdminNewPropertyNotification(
     adminEmails: string | string[],
     variables: {
@@ -140,15 +109,9 @@ export const emailService = {
       submission_date: string;
     }
   ) {
-    return sendEmail({
-      to: adminEmails,
-      template: 'admin_new_property',
-      variables,
-      skipAuth: true,
-    } as any);
+    return sendEmail({ to: adminEmails, template: 'general', variables: { message: `New property listed: ${variables.property_title} by ${variables.owner_name} in ${variables.property_location} (${variables.submission_date})` }, subject: `New Property: ${variables.property_title}` });
   },
 
-  // Send admin notification for new review  
   async sendAdminReviewNotification(
     adminEmails: string | string[],
     variables: {
@@ -158,26 +121,11 @@ export const emailService = {
       review_text: string;
     }
   ) {
-    return sendEmail({
-      to: adminEmails,
-      template: 'admin_review_notification',
-      variables,
-      skipAuth: true,
-    } as any);
+    return sendEmail({ to: adminEmails, template: 'general', variables: { message: `${variables.reviewer_name} left a ${variables.rating}★ review on ${variables.property_title}: "${variables.review_text}"` }, subject: `New Review: ${variables.rating}★ on ${variables.property_title}` });
   },
 
-  // Send custom email
-  async sendCustomEmail(
-    email: string,
-    subject: string,
-    message: string
-  ) {
-    return sendEmail({
-      to: email,
-      template: 'general',
-      variables: { message },
-      subject,
-    });
+  async sendCustomEmail(email: string, subject: string, message: string) {
+    return sendEmail({ to: email, template: 'general', variables: { message }, subject });
   },
 };
 
