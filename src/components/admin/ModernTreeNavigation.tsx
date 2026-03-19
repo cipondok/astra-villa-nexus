@@ -79,7 +79,8 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
       children: [
         { id: 'ai-bot-management', label: 'AI Bots', icon: '🤖', count: '5', color: 'violet', isNew: true },
         { id: 'ai-assistant', label: 'AI Assistant', icon: '🧠', count: '1', color: 'purple', isNew: true },
-        { id: 'document-ocr', label: 'Document OCR', icon: '🔍', count: '12', color: 'blue' }
+        { id: 'document-ocr', label: 'Document OCR', icon: '🔍', count: '12', color: 'blue' },
+        { id: 'ai-intelligence-monitor', label: 'Intelligence Monitor', icon: '📡', count: '0', color: 'cyan', isNew: true }
       ]
     },
     {
