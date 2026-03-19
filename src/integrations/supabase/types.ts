@@ -37729,6 +37729,14 @@ export type Database = {
         Returns: string
       }
       match_buyer_listings: { Args: { p_limit?: number }; Returns: Json }
+      pgmq_archive: {
+        Args: { msg_id: number; queue_name: string }
+        Returns: boolean
+      }
+      pgmq_read: {
+        Args: { qty: number; queue_name: string; vt: number }
+        Returns: Json[]
+      }
       predict_deal_closing_timeline: {
         Args: { p_limit?: number }
         Returns: Json
