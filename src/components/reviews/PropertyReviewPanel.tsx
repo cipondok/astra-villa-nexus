@@ -294,6 +294,20 @@ export default function PropertyReviewPanel({ propertyId, className }: PropertyR
                   <StarInput value={formData.rating} onChange={v => setFormData(p => ({ ...p, rating: v }))} />
                 </div>
 
+                {/* Sub-criteria ratings */}
+                <div className="space-y-2 border border-border/30 rounded-xl p-3 bg-muted/20">
+                  <label className="text-xs font-semibold text-foreground">Detailed Ratings (optional)</label>
+                  {SUB_CRITERIA.map(c => (
+                    <div key={c.key} className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground">{c.label}</span>
+                      <StarInput
+                        value={(formData as any)[c.key]}
+                        onChange={v => setFormData(p => ({ ...p, [c.key]: v }))}
+                      />
+                    </div>
+                  ))}
+                </div>
+
                 <div className="space-y-1.5">
                   <label className="text-xs font-semibold text-foreground">What stood out? (select tags)</label>
                   <div className="flex flex-wrap gap-1.5">
