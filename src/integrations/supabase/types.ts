@@ -11952,6 +11952,94 @@ export type Database = {
         }
         Relationships: []
       }
+      fund_deployments: {
+        Row: {
+          annualized_return: number
+          created_at: string
+          current_valuation: number
+          deployed_amount: number
+          deployed_at: string
+          deployment_pct_of_pool: number
+          deployment_status: string
+          exit_date: string | null
+          exit_multiple: number | null
+          exit_proceeds: number | null
+          id: string
+          impairment_amount: number | null
+          impairment_flag: boolean
+          monthly_cashflow: number
+          pool_id: string
+          property_id: string | null
+          risk_grade: string | null
+          unrealized_gain_pct: number
+          updated_at: string
+        }
+        Insert: {
+          annualized_return?: number
+          created_at?: string
+          current_valuation?: number
+          deployed_amount?: number
+          deployed_at?: string
+          deployment_pct_of_pool?: number
+          deployment_status?: string
+          exit_date?: string | null
+          exit_multiple?: number | null
+          exit_proceeds?: number | null
+          id?: string
+          impairment_amount?: number | null
+          impairment_flag?: boolean
+          monthly_cashflow?: number
+          pool_id: string
+          property_id?: string | null
+          risk_grade?: string | null
+          unrealized_gain_pct?: number
+          updated_at?: string
+        }
+        Update: {
+          annualized_return?: number
+          created_at?: string
+          current_valuation?: number
+          deployed_amount?: number
+          deployed_at?: string
+          deployment_pct_of_pool?: number
+          deployment_status?: string
+          exit_date?: string | null
+          exit_multiple?: number | null
+          exit_proceeds?: number | null
+          id?: string
+          impairment_amount?: number | null
+          impairment_flag?: boolean
+          monthly_cashflow?: number
+          pool_id?: string
+          property_id?: string | null
+          risk_grade?: string | null
+          unrealized_gain_pct?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_deployments_pool_id_fkey"
+            columns: ["pool_id"]
+            isOneToOne: false
+            referencedRelation: "fund_liquidity_pools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fund_deployments_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fund_deployments_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fund_entry_signals: {
         Row: {
           city: string
@@ -12050,6 +12138,411 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      fund_liquidity_pools: {
+        Row: {
+          available_capital: number
+          cash_yield: number
+          created_at: string
+          current_dpi: number
+          current_irr: number
+          current_tvpi: number
+          fund_term_months: number
+          id: string
+          inception_date: string | null
+          investment_strategy: string
+          maturity_date: string | null
+          max_single_asset_pct: number
+          max_ticket_size: number | null
+          min_ticket_size: number
+          pool_name: string
+          pool_type: string
+          status: string
+          target_asset_types: string[] | null
+          target_cities: string[] | null
+          target_irr: number
+          target_raise: number
+          total_committed: number
+          total_deployed: number
+          total_investors: number
+          total_returned: number
+          updated_at: string
+          vintage_year: number
+        }
+        Insert: {
+          available_capital?: number
+          cash_yield?: number
+          created_at?: string
+          current_dpi?: number
+          current_irr?: number
+          current_tvpi?: number
+          fund_term_months?: number
+          id?: string
+          inception_date?: string | null
+          investment_strategy?: string
+          maturity_date?: string | null
+          max_single_asset_pct?: number
+          max_ticket_size?: number | null
+          min_ticket_size?: number
+          pool_name: string
+          pool_type?: string
+          status?: string
+          target_asset_types?: string[] | null
+          target_cities?: string[] | null
+          target_irr?: number
+          target_raise?: number
+          total_committed?: number
+          total_deployed?: number
+          total_investors?: number
+          total_returned?: number
+          updated_at?: string
+          vintage_year?: number
+        }
+        Update: {
+          available_capital?: number
+          cash_yield?: number
+          created_at?: string
+          current_dpi?: number
+          current_irr?: number
+          current_tvpi?: number
+          fund_term_months?: number
+          id?: string
+          inception_date?: string | null
+          investment_strategy?: string
+          maturity_date?: string | null
+          max_single_asset_pct?: number
+          max_ticket_size?: number | null
+          min_ticket_size?: number
+          pool_name?: string
+          pool_type?: string
+          status?: string
+          target_asset_types?: string[] | null
+          target_cities?: string[] | null
+          target_irr?: number
+          target_raise?: number
+          total_committed?: number
+          total_deployed?: number
+          total_investors?: number
+          total_returned?: number
+          updated_at?: string
+          vintage_year?: number
+        }
+        Relationships: []
+      }
+      fund_opportunity_scores: {
+        Row: {
+          capital_inflow_momentum: number
+          city: string
+          created_at: string
+          deal_close_probability: number
+          district: string
+          district_growth_sequencing: number
+          expected_hold_months: number | null
+          expected_irr: number | null
+          id: string
+          last_scored_at: string
+          liquidity_acceleration: number
+          opportunity_score: number
+          opportunity_tier: string
+          price_inefficiency: number
+          property_id: string | null
+          recommended_action: string | null
+          recommended_ticket_size: number | null
+          rental_yield_strength: number
+          risk_grade: string | null
+          updated_at: string
+        }
+        Insert: {
+          capital_inflow_momentum?: number
+          city?: string
+          created_at?: string
+          deal_close_probability?: number
+          district?: string
+          district_growth_sequencing?: number
+          expected_hold_months?: number | null
+          expected_irr?: number | null
+          id?: string
+          last_scored_at?: string
+          liquidity_acceleration?: number
+          opportunity_score?: number
+          opportunity_tier?: string
+          price_inefficiency?: number
+          property_id?: string | null
+          recommended_action?: string | null
+          recommended_ticket_size?: number | null
+          rental_yield_strength?: number
+          risk_grade?: string | null
+          updated_at?: string
+        }
+        Update: {
+          capital_inflow_momentum?: number
+          city?: string
+          created_at?: string
+          deal_close_probability?: number
+          district?: string
+          district_growth_sequencing?: number
+          expected_hold_months?: number | null
+          expected_irr?: number | null
+          id?: string
+          last_scored_at?: string
+          liquidity_acceleration?: number
+          opportunity_score?: number
+          opportunity_tier?: string
+          price_inefficiency?: number
+          property_id?: string | null
+          recommended_action?: string | null
+          recommended_ticket_size?: number | null
+          rental_yield_strength?: number
+          risk_grade?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_opportunity_scores_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fund_opportunity_scores_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fund_performance_snapshots: {
+        Row: {
+          alpha: number | null
+          benchmark_irr: number | null
+          capital_deployment_velocity: number
+          capital_return_velocity: number
+          cashflow_stability_index: number
+          created_at: string
+          cumulative_distributions: number
+          deal_pipeline_count: number
+          dpi: number
+          gross_irr: number
+          id: string
+          max_drawdown: number
+          nav: number
+          net_irr: number
+          period_cashflow: number
+          pool_id: string
+          rvpi: number
+          sharpe_ratio: number
+          snapshot_date: string
+          tvpi: number
+          var_95: number
+          volatility: number
+        }
+        Insert: {
+          alpha?: number | null
+          benchmark_irr?: number | null
+          capital_deployment_velocity?: number
+          capital_return_velocity?: number
+          cashflow_stability_index?: number
+          created_at?: string
+          cumulative_distributions?: number
+          deal_pipeline_count?: number
+          dpi?: number
+          gross_irr?: number
+          id?: string
+          max_drawdown?: number
+          nav?: number
+          net_irr?: number
+          period_cashflow?: number
+          pool_id: string
+          rvpi?: number
+          sharpe_ratio?: number
+          snapshot_date?: string
+          tvpi?: number
+          var_95?: number
+          volatility?: number
+        }
+        Update: {
+          alpha?: number | null
+          benchmark_irr?: number | null
+          capital_deployment_velocity?: number
+          capital_return_velocity?: number
+          cashflow_stability_index?: number
+          created_at?: string
+          cumulative_distributions?: number
+          deal_pipeline_count?: number
+          dpi?: number
+          gross_irr?: number
+          id?: string
+          max_drawdown?: number
+          nav?: number
+          net_irr?: number
+          period_cashflow?: number
+          pool_id?: string
+          rvpi?: number
+          sharpe_ratio?: number
+          snapshot_date?: string
+          tvpi?: number
+          var_95?: number
+          volatility?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_performance_snapshots_pool_id_fkey"
+            columns: ["pool_id"]
+            isOneToOne: false
+            referencedRelation: "fund_liquidity_pools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fund_pool_participations: {
+        Row: {
+          called_amount: number
+          committed_amount: number
+          created_at: string
+          distributed_amount: number
+          id: string
+          investor_id: string
+          investor_irr: number
+          investor_tvpi: number
+          joined_at: string
+          last_distribution_at: string | null
+          ownership_pct: number
+          participation_status: string
+          pool_id: string
+          unrealized_value: number
+          updated_at: string
+        }
+        Insert: {
+          called_amount?: number
+          committed_amount?: number
+          created_at?: string
+          distributed_amount?: number
+          id?: string
+          investor_id: string
+          investor_irr?: number
+          investor_tvpi?: number
+          joined_at?: string
+          last_distribution_at?: string | null
+          ownership_pct?: number
+          participation_status?: string
+          pool_id: string
+          unrealized_value?: number
+          updated_at?: string
+        }
+        Update: {
+          called_amount?: number
+          committed_amount?: number
+          created_at?: string
+          distributed_amount?: number
+          id?: string
+          investor_id?: string
+          investor_irr?: number
+          investor_tvpi?: number
+          joined_at?: string
+          last_distribution_at?: string | null
+          ownership_pct?: number
+          participation_status?: string
+          pool_id?: string
+          unrealized_value?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_pool_participations_pool_id_fkey"
+            columns: ["pool_id"]
+            isOneToOne: false
+            referencedRelation: "fund_liquidity_pools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fund_rebalance_signals: {
+        Row: {
+          auto_executable: boolean
+          created_at: string
+          current_allocation_pct: number | null
+          deployment_id: string | null
+          executed_at: string | null
+          execution_result: string | null
+          expected_impact_irr: number | null
+          id: string
+          is_acknowledged: boolean
+          pool_id: string | null
+          property_id: string | null
+          rationale: string | null
+          recommended_action: string
+          recommended_allocation_pct: number | null
+          severity: string
+          signal_type: string
+        }
+        Insert: {
+          auto_executable?: boolean
+          created_at?: string
+          current_allocation_pct?: number | null
+          deployment_id?: string | null
+          executed_at?: string | null
+          execution_result?: string | null
+          expected_impact_irr?: number | null
+          id?: string
+          is_acknowledged?: boolean
+          pool_id?: string | null
+          property_id?: string | null
+          rationale?: string | null
+          recommended_action?: string
+          recommended_allocation_pct?: number | null
+          severity?: string
+          signal_type: string
+        }
+        Update: {
+          auto_executable?: boolean
+          created_at?: string
+          current_allocation_pct?: number | null
+          deployment_id?: string | null
+          executed_at?: string | null
+          execution_result?: string | null
+          expected_impact_irr?: number | null
+          id?: string
+          is_acknowledged?: boolean
+          pool_id?: string | null
+          property_id?: string | null
+          rationale?: string | null
+          recommended_action?: string
+          recommended_allocation_pct?: number | null
+          severity?: string
+          signal_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_rebalance_signals_deployment_id_fkey"
+            columns: ["deployment_id"]
+            isOneToOne: false
+            referencedRelation: "fund_deployments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fund_rebalance_signals_pool_id_fkey"
+            columns: ["pool_id"]
+            isOneToOne: false
+            referencedRelation: "fund_liquidity_pools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fund_rebalance_signals_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fund_rebalance_signals_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       fund_rebalancing_signals: {
         Row: {
