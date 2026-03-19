@@ -420,3 +420,6 @@ verify_jwt = false
 
 [functions.capital-governance-framework]
 verify_jwt = false
+
+[functions.prosperity-optimization-protocol]
+verify_jwt = false
