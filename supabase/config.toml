@@ -346,3 +346,6 @@ verify_jwt = false
 [functions.recompute-liquidity]
 verify_jwt = false
 
+[functions.update-liquidity-on-signal]
+verify_jwt = false
+

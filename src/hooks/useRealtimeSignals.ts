@@ -64,6 +64,14 @@ export function useRealtimeSignals(options?: { showToasts?: boolean }) {
             qc.invalidateQueries({ queryKey: ['market-clusters'] });
           }
 
+          // Refresh liquidity metrics on relevant signals
+          if (['liquidity_recalculated', 'escrow_initiated', 'deal_closed'].includes(signal.event_type)) {
+            qc.invalidateQueries({ queryKey: ['liquidity-metrics'] });
+            qc.invalidateQueries({ queryKey: ['property-liquidity'] });
+            qc.invalidateQueries({ queryKey: ['liquidity-hotspots'] });
+            qc.invalidateQueries({ queryKey: ['liquidity-signal-queue'] });
+          }
+
           // Always refresh signal stats and autopilot
           qc.invalidateQueries({ queryKey: ['event-signal-stats'] });
           qc.invalidateQueries({ queryKey: ['autopilot-status'] });

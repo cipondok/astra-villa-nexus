@@ -15047,6 +15047,60 @@ export type Database = {
         }
         Relationships: []
       }
+      liquidity_signal_queue: {
+        Row: {
+          created_at: string | null
+          district: string | null
+          id: string
+          payload: Json | null
+          processed: boolean | null
+          processed_at: string | null
+          property_id: string | null
+          segment_type: string | null
+          signal_type: string
+          signal_weight: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          district?: string | null
+          id?: string
+          payload?: Json | null
+          processed?: boolean | null
+          processed_at?: string | null
+          property_id?: string | null
+          segment_type?: string | null
+          signal_type: string
+          signal_weight?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          district?: string | null
+          id?: string
+          payload?: Json | null
+          processed?: boolean | null
+          processed_at?: string | null
+          property_id?: string | null
+          segment_type?: string | null
+          signal_type?: string
+          signal_weight?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "liquidity_signal_queue_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "liquidity_signal_queue_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       listing_automation_config: {
         Row: {
           ai_description_enhancement: boolean | null
