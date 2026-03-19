@@ -60,6 +60,7 @@ const PropertyOwnerOnlyRoute = lazy(() => import('@/components/PropertyOwnerOnly
 const Index = lazy(() => import('@/pages/Index'));
 const LandingPage = lazy(() => import('@/pages/LandingPage'));
 const CityInvestmentPage = lazy(() => import('@/pages/CityInvestmentPage'));
+const InvestorOnboarding = lazy(() => import('@/pages/InvestorOnboarding'));
 const AIListingGenerator = lazy(() => import('@/pages/AIListingGenerator'));
 const Search = lazy(() => import('@/pages/Search'));
 const ErrorPage = lazy(() => import('@/pages/ErrorPage'));
