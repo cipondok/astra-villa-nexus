@@ -70,6 +70,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   gwsm_singularity_cycle: { label: 'Wealth Singularity', icon: '♾️' },
   ceos_equilibrium_critical: { label: 'Equilibrium Alert', icon: '⚖️' },
   ceos_engine_cycle: { label: 'Civilization OS', icon: '🌍' },
+  apin_high_urgency_deal: { label: 'Urgent Deal', icon: '🚀' },
+  apin_network_cycle: { label: 'Investment Network', icon: '🌐' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
