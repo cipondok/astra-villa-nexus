@@ -408,3 +408,6 @@ verify_jwt = false
 
 [functions.wealth-singularity]
 verify_jwt = false
+
+[functions.civilization-economic-os]
+verify_jwt = false

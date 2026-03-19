@@ -7454,6 +7454,348 @@ export type Database = {
           },
         ]
       }
+      ceos_development_coordination: {
+        Row: {
+          active_supply_units: number
+          bottleneck_severity: number
+          bottleneck_type: string | null
+          city: string
+          computed_at: string
+          construction_capacity_pct: number
+          construction_pipeline_units: number
+          coordination_status: string
+          country: string
+          created_at: string
+          district: string | null
+          id: string
+          infrastructure_investment_usd: number
+          infrastructure_readiness_score: number
+          pipeline_delivery_months: number
+          population_growth_rate: number
+          population_migration_net: number
+          segment_type: string | null
+          supply_demand_ratio: number
+          synchronization_score: number
+          urbanization_velocity: number
+        }
+        Insert: {
+          active_supply_units?: number
+          bottleneck_severity?: number
+          bottleneck_type?: string | null
+          city: string
+          computed_at?: string
+          construction_capacity_pct?: number
+          construction_pipeline_units?: number
+          coordination_status?: string
+          country?: string
+          created_at?: string
+          district?: string | null
+          id?: string
+          infrastructure_investment_usd?: number
+          infrastructure_readiness_score?: number
+          pipeline_delivery_months?: number
+          population_growth_rate?: number
+          population_migration_net?: number
+          segment_type?: string | null
+          supply_demand_ratio?: number
+          synchronization_score?: number
+          urbanization_velocity?: number
+        }
+        Update: {
+          active_supply_units?: number
+          bottleneck_severity?: number
+          bottleneck_type?: string | null
+          city?: string
+          computed_at?: string
+          construction_capacity_pct?: number
+          construction_pipeline_units?: number
+          coordination_status?: string
+          country?: string
+          created_at?: string
+          district?: string | null
+          id?: string
+          infrastructure_investment_usd?: number
+          infrastructure_readiness_score?: number
+          pipeline_delivery_months?: number
+          population_growth_rate?: number
+          population_migration_net?: number
+          segment_type?: string | null
+          supply_demand_ratio?: number
+          synchronization_score?: number
+          urbanization_velocity?: number
+        }
+        Relationships: []
+      }
+      ceos_governance_modules: {
+        Row: {
+          active_city_count: number
+          country: string
+          country_name: string
+          created_at: string
+          data_sharing_agreement: boolean
+          digital_governance_score: number
+          foreign_ownership_rules: Json
+          geopolitical_risk_score: number
+          government_api_connected: boolean
+          id: string
+          is_active: boolean
+          last_policy_change_at: string | null
+          ownership_restriction_level: string
+          platform_adoption_phase: string
+          policy_stability_score: number
+          ppp_readiness_score: number
+          regulation_framework_version: string
+          regulatory_change_velocity: number
+          smart_city_integration_level: string
+          tax_regime_summary: Json
+          updated_at: string
+          zoning_flexibility_score: number
+        }
+        Insert: {
+          active_city_count?: number
+          country: string
+          country_name: string
+          created_at?: string
+          data_sharing_agreement?: boolean
+          digital_governance_score?: number
+          foreign_ownership_rules?: Json
+          geopolitical_risk_score?: number
+          government_api_connected?: boolean
+          id?: string
+          is_active?: boolean
+          last_policy_change_at?: string | null
+          ownership_restriction_level?: string
+          platform_adoption_phase?: string
+          policy_stability_score?: number
+          ppp_readiness_score?: number
+          regulation_framework_version?: string
+          regulatory_change_velocity?: number
+          smart_city_integration_level?: string
+          tax_regime_summary?: Json
+          updated_at?: string
+          zoning_flexibility_score?: number
+        }
+        Update: {
+          active_city_count?: number
+          country?: string
+          country_name?: string
+          created_at?: string
+          data_sharing_agreement?: boolean
+          digital_governance_score?: number
+          foreign_ownership_rules?: Json
+          geopolitical_risk_score?: number
+          government_api_connected?: boolean
+          id?: string
+          is_active?: boolean
+          last_policy_change_at?: string | null
+          ownership_restriction_level?: string
+          platform_adoption_phase?: string
+          policy_stability_score?: number
+          ppp_readiness_score?: number
+          regulation_framework_version?: string
+          regulatory_change_velocity?: number
+          smart_city_integration_level?: string
+          tax_regime_summary?: Json
+          updated_at?: string
+          zoning_flexibility_score?: number
+        }
+        Relationships: []
+      }
+      ceos_market_equilibrium: {
+        Row: {
+          city: string
+          computed_at: string
+          control_loop_confidence: number
+          country: string
+          created_at: string
+          district: string | null
+          equilibrium_phase: string
+          equilibrium_score: number
+          housing_shortage_index: number
+          id: string
+          intervention_urgency: string
+          investor_return_index: number
+          last_intervention_at: string | null
+          mean_reversion_pressure: number
+          recommended_demand_action: string | null
+          recommended_supply_action: string | null
+          rental_affordability_index: number
+          speculative_oversupply_risk: number
+        }
+        Insert: {
+          city: string
+          computed_at?: string
+          control_loop_confidence?: number
+          country?: string
+          created_at?: string
+          district?: string | null
+          equilibrium_phase?: string
+          equilibrium_score?: number
+          housing_shortage_index?: number
+          id?: string
+          intervention_urgency?: string
+          investor_return_index?: number
+          last_intervention_at?: string | null
+          mean_reversion_pressure?: number
+          recommended_demand_action?: string | null
+          recommended_supply_action?: string | null
+          rental_affordability_index?: number
+          speculative_oversupply_risk?: number
+        }
+        Update: {
+          city?: string
+          computed_at?: string
+          control_loop_confidence?: number
+          country?: string
+          created_at?: string
+          district?: string | null
+          equilibrium_phase?: string
+          equilibrium_score?: number
+          housing_shortage_index?: number
+          id?: string
+          intervention_urgency?: string
+          investor_return_index?: number
+          last_intervention_at?: string | null
+          mean_reversion_pressure?: number
+          recommended_demand_action?: string | null
+          recommended_supply_action?: string | null
+          rental_affordability_index?: number
+          speculative_oversupply_risk?: number
+        }
+        Relationships: []
+      }
+      ceos_prosperity_index: {
+        Row: {
+          city: string
+          computed_at: string
+          country: string
+          created_at: string
+          economic_resilience_score: number
+          employment_diversity_index: number
+          forecast_5y_score: number | null
+          green_space_per_capita_sqm: number
+          homeownership_rate_pct: number
+          housing_stability_score: number
+          id: string
+          infrastructure_quality_score: number
+          median_price_to_income_ratio: number
+          policy_recommendations: Json
+          prosperity_composite_score: number
+          prosperity_tier: string
+          rental_burden_pct: number
+          trajectory: string
+          urban_livability_score: number
+          wealth_accessibility_score: number
+        }
+        Insert: {
+          city: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          economic_resilience_score?: number
+          employment_diversity_index?: number
+          forecast_5y_score?: number | null
+          green_space_per_capita_sqm?: number
+          homeownership_rate_pct?: number
+          housing_stability_score?: number
+          id?: string
+          infrastructure_quality_score?: number
+          median_price_to_income_ratio?: number
+          policy_recommendations?: Json
+          prosperity_composite_score?: number
+          prosperity_tier?: string
+          rental_burden_pct?: number
+          trajectory?: string
+          urban_livability_score?: number
+          wealth_accessibility_score?: number
+        }
+        Update: {
+          city?: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          economic_resilience_score?: number
+          employment_diversity_index?: number
+          forecast_5y_score?: number | null
+          green_space_per_capita_sqm?: number
+          homeownership_rate_pct?: number
+          housing_stability_score?: number
+          id?: string
+          infrastructure_quality_score?: number
+          median_price_to_income_ratio?: number
+          policy_recommendations?: Json
+          prosperity_composite_score?: number
+          prosperity_tier?: string
+          rental_burden_pct?: number
+          trajectory?: string
+          urban_livability_score?: number
+          wealth_accessibility_score?: number
+        }
+        Relationships: []
+      }
+      ceos_signal_routing: {
+        Row: {
+          amplification_factor: number
+          city: string
+          country: string
+          created_at: string
+          delivered_at: string | null
+          id: string
+          is_amplified: boolean
+          propagation_speed: string
+          routed_at: string | null
+          routing_status: string
+          signal_decay_hours: number
+          signal_payload: Json
+          signal_strength: number
+          signal_type: string
+          source_entity_id: string | null
+          source_entity_type: string
+          target_entity_id: string | null
+          target_entity_type: string
+        }
+        Insert: {
+          amplification_factor?: number
+          city: string
+          country?: string
+          created_at?: string
+          delivered_at?: string | null
+          id?: string
+          is_amplified?: boolean
+          propagation_speed?: string
+          routed_at?: string | null
+          routing_status?: string
+          signal_decay_hours?: number
+          signal_payload?: Json
+          signal_strength?: number
+          signal_type: string
+          source_entity_id?: string | null
+          source_entity_type: string
+          target_entity_id?: string | null
+          target_entity_type: string
+        }
+        Update: {
+          amplification_factor?: number
+          city?: string
+          country?: string
+          created_at?: string
+          delivered_at?: string | null
+          id?: string
+          is_amplified?: boolean
+          propagation_speed?: string
+          routed_at?: string | null
+          routing_status?: string
+          signal_decay_hours?: number
+          signal_payload?: Json
+          signal_strength?: number
+          signal_type?: string
+          source_entity_id?: string | null
+          source_entity_type?: string
+          target_entity_id?: string | null
+          target_entity_type?: string
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           created_at: string
