@@ -52,6 +52,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   reos_infrastructure_critical: { label: 'RE-OS Infra', icon: '🖥️' },
   capital_gravity_magnetic_zone: { label: 'Magnetic Zone', icon: '🧲' },
   capital_gravity_engine_cycle: { label: 'Capital Gravity', icon: '🌊' },
+  city_expansion_breakout: { label: 'City Breakout', icon: '🏙️' },
+  city_expansion_engine_cycle: { label: 'Expansion Engine', icon: '📡' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */

@@ -384,3 +384,6 @@ verify_jwt = false
 
 [functions.capital-gravity-engine]
 verify_jwt = false
+
+[functions.city-expansion-intelligence]
+verify_jwt = false
