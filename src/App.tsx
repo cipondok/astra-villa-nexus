@@ -386,6 +386,7 @@ const AppContent = () => {
                 <Route path="/landing" element={<LandingPage />} />
                 <Route path="/investor-landing" element={<InvestorLandingPage />} />
                 <Route path="/onboarding/investor" element={<InvestorOnboarding />} />
+                <Route path="/onboarding/investor-wizard" element={<InvestorOnboardingWizard />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
