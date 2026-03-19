@@ -124,6 +124,7 @@ const RealEstateIntelligenceOS = lazy(() => import('@/pages/RealEstateIntelligen
 const WealthUniverseEngine = lazy(() => import('@/pages/WealthUniverseEngine'));
 const GlobalInvestorNetworkAI = lazy(() => import('@/pages/GlobalInvestorNetworkAI'));
 const SelfOptimizingEcosystem = lazy(() => import('@/pages/SelfOptimizingEcosystem'));
+const InvestorAcquisitionFunnel = lazy(() => import('@/pages/InvestorAcquisitionFunnel'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
@@ -459,6 +460,7 @@ const AppContent = () => {
                 <Route path="/wealth-universe" element={<WealthUniverseEngine />} />
                 <Route path="/investor-network" element={<GlobalInvestorNetworkAI />} />
                 <Route path="/self-optimizing-ecosystem" element={<SelfOptimizingEcosystem />} />
+                <Route path="/investor-funnel" element={<InvestorAcquisitionFunnel />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
