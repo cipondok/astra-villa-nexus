@@ -37,8 +37,8 @@ export interface IntelligenceMonitorData {
 
 export function useIntelligenceMonitor() {
   return useQuery({
-    queryKey: ['intelligence-monitor'],
-    queryFn: async (): Promise<IntelligenceMonitorData> => {
+    queryKey: ['intelligence-monitor'] as const,
+    queryFn: async () => {
       // ── Opportunity Score Engine ──
       const [totalProps, scoredProps, eliteProps, cacheData] = await Promise.all([
         supabase.from('properties').select('id', { count: 'exact', head: true }) as any,
