@@ -105,6 +105,7 @@ const CapitalAllocationOptimizer = lazy(() => import('@/pages/CapitalAllocationO
 const DealSyndicationHub = lazy(() => import('@/pages/DealSyndicationHub'));
 const GrowthIntelligenceBrain = lazy(() => import('@/pages/GrowthIntelligenceBrain'));
 const GlobalExpansionSimulator = lazy(() => import('@/pages/GlobalExpansionSimulator'));
+const PropertyTokenizationHub = lazy(() => import('@/pages/PropertyTokenizationHub'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
