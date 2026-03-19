@@ -13,7 +13,7 @@ import {
   Upload, Loader2, Video, Film, Play, Pause, Download, Trash2,
   Plus, X, ChevronLeft, ChevronRight, Music, Type, MapPin,
   DollarSign, TrendingUp, Sparkles, GripVertical, Eye, Share2,
-  ImageIcon, Clapperboard,
+  ImageIcon, Clapperboard, Mic, Copy, CheckCircle2, FileText,
 } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 
