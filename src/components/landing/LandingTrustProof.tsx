@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Star, Quote, Building2 } from 'lucide-react';
+import { Star, Quote, Search, BarChart3, BadgeDollarSign } from 'lucide-react';
 
 const testimonials = [
   {
@@ -25,13 +25,22 @@ const testimonials = [
   },
 ];
 
-const partners = [
-  'Intiland Development',
-  'Ciputra Group',
-  'Sinar Mas Land',
-  'Agung Podomoro',
-  'Summarecon Agung',
-  'Pakuwon Jati',
+const steps = [
+  {
+    icon: Search,
+    title: 'Browse',
+    description: 'Explore curated properties across Bali, Jakarta, and BSD with full market data.',
+  },
+  {
+    icon: BarChart3,
+    title: 'Score',
+    description: 'Every listing is AI-scored on rental yield, capital growth, and location potential.',
+  },
+  {
+    icon: BadgeDollarSign,
+    title: 'Invest',
+    description: 'Connect directly with verified sellers and close deals with confidence.',
+  },
 ];
 
 const LandingTrustProof = () => {
@@ -49,7 +58,7 @@ const LandingTrustProof = () => {
           className="text-center mb-16"
         >
           <span className="font-inter text-xs uppercase tracking-[0.2em] text-gold-primary mb-4 block">
-            Trusted by Investors
+            What Investors Say
           </span>
           <h2 className="font-playfair text-3xl md:text-4xl lg:text-5xl font-bold text-titanium-white mb-4">
             Success Stories
@@ -68,22 +77,15 @@ const LandingTrustProof = () => {
               transition={{ delay: i * 0.12, duration: 0.5 }}
               className="relative p-6 rounded-2xl border border-border/15 bg-card/5 hover:border-gold-primary/20 transition-all duration-300"
             >
-              {/* Quote icon */}
               <Quote className="w-8 h-8 text-gold-primary/20 mb-4" />
-
-              {/* Stars */}
               <div className="flex gap-0.5 mb-3">
                 {[...Array(t.rating)].map((_, si) => (
                   <Star key={si} className="w-3.5 h-3.5 fill-gold-primary text-gold-primary" />
                 ))}
               </div>
-
-              {/* Quote text */}
               <p className="font-inter text-sm text-text-muted leading-relaxed mb-6">
                 "{t.quote}"
               </p>
-
-              {/* Author */}
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold-primary/20 to-gold-primary/5 border border-gold-primary/20 flex items-center justify-center">
                   <span className="font-playfair text-xs font-bold text-gold-primary">{t.avatar}</span>
@@ -97,27 +99,37 @@ const LandingTrustProof = () => {
           ))}
         </div>
 
-        {/* Partner logos */}
+        {/* How It Works */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-center"
         >
-          <p className="font-inter text-xs uppercase tracking-[0.2em] text-text-muted mb-8">
-            Developer Partners
+          <p className="font-inter text-xs uppercase tracking-[0.2em] text-text-muted mb-10">
+            How It Works
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
-            {partners.map((name) => (
-              <div
-                key={name}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border/10 bg-card/5 hover:border-gold-primary/15 transition-colors"
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {steps.map((step, i) => (
+              <motion.div
+                key={step.title}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.12 }}
+                className="flex flex-col items-center text-center"
               >
-                <Building2 className="w-4 h-4 text-gold-primary/50" />
-                <span className="font-inter text-sm text-text-muted/80 font-medium tracking-wide">
-                  {name}
+                <div className="w-14 h-14 rounded-2xl bg-gold-primary/10 border border-gold-primary/20 flex items-center justify-center mb-4">
+                  <step.icon className="w-6 h-6 text-gold-primary" />
+                </div>
+                <span className="font-inter text-[10px] uppercase tracking-widest text-gold-primary/60 mb-1">
+                  Step {i + 1}
                 </span>
-              </div>
+                <h3 className="font-playfair text-lg font-bold text-titanium-white mb-2">{step.title}</h3>
+                <p className="font-inter text-sm text-text-muted leading-relaxed max-w-xs">
+                  {step.description}
+                </p>
+              </motion.div>
             ))}
           </div>
         </motion.div>

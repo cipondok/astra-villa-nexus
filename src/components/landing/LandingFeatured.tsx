@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import OpportunityScoreRing from '@/components/property/OpportunityScoreRing';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, BedDouble, Bath, Maximize } from 'lucide-react';
+import { MapPin, BedDouble, Bath, Maximize, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const formatPrice = (price: number) => {

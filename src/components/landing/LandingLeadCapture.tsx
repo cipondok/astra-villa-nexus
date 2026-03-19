@@ -73,10 +73,10 @@ const LandingLeadCapture = () => {
             Get Started
           </span>
           <h2 className="font-playfair text-3xl md:text-4xl font-bold text-titanium-white mb-3">
-            Ready to Invest?
+            Get Early Access to Premium Deals
           </h2>
           <p className="font-inter text-text-muted">
-            Whether you're an investor or property owner, we're here to help.
+            Join investors exploring Indonesia's highest-yield property markets. Whether you're buying or listing — we're here to help.
           </p>
         </motion.div>
 
