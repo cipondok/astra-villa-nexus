@@ -5666,6 +5666,296 @@ export type Database = {
         }
         Relationships: []
       }
+      asci_capital_intake: {
+        Row: {
+          approved_asset_classes: string[] | null
+          approved_geographies: string[] | null
+          capital_horizon: string
+          created_at: string | null
+          deployment_capacity_usd: number | null
+          esg_requirements: Json | null
+          id: string
+          institution_name: string
+          institution_type: string
+          jurisdiction: string
+          liquidity_tolerance_pct: number | null
+          max_single_exposure_pct: number | null
+          min_ticket_usd: number | null
+          onboarded_at: string | null
+          onboarding_status: string | null
+          regulatory_constraints: Json | null
+          risk_appetite: string
+        }
+        Insert: {
+          approved_asset_classes?: string[] | null
+          approved_geographies?: string[] | null
+          capital_horizon?: string
+          created_at?: string | null
+          deployment_capacity_usd?: number | null
+          esg_requirements?: Json | null
+          id?: string
+          institution_name: string
+          institution_type: string
+          jurisdiction: string
+          liquidity_tolerance_pct?: number | null
+          max_single_exposure_pct?: number | null
+          min_ticket_usd?: number | null
+          onboarded_at?: string | null
+          onboarding_status?: string | null
+          regulatory_constraints?: Json | null
+          risk_appetite?: string
+        }
+        Update: {
+          approved_asset_classes?: string[] | null
+          approved_geographies?: string[] | null
+          capital_horizon?: string
+          created_at?: string | null
+          deployment_capacity_usd?: number | null
+          esg_requirements?: Json | null
+          id?: string
+          institution_name?: string
+          institution_type?: string
+          jurisdiction?: string
+          liquidity_tolerance_pct?: number | null
+          max_single_exposure_pct?: number | null
+          min_ticket_usd?: number | null
+          onboarded_at?: string | null
+          onboarding_status?: string | null
+          regulatory_constraints?: Json | null
+          risk_appetite?: string
+        }
+        Relationships: []
+      }
+      asci_crossborder_deployment: {
+        Row: {
+          co_investment_partners: number | null
+          created_at: string | null
+          currency_pair: string | null
+          deployed_at: string | null
+          deployment_phase: number | null
+          deployment_status: string | null
+          deployment_tranche_usd: number | null
+          fx_cost_annual_pct: number | null
+          fx_hedging_strategy: string | null
+          id: string
+          phase_description: string | null
+          regulatory_clearance: boolean | null
+          source_jurisdiction: string
+          syndication_structure: string | null
+          target_jurisdiction: string
+          tax_treaty_benefit: boolean | null
+          withholding_tax_pct: number | null
+        }
+        Insert: {
+          co_investment_partners?: number | null
+          created_at?: string | null
+          currency_pair?: string | null
+          deployed_at?: string | null
+          deployment_phase?: number | null
+          deployment_status?: string | null
+          deployment_tranche_usd?: number | null
+          fx_cost_annual_pct?: number | null
+          fx_hedging_strategy?: string | null
+          id?: string
+          phase_description?: string | null
+          regulatory_clearance?: boolean | null
+          source_jurisdiction: string
+          syndication_structure?: string | null
+          target_jurisdiction: string
+          tax_treaty_benefit?: boolean | null
+          withholding_tax_pct?: number | null
+        }
+        Update: {
+          co_investment_partners?: number | null
+          created_at?: string | null
+          currency_pair?: string | null
+          deployed_at?: string | null
+          deployment_phase?: number | null
+          deployment_status?: string | null
+          deployment_tranche_usd?: number | null
+          fx_cost_annual_pct?: number | null
+          fx_hedging_strategy?: string | null
+          id?: string
+          phase_description?: string | null
+          regulatory_clearance?: boolean | null
+          source_jurisdiction?: string
+          syndication_structure?: string | null
+          target_jurisdiction?: string
+          tax_treaty_benefit?: boolean | null
+          withholding_tax_pct?: number | null
+        }
+        Relationships: []
+      }
+      asci_macro_allocation: {
+        Row: {
+          allocation_rationale: string | null
+          allocation_weight_pct: number | null
+          asset_class: string
+          city: string | null
+          computed_at: string | null
+          created_at: string | null
+          demographic_expansion_rate: number | null
+          growth_momentum_score: number | null
+          id: string
+          infrastructure_pipeline_usd: number | null
+          macro_confidence: number | null
+          recommended_deployment_usd: number | null
+          region: string
+          risk_adjusted_return: number | null
+          yield_differential_bps: number | null
+        }
+        Insert: {
+          allocation_rationale?: string | null
+          allocation_weight_pct?: number | null
+          asset_class: string
+          city?: string | null
+          computed_at?: string | null
+          created_at?: string | null
+          demographic_expansion_rate?: number | null
+          growth_momentum_score?: number | null
+          id?: string
+          infrastructure_pipeline_usd?: number | null
+          macro_confidence?: number | null
+          recommended_deployment_usd?: number | null
+          region: string
+          risk_adjusted_return?: number | null
+          yield_differential_bps?: number | null
+        }
+        Update: {
+          allocation_rationale?: string | null
+          allocation_weight_pct?: number | null
+          asset_class?: string
+          city?: string | null
+          computed_at?: string | null
+          created_at?: string | null
+          demographic_expansion_rate?: number | null
+          growth_momentum_score?: number | null
+          id?: string
+          infrastructure_pipeline_usd?: number | null
+          macro_confidence?: number | null
+          recommended_deployment_usd?: number | null
+          region?: string
+          risk_adjusted_return?: number | null
+          yield_differential_bps?: number | null
+        }
+        Relationships: []
+      }
+      asci_risk_stabilization: {
+        Row: {
+          assessed_at: string | null
+          created_at: string | null
+          early_warning_triggered: boolean | null
+          hedging_cost_pct: number | null
+          id: string
+          mitigation_strategies: Json | null
+          potential_drawdown_pct: number | null
+          probability: number | null
+          region: string
+          risk_type: string
+          severity: number | null
+          simulation_scenarios: Json | null
+          stress_test_result: string | null
+          time_horizon_months: number | null
+        }
+        Insert: {
+          assessed_at?: string | null
+          created_at?: string | null
+          early_warning_triggered?: boolean | null
+          hedging_cost_pct?: number | null
+          id?: string
+          mitigation_strategies?: Json | null
+          potential_drawdown_pct?: number | null
+          probability?: number | null
+          region: string
+          risk_type: string
+          severity?: number | null
+          simulation_scenarios?: Json | null
+          stress_test_result?: string | null
+          time_horizon_months?: number | null
+        }
+        Update: {
+          assessed_at?: string | null
+          created_at?: string | null
+          early_warning_triggered?: boolean | null
+          hedging_cost_pct?: number | null
+          id?: string
+          mitigation_strategies?: Json | null
+          potential_drawdown_pct?: number | null
+          probability?: number | null
+          region?: string
+          risk_type?: string
+          severity?: number | null
+          simulation_scenarios?: Json | null
+          stress_test_result?: string | null
+          time_horizon_months?: number | null
+        }
+        Relationships: []
+      }
+      asci_trust_transparency: {
+        Row: {
+          alpha_generated_pct: number | null
+          attribution_by_asset_class: Json | null
+          attribution_by_region: Json | null
+          benchmark_return_pct: number | null
+          compliance_status: string | null
+          created_at: string | null
+          decision_confidence_score: number | null
+          governance_score: number | null
+          id: string
+          institution_id: string | null
+          report_generated_at: string | null
+          reporting_period: string
+          scenario_projections: Json | null
+          total_deployed_usd: number | null
+          total_return_pct: number | null
+          transparency_index: number | null
+        }
+        Insert: {
+          alpha_generated_pct?: number | null
+          attribution_by_asset_class?: Json | null
+          attribution_by_region?: Json | null
+          benchmark_return_pct?: number | null
+          compliance_status?: string | null
+          created_at?: string | null
+          decision_confidence_score?: number | null
+          governance_score?: number | null
+          id?: string
+          institution_id?: string | null
+          report_generated_at?: string | null
+          reporting_period: string
+          scenario_projections?: Json | null
+          total_deployed_usd?: number | null
+          total_return_pct?: number | null
+          transparency_index?: number | null
+        }
+        Update: {
+          alpha_generated_pct?: number | null
+          attribution_by_asset_class?: Json | null
+          attribution_by_region?: Json | null
+          benchmark_return_pct?: number | null
+          compliance_status?: string | null
+          created_at?: string | null
+          decision_confidence_score?: number | null
+          governance_score?: number | null
+          id?: string
+          institution_id?: string | null
+          report_generated_at?: string | null
+          reporting_period?: string
+          scenario_projections?: Json | null
+          total_deployed_usd?: number | null
+          total_return_pct?: number | null
+          transparency_index?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asci_trust_transparency_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "asci_capital_intake"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       asset_lifecycle_tracker: {
         Row: {
           acquisition_costs: number | null

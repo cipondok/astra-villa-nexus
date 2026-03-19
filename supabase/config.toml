@@ -450,3 +450,6 @@ verify_jwt = false
 
 [functions.market-creation-engine]
 verify_jwt = false
+
+[functions.sovereign-capital-infrastructure]
+verify_jwt = false
