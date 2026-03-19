@@ -124,7 +124,9 @@ const LandingFeatured = () => {
 
         {properties.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-text-muted font-inter">Loading elite opportunities…</p>
+            <Sparkles className="w-8 h-8 text-gold-primary/40 mx-auto mb-4" />
+            <p className="text-titanium-white font-inter font-medium mb-2">Properties are being scored by our AI engine</p>
+            <p className="text-text-muted font-inter text-sm">Check back shortly — new opportunities are added daily.</p>
           </div>
         )}
       </div>
