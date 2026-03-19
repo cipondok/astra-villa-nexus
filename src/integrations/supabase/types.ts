@@ -9897,6 +9897,66 @@ export type Database = {
         }
         Relationships: []
       }
+      district_price_stabilization: {
+        Row: {
+          active_interventions: Json | null
+          avg_price: number | null
+          bubble_cascade_risk: number | null
+          created_at: string | null
+          district: string
+          id: string
+          last_computed_at: string | null
+          median_price: number | null
+          panic_discount_risk: number | null
+          price_smoothing_coefficient: number | null
+          price_trend_direction: string | null
+          price_volatility_30d: number | null
+          price_volatility_90d: number | null
+          segment_type: string | null
+          stabilization_mode: string | null
+          volatility_guardrail_lower: number | null
+          volatility_guardrail_upper: number | null
+        }
+        Insert: {
+          active_interventions?: Json | null
+          avg_price?: number | null
+          bubble_cascade_risk?: number | null
+          created_at?: string | null
+          district: string
+          id?: string
+          last_computed_at?: string | null
+          median_price?: number | null
+          panic_discount_risk?: number | null
+          price_smoothing_coefficient?: number | null
+          price_trend_direction?: string | null
+          price_volatility_30d?: number | null
+          price_volatility_90d?: number | null
+          segment_type?: string | null
+          stabilization_mode?: string | null
+          volatility_guardrail_lower?: number | null
+          volatility_guardrail_upper?: number | null
+        }
+        Update: {
+          active_interventions?: Json | null
+          avg_price?: number | null
+          bubble_cascade_risk?: number | null
+          created_at?: string | null
+          district?: string
+          id?: string
+          last_computed_at?: string | null
+          median_price?: number | null
+          panic_discount_risk?: number | null
+          price_smoothing_coefficient?: number | null
+          price_trend_direction?: string | null
+          price_volatility_30d?: number | null
+          price_volatility_90d?: number | null
+          segment_type?: string | null
+          stabilization_mode?: string | null
+          volatility_guardrail_lower?: number | null
+          volatility_guardrail_upper?: number | null
+        }
+        Relationships: []
+      }
       document_audit_trail: {
         Row: {
           action: string
@@ -10059,6 +10119,72 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      dynamic_pricing_guidance: {
+        Row: {
+          adjustment_direction: string | null
+          created_at: string | null
+          district: string | null
+          guidance_narrative: string | null
+          id: string
+          last_computed_at: string | null
+          liquidity_optimal_price: number | null
+          offer_rejection_ratio: number | null
+          predicted_days_to_close: number | null
+          pricing_grade: string | null
+          pricing_zone: string | null
+          property_id: string
+          recommended_price_high: number | null
+          recommended_price_low: number | null
+          recommended_price_mid: number | null
+          suggested_adjustment_pct: number | null
+          updated_at: string | null
+          urgency_discount_pct: number | null
+          view_to_offer_rate: number | null
+        }
+        Insert: {
+          adjustment_direction?: string | null
+          created_at?: string | null
+          district?: string | null
+          guidance_narrative?: string | null
+          id?: string
+          last_computed_at?: string | null
+          liquidity_optimal_price?: number | null
+          offer_rejection_ratio?: number | null
+          predicted_days_to_close?: number | null
+          pricing_grade?: string | null
+          pricing_zone?: string | null
+          property_id: string
+          recommended_price_high?: number | null
+          recommended_price_low?: number | null
+          recommended_price_mid?: number | null
+          suggested_adjustment_pct?: number | null
+          updated_at?: string | null
+          urgency_discount_pct?: number | null
+          view_to_offer_rate?: number | null
+        }
+        Update: {
+          adjustment_direction?: string | null
+          created_at?: string | null
+          district?: string | null
+          guidance_narrative?: string | null
+          id?: string
+          last_computed_at?: string | null
+          liquidity_optimal_price?: number | null
+          offer_rejection_ratio?: number | null
+          predicted_days_to_close?: number | null
+          pricing_grade?: string | null
+          pricing_zone?: string | null
+          property_id?: string
+          recommended_price_high?: number | null
+          recommended_price_low?: number | null
+          recommended_price_mid?: number | null
+          suggested_adjustment_pct?: number | null
+          updated_at?: string | null
+          urgency_discount_pct?: number | null
+          view_to_offer_rate?: number | null
+        }
+        Relationships: []
       }
       email_logs: {
         Row: {
@@ -20131,6 +20257,72 @@ export type Database = {
           },
         ]
       }
+      negotiation_intelligence: {
+        Row: {
+          avg_counter_offer_discount_pct: number | null
+          avg_rounds_to_close: number | null
+          buyer_urgency_index: number | null
+          close_probability_at_10pct_discount: number | null
+          close_probability_at_5pct_discount: number | null
+          close_probability_at_asking: number | null
+          created_at: string | null
+          deal_close_price_high: number | null
+          deal_close_price_low: number | null
+          deal_close_price_mid: number | null
+          district: string | null
+          id: string
+          insight_narrative: string | null
+          last_computed_at: string | null
+          negotiation_power: string | null
+          optimal_opening_offer_pct: number | null
+          predicted_final_discount_pct: number | null
+          property_id: string
+          seller_flexibility_index: number | null
+        }
+        Insert: {
+          avg_counter_offer_discount_pct?: number | null
+          avg_rounds_to_close?: number | null
+          buyer_urgency_index?: number | null
+          close_probability_at_10pct_discount?: number | null
+          close_probability_at_5pct_discount?: number | null
+          close_probability_at_asking?: number | null
+          created_at?: string | null
+          deal_close_price_high?: number | null
+          deal_close_price_low?: number | null
+          deal_close_price_mid?: number | null
+          district?: string | null
+          id?: string
+          insight_narrative?: string | null
+          last_computed_at?: string | null
+          negotiation_power?: string | null
+          optimal_opening_offer_pct?: number | null
+          predicted_final_discount_pct?: number | null
+          property_id: string
+          seller_flexibility_index?: number | null
+        }
+        Update: {
+          avg_counter_offer_discount_pct?: number | null
+          avg_rounds_to_close?: number | null
+          buyer_urgency_index?: number | null
+          close_probability_at_10pct_discount?: number | null
+          close_probability_at_5pct_discount?: number | null
+          close_probability_at_asking?: number | null
+          created_at?: string | null
+          deal_close_price_high?: number | null
+          deal_close_price_low?: number | null
+          deal_close_price_mid?: number | null
+          district?: string | null
+          id?: string
+          insight_narrative?: string | null
+          last_computed_at?: string | null
+          negotiation_power?: string | null
+          optimal_opening_offer_pct?: number | null
+          predicted_final_discount_pct?: number | null
+          property_id?: string
+          seller_flexibility_index?: number | null
+        }
+        Relationships: []
+      }
       neighborhood_guides: {
         Row: {
           author_id: string | null
@@ -22968,6 +23160,75 @@ export type Database = {
         }
         Relationships: []
       }
+      price_inefficiency_index: {
+        Row: {
+          created_at: string | null
+          current_price: number | null
+          days_on_market: number | null
+          district: string | null
+          estimated_fmv: number | null
+          fmv_ratio: number | null
+          id: string
+          inefficiency_type: string | null
+          last_computed_at: string | null
+          offer_count: number | null
+          overpricing_score: number | null
+          pricing_inefficiency_score: number | null
+          property_id: string
+          scoring_inputs: Json | null
+          speculative_appreciation_score: number | null
+          stagnation_risk_score: number | null
+          total_inquiries: number | null
+          total_views: number | null
+          undervaluation_score: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_price?: number | null
+          days_on_market?: number | null
+          district?: string | null
+          estimated_fmv?: number | null
+          fmv_ratio?: number | null
+          id?: string
+          inefficiency_type?: string | null
+          last_computed_at?: string | null
+          offer_count?: number | null
+          overpricing_score?: number | null
+          pricing_inefficiency_score?: number | null
+          property_id: string
+          scoring_inputs?: Json | null
+          speculative_appreciation_score?: number | null
+          stagnation_risk_score?: number | null
+          total_inquiries?: number | null
+          total_views?: number | null
+          undervaluation_score?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          current_price?: number | null
+          days_on_market?: number | null
+          district?: string | null
+          estimated_fmv?: number | null
+          fmv_ratio?: number | null
+          id?: string
+          inefficiency_type?: string | null
+          last_computed_at?: string | null
+          offer_count?: number | null
+          overpricing_score?: number | null
+          pricing_inefficiency_score?: number | null
+          property_id?: string
+          scoring_inputs?: Json | null
+          speculative_appreciation_score?: number | null
+          stagnation_risk_score?: number | null
+          total_inquiries?: number | null
+          total_views?: number | null
+          undervaluation_score?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       price_shock_alerts: {
         Row: {
           affected_cities: string[] | null
@@ -23079,6 +23340,63 @@ export type Database = {
           price_change_pct?: number | null
           transaction_volume?: number | null
           urban_expansion_index?: number | null
+        }
+        Relationships: []
+      }
+      pricing_influence_signals: {
+        Row: {
+          acted_at: string | null
+          created_at: string | null
+          delivered_at: string | null
+          district: string | null
+          expires_at: string | null
+          headline: string
+          id: string
+          message: string | null
+          property_id: string | null
+          signal_type: string
+          status: string | null
+          suggested_action: string | null
+          target_role: string
+          trigger_metrics: Json | null
+          trigger_source: string | null
+          urgency_score: number | null
+        }
+        Insert: {
+          acted_at?: string | null
+          created_at?: string | null
+          delivered_at?: string | null
+          district?: string | null
+          expires_at?: string | null
+          headline: string
+          id?: string
+          message?: string | null
+          property_id?: string | null
+          signal_type: string
+          status?: string | null
+          suggested_action?: string | null
+          target_role: string
+          trigger_metrics?: Json | null
+          trigger_source?: string | null
+          urgency_score?: number | null
+        }
+        Update: {
+          acted_at?: string | null
+          created_at?: string | null
+          delivered_at?: string | null
+          district?: string | null
+          expires_at?: string | null
+          headline?: string
+          id?: string
+          message?: string | null
+          property_id?: string | null
+          signal_type?: string
+          status?: string | null
+          suggested_action?: string | null
+          target_role?: string
+          trigger_metrics?: Json | null
+          trigger_source?: string | null
+          urgency_score?: number | null
         }
         Relationships: []
       }
