@@ -72,6 +72,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   ceos_engine_cycle: { label: 'Civilization OS', icon: '🌍' },
   apin_high_urgency_deal: { label: 'Urgent Deal', icon: '🚀' },
   apin_network_cycle: { label: 'Investment Network', icon: '🌐' },
+  psre_artificial_scarcity: { label: 'Scarcity Alert', icon: '🏚️' },
+  psre_engine_cycle: { label: 'Post-Scarcity OS', icon: '🏡' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */

@@ -30972,6 +30972,405 @@ export type Database = {
           },
         ]
       }
+      psre_abundance_flywheel: {
+        Row: {
+          abundance_composite_score: number
+          adaptive_reuse_units: number
+          asset_utilization_score: number
+          avg_construction_months: number
+          avg_permitting_days: number
+          city: string
+          computed_at: string
+          country: string
+          created_at: string
+          cycle_improvement_pct_yr: number
+          dev_cycle_efficiency_score: number
+          estimated_months_to_next: number | null
+          flywheel_momentum: number
+          flywheel_stage: string
+          homeownership_accessibility_score: number
+          housing_cost_burden_reduction_pct: number
+          id: string
+          intergenerational_mobility_index: number
+          next_stage_trigger: string | null
+          optimal_vacancy_pct: number
+          structural_vacancy_pct: number
+          vacancy_gap: number
+          wealth_building_velocity: number
+        }
+        Insert: {
+          abundance_composite_score?: number
+          adaptive_reuse_units?: number
+          asset_utilization_score?: number
+          avg_construction_months?: number
+          avg_permitting_days?: number
+          city: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          cycle_improvement_pct_yr?: number
+          dev_cycle_efficiency_score?: number
+          estimated_months_to_next?: number | null
+          flywheel_momentum?: number
+          flywheel_stage?: string
+          homeownership_accessibility_score?: number
+          housing_cost_burden_reduction_pct?: number
+          id?: string
+          intergenerational_mobility_index?: number
+          next_stage_trigger?: string | null
+          optimal_vacancy_pct?: number
+          structural_vacancy_pct?: number
+          vacancy_gap?: number
+          wealth_building_velocity?: number
+        }
+        Update: {
+          abundance_composite_score?: number
+          adaptive_reuse_units?: number
+          asset_utilization_score?: number
+          avg_construction_months?: number
+          avg_permitting_days?: number
+          city?: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          cycle_improvement_pct_yr?: number
+          dev_cycle_efficiency_score?: number
+          estimated_months_to_next?: number | null
+          flywheel_momentum?: number
+          flywheel_stage?: string
+          homeownership_accessibility_score?: number
+          housing_cost_burden_reduction_pct?: number
+          id?: string
+          intergenerational_mobility_index?: number
+          next_stage_trigger?: string | null
+          optimal_vacancy_pct?: number
+          structural_vacancy_pct?: number
+          vacancy_gap?: number
+          wealth_building_velocity?: number
+        }
+        Relationships: []
+      }
+      psre_habitat_quality: {
+        Row: {
+          air_quality_index: number
+          capital_deployment_priority: string
+          city: string
+          computed_at: string
+          connectivity_score: number
+          country: string
+          created_at: string
+          cultural_richness: number
+          digital_infrastructure: number
+          district: string | null
+          economic_opportunity_score: number
+          education_quality: number
+          employment_density: number
+          environmental_sustainability_score: number
+          green_coverage_pct: number
+          habitat_quality_index: number
+          habitat_tier: string
+          healthcare_access: number
+          id: string
+          improvement_trajectory: string
+          investment_impact_multiplier: number
+          livability_score: number
+          public_transit_coverage: number
+          renewable_energy_pct: number
+          safety_index: number
+          startup_ecosystem: number
+          water_security: number
+        }
+        Insert: {
+          air_quality_index?: number
+          capital_deployment_priority?: string
+          city: string
+          computed_at?: string
+          connectivity_score?: number
+          country?: string
+          created_at?: string
+          cultural_richness?: number
+          digital_infrastructure?: number
+          district?: string | null
+          economic_opportunity_score?: number
+          education_quality?: number
+          employment_density?: number
+          environmental_sustainability_score?: number
+          green_coverage_pct?: number
+          habitat_quality_index?: number
+          habitat_tier?: string
+          healthcare_access?: number
+          id?: string
+          improvement_trajectory?: string
+          investment_impact_multiplier?: number
+          livability_score?: number
+          public_transit_coverage?: number
+          renewable_energy_pct?: number
+          safety_index?: number
+          startup_ecosystem?: number
+          water_security?: number
+        }
+        Update: {
+          air_quality_index?: number
+          capital_deployment_priority?: string
+          city?: string
+          computed_at?: string
+          connectivity_score?: number
+          country?: string
+          created_at?: string
+          cultural_richness?: number
+          digital_infrastructure?: number
+          district?: string | null
+          economic_opportunity_score?: number
+          education_quality?: number
+          employment_density?: number
+          environmental_sustainability_score?: number
+          green_coverage_pct?: number
+          habitat_quality_index?: number
+          habitat_tier?: string
+          healthcare_access?: number
+          id?: string
+          improvement_trajectory?: string
+          investment_impact_multiplier?: number
+          livability_score?: number
+          public_transit_coverage?: number
+          renewable_energy_pct?: number
+          safety_index?: number
+          startup_ecosystem?: number
+          water_security?: number
+        }
+        Relationships: []
+      }
+      psre_ownership_models: {
+        Row: {
+          accessibility_score: number
+          active_participants: number
+          avg_entry_cost_usd: number
+          avg_equity_accumulation_rate_pct: number
+          avg_participant_roi_pct: number
+          city: string
+          computed_at: string
+          country: string
+          created_at: string
+          default_rate_pct: number
+          first_time_buyer_pct: number
+          id: string
+          income_bracket_coverage: string
+          liquidity_provision_score: number
+          market_destabilization_risk: number
+          model_maturity: string
+          model_type: string
+          regulatory_compliance_score: number
+          satisfaction_score: number
+          total_capital_locked_usd: number
+          total_units_covered: number
+        }
+        Insert: {
+          accessibility_score?: number
+          active_participants?: number
+          avg_entry_cost_usd?: number
+          avg_equity_accumulation_rate_pct?: number
+          avg_participant_roi_pct?: number
+          city: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          default_rate_pct?: number
+          first_time_buyer_pct?: number
+          id?: string
+          income_bracket_coverage?: string
+          liquidity_provision_score?: number
+          market_destabilization_risk?: number
+          model_maturity?: string
+          model_type: string
+          regulatory_compliance_score?: number
+          satisfaction_score?: number
+          total_capital_locked_usd?: number
+          total_units_covered?: number
+        }
+        Update: {
+          accessibility_score?: number
+          active_participants?: number
+          avg_entry_cost_usd?: number
+          avg_equity_accumulation_rate_pct?: number
+          avg_participant_roi_pct?: number
+          city?: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          default_rate_pct?: number
+          first_time_buyer_pct?: number
+          id?: string
+          income_bracket_coverage?: string
+          liquidity_provision_score?: number
+          market_destabilization_risk?: number
+          model_maturity?: string
+          model_type?: string
+          regulatory_compliance_score?: number
+          satisfaction_score?: number
+          total_capital_locked_usd?: number
+          total_units_covered?: number
+        }
+        Relationships: []
+      }
+      psre_price_stability: {
+        Row: {
+          affordability_trajectory: string
+          affordable_stock_pct: number
+          city: string
+          computed_at: string
+          country: string
+          created_at: string
+          dampening_mechanism: string | null
+          dampening_score: number
+          district: string | null
+          flip_transaction_pct: number
+          foreign_speculative_volume_pct: number
+          id: string
+          incentive_effectiveness_score: number
+          incentive_type: string | null
+          intervention_urgency: string
+          median_price_to_income: number
+          price_income_divergence: number
+          rental_burden_pct: number
+          speculative_heat_index: number
+          supply_incentive_active: boolean
+          volatility_30d: number
+          volatility_90d: number
+        }
+        Insert: {
+          affordability_trajectory?: string
+          affordable_stock_pct?: number
+          city: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          dampening_mechanism?: string | null
+          dampening_score?: number
+          district?: string | null
+          flip_transaction_pct?: number
+          foreign_speculative_volume_pct?: number
+          id?: string
+          incentive_effectiveness_score?: number
+          incentive_type?: string | null
+          intervention_urgency?: string
+          median_price_to_income?: number
+          price_income_divergence?: number
+          rental_burden_pct?: number
+          speculative_heat_index?: number
+          supply_incentive_active?: boolean
+          volatility_30d?: number
+          volatility_90d?: number
+        }
+        Update: {
+          affordability_trajectory?: string
+          affordable_stock_pct?: number
+          city?: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          dampening_mechanism?: string | null
+          dampening_score?: number
+          district?: string | null
+          flip_transaction_pct?: number
+          foreign_speculative_volume_pct?: number
+          id?: string
+          incentive_effectiveness_score?: number
+          incentive_type?: string | null
+          intervention_urgency?: string
+          median_price_to_income?: number
+          price_income_divergence?: number
+          rental_burden_pct?: number
+          speculative_heat_index?: number
+          supply_incentive_active?: boolean
+          volatility_30d?: number
+          volatility_90d?: number
+        }
+        Relationships: []
+      }
+      psre_supply_sync: {
+        Row: {
+          active_construction_units: number
+          artificial_scarcity_index: number
+          avg_build_cycle_months: number
+          city: string
+          computed_at: string
+          construction_capacity_units_yr: number
+          country: string
+          created_at: string
+          district: string | null
+          household_formation_rate: number
+          housing_units_needed_5y: number
+          id: string
+          infra_readiness_score: number
+          labor_availability_index: number
+          land_banking_pct: number
+          migration_net_annual: number
+          population_forecast_5y: number
+          recommended_intervention: string | null
+          supply_sync_score: number
+          sync_status: string
+          total_developable_land_ha: number
+          transit_expansion_planned: boolean
+          utility_capacity_headroom_pct: number
+          utilized_land_pct: number
+          zoned_residential_pct: number
+        }
+        Insert: {
+          active_construction_units?: number
+          artificial_scarcity_index?: number
+          avg_build_cycle_months?: number
+          city: string
+          computed_at?: string
+          construction_capacity_units_yr?: number
+          country?: string
+          created_at?: string
+          district?: string | null
+          household_formation_rate?: number
+          housing_units_needed_5y?: number
+          id?: string
+          infra_readiness_score?: number
+          labor_availability_index?: number
+          land_banking_pct?: number
+          migration_net_annual?: number
+          population_forecast_5y?: number
+          recommended_intervention?: string | null
+          supply_sync_score?: number
+          sync_status?: string
+          total_developable_land_ha?: number
+          transit_expansion_planned?: boolean
+          utility_capacity_headroom_pct?: number
+          utilized_land_pct?: number
+          zoned_residential_pct?: number
+        }
+        Update: {
+          active_construction_units?: number
+          artificial_scarcity_index?: number
+          avg_build_cycle_months?: number
+          city?: string
+          computed_at?: string
+          construction_capacity_units_yr?: number
+          country?: string
+          created_at?: string
+          district?: string | null
+          household_formation_rate?: number
+          housing_units_needed_5y?: number
+          id?: string
+          infra_readiness_score?: number
+          labor_availability_index?: number
+          land_banking_pct?: number
+          migration_net_annual?: number
+          population_forecast_5y?: number
+          recommended_intervention?: string | null
+          supply_sync_score?: number
+          sync_status?: string
+          total_developable_land_ha?: number
+          transit_expansion_planned?: boolean
+          utility_capacity_headroom_pct?: number
+          utilized_land_pct?: number
+          zoned_residential_pct?: number
+        }
+        Relationships: []
+      }
       push_subscriptions: {
         Row: {
           auth_key: string | null
