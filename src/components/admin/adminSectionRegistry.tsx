@@ -323,6 +323,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "system-settings":     () => <SystemSettings />,
   "settings":            () => <SystemSettings />,
   "smtp-settings":       () => <EmailSettings />,
+  "email-monitoring":    () => <EmailMonitoringDashboard />,
   "indonesian-payment-config": () => <IndonesianPaymentMerchantConfig />,
   "seo-settings":        () => <SystemSettings defaultTab="seo-hub" />,
 
