@@ -156,3 +156,44 @@ export function useCreateAuction() {
     },
   });
 }
+
+export function useAuctionBidHistory(auctionId: string | undefined) {
+  return useQuery({
+    queryKey: ['auction-bid-history', auctionId],
+    queryFn: async () => {
+      const { data, error } = await supabase.functions.invoke('auction-flash-deals', {
+        body: { mode: 'auction_bid_history', auction_id: auctionId },
+      });
+      if (error) throw new Error(error.message);
+      return (data?.bids || []) as Array<{
+        id: string;
+        bidder_id: string;
+        bid_amount: number;
+        created_at: string;
+        rank: number;
+      }>;
+    },
+    enabled: !!auctionId,
+    staleTime: 5_000,
+    refetchInterval: 5_000,
+  });
+}
+
+export function useAuctionDiscovery() {
+  return useQuery({
+    queryKey: ['auction-discovery'],
+    queryFn: async () => {
+      const { data, error } = await supabase.functions.invoke('auction-flash-deals', {
+        body: { mode: 'discovery' },
+      });
+      if (error) throw new Error(error.message);
+      return data as {
+        flash_deals: FlashDeal[];
+        auctions: AuctionListing[];
+        total_active: number;
+      };
+    },
+    staleTime: 30_000,
+    refetchInterval: 30_000,
+  });
+}

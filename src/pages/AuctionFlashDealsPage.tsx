@@ -9,11 +9,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { motion, AnimatePresence } from 'framer-motion';
+import AuctionListingBadge from '@/components/auction/AuctionListingBadge';
+import BidCompetitivenessIndicator from '@/components/auction/BidCompetitivenessIndicator';
 import {
   Zap, Gavel, Clock, TrendingUp, Flame, Eye, MapPin,
   Home, ArrowUpRight, Loader2, AlertTriangle, Users,
   DollarSign, Timer, Sparkles, ChevronRight, Target,
-} from 'lucide-react';
+}from 'lucide-react';
 
 const formatIDR = (v: number) =>
   new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v);
@@ -121,7 +123,7 @@ function FlashDealCard({ deal, index }: { deal: FlashDeal; index: number }) {
                   <Badge variant="outline" className="text-[9px] px-1.5">{p?.property_type}</Badge>
                   <Badge variant="outline" className="text-[9px] px-1.5 flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" /> {p?.city}</Badge>
                   {p?.investment_score > 70 && (
-                    <Badge className="bg-emerald-500/15 text-emerald-600 border-emerald-500/30 text-[9px] gap-0.5">
+                    <Badge className="bg-chart-2/15 text-chart-2 border-chart-2/30 text-[9px] gap-0.5">
                       <Sparkles className="h-2.5 w-2.5" /> Score {p.investment_score}
                     </Badge>
                   )}
@@ -185,14 +187,12 @@ function AuctionCard({ auction, index }: { auction: AuctionListing; index: numbe
                 </div>
               )}
               <div className="absolute top-2 left-2">
-                <Badge className="bg-primary/90 text-primary-foreground text-[9px] gap-1">
-                  <Gavel className="h-3 w-3" /> LIVE AUCTION
-                </Badge>
-              </div>
-              <div className="absolute bottom-2 right-2 flex items-center gap-1">
-                <Badge variant="outline" className="bg-background/80 text-[9px] gap-0.5">
-                  <Users className="h-2.5 w-2.5" /> {auction.bid_count} bids
-                </Badge>
+                <AuctionListingBadge
+                  type="auction"
+                  endTime={auction.end_time}
+                  bidCount={auction.bid_count}
+                  compact
+                />
               </div>
             </div>
 
@@ -249,8 +249,19 @@ function AuctionCard({ auction, index }: { auction: AuctionListing; index: numbe
                           <p className="text-lg font-bold text-foreground">{formatIDR(minBid)}</p>
                         </div>
                       </div>
+
+                      {/* Competitiveness Indicator */}
+                      {bidAmount && Number(bidAmount) > 0 && (
+                        <BidCompetitivenessIndicator
+                          proposedBid={Number(bidAmount)}
+                          currentBid={auction.current_bid}
+                          startingPrice={auction.starting_price}
+                          minimumIncrement={auction.minimum_increment}
+                          totalBids={auction.bid_count}
+                        />
+                      )}
+
                       <div>
-                        <label className="text-xs text-muted-foreground mb-1 block">Your Bid (IDR)</label>
                         <Input
                           type="number"
                           placeholder={String(minBid)}
@@ -281,6 +292,9 @@ function AuctionCard({ auction, index }: { auction: AuctionListing; index: numbe
                         <Clock className="h-3 w-3" />
                         <span>Time remaining: <CountdownTimer endTime={auction.end_time} compact /></span>
                       </div>
+                      <p className="text-[9px] text-center text-muted-foreground">
+                        🔒 Bidder identities are anonymized. Bids within 5 min of closing extend the auction.
+                      </p>
                     </div>
                   </DialogContent>
                 </Dialog>
@@ -351,7 +365,7 @@ export default function AuctionFlashDealsPage() {
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.15 }}>
           <Card className="border-border/50 bg-card/80">
             <CardContent className="p-3 text-center">
-              <DollarSign className="h-5 w-5 text-emerald-500 mx-auto mb-1" />
+              <DollarSign className="h-5 w-5 text-chart-2 mx-auto mb-1" />
               <p className="text-xl font-bold text-foreground">
                 {formatShort(
                   (deals || []).reduce((s, d) => s + (d.original_price - d.flash_price), 0)
