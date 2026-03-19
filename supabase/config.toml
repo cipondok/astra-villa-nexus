@@ -396,3 +396,6 @@ verify_jwt = false
 
 [functions.asset-allocation-brain]
 verify_jwt = false
+
+[functions.asset-tokenization-exchange]
+verify_jwt = false

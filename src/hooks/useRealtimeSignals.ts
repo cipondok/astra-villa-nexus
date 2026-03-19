@@ -60,6 +60,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   gpi_index_computed: { label: 'Index Computed', icon: '🔢' },
   aab_critical_rebalance: { label: 'Rebalance Alert', icon: '⚖️' },
   aab_allocation_brain_cycle: { label: 'Allocation Brain', icon: '🧠' },
+  pate_whale_trade: { label: 'Whale Trade', icon: '🐋' },
+  pate_exchange_cycle: { label: 'Exchange Engine', icon: '🏛️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
