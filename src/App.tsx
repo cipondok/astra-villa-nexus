@@ -241,6 +241,7 @@ const DealHunterBotPage = lazy(() => import('@/pages/DealHunterBotPage'));
 const DeveloperCampaignPage = lazy(() => import('@/pages/DeveloperCampaignPage'));
 const OwnershipLifecyclePage = lazy(() => import('@/pages/OwnershipLifecyclePage'));
 const MacroPredictionTerminal = lazy(() => import('@/pages/MacroPredictionTerminal'));
+const GlobalPredictiveAnalyticsPage = lazy(() => import('@/pages/GlobalPredictiveAnalyticsPage'));
 const InvestorSocialNetwork = lazy(() => import('@/pages/InvestorSocialNetwork'));
 const VirtualPropertyExplorer = lazy(() => import('@/pages/VirtualPropertyExplorer'));
 const ProductArchitecturePage = lazy(() => import('@/pages/ProductArchitecturePage'));
