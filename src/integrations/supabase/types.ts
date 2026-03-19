@@ -9414,6 +9414,39 @@ export type Database = {
         }
         Relationships: []
       }
+      email_send_state: {
+        Row: {
+          auth_email_ttl_minutes: number | null
+          batch_size: number | null
+          id: number
+          is_rate_limited: boolean | null
+          rate_limited_until: string | null
+          send_delay_ms: number | null
+          transactional_email_ttl_minutes: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          auth_email_ttl_minutes?: number | null
+          batch_size?: number | null
+          id?: number
+          is_rate_limited?: boolean | null
+          rate_limited_until?: string | null
+          send_delay_ms?: number | null
+          transactional_email_ttl_minutes?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          auth_email_ttl_minutes?: number | null
+          batch_size?: number | null
+          id?: number
+          is_rate_limited?: boolean | null
+          rate_limited_until?: string | null
+          send_delay_ms?: number | null
+          transactional_email_ttl_minutes?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       email_templates: {
         Row: {
           body_html: string
@@ -36634,6 +36667,10 @@ export type Database = {
       encrypt_healthcare_data: {
         Args: { data_type: string; healthcare_data: string }
         Returns: string
+      }
+      enqueue_email: {
+        Args: { payload: Json; queue_name: string }
+        Returns: undefined
       }
       execute_learning_cycle: { Args: never; Returns: Json }
       forecast_national_market: {
