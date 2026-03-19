@@ -241,6 +241,7 @@ const DealHunterBotPage = lazy(() => import('@/pages/DealHunterBotPage'));
 const DeveloperCampaignPage = lazy(() => import('@/pages/DeveloperCampaignPage'));
 const OwnershipLifecyclePage = lazy(() => import('@/pages/OwnershipLifecyclePage'));
 const MacroPredictionTerminal = lazy(() => import('@/pages/MacroPredictionTerminal'));
+const GlobalPredictiveAnalyticsPage = lazy(() => import('@/pages/GlobalPredictiveAnalyticsPage'));
 const InvestorSocialNetwork = lazy(() => import('@/pages/InvestorSocialNetwork'));
 const VirtualPropertyExplorer = lazy(() => import('@/pages/VirtualPropertyExplorer'));
 const ProductArchitecturePage = lazy(() => import('@/pages/ProductArchitecturePage'));
@@ -668,6 +669,7 @@ const AppContent = () => {
                 <Route path="/ownership-lifecycle" element={<OwnershipLifecyclePage />} />
                 <Route path="/macro-prediction" element={<MacroPredictionTerminal />} />
                 <Route path="/investor-social" element={<InvestorSocialNetwork />} />
+                <Route path="/global-predictive-analytics" element={<GlobalPredictiveAnalyticsPage />} />
                 <Route path="/virtual-explorer" element={<VirtualPropertyExplorer />} />
                 <Route path="/product-architecture" element={<ProductArchitecturePage />} />
                 <Route path="/development-roadmap" element={<DevelopmentRoadmapPage />} />
