@@ -62,6 +62,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   aab_allocation_brain_cycle: { label: 'Allocation Brain', icon: '🧠' },
   pate_whale_trade: { label: 'Whale Trade', icon: '🐋' },
   pate_exchange_cycle: { label: 'Exchange Engine', icon: '🏛️' },
+  gues_hotspot_detected: { label: 'Hotspot Found', icon: '🔥' },
+  gues_simulator_cycle: { label: 'Urban Simulator', icon: '🏙️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */

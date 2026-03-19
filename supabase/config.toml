@@ -399,3 +399,6 @@ verify_jwt = false
 
 [functions.asset-tokenization-exchange]
 verify_jwt = false
+
+[functions.urban-economic-simulator]
+verify_jwt = false
