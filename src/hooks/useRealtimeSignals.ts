@@ -34,6 +34,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   vendor_engine_cycle: { label: 'Vendor Engine', icon: '🏗️' },
   vendor_revenue_flywheel_cycle: { label: 'Revenue Flywheel', icon: '💎' },
   vendor_growth_orchestrator_cycle: { label: 'Growth Orchestrator', icon: '🧠' },
+  capital_allocation_engine_cycle: { label: 'Capital Engine', icon: '🏦' },
+  bubble_risk_critical: { label: 'Bubble Alert', icon: '🫧' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */

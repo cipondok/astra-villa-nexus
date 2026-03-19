@@ -6316,6 +6316,63 @@ export type Database = {
         }
         Relationships: []
       }
+      capital_sequencing_queue: {
+        Row: {
+          ai_rationale: string | null
+          asset_class: string | null
+          bubble_risk_discount: number | null
+          capital_gravity_score: number | null
+          capital_priority_score: number | null
+          city: string
+          created_at: string | null
+          deal_pipeline_density: number | null
+          district: string
+          id: string
+          recommended_allocation_pct: number | null
+          risk_adjusted_liquidity_yield: number | null
+          segment_type: string | null
+          sequence_rank: number
+          status: string | null
+          time_to_exit_score: number | null
+        }
+        Insert: {
+          ai_rationale?: string | null
+          asset_class?: string | null
+          bubble_risk_discount?: number | null
+          capital_gravity_score?: number | null
+          capital_priority_score?: number | null
+          city: string
+          created_at?: string | null
+          deal_pipeline_density?: number | null
+          district: string
+          id?: string
+          recommended_allocation_pct?: number | null
+          risk_adjusted_liquidity_yield?: number | null
+          segment_type?: string | null
+          sequence_rank?: number
+          status?: string | null
+          time_to_exit_score?: number | null
+        }
+        Update: {
+          ai_rationale?: string | null
+          asset_class?: string | null
+          bubble_risk_discount?: number | null
+          capital_gravity_score?: number | null
+          capital_priority_score?: number | null
+          city?: string
+          created_at?: string | null
+          deal_pipeline_density?: number | null
+          district?: string
+          id?: string
+          recommended_allocation_pct?: number | null
+          risk_adjusted_liquidity_yield?: number | null
+          segment_type?: string | null
+          sequence_rank?: number
+          status?: string | null
+          time_to_exit_score?: number | null
+        }
+        Relationships: []
+      }
       carousel_settings: {
         Row: {
           auto_scroll: boolean | null
@@ -9369,6 +9426,126 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      district_bubble_risk: {
+        Row: {
+          bubble_risk_score: number | null
+          capital_concentration_risk: number | null
+          cooling_signal_emitted: boolean | null
+          created_at: string | null
+          district: string
+          id: string
+          last_computed_at: string | null
+          liquidity_overheat_score: number | null
+          narrative: string | null
+          offer_frenzy_index: number | null
+          price_to_fundamental_ratio: number | null
+          recommended_actions: Json | null
+          risk_level: string | null
+          roi_adjustment_factor: number | null
+          scoring_inputs: Json | null
+          segment_type: string | null
+          speculative_pricing_divergence: number | null
+        }
+        Insert: {
+          bubble_risk_score?: number | null
+          capital_concentration_risk?: number | null
+          cooling_signal_emitted?: boolean | null
+          created_at?: string | null
+          district: string
+          id?: string
+          last_computed_at?: string | null
+          liquidity_overheat_score?: number | null
+          narrative?: string | null
+          offer_frenzy_index?: number | null
+          price_to_fundamental_ratio?: number | null
+          recommended_actions?: Json | null
+          risk_level?: string | null
+          roi_adjustment_factor?: number | null
+          scoring_inputs?: Json | null
+          segment_type?: string | null
+          speculative_pricing_divergence?: number | null
+        }
+        Update: {
+          bubble_risk_score?: number | null
+          capital_concentration_risk?: number | null
+          cooling_signal_emitted?: boolean | null
+          created_at?: string | null
+          district?: string
+          id?: string
+          last_computed_at?: string | null
+          liquidity_overheat_score?: number | null
+          narrative?: string | null
+          offer_frenzy_index?: number | null
+          price_to_fundamental_ratio?: number | null
+          recommended_actions?: Json | null
+          risk_level?: string | null
+          roi_adjustment_factor?: number | null
+          scoring_inputs?: Json | null
+          segment_type?: string | null
+          speculative_pricing_divergence?: number | null
+        }
+        Relationships: []
+      }
+      district_capital_gravity: {
+        Row: {
+          absorption_velocity_score: number | null
+          capital_gravity_score: number | null
+          city: string | null
+          created_at: string | null
+          deal_close_reliability_score: number | null
+          district: string
+          gravity_tier: string | null
+          id: string
+          last_computed_at: string | null
+          liquidity_acceleration_score: number | null
+          price_appreciation_momentum: number | null
+          scoring_inputs: Json | null
+          scoring_weights: Json | null
+          segment_type: string | null
+          supply_gap_persistence_score: number | null
+          updated_at: string | null
+          vendor_execution_depth_score: number | null
+        }
+        Insert: {
+          absorption_velocity_score?: number | null
+          capital_gravity_score?: number | null
+          city?: string | null
+          created_at?: string | null
+          deal_close_reliability_score?: number | null
+          district: string
+          gravity_tier?: string | null
+          id?: string
+          last_computed_at?: string | null
+          liquidity_acceleration_score?: number | null
+          price_appreciation_momentum?: number | null
+          scoring_inputs?: Json | null
+          scoring_weights?: Json | null
+          segment_type?: string | null
+          supply_gap_persistence_score?: number | null
+          updated_at?: string | null
+          vendor_execution_depth_score?: number | null
+        }
+        Update: {
+          absorption_velocity_score?: number | null
+          capital_gravity_score?: number | null
+          city?: string | null
+          created_at?: string | null
+          deal_close_reliability_score?: number | null
+          district?: string
+          gravity_tier?: string | null
+          id?: string
+          last_computed_at?: string | null
+          liquidity_acceleration_score?: number | null
+          price_appreciation_momentum?: number | null
+          scoring_inputs?: Json | null
+          scoring_weights?: Json | null
+          segment_type?: string | null
+          supply_gap_persistence_score?: number | null
+          updated_at?: string | null
+          vendor_execution_depth_score?: number | null
+        }
+        Relationships: []
       }
       district_marketplace_balance: {
         Row: {
@@ -13104,6 +13281,63 @@ export type Database = {
           },
         ]
       }
+      institutional_deal_clusters: {
+        Row: {
+          ai_rationale: string | null
+          capital_gravity_at_creation: number | null
+          cluster_name: string
+          cluster_type: string | null
+          created_at: string | null
+          district: string
+          id: string
+          min_ticket_idr: number | null
+          participating_funds: number | null
+          segment_type: string | null
+          status: string | null
+          supporting_metrics: Json | null
+          target_irr_pct: number | null
+          target_properties: number | null
+          total_deal_value_idr: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          ai_rationale?: string | null
+          capital_gravity_at_creation?: number | null
+          cluster_name: string
+          cluster_type?: string | null
+          created_at?: string | null
+          district: string
+          id?: string
+          min_ticket_idr?: number | null
+          participating_funds?: number | null
+          segment_type?: string | null
+          status?: string | null
+          supporting_metrics?: Json | null
+          target_irr_pct?: number | null
+          target_properties?: number | null
+          total_deal_value_idr?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          ai_rationale?: string | null
+          capital_gravity_at_creation?: number | null
+          cluster_name?: string
+          cluster_type?: string | null
+          created_at?: string | null
+          district?: string
+          id?: string
+          min_ticket_idr?: number | null
+          participating_funds?: number | null
+          segment_type?: string | null
+          status?: string | null
+          supporting_metrics?: Json | null
+          target_irr_pct?: number | null
+          target_properties?: number | null
+          total_deal_value_idr?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       intelligence_worker_runs: {
         Row: {
           completed_at: string | null
@@ -13602,6 +13836,63 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      investor_portfolio_flow: {
+        Row: {
+          avg_ticket_size: number | null
+          capital_inflow_idr: number | null
+          capital_outflow_idr: number | null
+          capital_rotation_signal: string | null
+          created_at: string | null
+          district: string
+          district_saturation_pct: number | null
+          flow_trend: string | null
+          id: string
+          insights: Json | null
+          investor_concentration_hhi: number | null
+          net_flow_idr: number | null
+          period_month: string
+          segment_type: string | null
+          top_investor_share_pct: number | null
+          unique_investors: number | null
+        }
+        Insert: {
+          avg_ticket_size?: number | null
+          capital_inflow_idr?: number | null
+          capital_outflow_idr?: number | null
+          capital_rotation_signal?: string | null
+          created_at?: string | null
+          district: string
+          district_saturation_pct?: number | null
+          flow_trend?: string | null
+          id?: string
+          insights?: Json | null
+          investor_concentration_hhi?: number | null
+          net_flow_idr?: number | null
+          period_month: string
+          segment_type?: string | null
+          top_investor_share_pct?: number | null
+          unique_investors?: number | null
+        }
+        Update: {
+          avg_ticket_size?: number | null
+          capital_inflow_idr?: number | null
+          capital_outflow_idr?: number | null
+          capital_rotation_signal?: string | null
+          created_at?: string | null
+          district?: string
+          district_saturation_pct?: number | null
+          flow_trend?: string | null
+          id?: string
+          insights?: Json | null
+          investor_concentration_hhi?: number | null
+          net_flow_idr?: number | null
+          period_month?: string
+          segment_type?: string | null
+          top_investor_share_pct?: number | null
+          unique_investors?: number | null
+        }
+        Relationships: []
       }
       investor_portfolio_snapshots: {
         Row: {
