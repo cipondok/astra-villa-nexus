@@ -124,6 +124,31 @@ export const emailService = {
     return sendEmail({ to: adminEmails, template: 'general', variables: { message: `${variables.reviewer_name} left a ${variables.rating}★ review on ${variables.property_title}: "${variables.review_text}"` }, subject: `New Review: ${variables.rating}★ on ${variables.property_title}` });
   },
 
+  async sendWelcomeEmail(
+    email: string,
+    variables: {
+      user_name: string;
+      dashboard_url?: string;
+    }
+  ) {
+    return sendEmail({ to: email, template: 'welcome', variables });
+  },
+
+  async sendPropertyAlert(
+    email: string,
+    variables: {
+      user_name: string;
+      property_title: string;
+      property_location: string;
+      property_price: string;
+      property_type: string;
+      property_url?: string;
+      alert_type?: string;
+    }
+  ) {
+    return sendEmail({ to: email, template: 'property_alert', variables });
+  },
+
   async sendCustomEmail(email: string, subject: string, message: string) {
     return sendEmail({ to: email, template: 'general', variables: { message }, subject });
   },

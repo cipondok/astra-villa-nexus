@@ -7,6 +7,8 @@ import { NewReviewEmail } from '../_shared/email-templates/transactional/new-rev
 import { InquiryConfirmationEmail } from '../_shared/email-templates/transactional/inquiry-confirmation.tsx'
 import { GeneralEmail } from '../_shared/email-templates/transactional/general.tsx'
 import { VerificationApprovedEmail } from '../_shared/email-templates/transactional/verification-approved.tsx'
+import { WelcomeEmail } from '../_shared/email-templates/transactional/welcome.tsx'
+import { PropertyAlertEmail } from '../_shared/email-templates/transactional/property-alert.tsx'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -46,6 +48,14 @@ const TEMPLATES: Record<string, TemplateEntry> = {
   general: {
     component: GeneralEmail,
     subject: 'Message from Astra Villa Realty',
+  },
+  welcome: {
+    component: WelcomeEmail,
+    subject: 'Welcome to Astra Villa Realty!',
+  },
+  property_alert: {
+    component: PropertyAlertEmail,
+    subject: (v) => v.alert_type === 'price_drop' ? `Price drop: ${v.property_title}` : `New listing: ${v.property_title}`,
   },
 }
 
