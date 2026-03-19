@@ -364,3 +364,6 @@ verify_jwt = false
 [functions.investor-capital-engine]
 verify_jwt = false
 
+[functions.deal-dominance-engine]
+verify_jwt = false
+
