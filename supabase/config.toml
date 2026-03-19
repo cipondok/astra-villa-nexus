@@ -402,3 +402,6 @@ verify_jwt = false
 
 [functions.urban-economic-simulator]
 verify_jwt = false
+
+[functions.sovereign-wealth-copilot]
+verify_jwt = false

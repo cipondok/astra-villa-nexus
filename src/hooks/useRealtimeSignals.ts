@@ -64,6 +64,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   pate_exchange_cycle: { label: 'Exchange Engine', icon: '🏛️' },
   gues_hotspot_detected: { label: 'Hotspot Found', icon: '🔥' },
   gues_simulator_cycle: { label: 'Urban Simulator', icon: '🏙️' },
+  aswc_critical_deployment: { label: 'Sovereign Deploy', icon: '🏛️' },
+  aswc_copilot_cycle: { label: 'Wealth Co-Pilot', icon: '👑' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
