@@ -119,6 +119,7 @@ const MarketplaceOperationsBrain = lazy(() => import('@/pages/MarketplaceOperati
 const SelfLearningValuationCore = lazy(() => import('@/pages/SelfLearningValuationCore'));
 const RealEstateIntelligenceAPIHub = lazy(() => import('@/pages/RealEstateIntelligenceAPIHub'));
 const AIWealthAdvisor = lazy(() => import('@/pages/AIWealthAdvisor'));
+const AutonomousGlobalPropertyExchange = lazy(() => import('@/pages/AutonomousGlobalPropertyExchange'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
@@ -449,6 +450,7 @@ const AppContent = () => {
                 <Route path="/valuation-core" element={<SelfLearningValuationCore />} />
                 <Route path="/api-hub" element={<RealEstateIntelligenceAPIHub />} />
                 <Route path="/wealth-advisor" element={<AIWealthAdvisor />} />
+                <Route path="/global-exchange" element={<AutonomousGlobalPropertyExchange />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
