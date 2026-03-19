@@ -142,7 +142,7 @@ const InvoiceGenerator = ({ invoiceData, onPaymentInitiate }: InvoiceGeneratorPr
         subject: `Invoice #${invoiceData.invoiceNumber}`,
         template: 'general',
         variables: {
-          message: `Your invoice #${invoiceData.invoiceNumber} for ${invoiceData.property.title} is attached. Total: Rp ${invoiceData.totalAmount.toLocaleString('id-ID')}`,
+          message: `Your invoice #${invoiceData.invoiceNumber} for ${invoiceData.property.title} is attached. Total: Rp ${invoiceData.pricing.total.toLocaleString('id-ID')}`,
         },
       });
 
