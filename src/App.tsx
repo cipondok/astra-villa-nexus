@@ -83,6 +83,7 @@ const UserDashboardPage = lazy(() => import('@/pages/UserDashboardPage'));
 // ThreeDShowcase removed - consolidated into VR Tour
 const AddProperty = lazy(() => import('@/pages/AddProperty'));
 const SubmitPropertyListing = lazy(() => import('@/pages/SubmitPropertyListing'));
+const InvestorLandingPage = lazy(() => import('@/pages/InvestorLandingPage'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
