@@ -87,6 +87,7 @@ const InvestorLandingPage = lazy(() => import('@/pages/InvestorLandingPage'));
 const DealRoom = lazy(() => import('@/pages/DealRoom'));
 const LaunchCommandCenter = lazy(() => import('@/pages/LaunchCommandCenter'));
 const PropertyDeepAnalysis = lazy(() => import('@/pages/PropertyDeepAnalysis'));
+const InvestorOnboardingWizard = lazy(() => import('@/pages/InvestorOnboardingWizard'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
@@ -385,6 +386,7 @@ const AppContent = () => {
                 <Route path="/landing" element={<LandingPage />} />
                 <Route path="/investor-landing" element={<InvestorLandingPage />} />
                 <Route path="/onboarding/investor" element={<InvestorOnboarding />} />
+                <Route path="/onboarding/investor-wizard" element={<InvestorOnboardingWizard />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
