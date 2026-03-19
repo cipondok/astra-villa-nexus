@@ -74,6 +74,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   apin_network_cycle: { label: 'Investment Network', icon: '🌐' },
   psre_artificial_scarcity: { label: 'Scarcity Alert', icon: '🏚️' },
   psre_engine_cycle: { label: 'Post-Scarcity OS', icon: '🏡' },
+  gccf_crisis_activated: { label: 'Crisis Protocol', icon: '🚨' },
+  gccf_governance_cycle: { label: 'Capital Governance', icon: '🏛️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
