@@ -33917,6 +33917,77 @@ export type Database = {
           },
         ]
       }
+      vendor_campaign_performance: {
+        Row: {
+          budget: number | null
+          campaign_name: string
+          campaign_type: string
+          clicks: number | null
+          conversions: number | null
+          created_at: string | null
+          district: string | null
+          end_date: string | null
+          id: string
+          impressions: number | null
+          leads_generated: number | null
+          revenue_generated: number | null
+          roi: number | null
+          spend: number | null
+          start_date: string
+          status: string | null
+          updated_at: string | null
+          vendor_id: string
+        }
+        Insert: {
+          budget?: number | null
+          campaign_name: string
+          campaign_type: string
+          clicks?: number | null
+          conversions?: number | null
+          created_at?: string | null
+          district?: string | null
+          end_date?: string | null
+          id?: string
+          impressions?: number | null
+          leads_generated?: number | null
+          revenue_generated?: number | null
+          roi?: number | null
+          spend?: number | null
+          start_date: string
+          status?: string | null
+          updated_at?: string | null
+          vendor_id: string
+        }
+        Update: {
+          budget?: number | null
+          campaign_name?: string
+          campaign_type?: string
+          clicks?: number | null
+          conversions?: number | null
+          created_at?: string | null
+          district?: string | null
+          end_date?: string | null
+          id?: string
+          impressions?: number | null
+          leads_generated?: number | null
+          revenue_generated?: number | null
+          roi?: number | null
+          spend?: number | null
+          start_date?: string
+          status?: string | null
+          updated_at?: string | null
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_campaign_performance_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_business_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vendor_categories_hierarchy: {
         Row: {
           base_price_range: Json | null
@@ -34965,6 +35036,68 @@ export type Database = {
         }
         Relationships: []
       }
+      vendor_market_share: {
+        Row: {
+          avg_time_to_close_days: number | null
+          competitor_count: number | null
+          created_at: string | null
+          district: string
+          id: string
+          insight_narrative: string | null
+          lead_win_rate: number | null
+          market_share_pct: number | null
+          period_month: string
+          pricing_competitiveness_score: number | null
+          rank_in_district: number | null
+          service_category: string
+          total_district_leads: number | null
+          vendor_id: string
+          vendor_leads_captured: number | null
+        }
+        Insert: {
+          avg_time_to_close_days?: number | null
+          competitor_count?: number | null
+          created_at?: string | null
+          district: string
+          id?: string
+          insight_narrative?: string | null
+          lead_win_rate?: number | null
+          market_share_pct?: number | null
+          period_month: string
+          pricing_competitiveness_score?: number | null
+          rank_in_district?: number | null
+          service_category: string
+          total_district_leads?: number | null
+          vendor_id: string
+          vendor_leads_captured?: number | null
+        }
+        Update: {
+          avg_time_to_close_days?: number | null
+          competitor_count?: number | null
+          created_at?: string | null
+          district?: string
+          id?: string
+          insight_narrative?: string | null
+          lead_win_rate?: number | null
+          market_share_pct?: number | null
+          period_month?: string
+          pricing_competitiveness_score?: number | null
+          rank_in_district?: number | null
+          service_category?: string
+          total_district_leads?: number | null
+          vendor_id?: string
+          vendor_leads_captured?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_market_share_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_business_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vendor_match_results: {
         Row: {
           completed_at: string | null
@@ -35328,6 +35461,80 @@ export type Database = {
           },
         ]
       }
+      vendor_premium_slots: {
+        Row: {
+          activated_at: string | null
+          auto_renew: boolean | null
+          created_at: string | null
+          discount_pct: number | null
+          district: string | null
+          expires_at: string | null
+          id: string
+          performance_clicks: number | null
+          performance_conversions: number | null
+          performance_impressions: number | null
+          performance_leads: number | null
+          price_monthly: number
+          roi_multiplier: number | null
+          segment_type: string | null
+          service_category: string | null
+          slot_type: string
+          status: string | null
+          updated_at: string | null
+          vendor_id: string
+        }
+        Insert: {
+          activated_at?: string | null
+          auto_renew?: boolean | null
+          created_at?: string | null
+          discount_pct?: number | null
+          district?: string | null
+          expires_at?: string | null
+          id?: string
+          performance_clicks?: number | null
+          performance_conversions?: number | null
+          performance_impressions?: number | null
+          performance_leads?: number | null
+          price_monthly?: number
+          roi_multiplier?: number | null
+          segment_type?: string | null
+          service_category?: string | null
+          slot_type: string
+          status?: string | null
+          updated_at?: string | null
+          vendor_id: string
+        }
+        Update: {
+          activated_at?: string | null
+          auto_renew?: boolean | null
+          created_at?: string | null
+          discount_pct?: number | null
+          district?: string | null
+          expires_at?: string | null
+          id?: string
+          performance_clicks?: number | null
+          performance_conversions?: number | null
+          performance_impressions?: number | null
+          performance_leads?: number | null
+          price_monthly?: number
+          roi_multiplier?: number | null
+          segment_type?: string | null
+          service_category?: string | null
+          slot_type?: string
+          status?: string | null
+          updated_at?: string | null
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_premium_slots_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_business_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vendor_project_progress: {
         Row: {
           booking_id: string | null
@@ -35554,6 +35761,71 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_revenue_metrics: {
+        Row: {
+          avg_deal_value: number | null
+          capacity_utilization_pct: number | null
+          created_at: string | null
+          district_growth_capture_score: number | null
+          id: string
+          last_computed_at: string | null
+          lead_to_deal_ratio: number | null
+          monthly_revenue_trend: Json | null
+          premium_upgrade_propensity: number | null
+          revenue_potential_score: number | null
+          scoring_inputs: Json | null
+          total_leads_value: number | null
+          total_platform_revenue: number | null
+          updated_at: string | null
+          vendor_id: string
+          vendor_roi_score: number | null
+        }
+        Insert: {
+          avg_deal_value?: number | null
+          capacity_utilization_pct?: number | null
+          created_at?: string | null
+          district_growth_capture_score?: number | null
+          id?: string
+          last_computed_at?: string | null
+          lead_to_deal_ratio?: number | null
+          monthly_revenue_trend?: Json | null
+          premium_upgrade_propensity?: number | null
+          revenue_potential_score?: number | null
+          scoring_inputs?: Json | null
+          total_leads_value?: number | null
+          total_platform_revenue?: number | null
+          updated_at?: string | null
+          vendor_id: string
+          vendor_roi_score?: number | null
+        }
+        Update: {
+          avg_deal_value?: number | null
+          capacity_utilization_pct?: number | null
+          created_at?: string | null
+          district_growth_capture_score?: number | null
+          id?: string
+          last_computed_at?: string | null
+          lead_to_deal_ratio?: number | null
+          monthly_revenue_trend?: Json | null
+          premium_upgrade_propensity?: number | null
+          revenue_potential_score?: number | null
+          scoring_inputs?: Json | null
+          total_leads_value?: number | null
+          total_platform_revenue?: number | null
+          updated_at?: string | null
+          vendor_id?: string
+          vendor_roi_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_revenue_metrics_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: true
+            referencedRelation: "vendor_business_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -36355,6 +36627,65 @@ export type Database = {
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_upgrade_recommendations: {
+        Row: {
+          created_at: string | null
+          estimated_additional_leads: number | null
+          estimated_roi_multiplier: number | null
+          id: string
+          presented_at: string | null
+          priority_score: number | null
+          recommendation_type: string
+          recommended_district: string | null
+          recommended_slot_type: string | null
+          responded_at: string | null
+          status: string | null
+          trigger_metrics: Json | null
+          trigger_reason: string
+          vendor_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          estimated_additional_leads?: number | null
+          estimated_roi_multiplier?: number | null
+          id?: string
+          presented_at?: string | null
+          priority_score?: number | null
+          recommendation_type: string
+          recommended_district?: string | null
+          recommended_slot_type?: string | null
+          responded_at?: string | null
+          status?: string | null
+          trigger_metrics?: Json | null
+          trigger_reason: string
+          vendor_id: string
+        }
+        Update: {
+          created_at?: string | null
+          estimated_additional_leads?: number | null
+          estimated_roi_multiplier?: number | null
+          id?: string
+          presented_at?: string | null
+          priority_score?: number | null
+          recommendation_type?: string
+          recommended_district?: string | null
+          recommended_slot_type?: string | null
+          responded_at?: string | null
+          status?: string | null
+          trigger_metrics?: Json | null
+          trigger_reason?: string
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_upgrade_recommendations_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_business_profiles"
             referencedColumns: ["id"]
           },
         ]
