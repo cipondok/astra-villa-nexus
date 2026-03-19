@@ -42,6 +42,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   pricing_inefficiency_detected: { label: 'Price Alert', icon: '📉' },
   network_effect_engine_cycle: { label: 'Network Engine', icon: '🕸️' },
   network_critical_mass_reached: { label: 'Critical Mass!', icon: '💥' },
+  superapp_lifecycle_transition: { label: 'Lifecycle Event', icon: '🔁' },
+  superapp_orchestrator_cycle: { label: 'SuperApp Engine', icon: '🏗️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
