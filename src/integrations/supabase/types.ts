@@ -2124,6 +2124,47 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_campaign_budget_allocations: {
+        Row: {
+          allocation_amount: number
+          campaign_id: string | null
+          created_at: string | null
+          district: string
+          expected_roi: number | null
+          id: string
+          marketplace_balance_at_allocation: number | null
+          rationale: string | null
+        }
+        Insert: {
+          allocation_amount?: number
+          campaign_id?: string | null
+          created_at?: string | null
+          district: string
+          expected_roi?: number | null
+          id?: string
+          marketplace_balance_at_allocation?: number | null
+          rationale?: string | null
+        }
+        Update: {
+          allocation_amount?: number
+          campaign_id?: string | null
+          created_at?: string | null
+          district?: string
+          expected_roi?: number | null
+          id?: string
+          marketplace_balance_at_allocation?: number | null
+          rationale?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_campaign_budget_allocations_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_growth_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_chat_logs: {
         Row: {
           ai_response: string | null
@@ -9329,6 +9370,78 @@ export type Database = {
           },
         ]
       }
+      district_marketplace_balance: {
+        Row: {
+          created_at: string | null
+          deal_velocity: number | null
+          demand_liquidity_weight: number | null
+          district: string
+          id: string
+          investor_demand_to_vendor_ratio: number | null
+          investor_interest_growth: number | null
+          last_computed_at: string | null
+          lead_starvation_pct: number | null
+          marketplace_balance_score: number | null
+          oversupply_detected: boolean | null
+          oversupply_penalty: number | null
+          price_war_risk_level: string | null
+          recommended_action: string | null
+          scoring_inputs: Json | null
+          segment_type: string | null
+          service_completion_delay_risk: number | null
+          updated_at: string | null
+          vendor_category_gap_index: number | null
+          vendor_supply_depth: number | null
+          vendor_supply_pressure: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          deal_velocity?: number | null
+          demand_liquidity_weight?: number | null
+          district: string
+          id?: string
+          investor_demand_to_vendor_ratio?: number | null
+          investor_interest_growth?: number | null
+          last_computed_at?: string | null
+          lead_starvation_pct?: number | null
+          marketplace_balance_score?: number | null
+          oversupply_detected?: boolean | null
+          oversupply_penalty?: number | null
+          price_war_risk_level?: string | null
+          recommended_action?: string | null
+          scoring_inputs?: Json | null
+          segment_type?: string | null
+          service_completion_delay_risk?: number | null
+          updated_at?: string | null
+          vendor_category_gap_index?: number | null
+          vendor_supply_depth?: number | null
+          vendor_supply_pressure?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          deal_velocity?: number | null
+          demand_liquidity_weight?: number | null
+          district?: string
+          id?: string
+          investor_demand_to_vendor_ratio?: number | null
+          investor_interest_growth?: number | null
+          last_computed_at?: string | null
+          lead_starvation_pct?: number | null
+          marketplace_balance_score?: number | null
+          oversupply_detected?: boolean | null
+          oversupply_penalty?: number | null
+          price_war_risk_level?: string | null
+          recommended_action?: string | null
+          scoring_inputs?: Json | null
+          segment_type?: string | null
+          service_completion_delay_risk?: number | null
+          updated_at?: string | null
+          vendor_category_gap_index?: number | null
+          vendor_supply_depth?: number | null
+          vendor_supply_pressure?: number | null
+        }
+        Relationships: []
+      }
       document_audit_trail: {
         Row: {
           action: string
@@ -10185,6 +10298,62 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      expansion_sequencing_queue: {
+        Row: {
+          capital_inflow_score: number | null
+          city: string
+          composite_expansion_score: number | null
+          created_at: string | null
+          district: string
+          id: string
+          liquidity_acceleration: number | null
+          market_share_opportunity: number | null
+          recommended_campaign_id: string | null
+          segment_type: string | null
+          sequence_rank: number
+          status: string | null
+          vendor_category: string
+        }
+        Insert: {
+          capital_inflow_score?: number | null
+          city: string
+          composite_expansion_score?: number | null
+          created_at?: string | null
+          district: string
+          id?: string
+          liquidity_acceleration?: number | null
+          market_share_opportunity?: number | null
+          recommended_campaign_id?: string | null
+          segment_type?: string | null
+          sequence_rank?: number
+          status?: string | null
+          vendor_category: string
+        }
+        Update: {
+          capital_inflow_score?: number | null
+          city?: string
+          composite_expansion_score?: number | null
+          created_at?: string | null
+          district?: string
+          id?: string
+          liquidity_acceleration?: number | null
+          market_share_opportunity?: number | null
+          recommended_campaign_id?: string | null
+          segment_type?: string | null
+          sequence_rank?: number
+          status?: string | null
+          vendor_category?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expansion_sequencing_queue_recommended_campaign_id_fkey"
+            columns: ["recommended_campaign_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_growth_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       favorites: {
         Row: {
@@ -34056,6 +34225,51 @@ export type Database = {
           },
         ]
       }
+      vendor_category_expansion_targets: {
+        Row: {
+          category_gap_index: number | null
+          created_at: string | null
+          current_vendor_count: number | null
+          demand_signal_strength: number | null
+          district: string
+          expansion_status: string | null
+          id: string
+          last_computed_at: string | null
+          priority_rank: number | null
+          segment_type: string | null
+          service_category: string
+          target_vendor_count: number | null
+        }
+        Insert: {
+          category_gap_index?: number | null
+          created_at?: string | null
+          current_vendor_count?: number | null
+          demand_signal_strength?: number | null
+          district: string
+          expansion_status?: string | null
+          id?: string
+          last_computed_at?: string | null
+          priority_rank?: number | null
+          segment_type?: string | null
+          service_category: string
+          target_vendor_count?: number | null
+        }
+        Update: {
+          category_gap_index?: number | null
+          created_at?: string | null
+          current_vendor_count?: number | null
+          demand_signal_strength?: number | null
+          district?: string
+          expansion_status?: string | null
+          id?: string
+          last_computed_at?: string | null
+          priority_rank?: number | null
+          segment_type?: string | null
+          service_category?: string
+          target_vendor_count?: number | null
+        }
+        Relationships: []
+      }
       vendor_change_requests: {
         Row: {
           admin_notes: string | null
@@ -34554,6 +34768,72 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      vendor_growth_campaigns: {
+        Row: {
+          acquired_vendor_count: number | null
+          budget_allocated: number | null
+          budget_spent: number | null
+          campaign_name: string
+          campaign_type: string
+          completed_at: string | null
+          created_at: string | null
+          district: string
+          id: string
+          roi: number | null
+          segment_type: string | null
+          started_at: string | null
+          status: string | null
+          target_vendor_category: string
+          target_vendor_count: number
+          trigger_metrics: Json | null
+          trigger_reason: string | null
+          updated_at: string | null
+          urgency_score: number | null
+        }
+        Insert: {
+          acquired_vendor_count?: number | null
+          budget_allocated?: number | null
+          budget_spent?: number | null
+          campaign_name: string
+          campaign_type?: string
+          completed_at?: string | null
+          created_at?: string | null
+          district: string
+          id?: string
+          roi?: number | null
+          segment_type?: string | null
+          started_at?: string | null
+          status?: string | null
+          target_vendor_category: string
+          target_vendor_count?: number
+          trigger_metrics?: Json | null
+          trigger_reason?: string | null
+          updated_at?: string | null
+          urgency_score?: number | null
+        }
+        Update: {
+          acquired_vendor_count?: number | null
+          budget_allocated?: number | null
+          budget_spent?: number | null
+          campaign_name?: string
+          campaign_type?: string
+          completed_at?: string | null
+          created_at?: string | null
+          district?: string
+          id?: string
+          roi?: number | null
+          segment_type?: string | null
+          started_at?: string | null
+          status?: string | null
+          target_vendor_category?: string
+          target_vendor_count?: number
+          trigger_metrics?: Json | null
+          trigger_reason?: string | null
+          updated_at?: string | null
+          urgency_score?: number | null
+        }
+        Relationships: []
       }
       vendor_holidays: {
         Row: {
