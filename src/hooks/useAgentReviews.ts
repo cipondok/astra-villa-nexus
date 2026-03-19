@@ -43,11 +43,24 @@ export function useAgentReviews(agentId?: string) {
       if (!agentId) return [];
       const { data, error } = await supabase
         .from('agent_reviews')
-        .select('*, profiles:reviewer_id (id, full_name, avatar_url)')
+        .select('*')
         .eq('agent_id', agentId)
         .eq('is_published', true)
         .eq('admin_approved', true)
         .order('created_at', { ascending: false });
+      if (error) throw error;
+      
+      // Enrich with profile data
+      const reviewerIds = (data || []).map((r: any) => r.reviewer_id);
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name, avatar_url')
+        .in('id', reviewerIds);
+      const profileMap = new Map((profiles || []).map(p => [p.id, p]));
+      return (data || []).map((r: any) => ({
+        ...r,
+        profiles: profileMap.get(r.reviewer_id) || null,
+      })) as AgentReview[];
       if (error) throw error;
       return data as AgentReview[];
     },
