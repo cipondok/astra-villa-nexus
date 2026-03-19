@@ -321,3 +321,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.seo-content-pipeline]
     verify_jwt = false
+
+[functions.auth-email-hook]
+verify_jwt = false
