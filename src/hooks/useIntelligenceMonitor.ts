@@ -41,10 +41,10 @@ export function useIntelligenceMonitor() {
     queryFn: async (): Promise<IntelligenceMonitorData> => {
       // ── Opportunity Score Engine ──
       const [totalProps, scoredProps, eliteProps, cacheData] = await Promise.all([
-        supabase.from('properties').select('id', { count: 'exact', head: true }),
-        supabase.from('ai_intelligence_cache').select('id', { count: 'exact', head: true }).eq('intelligence_type', 'opportunity_score'),
-        supabase.from('ai_intelligence_cache').select('property_id, data, updated_at').eq('intelligence_type', 'opportunity_score').gte('data->>score', '85').order('updated_at', { ascending: false }).limit(10),
-        supabase.from('ai_intelligence_cache').select('data, updated_at').eq('intelligence_type', 'opportunity_score').order('updated_at', { ascending: false }).limit(200),
+        supabase.from('properties').select('id', { count: 'exact', head: true }) as any,
+        supabase.from('ai_intelligence_cache').select('id', { count: 'exact', head: true }).eq('intelligence_type', 'opportunity_score') as any,
+        supabase.from('ai_intelligence_cache').select('property_id, data, updated_at').eq('intelligence_type', 'opportunity_score').gte('data->>score', '85').order('updated_at', { ascending: false }).limit(10) as any,
+        supabase.from('ai_intelligence_cache').select('data, updated_at').eq('intelligence_type', 'opportunity_score').order('updated_at', { ascending: false }).limit(200) as any,
       ]);
 
       const totalCount = totalProps.count || 0;
