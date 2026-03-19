@@ -414,3 +414,6 @@ verify_jwt = false
 
 [functions.planetary-investment-network]
 verify_jwt = false
+
+[functions.post-scarcity-economy]
+verify_jwt = false
