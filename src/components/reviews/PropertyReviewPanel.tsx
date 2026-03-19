@@ -180,7 +180,10 @@ export default function PropertyReviewPanel({ propertyId, className }: PropertyR
   const [showForm, setShowForm] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [filterTag, setFilterTag] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ rating: 0, title: '', review_text: '', tag_categories: [] as string[] });
+  const [formData, setFormData] = useState({
+    rating: 0, title: '', review_text: '', tag_categories: [] as string[],
+    rating_condition: 0, rating_agent: 0, rating_investment: 0,
+  });
 
   const filteredReviews = useMemo(() => {
     if (!filterTag) return reviews;
@@ -205,9 +208,9 @@ export default function PropertyReviewPanel({ propertyId, className }: PropertyR
       rating: formData.rating,
       title: formData.title.trim() || undefined,
       review_text: formData.review_text.trim() || undefined,
-      pros: formData.tag_categories as any, // store tags in pros for now until types refresh
+      pros: formData.tag_categories as any,
     } as any);
-    setFormData({ rating: 0, title: '', review_text: '', tag_categories: [] });
+    setFormData({ rating: 0, title: '', review_text: '', tag_categories: [], rating_condition: 0, rating_agent: 0, rating_investment: 0 });
     setShowForm(false);
   };
 
