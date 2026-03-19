@@ -58,6 +58,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   wealth_intelligence_engine_cycle: { label: 'Wealth Engine', icon: '💎' },
   gpi_major_movement: { label: 'Index Movement', icon: '📈' },
   gpi_index_computed: { label: 'Index Computed', icon: '🔢' },
+  aab_critical_rebalance: { label: 'Rebalance Alert', icon: '⚖️' },
+  aab_allocation_brain_cycle: { label: 'Allocation Brain', icon: '🧠' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
