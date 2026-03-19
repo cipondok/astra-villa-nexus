@@ -1384,6 +1384,13 @@ const EmailManagementSettings: React.FC = () => {
             </Button>
           </div>
         </TabsContent>
+
+        {/* Monitoring Tab */}
+        <TabsContent value="monitoring" className="mt-3">
+          <Suspense fallback={<div className="flex items-center justify-center py-12 text-muted-foreground">Loading monitoring dashboard...</div>}>
+            <EmailMonitoringDashboard />
+          </Suspense>
+        </TabsContent>
       </Tabs>
     </div>
   );
