@@ -13365,6 +13365,75 @@ export type Database = {
         }
         Relationships: []
       }
+      investor_liquidity_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string | null
+          description: string | null
+          district: string | null
+          id: string
+          investor_id: string
+          is_dismissed: boolean | null
+          is_read: boolean | null
+          property_id: string | null
+          read_at: string | null
+          segment_type: string | null
+          supporting_metrics: Json | null
+          title: string
+          triggered_at: string | null
+          urgency_score: number
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string | null
+          description?: string | null
+          district?: string | null
+          id?: string
+          investor_id: string
+          is_dismissed?: boolean | null
+          is_read?: boolean | null
+          property_id?: string | null
+          read_at?: string | null
+          segment_type?: string | null
+          supporting_metrics?: Json | null
+          title: string
+          triggered_at?: string | null
+          urgency_score?: number
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string | null
+          description?: string | null
+          district?: string | null
+          id?: string
+          investor_id?: string
+          is_dismissed?: boolean | null
+          is_read?: boolean | null
+          property_id?: string | null
+          read_at?: string | null
+          segment_type?: string | null
+          supporting_metrics?: Json | null
+          title?: string
+          triggered_at?: string | null
+          urgency_score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_liquidity_alerts_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "investor_liquidity_alerts_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       investor_portfolio_snapshots: {
         Row: {
           created_at: string | null
@@ -16513,6 +16582,51 @@ export type Database = {
           updated_at?: string
           viewing_count_30d?: number | null
           viewing_velocity_score?: number
+        }
+        Relationships: []
+      }
+      market_story_signals: {
+        Row: {
+          content_priority_score: number | null
+          created_at: string | null
+          district: string
+          expires_at: string | null
+          headline: string
+          id: string
+          is_published: boolean | null
+          narrative: string | null
+          published_at: string | null
+          segment_type: string | null
+          story_type: string
+          supporting_metrics: Json | null
+        }
+        Insert: {
+          content_priority_score?: number | null
+          created_at?: string | null
+          district: string
+          expires_at?: string | null
+          headline: string
+          id?: string
+          is_published?: boolean | null
+          narrative?: string | null
+          published_at?: string | null
+          segment_type?: string | null
+          story_type: string
+          supporting_metrics?: Json | null
+        }
+        Update: {
+          content_priority_score?: number | null
+          created_at?: string | null
+          district?: string
+          expires_at?: string | null
+          headline?: string
+          id?: string
+          is_published?: boolean | null
+          narrative?: string | null
+          published_at?: string | null
+          segment_type?: string | null
+          story_type?: string
+          supporting_metrics?: Json | null
         }
         Relationships: []
       }
@@ -29229,6 +29343,57 @@ export type Database = {
           price_monthly?: number
           slug?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      supply_acquisition_targets: {
+        Row: {
+          action_priority: string | null
+          active_listings: number | null
+          avg_days_to_close: number | null
+          created_at: string | null
+          demand_velocity: number | null
+          district: string
+          id: string
+          investor_interest_count: number | null
+          last_computed_at: string | null
+          liquidity_strength_index: number | null
+          recommended_action: string | null
+          segment_type: string
+          supply_gap_score: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          action_priority?: string | null
+          active_listings?: number | null
+          avg_days_to_close?: number | null
+          created_at?: string | null
+          demand_velocity?: number | null
+          district: string
+          id?: string
+          investor_interest_count?: number | null
+          last_computed_at?: string | null
+          liquidity_strength_index?: number | null
+          recommended_action?: string | null
+          segment_type: string
+          supply_gap_score?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          action_priority?: string | null
+          active_listings?: number | null
+          avg_days_to_close?: number | null
+          created_at?: string | null
+          demand_velocity?: number | null
+          district?: string
+          id?: string
+          investor_interest_count?: number | null
+          last_computed_at?: string | null
+          liquidity_strength_index?: number | null
+          recommended_action?: string | null
+          segment_type?: string
+          supply_gap_score?: number | null
+          updated_at?: string | null
         }
         Relationships: []
       }

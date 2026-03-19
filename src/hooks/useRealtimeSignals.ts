@@ -28,6 +28,9 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   demand_spike: { label: 'Demand Surge', icon: '🔥' },
   portfolio_transaction: { label: 'Portfolio Event', icon: '📊' },
   cluster_shift: { label: 'Market Shift', icon: '🌐' },
+  liquidity_recalculated: { label: 'Liquidity Update', icon: '💧' },
+  liquidity_flywheel_trigger: { label: 'Flywheel Trigger', icon: '⚡' },
+  flywheel_cycle_completed: { label: 'Flywheel Complete', icon: '🔄' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
