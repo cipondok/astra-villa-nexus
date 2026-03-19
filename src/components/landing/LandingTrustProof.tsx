@@ -5,7 +5,7 @@ const testimonials = [
   {
     name: 'David Hartono',
     role: 'Private Investor, Singapore',
-    quote: 'ASTRA's AI scoring helped me identify a Canggu villa that yielded 18% ROI in the first year. The market intelligence is unmatched.',
+    quote: "ASTRA's AI scoring helped me identify a Canggu villa that yielded 18% ROI in the first year. The market intelligence is unmatched.",
     rating: 5,
     avatar: 'DH',
   },
