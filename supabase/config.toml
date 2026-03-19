@@ -358,3 +358,6 @@ verify_jwt = false
 [functions.vendor-revenue-flywheel]
 verify_jwt = false
 
+[functions.vendor-growth-orchestrator]
+verify_jwt = false
+

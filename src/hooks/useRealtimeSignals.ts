@@ -33,6 +33,7 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   flywheel_cycle_completed: { label: 'Flywheel Complete', icon: '🔄' },
   vendor_engine_cycle: { label: 'Vendor Engine', icon: '🏗️' },
   vendor_revenue_flywheel_cycle: { label: 'Revenue Flywheel', icon: '💎' },
+  vendor_growth_orchestrator_cycle: { label: 'Growth Orchestrator', icon: '🧠' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
