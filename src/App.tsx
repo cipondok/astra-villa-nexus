@@ -95,6 +95,7 @@ const InvestorIntelligenceReports = lazy(() => import('@/pages/InvestorIntellige
 const LiquidityForecastEngine = lazy(() => import('@/pages/LiquidityForecastEngine'));
 const InvestorIntelligenceDeck = lazy(() => import('@/pages/InvestorIntelligenceDeck'));
 const DeveloperPipelineCRM = lazy(() => import('@/pages/DeveloperPipelineCRM'));
+const PricingInefficiencyDetector = lazy(() => import('@/pages/PricingInefficiencyDetector'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
