@@ -212,6 +212,7 @@ export const DocumentSigningHub = lazyRetry(() => import("./DocumentSigningHub")
 export const PropertyAuctionManager = lazyRetry(() => import("./PropertyAuctionManager"));
 export const TenantScreening = lazyRetry(() => import("./TenantScreening"));
 export const AICommandCenter = lazyRetry(() => import("./AICommandCenter"));
+export const AIIntelligenceMonitor = lazyRetry(() => import("./AIIntelligenceMonitor"));
 export const GlobalStrategyPanel = lazyRetry(() => import("./GlobalStrategyPanel"));
 export const InvestorDNAAdminPanel = lazyRetry(() => import("./InvestorDNAAdminPanel"));
 export const GlobalMacroIntelligencePanel = lazyRetry(() => import("@/pages/GlobalMacroIntelligencePage"));
