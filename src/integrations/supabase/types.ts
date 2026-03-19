@@ -4642,6 +4642,288 @@ export type Database = {
         }
         Relationships: []
       }
+      amce_category_formation: {
+        Row: {
+          asset_count: number | null
+          category_distinctiveness: number | null
+          category_name: string
+          category_thesis: string | null
+          comparable_categories: string[] | null
+          created_at: string | null
+          formation_stage: string | null
+          formed_at: string | null
+          id: string
+          investor_comprehension_score: number | null
+          narrative_frame: string | null
+          standardized_metrics: Json | null
+          thematic_tags: string[] | null
+        }
+        Insert: {
+          asset_count?: number | null
+          category_distinctiveness?: number | null
+          category_name: string
+          category_thesis?: string | null
+          comparable_categories?: string[] | null
+          created_at?: string | null
+          formation_stage?: string | null
+          formed_at?: string | null
+          id?: string
+          investor_comprehension_score?: number | null
+          narrative_frame?: string | null
+          standardized_metrics?: Json | null
+          thematic_tags?: string[] | null
+        }
+        Update: {
+          asset_count?: number | null
+          category_distinctiveness?: number | null
+          category_name?: string
+          category_thesis?: string | null
+          comparable_categories?: string[] | null
+          created_at?: string | null
+          formation_stage?: string | null
+          formed_at?: string | null
+          id?: string
+          investor_comprehension_score?: number | null
+          narrative_frame?: string | null
+          standardized_metrics?: Json | null
+          thematic_tags?: string[] | null
+        }
+        Relationships: []
+      }
+      amce_demand_stimulation: {
+        Row: {
+          awareness_lift_pct: number | null
+          budget_usd: number | null
+          campaign_name: string
+          category_id: string | null
+          conversion_count: number | null
+          created_at: string | null
+          demand_acceleration_score: number | null
+          engagement_rate: number | null
+          id: string
+          launched_at: string | null
+          reach_count: number | null
+          roi_multiple: number | null
+          status: string | null
+          stimulation_type: string
+          target_investor_segment: string | null
+        }
+        Insert: {
+          awareness_lift_pct?: number | null
+          budget_usd?: number | null
+          campaign_name: string
+          category_id?: string | null
+          conversion_count?: number | null
+          created_at?: string | null
+          demand_acceleration_score?: number | null
+          engagement_rate?: number | null
+          id?: string
+          launched_at?: string | null
+          reach_count?: number | null
+          roi_multiple?: number | null
+          status?: string | null
+          stimulation_type: string
+          target_investor_segment?: string | null
+        }
+        Update: {
+          awareness_lift_pct?: number | null
+          budget_usd?: number | null
+          campaign_name?: string
+          category_id?: string | null
+          conversion_count?: number | null
+          created_at?: string | null
+          demand_acceleration_score?: number | null
+          engagement_rate?: number | null
+          id?: string
+          launched_at?: string | null
+          reach_count?: number | null
+          roi_multiple?: number | null
+          status?: string | null
+          stimulation_type?: string
+          target_investor_segment?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "amce_demand_stimulation_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "amce_category_formation"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      amce_liquidity_seeding: {
+        Row: {
+          anchor_investor_count: number | null
+          avg_transaction_value_usd: number | null
+          benchmark_price_established: boolean | null
+          category_id: string | null
+          city: string
+          comparable_transactions: number | null
+          created_at: string | null
+          deal_flow_concentration: number | null
+          district: string | null
+          id: string
+          liquidity_depth_score: number | null
+          seeded_at: string | null
+          seeding_phase: string | null
+          time_to_benchmark_months: number | null
+        }
+        Insert: {
+          anchor_investor_count?: number | null
+          avg_transaction_value_usd?: number | null
+          benchmark_price_established?: boolean | null
+          category_id?: string | null
+          city: string
+          comparable_transactions?: number | null
+          created_at?: string | null
+          deal_flow_concentration?: number | null
+          district?: string | null
+          id?: string
+          liquidity_depth_score?: number | null
+          seeded_at?: string | null
+          seeding_phase?: string | null
+          time_to_benchmark_months?: number | null
+        }
+        Update: {
+          anchor_investor_count?: number | null
+          avg_transaction_value_usd?: number | null
+          benchmark_price_established?: boolean | null
+          category_id?: string | null
+          city?: string
+          comparable_transactions?: number | null
+          created_at?: string | null
+          deal_flow_concentration?: number | null
+          district?: string | null
+          id?: string
+          liquidity_depth_score?: number | null
+          seeded_at?: string | null
+          seeding_phase?: string | null
+          time_to_benchmark_months?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "amce_liquidity_seeding_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "amce_category_formation"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      amce_market_maturity: {
+        Row: {
+          assessed_at: string | null
+          category_id: string | null
+          created_at: string | null
+          graduation_readiness_pct: number | null
+          id: string
+          impact_thesis: string | null
+          institutional_participation: boolean | null
+          market_depth_index: number | null
+          maturity_stage: string
+          months_in_stage: number | null
+          next_stage_requirements: Json | null
+          price_discovery_accuracy: number | null
+          total_transaction_volume_usd: number | null
+          unique_investors: number | null
+        }
+        Insert: {
+          assessed_at?: string | null
+          category_id?: string | null
+          created_at?: string | null
+          graduation_readiness_pct?: number | null
+          id?: string
+          impact_thesis?: string | null
+          institutional_participation?: boolean | null
+          market_depth_index?: number | null
+          maturity_stage?: string
+          months_in_stage?: number | null
+          next_stage_requirements?: Json | null
+          price_discovery_accuracy?: number | null
+          total_transaction_volume_usd?: number | null
+          unique_investors?: number | null
+        }
+        Update: {
+          assessed_at?: string | null
+          category_id?: string | null
+          created_at?: string | null
+          graduation_readiness_pct?: number | null
+          id?: string
+          impact_thesis?: string | null
+          institutional_participation?: boolean | null
+          market_depth_index?: number | null
+          maturity_stage?: string
+          months_in_stage?: number | null
+          next_stage_requirements?: Json | null
+          price_discovery_accuracy?: number | null
+          total_transaction_volume_usd?: number | null
+          unique_investors?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "amce_market_maturity_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "amce_category_formation"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      amce_opportunity_detection: {
+        Row: {
+          city: string
+          confidence: number | null
+          created_at: string | null
+          current_liquidity_index: number | null
+          demographic_shift_vector: Json | null
+          detected_at: string | null
+          detection_type: string
+          discovery_priority: number | null
+          district: string | null
+          id: string
+          infrastructure_catalyst: string | null
+          is_actionable: boolean | null
+          projected_growth_12m: number | null
+          signal_strength: number | null
+          yield_spread_vs_mainstream: number | null
+        }
+        Insert: {
+          city: string
+          confidence?: number | null
+          created_at?: string | null
+          current_liquidity_index?: number | null
+          demographic_shift_vector?: Json | null
+          detected_at?: string | null
+          detection_type: string
+          discovery_priority?: number | null
+          district?: string | null
+          id?: string
+          infrastructure_catalyst?: string | null
+          is_actionable?: boolean | null
+          projected_growth_12m?: number | null
+          signal_strength?: number | null
+          yield_spread_vs_mainstream?: number | null
+        }
+        Update: {
+          city?: string
+          confidence?: number | null
+          created_at?: string | null
+          current_liquidity_index?: number | null
+          demographic_shift_vector?: Json | null
+          detected_at?: string | null
+          detection_type?: string
+          discovery_priority?: number | null
+          district?: string | null
+          id?: string
+          infrastructure_catalyst?: string | null
+          is_actionable?: boolean | null
+          projected_growth_12m?: number | null
+          signal_strength?: number | null
+          yield_spread_vs_mainstream?: number | null
+        }
+        Relationships: []
+      }
       analytics_settings: {
         Row: {
           configuration: Json | null
