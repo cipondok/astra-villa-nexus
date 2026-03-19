@@ -14,6 +14,25 @@ function json(body: unknown, status = 200) {
   });
 }
 
+// ── TIERED COMMISSION SCHEDULE ──
+const COMMISSION_TIERS = [
+  { tier: "Bronze",   minReferrals: 0,   rate: 0.05, bonus: 0 },
+  { tier: "Silver",   minReferrals: 5,   rate: 0.06, bonus: 250_000 },
+  { tier: "Gold",     minReferrals: 15,  rate: 0.075, bonus: 750_000 },
+  { tier: "Platinum", minReferrals: 30,  rate: 0.09, bonus: 2_000_000 },
+  { tier: "Diamond",  minReferrals: 50,  rate: 0.12, bonus: 5_000_000 },
+];
+
+function getCommissionTier(totalConverted: number) {
+  let current = COMMISSION_TIERS[0];
+  for (const t of COMMISSION_TIERS) {
+    if (totalConverted >= t.minReferrals) current = t;
+  }
+  const nextIdx = COMMISSION_TIERS.indexOf(current) + 1;
+  const next = nextIdx < COMMISSION_TIERS.length ? COMMISSION_TIERS[nextIdx] : null;
+  return { current, next, all: COMMISSION_TIERS };
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -34,21 +53,18 @@ serve(async (req) => {
 
     // ── GET DASHBOARD DATA ──
     if (action === "get_dashboard") {
-      // Get or create affiliate record
       let { data: affiliate } = await supabase
         .from("affiliates")
         .select("*")
         .eq("user_id", user.id)
         .maybeSingle();
 
-      // Get referrals from acquisition_referrals
       const { data: referrals = [] } = await supabase
         .from("acquisition_referrals")
         .select("*")
         .eq("referrer_id", user.id)
         .order("created_at", { ascending: false });
 
-      // Get commissions if affiliate
       let commissions: any[] = [];
       if (affiliate) {
         const { data } = await supabase
@@ -59,8 +75,9 @@ serve(async (req) => {
         commissions = data || [];
       }
 
-      // Compute milestone progress
       const convertedCount = referrals.filter((r: any) => r.status === "converted" || r.status === "rewarded").length;
+
+      // Milestone system
       const milestones = [
         { level: 1, name: "Starter", threshold: 3, reward: 150000, desc: "Refer 3 users" },
         { level: 2, name: "Connector", threshold: 10, reward: 500000, desc: "Refer 10 users" },
@@ -72,14 +89,16 @@ serve(async (req) => {
       const currentMilestone = milestones.reduce((best, m) => convertedCount >= m.threshold ? m : best, milestones[0]);
       const nextMilestone = milestones.find((m) => convertedCount < m.threshold) || milestones[milestones.length - 1];
 
-      // Leaderboard — top 10 referrers
+      // Commission tier
+      const tierInfo = getCommissionTier(convertedCount);
+
+      // Leaderboard
       const { data: leaderboard = [] } = await supabase
         .from("affiliates")
         .select("id, user_id, referral_code, total_referrals, total_earnings")
         .order("total_referrals", { ascending: false })
         .limit(10);
 
-      // Enrich leaderboard with profile data
       const userIds = leaderboard.map((a: any) => a.user_id);
       const { data: profiles = [] } = await supabase
         .from("profiles")
@@ -100,13 +119,11 @@ serve(async (req) => {
         };
       });
 
-      // Stats summary
       const pendingCount = referrals.filter((r: any) => r.status === "pending" || r.status === "signed_up").length;
       const totalEarnings = affiliate?.total_earnings || 0;
       const pendingEarnings = affiliate?.pending_earnings || 0;
       const paidEarnings = affiliate?.paid_earnings || 0;
 
-      // Recent referral activity
       const recentActivity = referrals.slice(0, 15).map((r: any) => ({
         id: r.id,
         status: r.status,
@@ -127,6 +144,9 @@ serve(async (req) => {
           pending_earnings: pendingEarnings,
           paid_earnings: paidEarnings,
         },
+        commission_tier: tierInfo.current,
+        next_tier: tierInfo.next,
+        all_tiers: tierInfo.all,
         milestones,
         current_milestone: currentMilestone,
         next_milestone: nextMilestone,
@@ -135,7 +155,83 @@ serve(async (req) => {
           : 100,
         leaderboard: enrichedLeaderboard,
         recent_activity: recentActivity,
-        commissions: commissions.slice(0, 10),
+        commissions: commissions.slice(0, 20),
+      });
+    }
+
+    // ── PROCESS COMMISSION (for deal completion) ──
+    if (action === "process_commission") {
+      const { referral_id, order_id, order_amount } = body;
+      if (!referral_id || !order_amount) return json({ error: "referral_id and order_amount required" }, 400);
+
+      // Find the referral
+      const { data: referral } = await supabase
+        .from("acquisition_referrals")
+        .select("referrer_id, status")
+        .eq("id", referral_id)
+        .single();
+
+      if (!referral) return json({ error: "Referral not found" }, 404);
+
+      // Find affiliate
+      const { data: affiliate } = await supabase
+        .from("affiliates")
+        .select("id, total_referrals")
+        .eq("user_id", referral.referrer_id)
+        .single();
+
+      if (!affiliate) return json({ error: "No affiliate record for referrer" }, 404);
+
+      // Calculate tiered commission
+      const tierInfo = getCommissionTier(affiliate.total_referrals || 0);
+      const commissionAmount = Math.round(order_amount * tierInfo.current.rate);
+
+      // Insert commission record
+      const { data: commission, error: commErr } = await supabase
+        .from("affiliate_commissions")
+        .insert({
+          affiliate_id: affiliate.id,
+          referral_id,
+          order_id: order_id || null,
+          order_amount,
+          commission_rate: tierInfo.current.rate * 100,
+          commission_amount: commissionAmount,
+          status: "pending",
+        })
+        .select()
+        .single();
+
+      if (commErr) return json({ error: "Failed to create commission" }, 500);
+
+      // Update affiliate earnings
+      await supabase.rpc("increment_affiliate_earnings", {
+        p_affiliate_id: affiliate.id,
+        p_amount: commissionAmount,
+      }).then(() => {}).catch(() => {
+        // Fallback: direct update if RPC doesn't exist
+        supabase
+          .from("affiliates")
+          .update({
+            pending_earnings: (affiliate as any).pending_earnings + commissionAmount,
+          })
+          .eq("id", affiliate.id);
+      });
+
+      // Mark referral as rewarded
+      await supabase
+        .from("acquisition_referrals")
+        .update({
+          status: "rewarded",
+          rewarded_at: new Date().toISOString(),
+          referrer_reward_amount: commissionAmount,
+        })
+        .eq("id", referral_id);
+
+      return json({
+        commission,
+        tier: tierInfo.current.tier,
+        rate: tierInfo.current.rate,
+        message: `Commission of IDR ${commissionAmount.toLocaleString()} created at ${tierInfo.current.tier} tier (${(tierInfo.current.rate * 100)}%)`,
       });
     }
 
@@ -180,7 +276,6 @@ serve(async (req) => {
 
       if (!existing) return json({ error: "Join the referral program first" }, 400);
 
-      // Upgrade commission rate for affiliate partner
       const { error } = await supabase
         .from("affiliates")
         .update({ commission_rate: 10, status: "active" })
