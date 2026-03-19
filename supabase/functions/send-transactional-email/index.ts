@@ -7,6 +7,8 @@ import { NewReviewEmail } from '../_shared/email-templates/transactional/new-rev
 import { InquiryConfirmationEmail } from '../_shared/email-templates/transactional/inquiry-confirmation.tsx'
 import { GeneralEmail } from '../_shared/email-templates/transactional/general.tsx'
 import { VerificationApprovedEmail } from '../_shared/email-templates/transactional/verification-approved.tsx'
+import { WelcomeEmail } from '../_shared/email-templates/transactional/welcome.tsx'
+import { PropertyAlertEmail } from '../_shared/email-templates/transactional/property-alert.tsx'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
