@@ -647,6 +647,7 @@ const AppContent = () => {
                 <Route path="/ai-smart-pricing" element={<AISmartPricingPage />} />
                 <Route path="/ml-valuation-engine" element={<MLValuationEnginePage />} />
                 <Route path="/investment-scenario-simulator" element={<InvestmentScenarioSimulatorPage />} />
+                <Route path="/institutional-analytics" element={<InstitutionalAnalyticsPage />} />
                 <Route path="/ai-document-generator" element={<AIDocumentGeneratorPage />} />
                 <Route path="/rental-yield-optimizer" element={<ProtectedRoute />}>
                   <Route index element={<RentalYieldOptimizerPage />} />
