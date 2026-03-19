@@ -116,6 +116,7 @@ const AutonomousClosingSystem = lazy(() => import('@/pages/AutonomousClosingSyst
 const RealEstateMacroRadar = lazy(() => import('@/pages/RealEstateMacroRadar'));
 const InvestorBehaviorPrediction = lazy(() => import('@/pages/InvestorBehaviorPrediction'));
 const MarketplaceOperationsBrain = lazy(() => import('@/pages/MarketplaceOperationsBrain'));
+const SelfLearningValuationCore = lazy(() => import('@/pages/SelfLearningValuationCore'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
@@ -443,6 +444,7 @@ const AppContent = () => {
                 <Route path="/macro-radar" element={<RealEstateMacroRadar />} />
                 <Route path="/investor-behavior-prediction" element={<InvestorBehaviorPrediction />} />
                 <Route path="/operations-brain" element={<MarketplaceOperationsBrain />} />
+                <Route path="/valuation-core" element={<SelfLearningValuationCore />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
