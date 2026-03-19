@@ -15799,6 +15799,300 @@ export type Database = {
         }
         Relationships: []
       }
+      gali_asset_discovery_graph: {
+        Row: {
+          asset_id: string | null
+          asset_type: string
+          city: string
+          connected_investors: number | null
+          connected_vendors: number | null
+          created_at: string | null
+          cross_market_links: number | null
+          discovery_velocity: number | null
+          district: string | null
+          graph_centrality_score: number | null
+          id: string
+          investor_reach_count: number | null
+          last_signal_at: string | null
+          metadata: Json | null
+          region: string
+          signal_density_score: number | null
+          transaction_history_depth: number | null
+          updated_at: string | null
+          vendor_connections: number | null
+        }
+        Insert: {
+          asset_id?: string | null
+          asset_type?: string
+          city: string
+          connected_investors?: number | null
+          connected_vendors?: number | null
+          created_at?: string | null
+          cross_market_links?: number | null
+          discovery_velocity?: number | null
+          district?: string | null
+          graph_centrality_score?: number | null
+          id?: string
+          investor_reach_count?: number | null
+          last_signal_at?: string | null
+          metadata?: Json | null
+          region: string
+          signal_density_score?: number | null
+          transaction_history_depth?: number | null
+          updated_at?: string | null
+          vendor_connections?: number | null
+        }
+        Update: {
+          asset_id?: string | null
+          asset_type?: string
+          city?: string
+          connected_investors?: number | null
+          connected_vendors?: number | null
+          created_at?: string | null
+          cross_market_links?: number | null
+          discovery_velocity?: number | null
+          district?: string | null
+          graph_centrality_score?: number | null
+          id?: string
+          investor_reach_count?: number | null
+          last_signal_at?: string | null
+          metadata?: Json | null
+          region?: string
+          signal_density_score?: number | null
+          transaction_history_depth?: number | null
+          updated_at?: string | null
+          vendor_connections?: number | null
+        }
+        Relationships: []
+      }
+      gali_friction_compression: {
+        Row: {
+          asset_type: string | null
+          automation_coverage_pct: number | null
+          benchmark_friction_score: number | null
+          bottleneck_action: string | null
+          bottleneck_stage: string | null
+          city: string
+          created_at: string | null
+          due_diligence_avg_hours: number | null
+          friction_reduction_pct: number | null
+          id: string
+          measured_at: string | null
+          negotiation_cycle_days: number | null
+          region: string
+          total_friction_score: number | null
+          transactions_measured: number | null
+          vendor_sync_latency_hours: number | null
+        }
+        Insert: {
+          asset_type?: string | null
+          automation_coverage_pct?: number | null
+          benchmark_friction_score?: number | null
+          bottleneck_action?: string | null
+          bottleneck_stage?: string | null
+          city: string
+          created_at?: string | null
+          due_diligence_avg_hours?: number | null
+          friction_reduction_pct?: number | null
+          id?: string
+          measured_at?: string | null
+          negotiation_cycle_days?: number | null
+          region: string
+          total_friction_score?: number | null
+          transactions_measured?: number | null
+          vendor_sync_latency_hours?: number | null
+        }
+        Update: {
+          asset_type?: string | null
+          automation_coverage_pct?: number | null
+          benchmark_friction_score?: number | null
+          bottleneck_action?: string | null
+          bottleneck_stage?: string | null
+          city?: string
+          created_at?: string | null
+          due_diligence_avg_hours?: number | null
+          friction_reduction_pct?: number | null
+          id?: string
+          measured_at?: string | null
+          negotiation_cycle_days?: number | null
+          region?: string
+          total_friction_score?: number | null
+          transactions_measured?: number | null
+          vendor_sync_latency_hours?: number | null
+        }
+        Relationships: []
+      }
+      gali_liquidity_routing: {
+        Row: {
+          asset_id: string | null
+          city: string
+          created_at: string | null
+          demand_supply_ratio: number | null
+          estimated_days_to_exit: number | null
+          exit_probability_score: number | null
+          geographic_rebalance_weight: number | null
+          id: string
+          investor_intent_alignment: number | null
+          last_routed_at: string | null
+          liquidity_depth: number | null
+          rebalance_signal: string | null
+          region: string
+          routing_confidence: number | null
+          routing_priority: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          asset_id?: string | null
+          city: string
+          created_at?: string | null
+          demand_supply_ratio?: number | null
+          estimated_days_to_exit?: number | null
+          exit_probability_score?: number | null
+          geographic_rebalance_weight?: number | null
+          id?: string
+          investor_intent_alignment?: number | null
+          last_routed_at?: string | null
+          liquidity_depth?: number | null
+          rebalance_signal?: string | null
+          region: string
+          routing_confidence?: number | null
+          routing_priority?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          asset_id?: string | null
+          city?: string
+          created_at?: string | null
+          demand_supply_ratio?: number | null
+          estimated_days_to_exit?: number | null
+          exit_probability_score?: number | null
+          geographic_rebalance_weight?: number | null
+          id?: string
+          investor_intent_alignment?: number | null
+          last_routed_at?: string | null
+          liquidity_depth?: number | null
+          rebalance_signal?: string | null
+          region?: string
+          routing_confidence?: number | null
+          routing_priority?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      gali_network_expansion: {
+        Row: {
+          city: string
+          compounding_velocity: number | null
+          computed_at: string | null
+          created_at: string | null
+          flywheel_rpm: number | null
+          growth_stage: string | null
+          id: string
+          investor_trust_index: number | null
+          liquidity_concentration_pct: number | null
+          network_effect_multiplier: number | null
+          platform_authority_score: number | null
+          projected_authority_90d: number | null
+          region: string
+          total_transactions_30d: number | null
+          transparency_index: number | null
+          valuation_accuracy_pct: number | null
+        }
+        Insert: {
+          city: string
+          compounding_velocity?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          flywheel_rpm?: number | null
+          growth_stage?: string | null
+          id?: string
+          investor_trust_index?: number | null
+          liquidity_concentration_pct?: number | null
+          network_effect_multiplier?: number | null
+          platform_authority_score?: number | null
+          projected_authority_90d?: number | null
+          region: string
+          total_transactions_30d?: number | null
+          transparency_index?: number | null
+          valuation_accuracy_pct?: number | null
+        }
+        Update: {
+          city?: string
+          compounding_velocity?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          flywheel_rpm?: number | null
+          growth_stage?: string | null
+          id?: string
+          investor_trust_index?: number | null
+          liquidity_concentration_pct?: number | null
+          network_effect_multiplier?: number | null
+          platform_authority_score?: number | null
+          projected_authority_90d?: number | null
+          region?: string
+          total_transactions_30d?: number | null
+          transparency_index?: number | null
+          valuation_accuracy_pct?: number | null
+        }
+        Relationships: []
+      }
+      gali_valuation_intelligence: {
+        Row: {
+          asset_id: string | null
+          asset_performance_score: number | null
+          city: string
+          comparable_score: number | null
+          computed_at: string | null
+          confidence_level: number | null
+          created_at: string | null
+          cross_market_premium: number | null
+          id: string
+          liquidity_velocity_score: number | null
+          macro_growth_score: number | null
+          price_efficiency_ratio: number | null
+          region: string
+          standardized_yield_pct: number | null
+          universal_valuation_index: number | null
+          valuation_tier: string | null
+        }
+        Insert: {
+          asset_id?: string | null
+          asset_performance_score?: number | null
+          city: string
+          comparable_score?: number | null
+          computed_at?: string | null
+          confidence_level?: number | null
+          created_at?: string | null
+          cross_market_premium?: number | null
+          id?: string
+          liquidity_velocity_score?: number | null
+          macro_growth_score?: number | null
+          price_efficiency_ratio?: number | null
+          region: string
+          standardized_yield_pct?: number | null
+          universal_valuation_index?: number | null
+          valuation_tier?: string | null
+        }
+        Update: {
+          asset_id?: string | null
+          asset_performance_score?: number | null
+          city?: string
+          comparable_score?: number | null
+          computed_at?: string | null
+          confidence_level?: number | null
+          created_at?: string | null
+          cross_market_premium?: number | null
+          id?: string
+          liquidity_velocity_score?: number | null
+          macro_growth_score?: number | null
+          price_efficiency_ratio?: number | null
+          region?: string
+          standardized_yield_pct?: number | null
+          universal_valuation_index?: number | null
+          valuation_tier?: string | null
+        }
+        Relationships: []
+      }
       gamification_config: {
         Row: {
           config_key: string
