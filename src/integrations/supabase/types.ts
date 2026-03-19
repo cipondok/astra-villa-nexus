@@ -16387,6 +16387,81 @@ export type Database = {
         }
         Relationships: []
       }
+      market_liquidity_metrics: {
+        Row: {
+          absorption_rate: number | null
+          active_listings: number | null
+          avg_days_to_close: number | null
+          avg_days_to_offer: number | null
+          closed_count_30d: number | null
+          created_at: string
+          deal_close_probability: number | null
+          district: string
+          escrow_count_30d: number | null
+          id: string
+          inquiry_count_30d: number | null
+          last_recalculated_at: string
+          liquidity_strength_index: number
+          momentum_trend: string | null
+          offer_conversion_score: number
+          offer_count_30d: number | null
+          property_id: string | null
+          segment_type: string
+          supply_demand_ratio: number | null
+          updated_at: string
+          viewing_count_30d: number | null
+          viewing_velocity_score: number
+        }
+        Insert: {
+          absorption_rate?: number | null
+          active_listings?: number | null
+          avg_days_to_close?: number | null
+          avg_days_to_offer?: number | null
+          closed_count_30d?: number | null
+          created_at?: string
+          deal_close_probability?: number | null
+          district: string
+          escrow_count_30d?: number | null
+          id?: string
+          inquiry_count_30d?: number | null
+          last_recalculated_at?: string
+          liquidity_strength_index?: number
+          momentum_trend?: string | null
+          offer_conversion_score?: number
+          offer_count_30d?: number | null
+          property_id?: string | null
+          segment_type?: string
+          supply_demand_ratio?: number | null
+          updated_at?: string
+          viewing_count_30d?: number | null
+          viewing_velocity_score?: number
+        }
+        Update: {
+          absorption_rate?: number | null
+          active_listings?: number | null
+          avg_days_to_close?: number | null
+          avg_days_to_offer?: number | null
+          closed_count_30d?: number | null
+          created_at?: string
+          deal_close_probability?: number | null
+          district?: string
+          escrow_count_30d?: number | null
+          id?: string
+          inquiry_count_30d?: number | null
+          last_recalculated_at?: string
+          liquidity_strength_index?: number
+          momentum_trend?: string | null
+          offer_conversion_score?: number
+          offer_count_30d?: number | null
+          property_id?: string | null
+          segment_type?: string
+          supply_demand_ratio?: number | null
+          updated_at?: string
+          viewing_count_30d?: number | null
+          viewing_velocity_score?: number
+        }
+        Relationships: []
+      }
       market_trend_factors: {
         Row: {
           avg_days_on_market: number | null
@@ -23894,6 +23969,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      property_liquidity_scores: {
+        Row: {
+          created_at: string
+          days_on_market: number | null
+          id: string
+          inquiry_intensity: number | null
+          last_recalculated_at: string
+          last_signal_at: string | null
+          liquidity_grade: string | null
+          liquidity_score: number
+          offer_momentum: number | null
+          price_competitiveness: number | null
+          property_id: string
+          viewing_velocity: number | null
+        }
+        Insert: {
+          created_at?: string
+          days_on_market?: number | null
+          id?: string
+          inquiry_intensity?: number | null
+          last_recalculated_at?: string
+          last_signal_at?: string | null
+          liquidity_grade?: string | null
+          liquidity_score?: number
+          offer_momentum?: number | null
+          price_competitiveness?: number | null
+          property_id: string
+          viewing_velocity?: number | null
+        }
+        Update: {
+          created_at?: string
+          days_on_market?: number | null
+          id?: string
+          inquiry_intensity?: number | null
+          last_recalculated_at?: string
+          last_signal_at?: string | null
+          liquidity_grade?: string | null
+          liquidity_score?: number
+          offer_momentum?: number | null
+          price_competitiveness?: number | null
+          property_id?: string
+          viewing_velocity?: number | null
+        }
+        Relationships: []
       }
       property_offers: {
         Row: {
@@ -36814,6 +36934,60 @@ export type Database = {
         }
         Relationships: []
       }
+      liquidity_hotspot_zones: {
+        Row: {
+          absorption_rate: number | null
+          active_listings: number | null
+          avg_days_to_close: number | null
+          avg_days_to_offer: number | null
+          closed_count_30d: number | null
+          closing_momentum: number | null
+          district: string | null
+          investor_demand_velocity: number | null
+          last_recalculated_at: string | null
+          liquidity_strength_index: number | null
+          momentum_trend: string | null
+          offer_count_30d: number | null
+          segment_type: string | null
+          supply_indicator: string | null
+          viewing_count_30d: number | null
+        }
+        Insert: {
+          absorption_rate?: number | null
+          active_listings?: number | null
+          avg_days_to_close?: number | null
+          avg_days_to_offer?: number | null
+          closed_count_30d?: number | null
+          closing_momentum?: number | null
+          district?: string | null
+          investor_demand_velocity?: number | null
+          last_recalculated_at?: string | null
+          liquidity_strength_index?: number | null
+          momentum_trend?: string | null
+          offer_count_30d?: number | null
+          segment_type?: string | null
+          supply_indicator?: never
+          viewing_count_30d?: number | null
+        }
+        Update: {
+          absorption_rate?: number | null
+          active_listings?: number | null
+          avg_days_to_close?: number | null
+          avg_days_to_offer?: number | null
+          closed_count_30d?: number | null
+          closing_momentum?: number | null
+          district?: string | null
+          investor_demand_velocity?: number | null
+          last_recalculated_at?: string | null
+          liquidity_strength_index?: number | null
+          momentum_trend?: string | null
+          offer_count_30d?: number | null
+          segment_type?: string | null
+          supply_indicator?: never
+          viewing_count_30d?: number | null
+        }
+        Relationships: []
+      }
       public_profiles: {
         Row: {
           avatar_url: string | null
@@ -37712,6 +37886,10 @@ export type Database = {
       get_property_investment_report: {
         Args: { p_property_id: string }
         Returns: Json
+      }
+      get_property_liquidity_boost: {
+        Args: { p_property_id: string }
+        Returns: number
       }
       get_property_statistics_secure: { Args: never; Returns: Json }
       get_property_survey_bookings_for_owner: {
