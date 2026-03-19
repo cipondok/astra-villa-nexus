@@ -82,6 +82,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   afiba_engine_cycle: { label: 'Immortality Engine', icon: '♾️' },
   mpeem_frontier_breakthrough: { label: 'Frontier Breakthrough', icon: '🚀' },
   mpeem_expansion_cycle: { label: 'Multi-Planet Engine', icon: '🪐' },
+  hawce_synergy_milestone: { label: 'Co-Evolution Milestone', icon: '🤝' },
+  hawce_engine_cycle: { label: 'Wealth Co-Evolution', icon: '🧬' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */

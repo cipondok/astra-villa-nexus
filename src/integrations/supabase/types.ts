@@ -16708,6 +16708,243 @@ export type Database = {
         }
         Relationships: []
       }
+      hawce_augmented_intelligence: {
+        Row: {
+          ai_suggestions_accepted: number | null
+          ai_suggestions_rejected: number | null
+          augmentation_composite: number | null
+          augmentation_level: string | null
+          computed_at: string
+          created_at: string
+          decision_clarity_score: number | null
+          human_agency_preserved: boolean | null
+          id: string
+          investor_id: string | null
+          opportunity_discovery_speed: number | null
+          override_rate: number | null
+          risk_perception_accuracy: number | null
+        }
+        Insert: {
+          ai_suggestions_accepted?: number | null
+          ai_suggestions_rejected?: number | null
+          augmentation_composite?: number | null
+          augmentation_level?: string | null
+          computed_at?: string
+          created_at?: string
+          decision_clarity_score?: number | null
+          human_agency_preserved?: boolean | null
+          id?: string
+          investor_id?: string | null
+          opportunity_discovery_speed?: number | null
+          override_rate?: number | null
+          risk_perception_accuracy?: number | null
+        }
+        Update: {
+          ai_suggestions_accepted?: number | null
+          ai_suggestions_rejected?: number | null
+          augmentation_composite?: number | null
+          augmentation_level?: string | null
+          computed_at?: string
+          created_at?: string
+          decision_clarity_score?: number | null
+          human_agency_preserved?: boolean | null
+          id?: string
+          investor_id?: string | null
+          opportunity_discovery_speed?: number | null
+          override_rate?: number | null
+          risk_perception_accuracy?: number | null
+        }
+        Relationships: []
+      }
+      hawce_coevolution_flywheel: {
+        Row: {
+          capital_productivity_gain: number | null
+          collaboration_depth: string | null
+          computed_at: string
+          created_at: string
+          cumulative_wealth_impact_usd: number | null
+          cycle_id: string
+          decade_span: string | null
+          flywheel_velocity: number | null
+          human_ai_synergy_score: number | null
+          id: string
+          participation_growth_pct: number | null
+          systemic_risk_reduction: number | null
+          wealth_inclusivity_index: number | null
+        }
+        Insert: {
+          capital_productivity_gain?: number | null
+          collaboration_depth?: string | null
+          computed_at?: string
+          created_at?: string
+          cumulative_wealth_impact_usd?: number | null
+          cycle_id: string
+          decade_span?: string | null
+          flywheel_velocity?: number | null
+          human_ai_synergy_score?: number | null
+          id?: string
+          participation_growth_pct?: number | null
+          systemic_risk_reduction?: number | null
+          wealth_inclusivity_index?: number | null
+        }
+        Update: {
+          capital_productivity_gain?: number | null
+          collaboration_depth?: string | null
+          computed_at?: string
+          created_at?: string
+          cumulative_wealth_impact_usd?: number | null
+          cycle_id?: string
+          decade_span?: string | null
+          flywheel_velocity?: number | null
+          human_ai_synergy_score?: number | null
+          id?: string
+          participation_growth_pct?: number | null
+          systemic_risk_reduction?: number | null
+          wealth_inclusivity_index?: number | null
+        }
+        Relationships: []
+      }
+      hawce_collective_intelligence: {
+        Row: {
+          behaviors_ingested: number | null
+          compounding_epoch: number | null
+          computed_at: string
+          created_at: string
+          graph_density: number | null
+          id: string
+          intelligence_tier: string | null
+          investment_outcome_improvement: number | null
+          network_effect_multiplier: number | null
+          network_size: number | null
+          opportunity_matching_precision: number | null
+          signal_to_noise_ratio: number | null
+        }
+        Insert: {
+          behaviors_ingested?: number | null
+          compounding_epoch?: number | null
+          computed_at?: string
+          created_at?: string
+          graph_density?: number | null
+          id?: string
+          intelligence_tier?: string | null
+          investment_outcome_improvement?: number | null
+          network_effect_multiplier?: number | null
+          network_size?: number | null
+          opportunity_matching_precision?: number | null
+          signal_to_noise_ratio?: number | null
+        }
+        Update: {
+          behaviors_ingested?: number | null
+          compounding_epoch?: number | null
+          computed_at?: string
+          created_at?: string
+          graph_density?: number | null
+          id?: string
+          intelligence_tier?: string | null
+          investment_outcome_improvement?: number | null
+          network_effect_multiplier?: number | null
+          network_size?: number | null
+          opportunity_matching_precision?: number | null
+          signal_to_noise_ratio?: number | null
+        }
+        Relationships: []
+      }
+      hawce_skill_evolution: {
+        Row: {
+          coaching_sessions: number | null
+          computed_at: string
+          created_at: string
+          evolution_path: Json | null
+          id: string
+          insights_consumed: number | null
+          investing_stage: string | null
+          investor_id: string | null
+          literacy_score: number | null
+          milestone_achieved: string | null
+          portfolio_complexity_level: string | null
+          skill_growth_rate: number | null
+          strategic_maturity_index: number | null
+        }
+        Insert: {
+          coaching_sessions?: number | null
+          computed_at?: string
+          created_at?: string
+          evolution_path?: Json | null
+          id?: string
+          insights_consumed?: number | null
+          investing_stage?: string | null
+          investor_id?: string | null
+          literacy_score?: number | null
+          milestone_achieved?: string | null
+          portfolio_complexity_level?: string | null
+          skill_growth_rate?: number | null
+          strategic_maturity_index?: number | null
+        }
+        Update: {
+          coaching_sessions?: number | null
+          computed_at?: string
+          created_at?: string
+          evolution_path?: Json | null
+          id?: string
+          insights_consumed?: number | null
+          investing_stage?: string | null
+          investor_id?: string | null
+          literacy_score?: number | null
+          milestone_achieved?: string | null
+          portfolio_complexity_level?: string | null
+          skill_growth_rate?: number | null
+          strategic_maturity_index?: number | null
+        }
+        Relationships: []
+      }
+      hawce_trust_architecture: {
+        Row: {
+          ai_reasoning_visibility: number | null
+          automation_adoption_stage: string | null
+          computed_at: string
+          confidence_calibration: number | null
+          created_at: string
+          explainability_requests: number | null
+          id: string
+          investor_id: string | null
+          progressive_delegation_pct: number | null
+          transparency_score: number | null
+          trust_building_events: number | null
+          trust_erosion_events: number | null
+          trust_level: string | null
+        }
+        Insert: {
+          ai_reasoning_visibility?: number | null
+          automation_adoption_stage?: string | null
+          computed_at?: string
+          confidence_calibration?: number | null
+          created_at?: string
+          explainability_requests?: number | null
+          id?: string
+          investor_id?: string | null
+          progressive_delegation_pct?: number | null
+          transparency_score?: number | null
+          trust_building_events?: number | null
+          trust_erosion_events?: number | null
+          trust_level?: string | null
+        }
+        Update: {
+          ai_reasoning_visibility?: number | null
+          automation_adoption_stage?: string | null
+          computed_at?: string
+          confidence_calibration?: number | null
+          created_at?: string
+          explainability_requests?: number | null
+          id?: string
+          investor_id?: string | null
+          progressive_delegation_pct?: number | null
+          transparency_score?: number | null
+          trust_building_events?: number | null
+          trust_erosion_events?: number | null
+          trust_level?: string | null
+        }
+        Relationships: []
+      }
       hedging_downside_protection: {
         Row: {
           city: string

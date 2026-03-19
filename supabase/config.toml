@@ -429,3 +429,6 @@ verify_jwt = false
 
 [functions.multiplanet-expansion]
 verify_jwt = false
+
+[functions.wealth-coevolution]
+verify_jwt = false
