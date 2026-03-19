@@ -92,9 +92,9 @@ const LandingHero = () => {
             className="mt-16 grid grid-cols-3 gap-4 md:gap-8 max-w-xl mx-auto"
           >
             {[
-              { value: '5', label: 'Live Listings' },
+              { value: '15', label: 'Live Listings' },
               { value: 'AI', label: 'Scored & Ranked' },
-              { value: 'Bali · JKT', label: 'Markets Covered' },
+              { value: '8+', label: 'Cities Covered' },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
                 <div className="font-playfair text-2xl md:text-3xl font-bold text-gold-primary">
