@@ -6,6 +6,7 @@ const LandingBenefits = lazy(() => import('@/components/landing/LandingBenefits'
 const LandingFeatured = lazy(() => import('@/components/landing/LandingFeatured'));
 const LandingDeveloper = lazy(() => import('@/components/landing/LandingDeveloper'));
 const LandingServices = lazy(() => import('@/components/landing/LandingServices'));
+const LandingTrustProof = lazy(() => import('@/components/landing/LandingTrustProof'));
 const LandingLeadCapture = lazy(() => import('@/components/landing/LandingLeadCapture'));
 const LandingFooter = lazy(() => import('@/components/landing/LandingFooter'));
 
