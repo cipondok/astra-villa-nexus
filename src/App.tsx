@@ -442,6 +442,7 @@ const AppContent = () => {
                 <Route path="/autonomous-closing" element={<AutonomousClosingSystem />} />
                 <Route path="/macro-radar" element={<RealEstateMacroRadar />} />
                 <Route path="/investor-behavior-prediction" element={<InvestorBehaviorPrediction />} />
+                <Route path="/operations-brain" element={<MarketplaceOperationsBrain />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
