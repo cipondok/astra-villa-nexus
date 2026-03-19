@@ -13412,6 +13412,300 @@ export type Database = {
         }
         Relationships: []
       }
+      gpi_index_constituents: {
+        Row: {
+          added_at: string
+          capital_inflow_score: number | null
+          city: string
+          composite_score: number | null
+          country: string
+          district: string | null
+          id: string
+          index_id: string
+          is_active: boolean
+          liquidity_score: number | null
+          listing_count: number | null
+          market_value_usd: number | null
+          price_appreciation_score: number | null
+          removed_at: string | null
+          transaction_velocity_score: number | null
+          weight_in_index: number | null
+        }
+        Insert: {
+          added_at?: string
+          capital_inflow_score?: number | null
+          city: string
+          composite_score?: number | null
+          country?: string
+          district?: string | null
+          id?: string
+          index_id: string
+          is_active?: boolean
+          liquidity_score?: number | null
+          listing_count?: number | null
+          market_value_usd?: number | null
+          price_appreciation_score?: number | null
+          removed_at?: string | null
+          transaction_velocity_score?: number | null
+          weight_in_index?: number | null
+        }
+        Update: {
+          added_at?: string
+          capital_inflow_score?: number | null
+          city?: string
+          composite_score?: number | null
+          country?: string
+          district?: string | null
+          id?: string
+          index_id?: string
+          is_active?: boolean
+          liquidity_score?: number | null
+          listing_count?: number | null
+          market_value_usd?: number | null
+          price_appreciation_score?: number | null
+          removed_at?: string | null
+          transaction_velocity_score?: number | null
+          weight_in_index?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gpi_index_constituents_index_id_fkey"
+            columns: ["index_id"]
+            isOneToOne: false
+            referencedRelation: "gpi_index_definitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gpi_index_definitions: {
+        Row: {
+          base_date: string
+          base_value: number
+          city_filter: string | null
+          country_filter: string | null
+          created_at: string
+          description: string | null
+          id: string
+          index_code: string
+          index_name: string
+          index_tier: string
+          is_active: boolean
+          rebalance_frequency: string
+          region_filter: string | null
+          updated_at: string
+          w_capital_inflow: number
+          w_liquidity: number
+          w_price_appreciation: number
+          w_transaction_velocity: number
+          weighting_method: string
+        }
+        Insert: {
+          base_date?: string
+          base_value?: number
+          city_filter?: string | null
+          country_filter?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          index_code: string
+          index_name: string
+          index_tier: string
+          is_active?: boolean
+          rebalance_frequency?: string
+          region_filter?: string | null
+          updated_at?: string
+          w_capital_inflow?: number
+          w_liquidity?: number
+          w_price_appreciation?: number
+          w_transaction_velocity?: number
+          weighting_method?: string
+        }
+        Update: {
+          base_date?: string
+          base_value?: number
+          city_filter?: string | null
+          country_filter?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          index_code?: string
+          index_name?: string
+          index_tier?: string
+          is_active?: boolean
+          rebalance_frequency?: string
+          region_filter?: string | null
+          updated_at?: string
+          w_capital_inflow?: number
+          w_liquidity?: number
+          w_price_appreciation?: number
+          w_transaction_velocity?: number
+          weighting_method?: string
+        }
+        Relationships: []
+      }
+      gpi_index_values: {
+        Row: {
+          computed_at: string
+          constituents_count: number | null
+          daily_change_pct: number | null
+          id: string
+          index_id: string
+          index_value: number
+          max_drawdown_pct: number | null
+          monthly_change_pct: number | null
+          sharpe_ratio: number | null
+          total_market_value_usd: number | null
+          value_date: string
+          volatility_30d: number | null
+          weekly_change_pct: number | null
+          ytd_change_pct: number | null
+        }
+        Insert: {
+          computed_at?: string
+          constituents_count?: number | null
+          daily_change_pct?: number | null
+          id?: string
+          index_id: string
+          index_value: number
+          max_drawdown_pct?: number | null
+          monthly_change_pct?: number | null
+          sharpe_ratio?: number | null
+          total_market_value_usd?: number | null
+          value_date: string
+          volatility_30d?: number | null
+          weekly_change_pct?: number | null
+          ytd_change_pct?: number | null
+        }
+        Update: {
+          computed_at?: string
+          constituents_count?: number | null
+          daily_change_pct?: number | null
+          id?: string
+          index_id?: string
+          index_value?: number
+          max_drawdown_pct?: number | null
+          monthly_change_pct?: number | null
+          sharpe_ratio?: number | null
+          total_market_value_usd?: number | null
+          value_date?: string
+          volatility_30d?: number | null
+          weekly_change_pct?: number | null
+          ytd_change_pct?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gpi_index_values_index_id_fkey"
+            columns: ["index_id"]
+            isOneToOne: false
+            referencedRelation: "gpi_index_definitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gpi_institutional_access: {
+        Row: {
+          access_tier: string
+          api_key_hash: string | null
+          contact_email: string | null
+          contracted_at: string | null
+          created_at: string
+          data_feed_type: string | null
+          expires_at: string | null
+          id: string
+          indexes_subscribed: string[] | null
+          institution_name: string
+          institution_type: string
+          is_active: boolean
+          updated_at: string
+        }
+        Insert: {
+          access_tier?: string
+          api_key_hash?: string | null
+          contact_email?: string | null
+          contracted_at?: string | null
+          created_at?: string
+          data_feed_type?: string | null
+          expires_at?: string | null
+          id?: string
+          indexes_subscribed?: string[] | null
+          institution_name: string
+          institution_type: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Update: {
+          access_tier?: string
+          api_key_hash?: string | null
+          contact_email?: string | null
+          contracted_at?: string | null
+          created_at?: string
+          data_feed_type?: string | null
+          expires_at?: string | null
+          id?: string
+          indexes_subscribed?: string[] | null
+          institution_name?: string
+          institution_type?: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      gpi_rebalance_events: {
+        Row: {
+          constituents_added: number | null
+          constituents_removed: number | null
+          created_at: string
+          id: string
+          index_id: string
+          notes: string | null
+          post_rebalance_value: number | null
+          pre_rebalance_value: number | null
+          rebalance_date: string
+          shock_absorption_dampener: number | null
+          stability_safeguard_applied: boolean | null
+          trigger_type: string
+          weight_changes: Json | null
+        }
+        Insert: {
+          constituents_added?: number | null
+          constituents_removed?: number | null
+          created_at?: string
+          id?: string
+          index_id: string
+          notes?: string | null
+          post_rebalance_value?: number | null
+          pre_rebalance_value?: number | null
+          rebalance_date: string
+          shock_absorption_dampener?: number | null
+          stability_safeguard_applied?: boolean | null
+          trigger_type: string
+          weight_changes?: Json | null
+        }
+        Update: {
+          constituents_added?: number | null
+          constituents_removed?: number | null
+          created_at?: string
+          id?: string
+          index_id?: string
+          notes?: string | null
+          post_rebalance_value?: number | null
+          pre_rebalance_value?: number | null
+          rebalance_date?: string
+          shock_absorption_dampener?: number | null
+          stability_safeguard_applied?: boolean | null
+          trigger_type?: string
+          weight_changes?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gpi_rebalance_events_index_id_fkey"
+            columns: ["index_id"]
+            isOneToOne: false
+            referencedRelation: "gpi_index_definitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       group_deal_participants: {
         Row: {
           confirmed_at: string | null
