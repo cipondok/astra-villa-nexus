@@ -27535,6 +27535,255 @@ export type Database = {
         }
         Relationships: []
       }
+      ppop_feedback_loop: {
+        Row: {
+          computed_at: string
+          created_at: string
+          cycle_id: string
+          development_cycles_tracked: number | null
+          id: string
+          improvement_delta_pct: number | null
+          learning_epoch: number | null
+          migration_patterns_ingested: number | null
+          model_version: string | null
+          prediction_accuracy_after: number | null
+          prediction_accuracy_before: number | null
+          prosperity_gain_cumulative: number | null
+          transaction_outcomes_analyzed: number | null
+        }
+        Insert: {
+          computed_at?: string
+          created_at?: string
+          cycle_id: string
+          development_cycles_tracked?: number | null
+          id?: string
+          improvement_delta_pct?: number | null
+          learning_epoch?: number | null
+          migration_patterns_ingested?: number | null
+          model_version?: string | null
+          prediction_accuracy_after?: number | null
+          prediction_accuracy_before?: number | null
+          prosperity_gain_cumulative?: number | null
+          transaction_outcomes_analyzed?: number | null
+        }
+        Update: {
+          computed_at?: string
+          created_at?: string
+          cycle_id?: string
+          development_cycles_tracked?: number | null
+          id?: string
+          improvement_delta_pct?: number | null
+          learning_epoch?: number | null
+          migration_patterns_ingested?: number | null
+          model_version?: string | null
+          prediction_accuracy_after?: number | null
+          prediction_accuracy_before?: number | null
+          prosperity_gain_cumulative?: number | null
+          transaction_outcomes_analyzed?: number | null
+        }
+        Relationships: []
+      }
+      ppop_long_horizon_alignment: {
+        Row: {
+          alignment_tier: string | null
+          asset_productivity_30y: number | null
+          city: string
+          computed_at: string
+          country: string
+          created_at: string
+          district: string | null
+          id: string
+          incentive_structure: Json | null
+          infra_housing_capital_synergy: number | null
+          institutional_alignment_score: number | null
+          multi_decade_roi_forecast: number | null
+          societal_benefit_index: number | null
+        }
+        Insert: {
+          alignment_tier?: string | null
+          asset_productivity_30y?: number | null
+          city: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          district?: string | null
+          id?: string
+          incentive_structure?: Json | null
+          infra_housing_capital_synergy?: number | null
+          institutional_alignment_score?: number | null
+          multi_decade_roi_forecast?: number | null
+          societal_benefit_index?: number | null
+        }
+        Update: {
+          alignment_tier?: string | null
+          asset_productivity_30y?: number | null
+          city?: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          district?: string | null
+          id?: string
+          incentive_structure?: Json | null
+          infra_housing_capital_synergy?: number | null
+          institutional_alignment_score?: number | null
+          multi_decade_roi_forecast?: number | null
+          societal_benefit_index?: number | null
+        }
+        Relationships: []
+      }
+      ppop_opportunity_equalization: {
+        Row: {
+          capital_redirected_usd: number | null
+          city: string | null
+          computed_at: string
+          country: string
+          created_at: string
+          development_attraction_score: number | null
+          emerging_market_readiness: number | null
+          equalization_intervention: string | null
+          gini_improvement_pct: number | null
+          id: string
+          region: string
+          upward_mobility_rate: number | null
+          wealth_imbalance_index: number | null
+        }
+        Insert: {
+          capital_redirected_usd?: number | null
+          city?: string | null
+          computed_at?: string
+          country?: string
+          created_at?: string
+          development_attraction_score?: number | null
+          emerging_market_readiness?: number | null
+          equalization_intervention?: string | null
+          gini_improvement_pct?: number | null
+          id?: string
+          region: string
+          upward_mobility_rate?: number | null
+          wealth_imbalance_index?: number | null
+        }
+        Update: {
+          capital_redirected_usd?: number | null
+          city?: string | null
+          computed_at?: string
+          country?: string
+          created_at?: string
+          development_attraction_score?: number | null
+          emerging_market_readiness?: number | null
+          equalization_intervention?: string | null
+          gini_improvement_pct?: number | null
+          id?: string
+          region?: string
+          upward_mobility_rate?: number | null
+          wealth_imbalance_index?: number | null
+        }
+        Relationships: []
+      }
+      ppop_prosperity_signals: {
+        Row: {
+          acceleration_detected: boolean | null
+          affordability_index: number | null
+          capital_formation_rate: number | null
+          city: string
+          computed_at: string
+          country: string
+          created_at: string
+          district: string | null
+          id: string
+          infrastructure_productivity: number | null
+          job_creation_velocity: number | null
+          prosperity_composite_score: number | null
+          prosperity_zone_tier: string | null
+          signal_drivers: Json | null
+        }
+        Insert: {
+          acceleration_detected?: boolean | null
+          affordability_index?: number | null
+          capital_formation_rate?: number | null
+          city: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          district?: string | null
+          id?: string
+          infrastructure_productivity?: number | null
+          job_creation_velocity?: number | null
+          prosperity_composite_score?: number | null
+          prosperity_zone_tier?: string | null
+          signal_drivers?: Json | null
+        }
+        Update: {
+          acceleration_detected?: boolean | null
+          affordability_index?: number | null
+          capital_formation_rate?: number | null
+          city?: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          district?: string | null
+          id?: string
+          infrastructure_productivity?: number | null
+          job_creation_velocity?: number | null
+          prosperity_composite_score?: number | null
+          prosperity_zone_tier?: string | null
+          signal_drivers?: Json | null
+        }
+        Relationships: []
+      }
+      ppop_urban_regeneration: {
+        Row: {
+          capital_channeled_usd: number | null
+          city: string
+          computed_at: string
+          country: string
+          created_at: string
+          district: string | null
+          economic_vitality_score: number | null
+          housing_quality_index: number | null
+          id: string
+          intervention_type: string | null
+          investment_gap_usd: number | null
+          projected_roi_5y: number | null
+          regeneration_phase: string | null
+          revitalization_priority: string | null
+          underperformance_score: number | null
+        }
+        Insert: {
+          capital_channeled_usd?: number | null
+          city: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          district?: string | null
+          economic_vitality_score?: number | null
+          housing_quality_index?: number | null
+          id?: string
+          intervention_type?: string | null
+          investment_gap_usd?: number | null
+          projected_roi_5y?: number | null
+          regeneration_phase?: string | null
+          revitalization_priority?: string | null
+          underperformance_score?: number | null
+        }
+        Update: {
+          capital_channeled_usd?: number | null
+          city?: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          district?: string | null
+          economic_vitality_score?: number | null
+          housing_quality_index?: number | null
+          id?: string
+          intervention_type?: string | null
+          investment_gap_usd?: number | null
+          projected_roi_5y?: number | null
+          regeneration_phase?: string | null
+          revitalization_priority?: string | null
+          underperformance_score?: number | null
+        }
+        Relationships: []
+      }
       pr_agencies: {
         Row: {
           agency_name: string
