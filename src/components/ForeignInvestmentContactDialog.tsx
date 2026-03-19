@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { emailService } from "@/services/emailService";
 import { Loader2 } from "lucide-react";
 import { useTranslation } from "@/i18n/useTranslation";
 
@@ -43,17 +44,13 @@ export const ForeignInvestmentContactDialog = ({ open, onOpenChange }: ForeignIn
 
       if (error) throw error;
 
-      // Send confirmation email via SMTP
+      // Send confirmation email via transactional email service
       if (inquiry) {
-        await supabase.functions.invoke('notification-engine', {
-          body: {
-            action: 'send_inquiry_email',
-            inquiry_id: inquiry.id,
-            customer_email: formData.email,
-            customer_name: formData.name,
-            inquiry_type: "foreign_investment",
-            message: formData.message
-          }
+        await emailService.sendForeignInvestmentInquiry(formData.email, {
+          user_name: formData.name,
+          property_title: formData.investmentType || 'General Investment',
+          investment_type: 'foreign_investment',
+          investor_country: formData.nationality,
         });
       }
 

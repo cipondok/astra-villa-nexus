@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { emailService } from "@/services/emailService";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -72,16 +73,13 @@ export const InquiryForm = () => {
         .eq('id', user.id)
         .single();
 
-      // Send confirmation email via SMTP
+      // Send confirmation email via transactional email service
       if (inquiry && profile?.email) {
-        await supabase.functions.invoke('notification-engine', {
-          body: {
-            inquiry_id: inquiry.id,
-            customer_email: profile.email,
-            customer_name: profile.full_name || 'Valued Customer',
-            inquiry_type: validatedData.inquiry_type,
-            message: validatedData.message
-          }
+        await emailService.sendForeignInvestmentInquiry(profile.email, {
+          user_name: profile.full_name || 'Valued Customer',
+          property_title: validatedData.subject,
+          investment_type: validatedData.inquiry_type,
+          investor_country: 'N/A',
         });
       }
 
