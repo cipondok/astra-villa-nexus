@@ -447,3 +447,6 @@ verify_jwt = false
 
 [functions.capital-flywheel-singularity]
 verify_jwt = false
+
+[functions.market-creation-engine]
+verify_jwt = false

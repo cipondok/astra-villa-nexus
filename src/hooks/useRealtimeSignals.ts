@@ -94,6 +94,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   aces_engine_cycle: { label: 'Competitive Extinction', icon: '🎯' },
   gcfs_singularity_reached: { label: 'Capital Singularity', icon: '🌌' },
   gcfs_engine_cycle: { label: 'Capital Flywheel', icon: '🔄' },
+  amce_market_institutionalized: { label: 'Market Created', icon: '🌱' },
+  amce_engine_cycle: { label: 'Market Creation', icon: '🏗️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
