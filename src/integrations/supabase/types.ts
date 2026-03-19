@@ -5148,6 +5148,389 @@ export type Database = {
           },
         ]
       }
+      aswc_deployment_signals: {
+        Row: {
+          allocation_change_pct: number | null
+          approved_by: string | null
+          capital_amount_usd: number | null
+          computed_at: string | null
+          confidence: number | null
+          created_at: string | null
+          executed_at: string | null
+          execution_notes: string | null
+          execution_window_days: number | null
+          id: string
+          is_executed: boolean | null
+          macro_context: Json | null
+          risk_assessment: Json | null
+          signal_type: string
+          strategy_id: string | null
+          target_asset_class: string | null
+          target_city: string | null
+          target_country: string
+          trigger_reasons: Json
+          urgency: string | null
+          wealth_preservation_score: number | null
+        }
+        Insert: {
+          allocation_change_pct?: number | null
+          approved_by?: string | null
+          capital_amount_usd?: number | null
+          computed_at?: string | null
+          confidence?: number | null
+          created_at?: string | null
+          executed_at?: string | null
+          execution_notes?: string | null
+          execution_window_days?: number | null
+          id?: string
+          is_executed?: boolean | null
+          macro_context?: Json | null
+          risk_assessment?: Json | null
+          signal_type: string
+          strategy_id?: string | null
+          target_asset_class?: string | null
+          target_city?: string | null
+          target_country: string
+          trigger_reasons?: Json
+          urgency?: string | null
+          wealth_preservation_score?: number | null
+        }
+        Update: {
+          allocation_change_pct?: number | null
+          approved_by?: string | null
+          capital_amount_usd?: number | null
+          computed_at?: string | null
+          confidence?: number | null
+          created_at?: string | null
+          executed_at?: string | null
+          execution_notes?: string | null
+          execution_window_days?: number | null
+          id?: string
+          is_executed?: boolean | null
+          macro_context?: Json | null
+          risk_assessment?: Json | null
+          signal_type?: string
+          strategy_id?: string | null
+          target_asset_class?: string | null
+          target_city?: string | null
+          target_country?: string
+          trigger_reasons?: Json
+          urgency?: string | null
+          wealth_preservation_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "aswc_deployment_signals_strategy_id_fkey"
+            columns: ["strategy_id"]
+            isOneToOne: false
+            referencedRelation: "aswc_portfolio_strategies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      aswc_macro_cycles: {
+        Row: {
+          capital_rotation_direction: string | null
+          computed_at: string | null
+          country: string | null
+          created_at: string | null
+          currency_strength_index: number | null
+          current_phase: string
+          cycle_indicator: string
+          estimated_phase_remaining_months: number | null
+          growth_divergence_pct: number | null
+          historical_analog: string | null
+          id: string
+          implications_re: Json | null
+          indicator_trend: string | null
+          indicator_value: number | null
+          phase_confidence: number | null
+          rate_differential_bps: number | null
+          region: string
+          signal_drivers: Json | null
+          time_in_phase_months: number | null
+        }
+        Insert: {
+          capital_rotation_direction?: string | null
+          computed_at?: string | null
+          country?: string | null
+          created_at?: string | null
+          currency_strength_index?: number | null
+          current_phase: string
+          cycle_indicator: string
+          estimated_phase_remaining_months?: number | null
+          growth_divergence_pct?: number | null
+          historical_analog?: string | null
+          id?: string
+          implications_re?: Json | null
+          indicator_trend?: string | null
+          indicator_value?: number | null
+          phase_confidence?: number | null
+          rate_differential_bps?: number | null
+          region: string
+          signal_drivers?: Json | null
+          time_in_phase_months?: number | null
+        }
+        Update: {
+          capital_rotation_direction?: string | null
+          computed_at?: string | null
+          country?: string | null
+          created_at?: string | null
+          currency_strength_index?: number | null
+          current_phase?: string
+          cycle_indicator?: string
+          estimated_phase_remaining_months?: number | null
+          growth_divergence_pct?: number | null
+          historical_analog?: string | null
+          id?: string
+          implications_re?: Json | null
+          indicator_trend?: string | null
+          indicator_value?: number | null
+          phase_confidence?: number | null
+          rate_differential_bps?: number | null
+          region?: string
+          signal_drivers?: Json | null
+          time_in_phase_months?: number | null
+        }
+        Relationships: []
+      }
+      aswc_mega_deals: {
+        Row: {
+          asset_count: number | null
+          capital_required_usd: number | null
+          city: string | null
+          co_investment_available: boolean | null
+          competition_level: string | null
+          country: string
+          created_at: string | null
+          deal_name: string
+          deal_type: string
+          detected_at: string | null
+          discount_to_nav_pct: number | null
+          due_diligence_status: string | null
+          estimated_irr_pct: number | null
+          estimated_multiple: number | null
+          estimated_value_usd: number
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          key_risks: Json | null
+          key_strengths: Json | null
+          regulatory_approval_needed: boolean | null
+          seller_motivation: string | null
+          source_channel: string | null
+          total_sqm: number | null
+          updated_at: string | null
+          urgency: string | null
+        }
+        Insert: {
+          asset_count?: number | null
+          capital_required_usd?: number | null
+          city?: string | null
+          co_investment_available?: boolean | null
+          competition_level?: string | null
+          country?: string
+          created_at?: string | null
+          deal_name: string
+          deal_type: string
+          detected_at?: string | null
+          discount_to_nav_pct?: number | null
+          due_diligence_status?: string | null
+          estimated_irr_pct?: number | null
+          estimated_multiple?: number | null
+          estimated_value_usd?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          key_risks?: Json | null
+          key_strengths?: Json | null
+          regulatory_approval_needed?: boolean | null
+          seller_motivation?: string | null
+          source_channel?: string | null
+          total_sqm?: number | null
+          updated_at?: string | null
+          urgency?: string | null
+        }
+        Update: {
+          asset_count?: number | null
+          capital_required_usd?: number | null
+          city?: string | null
+          co_investment_available?: boolean | null
+          competition_level?: string | null
+          country?: string
+          created_at?: string | null
+          deal_name?: string
+          deal_type?: string
+          detected_at?: string | null
+          discount_to_nav_pct?: number | null
+          due_diligence_status?: string | null
+          estimated_irr_pct?: number | null
+          estimated_multiple?: number | null
+          estimated_value_usd?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          key_risks?: Json | null
+          key_strengths?: Json | null
+          regulatory_approval_needed?: boolean | null
+          seller_motivation?: string | null
+          source_channel?: string | null
+          total_sqm?: number | null
+          updated_at?: string | null
+          urgency?: string | null
+        }
+        Relationships: []
+      }
+      aswc_political_risk: {
+        Row: {
+          capital_controls_risk: number | null
+          city: string | null
+          composite_risk_score: number
+          computed_at: string | null
+          country: string
+          created_at: string | null
+          data_sources: Json | null
+          election_cycle_impact: string | null
+          expropriation_risk: number | null
+          geopolitical_exposure: number | null
+          hedging_recommendations: Json | null
+          id: string
+          investment_implications: string | null
+          next_election_date: string | null
+          ownership_restriction_score: number | null
+          policy_stability: number | null
+          recent_policy_changes: Json | null
+          risk_trend: string | null
+          rule_of_law_index: number | null
+          sanctions_exposure: number | null
+          tax_regime_risk: number | null
+        }
+        Insert: {
+          capital_controls_risk?: number | null
+          city?: string | null
+          composite_risk_score?: number
+          computed_at?: string | null
+          country: string
+          created_at?: string | null
+          data_sources?: Json | null
+          election_cycle_impact?: string | null
+          expropriation_risk?: number | null
+          geopolitical_exposure?: number | null
+          hedging_recommendations?: Json | null
+          id?: string
+          investment_implications?: string | null
+          next_election_date?: string | null
+          ownership_restriction_score?: number | null
+          policy_stability?: number | null
+          recent_policy_changes?: Json | null
+          risk_trend?: string | null
+          rule_of_law_index?: number | null
+          sanctions_exposure?: number | null
+          tax_regime_risk?: number | null
+        }
+        Update: {
+          capital_controls_risk?: number | null
+          city?: string | null
+          composite_risk_score?: number
+          computed_at?: string | null
+          country?: string
+          created_at?: string | null
+          data_sources?: Json | null
+          election_cycle_impact?: string | null
+          expropriation_risk?: number | null
+          geopolitical_exposure?: number | null
+          hedging_recommendations?: Json | null
+          id?: string
+          investment_implications?: string | null
+          next_election_date?: string | null
+          ownership_restriction_score?: number | null
+          policy_stability?: number | null
+          recent_policy_changes?: Json | null
+          risk_trend?: string | null
+          rule_of_law_index?: number | null
+          sanctions_exposure?: number | null
+          tax_regime_risk?: number | null
+        }
+        Relationships: []
+      }
+      aswc_portfolio_strategies: {
+        Row: {
+          asset_class_weights: Json | null
+          city_allocations: Json | null
+          computed_at: string | null
+          country_allocations: Json
+          created_at: string | null
+          currency_hedge_ratio: number | null
+          entry_timing_signals: Json | null
+          fund_size_usd: number
+          hedging_overlays: Json | null
+          id: string
+          is_active: boolean | null
+          liquidity_reserve_pct: number | null
+          max_drawdown_limit_pct: number | null
+          max_single_city_pct: number | null
+          max_single_country_pct: number | null
+          rebalance_frequency: string | null
+          risk_tolerance: string | null
+          sharpe_ratio_target: number | null
+          strategy_name: string
+          target_return_pct: number | null
+          valid_from: string | null
+          valid_until: string | null
+          vintage_diversification: boolean | null
+        }
+        Insert: {
+          asset_class_weights?: Json | null
+          city_allocations?: Json | null
+          computed_at?: string | null
+          country_allocations?: Json
+          created_at?: string | null
+          currency_hedge_ratio?: number | null
+          entry_timing_signals?: Json | null
+          fund_size_usd?: number
+          hedging_overlays?: Json | null
+          id?: string
+          is_active?: boolean | null
+          liquidity_reserve_pct?: number | null
+          max_drawdown_limit_pct?: number | null
+          max_single_city_pct?: number | null
+          max_single_country_pct?: number | null
+          rebalance_frequency?: string | null
+          risk_tolerance?: string | null
+          sharpe_ratio_target?: number | null
+          strategy_name: string
+          target_return_pct?: number | null
+          valid_from?: string | null
+          valid_until?: string | null
+          vintage_diversification?: boolean | null
+        }
+        Update: {
+          asset_class_weights?: Json | null
+          city_allocations?: Json | null
+          computed_at?: string | null
+          country_allocations?: Json
+          created_at?: string | null
+          currency_hedge_ratio?: number | null
+          entry_timing_signals?: Json | null
+          fund_size_usd?: number
+          hedging_overlays?: Json | null
+          id?: string
+          is_active?: boolean | null
+          liquidity_reserve_pct?: number | null
+          max_drawdown_limit_pct?: number | null
+          max_single_city_pct?: number | null
+          max_single_country_pct?: number | null
+          rebalance_frequency?: string | null
+          risk_tolerance?: string | null
+          sharpe_ratio_target?: number | null
+          strategy_name?: string
+          target_return_pct?: number | null
+          valid_from?: string | null
+          valid_until?: string | null
+          vintage_diversification?: boolean | null
+        }
+        Relationships: []
+      }
       automation_bots: {
         Row: {
           ai_model: string | null
