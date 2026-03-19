@@ -248,6 +248,10 @@ export default function PropertyVideoTourPage() {
   const [selectedTheme, setSelectedTheme] = useState("luxury_cinematic");
   const [selectedMusic, setSelectedMusic] = useState("ambient");
   const [result, setResult] = useState<VideoGenResult | null>(null);
+  const [outputFormat, setOutputFormat] = useState("full_tour");
+  const [voiceoverScript, setVoiceoverScript] = useState("");
+  const [isGeneratingScript, setIsGeneratingScript] = useState(false);
+  const [scriptCopied, setScriptCopied] = useState(false);
 
   // Property info
   const [title, setTitle] = useState("");
@@ -259,6 +263,44 @@ export default function PropertyVideoTourPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const videoGen = usePropertyVideoGen();
+
+  const generateVoiceoverScript = async () => {
+    if (!title && !location) {
+      toast({ title: "Add property info first", description: "Title or location needed for script.", variant: "destructive" });
+      return;
+    }
+    setIsGeneratingScript(true);
+    try {
+      const { data, error } = await (await import("@/integrations/supabase/client")).supabase.functions.invoke("property-video-gen", {
+        body: {
+          action: "generate_script",
+          property_info: {
+            title: title || "Premium Property",
+            price: price || undefined,
+            location: location || undefined,
+            opportunity_score: score ? parseInt(score) : undefined,
+            selling_points: sellingPoints.filter(Boolean),
+          },
+          output_format: outputFormat,
+          image_count: images.length,
+        },
+      });
+      if (error) throw error;
+      setVoiceoverScript(data?.script || "");
+      toast({ title: "Voiceover script ready!", description: "Review and customize before recording." });
+    } catch (e: any) {
+      toast({ title: "Script generation failed", description: e?.message || "Try again.", variant: "destructive" });
+    } finally {
+      setIsGeneratingScript(false);
+    }
+  };
+
+  const copyScript = () => {
+    navigator.clipboard.writeText(voiceoverScript);
+    setScriptCopied(true);
+    toast({ title: "Script copied!" });
+    setTimeout(() => setScriptCopied(false), 2000);
+  };
 
   const handleFilesSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
