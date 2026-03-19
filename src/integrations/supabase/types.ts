@@ -8956,6 +8956,39 @@ export type Database = {
           },
         ]
       }
+      deal_stage_rules: {
+        Row: {
+          allowed_roles: string[]
+          created_at: string
+          description: string | null
+          from_stage: string
+          id: string
+          is_active: boolean | null
+          required_flags: Json | null
+          to_stage: string
+        }
+        Insert: {
+          allowed_roles?: string[]
+          created_at?: string
+          description?: string | null
+          from_stage: string
+          id?: string
+          is_active?: boolean | null
+          required_flags?: Json | null
+          to_stage: string
+        }
+        Update: {
+          allowed_roles?: string[]
+          created_at?: string
+          description?: string | null
+          from_stage?: string
+          id?: string
+          is_active?: boolean | null
+          required_flags?: Json | null
+          to_stage?: string
+        }
+        Relationships: []
+      }
       deposit_escrows: {
         Row: {
           booking_id: string

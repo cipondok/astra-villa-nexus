@@ -14,18 +14,26 @@ export const useEscrowTransactions = (offerId?: string) => {
       if (error) throw error;
       return data || [];
     },
-    enabled: !!offerId || true,
   });
 
+  // Initiate escrow via backend Edge Function (with validation + listing lock)
   const initiateEscrow = useMutation({
-    mutationFn: async (escrow: { offer_id: string; property_id: string; buyer_id: string; seller_id?: string; agent_id?: string; escrow_amount: number }) => {
-      const { data, error } = await supabase.from('escrow_transactions').insert(escrow as any).select().single();
-      if (error) throw error;
+    mutationFn: async (params: {
+      offer_id: string;
+      payment_gateway?: string;
+      payment_method?: string;
+    }) => {
+      const { data, error } = await supabase.functions.invoke('initiate-escrow', {
+        body: params,
+      });
+      if (error) throw new Error(error.message || 'Failed to initiate escrow');
+      if (data?.error) throw new Error(data.error);
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['escrow-transactions'] });
-      toast.success('Escrow initiated');
+      queryClient.invalidateQueries({ queryKey: ['property-offers'] });
+      toast.success(`Escrow initiated. Reference: ${data.payment_reference}`);
     },
     onError: (err: Error) => toast.error(err.message),
   });

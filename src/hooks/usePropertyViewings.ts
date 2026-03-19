@@ -43,10 +43,22 @@ export const usePropertyViewings = (filters?: { agentId?: string; investorId?: s
     },
   });
 
+  // Schedule viewing via Edge Function (with double-booking prevention)
   const scheduleViewing = useMutation({
-    mutationFn: async (viewing: Omit<PropertyViewing, 'id' | 'created_at' | 'updated_at' | 'confirmed_at' | 'completed_at' | 'cancelled_at' | 'cancellation_reason' | 'feedback_rating' | 'feedback_text' | 'offer_triggered'>) => {
-      const { data, error } = await supabase.from('property_viewings').insert(viewing as any).select().single();
-      if (error) throw error;
+    mutationFn: async (params: {
+      property_id: string;
+      agent_id: string;
+      scheduled_at: string;
+      duration_minutes?: number;
+      viewing_type?: string;
+      location_notes?: string;
+      investor_notes?: string;
+    }) => {
+      const { data, error } = await supabase.functions.invoke('schedule-viewing', {
+        body: params,
+      });
+      if (error) throw new Error(error.message || 'Failed to schedule viewing');
+      if (data?.error) throw new Error(data.error);
       return data;
     },
     onSuccess: () => {
@@ -56,6 +68,7 @@ export const usePropertyViewings = (filters?: { agentId?: string; investorId?: s
     onError: (err: Error) => toast.error(err.message),
   });
 
+  // Status updates still use direct writes for agent confirmations
   const updateViewingStatus = useMutation({
     mutationFn: async ({ id, status, notes }: { id: string; status: string; notes?: string }) => {
       const updates: Record<string, any> = { status, updated_at: new Date().toISOString() };
