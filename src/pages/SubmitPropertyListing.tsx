@@ -337,7 +337,7 @@ export default function SubmitPropertyListing() {
                       </button>
                       <div className="absolute bottom-2 left-2">
                         <Badge variant="secondary" className="text-xs bg-background/80 backdrop-blur-sm">
-                          <CheckCircle2 className="w-3 h-3 mr-1 text-emerald-500" />
+                          <CheckCircle2 className="w-3 h-3 mr-1 text-primary" />
                           Good quality
                         </Badge>
                       </div>
