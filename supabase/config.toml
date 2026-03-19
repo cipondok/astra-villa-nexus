@@ -435,3 +435,6 @@ verify_jwt = false
 
 [functions.market-reality-distortion]
 verify_jwt = false
+
+[functions.monopoly-moat-engine]
+verify_jwt = false
