@@ -84,6 +84,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   mpeem_expansion_cycle: { label: 'Multi-Planet Engine', icon: '🪐' },
   hawce_synergy_milestone: { label: 'Co-Evolution Milestone', icon: '🤝' },
   hawce_engine_cycle: { label: 'Wealth Co-Evolution', icon: '🧬' },
+  mrde_tipping_point_imminent: { label: 'Tipping Point', icon: '⚡' },
+  mrde_engine_cycle: { label: 'Reality Distortion', icon: '🌀' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
