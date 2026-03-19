@@ -88,6 +88,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   mrde_engine_cycle: { label: 'Reality Distortion', icon: '🌀' },
   gmma_fortress_moat_achieved: { label: 'Fortress Moat', icon: '🏰' },
   gmma_engine_cycle: { label: 'Monopoly Moat', icon: '🛡️' },
+  ckper_phase_dominant: { label: 'Phase Dominant', icon: '🚀' },
+  ckper_engine_cycle: { label: 'Category Killer', icon: '⚔️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */

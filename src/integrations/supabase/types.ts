@@ -9041,6 +9041,266 @@ export type Database = {
         }
         Relationships: []
       }
+      ckper_behavior_transformation: {
+        Row: {
+          autonomous_pct: number | null
+          avg_decisions_per_month: number | null
+          behavior_velocity: number | null
+          cohort_name: string
+          created_at: string | null
+          id: string
+          informed_pct: number | null
+          institutional_pct: number | null
+          measured_at: string | null
+          phase_number: number
+          platform_dependency_score: number | null
+          predictive_pct: number | null
+          reactive_pct: number | null
+          transformation_confidence: number | null
+        }
+        Insert: {
+          autonomous_pct?: number | null
+          avg_decisions_per_month?: number | null
+          behavior_velocity?: number | null
+          cohort_name: string
+          created_at?: string | null
+          id?: string
+          informed_pct?: number | null
+          institutional_pct?: number | null
+          measured_at?: string | null
+          phase_number: number
+          platform_dependency_score?: number | null
+          predictive_pct?: number | null
+          reactive_pct?: number | null
+          transformation_confidence?: number | null
+        }
+        Update: {
+          autonomous_pct?: number | null
+          avg_decisions_per_month?: number | null
+          behavior_velocity?: number | null
+          cohort_name?: string
+          created_at?: string | null
+          id?: string
+          informed_pct?: number | null
+          institutional_pct?: number | null
+          measured_at?: string | null
+          phase_number?: number
+          platform_dependency_score?: number | null
+          predictive_pct?: number | null
+          reactive_pct?: number | null
+          transformation_confidence?: number | null
+        }
+        Relationships: []
+      }
+      ckper_category_ownership: {
+        Row: {
+          api_dependency_count: number | null
+          category_name: string
+          category_redefinition_events: number | null
+          computed_at: string | null
+          created_at: string | null
+          decade_projection: Json | null
+          ecosystem_partners: number | null
+          id: string
+          market_share_pct: number | null
+          mind_share_pct: number | null
+          ownership_momentum: number | null
+          ownership_tier: string
+          standard_setting_influence: number | null
+          time_to_next_tier_months: number | null
+        }
+        Insert: {
+          api_dependency_count?: number | null
+          category_name: string
+          category_redefinition_events?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          decade_projection?: Json | null
+          ecosystem_partners?: number | null
+          id?: string
+          market_share_pct?: number | null
+          mind_share_pct?: number | null
+          ownership_momentum?: number | null
+          ownership_tier?: string
+          standard_setting_influence?: number | null
+          time_to_next_tier_months?: number | null
+        }
+        Update: {
+          api_dependency_count?: number | null
+          category_name?: string
+          category_redefinition_events?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          decade_projection?: Json | null
+          ecosystem_partners?: number | null
+          id?: string
+          market_share_pct?: number | null
+          mind_share_pct?: number | null
+          ownership_momentum?: number | null
+          ownership_tier?: string
+          standard_setting_influence?: number | null
+          time_to_next_tier_months?: number | null
+        }
+        Relationships: []
+      }
+      ckper_competitive_displacement: {
+        Row: {
+          competitor_category: string
+          competitor_name: string
+          created_at: string | null
+          data_moat_depth: number | null
+          displacement_phase: number | null
+          displacement_strategy: string | null
+          feature_gap_count: number | null
+          id: string
+          our_advantage_score: number | null
+          perceived_inevitability: number | null
+          speed_advantage_pct: number | null
+          tracked_at: string | null
+          user_migration_rate: number | null
+        }
+        Insert: {
+          competitor_category: string
+          competitor_name: string
+          created_at?: string | null
+          data_moat_depth?: number | null
+          displacement_phase?: number | null
+          displacement_strategy?: string | null
+          feature_gap_count?: number | null
+          id?: string
+          our_advantage_score?: number | null
+          perceived_inevitability?: number | null
+          speed_advantage_pct?: number | null
+          tracked_at?: string | null
+          user_migration_rate?: number | null
+        }
+        Update: {
+          competitor_category?: string
+          competitor_name?: string
+          created_at?: string | null
+          data_moat_depth?: number | null
+          displacement_phase?: number | null
+          displacement_strategy?: string | null
+          feature_gap_count?: number | null
+          id?: string
+          our_advantage_score?: number | null
+          perceived_inevitability?: number | null
+          speed_advantage_pct?: number | null
+          tracked_at?: string | null
+          user_migration_rate?: number | null
+        }
+        Relationships: []
+      }
+      ckper_evolution_phases: {
+        Row: {
+          actual_end_date: string | null
+          actual_start_date: string | null
+          breakthrough_features: Json | null
+          category_displacement_score: number | null
+          competitive_gap_months: number | null
+          completion_pct: number | null
+          created_at: string | null
+          displacement_metrics: Json | null
+          id: string
+          phase_name: string
+          phase_number: number
+          phase_status: string
+          target_end_date: string | null
+          target_start_date: string | null
+          updated_at: string | null
+          user_behavior_shift_pct: number | null
+        }
+        Insert: {
+          actual_end_date?: string | null
+          actual_start_date?: string | null
+          breakthrough_features?: Json | null
+          category_displacement_score?: number | null
+          competitive_gap_months?: number | null
+          completion_pct?: number | null
+          created_at?: string | null
+          displacement_metrics?: Json | null
+          id?: string
+          phase_name: string
+          phase_number: number
+          phase_status?: string
+          target_end_date?: string | null
+          target_start_date?: string | null
+          updated_at?: string | null
+          user_behavior_shift_pct?: number | null
+        }
+        Update: {
+          actual_end_date?: string | null
+          actual_start_date?: string | null
+          breakthrough_features?: Json | null
+          category_displacement_score?: number | null
+          competitive_gap_months?: number | null
+          completion_pct?: number | null
+          created_at?: string | null
+          displacement_metrics?: Json | null
+          id?: string
+          phase_name?: string
+          phase_number?: number
+          phase_status?: string
+          target_end_date?: string | null
+          target_start_date?: string | null
+          updated_at?: string | null
+          user_behavior_shift_pct?: number | null
+        }
+        Relationships: []
+      }
+      ckper_feature_stack: {
+        Row: {
+          competitive_uniqueness_score: number | null
+          created_at: string | null
+          dependencies: Json | null
+          development_status: string
+          estimated_dev_weeks: number | null
+          feature_category: string
+          feature_name: string
+          id: string
+          impact_tier: string
+          phase_id: string
+          switching_cost_contribution: number | null
+          user_adoption_rate: number | null
+        }
+        Insert: {
+          competitive_uniqueness_score?: number | null
+          created_at?: string | null
+          dependencies?: Json | null
+          development_status?: string
+          estimated_dev_weeks?: number | null
+          feature_category: string
+          feature_name: string
+          id?: string
+          impact_tier?: string
+          phase_id: string
+          switching_cost_contribution?: number | null
+          user_adoption_rate?: number | null
+        }
+        Update: {
+          competitive_uniqueness_score?: number | null
+          created_at?: string | null
+          dependencies?: Json | null
+          development_status?: string
+          estimated_dev_weeks?: number | null
+          feature_category?: string
+          feature_name?: string
+          id?: string
+          impact_tier?: string
+          phase_id?: string
+          switching_cost_contribution?: number | null
+          user_adoption_rate?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ckper_feature_stack_phase_id_fkey"
+            columns: ["phase_id"]
+            isOneToOne: false
+            referencedRelation: "ckper_evolution_phases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cloudflare_audit_log: {
         Row: {
           action: string

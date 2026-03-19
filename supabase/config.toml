@@ -438,3 +438,6 @@ verify_jwt = false
 
 [functions.monopoly-moat-engine]
 verify_jwt = false
+
+[functions.category-killer-engine]
+verify_jwt = false

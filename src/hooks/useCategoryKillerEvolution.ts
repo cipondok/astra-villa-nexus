@@ -24,10 +24,10 @@ export function useEvolutionPhases() {
   return useQuery({
     queryKey: ['ckper-phases'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('ckper_evolution_phases')
+      const { data, error } = await (supabase
+        .from('ckper_evolution_phases' as any)
         .select('*')
-        .order('phase_number', { ascending: true });
+        .order('phase_number', { ascending: true }) as any);
       if (error) throw error;
       return data;
     },
@@ -39,7 +39,7 @@ export function useFeatureStack(phaseId?: string) {
   return useQuery({
     queryKey: ['ckper-features', phaseId],
     queryFn: async () => {
-      let q = supabase.from('ckper_feature_stack').select('*').order('competitive_uniqueness_score', { ascending: false });
+      let q = supabase.from('ckper_feature_stack' as any).select('*').order('competitive_uniqueness_score', { ascending: false }) as any;
       if (phaseId) q = q.eq('phase_id', phaseId);
       const { data, error } = await q.limit(30);
       if (error) throw error;
@@ -53,11 +53,11 @@ export function useCompetitiveDisplacement() {
   return useQuery({
     queryKey: ['ckper-displacement'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('ckper_competitive_displacement')
+      const { data, error } = await (supabase
+        .from('ckper_competitive_displacement' as any)
         .select('*')
         .order('tracked_at', { ascending: false })
-        .limit(15);
+        .limit(15) as any);
       if (error) throw error;
       return data;
     },
@@ -69,11 +69,11 @@ export function useBehaviorTransformation() {
   return useQuery({
     queryKey: ['ckper-behavior'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('ckper_behavior_transformation')
+      const { data, error } = await (supabase
+        .from('ckper_behavior_transformation' as any)
         .select('*')
         .order('measured_at', { ascending: false })
-        .limit(10);
+        .limit(10) as any);
       if (error) throw error;
       return data;
     },
@@ -85,11 +85,11 @@ export function useCategoryOwnership() {
   return useQuery({
     queryKey: ['ckper-ownership'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('ckper_category_ownership')
+      const { data, error } = await (supabase
+        .from('ckper_category_ownership' as any)
         .select('*')
         .order('computed_at', { ascending: false })
-        .limit(5);
+        .limit(5) as any);
       if (error) throw error;
       return data;
     },
