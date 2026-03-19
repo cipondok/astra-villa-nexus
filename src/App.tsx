@@ -121,6 +121,7 @@ const RealEstateIntelligenceAPIHub = lazy(() => import('@/pages/RealEstateIntell
 const AIWealthAdvisor = lazy(() => import('@/pages/AIWealthAdvisor'));
 const AutonomousGlobalPropertyExchange = lazy(() => import('@/pages/AutonomousGlobalPropertyExchange'));
 const RealEstateIntelligenceOS = lazy(() => import('@/pages/RealEstateIntelligenceOS'));
+const WealthUniverseEngine = lazy(() => import('@/pages/WealthUniverseEngine'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
