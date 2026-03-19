@@ -378,3 +378,6 @@ verify_jwt = false
 
 [functions.institutional-fund-engine]
 verify_jwt = false
+
+[functions.re-os-kernel]
+verify_jwt = false
