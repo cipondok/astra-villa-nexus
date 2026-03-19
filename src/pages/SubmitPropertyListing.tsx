@@ -67,8 +67,8 @@ function computeOpportunityScore(form: FormData): number {
 }
 
 function getScoreColor(score: number) {
-  if (score >= 80) return 'text-emerald-500';
-  if (score >= 50) return 'text-amber-500';
+  if (score >= 80) return 'text-primary';
+  if (score >= 50) return 'text-warning';
   return 'text-muted-foreground';
 }
 
