@@ -89,6 +89,7 @@ const LaunchCommandCenter = lazy(() => import('@/pages/LaunchCommandCenter'));
 const PropertyDeepAnalysis = lazy(() => import('@/pages/PropertyDeepAnalysis'));
 const InvestorOnboardingWizard = lazy(() => import('@/pages/InvestorOnboardingWizard'));
 const InvestorReferralEngine = lazy(() => import('@/pages/InvestorReferralEngine'));
+const MarketIntelligenceHeatmap = lazy(() => import('@/pages/MarketIntelligenceHeatmap'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
