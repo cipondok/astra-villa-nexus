@@ -98,6 +98,7 @@ const DeveloperPipelineCRM = lazy(() => import('@/pages/DeveloperPipelineCRM'));
 const PricingInefficiencyDetector = lazy(() => import('@/pages/PricingInefficiencyDetector'));
 const InvestmentPerformanceTracker = lazy(() => import('@/pages/InvestmentPerformanceTracker'));
 const AutonomousDealAlerts = lazy(() => import('@/pages/AutonomousDealAlerts'));
+const InvestorRiskIntelligence = lazy(() => import('@/pages/InvestorRiskIntelligence'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
