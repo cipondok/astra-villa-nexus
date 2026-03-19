@@ -23,6 +23,12 @@ const TAG_CATEGORIES = [
   { key: 'build_quality', label: 'Build Quality', icon: Hammer, color: 'bg-primary/15 text-primary border-primary/30' },
 ] as const;
 
+const SUB_CRITERIA = [
+  { key: 'rating_condition', label: 'Property Condition' },
+  { key: 'rating_agent', label: 'Agent Quality' },
+  { key: 'rating_investment', label: 'Investment Alignment' },
+] as const;
+
 interface PropertyReviewPanelProps {
   propertyId: string;
   className?: string;
@@ -174,7 +180,10 @@ export default function PropertyReviewPanel({ propertyId, className }: PropertyR
   const [showForm, setShowForm] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [filterTag, setFilterTag] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ rating: 0, title: '', review_text: '', tag_categories: [] as string[] });
+  const [formData, setFormData] = useState({
+    rating: 0, title: '', review_text: '', tag_categories: [] as string[],
+    rating_condition: 0, rating_agent: 0, rating_investment: 0,
+  });
 
   const filteredReviews = useMemo(() => {
     if (!filterTag) return reviews;
@@ -199,9 +208,9 @@ export default function PropertyReviewPanel({ propertyId, className }: PropertyR
       rating: formData.rating,
       title: formData.title.trim() || undefined,
       review_text: formData.review_text.trim() || undefined,
-      pros: formData.tag_categories as any, // store tags in pros for now until types refresh
+      pros: formData.tag_categories as any,
     } as any);
-    setFormData({ rating: 0, title: '', review_text: '', tag_categories: [] });
+    setFormData({ rating: 0, title: '', review_text: '', tag_categories: [], rating_condition: 0, rating_agent: 0, rating_investment: 0 });
     setShowForm(false);
   };
 
@@ -283,6 +292,20 @@ export default function PropertyReviewPanel({ propertyId, className }: PropertyR
                 <div className="space-y-1.5">
                   <label className="text-xs font-semibold text-foreground">Overall Rating *</label>
                   <StarInput value={formData.rating} onChange={v => setFormData(p => ({ ...p, rating: v }))} />
+                </div>
+
+                {/* Sub-criteria ratings */}
+                <div className="space-y-2 border border-border/30 rounded-xl p-3 bg-muted/20">
+                  <label className="text-xs font-semibold text-foreground">Detailed Ratings (optional)</label>
+                  {SUB_CRITERIA.map(c => (
+                    <div key={c.key} className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground">{c.label}</span>
+                      <StarInput
+                        value={(formData as any)[c.key]}
+                        onChange={v => setFormData(p => ({ ...p, [c.key]: v }))}
+                      />
+                    </div>
+                  ))}
                 </div>
 
                 <div className="space-y-1.5">

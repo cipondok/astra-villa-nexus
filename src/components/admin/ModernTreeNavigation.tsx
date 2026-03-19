@@ -106,7 +106,8 @@ const ModernTreeNavigation = ({ activeTab, onTabChange, headerCounts }: ModernTr
         { id: 'admin-alerts', label: 'Alert System', icon: '🚨', count: headerCounts.alerts, color: 'red' },
         { id: 'admin-kyc-review', label: 'KYC Review', icon: '📋', count: '8', color: 'blue' },
         { id: 'kyc-analytics', label: 'KYC Analytics', icon: '📊', count: '15', color: 'cyan' },
-        { id: 'bulk-kyc-operations', label: 'Bulk KYC', icon: '📦', count: '3', color: 'purple' }
+        { id: 'bulk-kyc-operations', label: 'Bulk KYC', icon: '📦', count: '3', color: 'purple' },
+        { id: 'review-moderation', label: 'Review Moderation', icon: '⭐', count: '0', color: 'yellow' }
       ]
     },
     {

@@ -76,6 +76,7 @@ export const AIPropertyAssistant = lazyRetry(() => import("./AIPropertyAssistant
 export const BookingPaymentSettings = lazyRetry(() => import("./BookingPaymentSettings"));
 export const BPJSAPISettings = lazyRetry(() => import("./BPJSAPISettings"));
 export const AdminKYCReview = lazyRetry(() => import("./AdminKYCReview"));
+export const ReviewModerationDashboard = lazyRetry(() => import("./ReviewModerationDashboard"));
 export const VideoVerificationReviewDashboard = lazyRetry(() => import("./video-verification/VideoVerificationReviewDashboard"));
 export const KYCAnalyticsDashboard = lazyRetry(() => import("./KYCAnalyticsDashboard").then((m) => ({ default: m.KYCAnalyticsDashboard })));
 export const BulkKYCOperations = lazyRetry(() => import("./BulkKYCOperations").then((m) => ({ default: m.BulkKYCOperations })));
@@ -417,6 +418,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "kyc-analytics":       () => <KYCAnalyticsDashboard />,
   "bulk-kyc-operations": () => <BulkKYCOperations />,
   "document-ocr":        () => <DocumentOCR />,
+  "review-moderation":   () => <ReviewModerationDashboard />,
 
   // UX & algorithm
   "user-experience-tips": () => <UserExperienceTips />,
