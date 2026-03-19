@@ -410,6 +410,7 @@ const AppContent = () => {
                 <Route path="/investment-performance" element={<InvestmentPerformanceTracker />} />
                 <Route path="/deal-alerts" element={<AutonomousDealAlerts />} />
                 <Route path="/risk-intelligence" element={<InvestorRiskIntelligence />} />
+                <Route path="/exit-strategy" element={<ExitStrategyPlanner />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
