@@ -66,6 +66,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   gues_simulator_cycle: { label: 'Urban Simulator', icon: '🏙️' },
   aswc_critical_deployment: { label: 'Sovereign Deploy', icon: '🏛️' },
   aswc_copilot_cycle: { label: 'Wealth Co-Pilot', icon: '👑' },
+  gwsm_systemic_instability: { label: 'Systemic Alert', icon: '🌋' },
+  gwsm_singularity_cycle: { label: 'Wealth Singularity', icon: '♾️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
