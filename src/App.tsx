@@ -83,6 +83,7 @@ const UserDashboardPage = lazy(() => import('@/pages/UserDashboardPage'));
 // ThreeDShowcase removed - consolidated into VR Tour
 const AddProperty = lazy(() => import('@/pages/AddProperty'));
 const SubmitPropertyListing = lazy(() => import('@/pages/SubmitPropertyListing'));
+const InvestorLandingPage = lazy(() => import('@/pages/InvestorLandingPage'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
@@ -379,6 +380,7 @@ const AppContent = () => {
               <Routes location={location}>
                 <Route path="/" element={<Index />} />
                 <Route path="/landing" element={<LandingPage />} />
+                <Route path="/investor-landing" element={<InvestorLandingPage />} />
                 <Route path="/onboarding/investor" element={<InvestorOnboarding />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
