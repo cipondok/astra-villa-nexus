@@ -1822,6 +1822,255 @@ export type Database = {
         }
         Relationships: []
       }
+      afiba_intelligence_capture: {
+        Row: {
+          capture_type: string
+          captured_at: string
+          confidence_level: number | null
+          created_at: string
+          decision_pattern: Json | null
+          domain: string
+          encoding_version: string | null
+          id: string
+          innovation_heuristic: string | null
+          is_active: boolean | null
+          market_interpretation: Json | null
+          risk_appetite_calibration: number | null
+          source_context: string | null
+        }
+        Insert: {
+          capture_type?: string
+          captured_at?: string
+          confidence_level?: number | null
+          created_at?: string
+          decision_pattern?: Json | null
+          domain?: string
+          encoding_version?: string | null
+          id?: string
+          innovation_heuristic?: string | null
+          is_active?: boolean | null
+          market_interpretation?: Json | null
+          risk_appetite_calibration?: number | null
+          source_context?: string | null
+        }
+        Update: {
+          capture_type?: string
+          captured_at?: string
+          confidence_level?: number | null
+          created_at?: string
+          decision_pattern?: Json | null
+          domain?: string
+          encoding_version?: string | null
+          id?: string
+          innovation_heuristic?: string | null
+          is_active?: boolean | null
+          market_interpretation?: Json | null
+          risk_appetite_calibration?: number | null
+          source_context?: string | null
+        }
+        Relationships: []
+      }
+      afiba_leadership_simulation: {
+        Row: {
+          alternative_paths: number | null
+          capital_allocation_judgment: Json | null
+          computed_at: string
+          confidence_score: number | null
+          created_at: string
+          crisis_severity: number | null
+          decision_output: Json | null
+          founder_ethos_alignment: number | null
+          id: string
+          scenario_description: string | null
+          selected_path_rationale: string | null
+          simulation_outcome: string | null
+          simulation_type: string
+          validated_by_governance: boolean | null
+        }
+        Insert: {
+          alternative_paths?: number | null
+          capital_allocation_judgment?: Json | null
+          computed_at?: string
+          confidence_score?: number | null
+          created_at?: string
+          crisis_severity?: number | null
+          decision_output?: Json | null
+          founder_ethos_alignment?: number | null
+          id?: string
+          scenario_description?: string | null
+          selected_path_rationale?: string | null
+          simulation_outcome?: string | null
+          simulation_type?: string
+          validated_by_governance?: boolean | null
+        }
+        Update: {
+          alternative_paths?: number | null
+          capital_allocation_judgment?: Json | null
+          computed_at?: string
+          confidence_score?: number | null
+          created_at?: string
+          crisis_severity?: number | null
+          decision_output?: Json | null
+          founder_ethos_alignment?: number | null
+          id?: string
+          scenario_description?: string | null
+          selected_path_rationale?: string | null
+          simulation_outcome?: string | null
+          simulation_type?: string
+          validated_by_governance?: boolean | null
+        }
+        Relationships: []
+      }
+      afiba_legacy_governance: {
+        Row: {
+          audit_trail: Json | null
+          computed_at: string
+          corrective_action: Json | null
+          created_at: string
+          ethical_alignment_score: number | null
+          evolution_control_status: string | null
+          governance_type: string
+          guardian_council_approval: boolean | null
+          id: string
+          override_reason: string | null
+          override_required: boolean | null
+          review_period: string | null
+          risk_of_drift: string | null
+          strategic_consistency_score: number | null
+        }
+        Insert: {
+          audit_trail?: Json | null
+          computed_at?: string
+          corrective_action?: Json | null
+          created_at?: string
+          ethical_alignment_score?: number | null
+          evolution_control_status?: string | null
+          governance_type?: string
+          guardian_council_approval?: boolean | null
+          id?: string
+          override_reason?: string | null
+          override_required?: boolean | null
+          review_period?: string | null
+          risk_of_drift?: string | null
+          strategic_consistency_score?: number | null
+        }
+        Update: {
+          audit_trail?: Json | null
+          computed_at?: string
+          corrective_action?: Json | null
+          created_at?: string
+          ethical_alignment_score?: number | null
+          evolution_control_status?: string | null
+          governance_type?: string
+          guardian_council_approval?: boolean | null
+          id?: string
+          override_reason?: string | null
+          override_required?: boolean | null
+          review_period?: string | null
+          risk_of_drift?: string | null
+          strategic_consistency_score?: number | null
+        }
+        Relationships: []
+      }
+      afiba_strategic_memory: {
+        Row: {
+          compounding_factor: number | null
+          computed_at: string
+          created_at: string
+          deal_outcomes_linked: number | null
+          decade_span: string | null
+          id: string
+          institutional_relevance_score: number | null
+          knowledge_domain: string
+          last_retrieved_at: string | null
+          memory_content: Json | null
+          memory_epoch: number | null
+          memory_type: string
+          retrieval_frequency: number | null
+          strategic_advantage_index: number | null
+        }
+        Insert: {
+          compounding_factor?: number | null
+          computed_at?: string
+          created_at?: string
+          deal_outcomes_linked?: number | null
+          decade_span?: string | null
+          id?: string
+          institutional_relevance_score?: number | null
+          knowledge_domain?: string
+          last_retrieved_at?: string | null
+          memory_content?: Json | null
+          memory_epoch?: number | null
+          memory_type?: string
+          retrieval_frequency?: number | null
+          strategic_advantage_index?: number | null
+        }
+        Update: {
+          compounding_factor?: number | null
+          computed_at?: string
+          created_at?: string
+          deal_outcomes_linked?: number | null
+          decade_span?: string | null
+          id?: string
+          institutional_relevance_score?: number | null
+          knowledge_domain?: string
+          last_retrieved_at?: string | null
+          memory_content?: Json | null
+          memory_epoch?: number | null
+          memory_type?: string
+          retrieval_frequency?: number | null
+          strategic_advantage_index?: number | null
+        }
+        Relationships: []
+      }
+      afiba_vision_evolution: {
+        Row: {
+          alignment_with_original: number | null
+          approved_by_governance: boolean | null
+          computed_at: string
+          created_at: string
+          evolution_epoch: number | null
+          evolution_magnitude: string | null
+          evolution_trigger: string
+          id: string
+          intelligence_refinement: Json | null
+          market_reality: Json | null
+          societal_shift: Json | null
+          tech_breakthrough: Json | null
+          vision_drift_score: number | null
+        }
+        Insert: {
+          alignment_with_original?: number | null
+          approved_by_governance?: boolean | null
+          computed_at?: string
+          created_at?: string
+          evolution_epoch?: number | null
+          evolution_magnitude?: string | null
+          evolution_trigger?: string
+          id?: string
+          intelligence_refinement?: Json | null
+          market_reality?: Json | null
+          societal_shift?: Json | null
+          tech_breakthrough?: Json | null
+          vision_drift_score?: number | null
+        }
+        Update: {
+          alignment_with_original?: number | null
+          approved_by_governance?: boolean | null
+          computed_at?: string
+          created_at?: string
+          evolution_epoch?: number | null
+          evolution_magnitude?: string | null
+          evolution_trigger?: string
+          id?: string
+          intelligence_refinement?: Json | null
+          market_reality?: Json | null
+          societal_shift?: Json | null
+          tech_breakthrough?: Json | null
+          vision_drift_score?: number | null
+        }
+        Relationships: []
+      }
       agent_acquisition_pipeline: {
         Row: {
           activated_at: string | null
