@@ -14,6 +14,306 @@ export type Database = {
   }
   public: {
     Tables: {
+      aab_capital_rotation: {
+        Row: {
+          city: string
+          computed_at: string
+          country: string
+          created_at: string
+          cycle_phase: string
+          district: string | null
+          estimated_phase_remaining_months: number | null
+          id: string
+          liquidity_acceleration: number | null
+          mean_reversion_risk: number | null
+          momentum_score: number | null
+          phase_confidence: number | null
+          rotation_signal: string
+          signal_drivers: Json | null
+          time_in_phase_months: number | null
+        }
+        Insert: {
+          city: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          cycle_phase: string
+          district?: string | null
+          estimated_phase_remaining_months?: number | null
+          id?: string
+          liquidity_acceleration?: number | null
+          mean_reversion_risk?: number | null
+          momentum_score?: number | null
+          phase_confidence?: number | null
+          rotation_signal: string
+          signal_drivers?: Json | null
+          time_in_phase_months?: number | null
+        }
+        Update: {
+          city?: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          cycle_phase?: string
+          district?: string | null
+          estimated_phase_remaining_months?: number | null
+          id?: string
+          liquidity_acceleration?: number | null
+          mean_reversion_risk?: number | null
+          momentum_score?: number | null
+          phase_confidence?: number | null
+          rotation_signal?: string
+          signal_drivers?: Json | null
+          time_in_phase_months?: number | null
+        }
+        Relationships: []
+      }
+      aab_portfolio_gravity: {
+        Row: {
+          capital_mass: number | null
+          city: string
+          clustering_coefficient: number | null
+          computed_at: string
+          country: string
+          created_at: string
+          district: string | null
+          gravity_pull_score: number | null
+          gravity_tier: string | null
+          id: string
+          investor_density: number | null
+          is_saturated: boolean | null
+          network_liquidity_score: number | null
+          network_reinforcement_active: boolean | null
+          saturation_index: number | null
+          saturation_threshold: number | null
+          simulation_data: Json | null
+        }
+        Insert: {
+          capital_mass?: number | null
+          city: string
+          clustering_coefficient?: number | null
+          computed_at?: string
+          country?: string
+          created_at?: string
+          district?: string | null
+          gravity_pull_score?: number | null
+          gravity_tier?: string | null
+          id?: string
+          investor_density?: number | null
+          is_saturated?: boolean | null
+          network_liquidity_score?: number | null
+          network_reinforcement_active?: boolean | null
+          saturation_index?: number | null
+          saturation_threshold?: number | null
+          simulation_data?: Json | null
+        }
+        Update: {
+          capital_mass?: number | null
+          city?: string
+          clustering_coefficient?: number | null
+          computed_at?: string
+          country?: string
+          created_at?: string
+          district?: string | null
+          gravity_pull_score?: number | null
+          gravity_tier?: string | null
+          id?: string
+          investor_density?: number | null
+          is_saturated?: boolean | null
+          network_liquidity_score?: number | null
+          network_reinforcement_active?: boolean | null
+          saturation_index?: number | null
+          saturation_threshold?: number | null
+          simulation_data?: Json | null
+        }
+        Relationships: []
+      }
+      aab_rebalance_signals: {
+        Row: {
+          action_recommendation: string | null
+          allocation_delta_pct: number | null
+          city: string
+          confidence: number | null
+          country: string
+          created_at: string
+          current_allocation_pct: number | null
+          district: string | null
+          executed_at: string | null
+          id: string
+          is_executed: boolean | null
+          recommended_allocation_pct: number | null
+          risk_if_ignored: string | null
+          signal_type: string
+          trigger_reason: string
+          urgency: string
+        }
+        Insert: {
+          action_recommendation?: string | null
+          allocation_delta_pct?: number | null
+          city: string
+          confidence?: number | null
+          country?: string
+          created_at?: string
+          current_allocation_pct?: number | null
+          district?: string | null
+          executed_at?: string | null
+          id?: string
+          is_executed?: boolean | null
+          recommended_allocation_pct?: number | null
+          risk_if_ignored?: string | null
+          signal_type: string
+          trigger_reason: string
+          urgency: string
+        }
+        Update: {
+          action_recommendation?: string | null
+          allocation_delta_pct?: number | null
+          city?: string
+          confidence?: number | null
+          country?: string
+          created_at?: string
+          current_allocation_pct?: number | null
+          district?: string | null
+          executed_at?: string | null
+          id?: string
+          is_executed?: boolean | null
+          recommended_allocation_pct?: number | null
+          risk_if_ignored?: string | null
+          signal_type?: string
+          trigger_reason?: string
+          urgency?: string
+        }
+        Relationships: []
+      }
+      aab_syndication_opportunities: {
+        Row: {
+          city: string
+          co_investors_committed: number | null
+          co_investors_target: number | null
+          country: string
+          created_at: string
+          deal_thesis: string | null
+          district: string | null
+          expected_irr_pct: number | null
+          expected_multiple: number | null
+          hold_period_years: number | null
+          id: string
+          identified_at: string | null
+          market_timing_score: number | null
+          minimum_ticket_usd: number | null
+          opportunity_name: string
+          risk_rating: string | null
+          status: string | null
+          syndication_type: string
+          target_capital_usd: number | null
+          updated_at: string
+        }
+        Insert: {
+          city: string
+          co_investors_committed?: number | null
+          co_investors_target?: number | null
+          country?: string
+          created_at?: string
+          deal_thesis?: string | null
+          district?: string | null
+          expected_irr_pct?: number | null
+          expected_multiple?: number | null
+          hold_period_years?: number | null
+          id?: string
+          identified_at?: string | null
+          market_timing_score?: number | null
+          minimum_ticket_usd?: number | null
+          opportunity_name: string
+          risk_rating?: string | null
+          status?: string | null
+          syndication_type: string
+          target_capital_usd?: number | null
+          updated_at?: string
+        }
+        Update: {
+          city?: string
+          co_investors_committed?: number | null
+          co_investors_target?: number | null
+          country?: string
+          created_at?: string
+          deal_thesis?: string | null
+          district?: string | null
+          expected_irr_pct?: number | null
+          expected_multiple?: number | null
+          hold_period_years?: number | null
+          id?: string
+          identified_at?: string | null
+          market_timing_score?: number | null
+          minimum_ticket_usd?: number | null
+          opportunity_name?: string
+          risk_rating?: string | null
+          status?: string | null
+          syndication_type?: string
+          target_capital_usd?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      aab_yield_optimizer: {
+        Row: {
+          blended_yield: number | null
+          capital_appreciation_yield: number | null
+          cashflow_yield: number | null
+          city: string
+          computed_at: string
+          country: string
+          created_at: string
+          currency_exposure_factor: number | null
+          district: string | null
+          id: string
+          liquidity_premium: number | null
+          optimal_hold_period_months: number | null
+          optimization_strategy: string | null
+          recommended_allocation_pct: number | null
+          risk_adjusted_yield: number | null
+          volatility_discount: number | null
+          yield_tier: string | null
+        }
+        Insert: {
+          blended_yield?: number | null
+          capital_appreciation_yield?: number | null
+          cashflow_yield?: number | null
+          city: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          currency_exposure_factor?: number | null
+          district?: string | null
+          id?: string
+          liquidity_premium?: number | null
+          optimal_hold_period_months?: number | null
+          optimization_strategy?: string | null
+          recommended_allocation_pct?: number | null
+          risk_adjusted_yield?: number | null
+          volatility_discount?: number | null
+          yield_tier?: string | null
+        }
+        Update: {
+          blended_yield?: number | null
+          capital_appreciation_yield?: number | null
+          cashflow_yield?: number | null
+          city?: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          currency_exposure_factor?: number | null
+          district?: string | null
+          id?: string
+          liquidity_premium?: number | null
+          optimal_hold_period_months?: number | null
+          optimization_strategy?: string | null
+          recommended_allocation_pct?: number | null
+          risk_adjusted_yield?: number | null
+          volatility_discount?: number | null
+          yield_tier?: string | null
+        }
+        Relationships: []
+      }
       account_lockouts: {
         Row: {
           created_at: string | null
