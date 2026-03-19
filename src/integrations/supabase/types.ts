@@ -1880,6 +1880,48 @@ export type Database = {
         }
         Relationships: []
       }
+      agent_response_tracking: {
+        Row: {
+          agent_id: string
+          alert_triggered: boolean | null
+          alert_triggered_at: string | null
+          created_at: string
+          id: string
+          inquiry_id: string | null
+          inquiry_type: string
+          is_overdue: boolean | null
+          received_at: string
+          responded_at: string | null
+          response_time_minutes: number | null
+        }
+        Insert: {
+          agent_id: string
+          alert_triggered?: boolean | null
+          alert_triggered_at?: string | null
+          created_at?: string
+          id?: string
+          inquiry_id?: string | null
+          inquiry_type?: string
+          is_overdue?: boolean | null
+          received_at?: string
+          responded_at?: string | null
+          response_time_minutes?: number | null
+        }
+        Update: {
+          agent_id?: string
+          alert_triggered?: boolean | null
+          alert_triggered_at?: string | null
+          created_at?: string
+          id?: string
+          inquiry_id?: string | null
+          inquiry_type?: string
+          is_overdue?: boolean | null
+          received_at?: string
+          responded_at?: string | null
+          response_time_minutes?: number | null
+        }
+        Relationships: []
+      }
       agent_reviews: {
         Row: {
           admin_approved: boolean | null
@@ -9164,6 +9206,96 @@ export type Database = {
         }
         Relationships: []
       }
+      dispute_cases: {
+        Row: {
+          assigned_to: string | null
+          case_number: string
+          complainant_id: string
+          created_at: string
+          description: string | null
+          dispute_type: string
+          escalated_at: string | null
+          evidence_urls: Json | null
+          id: string
+          metadata: Json | null
+          priority: string
+          related_escrow_id: string | null
+          related_offer_id: string | null
+          related_property_id: string | null
+          resolution_amount: number | null
+          resolution_notes: string | null
+          resolution_type: string | null
+          resolved_at: string | null
+          respondent_id: string | null
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          case_number?: string
+          complainant_id: string
+          created_at?: string
+          description?: string | null
+          dispute_type?: string
+          escalated_at?: string | null
+          evidence_urls?: Json | null
+          id?: string
+          metadata?: Json | null
+          priority?: string
+          related_escrow_id?: string | null
+          related_offer_id?: string | null
+          related_property_id?: string | null
+          resolution_amount?: number | null
+          resolution_notes?: string | null
+          resolution_type?: string | null
+          resolved_at?: string | null
+          respondent_id?: string | null
+          status?: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          case_number?: string
+          complainant_id?: string
+          created_at?: string
+          description?: string | null
+          dispute_type?: string
+          escalated_at?: string | null
+          evidence_urls?: Json | null
+          id?: string
+          metadata?: Json | null
+          priority?: string
+          related_escrow_id?: string | null
+          related_offer_id?: string | null
+          related_property_id?: string | null
+          resolution_amount?: number | null
+          resolution_notes?: string | null
+          resolution_type?: string | null
+          resolved_at?: string | null
+          respondent_id?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dispute_cases_related_escrow_id_fkey"
+            columns: ["related_escrow_id"]
+            isOneToOne: false
+            referencedRelation: "escrow_transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dispute_cases_related_offer_id_fkey"
+            columns: ["related_offer_id"]
+            isOneToOne: false
+            referencedRelation: "property_offers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       document_audit_trail: {
         Row: {
           action: string
@@ -9569,6 +9701,101 @@ export type Database = {
           user_ip?: unknown
         }
         Relationships: []
+      }
+      escrow_transactions: {
+        Row: {
+          agent_id: string | null
+          buyer_id: string
+          created_at: string
+          currency: string
+          escrow_amount: number
+          funds_received_at: string | null
+          funds_released_at: string | null
+          gateway_status: string | null
+          gateway_transaction_id: string | null
+          id: string
+          initiated_at: string | null
+          legal_notes: string | null
+          legal_verification_status: string | null
+          legal_verified_at: string | null
+          legal_verified_by: string | null
+          metadata: Json | null
+          offer_id: string | null
+          payment_gateway: string | null
+          payment_method: string | null
+          payment_proof_url: string | null
+          property_id: string
+          refund_reason: string | null
+          refunded_at: string | null
+          seller_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          agent_id?: string | null
+          buyer_id: string
+          created_at?: string
+          currency?: string
+          escrow_amount: number
+          funds_received_at?: string | null
+          funds_released_at?: string | null
+          gateway_status?: string | null
+          gateway_transaction_id?: string | null
+          id?: string
+          initiated_at?: string | null
+          legal_notes?: string | null
+          legal_verification_status?: string | null
+          legal_verified_at?: string | null
+          legal_verified_by?: string | null
+          metadata?: Json | null
+          offer_id?: string | null
+          payment_gateway?: string | null
+          payment_method?: string | null
+          payment_proof_url?: string | null
+          property_id: string
+          refund_reason?: string | null
+          refunded_at?: string | null
+          seller_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          agent_id?: string | null
+          buyer_id?: string
+          created_at?: string
+          currency?: string
+          escrow_amount?: number
+          funds_received_at?: string | null
+          funds_released_at?: string | null
+          gateway_status?: string | null
+          gateway_transaction_id?: string | null
+          id?: string
+          initiated_at?: string | null
+          legal_notes?: string | null
+          legal_verification_status?: string | null
+          legal_verified_at?: string | null
+          legal_verified_by?: string | null
+          metadata?: Json | null
+          offer_id?: string | null
+          payment_gateway?: string | null
+          payment_method?: string | null
+          payment_proof_url?: string | null
+          property_id?: string
+          refund_reason?: string | null
+          refunded_at?: string | null
+          seller_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escrow_transactions_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "property_offers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       event_registrations: {
         Row: {
@@ -14963,6 +15190,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      listing_expiry_schedule: {
+        Row: {
+          action_executed: boolean | null
+          action_executed_at: string | null
+          auto_action: string
+          created_at: string
+          expires_at: string
+          id: string
+          owner_id: string
+          property_id: string
+          renewal_requested: boolean | null
+          updated_at: string
+          warning_sent: boolean | null
+          warning_sent_at: string | null
+        }
+        Insert: {
+          action_executed?: boolean | null
+          action_executed_at?: string | null
+          auto_action?: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          owner_id: string
+          property_id: string
+          renewal_requested?: boolean | null
+          updated_at?: string
+          warning_sent?: boolean | null
+          warning_sent_at?: string | null
+        }
+        Update: {
+          action_executed?: boolean | null
+          action_executed_at?: string | null
+          auto_action?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          owner_id?: string
+          property_id?: string
+          renewal_requested?: boolean | null
+          updated_at?: string
+          warning_sent?: boolean | null
+          warning_sent_at?: string | null
+        }
+        Relationships: []
       }
       listing_improvement_tips: {
         Row: {
@@ -23600,11 +23872,17 @@ export type Database = {
           completion_timeline: string | null
           counter_price: number | null
           created_at: string
+          deal_closed_at: string | null
+          deal_stage: string | null
+          deal_state_history: Json | null
+          escrow_id: string | null
           expired_at: string | null
           financing_method: string
           id: string
+          legal_verified_at: string | null
           metadata: Json | null
           offer_price: number
+          payment_initiated_at: string | null
           property_id: string
           property_image: string | null
           property_original_price: number | null
@@ -23613,6 +23891,7 @@ export type Database = {
           seller_id: string | null
           status: string
           updated_at: string
+          viewing_id: string | null
         }
         Insert: {
           accepted_at?: string | null
@@ -23623,11 +23902,17 @@ export type Database = {
           completion_timeline?: string | null
           counter_price?: number | null
           created_at?: string
+          deal_closed_at?: string | null
+          deal_stage?: string | null
+          deal_state_history?: Json | null
+          escrow_id?: string | null
           expired_at?: string | null
           financing_method?: string
           id?: string
+          legal_verified_at?: string | null
           metadata?: Json | null
           offer_price: number
+          payment_initiated_at?: string | null
           property_id: string
           property_image?: string | null
           property_original_price?: number | null
@@ -23636,6 +23921,7 @@ export type Database = {
           seller_id?: string | null
           status?: string
           updated_at?: string
+          viewing_id?: string | null
         }
         Update: {
           accepted_at?: string | null
@@ -23646,11 +23932,17 @@ export type Database = {
           completion_timeline?: string | null
           counter_price?: number | null
           created_at?: string
+          deal_closed_at?: string | null
+          deal_stage?: string | null
+          deal_state_history?: Json | null
+          escrow_id?: string | null
           expired_at?: string | null
           financing_method?: string
           id?: string
+          legal_verified_at?: string | null
           metadata?: Json | null
           offer_price?: number
+          payment_initiated_at?: string | null
           property_id?: string
           property_image?: string | null
           property_original_price?: number | null
@@ -23659,6 +23951,7 @@ export type Database = {
           seller_id?: string | null
           status?: string
           updated_at?: string
+          viewing_id?: string | null
         }
         Relationships: [
           {
@@ -24816,6 +25109,84 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      property_viewings: {
+        Row: {
+          agent_id: string
+          agent_notes: string | null
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          completed_at: string | null
+          confirmed_at: string | null
+          created_at: string
+          duration_minutes: number | null
+          feedback_rating: number | null
+          feedback_text: string | null
+          id: string
+          investor_id: string
+          investor_notes: string | null
+          location_notes: string | null
+          metadata: Json | null
+          offer_probability: number | null
+          offer_triggered: boolean | null
+          property_id: string
+          reminder_sent: boolean | null
+          scheduled_at: string
+          status: string
+          updated_at: string
+          viewing_type: string
+        }
+        Insert: {
+          agent_id: string
+          agent_notes?: string | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          completed_at?: string | null
+          confirmed_at?: string | null
+          created_at?: string
+          duration_minutes?: number | null
+          feedback_rating?: number | null
+          feedback_text?: string | null
+          id?: string
+          investor_id: string
+          investor_notes?: string | null
+          location_notes?: string | null
+          metadata?: Json | null
+          offer_probability?: number | null
+          offer_triggered?: boolean | null
+          property_id: string
+          reminder_sent?: boolean | null
+          scheduled_at: string
+          status?: string
+          updated_at?: string
+          viewing_type?: string
+        }
+        Update: {
+          agent_id?: string
+          agent_notes?: string | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          completed_at?: string | null
+          confirmed_at?: string | null
+          created_at?: string
+          duration_minutes?: number | null
+          feedback_rating?: number | null
+          feedback_text?: string | null
+          id?: string
+          investor_id?: string
+          investor_notes?: string | null
+          location_notes?: string | null
+          metadata?: Json | null
+          offer_probability?: number | null
+          offer_triggered?: boolean | null
+          property_id?: string
+          reminder_sent?: boolean | null
+          scheduled_at?: string
+          status?: string
+          updated_at?: string
+          viewing_type?: string
+        }
+        Relationships: []
       }
       property_visits: {
         Row: {
@@ -30193,61 +30564,97 @@ export type Database = {
       }
       transaction_commissions: {
         Row: {
+          affiliate_reward_amount: number | null
+          agent_split_amount: number | null
+          approved_at: string | null
+          approved_by: string | null
           buyer_id: string | null
           commission_amount: number
           commission_rate: number
+          commission_type: string | null
           created_at: string
           gross_amount: number
           hold_until: string | null
           id: string
           metadata: Json | null
           net_amount: number
+          offer_id: string | null
+          paid_at: string | null
+          payment_reference: string | null
           payout_id: string | null
+          platform_fee_amount: number | null
+          referral_id: string | null
           released_at: string | null
           seller_id: string
+          settlement_status: string | null
           status: string
           tax_amount: number | null
           transaction_id: string
           transaction_type: string
           updated_at: string
+          vendor_service_fee: number | null
         }
         Insert: {
+          affiliate_reward_amount?: number | null
+          agent_split_amount?: number | null
+          approved_at?: string | null
+          approved_by?: string | null
           buyer_id?: string | null
           commission_amount: number
           commission_rate: number
+          commission_type?: string | null
           created_at?: string
           gross_amount: number
           hold_until?: string | null
           id?: string
           metadata?: Json | null
           net_amount: number
+          offer_id?: string | null
+          paid_at?: string | null
+          payment_reference?: string | null
           payout_id?: string | null
+          platform_fee_amount?: number | null
+          referral_id?: string | null
           released_at?: string | null
           seller_id: string
+          settlement_status?: string | null
           status?: string
           tax_amount?: number | null
           transaction_id: string
           transaction_type: string
           updated_at?: string
+          vendor_service_fee?: number | null
         }
         Update: {
+          affiliate_reward_amount?: number | null
+          agent_split_amount?: number | null
+          approved_at?: string | null
+          approved_by?: string | null
           buyer_id?: string | null
           commission_amount?: number
           commission_rate?: number
+          commission_type?: string | null
           created_at?: string
           gross_amount?: number
           hold_until?: string | null
           id?: string
           metadata?: Json | null
           net_amount?: number
+          offer_id?: string | null
+          paid_at?: string | null
+          payment_reference?: string | null
           payout_id?: string | null
+          platform_fee_amount?: number | null
+          referral_id?: string | null
           released_at?: string | null
           seller_id?: string
+          settlement_status?: string | null
           status?: string
           tax_amount?: number | null
           transaction_id?: string
           transaction_type?: string
           updated_at?: string
+          vendor_service_fee?: number | null
         }
         Relationships: []
       }
@@ -32889,6 +33296,7 @@ export type Database = {
       }
       vendor_business_profiles: {
         Row: {
+          avg_response_minutes: number | null
           banner_url: string | null
           bpjs_kesehatan_status: string | null
           bpjs_kesehatan_verified: boolean | null
@@ -32918,6 +33326,7 @@ export type Database = {
           certifications: Json | null
           compliance_documents: Json | null
           created_at: string | null
+          deal_conversion_rate: number | null
           floor_unit: string | null
           gallery_images: Json | null
           gps_address: string | null
@@ -32928,6 +33337,7 @@ export type Database = {
           is_verified: boolean | null
           ktp_verified: boolean | null
           landmark: string | null
+          last_active_at: string | null
           last_nature_change_at: string | null
           license_number: string | null
           logo_url: string | null
@@ -32951,12 +33361,15 @@ export type Database = {
           tarif_harian_max: number | null
           tarif_harian_min: number | null
           tax_id: string | null
+          total_deals_closed: number | null
+          total_leads_received: number | null
           total_reviews: number | null
           updated_at: string | null
           vendor_id: string | null
           verification_completed_at: string | null
         }
         Insert: {
+          avg_response_minutes?: number | null
           banner_url?: string | null
           bpjs_kesehatan_status?: string | null
           bpjs_kesehatan_verified?: boolean | null
@@ -32986,6 +33399,7 @@ export type Database = {
           certifications?: Json | null
           compliance_documents?: Json | null
           created_at?: string | null
+          deal_conversion_rate?: number | null
           floor_unit?: string | null
           gallery_images?: Json | null
           gps_address?: string | null
@@ -32996,6 +33410,7 @@ export type Database = {
           is_verified?: boolean | null
           ktp_verified?: boolean | null
           landmark?: string | null
+          last_active_at?: string | null
           last_nature_change_at?: string | null
           license_number?: string | null
           logo_url?: string | null
@@ -33019,12 +33434,15 @@ export type Database = {
           tarif_harian_max?: number | null
           tarif_harian_min?: number | null
           tax_id?: string | null
+          total_deals_closed?: number | null
+          total_leads_received?: number | null
           total_reviews?: number | null
           updated_at?: string | null
           vendor_id?: string | null
           verification_completed_at?: string | null
         }
         Update: {
+          avg_response_minutes?: number | null
           banner_url?: string | null
           bpjs_kesehatan_status?: string | null
           bpjs_kesehatan_verified?: boolean | null
@@ -33054,6 +33472,7 @@ export type Database = {
           certifications?: Json | null
           compliance_documents?: Json | null
           created_at?: string | null
+          deal_conversion_rate?: number | null
           floor_unit?: string | null
           gallery_images?: Json | null
           gps_address?: string | null
@@ -33064,6 +33483,7 @@ export type Database = {
           is_verified?: boolean | null
           ktp_verified?: boolean | null
           landmark?: string | null
+          last_active_at?: string | null
           last_nature_change_at?: string | null
           license_number?: string | null
           logo_url?: string | null
@@ -33087,6 +33507,8 @@ export type Database = {
           tarif_harian_max?: number | null
           tarif_harian_min?: number | null
           tax_id?: string | null
+          total_deals_closed?: number | null
+          total_leads_received?: number | null
           total_reviews?: number | null
           updated_at?: string | null
           vendor_id?: string | null
@@ -33949,6 +34371,87 @@ export type Database = {
             columns: ["verified_by"]
             isOneToOne: false
             referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_leads_pipeline: {
+        Row: {
+          client_email: string | null
+          client_name: string | null
+          client_phone: string | null
+          converted_at: string | null
+          created_at: string
+          deal_value: number | null
+          first_response_at: string | null
+          id: string
+          lead_source: string
+          lead_type: string
+          lost_reason: string | null
+          metadata: Json | null
+          notes: string | null
+          priority: string
+          property_id: string | null
+          service_id: string | null
+          status: string
+          updated_at: string
+          vendor_id: string
+        }
+        Insert: {
+          client_email?: string | null
+          client_name?: string | null
+          client_phone?: string | null
+          converted_at?: string | null
+          created_at?: string
+          deal_value?: number | null
+          first_response_at?: string | null
+          id?: string
+          lead_source?: string
+          lead_type?: string
+          lost_reason?: string | null
+          metadata?: Json | null
+          notes?: string | null
+          priority?: string
+          property_id?: string | null
+          service_id?: string | null
+          status?: string
+          updated_at?: string
+          vendor_id: string
+        }
+        Update: {
+          client_email?: string | null
+          client_name?: string | null
+          client_phone?: string | null
+          converted_at?: string | null
+          created_at?: string
+          deal_value?: number | null
+          first_response_at?: string | null
+          id?: string
+          lead_source?: string
+          lead_type?: string
+          lost_reason?: string | null
+          metadata?: Json | null
+          notes?: string | null
+          priority?: string
+          property_id?: string | null
+          service_id?: string | null
+          status?: string
+          updated_at?: string
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_leads_pipeline_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_services"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_leads_pipeline_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_business_profiles"
             referencedColumns: ["id"]
           },
         ]

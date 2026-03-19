@@ -127,6 +127,7 @@ const SelfOptimizingEcosystem = lazy(() => import('@/pages/SelfOptimizingEcosyst
 const InvestorAcquisitionFunnel = lazy(() => import('@/pages/InvestorAcquisitionFunnel'));
 const ListingSEOTrafficEngine = lazy(() => import('@/pages/ListingSEOTrafficEngine'));
 const PropertyContentEngine = lazy(() => import('@/pages/PropertyContentEngine'));
+const MarketplaceEvolution = lazy(() => import('@/pages/MarketplaceEvolution'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
@@ -465,6 +466,7 @@ const AppContent = () => {
                 <Route path="/investor-funnel" element={<InvestorAcquisitionFunnel />} />
                 <Route path="/seo-traffic-engine" element={<ListingSEOTrafficEngine />} />
                 <Route path="/content-engine" element={<PropertyContentEngine />} />
+                <Route path="/marketplace-evolution" element={<MarketplaceEvolution />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
