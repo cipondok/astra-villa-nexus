@@ -12693,6 +12693,51 @@ export type Database = {
           },
         ]
       }
+      investor_credibility: {
+        Row: {
+          deals_shared: number
+          follower_count: number
+          following_count: number
+          id: string
+          reputation_score: number
+          successful_referrals: number
+          tier: string
+          total_likes_received: number
+          total_saves_received: number
+          updated_at: string
+          user_id: string
+          verified_transactions: number
+        }
+        Insert: {
+          deals_shared?: number
+          follower_count?: number
+          following_count?: number
+          id?: string
+          reputation_score?: number
+          successful_referrals?: number
+          tier?: string
+          total_likes_received?: number
+          total_saves_received?: number
+          updated_at?: string
+          user_id: string
+          verified_transactions?: number
+        }
+        Update: {
+          deals_shared?: number
+          follower_count?: number
+          following_count?: number
+          id?: string
+          reputation_score?: number
+          successful_referrals?: number
+          tier?: string
+          total_likes_received?: number
+          total_saves_received?: number
+          updated_at?: string
+          user_id?: string
+          verified_transactions?: number
+        }
+        Relationships: []
+      }
       investor_deal_access: {
         Row: {
           access_type: string | null
@@ -12907,6 +12952,27 @@ export type Database = {
         }
         Relationships: []
       }
+      investor_follows: {
+        Row: {
+          created_at: string
+          follower_id: string
+          following_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          follower_id: string
+          following_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          following_id?: string
+          id?: string
+        }
+        Relationships: []
+      }
       investor_portfolio_snapshots: {
         Row: {
           created_at: string | null
@@ -12945,6 +13011,181 @@ export type Database = {
           total_value?: number | null
         }
         Relationships: []
+      }
+      investor_post_comments: {
+        Row: {
+          author_id: string
+          content: string
+          created_at: string
+          id: string
+          likes_count: number
+          parent_comment_id: string | null
+          post_id: string
+        }
+        Insert: {
+          author_id: string
+          content: string
+          created_at?: string
+          id?: string
+          likes_count?: number
+          parent_comment_id?: string | null
+          post_id: string
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          likes_count?: number
+          parent_comment_id?: string | null
+          post_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_post_comments_parent_comment_id_fkey"
+            columns: ["parent_comment_id"]
+            isOneToOne: false
+            referencedRelation: "investor_post_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "investor_post_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "investor_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      investor_post_likes: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_post_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "investor_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      investor_post_saves: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_post_saves_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "investor_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      investor_posts: {
+        Row: {
+          author_id: string
+          comments_count: number
+          content: string
+          created_at: string
+          id: string
+          is_elite: boolean
+          is_moderated: boolean
+          likes_count: number
+          moderation_status: string
+          post_type: Database["public"]["Enums"]["social_post_type"]
+          property_id: string | null
+          saves_count: number
+          tags: string[] | null
+          title: string
+          updated_at: string
+          views_count: number
+        }
+        Insert: {
+          author_id: string
+          comments_count?: number
+          content: string
+          created_at?: string
+          id?: string
+          is_elite?: boolean
+          is_moderated?: boolean
+          likes_count?: number
+          moderation_status?: string
+          post_type?: Database["public"]["Enums"]["social_post_type"]
+          property_id?: string | null
+          saves_count?: number
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          views_count?: number
+        }
+        Update: {
+          author_id?: string
+          comments_count?: number
+          content?: string
+          created_at?: string
+          id?: string
+          is_elite?: boolean
+          is_moderated?: boolean
+          likes_count?: number
+          moderation_status?: string
+          post_type?: Database["public"]["Enums"]["social_post_type"]
+          property_id?: string | null
+          saves_count?: number
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          views_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_posts_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "investor_posts_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       investor_profiles: {
         Row: {
@@ -37249,6 +37490,7 @@ export type Database = {
         | "per_item"
         | "daily"
         | "fixed"
+      social_post_type: "opportunity" | "insight" | "discussion" | "watchlist"
       team_department:
         | "technology"
         | "product"
@@ -37516,6 +37758,7 @@ export const Constants = {
         "smart_home_installer",
       ],
       pricing_model: ["hourly", "sqm", "project", "per_item", "daily", "fixed"],
+      social_post_type: ["opportunity", "insight", "discussion", "watchlist"],
       team_department: [
         "technology",
         "product",

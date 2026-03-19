@@ -2,176 +2,177 @@ import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Users, TrendingUp, Award, MessageCircle, Heart, Bookmark, Share2,
-  MapPin, Shield, Crown, Star, Filter, Search, Send, ChevronUp,
-  Eye, Flame, ArrowUpRight, BadgeCheck, Sparkles, Globe, Target
+  MapPin, Shield, Crown, Star, Search, Send, Eye, Flame,
+  ArrowUpRight, BadgeCheck, Sparkles, Globe, Target, UserPlus, UserCheck, Loader2,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useAuth } from '@/contexts/AuthContext';
+import { cn } from '@/lib/utils';
+import { formatDistanceToNow } from 'date-fns';
+import {
+  useSocialFeed, useCreatePost, useToggleLike, useToggleSave,
+  useToggleFollow, usePostComments, useAddComment, useInvestorLeaderboard,
+  type SocialPost, type InvestorProfile,
+} from '@/hooks/useInvestorSocial';
 
-// ─── Types ───────────────────────────────────────────────────────────
-interface InvestorUser {
-  id: string;
-  name: string;
-  initials: string;
-  verified: boolean;
-  tier: 'elite' | 'pro' | 'member';
-  interests: string[];
-  cities: string[];
-  strategy: string;
-  deals_shared: number;
-  reputation: number;
-  joined: string;
-}
-
-interface DealPost {
-  id: string;
-  author: InvestorUser;
-  type: 'opportunity' | 'insight' | 'discussion' | 'watchlist';
-  title: string;
-  content: string;
-  property?: { title: string; location: string; price: string; roi: string; type: string };
-  tags: string[];
-  likes: number;
-  comments: number;
-  saves: number;
-  views: number;
-  is_elite: boolean;
-  created_at: string;
-  user_liked: boolean;
-  user_saved: boolean;
-}
-
-interface TrendingZone {
-  zone: string;
-  city: string;
-  threads: number;
-  sentiment: 'bullish' | 'bearish' | 'neutral';
-  heat: number;
-  top_comment: string;
-}
-
-// ─── Mock Data ───────────────────────────────────────────────────────
-const INVESTORS: InvestorUser[] = [
-  { id: '1', name: 'Andi Wijaya', initials: 'AW', verified: true, tier: 'elite', interests: ['Villa', 'Land Banking', 'Luxury'], cities: ['Bali', 'Jakarta'], strategy: 'High-yield luxury villa accumulation in premium tourist corridors', deals_shared: 47, reputation: 96, joined: '2023-06' },
-  { id: '2', name: 'Sarah Chen', initials: 'SC', verified: true, tier: 'pro', interests: ['Apartment', 'Rental Income', 'Commercial'], cities: ['Jakarta', 'BSD City'], strategy: 'Cash-flow optimized residential portfolio in growth corridors', deals_shared: 32, reputation: 88, joined: '2024-01' },
-  { id: '3', name: 'Budi Hartono', initials: 'BH', verified: true, tier: 'elite', interests: ['Development', 'Land', 'Infrastructure'], cities: ['Surabaya', 'Makassar'], strategy: 'Infrastructure-adjacent land plays in Tier 2 cities', deals_shared: 55, reputation: 94, joined: '2023-03' },
-  { id: '4', name: 'Maya Lestari', initials: 'ML', verified: false, tier: 'member', interests: ['Residential', 'First-time'], cities: ['Bandung'], strategy: 'Building first residential portfolio', deals_shared: 8, reputation: 62, joined: '2024-09' },
-  { id: '5', name: 'Reza Pratama', initials: 'RP', verified: true, tier: 'pro', interests: ['Villa', 'Short-term Rental'], cities: ['Bali', 'Yogyakarta'], strategy: 'Airbnb-optimized villa portfolio in cultural tourism hubs', deals_shared: 28, reputation: 82, joined: '2024-03' },
-];
-
-const DEAL_POSTS: DealPost[] = [
-  {
-    id: 'p1', author: INVESTORS[0], type: 'opportunity', title: 'Hidden gem in Canggu — 800m² freehold below market',
-    content: 'Just came across this plot on the north side of Canggu. Owner relocating and priced 15% below comparable lots. Infrastructure development nearby (new bypass road Q2 2026) will likely push appreciation 25-30% within 18 months. Due diligence complete — clean title, IMB ready.',
-    property: { title: 'Canggu North Freehold Land', location: 'Canggu, Bali', price: 'Rp 4.2B', roi: '25-30%', type: 'Land' },
-    tags: ['Freehold', 'Below Market', 'Infrastructure Play'], likes: 142, comments: 38, saves: 67, views: 1240, is_elite: true, created_at: '2h ago', user_liked: false, user_saved: false,
-  },
-  {
-    id: 'p2', author: INVESTORS[2], type: 'insight', title: 'Surabaya East corridor — the next BSD City?',
-    content: 'Tracking developer activity in Surabaya East for 6 months now. 3 major developers have quietly acquired 200+ hectares. Toll road connection completing Dec 2025. Price per m² still 40% below Jakarta satellite cities. This is a 3-5 year infrastructure thesis with significant upside.',
-    tags: ['Surabaya', 'Infrastructure', 'Long-term'], likes: 89, comments: 24, saves: 45, views: 890, is_elite: true, created_at: '5h ago', user_liked: true, user_saved: false,
-  },
-  {
-    id: 'p3', author: INVESTORS[1], type: 'opportunity', title: 'Off-market apartment unit in SCBD — 8.2% gross yield',
-    content: 'Corporate tenant leaving in March. Owner wants quick sale. Current rent Rp 180M/year on Rp 2.2B asking price = 8.2% gross yield. Similar units trading at Rp 2.5-2.8B. Furnished, high floor, city view.',
-    property: { title: 'SCBD Luxury Apartment', location: 'SCBD, Jakarta', price: 'Rp 2.2B', roi: '8.2%', type: 'Apartment' },
-    tags: ['Off-Market', 'High Yield', 'SCBD'], likes: 76, comments: 19, saves: 34, views: 650, is_elite: false, created_at: '8h ago', user_liked: false, user_saved: true,
-  },
-  {
-    id: 'p4', author: INVESTORS[4], type: 'discussion', title: 'Bali villa market — peak or more room to run?',
-    content: 'Seeing mixed signals. Occupancy still strong at 78% avg but new supply accelerating. Curious what others think — are we approaching oversupply in Seminyak/Canggu or does post-COVID tourism demand sustain another 2 years of growth?',
-    tags: ['Bali', 'Villa', 'Market Cycle'], likes: 134, comments: 56, saves: 23, views: 1560, is_elite: false, created_at: '1d ago', user_liked: false, user_saved: false,
-  },
-  {
-    id: 'p5', author: INVESTORS[3], type: 'watchlist', title: 'Bandung student housing — shared watchlist idea',
-    content: 'Creating a watchlist around Bandung university district properties. ITB expansion + new LRT line should drive rental demand. Looking for 2BR apartments under Rp 800M within 1km of campus. Anyone want to collaborate on due diligence?',
-    tags: ['Bandung', 'Student Housing', 'Collaborative'], likes: 45, comments: 12, saves: 18, views: 320, is_elite: false, created_at: '1d ago', user_liked: false, user_saved: false,
-  },
-];
-
-const TRENDING_ZONES: TrendingZone[] = [
-  { zone: 'Canggu North', city: 'Bali', threads: 24, sentiment: 'bullish', heat: 92, top_comment: 'Bypass road construction confirmed for Q2 2026 — land prices moving fast' },
-  { zone: 'Surabaya East', city: 'Surabaya', threads: 18, sentiment: 'bullish', heat: 85, top_comment: 'Three major developers acquiring land — infrastructure thesis playing out' },
-  { zone: 'PIK 2', city: 'Jakarta', threads: 31, sentiment: 'neutral', heat: 78, top_comment: 'Reclamation concerns vs strong developer marketing. Wait for clarity.' },
-  { zone: 'Nusa Penida', city: 'Bali', threads: 12, sentiment: 'bullish', heat: 71, top_comment: 'New bridge plan would be a game-changer for land values' },
-  { zone: 'BSD City Green', city: 'Tangerang', threads: 22, sentiment: 'neutral', heat: 68, top_comment: 'Pricing starting to plateau — selective opportunities only' },
-];
+const formatShort = (v: number) =>
+  v >= 1e12 ? `${(v / 1e12).toFixed(1)}T` : v >= 1e9 ? `${(v / 1e9).toFixed(1)}B` : v >= 1e6 ? `${(v / 1e6).toFixed(0)}M` : `${(v / 1e3).toFixed(0)}K`;
 
 // ─── Tier Badge ──────────────────────────────────────────────────────
-function TierBadge({ tier }: { tier: InvestorUser['tier'] }) {
+function TierBadge({ tier }: { tier: string }) {
   const cfg = {
-    elite: { label: 'Elite', icon: Crown, className: 'bg-amber-400/10 text-amber-400 border-amber-400/30' },
+    elite: { label: 'Elite', icon: Crown, className: 'bg-chart-3/10 text-chart-3 border-chart-3/30' },
     pro: { label: 'Pro', icon: Star, className: 'bg-primary/10 text-primary border-primary/30' },
     member: { label: 'Member', icon: Users, className: 'bg-muted text-muted-foreground border-border/30' },
-  }[tier];
+  }[tier] || { label: 'Member', icon: Users, className: 'bg-muted text-muted-foreground border-border/30' };
   const Icon = cfg.icon;
   return (
-    <Badge variant="outline" className={`text-[9px] h-5 gap-0.5 ${cfg.className}`}>
+    <Badge variant="outline" className={cn('text-[9px] h-5 gap-0.5', cfg.className)}>
       <Icon className="h-2.5 w-2.5" /> {cfg.label}
     </Badge>
   );
 }
 
 // ─── Post Type Badge ─────────────────────────────────────────────────
-function PostTypeBadge({ type }: { type: DealPost['type'] }) {
+function PostTypeBadge({ type }: { type: string }) {
   const cfg = {
-    opportunity: { label: 'Opportunity', className: 'bg-emerald-400/10 text-emerald-400 border-emerald-400/30', icon: Target },
-    insight: { label: 'Insight', className: 'bg-sky-400/10 text-sky-400 border-sky-400/30', icon: TrendingUp },
-    discussion: { label: 'Discussion', className: 'bg-violet-400/10 text-violet-400 border-violet-400/30', icon: MessageCircle },
-    watchlist: { label: 'Watchlist', className: 'bg-amber-400/10 text-amber-400 border-amber-400/30', icon: Eye },
-  }[type];
+    opportunity: { label: 'Opportunity', className: 'bg-chart-2/10 text-chart-2 border-chart-2/30', icon: Target },
+    insight: { label: 'Insight', className: 'bg-chart-4/10 text-chart-4 border-chart-4/30', icon: TrendingUp },
+    discussion: { label: 'Discussion', className: 'bg-primary/10 text-primary border-primary/30', icon: MessageCircle },
+    watchlist: { label: 'Watchlist', className: 'bg-chart-3/10 text-chart-3 border-chart-3/30', icon: Eye },
+  }[type] || { label: type, className: 'bg-muted text-muted-foreground', icon: MessageCircle };
   const Icon = cfg.icon;
   return (
-    <Badge variant="outline" className={`text-[9px] h-5 gap-0.5 ${cfg.className}`}>
+    <Badge variant="outline" className={cn('text-[9px] h-5 gap-0.5', cfg.className)}>
       <Icon className="h-2.5 w-2.5" /> {cfg.label}
     </Badge>
   );
 }
 
+// ─── Comment Dialog ──────────────────────────────────────────────────
+function CommentSection({ postId, onClose }: { postId: string; onClose: () => void }) {
+  const { data: comments, isLoading } = usePostComments(postId);
+  const addComment = useAddComment();
+  const [text, setText] = useState('');
+
+  return (
+    <Dialog open onOpenChange={() => onClose()}>
+      <DialogContent className="sm:max-w-lg max-h-[80vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle className="text-sm">Comments</DialogTitle>
+        </DialogHeader>
+        <div className="flex-1 overflow-y-auto space-y-3 py-2">
+          {isLoading && <div className="text-xs text-muted-foreground text-center py-8">Loading...</div>}
+          {!isLoading && (!comments || comments.length === 0) && (
+            <div className="text-center py-8">
+              <MessageCircle className="h-8 w-8 mx-auto text-muted-foreground/30 mb-2" />
+              <p className="text-xs text-muted-foreground">No comments yet — start the conversation</p>
+            </div>
+          )}
+          {(comments || []).map((c) => (
+            <div key={c.id} className="flex gap-2.5">
+              <Avatar className="h-7 w-7 border border-border/20">
+                <AvatarImage src={c.author?.avatar_url || undefined} />
+                <AvatarFallback className="text-[9px] bg-muted">{(c.author?.full_name || 'U')[0]}</AvatarFallback>
+              </Avatar>
+              <div className="flex-1">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-semibold text-foreground">{c.author?.full_name || 'Investor'}</span>
+                  <span className="text-[9px] text-muted-foreground">{formatDistanceToNow(new Date(c.created_at), { addSuffix: true })}</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5">{c.content}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="flex gap-2 pt-2 border-t border-border/30">
+          <Input
+            placeholder="Share your thoughts..."
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            className="text-xs h-9"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && text.trim()) {
+                addComment.mutate({ postId, content: text.trim() });
+                setText('');
+              }
+            }}
+          />
+          <Button
+            size="sm"
+            disabled={!text.trim() || addComment.isPending}
+            onClick={() => { addComment.mutate({ postId, content: text.trim() }); setText(''); }}
+          >
+            <Send className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 // ─── Deal Post Card ──────────────────────────────────────────────────
-function DealPostCard({ post }: { post: DealPost }) {
-  const [liked, setLiked] = useState(post.user_liked);
-  const [saved, setSaved] = useState(post.user_saved);
-  const [likeCount, setLikeCount] = useState(post.likes);
+function DealPostCard({ post }: { post: SocialPost }) {
+  const toggleLike = useToggleLike();
+  const toggleSave = useToggleSave();
+  const [showComments, setShowComments] = useState(false);
+  const [liked, setLiked] = useState(post.user_liked || false);
+  const [saved, setSaved] = useState(post.user_saved || false);
+  const [likeCount, setLikeCount] = useState(post.likes_count);
+
+  const handleLike = () => {
+    setLiked(!liked);
+    setLikeCount(c => liked ? c - 1 : c + 1);
+    toggleLike.mutate({ postId: post.id, isLiked: liked });
+  };
+
+  const handleSave = () => {
+    setSaved(!saved);
+    toggleSave.mutate({ postId: post.id, isSaved: saved });
+  };
+
+  const authorName = post.author?.full_name || 'Investor';
+  const initials = authorName.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-      <Card className={`bg-card/50 border-border/30 ${post.is_elite ? 'ring-1 ring-amber-400/20' : ''}`}>
+      <Card className={cn('bg-card/50 border-border/30', post.is_elite && 'ring-1 ring-chart-3/20')}>
         {post.is_elite && (
-          <div className="px-4 py-1.5 bg-gradient-to-r from-amber-400/5 to-transparent border-b border-amber-400/10 flex items-center gap-1.5">
-            <Sparkles className="h-3 w-3 text-amber-400" />
-            <span className="text-[10px] font-medium text-amber-400">Elite Opportunity</span>
+          <div className="px-4 py-1.5 bg-gradient-to-r from-chart-3/5 to-transparent border-b border-chart-3/10 flex items-center gap-1.5">
+            <Sparkles className="h-3 w-3 text-chart-3" />
+            <span className="text-[10px] font-medium text-chart-3">Elite Opportunity</span>
           </div>
         )}
         <CardContent className="p-4">
           {/* Author */}
           <div className="flex items-center gap-3 mb-3">
             <Avatar className="h-9 w-9 border border-border/30">
-              <AvatarFallback className="text-xs bg-muted">{post.author.initials}</AvatarFallback>
+              <AvatarImage src={post.author?.avatar_url || undefined} />
+              <AvatarFallback className="text-xs bg-muted">{initials}</AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5">
-                <span className="text-sm font-semibold text-foreground">{post.author.name}</span>
-                {post.author.verified && <BadgeCheck className="h-3.5 w-3.5 text-primary" />}
-                <TierBadge tier={post.author.tier} />
+                <span className="text-sm font-semibold text-foreground">{authorName}</span>
+                <BadgeCheck className="h-3.5 w-3.5 text-primary" />
               </div>
               <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-                <span>{post.created_at}</span>
+                <span>{formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}</span>
                 <span>·</span>
-                <span className="flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" /> {post.views}</span>
+                <span className="flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" /> {post.views_count}</span>
               </div>
             </div>
-            <PostTypeBadge type={post.type} />
+            <PostTypeBadge type={post.post_type} />
           </div>
 
-          {/* Title & Content */}
           <h3 className="text-sm font-bold text-foreground mb-2">{post.title}</h3>
           <p className="text-xs text-muted-foreground leading-relaxed mb-3">{post.content}</p>
 
@@ -180,30 +181,34 @@ function DealPostCard({ post }: { post: DealPost }) {
             <div className="rounded-lg border border-border/20 bg-muted/5 p-3 mb-3">
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs font-semibold text-foreground">{post.property.title}</span>
-                <Badge variant="outline" className="text-[9px] h-4">{post.property.type}</Badge>
+                <Badge variant="outline" className="text-[9px] h-4">{post.property.property_type}</Badge>
               </div>
               <div className="flex items-center gap-1 text-[10px] text-muted-foreground mb-2">
-                <MapPin className="h-2.5 w-2.5" /> {post.property.location}
+                <MapPin className="h-2.5 w-2.5" /> {post.property.city}
               </div>
               <div className="flex gap-4">
                 <div>
                   <span className="text-[9px] text-muted-foreground uppercase">Price</span>
-                  <p className="text-xs font-bold text-foreground">{post.property.price}</p>
+                  <p className="text-xs font-bold text-foreground">Rp {formatShort(post.property.price)}</p>
                 </div>
-                <div>
-                  <span className="text-[9px] text-muted-foreground uppercase">Est. ROI</span>
-                  <p className="text-xs font-bold text-emerald-400">{post.property.roi}</p>
-                </div>
+                {post.property.investment_score > 0 && (
+                  <div>
+                    <span className="text-[9px] text-muted-foreground uppercase">Score</span>
+                    <p className="text-xs font-bold text-chart-2">{post.property.investment_score}/100</p>
+                  </div>
+                )}
               </div>
             </div>
           )}
 
           {/* Tags */}
-          <div className="flex flex-wrap gap-1.5 mb-3">
-            {post.tags.map((t) => (
-              <Badge key={t} variant="secondary" className="text-[9px] h-5 bg-muted/30">{t}</Badge>
-            ))}
-          </div>
+          {post.tags && post.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-3">
+              {post.tags.map((t) => (
+                <Badge key={t} variant="secondary" className="text-[9px] h-5 bg-muted/30">{t}</Badge>
+              ))}
+            </div>
+          )}
 
           <Separator className="opacity-20 mb-3" />
 
@@ -211,20 +216,20 @@ function DealPostCard({ post }: { post: DealPost }) {
           <div className="flex items-center gap-1">
             <Button
               variant="ghost" size="sm"
-              className={`h-8 text-xs gap-1.5 ${liked ? 'text-rose-400' : 'text-muted-foreground'}`}
-              onClick={() => { setLiked(!liked); setLikeCount(c => liked ? c - 1 : c + 1); }}
+              className={cn('h-8 text-xs gap-1.5', liked ? 'text-destructive' : 'text-muted-foreground')}
+              onClick={handleLike}
             >
-              <Heart className={`h-3.5 w-3.5 ${liked ? 'fill-rose-400' : ''}`} /> {likeCount}
+              <Heart className={cn('h-3.5 w-3.5', liked && 'fill-destructive')} /> {likeCount}
             </Button>
-            <Button variant="ghost" size="sm" className="h-8 text-xs gap-1.5 text-muted-foreground">
-              <MessageCircle className="h-3.5 w-3.5" /> {post.comments}
+            <Button variant="ghost" size="sm" className="h-8 text-xs gap-1.5 text-muted-foreground" onClick={() => setShowComments(true)}>
+              <MessageCircle className="h-3.5 w-3.5" /> {post.comments_count}
             </Button>
             <Button
               variant="ghost" size="sm"
-              className={`h-8 text-xs gap-1.5 ${saved ? 'text-primary' : 'text-muted-foreground'}`}
-              onClick={() => setSaved(!saved)}
+              className={cn('h-8 text-xs gap-1.5', saved ? 'text-primary' : 'text-muted-foreground')}
+              onClick={handleSave}
             >
-              <Bookmark className={`h-3.5 w-3.5 ${saved ? 'fill-primary' : ''}`} /> {saved ? 'Saved' : 'Save'}
+              <Bookmark className={cn('h-3.5 w-3.5', saved && 'fill-primary')} /> {saved ? 'Saved' : 'Save'}
             </Button>
             <Button variant="ghost" size="sm" className="h-8 text-xs gap-1.5 text-muted-foreground ml-auto">
               <Share2 className="h-3.5 w-3.5" /> Share
@@ -232,57 +237,187 @@ function DealPostCard({ post }: { post: DealPost }) {
           </div>
         </CardContent>
       </Card>
+
+      {showComments && <CommentSection postId={post.id} onClose={() => setShowComments(false)} />}
     </motion.div>
   );
 }
 
 // ─── Leaderboard Row ─────────────────────────────────────────────────
-function LeaderboardRow({ inv, rank }: { inv: InvestorUser; rank: number }) {
+function LeaderboardRow({ inv, rank }: { inv: InvestorProfile; rank: number }) {
+  const { user } = useAuth();
+  const toggleFollow = useToggleFollow();
+  const isOwnProfile = user?.id === inv.user_id;
+
   return (
     <div className="flex items-center gap-3 py-3 border-b border-border/10 last:border-0">
-      <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${rank <= 3 ? 'bg-amber-400/10 text-amber-400' : 'bg-muted text-muted-foreground'}`}>
+      <div className={cn('w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold',
+        rank <= 3 ? 'bg-chart-3/10 text-chart-3' : 'bg-muted text-muted-foreground'
+      )}>
         {rank}
       </div>
       <Avatar className="h-8 w-8 border border-border/20">
-        <AvatarFallback className="text-[10px] bg-muted">{inv.initials}</AvatarFallback>
+        <AvatarImage src={inv.avatar_url || undefined} />
+        <AvatarFallback className="text-[10px] bg-muted">{(inv.full_name || 'U')[0]}</AvatarFallback>
       </Avatar>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
-          <span className="text-xs font-semibold text-foreground truncate">{inv.name}</span>
-          {inv.verified && <BadgeCheck className="h-3 w-3 text-primary shrink-0" />}
+          <span className="text-xs font-semibold text-foreground truncate">{inv.full_name}</span>
           <TierBadge tier={inv.tier} />
         </div>
         <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-          <span>{inv.deals_shared} deals shared</span>
+          <span>{inv.deals_shared} deals</span>
           <span>·</span>
-          <span>{inv.cities.join(', ')}</span>
+          <span>{inv.follower_count} followers</span>
         </div>
       </div>
-      <div className="text-right">
-        <div className="text-xs font-bold text-foreground">{inv.reputation}</div>
-        <div className="text-[9px] text-muted-foreground">reputation</div>
+      <div className="flex items-center gap-2">
+        <div className="text-right">
+          <div className="text-xs font-bold text-foreground">{inv.reputation_score}</div>
+          <div className="text-[9px] text-muted-foreground">score</div>
+        </div>
+        {!isOwnProfile && user && (
+          <Button
+            variant={inv.is_following ? 'secondary' : 'outline'}
+            size="sm"
+            className="h-7 text-[10px] gap-1"
+            onClick={() => toggleFollow.mutate({ targetId: inv.user_id, isFollowing: !!inv.is_following })}
+          >
+            {inv.is_following ? <UserCheck className="h-3 w-3" /> : <UserPlus className="h-3 w-3" />}
+            {inv.is_following ? 'Following' : 'Follow'}
+          </Button>
+        )}
       </div>
     </div>
   );
 }
 
+// ─── Compose Panel ───────────────────────────────────────────────────
+function ComposePanel({ onClose }: { onClose: () => void }) {
+  const createPost = useCreatePost();
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [postType, setPostType] = useState<'opportunity' | 'insight' | 'discussion' | 'watchlist'>('discussion');
+  const [tags, setTags] = useState('');
+
+  const handleSubmit = () => {
+    if (!title.trim() || !content.trim()) return;
+    createPost.mutate({
+      title: title.trim(),
+      content: content.trim(),
+      post_type: postType,
+      tags: tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : [],
+    }, {
+      onSuccess: () => { onClose(); },
+    });
+  };
+
+  return (
+    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}>
+      <Card className="bg-card/50 border-border/30">
+        <CardContent className="p-4 space-y-3">
+          <div className="flex gap-2">
+            <Input
+              placeholder="Deal title — what did you find?"
+              className="text-sm bg-muted/10 border-border/20 flex-1"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            <Select value={postType} onValueChange={(v) => setPostType(v as any)}>
+              <SelectTrigger className="w-36 h-9 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="opportunity">Opportunity</SelectItem>
+                <SelectItem value="insight">Insight</SelectItem>
+                <SelectItem value="discussion">Discussion</SelectItem>
+                <SelectItem value="watchlist">Watchlist</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Textarea
+            placeholder="Share your investment insight, opportunity, or discussion topic..."
+            className="text-xs bg-muted/10 border-border/20 min-h-[80px]"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+          <Input
+            placeholder="Tags (comma separated): e.g. Bali, Villa, High Yield"
+            className="text-xs bg-muted/10 border-border/20"
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+          />
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] text-muted-foreground">
+              <Shield className="h-3 w-3 inline mr-1" />
+              Posts are reviewed for quality. Credibility affects visibility.
+            </p>
+            <div className="flex gap-2">
+              <Button variant="ghost" size="sm" onClick={onClose}>Cancel</Button>
+              <Button size="sm" disabled={!title.trim() || !content.trim() || createPost.isPending} onClick={handleSubmit}>
+                {createPost.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" /> : <Send className="h-3.5 w-3.5 mr-1.5" />}
+                Post
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+}
+
+// ─── Credibility Explainer ───────────────────────────────────────────
+function CredibilityExplainer() {
+  const criteria = [
+    { label: 'Verified Transactions', weight: '30%', icon: Shield },
+    { label: 'Community Engagement', weight: '25%', icon: Heart },
+    { label: 'Deal Quality (likes/saves)', weight: '20%', icon: Sparkles },
+    { label: 'Referral Success', weight: '15%', icon: Users },
+    { label: 'Account Age', weight: '10%', icon: Star },
+  ];
+
+  return (
+    <Card className="bg-card/40 border-border/30">
+      <CardHeader className="pb-2 pt-4 px-4">
+        <CardTitle className="text-xs font-medium flex items-center gap-1.5">
+          <Shield className="h-3.5 w-3.5 text-primary" /> Credibility Score
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="px-4 pb-4 space-y-2">
+        <p className="text-[10px] text-muted-foreground mb-2">
+          Your reputation is earned through verified activity and community trust.
+        </p>
+        {criteria.map((c) => (
+          <div key={c.label} className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <c.icon className="h-3 w-3 text-muted-foreground" />
+              <span className="text-[10px] text-foreground">{c.label}</span>
+            </div>
+            <Badge variant="outline" className="text-[9px] h-4">{c.weight}</Badge>
+          </div>
+        ))}
+        <Separator className="opacity-20 my-2" />
+        <div className="flex items-center gap-2 text-[10px]">
+          <TierBadge tier="member" /> <span className="text-muted-foreground">0-50</span>
+          <TierBadge tier="pro" /> <span className="text-muted-foreground">51-80</span>
+          <TierBadge tier="elite" /> <span className="text-muted-foreground">81+</span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 // ─── Main Page ───────────────────────────────────────────────────────
 export default function InvestorSocialNetwork() {
-  const [filter, setFilter] = useState<'all' | DealPost['type']>('all');
+  const { user } = useAuth();
+  const [filter, setFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [composeOpen, setComposeOpen] = useState(false);
 
-  const filteredPosts = useMemo(() => {
-    let posts = DEAL_POSTS;
-    if (filter !== 'all') posts = posts.filter(p => p.type === filter);
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      posts = posts.filter(p => p.title.toLowerCase().includes(q) || p.content.toLowerCase().includes(q) || p.tags.some(t => t.toLowerCase().includes(q)));
-    }
-    return posts;
-  }, [filter, searchQuery]);
+  const { data: posts, isLoading: postsLoading } = useSocialFeed(filter, searchQuery);
+  const { data: leaderboard, isLoading: leaderboardLoading } = useInvestorLeaderboard();
 
-  const leaderboard = useMemo(() => [...INVESTORS].sort((a, b) => b.reputation - a.reputation), []);
+  const feedPosts = posts || [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -300,12 +435,20 @@ export default function InvestorSocialNetwork() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-[10px] text-muted-foreground">
-                <Users className="h-3 w-3 mr-1" /> {INVESTORS.length.toLocaleString()} investors
-              </Badge>
-              <Button size="sm" onClick={() => setComposeOpen(!composeOpen)}>
-                <Send className="h-3.5 w-3.5 mr-1.5" /> Share Deal
-              </Button>
+              {leaderboard && (
+                <Badge variant="outline" className="text-[10px] text-muted-foreground">
+                  <Users className="h-3 w-3 mr-1" /> {leaderboard.length} investors
+                </Badge>
+              )}
+              {user ? (
+                <Button size="sm" onClick={() => setComposeOpen(!composeOpen)}>
+                  <Send className="h-3.5 w-3.5 mr-1.5" /> Share Deal
+                </Button>
+              ) : (
+                <Button size="sm" variant="outline" onClick={() => window.location.href = '/?auth=true'}>
+                  Sign in to participate
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -319,24 +462,7 @@ export default function InvestorSocialNetwork() {
 
             {/* Compose */}
             <AnimatePresence>
-              {composeOpen && (
-                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}>
-                  <Card className="bg-card/50 border-border/30">
-                    <CardContent className="p-4 space-y-3">
-                      <Input placeholder="Deal title — what did you find?" className="text-sm bg-muted/10 border-border/20" />
-                      <Textarea placeholder="Share your investment insight, opportunity, or discussion topic..." className="text-xs bg-muted/10 border-border/20 min-h-[80px]" />
-                      <div className="flex items-center justify-between">
-                        <div className="flex gap-1.5">
-                          {['Opportunity', 'Insight', 'Discussion', 'Watchlist'].map((t) => (
-                            <Badge key={t} variant="outline" className="text-[9px] cursor-pointer hover:bg-primary/10 transition-colors">{t}</Badge>
-                          ))}
-                        </div>
-                        <Button size="sm"><Send className="h-3.5 w-3.5 mr-1.5" /> Post</Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              )}
+              {composeOpen && <ComposePanel onClose={() => setComposeOpen(false)} />}
             </AnimatePresence>
 
             {/* Filters */}
@@ -356,90 +482,79 @@ export default function InvestorSocialNetwork() {
 
             {/* Posts */}
             <div className="space-y-4">
-              {filteredPosts.map((post) => <DealPostCard key={post.id} post={post} />)}
-              {filteredPosts.length === 0 && (
-                <div className="text-center py-12 text-muted-foreground text-sm">No posts match your filters</div>
+              {postsLoading && [...Array(3)].map((_, i) => (
+                <div key={i} className="h-40 rounded-xl bg-muted/20 animate-pulse" style={{ animationDelay: `${i * 80}ms` }} />
+              ))}
+
+              {!postsLoading && feedPosts.length === 0 && (
+                <Card className="bg-card/50 border-border/30">
+                  <CardContent className="p-12 text-center">
+                    <Globe className="h-12 w-12 mx-auto text-muted-foreground/20 mb-4" />
+                    <h3 className="text-base font-semibold text-foreground mb-1">No Posts Yet</h3>
+                    <p className="text-xs text-muted-foreground mb-4">Be the first to share an investment opportunity with the community.</p>
+                    {user && (
+                      <Button size="sm" onClick={() => setComposeOpen(true)}>
+                        <Send className="h-3.5 w-3.5 mr-1.5" /> Share a Deal
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
               )}
+
+              {feedPosts.map((post) => <DealPostCard key={post.id} post={post} />)}
             </div>
           </div>
 
           {/* ── Right Sidebar (4 cols) ── */}
           <div className="lg:col-span-4 space-y-4">
 
-            {/* Trending Zones */}
-            <Card className="bg-card/40 border-border/30">
-              <CardHeader className="pb-2 pt-4 px-4">
-                <CardTitle className="text-xs font-medium flex items-center gap-1.5">
-                  <Flame className="h-3.5 w-3.5 text-primary" /> Trending Investment Zones
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="px-4 pb-4 space-y-0">
-                {TRENDING_ZONES.map((z, i) => (
-                  <div key={i} className="py-2.5 border-b border-border/10 last:border-0">
-                    <div className="flex items-center justify-between mb-1">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-semibold text-foreground">{z.zone}</span>
-                        <Badge variant="outline" className={`text-[8px] h-4 ${z.sentiment === 'bullish' ? 'text-emerald-400 border-emerald-400/30' : z.sentiment === 'bearish' ? 'text-rose-400 border-rose-400/30' : 'text-muted-foreground border-border/30'}`}>
-                          {z.sentiment}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Progress value={z.heat} className="h-1 w-10" />
-                        <span className="text-[9px] font-mono text-muted-foreground">{z.heat}</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1 text-[10px] text-muted-foreground mb-1">
-                      <MapPin className="h-2.5 w-2.5" /> {z.city} · {z.threads} threads
-                    </div>
-                    <p className="text-[10px] text-muted-foreground/80 italic">"{z.top_comment}"</p>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+            {/* Credibility Explainer */}
+            <CredibilityExplainer />
 
             {/* Leaderboard */}
             <Card className="bg-card/40 border-border/30">
               <CardHeader className="pb-2 pt-4 px-4">
                 <CardTitle className="text-xs font-medium flex items-center gap-1.5">
-                  <Award className="h-3.5 w-3.5 text-primary" /> Top Investor Insights
+                  <Award className="h-3.5 w-3.5 text-chart-3" /> Investor Leaderboard
                 </CardTitle>
               </CardHeader>
-              <CardContent className="px-4 pb-3">
-                {leaderboard.map((inv, i) => <LeaderboardRow key={inv.id} inv={inv} rank={i + 1} />)}
+              <CardContent className="px-4 pb-4">
+                {leaderboardLoading ? (
+                  <div className="space-y-2">
+                    {[...Array(5)].map((_, i) => <div key={i} className="h-12 rounded-lg bg-muted/20 animate-pulse" />)}
+                  </div>
+                ) : (leaderboard || []).length === 0 ? (
+                  <div className="text-center py-6">
+                    <Award className="h-8 w-8 mx-auto text-muted-foreground/20 mb-2" />
+                    <p className="text-[10px] text-muted-foreground">Leaderboard builds as investors participate</p>
+                  </div>
+                ) : (
+                  (leaderboard || []).map((inv, i) => <LeaderboardRow key={inv.user_id} inv={inv} rank={i + 1} />)
+                )}
               </CardContent>
             </Card>
 
-            {/* Trust & Verification */}
-            <Card className="bg-card/60 border-primary/20">
+            {/* Community Stats */}
+            <Card className="bg-card/40 border-border/30">
               <CardHeader className="pb-2 pt-4 px-4">
                 <CardTitle className="text-xs font-medium flex items-center gap-1.5">
-                  <Shield className="h-3.5 w-3.5 text-primary" /> Trust & Verification
+                  <TrendingUp className="h-3.5 w-3.5 text-chart-2" /> Community Health
                 </CardTitle>
               </CardHeader>
               <CardContent className="px-4 pb-4 space-y-3">
-                <div className="rounded-lg bg-muted/10 border border-border/20 p-3">
-                  <div className="flex items-center gap-2 mb-2">
-                    <BadgeCheck className="h-4 w-4 text-primary" />
-                    <span className="text-xs font-semibold text-foreground">Verified Investor Badge</span>
-                  </div>
-                  <p className="text-[10px] text-muted-foreground leading-relaxed">Complete KYC verification and prove active investment history to earn your verified badge. Verified investors get priority visibility in the feed.</p>
-                  <Button variant="outline" size="sm" className="mt-2 text-[10px] h-7">Apply for Verification</Button>
-                </div>
-                <div className="space-y-2">
-                  {[
-                    { label: 'Community Guidelines', desc: 'All posts moderated for accuracy and respect' },
-                    { label: 'Deal Validation', desc: 'Elite opportunity posts reviewed by admin team' },
-                    { label: 'Privacy Controls', desc: 'Control who sees your portfolio strategy' },
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-start gap-2">
-                      <div className="w-1 h-1 rounded-full bg-primary mt-1.5 shrink-0" />
-                      <div>
-                        <span className="text-[10px] font-medium text-foreground">{item.label}</span>
-                        <p className="text-[9px] text-muted-foreground">{item.desc}</p>
-                      </div>
+                {[
+                  { label: 'Content Quality', value: 87, detail: 'Moderation pass rate' },
+                  { label: 'Engagement Rate', value: 34, detail: 'Avg interactions/post' },
+                  { label: 'Trust Index', value: 92, detail: 'Verified transaction ratio' },
+                ].map((m) => (
+                  <div key={m.label}>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[10px] font-medium text-foreground">{m.label}</span>
+                      <span className="text-[9px] text-muted-foreground">{m.detail}</span>
                     </div>
-                  ))}
-                </div>
+                    <Progress value={m.value} className="h-1.5" />
+                  </div>
+                ))}
               </CardContent>
             </Card>
           </div>
