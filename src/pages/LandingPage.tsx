@@ -31,6 +31,7 @@ const LandingPage = () => {
         <Suspense fallback={<SectionLoader />}><LandingFeatured /></Suspense>
         <Suspense fallback={<SectionLoader />}><LandingDeveloper /></Suspense>
         <Suspense fallback={<SectionLoader />}><LandingServices /></Suspense>
+        <Suspense fallback={<SectionLoader />}><LandingTrustProof /></Suspense>
         <Suspense fallback={<SectionLoader />}><LandingLeadCapture /></Suspense>
         <Suspense fallback={<SectionLoader />}><LandingFooter /></Suspense>
       </div>
