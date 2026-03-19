@@ -13232,6 +13232,51 @@ export type Database = {
           },
         ]
       }
+      investor_preferences: {
+        Row: {
+          budget_max: number | null
+          budget_min: number | null
+          completed_at: string | null
+          created_at: string | null
+          experience_level: string | null
+          id: string
+          investment_goals: string[] | null
+          preferred_cities: string[] | null
+          preferred_property_types: string[] | null
+          risk_tolerance: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          budget_max?: number | null
+          budget_min?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          experience_level?: string | null
+          id?: string
+          investment_goals?: string[] | null
+          preferred_cities?: string[] | null
+          preferred_property_types?: string[] | null
+          risk_tolerance?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          budget_max?: number | null
+          budget_min?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          experience_level?: string | null
+          id?: string
+          investment_goals?: string[] | null
+          preferred_cities?: string[] | null
+          preferred_property_types?: string[] | null
+          risk_tolerance?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       investor_profiles: {
         Row: {
           country_of_residence: string | null
