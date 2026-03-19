@@ -70,6 +70,7 @@ export const DatabaseErrorManager = lazyRetry(() => import("./cs-tools/DatabaseE
 export const Property3DViewSettings = lazyRetry(() => import("./Property3DViewSettings"));
 export const PropertySurveyManagement = lazyRetry(() => import("./PropertySurveyManagement"));
 export const EmailSettings = lazyRetry(() => import("@/pages/admin/EmailSettings"));
+export const EmailMonitoringDashboard = lazyRetry(() => import("./EmailMonitoringDashboard"));
 export const LocationManagement = lazyRetry(() => import("./LocationManagement"));
 export const APISettingsManagement = lazyRetry(() => import("./APISettingsManagement"));
 export const AIPropertyAssistant = lazyRetry(() => import("./AIPropertyAssistant"));
