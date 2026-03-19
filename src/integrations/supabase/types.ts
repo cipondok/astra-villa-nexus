@@ -8889,6 +8889,155 @@ export type Database = {
           },
         ]
       }
+      deal_boost_signals: {
+        Row: {
+          boost_reason: string | null
+          boost_strength: number | null
+          boost_type: string
+          created_at: string | null
+          district: string | null
+          expires_at: string | null
+          id: string
+          property_id: string
+          status: string | null
+          trigger_metrics: Json | null
+        }
+        Insert: {
+          boost_reason?: string | null
+          boost_strength?: number | null
+          boost_type: string
+          created_at?: string | null
+          district?: string | null
+          expires_at?: string | null
+          id?: string
+          property_id: string
+          status?: string | null
+          trigger_metrics?: Json | null
+        }
+        Update: {
+          boost_reason?: string | null
+          boost_strength?: number | null
+          boost_type?: string
+          created_at?: string | null
+          district?: string | null
+          expires_at?: string | null
+          id?: string
+          property_id?: string
+          status?: string | null
+          trigger_metrics?: Json | null
+        }
+        Relationships: []
+      }
+      deal_dominance_feedback: {
+        Row: {
+          boost_id: string | null
+          close_count_delta: number | null
+          conversion_lift_pct: number | null
+          created_at: string | null
+          district: string | null
+          fed_to_learning_engine: boolean | null
+          id: string
+          inquiry_count_delta: number | null
+          offer_count_delta: number | null
+          post_boost_visibility: number | null
+          pre_boost_visibility: number | null
+          property_id: string | null
+          weight_adjustment: Json | null
+        }
+        Insert: {
+          boost_id?: string | null
+          close_count_delta?: number | null
+          conversion_lift_pct?: number | null
+          created_at?: string | null
+          district?: string | null
+          fed_to_learning_engine?: boolean | null
+          id?: string
+          inquiry_count_delta?: number | null
+          offer_count_delta?: number | null
+          post_boost_visibility?: number | null
+          pre_boost_visibility?: number | null
+          property_id?: string | null
+          weight_adjustment?: Json | null
+        }
+        Update: {
+          boost_id?: string | null
+          close_count_delta?: number | null
+          conversion_lift_pct?: number | null
+          created_at?: string | null
+          district?: string | null
+          fed_to_learning_engine?: boolean | null
+          id?: string
+          inquiry_count_delta?: number | null
+          offer_count_delta?: number | null
+          post_boost_visibility?: number | null
+          pre_boost_visibility?: number | null
+          property_id?: string | null
+          weight_adjustment?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_dominance_feedback_boost_id_fkey"
+            columns: ["boost_id"]
+            isOneToOne: false
+            referencedRelation: "deal_boost_signals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      deal_gravity_index: {
+        Row: {
+          created_at: string | null
+          deal_close_reliability: number | null
+          deal_gravity_score: number | null
+          district: string | null
+          escrow_initiation_probability: number | null
+          gravity_tier: string | null
+          id: string
+          investor_competition_density: number | null
+          last_computed_at: string | null
+          offer_frequency_acceleration: number | null
+          price_competitiveness: number | null
+          property_id: string
+          scoring_inputs: Json | null
+          updated_at: string | null
+          viewing_velocity_momentum: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          deal_close_reliability?: number | null
+          deal_gravity_score?: number | null
+          district?: string | null
+          escrow_initiation_probability?: number | null
+          gravity_tier?: string | null
+          id?: string
+          investor_competition_density?: number | null
+          last_computed_at?: string | null
+          offer_frequency_acceleration?: number | null
+          price_competitiveness?: number | null
+          property_id: string
+          scoring_inputs?: Json | null
+          updated_at?: string | null
+          viewing_velocity_momentum?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          deal_close_reliability?: number | null
+          deal_gravity_score?: number | null
+          district?: string | null
+          escrow_initiation_probability?: number | null
+          gravity_tier?: string | null
+          id?: string
+          investor_competition_density?: number | null
+          last_computed_at?: string | null
+          offer_frequency_acceleration?: number | null
+          price_competitiveness?: number | null
+          property_id?: string
+          scoring_inputs?: Json | null
+          updated_at?: string | null
+          viewing_velocity_momentum?: number | null
+        }
+        Relationships: []
+      }
       deal_hunter_notifications: {
         Row: {
           channel: string
@@ -9084,6 +9233,75 @@ export type Database = {
           is_active?: boolean | null
           required_flags?: Json | null
           to_stage?: string
+        }
+        Relationships: []
+      }
+      deal_visibility_ranking: {
+        Row: {
+          agent_feed_rank: number | null
+          boost_multiplier: number | null
+          capital_inflow_weight: number | null
+          created_at: string | null
+          deal_gravity_weight: number | null
+          district: string | null
+          homepage_rank: number | null
+          id: string
+          investor_feed_rank: number | null
+          last_computed_at: string | null
+          last_decay_at: string | null
+          liquidity_urgency_weight: number | null
+          portfolio_demand_weight: number | null
+          property_id: string
+          ranking_context: string | null
+          ranking_decay_rate: number | null
+          search_rank: number | null
+          suppression_coefficient: number | null
+          updated_at: string | null
+          visibility_score: number | null
+        }
+        Insert: {
+          agent_feed_rank?: number | null
+          boost_multiplier?: number | null
+          capital_inflow_weight?: number | null
+          created_at?: string | null
+          deal_gravity_weight?: number | null
+          district?: string | null
+          homepage_rank?: number | null
+          id?: string
+          investor_feed_rank?: number | null
+          last_computed_at?: string | null
+          last_decay_at?: string | null
+          liquidity_urgency_weight?: number | null
+          portfolio_demand_weight?: number | null
+          property_id: string
+          ranking_context?: string | null
+          ranking_decay_rate?: number | null
+          search_rank?: number | null
+          suppression_coefficient?: number | null
+          updated_at?: string | null
+          visibility_score?: number | null
+        }
+        Update: {
+          agent_feed_rank?: number | null
+          boost_multiplier?: number | null
+          capital_inflow_weight?: number | null
+          created_at?: string | null
+          deal_gravity_weight?: number | null
+          district?: string | null
+          homepage_rank?: number | null
+          id?: string
+          investor_feed_rank?: number | null
+          last_computed_at?: string | null
+          last_decay_at?: string | null
+          liquidity_urgency_weight?: number | null
+          portfolio_demand_weight?: number | null
+          property_id?: string
+          ranking_context?: string | null
+          ranking_decay_rate?: number | null
+          search_rank?: number | null
+          suppression_coefficient?: number | null
+          updated_at?: string | null
+          visibility_score?: number | null
         }
         Relationships: []
       }
@@ -9544,6 +9762,66 @@ export type Database = {
           supply_gap_persistence_score?: number | null
           updated_at?: string | null
           vendor_execution_depth_score?: number | null
+        }
+        Relationships: []
+      }
+      district_deal_dominance: {
+        Row: {
+          avg_deal_gravity: number | null
+          avg_visibility_score: number | null
+          boost_to_inquiry_rate: number | null
+          conversion_lift_pct: number | null
+          created_at: string | null
+          deal_velocity_7d: number | null
+          district: string
+          dominance_efficiency_score: number | null
+          dominant_listings: number | null
+          id: string
+          inquiry_to_offer_rate: number | null
+          insights: Json | null
+          last_computed_at: string | null
+          offer_to_close_rate: number | null
+          segment_type: string | null
+          suppressed_listings: number | null
+          total_active_deals: number | null
+        }
+        Insert: {
+          avg_deal_gravity?: number | null
+          avg_visibility_score?: number | null
+          boost_to_inquiry_rate?: number | null
+          conversion_lift_pct?: number | null
+          created_at?: string | null
+          deal_velocity_7d?: number | null
+          district: string
+          dominance_efficiency_score?: number | null
+          dominant_listings?: number | null
+          id?: string
+          inquiry_to_offer_rate?: number | null
+          insights?: Json | null
+          last_computed_at?: string | null
+          offer_to_close_rate?: number | null
+          segment_type?: string | null
+          suppressed_listings?: number | null
+          total_active_deals?: number | null
+        }
+        Update: {
+          avg_deal_gravity?: number | null
+          avg_visibility_score?: number | null
+          boost_to_inquiry_rate?: number | null
+          conversion_lift_pct?: number | null
+          created_at?: string | null
+          deal_velocity_7d?: number | null
+          district?: string
+          dominance_efficiency_score?: number | null
+          dominant_listings?: number | null
+          id?: string
+          inquiry_to_offer_rate?: number | null
+          insights?: Json | null
+          last_computed_at?: string | null
+          offer_to_close_rate?: number | null
+          segment_type?: string | null
+          suppressed_listings?: number | null
+          total_active_deals?: number | null
         }
         Relationships: []
       }

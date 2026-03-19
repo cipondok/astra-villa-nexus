@@ -36,6 +36,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   vendor_growth_orchestrator_cycle: { label: 'Growth Orchestrator', icon: '🧠' },
   capital_allocation_engine_cycle: { label: 'Capital Engine', icon: '🏦' },
   bubble_risk_critical: { label: 'Bubble Alert', icon: '🫧' },
+  deal_dominance_engine_cycle: { label: 'Deal Dominance', icon: '👑' },
+  deal_dominance_achieved: { label: 'Dominant Listing', icon: '🏆' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
