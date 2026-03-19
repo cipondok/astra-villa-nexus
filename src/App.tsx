@@ -434,6 +434,7 @@ const AppContent = () => {
                 <Route path="/autonomous-acquisition" element={<AutonomousAcquisitionEngine />} />
                 <Route path="/global-deal-flow" element={<GlobalDealFlowNetwork />} />
                 <Route path="/hedge-fund-mode" element={<HedgeFundMode />} />
+                <Route path="/urban-growth-simulator" element={<UrbanGrowthSimulator />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
