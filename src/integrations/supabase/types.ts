@@ -1880,6 +1880,90 @@ export type Database = {
         }
         Relationships: []
       }
+      agent_reviews: {
+        Row: {
+          admin_approved: boolean | null
+          agent_id: string
+          created_at: string | null
+          helpful_count: number | null
+          id: string
+          is_published: boolean | null
+          moderated_at: string | null
+          moderated_by: string | null
+          moderation_notes: string | null
+          property_id: string | null
+          rating: number
+          rating_knowledge: number | null
+          rating_professionalism: number | null
+          rating_responsiveness: number | null
+          report_count: number | null
+          review_text: string | null
+          reviewer_id: string
+          spam_score: number | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          admin_approved?: boolean | null
+          agent_id: string
+          created_at?: string | null
+          helpful_count?: number | null
+          id?: string
+          is_published?: boolean | null
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_notes?: string | null
+          property_id?: string | null
+          rating: number
+          rating_knowledge?: number | null
+          rating_professionalism?: number | null
+          rating_responsiveness?: number | null
+          report_count?: number | null
+          review_text?: string | null
+          reviewer_id: string
+          spam_score?: number | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          admin_approved?: boolean | null
+          agent_id?: string
+          created_at?: string | null
+          helpful_count?: number | null
+          id?: string
+          is_published?: boolean | null
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_notes?: string | null
+          property_id?: string | null
+          rating?: number
+          rating_knowledge?: number | null
+          rating_professionalism?: number | null
+          rating_responsiveness?: number | null
+          report_count?: number | null
+          review_text?: string | null
+          reviewer_id?: string
+          spam_score?: number | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_reviews_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agent_reviews_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_batch_locks: {
         Row: {
           expires_at: string
@@ -23258,13 +23342,20 @@ export type Database = {
           id: string
           is_published: boolean | null
           is_verified_visit: boolean | null
+          moderated_at: string | null
+          moderated_by: string | null
+          moderation_notes: string | null
           owner_responded_at: string | null
           owner_response: string | null
           property_id: string
           pros: string[] | null
           rating: number
+          rating_agent: number | null
+          rating_condition: number | null
+          rating_investment: number | null
           report_count: number | null
           review_text: string | null
+          spam_score: number | null
           tag_categories: string[] | null
           title: string | null
           updated_at: string | null
@@ -23279,13 +23370,20 @@ export type Database = {
           id?: string
           is_published?: boolean | null
           is_verified_visit?: boolean | null
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_notes?: string | null
           owner_responded_at?: string | null
           owner_response?: string | null
           property_id: string
           pros?: string[] | null
           rating: number
+          rating_agent?: number | null
+          rating_condition?: number | null
+          rating_investment?: number | null
           report_count?: number | null
           review_text?: string | null
+          spam_score?: number | null
           tag_categories?: string[] | null
           title?: string | null
           updated_at?: string | null
@@ -23300,13 +23398,20 @@ export type Database = {
           id?: string
           is_published?: boolean | null
           is_verified_visit?: boolean | null
+          moderated_at?: string | null
+          moderated_by?: string | null
+          moderation_notes?: string | null
           owner_responded_at?: string | null
           owner_response?: string | null
           property_id?: string
           pros?: string[] | null
           rating?: number
+          rating_agent?: number | null
+          rating_condition?: number | null
+          rating_investment?: number | null
           report_count?: number | null
           review_text?: string | null
+          spam_score?: number | null
           tag_categories?: string[] | null
           title?: string | null
           updated_at?: string | null
