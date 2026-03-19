@@ -463,6 +463,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
 
   // AI admin panels
   "dom-accuracy":        () => <DOMAccuracyReport />,
+  "email-monitor":       () => <EmailMonitoringDashboard />,
   "cron-monitor":        () => <CronJobMonitor />,
   "weight-tuning-history": () => <WeightTuningHistory />,
   "system-health":       () => <SystemHealthDashboard />,

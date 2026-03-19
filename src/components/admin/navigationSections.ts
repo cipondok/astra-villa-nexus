@@ -1226,6 +1226,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "email-monitor",
+      label: "Email Monitor",
+      icon: Mail,
+      description: "Track email delivery stats, failures, suppression, and queue performance",
+      badge: "New"
+    },
+    {
       key: "cron-monitor",
       label: "Cron Job Monitor",
       icon: CalendarDays,
