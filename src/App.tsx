@@ -452,6 +452,7 @@ const AppContent = () => {
                 <Route path="/api-hub" element={<RealEstateIntelligenceAPIHub />} />
                 <Route path="/wealth-advisor" element={<AIWealthAdvisor />} />
                 <Route path="/global-exchange" element={<AutonomousGlobalPropertyExchange />} />
+                <Route path="/intelligence-os" element={<RealEstateIntelligenceOS />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
