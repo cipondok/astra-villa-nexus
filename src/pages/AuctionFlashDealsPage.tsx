@@ -365,7 +365,7 @@ export default function AuctionFlashDealsPage() {
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.15 }}>
           <Card className="border-border/50 bg-card/80">
             <CardContent className="p-3 text-center">
-              <DollarSign className="h-5 w-5 text-emerald-500 mx-auto mb-1" />
+              <DollarSign className="h-5 w-5 text-chart-2 mx-auto mb-1" />
               <p className="text-xl font-bold text-foreground">
                 {formatShort(
                   (deals || []).reduce((s, d) => s + (d.original_price - d.flash_price), 0)
