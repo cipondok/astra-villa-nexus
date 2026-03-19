@@ -105,6 +105,7 @@ const CapitalAllocationOptimizer = lazy(() => import('@/pages/CapitalAllocationO
 const DealSyndicationHub = lazy(() => import('@/pages/DealSyndicationHub'));
 const GrowthIntelligenceBrain = lazy(() => import('@/pages/GrowthIntelligenceBrain'));
 const GlobalExpansionSimulator = lazy(() => import('@/pages/GlobalExpansionSimulator'));
+const PropertyTokenizationHub = lazy(() => import('@/pages/PropertyTokenizationHub'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
@@ -421,6 +422,7 @@ const AppContent = () => {
                 <Route path="/deal-syndication" element={<DealSyndicationHub />} />
                 <Route path="/growth-intelligence" element={<GrowthIntelligenceBrain />} />
                 <Route path="/global-expansion" element={<GlobalExpansionSimulator />} />
+                <Route path="/property-tokenization" element={<PropertyTokenizationHub />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
