@@ -114,6 +114,7 @@ const HedgeFundMode = lazy(() => import('@/pages/HedgeFundMode'));
 const UrbanGrowthSimulator = lazy(() => import('@/pages/UrbanGrowthSimulator'));
 const AutonomousClosingSystem = lazy(() => import('@/pages/AutonomousClosingSystem'));
 const RealEstateMacroRadar = lazy(() => import('@/pages/RealEstateMacroRadar'));
+const InvestorBehaviorPrediction = lazy(() => import('@/pages/InvestorBehaviorPrediction'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
