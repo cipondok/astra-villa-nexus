@@ -187,14 +187,12 @@ function AuctionCard({ auction, index }: { auction: AuctionListing; index: numbe
                 </div>
               )}
               <div className="absolute top-2 left-2">
-                <Badge className="bg-primary/90 text-primary-foreground text-[9px] gap-1">
-                  <Gavel className="h-3 w-3" /> LIVE AUCTION
-                </Badge>
-              </div>
-              <div className="absolute bottom-2 right-2 flex items-center gap-1">
-                <Badge variant="outline" className="bg-background/80 text-[9px] gap-0.5">
-                  <Users className="h-2.5 w-2.5" /> {auction.bid_count} bids
-                </Badge>
+                <AuctionListingBadge
+                  type="auction"
+                  endTime={auction.end_time}
+                  bidCount={auction.bid_count}
+                  compact
+                />
               </div>
             </div>
 
