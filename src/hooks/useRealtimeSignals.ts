@@ -92,6 +92,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   ckper_engine_cycle: { label: 'Category Killer', icon: '⚔️' },
   aces_extinction_tipping: { label: 'Extinction Tipping', icon: '💀' },
   aces_engine_cycle: { label: 'Competitive Extinction', icon: '🎯' },
+  gcfs_singularity_reached: { label: 'Capital Singularity', icon: '🌌' },
+  gcfs_engine_cycle: { label: 'Capital Flywheel', icon: '🔄' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */

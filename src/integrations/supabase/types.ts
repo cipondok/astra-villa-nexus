@@ -15626,6 +15626,246 @@ export type Database = {
         }
         Relationships: []
       }
+      gcfs_capital_signals: {
+        Row: {
+          capital_migration_volume_usd: number | null
+          city: string
+          conversion_probability: number | null
+          created_at: string | null
+          detected_at: string | null
+          district: string | null
+          flow_direction: string | null
+          id: string
+          inquiry_velocity: number | null
+          macro_yield_expectation: number | null
+          signal_confidence: number | null
+          signal_source: string
+          signal_strength: number | null
+        }
+        Insert: {
+          capital_migration_volume_usd?: number | null
+          city: string
+          conversion_probability?: number | null
+          created_at?: string | null
+          detected_at?: string | null
+          district?: string | null
+          flow_direction?: string | null
+          id?: string
+          inquiry_velocity?: number | null
+          macro_yield_expectation?: number | null
+          signal_confidence?: number | null
+          signal_source: string
+          signal_strength?: number | null
+        }
+        Update: {
+          capital_migration_volume_usd?: number | null
+          city?: string
+          conversion_probability?: number | null
+          created_at?: string | null
+          detected_at?: string | null
+          district?: string | null
+          flow_direction?: string | null
+          id?: string
+          inquiry_velocity?: number | null
+          macro_yield_expectation?: number | null
+          signal_confidence?: number | null
+          signal_source?: string
+          signal_strength?: number | null
+        }
+        Relationships: []
+      }
+      gcfs_centralization_threshold: {
+        Row: {
+          assessed_at: string | null
+          centralization_phase: string | null
+          created_at: string | null
+          current_value: number | null
+          id: string
+          institutional_dependency_score: number | null
+          is_crossed: boolean | null
+          metric_name: string
+          milestone_description: string | null
+          platform_origination_share: number | null
+          proximity_pct: number | null
+          secondary_ecosystem_count: number | null
+          tipping_threshold: number | null
+        }
+        Insert: {
+          assessed_at?: string | null
+          centralization_phase?: string | null
+          created_at?: string | null
+          current_value?: number | null
+          id?: string
+          institutional_dependency_score?: number | null
+          is_crossed?: boolean | null
+          metric_name: string
+          milestone_description?: string | null
+          platform_origination_share?: number | null
+          proximity_pct?: number | null
+          secondary_ecosystem_count?: number | null
+          tipping_threshold?: number | null
+        }
+        Update: {
+          assessed_at?: string | null
+          centralization_phase?: string | null
+          created_at?: string | null
+          current_value?: number | null
+          id?: string
+          institutional_dependency_score?: number | null
+          is_crossed?: boolean | null
+          metric_name?: string
+          milestone_description?: string | null
+          platform_origination_share?: number | null
+          proximity_pct?: number | null
+          secondary_ecosystem_count?: number | null
+          tipping_threshold?: number | null
+        }
+        Relationships: []
+      }
+      gcfs_institutional_confidence: {
+        Row: {
+          adoption_phase: string | null
+          assessed_at: string | null
+          confidence_trend: string | null
+          created_at: string | null
+          deal_performance_visibility: number | null
+          downside_risk_accuracy: number | null
+          id: string
+          institution_tier: string
+          min_ticket_usd: number | null
+          participation_probability: number | null
+          transparency_score: number | null
+          trust_threshold_met: boolean | null
+        }
+        Insert: {
+          adoption_phase?: string | null
+          assessed_at?: string | null
+          confidence_trend?: string | null
+          created_at?: string | null
+          deal_performance_visibility?: number | null
+          downside_risk_accuracy?: number | null
+          id?: string
+          institution_tier: string
+          min_ticket_usd?: number | null
+          participation_probability?: number | null
+          transparency_score?: number | null
+          trust_threshold_met?: boolean | null
+        }
+        Update: {
+          adoption_phase?: string | null
+          assessed_at?: string | null
+          confidence_trend?: string | null
+          created_at?: string | null
+          deal_performance_visibility?: number | null
+          downside_risk_accuracy?: number | null
+          id?: string
+          institution_tier?: string
+          min_ticket_usd?: number | null
+          participation_probability?: number | null
+          transparency_score?: number | null
+          trust_threshold_met?: boolean | null
+        }
+        Relationships: []
+      }
+      gcfs_liquidity_reinforcement: {
+        Row: {
+          avg_exit_days: number | null
+          created_at: string | null
+          flywheel_multiplier: number | null
+          id: string
+          loop_iteration: number | null
+          market_segment: string
+          market_uncertainty_index: number | null
+          measured_at: string | null
+          platform_authority_score: number | null
+          pricing_discovery_accuracy: number | null
+          reinforcement_trend: string | null
+          reinvestment_velocity: number | null
+          transaction_throughput_monthly: number | null
+        }
+        Insert: {
+          avg_exit_days?: number | null
+          created_at?: string | null
+          flywheel_multiplier?: number | null
+          id?: string
+          loop_iteration?: number | null
+          market_segment: string
+          market_uncertainty_index?: number | null
+          measured_at?: string | null
+          platform_authority_score?: number | null
+          pricing_discovery_accuracy?: number | null
+          reinforcement_trend?: string | null
+          reinvestment_velocity?: number | null
+          transaction_throughput_monthly?: number | null
+        }
+        Update: {
+          avg_exit_days?: number | null
+          created_at?: string | null
+          flywheel_multiplier?: number | null
+          id?: string
+          loop_iteration?: number | null
+          market_segment?: string
+          market_uncertainty_index?: number | null
+          measured_at?: string | null
+          platform_authority_score?: number | null
+          pricing_discovery_accuracy?: number | null
+          reinforcement_trend?: string | null
+          reinvestment_velocity?: number | null
+          transaction_throughput_monthly?: number | null
+        }
+        Relationships: []
+      }
+      gcfs_opportunity_gravity: {
+        Row: {
+          absorption_velocity: number | null
+          asset_class: string
+          capital_flow_priority: number | null
+          city: string
+          competing_capital_density: number | null
+          computed_at: string | null
+          created_at: string | null
+          district: string | null
+          gravity_score: number | null
+          id: string
+          liquidity_momentum: number | null
+          opportunity_window_months: number | null
+          visibility_rank: number | null
+          yield_forecast_12m: number | null
+        }
+        Insert: {
+          absorption_velocity?: number | null
+          asset_class: string
+          capital_flow_priority?: number | null
+          city: string
+          competing_capital_density?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          district?: string | null
+          gravity_score?: number | null
+          id?: string
+          liquidity_momentum?: number | null
+          opportunity_window_months?: number | null
+          visibility_rank?: number | null
+          yield_forecast_12m?: number | null
+        }
+        Update: {
+          absorption_velocity?: number | null
+          asset_class?: string
+          capital_flow_priority?: number | null
+          city?: string
+          competing_capital_density?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          district?: string | null
+          gravity_score?: number | null
+          id?: string
+          liquidity_momentum?: number | null
+          opportunity_window_months?: number | null
+          visibility_rank?: number | null
+          yield_forecast_12m?: number | null
+        }
+        Relationships: []
+      }
       generated_functions: {
         Row: {
           complexity: string | null
