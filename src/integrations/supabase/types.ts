@@ -6418,6 +6418,210 @@ export type Database = {
         }
         Relationships: []
       }
+      capital_flow_predictions: {
+        Row: {
+          capital_gravity_score: number
+          city: string
+          created_at: string
+          cross_border_migration_score: number
+          cross_border_origin_countries: string[] | null
+          district: string
+          fx_tailwind_index: number
+          gravity_tier: string
+          id: string
+          institutional_confidence: number
+          institutional_inflow_forecast: number
+          institutional_source_markets: string[] | null
+          market_code: string
+          model_accuracy_pct: number | null
+          predicted_capital_volume: number
+          prediction_horizon: string
+          prediction_model_version: string | null
+          retail_demand_wave_index: number
+          retail_search_momentum: number
+          retail_sentiment_score: number
+          updated_at: string
+        }
+        Insert: {
+          capital_gravity_score?: number
+          city?: string
+          created_at?: string
+          cross_border_migration_score?: number
+          cross_border_origin_countries?: string[] | null
+          district?: string
+          fx_tailwind_index?: number
+          gravity_tier?: string
+          id?: string
+          institutional_confidence?: number
+          institutional_inflow_forecast?: number
+          institutional_source_markets?: string[] | null
+          market_code: string
+          model_accuracy_pct?: number | null
+          predicted_capital_volume?: number
+          prediction_horizon?: string
+          prediction_model_version?: string | null
+          retail_demand_wave_index?: number
+          retail_search_momentum?: number
+          retail_sentiment_score?: number
+          updated_at?: string
+        }
+        Update: {
+          capital_gravity_score?: number
+          city?: string
+          created_at?: string
+          cross_border_migration_score?: number
+          cross_border_origin_countries?: string[] | null
+          district?: string
+          fx_tailwind_index?: number
+          gravity_tier?: string
+          id?: string
+          institutional_confidence?: number
+          institutional_inflow_forecast?: number
+          institutional_source_markets?: string[] | null
+          market_code?: string
+          model_accuracy_pct?: number | null
+          predicted_capital_volume?: number
+          prediction_horizon?: string
+          prediction_model_version?: string | null
+          retail_demand_wave_index?: number
+          retail_search_momentum?: number
+          retail_sentiment_score?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      capital_influence_actions: {
+        Row: {
+          action_type: string
+          activated_at: string
+          capital_influenced: number
+          clicks: number
+          conversions: number
+          created_at: string
+          delivery_channel: string
+          district: string
+          expires_at: string | null
+          headline: string
+          id: string
+          impressions: number
+          is_active: boolean
+          market_code: string
+          narrative: string | null
+          priority: string
+          supporting_data: Json | null
+          target_audience: string
+        }
+        Insert: {
+          action_type: string
+          activated_at?: string
+          capital_influenced?: number
+          clicks?: number
+          conversions?: number
+          created_at?: string
+          delivery_channel?: string
+          district?: string
+          expires_at?: string | null
+          headline: string
+          id?: string
+          impressions?: number
+          is_active?: boolean
+          market_code: string
+          narrative?: string | null
+          priority?: string
+          supporting_data?: Json | null
+          target_audience?: string
+        }
+        Update: {
+          action_type?: string
+          activated_at?: string
+          capital_influenced?: number
+          clicks?: number
+          conversions?: number
+          created_at?: string
+          delivery_channel?: string
+          district?: string
+          expires_at?: string | null
+          headline?: string
+          id?: string
+          impressions?: number
+          is_active?: boolean
+          market_code?: string
+          narrative?: string | null
+          priority?: string
+          supporting_data?: Json | null
+          target_audience?: string
+        }
+        Relationships: []
+      }
+      capital_network_effect_metrics: {
+        Row: {
+          active_investors: number
+          avg_days_to_close: number
+          avg_deal_size: number
+          capital_inflow_30d: number
+          capital_multiplier: number
+          city: string
+          created_at: string
+          deal_velocity_acceleration: number
+          deals_closed_30d: number
+          flywheel_rpm: number
+          id: string
+          investor_growth_rate: number
+          liquidity_depth_index: number
+          market_code: string
+          metcalfe_value_proxy: number
+          network_maturity_phase: string | null
+          new_investors_30d: number
+          snapshot_date: string
+          time_to_critical_mass_days: number | null
+          total_liquidity_volume: number
+        }
+        Insert: {
+          active_investors?: number
+          avg_days_to_close?: number
+          avg_deal_size?: number
+          capital_inflow_30d?: number
+          capital_multiplier?: number
+          city?: string
+          created_at?: string
+          deal_velocity_acceleration?: number
+          deals_closed_30d?: number
+          flywheel_rpm?: number
+          id?: string
+          investor_growth_rate?: number
+          liquidity_depth_index?: number
+          market_code: string
+          metcalfe_value_proxy?: number
+          network_maturity_phase?: string | null
+          new_investors_30d?: number
+          snapshot_date?: string
+          time_to_critical_mass_days?: number | null
+          total_liquidity_volume?: number
+        }
+        Update: {
+          active_investors?: number
+          avg_days_to_close?: number
+          avg_deal_size?: number
+          capital_inflow_30d?: number
+          capital_multiplier?: number
+          city?: string
+          created_at?: string
+          deal_velocity_acceleration?: number
+          deals_closed_30d?: number
+          flywheel_rpm?: number
+          id?: string
+          investor_growth_rate?: number
+          liquidity_depth_index?: number
+          market_code?: string
+          metcalfe_value_proxy?: number
+          network_maturity_phase?: string | null
+          new_investors_30d?: number
+          snapshot_date?: string
+          time_to_critical_mass_days?: number | null
+          total_liquidity_volume?: number
+        }
+        Relationships: []
+      }
       capital_sequencing_queue: {
         Row: {
           ai_rationale: string | null
@@ -16617,6 +16821,63 @@ export type Database = {
           seasonal_factor?: Json | null
           transaction_velocity?: number | null
           view_to_inquiry_ratio?: number | null
+        }
+        Relationships: []
+      }
+      liquidity_acceleration_signals: {
+        Row: {
+          acceleration_rate: number
+          baseline_metric: number | null
+          city: string
+          confirmed_at: string | null
+          created_at: string
+          current_metric: number | null
+          days_to_breakout: number | null
+          district: string
+          expires_at: string | null
+          id: string
+          market_code: string
+          pct_change: number | null
+          signal_strength: number
+          signal_type: string
+          status: string
+          trigger_conditions: Json | null
+        }
+        Insert: {
+          acceleration_rate?: number
+          baseline_metric?: number | null
+          city?: string
+          confirmed_at?: string | null
+          created_at?: string
+          current_metric?: number | null
+          days_to_breakout?: number | null
+          district?: string
+          expires_at?: string | null
+          id?: string
+          market_code: string
+          pct_change?: number | null
+          signal_strength?: number
+          signal_type: string
+          status?: string
+          trigger_conditions?: Json | null
+        }
+        Update: {
+          acceleration_rate?: number
+          baseline_metric?: number | null
+          city?: string
+          confirmed_at?: string | null
+          created_at?: string
+          current_metric?: number | null
+          days_to_breakout?: number | null
+          district?: string
+          expires_at?: string | null
+          id?: string
+          market_code?: string
+          pct_change?: number | null
+          signal_strength?: number
+          signal_type?: string
+          status?: string
+          trigger_conditions?: Json | null
         }
         Relationships: []
       }
@@ -40566,6 +40827,84 @@ export type Database = {
           reference_type?: string | null
           user_id?: string
           xp_amount?: number
+        }
+        Relationships: []
+      }
+      yield_gradient_map: {
+        Row: {
+          asset_type: string
+          capital_appreciation_12m: number
+          capital_appreciation_36m: number
+          city: string
+          created_at: string
+          district: string
+          downside_risk: number
+          gradient_velocity: number | null
+          gross_rental_yield: number
+          id: string
+          last_computed_at: string
+          market_code: string
+          net_rental_yield: number
+          risk_adjusted_return: number
+          sharpe_proxy: number
+          total_return_forecast: number
+          updated_at: string
+          volatility: number
+          yield_gradient_direction: string | null
+          yield_rank_global: number | null
+          yield_rank_in_country: number | null
+          yield_vs_national_avg: number
+          yield_vs_regional_avg: number
+        }
+        Insert: {
+          asset_type?: string
+          capital_appreciation_12m?: number
+          capital_appreciation_36m?: number
+          city?: string
+          created_at?: string
+          district?: string
+          downside_risk?: number
+          gradient_velocity?: number | null
+          gross_rental_yield?: number
+          id?: string
+          last_computed_at?: string
+          market_code: string
+          net_rental_yield?: number
+          risk_adjusted_return?: number
+          sharpe_proxy?: number
+          total_return_forecast?: number
+          updated_at?: string
+          volatility?: number
+          yield_gradient_direction?: string | null
+          yield_rank_global?: number | null
+          yield_rank_in_country?: number | null
+          yield_vs_national_avg?: number
+          yield_vs_regional_avg?: number
+        }
+        Update: {
+          asset_type?: string
+          capital_appreciation_12m?: number
+          capital_appreciation_36m?: number
+          city?: string
+          created_at?: string
+          district?: string
+          downside_risk?: number
+          gradient_velocity?: number | null
+          gross_rental_yield?: number
+          id?: string
+          last_computed_at?: string
+          market_code?: string
+          net_rental_yield?: number
+          risk_adjusted_return?: number
+          sharpe_proxy?: number
+          total_return_forecast?: number
+          updated_at?: string
+          volatility?: number
+          yield_gradient_direction?: string | null
+          yield_rank_global?: number | null
+          yield_rank_in_country?: number | null
+          yield_vs_national_avg?: number
+          yield_vs_regional_avg?: number
         }
         Relationships: []
       }
