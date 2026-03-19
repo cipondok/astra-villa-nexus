@@ -212,6 +212,7 @@ export const DocumentSigningHub = lazyRetry(() => import("./DocumentSigningHub")
 export const PropertyAuctionManager = lazyRetry(() => import("./PropertyAuctionManager"));
 export const TenantScreening = lazyRetry(() => import("./TenantScreening"));
 export const AICommandCenter = lazyRetry(() => import("./AICommandCenter"));
+export const AIIntelligenceMonitor = lazyRetry(() => import("./AIIntelligenceMonitor"));
 export const GlobalStrategyPanel = lazyRetry(() => import("./GlobalStrategyPanel"));
 export const InvestorDNAAdminPanel = lazyRetry(() => import("./InvestorDNAAdminPanel"));
 export const GlobalMacroIntelligencePanel = lazyRetry(() => import("@/pages/GlobalMacroIntelligencePage"));
@@ -333,6 +334,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ai-bot-management":   () => <AIBotManagement />,
   "ai-assistant":        () => <AIPropertyAssistant />,
   "ai-command-center":   () => <AICommandCenter />,
+  "ai-intelligence-monitor": () => <AIIntelligenceMonitor />,
   "ai-performance":      () => <AIPerformanceDashboard />,
   "ai-model-weights":    () => <AIModelWeightsPanel />,
   "ai-feedback-analytics": () => <AIFeedbackAnalytics />,
