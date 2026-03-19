@@ -44,6 +44,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   network_critical_mass_reached: { label: 'Critical Mass!', icon: '💥' },
   superapp_lifecycle_transition: { label: 'Lifecycle Event', icon: '🔁' },
   superapp_orchestrator_cycle: { label: 'SuperApp Engine', icon: '🏗️' },
+  fund_rebalance_alert: { label: 'Fund Rebalance', icon: '⚖️' },
+  fund_engine_cycle: { label: 'Fund Engine', icon: '🏛️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */

@@ -375,3 +375,6 @@ verify_jwt = false
 
 [functions.superapp-orchestrator]
 verify_jwt = false
+
+[functions.institutional-fund-engine]
+verify_jwt = false
