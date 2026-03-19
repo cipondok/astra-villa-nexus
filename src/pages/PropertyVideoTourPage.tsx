@@ -49,6 +49,23 @@ const MUSIC_OPTIONS = [
   { id: "none", label: "No Music", desc: "Silent video" },
 ];
 
+const OUTPUT_FORMATS = [
+  {
+    id: "social_teaser",
+    label: "Social Teaser",
+    desc: "15-30s vertical clip for Instagram/TikTok",
+    icon: <Share2 className="h-5 w-5" />,
+    gradient: "from-pink-500/20 to-rose-500/20",
+  },
+  {
+    id: "full_tour",
+    label: "Full Tour",
+    desc: "60-90s cinematic landscape presentation",
+    icon: <Film className="h-5 w-5" />,
+    gradient: "from-indigo-500/20 to-blue-500/20",
+  },
+];
+
 /* ── Timeline Frame ── */
 function TimelineFrame({
   src, index, total, isActive, onClick, onRemove,
