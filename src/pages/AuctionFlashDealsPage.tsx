@@ -9,11 +9,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { motion, AnimatePresence } from 'framer-motion';
+import AuctionListingBadge from '@/components/auction/AuctionListingBadge';
+import BidCompetitivenessIndicator from '@/components/auction/BidCompetitivenessIndicator';
 import {
   Zap, Gavel, Clock, TrendingUp, Flame, Eye, MapPin,
   Home, ArrowUpRight, Loader2, AlertTriangle, Users,
   DollarSign, Timer, Sparkles, ChevronRight, Target,
-} from 'lucide-react';
+}from 'lucide-react';
 
 const formatIDR = (v: number) =>
   new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v);
