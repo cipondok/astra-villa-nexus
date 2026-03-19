@@ -7113,6 +7113,177 @@ export type Database = {
           },
         ]
       }
+      city_developer_opportunities: {
+        Row: {
+          avg_land_price_sqm: number | null
+          city: string
+          country: string
+          created_at: string
+          demand_forecast_12m: number | null
+          district: string | null
+          estimated_roi_pct: number | null
+          id: string
+          opportunity_score: number
+          opportunity_type: string
+          recommended_property_type: string | null
+          risk_level: string | null
+          strategy_brief: string | null
+          supply_deficit_units: number | null
+          updated_at: string
+          valid_until: string | null
+        }
+        Insert: {
+          avg_land_price_sqm?: number | null
+          city: string
+          country?: string
+          created_at?: string
+          demand_forecast_12m?: number | null
+          district?: string | null
+          estimated_roi_pct?: number | null
+          id?: string
+          opportunity_score?: number
+          opportunity_type: string
+          recommended_property_type?: string | null
+          risk_level?: string | null
+          strategy_brief?: string | null
+          supply_deficit_units?: number | null
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Update: {
+          avg_land_price_sqm?: number | null
+          city?: string
+          country?: string
+          created_at?: string
+          demand_forecast_12m?: number | null
+          district?: string | null
+          estimated_roi_pct?: number | null
+          id?: string
+          opportunity_score?: number
+          opportunity_type?: string
+          recommended_property_type?: string | null
+          risk_level?: string | null
+          strategy_brief?: string | null
+          supply_deficit_units?: number | null
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
+      city_expansion_probability: {
+        Row: {
+          absorption_acceleration: number
+          city: string
+          computed_at: string
+          confidence_level: number | null
+          country: string
+          created_at: string
+          district: string | null
+          expansion_phase: string | null
+          expansion_probability: number
+          id: string
+          infrastructure_score: number
+          investor_entry_velocity: number
+          liquidity_momentum: number
+          population_growth_score: number
+          price_appreciation_slope: number
+          time_horizon_months: number | null
+        }
+        Insert: {
+          absorption_acceleration?: number
+          city: string
+          computed_at?: string
+          confidence_level?: number | null
+          country?: string
+          created_at?: string
+          district?: string | null
+          expansion_phase?: string | null
+          expansion_probability?: number
+          id?: string
+          infrastructure_score?: number
+          investor_entry_velocity?: number
+          liquidity_momentum?: number
+          population_growth_score?: number
+          price_appreciation_slope?: number
+          time_horizon_months?: number | null
+        }
+        Update: {
+          absorption_acceleration?: number
+          city?: string
+          computed_at?: string
+          confidence_level?: number | null
+          country?: string
+          created_at?: string
+          district?: string | null
+          expansion_phase?: string | null
+          expansion_probability?: number
+          id?: string
+          infrastructure_score?: number
+          investor_entry_velocity?: number
+          liquidity_momentum?: number
+          population_growth_score?: number
+          price_appreciation_slope?: number
+          time_horizon_months?: number | null
+        }
+        Relationships: []
+      }
+      city_expansion_sequencing: {
+        Row: {
+          capital_deployment_strategy: string | null
+          capital_inflow_potential: number
+          city: string
+          composite_score: number
+          computed_at: string
+          country: string
+          created_at: string
+          digital_readiness: number
+          entry_strategy: string | null
+          id: string
+          market_maturity: number
+          recommended_entry_timing: string | null
+          regulatory_openness: number
+          sequence_rank: number | null
+          vendor_activation_plan: string | null
+          vendor_ecosystem_depth: number
+        }
+        Insert: {
+          capital_deployment_strategy?: string | null
+          capital_inflow_potential?: number
+          city: string
+          composite_score?: number
+          computed_at?: string
+          country?: string
+          created_at?: string
+          digital_readiness?: number
+          entry_strategy?: string | null
+          id?: string
+          market_maturity?: number
+          recommended_entry_timing?: string | null
+          regulatory_openness?: number
+          sequence_rank?: number | null
+          vendor_activation_plan?: string | null
+          vendor_ecosystem_depth?: number
+        }
+        Update: {
+          capital_deployment_strategy?: string | null
+          capital_inflow_potential?: number
+          city?: string
+          composite_score?: number
+          computed_at?: string
+          country?: string
+          created_at?: string
+          digital_readiness?: number
+          entry_strategy?: string | null
+          id?: string
+          market_maturity?: number
+          recommended_entry_timing?: string | null
+          regulatory_openness?: number
+          sequence_rank?: number | null
+          vendor_activation_plan?: string | null
+          vendor_ecosystem_depth?: number
+        }
+        Relationships: []
+      }
       city_network_density: {
         Row: {
           active_agents: number | null
@@ -7176,6 +7347,48 @@ export type Database = {
           scoring_inputs?: Json | null
           updated_at?: string | null
           vendor_service_depth_score?: number | null
+        }
+        Relationships: []
+      }
+      city_urban_growth_signals: {
+        Row: {
+          city: string
+          country: string
+          created_at: string
+          detected_at: string
+          expires_at: string | null
+          id: string
+          province: string | null
+          signal_data: Json | null
+          signal_strength: number
+          signal_type: string
+          trend_direction: string | null
+        }
+        Insert: {
+          city: string
+          country?: string
+          created_at?: string
+          detected_at?: string
+          expires_at?: string | null
+          id?: string
+          province?: string | null
+          signal_data?: Json | null
+          signal_strength?: number
+          signal_type: string
+          trend_direction?: string | null
+        }
+        Update: {
+          city?: string
+          country?: string
+          created_at?: string
+          detected_at?: string
+          expires_at?: string | null
+          id?: string
+          province?: string | null
+          signal_data?: Json | null
+          signal_strength?: number
+          signal_type?: string
+          trend_direction?: string | null
         }
         Relationships: []
       }
