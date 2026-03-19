@@ -669,6 +669,7 @@ const AppContent = () => {
                 <Route path="/ownership-lifecycle" element={<OwnershipLifecyclePage />} />
                 <Route path="/macro-prediction" element={<MacroPredictionTerminal />} />
                 <Route path="/investor-social" element={<InvestorSocialNetwork />} />
+                <Route path="/global-predictive-analytics" element={<GlobalPredictiveAnalyticsPage />} />
                 <Route path="/virtual-explorer" element={<VirtualPropertyExplorer />} />
                 <Route path="/product-architecture" element={<ProductArchitecturePage />} />
                 <Route path="/development-roadmap" element={<DevelopmentRoadmapPage />} />
