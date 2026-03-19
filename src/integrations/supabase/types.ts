@@ -15031,6 +15031,348 @@ export type Database = {
         }
         Relationships: []
       }
+      gwsm_capital_flows: {
+        Row: {
+          asset_class: string
+          bubble_risk_contribution: number | null
+          computed_at: string | null
+          confidence: number | null
+          created_at: string | null
+          flow_amount_usd: number
+          flow_type: string
+          flow_velocity: number | null
+          friction_cost_pct: number | null
+          id: string
+          long_term_asset_productivity: number | null
+          optimization_delta_pct: number | null
+          productivity_gain_pct: number | null
+          recommendation: string | null
+          regulatory_friction: number | null
+          signal_sources: Json | null
+          source_geography: string
+          target_geography: string
+          time_horizon_years: number | null
+        }
+        Insert: {
+          asset_class: string
+          bubble_risk_contribution?: number | null
+          computed_at?: string | null
+          confidence?: number | null
+          created_at?: string | null
+          flow_amount_usd?: number
+          flow_type: string
+          flow_velocity?: number | null
+          friction_cost_pct?: number | null
+          id?: string
+          long_term_asset_productivity?: number | null
+          optimization_delta_pct?: number | null
+          productivity_gain_pct?: number | null
+          recommendation?: string | null
+          regulatory_friction?: number | null
+          signal_sources?: Json | null
+          source_geography: string
+          target_geography: string
+          time_horizon_years?: number | null
+        }
+        Update: {
+          asset_class?: string
+          bubble_risk_contribution?: number | null
+          computed_at?: string | null
+          confidence?: number | null
+          created_at?: string | null
+          flow_amount_usd?: number
+          flow_type?: string
+          flow_velocity?: number | null
+          friction_cost_pct?: number | null
+          id?: string
+          long_term_asset_productivity?: number | null
+          optimization_delta_pct?: number | null
+          productivity_gain_pct?: number | null
+          recommendation?: string | null
+          regulatory_friction?: number | null
+          signal_sources?: Json | null
+          source_geography?: string
+          target_geography?: string
+          time_horizon_years?: number | null
+        }
+        Relationships: []
+      }
+      gwsm_generational_forecasts: {
+        Row: {
+          allocation_strategy: Json | null
+          cagr_10y: number | null
+          cagr_25y: number | null
+          cagr_50y: number | null
+          compounding_efficiency: number | null
+          computed_at: string | null
+          created_at: string | null
+          dynasty_longevity_score: number | null
+          entity_name: string | null
+          entity_type: string
+          forecast_100y_usd: number | null
+          forecast_10y_usd: number | null
+          forecast_25y_usd: number | null
+          forecast_50y_usd: number | null
+          id: string
+          initial_capital_usd: number
+          intergenerational_transfer_loss_pct: number | null
+          key_assumptions: Json | null
+          real_return_after_inflation: number | null
+          risk_factors: Json | null
+          scenario: string | null
+          wealth_preservation_probability: number | null
+        }
+        Insert: {
+          allocation_strategy?: Json | null
+          cagr_10y?: number | null
+          cagr_25y?: number | null
+          cagr_50y?: number | null
+          compounding_efficiency?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          dynasty_longevity_score?: number | null
+          entity_name?: string | null
+          entity_type: string
+          forecast_100y_usd?: number | null
+          forecast_10y_usd?: number | null
+          forecast_25y_usd?: number | null
+          forecast_50y_usd?: number | null
+          id?: string
+          initial_capital_usd?: number
+          intergenerational_transfer_loss_pct?: number | null
+          key_assumptions?: Json | null
+          real_return_after_inflation?: number | null
+          risk_factors?: Json | null
+          scenario?: string | null
+          wealth_preservation_probability?: number | null
+        }
+        Update: {
+          allocation_strategy?: Json | null
+          cagr_10y?: number | null
+          cagr_25y?: number | null
+          cagr_50y?: number | null
+          compounding_efficiency?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          dynasty_longevity_score?: number | null
+          entity_name?: string | null
+          entity_type?: string
+          forecast_100y_usd?: number | null
+          forecast_10y_usd?: number | null
+          forecast_25y_usd?: number | null
+          forecast_50y_usd?: number | null
+          id?: string
+          initial_capital_usd?: number
+          intergenerational_transfer_loss_pct?: number | null
+          key_assumptions?: Json | null
+          real_return_after_inflation?: number | null
+          risk_factors?: Json | null
+          scenario?: string | null
+          wealth_preservation_probability?: number | null
+        }
+        Relationships: []
+      }
+      gwsm_gravity_field: {
+        Row: {
+          attractors: Json | null
+          capital_mass_usd: number | null
+          competing_fields: Json | null
+          computed_at: string | null
+          created_at: string | null
+          detractors: Json | null
+          escape_velocity_threshold: number | null
+          field_trend: string | null
+          gravitational_anomalies: Json | null
+          gravity_score: number
+          id: string
+          inflow_momentum: number | null
+          magnetic_field_strength: number | null
+          net_attraction: number | null
+          orbital_capital_usd: number | null
+          outflow_pressure: number | null
+          rank_global: number | null
+          target: string
+          target_type: string
+        }
+        Insert: {
+          attractors?: Json | null
+          capital_mass_usd?: number | null
+          competing_fields?: Json | null
+          computed_at?: string | null
+          created_at?: string | null
+          detractors?: Json | null
+          escape_velocity_threshold?: number | null
+          field_trend?: string | null
+          gravitational_anomalies?: Json | null
+          gravity_score?: number
+          id?: string
+          inflow_momentum?: number | null
+          magnetic_field_strength?: number | null
+          net_attraction?: number | null
+          orbital_capital_usd?: number | null
+          outflow_pressure?: number | null
+          rank_global?: number | null
+          target: string
+          target_type: string
+        }
+        Update: {
+          attractors?: Json | null
+          capital_mass_usd?: number | null
+          competing_fields?: Json | null
+          computed_at?: string | null
+          created_at?: string | null
+          detractors?: Json | null
+          escape_velocity_threshold?: number | null
+          field_trend?: string | null
+          gravitational_anomalies?: Json | null
+          gravity_score?: number
+          id?: string
+          inflow_momentum?: number | null
+          magnetic_field_strength?: number | null
+          net_attraction?: number | null
+          orbital_capital_usd?: number | null
+          outflow_pressure?: number | null
+          rank_global?: number | null
+          target?: string
+          target_type?: string
+        }
+        Relationships: []
+      }
+      gwsm_risk_entropy: {
+        Row: {
+          computed_at: string | null
+          contagion_risk: number | null
+          correlation_spike_detected: boolean | null
+          created_at: string | null
+          crisis_probability_12m: number | null
+          crisis_probability_24m: number | null
+          crisis_probability_6m: number | null
+          dampening_capacity: number | null
+          early_warning_signals: Json | null
+          entropy_index: number
+          geography: string | null
+          id: string
+          leverage_system_risk: number | null
+          liquidity_stress_index: number | null
+          propagation_paths: Json | null
+          rebalancing_urgency: string | null
+          recommended_actions: Json | null
+          safe_haven_demand_index: number | null
+          scope: string
+          systemic_instability_score: number | null
+        }
+        Insert: {
+          computed_at?: string | null
+          contagion_risk?: number | null
+          correlation_spike_detected?: boolean | null
+          created_at?: string | null
+          crisis_probability_12m?: number | null
+          crisis_probability_24m?: number | null
+          crisis_probability_6m?: number | null
+          dampening_capacity?: number | null
+          early_warning_signals?: Json | null
+          entropy_index?: number
+          geography?: string | null
+          id?: string
+          leverage_system_risk?: number | null
+          liquidity_stress_index?: number | null
+          propagation_paths?: Json | null
+          rebalancing_urgency?: string | null
+          recommended_actions?: Json | null
+          safe_haven_demand_index?: number | null
+          scope?: string
+          systemic_instability_score?: number | null
+        }
+        Update: {
+          computed_at?: string | null
+          contagion_risk?: number | null
+          correlation_spike_detected?: boolean | null
+          created_at?: string | null
+          crisis_probability_12m?: number | null
+          crisis_probability_24m?: number | null
+          crisis_probability_6m?: number | null
+          dampening_capacity?: number | null
+          early_warning_signals?: Json | null
+          entropy_index?: number
+          geography?: string | null
+          id?: string
+          leverage_system_risk?: number | null
+          liquidity_stress_index?: number | null
+          propagation_paths?: Json | null
+          rebalancing_urgency?: string | null
+          recommended_actions?: Json | null
+          safe_haven_demand_index?: number | null
+          scope?: string
+          systemic_instability_score?: number | null
+        }
+        Relationships: []
+      }
+      gwsm_wealth_map: {
+        Row: {
+          asset_class: string
+          computed_at: string | null
+          created_at: string | null
+          data_confidence: number | null
+          geography: string
+          geography_type: string
+          growth_potential_score: number | null
+          id: string
+          inefficiency_index: number | null
+          leverage_ratio: number | null
+          liquidity_score: number | null
+          productivity_score: number | null
+          snapshot_date: string
+          total_value_usd: number
+          trapped_capital_pct: number | null
+          trapped_capital_usd: number | null
+          under_leveraged: boolean | null
+          value_share_pct: number | null
+          velocity_of_capital: number | null
+        }
+        Insert: {
+          asset_class: string
+          computed_at?: string | null
+          created_at?: string | null
+          data_confidence?: number | null
+          geography: string
+          geography_type?: string
+          growth_potential_score?: number | null
+          id?: string
+          inefficiency_index?: number | null
+          leverage_ratio?: number | null
+          liquidity_score?: number | null
+          productivity_score?: number | null
+          snapshot_date?: string
+          total_value_usd?: number
+          trapped_capital_pct?: number | null
+          trapped_capital_usd?: number | null
+          under_leveraged?: boolean | null
+          value_share_pct?: number | null
+          velocity_of_capital?: number | null
+        }
+        Update: {
+          asset_class?: string
+          computed_at?: string | null
+          created_at?: string | null
+          data_confidence?: number | null
+          geography?: string
+          geography_type?: string
+          growth_potential_score?: number | null
+          id?: string
+          inefficiency_index?: number | null
+          leverage_ratio?: number | null
+          liquidity_score?: number | null
+          productivity_score?: number | null
+          snapshot_date?: string
+          total_value_usd?: number
+          trapped_capital_pct?: number | null
+          trapped_capital_usd?: number | null
+          under_leveraged?: boolean | null
+          value_share_pct?: number | null
+          velocity_of_capital?: number | null
+        }
+        Relationships: []
+      }
       hedging_downside_protection: {
         Row: {
           city: string
