@@ -418,6 +418,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "kyc-analytics":       () => <KYCAnalyticsDashboard />,
   "bulk-kyc-operations": () => <BulkKYCOperations />,
   "document-ocr":        () => <DocumentOCR />,
+  "review-moderation":   () => <ReviewModerationDashboard />,
 
   // UX & algorithm
   "user-experience-tips": () => <UserExperienceTips />,
