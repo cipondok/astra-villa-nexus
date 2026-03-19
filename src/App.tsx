@@ -90,6 +90,7 @@ const PropertyDeepAnalysis = lazy(() => import('@/pages/PropertyDeepAnalysis'));
 const InvestorOnboardingWizard = lazy(() => import('@/pages/InvestorOnboardingWizard'));
 const InvestorReferralEngine = lazy(() => import('@/pages/InvestorReferralEngine'));
 const MarketIntelligenceHeatmap = lazy(() => import('@/pages/MarketIntelligenceHeatmap'));
+const SmartDealMatching = lazy(() => import('@/pages/SmartDealMatching'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
@@ -391,6 +392,7 @@ const AppContent = () => {
                 <Route path="/onboarding/investor-wizard" element={<InvestorOnboardingWizard />} />
                 <Route path="/referral-engine" element={<InvestorReferralEngine />} />
                 <Route path="/market-heatmap" element={<MarketIntelligenceHeatmap />} />
+                <Route path="/smart-deal-matching" element={<SmartDealMatching />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
