@@ -103,10 +103,33 @@ Deno.serve(async (req) => {
       })
     }
 
-    // Enqueue for each recipient
+    // Enqueue for each recipient (skip suppressed emails)
     const results = []
     for (const recipient of recipients) {
+      // Check suppression list
+      const { data: isSuppressed } = await supabase.rpc('is_email_suppressed', { p_email: recipient })
+      if (isSuppressed) {
+        console.log('Skipping suppressed email:', recipient)
+        const messageId = crypto.randomUUID()
+        await supabase.from('email_send_log').insert({
+          message_id: messageId,
+          template_name: template || 'custom',
+          recipient_email: recipient,
+          status: 'suppressed',
+        })
+        results.push({ recipient, success: true, suppressed: true })
+        continue
+      }
+
       const messageId = crypto.randomUUID()
+
+      // Get unsubscribe token and inject link into HTML
+      const { data: unsubToken } = await supabase.rpc('get_unsubscribe_token', { p_email: recipient })
+      const unsubUrl = `${Deno.env.get('SUPABASE_URL')}/functions/v1/handle-email-unsubscribe?token=${unsubToken}`
+      const htmlWithUnsub = emailHtml.replace(
+        '</body>',
+        `<div style="text-align:center;padding:20px 0 10px;"><a href="${unsubUrl}" style="color:#999;font-size:11px;text-decoration:underline;">Unsubscribe from these emails</a></div></body>`
+      )
 
       await supabase.from('email_send_log').insert({
         message_id: messageId,
@@ -123,7 +146,7 @@ Deno.serve(async (req) => {
           from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
           sender_domain: SENDER_DOMAIN,
           subject: emailSubject,
-          html: emailHtml,
+          html: htmlWithUnsub,
           text: emailText,
           purpose: 'transactional',
           label: template || 'custom',
