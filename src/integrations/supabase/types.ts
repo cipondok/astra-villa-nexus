@@ -36868,6 +36868,46 @@ export type Database = {
           subdistrict_name: string
         }[]
       }
+      get_email_log_entries: {
+        Args: {
+          p_end?: string
+          p_limit?: number
+          p_offset?: number
+          p_start?: string
+          p_status?: string
+          p_template?: string
+        }
+        Returns: {
+          created_at: string
+          error_message: string
+          id: string
+          message_id: string
+          recipient_email: string
+          status: string
+          template_name: string
+        }[]
+      }
+      get_email_log_stats: {
+        Args: {
+          p_end?: string
+          p_start?: string
+          p_status?: string
+          p_template?: string
+        }
+        Returns: {
+          failed_count: number
+          pending_count: number
+          sent_count: number
+          suppressed_count: number
+          total_count: number
+        }[]
+      }
+      get_email_template_names: {
+        Args: never
+        Returns: {
+          template_name: string
+        }[]
+      }
       get_event_signal_stats: {
         Args: never
         Returns: {
