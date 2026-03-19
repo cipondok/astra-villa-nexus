@@ -49,6 +49,14 @@ const TEMPLATES: Record<string, TemplateEntry> = {
     component: GeneralEmail,
     subject: 'Message from Astra Villa Realty',
   },
+  welcome: {
+    component: WelcomeEmail,
+    subject: 'Welcome to Astra Villa Realty!',
+  },
+  property_alert: {
+    component: PropertyAlertEmail,
+    subject: (v) => v.alert_type === 'price_drop' ? `Price drop: ${v.property_title}` : `New listing: ${v.property_title}`,
+  },
 }
 
 Deno.serve(async (req) => {
