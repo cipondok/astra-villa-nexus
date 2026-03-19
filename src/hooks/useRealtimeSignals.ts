@@ -90,6 +90,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   gmma_engine_cycle: { label: 'Monopoly Moat', icon: '🛡️' },
   ckper_phase_dominant: { label: 'Phase Dominant', icon: '🚀' },
   ckper_engine_cycle: { label: 'Category Killer', icon: '⚔️' },
+  aces_extinction_tipping: { label: 'Extinction Tipping', icon: '💀' },
+  aces_engine_cycle: { label: 'Competitive Extinction', icon: '🎯' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */

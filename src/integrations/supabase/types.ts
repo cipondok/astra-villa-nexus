@@ -350,6 +350,228 @@ export type Database = {
         }
         Relationships: []
       }
+      aces_ecosystem_depth: {
+        Row: {
+          api_call_volume_daily: number | null
+          competitor_integration_gap: number | null
+          created_at: string | null
+          depth_tier: string | null
+          embedded_processes: number | null
+          id: string
+          integration_domain: string
+          measured_at: string | null
+          retention_probability_pct: number | null
+          switching_cost_hours: number | null
+          workflow_dependency_score: number | null
+        }
+        Insert: {
+          api_call_volume_daily?: number | null
+          competitor_integration_gap?: number | null
+          created_at?: string | null
+          depth_tier?: string | null
+          embedded_processes?: number | null
+          id?: string
+          integration_domain: string
+          measured_at?: string | null
+          retention_probability_pct?: number | null
+          switching_cost_hours?: number | null
+          workflow_dependency_score?: number | null
+        }
+        Update: {
+          api_call_volume_daily?: number | null
+          competitor_integration_gap?: number | null
+          created_at?: string | null
+          depth_tier?: string | null
+          embedded_processes?: number | null
+          id?: string
+          integration_domain?: string
+          measured_at?: string | null
+          retention_probability_pct?: number | null
+          switching_cost_hours?: number | null
+          workflow_dependency_score?: number | null
+        }
+        Relationships: []
+      }
+      aces_execution_dominance: {
+        Row: {
+          automation_coverage_pct: number | null
+          bottleneck_count: number | null
+          competitor_speed_multiple: number | null
+          coordination_efficiency: number | null
+          created_at: string | null
+          discovery_to_close_hours: number | null
+          id: string
+          measured_at: string | null
+          participant_satisfaction: number | null
+          speed_trend: string | null
+          uncertainty_reduction_pct: number | null
+          workflow_name: string
+        }
+        Insert: {
+          automation_coverage_pct?: number | null
+          bottleneck_count?: number | null
+          competitor_speed_multiple?: number | null
+          coordination_efficiency?: number | null
+          created_at?: string | null
+          discovery_to_close_hours?: number | null
+          id?: string
+          measured_at?: string | null
+          participant_satisfaction?: number | null
+          speed_trend?: string | null
+          uncertainty_reduction_pct?: number | null
+          workflow_name: string
+        }
+        Update: {
+          automation_coverage_pct?: number | null
+          bottleneck_count?: number | null
+          competitor_speed_multiple?: number | null
+          coordination_efficiency?: number | null
+          created_at?: string | null
+          discovery_to_close_hours?: number | null
+          id?: string
+          measured_at?: string | null
+          participant_satisfaction?: number | null
+          speed_trend?: string | null
+          uncertainty_reduction_pct?: number | null
+          workflow_name?: string
+        }
+        Relationships: []
+      }
+      aces_extinction_indicators: {
+        Row: {
+          competitor_name: string
+          created_at: string | null
+          deal_velocity_decline_pct: number | null
+          ethical_boundary_compliance: boolean | null
+          extinction_phase: string | null
+          id: string
+          investor_attention_shift_pct: number | null
+          listing_quality_migration_pct: number | null
+          market_share_delta_pct: number | null
+          time_to_irrelevance_months: number | null
+          tipping_point_proximity: number | null
+          tracked_at: string | null
+        }
+        Insert: {
+          competitor_name: string
+          created_at?: string | null
+          deal_velocity_decline_pct?: number | null
+          ethical_boundary_compliance?: boolean | null
+          extinction_phase?: string | null
+          id?: string
+          investor_attention_shift_pct?: number | null
+          listing_quality_migration_pct?: number | null
+          market_share_delta_pct?: number | null
+          time_to_irrelevance_months?: number | null
+          tipping_point_proximity?: number | null
+          tracked_at?: string | null
+        }
+        Update: {
+          competitor_name?: string
+          created_at?: string | null
+          deal_velocity_decline_pct?: number | null
+          ethical_boundary_compliance?: boolean | null
+          extinction_phase?: string | null
+          id?: string
+          investor_attention_shift_pct?: number | null
+          listing_quality_migration_pct?: number | null
+          market_share_delta_pct?: number | null
+          time_to_irrelevance_months?: number | null
+          tipping_point_proximity?: number | null
+          tracked_at?: string | null
+        }
+        Relationships: []
+      }
+      aces_intelligence_superiority: {
+        Row: {
+          accuracy_improvement_rate: number | null
+          competitor_accuracy_gap_pct: number | null
+          compounding_velocity: number | null
+          computed_at: string | null
+          created_at: string | null
+          domain: string
+          id: string
+          market_timing_advantage_hours: number | null
+          prediction_accuracy_pct: number | null
+          proprietary_data_points: number | null
+          replication_difficulty_score: number | null
+          transactions_processed: number | null
+        }
+        Insert: {
+          accuracy_improvement_rate?: number | null
+          competitor_accuracy_gap_pct?: number | null
+          compounding_velocity?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          domain: string
+          id?: string
+          market_timing_advantage_hours?: number | null
+          prediction_accuracy_pct?: number | null
+          proprietary_data_points?: number | null
+          replication_difficulty_score?: number | null
+          transactions_processed?: number | null
+        }
+        Update: {
+          accuracy_improvement_rate?: number | null
+          competitor_accuracy_gap_pct?: number | null
+          compounding_velocity?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          domain?: string
+          id?: string
+          market_timing_advantage_hours?: number | null
+          prediction_accuracy_pct?: number | null
+          proprietary_data_points?: number | null
+          replication_difficulty_score?: number | null
+          transactions_processed?: number | null
+        }
+        Relationships: []
+      }
+      aces_network_acceleration: {
+        Row: {
+          competitor_velocity_gap_pct: number | null
+          created_at: string | null
+          deal_velocity_per_user: number | null
+          flywheel_rpm: number | null
+          id: string
+          institutional_attraction_rate: number | null
+          measured_at: string | null
+          network_density: number | null
+          network_segment: string
+          time_to_critical_mass_months: number | null
+          transaction_friction_score: number | null
+          user_to_deal_ratio: number | null
+        }
+        Insert: {
+          competitor_velocity_gap_pct?: number | null
+          created_at?: string | null
+          deal_velocity_per_user?: number | null
+          flywheel_rpm?: number | null
+          id?: string
+          institutional_attraction_rate?: number | null
+          measured_at?: string | null
+          network_density?: number | null
+          network_segment: string
+          time_to_critical_mass_months?: number | null
+          transaction_friction_score?: number | null
+          user_to_deal_ratio?: number | null
+        }
+        Update: {
+          competitor_velocity_gap_pct?: number | null
+          created_at?: string | null
+          deal_velocity_per_user?: number | null
+          flywheel_rpm?: number | null
+          id?: string
+          institutional_attraction_rate?: number | null
+          measured_at?: string | null
+          network_density?: number | null
+          network_segment?: string
+          time_to_critical_mass_months?: number | null
+          transaction_friction_score?: number | null
+          user_to_deal_ratio?: number | null
+        }
+        Relationships: []
+      }
       acquisition_analytics: {
         Row: {
           campaign_id: string | null
