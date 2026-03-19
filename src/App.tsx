@@ -466,6 +466,7 @@ const AppContent = () => {
                 <Route path="/investor-funnel" element={<InvestorAcquisitionFunnel />} />
                 <Route path="/seo-traffic-engine" element={<ListingSEOTrafficEngine />} />
                 <Route path="/content-engine" element={<PropertyContentEngine />} />
+                <Route path="/marketplace-evolution" element={<MarketplaceEvolution />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
