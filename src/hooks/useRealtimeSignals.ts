@@ -96,6 +96,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   gcfs_engine_cycle: { label: 'Capital Flywheel', icon: '🔄' },
   amce_market_institutionalized: { label: 'Market Created', icon: '🌱' },
   amce_engine_cycle: { label: 'Market Creation', icon: '🏗️' },
+  asci_sovereign_deployment: { label: 'Sovereign Deploy', icon: '🏦' },
+  asci_engine_cycle: { label: 'Sovereign Capital', icon: '👑' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
