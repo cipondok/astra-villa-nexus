@@ -18,6 +18,7 @@ import {
 import SEOAuditReport from './SEOAuditReport';
 import SeoLandingContentGenerator from './SeoLandingContentGenerator';
 import SeoLocationBlueprintGenerator from '../SeoLocationBlueprintGenerator';
+import SeoContentPipelineDashboard from '../SeoContentPipelineDashboard';
 
 interface SEOSettingsHubProps {
   settings: any;
