@@ -462,6 +462,7 @@ const AppContent = () => {
                 <Route path="/investor-network" element={<GlobalInvestorNetworkAI />} />
                 <Route path="/self-optimizing-ecosystem" element={<SelfOptimizingEcosystem />} />
                 <Route path="/investor-funnel" element={<InvestorAcquisitionFunnel />} />
+                <Route path="/seo-traffic-engine" element={<ListingSEOTrafficEngine />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
