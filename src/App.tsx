@@ -245,6 +245,7 @@ const GlobalPredictiveAnalyticsPage = lazy(() => import('@/pages/GlobalPredictiv
 const InvestorSocialNetwork = lazy(() => import('@/pages/InvestorSocialNetwork'));
 const VirtualPropertyExplorer = lazy(() => import('@/pages/VirtualPropertyExplorer'));
 const ProductArchitecturePage = lazy(() => import('@/pages/ProductArchitecturePage'));
+const SuperappBlueprintPage = lazy(() => import('@/pages/SuperappBlueprintPage'));
 const DevelopmentRoadmapPage = lazy(() => import('@/pages/DevelopmentRoadmapPage'));
 const SchemaArchitecturePage = lazy(() => import('@/pages/SchemaArchitecturePage'));
 const ApiArchitecturePage = lazy(() => import('@/pages/ApiArchitecturePage'));
