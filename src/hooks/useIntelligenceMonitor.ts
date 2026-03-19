@@ -1,6 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
+// Use untyped client to avoid deep type instantiation
+const db = supabase as any;
+
 export interface OpportunityScoreMetrics {
   totalProperties: number;
   scoredProperties: number;
