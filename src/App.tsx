@@ -95,6 +95,7 @@ const InvestorIntelligenceReports = lazy(() => import('@/pages/InvestorIntellige
 const LiquidityForecastEngine = lazy(() => import('@/pages/LiquidityForecastEngine'));
 const InvestorIntelligenceDeck = lazy(() => import('@/pages/InvestorIntelligenceDeck'));
 const DeveloperPipelineCRM = lazy(() => import('@/pages/DeveloperPipelineCRM'));
+const PricingInefficiencyDetector = lazy(() => import('@/pages/PricingInefficiencyDetector'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
@@ -401,6 +402,7 @@ const AppContent = () => {
                 <Route path="/liquidity-forecast" element={<LiquidityForecastEngine />} />
                 <Route path="/investor-deck" element={<InvestorIntelligenceDeck />} />
                 <Route path="/developer-pipeline" element={<DeveloperPipelineCRM />} />
+                <Route path="/pricing-inefficiency" element={<PricingInefficiencyDetector />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
