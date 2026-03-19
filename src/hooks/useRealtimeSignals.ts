@@ -56,6 +56,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   city_expansion_engine_cycle: { label: 'Expansion Engine', icon: '📡' },
   wealth_risk_critical: { label: 'Wealth Risk', icon: '⚠️' },
   wealth_intelligence_engine_cycle: { label: 'Wealth Engine', icon: '💎' },
+  gpi_major_movement: { label: 'Index Movement', icon: '📈' },
+  gpi_index_computed: { label: 'Index Computed', icon: '🔢' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */

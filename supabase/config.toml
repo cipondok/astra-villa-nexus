@@ -390,3 +390,6 @@ verify_jwt = false
 
 [functions.wealth-intelligence-engine]
 verify_jwt = false
+
+[functions.global-property-index]
+verify_jwt = false
