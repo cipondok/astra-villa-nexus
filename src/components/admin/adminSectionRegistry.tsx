@@ -334,6 +334,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ai-bot-management":   () => <AIBotManagement />,
   "ai-assistant":        () => <AIPropertyAssistant />,
   "ai-command-center":   () => <AICommandCenter />,
+  "ai-intelligence-monitor": () => <AIIntelligenceMonitor />,
   "ai-performance":      () => <AIPerformanceDashboard />,
   "ai-model-weights":    () => <AIModelWeightsPanel />,
   "ai-feedback-analytics": () => <AIFeedbackAnalytics />,
