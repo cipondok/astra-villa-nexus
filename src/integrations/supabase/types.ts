@@ -25162,6 +25162,258 @@ export type Database = {
         }
         Relationships: []
       }
+      mrde_competitive_dominance: {
+        Row: {
+          competitor_segment: string
+          computed_at: string
+          content_velocity_ratio: number | null
+          created_at: string
+          dominance_tier: string | null
+          id: string
+          media_mention_multiplier: number | null
+          perceived_inevitability: number | null
+          seo_dominance_keywords: number | null
+          share_of_voice: number | null
+          strategy_active: string | null
+          thought_leadership_score: number | null
+          visibility_lead_pct: number | null
+        }
+        Insert: {
+          competitor_segment?: string
+          computed_at?: string
+          content_velocity_ratio?: number | null
+          created_at?: string
+          dominance_tier?: string | null
+          id?: string
+          media_mention_multiplier?: number | null
+          perceived_inevitability?: number | null
+          seo_dominance_keywords?: number | null
+          share_of_voice?: number | null
+          strategy_active?: string | null
+          thought_leadership_score?: number | null
+          visibility_lead_pct?: number | null
+        }
+        Update: {
+          competitor_segment?: string
+          computed_at?: string
+          content_velocity_ratio?: number | null
+          created_at?: string
+          dominance_tier?: string | null
+          id?: string
+          media_mention_multiplier?: number | null
+          perceived_inevitability?: number | null
+          seo_dominance_keywords?: number | null
+          share_of_voice?: number | null
+          strategy_active?: string | null
+          thought_leadership_score?: number | null
+          visibility_lead_pct?: number | null
+        }
+        Relationships: []
+      }
+      mrde_demand_gravity: {
+        Row: {
+          appreciation_velocity: number | null
+          attention_density: number | null
+          capital_clustering_index: number | null
+          city: string
+          computed_at: string
+          country: string
+          created_at: string
+          district: string | null
+          gravity_pull_score: number | null
+          id: string
+          investment_theme: string | null
+          liquidity_concentration: number | null
+          organic_vs_amplified_ratio: number | null
+          promoted_asset_class: string | null
+        }
+        Insert: {
+          appreciation_velocity?: number | null
+          attention_density?: number | null
+          capital_clustering_index?: number | null
+          city: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          district?: string | null
+          gravity_pull_score?: number | null
+          id?: string
+          investment_theme?: string | null
+          liquidity_concentration?: number | null
+          organic_vs_amplified_ratio?: number | null
+          promoted_asset_class?: string | null
+        }
+        Update: {
+          appreciation_velocity?: number | null
+          attention_density?: number | null
+          capital_clustering_index?: number | null
+          city?: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          district?: string | null
+          gravity_pull_score?: number | null
+          id?: string
+          investment_theme?: string | null
+          liquidity_concentration?: number | null
+          organic_vs_amplified_ratio?: number | null
+          promoted_asset_class?: string | null
+        }
+        Relationships: []
+      }
+      mrde_narrative_momentum: {
+        Row: {
+          amplification_channel: string | null
+          city: string | null
+          computed_at: string
+          confidence_signal_strength: number | null
+          country: string
+          created_at: string
+          engagement_multiplier: number | null
+          ethical_clearance: boolean | null
+          growth_expectation_index: number | null
+          id: string
+          narrative_phase: string | null
+          narrative_theme: string
+          narrative_velocity: number | null
+          reach_estimate: number | null
+          success_case_visibility: number | null
+        }
+        Insert: {
+          amplification_channel?: string | null
+          city?: string | null
+          computed_at?: string
+          confidence_signal_strength?: number | null
+          country?: string
+          created_at?: string
+          engagement_multiplier?: number | null
+          ethical_clearance?: boolean | null
+          growth_expectation_index?: number | null
+          id?: string
+          narrative_phase?: string | null
+          narrative_theme: string
+          narrative_velocity?: number | null
+          reach_estimate?: number | null
+          success_case_visibility?: number | null
+        }
+        Update: {
+          amplification_channel?: string | null
+          city?: string | null
+          computed_at?: string
+          confidence_signal_strength?: number | null
+          country?: string
+          created_at?: string
+          engagement_multiplier?: number | null
+          ethical_clearance?: boolean | null
+          growth_expectation_index?: number | null
+          id?: string
+          narrative_phase?: string | null
+          narrative_theme?: string
+          narrative_velocity?: number | null
+          reach_estimate?: number | null
+          success_case_visibility?: number | null
+        }
+        Relationships: []
+      }
+      mrde_perception_velocity: {
+        Row: {
+          city: string | null
+          computed_at: string
+          created_at: string
+          fomo_participation_rate: number | null
+          forecast_tipping_date: string | null
+          id: string
+          market_segment: string | null
+          sentiment_acceleration: number | null
+          sentiment_phase: string | null
+          tipping_point_proximity: number | null
+          trust_index: number | null
+          trust_index_delta: number | null
+          viral_coefficient: number | null
+        }
+        Insert: {
+          city?: string | null
+          computed_at?: string
+          created_at?: string
+          fomo_participation_rate?: number | null
+          forecast_tipping_date?: string | null
+          id?: string
+          market_segment?: string | null
+          sentiment_acceleration?: number | null
+          sentiment_phase?: string | null
+          tipping_point_proximity?: number | null
+          trust_index?: number | null
+          trust_index_delta?: number | null
+          viral_coefficient?: number | null
+        }
+        Update: {
+          city?: string | null
+          computed_at?: string
+          created_at?: string
+          fomo_participation_rate?: number | null
+          forecast_tipping_date?: string | null
+          id?: string
+          market_segment?: string | null
+          sentiment_acceleration?: number | null
+          sentiment_phase?: string | null
+          tipping_point_proximity?: number | null
+          trust_index?: number | null
+          trust_index_delta?: number | null
+          viral_coefficient?: number | null
+        }
+        Relationships: []
+      }
+      mrde_phase_acceleration: {
+        Row: {
+          acceleration_lever: string | null
+          adoption_cycle_weeks: number | null
+          city: string | null
+          compressed_vs_natural_ratio: number | null
+          computed_at: string
+          created_at: string
+          critical_mass_pct: number | null
+          diffusion_velocity: number | null
+          ecosystem_scaling_wave: number | null
+          ethical_guardrails: Json | null
+          id: string
+          market_segment: string
+          network_effect_stage: string | null
+          participation_doubling_weeks: number | null
+        }
+        Insert: {
+          acceleration_lever?: string | null
+          adoption_cycle_weeks?: number | null
+          city?: string | null
+          compressed_vs_natural_ratio?: number | null
+          computed_at?: string
+          created_at?: string
+          critical_mass_pct?: number | null
+          diffusion_velocity?: number | null
+          ecosystem_scaling_wave?: number | null
+          ethical_guardrails?: Json | null
+          id?: string
+          market_segment?: string
+          network_effect_stage?: string | null
+          participation_doubling_weeks?: number | null
+        }
+        Update: {
+          acceleration_lever?: string | null
+          adoption_cycle_weeks?: number | null
+          city?: string | null
+          compressed_vs_natural_ratio?: number | null
+          computed_at?: string
+          created_at?: string
+          critical_mass_pct?: number | null
+          diffusion_velocity?: number | null
+          ecosystem_scaling_wave?: number | null
+          ethical_guardrails?: Json | null
+          id?: string
+          market_segment?: string
+          network_effect_stage?: string | null
+          participation_doubling_weeks?: number | null
+        }
+        Relationships: []
+      }
       negotiation_intelligence: {
         Row: {
           avg_counter_offer_discount_pct: number | null
