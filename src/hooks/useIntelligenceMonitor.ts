@@ -113,7 +113,7 @@ export function useIntelligenceMonitor() {
       };
 
       // ── Market Heat Intelligence ──
-      const { data: heatCache } = await (supabase
+      const { data: heatCache } = await (db
         .from('ai_intelligence_cache')
         .select('data, updated_at')
         .eq('intelligence_type', 'market_heat')
@@ -145,7 +145,7 @@ export function useIntelligenceMonitor() {
         : 50;
 
       // Anomaly signals
-      const { data: signals } = await (supabase
+      const { data: signals } = await (db
         .from('ai_event_signals')
         .select('id, signal_type, payload, created_at')
         .order('created_at', { ascending: false })
