@@ -100,6 +100,7 @@ const InvestmentPerformanceTracker = lazy(() => import('@/pages/InvestmentPerfor
 const AutonomousDealAlerts = lazy(() => import('@/pages/AutonomousDealAlerts'));
 const InvestorRiskIntelligence = lazy(() => import('@/pages/InvestorRiskIntelligence'));
 const ExitStrategyPlanner = lazy(() => import('@/pages/ExitStrategyPlanner'));
+const DemandSentimentAnalyzer = lazy(() => import('@/pages/DemandSentimentAnalyzer'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
