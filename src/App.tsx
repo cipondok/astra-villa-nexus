@@ -418,6 +418,7 @@ const AppContent = () => {
                 <Route path="/demand-sentiment" element={<DemandSentimentAnalyzer />} />
                 <Route path="/capital-allocation" element={<CapitalAllocationOptimizer />} />
                 <Route path="/deal-syndication" element={<DealSyndicationHub />} />
+                <Route path="/growth-intelligence" element={<GrowthIntelligenceBrain />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
