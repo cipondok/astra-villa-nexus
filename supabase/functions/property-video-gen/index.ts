@@ -33,6 +33,55 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) return json({ error: "LOVABLE_API_KEY not configured" }, 500);
 
     const body = await req.json();
+
+    // Handle voiceover script generation
+    if (body.action === "generate_script") {
+      const { property_info: info, output_format, image_count } = body;
+      const duration = output_format === "social_teaser" ? "15-30 seconds" : "60-90 seconds";
+      const style = output_format === "social_teaser"
+        ? "punchy, attention-grabbing, with a strong hook in the first 3 seconds. Use short sentences. End with a clear call-to-action."
+        : "professional, detailed, and cinematic. Guide the viewer through each room/area. Include investment highlights.";
+
+      const scriptPrompt = `Write a voiceover narration script for a ${duration} property video tour.
+
+Property: ${info.title || "Premium Property"}
+Location: ${info.location || "Prime Location"}
+${info.price ? `Price: ${info.price}` : ""}
+${info.opportunity_score ? `Investment Score: ${info.opportunity_score}/100` : ""}
+${info.selling_points?.length ? `Key Features: ${info.selling_points.join(", ")}` : ""}
+Number of photos/scenes: ${image_count || 3}
+
+Style: ${style}
+
+Write ONLY the narration text. Include [PAUSE] markers between scenes. Keep it natural and engaging. Write in English with Indonesian location names.`;
+
+      const scriptRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-3-flash-preview",
+          messages: [
+            { role: "system", content: "You are a professional video narration scriptwriter for luxury real estate marketing." },
+            { role: "user", content: scriptPrompt },
+          ],
+          temperature: 0.7,
+        }),
+      });
+
+      if (!scriptRes.ok) {
+        if (scriptRes.status === 429) return json({ error: "Rate limit exceeded." }, 429);
+        if (scriptRes.status === 402) return json({ error: "AI credits exhausted." }, 402);
+        return json({ error: "Script generation failed" }, 500);
+      }
+
+      const scriptData = await scriptRes.json();
+      const script = scriptData.choices?.[0]?.message?.content || "";
+      return json({ script });
+    }
+
     const { images, theme, property_info, music_style } = body as {
       images: string[];
       theme: string;

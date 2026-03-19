@@ -13,7 +13,7 @@ import {
   Upload, Loader2, Video, Film, Play, Pause, Download, Trash2,
   Plus, X, ChevronLeft, ChevronRight, Music, Type, MapPin,
   DollarSign, TrendingUp, Sparkles, GripVertical, Eye, Share2,
-  ImageIcon, Clapperboard,
+  ImageIcon, Clapperboard, Mic, Copy, CheckCircle2, FileText,
 } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 
@@ -47,6 +47,23 @@ const MUSIC_OPTIONS = [
   { id: "cinematic", label: "Cinematic", desc: "Orchestral drama" },
   { id: "upbeat", label: "Upbeat", desc: "Energetic, modern" },
   { id: "none", label: "No Music", desc: "Silent video" },
+];
+
+const OUTPUT_FORMATS = [
+  {
+    id: "social_teaser",
+    label: "Social Teaser",
+    desc: "15-30s vertical clip for Instagram/TikTok",
+    icon: <Share2 className="h-5 w-5" />,
+    gradient: "from-pink-500/20 to-rose-500/20",
+  },
+  {
+    id: "full_tour",
+    label: "Full Tour",
+    desc: "60-90s cinematic landscape presentation",
+    icon: <Film className="h-5 w-5" />,
+    gradient: "from-indigo-500/20 to-blue-500/20",
+  },
 ];
 
 /* ── Timeline Frame ── */
@@ -231,6 +248,10 @@ export default function PropertyVideoTourPage() {
   const [selectedTheme, setSelectedTheme] = useState("luxury_cinematic");
   const [selectedMusic, setSelectedMusic] = useState("ambient");
   const [result, setResult] = useState<VideoGenResult | null>(null);
+  const [outputFormat, setOutputFormat] = useState("full_tour");
+  const [voiceoverScript, setVoiceoverScript] = useState("");
+  const [isGeneratingScript, setIsGeneratingScript] = useState(false);
+  const [scriptCopied, setScriptCopied] = useState(false);
 
   // Property info
   const [title, setTitle] = useState("");
@@ -242,6 +263,44 @@ export default function PropertyVideoTourPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const videoGen = usePropertyVideoGen();
+
+  const generateVoiceoverScript = async () => {
+    if (!title && !location) {
+      toast({ title: "Add property info first", description: "Title or location needed for script.", variant: "destructive" });
+      return;
+    }
+    setIsGeneratingScript(true);
+    try {
+      const { data, error } = await (await import("@/integrations/supabase/client")).supabase.functions.invoke("property-video-gen", {
+        body: {
+          action: "generate_script",
+          property_info: {
+            title: title || "Premium Property",
+            price: price || undefined,
+            location: location || undefined,
+            opportunity_score: score ? parseInt(score) : undefined,
+            selling_points: sellingPoints.filter(Boolean),
+          },
+          output_format: outputFormat,
+          image_count: images.length,
+        },
+      });
+      if (error) throw error;
+      setVoiceoverScript(data?.script || "");
+      toast({ title: "Voiceover script ready!", description: "Review and customize before recording." });
+    } catch (e: any) {
+      toast({ title: "Script generation failed", description: e?.message || "Try again.", variant: "destructive" });
+    } finally {
+      setIsGeneratingScript(false);
+    }
+  };
+
+  const copyScript = () => {
+    navigator.clipboard.writeText(voiceoverScript);
+    setScriptCopied(true);
+    toast({ title: "Script copied!" });
+    setTimeout(() => setScriptCopied(false), 2000);
+  };
 
   const handleFilesSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -456,7 +515,90 @@ export default function PropertyVideoTourPage() {
                 </CardContent>
               </Card>
 
-              {/* Property Info */}
+              {/* Output Format */}
+              <Card className="border-border/50">
+                <CardContent className="p-4 space-y-3">
+                  <Label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                    <Clapperboard className="h-3.5 w-3.5" /> Output Format
+                  </Label>
+                  <div className="space-y-2">
+                    {OUTPUT_FORMATS.map((fmt) => (
+                      <button
+                        key={fmt.id}
+                        onClick={() => setOutputFormat(fmt.id)}
+                        className={cn(
+                          "w-full flex items-start gap-3 p-3 rounded-xl border text-left transition-all",
+                          outputFormat === fmt.id
+                            ? "border-primary/50 bg-primary/5 shadow-sm"
+                            : "border-border/40 hover:border-border hover:bg-muted/30"
+                        )}
+                      >
+                        <div className={cn(
+                          "p-2 rounded-lg bg-gradient-to-br",
+                          fmt.gradient,
+                          outputFormat === fmt.id ? "text-primary" : "text-muted-foreground"
+                        )}>
+                          {fmt.icon}
+                        </div>
+                        <div>
+                          <p className={cn("text-sm font-medium", outputFormat === fmt.id ? "text-primary" : "text-foreground")}>
+                            {fmt.label}
+                          </p>
+                          <p className="text-[11px] text-muted-foreground">{fmt.desc}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Voiceover Script */}
+              <Card className="border-border/50">
+                <CardContent className="p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                      <Mic className="h-3.5 w-3.5" /> Voiceover Script
+                    </Label>
+                    <Badge variant="outline" className="text-[9px]">AI Suggested</Badge>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">
+                    Generate a narration script based on property details and selected format.
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full text-xs gap-2"
+                    onClick={generateVoiceoverScript}
+                    disabled={isGeneratingScript || (!title && !location)}
+                  >
+                    {isGeneratingScript ? (
+                      <><Loader2 className="h-3 w-3 animate-spin" /> Generating Script...</>
+                    ) : (
+                      <><FileText className="h-3 w-3" /> Generate Script</>
+                    )}
+                  </Button>
+                  {voiceoverScript && (
+                    <div className="space-y-2">
+                      <div className="p-3 rounded-lg bg-muted/30 border border-border/30 text-[11px] text-foreground leading-relaxed whitespace-pre-wrap max-h-[200px] overflow-y-auto">
+                        {voiceoverScript}
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-[10px] h-6 gap-1.5"
+                        onClick={copyScript}
+                      >
+                        {scriptCopied ? (
+                          <><CheckCircle2 className="h-3 w-3 text-chart-3" /> Copied</>
+                        ) : (
+                          <><Copy className="h-3 w-3" /> Copy Script</>
+                        )}
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
               <Card className="border-border/50">
                 <CardContent className="p-4 space-y-3">
                   <Label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
