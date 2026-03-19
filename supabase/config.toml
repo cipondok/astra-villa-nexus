@@ -318,3 +318,6 @@ project_id = "zymrajuuyyfkzdmptebl"
 
   [functions.sitemap]
     verify_jwt = false
+
+  [functions.seo-content-pipeline]
+    verify_jwt = false
