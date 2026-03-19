@@ -415,6 +415,8 @@ const AppContent = () => {
                 <Route path="/deal-room" element={<DealRoom />} />
                 <Route path="/deal-room/:dealId" element={<DealRoom />} />
                 <Route path="/launch-command" element={<LaunchCommandCenter />} />
+                <Route path="/property-analysis" element={<PropertyDeepAnalysis />} />
+                <Route path="/property-analysis/:id" element={<PropertyDeepAnalysis />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 <Route path="/dashboard/admin" element={<AdminDashboard />} />
