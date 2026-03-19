@@ -15430,6 +15430,252 @@ export type Database = {
         }
         Relationships: []
       }
+      gmma_brand_authority: {
+        Row: {
+          authority_tier: string | null
+          awards_recognitions: number | null
+          brand_recognition_score: number | null
+          category: string
+          category_definition_power: number | null
+          computed_at: string
+          created_at: string
+          default_platform_probability: number | null
+          id: string
+          industry_citations: number | null
+          media_authority_index: number | null
+          standard_setting_influence: number | null
+          thought_leadership_pieces: number | null
+        }
+        Insert: {
+          authority_tier?: string | null
+          awards_recognitions?: number | null
+          brand_recognition_score?: number | null
+          category?: string
+          category_definition_power?: number | null
+          computed_at?: string
+          created_at?: string
+          default_platform_probability?: number | null
+          id?: string
+          industry_citations?: number | null
+          media_authority_index?: number | null
+          standard_setting_influence?: number | null
+          thought_leadership_pieces?: number | null
+        }
+        Update: {
+          authority_tier?: string | null
+          awards_recognitions?: number | null
+          brand_recognition_score?: number | null
+          category?: string
+          category_definition_power?: number | null
+          computed_at?: string
+          created_at?: string
+          default_platform_probability?: number | null
+          id?: string
+          industry_citations?: number | null
+          media_authority_index?: number | null
+          standard_setting_influence?: number | null
+          thought_leadership_pieces?: number | null
+        }
+        Relationships: []
+      }
+      gmma_capital_dependency: {
+        Row: {
+          alternative_friction_score: number | null
+          channel_type: string
+          computed_at: string
+          created_at: string
+          dependency_depth: string | null
+          developer_pipelines: number | null
+          flow_volume_usd: number | null
+          id: string
+          institutional_contracts: number | null
+          platform_share_pct: number | null
+          secondary_market_volume_usd: number | null
+          structural_lock_in: boolean | null
+          switching_cost_usd: number | null
+        }
+        Insert: {
+          alternative_friction_score?: number | null
+          channel_type?: string
+          computed_at?: string
+          created_at?: string
+          dependency_depth?: string | null
+          developer_pipelines?: number | null
+          flow_volume_usd?: number | null
+          id?: string
+          institutional_contracts?: number | null
+          platform_share_pct?: number | null
+          secondary_market_volume_usd?: number | null
+          structural_lock_in?: boolean | null
+          switching_cost_usd?: number | null
+        }
+        Update: {
+          alternative_friction_score?: number | null
+          channel_type?: string
+          computed_at?: string
+          created_at?: string
+          dependency_depth?: string | null
+          developer_pipelines?: number | null
+          flow_volume_usd?: number | null
+          id?: string
+          institutional_contracts?: number | null
+          platform_share_pct?: number | null
+          secondary_market_volume_usd?: number | null
+          structural_lock_in?: boolean | null
+          switching_cost_usd?: number | null
+        }
+        Relationships: []
+      }
+      gmma_data_gravity: {
+        Row: {
+          behavioral_signals_ingested: number | null
+          city: string
+          compounding_rate_monthly: number | null
+          computed_at: string
+          country: string
+          created_at: string
+          data_half_life_months: number | null
+          gravity_tier: string | null
+          id: string
+          localized_liquidity_records: number | null
+          moat_depth_score: number | null
+          prediction_superiority_index: number | null
+          replication_cost_estimate_usd: number | null
+          transaction_velocity_patterns: number | null
+        }
+        Insert: {
+          behavioral_signals_ingested?: number | null
+          city: string
+          compounding_rate_monthly?: number | null
+          computed_at?: string
+          country?: string
+          created_at?: string
+          data_half_life_months?: number | null
+          gravity_tier?: string | null
+          id?: string
+          localized_liquidity_records?: number | null
+          moat_depth_score?: number | null
+          prediction_superiority_index?: number | null
+          replication_cost_estimate_usd?: number | null
+          transaction_velocity_patterns?: number | null
+        }
+        Update: {
+          behavioral_signals_ingested?: number | null
+          city?: string
+          compounding_rate_monthly?: number | null
+          computed_at?: string
+          country?: string
+          created_at?: string
+          data_half_life_months?: number | null
+          gravity_tier?: string | null
+          id?: string
+          localized_liquidity_records?: number | null
+          moat_depth_score?: number | null
+          prediction_superiority_index?: number | null
+          replication_cost_estimate_usd?: number | null
+          transaction_velocity_patterns?: number | null
+        }
+        Relationships: []
+      }
+      gmma_network_lockin: {
+        Row: {
+          churn_resistance: number | null
+          city: string | null
+          computed_at: string
+          created_at: string
+          deal_count: number | null
+          deal_to_vendor_ratio: number | null
+          feedback_loop_strength: number | null
+          id: string
+          investor_count: number | null
+          investor_to_deal_ratio: number | null
+          irreversibility_index: number | null
+          lock_in_tier: string | null
+          network_density: number | null
+          vendor_count: number | null
+        }
+        Insert: {
+          churn_resistance?: number | null
+          city?: string | null
+          computed_at?: string
+          created_at?: string
+          deal_count?: number | null
+          deal_to_vendor_ratio?: number | null
+          feedback_loop_strength?: number | null
+          id?: string
+          investor_count?: number | null
+          investor_to_deal_ratio?: number | null
+          irreversibility_index?: number | null
+          lock_in_tier?: string | null
+          network_density?: number | null
+          vendor_count?: number | null
+        }
+        Update: {
+          churn_resistance?: number | null
+          city?: string | null
+          computed_at?: string
+          created_at?: string
+          deal_count?: number | null
+          deal_to_vendor_ratio?: number | null
+          feedback_loop_strength?: number | null
+          id?: string
+          investor_count?: number | null
+          investor_to_deal_ratio?: number | null
+          irreversibility_index?: number | null
+          lock_in_tier?: string | null
+          network_density?: number | null
+          vendor_count?: number | null
+        }
+        Relationships: []
+      }
+      gmma_workflow_integration: {
+        Row: {
+          api_calls_monthly: number | null
+          computed_at: string
+          created_at: string
+          daily_active_workflows: number | null
+          data_stored_gb: number | null
+          embedded_processes: number | null
+          id: string
+          integration_depth: string | null
+          integration_tier: string | null
+          participant_type: string
+          replacement_complexity: string | null
+          retention_probability: number | null
+          switching_cost_hours: number | null
+        }
+        Insert: {
+          api_calls_monthly?: number | null
+          computed_at?: string
+          created_at?: string
+          daily_active_workflows?: number | null
+          data_stored_gb?: number | null
+          embedded_processes?: number | null
+          id?: string
+          integration_depth?: string | null
+          integration_tier?: string | null
+          participant_type?: string
+          replacement_complexity?: string | null
+          retention_probability?: number | null
+          switching_cost_hours?: number | null
+        }
+        Update: {
+          api_calls_monthly?: number | null
+          computed_at?: string
+          created_at?: string
+          daily_active_workflows?: number | null
+          data_stored_gb?: number | null
+          embedded_processes?: number | null
+          id?: string
+          integration_depth?: string | null
+          integration_tier?: string | null
+          participant_type?: string
+          replacement_complexity?: string | null
+          retention_probability?: number | null
+          switching_cost_hours?: number | null
+        }
+        Relationships: []
+      }
       gpi_index_constituents: {
         Row: {
           added_at: string
