@@ -387,3 +387,6 @@ verify_jwt = false
 
 [functions.city-expansion-intelligence]
 verify_jwt = false
+
+[functions.wealth-intelligence-engine]
+verify_jwt = false

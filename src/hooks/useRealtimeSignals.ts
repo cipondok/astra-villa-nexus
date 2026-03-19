@@ -54,6 +54,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   capital_gravity_engine_cycle: { label: 'Capital Gravity', icon: '🌊' },
   city_expansion_breakout: { label: 'City Breakout', icon: '🏙️' },
   city_expansion_engine_cycle: { label: 'Expansion Engine', icon: '📡' },
+  wealth_risk_critical: { label: 'Wealth Risk', icon: '⚠️' },
+  wealth_intelligence_engine_cycle: { label: 'Wealth Engine', icon: '💎' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
