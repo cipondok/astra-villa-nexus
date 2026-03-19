@@ -99,6 +99,7 @@ const PricingInefficiencyDetector = lazy(() => import('@/pages/PricingInefficien
 const InvestmentPerformanceTracker = lazy(() => import('@/pages/InvestmentPerformanceTracker'));
 const AutonomousDealAlerts = lazy(() => import('@/pages/AutonomousDealAlerts'));
 const InvestorRiskIntelligence = lazy(() => import('@/pages/InvestorRiskIntelligence'));
+const ExitStrategyPlanner = lazy(() => import('@/pages/ExitStrategyPlanner'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
@@ -409,6 +410,7 @@ const AppContent = () => {
                 <Route path="/investment-performance" element={<InvestmentPerformanceTracker />} />
                 <Route path="/deal-alerts" element={<AutonomousDealAlerts />} />
                 <Route path="/risk-intelligence" element={<InvestorRiskIntelligence />} />
+                <Route path="/exit-strategy" element={<ExitStrategyPlanner />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/search-advanced" element={<AdvancedSearchPage />} />
