@@ -173,10 +173,10 @@ export function useIntelligenceMonitor() {
       const oneDayAgo = new Date(now - 86400000).toISOString();
 
       const [dailySessions, weeklySessions, searchCount, behaviorLogs] = await Promise.all([
-        supabase.from('activity_logs').select('id', { count: 'exact', head: true }).gte('created_at', oneDayAgo),
-        supabase.from('activity_logs').select('id', { count: 'exact', head: true }).gte('created_at', sevenDaysAgo),
-        supabase.from('ai_property_queries').select('id', { count: 'exact', head: true }).gte('created_at', sevenDaysAgo),
-        supabase.from('activity_logs').select('activity_type, created_at').gte('created_at', sevenDaysAgo).order('created_at', { ascending: false }).limit(500),
+        supabase.from('activity_logs').select('id', { count: 'exact', head: true }).gte('created_at', oneDayAgo) as any,
+        supabase.from('activity_logs').select('id', { count: 'exact', head: true }).gte('created_at', sevenDaysAgo) as any,
+        supabase.from('ai_property_queries').select('id', { count: 'exact', head: true }).gte('created_at', sevenDaysAgo) as any,
+        supabase.from('activity_logs').select('activity_type, created_at').gte('created_at', sevenDaysAgo).order('created_at', { ascending: false }).limit(500) as any,
       ]);
 
       // Engagement by day
