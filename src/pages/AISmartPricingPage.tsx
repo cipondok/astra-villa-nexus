@@ -379,11 +379,348 @@ const PriceSimulator: React.FC<{ result: SmartPricingResult; currentPrice: numbe
   );
 };
 
+// ========== DEMAND SENSITIVITY CURVE ==========
+const DemandSensitivityCurve: React.FC<{ result: SmartPricingResult; currentPrice: number }> = ({ result, currentPrice }) => {
+  const fmv = result.fair_market_value;
+
+  const sensitivityData = useMemo(() => {
+    const points = [];
+    for (let pct = -25; pct <= 30; pct += 5) {
+      const price = Math.round(fmv * (1 + pct / 100));
+      const ratio = price / fmv;
+      // Inquiry volume model: exponential decay above FMV, growth below
+      const baseInquiries = 100;
+      let inquiries: number;
+      if (ratio <= 0.85) inquiries = Math.round(baseInquiries * 2.2);
+      else if (ratio <= 0.95) inquiries = Math.round(baseInquiries * (1.6 + (0.95 - ratio) * 6));
+      else if (ratio <= 1.0) inquiries = Math.round(baseInquiries * (1.0 + (1.0 - ratio) * 12));
+      else if (ratio <= 1.1) inquiries = Math.round(baseInquiries * (1.0 - (ratio - 1.0) * 4));
+      else inquiries = Math.round(baseInquiries * Math.max(0.15, 0.6 - (ratio - 1.1) * 3));
+
+      // Revenue optimization: price * inquiry proxy
+      const revenueIndex = Math.round((price / fmv) * inquiries);
+
+      points.push({
+        label: `${pct > 0 ? '+' : ''}${pct}%`,
+        price,
+        inquiries,
+        revenueIndex,
+        isCurrent: Math.abs(price - currentPrice) < fmv * 0.03,
+        isFmv: pct === 0,
+      });
+    }
+    return points;
+  }, [fmv, currentPrice]);
+
+  const currentRatio = currentPrice / fmv;
+  const currentInquiryPct = currentRatio <= 1.0
+    ? Math.round((1.0 + (1.0 - currentRatio) * 1.5) * 100)
+    : Math.round(Math.max(15, (1.0 - (currentRatio - 1.0) * 3) * 100));
+
+  return (
+    <Card className="border-border/50">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base flex items-center gap-2">
+          <Users className="h-4 w-4 text-primary" />
+          Demand Sensitivity Analysis
+        </CardTitle>
+        <CardDescription>Expected inquiry volume at different price levels</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* Quick insight */}
+        <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/40 border border-border/30">
+          <Activity className="h-5 w-5 text-primary shrink-0" />
+          <div>
+            <p className="text-sm font-medium text-foreground">
+              At your current price, expected inquiry volume is{' '}
+              <span className={currentInquiryPct >= 100 ? 'text-chart-1 font-bold' : 'text-destructive font-bold'}>
+                {currentInquiryPct}%
+              </span>{' '}
+              of baseline
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {currentRatio > 1.1
+                ? 'Reducing price closer to FMV could significantly boost inquiries'
+                : currentRatio > 1.0
+                ? 'Slight premium pricing — moderate inquiry impact'
+                : 'Competitive pricing generates strong buyer interest'}
+            </p>
+          </div>
+        </div>
+
+        {/* Chart */}
+        <ResponsiveContainer width="100%" height={220}>
+          <ComposedChart data={sensitivityData}>
+            <defs>
+              <linearGradient id="gInquiry" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+            <XAxis dataKey="label" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} />
+            <YAxis yAxisId="left" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} />
+            <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} />
+            <Tooltip
+              contentStyle={{ background: 'hsl(var(--popover))', color: 'hsl(var(--popover-foreground))', border: '1px solid hsl(var(--border))', borderRadius: 8, fontSize: 12 }}
+              formatter={(v: number, name: string) => [v, name === 'inquiries' ? 'Est. Inquiries' : 'Revenue Index']}
+            />
+            <Area yAxisId="left" type="monotone" dataKey="inquiries" stroke="hsl(var(--chart-1))" fill="url(#gInquiry)" strokeWidth={2} name="inquiries" />
+            <Line yAxisId="right" type="monotone" dataKey="revenueIndex" stroke="hsl(var(--chart-4))" strokeWidth={2} dot={false} strokeDasharray="5 3" name="revenueIndex" />
+            <ReferenceLine yAxisId="left" x="0%" stroke="hsl(var(--muted-foreground))" strokeDasharray="2 2" label={{ value: 'FMV', fontSize: 9, fill: 'hsl(var(--muted-foreground))' }} />
+          </ComposedChart>
+        </ResponsiveContainer>
+
+        <div className="flex items-center justify-center gap-6 text-xs text-muted-foreground">
+          <span className="flex items-center gap-1.5">
+            <span className="h-2 w-4 rounded-full bg-chart-1" /> Inquiry Volume
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="h-0.5 w-4 border-t-2 border-dashed border-chart-4" /> Revenue Index
+          </span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+// ========== PRICING ADJUSTMENT ALERTS ==========
+interface PricingAlert {
+  severity: 'critical' | 'warning' | 'info';
+  title: string;
+  message: string;
+  action: string;
+  icon: React.ReactNode;
+}
+
+function generatePricingAlerts(result: SmartPricingResult, currentPrice: number): PricingAlert[] {
+  const alerts: PricingAlert[] = [];
+  const fmv = result.fair_market_value;
+  const ratio = currentPrice / fmv;
+
+  if (ratio > 1.15) {
+    alerts.push({
+      severity: 'critical',
+      title: 'Significant Overpricing Detected',
+      message: `Your listing is ${((ratio - 1) * 100).toFixed(0)}% above fair market value. This may reduce buyer interest by up to 60%.`,
+      action: `Consider reducing to ${formatIDR(Math.round(fmv * 1.05))} for faster results`,
+      icon: <AlertTriangle className="h-5 w-5" />,
+    });
+  } else if (ratio > 1.05) {
+    alerts.push({
+      severity: 'warning',
+      title: 'Slight Overpricing',
+      message: `Listing is ${((ratio - 1) * 100).toFixed(0)}% above FMV. May extend time-on-market by ${Math.round((ratio - 1) * 300)} days.`,
+      action: 'A 3-5% adjustment could increase inquiries by ~25%',
+      icon: <Eye className="h-5 w-5" />,
+    });
+  }
+
+  if (result.estimated_days_on_market > 60) {
+    alerts.push({
+      severity: 'warning',
+      title: 'Extended Market Duration Expected',
+      message: `Estimated ${result.estimated_days_on_market} days on market. Properties priced at FMV sell 2x faster.`,
+      action: 'Review pricing strategy to accelerate sale timeline',
+      icon: <Clock className="h-5 w-5" />,
+    });
+  }
+
+  if (result.demand_level === 'high' || result.demand_level === 'very_high') {
+    alerts.push({
+      severity: 'info',
+      title: 'High Demand Zone',
+      message: `Your area shows ${result.demand_level.replace('_', ' ')} demand. Strong buyer interest supports current pricing.`,
+      action: ratio < 0.95 ? 'Consider raising price 3-5% to capture premium' : 'Maintain current pricing for optimal positioning',
+      icon: <TrendingUp className="h-5 w-5" />,
+    });
+  }
+
+  if (result.price_trend === 'rising' || result.price_trend === 'rapidly_rising') {
+    alerts.push({
+      severity: 'info',
+      title: 'Rising Market Trend',
+      message: `Prices in this area are ${result.price_trend.replace('_', ' ')}. Consider timing your listing for maximum value.`,
+      action: 'Hold or incrementally increase to ride the trend',
+      icon: <Megaphone className="h-5 w-5" />,
+    });
+  }
+
+  if (result.seasonality_impact === 'negative') {
+    alerts.push({
+      severity: 'warning',
+      title: 'Off-Peak Seasonality',
+      message: 'Current season shows reduced buyer activity. Listings may require more competitive pricing.',
+      action: 'Apply 3-7% seasonal discount to maintain momentum',
+      icon: <ThermometerSun className="h-5 w-5" />,
+    });
+  }
+
+  if (ratio < 0.85) {
+    alerts.push({
+      severity: 'warning',
+      title: 'Potentially Underpriced',
+      message: `Listing is ${((1 - ratio) * 100).toFixed(0)}% below FMV. You may be leaving significant value on the table.`,
+      action: `Consider increasing to at least ${formatIDR(Math.round(fmv * 0.92))}`,
+      icon: <Shield className="h-5 w-5" />,
+    });
+  }
+
+  return alerts;
+}
+
+const PricingAdjustmentAlerts: React.FC<{ result: SmartPricingResult; currentPrice: number }> = ({ result, currentPrice }) => {
+  const alerts = useMemo(() => generatePricingAlerts(result, currentPrice), [result, currentPrice]);
+
+  const severityStyles: Record<string, string> = {
+    critical: 'border-destructive/40 bg-destructive/5',
+    warning: 'border-yellow-500/40 bg-yellow-500/5',
+    info: 'border-chart-1/40 bg-chart-1/5',
+  };
+  const severityIconColor: Record<string, string> = {
+    critical: 'text-destructive',
+    warning: 'text-yellow-600',
+    info: 'text-chart-1',
+  };
+
+  if (alerts.length === 0) return null;
+
+  return (
+    <Card className="border-border/50">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base flex items-center gap-2">
+          <Bell className="h-4 w-4 text-primary" />
+          Pricing Adjustment Alerts
+          <Badge variant="outline" className="ml-auto text-xs">
+            {alerts.length} {alerts.length === 1 ? 'alert' : 'alerts'}
+          </Badge>
+        </CardTitle>
+        <CardDescription>Actionable recommendations to optimize your listing price</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <AnimatePresence>
+          {alerts.map((alert, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.08 }}
+              className={`rounded-xl border p-4 ${severityStyles[alert.severity]}`}
+            >
+              <div className="flex items-start gap-3">
+                <div className={`mt-0.5 ${severityIconColor[alert.severity]}`}>
+                  {alert.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h4 className="text-sm font-semibold text-foreground">{alert.title}</h4>
+                    <Badge variant="outline" className={`text-[10px] px-1.5 py-0 capitalize ${
+                      alert.severity === 'critical' ? 'border-destructive/30 text-destructive' :
+                      alert.severity === 'warning' ? 'border-yellow-500/30 text-yellow-600' :
+                      'border-chart-1/30 text-chart-1'
+                    }`}>
+                      {alert.severity}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{alert.message}</p>
+                  <div className="flex items-center gap-1.5 mt-2 text-xs font-medium text-primary">
+                    <ChevronRight className="h-3 w-3" />
+                    {alert.action}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </CardContent>
+    </Card>
+  );
+};
+
+// ========== COMPETITIVENESS GAUGE ==========
+const CompetitivenessGauge: React.FC<{ result: SmartPricingResult; currentPrice: number }> = ({ result, currentPrice }) => {
+  const fmv = result.fair_market_value;
+  const ratio = currentPrice / fmv;
+  const pct = Math.max(0, Math.min(100, Math.round((1 - Math.abs(ratio - 0.95) * 2.5) * 100)));
+
+  const getGradeInfo = () => {
+    if (pct >= 80) return { grade: 'A', label: 'Highly Competitive', color: 'text-chart-1' };
+    if (pct >= 60) return { grade: 'B', label: 'Competitive', color: 'text-primary' };
+    if (pct >= 40) return { grade: 'C', label: 'Moderate', color: 'text-yellow-600' };
+    return { grade: 'D', label: 'Needs Adjustment', color: 'text-destructive' };
+  };
+  const { grade, label, color } = getGradeInfo();
+
+  const priceZones = [
+    { range: 'Quick Sale', pct: '−15% to −8%', price: `${fmt(Math.round(fmv * 0.85))} – ${fmt(Math.round(fmv * 0.92))}`, highlight: ratio < 0.92 },
+    { range: 'Sweet Spot', pct: '−7% to +3%', price: `${fmt(Math.round(fmv * 0.93))} – ${fmt(Math.round(fmv * 1.03))}`, highlight: ratio >= 0.92 && ratio <= 1.03 },
+    { range: 'Premium', pct: '+4% to +12%', price: `${fmt(Math.round(fmv * 1.04))} – ${fmt(Math.round(fmv * 1.12))}`, highlight: ratio > 1.03 && ratio <= 1.12 },
+    { range: 'Aspirational', pct: '+13%+', price: `${fmt(Math.round(fmv * 1.13))}+`, highlight: ratio > 1.12 },
+  ];
+
+  return (
+    <Card className="border-border/50">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base flex items-center gap-2">
+          <Gauge className="h-4 w-4 text-primary" />
+          Price Competitiveness
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-5">
+        {/* Score Display */}
+        <div className="flex items-center gap-6">
+          <div className="relative h-24 w-24 shrink-0">
+            <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90">
+              <circle cx="50" cy="50" r="42" fill="none" stroke="hsl(var(--muted))" strokeWidth="8" />
+              <circle cx="50" cy="50" r="42" fill="none" stroke="hsl(var(--primary))" strokeWidth="8"
+                strokeDasharray={`${pct * 2.64} 264`} strokeLinecap="round" className="transition-all duration-700" />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className={`text-2xl font-bold ${color}`}>{grade}</span>
+              <span className="text-[10px] text-muted-foreground">{pct}/100</span>
+            </div>
+          </div>
+          <div>
+            <p className={`text-lg font-bold ${color}`}>{label}</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Your listing is priced at <span className="font-medium text-foreground">{((ratio - 1) * 100).toFixed(1)}%</span> {ratio >= 1 ? 'above' : 'below'} fair market value
+            </p>
+            <div className="flex items-center gap-1.5 mt-2">
+              <span className="text-xs text-muted-foreground">FMV:</span>
+              <span className="text-xs font-semibold text-foreground">{formatIDR(fmv)}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Price Zones */}
+        <div className="space-y-2">
+          <p className="text-xs text-muted-foreground font-medium">Price Positioning Zones</p>
+          {priceZones.map((zone, i) => (
+            <div key={i} className={`flex items-center justify-between p-2.5 rounded-lg border text-xs transition-colors ${
+              zone.highlight ? 'border-primary/40 bg-primary/5' : 'border-border/30 bg-muted/20'
+            }`}>
+              <div className="flex items-center gap-2">
+                {zone.highlight && <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />}
+                <span className={`font-medium ${zone.highlight ? 'text-primary' : 'text-foreground'}`}>{zone.range}</span>
+                <span className="text-muted-foreground">{zone.pct}</span>
+              </div>
+              <span className="text-muted-foreground font-mono">{zone.price}</span>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
 const PricingResults: React.FC<{ result: SmartPricingResult; currentPrice: number }> = ({ result, currentPrice }) => {
   const diff = ((result.optimal_price - currentPrice) / currentPrice * 100);
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      {/* Pricing Adjustment Alerts — top priority */}
+      <PricingAdjustmentAlerts result={result} currentPrice={currentPrice} />
+
       {/* Key Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard label="Fair Market Value" value={formatIDR(result.fair_market_value)} icon={<DollarSign className="h-4 w-4" />} />
@@ -394,6 +731,12 @@ const PricingResults: React.FC<{ result: SmartPricingResult; currentPrice: numbe
         />
         <MetricCard label="Quick Sale Price" value={formatIDR(result.quick_sale_price)} icon={<Zap className="h-4 w-4" />} />
         <MetricCard label="Premium Price" value={formatIDR(result.premium_price)} icon={<TrendingUp className="h-4 w-4" />} />
+      </div>
+
+      {/* Competitiveness + Demand Sensitivity side by side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <CompetitivenessGauge result={result} currentPrice={currentPrice} />
+        <DemandSensitivityCurve result={result} currentPrice={currentPrice} />
       </div>
 
       {/* ===== DYNAMIC PRICE SIMULATOR ===== */}
