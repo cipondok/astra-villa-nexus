@@ -142,11 +142,11 @@ export function useIntelligenceMonitor() {
         : 50;
 
       // Anomaly signals
-      const { data: signals } = await supabase
+      const { data: signals } = await (supabase
         .from('ai_event_signals')
         .select('id, signal_type, payload, created_at')
         .order('created_at', { ascending: false })
-        .limit(10);
+        .limit(10) as any);
 
       const anomalies = (signals || []).map((s: any) => ({
         id: s.id,
