@@ -116,6 +116,7 @@ const AutonomousClosingSystem = lazy(() => import('@/pages/AutonomousClosingSyst
 const RealEstateMacroRadar = lazy(() => import('@/pages/RealEstateMacroRadar'));
 const InvestorBehaviorPrediction = lazy(() => import('@/pages/InvestorBehaviorPrediction'));
 const MarketplaceOperationsBrain = lazy(() => import('@/pages/MarketplaceOperationsBrain'));
+const SelfLearningValuationCore = lazy(() => import('@/pages/SelfLearningValuationCore'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
 const MembershipPage = lazy(() => import('@/pages/MembershipPage'));
