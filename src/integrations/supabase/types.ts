@@ -16970,6 +16970,340 @@ export type Database = {
         }
         Relationships: []
       }
+      ml_valuation_city_stats: {
+        Row: {
+          absorption_rate: number | null
+          avg_days_on_market: number | null
+          avg_price_per_sqm: number | null
+          city: string
+          created_at: string
+          demand_index: number | null
+          id: string
+          median_price_per_sqm: number | null
+          property_type: string | null
+          qoq_change_pct: number | null
+          sample_count: number | null
+          snapshot_date: string
+          supply_index: number | null
+          yoy_change_pct: number | null
+        }
+        Insert: {
+          absorption_rate?: number | null
+          avg_days_on_market?: number | null
+          avg_price_per_sqm?: number | null
+          city: string
+          created_at?: string
+          demand_index?: number | null
+          id?: string
+          median_price_per_sqm?: number | null
+          property_type?: string | null
+          qoq_change_pct?: number | null
+          sample_count?: number | null
+          snapshot_date?: string
+          supply_index?: number | null
+          yoy_change_pct?: number | null
+        }
+        Update: {
+          absorption_rate?: number | null
+          avg_days_on_market?: number | null
+          avg_price_per_sqm?: number | null
+          city?: string
+          created_at?: string
+          demand_index?: number | null
+          id?: string
+          median_price_per_sqm?: number | null
+          property_type?: string | null
+          qoq_change_pct?: number | null
+          sample_count?: number | null
+          snapshot_date?: string
+          supply_index?: number | null
+          yoy_change_pct?: number | null
+        }
+        Relationships: []
+      }
+      ml_valuation_feedback: {
+        Row: {
+          actual_value: number
+          created_at: string
+          error_amount: number | null
+          error_pct: number | null
+          feedback_source: string | null
+          feedback_type: string
+          id: string
+          notes: string | null
+          predicted_value: number
+          prediction_id: string | null
+          property_id: string
+        }
+        Insert: {
+          actual_value: number
+          created_at?: string
+          error_amount?: number | null
+          error_pct?: number | null
+          feedback_source?: string | null
+          feedback_type?: string
+          id?: string
+          notes?: string | null
+          predicted_value: number
+          prediction_id?: string | null
+          property_id: string
+        }
+        Update: {
+          actual_value?: number
+          created_at?: string
+          error_amount?: number | null
+          error_pct?: number | null
+          feedback_source?: string | null
+          feedback_type?: string
+          id?: string
+          notes?: string | null
+          predicted_value?: number
+          prediction_id?: string | null
+          property_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ml_valuation_feedback_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "ml_valuation_predictions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ml_valuation_feedback_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ml_valuation_feedback_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ml_valuation_models: {
+        Row: {
+          created_at: string
+          description: string | null
+          feature_weights: Json
+          id: string
+          is_active: boolean
+          is_shadow: boolean
+          mae: number | null
+          mape: number | null
+          median_error_pct: number | null
+          metadata: Json | null
+          model_type: string
+          model_version: string
+          promoted_at: string | null
+          r_squared: number | null
+          retired_at: string | null
+          trained_at: string
+          training_sample_size: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          feature_weights?: Json
+          id?: string
+          is_active?: boolean
+          is_shadow?: boolean
+          mae?: number | null
+          mape?: number | null
+          median_error_pct?: number | null
+          metadata?: Json | null
+          model_type?: string
+          model_version: string
+          promoted_at?: string | null
+          r_squared?: number | null
+          retired_at?: string | null
+          trained_at?: string
+          training_sample_size?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          feature_weights?: Json
+          id?: string
+          is_active?: boolean
+          is_shadow?: boolean
+          mae?: number | null
+          mape?: number | null
+          median_error_pct?: number | null
+          metadata?: Json | null
+          model_type?: string
+          model_version?: string
+          promoted_at?: string | null
+          r_squared?: number | null
+          retired_at?: string | null
+          trained_at?: string
+          training_sample_size?: number
+        }
+        Relationships: []
+      }
+      ml_valuation_predictions: {
+        Row: {
+          city: string | null
+          comparables_used: number | null
+          confidence_score: number
+          created_at: string
+          demand_multiplier: number | null
+          feature_contributions: Json | null
+          id: string
+          macro_adjustments: Json | null
+          model_id: string | null
+          predicted_range_high: number
+          predicted_range_low: number
+          predicted_value: number
+          price_per_sqm: number | null
+          property_id: string
+          property_type: string | null
+          seasonality_factor: number | null
+          trend_direction: string
+          trend_magnitude: number | null
+          valid_until: string
+        }
+        Insert: {
+          city?: string | null
+          comparables_used?: number | null
+          confidence_score?: number
+          created_at?: string
+          demand_multiplier?: number | null
+          feature_contributions?: Json | null
+          id?: string
+          macro_adjustments?: Json | null
+          model_id?: string | null
+          predicted_range_high: number
+          predicted_range_low: number
+          predicted_value: number
+          price_per_sqm?: number | null
+          property_id: string
+          property_type?: string | null
+          seasonality_factor?: number | null
+          trend_direction?: string
+          trend_magnitude?: number | null
+          valid_until?: string
+        }
+        Update: {
+          city?: string | null
+          comparables_used?: number | null
+          confidence_score?: number
+          created_at?: string
+          demand_multiplier?: number | null
+          feature_contributions?: Json | null
+          id?: string
+          macro_adjustments?: Json | null
+          model_id?: string | null
+          predicted_range_high?: number
+          predicted_range_low?: number
+          predicted_value?: number
+          price_per_sqm?: number | null
+          property_id?: string
+          property_type?: string | null
+          seasonality_factor?: number | null
+          trend_direction?: string
+          trend_magnitude?: number | null
+          valid_until?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ml_valuation_predictions_model_id_fkey"
+            columns: ["model_id"]
+            isOneToOne: false
+            referencedRelation: "ml_valuation_models"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ml_valuation_predictions_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ml_valuation_predictions_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ml_valuation_training_runs: {
+        Row: {
+          created_at: string
+          drift_detected: boolean | null
+          drift_magnitude: number | null
+          duration_ms: number | null
+          error_message: string | null
+          id: string
+          mae_after: number | null
+          mae_before: number | null
+          mape_after: number | null
+          mape_before: number | null
+          model_id: string | null
+          r_squared_after: number | null
+          r_squared_before: number | null
+          status: string
+          training_samples: number | null
+          trigger_source: string
+          validation_samples: number | null
+          weight_adjustments: Json | null
+        }
+        Insert: {
+          created_at?: string
+          drift_detected?: boolean | null
+          drift_magnitude?: number | null
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          mae_after?: number | null
+          mae_before?: number | null
+          mape_after?: number | null
+          mape_before?: number | null
+          model_id?: string | null
+          r_squared_after?: number | null
+          r_squared_before?: number | null
+          status?: string
+          training_samples?: number | null
+          trigger_source?: string
+          validation_samples?: number | null
+          weight_adjustments?: Json | null
+        }
+        Update: {
+          created_at?: string
+          drift_detected?: boolean | null
+          drift_magnitude?: number | null
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          mae_after?: number | null
+          mae_before?: number | null
+          mape_after?: number | null
+          mape_before?: number | null
+          model_id?: string | null
+          r_squared_after?: number | null
+          r_squared_before?: number | null
+          status?: string
+          training_samples?: number | null
+          trigger_source?: string
+          validation_samples?: number | null
+          weight_adjustments?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ml_valuation_training_runs_model_id_fkey"
+            columns: ["model_id"]
+            isOneToOne: false
+            referencedRelation: "ml_valuation_models"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mobile_ar_sessions: {
         Row: {
           ar_framework: string | null
