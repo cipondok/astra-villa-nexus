@@ -14282,6 +14282,372 @@ export type Database = {
         }
         Relationships: []
       }
+      gues_capital_attraction: {
+        Row: {
+          city: string
+          composite_score: number
+          computed_at: string | null
+          corruption_index: number | null
+          country: string
+          created_at: string | null
+          development_velocity: number | null
+          fdi_inflow_usd: number | null
+          fdi_trend: string | null
+          foreign_ownership_ease: number | null
+          id: string
+          institutional_interest_score: number | null
+          investment_friendliness: number | null
+          macro_stability: number | null
+          permit_speed_days: number | null
+          rank_global: number | null
+          rank_regional: number | null
+          regulatory_friction: number | null
+          signal_drivers: Json | null
+          tax_competitiveness: number | null
+          tier: string | null
+        }
+        Insert: {
+          city: string
+          composite_score?: number
+          computed_at?: string | null
+          corruption_index?: number | null
+          country?: string
+          created_at?: string | null
+          development_velocity?: number | null
+          fdi_inflow_usd?: number | null
+          fdi_trend?: string | null
+          foreign_ownership_ease?: number | null
+          id?: string
+          institutional_interest_score?: number | null
+          investment_friendliness?: number | null
+          macro_stability?: number | null
+          permit_speed_days?: number | null
+          rank_global?: number | null
+          rank_regional?: number | null
+          regulatory_friction?: number | null
+          signal_drivers?: Json | null
+          tax_competitiveness?: number | null
+          tier?: string | null
+        }
+        Update: {
+          city?: string
+          composite_score?: number
+          computed_at?: string | null
+          corruption_index?: number | null
+          country?: string
+          created_at?: string | null
+          development_velocity?: number | null
+          fdi_inflow_usd?: number | null
+          fdi_trend?: string | null
+          foreign_ownership_ease?: number | null
+          id?: string
+          institutional_interest_score?: number | null
+          investment_friendliness?: number | null
+          macro_stability?: number | null
+          permit_speed_days?: number | null
+          rank_global?: number | null
+          rank_regional?: number | null
+          regulatory_friction?: number | null
+          signal_drivers?: Json | null
+          tax_competitiveness?: number | null
+          tier?: string | null
+        }
+        Relationships: []
+      }
+      gues_crisis_simulations: {
+        Row: {
+          city: string
+          computed_at: string | null
+          country: string
+          created_at: string | null
+          developer_default_probability: number | null
+          historical_precedent: string | null
+          id: string
+          liquidity_impact_pct: number | null
+          mitigation_strategies: Json | null
+          mortgage_stress_pct: number | null
+          price_impact_pct: number | null
+          recovery_months: number | null
+          rental_yield_impact_pct: number | null
+          resilience_score: number | null
+          scenario_name: string
+          scenario_type: string
+          severity_level: number
+          simulation_parameters: Json | null
+          transaction_volume_impact_pct: number | null
+          vulnerability_factors: Json | null
+        }
+        Insert: {
+          city: string
+          computed_at?: string | null
+          country?: string
+          created_at?: string | null
+          developer_default_probability?: number | null
+          historical_precedent?: string | null
+          id?: string
+          liquidity_impact_pct?: number | null
+          mitigation_strategies?: Json | null
+          mortgage_stress_pct?: number | null
+          price_impact_pct?: number | null
+          recovery_months?: number | null
+          rental_yield_impact_pct?: number | null
+          resilience_score?: number | null
+          scenario_name: string
+          scenario_type: string
+          severity_level?: number
+          simulation_parameters?: Json | null
+          transaction_volume_impact_pct?: number | null
+          vulnerability_factors?: Json | null
+        }
+        Update: {
+          city?: string
+          computed_at?: string | null
+          country?: string
+          created_at?: string | null
+          developer_default_probability?: number | null
+          historical_precedent?: string | null
+          id?: string
+          liquidity_impact_pct?: number | null
+          mitigation_strategies?: Json | null
+          mortgage_stress_pct?: number | null
+          price_impact_pct?: number | null
+          recovery_months?: number | null
+          rental_yield_impact_pct?: number | null
+          resilience_score?: number | null
+          scenario_name?: string
+          scenario_type?: string
+          severity_level?: number
+          simulation_parameters?: Json | null
+          transaction_volume_impact_pct?: number | null
+          vulnerability_factors?: Json | null
+        }
+        Relationships: []
+      }
+      gues_expansion_recommendations: {
+        Row: {
+          capital_required_usd: number | null
+          city: string
+          comparable_cities: Json | null
+          competitive_landscape: string | null
+          computed_at: string | null
+          country: string
+          created_at: string | null
+          estimated_irr_pct: number | null
+          estimated_multiple: number | null
+          id: string
+          is_active: boolean | null
+          key_catalysts: Json | null
+          key_risks: Json | null
+          market_entry_strategy: string | null
+          opportunity_score: number
+          priority_rank: number | null
+          recommendation_type: string
+          thesis: string | null
+          timing_signal: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          capital_required_usd?: number | null
+          city: string
+          comparable_cities?: Json | null
+          competitive_landscape?: string | null
+          computed_at?: string | null
+          country?: string
+          created_at?: string | null
+          estimated_irr_pct?: number | null
+          estimated_multiple?: number | null
+          id?: string
+          is_active?: boolean | null
+          key_catalysts?: Json | null
+          key_risks?: Json | null
+          market_entry_strategy?: string | null
+          opportunity_score?: number
+          priority_rank?: number | null
+          recommendation_type: string
+          thesis?: string | null
+          timing_signal?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          capital_required_usd?: number | null
+          city?: string
+          comparable_cities?: Json | null
+          competitive_landscape?: string | null
+          computed_at?: string | null
+          country?: string
+          created_at?: string | null
+          estimated_irr_pct?: number | null
+          estimated_multiple?: number | null
+          id?: string
+          is_active?: boolean | null
+          key_catalysts?: Json | null
+          key_risks?: Json | null
+          market_entry_strategy?: string | null
+          opportunity_score?: number
+          priority_rank?: number | null
+          recommendation_type?: string
+          thesis?: string | null
+          timing_signal?: string | null
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
+      gues_urban_growth: {
+        Row: {
+          city: string
+          commercial_density_forecast: number | null
+          commercial_density_sqm_per_capita: number | null
+          computed_at: string | null
+          confidence_score: number | null
+          country: string
+          created_at: string | null
+          district: string | null
+          employment_cluster_count: number | null
+          employment_growth_pct: number | null
+          green_space_ratio: number | null
+          growth_phase: string | null
+          id: string
+          infrastructure_investment_usd: number | null
+          infrastructure_multiplier: number | null
+          population_cagr_pct: number | null
+          population_current: number | null
+          population_forecast: number | null
+          simulation_data: Json | null
+          simulation_horizon_years: number
+          transit_expansion_score: number | null
+          urbanization_velocity: number | null
+        }
+        Insert: {
+          city: string
+          commercial_density_forecast?: number | null
+          commercial_density_sqm_per_capita?: number | null
+          computed_at?: string | null
+          confidence_score?: number | null
+          country?: string
+          created_at?: string | null
+          district?: string | null
+          employment_cluster_count?: number | null
+          employment_growth_pct?: number | null
+          green_space_ratio?: number | null
+          growth_phase?: string | null
+          id?: string
+          infrastructure_investment_usd?: number | null
+          infrastructure_multiplier?: number | null
+          population_cagr_pct?: number | null
+          population_current?: number | null
+          population_forecast?: number | null
+          simulation_data?: Json | null
+          simulation_horizon_years?: number
+          transit_expansion_score?: number | null
+          urbanization_velocity?: number | null
+        }
+        Update: {
+          city?: string
+          commercial_density_forecast?: number | null
+          commercial_density_sqm_per_capita?: number | null
+          computed_at?: string | null
+          confidence_score?: number | null
+          country?: string
+          created_at?: string | null
+          district?: string | null
+          employment_cluster_count?: number | null
+          employment_growth_pct?: number | null
+          green_space_ratio?: number | null
+          growth_phase?: string | null
+          id?: string
+          infrastructure_investment_usd?: number | null
+          infrastructure_multiplier?: number | null
+          population_cagr_pct?: number | null
+          population_current?: number | null
+          population_forecast?: number | null
+          simulation_data?: Json | null
+          simulation_horizon_years?: number
+          transit_expansion_score?: number | null
+          urbanization_velocity?: number | null
+        }
+        Relationships: []
+      }
+      gues_value_trajectories: {
+        Row: {
+          appreciation_cagr_10y: number | null
+          appreciation_cagr_20y: number | null
+          appreciation_cagr_5y: number | null
+          city: string
+          computed_at: string | null
+          confidence_score: number | null
+          country: string
+          created_at: string | null
+          current_median_price_usd: number | null
+          district: string | null
+          forecast_10y_price_usd: number | null
+          forecast_20y_price_usd: number | null
+          forecast_5y_price_usd: number | null
+          gentrification_probability: number | null
+          gentrification_stage: string | null
+          id: string
+          luxury_demand_index: number | null
+          model_version: string | null
+          price_to_income_ratio: number | null
+          property_type: string | null
+          rental_yield_current: number | null
+          rental_yield_floor: number | null
+          rental_yield_stabilized: number | null
+          trajectory_curve: string | null
+        }
+        Insert: {
+          appreciation_cagr_10y?: number | null
+          appreciation_cagr_20y?: number | null
+          appreciation_cagr_5y?: number | null
+          city: string
+          computed_at?: string | null
+          confidence_score?: number | null
+          country?: string
+          created_at?: string | null
+          current_median_price_usd?: number | null
+          district?: string | null
+          forecast_10y_price_usd?: number | null
+          forecast_20y_price_usd?: number | null
+          forecast_5y_price_usd?: number | null
+          gentrification_probability?: number | null
+          gentrification_stage?: string | null
+          id?: string
+          luxury_demand_index?: number | null
+          model_version?: string | null
+          price_to_income_ratio?: number | null
+          property_type?: string | null
+          rental_yield_current?: number | null
+          rental_yield_floor?: number | null
+          rental_yield_stabilized?: number | null
+          trajectory_curve?: string | null
+        }
+        Update: {
+          appreciation_cagr_10y?: number | null
+          appreciation_cagr_20y?: number | null
+          appreciation_cagr_5y?: number | null
+          city?: string
+          computed_at?: string | null
+          confidence_score?: number | null
+          country?: string
+          created_at?: string | null
+          current_median_price_usd?: number | null
+          district?: string | null
+          forecast_10y_price_usd?: number | null
+          forecast_20y_price_usd?: number | null
+          forecast_5y_price_usd?: number | null
+          gentrification_probability?: number | null
+          gentrification_stage?: string | null
+          id?: string
+          luxury_demand_index?: number | null
+          model_version?: string | null
+          price_to_income_ratio?: number | null
+          property_type?: string | null
+          rental_yield_current?: number | null
+          rental_yield_floor?: number | null
+          rental_yield_stabilized?: number | null
+          trajectory_curve?: string | null
+        }
+        Relationships: []
+      }
       hedging_downside_protection: {
         Row: {
           city: string
