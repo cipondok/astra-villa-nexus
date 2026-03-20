@@ -239,6 +239,7 @@ export const PartnershipExpansionDashboard = lazyRetry(() => import("./Partnersh
 export const BrandAuthorityDashboard = lazyRetry(() => import("./BrandAuthorityDashboard"));
 export const MonetizationStrategyDashboard = lazyRetry(() => import("./MonetizationStrategyDashboard"));
 export const InvestorPitchDashboard = lazyRetry(() => import("./InvestorPitchDashboard"));
+export const SeriesBPitchNarrative = lazyRetry(() => import("./SeriesBPitchNarrative"));
 export const InvestorCommunityDashboard = lazyRetry(() => import("./InvestorCommunityDashboard"));
 export const GeoExpansionDashboard = lazyRetry(() => import("./GeoExpansionDashboard"));
 export const FounderBrandingDashboard = lazyRetry(() => import("./FounderBrandingDashboard"));
