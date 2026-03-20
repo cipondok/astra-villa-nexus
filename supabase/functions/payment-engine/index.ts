@@ -122,7 +122,8 @@ async function createCheckout(params: Record<string, any>, supabase: any, userId
   return { success: true, token: result.token, redirect_url: result.redirect_url, order_id: params.order_id };
 }
 
-async function processRefund(params: Record<string, any>, supabase: any) {
+async function processRefund(params: Record<string, any>, supabase: any, userId: string | null) {
+  if (!userId) throw new Error("Authentication required for refund operations");
   const { order_id, amount, reason } = params;
   const body: Record<string, any> = { reason: reason || "Customer request" };
   if (amount) {
