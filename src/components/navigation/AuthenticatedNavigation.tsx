@@ -22,8 +22,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
-import LanguageToggleSwitch from "@/components/LanguageToggleSwitch";
-import CurrencySelector from "@/components/CurrencySelector";
+import LocaleSelector from "@/components/LocaleSelector";
 import ThemeToggleSwitch from "@/components/ThemeToggleSwitch";
 import { 
   User, 
