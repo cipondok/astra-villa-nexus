@@ -1832,6 +1832,13 @@ export const navigationSections = {
       icon: Flame,
       description: "3-tier prioritization — high valuation impact features first, growth multipliers second, polish last",
       badge: "🔥 Priority"
+    },
+    {
+      key: "launch-execution-kit",
+      label: "Launch Execution Kit",
+      icon: Rocket,
+      description: "Unified launch command center — checklist, playbook links, milestones, and progress tracking",
+      badge: "🚀 Kit"
     }
   ],
 
