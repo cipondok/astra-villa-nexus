@@ -513,3 +513,6 @@ verify_jwt = false
 
 [functions.founder-capital-strategy]
 verify_jwt = false
+
+[functions.mega-fund-blueprint]
+verify_jwt = false

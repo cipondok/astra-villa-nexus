@@ -28798,6 +28798,347 @@ export type Database = {
         }
         Relationships: []
       }
+      mfcb_capital_raising: {
+        Row: {
+          committed_usd: number | null
+          conversion_probability_pct: number | null
+          created_at: string | null
+          engagement_stage: string | null
+          fund_id: string | null
+          id: string
+          key_decision_maker: string | null
+          lp_segment: string
+          mandate_alignment_score: number | null
+          mandate_requirements: Json | null
+          next_milestone: string | null
+          objections: Json | null
+          pipeline_usd: number | null
+          target_allocation_usd: number | null
+          target_close_date: string | null
+        }
+        Insert: {
+          committed_usd?: number | null
+          conversion_probability_pct?: number | null
+          created_at?: string | null
+          engagement_stage?: string | null
+          fund_id?: string | null
+          id?: string
+          key_decision_maker?: string | null
+          lp_segment: string
+          mandate_alignment_score?: number | null
+          mandate_requirements?: Json | null
+          next_milestone?: string | null
+          objections?: Json | null
+          pipeline_usd?: number | null
+          target_allocation_usd?: number | null
+          target_close_date?: string | null
+        }
+        Update: {
+          committed_usd?: number | null
+          conversion_probability_pct?: number | null
+          created_at?: string | null
+          engagement_stage?: string | null
+          fund_id?: string | null
+          id?: string
+          key_decision_maker?: string | null
+          lp_segment?: string
+          mandate_alignment_score?: number | null
+          mandate_requirements?: Json | null
+          next_milestone?: string | null
+          objections?: Json | null
+          pipeline_usd?: number | null
+          target_allocation_usd?: number | null
+          target_close_date?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mfcb_capital_raising_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "mfcb_fund_structure"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mfcb_deal_origination: {
+        Row: {
+          asset_type: string | null
+          city: string
+          competitor_avg_close_days: number | null
+          created_at: string | null
+          data_confidence_score: number | null
+          deal_name: string
+          deal_value_usd: number | null
+          district: string | null
+          expected_irr_pct: number | null
+          fund_id: string | null
+          id: string
+          pipeline_stage: string | null
+          platform_pricing_advantage_pct: number | null
+          proprietary_signals: Json | null
+          source_channel: string
+          time_to_close_days: number | null
+        }
+        Insert: {
+          asset_type?: string | null
+          city: string
+          competitor_avg_close_days?: number | null
+          created_at?: string | null
+          data_confidence_score?: number | null
+          deal_name: string
+          deal_value_usd?: number | null
+          district?: string | null
+          expected_irr_pct?: number | null
+          fund_id?: string | null
+          id?: string
+          pipeline_stage?: string | null
+          platform_pricing_advantage_pct?: number | null
+          proprietary_signals?: Json | null
+          source_channel: string
+          time_to_close_days?: number | null
+        }
+        Update: {
+          asset_type?: string | null
+          city?: string
+          competitor_avg_close_days?: number | null
+          created_at?: string | null
+          data_confidence_score?: number | null
+          deal_name?: string
+          deal_value_usd?: number | null
+          district?: string | null
+          expected_irr_pct?: number | null
+          fund_id?: string | null
+          id?: string
+          pipeline_stage?: string | null
+          platform_pricing_advantage_pct?: number | null
+          proprietary_signals?: Json | null
+          source_channel?: string
+          time_to_close_days?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mfcb_deal_origination_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "mfcb_fund_structure"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mfcb_fund_structure: {
+        Row: {
+          carry_pct: number | null
+          computed_at: string | null
+          created_at: string | null
+          current_aum_usd: number | null
+          deployment_pct: number | null
+          domicile: string | null
+          fund_name: string
+          fund_term_years: number | null
+          fund_type: string
+          gp_commitment_pct: number | null
+          hurdle_rate_pct: number | null
+          id: string
+          investment_period_years: number | null
+          management_fee_pct: number | null
+          minimum_commitment_usd: number | null
+          num_lps: number | null
+          regulatory_status: string | null
+          status: string | null
+          target_aum_usd: number | null
+          target_lps: number | null
+          thesis_id: string | null
+          vintage_year: number | null
+        }
+        Insert: {
+          carry_pct?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          current_aum_usd?: number | null
+          deployment_pct?: number | null
+          domicile?: string | null
+          fund_name: string
+          fund_term_years?: number | null
+          fund_type: string
+          gp_commitment_pct?: number | null
+          hurdle_rate_pct?: number | null
+          id?: string
+          investment_period_years?: number | null
+          management_fee_pct?: number | null
+          minimum_commitment_usd?: number | null
+          num_lps?: number | null
+          regulatory_status?: string | null
+          status?: string | null
+          target_aum_usd?: number | null
+          target_lps?: number | null
+          thesis_id?: string | null
+          vintage_year?: number | null
+        }
+        Update: {
+          carry_pct?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          current_aum_usd?: number | null
+          deployment_pct?: number | null
+          domicile?: string | null
+          fund_name?: string
+          fund_term_years?: number | null
+          fund_type?: string
+          gp_commitment_pct?: number | null
+          hurdle_rate_pct?: number | null
+          id?: string
+          investment_period_years?: number | null
+          management_fee_pct?: number | null
+          minimum_commitment_usd?: number | null
+          num_lps?: number | null
+          regulatory_status?: string | null
+          status?: string | null
+          target_aum_usd?: number | null
+          target_lps?: number | null
+          thesis_id?: string | null
+          vintage_year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mfcb_fund_structure_thesis_id_fkey"
+            columns: ["thesis_id"]
+            isOneToOne: false
+            referencedRelation: "mfcb_fund_thesis"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mfcb_fund_thesis: {
+        Row: {
+          competitive_edge: string | null
+          computed_at: string | null
+          conviction_score: number | null
+          created_at: string | null
+          data_signals: Json | null
+          expected_irr_pct: number | null
+          expected_multiple: number | null
+          heat_score_threshold: number | null
+          hold_period_years: number | null
+          id: string
+          liquidity_score_threshold: number | null
+          narrative: string | null
+          risk_factors: Json | null
+          status: string | null
+          target_districts: Json | null
+          target_geography: string
+          thesis_name: string
+          thesis_type: string
+        }
+        Insert: {
+          competitive_edge?: string | null
+          computed_at?: string | null
+          conviction_score?: number | null
+          created_at?: string | null
+          data_signals?: Json | null
+          expected_irr_pct?: number | null
+          expected_multiple?: number | null
+          heat_score_threshold?: number | null
+          hold_period_years?: number | null
+          id?: string
+          liquidity_score_threshold?: number | null
+          narrative?: string | null
+          risk_factors?: Json | null
+          status?: string | null
+          target_districts?: Json | null
+          target_geography?: string
+          thesis_name: string
+          thesis_type: string
+        }
+        Update: {
+          competitive_edge?: string | null
+          computed_at?: string | null
+          conviction_score?: number | null
+          created_at?: string | null
+          data_signals?: Json | null
+          expected_irr_pct?: number | null
+          expected_multiple?: number | null
+          heat_score_threshold?: number | null
+          hold_period_years?: number | null
+          id?: string
+          liquidity_score_threshold?: number | null
+          narrative?: string | null
+          risk_factors?: Json | null
+          status?: string | null
+          target_districts?: Json | null
+          target_geography?: string
+          thesis_name?: string
+          thesis_type?: string
+        }
+        Relationships: []
+      }
+      mfcb_performance_flywheel: {
+        Row: {
+          aum_growth_pct: number | null
+          compounding_rate: number | null
+          computed_at: string | null
+          created_at: string | null
+          data_quality_score: number | null
+          deal_quality_score: number | null
+          flywheel_momentum: number | null
+          flywheel_stage: string | null
+          follow_on_commitment_pct: number | null
+          fund_id: string | null
+          id: string
+          lp_satisfaction_score: number | null
+          period_quarter: string
+          platform_influence_score: number | null
+          portfolio_dpi: number | null
+          portfolio_irr_pct: number | null
+          portfolio_tvpi: number | null
+        }
+        Insert: {
+          aum_growth_pct?: number | null
+          compounding_rate?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          data_quality_score?: number | null
+          deal_quality_score?: number | null
+          flywheel_momentum?: number | null
+          flywheel_stage?: string | null
+          follow_on_commitment_pct?: number | null
+          fund_id?: string | null
+          id?: string
+          lp_satisfaction_score?: number | null
+          period_quarter: string
+          platform_influence_score?: number | null
+          portfolio_dpi?: number | null
+          portfolio_irr_pct?: number | null
+          portfolio_tvpi?: number | null
+        }
+        Update: {
+          aum_growth_pct?: number | null
+          compounding_rate?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          data_quality_score?: number | null
+          deal_quality_score?: number | null
+          flywheel_momentum?: number | null
+          flywheel_stage?: string | null
+          follow_on_commitment_pct?: number | null
+          fund_id?: string | null
+          id?: string
+          lp_satisfaction_score?: number | null
+          period_quarter?: string
+          platform_influence_score?: number | null
+          portfolio_dpi?: number | null
+          portfolio_irr_pct?: number | null
+          portfolio_tvpi?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mfcb_performance_flywheel_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "mfcb_fund_structure"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       micro_location_valuations: {
         Row: {
           appreciation_pct_1y: number | null
