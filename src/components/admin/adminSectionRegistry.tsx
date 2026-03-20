@@ -291,6 +291,7 @@ export const RevenueProjectionModelPage = lazyRetry(() => import("@/pages/Revenu
 export const InvestorKPIFrameworkPage = lazyRetry(() => import("@/pages/InvestorKPIFrameworkPage"));
 export const VendorAcquisitionScriptsPage = lazyRetry(() => import("@/pages/VendorAcquisitionScriptsPage"));
 export const FeatureImpactMatrixPage = lazyRetry(() => import("@/pages/FeatureImpactMatrixPage"));
+export const LaunchExecutionKitPage = lazyRetry(() => import("@/pages/LaunchExecutionKitPage"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
@@ -625,6 +626,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "investor-kpi-framework-page": () => <InvestorKPIFrameworkPage />,
   "vendor-acquisition-scripts": () => <VendorAcquisitionScriptsPage />,
   "feature-impact-matrix": () => <FeatureImpactMatrixPage />,
+  "launch-execution-kit": () => <LaunchExecutionKitPage />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -874,4 +876,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "investor-kpi-framework-page": { label: "Investor KPI Framework", category: "Features" },
   "vendor-acquisition-scripts": { label: "Vendor Acquisition Scripts", category: "Features" },
   "feature-impact-matrix": { label: "Feature Impact Matrix", category: "Features" },
+  "launch-execution-kit": { label: "Launch Execution Kit", category: "Features" },
 };
