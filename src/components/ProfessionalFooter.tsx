@@ -1,222 +1,95 @@
-import { useState, useRef, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Instagram, Youtube, Home, ShoppingCart, Key, UsersRound, Construction, Search, MessageSquare, Calculator, PiggyBank, HelpCircle, PhoneCall, MapPin, Glasses, UserCheck, Facebook, Twitter, Music2 } from "lucide-react";
+import { Instagram, Youtube, Home, ShoppingCart, Key, UsersRound, Search, MessageSquare, Calculator, PiggyBank, PhoneCall, MapPin, Glasses, UserCheck, Facebook, Twitter, Music2 } from "lucide-react";
 import { useSocialMediaSettings } from "@/hooks/useSocialMediaSettings";
 
 interface ProfessionalFooterProps {
   language: string;
 }
 
-interface DockItem {
-  label: string;
-  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
-  to?: string;
-}
-
-/**
- * macOS-style Dock with proximity magnification.
- */
-const Dock = ({ items }: { items: DockItem[] }) => {
-  const dockRef = useRef<HTMLDivElement>(null);
-  const iconRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [scales, setScales] = useState<number[]>(() => items.map(() => 1));
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const animFrame = useRef<number>(0);
-  const mouseXRef = useRef<number | null>(null);
-
-  const MAX_DISTANCE = 80;
-  const MAX_SCALE = 1.35;
-
-  const computeScales = useCallback(() => {
-    const mx = mouseXRef.current;
-    let closestIdx = -1;
-    let closestDist = Infinity;
-    const newScales = items.map((_, i) => {
-      const el = iconRefs.current[i];
-      if (mx === null || !el) return 1;
-      const rect = el.getBoundingClientRect();
-      const center = rect.left + rect.width / 2;
-      const dist = Math.abs(mx - center);
-      if (dist < closestDist) { closestDist = dist; closestIdx = i; }
-      if (dist > MAX_DISTANCE) return 1;
-      return 1 + (MAX_SCALE - 1) * (0.5 + 0.5 * Math.cos((Math.PI * dist) / MAX_DISTANCE));
-    });
-    setScales(newScales);
-    setHoveredIndex(closestDist <= MAX_DISTANCE ? closestIdx : null);
-  }, [items.length]);
-
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    mouseXRef.current = e.clientX;
-    cancelAnimationFrame(animFrame.current);
-    animFrame.current = requestAnimationFrame(computeScales);
-  }, [computeScales]);
-
-  const handleMouseLeave = useCallback(() => {
-    mouseXRef.current = null;
-    cancelAnimationFrame(animFrame.current);
-    setScales(items.map(() => 1));
-    setHoveredIndex(null);
-  }, [items.length]);
-
-  useEffect(() => {
-    return () => cancelAnimationFrame(animFrame.current);
-  }, []);
-
-  return (
-    <div
-      ref={dockRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="relative flex items-end gap-1.5 md:gap-2.5 px-3 md:px-5 py-2.5 pt-7 md:pt-9 rounded-2xl
-        overflow-x-auto overflow-y-visible md:overflow-visible md:justify-center
-        scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]
-        bg-primary-foreground/5 border border-primary-foreground/10 backdrop-blur-xl
-        shadow-sm"
-    >
-      {items.map((item, i) => {
-        const scale = scales[i] ?? 1;
-        const isHovered = hoveredIndex === i;
-
-        const iconEl = (
-          <div
-            ref={(el) => { iconRefs.current[i] = el; }}
-            className="relative flex flex-col items-center justify-end cursor-pointer"
-            style={{
-              transition: 'transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1)',
-              transform: `translateY(${-(scale - 1) * 12}px) scale(${scale})`,
-              transformOrigin: 'bottom center',
-              zIndex: isHovered ? 10 : 1,
-            }}
-          >
-            {/* Tooltip label */}
-            <span
-              className="absolute -top-6 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md text-[10px] font-medium whitespace-nowrap pointer-events-none z-50
-                bg-foreground text-background shadow-lg"
-              style={{
-                opacity: isHovered ? 1 : 0,
-                transform: `scale(${isHovered ? 1 / scale : 0.8})`,
-                transition: 'opacity 0.12s ease, transform 0.12s ease',
-              }}
-            >
-              {item.label}
-              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45 bg-foreground" />
-            </span>
-
-            {/* Icon box */}
-            <div
-              className="w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center flex-shrink-0
-                bg-primary-foreground/8 border border-primary-foreground/10 shadow-sm
-                hover:bg-gold-primary/10 hover:border-gold-primary/30
-                transition-colors duration-150"
-            >
-              <item.icon className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground group-hover:text-gold-primary" />
-            </div>
-            {/* Tiny label */}
-            <span className="text-[7px] md:text-[8px] font-medium text-muted-foreground/50 mt-0.5 leading-none truncate max-w-[40px] md:max-w-[48px] text-center">
-              {item.label}
-            </span>
-          </div>
-        );
-
-        return item.to ? (
-          <Link key={item.label} to={item.to} className="no-underline group">
-            {iconEl}
-          </Link>
-        ) : (
-          <div key={item.label} className="group">{iconEl}</div>
-        );
-      })}
-    </div>
-  );
-};
-
 const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
   const { settings } = useSocialMediaSettings();
 
-  const currentText = language === "en" ? {
+  const t = language === "en" ? {
     company: "Astra Villa",
-    allRights: "All rights reserved.",
-    home: "Home", buy: "Buy", rent: "Rent", community: "Community",
-    propertySearch: "Property Search", consultation: "Consultation",
-    valuation: "Property Valuation", investment: "Investment Advisory",
-    help: "Help Center", faq: "FAQ", contactUs: "Contact Us",
+    home: "Home", buy: "Buy", rent: "Rent", vr: "VR Tour", map: "Map",
+    community: "Community", agents: "Agents", search: "Search",
+    consult: "Consult", valuation: "Valuation", invest: "Invest",
+    faq: "FAQ", contact: "Contact",
   } : {
     company: "Astra Villa",
-    allRights: "Semua hak dilindungi.",
-    home: "Beranda", buy: "Beli", rent: "Sewa", community: "Komunitas",
-    propertySearch: "Pencarian Properti", consultation: "Konsultasi",
-    valuation: "Valuasi Properti", investment: "Konsultan Investasi",
-    help: "Pusat Bantuan", faq: "FAQ", contactUs: "Hubungi Kami",
+    home: "Beranda", buy: "Beli", rent: "Sewa", vr: "VR", map: "Peta",
+    community: "Komunitas", agents: "Agen", search: "Cari",
+    consult: "Konsultasi", valuation: "Valuasi", invest: "Investasi",
+    faq: "FAQ", contact: "Kontak",
   };
 
-  const allDockItems: DockItem[] = [
-    { to: "/", label: currentText.home, icon: Home },
-    { to: "/dijual", label: currentText.buy, icon: ShoppingCart },
-    { to: "/disewa", label: currentText.rent, icon: Key },
-    { to: "/vr-tour", label: language === "en" ? "VR Tour" : "Tur VR", icon: Glasses },
-    { to: "/location", label: language === "en" ? "Location Map" : "Peta Lokasi", icon: MapPin },
-    { to: "/community", label: currentText.community, icon: UsersRound },
-    { to: "/agents", label: language === "en" ? "Find Agents" : "Cari Agen", icon: UserCheck },
-    { to: "/development", label: language === "en" ? "Development" : "Pengembangan", icon: Construction },
-    { to: "/search", label: currentText.propertySearch, icon: Search },
-    { to: "/consultation", label: currentText.consultation, icon: MessageSquare },
-    { to: "/valuation", label: currentText.valuation, icon: Calculator },
-    { to: "/investment", label: currentText.investment, icon: PiggyBank },
-    { to: "/faq", label: currentText.faq, icon: HelpCircle },
-    { to: "/contact", label: currentText.contactUs, icon: PhoneCall },
+  const links = [
+    { to: "/", label: t.home, icon: Home },
+    { to: "/dijual", label: t.buy, icon: ShoppingCart },
+    { to: "/disewa", label: t.rent, icon: Key },
+    { to: "/vr-tour", label: t.vr, icon: Glasses },
+    { to: "/location", label: t.map, icon: MapPin },
+    { to: "/community", label: t.community, icon: UsersRound },
+    { to: "/agents", label: t.agents, icon: UserCheck },
+    { to: "/search", label: t.search, icon: Search },
+    { to: "/consultation", label: t.consult, icon: MessageSquare },
+    { to: "/valuation", label: t.valuation, icon: Calculator },
+    { to: "/investment", label: t.invest, icon: PiggyBank },
+    { to: "/faq", label: t.faq, icon: PhoneCall },
+    { to: "/contact", label: t.contact, icon: PhoneCall },
   ];
 
-  const allSocialLinks = [
-    { url: settings.facebookUrl, icon: <Facebook className="w-4 h-4" />, label: 'Facebook' },
-    { url: settings.twitterUrl, icon: <Twitter className="w-4 h-4" />, label: 'Twitter / X' },
-    { url: settings.instagramUrl, icon: <Instagram className="w-4 h-4" />, label: 'Instagram' },
-    { url: settings.tiktokUrl, icon: <Music2 className="w-4 h-4" />, label: 'TikTok' },
-    { url: settings.youtubeUrl, icon: <Youtube className="w-4 h-4" />, label: 'YouTube' },
-    { url: settings.whatsappNumber, icon: <span className="text-sm font-bold">W</span>, label: 'WhatsApp', isPhone: true },
+  const socialLinks = [
+    { url: settings.facebookUrl, icon: <Facebook className="w-3 h-3" />, label: 'Facebook' },
+    { url: settings.twitterUrl, icon: <Twitter className="w-3 h-3" />, label: 'X' },
+    { url: settings.instagramUrl, icon: <Instagram className="w-3 h-3" />, label: 'Instagram' },
+    { url: settings.tiktokUrl, icon: <Music2 className="w-3 h-3" />, label: 'TikTok' },
+    { url: settings.youtubeUrl, icon: <Youtube className="w-3 h-3" />, label: 'YouTube' },
+    { url: settings.whatsappNumber, icon: <span className="text-[10px] font-bold">W</span>, label: 'WhatsApp', isPhone: true },
   ].filter(l => l.url);
 
-  const getSocialHref = (link: typeof allSocialLinks[0]) => {
+  const getSocialHref = (link: typeof socialLinks[0]) => {
     if (!link.url) return '#';
     if ((link as any).isPhone) return `https://wa.me/${link.url.replace(/\D/g, '')}`;
     return link.url.startsWith('http') ? link.url : `https://${link.url}`;
   };
 
   return (
-    <footer
-      className="w-full border-t border-border/30 backdrop-blur-xl px-4 md:px-6 py-2 transition-colors duration-200
-        bg-card/90"
-      style={{ contain: 'layout style' }}
-    >
-      {/* Dock — centered, compact */}
-      <div className="flex justify-center mb-1.5">
-        <Dock items={allDockItems} />
+    <footer className="w-full border-t border-border/20 bg-card/80 backdrop-blur-md px-3 py-1.5">
+      {/* Links row */}
+      <div className="flex items-center justify-center gap-0.5 flex-wrap mb-1">
+        {links.map((item) => (
+          <Link
+            key={item.to}
+            to={item.to}
+            className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-medium text-muted-foreground/70 hover:text-primary hover:bg-primary/5 transition-colors"
+          >
+            <item.icon className="w-2.5 h-2.5" />
+            {item.label}
+          </Link>
+        ))}
       </div>
 
-      {/* Social + Copyright — single slim line */}
-      <div className="flex items-center justify-center gap-2.5 text-center">
-        {allSocialLinks.length > 0 && (
-          <div className="flex items-center gap-1">
-            {allSocialLinks.map((s, i) => (
+      {/* Social + Copyright */}
+      <div className="flex items-center justify-center gap-2 text-center">
+        {socialLinks.length > 0 && (
+          <div className="flex items-center gap-0.5">
+            {socialLinks.map((s, i) => (
               <a
                 key={i}
                 href={getSocialHref(s)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center w-6 h-6 rounded-full
-                  text-muted-foreground/60 hover:text-primary hover:scale-110 transition-all duration-200"
+                className="inline-flex items-center justify-center w-5 h-5 rounded-full text-muted-foreground/50 hover:text-primary hover:scale-110 transition-all"
                 aria-label={s.label}
-                title={s.label}
               >
                 {s.icon}
               </a>
             ))}
           </div>
         )}
-        {allSocialLinks.length > 0 && (
-          <span className="text-border/40">·</span>
-        )}
-        <span className="text-[10px] text-muted-foreground/60">
-          © {new Date().getFullYear()} {currentText.company}
+        <span className="text-[9px] text-muted-foreground/50">
+          © {new Date().getFullYear()} {t.company}
         </span>
       </div>
     </footer>
