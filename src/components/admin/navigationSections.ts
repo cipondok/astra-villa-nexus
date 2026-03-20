@@ -764,6 +764,13 @@ export const navigationSections = {
       badge: "💰 AI Yield"
     },
     {
+      key: "developer-supply-acquisition",
+      label: "Developer Supply Acquisition",
+      icon: Building2,
+      description: "Developer scoring, outreach automation, partnership pipeline & multi-city inventory scaling",
+      badge: "🏗️ Supply AI"
+    },
+    {
       key: "workforce-scheduler",
       label: "Workforce Scheduler",
       icon: Clock,

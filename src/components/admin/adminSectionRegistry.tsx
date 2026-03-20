@@ -983,4 +983,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "growth-experimentation": { label: "Growth Experimentation Engine", category: "Operations" },
   "mega-city-domination": { label: "Mega-City Domination", category: "Operations" },
   "rental-yield-optimization": { label: "Rental Yield Optimization", category: "Operations" },
+  "developer-supply-acquisition": { label: "Developer Supply Acquisition", category: "Operations" },
 };
