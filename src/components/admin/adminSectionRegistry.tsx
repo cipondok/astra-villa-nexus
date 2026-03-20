@@ -402,6 +402,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "vendor-revenue-optimization": () => <VendorRevenueOptimizationPanel />,
   "city-expansion-command": () => <CityExpansionCommandPanel />,
   "superapp-journey": () => <SuperAppJourneyPanel />,
+  "deal-closing-automation": () => <DealClosingAutomationPanel />,
 
   // Content
   "homepage-slider":     () => <HomepageSliderSettings />,
