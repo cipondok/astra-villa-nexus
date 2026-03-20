@@ -456,3 +456,6 @@ verify_jwt = false
 
 [functions.global-asset-liquidity-internet]
 verify_jwt = false
+
+[functions.urban-wealth-creation]
+verify_jwt = false
