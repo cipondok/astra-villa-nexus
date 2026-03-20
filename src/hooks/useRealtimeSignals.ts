@@ -112,6 +112,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   iees_engine_cycle: { label: 'Expansion Simulator', icon: '🪐' },
   cwse_systemic_risk_alert: { label: 'Systemic Risk Alert', icon: '🌋' },
   cwse_engine_cycle: { label: 'Wealth Stability', icon: '🏛️' },
+  lhps_prosperity_surge: { label: 'Prosperity Surge', icon: '🌟' },
+  lhps_engine_cycle: { label: 'Prosperity Strategy', icon: '🌍' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */

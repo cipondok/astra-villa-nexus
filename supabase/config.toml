@@ -474,3 +474,6 @@ verify_jwt = false
 
 [functions.civilizational-wealth-stability]
 verify_jwt = false
+
+[functions.human-prosperity-strategy]
+verify_jwt = false
