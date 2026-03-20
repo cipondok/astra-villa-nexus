@@ -194,28 +194,32 @@ const AddProperty = () => {
   return (
     <div className="min-h-[100dvh] bg-background pb-20 md:pb-0">
       {/* Sticky Header */}
-      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
-        <div className="container mx-auto px-3 sm:px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2 sm:gap-3">
+      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-xl border-b border-border/40 shadow-[0_1px_3px_hsl(var(--foreground)/0.04)]">
+        <div className="flex items-center justify-between px-3 py-2 md:container md:mx-auto md:px-4 md:py-3">
+          <div className="flex items-center gap-2">
             <Link to="/">
-              <Button variant="ghost" size="sm" className="h-8 px-2 sm:px-3">
-                <ArrowLeft className="h-4 w-4 mr-1" />
-                <span className="hidden sm:inline">Back</span>
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full md:h-8 md:w-auto md:px-3 md:rounded-md" aria-label="Back">
+                <ArrowLeft className="h-4 w-4" />
+                <span className="hidden md:inline ml-1">Back</span>
               </Button>
             </Link>
-            <h1 className="text-lg sm:text-xl font-bold flex items-center gap-2 text-foreground">
-              <Plus className="h-5 w-5 text-primary" />
-              <span>{txt.addProperty}</span>
-            </h1>
+            <div className="flex items-center gap-1.5">
+              <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                <Plus className="h-4 w-4 text-primary" />
+              </div>
+              <h1 className="text-base font-semibold text-foreground md:text-xl md:font-bold">
+                {txt.addProperty}
+              </h1>
+            </div>
           </div>
           
           {/* User Role Badges */}
           {userRoles.length > 0 && (
-            <div className="flex gap-1.5">
-              {userRoles.slice(0, 2).map(role => (
+            <div className="flex gap-1">
+              {userRoles.slice(0, 1).map(role => (
                 <span 
                   key={role} 
-                  className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-medium bg-primary/10 text-primary border border-primary/20"
+                  className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-primary/10 text-primary"
                 >
                   {role.replace('_', ' ')}
                 </span>
