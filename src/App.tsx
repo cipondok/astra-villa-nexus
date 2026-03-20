@@ -526,6 +526,7 @@ const AppContent = () => {
                 <Route path="/developer-demand-forecast" element={<DeveloperDemandForecastPage />} />
                 <Route path="/properties/:id" element={<PropertyDetail />} />
                 <Route path="/add-property" element={<AddProperty />} />
+                <Route path="/post-property" element={<AddProperty />} />
                 <Route path="/submit-listing" element={<SubmitPropertyListing />} />
                 <Route path="/deal-room" element={<DealRoom />} />
                 <Route path="/deal-room/:dealId" element={<DealRoom />} />
