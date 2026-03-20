@@ -110,6 +110,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   amens_engine_cycle: { label: 'Multi-Asset Nervous System', icon: '🧬' },
   iees_frontier_opportunity: { label: 'Frontier Opportunity', icon: '🚀' },
   iees_engine_cycle: { label: 'Expansion Simulator', icon: '🪐' },
+  cwse_systemic_risk_alert: { label: 'Systemic Risk Alert', icon: '🌋' },
+  cwse_engine_cycle: { label: 'Wealth Stability', icon: '🏛️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
