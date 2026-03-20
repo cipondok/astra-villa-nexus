@@ -411,8 +411,7 @@ const AuthenticatedNavigation = ({
               )}
               <div className="border-t border-gold-primary/10 pt-2 mt-2 flex gap-2 px-3">
                 <ThemeToggleSwitch />
-                <CurrencySelector />
-                <LanguageToggleSwitch />
+                <LocaleSelector />
               </div>
             </div>
           </div>

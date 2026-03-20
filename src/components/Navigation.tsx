@@ -461,8 +461,7 @@ const Navigation = () => {
                       {theme === "light" ? <Moon className="h-3 w-3 mr-1" /> : <Sun className="h-3 w-3 mr-1" />}
                       {theme === "light" ? "Dark" : "Light"}
                     </Button>
-                    <CurrencySelector />
-                    <LanguageToggleSwitch />
+                    <LocaleSelector />
                   </div>
                   {user && (
                     <Button variant="ghost" className="w-full justify-start h-8 text-[11px] font-medium text-destructive hover:text-destructive hover:bg-destructive/10 rounded-lg" onClick={handleSignOut}>
