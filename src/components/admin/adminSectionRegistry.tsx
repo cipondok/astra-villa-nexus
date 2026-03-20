@@ -699,6 +699,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "global-brand-authority": () => <GlobalBrandAuthorityPanel />,
   "institutional-capital-gateway": () => <InstitutionalCapitalGatewayPanel />,
   "growth-experimentation": () => <GrowthExperimentationPanel />,
+  "mega-city-domination": () => <MegaCityDominationPanel />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
