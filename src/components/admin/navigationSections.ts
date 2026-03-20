@@ -154,6 +154,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "investor-scoring-engine",
+      label: "Investor Scoring Engine",
+      icon: Target,
+      description: "Capital readiness, conversion probability, style classification & weight overrides",
+      badge: "New"
+    },
+    {
       key: "project-map",
       label: "Project Map",
       icon: Map,

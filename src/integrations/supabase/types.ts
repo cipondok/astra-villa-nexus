@@ -29323,6 +29323,87 @@ export type Database = {
         }
         Relationships: []
       }
+      investor_scores: {
+        Row: {
+          avg_session_duration_sec: number | null
+          capital_readiness_score: number | null
+          computed_at: string | null
+          created_at: string | null
+          deal_conversion_probability: number | null
+          id: string
+          inquiry_count: number | null
+          liquidity_matching_index: number | null
+          past_transactions: number | null
+          saved_count: number | null
+          search_frequency: number | null
+          style_classification: string | null
+          style_confidence: number | null
+          updated_at: string | null
+          user_id: string
+          viewing_bookings: number | null
+          weight_budget: number | null
+          weight_location: number | null
+          weight_rental_pref: number | null
+          weight_risk_profile: number | null
+          weight_saves: number | null
+          weight_search: number | null
+          weight_transactions: number | null
+          weight_viewings: number | null
+        }
+        Insert: {
+          avg_session_duration_sec?: number | null
+          capital_readiness_score?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          deal_conversion_probability?: number | null
+          id?: string
+          inquiry_count?: number | null
+          liquidity_matching_index?: number | null
+          past_transactions?: number | null
+          saved_count?: number | null
+          search_frequency?: number | null
+          style_classification?: string | null
+          style_confidence?: number | null
+          updated_at?: string | null
+          user_id: string
+          viewing_bookings?: number | null
+          weight_budget?: number | null
+          weight_location?: number | null
+          weight_rental_pref?: number | null
+          weight_risk_profile?: number | null
+          weight_saves?: number | null
+          weight_search?: number | null
+          weight_transactions?: number | null
+          weight_viewings?: number | null
+        }
+        Update: {
+          avg_session_duration_sec?: number | null
+          capital_readiness_score?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          deal_conversion_probability?: number | null
+          id?: string
+          inquiry_count?: number | null
+          liquidity_matching_index?: number | null
+          past_transactions?: number | null
+          saved_count?: number | null
+          search_frequency?: number | null
+          style_classification?: string | null
+          style_confidence?: number | null
+          updated_at?: string | null
+          user_id?: string
+          viewing_bookings?: number | null
+          weight_budget?: number | null
+          weight_location?: number | null
+          weight_rental_pref?: number | null
+          weight_risk_profile?: number | null
+          weight_saves?: number | null
+          weight_search?: number | null
+          weight_transactions?: number | null
+          weight_viewings?: number | null
+        }
+        Relationships: []
+      }
       investor_watchlist_categories: {
         Row: {
           color: string | null
