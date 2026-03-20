@@ -197,35 +197,35 @@ const LocationSelector = ({
   }, [subdistrictsData, onSubdistrictChange]);
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="space-y-3">
+      <div className="grid grid-cols-2 gap-2">
         <div>
-          <Label htmlFor="state">{t.province} *</Label>
+          <Label htmlFor="state" className="text-[10px] font-medium text-muted-foreground">{t.province} *</Label>
           <SearchableSelect
             options={provincesData.map((p: any) => ({ value: p.province_code, label: p.province_name }))}
             value={selectedProvinceCode}
             onChange={handleStateChange}
             placeholder={t.selectProvince}
             searchPlaceholder={language === 'id' ? 'Cari provinsi...' : 'Search province...'}
-            className="mt-1"
+            className="mt-0.5"
           />
         </div>
 
         <div>
-          <Label htmlFor="city">{t.city} *</Label>
+          <Label htmlFor="city" className="text-[10px] font-medium text-muted-foreground">{t.city} *</Label>
           <SearchableSelect
             options={citiesData.map((c: any) => ({ value: c.city_code, label: `${c.city_type || ''} ${c.city_name}`.trim() }))}
             value={selectedCityCode}
             onChange={handleCityChange}
             placeholder={!selectedProvinceCode ? t.selectProvince : t.selectCity}
-            searchPlaceholder={language === 'id' ? 'Cari kota/kabupaten...' : 'Search city/regency...'}
+            searchPlaceholder={language === 'id' ? 'Cari kota...' : 'Search city...'}
             disabled={!selectedProvinceCode}
-            className="mt-1"
+            className="mt-0.5"
           />
         </div>
 
         <div>
-          <Label htmlFor="district">{t.district} *</Label>
+          <Label htmlFor="district" className="text-[10px] font-medium text-muted-foreground">{t.district} *</Label>
           <SearchableSelect
             options={districtsData.map((d: any) => ({ value: d.district_code, label: d.district_name }))}
             value={selectedDistrictCode}
@@ -233,66 +233,40 @@ const LocationSelector = ({
             placeholder={!selectedCityCode ? t.selectCity : t.selectDistrict}
             searchPlaceholder={language === 'id' ? 'Cari kecamatan...' : 'Search district...'}
             disabled={!selectedCityCode}
-            className="mt-1"
+            className="mt-0.5"
           />
         </div>
 
         <div>
-          <div className="flex items-center justify-between">
-            <Label htmlFor="subdistrict" className="flex items-center gap-2">
-              {t.subdistrict} {subdistrictsData.length === 0 && selectedDistrictCode ? t.optional : '*'}
-              {selectedDistrictCode && subdistrictsData.length > 0 && (
-                <span className="text-xs font-normal text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-                  {subdistrictsData.length} {language === 'id' ? 'di kecamatan ini' : 'in this district'}
-                </span>
-              )}
-            </Label>
-            <span className="text-[10px] text-muted-foreground" title="75.753 Desa + 8.486 Kelurahan + 37 Transmigrasi">
-              🇮🇩 84.276 total
-            </span>
-          </div>
+          <Label htmlFor="subdistrict" className="text-[10px] font-medium text-muted-foreground">
+            {t.subdistrict} {subdistrictsData.length === 0 && selectedDistrictCode ? t.optional : '*'}
+          </Label>
           <SearchableSelect
             options={subdistrictsData.map((s: any) => ({ value: s.subdistrict_code, label: s.subdistrict_name }))}
             value={selectedSubdistrict ? subdistrictsData.find((s: any) => s.subdistrict_name === selectedSubdistrict)?.subdistrict_code || '' : ''}
             onChange={handleSubdistrictChange}
-            placeholder={!selectedDistrictCode ? t.selectDistrict : `${t.selectSubdistrict}${subdistrictsData.length > 0 ? ` (${subdistrictsData.length})` : ''}`}
-            searchPlaceholder={language === 'id' ? 'Cari kelurahan/desa...' : 'Search subdistrict/village...'}
+            placeholder={!selectedDistrictCode ? t.selectDistrict : t.selectSubdistrict}
+            searchPlaceholder={language === 'id' ? 'Cari kelurahan...' : 'Search subdistrict...'}
             disabled={!selectedDistrictCode}
-            className="mt-1"
+            className="mt-0.5"
           />
         </div>
       </div>
 
-      {/* No subdistricts available notice */}
+      {/* No subdistricts notice */}
       {selectedDistrictCode && subdistrictsData.length === 0 && (
-        <Alert className="bg-chart-3/10 border-chart-3/30">
-          <AlertCircle className="h-4 w-4 text-chart-3" />
-          <AlertDescription className="text-foreground">
-            {t.noSubdistrictsAvailable}
-          </AlertDescription>
-        </Alert>
+        <p className="text-[10px] text-muted-foreground px-2">
+          {t.noSubdistrictsAvailable}
+        </p>
       )}
 
-      {/* Location Preview */}
+      {/* Location Preview - compact */}
       {selectedState && selectedCity && selectedDistrict && (
-        <div className="p-3 bg-primary/5 border border-primary/20 rounded-lg">
-          <div className="flex items-center gap-2 text-primary">
-            <MapPin className="h-4 w-4" />
-            <span className="font-medium text-sm">{t.selectedLocation}</span>
-          </div>
-          <div className="text-foreground font-medium mt-1 flex flex-wrap items-center gap-1 text-sm">
-            {selectedSubdistrict && (
-              <>
-                <span>{selectedSubdistrict}</span>
-                <ChevronRight className="h-3 w-3 text-muted-foreground" />
-              </>
-            )}
-            <span>{selectedDistrict}</span>
-            <ChevronRight className="h-3 w-3 text-muted-foreground" />
-            <span>{selectedCity}</span>
-            <ChevronRight className="h-3 w-3 text-muted-foreground" />
-            <span>{selectedState}</span>
-          </div>
+        <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-primary/5 border border-primary/15 rounded-md">
+          <MapPin className="h-3 w-3 text-primary shrink-0" />
+          <span className="text-[10px] text-foreground font-medium truncate">
+            {[selectedSubdistrict, selectedDistrict, selectedCity, selectedState].filter(Boolean).join(' › ')}
+          </span>
         </div>
       )}
     </div>
