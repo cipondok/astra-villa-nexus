@@ -144,6 +144,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   geiti_engine_cycle: { label: 'Exit Timing', icon: '⏰' },
   gpws_unstoppable_momentum: { label: 'Unstoppable Market', icon: '🚀' },
   gpws_engine_cycle: { label: 'PropTech War', icon: '⚔️' },
+  cmppm_narrative_dominant: { label: 'Narrative Dominant', icon: '📣' },
+  cmppm_engine_cycle: { label: 'Capital Positioning', icon: '🎯' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
