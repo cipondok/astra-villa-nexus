@@ -525,3 +525,6 @@ verify_jwt = false
 
 [functions.capital-market-positioning]
 verify_jwt = false
+
+[functions.decade-monopoly-expansion]
+verify_jwt = false
