@@ -120,7 +120,7 @@ const AIFooterBot = () => {
   }, []);
 
   return (
-    <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[9999] pointer-events-auto">
+    <div className="fixed bottom-[72px] right-3 md:bottom-6 md:right-6 z-[9999] pointer-events-auto">
       {/* AI Bot Trigger Button - Gold & Navy Theme */}
       {!isOpen && (
         <div className="relative group">
