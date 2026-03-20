@@ -849,6 +849,7 @@ const AppContent = () => {
                 <Route path="/founder-power-os" element={<FounderPowerOSPage />} />
                 <Route path="/planetary-scale-roadmap" element={<PlanetaryScaleRoadmapPage />} />
                 <Route path="/data-moat-intelligence" element={<DataMoatIntelligencePage />} />
+                <Route path="/fundraising-architecture" element={<FundraisingArchitecturePage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
