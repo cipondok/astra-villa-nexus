@@ -112,21 +112,24 @@ const ExecutionCommandCenter = () => {
   const { data: vendorStats } = useQuery({
     queryKey: ['exec-cmd-vendors', refreshKey],
     queryFn: async () => {
-      const { count: total } = await supabase.from('vendor_profiles').select('*', { count: 'exact', head: true });
-      const { count: verified } = await supabase.from('vendor_profiles').select('*', { count: 'exact', head: true }).eq('is_verified', true);
+      const { count: total } = await supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true });
+      const { count: verified } = await supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true }).eq('verification_status', 'verified');
       return { total: total ?? 0, verified: verified ?? 0 };
     },
     staleTime: 30_000,
   });
 
-  // Fetch deal pipeline
+  // Fetch deal pipeline via inquiries
   const { data: dealStats } = useQuery({
     queryKey: ['exec-cmd-deals', refreshKey],
     queryFn: async () => {
-      const { data } = await supabase.from('deals').select('stage, id');
-      if (!data) return { stages: {}, total: 0 };
+      const { data } = await supabase.from('inquiries').select('status, id');
+      if (!data) return { stages: {} as Record<string, number>, total: 0 };
       const stages: Record<string, number> = {};
-      data.forEach(d => { stages[d.stage] = (stages[d.stage] || 0) + 1; });
+      data.forEach((d: { status: string | null; id: string }) => {
+        const key = d.status ?? 'unknown';
+        stages[key] = (stages[key] || 0) + 1;
+      });
       return { stages, total: data.length };
     },
     staleTime: 30_000,
