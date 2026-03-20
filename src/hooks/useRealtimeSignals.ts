@@ -176,6 +176,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   gpewm_engine_cycle: { label: 'Execution Warmap', icon: '🗺️' },
   cdte_deploy_window: { label: 'Deploy Window', icon: '🎯' },
   cdte_engine_cycle: { label: 'Capital Timing', icon: '⏱️' },
+  fscc_critical_decision: { label: 'Critical Decision', icon: '🚨' },
+  fscc_engine_cycle: { label: 'Command Center', icon: '🎖️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
