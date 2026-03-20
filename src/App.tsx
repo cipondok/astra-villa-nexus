@@ -903,6 +903,7 @@ const AppContent = () => {
                 <Route path="/pricing-psychology" element={<PricingPsychologyPage />} />
                 <Route path="/deal-risk-detection" element={<DealRiskDetectionPage />} />
                 <Route path="/agent-leaderboard" element={<AgentLeaderboardPage />} />
+                <Route path="/revenue-milestone" element={<RevenueMilestonePage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
