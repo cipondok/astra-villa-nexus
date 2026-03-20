@@ -373,6 +373,7 @@ const RevenueScalingBlueprintPage = lazy(() => import('@/pages/RevenueScalingBlu
 const MonetizationPricingPage = lazy(() => import('@/pages/MonetizationPricingPage'));
 const SprintExecutionRoadmapPage = lazy(() => import('@/pages/SprintExecutionRoadmapPage'));
 const MarketplaceLaunchPlaybookPage = lazy(() => import('@/pages/MarketplaceLaunchPlaybookPage'));
+const CityLaunchPlaybookPage = lazy(() => import('@/pages/CityLaunchPlaybookPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
