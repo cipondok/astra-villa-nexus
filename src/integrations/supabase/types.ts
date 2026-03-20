@@ -21291,6 +21291,264 @@ export type Database = {
           },
         ]
       }
+      gfne_investor_psychology: {
+        Row: {
+          conversion_playbook: string | null
+          created_at: string | null
+          decision_drivers: string[] | null
+          deck_emphasis: string[] | null
+          effectiveness_score: number | null
+          follow_up_sequence: Json | null
+          id: string
+          investor_archetype: string
+          last_calibrated: string | null
+          messaging_tone: string | null
+          objection_patterns: string[] | null
+          objection_responses: Json | null
+          primary_motivation: string
+          return_expectation: string | null
+          risk_tolerance: string | null
+        }
+        Insert: {
+          conversion_playbook?: string | null
+          created_at?: string | null
+          decision_drivers?: string[] | null
+          deck_emphasis?: string[] | null
+          effectiveness_score?: number | null
+          follow_up_sequence?: Json | null
+          id?: string
+          investor_archetype: string
+          last_calibrated?: string | null
+          messaging_tone?: string | null
+          objection_patterns?: string[] | null
+          objection_responses?: Json | null
+          primary_motivation: string
+          return_expectation?: string | null
+          risk_tolerance?: string | null
+        }
+        Update: {
+          conversion_playbook?: string | null
+          created_at?: string | null
+          decision_drivers?: string[] | null
+          deck_emphasis?: string[] | null
+          effectiveness_score?: number | null
+          follow_up_sequence?: Json | null
+          id?: string
+          investor_archetype?: string
+          last_calibrated?: string | null
+          messaging_tone?: string | null
+          objection_patterns?: string[] | null
+          objection_responses?: Json | null
+          primary_motivation?: string
+          return_expectation?: string | null
+          risk_tolerance?: string | null
+        }
+        Relationships: []
+      }
+      gfne_market_opportunity: {
+        Row: {
+          competitive_landscape_summary: string | null
+          computed_at: string | null
+          confidence: number | null
+          created_at: string | null
+          defensibility_narrative: string | null
+          expansion_pathway: string[] | null
+          growth_rate_pct: number | null
+          id: string
+          market_segment: string
+          network_effect_multiplier: number | null
+          penetration_current_pct: number | null
+          penetration_target_pct: number | null
+          regional_breakdown: Json | null
+          sam_usd: number | null
+          som_usd: number | null
+          tam_usd: number | null
+          time_horizon: string | null
+        }
+        Insert: {
+          competitive_landscape_summary?: string | null
+          computed_at?: string | null
+          confidence?: number | null
+          created_at?: string | null
+          defensibility_narrative?: string | null
+          expansion_pathway?: string[] | null
+          growth_rate_pct?: number | null
+          id?: string
+          market_segment: string
+          network_effect_multiplier?: number | null
+          penetration_current_pct?: number | null
+          penetration_target_pct?: number | null
+          regional_breakdown?: Json | null
+          sam_usd?: number | null
+          som_usd?: number | null
+          tam_usd?: number | null
+          time_horizon?: string | null
+        }
+        Update: {
+          competitive_landscape_summary?: string | null
+          computed_at?: string | null
+          confidence?: number | null
+          created_at?: string | null
+          defensibility_narrative?: string | null
+          expansion_pathway?: string[] | null
+          growth_rate_pct?: number | null
+          id?: string
+          market_segment?: string
+          network_effect_multiplier?: number | null
+          penetration_current_pct?: number | null
+          penetration_target_pct?: number | null
+          regional_breakdown?: Json | null
+          sam_usd?: number | null
+          som_usd?: number | null
+          tam_usd?: number | null
+          time_horizon?: string | null
+        }
+        Relationships: []
+      }
+      gfne_moat_communication: {
+        Row: {
+          assessed_at: string | null
+          competitive_advantage_narrative: string | null
+          created_at: string | null
+          depth_score: number | null
+          evidence_points: string[] | null
+          id: string
+          investor_proof_points: Json | null
+          moat_name: string
+          moat_trend: string | null
+          moat_type: string
+          replication_difficulty: string | null
+          time_to_replicate_months: number | null
+        }
+        Insert: {
+          assessed_at?: string | null
+          competitive_advantage_narrative?: string | null
+          created_at?: string | null
+          depth_score?: number | null
+          evidence_points?: string[] | null
+          id?: string
+          investor_proof_points?: Json | null
+          moat_name: string
+          moat_trend?: string | null
+          moat_type: string
+          replication_difficulty?: string | null
+          time_to_replicate_months?: number | null
+        }
+        Update: {
+          assessed_at?: string | null
+          competitive_advantage_narrative?: string | null
+          created_at?: string | null
+          depth_score?: number | null
+          evidence_points?: string[] | null
+          id?: string
+          investor_proof_points?: Json | null
+          moat_name?: string
+          moat_trend?: string | null
+          moat_type?: string
+          replication_difficulty?: string | null
+          time_to_replicate_months?: number | null
+        }
+        Relationships: []
+      }
+      gfne_traction_signals: {
+        Row: {
+          benchmark_source: string | null
+          benchmark_value: number | null
+          created_at: string | null
+          current_value: number | null
+          growth_pct: number | null
+          id: string
+          investor_relevance: string | null
+          measured_at: string | null
+          metric_name: string
+          narrative_framing: string | null
+          period: string | null
+          previous_value: number | null
+          signal_category: string
+          visual_treatment: string | null
+        }
+        Insert: {
+          benchmark_source?: string | null
+          benchmark_value?: number | null
+          created_at?: string | null
+          current_value?: number | null
+          growth_pct?: number | null
+          id?: string
+          investor_relevance?: string | null
+          measured_at?: string | null
+          metric_name: string
+          narrative_framing?: string | null
+          period?: string | null
+          previous_value?: number | null
+          signal_category: string
+          visual_treatment?: string | null
+        }
+        Update: {
+          benchmark_source?: string | null
+          benchmark_value?: number | null
+          created_at?: string | null
+          current_value?: number | null
+          growth_pct?: number | null
+          id?: string
+          investor_relevance?: string | null
+          measured_at?: string | null
+          metric_name?: string
+          narrative_framing?: string | null
+          period?: string | null
+          previous_value?: number | null
+          signal_category?: string
+          visual_treatment?: string | null
+        }
+        Relationships: []
+      }
+      gfne_vision_narrative: {
+        Row: {
+          core_thesis: string
+          created_at: string | null
+          data_points: Json | null
+          emotional_hook: string | null
+          headline: string
+          id: string
+          is_active: boolean | null
+          narrative_layer: string
+          narrative_strength: number | null
+          supporting_evidence: string[] | null
+          target_audience: string | null
+          updated_at: string | null
+          version: number | null
+        }
+        Insert: {
+          core_thesis: string
+          created_at?: string | null
+          data_points?: Json | null
+          emotional_hook?: string | null
+          headline: string
+          id?: string
+          is_active?: boolean | null
+          narrative_layer: string
+          narrative_strength?: number | null
+          supporting_evidence?: string[] | null
+          target_audience?: string | null
+          updated_at?: string | null
+          version?: number | null
+        }
+        Update: {
+          core_thesis?: string
+          created_at?: string | null
+          data_points?: Json | null
+          emotional_hook?: string | null
+          headline?: string
+          id?: string
+          is_active?: boolean | null
+          narrative_layer?: string
+          narrative_strength?: number | null
+          supporting_evidence?: string[] | null
+          target_audience?: string | null
+          updated_at?: string | null
+          version?: number | null
+        }
+        Relationships: []
+      }
       gipd_behavioral_segmentation: {
         Row: {
           analysis_depth_preference: number
