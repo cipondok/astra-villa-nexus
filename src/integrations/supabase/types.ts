@@ -35431,6 +35431,315 @@ export type Database = {
         }
         Relationships: []
       }
+      pufg_district_lifecycle: {
+        Row: {
+          city: string
+          commercial_saturation: number | null
+          computed_at: string | null
+          created_at: string | null
+          density_index: number | null
+          district: string
+          estimated_phase_remaining_months: number | null
+          id: string
+          infrastructure_completeness: number | null
+          lifecycle_confidence: number | null
+          lifecycle_phase: string | null
+          phase_maturity_pct: number | null
+          phase_velocity: number | null
+          regeneration_potential: number | null
+          region: string
+          residential_saturation: number | null
+          transition_triggers: Json | null
+        }
+        Insert: {
+          city: string
+          commercial_saturation?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          density_index?: number | null
+          district: string
+          estimated_phase_remaining_months?: number | null
+          id?: string
+          infrastructure_completeness?: number | null
+          lifecycle_confidence?: number | null
+          lifecycle_phase?: string | null
+          phase_maturity_pct?: number | null
+          phase_velocity?: number | null
+          regeneration_potential?: number | null
+          region?: string
+          residential_saturation?: number | null
+          transition_triggers?: Json | null
+        }
+        Update: {
+          city?: string
+          commercial_saturation?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          density_index?: number | null
+          district?: string
+          estimated_phase_remaining_months?: number | null
+          id?: string
+          infrastructure_completeness?: number | null
+          lifecycle_confidence?: number | null
+          lifecycle_phase?: string | null
+          phase_maturity_pct?: number | null
+          phase_velocity?: number | null
+          regeneration_potential?: number | null
+          region?: string
+          residential_saturation?: number | null
+          transition_triggers?: Json | null
+        }
+        Relationships: []
+      }
+      pufg_expansion_signals: {
+        Row: {
+          building_permit_momentum: number | null
+          city: string
+          commercial_cluster_score: number | null
+          composite_expansion_signal: number | null
+          computed_at: string | null
+          created_at: string | null
+          district: string
+          expansion_tier: string | null
+          expansion_vector: string | null
+          forecast_horizon_months: number | null
+          green_field_conversion_rate: number | null
+          id: string
+          land_use_velocity: number | null
+          population_inflow_score: number | null
+          region: string
+          signal_drivers: Json | null
+          transport_investment_score: number | null
+        }
+        Insert: {
+          building_permit_momentum?: number | null
+          city: string
+          commercial_cluster_score?: number | null
+          composite_expansion_signal?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          district: string
+          expansion_tier?: string | null
+          expansion_vector?: string | null
+          forecast_horizon_months?: number | null
+          green_field_conversion_rate?: number | null
+          id?: string
+          land_use_velocity?: number | null
+          population_inflow_score?: number | null
+          region?: string
+          signal_drivers?: Json | null
+          transport_investment_score?: number | null
+        }
+        Update: {
+          building_permit_momentum?: number | null
+          city?: string
+          commercial_cluster_score?: number | null
+          composite_expansion_signal?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          district?: string
+          expansion_tier?: string | null
+          expansion_vector?: string | null
+          forecast_horizon_months?: number | null
+          green_field_conversion_rate?: number | null
+          id?: string
+          land_use_velocity?: number | null
+          population_inflow_score?: number | null
+          region?: string
+          signal_drivers?: Json | null
+          transport_investment_score?: number | null
+        }
+        Relationships: []
+      }
+      pufg_infrastructure_impact: {
+        Row: {
+          affected_properties_count: number | null
+          city: string
+          completion_pct: number | null
+          composite_impact_score: number | null
+          computed_at: string | null
+          created_at: string | null
+          district: string
+          estimated_completion_date: string | null
+          id: string
+          impact_radius_km: number | null
+          impact_tier: string | null
+          industrial_zone_effect: number | null
+          investment_amount_usd: number | null
+          logistics_expansion_score: number | null
+          project_name: string | null
+          project_type: string | null
+          region: string
+          tod_effect_score: number | null
+          value_uplift_pct: number | null
+        }
+        Insert: {
+          affected_properties_count?: number | null
+          city: string
+          completion_pct?: number | null
+          composite_impact_score?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          district: string
+          estimated_completion_date?: string | null
+          id?: string
+          impact_radius_km?: number | null
+          impact_tier?: string | null
+          industrial_zone_effect?: number | null
+          investment_amount_usd?: number | null
+          logistics_expansion_score?: number | null
+          project_name?: string | null
+          project_type?: string | null
+          region?: string
+          tod_effect_score?: number | null
+          value_uplift_pct?: number | null
+        }
+        Update: {
+          affected_properties_count?: number | null
+          city?: string
+          completion_pct?: number | null
+          composite_impact_score?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          district?: string
+          estimated_completion_date?: string | null
+          id?: string
+          impact_radius_km?: number | null
+          impact_tier?: string | null
+          industrial_zone_effect?: number | null
+          investment_amount_usd?: number | null
+          logistics_expansion_score?: number | null
+          project_name?: string | null
+          project_type?: string | null
+          region?: string
+          tod_effect_score?: number | null
+          value_uplift_pct?: number | null
+        }
+        Relationships: []
+      }
+      pufg_spatial_sequencing: {
+        Row: {
+          capital_timing_alignment: number | null
+          city: string
+          commercial_readiness: number | null
+          computed_at: string | null
+          created_at: string | null
+          deployment_sequence: Json | null
+          development_wave: number | null
+          district: string
+          estimated_roi_premium_pct: number | null
+          id: string
+          recommended_asset_mix: Json | null
+          region: string
+          residential_readiness: number | null
+          sequencing_confidence: number | null
+          service_ecosystem_readiness: number | null
+          urban_readiness_index: number | null
+          wave_priority_score: number | null
+        }
+        Insert: {
+          capital_timing_alignment?: number | null
+          city: string
+          commercial_readiness?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          deployment_sequence?: Json | null
+          development_wave?: number | null
+          district: string
+          estimated_roi_premium_pct?: number | null
+          id?: string
+          recommended_asset_mix?: Json | null
+          region?: string
+          residential_readiness?: number | null
+          sequencing_confidence?: number | null
+          service_ecosystem_readiness?: number | null
+          urban_readiness_index?: number | null
+          wave_priority_score?: number | null
+        }
+        Update: {
+          capital_timing_alignment?: number | null
+          city?: string
+          commercial_readiness?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          deployment_sequence?: Json | null
+          development_wave?: number | null
+          district?: string
+          estimated_roi_premium_pct?: number | null
+          id?: string
+          recommended_asset_mix?: Json | null
+          region?: string
+          residential_readiness?: number | null
+          sequencing_confidence?: number | null
+          service_ecosystem_readiness?: number | null
+          urban_readiness_index?: number | null
+          wave_priority_score?: number | null
+        }
+        Relationships: []
+      }
+      pufg_sustainable_growth: {
+        Row: {
+          balanced_growth_score: number | null
+          carrying_capacity_pct: number | null
+          city: string
+          computed_at: string | null
+          congestion_risk_score: number | null
+          created_at: string | null
+          density_stress_index: number | null
+          district: string
+          environmental_pressure: number | null
+          expansion_recommendation: string | null
+          green_space_ratio: number | null
+          id: string
+          optimization_actions: Json | null
+          projected_stress_12m: number | null
+          region: string
+          risk_warnings: Json | null
+          service_capacity_utilization: number | null
+          sustainability_tier: string | null
+        }
+        Insert: {
+          balanced_growth_score?: number | null
+          carrying_capacity_pct?: number | null
+          city: string
+          computed_at?: string | null
+          congestion_risk_score?: number | null
+          created_at?: string | null
+          density_stress_index?: number | null
+          district: string
+          environmental_pressure?: number | null
+          expansion_recommendation?: string | null
+          green_space_ratio?: number | null
+          id?: string
+          optimization_actions?: Json | null
+          projected_stress_12m?: number | null
+          region?: string
+          risk_warnings?: Json | null
+          service_capacity_utilization?: number | null
+          sustainability_tier?: string | null
+        }
+        Update: {
+          balanced_growth_score?: number | null
+          carrying_capacity_pct?: number | null
+          city?: string
+          computed_at?: string | null
+          congestion_risk_score?: number | null
+          created_at?: string | null
+          density_stress_index?: number | null
+          district?: string
+          environmental_pressure?: number | null
+          expansion_recommendation?: string | null
+          green_space_ratio?: number | null
+          id?: string
+          optimization_actions?: Json | null
+          projected_stress_12m?: number | null
+          region?: string
+          risk_warnings?: Json | null
+          service_capacity_utilization?: number | null
+          sustainability_tier?: string | null
+        }
+        Relationships: []
+      }
       push_subscriptions: {
         Row: {
           auth_key: string | null
