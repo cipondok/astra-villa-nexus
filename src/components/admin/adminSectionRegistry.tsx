@@ -146,6 +146,7 @@ export const VendorRevenueOptimizationPanel = lazyRetry(() => import("./VendorRe
 export const CityExpansionCommandPanel = lazyRetry(() => import("./CityExpansionCommandPanel"));
 export const SuperAppJourneyPanel = lazyRetry(() => import("./SuperAppJourneyPanel"));
 export const DealClosingAutomationPanel = lazyRetry(() => import("./DealClosingAutomationPanel"));
+export const NetworkEffectSimulatorPanel = lazyRetry(() => import("./NetworkEffectSimulatorPanel"));
 export const DOMAccuracyReport = lazyRetry(() => import("./DOMAccuracyReport"));
 export const CronJobMonitor = lazyRetry(() => import("./CronJobMonitor"));
 export const WeightTuningHistory = lazyRetry(() => import("./WeightTuningHistory"));
