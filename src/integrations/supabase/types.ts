@@ -4924,6 +4924,266 @@ export type Database = {
         }
         Relationships: []
       }
+      amda_competitor_signals: {
+        Row: {
+          agent_churn_risk: number | null
+          city: string
+          competitor_name: string
+          created_at: string | null
+          detected_at: string | null
+          district: string | null
+          id: string
+          listing_delta_pct: number | null
+          marketing_intensity: number | null
+          price_undercut_pct: number | null
+          raw_evidence: Json | null
+          signal_strength: number | null
+          signal_type: string
+          threat_composite_score: number | null
+          threat_level: string | null
+        }
+        Insert: {
+          agent_churn_risk?: number | null
+          city?: string
+          competitor_name: string
+          created_at?: string | null
+          detected_at?: string | null
+          district?: string | null
+          id?: string
+          listing_delta_pct?: number | null
+          marketing_intensity?: number | null
+          price_undercut_pct?: number | null
+          raw_evidence?: Json | null
+          signal_strength?: number | null
+          signal_type: string
+          threat_composite_score?: number | null
+          threat_level?: string | null
+        }
+        Update: {
+          agent_churn_risk?: number | null
+          city?: string
+          competitor_name?: string
+          created_at?: string | null
+          detected_at?: string | null
+          district?: string | null
+          id?: string
+          listing_delta_pct?: number | null
+          marketing_intensity?: number | null
+          price_undercut_pct?: number | null
+          raw_evidence?: Json | null
+          signal_strength?: number | null
+          signal_type?: string
+          threat_composite_score?: number | null
+          threat_level?: string | null
+        }
+        Relationships: []
+      }
+      amda_counter_moves: {
+        Row: {
+          city: string
+          created_at: string | null
+          district: string | null
+          estimated_impact_score: number | null
+          executed_at: string | null
+          execution_status: string | null
+          id: string
+          move_details: Json | null
+          move_type: string
+          planned_at: string | null
+          resource_cost_index: number | null
+          roi_projection: number | null
+          threat_signal_id: string | null
+          urgency: string | null
+        }
+        Insert: {
+          city?: string
+          created_at?: string | null
+          district?: string | null
+          estimated_impact_score?: number | null
+          executed_at?: string | null
+          execution_status?: string | null
+          id?: string
+          move_details?: Json | null
+          move_type: string
+          planned_at?: string | null
+          resource_cost_index?: number | null
+          roi_projection?: number | null
+          threat_signal_id?: string | null
+          urgency?: string | null
+        }
+        Update: {
+          city?: string
+          created_at?: string | null
+          district?: string | null
+          estimated_impact_score?: number | null
+          executed_at?: string | null
+          execution_status?: string | null
+          id?: string
+          move_details?: Json | null
+          move_type?: string
+          planned_at?: string | null
+          resource_cost_index?: number | null
+          roi_projection?: number | null
+          threat_signal_id?: string | null
+          urgency?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "amda_counter_moves_threat_signal_id_fkey"
+            columns: ["threat_signal_id"]
+            isOneToOne: false
+            referencedRelation: "amda_competitor_signals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      amda_dominance_simulator: {
+        Row: {
+          city: string
+          created_at: string | null
+          defense_allocation_pct: number | null
+          expansion_allocation_pct: number | null
+          id: string
+          optimal_strategy: string | null
+          projected_market_share_pct: number | null
+          risk_of_displacement: number | null
+          scenario_name: string
+          simulated_at: string | null
+          simulation_inputs: Json | null
+          simulation_results: Json | null
+          sustainability_score: number | null
+          time_horizon_months: number | null
+        }
+        Insert: {
+          city?: string
+          created_at?: string | null
+          defense_allocation_pct?: number | null
+          expansion_allocation_pct?: number | null
+          id?: string
+          optimal_strategy?: string | null
+          projected_market_share_pct?: number | null
+          risk_of_displacement?: number | null
+          scenario_name: string
+          simulated_at?: string | null
+          simulation_inputs?: Json | null
+          simulation_results?: Json | null
+          sustainability_score?: number | null
+          time_horizon_months?: number | null
+        }
+        Update: {
+          city?: string
+          created_at?: string | null
+          defense_allocation_pct?: number | null
+          expansion_allocation_pct?: number | null
+          id?: string
+          optimal_strategy?: string | null
+          projected_market_share_pct?: number | null
+          risk_of_displacement?: number | null
+          scenario_name?: string
+          simulated_at?: string | null
+          simulation_inputs?: Json | null
+          simulation_results?: Json | null
+          sustainability_score?: number | null
+          time_horizon_months?: number | null
+        }
+        Relationships: []
+      }
+      amda_moat_reinforcement: {
+        Row: {
+          city: string
+          competitor_closest_pct: number | null
+          computed_at: string | null
+          created_at: string | null
+          current_strength: number | null
+          fortress_status: string | null
+          gap_score: number | null
+          id: string
+          indispensability_index: number | null
+          moat_dimension: string
+          reinforcement_actions: Json | null
+          reinforcement_velocity: number | null
+          target_strength: number | null
+        }
+        Insert: {
+          city?: string
+          competitor_closest_pct?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          current_strength?: number | null
+          fortress_status?: string | null
+          gap_score?: number | null
+          id?: string
+          indispensability_index?: number | null
+          moat_dimension: string
+          reinforcement_actions?: Json | null
+          reinforcement_velocity?: number | null
+          target_strength?: number | null
+        }
+        Update: {
+          city?: string
+          competitor_closest_pct?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          current_strength?: number | null
+          fortress_status?: string | null
+          gap_score?: number | null
+          id?: string
+          indispensability_index?: number | null
+          moat_dimension?: string
+          reinforcement_actions?: Json | null
+          reinforcement_velocity?: number | null
+          target_strength?: number | null
+        }
+        Relationships: []
+      }
+      amda_narrative_control: {
+        Row: {
+          authority_perception_score: number | null
+          category_leadership_index: number | null
+          city: string
+          competitor_legacy_framing: number | null
+          computed_at: string | null
+          content_strategy: Json | null
+          control_status: string | null
+          created_at: string | null
+          id: string
+          narrative_theme: string
+          narrative_velocity: number | null
+          sentiment_advantage: number | null
+          share_of_voice_pct: number | null
+        }
+        Insert: {
+          authority_perception_score?: number | null
+          category_leadership_index?: number | null
+          city?: string
+          competitor_legacy_framing?: number | null
+          computed_at?: string | null
+          content_strategy?: Json | null
+          control_status?: string | null
+          created_at?: string | null
+          id?: string
+          narrative_theme: string
+          narrative_velocity?: number | null
+          sentiment_advantage?: number | null
+          share_of_voice_pct?: number | null
+        }
+        Update: {
+          authority_perception_score?: number | null
+          category_leadership_index?: number | null
+          city?: string
+          competitor_legacy_framing?: number | null
+          computed_at?: string | null
+          content_strategy?: Json | null
+          control_status?: string | null
+          created_at?: string | null
+          id?: string
+          narrative_theme?: string
+          narrative_velocity?: number | null
+          sentiment_advantage?: number | null
+          share_of_voice_pct?: number | null
+        }
+        Relationships: []
+      }
       amens_capital_rotation: {
         Row: {
           actionable_insight: string | null

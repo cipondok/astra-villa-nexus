@@ -128,6 +128,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   mcbm_engine_cycle: { label: 'Market Blitzkrieg', icon: '🎯' },
   newf_inescapable_gravity: { label: 'Inescapable Gravity', icon: '🕳️' },
   newf_engine_cycle: { label: 'Network Weaponization', icon: '🕸️' },
+  amda_critical_threat: { label: 'Critical Threat', icon: '🚨' },
+  amda_engine_cycle: { label: 'Monopoly Defense', icon: '🛡️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
