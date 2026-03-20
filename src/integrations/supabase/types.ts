@@ -20359,6 +20359,276 @@ export type Database = {
         }
         Relationships: []
       }
+      gpes_endgame_state: {
+        Row: {
+          annual_platform_throughput_usd: number | null
+          api_consumers: number | null
+          cities_controlled: number | null
+          created_at: string | null
+          data_monopoly_score: number | null
+          endgame_probability_pct: number | null
+          endgame_role: string
+          endgame_timeline_years: number | null
+          global_penetration_pct: number | null
+          id: string
+          institutional_clients: number | null
+          irreplaceability_score: number | null
+          positioning_strength: number | null
+          risk_factors: Json | null
+          simulated_at: string | null
+          structural_power_index: number | null
+        }
+        Insert: {
+          annual_platform_throughput_usd?: number | null
+          api_consumers?: number | null
+          cities_controlled?: number | null
+          created_at?: string | null
+          data_monopoly_score?: number | null
+          endgame_probability_pct?: number | null
+          endgame_role: string
+          endgame_timeline_years?: number | null
+          global_penetration_pct?: number | null
+          id?: string
+          institutional_clients?: number | null
+          irreplaceability_score?: number | null
+          positioning_strength?: number | null
+          risk_factors?: Json | null
+          simulated_at?: string | null
+          structural_power_index?: number | null
+        }
+        Update: {
+          annual_platform_throughput_usd?: number | null
+          api_consumers?: number | null
+          cities_controlled?: number | null
+          created_at?: string | null
+          data_monopoly_score?: number | null
+          endgame_probability_pct?: number | null
+          endgame_role?: string
+          endgame_timeline_years?: number | null
+          global_penetration_pct?: number | null
+          id?: string
+          institutional_clients?: number | null
+          irreplaceability_score?: number | null
+          positioning_strength?: number | null
+          risk_factors?: Json | null
+          simulated_at?: string | null
+          structural_power_index?: number | null
+        }
+        Relationships: []
+      }
+      gpes_market_saturation: {
+        Row: {
+          city: string
+          competitor_status: string | null
+          country: string
+          created_at: string | null
+          cross_border_flow_share_pct: number | null
+          deal_velocity_advantage_pct: number | null
+          id: string
+          investor_concentration_index: number | null
+          listing_market_share_pct: number | null
+          platform_captured_market_usd: number | null
+          platform_liquidity_share_pct: number | null
+          region: string | null
+          saturation_phase: string
+          simulated_at: string | null
+          time_to_saturation_months: number | null
+          total_addressable_market_usd: number | null
+        }
+        Insert: {
+          city: string
+          competitor_status?: string | null
+          country?: string
+          created_at?: string | null
+          cross_border_flow_share_pct?: number | null
+          deal_velocity_advantage_pct?: number | null
+          id?: string
+          investor_concentration_index?: number | null
+          listing_market_share_pct?: number | null
+          platform_captured_market_usd?: number | null
+          platform_liquidity_share_pct?: number | null
+          region?: string | null
+          saturation_phase: string
+          simulated_at?: string | null
+          time_to_saturation_months?: number | null
+          total_addressable_market_usd?: number | null
+        }
+        Update: {
+          city?: string
+          competitor_status?: string | null
+          country?: string
+          created_at?: string | null
+          cross_border_flow_share_pct?: number | null
+          deal_velocity_advantage_pct?: number | null
+          id?: string
+          investor_concentration_index?: number | null
+          listing_market_share_pct?: number | null
+          platform_captured_market_usd?: number | null
+          platform_liquidity_share_pct?: number | null
+          region?: string | null
+          saturation_phase?: string
+          simulated_at?: string | null
+          time_to_saturation_months?: number | null
+          total_addressable_market_usd?: number | null
+        }
+        Relationships: []
+      }
+      gpes_platform_dependency: {
+        Row: {
+          alternative_viability_score: number | null
+          created_at: string | null
+          dependency_driver: string
+          dependency_intensity: number | null
+          dependency_trajectory: string | null
+          formation_stage: string | null
+          id: string
+          lock_in_mechanism: string | null
+          revenue_at_risk_if_churn_pct: number | null
+          simulated_at: string | null
+          stakeholder_type: string
+          switching_cost_usd: number | null
+          time_to_full_dependency_months: number | null
+          workflow_capture_pct: number | null
+        }
+        Insert: {
+          alternative_viability_score?: number | null
+          created_at?: string | null
+          dependency_driver: string
+          dependency_intensity?: number | null
+          dependency_trajectory?: string | null
+          formation_stage?: string | null
+          id?: string
+          lock_in_mechanism?: string | null
+          revenue_at_risk_if_churn_pct?: number | null
+          simulated_at?: string | null
+          stakeholder_type: string
+          switching_cost_usd?: number | null
+          time_to_full_dependency_months?: number | null
+          workflow_capture_pct?: number | null
+        }
+        Update: {
+          alternative_viability_score?: number | null
+          created_at?: string | null
+          dependency_driver?: string
+          dependency_intensity?: number | null
+          dependency_trajectory?: string | null
+          formation_stage?: string | null
+          id?: string
+          lock_in_mechanism?: string | null
+          revenue_at_risk_if_churn_pct?: number | null
+          simulated_at?: string | null
+          stakeholder_type?: string
+          switching_cost_usd?: number | null
+          time_to_full_dependency_months?: number | null
+          workflow_capture_pct?: number | null
+        }
+        Relationships: []
+      }
+      gpes_strategic_optionality: {
+        Row: {
+          capital_required_usd: number | null
+          competitive_moat_years: number | null
+          created_at: string | null
+          execution_readiness_pct: number | null
+          expansion_path: string
+          id: string
+          market_size_usd: number | null
+          option_value_usd: number | null
+          prerequisite_milestones: Json | null
+          recommended_timing: string | null
+          revenue_potential_annual_usd: number | null
+          risk_level: string | null
+          simulated_at: string | null
+          synergy_with_core_pct: number | null
+          time_to_market_months: number | null
+        }
+        Insert: {
+          capital_required_usd?: number | null
+          competitive_moat_years?: number | null
+          created_at?: string | null
+          execution_readiness_pct?: number | null
+          expansion_path: string
+          id?: string
+          market_size_usd?: number | null
+          option_value_usd?: number | null
+          prerequisite_milestones?: Json | null
+          recommended_timing?: string | null
+          revenue_potential_annual_usd?: number | null
+          risk_level?: string | null
+          simulated_at?: string | null
+          synergy_with_core_pct?: number | null
+          time_to_market_months?: number | null
+        }
+        Update: {
+          capital_required_usd?: number | null
+          competitive_moat_years?: number | null
+          created_at?: string | null
+          execution_readiness_pct?: number | null
+          expansion_path?: string
+          id?: string
+          market_size_usd?: number | null
+          option_value_usd?: number | null
+          prerequisite_milestones?: Json | null
+          recommended_timing?: string | null
+          revenue_potential_annual_usd?: number | null
+          risk_level?: string | null
+          simulated_at?: string | null
+          synergy_with_core_pct?: number | null
+          time_to_market_months?: number | null
+        }
+        Relationships: []
+      }
+      gpes_terminal_velocity: {
+        Row: {
+          acceleration_rate: number | null
+          competitor_catchup_years: number | null
+          created_at: string | null
+          current_velocity: number | null
+          data_points_at_tipping_point: number | null
+          dominance_multiplier: number | null
+          exponential_growth_factor: number | null
+          id: string
+          network_dimension: string
+          network_effect_type: string | null
+          simulated_at: string | null
+          tipping_point_reached: boolean | null
+          tipping_point_threshold: number | null
+          users_at_tipping_point: number | null
+        }
+        Insert: {
+          acceleration_rate?: number | null
+          competitor_catchup_years?: number | null
+          created_at?: string | null
+          current_velocity?: number | null
+          data_points_at_tipping_point?: number | null
+          dominance_multiplier?: number | null
+          exponential_growth_factor?: number | null
+          id?: string
+          network_dimension: string
+          network_effect_type?: string | null
+          simulated_at?: string | null
+          tipping_point_reached?: boolean | null
+          tipping_point_threshold?: number | null
+          users_at_tipping_point?: number | null
+        }
+        Update: {
+          acceleration_rate?: number | null
+          competitor_catchup_years?: number | null
+          created_at?: string | null
+          current_velocity?: number | null
+          data_points_at_tipping_point?: number | null
+          dominance_multiplier?: number | null
+          exponential_growth_factor?: number | null
+          id?: string
+          network_dimension?: string
+          network_effect_type?: string | null
+          simulated_at?: string | null
+          tipping_point_reached?: boolean | null
+          tipping_point_threshold?: number | null
+          users_at_tipping_point?: number | null
+        }
+        Relationships: []
+      }
       gpi_index_constituents: {
         Row: {
           added_at: string
