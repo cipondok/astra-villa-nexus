@@ -361,6 +361,7 @@ const ResilienceFrameworkPage = lazy(() => import('@/pages/ResilienceFrameworkPa
 const NegotiationMindsetPage = lazy(() => import('@/pages/NegotiationMindsetPage'));
 const VisionFrameworkPage = lazy(() => import('@/pages/VisionFrameworkPage'));
 const InvestorSentimentDashboardPage = lazy(() => import('@/pages/InvestorSentimentDashboardPage'));
+const HedgeFundDefensePage = lazy(() => import('@/pages/HedgeFundDefensePage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -840,6 +841,7 @@ const AppContent = () => {
                 <Route path="/city-expansion" element={<CityExpansionPage />} />
                 <Route path="/ecosystem-partnerships" element={<EcosystemPartnershipsPage />} />
                 <Route path="/investor-sentiment-dashboard" element={<InvestorSentimentDashboardPage />} />
+                <Route path="/hedge-fund-defense" element={<HedgeFundDefensePage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
