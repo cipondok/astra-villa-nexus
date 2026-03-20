@@ -37319,6 +37319,261 @@ export type Database = {
           },
         ]
       }
+      pesa_crisis_resilience: {
+        Row: {
+          climate_migration_preparedness: number | null
+          computed_at: string
+          created_at: string
+          crisis_type: string
+          demographic_shift_adaptability: number | null
+          financial_shock_readiness: number | null
+          id: string
+          mitigation_effectiveness: number | null
+          recovery_trajectory_score: number | null
+          region: string
+          resilience_composite: number | null
+          resilience_tier: string | null
+          response_speed_index: number | null
+          systemic_contagion_risk: number | null
+        }
+        Insert: {
+          climate_migration_preparedness?: number | null
+          computed_at?: string
+          created_at?: string
+          crisis_type: string
+          demographic_shift_adaptability?: number | null
+          financial_shock_readiness?: number | null
+          id?: string
+          mitigation_effectiveness?: number | null
+          recovery_trajectory_score?: number | null
+          region: string
+          resilience_composite?: number | null
+          resilience_tier?: string | null
+          response_speed_index?: number | null
+          systemic_contagion_risk?: number | null
+        }
+        Update: {
+          climate_migration_preparedness?: number | null
+          computed_at?: string
+          created_at?: string
+          crisis_type?: string
+          demographic_shift_adaptability?: number | null
+          financial_shock_readiness?: number | null
+          id?: string
+          mitigation_effectiveness?: number | null
+          recovery_trajectory_score?: number | null
+          region?: string
+          resilience_composite?: number | null
+          resilience_tier?: string | null
+          response_speed_index?: number | null
+          systemic_contagion_risk?: number | null
+        }
+        Relationships: []
+      }
+      pesa_inclusive_growth: {
+        Row: {
+          affordability_ratio: number | null
+          balanced_expansion_score: number | null
+          city: string
+          computed_at: string
+          country: string
+          created_at: string
+          green_development_pct: number | null
+          housing_accessibility_index: number | null
+          id: string
+          inclusivity_composite: number | null
+          inclusivity_tier: string | null
+          regional_economy_sustainability: number | null
+          social_mobility_contribution: number | null
+          year_horizon: number | null
+        }
+        Insert: {
+          affordability_ratio?: number | null
+          balanced_expansion_score?: number | null
+          city: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          green_development_pct?: number | null
+          housing_accessibility_index?: number | null
+          id?: string
+          inclusivity_composite?: number | null
+          inclusivity_tier?: string | null
+          regional_economy_sustainability?: number | null
+          social_mobility_contribution?: number | null
+          year_horizon?: number | null
+        }
+        Update: {
+          affordability_ratio?: number | null
+          balanced_expansion_score?: number | null
+          city?: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          green_development_pct?: number | null
+          housing_accessibility_index?: number | null
+          id?: string
+          inclusivity_composite?: number | null
+          inclusivity_tier?: string | null
+          regional_economy_sustainability?: number | null
+          social_mobility_contribution?: number | null
+          year_horizon?: number | null
+        }
+        Relationships: []
+      }
+      pesa_investment_flow: {
+        Row: {
+          capital_volume_usd: number | null
+          computed_at: string
+          concentration_risk_index: number | null
+          coordination_effectiveness: number | null
+          created_at: string
+          flow_health: string | null
+          flow_type: string | null
+          id: string
+          infrastructure_alignment: number | null
+          redirection_potential: number | null
+          source_region: string
+          target_region: string
+          underdevelopment_gap_score: number | null
+          year_horizon: number | null
+        }
+        Insert: {
+          capital_volume_usd?: number | null
+          computed_at?: string
+          concentration_risk_index?: number | null
+          coordination_effectiveness?: number | null
+          created_at?: string
+          flow_health?: string | null
+          flow_type?: string | null
+          id?: string
+          infrastructure_alignment?: number | null
+          redirection_potential?: number | null
+          source_region: string
+          target_region: string
+          underdevelopment_gap_score?: number | null
+          year_horizon?: number | null
+        }
+        Update: {
+          capital_volume_usd?: number | null
+          computed_at?: string
+          concentration_risk_index?: number | null
+          coordination_effectiveness?: number | null
+          created_at?: string
+          flow_health?: string | null
+          flow_type?: string | null
+          id?: string
+          infrastructure_alignment?: number | null
+          redirection_potential?: number | null
+          source_region?: string
+          target_region?: string
+          underdevelopment_gap_score?: number | null
+          year_horizon?: number | null
+        }
+        Relationships: []
+      }
+      pesa_stability_governance: {
+        Row: {
+          accountability_mechanisms: number | null
+          adaptive_policy_alignment: number | null
+          computed_at: string
+          created_at: string
+          data_stewardship_score: number | null
+          decade_horizon: number | null
+          governance_composite: number | null
+          governance_domain: string
+          governance_tier: string | null
+          id: string
+          institutional_trust_score: number | null
+          multi_stakeholder_collaboration: number | null
+          transparency_index: number | null
+        }
+        Insert: {
+          accountability_mechanisms?: number | null
+          adaptive_policy_alignment?: number | null
+          computed_at?: string
+          created_at?: string
+          data_stewardship_score?: number | null
+          decade_horizon?: number | null
+          governance_composite?: number | null
+          governance_domain: string
+          governance_tier?: string | null
+          id?: string
+          institutional_trust_score?: number | null
+          multi_stakeholder_collaboration?: number | null
+          transparency_index?: number | null
+        }
+        Update: {
+          accountability_mechanisms?: number | null
+          adaptive_policy_alignment?: number | null
+          computed_at?: string
+          created_at?: string
+          data_stewardship_score?: number | null
+          decade_horizon?: number | null
+          governance_composite?: number | null
+          governance_domain?: string
+          governance_tier?: string | null
+          id?: string
+          institutional_trust_score?: number | null
+          multi_stakeholder_collaboration?: number | null
+          transparency_index?: number | null
+        }
+        Relationships: []
+      }
+      pesa_volatility_signals: {
+        Row: {
+          capital_withdrawal_risk: number | null
+          city: string
+          computed_at: string
+          country: string
+          created_at: string
+          credit_growth_ratio: number | null
+          early_warning_lead_months: number | null
+          id: string
+          overheating_index: number | null
+          price_acceleration_pct: number | null
+          signal_confidence: number | null
+          signal_severity: string | null
+          signal_type: string
+          speculative_activity_index: number | null
+          supply_imbalance_score: number | null
+        }
+        Insert: {
+          capital_withdrawal_risk?: number | null
+          city: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          credit_growth_ratio?: number | null
+          early_warning_lead_months?: number | null
+          id?: string
+          overheating_index?: number | null
+          price_acceleration_pct?: number | null
+          signal_confidence?: number | null
+          signal_severity?: string | null
+          signal_type?: string
+          speculative_activity_index?: number | null
+          supply_imbalance_score?: number | null
+        }
+        Update: {
+          capital_withdrawal_risk?: number | null
+          city?: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          credit_growth_ratio?: number | null
+          early_warning_lead_months?: number | null
+          id?: string
+          overheating_index?: number | null
+          price_acceleration_pct?: number | null
+          signal_confidence?: number | null
+          signal_severity?: string | null
+          signal_type?: string
+          speculative_activity_index?: number | null
+          supply_imbalance_score?: number | null
+        }
+        Relationships: []
+      }
       pgcm_capital_allocation: {
         Row: {
           allocation_composite: number
