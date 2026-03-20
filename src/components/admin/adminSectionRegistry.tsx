@@ -665,6 +665,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "investor-scoring-engine": { label: "Investor Scoring Engine", category: "Investor Management" },
   "vendor-intelligence-engine": { label: "Vendor Intelligence Engine", category: "Operations" },
   "revenue-flywheel-optimizer": { label: "Revenue Flywheel Optimizer", category: "Revenue" },
+  "data-moat-governance": { label: "Data Moat Governance", category: "Strategy" },
   "overview": { label: "Dashboard Overview", category: "" },
   "diagnostic": { label: "Project Diagnostics", category: "System" },
   "project-progress": { label: "Launch Readiness", category: "System" },
