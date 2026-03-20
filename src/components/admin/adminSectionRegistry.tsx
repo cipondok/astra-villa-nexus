@@ -628,6 +628,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "vendor-acquisition-scripts": () => <VendorAcquisitionScriptsPage />,
   "feature-impact-matrix": () => <FeatureImpactMatrixPage />,
   "launch-execution-kit": () => <LaunchExecutionKitPage />,
+  "cac-ltv-model": () => <CacLtvModelPage />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
