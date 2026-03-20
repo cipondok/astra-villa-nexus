@@ -20122,6 +20122,300 @@ export type Database = {
           },
         ]
       }
+      gpws_battlefield: {
+        Row: {
+          assessed_at: string | null
+          city: string
+          competitor_name: string
+          competitor_strength_score: number | null
+          competitor_type: string | null
+          country: string
+          created_at: string | null
+          defensible_niche: string | null
+          digital_maturity_score: number | null
+          displacement_strategy: string | null
+          displacement_timeline_months: number | null
+          id: string
+          investor_base_size: number | null
+          listing_volume: number | null
+          market_share_pct: number | null
+          our_advantage_score: number | null
+          vulnerability_score: number | null
+        }
+        Insert: {
+          assessed_at?: string | null
+          city: string
+          competitor_name: string
+          competitor_strength_score?: number | null
+          competitor_type?: string | null
+          country?: string
+          created_at?: string | null
+          defensible_niche?: string | null
+          digital_maturity_score?: number | null
+          displacement_strategy?: string | null
+          displacement_timeline_months?: number | null
+          id?: string
+          investor_base_size?: number | null
+          listing_volume?: number | null
+          market_share_pct?: number | null
+          our_advantage_score?: number | null
+          vulnerability_score?: number | null
+        }
+        Update: {
+          assessed_at?: string | null
+          city?: string
+          competitor_name?: string
+          competitor_strength_score?: number | null
+          competitor_type?: string | null
+          country?: string
+          created_at?: string | null
+          defensible_niche?: string | null
+          digital_maturity_score?: number | null
+          displacement_strategy?: string | null
+          displacement_timeline_months?: number | null
+          id?: string
+          investor_base_size?: number | null
+          listing_volume?: number | null
+          market_share_pct?: number | null
+          our_advantage_score?: number | null
+          vulnerability_score?: number | null
+        }
+        Relationships: []
+      }
+      gpws_beachhead: {
+        Row: {
+          activated_at: string | null
+          anchor_agents_recruited: number | null
+          anchor_developers_recruited: number | null
+          beachhead_phase: string
+          beachhead_strength_score: number | null
+          city: string
+          content_pieces_published: number | null
+          country: string
+          created_at: string | null
+          id: string
+          investor_demand_perception: number | null
+          local_brand_awareness_pct: number | null
+          network_effect_ignition_score: number | null
+          premium_listings_seeded: number | null
+          strategic_partnerships: number | null
+          time_to_critical_mass_weeks: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          activated_at?: string | null
+          anchor_agents_recruited?: number | null
+          anchor_developers_recruited?: number | null
+          beachhead_phase?: string
+          beachhead_strength_score?: number | null
+          city: string
+          content_pieces_published?: number | null
+          country?: string
+          created_at?: string | null
+          id?: string
+          investor_demand_perception?: number | null
+          local_brand_awareness_pct?: number | null
+          network_effect_ignition_score?: number | null
+          premium_listings_seeded?: number | null
+          strategic_partnerships?: number | null
+          time_to_critical_mass_weeks?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          activated_at?: string | null
+          anchor_agents_recruited?: number | null
+          anchor_developers_recruited?: number | null
+          beachhead_phase?: string
+          beachhead_strength_score?: number | null
+          city?: string
+          content_pieces_published?: number | null
+          country?: string
+          created_at?: string | null
+          id?: string
+          investor_demand_perception?: number | null
+          local_brand_awareness_pct?: number | null
+          network_effect_ignition_score?: number | null
+          premium_listings_seeded?: number | null
+          strategic_partnerships?: number | null
+          time_to_critical_mass_weeks?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      gpws_data_supremacy: {
+        Row: {
+          competitor_data_gap_pct: number | null
+          compounding_rate: number | null
+          created_at: string | null
+          data_asset_type: string | null
+          data_freshness_hours: number | null
+          domain: string
+          id: string
+          measured_at: string | null
+          moat_depth_score: number | null
+          monetization_potential_usd: number | null
+          prediction_accuracy_pct: number | null
+          proprietary_data_points: number | null
+          replication_difficulty: number | null
+          strategic_value_tier: string | null
+        }
+        Insert: {
+          competitor_data_gap_pct?: number | null
+          compounding_rate?: number | null
+          created_at?: string | null
+          data_asset_type?: string | null
+          data_freshness_hours?: number | null
+          domain: string
+          id?: string
+          measured_at?: string | null
+          moat_depth_score?: number | null
+          monetization_potential_usd?: number | null
+          prediction_accuracy_pct?: number | null
+          proprietary_data_points?: number | null
+          replication_difficulty?: number | null
+          strategic_value_tier?: string | null
+        }
+        Update: {
+          competitor_data_gap_pct?: number | null
+          compounding_rate?: number | null
+          created_at?: string | null
+          data_asset_type?: string | null
+          data_freshness_hours?: number | null
+          domain?: string
+          id?: string
+          measured_at?: string | null
+          moat_depth_score?: number | null
+          monetization_potential_usd?: number | null
+          prediction_accuracy_pct?: number | null
+          proprietary_data_points?: number | null
+          replication_difficulty?: number | null
+          strategic_value_tier?: string | null
+        }
+        Relationships: []
+      }
+      gpws_expansion_momentum: {
+        Row: {
+          city: string
+          competitor_gap_widening_rate: number | null
+          country: string
+          created_at: string | null
+          data_points_generated: number | null
+          deal_velocity_monthly: number | null
+          flywheel_rpm: number | null
+          id: string
+          intelligence_advantage_score: number | null
+          investor_count: number | null
+          listings_count: number | null
+          measured_at: string | null
+          momentum_phase: string | null
+          network_density: number | null
+          time_to_dominance_months: number | null
+          viral_coefficient: number | null
+        }
+        Insert: {
+          city: string
+          competitor_gap_widening_rate?: number | null
+          country?: string
+          created_at?: string | null
+          data_points_generated?: number | null
+          deal_velocity_monthly?: number | null
+          flywheel_rpm?: number | null
+          id?: string
+          intelligence_advantage_score?: number | null
+          investor_count?: number | null
+          listings_count?: number | null
+          measured_at?: string | null
+          momentum_phase?: string | null
+          network_density?: number | null
+          time_to_dominance_months?: number | null
+          viral_coefficient?: number | null
+        }
+        Update: {
+          city?: string
+          competitor_gap_widening_rate?: number | null
+          country?: string
+          created_at?: string | null
+          data_points_generated?: number | null
+          deal_velocity_monthly?: number | null
+          flywheel_rpm?: number | null
+          id?: string
+          intelligence_advantage_score?: number | null
+          investor_count?: number | null
+          listings_count?: number | null
+          measured_at?: string | null
+          momentum_phase?: string | null
+          network_density?: number | null
+          time_to_dominance_months?: number | null
+          viral_coefficient?: number | null
+        }
+        Relationships: []
+      }
+      gpws_market_invasion: {
+        Row: {
+          city: string
+          competitor_density: number | null
+          country: string
+          created_at: string | null
+          digital_infra_weakness: number | null
+          dominance_compounding_factor: number | null
+          entry_started_at: string | null
+          entry_strategy: string | null
+          estimated_capture_months: number | null
+          id: string
+          invasion_phase: string
+          liquidity_signal_score: number | null
+          market_size_usd_m: number | null
+          population_millions: number | null
+          region: string | null
+          sequence_rank: number | null
+          timing_window: string | null
+          updated_at: string | null
+          urbanization_rate: number | null
+        }
+        Insert: {
+          city: string
+          competitor_density?: number | null
+          country?: string
+          created_at?: string | null
+          digital_infra_weakness?: number | null
+          dominance_compounding_factor?: number | null
+          entry_started_at?: string | null
+          entry_strategy?: string | null
+          estimated_capture_months?: number | null
+          id?: string
+          invasion_phase?: string
+          liquidity_signal_score?: number | null
+          market_size_usd_m?: number | null
+          population_millions?: number | null
+          region?: string | null
+          sequence_rank?: number | null
+          timing_window?: string | null
+          updated_at?: string | null
+          urbanization_rate?: number | null
+        }
+        Update: {
+          city?: string
+          competitor_density?: number | null
+          country?: string
+          created_at?: string | null
+          digital_infra_weakness?: number | null
+          dominance_compounding_factor?: number | null
+          entry_started_at?: string | null
+          entry_strategy?: string | null
+          estimated_capture_months?: number | null
+          id?: string
+          invasion_phase?: string
+          liquidity_signal_score?: number | null
+          market_size_usd_m?: number | null
+          population_millions?: number | null
+          region?: string | null
+          sequence_rank?: number | null
+          timing_window?: string | null
+          updated_at?: string | null
+          urbanization_rate?: number | null
+        }
+        Relationships: []
+      }
       group_deal_participants: {
         Row: {
           confirmed_at: string | null
