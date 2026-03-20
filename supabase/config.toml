@@ -528,3 +528,6 @@ verify_jwt = false
 
 [functions.decade-monopoly-expansion]
 verify_jwt = false
+
+[functions.proptech-endgame-simulation]
+verify_jwt = false
