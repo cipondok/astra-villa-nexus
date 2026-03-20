@@ -600,3 +600,6 @@ verify_jwt = false
 
 [functions.vendor-revenue-optimizer]
 verify_jwt = false
+
+[functions.city-launch-planner]
+verify_jwt = false
