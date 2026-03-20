@@ -242,6 +242,7 @@ export const InvestorPitchDashboard = lazyRetry(() => import("./InvestorPitchDas
 export const SeriesBPitchNarrative = lazyRetry(() => import("./SeriesBPitchNarrative"));
 export const HundredMArrOperatingModel = lazyRetry(() => import("./HundredMArrOperatingModel"));
 export const GlobalIpoVisionStrategy = lazyRetry(() => import("./GlobalIpoVisionStrategy"));
+export const SuperAppEcosystemArchitecture = lazyRetry(() => import("./SuperAppEcosystemArchitecture"));
 export const InvestorCommunityDashboard = lazyRetry(() => import("./InvestorCommunityDashboard"));
 export const GeoExpansionDashboard = lazyRetry(() => import("./GeoExpansionDashboard"));
 export const FounderBrandingDashboard = lazyRetry(() => import("./FounderBrandingDashboard"));
