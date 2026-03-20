@@ -31411,6 +31411,258 @@ export type Database = {
           },
         ]
       }
+      phes_autonomous_productivity: {
+        Row: {
+          ai_production_capacity_index: number
+          automation_penetration_pct: number
+          computed_at: string
+          country: string
+          created_at: string
+          human_machine_ratio: number
+          id: string
+          labor_participation_shift: number
+          new_value_generation_score: number
+          productivity_era: string
+          productivity_multiplier: number
+          region: string
+          sector: string
+        }
+        Insert: {
+          ai_production_capacity_index?: number
+          automation_penetration_pct?: number
+          computed_at?: string
+          country?: string
+          created_at?: string
+          human_machine_ratio?: number
+          id?: string
+          labor_participation_shift?: number
+          new_value_generation_score?: number
+          productivity_era?: string
+          productivity_multiplier?: number
+          region: string
+          sector?: string
+        }
+        Update: {
+          ai_production_capacity_index?: number
+          automation_penetration_pct?: number
+          computed_at?: string
+          country?: string
+          created_at?: string
+          human_machine_ratio?: number
+          id?: string
+          labor_participation_shift?: number
+          new_value_generation_score?: number
+          productivity_era?: string
+          productivity_multiplier?: number
+          region?: string
+          sector?: string
+        }
+        Relationships: []
+      }
+      phes_capability_augmentation: {
+        Row: {
+          augmentation_tier: string
+          capability_composite: number
+          cognitive_creative_readiness: number
+          computed_at: string
+          country: string
+          created_at: string
+          education_evolution_phase: string
+          human_ai_collaboration_score: number
+          id: string
+          lifelong_learning_roi: number
+          region: string
+          reskilling_velocity: number
+          skill_obsolescence_rate: number
+        }
+        Insert: {
+          augmentation_tier?: string
+          capability_composite?: number
+          cognitive_creative_readiness?: number
+          computed_at?: string
+          country?: string
+          created_at?: string
+          education_evolution_phase?: string
+          human_ai_collaboration_score?: number
+          id?: string
+          lifelong_learning_roi?: number
+          region: string
+          reskilling_velocity?: number
+          skill_obsolescence_rate?: number
+        }
+        Update: {
+          augmentation_tier?: string
+          capability_composite?: number
+          cognitive_creative_readiness?: number
+          computed_at?: string
+          country?: string
+          created_at?: string
+          education_evolution_phase?: string
+          human_ai_collaboration_score?: number
+          id?: string
+          lifelong_learning_roi?: number
+          region?: string
+          reskilling_velocity?: number
+          skill_obsolescence_rate?: number
+        }
+        Relationships: []
+      }
+      phes_economic_identity: {
+        Row: {
+          computed_at: string
+          contribution_recognition_score: number
+          country: string
+          created_at: string
+          decentralized_exchange_maturity: number
+          digital_participation_score: number
+          id: string
+          identity_era: string
+          identity_portability_index: number
+          ownership_model_innovation: number
+          participation_composite: number
+          participation_model: string
+          region: string
+        }
+        Insert: {
+          computed_at?: string
+          contribution_recognition_score?: number
+          country?: string
+          created_at?: string
+          decentralized_exchange_maturity?: number
+          digital_participation_score?: number
+          id?: string
+          identity_era?: string
+          identity_portability_index?: number
+          ownership_model_innovation?: number
+          participation_composite?: number
+          participation_model?: string
+          region: string
+        }
+        Update: {
+          computed_at?: string
+          contribution_recognition_score?: number
+          country?: string
+          created_at?: string
+          decentralized_exchange_maturity?: number
+          digital_participation_score?: number
+          id?: string
+          identity_era?: string
+          identity_portability_index?: number
+          ownership_model_innovation?: number
+          participation_composite?: number
+          participation_model?: string
+          region?: string
+        }
+        Relationships: []
+      }
+      phes_policy_simulation: {
+        Row: {
+          automation_growth_rate: number
+          computed_at: string
+          country: string
+          created_at: string
+          employment_impact_pct: number
+          fiscal_response_effectiveness: number
+          gdp_impact_pct: number
+          id: string
+          inequality_impact: number
+          innovation_acceleration: number
+          policy_type: string
+          region: string
+          scenario_name: string
+          simulation_status: string
+          social_resilience_score: number
+          success_probability: number
+          time_horizon_years: number
+        }
+        Insert: {
+          automation_growth_rate?: number
+          computed_at?: string
+          country?: string
+          created_at?: string
+          employment_impact_pct?: number
+          fiscal_response_effectiveness?: number
+          gdp_impact_pct?: number
+          id?: string
+          inequality_impact?: number
+          innovation_acceleration?: number
+          policy_type?: string
+          region: string
+          scenario_name: string
+          simulation_status?: string
+          social_resilience_score?: number
+          success_probability?: number
+          time_horizon_years?: number
+        }
+        Update: {
+          automation_growth_rate?: number
+          computed_at?: string
+          country?: string
+          created_at?: string
+          employment_impact_pct?: number
+          fiscal_response_effectiveness?: number
+          gdp_impact_pct?: number
+          id?: string
+          inequality_impact?: number
+          innovation_acceleration?: number
+          policy_type?: string
+          region?: string
+          scenario_name?: string
+          simulation_status?: string
+          social_resilience_score?: number
+          success_probability?: number
+          time_horizon_years?: number
+        }
+        Relationships: []
+      }
+      phes_resource_distribution: {
+        Row: {
+          computed_at: string
+          country: string
+          created_at: string
+          distribution_equity_index: number
+          distribution_phase: string
+          entrepreneurship_vitality: number
+          essential_access_score: number
+          id: string
+          incentive_model: string
+          innovation_incentive_index: number
+          public_private_coordination: number
+          region: string
+          ubi_feasibility_score: number
+        }
+        Insert: {
+          computed_at?: string
+          country?: string
+          created_at?: string
+          distribution_equity_index?: number
+          distribution_phase?: string
+          entrepreneurship_vitality?: number
+          essential_access_score?: number
+          id?: string
+          incentive_model?: string
+          innovation_incentive_index?: number
+          public_private_coordination?: number
+          region: string
+          ubi_feasibility_score?: number
+        }
+        Update: {
+          computed_at?: string
+          country?: string
+          created_at?: string
+          distribution_equity_index?: number
+          distribution_phase?: string
+          entrepreneurship_vitality?: number
+          essential_access_score?: number
+          id?: string
+          incentive_model?: string
+          innovation_incentive_index?: number
+          public_private_coordination?: number
+          region?: string
+          ubi_feasibility_score?: number
+        }
+        Relationships: []
+      }
       photo_contest_entries: {
         Row: {
           admin_score: number | null
