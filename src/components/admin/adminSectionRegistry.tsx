@@ -853,6 +853,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "monetization-strategy": { label: "Monetization Strategy", category: "Features" },
   "investor-pitch": { label: "Investor Pitch Deck", category: "Features" },
   "series-b-pitch": { label: "Series B Pitch Narrative", category: "Strategy" },
+  "100m-arr-model": { label: "$100M ARR Operating Model", category: "Strategy" },
   "investor-community": { label: "Investor Community", category: "Features" },
   "geo-expansion": { label: "Geographic Expansion", category: "Features" },
   "founder-branding": { label: "Founder Branding", category: "Features" },
