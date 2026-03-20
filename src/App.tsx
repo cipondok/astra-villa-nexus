@@ -901,6 +901,7 @@ const AppContent = () => {
                 <Route path="/first-10-investor-closing" element={<First10InvestorClosingPage />} />
                 <Route path="/pricing-psychology" element={<PricingPsychologyPage />} />
                 <Route path="/deal-risk-detection" element={<DealRiskDetectionPage />} />
+                <Route path="/agent-leaderboard" element={<AgentLeaderboardPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
