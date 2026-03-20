@@ -10488,6 +10488,291 @@ export type Database = {
         }
         Relationships: []
       }
+      cdte_allocation_strategy: {
+        Row: {
+          allocation_phase: string | null
+          city: string
+          computed_at: string | null
+          country: string
+          created_at: string | null
+          deployed_usd: number | null
+          deployment_efficiency: number | null
+          growth_allocation_pct: number | null
+          id: string
+          infrastructure_allocation_pct: number | null
+          partnership_allocation_pct: number | null
+          reserve_allocation_pct: number | null
+          risk_tolerance: string | null
+          roi_projection_pct: number | null
+          strategy_rationale: string | null
+          total_deployable_usd: number | null
+        }
+        Insert: {
+          allocation_phase?: string | null
+          city: string
+          computed_at?: string | null
+          country?: string
+          created_at?: string | null
+          deployed_usd?: number | null
+          deployment_efficiency?: number | null
+          growth_allocation_pct?: number | null
+          id?: string
+          infrastructure_allocation_pct?: number | null
+          partnership_allocation_pct?: number | null
+          reserve_allocation_pct?: number | null
+          risk_tolerance?: string | null
+          roi_projection_pct?: number | null
+          strategy_rationale?: string | null
+          total_deployable_usd?: number | null
+        }
+        Update: {
+          allocation_phase?: string | null
+          city?: string
+          computed_at?: string | null
+          country?: string
+          created_at?: string | null
+          deployed_usd?: number | null
+          deployment_efficiency?: number | null
+          growth_allocation_pct?: number | null
+          id?: string
+          infrastructure_allocation_pct?: number | null
+          partnership_allocation_pct?: number | null
+          reserve_allocation_pct?: number | null
+          risk_tolerance?: string | null
+          roi_projection_pct?: number | null
+          strategy_rationale?: string | null
+          total_deployable_usd?: number | null
+        }
+        Relationships: []
+      }
+      cdte_cycle_phases: {
+        Row: {
+          city: string
+          country: string
+          created_at: string | null
+          cycle_phase: string | null
+          detected_at: string | null
+          district: string | null
+          estimated_phase_remaining: number | null
+          growth_rate_pct: number | null
+          id: string
+          leading_indicators: Json | null
+          months_in_phase: number | null
+          phase_confidence: number | null
+          price_momentum: number | null
+          valuation_multiple: number | null
+          volume_trend: string | null
+        }
+        Insert: {
+          city: string
+          country?: string
+          created_at?: string | null
+          cycle_phase?: string | null
+          detected_at?: string | null
+          district?: string | null
+          estimated_phase_remaining?: number | null
+          growth_rate_pct?: number | null
+          id?: string
+          leading_indicators?: Json | null
+          months_in_phase?: number | null
+          phase_confidence?: number | null
+          price_momentum?: number | null
+          valuation_multiple?: number | null
+          volume_trend?: string | null
+        }
+        Update: {
+          city?: string
+          country?: string
+          created_at?: string | null
+          cycle_phase?: string | null
+          detected_at?: string | null
+          district?: string | null
+          estimated_phase_remaining?: number | null
+          growth_rate_pct?: number | null
+          id?: string
+          leading_indicators?: Json | null
+          months_in_phase?: number | null
+          phase_confidence?: number | null
+          price_momentum?: number | null
+          valuation_multiple?: number | null
+          volume_trend?: string | null
+        }
+        Relationships: []
+      }
+      cdte_feedback_loop: {
+        Row: {
+          actual_roi_pct: number | null
+          city: string
+          country: string
+          created_at: string | null
+          deployment_id: string | null
+          evaluated_at: string | null
+          feedback_iteration: number | null
+          id: string
+          learning_velocity: number | null
+          lessons_learned: string | null
+          market_condition_at_deploy: string | null
+          market_condition_at_outcome: string | null
+          model_adjustment: Json | null
+          predicted_roi_pct: number | null
+          prediction_error_pct: number | null
+          scenario_simulation: Json | null
+          timing_accuracy_score: number | null
+        }
+        Insert: {
+          actual_roi_pct?: number | null
+          city: string
+          country?: string
+          created_at?: string | null
+          deployment_id?: string | null
+          evaluated_at?: string | null
+          feedback_iteration?: number | null
+          id?: string
+          learning_velocity?: number | null
+          lessons_learned?: string | null
+          market_condition_at_deploy?: string | null
+          market_condition_at_outcome?: string | null
+          model_adjustment?: Json | null
+          predicted_roi_pct?: number | null
+          prediction_error_pct?: number | null
+          scenario_simulation?: Json | null
+          timing_accuracy_score?: number | null
+        }
+        Update: {
+          actual_roi_pct?: number | null
+          city?: string
+          country?: string
+          created_at?: string | null
+          deployment_id?: string | null
+          evaluated_at?: string | null
+          feedback_iteration?: number | null
+          id?: string
+          learning_velocity?: number | null
+          lessons_learned?: string | null
+          market_condition_at_deploy?: string | null
+          market_condition_at_outcome?: string | null
+          model_adjustment?: Json | null
+          predicted_roi_pct?: number | null
+          prediction_error_pct?: number | null
+          scenario_simulation?: Json | null
+          timing_accuracy_score?: number | null
+        }
+        Relationships: []
+      }
+      cdte_growth_timing: {
+        Row: {
+          assessed_at: string | null
+          capital_efficiency_ratio: number | null
+          city: string
+          country: string
+          created_at: string | null
+          downside_protection_score: number | null
+          drawdown_risk_pct: number | null
+          expansion_readiness: number | null
+          id: string
+          max_deployment_pct: number | null
+          optimal_horizon_months: number | null
+          regional_sequence_rank: number | null
+          risk_reward_ratio: number | null
+          timing_factors: Json | null
+          timing_window: string | null
+          volatility_adjusted_return: number | null
+          window_confidence: number | null
+        }
+        Insert: {
+          assessed_at?: string | null
+          capital_efficiency_ratio?: number | null
+          city: string
+          country?: string
+          created_at?: string | null
+          downside_protection_score?: number | null
+          drawdown_risk_pct?: number | null
+          expansion_readiness?: number | null
+          id?: string
+          max_deployment_pct?: number | null
+          optimal_horizon_months?: number | null
+          regional_sequence_rank?: number | null
+          risk_reward_ratio?: number | null
+          timing_factors?: Json | null
+          timing_window?: string | null
+          volatility_adjusted_return?: number | null
+          window_confidence?: number | null
+        }
+        Update: {
+          assessed_at?: string | null
+          capital_efficiency_ratio?: number | null
+          city?: string
+          country?: string
+          created_at?: string | null
+          downside_protection_score?: number | null
+          drawdown_risk_pct?: number | null
+          expansion_readiness?: number | null
+          id?: string
+          max_deployment_pct?: number | null
+          optimal_horizon_months?: number | null
+          regional_sequence_rank?: number | null
+          risk_reward_ratio?: number | null
+          timing_factors?: Json | null
+          timing_window?: string | null
+          volatility_adjusted_return?: number | null
+          window_confidence?: number | null
+        }
+        Relationships: []
+      }
+      cdte_liquidity_momentum: {
+        Row: {
+          absorption_rate_pct: number | null
+          bid_ask_spread_pct: number | null
+          capital_inflow_usd: number | null
+          city: string
+          computed_at: string | null
+          country: string
+          created_at: string | null
+          days_on_market_avg: number | null
+          id: string
+          inflow_concentration_pct: number | null
+          investor_sentiment_score: number | null
+          momentum_composite: number | null
+          signal_strength: string | null
+          transaction_velocity: number | null
+          velocity_trend: string | null
+        }
+        Insert: {
+          absorption_rate_pct?: number | null
+          bid_ask_spread_pct?: number | null
+          capital_inflow_usd?: number | null
+          city: string
+          computed_at?: string | null
+          country?: string
+          created_at?: string | null
+          days_on_market_avg?: number | null
+          id?: string
+          inflow_concentration_pct?: number | null
+          investor_sentiment_score?: number | null
+          momentum_composite?: number | null
+          signal_strength?: string | null
+          transaction_velocity?: number | null
+          velocity_trend?: string | null
+        }
+        Update: {
+          absorption_rate_pct?: number | null
+          bid_ask_spread_pct?: number | null
+          capital_inflow_usd?: number | null
+          city?: string
+          computed_at?: string | null
+          country?: string
+          created_at?: string | null
+          days_on_market_avg?: number | null
+          id?: string
+          inflow_concentration_pct?: number | null
+          investor_sentiment_score?: number | null
+          momentum_composite?: number | null
+          signal_strength?: string | null
+          transaction_velocity?: number | null
+          velocity_trend?: string | null
+        }
+        Relationships: []
+      }
       ceos_development_coordination: {
         Row: {
           active_supply_units: number

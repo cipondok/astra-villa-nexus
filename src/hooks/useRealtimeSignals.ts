@@ -174,6 +174,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   pesa_engine_cycle: { label: 'Planetary Stability', icon: '🌍' },
   gpewm_immediate_entry: { label: 'Immediate Entry', icon: '🚀' },
   gpewm_engine_cycle: { label: 'Execution Warmap', icon: '🗺️' },
+  cdte_deploy_window: { label: 'Deploy Window', icon: '🎯' },
+  cdte_engine_cycle: { label: 'Capital Timing', icon: '⏱️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
