@@ -57776,6 +57776,62 @@ export type Database = {
           },
         ]
       }
+      vendor_job_assignments: {
+        Row: {
+          created_at: string
+          decline_reason: string | null
+          id: string
+          is_backup: boolean | null
+          offered_at: string
+          rank: number
+          request_id: string
+          responded_at: string | null
+          response_deadline: string | null
+          routing_breakdown: Json | null
+          routing_score: number
+          status: string
+          vendor_id: string
+        }
+        Insert: {
+          created_at?: string
+          decline_reason?: string | null
+          id?: string
+          is_backup?: boolean | null
+          offered_at?: string
+          rank?: number
+          request_id: string
+          responded_at?: string | null
+          response_deadline?: string | null
+          routing_breakdown?: Json | null
+          routing_score?: number
+          status?: string
+          vendor_id: string
+        }
+        Update: {
+          created_at?: string
+          decline_reason?: string | null
+          id?: string
+          is_backup?: boolean | null
+          offered_at?: string
+          rank?: number
+          request_id?: string
+          responded_at?: string | null
+          response_deadline?: string | null
+          routing_breakdown?: Json | null
+          routing_score?: number
+          status?: string
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_job_assignments_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vendor_kyc_status: {
         Row: {
           access_level: string | null
@@ -58298,6 +58354,72 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      vendor_metrics: {
+        Row: {
+          avg_completion_hours: number | null
+          avg_rating: number | null
+          avg_response_minutes: number | null
+          category: string
+          completion_rate: number | null
+          computed_at: string
+          created_at: string
+          current_active_jobs: number | null
+          id: string
+          is_available: boolean | null
+          last_job_at: string | null
+          location_lat: number | null
+          location_lng: number | null
+          max_concurrent_jobs: number | null
+          price_competitiveness_score: number | null
+          service_radius_km: number | null
+          total_jobs_assigned: number | null
+          total_jobs_completed: number | null
+          vendor_id: string
+        }
+        Insert: {
+          avg_completion_hours?: number | null
+          avg_rating?: number | null
+          avg_response_minutes?: number | null
+          category: string
+          completion_rate?: number | null
+          computed_at?: string
+          created_at?: string
+          current_active_jobs?: number | null
+          id?: string
+          is_available?: boolean | null
+          last_job_at?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          max_concurrent_jobs?: number | null
+          price_competitiveness_score?: number | null
+          service_radius_km?: number | null
+          total_jobs_assigned?: number | null
+          total_jobs_completed?: number | null
+          vendor_id: string
+        }
+        Update: {
+          avg_completion_hours?: number | null
+          avg_rating?: number | null
+          avg_response_minutes?: number | null
+          category?: string
+          completion_rate?: number | null
+          computed_at?: string
+          created_at?: string
+          current_active_jobs?: number | null
+          id?: string
+          is_available?: boolean | null
+          last_job_at?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          max_concurrent_jobs?: number | null
+          price_competitiveness_score?: number | null
+          service_radius_km?: number | null
+          total_jobs_assigned?: number | null
+          total_jobs_completed?: number | null
+          vendor_id?: string
+        }
+        Relationships: []
       }
       vendor_payout_settings: {
         Row: {
@@ -59193,6 +59315,96 @@ export type Database = {
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "vendor_business_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_service_requests: {
+        Row: {
+          admin_override: boolean | null
+          assigned_at: string | null
+          assigned_vendor_id: string | null
+          budget_max: number | null
+          budget_min: number | null
+          category: string
+          city: string | null
+          completed_at: string | null
+          created_at: string
+          description: string | null
+          district: string | null
+          escalation_count: number | null
+          id: string
+          location_lat: number | null
+          location_lng: number | null
+          property_id: string | null
+          requested_by: string | null
+          sla_deadline_hours: number | null
+          status: string
+          title: string
+          updated_at: string
+          urgency: string
+        }
+        Insert: {
+          admin_override?: boolean | null
+          assigned_at?: string | null
+          assigned_vendor_id?: string | null
+          budget_max?: number | null
+          budget_min?: number | null
+          category: string
+          city?: string | null
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          district?: string | null
+          escalation_count?: number | null
+          id?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          property_id?: string | null
+          requested_by?: string | null
+          sla_deadline_hours?: number | null
+          status?: string
+          title: string
+          updated_at?: string
+          urgency?: string
+        }
+        Update: {
+          admin_override?: boolean | null
+          assigned_at?: string | null
+          assigned_vendor_id?: string | null
+          budget_max?: number | null
+          budget_min?: number | null
+          category?: string
+          city?: string | null
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          district?: string | null
+          escalation_count?: number | null
+          id?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          property_id?: string | null
+          requested_by?: string | null
+          sla_deadline_hours?: number | null
+          status?: string
+          title?: string
+          updated_at?: string
+          urgency?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_service_requests_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_service_requests_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
