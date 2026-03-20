@@ -351,11 +351,9 @@ const Navigation = () => {
               {pastHero && isHomePage && (
                 <form onSubmit={handleHeaderSearch} className="flex items-center gap-0.5">
                   <div className="relative">
-                    <Input type="text" value={headerSearchQuery} onChange={(e) => setHeaderSearchQuery(e.target.value)} placeholder={t('common.search') + '...'} className="px-2 h-6 sm:h-7 w-20 sm:w-32 lg:w-44 xl:w-56 text-[10px] sm:text-xs bg-muted/50 border-border/50 rounded-md focus:bg-background focus:border-gold-primary/30 focus:w-28 sm:focus:w-44 lg:focus:w-56 transition-all duration-300" />
+                    <Search className="absolute left-1.5 top-1/2 -translate-y-1/2 h-2.5 w-2.5 sm:h-3 sm:w-3 text-muted-foreground pointer-events-none" />
+                    <Input type="text" value={headerSearchQuery} onChange={(e) => setHeaderSearchQuery(e.target.value)} placeholder={t('common.search') + '...'} className="pl-5 pr-2 h-6 sm:h-7 w-24 sm:w-32 lg:w-44 xl:w-56 text-[10px] sm:text-xs bg-muted/50 border-border/50 rounded-md focus:bg-background focus:border-gold-primary/30 focus:w-32 sm:focus:w-44 lg:focus:w-56 transition-all duration-300" />
                   </div>
-                  <Button type="submit" size="sm" className="h-6 w-6 sm:h-7 sm:w-7 p-0 rounded-md bg-gold-primary hover:bg-gold-primary/90 text-background shrink-0">
-                    <Search className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                  </Button>
                 </form>
               )}
 
