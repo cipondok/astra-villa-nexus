@@ -540,3 +540,6 @@ verify_jwt = false
 
 [functions.ipo-domination-simulator]
 verify_jwt = false
+
+[functions.sovereign-wealth-partnership]
+verify_jwt = false
