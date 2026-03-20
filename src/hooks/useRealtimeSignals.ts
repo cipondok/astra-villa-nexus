@@ -134,6 +134,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   pmne_engine_cycle: { label: 'Market Narrative', icon: '📈' },
   icta_trust_self_sustaining: { label: 'Trust Self-Sustaining', icon: '🏛️' },
   icta_engine_cycle: { label: 'Institutional Trust', icon: '🤝' },
+  gvem_valuation_milestone: { label: 'Valuation Milestone', icon: '💎' },
+  gvem_engine_cycle: { label: 'Valuation Engine', icon: '📊' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
