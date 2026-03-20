@@ -60,24 +60,25 @@ export function useFounderStrategicKPIs(enabled = true) {
       const sixtyDaysAgo = new Date(now.getTime() - 60 * 86400000).toISOString();
       const sevenDaysAgo = new Date(now.getTime() - 7 * 86400000).toISOString();
 
+      const sb = supabase as any;
       const [
         activeProps, newProps30, newProps60, profiles, agents,
         transactions, watchlist, aiJobs, content, subscriptions,
         referrals, commissions, activityRecent
       ] = await Promise.all([
-        supabase.from('properties').select('id,city,property_type', { count: 'exact', head: true }).eq('status', 'active'),
-        supabase.from('properties').select('id', { count: 'exact', head: true }).gte('created_at', thirtyDaysAgo),
-        supabase.from('properties').select('id', { count: 'exact', head: true }).gte('created_at', sixtyDaysAgo).lt('created_at', thirtyDaysAgo),
-        supabase.from('profiles').select('id', { count: 'exact', head: true }),
-        supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('account_type', 'agent'),
-        supabase.from('transaction_commissions').select('commission_amount,created_at').limit(500),
-        supabase.from('investor_watchlist_items').select('id', { count: 'exact', head: true }),
-        supabase.from('ai_processing_jobs').select('id', { count: 'exact', head: true }).eq('status', 'completed'),
-        supabase.from('acquisition_seo_content').select('id', { count: 'exact', head: true }).eq('status', 'published'),
-        supabase.from('user_subscriptions').select('id', { count: 'exact', head: true }).eq('status', 'active'),
-        supabase.from('referrals').select('id', { count: 'exact', head: true }).eq('status', 'converted'),
-        supabase.from('transaction_commissions').select('commission_amount').limit(500),
-        supabase.from('activity_logs').select('id', { count: 'exact', head: true }).gte('created_at', sevenDaysAgo),
+        sb.from('properties').select('id,city,property_type', { count: 'exact', head: true }).eq('status', 'active'),
+        sb.from('properties').select('id', { count: 'exact', head: true }).gte('created_at', thirtyDaysAgo),
+        sb.from('properties').select('id', { count: 'exact', head: true }).gte('created_at', sixtyDaysAgo).lt('created_at', thirtyDaysAgo),
+        sb.from('profiles').select('id', { count: 'exact', head: true }),
+        sb.from('profiles').select('id', { count: 'exact', head: true }).eq('account_type', 'agent'),
+        sb.from('transaction_commissions').select('commission_amount,created_at').limit(500),
+        sb.from('investor_watchlist_items').select('id', { count: 'exact', head: true }),
+        sb.from('ai_processing_jobs').select('id', { count: 'exact', head: true }).eq('status', 'completed'),
+        sb.from('acquisition_seo_content').select('id', { count: 'exact', head: true }).eq('status', 'published'),
+        sb.from('user_subscriptions').select('id', { count: 'exact', head: true }).eq('status', 'active'),
+        sb.from('referrals').select('id', { count: 'exact', head: true }).eq('status', 'converted'),
+        sb.from('transaction_commissions').select('commission_amount').limit(500),
+        sb.from('activity_logs').select('id', { count: 'exact', head: true }).gte('created_at', sevenDaysAgo),
       ]);
 
       const totalActive = activeProps.count ?? 0;
