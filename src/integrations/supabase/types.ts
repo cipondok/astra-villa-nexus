@@ -12151,6 +12151,282 @@ export type Database = {
         }
         Relationships: []
       }
+      cmpc_category_leadership: {
+        Row: {
+          assessed_at: string
+          category_dimension: string
+          competitor_gap_pct: number | null
+          created_at: string
+          ecosystem_depth_score: number | null
+          evidence_artifacts: Json | null
+          id: string
+          innovation_velocity: number | null
+          leadership_score: number
+          market_relevance_index: number | null
+          metadata: Json | null
+          position_label: string
+          positioning_status: string | null
+          scalability_credibility: number | null
+          thought_leadership_index: number | null
+        }
+        Insert: {
+          assessed_at?: string
+          category_dimension?: string
+          competitor_gap_pct?: number | null
+          created_at?: string
+          ecosystem_depth_score?: number | null
+          evidence_artifacts?: Json | null
+          id?: string
+          innovation_velocity?: number | null
+          leadership_score?: number
+          market_relevance_index?: number | null
+          metadata?: Json | null
+          position_label: string
+          positioning_status?: string | null
+          scalability_credibility?: number | null
+          thought_leadership_index?: number | null
+        }
+        Update: {
+          assessed_at?: string
+          category_dimension?: string
+          competitor_gap_pct?: number | null
+          created_at?: string
+          ecosystem_depth_score?: number | null
+          evidence_artifacts?: Json | null
+          id?: string
+          innovation_velocity?: number | null
+          leadership_score?: number
+          market_relevance_index?: number | null
+          metadata?: Json | null
+          position_label?: string
+          positioning_status?: string | null
+          scalability_credibility?: number | null
+          thought_leadership_index?: number | null
+        }
+        Relationships: []
+      }
+      cmpc_institutional_trust: {
+        Row: {
+          assessed_at: string
+          audit_compliance_pct: number | null
+          board_credibility: number | null
+          capital_discipline_index: number | null
+          created_at: string
+          governance_rating: string | null
+          id: string
+          metadata: Json | null
+          previous_score: number | null
+          risk_factors: string[] | null
+          roadmap_visibility_score: number | null
+          stakeholder_feedback_score: number | null
+          trust_building_actions: Json | null
+          trust_dimension: string
+          trust_score: number
+        }
+        Insert: {
+          assessed_at?: string
+          audit_compliance_pct?: number | null
+          board_credibility?: number | null
+          capital_discipline_index?: number | null
+          created_at?: string
+          governance_rating?: string | null
+          id?: string
+          metadata?: Json | null
+          previous_score?: number | null
+          risk_factors?: string[] | null
+          roadmap_visibility_score?: number | null
+          stakeholder_feedback_score?: number | null
+          trust_building_actions?: Json | null
+          trust_dimension?: string
+          trust_score?: number
+        }
+        Update: {
+          assessed_at?: string
+          audit_compliance_pct?: number | null
+          board_credibility?: number | null
+          capital_discipline_index?: number | null
+          created_at?: string
+          governance_rating?: string | null
+          id?: string
+          metadata?: Json | null
+          previous_score?: number | null
+          risk_factors?: string[] | null
+          roadmap_visibility_score?: number | null
+          stakeholder_feedback_score?: number | null
+          trust_building_actions?: Json | null
+          trust_dimension?: string
+          trust_score?: number
+        }
+        Relationships: []
+      }
+      cmpc_reputation_signals: {
+        Row: {
+          analyst_pickup_count: number | null
+          created_at: string
+          credibility_weight: number | null
+          id: string
+          measured_at: string
+          media_amplification: number | null
+          metadata: Json | null
+          narrative_alignment: number | null
+          recommended_framing: string | null
+          risk_of_misinterpretation: number | null
+          sentiment_impact: string | null
+          signal_name: string
+          signal_type: string
+          visibility_score: number
+          volatility_context: string | null
+        }
+        Insert: {
+          analyst_pickup_count?: number | null
+          created_at?: string
+          credibility_weight?: number | null
+          id?: string
+          measured_at?: string
+          media_amplification?: number | null
+          metadata?: Json | null
+          narrative_alignment?: number | null
+          recommended_framing?: string | null
+          risk_of_misinterpretation?: number | null
+          sentiment_impact?: string | null
+          signal_name: string
+          signal_type?: string
+          visibility_score?: number
+          volatility_context?: string | null
+        }
+        Update: {
+          analyst_pickup_count?: number | null
+          created_at?: string
+          credibility_weight?: number | null
+          id?: string
+          measured_at?: string
+          media_amplification?: number | null
+          metadata?: Json | null
+          narrative_alignment?: number | null
+          recommended_framing?: string | null
+          risk_of_misinterpretation?: number | null
+          sentiment_impact?: string | null
+          signal_name?: string
+          signal_type?: string
+          visibility_score?: number
+          volatility_context?: string | null
+        }
+        Relationships: []
+      }
+      cmpc_sentiment_adaptive: {
+        Row: {
+          adaptive_actions: Json | null
+          confidence_reinforcement_needed: boolean | null
+          created_at: string
+          current_sentiment: number
+          effectiveness_feedback: number | null
+          id: string
+          key_concerns: string[] | null
+          messaging_adjustment: string | null
+          metadata: Json | null
+          monitored_at: string
+          previous_sentiment: number | null
+          recommended_tone: string | null
+          response_urgency: string | null
+          sentiment_source: string
+          sentiment_trend: string | null
+          volatility_level: string | null
+        }
+        Insert: {
+          adaptive_actions?: Json | null
+          confidence_reinforcement_needed?: boolean | null
+          created_at?: string
+          current_sentiment?: number
+          effectiveness_feedback?: number | null
+          id?: string
+          key_concerns?: string[] | null
+          messaging_adjustment?: string | null
+          metadata?: Json | null
+          monitored_at?: string
+          previous_sentiment?: number | null
+          recommended_tone?: string | null
+          response_urgency?: string | null
+          sentiment_source?: string
+          sentiment_trend?: string | null
+          volatility_level?: string | null
+        }
+        Update: {
+          adaptive_actions?: Json | null
+          confidence_reinforcement_needed?: boolean | null
+          created_at?: string
+          current_sentiment?: number
+          effectiveness_feedback?: number | null
+          id?: string
+          key_concerns?: string[] | null
+          messaging_adjustment?: string | null
+          metadata?: Json | null
+          monitored_at?: string
+          previous_sentiment?: number | null
+          recommended_tone?: string | null
+          response_urgency?: string | null
+          sentiment_source?: string
+          sentiment_trend?: string | null
+          volatility_level?: string | null
+        }
+        Relationships: []
+      }
+      cmpc_strategic_communication: {
+        Row: {
+          assessed_at: string
+          clarity_score: number
+          consistency_index: number | null
+          created_at: string
+          delivery_channel: string | null
+          effectiveness_rating: number | null
+          frequency: string | null
+          id: string
+          key_messages: string[] | null
+          last_delivered_at: string | null
+          message_theme: string
+          metadata: Json | null
+          pillar: string
+          resonance_score: number | null
+          supporting_evidence: Json | null
+          target_audience: string | null
+        }
+        Insert: {
+          assessed_at?: string
+          clarity_score?: number
+          consistency_index?: number | null
+          created_at?: string
+          delivery_channel?: string | null
+          effectiveness_rating?: number | null
+          frequency?: string | null
+          id?: string
+          key_messages?: string[] | null
+          last_delivered_at?: string | null
+          message_theme: string
+          metadata?: Json | null
+          pillar?: string
+          resonance_score?: number | null
+          supporting_evidence?: Json | null
+          target_audience?: string | null
+        }
+        Update: {
+          assessed_at?: string
+          clarity_score?: number
+          consistency_index?: number | null
+          created_at?: string
+          delivery_channel?: string | null
+          effectiveness_rating?: number | null
+          frequency?: string | null
+          id?: string
+          key_messages?: string[] | null
+          last_delivered_at?: string | null
+          message_theme?: string
+          metadata?: Json | null
+          pillar?: string
+          resonance_score?: number | null
+          supporting_evidence?: Json | null
+          target_audience?: string | null
+        }
+        Relationships: []
+      }
       cmppm_category_leadership: {
         Row: {
           analyst_coverage_count: number | null
