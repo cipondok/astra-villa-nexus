@@ -221,6 +221,7 @@ export const DealHunterAdminPanel = lazyRetry(() => import("./DealHunterAdminPan
 export const MarketHeatIntelligence = lazyRetry(() => import("./MarketHeatIntelligence"));
 export const OpportunityScoringEngine = lazyRetry(() => import("./OpportunityScoringEngine"));
 export const PricePredictionEngine = lazyRetry(() => import("./PricePredictionEngine"));
+export const ExecutionCommandCenter = lazyRetry(() => import("./ExecutionCommandCenter"));
 export const OffPlanProjectManager = lazyRetry(() => import("./OffPlanProjectManager"));
 
 // Feature Enhancement dashboards
@@ -322,6 +323,9 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "technical-overview":            (sc) => <CategoryOverviewDashboard category="technical" onSectionChange={sc} />,
   "features-overview":             (sc) => <CategoryOverviewDashboard category="features" onSectionChange={sc} />,
   "help-overview":                 (sc) => <CategoryOverviewDashboard category="help" onSectionChange={sc} />,
+
+  // Execution Command Center
+  "execution-command-center": () => <ExecutionCommandCenter />,
 
   // User management
   "user-management":     (sc) => <UserManagementHub onNavigate={sc} />,
@@ -641,6 +645,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "investor-dna-admin": { label: "Investor DNA Intelligence", category: "Investor Management" },
   "global-macro-intelligence": { label: "Global Macro Intelligence", category: "Investor Management" },
   "global-strategy": { label: "Global Strategy", category: "AI & Tools" },
+  "execution-command-center": { label: "Execution Command Center", category: "Operations" },
   "overview": { label: "Dashboard Overview", category: "" },
   "diagnostic": { label: "Project Diagnostics", category: "System" },
   "project-progress": { label: "Launch Readiness", category: "System" },
