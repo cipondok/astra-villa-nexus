@@ -178,6 +178,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   cdte_engine_cycle: { label: 'Capital Timing', icon: '⏱️' },
   fscc_critical_decision: { label: 'Critical Decision', icon: '🚨' },
   fscc_engine_cycle: { label: 'Command Center', icon: '🎖️' },
+  gfne_traction_milestone: { label: 'Traction Milestone', icon: '📈' },
+  gfne_engine_cycle: { label: 'Narrative Engine', icon: '📖' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
