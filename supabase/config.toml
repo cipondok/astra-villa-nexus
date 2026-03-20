@@ -612,3 +612,6 @@ verify_jwt = false
 
 [functions.vendor-supply-optimizer]
 verify_jwt = false
+
+[functions.forecast-market-trends]
+verify_jwt = false

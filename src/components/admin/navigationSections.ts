@@ -721,6 +721,13 @@ export const navigationSections = {
       badge: "AI"
     },
     {
+      key: "market-forecasting-engine",
+      label: "Market Forecasting Engine",
+      icon: Brain,
+      description: "AI-powered city-level price growth, rental yield, liquidity cycle, and risk forecasts",
+      badge: "AI"
+    },
+    {
       key: "workforce-scheduler",
       label: "Workforce Scheduler",
       icon: Clock,
