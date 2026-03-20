@@ -150,6 +150,7 @@ export const NetworkEffectSimulatorPanel = lazyRetry(() => import("./NetworkEffe
 export const GlobalExpansionWarPanel = lazyRetry(() => import("./GlobalExpansionWarPanel"));
 export const MarketplaceOptimizationPanel = lazyRetry(() => import("./MarketplaceOptimizationPanel"));
 export const UnicornNarrativePanel = lazyRetry(() => import("./UnicornNarrativePanel"));
+export const LiquidityIndexBrandingPanel = lazyRetry(() => import("./LiquidityIndexBrandingPanel"));
 export const DOMAccuracyReport = lazyRetry(() => import("./DOMAccuracyReport"));
 export const CronJobMonitor = lazyRetry(() => import("./CronJobMonitor"));
 export const WeightTuningHistory = lazyRetry(() => import("./WeightTuningHistory"));
