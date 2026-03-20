@@ -120,6 +120,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   pgcm_engine_cycle: { label: 'Planetary Governance', icon: '🌐' },
   ihwi_prosperity_breakout: { label: 'Prosperity Breakout', icon: '🌅' },
   ihwi_engine_cycle: { label: 'Infinite Horizon Wealth', icon: '♾️' },
+  ccne_category_crystallized: { label: 'Category Crystallized', icon: '💎' },
+  ccne_engine_cycle: { label: 'Narrative Engine', icon: '📖' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */

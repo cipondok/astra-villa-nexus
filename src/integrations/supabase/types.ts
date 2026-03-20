@@ -9481,6 +9481,234 @@ export type Database = {
           },
         ]
       }
+      ccne_category_definition: {
+        Row: {
+          category_maturity: string
+          category_name: string
+          competitive_moat_depth: number
+          computed_at: string
+          created_at: string
+          disruption_thesis: string
+          id: string
+          legacy_framing: string
+          legacy_weakness_score: number
+          market_readiness: number
+          new_category_strength: number
+          new_framing: string
+          positioning_clarity: number
+        }
+        Insert: {
+          category_maturity?: string
+          category_name: string
+          competitive_moat_depth?: number
+          computed_at?: string
+          created_at?: string
+          disruption_thesis: string
+          id?: string
+          legacy_framing: string
+          legacy_weakness_score?: number
+          market_readiness?: number
+          new_category_strength?: number
+          new_framing: string
+          positioning_clarity?: number
+        }
+        Update: {
+          category_maturity?: string
+          category_name?: string
+          competitive_moat_depth?: number
+          computed_at?: string
+          created_at?: string
+          disruption_thesis?: string
+          id?: string
+          legacy_framing?: string
+          legacy_weakness_score?: number
+          market_readiness?: number
+          new_category_strength?: number
+          new_framing?: string
+          positioning_clarity?: number
+        }
+        Relationships: []
+      }
+      ccne_education_flywheel: {
+        Row: {
+          adoption_velocity: number
+          computed_at: string
+          content_pillar: string
+          content_reach_multiplier: number
+          created_at: string
+          evangelist_conversion_rate: number
+          flywheel_momentum: number
+          flywheel_stage: string
+          id: string
+          mental_model_shift: string
+          paradigm_shift_score: number
+          target_audience: string
+        }
+        Insert: {
+          adoption_velocity?: number
+          computed_at?: string
+          content_pillar: string
+          content_reach_multiplier?: number
+          created_at?: string
+          evangelist_conversion_rate?: number
+          flywheel_momentum?: number
+          flywheel_stage?: string
+          id?: string
+          mental_model_shift: string
+          paradigm_shift_score?: number
+          target_audience?: string
+        }
+        Update: {
+          adoption_velocity?: number
+          computed_at?: string
+          content_pillar?: string
+          content_reach_multiplier?: number
+          created_at?: string
+          evangelist_conversion_rate?: number
+          flywheel_momentum?: number
+          flywheel_stage?: string
+          id?: string
+          mental_model_shift?: string
+          paradigm_shift_score?: number
+          target_audience?: string
+        }
+        Relationships: []
+      }
+      ccne_founder_mythology: {
+        Row: {
+          audience_inspiration: number
+          computed_at: string
+          contrarian_strength: number
+          created_at: string
+          credibility_score: number
+          id: string
+          media_pickup_potential: number
+          mission_alignment: number
+          mythology_composite: number
+          mythology_type: string
+          narrative_element: string
+          story_phase: string
+        }
+        Insert: {
+          audience_inspiration?: number
+          computed_at?: string
+          contrarian_strength?: number
+          created_at?: string
+          credibility_score?: number
+          id?: string
+          media_pickup_potential?: number
+          mission_alignment?: number
+          mythology_composite?: number
+          mythology_type?: string
+          narrative_element: string
+          story_phase?: string
+        }
+        Update: {
+          audience_inspiration?: number
+          computed_at?: string
+          contrarian_strength?: number
+          created_at?: string
+          credibility_score?: number
+          id?: string
+          media_pickup_potential?: number
+          mission_alignment?: number
+          mythology_composite?: number
+          mythology_type?: string
+          narrative_element?: string
+          story_phase?: string
+        }
+        Relationships: []
+      }
+      ccne_problem_amplification: {
+        Row: {
+          affected_stakeholders: string
+          amplification_strategy: string | null
+          awareness_level: string
+          computed_at: string
+          created_at: string
+          emotional_urgency_score: number
+          id: string
+          inefficiency_description: string
+          problem_domain: string
+          quantified_loss_usd: number
+          systemic_failure_index: number
+          virality_potential: number
+        }
+        Insert: {
+          affected_stakeholders?: string
+          amplification_strategy?: string | null
+          awareness_level?: string
+          computed_at?: string
+          created_at?: string
+          emotional_urgency_score?: number
+          id?: string
+          inefficiency_description: string
+          problem_domain: string
+          quantified_loss_usd?: number
+          systemic_failure_index?: number
+          virality_potential?: number
+        }
+        Update: {
+          affected_stakeholders?: string
+          amplification_strategy?: string | null
+          awareness_level?: string
+          computed_at?: string
+          created_at?: string
+          emotional_urgency_score?: number
+          id?: string
+          inefficiency_description?: string
+          problem_domain?: string
+          quantified_loss_usd?: number
+          systemic_failure_index?: number
+          virality_potential?: number
+        }
+        Relationships: []
+      }
+      ccne_vision_projection: {
+        Row: {
+          audience_resonance: number
+          computed_at: string
+          created_at: string
+          id: string
+          inevitability_index: number
+          infrastructure_positioning: number
+          macro_alignment_score: number
+          narrative_arc: string
+          projection_horizon_years: number
+          roadmap_coherence: number
+          vision_theme: string
+          vision_tier: string
+        }
+        Insert: {
+          audience_resonance?: number
+          computed_at?: string
+          created_at?: string
+          id?: string
+          inevitability_index?: number
+          infrastructure_positioning?: number
+          macro_alignment_score?: number
+          narrative_arc: string
+          projection_horizon_years?: number
+          roadmap_coherence?: number
+          vision_theme: string
+          vision_tier?: string
+        }
+        Update: {
+          audience_resonance?: number
+          computed_at?: string
+          created_at?: string
+          id?: string
+          inevitability_index?: number
+          infrastructure_positioning?: number
+          macro_alignment_score?: number
+          narrative_arc?: string
+          projection_horizon_years?: number
+          roadmap_coherence?: number
+          vision_theme?: string
+          vision_tier?: string
+        }
+        Relationships: []
+      }
       ceos_development_coordination: {
         Row: {
           active_supply_units: number
