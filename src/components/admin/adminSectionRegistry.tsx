@@ -239,6 +239,7 @@ export const PricePredictionAnalyticsDashboard = lazyRetry(() => import("./Price
 export const MarketForecastingDashboard = lazyRetry(() => import("./MarketForecastingDashboard"));
 export const ExecutionCommandCenter = lazyRetry(() => import("./ExecutionCommandCenter"));
 export const OffPlanProjectManager = lazyRetry(() => import("./OffPlanProjectManager"));
+export const NegotiationAgentPanel = lazyRetry(() => import("./NegotiationAgentPanel"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -690,6 +691,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "feature-impact-matrix": () => <FeatureImpactMatrixPage />,
   "launch-execution-kit": () => <LaunchExecutionKitPage />,
   "cac-ltv-model": () => <CacLtvModelPage />,
+  "ai-negotiation-agent": () => <NegotiationAgentPanel />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -963,4 +965,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "marketplace-optimization-ai": { label: "Marketplace Optimization AI", category: "Features" },
   "unicorn-narrative": { label: "$1B Valuation Narrative", category: "Features" },
   "liquidity-index-branding": { label: "Liquidity Index Branding", category: "Features" },
+  "ai-negotiation-agent": { label: "AI Negotiation Agent", category: "Transactions" },
 };

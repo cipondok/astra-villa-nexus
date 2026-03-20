@@ -615,3 +615,6 @@ verify_jwt = false
 
 [functions.forecast-market-trends]
 verify_jwt = false
+
+[functions.negotiation-agent]
+verify_jwt = false
