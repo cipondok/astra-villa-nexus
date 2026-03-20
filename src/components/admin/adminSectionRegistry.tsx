@@ -937,4 +937,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "vendor-revenue-optimization": { label: "Vendor Revenue Optimization", category: "Vendor Management" },
   "city-expansion-command": { label: "City Expansion Command", category: "Features" },
   "superapp-journey": { label: "Super-App User Journey", category: "Features" },
+  "deal-closing-automation": { label: "Deal Closing Automation", category: "Transactions" },
 };
