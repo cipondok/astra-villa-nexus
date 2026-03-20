@@ -115,6 +115,7 @@ const UrbanGrowthSimulator = lazy(() => import('@/pages/UrbanGrowthSimulator'));
 const AutonomousClosingSystem = lazy(() => import('@/pages/AutonomousClosingSystem'));
 const RealEstateMacroRadar = lazy(() => import('@/pages/RealEstateMacroRadar'));
 const InvestorBehaviorPrediction = lazy(() => import('@/pages/InvestorBehaviorPrediction'));
+const IPORoadshowPage = lazy(() => import('@/pages/IPORoadshowPage'));
 const MarketplaceOperationsBrain = lazy(() => import('@/pages/MarketplaceOperationsBrain'));
 const SelfLearningValuationCore = lazy(() => import('@/pages/SelfLearningValuationCore'));
 const RealEstateIntelligenceAPIHub = lazy(() => import('@/pages/RealEstateIntelligenceAPIHub'));
@@ -578,6 +579,9 @@ const AppContent = () => {
                 </Route>
                 <Route path="/investor-intelligence-terminal" element={<ProtectedRoute />}>
                   <Route index element={<InvestorIntelligenceTerminal />} />
+                </Route>
+                <Route path="/ipo-roadshow" element={<ProtectedRoute />}>
+                  <Route index element={<IPORoadshowPage />} />
                 </Route>
                 <Route path="/portfolio-roi-tracker" element={<ProtectedRoute />}>
                   <Route index element={<PortfolioROITrackerPage />} />
