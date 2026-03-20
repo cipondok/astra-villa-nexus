@@ -313,6 +313,13 @@ export const navigationSections = {
       badge: "Strategy"
     },
     {
+      key: "liquidity-index-branding",
+      label: "Liquidity Index Branding",
+      icon: Activity,
+      description: "Public branding strategy for ASTRA Liquidity Index — data products, authority building & monetization",
+      badge: "Strategy"
+    },
+    {
       key: "mortgage-management",
       label: "Mortgage (KPR) Management",
       icon: Calculator,
