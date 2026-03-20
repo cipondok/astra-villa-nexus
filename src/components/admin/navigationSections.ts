@@ -1498,6 +1498,13 @@ export const navigationSections = {
       badge: "🚀 Series B"
     },
     {
+      key: "100m-arr-model",
+      label: "$100M ARR Operating Model",
+      icon: Target,
+      description: "5-year scaling roadmap with revenue engine, KPI pyramid, team structure, and unit economics",
+      badge: "💎 Scale"
+    },
+    {
       key: "investor-community",
       label: "Investor Community",
       icon: Users,
