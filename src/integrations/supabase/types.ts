@@ -46915,6 +46915,273 @@ export type Database = {
         }
         Relationships: []
       }
+      swfps_capital_stability: {
+        Row: {
+          counter_cyclical_buffer_usd: number | null
+          created_at: string
+          dilution_impact_pct: number | null
+          emerging_market_expansion_count: number | null
+          funding_cycle_stability_index: number | null
+          id: string
+          institutional_credibility_lift: number | null
+          runway_extension_months: number | null
+          scenario_name: string
+          simulated_at: string
+          sovereign_capital_committed_usd: number | null
+          stability_tier: string | null
+          valuation_premium_pct: number | null
+        }
+        Insert: {
+          counter_cyclical_buffer_usd?: number | null
+          created_at?: string
+          dilution_impact_pct?: number | null
+          emerging_market_expansion_count?: number | null
+          funding_cycle_stability_index?: number | null
+          id?: string
+          institutional_credibility_lift?: number | null
+          runway_extension_months?: number | null
+          scenario_name: string
+          simulated_at?: string
+          sovereign_capital_committed_usd?: number | null
+          stability_tier?: string | null
+          valuation_premium_pct?: number | null
+        }
+        Update: {
+          counter_cyclical_buffer_usd?: number | null
+          created_at?: string
+          dilution_impact_pct?: number | null
+          emerging_market_expansion_count?: number | null
+          funding_cycle_stability_index?: number | null
+          id?: string
+          institutional_credibility_lift?: number | null
+          runway_extension_months?: number | null
+          scenario_name?: string
+          simulated_at?: string
+          sovereign_capital_committed_usd?: number | null
+          stability_tier?: string | null
+          valuation_premium_pct?: number | null
+        }
+        Relationships: []
+      }
+      swfps_governance_trust: {
+        Row: {
+          assessed_at: string
+          audit_rights_granted: boolean | null
+          board_observer_rights: boolean | null
+          compliance_framework: string | null
+          country: string
+          created_at: string
+          data_sovereignty_compliance: boolean | null
+          esg_alignment_score: number | null
+          governance_domain: string
+          governance_status: string | null
+          id: string
+          reporting_frequency: string | null
+          risk_management_maturity: number | null
+          sovereign_fund_name: string
+          transparency_score: number | null
+          trust_index: number | null
+        }
+        Insert: {
+          assessed_at?: string
+          audit_rights_granted?: boolean | null
+          board_observer_rights?: boolean | null
+          compliance_framework?: string | null
+          country: string
+          created_at?: string
+          data_sovereignty_compliance?: boolean | null
+          esg_alignment_score?: number | null
+          governance_domain: string
+          governance_status?: string | null
+          id?: string
+          reporting_frequency?: string | null
+          risk_management_maturity?: number | null
+          sovereign_fund_name: string
+          transparency_score?: number | null
+          trust_index?: number | null
+        }
+        Update: {
+          assessed_at?: string
+          audit_rights_granted?: boolean | null
+          board_observer_rights?: boolean | null
+          compliance_framework?: string | null
+          country?: string
+          created_at?: string
+          data_sovereignty_compliance?: boolean | null
+          esg_alignment_score?: number | null
+          governance_domain?: string
+          governance_status?: string | null
+          id?: string
+          reporting_frequency?: string | null
+          risk_management_maturity?: number | null
+          sovereign_fund_name?: string
+          transparency_score?: number | null
+          trust_index?: number | null
+        }
+        Relationships: []
+      }
+      swfps_mutual_value: {
+        Row: {
+          assessed_at: string
+          asset_allocation_insight_score: number | null
+          country: string
+          created_at: string
+          global_dealflow_visibility_score: number | null
+          id: string
+          mutual_value_score: number | null
+          platform_benefit_index: number | null
+          platform_data_access_tier: string | null
+          sovereign_benefit_index: number | null
+          sovereign_fund_name: string
+          urban_planning_support_score: number | null
+          value_delivery_status: string | null
+          value_domain: string
+        }
+        Insert: {
+          assessed_at?: string
+          asset_allocation_insight_score?: number | null
+          country: string
+          created_at?: string
+          global_dealflow_visibility_score?: number | null
+          id?: string
+          mutual_value_score?: number | null
+          platform_benefit_index?: number | null
+          platform_data_access_tier?: string | null
+          sovereign_benefit_index?: number | null
+          sovereign_fund_name: string
+          urban_planning_support_score?: number | null
+          value_delivery_status?: string | null
+          value_domain: string
+        }
+        Update: {
+          assessed_at?: string
+          asset_allocation_insight_score?: number | null
+          country?: string
+          created_at?: string
+          global_dealflow_visibility_score?: number | null
+          id?: string
+          mutual_value_score?: number | null
+          platform_benefit_index?: number | null
+          platform_data_access_tier?: string | null
+          sovereign_benefit_index?: number | null
+          sovereign_fund_name?: string
+          urban_planning_support_score?: number | null
+          value_delivery_status?: string | null
+          value_domain?: string
+        }
+        Relationships: []
+      }
+      swfps_partnership_structures: {
+        Row: {
+          capital_commitment_usd: number | null
+          coinvestment_pipeline_size: number | null
+          country: string
+          created_at: string
+          designed_at: string
+          equity_stake_pct: number | null
+          exclusivity_terms: Json | null
+          governance_seats: number | null
+          id: string
+          joint_venture_scope: string | null
+          negotiation_stage: string | null
+          sovereign_fund_name: string
+          structure_attractiveness: number | null
+          structure_type: string
+          tech_integration_depth: string | null
+          term_years: number | null
+        }
+        Insert: {
+          capital_commitment_usd?: number | null
+          coinvestment_pipeline_size?: number | null
+          country: string
+          created_at?: string
+          designed_at?: string
+          equity_stake_pct?: number | null
+          exclusivity_terms?: Json | null
+          governance_seats?: number | null
+          id?: string
+          joint_venture_scope?: string | null
+          negotiation_stage?: string | null
+          sovereign_fund_name: string
+          structure_attractiveness?: number | null
+          structure_type: string
+          tech_integration_depth?: string | null
+          term_years?: number | null
+        }
+        Update: {
+          capital_commitment_usd?: number | null
+          coinvestment_pipeline_size?: number | null
+          country?: string
+          created_at?: string
+          designed_at?: string
+          equity_stake_pct?: number | null
+          exclusivity_terms?: Json | null
+          governance_seats?: number | null
+          id?: string
+          joint_venture_scope?: string | null
+          negotiation_stage?: string | null
+          sovereign_fund_name?: string
+          structure_attractiveness?: number | null
+          structure_type?: string
+          tech_integration_depth?: string | null
+          term_years?: number | null
+        }
+        Relationships: []
+      }
+      swfps_strategic_alignment: {
+        Row: {
+          alignment_domain: string
+          alignment_strength: number | null
+          assessed_at: string
+          composite_alignment_score: number | null
+          country: string
+          created_at: string
+          crossborder_transparency_fit: number | null
+          economic_diversification_fit: number | null
+          engagement_readiness: string | null
+          id: string
+          platform_capability: string | null
+          smartcity_intelligence_fit: number | null
+          sovereign_fund_name: string
+          sovereign_priority_score: number | null
+          urban_modernization_fit: number | null
+        }
+        Insert: {
+          alignment_domain: string
+          alignment_strength?: number | null
+          assessed_at?: string
+          composite_alignment_score?: number | null
+          country: string
+          created_at?: string
+          crossborder_transparency_fit?: number | null
+          economic_diversification_fit?: number | null
+          engagement_readiness?: string | null
+          id?: string
+          platform_capability?: string | null
+          smartcity_intelligence_fit?: number | null
+          sovereign_fund_name: string
+          sovereign_priority_score?: number | null
+          urban_modernization_fit?: number | null
+        }
+        Update: {
+          alignment_domain?: string
+          alignment_strength?: number | null
+          assessed_at?: string
+          composite_alignment_score?: number | null
+          country?: string
+          created_at?: string
+          crossborder_transparency_fit?: number | null
+          economic_diversification_fit?: number | null
+          engagement_readiness?: string | null
+          id?: string
+          platform_capability?: string | null
+          smartcity_intelligence_fit?: number | null
+          sovereign_fund_name?: string
+          sovereign_priority_score?: number | null
+          urban_modernization_fit?: number | null
+        }
+        Relationships: []
+      }
       syndicated_listings: {
         Row: {
           agent_id: string | null
