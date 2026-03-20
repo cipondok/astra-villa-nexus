@@ -163,7 +163,7 @@ export const navigationSections = {
     {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
-      icon: Route,
+      icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
       badge: "New"
     },
