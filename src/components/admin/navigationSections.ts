@@ -109,7 +109,8 @@ import {
   PieChart,
   CalendarClock,
   Sunrise,
-  Orbit
+  Orbit,
+  Network
 } from "lucide-react";
 
 export interface NavigationSection {
