@@ -265,7 +265,7 @@ const GridView: React.FC<{
   setHoveredKey: (k: string | null) => void;
   onSectionChange?: (s: string) => void;
 }> = ({ sections, hoveredKey, setHoveredKey, onSectionChange }) => (
-  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-px bg-[hsl(var(--panel-border-subtle))]">
+  <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-px bg-[hsl(var(--panel-border-subtle))]">
     {sections.map((section) => {
       const Icon = section.icon;
       const badgeText = 'badge' in section ? String(section.badge || '') : '';
