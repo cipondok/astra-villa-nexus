@@ -11347,6 +11347,264 @@ export type Database = {
         }
         Relationships: []
       }
+      cmppm_category_leadership: {
+        Row: {
+          analyst_coverage_count: number | null
+          category_name: string
+          category_ownership_score: number | null
+          competitor_mention_ratio: number | null
+          created_at: string | null
+          id: string
+          key_channels: Json | null
+          leadership_claim: string
+          measured_at: string | null
+          media_mentions_count: number | null
+          positioning_strategy: string | null
+          search_volume_index: number | null
+          share_of_voice_pct: number | null
+          thought_leadership_score: number | null
+        }
+        Insert: {
+          analyst_coverage_count?: number | null
+          category_name: string
+          category_ownership_score?: number | null
+          competitor_mention_ratio?: number | null
+          created_at?: string | null
+          id?: string
+          key_channels?: Json | null
+          leadership_claim: string
+          measured_at?: string | null
+          media_mentions_count?: number | null
+          positioning_strategy?: string | null
+          search_volume_index?: number | null
+          share_of_voice_pct?: number | null
+          thought_leadership_score?: number | null
+        }
+        Update: {
+          analyst_coverage_count?: number | null
+          category_name?: string
+          category_ownership_score?: number | null
+          competitor_mention_ratio?: number | null
+          created_at?: string | null
+          id?: string
+          key_channels?: Json | null
+          leadership_claim?: string
+          measured_at?: string | null
+          media_mentions_count?: number | null
+          positioning_strategy?: string | null
+          search_volume_index?: number | null
+          share_of_voice_pct?: number | null
+          thought_leadership_score?: number | null
+        }
+        Relationships: []
+      }
+      cmppm_institutional_trust: {
+        Row: {
+          assessed_at: string | null
+          created_at: string | null
+          due_diligence_readiness_pct: number | null
+          engagement_depth: string | null
+          evidence_strength: number | null
+          id: string
+          institution_segment: string
+          next_milestone: string | null
+          objection_handling_coverage_pct: number | null
+          touchpoints_completed: number | null
+          trust_building_actions: Json | null
+          trust_dimension: string
+          trust_score: number | null
+        }
+        Insert: {
+          assessed_at?: string | null
+          created_at?: string | null
+          due_diligence_readiness_pct?: number | null
+          engagement_depth?: string | null
+          evidence_strength?: number | null
+          id?: string
+          institution_segment: string
+          next_milestone?: string | null
+          objection_handling_coverage_pct?: number | null
+          touchpoints_completed?: number | null
+          trust_building_actions?: Json | null
+          trust_dimension: string
+          trust_score?: number | null
+        }
+        Update: {
+          assessed_at?: string | null
+          created_at?: string | null
+          due_diligence_readiness_pct?: number | null
+          engagement_depth?: string | null
+          evidence_strength?: number | null
+          id?: string
+          institution_segment?: string
+          next_milestone?: string | null
+          objection_handling_coverage_pct?: number | null
+          touchpoints_completed?: number | null
+          trust_building_actions?: Json | null
+          trust_dimension?: string
+          trust_score?: number | null
+        }
+        Relationships: []
+      }
+      cmppm_narrative_power: {
+        Row: {
+          activated_at: string | null
+          competitor_frame_gap: number | null
+          created_at: string | null
+          differentiation_clarity: number | null
+          id: string
+          investor_recall_score: number | null
+          key_proof_points: Json | null
+          media_resonance_score: number | null
+          narrative_frame: string
+          narrative_status: string | null
+          narrative_strength_score: number | null
+          positioning_tier: string | null
+          target_audience: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          activated_at?: string | null
+          competitor_frame_gap?: number | null
+          created_at?: string | null
+          differentiation_clarity?: number | null
+          id?: string
+          investor_recall_score?: number | null
+          key_proof_points?: Json | null
+          media_resonance_score?: number | null
+          narrative_frame: string
+          narrative_status?: string | null
+          narrative_strength_score?: number | null
+          positioning_tier?: string | null
+          target_audience?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          activated_at?: string | null
+          competitor_frame_gap?: number | null
+          created_at?: string | null
+          differentiation_clarity?: number | null
+          id?: string
+          investor_recall_score?: number | null
+          key_proof_points?: Json | null
+          media_resonance_score?: number | null
+          narrative_frame?: string
+          narrative_status?: string | null
+          narrative_strength_score?: number | null
+          positioning_tier?: string | null
+          target_audience?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      cmppm_scarcity_momentum: {
+        Row: {
+          acceleration_rate: number | null
+          competitor_gap_multiple: number | null
+          created_at: string | null
+          current_value: number | null
+          display_format: string | null
+          evidence_data: Json | null
+          fomo_intensity: number | null
+          growth_rate_pct: number | null
+          id: string
+          is_public: boolean | null
+          measured_at: string | null
+          scarcity_perception_score: number | null
+          signal_name: string
+          signal_type: string
+          urgency_created: number | null
+        }
+        Insert: {
+          acceleration_rate?: number | null
+          competitor_gap_multiple?: number | null
+          created_at?: string | null
+          current_value?: number | null
+          display_format?: string | null
+          evidence_data?: Json | null
+          fomo_intensity?: number | null
+          growth_rate_pct?: number | null
+          id?: string
+          is_public?: boolean | null
+          measured_at?: string | null
+          scarcity_perception_score?: number | null
+          signal_name: string
+          signal_type: string
+          urgency_created?: number | null
+        }
+        Update: {
+          acceleration_rate?: number | null
+          competitor_gap_multiple?: number | null
+          created_at?: string | null
+          current_value?: number | null
+          display_format?: string | null
+          evidence_data?: Json | null
+          fomo_intensity?: number | null
+          growth_rate_pct?: number | null
+          id?: string
+          is_public?: boolean | null
+          measured_at?: string | null
+          scarcity_perception_score?: number | null
+          signal_name?: string
+          signal_type?: string
+          urgency_created?: number | null
+        }
+        Relationships: []
+      }
+      cmppm_valuation_psychology: {
+        Row: {
+          amplification_factor: number | null
+          bottleneck_identified: string | null
+          bottleneck_severity: number | null
+          compounding_velocity: number | null
+          created_at: string | null
+          current_rpm: number | null
+          cycle_number: number | null
+          flywheel_stage: string
+          id: string
+          intervention_strategy: string | null
+          measured_at: string | null
+          momentum_contribution: number | null
+          reinforcement_loops: Json | null
+          stage_strength: number | null
+          target_rpm: number | null
+        }
+        Insert: {
+          amplification_factor?: number | null
+          bottleneck_identified?: string | null
+          bottleneck_severity?: number | null
+          compounding_velocity?: number | null
+          created_at?: string | null
+          current_rpm?: number | null
+          cycle_number?: number | null
+          flywheel_stage: string
+          id?: string
+          intervention_strategy?: string | null
+          measured_at?: string | null
+          momentum_contribution?: number | null
+          reinforcement_loops?: Json | null
+          stage_strength?: number | null
+          target_rpm?: number | null
+        }
+        Update: {
+          amplification_factor?: number | null
+          bottleneck_identified?: string | null
+          bottleneck_severity?: number | null
+          compounding_velocity?: number | null
+          created_at?: string | null
+          current_rpm?: number | null
+          cycle_number?: number | null
+          flywheel_stage?: string
+          id?: string
+          intervention_strategy?: string | null
+          measured_at?: string | null
+          momentum_contribution?: number | null
+          reinforcement_loops?: Json | null
+          stage_strength?: number | null
+          target_rpm?: number | null
+        }
+        Relationships: []
+      }
       cms_content: {
         Row: {
           author_id: string | null
