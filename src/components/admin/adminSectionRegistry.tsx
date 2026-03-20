@@ -952,4 +952,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-expansion-war": { label: "Global Expansion War Strategy", category: "Features" },
   "marketplace-optimization-ai": { label: "Marketplace Optimization AI", category: "Features" },
   "unicorn-narrative": { label: "$1B Valuation Narrative", category: "Features" },
+  "liquidity-index-branding": { label: "Liquidity Index Branding", category: "Features" },
 };
