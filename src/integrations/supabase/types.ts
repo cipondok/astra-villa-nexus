@@ -20131,6 +20131,276 @@ export type Database = {
         }
         Relationships: []
       }
+      gvem_ev_simulator: {
+        Row: {
+          base_revenue_usd: number | null
+          blended_multiple: number | null
+          computed_at: string | null
+          created_at: string | null
+          id: string
+          implied_ev_usd: number | null
+          infrastructure_multiple: number | null
+          infrastructure_revenue_pct: number | null
+          marketplace_multiple: number | null
+          network_premium_pct: number | null
+          optionality_premium_pct: number | null
+          projected_revenue_usd: number | null
+          revenue_cagr_pct: number | null
+          scenario_name: string
+          scenario_type: string
+          sustainability_score: number | null
+          total_ev_usd: number | null
+          year_horizon: number
+        }
+        Insert: {
+          base_revenue_usd?: number | null
+          blended_multiple?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          id?: string
+          implied_ev_usd?: number | null
+          infrastructure_multiple?: number | null
+          infrastructure_revenue_pct?: number | null
+          marketplace_multiple?: number | null
+          network_premium_pct?: number | null
+          optionality_premium_pct?: number | null
+          projected_revenue_usd?: number | null
+          revenue_cagr_pct?: number | null
+          scenario_name: string
+          scenario_type: string
+          sustainability_score?: number | null
+          total_ev_usd?: number | null
+          year_horizon?: number
+        }
+        Update: {
+          base_revenue_usd?: number | null
+          blended_multiple?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          id?: string
+          implied_ev_usd?: number | null
+          infrastructure_multiple?: number | null
+          infrastructure_revenue_pct?: number | null
+          marketplace_multiple?: number | null
+          network_premium_pct?: number | null
+          optionality_premium_pct?: number | null
+          projected_revenue_usd?: number | null
+          revenue_cagr_pct?: number | null
+          scenario_name?: string
+          scenario_type?: string
+          sustainability_score?: number | null
+          total_ev_usd?: number | null
+          year_horizon?: number
+        }
+        Relationships: []
+      }
+      gvem_market_expansion: {
+        Row: {
+          computed_at: string | null
+          created_at: string | null
+          estimated_timeline_months: number | null
+          expansion_phase: string
+          geographic_scope: string | null
+          growth_rate_pct: number | null
+          id: string
+          key_drivers: Json | null
+          milestones_achieved: number | null
+          milestones_total: number | null
+          penetration_pct: number | null
+          phase_confidence: number | null
+          phase_label: string
+          sam_usd: number
+          som_usd: number
+          tam_usd: number
+        }
+        Insert: {
+          computed_at?: string | null
+          created_at?: string | null
+          estimated_timeline_months?: number | null
+          expansion_phase: string
+          geographic_scope?: string | null
+          growth_rate_pct?: number | null
+          id?: string
+          key_drivers?: Json | null
+          milestones_achieved?: number | null
+          milestones_total?: number | null
+          penetration_pct?: number | null
+          phase_confidence?: number | null
+          phase_label: string
+          sam_usd?: number
+          som_usd?: number
+          tam_usd?: number
+        }
+        Update: {
+          computed_at?: string | null
+          created_at?: string | null
+          estimated_timeline_months?: number | null
+          expansion_phase?: string
+          geographic_scope?: string | null
+          growth_rate_pct?: number | null
+          id?: string
+          key_drivers?: Json | null
+          milestones_achieved?: number | null
+          milestones_total?: number | null
+          penetration_pct?: number | null
+          phase_confidence?: number | null
+          phase_label?: string
+          sam_usd?: number
+          som_usd?: number
+          tam_usd?: number
+        }
+        Relationships: []
+      }
+      gvem_monetization_stack: {
+        Row: {
+          activation_status: string | null
+          computed_at: string | null
+          contribution_to_valuation_pct: number | null
+          created_at: string | null
+          current_arr_usd: number | null
+          dependencies: Json | null
+          id: string
+          implied_value_usd: number | null
+          layer_name: string
+          layer_order: number
+          layer_type: string
+          margin_pct: number | null
+          multiple_applied: number | null
+          projected_arr_usd: number | null
+        }
+        Insert: {
+          activation_status?: string | null
+          computed_at?: string | null
+          contribution_to_valuation_pct?: number | null
+          created_at?: string | null
+          current_arr_usd?: number | null
+          dependencies?: Json | null
+          id?: string
+          implied_value_usd?: number | null
+          layer_name: string
+          layer_order?: number
+          layer_type: string
+          margin_pct?: number | null
+          multiple_applied?: number | null
+          projected_arr_usd?: number | null
+        }
+        Update: {
+          activation_status?: string | null
+          computed_at?: string | null
+          contribution_to_valuation_pct?: number | null
+          created_at?: string | null
+          current_arr_usd?: number | null
+          dependencies?: Json | null
+          id?: string
+          implied_value_usd?: number | null
+          layer_name?: string
+          layer_order?: number
+          layer_type?: string
+          margin_pct?: number | null
+          multiple_applied?: number | null
+          projected_arr_usd?: number | null
+        }
+        Relationships: []
+      }
+      gvem_network_multiplier: {
+        Row: {
+          competitor_gap_pct: number | null
+          computed_at: string | null
+          created_at: string | null
+          current_magnitude: number | null
+          defensibility_score: number | null
+          effect_dimension: string
+          growth_velocity: number | null
+          id: string
+          metcalfe_proxy: number | null
+          multiplier_contribution: number | null
+          pricing_power_index: number | null
+          strategic_value_score: number | null
+          tipping_point_reached: boolean | null
+        }
+        Insert: {
+          competitor_gap_pct?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          current_magnitude?: number | null
+          defensibility_score?: number | null
+          effect_dimension: string
+          growth_velocity?: number | null
+          id?: string
+          metcalfe_proxy?: number | null
+          multiplier_contribution?: number | null
+          pricing_power_index?: number | null
+          strategic_value_score?: number | null
+          tipping_point_reached?: boolean | null
+        }
+        Update: {
+          competitor_gap_pct?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          current_magnitude?: number | null
+          defensibility_score?: number | null
+          effect_dimension?: string
+          growth_velocity?: number | null
+          id?: string
+          metcalfe_proxy?: number | null
+          multiplier_contribution?: number | null
+          pricing_power_index?: number | null
+          strategic_value_score?: number | null
+          tipping_point_reached?: boolean | null
+        }
+        Relationships: []
+      }
+      gvem_strategic_optionality: {
+        Row: {
+          computed_at: string | null
+          created_at: string | null
+          expected_value_usd: number | null
+          id: string
+          option_name: string
+          option_type: string
+          potential_value_usd: number | null
+          prerequisite_layers: Json | null
+          probability_pct: number | null
+          readiness_score: number | null
+          risk_factors: Json | null
+          status: string | null
+          time_to_activation_months: number | null
+          valuation_uplift_pct: number | null
+        }
+        Insert: {
+          computed_at?: string | null
+          created_at?: string | null
+          expected_value_usd?: number | null
+          id?: string
+          option_name: string
+          option_type: string
+          potential_value_usd?: number | null
+          prerequisite_layers?: Json | null
+          probability_pct?: number | null
+          readiness_score?: number | null
+          risk_factors?: Json | null
+          status?: string | null
+          time_to_activation_months?: number | null
+          valuation_uplift_pct?: number | null
+        }
+        Update: {
+          computed_at?: string | null
+          created_at?: string | null
+          expected_value_usd?: number | null
+          id?: string
+          option_name?: string
+          option_type?: string
+          potential_value_usd?: number | null
+          prerequisite_layers?: Json | null
+          probability_pct?: number | null
+          readiness_score?: number | null
+          risk_factors?: Json | null
+          status?: string | null
+          time_to_activation_months?: number | null
+          valuation_uplift_pct?: number | null
+        }
+        Relationships: []
+      }
       gwsm_capital_flows: {
         Row: {
           asset_class: string
