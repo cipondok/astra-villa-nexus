@@ -50748,6 +50748,13 @@ export type Database = {
             foreignKeyName: "social_commerce_campaigns_platform_id_fkey"
             columns: ["platform_id"]
             isOneToOne: false
+            referencedRelation: "public_social_platforms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_commerce_campaigns_platform_id_fkey"
+            columns: ["platform_id"]
+            isOneToOne: false
             referencedRelation: "social_commerce_platforms"
             referencedColumns: ["id"]
           },
@@ -50821,6 +50828,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "social_commerce_listings_platform_id_fkey"
+            columns: ["platform_id"]
+            isOneToOne: false
+            referencedRelation: "public_social_platforms"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "social_commerce_listings_platform_id_fkey"
             columns: ["platform_id"]
@@ -61462,6 +61476,33 @@ export type Database = {
           title?: string | null
           updated_at?: string | null
           virtual_tour_url?: string | null
+        }
+        Relationships: []
+      }
+      public_social_platforms: {
+        Row: {
+          display_name: string | null
+          id: string | null
+          is_enabled: boolean | null
+          platform_name: string | null
+          settings: Json | null
+          sync_status: string | null
+        }
+        Insert: {
+          display_name?: string | null
+          id?: string | null
+          is_enabled?: boolean | null
+          platform_name?: string | null
+          settings?: Json | null
+          sync_status?: string | null
+        }
+        Update: {
+          display_name?: string | null
+          id?: string | null
+          is_enabled?: boolean | null
+          platform_name?: string | null
+          settings?: Json | null
+          sync_status?: string | null
         }
         Relationships: []
       }

@@ -122,7 +122,8 @@ async function createCheckout(params: Record<string, any>, supabase: any, userId
   return { success: true, token: result.token, redirect_url: result.redirect_url, order_id: params.order_id };
 }
 
-async function processRefund(params: Record<string, any>, supabase: any) {
+async function processRefund(params: Record<string, any>, supabase: any, userId: string | null) {
+  if (!userId) throw new Error("Authentication required for refund operations");
   const { order_id, amount, reason } = params;
   const body: Record<string, any> = { reason: reason || "Customer request" };
   if (amount) {
@@ -282,7 +283,8 @@ async function generateInvoice(params: Record<string, any>, supabase: any, userI
   return { success: true, invoice };
 }
 
-async function verifyPayment(params: Record<string, any>, supabase: any) {
+async function verifyPayment(params: Record<string, any>, supabase: any, userId: string | null) {
+  if (!userId) throw new Error("Authentication required for payment verification");
   const { order_id } = params;
   if (!order_id) throw new Error("order_id required");
 
@@ -381,7 +383,7 @@ serve(async (req) => {
         result = await createCheckout(params, supabase, userId);
         break;
       case 'process_refund':
-        result = await processRefund(params, supabase);
+        result = await processRefund(params, supabase, userId);
         break;
       case 'handle_subscription':
         result = await handleSubscription(params, supabase, userId);
@@ -390,7 +392,7 @@ serve(async (req) => {
         result = await generateInvoice(params, supabase, userId);
         break;
       case 'verify_payment':
-        result = await verifyPayment(params, supabase);
+        result = await verifyPayment(params, supabase, userId);
         break;
       case 'wallet_operation':
         result = await walletOperation(params, supabase, userId);
