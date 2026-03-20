@@ -1535,7 +1535,7 @@ export const navigationSections = {
     {
       key: "liquidity-ai-scoring",
       label: "Liquidity AI Scoring",
-      icon: Droplets,
+      icon: Activity,
       description: "Dynamic liquidity scoring engine — sell speed prediction, visibility boost, urgency alerts, district metrics",
       badge: "💧 Liquidity AI"
     },
