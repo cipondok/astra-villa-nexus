@@ -116,7 +116,7 @@ const PropertyLiquidityAIPanel = () => {
           <Card className="border-border/50">
             <CardContent className="p-4 text-center">
               <BarChart3 className="h-5 w-5 mx-auto mb-1 text-primary" />
-              <div className="text-2xl font-bold tabular-nums">{signalQueue?.pending ?? 0}</div>
+              <div className="text-2xl font-bold tabular-nums">{signalQueue?.pendingCount ?? 0}</div>
               <p className="text-xs text-muted-foreground">Pending Signals</p>
             </CardContent>
           </Card>
