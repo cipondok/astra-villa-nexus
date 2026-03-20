@@ -726,7 +726,6 @@ export const navigationSections = {
       icon: Brain,
       description: "AI-powered city-level price growth, rental yield, liquidity cycle, and risk forecasts",
       badge: "AI"
-      badge: "AI"
     },
     {
       key: "workforce-scheduler",
