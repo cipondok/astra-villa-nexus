@@ -20555,6 +20555,249 @@ export type Database = {
         }
         Relationships: []
       }
+      ihwi_capital_growth: {
+        Row: {
+          allocation_strategy: string
+          compounding_rate_pct: number
+          computed_at: string
+          confidence_band_pct: number
+          country: string
+          created_at: string
+          cyclical_risk_score: number
+          id: string
+          opportunity_convergence: number
+          projected_wealth_multiple: number
+          recovery_velocity: number
+          region: string
+          scenario_name: string
+          simulation_status: string
+          time_horizon_years: number
+        }
+        Insert: {
+          allocation_strategy?: string
+          compounding_rate_pct?: number
+          computed_at?: string
+          confidence_band_pct?: number
+          country?: string
+          created_at?: string
+          cyclical_risk_score?: number
+          id?: string
+          opportunity_convergence?: number
+          projected_wealth_multiple?: number
+          recovery_velocity?: number
+          region: string
+          scenario_name: string
+          simulation_status?: string
+          time_horizon_years?: number
+        }
+        Update: {
+          allocation_strategy?: string
+          compounding_rate_pct?: number
+          computed_at?: string
+          confidence_band_pct?: number
+          country?: string
+          created_at?: string
+          cyclical_risk_score?: number
+          id?: string
+          opportunity_convergence?: number
+          projected_wealth_multiple?: number
+          recovery_velocity?: number
+          region?: string
+          scenario_name?: string
+          simulation_status?: string
+          time_horizon_years?: number
+        }
+        Relationships: []
+      }
+      ihwi_decision_intelligence: {
+        Row: {
+          computed_at: string
+          country: string
+          created_at: string
+          decision_composite: number
+          growth_balance_index: number
+          horizon_confidence: number
+          id: string
+          institutional_readiness: number
+          prosperity_era: string
+          region: string
+          strategic_recommendations: string[] | null
+          wealth_trajectory_score: number
+        }
+        Insert: {
+          computed_at?: string
+          country?: string
+          created_at?: string
+          decision_composite?: number
+          growth_balance_index?: number
+          horizon_confidence?: number
+          id?: string
+          institutional_readiness?: number
+          prosperity_era?: string
+          region: string
+          strategic_recommendations?: string[] | null
+          wealth_trajectory_score?: number
+        }
+        Update: {
+          computed_at?: string
+          country?: string
+          created_at?: string
+          decision_composite?: number
+          growth_balance_index?: number
+          horizon_confidence?: number
+          id?: string
+          institutional_readiness?: number
+          prosperity_era?: string
+          region?: string
+          strategic_recommendations?: string[] | null
+          wealth_trajectory_score?: number
+        }
+        Relationships: []
+      }
+      ihwi_generational_continuity: {
+        Row: {
+          asset_transition_readiness: number
+          computed_at: string
+          continuity_composite: number
+          country: string
+          created_at: string
+          education_investment_roi: number
+          financial_inclusion_expansion: number
+          generational_tier: string
+          human_capital_score: number
+          id: string
+          inheritance_efficiency: number
+          region: string
+          wealth_mobility_index: number
+        }
+        Insert: {
+          asset_transition_readiness?: number
+          computed_at?: string
+          continuity_composite?: number
+          country?: string
+          created_at?: string
+          education_investment_roi?: number
+          financial_inclusion_expansion?: number
+          generational_tier?: string
+          human_capital_score?: number
+          id?: string
+          inheritance_efficiency?: number
+          region: string
+          wealth_mobility_index?: number
+        }
+        Update: {
+          asset_transition_readiness?: number
+          computed_at?: string
+          continuity_composite?: number
+          country?: string
+          created_at?: string
+          education_investment_roi?: number
+          financial_inclusion_expansion?: number
+          generational_tier?: string
+          human_capital_score?: number
+          id?: string
+          inheritance_efficiency?: number
+          region?: string
+          wealth_mobility_index?: number
+        }
+        Relationships: []
+      }
+      ihwi_resilience_alignment: {
+        Row: {
+          alignment_tier: string
+          climate_adaptation_score: number
+          computed_at: string
+          country: string
+          created_at: string
+          esg_integration_depth: number
+          id: string
+          region: string
+          resilience_composite: number
+          resource_efficiency_index: number
+          risk_outlook: string
+          sustainability_roi: number
+          systemic_risk_buffer: number
+        }
+        Insert: {
+          alignment_tier?: string
+          climate_adaptation_score?: number
+          computed_at?: string
+          country?: string
+          created_at?: string
+          esg_integration_depth?: number
+          id?: string
+          region: string
+          resilience_composite?: number
+          resource_efficiency_index?: number
+          risk_outlook?: string
+          sustainability_roi?: number
+          systemic_risk_buffer?: number
+        }
+        Update: {
+          alignment_tier?: string
+          climate_adaptation_score?: number
+          computed_at?: string
+          country?: string
+          created_at?: string
+          esg_integration_depth?: number
+          id?: string
+          region?: string
+          resilience_composite?: number
+          resource_efficiency_index?: number
+          risk_outlook?: string
+          sustainability_roi?: number
+          systemic_risk_buffer?: number
+        }
+        Relationships: []
+      }
+      ihwi_structural_drivers: {
+        Row: {
+          computed_at: string
+          country: string
+          created_at: string
+          demographic_momentum: number
+          driver_era: string
+          human_capital_depth: number
+          id: string
+          infra_investment_maturity: number
+          innovation_density: number
+          region: string
+          structural_driver_composite: number
+          tech_productivity_multiplier: number
+          urbanization_value_cycle: number
+        }
+        Insert: {
+          computed_at?: string
+          country?: string
+          created_at?: string
+          demographic_momentum?: number
+          driver_era?: string
+          human_capital_depth?: number
+          id?: string
+          infra_investment_maturity?: number
+          innovation_density?: number
+          region: string
+          structural_driver_composite?: number
+          tech_productivity_multiplier?: number
+          urbanization_value_cycle?: number
+        }
+        Update: {
+          computed_at?: string
+          country?: string
+          created_at?: string
+          demographic_momentum?: number
+          driver_era?: string
+          human_capital_depth?: number
+          id?: string
+          infra_investment_maturity?: number
+          innovation_density?: number
+          region?: string
+          structural_driver_composite?: number
+          tech_productivity_multiplier?: number
+          urbanization_value_cycle?: number
+        }
+        Relationships: []
+      }
       in_app_notifications: {
         Row: {
           created_at: string
