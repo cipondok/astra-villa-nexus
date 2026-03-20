@@ -412,6 +412,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "global-expansion-war": () => <GlobalExpansionWarPanel />,
   "marketplace-optimization-ai": () => <MarketplaceOptimizationPanel />,
   "unicorn-narrative": () => <UnicornNarrativePanel />,
+  "liquidity-index-branding": () => <LiquidityIndexBrandingPanel />,
 
   // Content
   "homepage-slider":     () => <HomepageSliderSettings />,
