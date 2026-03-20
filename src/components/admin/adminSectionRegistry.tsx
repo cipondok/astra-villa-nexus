@@ -695,6 +695,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "cac-ltv-model": () => <CacLtvModelPage />,
   "ai-negotiation-agent": () => <NegotiationAgentPanel />,
   "global-brand-authority": () => <GlobalBrandAuthorityPanel />,
+  "institutional-capital-gateway": () => <InstitutionalCapitalGatewayPanel />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
