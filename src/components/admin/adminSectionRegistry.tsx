@@ -934,4 +934,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "cac-ltv-model": { label: "CAC vs LTV Model", category: "Features" },
   "vendor-revenue-optimization": { label: "Vendor Revenue Optimization", category: "Vendor Management" },
   "city-expansion-command": { label: "City Expansion Command", category: "Features" },
+  "superapp-journey": { label: "Super-App User Journey", category: "Features" },
 };
