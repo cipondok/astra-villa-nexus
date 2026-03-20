@@ -245,6 +245,7 @@ export const InstitutionalCapitalGatewayPanel = lazyRetry(() => import("./Instit
 export const GrowthExperimentationPanel = lazyRetry(() => import("./GrowthExperimentationPanel"));
 export const MegaCityDominationPanel = lazyRetry(() => import("./MegaCityDominationPanel"));
 export const RentalYieldOptimizationPanel = lazyRetry(() => import("./RentalYieldOptimizationPanel"));
+export const DeveloperSupplyAcquisitionPanel = lazyRetry(() => import("./DeveloperSupplyAcquisitionPanel"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -702,6 +703,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "growth-experimentation": () => <GrowthExperimentationPanel />,
   "mega-city-domination": () => <MegaCityDominationPanel />,
   "rental-yield-optimization": () => <RentalYieldOptimizationPanel />,
+  "developer-supply-acquisition": () => <DeveloperSupplyAcquisitionPanel />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -981,4 +983,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "growth-experimentation": { label: "Growth Experimentation Engine", category: "Operations" },
   "mega-city-domination": { label: "Mega-City Domination", category: "Operations" },
   "rental-yield-optimization": { label: "Rental Yield Optimization", category: "Operations" },
+  "developer-supply-acquisition": { label: "Developer Supply Acquisition", category: "Operations" },
 };
