@@ -132,6 +132,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   amda_engine_cycle: { label: 'Monopoly Defense', icon: '🛡️' },
   pmne_flagship_signal: { label: 'Flagship Signal', icon: '📣' },
   pmne_engine_cycle: { label: 'Market Narrative', icon: '📈' },
+  icta_trust_self_sustaining: { label: 'Trust Self-Sustaining', icon: '🏛️' },
+  icta_engine_cycle: { label: 'Institutional Trust', icon: '🤝' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
