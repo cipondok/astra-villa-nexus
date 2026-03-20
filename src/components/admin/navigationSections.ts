@@ -1512,6 +1512,13 @@ export const navigationSections = {
       badge: "🌐 IPO"
     },
     {
+      key: "superapp-ecosystem",
+      label: "Super-App Ecosystem",
+      icon: Layers,
+      description: "Modular ecosystem architecture — modules, user journey, data layer, rollout roadmap, and monetization model",
+      badge: "🚀 Ecosystem"
+    },
+    {
       key: "investor-community",
       label: "Investor Community",
       icon: Users,
