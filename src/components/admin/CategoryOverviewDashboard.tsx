@@ -280,7 +280,7 @@ const GridView: React.FC<{
           onMouseEnter={() => setHoveredKey(section.key)}
           onMouseLeave={() => setHoveredKey(null)}
           className={cn(
-            "relative flex flex-col items-center gap-1.5 px-2.5 py-3 text-center transition-all duration-100",
+            "relative flex flex-col items-center gap-1 px-1.5 py-2 text-center transition-all duration-100",
             isHovered ? "bg-[hsl(var(--panel-hover))]" : "bg-[hsl(var(--panel-bg))]"
           )}
           style={isHovered ? { boxShadow: 'inset 0 0 24px hsl(var(--panel-accent) / 0.03)' } : undefined}
