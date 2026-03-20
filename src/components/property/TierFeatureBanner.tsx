@@ -74,21 +74,21 @@ const TierFeatureBanner: React.FC = () => {
 
   return (
     <Card className="border-border/50 bg-gradient-to-r from-primary/5 via-transparent to-primary/5">
-      <CardContent className="p-3 sm:p-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <CardContent className="px-3 py-2 sm:p-4">
+        <div className="flex items-center justify-between gap-2 flex-wrap">
           {/* Current Level */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <div className={cn(
-              "w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center",
+              "w-7 h-7 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center",
               levelConfig.bgColor,
               "border",
               levelConfig.borderColor
             )}>
-              <Crown className={cn("h-5 w-5 sm:h-6 sm:w-6", levelConfig.color)} />
+              <Crown className={cn("h-3.5 w-3.5 sm:h-5 sm:w-5", levelConfig.color)} />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">{t.yourLevel}</p>
-              <p className={cn("font-semibold text-sm sm:text-base", levelConfig.color)}>
+              <p className="text-[10px] leading-tight text-muted-foreground">{t.yourLevel}</p>
+              <p className={cn("font-semibold text-xs sm:text-sm", levelConfig.color)}>
                 {levelConfig.label}
               </p>
             </div>
