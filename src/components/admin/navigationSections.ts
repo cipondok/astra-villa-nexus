@@ -950,7 +950,7 @@ export const navigationSections = {
       badge: "New"
     },
     {
-      key: "commission-tracker",
+      key: "commission-tracker-analytics",
       label: "Commission Tracker",
       icon: DollarSign,
       description: "Agent commissions, payouts, and revenue splits with trend analysis",
