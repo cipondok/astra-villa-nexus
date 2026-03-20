@@ -9,7 +9,7 @@ import ReactMarkdown from "react-markdown";
 import { useNegotiationAgent, DealContext } from "@/hooks/useNegotiationAgent";
 import {
   MessageSquare, Send, Trash2, Target, TrendingUp,
-  AlertTriangle, Scale, Zap, Bot, User
+  AlertTriangle, Scale, Zap, Bot, User, Handshake
 } from "lucide-react";
 
 const QUICK_PROMPTS = [
