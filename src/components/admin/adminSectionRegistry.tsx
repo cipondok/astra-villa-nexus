@@ -143,6 +143,7 @@ export const VendorIntelligencePanel = lazyRetry(() => import("./VendorIntellige
 export const RevenueFlywheelPanel = lazyRetry(() => import("./RevenueFlywheelPanel"));
 export const DataMoatGovernancePanel = lazyRetry(() => import("./DataMoatGovernancePanel"));
 export const VendorRevenueOptimizationPanel = lazyRetry(() => import("./VendorRevenueOptimizationPanel"));
+export const CityExpansionCommandPanel = lazyRetry(() => import("./CityExpansionCommandPanel"));
 export const DOMAccuracyReport = lazyRetry(() => import("./DOMAccuracyReport"));
 export const CronJobMonitor = lazyRetry(() => import("./CronJobMonitor"));
 export const WeightTuningHistory = lazyRetry(() => import("./WeightTuningHistory"));
@@ -397,6 +398,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "vendors-hub":         () => <VendorsHubContent />,
   "vendor-agent-control": () => <EnhancedVendorAgentControl />,
   "vendor-revenue-optimization": () => <VendorRevenueOptimizationPanel />,
+  "city-expansion-command": () => <CityExpansionCommandPanel />,
 
   // Content
   "homepage-slider":     () => <HomepageSliderSettings />,
@@ -929,4 +931,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "launch-execution-kit": { label: "Launch Execution Kit", category: "Features" },
   "cac-ltv-model": { label: "CAC vs LTV Model", category: "Features" },
   "vendor-revenue-optimization": { label: "Vendor Revenue Optimization", category: "Vendor Management" },
+  "city-expansion-command": { label: "City Expansion Command", category: "Features" },
 };

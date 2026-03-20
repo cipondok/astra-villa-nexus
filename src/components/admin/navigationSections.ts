@@ -1268,6 +1268,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "city-expansion-command",
+      label: "City Expansion Command",
+      icon: Rocket,
+      description: "Auto-deploy marketplace operations to new cities with AI readiness scoring",
+      badge: "AI"
+    },
+    {
       key: "email-monitor",
       label: "Email Monitor",
       icon: Mail,
