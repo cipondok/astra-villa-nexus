@@ -492,3 +492,6 @@ verify_jwt = false
 
 [functions.investor-psychology-domination]
 verify_jwt = false
+
+[functions.market-capture-blitzkrieg]
+verify_jwt = false
