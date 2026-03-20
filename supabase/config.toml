@@ -561,3 +561,6 @@ verify_jwt = false
 
 [functions.ai-human-symbiosis]
 verify_jwt = false
+
+[functions.planetary-stability]
+verify_jwt = false
