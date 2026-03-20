@@ -1,5 +1,6 @@
 import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useLocation } from 'react-router-dom';
 import { 
   Phone, Mail, Facebook, Instagram, 
   MessageCircle, Youtube, Twitter, Music2
