@@ -242,6 +242,7 @@ export const OffPlanProjectManager = lazyRetry(() => import("./OffPlanProjectMan
 export const NegotiationAgentPanel = lazyRetry(() => import("./NegotiationAgentPanel"));
 export const GlobalBrandAuthorityPanel = lazyRetry(() => import("./GlobalBrandAuthorityPanel"));
 export const InstitutionalCapitalGatewayPanel = lazyRetry(() => import("./InstitutionalCapitalGatewayPanel"));
+export const GrowthExperimentationPanel = lazyRetry(() => import("./GrowthExperimentationPanel"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
