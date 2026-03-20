@@ -141,6 +141,7 @@ export const AIModelWeightsPanel = lazyRetry(() => import("./AIModelWeightsPanel
 export const InvestorScoringPanel = lazyRetry(() => import("./InvestorScoringPanel"));
 export const VendorIntelligencePanel = lazyRetry(() => import("./VendorIntelligencePanel"));
 export const RevenueFlywheelPanel = lazyRetry(() => import("./RevenueFlywheelPanel"));
+export const DataMoatGovernancePanel = lazyRetry(() => import("./DataMoatGovernancePanel"));
 export const DOMAccuracyReport = lazyRetry(() => import("./DOMAccuracyReport"));
 export const CronJobMonitor = lazyRetry(() => import("./CronJobMonitor"));
 export const WeightTuningHistory = lazyRetry(() => import("./WeightTuningHistory"));
@@ -338,6 +339,9 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
 
   // Revenue Flywheel
   "revenue-flywheel-optimizer": () => <RevenueFlywheelPanel />,
+
+  // Data Moat
+  "data-moat-governance": () => <DataMoatGovernancePanel />,
 
   // User management
   "user-management":     (sc) => <UserManagementHub onNavigate={sc} />,
@@ -661,6 +665,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "investor-scoring-engine": { label: "Investor Scoring Engine", category: "Investor Management" },
   "vendor-intelligence-engine": { label: "Vendor Intelligence Engine", category: "Operations" },
   "revenue-flywheel-optimizer": { label: "Revenue Flywheel Optimizer", category: "Revenue" },
+  "data-moat-governance": { label: "Data Moat Governance", category: "Strategy" },
   "overview": { label: "Dashboard Overview", category: "" },
   "diagnostic": { label: "Project Diagnostics", category: "System" },
   "project-progress": { label: "Launch Readiness", category: "System" },
