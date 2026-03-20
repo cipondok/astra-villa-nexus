@@ -147,6 +147,7 @@ export const CityExpansionCommandPanel = lazyRetry(() => import("./CityExpansion
 export const SuperAppJourneyPanel = lazyRetry(() => import("./SuperAppJourneyPanel"));
 export const DealClosingAutomationPanel = lazyRetry(() => import("./DealClosingAutomationPanel"));
 export const NetworkEffectSimulatorPanel = lazyRetry(() => import("./NetworkEffectSimulatorPanel"));
+export const GlobalExpansionWarPanel = lazyRetry(() => import("./GlobalExpansionWarPanel"));
 export const DOMAccuracyReport = lazyRetry(() => import("./DOMAccuracyReport"));
 export const CronJobMonitor = lazyRetry(() => import("./CronJobMonitor"));
 export const WeightTuningHistory = lazyRetry(() => import("./WeightTuningHistory"));
