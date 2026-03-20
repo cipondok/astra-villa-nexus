@@ -1,41 +1,37 @@
 
 
-# Optimize Landing Page for Investor Outreach
+# Footer Style Update & Mobile Optimization Plan
 
-## Current State
-The landing page hero has solid structure but needs optimization for converting real investors who receive the link. Key issues:
+## Current Issues
 
-1. **Stats are aspirational/fake** ("10K+ Properties Analyzed", "95% AI Accuracy") — destroys trust with savvy investors
-2. **CTAs are generic** — "Explore Opportunities" doesn't create urgency
-3. **No social proof above the fold** — testimonials exist but are buried below
-4. **No investor-specific entry point** — the onboarding flow exists but isn't linked from hero
-5. **Trust proof section uses fake partner logos** (Ciputra, Sinar Mas) — serious liability if shared publicly
+1. **MobileFooter** has excessive padding (`paddingBottom: calc(4rem + max(env(safe-area-inset-bottom), 8px) + 3.5rem)`) making it too tall
+2. MobileFooter sits above the `MobileBottomTabBar` (fixed bottom nav) but has bloated spacing
+3. Decorative dots at bottom waste vertical space
+4. `rounded-t-3xl` creates unnecessary visual weight
+5. **ProfessionalFooter** (desktop) is reasonable but the Dock takes significant vertical space
 
 ## Changes
 
-### 1. LandingHero.tsx — Investor-Focused Rewrite
-- Replace fake stats with honest, compelling ones: "5 Live Listings", "AI-Scored", "Bali · Jakarta · BSD"
-- Change primary CTA: "Explore Opportunities" → "View Investment Opportunities" linking to `/search`
-- Change secondary CTA: "List Your Property" → "Start Investor Profile" linking to `/onboarding/investor`
-- Add a subtle trust line below CTAs: "Free access · No credit card · AI-powered scoring on every listing"
-- Remove fake floating particles (they add load time, not value)
+### 1. MobileFooter — Slim Redesign
+- Remove `rounded-t-3xl` — use flat top with subtle border
+- Reduce icon buttons from `w-9 h-9` to `w-7 h-7` with `h-3.5 w-3.5` icons
+- Remove decorative dot divider section entirely
+- Reduce padding: `px-3 pt-2 pb-1` with minimal safe-area bottom offset
+- Set `paddingBottom` to just `calc(env(safe-area-inset-bottom) + 56px)` to clear bottom tab bar
+- Single-row compact layout: contact icons left, social icons + copyright right
+- Tighter gaps between elements (`gap-1` instead of `gap-2`)
 
-### 2. LandingTrustProof.tsx — Remove Fake Partners
-- Remove the hardcoded developer partner names (Ciputra, Sinar Mas, etc.) — these imply partnerships that don't exist
-- Keep testimonials but label section as "What Investors Say" (mark as illustrative if needed)
-- Replace partner logos row with a "How It Works" 3-step flow: Browse → Score → Invest
+### 2. ProfessionalFooter — Slimmer Desktop
+- Reduce Dock icon sizes slightly and tighten padding
+- Reduce overall footer padding from `py-3` to `py-2`
+- Make the footer more compact with less whitespace
 
-### 3. LandingFeatured.tsx — Real Data Connection
-- Already queries real properties from DB — just needs the seeded listings to have `opportunity_score >= 70`
-- Add fallback messaging if no scored properties exist yet: "Properties are being scored by our AI engine"
+### 3. LandingFooter — Consistent Slim Style
+- Reduce `py-12` to `py-6` for a slimmer look
+- Tighten mobile padding
 
-### 4. LandingLeadCapture.tsx — Tighten Copy
-- Change heading to "Get Early Access to Premium Deals"
-- Add "Join 50+ investors exploring Indonesian property" (update as real numbers grow)
-
-## Files Modified
-- `src/components/landing/LandingHero.tsx` — stats, CTAs, remove particles
-- `src/components/landing/LandingTrustProof.tsx` — remove fake partners, add how-it-works
-- `src/components/landing/LandingFeatured.tsx` — fallback state
-- `src/components/landing/LandingLeadCapture.tsx` — copy update
+### Files Modified
+- `src/components/MobileFooter.tsx` — slim mobile footer
+- `src/components/ProfessionalFooter.tsx` — tighter desktop footer
+- `src/components/landing/LandingFooter.tsx` — slimmer landing footer
 
