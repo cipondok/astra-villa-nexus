@@ -213,7 +213,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
                       isActive
                         ? "bg-primary-foreground/20 text-primary-foreground"
                         : String(section.badge) === 'New'
-                          ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                          ? "bg-green-500/10 text-green-700 dark:text-green-400"
                           : "bg-primary/10 text-primary"
                     )}>
                       {String(section.badge)}
