@@ -30113,6 +30113,255 @@ export type Database = {
         }
         Relationships: []
       }
+      newf_data_advantage: {
+        Row: {
+          advantage_tier: string | null
+          behavioral_signals_ingested: number | null
+          city: string
+          competitor_data_gap_pct: number | null
+          compounding_rate: number | null
+          computed_at: string | null
+          created_at: string | null
+          domain: string
+          id: string
+          moat_width_score: number | null
+          pricing_accuracy_delta: number | null
+          pricing_accuracy_pct: number | null
+          proprietary_insights_generated: number | null
+          unique_dataset_count: number | null
+        }
+        Insert: {
+          advantage_tier?: string | null
+          behavioral_signals_ingested?: number | null
+          city?: string
+          competitor_data_gap_pct?: number | null
+          compounding_rate?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          domain: string
+          id?: string
+          moat_width_score?: number | null
+          pricing_accuracy_delta?: number | null
+          pricing_accuracy_pct?: number | null
+          proprietary_insights_generated?: number | null
+          unique_dataset_count?: number | null
+        }
+        Update: {
+          advantage_tier?: string | null
+          behavioral_signals_ingested?: number | null
+          city?: string
+          competitor_data_gap_pct?: number | null
+          compounding_rate?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          domain?: string
+          id?: string
+          moat_width_score?: number | null
+          pricing_accuracy_delta?: number | null
+          pricing_accuracy_pct?: number | null
+          proprietary_insights_generated?: number | null
+          unique_dataset_count?: number | null
+        }
+        Relationships: []
+      }
+      newf_ecosystem_hooks: {
+        Row: {
+          api_call_volume: number | null
+          city: string
+          computed_at: string | null
+          created_at: string | null
+          expansion_status: string | null
+          hook_metrics: Json | null
+          hook_type: string
+          id: string
+          integration_depth_score: number | null
+          partner_dependency_index: number | null
+          partner_name: string
+          revenue_contribution: number | null
+          user_adoption_pct: number | null
+        }
+        Insert: {
+          api_call_volume?: number | null
+          city?: string
+          computed_at?: string | null
+          created_at?: string | null
+          expansion_status?: string | null
+          hook_metrics?: Json | null
+          hook_type: string
+          id?: string
+          integration_depth_score?: number | null
+          partner_dependency_index?: number | null
+          partner_name: string
+          revenue_contribution?: number | null
+          user_adoption_pct?: number | null
+        }
+        Update: {
+          api_call_volume?: number | null
+          city?: string
+          computed_at?: string | null
+          created_at?: string | null
+          expansion_status?: string | null
+          hook_metrics?: Json | null
+          hook_type?: string
+          id?: string
+          integration_depth_score?: number | null
+          partner_dependency_index?: number | null
+          partner_name?: string
+          revenue_contribution?: number | null
+          user_adoption_pct?: number | null
+        }
+        Relationships: []
+      }
+      newf_liquidity_gravity: {
+        Row: {
+          city: string
+          computed_at: string | null
+          created_at: string | null
+          deal_activity_index: number | null
+          discovery_accuracy_score: number | null
+          district: string
+          feedback_loop_velocity: number | null
+          gravity_phase: string | null
+          gravity_pull: number | null
+          id: string
+          listing_quality_index: number | null
+          loop_metrics: Json | null
+          retention_rate: number | null
+        }
+        Insert: {
+          city?: string
+          computed_at?: string | null
+          created_at?: string | null
+          deal_activity_index?: number | null
+          discovery_accuracy_score?: number | null
+          district: string
+          feedback_loop_velocity?: number | null
+          gravity_phase?: string | null
+          gravity_pull?: number | null
+          id?: string
+          listing_quality_index?: number | null
+          loop_metrics?: Json | null
+          retention_rate?: number | null
+        }
+        Update: {
+          city?: string
+          computed_at?: string | null
+          created_at?: string | null
+          deal_activity_index?: number | null
+          discovery_accuracy_score?: number | null
+          district?: string
+          feedback_loop_velocity?: number | null
+          gravity_phase?: string | null
+          gravity_pull?: number | null
+          id?: string
+          listing_quality_index?: number | null
+          loop_metrics?: Json | null
+          retention_rate?: number | null
+        }
+        Relationships: []
+      }
+      newf_participant_lockin: {
+        Row: {
+          active_participants: number | null
+          avg_tenure_months: number | null
+          churn_probability: number | null
+          city: string
+          computed_at: string | null
+          created_at: string | null
+          id: string
+          lockin_metrics: Json | null
+          participant_type: string
+          performance_visibility_score: number | null
+          portfolio_dependency_depth: number | null
+          reward_tier: string | null
+          switching_friction_index: number | null
+          workflow_integration_count: number | null
+        }
+        Insert: {
+          active_participants?: number | null
+          avg_tenure_months?: number | null
+          churn_probability?: number | null
+          city?: string
+          computed_at?: string | null
+          created_at?: string | null
+          id?: string
+          lockin_metrics?: Json | null
+          participant_type: string
+          performance_visibility_score?: number | null
+          portfolio_dependency_depth?: number | null
+          reward_tier?: string | null
+          switching_friction_index?: number | null
+          workflow_integration_count?: number | null
+        }
+        Update: {
+          active_participants?: number | null
+          avg_tenure_months?: number | null
+          churn_probability?: number | null
+          city?: string
+          computed_at?: string | null
+          created_at?: string | null
+          id?: string
+          lockin_metrics?: Json | null
+          participant_type?: string
+          performance_visibility_score?: number | null
+          portfolio_dependency_depth?: number | null
+          reward_tier?: string | null
+          switching_friction_index?: number | null
+          workflow_integration_count?: number | null
+        }
+        Relationships: []
+      }
+      newf_reputation_flywheel: {
+        Row: {
+          amplification_multiplier: number | null
+          city: string
+          computed_at: string | null
+          created_at: string | null
+          deal_success_rate: number | null
+          district: string
+          flywheel_phase: string | null
+          id: string
+          marketplace_reliability_index: number | null
+          phase_metrics: Json | null
+          reputation_momentum: number | null
+          review_velocity: number | null
+          top_performer_count: number | null
+          trust_ecosystem_score: number | null
+        }
+        Insert: {
+          amplification_multiplier?: number | null
+          city?: string
+          computed_at?: string | null
+          created_at?: string | null
+          deal_success_rate?: number | null
+          district: string
+          flywheel_phase?: string | null
+          id?: string
+          marketplace_reliability_index?: number | null
+          phase_metrics?: Json | null
+          reputation_momentum?: number | null
+          review_velocity?: number | null
+          top_performer_count?: number | null
+          trust_ecosystem_score?: number | null
+        }
+        Update: {
+          amplification_multiplier?: number | null
+          city?: string
+          computed_at?: string | null
+          created_at?: string | null
+          deal_success_rate?: number | null
+          district?: string
+          flywheel_phase?: string | null
+          id?: string
+          marketplace_reliability_index?: number | null
+          phase_metrics?: Json | null
+          reputation_momentum?: number | null
+          review_velocity?: number | null
+          top_performer_count?: number | null
+          trust_ecosystem_score?: number | null
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           email: string
