@@ -17962,6 +17962,288 @@ export type Database = {
         }
         Relationships: []
       }
+      fscc_org_alignment: {
+        Row: {
+          alignment_score: number | null
+          blockers: Json | null
+          created_at: string | null
+          cross_team_dependencies: string[] | null
+          execution_velocity: number | null
+          function_area: string | null
+          headcount_current: number | null
+          headcount_target: number | null
+          hiring_gap: number | null
+          id: string
+          key_milestones: Json | null
+          measured_at: string | null
+          resource_utilization_pct: number | null
+          sprint_completion_pct: number | null
+          team_name: string
+          velocity_trend: string | null
+        }
+        Insert: {
+          alignment_score?: number | null
+          blockers?: Json | null
+          created_at?: string | null
+          cross_team_dependencies?: string[] | null
+          execution_velocity?: number | null
+          function_area?: string | null
+          headcount_current?: number | null
+          headcount_target?: number | null
+          hiring_gap?: number | null
+          id?: string
+          key_milestones?: Json | null
+          measured_at?: string | null
+          resource_utilization_pct?: number | null
+          sprint_completion_pct?: number | null
+          team_name: string
+          velocity_trend?: string | null
+        }
+        Update: {
+          alignment_score?: number | null
+          blockers?: Json | null
+          created_at?: string | null
+          cross_team_dependencies?: string[] | null
+          execution_velocity?: number | null
+          function_area?: string | null
+          headcount_current?: number | null
+          headcount_target?: number | null
+          hiring_gap?: number | null
+          id?: string
+          key_milestones?: Json | null
+          measured_at?: string | null
+          resource_utilization_pct?: number | null
+          sprint_completion_pct?: number | null
+          team_name?: string
+          velocity_trend?: string | null
+        }
+        Relationships: []
+      }
+      fscc_priority_decisions: {
+        Row: {
+          affected_cities: string[] | null
+          affected_metrics: string[] | null
+          alternative_actions: Json | null
+          assessed_at: string | null
+          confidence: number | null
+          created_at: string | null
+          deadline: string | null
+          decided_at: string | null
+          decision_category: string
+          estimated_roi_pct: number | null
+          id: string
+          impact_score: number | null
+          outcome_notes: string | null
+          recommended_action: string | null
+          status: string | null
+          title: string
+          urgency: string | null
+        }
+        Insert: {
+          affected_cities?: string[] | null
+          affected_metrics?: string[] | null
+          alternative_actions?: Json | null
+          assessed_at?: string | null
+          confidence?: number | null
+          created_at?: string | null
+          deadline?: string | null
+          decided_at?: string | null
+          decision_category: string
+          estimated_roi_pct?: number | null
+          id?: string
+          impact_score?: number | null
+          outcome_notes?: string | null
+          recommended_action?: string | null
+          status?: string | null
+          title: string
+          urgency?: string | null
+        }
+        Update: {
+          affected_cities?: string[] | null
+          affected_metrics?: string[] | null
+          alternative_actions?: Json | null
+          assessed_at?: string | null
+          confidence?: number | null
+          created_at?: string | null
+          deadline?: string | null
+          decided_at?: string | null
+          decision_category?: string
+          estimated_roi_pct?: number | null
+          id?: string
+          impact_score?: number | null
+          outcome_notes?: string | null
+          recommended_action?: string | null
+          status?: string | null
+          title?: string
+          urgency?: string | null
+        }
+        Relationships: []
+      }
+      fscc_scenario_simulations: {
+        Row: {
+          base_case: Json | null
+          bear_case: Json | null
+          bull_case: Json | null
+          created_at: string | null
+          expected_value_usd: number | null
+          id: string
+          key_assumptions: string[] | null
+          probability_base: number | null
+          probability_bear: number | null
+          probability_bull: number | null
+          result_summary: string | null
+          risk_adjusted_return: number | null
+          scenario_name: string
+          scenario_type: string
+          sensitivity_factors: Json | null
+          simulated_at: string | null
+          simulation_status: string | null
+          time_horizon_months: number | null
+        }
+        Insert: {
+          base_case?: Json | null
+          bear_case?: Json | null
+          bull_case?: Json | null
+          created_at?: string | null
+          expected_value_usd?: number | null
+          id?: string
+          key_assumptions?: string[] | null
+          probability_base?: number | null
+          probability_bear?: number | null
+          probability_bull?: number | null
+          result_summary?: string | null
+          risk_adjusted_return?: number | null
+          scenario_name: string
+          scenario_type: string
+          sensitivity_factors?: Json | null
+          simulated_at?: string | null
+          simulation_status?: string | null
+          time_horizon_months?: number | null
+        }
+        Update: {
+          base_case?: Json | null
+          bear_case?: Json | null
+          bull_case?: Json | null
+          created_at?: string | null
+          expected_value_usd?: number | null
+          id?: string
+          key_assumptions?: string[] | null
+          probability_base?: number | null
+          probability_bear?: number | null
+          probability_bull?: number | null
+          result_summary?: string | null
+          risk_adjusted_return?: number | null
+          scenario_name?: string
+          scenario_type?: string
+          sensitivity_factors?: Json | null
+          simulated_at?: string | null
+          simulation_status?: string | null
+          time_horizon_months?: number | null
+        }
+        Relationships: []
+      }
+      fscc_strategic_signals: {
+        Row: {
+          action_deadline: string | null
+          city: string | null
+          context_data: Json | null
+          country: string | null
+          created_at: string | null
+          detected_at: string | null
+          id: string
+          requires_action: boolean | null
+          severity: string | null
+          signal_domain: string
+          signal_name: string
+          signal_trend: string | null
+          signal_value: number | null
+        }
+        Insert: {
+          action_deadline?: string | null
+          city?: string | null
+          context_data?: Json | null
+          country?: string | null
+          created_at?: string | null
+          detected_at?: string | null
+          id?: string
+          requires_action?: boolean | null
+          severity?: string | null
+          signal_domain: string
+          signal_name: string
+          signal_trend?: string | null
+          signal_value?: number | null
+        }
+        Update: {
+          action_deadline?: string | null
+          city?: string | null
+          context_data?: Json | null
+          country?: string | null
+          created_at?: string | null
+          detected_at?: string | null
+          id?: string
+          requires_action?: boolean | null
+          severity?: string | null
+          signal_domain?: string
+          signal_name?: string
+          signal_trend?: string | null
+          signal_value?: number | null
+        }
+        Relationships: []
+      }
+      fscc_vision_tracking: {
+        Row: {
+          created_at: string | null
+          current_value: number | null
+          goal_category: string | null
+          goal_name: string
+          id: string
+          investor_talking_points: string[] | null
+          last_updated: string | null
+          milestones_completed: number | null
+          milestones_total: number | null
+          narrative_summary: string | null
+          progress_pct: number | null
+          risk_factors: string[] | null
+          target_value: number | null
+          time_horizon: string | null
+          trajectory: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_value?: number | null
+          goal_category?: string | null
+          goal_name: string
+          id?: string
+          investor_talking_points?: string[] | null
+          last_updated?: string | null
+          milestones_completed?: number | null
+          milestones_total?: number | null
+          narrative_summary?: string | null
+          progress_pct?: number | null
+          risk_factors?: string[] | null
+          target_value?: number | null
+          time_horizon?: string | null
+          trajectory?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          current_value?: number | null
+          goal_category?: string | null
+          goal_name?: string
+          id?: string
+          investor_talking_points?: string[] | null
+          last_updated?: string | null
+          milestones_completed?: number | null
+          milestones_total?: number | null
+          narrative_summary?: string | null
+          progress_pct?: number | null
+          risk_factors?: string[] | null
+          target_value?: number | null
+          time_horizon?: string | null
+          trajectory?: string | null
+        }
+        Relationships: []
+      }
       fspcm_capital_leverage: {
         Row: {
           capital_access_multiplier: number | null
