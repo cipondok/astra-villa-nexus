@@ -489,3 +489,6 @@ verify_jwt = false
 
 [functions.category-creator-narrative]
 verify_jwt = false
+
+[functions.investor-psychology-domination]
+verify_jwt = false

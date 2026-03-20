@@ -122,6 +122,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   ihwi_engine_cycle: { label: 'Infinite Horizon Wealth', icon: '♾️' },
   ccne_category_crystallized: { label: 'Category Crystallized', icon: '💎' },
   ccne_engine_cycle: { label: 'Narrative Engine', icon: '📖' },
+  gipd_sentiment_extreme: { label: 'Sentiment Extreme', icon: '🧠' },
+  gipd_engine_cycle: { label: 'Psychology Engine', icon: '🎯' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
