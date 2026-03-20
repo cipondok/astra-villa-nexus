@@ -750,6 +750,13 @@ export const navigationSections = {
       badge: "🧪 AI Growth"
     },
     {
+      key: "mega-city-domination",
+      label: "Mega-City Domination",
+      icon: MapPin,
+      description: "District scoring, tactical execution blitz, KPI benchmarks & phased domination timeline",
+      badge: "⚔️ War Plan"
+    },
+    {
       key: "workforce-scheduler",
       label: "Workforce Scheduler",
       icon: Clock,

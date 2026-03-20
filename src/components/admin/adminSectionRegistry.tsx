@@ -977,4 +977,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-brand-authority": { label: "Global Brand Authority", category: "Strategy" },
   "institutional-capital-gateway": { label: "Institutional Capital Gateway", category: "Investor Management" },
   "growth-experimentation": { label: "Growth Experimentation Engine", category: "Operations" },
+  "mega-city-domination": { label: "Mega-City Domination", category: "Operations" },
 };
