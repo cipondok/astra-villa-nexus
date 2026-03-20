@@ -373,8 +373,8 @@ const Navigation = () => {
                 <UserIconWithBadge onNavigate={(path) => navigate(path)} />
               ) : (
                 <div className="relative group">
-                  <Button onClick={() => setShowAuthModal(true)} variant="ghost" size="sm" className="w-8 h-8 p-0 rounded-xl bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300 text-foreground/70 hover:text-gold-primary">
-                    <User className="h-4 w-4" />
+                  <Button onClick={() => setShowAuthModal(true)} variant="ghost" size="sm" className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 p-0 rounded-lg bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300 text-foreground/70 hover:text-gold-primary">
+                    <User className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                   </Button>
                   <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1.5 bg-foreground text-background text-[10px] font-medium rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-[10001] shadow-lg">
                     {t('auth.signIn')}
