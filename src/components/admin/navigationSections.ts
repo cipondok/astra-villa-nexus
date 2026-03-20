@@ -965,13 +965,6 @@ export const navigationSections = {
       badge: "New"
     },
     {
-      key: "property-comparison",
-      label: "Property Comparison",
-      icon: ArrowLeftRight,
-      description: "Side-by-side property analysis with radar charts and detail tables",
-      badge: "New"
-    },
-    {
       key: "system-audit-trail",
       label: "System Audit Trail",
       icon: Shield,
