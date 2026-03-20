@@ -604,6 +604,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "market-heat-intelligence": () => <MarketHeatIntelligence />,
   "opportunity-scoring-engine": () => <OpportunityScoringEngine />,
   "price-prediction-engine": () => <PricePredictionEngine />,
+  "price-prediction-analytics": () => <PricePredictionAnalyticsDashboard />,
   "property-comparison-tool": () => <PropertyComparisonTool />,
 
   // Feature Enhancement dashboards
