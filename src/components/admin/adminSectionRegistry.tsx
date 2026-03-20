@@ -398,6 +398,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "vendors-hub":         () => <VendorsHubContent />,
   "vendor-agent-control": () => <EnhancedVendorAgentControl />,
   "vendor-revenue-optimization": () => <VendorRevenueOptimizationPanel />,
+  "city-expansion-command": () => <CityExpansionCommandPanel />,
 
   // Content
   "homepage-slider":     () => <HomepageSliderSettings />,
