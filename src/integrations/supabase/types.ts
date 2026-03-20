@@ -18303,6 +18303,285 @@ export type Database = {
         }
         Relationships: []
       }
+      fycs_capital_gravity: {
+        Row: {
+          capital_velocity: number | null
+          city: string
+          cluster_type: string | null
+          competing_clusters: number | null
+          computed_at: string
+          country: string
+          created_at: string
+          data_transparency_score: number | null
+          decade_horizon: number
+          gravity_pull_index: number | null
+          gravity_tier: string | null
+          id: string
+          institutional_capital_usd: number | null
+          liquidity_concentration: number | null
+          technology_ecosystem_depth: number | null
+          trajectory: string | null
+        }
+        Insert: {
+          capital_velocity?: number | null
+          city: string
+          cluster_type?: string | null
+          competing_clusters?: number | null
+          computed_at?: string
+          country?: string
+          created_at?: string
+          data_transparency_score?: number | null
+          decade_horizon?: number
+          gravity_pull_index?: number | null
+          gravity_tier?: string | null
+          id?: string
+          institutional_capital_usd?: number | null
+          liquidity_concentration?: number | null
+          technology_ecosystem_depth?: number | null
+          trajectory?: string | null
+        }
+        Update: {
+          capital_velocity?: number | null
+          city?: string
+          cluster_type?: string | null
+          competing_clusters?: number | null
+          computed_at?: string
+          country?: string
+          created_at?: string
+          data_transparency_score?: number | null
+          decade_horizon?: number
+          gravity_pull_index?: number | null
+          gravity_tier?: string | null
+          id?: string
+          institutional_capital_usd?: number | null
+          liquidity_concentration?: number | null
+          technology_ecosystem_depth?: number | null
+          trajectory?: string | null
+        }
+        Relationships: []
+      }
+      fycs_economic_stability: {
+        Row: {
+          asset_allocation_discipline: number | null
+          city: string
+          computed_at: string
+          country: string
+          created_at: string
+          decade_horizon: number
+          housing_supply_resilience: number | null
+          id: string
+          market_inefficiency_reduction: number | null
+          platform_contribution_pct: number | null
+          price_discovery_accuracy: number | null
+          stability_composite_score: number | null
+          stability_tier: string | null
+          systemic_risk_contribution: number | null
+          volatility_dampening: number | null
+        }
+        Insert: {
+          asset_allocation_discipline?: number | null
+          city: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          decade_horizon?: number
+          housing_supply_resilience?: number | null
+          id?: string
+          market_inefficiency_reduction?: number | null
+          platform_contribution_pct?: number | null
+          price_discovery_accuracy?: number | null
+          stability_composite_score?: number | null
+          stability_tier?: string | null
+          systemic_risk_contribution?: number | null
+          volatility_dampening?: number | null
+        }
+        Update: {
+          asset_allocation_discipline?: number | null
+          city?: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          decade_horizon?: number
+          housing_supply_resilience?: number | null
+          id?: string
+          market_inefficiency_reduction?: number | null
+          platform_contribution_pct?: number | null
+          price_discovery_accuracy?: number | null
+          stability_composite_score?: number | null
+          stability_tier?: string | null
+          systemic_risk_contribution?: number | null
+          volatility_dampening?: number | null
+        }
+        Relationships: []
+      }
+      fycs_innovation_waves: {
+        Row: {
+          adoption_pct: number | null
+          computed_at: string
+          created_at: string
+          current_phase: string | null
+          decade_horizon: number
+          disruption_intensity: number | null
+          id: string
+          market_impact_multiplier: number | null
+          opportunity_window_years: number | null
+          platform_positioning: string | null
+          real_estate_cycle_phase: string | null
+          synchronization_score: number | null
+          wave_name: string
+          wave_type: string
+        }
+        Insert: {
+          adoption_pct?: number | null
+          computed_at?: string
+          created_at?: string
+          current_phase?: string | null
+          decade_horizon?: number
+          disruption_intensity?: number | null
+          id?: string
+          market_impact_multiplier?: number | null
+          opportunity_window_years?: number | null
+          platform_positioning?: string | null
+          real_estate_cycle_phase?: string | null
+          synchronization_score?: number | null
+          wave_name: string
+          wave_type?: string
+        }
+        Update: {
+          adoption_pct?: number | null
+          computed_at?: string
+          created_at?: string
+          current_phase?: string | null
+          decade_horizon?: number
+          disruption_intensity?: number | null
+          id?: string
+          market_impact_multiplier?: number | null
+          opportunity_window_years?: number | null
+          platform_positioning?: string | null
+          real_estate_cycle_phase?: string | null
+          synchronization_score?: number | null
+          wave_name?: string
+          wave_type?: string
+        }
+        Relationships: []
+      }
+      fycs_strategic_positioning: {
+        Row: {
+          brand_permanence_index: number | null
+          capability_reinvention_score: number | null
+          competitive_moat_depth: number | null
+          computed_at: string
+          created_at: string
+          decade_horizon: number
+          ecosystem_lock_in: number | null
+          geographic_diversification_index: number | null
+          id: string
+          monetization_adaptability: number | null
+          positioning_tier: string | null
+          relevance_score: number | null
+          risk_scenario: string | null
+          strategic_resilience: number | null
+          strategy_domain: string
+        }
+        Insert: {
+          brand_permanence_index?: number | null
+          capability_reinvention_score?: number | null
+          competitive_moat_depth?: number | null
+          computed_at?: string
+          created_at?: string
+          decade_horizon?: number
+          ecosystem_lock_in?: number | null
+          geographic_diversification_index?: number | null
+          id?: string
+          monetization_adaptability?: number | null
+          positioning_tier?: string | null
+          relevance_score?: number | null
+          risk_scenario?: string | null
+          strategic_resilience?: number | null
+          strategy_domain: string
+        }
+        Update: {
+          brand_permanence_index?: number | null
+          capability_reinvention_score?: number | null
+          competitive_moat_depth?: number | null
+          computed_at?: string
+          created_at?: string
+          decade_horizon?: number
+          ecosystem_lock_in?: number | null
+          geographic_diversification_index?: number | null
+          id?: string
+          monetization_adaptability?: number | null
+          positioning_tier?: string | null
+          relevance_score?: number | null
+          risk_scenario?: string | null
+          strategic_resilience?: number | null
+          strategy_domain?: string
+        }
+        Relationships: []
+      }
+      fycs_urban_macrocycle: {
+        Row: {
+          city: string
+          climate_resilience_score: number | null
+          computed_at: string
+          country: string
+          created_at: string
+          decade_horizon: number
+          demographic_migration_net: number | null
+          density_trajectory: string | null
+          id: string
+          infrastructure_investment_usd: number | null
+          infrastructure_wave_phase: string | null
+          macrocycle_confidence: number | null
+          macrocycle_phase: string | null
+          megacity_probability: number | null
+          population_projection_m: number | null
+          region: string | null
+          smart_city_readiness: number | null
+          urbanization_rate: number | null
+        }
+        Insert: {
+          city: string
+          climate_resilience_score?: number | null
+          computed_at?: string
+          country?: string
+          created_at?: string
+          decade_horizon?: number
+          demographic_migration_net?: number | null
+          density_trajectory?: string | null
+          id?: string
+          infrastructure_investment_usd?: number | null
+          infrastructure_wave_phase?: string | null
+          macrocycle_confidence?: number | null
+          macrocycle_phase?: string | null
+          megacity_probability?: number | null
+          population_projection_m?: number | null
+          region?: string | null
+          smart_city_readiness?: number | null
+          urbanization_rate?: number | null
+        }
+        Update: {
+          city?: string
+          climate_resilience_score?: number | null
+          computed_at?: string
+          country?: string
+          created_at?: string
+          decade_horizon?: number
+          demographic_migration_net?: number | null
+          density_trajectory?: string | null
+          id?: string
+          infrastructure_investment_usd?: number | null
+          infrastructure_wave_phase?: string | null
+          macrocycle_confidence?: number | null
+          macrocycle_phase?: string | null
+          megacity_probability?: number | null
+          population_projection_m?: number | null
+          region?: string | null
+          smart_city_readiness?: number | null
+          urbanization_rate?: number | null
+        }
+        Relationships: []
+      }
       gali_asset_discovery_graph: {
         Row: {
           asset_id: string | null

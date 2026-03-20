@@ -549,3 +549,6 @@ verify_jwt = false
 
 [functions.proptech-legacy-architecture]
 verify_jwt = false
+
+[functions.capital-civilization-strategy]
+verify_jwt = false
