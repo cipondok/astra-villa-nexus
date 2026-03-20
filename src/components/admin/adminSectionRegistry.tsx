@@ -974,4 +974,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ai-negotiation-agent": { label: "AI Negotiation Agent", category: "Transactions" },
   "global-brand-authority": { label: "Global Brand Authority", category: "Strategy" },
   "institutional-capital-gateway": { label: "Institutional Capital Gateway", category: "Investor Management" },
+  "growth-experimentation": { label: "Growth Experimentation Engine", category: "Operations" },
 };
