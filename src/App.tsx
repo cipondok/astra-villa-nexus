@@ -371,6 +371,7 @@ const VendorMonetizationPyramidPage = lazy(() => import('@/pages/VendorMonetizat
 const InstitutionalSaaSBlueprintPage = lazy(() => import('@/pages/InstitutionalSaaSBlueprintPage'));
 const RevenueScalingBlueprintPage = lazy(() => import('@/pages/RevenueScalingBlueprintPage'));
 const MonetizationPricingPage = lazy(() => import('@/pages/MonetizationPricingPage'));
+const SprintExecutionRoadmapPage = lazy(() => import('@/pages/SprintExecutionRoadmapPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -860,6 +861,7 @@ const AppContent = () => {
                 <Route path="/institutional-saas-blueprint" element={<InstitutionalSaaSBlueprintPage />} />
                 <Route path="/revenue-scaling-blueprint" element={<RevenueScalingBlueprintPage />} />
                 <Route path="/monetization-pricing" element={<MonetizationPricingPage />} />
+                <Route path="/sprint-execution-roadmap" element={<SprintExecutionRoadmapPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
