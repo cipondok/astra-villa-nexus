@@ -350,6 +350,270 @@ export type Database = {
         }
         Relationships: []
       }
+      acecm_capital_feedback_loop: {
+        Row: {
+          amplification_factor: number | null
+          capital_inflow_usd: number | null
+          city: string
+          computed_at: string
+          country: string
+          created_at: string
+          data_signal_strength: number | null
+          feedback_health: string | null
+          id: string
+          is_self_sustaining: boolean | null
+          loop_iterations: number | null
+          loop_stage: string
+          loop_velocity: number | null
+          new_capital_attracted_usd: number | null
+          transaction_activity_index: number | null
+        }
+        Insert: {
+          amplification_factor?: number | null
+          capital_inflow_usd?: number | null
+          city: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          data_signal_strength?: number | null
+          feedback_health?: string | null
+          id?: string
+          is_self_sustaining?: boolean | null
+          loop_iterations?: number | null
+          loop_stage?: string
+          loop_velocity?: number | null
+          new_capital_attracted_usd?: number | null
+          transaction_activity_index?: number | null
+        }
+        Update: {
+          amplification_factor?: number | null
+          capital_inflow_usd?: number | null
+          city?: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          data_signal_strength?: number | null
+          feedback_health?: string | null
+          id?: string
+          is_self_sustaining?: boolean | null
+          loop_iterations?: number | null
+          loop_stage?: string
+          loop_velocity?: number | null
+          new_capital_attracted_usd?: number | null
+          transaction_activity_index?: number | null
+        }
+        Relationships: []
+      }
+      acecm_capital_signals: {
+        Row: {
+          city: string
+          composite_signal_strength: number | null
+          computed_at: string
+          country: string
+          created_at: string
+          data_points_consumed: number | null
+          district: string | null
+          id: string
+          investor_behavioral_score: number | null
+          liquidity_concentration: number | null
+          pricing_momentum: number | null
+          signal_confidence: number | null
+          signal_trend: string | null
+          signal_type: string
+          transaction_velocity: number | null
+        }
+        Insert: {
+          city: string
+          composite_signal_strength?: number | null
+          computed_at?: string
+          country?: string
+          created_at?: string
+          data_points_consumed?: number | null
+          district?: string | null
+          id?: string
+          investor_behavioral_score?: number | null
+          liquidity_concentration?: number | null
+          pricing_momentum?: number | null
+          signal_confidence?: number | null
+          signal_trend?: string | null
+          signal_type?: string
+          transaction_velocity?: number | null
+        }
+        Update: {
+          city?: string
+          composite_signal_strength?: number | null
+          computed_at?: string
+          country?: string
+          created_at?: string
+          data_points_consumed?: number | null
+          district?: string | null
+          id?: string
+          investor_behavioral_score?: number | null
+          liquidity_concentration?: number | null
+          pricing_momentum?: number | null
+          signal_confidence?: number | null
+          signal_trend?: string | null
+          signal_type?: string
+          transaction_velocity?: number | null
+        }
+        Relationships: []
+      }
+      acecm_governance_risk: {
+        Row: {
+          assessed_at: string
+          concentration_risk_flag: boolean | null
+          created_at: string
+          ethical_compliance_pct: number | null
+          governance_domain: string
+          id: string
+          last_audit_at: string | null
+          market_stability_score: number | null
+          regulatory_engagement_level: string | null
+          regulatory_jurisdictions: string[] | null
+          responsible_deployment_score: number | null
+          risk_mitigation_actions: Json | null
+          systemic_impact_assessment: string | null
+          transparency_index: number | null
+        }
+        Insert: {
+          assessed_at?: string
+          concentration_risk_flag?: boolean | null
+          created_at?: string
+          ethical_compliance_pct?: number | null
+          governance_domain: string
+          id?: string
+          last_audit_at?: string | null
+          market_stability_score?: number | null
+          regulatory_engagement_level?: string | null
+          regulatory_jurisdictions?: string[] | null
+          responsible_deployment_score?: number | null
+          risk_mitigation_actions?: Json | null
+          systemic_impact_assessment?: string | null
+          transparency_index?: number | null
+        }
+        Update: {
+          assessed_at?: string
+          concentration_risk_flag?: boolean | null
+          created_at?: string
+          ethical_compliance_pct?: number | null
+          governance_domain?: string
+          id?: string
+          last_audit_at?: string | null
+          market_stability_score?: number | null
+          regulatory_engagement_level?: string | null
+          regulatory_jurisdictions?: string[] | null
+          responsible_deployment_score?: number | null
+          risk_mitigation_actions?: Json | null
+          systemic_impact_assessment?: string | null
+          transparency_index?: number | null
+        }
+        Relationships: []
+      }
+      acecm_institutional_influence: {
+        Row: {
+          adoption_stage: string | null
+          capital_influenced_usd: number | null
+          created_at: string
+          data_dependency_score: number | null
+          deals_influenced: number | null
+          decision_influence_index: number | null
+          id: string
+          institution_name: string | null
+          institution_segment: string
+          integration_depth: string | null
+          measured_at: string
+          pipeline_reliance_score: number | null
+          risk_diversification_impact: number | null
+          underwriting_adoption_pct: number | null
+        }
+        Insert: {
+          adoption_stage?: string | null
+          capital_influenced_usd?: number | null
+          created_at?: string
+          data_dependency_score?: number | null
+          deals_influenced?: number | null
+          decision_influence_index?: number | null
+          id?: string
+          institution_name?: string | null
+          institution_segment: string
+          integration_depth?: string | null
+          measured_at?: string
+          pipeline_reliance_score?: number | null
+          risk_diversification_impact?: number | null
+          underwriting_adoption_pct?: number | null
+        }
+        Update: {
+          adoption_stage?: string | null
+          capital_influenced_usd?: number | null
+          created_at?: string
+          data_dependency_score?: number | null
+          deals_influenced?: number | null
+          decision_influence_index?: number | null
+          id?: string
+          institution_name?: string | null
+          institution_segment?: string
+          integration_depth?: string | null
+          measured_at?: string
+          pipeline_reliance_score?: number | null
+          risk_diversification_impact?: number | null
+          underwriting_adoption_pct?: number | null
+        }
+        Relationships: []
+      }
+      acecm_opportunity_gravity: {
+        Row: {
+          ai_recommendation_influence: number | null
+          capital_attraction_rate: number | null
+          city: string
+          competing_markets: number | null
+          computed_at: string
+          country: string
+          created_at: string
+          deal_flow_visibility: number | null
+          disproportionate_share_pct: number | null
+          district: string | null
+          gravity_score: number | null
+          gravity_tier: string | null
+          gravity_trend: string | null
+          id: string
+          investor_attention_index: number | null
+        }
+        Insert: {
+          ai_recommendation_influence?: number | null
+          capital_attraction_rate?: number | null
+          city: string
+          competing_markets?: number | null
+          computed_at?: string
+          country?: string
+          created_at?: string
+          deal_flow_visibility?: number | null
+          disproportionate_share_pct?: number | null
+          district?: string | null
+          gravity_score?: number | null
+          gravity_tier?: string | null
+          gravity_trend?: string | null
+          id?: string
+          investor_attention_index?: number | null
+        }
+        Update: {
+          ai_recommendation_influence?: number | null
+          capital_attraction_rate?: number | null
+          city?: string
+          competing_markets?: number | null
+          computed_at?: string
+          country?: string
+          created_at?: string
+          deal_flow_visibility?: number | null
+          disproportionate_share_pct?: number | null
+          district?: string | null
+          gravity_score?: number | null
+          gravity_tier?: string | null
+          gravity_trend?: string | null
+          id?: string
+          investor_attention_index?: number | null
+        }
+        Relationships: []
+      }
       aces_ecosystem_depth: {
         Row: {
           api_call_volume_daily: number | null
