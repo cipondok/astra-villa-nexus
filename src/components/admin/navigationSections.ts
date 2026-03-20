@@ -1540,6 +1540,13 @@ export const navigationSections = {
       badge: "💧 Liquidity AI"
     },
     {
+      key: "investor-deal-matching",
+      label: "Investor Deal Matching AI",
+      icon: Target,
+      description: "AI matching engine — investor-property pairing with confidence scoring, offer ranges, and strategy tags",
+      badge: "🎯 Deal Match"
+    },
+    {
       key: "investor-community",
       label: "Investor Community",
       icon: Users,
