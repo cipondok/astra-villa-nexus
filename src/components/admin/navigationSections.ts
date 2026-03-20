@@ -693,6 +693,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "investor-scoring-engine",
+      label: "Investor Scoring Engine",
+      icon: Target,
+      description: "Capital readiness, conversion probability, style classification & weight overrides",
+      badge: "New"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
@@ -707,6 +714,13 @@ export const navigationSections = {
       badge: "AI"
     },
     {
+      key: "price-prediction-analytics",
+      label: "Price Prediction Analytics",
+      icon: Brain,
+      description: "ML model metrics, market coverage, and batch prediction controls",
+      badge: "AI"
+    },
+    {
       key: "workforce-scheduler",
       label: "Workforce Scheduler",
       icon: Clock,
@@ -716,6 +730,35 @@ export const navigationSections = {
   ],
 
   "vendor-management": [
+    {
+      key: "vendor-management-overview",
+      label: "📊 Vendors Overview",
+      icon: LayoutDashboard,
+      description: "Category dashboard — overview of all vendor management modules"
+    },
+    {
+      key: "vendors-hub",
+      label: "Vendors Hub",
+      icon: ShoppingBag,
+      description: "Comprehensive vendor management platform with all vendor-related functionality including services, categories, KYC, analytics, and control panel"
+    },
+    {
+      key: "vendor-revenue-optimization",
+      label: "Revenue Optimization",
+      icon: TrendingUp,
+      description: "AI-driven vendor scoring, lead routing, pricing intelligence & upsell automation",
+      badge: "AI"
+    },
+    {
+      key: "vendor-performance",
+      label: "Vendor Performance",
+      icon: Store,
+      description: "Service provider metrics, quality scores, and category performance",
+      badge: "New"
+    }
+  ],
+
+  "analytics-monitoring": [
     {
       key: "analytics-monitoring-overview",
       label: "📊 Analytics Overview",
@@ -915,21 +958,7 @@ export const navigationSections = {
       badge: "New"
     },
     {
-      key: "api-usage",
-      label: "API Usage Monitor",
-      icon: Activity,
-      description: "Edge function performance, traffic patterns, latency, and error rates",
-      badge: "New"
-    },
-    {
-      key: "vendor-performance",
-      label: "Vendor Performance",
-      icon: Store,
-      description: "Service provider metrics, quality scores, and category performance",
-      badge: "New"
-    },
-    {
-      key: "commission-tracker-analytics",
+      key: "commission-tracker",
       label: "Commission Tracker",
       icon: DollarSign,
       description: "Agent commissions, payouts, and revenue splits with trend analysis",
@@ -954,13 +983,6 @@ export const navigationSections = {
       label: "Subscription Plans",
       icon: Crown,
       description: "Plan performance, MRR tracking, churn rates, and conversion funnels",
-      badge: "New"
-    },
-    {
-      key: "commission-tracker",
-      label: "Commission Tracker",
-      icon: DollarSign,
-      description: "Agent commissions, payouts, and revenue splits with trend analysis",
       badge: "New"
     },
     {
@@ -1045,13 +1067,6 @@ export const navigationSections = {
       label: "Ad Campaigns",
       icon: Megaphone,
       description: "Paid advertising campaigns, budget tracking, ROAS, and platform performance",
-      badge: "New"
-    },
-    {
-      key: "workforce-scheduler",
-      label: "Workforce Scheduler",
-      icon: Clock,
-      description: "Staff scheduling, shift management, and team utilization tracking",
       badge: "New"
     },
     {
