@@ -507,3 +507,6 @@ verify_jwt = false
 
 [functions.institutional-capital-trust]
 verify_jwt = false
+
+[functions.valuation-expansion]
+verify_jwt = false
