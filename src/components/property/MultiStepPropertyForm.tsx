@@ -446,12 +446,12 @@ const MultiStepPropertyForm = () => {
       )}
 
       {/* Progress Bar */}
-      <div className="space-y-1.5">
-        <div className="flex justify-between text-xs">
-          <span className="font-medium text-foreground">Step {getCurrentStepIndex() + 1} of {steps.length}</span>
+      <div className="space-y-1">
+        <div className="flex justify-between text-[10px] md:text-xs">
+          <span className="font-medium text-foreground">Step {getCurrentStepIndex() + 1}/{steps.length}</span>
           <span className="text-muted-foreground">{Math.round(progress)}%</span>
         </div>
-        <Progress value={progress} multiColor className="h-2" />
+        <Progress value={progress} multiColor className="h-1.5 md:h-2" />
       </div>
 
       {/* Tabs */}
