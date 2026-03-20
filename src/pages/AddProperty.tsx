@@ -230,7 +230,7 @@ const AddProperty = () => {
       </header>
 
       {/* Main Content */}
-      <div className="container mx-auto px-3 sm:px-4 py-4 md:py-6 space-y-4">
+      <div className="px-2.5 md:container md:mx-auto md:px-4 py-3 md:py-6 space-y-3 md:space-y-4">
         {/* VIP Limit Warning */}
         {!isAdmin && (
           <VIPLimitAlert
@@ -243,26 +243,26 @@ const AddProperty = () => {
         
         {/* Tabs for Manual or Import */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 h-10 sm:h-11 bg-muted/50 border border-border rounded-xl p-1">
+          <TabsList className="grid w-full grid-cols-2 h-8 md:h-11 bg-muted/50 border border-border rounded-lg md:rounded-xl p-0.5 md:p-1">
             <TabsTrigger 
               value="manual" 
-              className="text-xs sm:text-sm gap-1.5 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+              className="text-[11px] md:text-sm gap-1 rounded-md md:rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
             >
-              <PenTool className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <PenTool className="h-3 w-3 md:h-4 md:w-4" />
               {txt.createManually}
             </TabsTrigger>
             <TabsTrigger 
               value="import" 
-              className="text-xs sm:text-sm gap-1.5 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+              className="text-[11px] md:text-sm gap-1 rounded-md md:rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
             >
-              <Link2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <Link2 className="h-3 w-3 md:h-4 md:w-4" />
               {txt.importFromUrl}
             </TabsTrigger>
           </TabsList>
           
-          <TabsContent value="manual" className="mt-4">
+          <TabsContent value="manual" className="mt-2 md:mt-4">
             <Card className="border-border bg-card shadow-sm">
-              <CardContent className="p-3 sm:p-5">
+              <CardContent className="p-2 md:p-5">
                 <MultiStepPropertyForm />
               </CardContent>
             </Card>
