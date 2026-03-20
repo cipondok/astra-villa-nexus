@@ -588,3 +588,6 @@ verify_jwt = false
 
 [functions.institutional-capital-domination]
 verify_jwt = false
+
+[functions.public-market-liquidity]
+verify_jwt = false

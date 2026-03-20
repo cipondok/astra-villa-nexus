@@ -40518,6 +40518,267 @@ export type Database = {
         }
         Relationships: []
       }
+      pmlg_ecosystem_expansion: {
+        Row: {
+          assessed_at: string
+          competitive_moat_impact: number | null
+          confidence_reinforcement: number | null
+          created_at: string
+          expansion_name: string
+          expansion_type: string
+          id: string
+          investor_segment_breadth: number | null
+          market_relevance_boost: number | null
+          metadata: Json | null
+          network_effect_multiplier: number | null
+          product_evolution_score: number | null
+          signaling_effectiveness: number | null
+          tam_expansion_pct: number | null
+        }
+        Insert: {
+          assessed_at?: string
+          competitive_moat_impact?: number | null
+          confidence_reinforcement?: number | null
+          created_at?: string
+          expansion_name: string
+          expansion_type?: string
+          id?: string
+          investor_segment_breadth?: number | null
+          market_relevance_boost?: number | null
+          metadata?: Json | null
+          network_effect_multiplier?: number | null
+          product_evolution_score?: number | null
+          signaling_effectiveness?: number | null
+          tam_expansion_pct?: number | null
+        }
+        Update: {
+          assessed_at?: string
+          competitive_moat_impact?: number | null
+          confidence_reinforcement?: number | null
+          created_at?: string
+          expansion_name?: string
+          expansion_type?: string
+          id?: string
+          investor_segment_breadth?: number | null
+          market_relevance_boost?: number | null
+          metadata?: Json | null
+          network_effect_multiplier?: number | null
+          product_evolution_score?: number | null
+          signaling_effectiveness?: number | null
+          tam_expansion_pct?: number | null
+        }
+        Relationships: []
+      }
+      pmlg_feedback_loop: {
+        Row: {
+          assessed_at: string
+          created_at: string
+          decay_risk: number | null
+          engagement_index: number | null
+          execution_capacity: number | null
+          id: string
+          liquidity_depth: number | null
+          loop_health: number
+          loop_stage: string
+          loop_velocity: number | null
+          metadata: Json | null
+          optimization_actions: Json | null
+          previous_health: number | null
+          self_reinforcing: boolean | null
+          valuation_stability: number | null
+        }
+        Insert: {
+          assessed_at?: string
+          created_at?: string
+          decay_risk?: number | null
+          engagement_index?: number | null
+          execution_capacity?: number | null
+          id?: string
+          liquidity_depth?: number | null
+          loop_health?: number
+          loop_stage?: string
+          loop_velocity?: number | null
+          metadata?: Json | null
+          optimization_actions?: Json | null
+          previous_health?: number | null
+          self_reinforcing?: boolean | null
+          valuation_stability?: number | null
+        }
+        Update: {
+          assessed_at?: string
+          created_at?: string
+          decay_risk?: number | null
+          engagement_index?: number | null
+          execution_capacity?: number | null
+          id?: string
+          liquidity_depth?: number | null
+          loop_health?: number
+          loop_stage?: string
+          loop_velocity?: number | null
+          metadata?: Json | null
+          optimization_actions?: Json | null
+          previous_health?: number | null
+          self_reinforcing?: boolean | null
+          valuation_stability?: number | null
+        }
+        Relationships: []
+      }
+      pmlg_liquidity_drivers: {
+        Row: {
+          attraction_score: number
+          benchmark_vs_peers: number | null
+          category_leadership_pct: number | null
+          created_at: string
+          driver_category: string
+          driver_name: string
+          earnings_clarity: number | null
+          growth_visibility_index: number | null
+          id: string
+          institutional_ownership_pct: number | null
+          measured_at: string
+          metadata: Json | null
+          retail_interest_index: number | null
+          trading_volume_impact: number | null
+          trend_direction: string | null
+        }
+        Insert: {
+          attraction_score?: number
+          benchmark_vs_peers?: number | null
+          category_leadership_pct?: number | null
+          created_at?: string
+          driver_category?: string
+          driver_name: string
+          earnings_clarity?: number | null
+          growth_visibility_index?: number | null
+          id?: string
+          institutional_ownership_pct?: number | null
+          measured_at?: string
+          metadata?: Json | null
+          retail_interest_index?: number | null
+          trading_volume_impact?: number | null
+          trend_direction?: string | null
+        }
+        Update: {
+          attraction_score?: number
+          benchmark_vs_peers?: number | null
+          category_leadership_pct?: number | null
+          created_at?: string
+          driver_category?: string
+          driver_name?: string
+          earnings_clarity?: number | null
+          growth_visibility_index?: number | null
+          id?: string
+          institutional_ownership_pct?: number | null
+          measured_at?: string
+          metadata?: Json | null
+          retail_interest_index?: number | null
+          trading_volume_impact?: number | null
+          trend_direction?: string | null
+        }
+        Relationships: []
+      }
+      pmlg_narrative_momentum: {
+        Row: {
+          analyst_engagement_score: number | null
+          assessed_at: string
+          coverage_initiations: number | null
+          created_at: string
+          id: string
+          investor_sentiment_shift: number | null
+          media_coverage_lift: number | null
+          metadata: Json | null
+          milestone_description: string
+          milestone_type: string
+          narrative_consistency: number | null
+          price_target_revisions: number | null
+          thesis_reinforcement: number | null
+          valuation_resilience_impact: number | null
+        }
+        Insert: {
+          analyst_engagement_score?: number | null
+          assessed_at?: string
+          coverage_initiations?: number | null
+          created_at?: string
+          id?: string
+          investor_sentiment_shift?: number | null
+          media_coverage_lift?: number | null
+          metadata?: Json | null
+          milestone_description: string
+          milestone_type?: string
+          narrative_consistency?: number | null
+          price_target_revisions?: number | null
+          thesis_reinforcement?: number | null
+          valuation_resilience_impact?: number | null
+        }
+        Update: {
+          analyst_engagement_score?: number | null
+          assessed_at?: string
+          coverage_initiations?: number | null
+          created_at?: string
+          id?: string
+          investor_sentiment_shift?: number | null
+          media_coverage_lift?: number | null
+          metadata?: Json | null
+          milestone_description?: string
+          milestone_type?: string
+          narrative_consistency?: number | null
+          price_target_revisions?: number | null
+          thesis_reinforcement?: number | null
+          valuation_resilience_impact?: number | null
+        }
+        Relationships: []
+      }
+      pmlg_participation_stability: {
+        Row: {
+          assessed_at: string
+          avg_daily_volume: number | null
+          bid_ask_spread_basis_pts: number | null
+          created_at: string
+          disclosure_frequency: string | null
+          expectation_management_score: number | null
+          guidance_accuracy_pct: number | null
+          id: string
+          metadata: Json | null
+          previous_score: number | null
+          shareholder_communication_index: number | null
+          stability_dimension: string
+          stability_score: number
+          volatility_relative_to_sector: number | null
+        }
+        Insert: {
+          assessed_at?: string
+          avg_daily_volume?: number | null
+          bid_ask_spread_basis_pts?: number | null
+          created_at?: string
+          disclosure_frequency?: string | null
+          expectation_management_score?: number | null
+          guidance_accuracy_pct?: number | null
+          id?: string
+          metadata?: Json | null
+          previous_score?: number | null
+          shareholder_communication_index?: number | null
+          stability_dimension?: string
+          stability_score?: number
+          volatility_relative_to_sector?: number | null
+        }
+        Update: {
+          assessed_at?: string
+          avg_daily_volume?: number | null
+          bid_ask_spread_basis_pts?: number | null
+          created_at?: string
+          disclosure_frequency?: string | null
+          expectation_management_score?: number | null
+          guidance_accuracy_pct?: number | null
+          id?: string
+          metadata?: Json | null
+          previous_score?: number | null
+          shareholder_communication_index?: number | null
+          stability_dimension?: string
+          stability_score?: number
+          volatility_relative_to_sector?: number | null
+        }
+        Relationships: []
+      }
       pmne_category_narrative: {
         Row: {
           analyst_resonance_score: number | null
