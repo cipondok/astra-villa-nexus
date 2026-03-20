@@ -240,6 +240,7 @@ export const MarketForecastingDashboard = lazyRetry(() => import("./MarketForeca
 export const ExecutionCommandCenter = lazyRetry(() => import("./ExecutionCommandCenter"));
 export const OffPlanProjectManager = lazyRetry(() => import("./OffPlanProjectManager"));
 export const NegotiationAgentPanel = lazyRetry(() => import("./NegotiationAgentPanel"));
+export const GlobalBrandAuthorityPanel = lazyRetry(() => import("./GlobalBrandAuthorityPanel"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -692,6 +693,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "launch-execution-kit": () => <LaunchExecutionKitPage />,
   "cac-ltv-model": () => <CacLtvModelPage />,
   "ai-negotiation-agent": () => <NegotiationAgentPanel />,
+  "global-brand-authority": () => <GlobalBrandAuthorityPanel />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -966,4 +968,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "unicorn-narrative": { label: "$1B Valuation Narrative", category: "Features" },
   "liquidity-index-branding": { label: "Liquidity Index Branding", category: "Features" },
   "ai-negotiation-agent": { label: "AI Negotiation Agent", category: "Transactions" },
+  "global-brand-authority": { label: "Global Brand Authority", category: "Strategy" },
 };

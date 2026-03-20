@@ -110,7 +110,8 @@ import {
   CalendarClock,
   Sunrise,
   Orbit,
-  Network
+  Network,
+  Award
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -305,6 +306,13 @@ export const navigationSections = {
       icon: Activity,
       description: "Public branding strategy for ASTRA Liquidity Index — data products, authority building & monetization",
       badge: "Strategy"
+    },
+    {
+      key: "global-brand-authority",
+      label: "Global Brand Authority",
+      icon: Award,
+      description: "Brand positioning, thought leadership, credibility milestones & market trust strategy",
+      badge: "🏆 Brand"
     },
     {
       key: "mortgage-management",
