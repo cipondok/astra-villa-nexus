@@ -31,7 +31,7 @@ const MobileFooter = () => {
     return link.url.startsWith('http') ? link.url : `https://${link.url}`;
   };
 
-  if (!isMobile) return null;
+  if (!isMobile || isHiddenRoute) return null;
 
   return (
     <footer
