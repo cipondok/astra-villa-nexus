@@ -138,6 +138,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   gvem_engine_cycle: { label: 'Valuation Engine', icon: '📊' },
   fcss_control_risk: { label: 'Control Risk Alert', icon: '⚠️' },
   fcss_engine_cycle: { label: 'Founder Capital', icon: '👑' },
+  mfcb_fund_closed: { label: 'Fund Closed', icon: '🏦' },
+  mfcb_engine_cycle: { label: 'Mega-Fund Engine', icon: '🏛️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
