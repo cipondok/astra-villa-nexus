@@ -18238,6 +18238,243 @@ export type Database = {
           },
         ]
       }
+      gipd_behavioral_segmentation: {
+        Row: {
+          analysis_depth_preference: number
+          communication_tone: string
+          computed_at: string
+          conversion_rate: number
+          created_at: string
+          decision_speed_profile: string
+          engagement_nudge_type: string
+          id: string
+          investor_persona: string
+          ltv_multiplier: number
+          personalization_score: number
+          risk_appetite: number
+          segment_name: string
+          segment_size_pct: number
+        }
+        Insert: {
+          analysis_depth_preference?: number
+          communication_tone?: string
+          computed_at?: string
+          conversion_rate?: number
+          created_at?: string
+          decision_speed_profile?: string
+          engagement_nudge_type?: string
+          id?: string
+          investor_persona?: string
+          ltv_multiplier?: number
+          personalization_score?: number
+          risk_appetite?: number
+          segment_name: string
+          segment_size_pct?: number
+        }
+        Update: {
+          analysis_depth_preference?: number
+          communication_tone?: string
+          computed_at?: string
+          conversion_rate?: number
+          created_at?: string
+          decision_speed_profile?: string
+          engagement_nudge_type?: string
+          id?: string
+          investor_persona?: string
+          ltv_multiplier?: number
+          personalization_score?: number
+          risk_appetite?: number
+          segment_name?: string
+          segment_size_pct?: number
+        }
+        Relationships: []
+      }
+      gipd_capital_activation: {
+        Row: {
+          activation_phase: string
+          advocacy_potential: number
+          computed_at: string
+          created_at: string
+          emotional_driver: string
+          flywheel_composite: number
+          flywheel_velocity: number
+          friction_points: number
+          funnel_stage: string
+          id: string
+          rational_driver: string
+          stage_conversion_rate: number
+          stickiness_score: number
+        }
+        Insert: {
+          activation_phase?: string
+          advocacy_potential?: number
+          computed_at?: string
+          created_at?: string
+          emotional_driver?: string
+          flywheel_composite?: number
+          flywheel_velocity?: number
+          friction_points?: number
+          funnel_stage: string
+          id?: string
+          rational_driver?: string
+          stage_conversion_rate?: number
+          stickiness_score?: number
+        }
+        Update: {
+          activation_phase?: string
+          advocacy_potential?: number
+          computed_at?: string
+          created_at?: string
+          emotional_driver?: string
+          flywheel_composite?: number
+          flywheel_velocity?: number
+          friction_points?: number
+          funnel_stage?: string
+          id?: string
+          rational_driver?: string
+          stage_conversion_rate?: number
+          stickiness_score?: number
+        }
+        Relationships: []
+      }
+      gipd_motivation_mapping: {
+        Row: {
+          capital_deployment_velocity: number
+          computed_at: string
+          confidence_index: number
+          created_at: string
+          cycle_phase: string
+          dominant_motivation: string
+          fear_greed_index: number
+          growth_seeking_pct: number
+          id: string
+          macro_uncertainty_score: number
+          market_region: string
+          safety_seeking_pct: number
+          sentiment_momentum: number
+        }
+        Insert: {
+          capital_deployment_velocity?: number
+          computed_at?: string
+          confidence_index?: number
+          created_at?: string
+          cycle_phase?: string
+          dominant_motivation?: string
+          fear_greed_index?: number
+          growth_seeking_pct?: number
+          id?: string
+          macro_uncertainty_score?: number
+          market_region: string
+          safety_seeking_pct?: number
+          sentiment_momentum?: number
+        }
+        Update: {
+          capital_deployment_velocity?: number
+          computed_at?: string
+          confidence_index?: number
+          created_at?: string
+          cycle_phase?: string
+          dominant_motivation?: string
+          fear_greed_index?: number
+          growth_seeking_pct?: number
+          id?: string
+          macro_uncertainty_score?: number
+          market_region?: string
+          safety_seeking_pct?: number
+          sentiment_momentum?: number
+        }
+        Relationships: []
+      }
+      gipd_opportunity_perception: {
+        Row: {
+          amplification_mode: string
+          capital_flow_momentum: number
+          computed_at: string
+          created_at: string
+          fomo_trigger_score: number
+          id: string
+          market_region: string
+          opportunity_urgency: string
+          perception_composite: number
+          rational_backing_score: number
+          scarcity_intensity: number
+          wealth_narrative_strength: number
+        }
+        Insert: {
+          amplification_mode?: string
+          capital_flow_momentum?: number
+          computed_at?: string
+          created_at?: string
+          fomo_trigger_score?: number
+          id?: string
+          market_region: string
+          opportunity_urgency?: string
+          perception_composite?: number
+          rational_backing_score?: number
+          scarcity_intensity?: number
+          wealth_narrative_strength?: number
+        }
+        Update: {
+          amplification_mode?: string
+          capital_flow_momentum?: number
+          computed_at?: string
+          created_at?: string
+          fomo_trigger_score?: number
+          id?: string
+          market_region?: string
+          opportunity_urgency?: string
+          perception_composite?: number
+          rational_backing_score?: number
+          scarcity_intensity?: number
+          wealth_narrative_strength?: number
+        }
+        Relationships: []
+      }
+      gipd_trust_acceleration: {
+        Row: {
+          acceleration_strategy: string | null
+          computed_at: string
+          conviction_strength: number
+          created_at: string
+          data_transparency_index: number
+          deal_credibility_signal: number
+          decision_friction_score: number
+          id: string
+          insight_quality_score: number
+          trust_composite: number
+          trust_dimension: string
+          trust_tier: string
+        }
+        Insert: {
+          acceleration_strategy?: string | null
+          computed_at?: string
+          conviction_strength?: number
+          created_at?: string
+          data_transparency_index?: number
+          deal_credibility_signal?: number
+          decision_friction_score?: number
+          id?: string
+          insight_quality_score?: number
+          trust_composite?: number
+          trust_dimension: string
+          trust_tier?: string
+        }
+        Update: {
+          acceleration_strategy?: string | null
+          computed_at?: string
+          conviction_strength?: number
+          created_at?: string
+          data_transparency_index?: number
+          deal_credibility_signal?: number
+          decision_friction_score?: number
+          id?: string
+          insight_quality_score?: number
+          trust_composite?: number
+          trust_dimension?: string
+          trust_tier?: string
+        }
+        Relationships: []
+      }
       global_expansion_log: {
         Row: {
           created_at: string | null
