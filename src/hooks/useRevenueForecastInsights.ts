@@ -39,7 +39,7 @@ export function useRevenueForecastInsights(months = 24) {
         planRes,
       ] = await Promise.all([
         supabase.from('properties').select('id', { count: 'exact', head: true }).eq('status', 'available'),
-        supabase.from('property_offers').select('offer_amount').gte('created_at', d30).in('status', ['accepted', 'completed']),
+        supabase.from('property_offers').select('offer_price').gte('created_at', d30).in('status', ['accepted', 'completed']),
         supabase.from('transaction_commissions').select('commission_amount').gte('created_at', d30),
         supabase.from('user_subscriptions').select('id', { count: 'exact', head: true }).eq('status', 'active'),
         supabase.from('vendor_services').select('id', { count: 'exact', head: true }),
@@ -50,7 +50,7 @@ export function useRevenueForecastInsights(months = 24) {
       const offers = offersRes.data ?? [];
       const dealCount = offers.length || 1;
       const avgTxnValue = offers.length > 0
-        ? offers.reduce((s, o) => s + (o.offer_amount || 0), 0) / offers.length
+        ? offers.reduce((s, o) => s + (o.offer_price || 0), 0) / offers.length
         : 1_800_000_000;
       const conversionRate = activeListings > 0 ? Math.min(0.12, dealCount / activeListings) : 0.035;
 
