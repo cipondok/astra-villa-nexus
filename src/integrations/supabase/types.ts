@@ -26479,6 +26479,270 @@ export type Database = {
         }
         Relationships: []
       }
+      icd_capital_alignment: {
+        Row: {
+          active_initiatives: number | null
+          alignment_score: number
+          alignment_type: string
+          assessed_at: string
+          co_investment_capacity_usd: number | null
+          collaboration_depth: string | null
+          created_at: string
+          id: string
+          market_overlap_pct: number | null
+          metadata: Json | null
+          narrative_coherence: number | null
+          partner_segment: string | null
+          shared_value_index: number | null
+          strategic_fit_score: number | null
+        }
+        Insert: {
+          active_initiatives?: number | null
+          alignment_score?: number
+          alignment_type?: string
+          assessed_at?: string
+          co_investment_capacity_usd?: number | null
+          collaboration_depth?: string | null
+          created_at?: string
+          id?: string
+          market_overlap_pct?: number | null
+          metadata?: Json | null
+          narrative_coherence?: number | null
+          partner_segment?: string | null
+          shared_value_index?: number | null
+          strategic_fit_score?: number | null
+        }
+        Update: {
+          active_initiatives?: number | null
+          alignment_score?: number
+          alignment_type?: string
+          assessed_at?: string
+          co_investment_capacity_usd?: number | null
+          collaboration_depth?: string | null
+          created_at?: string
+          id?: string
+          market_overlap_pct?: number | null
+          metadata?: Json | null
+          narrative_coherence?: number | null
+          partner_segment?: string | null
+          shared_value_index?: number | null
+          strategic_fit_score?: number | null
+        }
+        Relationships: []
+      }
+      icd_multi_cycle: {
+        Row: {
+          assessed_at: string
+          confidence_score: number
+          confidence_trend: string | null
+          created_at: string
+          cycle_context: string
+          cycle_transitions_navigated: number | null
+          id: string
+          investor_retention_pct: number | null
+          metadata: Json | null
+          narrative_consistency: number | null
+          positioning_strength: number | null
+          previous_confidence: number | null
+          resilience_demonstrated: boolean | null
+          strategic_adaptations: Json | null
+          valuation_credibility: number | null
+        }
+        Insert: {
+          assessed_at?: string
+          confidence_score?: number
+          confidence_trend?: string | null
+          created_at?: string
+          cycle_context?: string
+          cycle_transitions_navigated?: number | null
+          id?: string
+          investor_retention_pct?: number | null
+          metadata?: Json | null
+          narrative_consistency?: number | null
+          positioning_strength?: number | null
+          previous_confidence?: number | null
+          resilience_demonstrated?: boolean | null
+          strategic_adaptations?: Json | null
+          valuation_credibility?: number | null
+        }
+        Update: {
+          assessed_at?: string
+          confidence_score?: number
+          confidence_trend?: string | null
+          created_at?: string
+          cycle_context?: string
+          cycle_transitions_navigated?: number | null
+          id?: string
+          investor_retention_pct?: number | null
+          metadata?: Json | null
+          narrative_consistency?: number | null
+          positioning_strength?: number | null
+          previous_confidence?: number | null
+          resilience_demonstrated?: boolean | null
+          strategic_adaptations?: Json | null
+          valuation_credibility?: number | null
+        }
+        Relationships: []
+      }
+      icd_partnership_lifecycle: {
+        Row: {
+          assessed_at: string
+          capital_deployed_usd: number | null
+          created_at: string
+          engagement_score: number | null
+          escalation_readiness: number | null
+          id: string
+          integration_depth: string | null
+          lifecycle_stage: string
+          metadata: Json | null
+          next_milestone: string | null
+          partner_name: string
+          partner_type: string | null
+          relationship_duration_months: number | null
+          risk_of_churn: number | null
+          touchpoints_count: number | null
+        }
+        Insert: {
+          assessed_at?: string
+          capital_deployed_usd?: number | null
+          created_at?: string
+          engagement_score?: number | null
+          escalation_readiness?: number | null
+          id?: string
+          integration_depth?: string | null
+          lifecycle_stage?: string
+          metadata?: Json | null
+          next_milestone?: string | null
+          partner_name: string
+          partner_type?: string | null
+          relationship_duration_months?: number | null
+          risk_of_churn?: number | null
+          touchpoints_count?: number | null
+        }
+        Update: {
+          assessed_at?: string
+          capital_deployed_usd?: number | null
+          created_at?: string
+          engagement_score?: number | null
+          escalation_readiness?: number | null
+          id?: string
+          integration_depth?: string | null
+          lifecycle_stage?: string
+          metadata?: Json | null
+          next_milestone?: string | null
+          partner_name?: string
+          partner_type?: string | null
+          relationship_duration_months?: number | null
+          risk_of_churn?: number | null
+          touchpoints_count?: number | null
+        }
+        Relationships: []
+      }
+      icd_stability_signaling: {
+        Row: {
+          assessed_at: string
+          churn_rate_pct: number | null
+          communication_effectiveness: number | null
+          created_at: string
+          id: string
+          liquidity_durability_index: number | null
+          metadata: Json | null
+          operational_risk_maturity: string | null
+          previous_score: number | null
+          recurring_revenue_pct: number | null
+          revenue_predictability: number | null
+          signal_dimension: string
+          stability_score: number
+          stress_test_result: string | null
+        }
+        Insert: {
+          assessed_at?: string
+          churn_rate_pct?: number | null
+          communication_effectiveness?: number | null
+          created_at?: string
+          id?: string
+          liquidity_durability_index?: number | null
+          metadata?: Json | null
+          operational_risk_maturity?: string | null
+          previous_score?: number | null
+          recurring_revenue_pct?: number | null
+          revenue_predictability?: number | null
+          signal_dimension?: string
+          stability_score?: number
+          stress_test_result?: string | null
+        }
+        Update: {
+          assessed_at?: string
+          churn_rate_pct?: number | null
+          communication_effectiveness?: number | null
+          created_at?: string
+          id?: string
+          liquidity_durability_index?: number | null
+          metadata?: Json | null
+          operational_risk_maturity?: string | null
+          previous_score?: number | null
+          recurring_revenue_pct?: number | null
+          revenue_predictability?: number | null
+          signal_dimension?: string
+          stability_score?: number
+          stress_test_result?: string | null
+        }
+        Relationships: []
+      }
+      icd_trust_stack: {
+        Row: {
+          assessed_at: string
+          audit_trail_completeness: number | null
+          board_independence_pct: number | null
+          capital_discipline_rating: number | null
+          created_at: string
+          disclosure_quality_index: number | null
+          driver_label: string
+          execution_cadence_consistency: number | null
+          governance_grade: string | null
+          id: string
+          institutional_feedback: string | null
+          metadata: Json | null
+          previous_score: number | null
+          trust_driver: string
+          trust_score: number
+        }
+        Insert: {
+          assessed_at?: string
+          audit_trail_completeness?: number | null
+          board_independence_pct?: number | null
+          capital_discipline_rating?: number | null
+          created_at?: string
+          disclosure_quality_index?: number | null
+          driver_label: string
+          execution_cadence_consistency?: number | null
+          governance_grade?: string | null
+          id?: string
+          institutional_feedback?: string | null
+          metadata?: Json | null
+          previous_score?: number | null
+          trust_driver?: string
+          trust_score?: number
+        }
+        Update: {
+          assessed_at?: string
+          audit_trail_completeness?: number | null
+          board_independence_pct?: number | null
+          capital_discipline_rating?: number | null
+          created_at?: string
+          disclosure_quality_index?: number | null
+          driver_label?: string
+          execution_cadence_consistency?: number | null
+          governance_grade?: string | null
+          id?: string
+          institutional_feedback?: string | null
+          metadata?: Json | null
+          previous_score?: number | null
+          trust_driver?: string
+          trust_score?: number
+        }
+        Relationships: []
+      }
       icta_capital_deployment: {
         Row: {
           allocation_performance_pct: number | null

@@ -186,6 +186,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   cmpc_engine_cycle: { label: 'Market Perception', icon: '📡' },
   giws_readiness_gap: { label: 'IPO Readiness Gap', icon: '⚠️' },
   giws_engine_cycle: { label: 'IPO War Strategy', icon: '⚔️' },
+  icd_churn_risk: { label: 'Partner Churn Risk', icon: '🚨' },
+  icd_engine_cycle: { label: 'Capital Domination', icon: '🏛️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
