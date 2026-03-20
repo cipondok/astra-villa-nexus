@@ -19991,6 +19991,279 @@ export type Database = {
         }
         Relationships: []
       }
+      iees_decision_support: {
+        Row: {
+          computed_at: string
+          confidence_score: number
+          created_at: string
+          frontier_zone: string
+          id: string
+          investment_readiness: string
+          key_drivers: string[]
+          opportunity_score: number
+          recommended_allocation_pct: number
+          risk_overlay_score: number
+          signal_count: number
+          strategic_recommendation: string
+          time_to_breakeven_years: number | null
+          urgency_rating: string
+        }
+        Insert: {
+          computed_at?: string
+          confidence_score?: number
+          created_at?: string
+          frontier_zone: string
+          id?: string
+          investment_readiness?: string
+          key_drivers?: string[]
+          opportunity_score?: number
+          recommended_allocation_pct?: number
+          risk_overlay_score?: number
+          signal_count?: number
+          strategic_recommendation?: string
+          time_to_breakeven_years?: number | null
+          urgency_rating?: string
+        }
+        Update: {
+          computed_at?: string
+          confidence_score?: number
+          created_at?: string
+          frontier_zone?: string
+          id?: string
+          investment_readiness?: string
+          key_drivers?: string[]
+          opportunity_score?: number
+          recommended_allocation_pct?: number
+          risk_overlay_score?: number
+          signal_count?: number
+          strategic_recommendation?: string
+          time_to_breakeven_years?: number | null
+          urgency_rating?: string
+        }
+        Relationships: []
+      }
+      iees_ecosystem_formation: {
+        Row: {
+          computed_at: string
+          created_at: string
+          economic_complexity_index: number
+          ecosystem_maturity_score: number
+          financial_system_maturity: string
+          frontier_zone: string
+          gdp_equivalent_usd: number
+          housing_demand_units: number
+          housing_gap_pct: number
+          housing_supply_units: number
+          id: string
+          industrial_base_stage: string
+          labor_market_depth_score: number
+          service_industry_count: number
+          years_to_self_sustaining: number | null
+        }
+        Insert: {
+          computed_at?: string
+          created_at?: string
+          economic_complexity_index?: number
+          ecosystem_maturity_score?: number
+          financial_system_maturity?: string
+          frontier_zone: string
+          gdp_equivalent_usd?: number
+          housing_demand_units?: number
+          housing_gap_pct?: number
+          housing_supply_units?: number
+          id?: string
+          industrial_base_stage?: string
+          labor_market_depth_score?: number
+          service_industry_count?: number
+          years_to_self_sustaining?: number | null
+        }
+        Update: {
+          computed_at?: string
+          created_at?: string
+          economic_complexity_index?: number
+          ecosystem_maturity_score?: number
+          financial_system_maturity?: string
+          frontier_zone?: string
+          gdp_equivalent_usd?: number
+          housing_demand_units?: number
+          housing_gap_pct?: number
+          housing_supply_units?: number
+          id?: string
+          industrial_base_stage?: string
+          labor_market_depth_score?: number
+          service_industry_count?: number
+          years_to_self_sustaining?: number | null
+        }
+        Relationships: []
+      }
+      iees_frontier_settlement: {
+        Row: {
+          cluster_diversity_score: number
+          computed_at: string
+          created_at: string
+          economic_cluster_count: number
+          energy_capacity_gw: number
+          frontier_zone: string
+          growth_phase: string
+          id: string
+          infrastructure_phase: string
+          infrastructure_readiness_pct: number
+          migration_momentum: number
+          population_wave_index: number
+          projected_population_5y: number | null
+          region: string
+          settlement_maturity_score: number
+          transport_node_density: number
+        }
+        Insert: {
+          cluster_diversity_score?: number
+          computed_at?: string
+          created_at?: string
+          economic_cluster_count?: number
+          energy_capacity_gw?: number
+          frontier_zone: string
+          growth_phase?: string
+          id?: string
+          infrastructure_phase?: string
+          infrastructure_readiness_pct?: number
+          migration_momentum?: number
+          population_wave_index?: number
+          projected_population_5y?: number | null
+          region?: string
+          settlement_maturity_score?: number
+          transport_node_density?: number
+        }
+        Update: {
+          cluster_diversity_score?: number
+          computed_at?: string
+          created_at?: string
+          economic_cluster_count?: number
+          energy_capacity_gw?: number
+          frontier_zone?: string
+          growth_phase?: string
+          id?: string
+          infrastructure_phase?: string
+          infrastructure_readiness_pct?: number
+          migration_momentum?: number
+          population_wave_index?: number
+          projected_population_5y?: number | null
+          region?: string
+          settlement_maturity_score?: number
+          transport_node_density?: number
+        }
+        Relationships: []
+      }
+      iees_resource_logistics: {
+        Row: {
+          capital_at_risk_usd: number
+          computed_at: string
+          cost_compression_rate: number
+          created_at: string
+          critical_dependency_count: number
+          frontier_zone: string
+          id: string
+          logistics_cost_index: number
+          logistics_tier: string
+          resource_self_sufficiency_pct: number
+          risk_adjusted_return_pct: number
+          supply_chain_resilience_score: number
+          trade_route_count: number
+          trade_route_efficiency: number
+        }
+        Insert: {
+          capital_at_risk_usd?: number
+          computed_at?: string
+          cost_compression_rate?: number
+          created_at?: string
+          critical_dependency_count?: number
+          frontier_zone: string
+          id?: string
+          logistics_cost_index?: number
+          logistics_tier?: string
+          resource_self_sufficiency_pct?: number
+          risk_adjusted_return_pct?: number
+          supply_chain_resilience_score?: number
+          trade_route_count?: number
+          trade_route_efficiency?: number
+        }
+        Update: {
+          capital_at_risk_usd?: number
+          computed_at?: string
+          cost_compression_rate?: number
+          created_at?: string
+          critical_dependency_count?: number
+          frontier_zone?: string
+          id?: string
+          logistics_cost_index?: number
+          logistics_tier?: string
+          resource_self_sufficiency_pct?: number
+          risk_adjusted_return_pct?: number
+          supply_chain_resilience_score?: number
+          trade_route_count?: number
+          trade_route_efficiency?: number
+        }
+        Relationships: []
+      }
+      iees_scenario_simulation: {
+        Row: {
+          computed_at: string
+          created_at: string
+          frontier_zone: string
+          funding_structure: string
+          governance_model: string
+          id: string
+          infrastructure_investment_usd: number
+          projected_gdp_usd: number
+          projected_population: number
+          risk_score: number
+          roi_estimate_pct: number
+          scenario_name: string
+          scenario_outcome: string
+          success_probability_pct: number
+          sustainability_constraint: string
+          tech_breakthrough_assumed: boolean
+          time_horizon_years: number
+        }
+        Insert: {
+          computed_at?: string
+          created_at?: string
+          frontier_zone: string
+          funding_structure?: string
+          governance_model?: string
+          id?: string
+          infrastructure_investment_usd?: number
+          projected_gdp_usd?: number
+          projected_population?: number
+          risk_score?: number
+          roi_estimate_pct?: number
+          scenario_name: string
+          scenario_outcome?: string
+          success_probability_pct?: number
+          sustainability_constraint?: string
+          tech_breakthrough_assumed?: boolean
+          time_horizon_years?: number
+        }
+        Update: {
+          computed_at?: string
+          created_at?: string
+          frontier_zone?: string
+          funding_structure?: string
+          governance_model?: string
+          id?: string
+          infrastructure_investment_usd?: number
+          projected_gdp_usd?: number
+          projected_population?: number
+          risk_score?: number
+          roi_estimate_pct?: number
+          scenario_name?: string
+          scenario_outcome?: string
+          success_probability_pct?: number
+          sustainability_constraint?: string
+          tech_breakthrough_assumed?: boolean
+          time_horizon_years?: number
+        }
+        Relationships: []
+      }
       in_app_notifications: {
         Row: {
           created_at: string
