@@ -576,3 +576,6 @@ verify_jwt = false
 
 [functions.fundraising-narrative-engine]
 verify_jwt = false
+
+[functions.ipo-valuation-momentum]
+verify_jwt = false
