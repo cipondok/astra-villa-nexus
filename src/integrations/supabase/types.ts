@@ -21007,6 +21007,252 @@ export type Database = {
         }
         Relationships: []
       }
+      icta_capital_deployment: {
+        Row: {
+          allocation_performance_pct: number | null
+          city: string
+          computed_at: string | null
+          created_at: string | null
+          deployment_status: string | null
+          district: string | null
+          geographic_diversification: number | null
+          id: string
+          mandate_fit_score: number | null
+          mandate_type: string
+          matched_opportunities: number | null
+          optimal_allocation_pct: number | null
+          risk_adjusted_return: number | null
+          scenario_count: number | null
+          scenario_results: Json | null
+        }
+        Insert: {
+          allocation_performance_pct?: number | null
+          city?: string
+          computed_at?: string | null
+          created_at?: string | null
+          deployment_status?: string | null
+          district?: string | null
+          geographic_diversification?: number | null
+          id?: string
+          mandate_fit_score?: number | null
+          mandate_type: string
+          matched_opportunities?: number | null
+          optimal_allocation_pct?: number | null
+          risk_adjusted_return?: number | null
+          scenario_count?: number | null
+          scenario_results?: Json | null
+        }
+        Update: {
+          allocation_performance_pct?: number | null
+          city?: string
+          computed_at?: string | null
+          created_at?: string | null
+          deployment_status?: string | null
+          district?: string | null
+          geographic_diversification?: number | null
+          id?: string
+          mandate_fit_score?: number | null
+          mandate_type?: string
+          matched_opportunities?: number | null
+          optimal_allocation_pct?: number | null
+          risk_adjusted_return?: number | null
+          scenario_count?: number | null
+          scenario_results?: Json | null
+        }
+        Relationships: []
+      }
+      icta_governance: {
+        Row: {
+          audit_trail_depth_days: number | null
+          compliance_gap_count: number | null
+          computed_at: string | null
+          created_at: string | null
+          credibility_index: number | null
+          evidence: Json | null
+          governance_dimension: string
+          id: string
+          incident_count_30d: number | null
+          maturity_level: string | null
+          maturity_score: number | null
+          remediation_velocity_hours: number | null
+        }
+        Insert: {
+          audit_trail_depth_days?: number | null
+          compliance_gap_count?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          credibility_index?: number | null
+          evidence?: Json | null
+          governance_dimension: string
+          id?: string
+          incident_count_30d?: number | null
+          maturity_level?: string | null
+          maturity_score?: number | null
+          remediation_velocity_hours?: number | null
+        }
+        Update: {
+          audit_trail_depth_days?: number | null
+          compliance_gap_count?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          credibility_index?: number | null
+          evidence?: Json | null
+          governance_dimension?: string
+          id?: string
+          incident_count_30d?: number | null
+          maturity_level?: string | null
+          maturity_score?: number | null
+          remediation_velocity_hours?: number | null
+        }
+        Relationships: []
+      }
+      icta_partnerships: {
+        Row: {
+          co_investment_count: number | null
+          collaboration_frequency: string | null
+          computed_at: string | null
+          created_at: string | null
+          id: string
+          interaction_log: Json | null
+          partner_name: string
+          partner_type: string
+          partnership_stage: string | null
+          relationship_depth_score: number | null
+          strategic_alignment: number | null
+          total_capital_deployed: number | null
+          trust_score: number | null
+        }
+        Insert: {
+          co_investment_count?: number | null
+          collaboration_frequency?: string | null
+          computed_at?: string | null
+          created_at?: string | null
+          id?: string
+          interaction_log?: Json | null
+          partner_name: string
+          partner_type: string
+          partnership_stage?: string | null
+          relationship_depth_score?: number | null
+          strategic_alignment?: number | null
+          total_capital_deployed?: number | null
+          trust_score?: number | null
+        }
+        Update: {
+          co_investment_count?: number | null
+          collaboration_frequency?: string | null
+          computed_at?: string | null
+          created_at?: string | null
+          id?: string
+          interaction_log?: Json | null
+          partner_name?: string
+          partner_type?: string
+          partnership_stage?: string | null
+          relationship_depth_score?: number | null
+          strategic_alignment?: number | null
+          total_capital_deployed?: number | null
+          trust_score?: number | null
+        }
+        Relationships: []
+      }
+      icta_transparency: {
+        Row: {
+          analytics_payload: Json | null
+          asset_class: string
+          city: string
+          computed_at: string | null
+          created_at: string | null
+          data_completeness_pct: number | null
+          district: string | null
+          id: string
+          liquidity_forecast_accuracy: number | null
+          pipeline_reliability_index: number | null
+          reporting_latency_hours: number | null
+          risk_visibility_score: number | null
+          standardized_return_pct: number | null
+          transparency_grade: string | null
+        }
+        Insert: {
+          analytics_payload?: Json | null
+          asset_class?: string
+          city?: string
+          computed_at?: string | null
+          created_at?: string | null
+          data_completeness_pct?: number | null
+          district?: string | null
+          id?: string
+          liquidity_forecast_accuracy?: number | null
+          pipeline_reliability_index?: number | null
+          reporting_latency_hours?: number | null
+          risk_visibility_score?: number | null
+          standardized_return_pct?: number | null
+          transparency_grade?: string | null
+        }
+        Update: {
+          analytics_payload?: Json | null
+          asset_class?: string
+          city?: string
+          computed_at?: string | null
+          created_at?: string | null
+          data_completeness_pct?: number | null
+          district?: string | null
+          id?: string
+          liquidity_forecast_accuracy?: number | null
+          pipeline_reliability_index?: number | null
+          reporting_latency_hours?: number | null
+          risk_visibility_score?: number | null
+          standardized_return_pct?: number | null
+          transparency_grade?: string | null
+        }
+        Relationships: []
+      }
+      icta_trust_flywheel: {
+        Row: {
+          allocation_success_rate: number | null
+          capital_inflow_velocity: number | null
+          city: string
+          compounding_rate: number | null
+          computed_at: string | null
+          created_at: string | null
+          data_accuracy_score: number | null
+          flywheel_momentum: number | null
+          flywheel_phase: string | null
+          id: string
+          institutional_confidence: number | null
+          loop_iteration: number | null
+          phase_metrics: Json | null
+        }
+        Insert: {
+          allocation_success_rate?: number | null
+          capital_inflow_velocity?: number | null
+          city?: string
+          compounding_rate?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          data_accuracy_score?: number | null
+          flywheel_momentum?: number | null
+          flywheel_phase?: string | null
+          id?: string
+          institutional_confidence?: number | null
+          loop_iteration?: number | null
+          phase_metrics?: Json | null
+        }
+        Update: {
+          allocation_success_rate?: number | null
+          capital_inflow_velocity?: number | null
+          city?: string
+          compounding_rate?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          data_accuracy_score?: number | null
+          flywheel_momentum?: number | null
+          flywheel_phase?: string | null
+          id?: string
+          institutional_confidence?: number | null
+          loop_iteration?: number | null
+          phase_metrics?: Json | null
+        }
+        Relationships: []
+      }
       iees_decision_support: {
         Row: {
           computed_at: string

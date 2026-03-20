@@ -504,3 +504,6 @@ verify_jwt = false
 
 [functions.public-market-narrative]
 verify_jwt = false
+
+[functions.institutional-capital-trust]
+verify_jwt = false
