@@ -324,6 +324,9 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "features-overview":             (sc) => <CategoryOverviewDashboard category="features" onSectionChange={sc} />,
   "help-overview":                 (sc) => <CategoryOverviewDashboard category="help" onSectionChange={sc} />,
 
+  // Execution Command Center
+  "execution-command-center": () => <ExecutionCommandCenter />,
+
   // User management
   "user-management":     (sc) => <UserManagementHub onNavigate={sc} />,
   "user-levels":         (sc) => <UserLevelManagement onNavigate={sc} />,
