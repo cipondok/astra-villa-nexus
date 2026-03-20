@@ -11,6 +11,10 @@ import { cn } from '@/lib/utils';
 const MobileFooter = () => {
   const { isMobile } = useIsMobile();
   const { settings } = useSocialMediaSettings();
+  const { pathname } = useLocation();
+
+  const hiddenRoutes = ['/post-property', '/add-property', '/auth'];
+  const isHiddenRoute = hiddenRoutes.some(r => pathname.startsWith(r));
 
   const socialLinks = [
     { url: settings.facebookUrl, Icon: Facebook, label: 'Facebook' },
