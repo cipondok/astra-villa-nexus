@@ -601,6 +601,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ipo-vision-strategy":        () => <GlobalIpoVisionStrategy />,
   "superapp-ecosystem":         () => <SuperAppEcosystemArchitecture />,
   "ai-deal-closing-agent":      () => <AIDealClosingAgentSystem />,
+  "production-system-organizer": () => <ProductionSystemOrganizer />,
   "investor-community":         () => <InvestorCommunityDashboard />,
   "geo-expansion":              () => <GeoExpansionDashboard />,
   "founder-branding":           () => <FounderBrandingDashboard />,
