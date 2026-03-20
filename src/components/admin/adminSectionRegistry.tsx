@@ -862,6 +862,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "100m-arr-model": { label: "$100M ARR Operating Model", category: "Strategy" },
   "ipo-vision-strategy": { label: "Global IPO Vision Strategy", category: "Strategy" },
   "superapp-ecosystem": { label: "Super-App Ecosystem Architecture", category: "Strategy" },
+  "ai-deal-closing-agent": { label: "AI Deal-Closing Agent", category: "Strategy" },
   "investor-community": { label: "Investor Community", category: "Features" },
   "geo-expansion": { label: "Geographic Expansion", category: "Features" },
   "founder-branding": { label: "Founder Branding", category: "Features" },
