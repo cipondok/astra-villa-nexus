@@ -24313,6 +24313,279 @@ export type Database = {
         }
         Relationships: []
       }
+      hycb_housing_stability: {
+        Row: {
+          affordability_sustainability: number | null
+          boom_bust_dampening: number | null
+          city: string
+          computed_at: string
+          country: string
+          created_at: string
+          id: string
+          institutional_stabilizer_pct: number | null
+          platform_stabilization_contribution: number | null
+          price_volatility_reduction: number | null
+          speculative_pressure_index: number | null
+          stability_composite: number | null
+          stability_tier: string | null
+          supply_equilibrium_score: number | null
+          year_horizon: number
+        }
+        Insert: {
+          affordability_sustainability?: number | null
+          boom_bust_dampening?: number | null
+          city: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          id?: string
+          institutional_stabilizer_pct?: number | null
+          platform_stabilization_contribution?: number | null
+          price_volatility_reduction?: number | null
+          speculative_pressure_index?: number | null
+          stability_composite?: number | null
+          stability_tier?: string | null
+          supply_equilibrium_score?: number | null
+          year_horizon?: number
+        }
+        Update: {
+          affordability_sustainability?: number | null
+          boom_bust_dampening?: number | null
+          city?: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          id?: string
+          institutional_stabilizer_pct?: number | null
+          platform_stabilization_contribution?: number | null
+          price_volatility_reduction?: number | null
+          speculative_pressure_index?: number | null
+          stability_composite?: number | null
+          stability_tier?: string | null
+          supply_equilibrium_score?: number | null
+          year_horizon?: number
+        }
+        Relationships: []
+      }
+      hycb_infrastructure_intelligence: {
+        Row: {
+          city: string | null
+          climate_resilience_contribution: number | null
+          computed_at: string
+          created_at: string
+          data_coverage_pct: number | null
+          decision_influence_index: number | null
+          energy_optimization_score: number | null
+          id: string
+          infrastructure_composite: number | null
+          integration_tier: string | null
+          intelligence_domain: string
+          mobility_grid_coordination: number | null
+          urban_planning_integration: number | null
+          year_horizon: number
+        }
+        Insert: {
+          city?: string | null
+          climate_resilience_contribution?: number | null
+          computed_at?: string
+          created_at?: string
+          data_coverage_pct?: number | null
+          decision_influence_index?: number | null
+          energy_optimization_score?: number | null
+          id?: string
+          infrastructure_composite?: number | null
+          integration_tier?: string | null
+          intelligence_domain: string
+          mobility_grid_coordination?: number | null
+          urban_planning_integration?: number | null
+          year_horizon?: number
+        }
+        Update: {
+          city?: string | null
+          climate_resilience_contribution?: number | null
+          computed_at?: string
+          created_at?: string
+          data_coverage_pct?: number | null
+          decision_influence_index?: number | null
+          energy_optimization_score?: number | null
+          id?: string
+          infrastructure_composite?: number | null
+          integration_tier?: string | null
+          intelligence_domain?: string
+          mobility_grid_coordination?: number | null
+          urban_planning_integration?: number | null
+          year_horizon?: number
+        }
+        Relationships: []
+      }
+      hycb_liquidity_evolution: {
+        Row: {
+          computed_at: string
+          created_at: string
+          cross_border_friction: number | null
+          dynamic_pricing_adoption: number | null
+          era: string
+          id: string
+          institutional_participation_pct: number | null
+          liquidity_depth_score: number | null
+          liquidity_evolution_tier: string | null
+          market_cluster: string
+          retail_access_score: number | null
+          settlement_speed_hours: number | null
+          tokenization_penetration: number | null
+          transparency_index: number | null
+          year_horizon: number
+        }
+        Insert: {
+          computed_at?: string
+          created_at?: string
+          cross_border_friction?: number | null
+          dynamic_pricing_adoption?: number | null
+          era?: string
+          id?: string
+          institutional_participation_pct?: number | null
+          liquidity_depth_score?: number | null
+          liquidity_evolution_tier?: string | null
+          market_cluster: string
+          retail_access_score?: number | null
+          settlement_speed_hours?: number | null
+          tokenization_penetration?: number | null
+          transparency_index?: number | null
+          year_horizon?: number
+        }
+        Update: {
+          computed_at?: string
+          created_at?: string
+          cross_border_friction?: number | null
+          dynamic_pricing_adoption?: number | null
+          era?: string
+          id?: string
+          institutional_participation_pct?: number | null
+          liquidity_depth_score?: number | null
+          liquidity_evolution_tier?: string | null
+          market_cluster?: string
+          retail_access_score?: number | null
+          settlement_speed_hours?: number | null
+          tokenization_penetration?: number | null
+          transparency_index?: number | null
+          year_horizon?: number
+        }
+        Relationships: []
+      }
+      hycb_platform_relevance: {
+        Row: {
+          adaptation_domain: string
+          capability_reinvention_cycles: number | null
+          competitive_moat_durability: number | null
+          computed_at: string
+          created_at: string
+          cultural_evolution_alignment: number | null
+          demographic_responsiveness: number | null
+          ecosystem_indispensability: number | null
+          generation_label: string | null
+          id: string
+          regulatory_adaptability: number | null
+          relevance_composite: number | null
+          relevance_tier: string | null
+          technology_paradigm_readiness: number | null
+          year_horizon: number
+        }
+        Insert: {
+          adaptation_domain: string
+          capability_reinvention_cycles?: number | null
+          competitive_moat_durability?: number | null
+          computed_at?: string
+          created_at?: string
+          cultural_evolution_alignment?: number | null
+          demographic_responsiveness?: number | null
+          ecosystem_indispensability?: number | null
+          generation_label?: string | null
+          id?: string
+          regulatory_adaptability?: number | null
+          relevance_composite?: number | null
+          relevance_tier?: string | null
+          technology_paradigm_readiness?: number | null
+          year_horizon?: number
+        }
+        Update: {
+          adaptation_domain?: string
+          capability_reinvention_cycles?: number | null
+          competitive_moat_durability?: number | null
+          computed_at?: string
+          created_at?: string
+          cultural_evolution_alignment?: number | null
+          demographic_responsiveness?: number | null
+          ecosystem_indispensability?: number | null
+          generation_label?: string | null
+          id?: string
+          regulatory_adaptability?: number | null
+          relevance_composite?: number | null
+          relevance_tier?: string | null
+          technology_paradigm_readiness?: number | null
+          year_horizon?: number
+        }
+        Relationships: []
+      }
+      hycb_urban_transformation: {
+        Row: {
+          autonomous_optimization_score: number | null
+          city: string
+          climate_adaptation_readiness: number | null
+          computed_at: string
+          country: string
+          created_at: string
+          digital_infrastructure_pct: number | null
+          horizon_year_end: number
+          horizon_year_start: number
+          id: string
+          intelligent_coordination_score: number | null
+          population_projection_m: number | null
+          region: string | null
+          time_horizon: string
+          transformation_confidence: number | null
+          transformation_phase: string | null
+          urban_density_trajectory: string | null
+        }
+        Insert: {
+          autonomous_optimization_score?: number | null
+          city: string
+          climate_adaptation_readiness?: number | null
+          computed_at?: string
+          country?: string
+          created_at?: string
+          digital_infrastructure_pct?: number | null
+          horizon_year_end?: number
+          horizon_year_start?: number
+          id?: string
+          intelligent_coordination_score?: number | null
+          population_projection_m?: number | null
+          region?: string | null
+          time_horizon?: string
+          transformation_confidence?: number | null
+          transformation_phase?: string | null
+          urban_density_trajectory?: string | null
+        }
+        Update: {
+          autonomous_optimization_score?: number | null
+          city?: string
+          climate_adaptation_readiness?: number | null
+          computed_at?: string
+          country?: string
+          created_at?: string
+          digital_infrastructure_pct?: number | null
+          horizon_year_end?: number
+          horizon_year_start?: number
+          id?: string
+          intelligent_coordination_score?: number | null
+          population_projection_m?: number | null
+          region?: string | null
+          time_horizon?: string
+          transformation_confidence?: number | null
+          transformation_phase?: string | null
+          urban_density_trajectory?: string | null
+        }
+        Relationships: []
+      }
       icta_capital_deployment: {
         Row: {
           allocation_performance_pct: number | null
