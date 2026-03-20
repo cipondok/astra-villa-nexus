@@ -140,6 +140,7 @@ export const AIPerformanceDashboard = lazyRetry(() => import("./AIPerformanceDas
 export const AIModelWeightsPanel = lazyRetry(() => import("./AIModelWeightsPanel"));
 export const InvestorScoringPanel = lazyRetry(() => import("./InvestorScoringPanel"));
 export const VendorIntelligencePanel = lazyRetry(() => import("./VendorIntelligencePanel"));
+export const RevenueFlywheelPanel = lazyRetry(() => import("./RevenueFlywheelPanel"));
 export const DOMAccuracyReport = lazyRetry(() => import("./DOMAccuracyReport"));
 export const CronJobMonitor = lazyRetry(() => import("./CronJobMonitor"));
 export const WeightTuningHistory = lazyRetry(() => import("./WeightTuningHistory"));
@@ -334,6 +335,9 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
 
   // Vendor Intelligence
   "vendor-intelligence-engine": () => <VendorIntelligencePanel />,
+
+  // Revenue Flywheel
+  "revenue-flywheel-optimizer": () => <RevenueFlywheelPanel />,
 
   // User management
   "user-management":     (sc) => <UserManagementHub onNavigate={sc} />,
@@ -656,6 +660,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "execution-command-center": { label: "Execution Command Center", category: "Operations" },
   "investor-scoring-engine": { label: "Investor Scoring Engine", category: "Investor Management" },
   "vendor-intelligence-engine": { label: "Vendor Intelligence Engine", category: "Operations" },
+  "revenue-flywheel-optimizer": { label: "Revenue Flywheel Optimizer", category: "Revenue" },
   "overview": { label: "Dashboard Overview", category: "" },
   "diagnostic": { label: "Project Diagnostics", category: "System" },
   "project-progress": { label: "Launch Readiness", category: "System" },

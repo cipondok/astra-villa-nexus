@@ -168,6 +168,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "revenue-flywheel-optimizer",
+      label: "Revenue Flywheel Optimizer",
+      icon: DollarSign,
+      description: "Pricing experiments, upsell signals, commission controls & velocity forecasting",
+      badge: "New"
+    },
+    {
       key: "project-map",
       label: "Project Map",
       icon: Map,
