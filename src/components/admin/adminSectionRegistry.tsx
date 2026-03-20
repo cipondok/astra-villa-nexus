@@ -340,6 +340,9 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   // Revenue Flywheel
   "revenue-flywheel-optimizer": () => <RevenueFlywheelPanel />,
 
+  // Data Moat
+  "data-moat-governance": () => <DataMoatGovernancePanel />,
+
   // User management
   "user-management":     (sc) => <UserManagementHub onNavigate={sc} />,
   "user-levels":         (sc) => <UserLevelManagement onNavigate={sc} />,
