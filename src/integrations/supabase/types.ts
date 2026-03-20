@@ -26507,6 +26507,276 @@ export type Database = {
         }
         Relationships: []
       }
+      mcbm_competitive_weakness: {
+        Row: {
+          city: string
+          competitor_name: string
+          created_at: string | null
+          district: string | null
+          exploitation_opportunity_score: number | null
+          id: string
+          listing_freshness_gap_days: number | null
+          our_speed_advantage_multiple: number | null
+          pricing_mismatch_pct: number | null
+          recommended_tactic: string | null
+          response_cycle_hours: number | null
+          tracked_at: string | null
+          underserved_segments: string[] | null
+          weakness_category: string | null
+        }
+        Insert: {
+          city?: string
+          competitor_name: string
+          created_at?: string | null
+          district?: string | null
+          exploitation_opportunity_score?: number | null
+          id?: string
+          listing_freshness_gap_days?: number | null
+          our_speed_advantage_multiple?: number | null
+          pricing_mismatch_pct?: number | null
+          recommended_tactic?: string | null
+          response_cycle_hours?: number | null
+          tracked_at?: string | null
+          underserved_segments?: string[] | null
+          weakness_category?: string | null
+        }
+        Update: {
+          city?: string
+          competitor_name?: string
+          created_at?: string | null
+          district?: string | null
+          exploitation_opportunity_score?: number | null
+          id?: string
+          listing_freshness_gap_days?: number | null
+          our_speed_advantage_multiple?: number | null
+          pricing_mismatch_pct?: number | null
+          recommended_tactic?: string | null
+          response_cycle_hours?: number | null
+          tracked_at?: string | null
+          underserved_segments?: string[] | null
+          weakness_category?: string | null
+        }
+        Relationships: []
+      }
+      mcbm_demand_surge: {
+        Row: {
+          absorption_rate: number | null
+          active_viewing_flow: number | null
+          city: string
+          computed_at: string | null
+          created_at: string | null
+          deal_opportunity_count: number | null
+          district: string
+          id: string
+          outbound_engagement_sent: number | null
+          outbound_response_rate: number | null
+          passive_to_active_conversion: number | null
+          scarcity_signal_active: boolean | null
+          surge_status: string | null
+          trigger_metrics: Json | null
+          urgency_score: number | null
+        }
+        Insert: {
+          absorption_rate?: number | null
+          active_viewing_flow?: number | null
+          city?: string
+          computed_at?: string | null
+          created_at?: string | null
+          deal_opportunity_count?: number | null
+          district: string
+          id?: string
+          outbound_engagement_sent?: number | null
+          outbound_response_rate?: number | null
+          passive_to_active_conversion?: number | null
+          scarcity_signal_active?: boolean | null
+          surge_status?: string | null
+          trigger_metrics?: Json | null
+          urgency_score?: number | null
+        }
+        Update: {
+          absorption_rate?: number | null
+          active_viewing_flow?: number | null
+          city?: string
+          computed_at?: string | null
+          created_at?: string | null
+          deal_opportunity_count?: number | null
+          district?: string
+          id?: string
+          outbound_engagement_sent?: number | null
+          outbound_response_rate?: number | null
+          passive_to_active_conversion?: number | null
+          scarcity_signal_active?: boolean | null
+          surge_status?: string | null
+          trigger_metrics?: Json | null
+          urgency_score?: number | null
+        }
+        Relationships: []
+      }
+      mcbm_district_domination: {
+        Row: {
+          active_listings: number | null
+          capture_priority: string | null
+          city: string
+          competitor_weakness_score: number | null
+          computed_at: string | null
+          country: string
+          created_at: string | null
+          district: string
+          domination_score: number | null
+          id: string
+          inquiry_velocity: number | null
+          liquidity_acceleration: number | null
+          price_inefficiency_score: number | null
+          recommended_action: string | null
+          scoring_inputs: Json | null
+          supply_gap_persistence: number | null
+        }
+        Insert: {
+          active_listings?: number | null
+          capture_priority?: string | null
+          city?: string
+          competitor_weakness_score?: number | null
+          computed_at?: string | null
+          country?: string
+          created_at?: string | null
+          district: string
+          domination_score?: number | null
+          id?: string
+          inquiry_velocity?: number | null
+          liquidity_acceleration?: number | null
+          price_inefficiency_score?: number | null
+          recommended_action?: string | null
+          scoring_inputs?: Json | null
+          supply_gap_persistence?: number | null
+        }
+        Update: {
+          active_listings?: number | null
+          capture_priority?: string | null
+          city?: string
+          competitor_weakness_score?: number | null
+          computed_at?: string | null
+          country?: string
+          created_at?: string | null
+          district?: string
+          domination_score?: number | null
+          id?: string
+          inquiry_velocity?: number | null
+          liquidity_acceleration?: number | null
+          price_inefficiency_score?: number | null
+          recommended_action?: string | null
+          scoring_inputs?: Json | null
+          supply_gap_persistence?: number | null
+        }
+        Relationships: []
+      }
+      mcbm_momentum_loop: {
+        Row: {
+          city: string
+          compounding_rate: number | null
+          computed_at: string | null
+          created_at: string | null
+          data_advantage_score: number | null
+          deal_velocity_rpm: number | null
+          district: string
+          flywheel_momentum: number | null
+          id: string
+          investor_trust_index: number | null
+          loop_iteration: number | null
+          momentum_phase: string | null
+          phase_metrics: Json | null
+          supply_dominance_score: number | null
+        }
+        Insert: {
+          city?: string
+          compounding_rate?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          data_advantage_score?: number | null
+          deal_velocity_rpm?: number | null
+          district: string
+          flywheel_momentum?: number | null
+          id?: string
+          investor_trust_index?: number | null
+          loop_iteration?: number | null
+          momentum_phase?: string | null
+          phase_metrics?: Json | null
+          supply_dominance_score?: number | null
+        }
+        Update: {
+          city?: string
+          compounding_rate?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          data_advantage_score?: number | null
+          deal_velocity_rpm?: number | null
+          district?: string
+          flywheel_momentum?: number | null
+          id?: string
+          investor_trust_index?: number | null
+          loop_iteration?: number | null
+          momentum_phase?: string | null
+          phase_metrics?: Json | null
+          supply_dominance_score?: number | null
+        }
+        Relationships: []
+      }
+      mcbm_supply_flood: {
+        Row: {
+          campaign_metrics: Json | null
+          campaign_status: string | null
+          city: string
+          computed_at: string | null
+          created_at: string | null
+          current_supply: number | null
+          demand_signals: number | null
+          district: string
+          id: string
+          marketplace_depth_score: number | null
+          onboarding_velocity: number | null
+          segment_type: string | null
+          supply_deficit_ratio: number | null
+          vendor_onboarding_target: number | null
+          vendors_onboarded: number | null
+          visibility_incentive_active: boolean | null
+        }
+        Insert: {
+          campaign_metrics?: Json | null
+          campaign_status?: string | null
+          city?: string
+          computed_at?: string | null
+          created_at?: string | null
+          current_supply?: number | null
+          demand_signals?: number | null
+          district: string
+          id?: string
+          marketplace_depth_score?: number | null
+          onboarding_velocity?: number | null
+          segment_type?: string | null
+          supply_deficit_ratio?: number | null
+          vendor_onboarding_target?: number | null
+          vendors_onboarded?: number | null
+          visibility_incentive_active?: boolean | null
+        }
+        Update: {
+          campaign_metrics?: Json | null
+          campaign_status?: string | null
+          city?: string
+          computed_at?: string | null
+          created_at?: string | null
+          current_supply?: number | null
+          demand_signals?: number | null
+          district?: string
+          id?: string
+          marketplace_depth_score?: number | null
+          onboarding_velocity?: number | null
+          segment_type?: string | null
+          supply_deficit_ratio?: number | null
+          vendor_onboarding_target?: number | null
+          vendors_onboarded?: number | null
+          visibility_incentive_active?: boolean | null
+        }
+        Relationships: []
+      }
       media_analytics: {
         Row: {
           channel: string
