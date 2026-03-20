@@ -106,6 +106,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   gcce_engine_cycle: { label: 'Capital Consciousness', icon: '🧠' },
   pufg_saturation_reached: { label: 'District Saturated', icon: '🏙️' },
   pufg_engine_cycle: { label: 'Urban Forecast', icon: '🗺️' },
+  amens_capital_rotation_alert: { label: 'Capital Rotation', icon: '🔄' },
+  amens_engine_cycle: { label: 'Multi-Asset Nervous System', icon: '🧬' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
