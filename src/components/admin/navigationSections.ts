@@ -110,7 +110,8 @@ import {
   CalendarClock,
   Sunrise,
   Orbit,
-  Network
+  Network,
+  Award
 } from "lucide-react";
 
 export interface NavigationSection {
