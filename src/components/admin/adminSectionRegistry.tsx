@@ -989,4 +989,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "rental-yield-optimization": { label: "Rental Yield Optimization", category: "Operations" },
   "developer-supply-acquisition": { label: "Developer Supply Acquisition", category: "Operations" },
   "hyper-growth-kpi": { label: "Hyper-Growth KPI Center", category: "Operations" },
+  "smart-recommendation-engine": { label: "Smart Recommendation Engine", category: "Operations" },
 };
