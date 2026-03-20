@@ -274,6 +274,9 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.predict-property-prices]
     verify_jwt = false
 
+  [functions.predict-property-price]
+    verify_jwt = false
+
   [functions.analyze-investor-portfolios]
     verify_jwt = false
 
