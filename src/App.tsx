@@ -364,6 +364,7 @@ const InvestorSentimentDashboardPage = lazy(() => import('@/pages/InvestorSentim
 const HedgeFundDefensePage = lazy(() => import('@/pages/HedgeFundDefensePage'));
 const FounderPowerOSPage = lazy(() => import('@/pages/FounderPowerOSPage'));
 const PlanetaryScaleRoadmapPage = lazy(() => import('@/pages/PlanetaryScaleRoadmapPage'));
+const DataMoatIntelligencePage = lazy(() => import('@/pages/DataMoatIntelligencePage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -846,6 +847,7 @@ const AppContent = () => {
                 <Route path="/hedge-fund-defense" element={<HedgeFundDefensePage />} />
                 <Route path="/founder-power-os" element={<FounderPowerOSPage />} />
                 <Route path="/planetary-scale-roadmap" element={<PlanetaryScaleRoadmapPage />} />
+                <Route path="/data-moat-intelligence" element={<DataMoatIntelligencePage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
