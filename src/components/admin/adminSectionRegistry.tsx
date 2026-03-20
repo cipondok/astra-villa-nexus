@@ -249,6 +249,7 @@ export const DeveloperSupplyAcquisitionPanel = lazyRetry(() => import("./Develop
 export const HyperGrowthKPIPanel = lazyRetry(() => import("./HyperGrowthKPIPanel"));
 export const SmartRecommendationPanel = lazyRetry(() => import("./SmartRecommendationPanel"));
 export const CommissionOptimizationPanel = lazyRetry(() => import("./CommissionOptimizationPanel"));
+export const ListingOptimizationAIPanel = lazyRetry(() => import("./ListingOptimizationAIPanel"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -710,6 +711,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "hyper-growth-kpi": () => <HyperGrowthKPIPanel />,
   "smart-recommendation-engine": () => <SmartRecommendationPanel />,
   "commission-optimization": () => <CommissionOptimizationPanel />,
+  "listing-optimization-ai": () => <ListingOptimizationAIPanel />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -993,4 +995,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "hyper-growth-kpi": { label: "Hyper-Growth KPI Center", category: "Operations" },
   "smart-recommendation-engine": { label: "Smart Recommendation Engine", category: "Operations" },
   "commission-optimization": { label: "Commission Optimization Engine", category: "Operations" },
+  "listing-optimization-ai": { label: "Listing Optimization AI", category: "Operations" },
 };

@@ -792,6 +792,13 @@ export const navigationSections = {
       badge: "💰 Revenue AI"
     },
     {
+      key: "listing-optimization-ai",
+      label: "Listing Optimization AI",
+      icon: Eye,
+      description: "Autonomous listing performance analysis — visibility, pricing, content & conversion optimization",
+      badge: "🤖 AI Engine"
+    },
+    {
       key: "workforce-scheduler",
       label: "Workforce Scheduler",
       icon: Clock,
