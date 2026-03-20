@@ -495,3 +495,6 @@ verify_jwt = false
 
 [functions.market-capture-blitzkrieg]
 verify_jwt = false
+
+[functions.network-effect-weaponization]
+verify_jwt = false
