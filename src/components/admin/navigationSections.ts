@@ -778,6 +778,13 @@ export const navigationSections = {
       badge: "📊 Executive"
     },
     {
+      key: "smart-recommendation-engine",
+      label: "Smart Recommendation Engine",
+      icon: Sparkles,
+      description: "AI recommendation algorithm, personalization pipeline, feed widgets & accuracy tuning roadmap",
+      badge: "🧠 AI Recs"
+    },
+    {
       key: "workforce-scheduler",
       label: "Workforce Scheduler",
       icon: Clock,
