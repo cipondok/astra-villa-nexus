@@ -149,27 +149,6 @@ export const navigationSections = {
       description: "Main dashboard overview and quick stats"
     },
     {
-      key: "execution-command-center",
-      label: "Execution Command Center",
-      icon: Rocket,
-      description: "Real-time operating cockpit — liquidity, pipeline, vendor, revenue & campaign controls",
-      badge: "New"
-    },
-    {
-      key: "investor-scoring-engine",
-      label: "Investor Scoring Engine",
-      icon: Target,
-      description: "Capital readiness, conversion probability, style classification & weight overrides",
-      badge: "New"
-    },
-    {
-      key: "vendor-intelligence-engine",
-      label: "Vendor Intelligence Engine",
-      icon: Store,
-      description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
-      badge: "New"
-    },
-    {
       key: "revenue-flywheel-optimizer",
       label: "Revenue Flywheel Optimizer",
       icon: DollarSign,
