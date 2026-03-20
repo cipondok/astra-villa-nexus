@@ -986,4 +986,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "mega-city-domination": { label: "Mega-City Domination", category: "Operations" },
   "rental-yield-optimization": { label: "Rental Yield Optimization", category: "Operations" },
   "developer-supply-acquisition": { label: "Developer Supply Acquisition", category: "Operations" },
+  "hyper-growth-kpi": { label: "Hyper-Growth KPI Center", category: "Operations" },
 };
