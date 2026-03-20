@@ -33664,6 +33664,243 @@ export type Database = {
         }
         Relationships: []
       }
+      pmne_category_narrative: {
+        Row: {
+          analyst_resonance_score: number | null
+          clarity_score: number | null
+          comparable_companies: Json | null
+          computed_at: string | null
+          created_at: string | null
+          differentiation_strength: number | null
+          id: string
+          media_pickup_potential: number | null
+          narrative_frame: string
+          narrative_status: string | null
+          positioning_pillar: string
+          supporting_evidence: Json | null
+          valuation_multiple_target: number | null
+        }
+        Insert: {
+          analyst_resonance_score?: number | null
+          clarity_score?: number | null
+          comparable_companies?: Json | null
+          computed_at?: string | null
+          created_at?: string | null
+          differentiation_strength?: number | null
+          id?: string
+          media_pickup_potential?: number | null
+          narrative_frame: string
+          narrative_status?: string | null
+          positioning_pillar: string
+          supporting_evidence?: Json | null
+          valuation_multiple_target?: number | null
+        }
+        Update: {
+          analyst_resonance_score?: number | null
+          clarity_score?: number | null
+          comparable_companies?: Json | null
+          computed_at?: string | null
+          created_at?: string | null
+          differentiation_strength?: number | null
+          id?: string
+          media_pickup_potential?: number | null
+          narrative_frame?: string
+          narrative_status?: string | null
+          positioning_pillar?: string
+          supporting_evidence?: Json | null
+          valuation_multiple_target?: number | null
+        }
+        Relationships: []
+      }
+      pmne_confidence_loop: {
+        Row: {
+          alignment_score: number | null
+          announcement_text: string | null
+          confidence_impact: number | null
+          created_at: string | null
+          id: string
+          loop_element: string
+          loop_status: string | null
+          market_timing_score: number | null
+          messaging_consistency: number | null
+          optimal_timing_window: string | null
+          outcome_metrics: Json | null
+          planned_at: string | null
+          synced_with_funding: boolean | null
+        }
+        Insert: {
+          alignment_score?: number | null
+          announcement_text?: string | null
+          confidence_impact?: number | null
+          created_at?: string | null
+          id?: string
+          loop_element: string
+          loop_status?: string | null
+          market_timing_score?: number | null
+          messaging_consistency?: number | null
+          optimal_timing_window?: string | null
+          outcome_metrics?: Json | null
+          planned_at?: string | null
+          synced_with_funding?: boolean | null
+        }
+        Update: {
+          alignment_score?: number | null
+          announcement_text?: string | null
+          confidence_impact?: number | null
+          created_at?: string | null
+          id?: string
+          loop_element?: string
+          loop_status?: string | null
+          market_timing_score?: number | null
+          messaging_consistency?: number | null
+          optimal_timing_window?: string | null
+          outcome_metrics?: Json | null
+          planned_at?: string | null
+          synced_with_funding?: boolean | null
+        }
+        Relationships: []
+      }
+      pmne_financial_story: {
+        Row: {
+          computed_at: string | null
+          created_at: string | null
+          credibility_score: number | null
+          current_metric_value: number | null
+          id: string
+          improvement_trajectory: string | null
+          investor_story_text: string | null
+          narrative_strength: number | null
+          peer_benchmark: Json | null
+          projected_metric_value: number | null
+          risk_factors: Json | null
+          story_element: string
+        }
+        Insert: {
+          computed_at?: string | null
+          created_at?: string | null
+          credibility_score?: number | null
+          current_metric_value?: number | null
+          id?: string
+          improvement_trajectory?: string | null
+          investor_story_text?: string | null
+          narrative_strength?: number | null
+          peer_benchmark?: Json | null
+          projected_metric_value?: number | null
+          risk_factors?: Json | null
+          story_element: string
+        }
+        Update: {
+          computed_at?: string | null
+          created_at?: string | null
+          credibility_score?: number | null
+          current_metric_value?: number | null
+          id?: string
+          improvement_trajectory?: string | null
+          investor_story_text?: string | null
+          narrative_strength?: number | null
+          peer_benchmark?: Json | null
+          projected_metric_value?: number | null
+          risk_factors?: Json | null
+          story_element?: string
+        }
+        Relationships: []
+      }
+      pmne_growth_signals: {
+        Row: {
+          amplification_priority: string | null
+          created_at: string | null
+          current_value: number | null
+          growth_pct: number | null
+          headline_worthy: boolean | null
+          id: string
+          investor_impact_score: number | null
+          measured_at: string | null
+          metric_name: string
+          period: string | null
+          previous_value: number | null
+          signal_category: string
+          suggested_headline: string | null
+          trend_direction: string | null
+        }
+        Insert: {
+          amplification_priority?: string | null
+          created_at?: string | null
+          current_value?: number | null
+          growth_pct?: number | null
+          headline_worthy?: boolean | null
+          id?: string
+          investor_impact_score?: number | null
+          measured_at?: string | null
+          metric_name: string
+          period?: string | null
+          previous_value?: number | null
+          signal_category: string
+          suggested_headline?: string | null
+          trend_direction?: string | null
+        }
+        Update: {
+          amplification_priority?: string | null
+          created_at?: string | null
+          current_value?: number | null
+          growth_pct?: number | null
+          headline_worthy?: boolean | null
+          id?: string
+          investor_impact_score?: number | null
+          measured_at?: string | null
+          metric_name?: string
+          period?: string | null
+          previous_value?: number | null
+          signal_category?: string
+          suggested_headline?: string | null
+          trend_direction?: string | null
+        }
+        Relationships: []
+      }
+      pmne_leadership_perception: {
+        Row: {
+          analyst_coverage_score: number | null
+          competitor_gap_pct: number | null
+          computed_at: string | null
+          created_at: string | null
+          evidence_depth: number | null
+          id: string
+          key_proof_points: Json | null
+          media_mention_velocity: number | null
+          perception_dimension: string
+          perception_strength: number | null
+          perception_trend: string | null
+          risk_to_perception: string | null
+        }
+        Insert: {
+          analyst_coverage_score?: number | null
+          competitor_gap_pct?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          evidence_depth?: number | null
+          id?: string
+          key_proof_points?: Json | null
+          media_mention_velocity?: number | null
+          perception_dimension: string
+          perception_strength?: number | null
+          perception_trend?: string | null
+          risk_to_perception?: string | null
+        }
+        Update: {
+          analyst_coverage_score?: number | null
+          competitor_gap_pct?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          evidence_depth?: number | null
+          id?: string
+          key_proof_points?: Json | null
+          media_mention_velocity?: number | null
+          perception_dimension?: string
+          perception_strength?: number | null
+          perception_trend?: string | null
+          risk_to_perception?: string | null
+        }
+        Relationships: []
+      }
       podcast_appearances: {
         Row: {
           air_date: string | null

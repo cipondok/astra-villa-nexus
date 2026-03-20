@@ -130,6 +130,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   newf_engine_cycle: { label: 'Network Weaponization', icon: '🕸️' },
   amda_critical_threat: { label: 'Critical Threat', icon: '🚨' },
   amda_engine_cycle: { label: 'Monopoly Defense', icon: '🛡️' },
+  pmne_flagship_signal: { label: 'Flagship Signal', icon: '📣' },
+  pmne_engine_cycle: { label: 'Market Narrative', icon: '📈' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */

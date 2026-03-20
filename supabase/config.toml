@@ -501,3 +501,6 @@ verify_jwt = false
 
 [functions.monopoly-defense]
 verify_jwt = false
+
+[functions.public-market-narrative]
+verify_jwt = false
