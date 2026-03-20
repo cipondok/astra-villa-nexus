@@ -241,6 +241,7 @@ export const ExecutionCommandCenter = lazyRetry(() => import("./ExecutionCommand
 export const OffPlanProjectManager = lazyRetry(() => import("./OffPlanProjectManager"));
 export const NegotiationAgentPanel = lazyRetry(() => import("./NegotiationAgentPanel"));
 export const GlobalBrandAuthorityPanel = lazyRetry(() => import("./GlobalBrandAuthorityPanel"));
+export const InstitutionalCapitalGatewayPanel = lazyRetry(() => import("./InstitutionalCapitalGatewayPanel"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -694,6 +695,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "cac-ltv-model": () => <CacLtvModelPage />,
   "ai-negotiation-agent": () => <NegotiationAgentPanel />,
   "global-brand-authority": () => <GlobalBrandAuthorityPanel />,
+  "institutional-capital-gateway": () => <InstitutionalCapitalGatewayPanel />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -969,4 +971,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "liquidity-index-branding": { label: "Liquidity Index Branding", category: "Features" },
   "ai-negotiation-agent": { label: "AI Negotiation Agent", category: "Transactions" },
   "global-brand-authority": { label: "Global Brand Authority", category: "Strategy" },
+  "institutional-capital-gateway": { label: "Institutional Capital Gateway", category: "Investor Management" },
 };
