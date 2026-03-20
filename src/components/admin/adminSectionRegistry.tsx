@@ -139,6 +139,7 @@ export const NearbyFacilitiesSettings = lazyRetry(() => import("./settings/Nearb
 export const AIPerformanceDashboard = lazyRetry(() => import("./AIPerformanceDashboard"));
 export const AIModelWeightsPanel = lazyRetry(() => import("./AIModelWeightsPanel"));
 export const InvestorScoringPanel = lazyRetry(() => import("./InvestorScoringPanel"));
+export const VendorIntelligencePanel = lazyRetry(() => import("./VendorIntelligencePanel"));
 export const DOMAccuracyReport = lazyRetry(() => import("./DOMAccuracyReport"));
 export const CronJobMonitor = lazyRetry(() => import("./CronJobMonitor"));
 export const WeightTuningHistory = lazyRetry(() => import("./WeightTuningHistory"));
