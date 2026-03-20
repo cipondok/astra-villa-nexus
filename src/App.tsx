@@ -382,6 +382,7 @@ const VendorAcquisitionScriptsPage = lazy(() => import('@/pages/VendorAcquisitio
 const FeatureImpactMatrixPage = lazy(() => import('@/pages/FeatureImpactMatrixPage'));
 const ProfitMaximizationDashboard = lazy(() => import('@/pages/ProfitMaximizationDashboard'));
 const Founder90DayCalendarPage = lazy(() => import('@/pages/Founder90DayCalendarPage'));
+const First50DealsPlaybookPage = lazy(() => import('@/pages/First50DealsPlaybookPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -886,6 +887,7 @@ const AppContent = () => {
                 <Route path="/vendor-acquisition-scripts" element={<VendorAcquisitionScriptsPage />} />
                 <Route path="/feature-impact-matrix" element={<FeatureImpactMatrixPage />} />
                 <Route path="/founder-90-day-calendar" element={<Founder90DayCalendarPage />} />
+                <Route path="/first-50-deals-playbook" element={<First50DealsPlaybookPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
