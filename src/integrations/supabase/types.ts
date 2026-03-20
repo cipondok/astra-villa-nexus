@@ -4924,6 +4924,306 @@ export type Database = {
         }
         Relationships: []
       }
+      amens_capital_rotation: {
+        Row: {
+          actionable_insight: string | null
+          bond_rotation_signal: number | null
+          commodity_cycle_signal: number | null
+          created_at: string | null
+          detected_at: string | null
+          equity_outflow_signal: number | null
+          financial_to_hard_asset_flow: number | null
+          id: string
+          macro_phase: string | null
+          re_inflow_momentum: number | null
+          region: string
+          rotation_confidence: number | null
+          rotation_direction: string | null
+          rotation_velocity: number | null
+          safe_haven_migration_score: number | null
+          trigger_factors: Json | null
+          yield_seeking_intensity: number | null
+        }
+        Insert: {
+          actionable_insight?: string | null
+          bond_rotation_signal?: number | null
+          commodity_cycle_signal?: number | null
+          created_at?: string | null
+          detected_at?: string | null
+          equity_outflow_signal?: number | null
+          financial_to_hard_asset_flow?: number | null
+          id?: string
+          macro_phase?: string | null
+          re_inflow_momentum?: number | null
+          region?: string
+          rotation_confidence?: number | null
+          rotation_direction?: string | null
+          rotation_velocity?: number | null
+          safe_haven_migration_score?: number | null
+          trigger_factors?: Json | null
+          yield_seeking_intensity?: number | null
+        }
+        Update: {
+          actionable_insight?: string | null
+          bond_rotation_signal?: number | null
+          commodity_cycle_signal?: number | null
+          created_at?: string | null
+          detected_at?: string | null
+          equity_outflow_signal?: number | null
+          financial_to_hard_asset_flow?: number | null
+          id?: string
+          macro_phase?: string | null
+          re_inflow_momentum?: number | null
+          region?: string
+          rotation_confidence?: number | null
+          rotation_direction?: string | null
+          rotation_velocity?: number | null
+          safe_haven_migration_score?: number | null
+          trigger_factors?: Json | null
+          yield_seeking_intensity?: number | null
+        }
+        Relationships: []
+      }
+      amens_cross_asset_correlation: {
+        Row: {
+          analysis_window_months: number | null
+          bond_yield_spread: number | null
+          city: string | null
+          commodity_growth_impact: number | null
+          computed_at: string | null
+          correlation_regime: string | null
+          created_at: string | null
+          decorrelation_opportunity: number | null
+          equity_cycle_phase: string | null
+          id: string
+          interest_rate_sensitivity: number | null
+          re_bond_correlation: number | null
+          re_commodity_correlation: number | null
+          re_equity_correlation: number | null
+          re_infrastructure_correlation: number | null
+          regime_stability_pct: number | null
+          region: string
+        }
+        Insert: {
+          analysis_window_months?: number | null
+          bond_yield_spread?: number | null
+          city?: string | null
+          commodity_growth_impact?: number | null
+          computed_at?: string | null
+          correlation_regime?: string | null
+          created_at?: string | null
+          decorrelation_opportunity?: number | null
+          equity_cycle_phase?: string | null
+          id?: string
+          interest_rate_sensitivity?: number | null
+          re_bond_correlation?: number | null
+          re_commodity_correlation?: number | null
+          re_equity_correlation?: number | null
+          re_infrastructure_correlation?: number | null
+          regime_stability_pct?: number | null
+          region?: string
+        }
+        Update: {
+          analysis_window_months?: number | null
+          bond_yield_spread?: number | null
+          city?: string | null
+          commodity_growth_impact?: number | null
+          computed_at?: string | null
+          correlation_regime?: string | null
+          created_at?: string | null
+          decorrelation_opportunity?: number | null
+          equity_cycle_phase?: string | null
+          id?: string
+          interest_rate_sensitivity?: number | null
+          re_bond_correlation?: number | null
+          re_commodity_correlation?: number | null
+          re_equity_correlation?: number | null
+          re_infrastructure_correlation?: number | null
+          regime_stability_pct?: number | null
+          region?: string
+        }
+        Relationships: []
+      }
+      amens_economic_cycle: {
+        Row: {
+          central_bank_rate: number | null
+          computed_at: string | null
+          consumer_confidence: number | null
+          created_at: string | null
+          credit_conditions_index: number | null
+          cycle_phase: string | null
+          expansion_contraction_signal: string | null
+          forecast_horizon_months: number | null
+          gdp_growth_trend: number | null
+          id: string
+          inflation_rate: number | null
+          macro_indicators: Json | null
+          phase_maturity_pct: number | null
+          pmi_manufacturing: number | null
+          region: string
+          strategic_allocation_bias: string | null
+          sync_score: number | null
+          unemployment_trend: number | null
+        }
+        Insert: {
+          central_bank_rate?: number | null
+          computed_at?: string | null
+          consumer_confidence?: number | null
+          created_at?: string | null
+          credit_conditions_index?: number | null
+          cycle_phase?: string | null
+          expansion_contraction_signal?: string | null
+          forecast_horizon_months?: number | null
+          gdp_growth_trend?: number | null
+          id?: string
+          inflation_rate?: number | null
+          macro_indicators?: Json | null
+          phase_maturity_pct?: number | null
+          pmi_manufacturing?: number | null
+          region?: string
+          strategic_allocation_bias?: string | null
+          sync_score?: number | null
+          unemployment_trend?: number | null
+        }
+        Update: {
+          central_bank_rate?: number | null
+          computed_at?: string | null
+          consumer_confidence?: number | null
+          created_at?: string | null
+          credit_conditions_index?: number | null
+          cycle_phase?: string | null
+          expansion_contraction_signal?: string | null
+          forecast_horizon_months?: number | null
+          gdp_growth_trend?: number | null
+          id?: string
+          inflation_rate?: number | null
+          macro_indicators?: Json | null
+          phase_maturity_pct?: number | null
+          pmi_manufacturing?: number | null
+          region?: string
+          strategic_allocation_bias?: string | null
+          sync_score?: number | null
+          unemployment_trend?: number | null
+        }
+        Relationships: []
+      }
+      amens_portfolio_resilience: {
+        Row: {
+          bond_allocation_pct: number | null
+          cash_allocation_pct: number | null
+          commodity_allocation_pct: number | null
+          computed_at: string | null
+          created_at: string | null
+          diversification_benefit_pct: number | null
+          equity_allocation_pct: number | null
+          id: string
+          infra_allocation_pct: number | null
+          max_drawdown_pct: number | null
+          optimal_re_weight_pct: number | null
+          portfolio_sharpe_ratio: number | null
+          re_allocation_pct: number | null
+          rebalance_urgency: string | null
+          scenario_name: string
+          simulation_assumptions: Json | null
+          stress_resilience_score: number | null
+          volatility_spillover_risk: number | null
+        }
+        Insert: {
+          bond_allocation_pct?: number | null
+          cash_allocation_pct?: number | null
+          commodity_allocation_pct?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          diversification_benefit_pct?: number | null
+          equity_allocation_pct?: number | null
+          id?: string
+          infra_allocation_pct?: number | null
+          max_drawdown_pct?: number | null
+          optimal_re_weight_pct?: number | null
+          portfolio_sharpe_ratio?: number | null
+          re_allocation_pct?: number | null
+          rebalance_urgency?: string | null
+          scenario_name: string
+          simulation_assumptions?: Json | null
+          stress_resilience_score?: number | null
+          volatility_spillover_risk?: number | null
+        }
+        Update: {
+          bond_allocation_pct?: number | null
+          cash_allocation_pct?: number | null
+          commodity_allocation_pct?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          diversification_benefit_pct?: number | null
+          equity_allocation_pct?: number | null
+          id?: string
+          infra_allocation_pct?: number | null
+          max_drawdown_pct?: number | null
+          optimal_re_weight_pct?: number | null
+          portfolio_sharpe_ratio?: number | null
+          re_allocation_pct?: number | null
+          rebalance_urgency?: string | null
+          scenario_name?: string
+          simulation_assumptions?: Json | null
+          stress_resilience_score?: number | null
+          volatility_spillover_risk?: number | null
+        }
+        Relationships: []
+      }
+      amens_strategy_feedback: {
+        Row: {
+          allocation_outcome_vs_benchmark: number | null
+          behavioral_pattern_detected: string | null
+          computed_at: string | null
+          created_at: string | null
+          feedback_strength: number | null
+          id: string
+          investor_behavior_cluster: string | null
+          learning_iteration: number | null
+          model_confidence_delta: number | null
+          next_recalibration_at: string | null
+          performance_attribution: Json | null
+          prediction_accuracy_pct: number | null
+          recommendation_hit_rate: number | null
+          strategy_name: string
+          weight_adjustments: Json | null
+        }
+        Insert: {
+          allocation_outcome_vs_benchmark?: number | null
+          behavioral_pattern_detected?: string | null
+          computed_at?: string | null
+          created_at?: string | null
+          feedback_strength?: number | null
+          id?: string
+          investor_behavior_cluster?: string | null
+          learning_iteration?: number | null
+          model_confidence_delta?: number | null
+          next_recalibration_at?: string | null
+          performance_attribution?: Json | null
+          prediction_accuracy_pct?: number | null
+          recommendation_hit_rate?: number | null
+          strategy_name: string
+          weight_adjustments?: Json | null
+        }
+        Update: {
+          allocation_outcome_vs_benchmark?: number | null
+          behavioral_pattern_detected?: string | null
+          computed_at?: string | null
+          created_at?: string | null
+          feedback_strength?: number | null
+          id?: string
+          investor_behavior_cluster?: string | null
+          learning_iteration?: number | null
+          model_confidence_delta?: number | null
+          next_recalibration_at?: string | null
+          performance_attribution?: Json | null
+          prediction_accuracy_pct?: number | null
+          recommendation_hit_rate?: number | null
+          strategy_name?: string
+          weight_adjustments?: Json | null
+        }
+        Relationships: []
+      }
       analytics_settings: {
         Row: {
           configuration: Json | null
