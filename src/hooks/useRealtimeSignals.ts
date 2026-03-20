@@ -160,6 +160,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   swfps_engine_cycle: { label: 'Sovereign Strategy', icon: '🏦' },
   psnem_tipping_point_reached: { label: 'Network Tipping Point', icon: '🔥' },
   psnem_engine_cycle: { label: 'Network Effect Model', icon: '📐' },
+  gpla_infrastructure_irreplaceable: { label: 'Infrastructure Irreplaceable', icon: '🏛️' },
+  gpla_engine_cycle: { label: 'Legacy Architecture', icon: '🏗️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */

@@ -546,3 +546,6 @@ verify_jwt = false
 
 [functions.network-effect-model]
 verify_jwt = false
+
+[functions.proptech-legacy-architecture]
+verify_jwt = false
