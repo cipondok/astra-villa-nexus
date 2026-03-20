@@ -6,7 +6,7 @@ import MultiStepPropertyForm from "@/components/property/MultiStepPropertyForm";
 import PropertyImporter from "@/components/property/PropertyImporter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// Tabs removed - using inline toggle buttons in header
 import { LogIn, UserPlus, Lock, ArrowLeft, Building, Crown, AlertTriangle, Link2, PenTool, Plus, ArrowRight } from "lucide-react";
 import { useIsAdmin, useUserRoles } from "@/hooks/useUserRoles";
 import { useVIPLimits } from "@/hooks/useVIPLimits";
