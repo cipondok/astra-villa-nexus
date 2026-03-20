@@ -14891,6 +14891,279 @@ export type Database = {
         }
         Relationships: []
       }
+      dmem_capital_flow_control: {
+        Row: {
+          capital_volume_usd: number | null
+          countries_active: number | null
+          created_at: string | null
+          dominance_score: number | null
+          flow_domain: string
+          id: string
+          institutional_relationships: number | null
+          intelligence_premium_pct: number | null
+          market_share_pct: number | null
+          platform_intermediation_pct: number | null
+          proprietary_advantage: string | null
+          regulatory_licenses: Json | null
+          revenue_from_flow_usd: number | null
+          target_year: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          capital_volume_usd?: number | null
+          countries_active?: number | null
+          created_at?: string | null
+          dominance_score?: number | null
+          flow_domain: string
+          id?: string
+          institutional_relationships?: number | null
+          intelligence_premium_pct?: number | null
+          market_share_pct?: number | null
+          platform_intermediation_pct?: number | null
+          proprietary_advantage?: string | null
+          regulatory_licenses?: Json | null
+          revenue_from_flow_usd?: number | null
+          target_year?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          capital_volume_usd?: number | null
+          countries_active?: number | null
+          created_at?: string | null
+          dominance_score?: number | null
+          flow_domain?: string
+          id?: string
+          institutional_relationships?: number | null
+          intelligence_premium_pct?: number | null
+          market_share_pct?: number | null
+          platform_intermediation_pct?: number | null
+          proprietary_advantage?: string | null
+          regulatory_licenses?: Json | null
+          revenue_from_flow_usd?: number | null
+          target_year?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      dmem_ecosystem_lockin: {
+        Row: {
+          competitor_replication_years: number | null
+          created_at: string | null
+          data_moat_contribution: number | null
+          ecosystem_completeness_pct: number | null
+          id: string
+          integration_depth: string | null
+          launch_year: number | null
+          lock_in_strength: number | null
+          maturity_year: number | null
+          multi_service_adoption_pct: number | null
+          revenue_per_user_usd: number | null
+          service_layer: string
+          status: string | null
+          switching_cost_score: number | null
+          updated_at: string | null
+          user_dependency_pct: number | null
+        }
+        Insert: {
+          competitor_replication_years?: number | null
+          created_at?: string | null
+          data_moat_contribution?: number | null
+          ecosystem_completeness_pct?: number | null
+          id?: string
+          integration_depth?: string | null
+          launch_year?: number | null
+          lock_in_strength?: number | null
+          maturity_year?: number | null
+          multi_service_adoption_pct?: number | null
+          revenue_per_user_usd?: number | null
+          service_layer: string
+          status?: string | null
+          switching_cost_score?: number | null
+          updated_at?: string | null
+          user_dependency_pct?: number | null
+        }
+        Update: {
+          competitor_replication_years?: number | null
+          created_at?: string | null
+          data_moat_contribution?: number | null
+          ecosystem_completeness_pct?: number | null
+          id?: string
+          integration_depth?: string | null
+          launch_year?: number | null
+          lock_in_strength?: number | null
+          maturity_year?: number | null
+          multi_service_adoption_pct?: number | null
+          revenue_per_user_usd?: number | null
+          service_layer?: string
+          status?: string | null
+          switching_cost_score?: number | null
+          updated_at?: string | null
+          user_dependency_pct?: number | null
+        }
+        Relationships: []
+      }
+      dmem_global_infrastructure: {
+        Row: {
+          annual_platform_gdp_usd: number | null
+          api_integrations: number | null
+          cities_embedded: number | null
+          created_at: string | null
+          data_standard_adoption_pct: number | null
+          geographic_reach: string | null
+          government_partnerships: number | null
+          id: string
+          infrastructure_dimension: string
+          infrastructure_status: string | null
+          irreversibility_score: number | null
+          market_penetration_pct: number | null
+          target_year: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          annual_platform_gdp_usd?: number | null
+          api_integrations?: number | null
+          cities_embedded?: number | null
+          created_at?: string | null
+          data_standard_adoption_pct?: number | null
+          geographic_reach?: string | null
+          government_partnerships?: number | null
+          id?: string
+          infrastructure_dimension: string
+          infrastructure_status?: string | null
+          irreversibility_score?: number | null
+          market_penetration_pct?: number | null
+          target_year?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          annual_platform_gdp_usd?: number | null
+          api_integrations?: number | null
+          cities_embedded?: number | null
+          created_at?: string | null
+          data_standard_adoption_pct?: number | null
+          geographic_reach?: string | null
+          government_partnerships?: number | null
+          id?: string
+          infrastructure_dimension?: string
+          infrastructure_status?: string | null
+          irreversibility_score?: number | null
+          market_penetration_pct?: number | null
+          target_year?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      dmem_liquidity_leadership: {
+        Row: {
+          achieved_at: string | null
+          actual_metric_value: number | null
+          category: string
+          competitive_advantage_score: number | null
+          created_at: string | null
+          current_progress_pct: number | null
+          dependencies: Json | null
+          id: string
+          metric_unit: string | null
+          milestone_name: string
+          moat_contribution: number | null
+          status: string | null
+          target_metric_value: number | null
+          target_quarter: number | null
+          target_year: number
+          updated_at: string | null
+        }
+        Insert: {
+          achieved_at?: string | null
+          actual_metric_value?: number | null
+          category: string
+          competitive_advantage_score?: number | null
+          created_at?: string | null
+          current_progress_pct?: number | null
+          dependencies?: Json | null
+          id?: string
+          metric_unit?: string | null
+          milestone_name: string
+          moat_contribution?: number | null
+          status?: string | null
+          target_metric_value?: number | null
+          target_quarter?: number | null
+          target_year: number
+          updated_at?: string | null
+        }
+        Update: {
+          achieved_at?: string | null
+          actual_metric_value?: number | null
+          category?: string
+          competitive_advantage_score?: number | null
+          created_at?: string | null
+          current_progress_pct?: number | null
+          dependencies?: Json | null
+          id?: string
+          metric_unit?: string | null
+          milestone_name?: string
+          moat_contribution?: number | null
+          status?: string | null
+          target_metric_value?: number | null
+          target_quarter?: number | null
+          target_year?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      dmem_marketplace_gravity: {
+        Row: {
+          alternative_count: number | null
+          compounding_factor: number | null
+          created_at: string | null
+          dependency_metric: string
+          dependency_score: number | null
+          gravity_pull_strength: number | null
+          id: string
+          measured_at: string | null
+          network_effect_multiplier: number | null
+          phase_target_year: number | null
+          platform_share_of_workflow_pct: number | null
+          retention_rate_pct: number | null
+          stakeholder_type: string
+          switching_cost_months: number | null
+          transaction_volume_contribution: number | null
+        }
+        Insert: {
+          alternative_count?: number | null
+          compounding_factor?: number | null
+          created_at?: string | null
+          dependency_metric: string
+          dependency_score?: number | null
+          gravity_pull_strength?: number | null
+          id?: string
+          measured_at?: string | null
+          network_effect_multiplier?: number | null
+          phase_target_year?: number | null
+          platform_share_of_workflow_pct?: number | null
+          retention_rate_pct?: number | null
+          stakeholder_type: string
+          switching_cost_months?: number | null
+          transaction_volume_contribution?: number | null
+        }
+        Update: {
+          alternative_count?: number | null
+          compounding_factor?: number | null
+          created_at?: string | null
+          dependency_metric?: string
+          dependency_score?: number | null
+          gravity_pull_strength?: number | null
+          id?: string
+          measured_at?: string | null
+          network_effect_multiplier?: number | null
+          phase_target_year?: number | null
+          platform_share_of_workflow_pct?: number | null
+          retention_rate_pct?: number | null
+          stakeholder_type?: string
+          switching_cost_months?: number | null
+          transaction_volume_contribution?: number | null
+        }
+        Relationships: []
+      }
       document_audit_trail: {
         Row: {
           action: string
