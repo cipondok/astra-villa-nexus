@@ -360,6 +360,7 @@ const DecisionPrioritizationPage = lazy(() => import('@/pages/DecisionPrioritiza
 const ResilienceFrameworkPage = lazy(() => import('@/pages/ResilienceFrameworkPage'));
 const NegotiationMindsetPage = lazy(() => import('@/pages/NegotiationMindsetPage'));
 const VisionFrameworkPage = lazy(() => import('@/pages/VisionFrameworkPage'));
+const InvestorSentimentDashboardPage = lazy(() => import('@/pages/InvestorSentimentDashboardPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
