@@ -336,6 +336,9 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   // Vendor Intelligence
   "vendor-intelligence-engine": () => <VendorIntelligencePanel />,
 
+  // Revenue Flywheel
+  "revenue-flywheel-optimizer": () => <RevenueFlywheelPanel />,
+
   // User management
   "user-management":     (sc) => <UserManagementHub onNavigate={sc} />,
   "user-levels":         (sc) => <UserLevelManagement onNavigate={sc} />,
