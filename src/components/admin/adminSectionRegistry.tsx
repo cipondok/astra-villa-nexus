@@ -599,6 +599,19 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ninety-day-roadmap": () => <NinetyDayRoadmap />,
   "daily-execution-plan": () => <DailyExecutionPlan />,
   "founder-strategic-kpis": () => <FounderStrategicKPIs />,
+
+  // Strategic blueprint pages
+  "vendor-monetization-pyramid": () => <VendorMonetizationPyramidPage />,
+  "institutional-saas-blueprint": () => <InstitutionalSaaSBlueprintPage />,
+  "revenue-scaling-blueprint": () => <RevenueScalingBlueprintPage />,
+  "monetization-pricing-blueprint": () => <MonetizationPricingPage />,
+  "sprint-execution-roadmap": () => <SprintExecutionRoadmapPage />,
+  "marketplace-launch-playbook": () => <MarketplaceLaunchPlaybookPage />,
+  "city-launch-playbook": () => <CityLaunchPlaybookPage />,
+  "revenue-projection-model": () => <RevenueProjectionModelPage />,
+  "investor-kpi-framework-page": () => <InvestorKPIFrameworkPage />,
+  "vendor-acquisition-scripts": () => <VendorAcquisitionScriptsPage />,
+  "feature-impact-matrix": () => <FeatureImpactMatrixPage />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
