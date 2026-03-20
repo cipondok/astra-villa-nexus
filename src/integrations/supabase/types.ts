@@ -3041,6 +3041,261 @@ export type Database = {
           },
         ]
       }
+      ahcss_capital_copilot: {
+        Row: {
+          ai_proposal_accuracy: number | null
+          allocation_domain: string
+          allocation_efficiency_gain: number | null
+          computed_at: string
+          contextual_adjustment_pct: number | null
+          copilot_maturity_score: number | null
+          copilot_tier: string | null
+          created_at: string
+          feedback_loop_iterations: number | null
+          human_validation_rate: number | null
+          id: string
+          refinement_velocity: number | null
+          risk_adjusted_return_delta: number | null
+          year_horizon: number | null
+        }
+        Insert: {
+          ai_proposal_accuracy?: number | null
+          allocation_domain: string
+          allocation_efficiency_gain?: number | null
+          computed_at?: string
+          contextual_adjustment_pct?: number | null
+          copilot_maturity_score?: number | null
+          copilot_tier?: string | null
+          created_at?: string
+          feedback_loop_iterations?: number | null
+          human_validation_rate?: number | null
+          id?: string
+          refinement_velocity?: number | null
+          risk_adjusted_return_delta?: number | null
+          year_horizon?: number | null
+        }
+        Update: {
+          ai_proposal_accuracy?: number | null
+          allocation_domain?: string
+          allocation_efficiency_gain?: number | null
+          computed_at?: string
+          contextual_adjustment_pct?: number | null
+          copilot_maturity_score?: number | null
+          copilot_tier?: string | null
+          created_at?: string
+          feedback_loop_iterations?: number | null
+          human_validation_rate?: number | null
+          id?: string
+          refinement_velocity?: number | null
+          risk_adjusted_return_delta?: number | null
+          year_horizon?: number | null
+        }
+        Relationships: []
+      }
+      ahcss_decision_augmentation: {
+        Row: {
+          ai_confidence_score: number | null
+          augmentation_composite: number | null
+          augmentation_domain: string
+          augmentation_tier: string | null
+          computed_at: string
+          created_at: string
+          decision_speed_multiplier: number | null
+          false_positive_rate: number | null
+          human_override_rate: number | null
+          id: string
+          opportunity_discovery_lift: number | null
+          override_quality_delta: number | null
+          risk_pattern_detection_accuracy: number | null
+          scenario_simulation_depth: number | null
+        }
+        Insert: {
+          ai_confidence_score?: number | null
+          augmentation_composite?: number | null
+          augmentation_domain: string
+          augmentation_tier?: string | null
+          computed_at?: string
+          created_at?: string
+          decision_speed_multiplier?: number | null
+          false_positive_rate?: number | null
+          human_override_rate?: number | null
+          id?: string
+          opportunity_discovery_lift?: number | null
+          override_quality_delta?: number | null
+          risk_pattern_detection_accuracy?: number | null
+          scenario_simulation_depth?: number | null
+        }
+        Update: {
+          ai_confidence_score?: number | null
+          augmentation_composite?: number | null
+          augmentation_domain?: string
+          augmentation_tier?: string | null
+          computed_at?: string
+          created_at?: string
+          decision_speed_multiplier?: number | null
+          false_positive_rate?: number | null
+          human_override_rate?: number | null
+          id?: string
+          opportunity_discovery_lift?: number | null
+          override_quality_delta?: number | null
+          risk_pattern_detection_accuracy?: number | null
+          scenario_simulation_depth?: number | null
+        }
+        Relationships: []
+      }
+      ahcss_human_oversight: {
+        Row: {
+          ai_delegation_readiness: number | null
+          computed_at: string
+          contextual_judgment_index: number | null
+          created_at: string
+          ethical_governance_score: number | null
+          id: string
+          intervention_effectiveness: number | null
+          oversight_composite: number | null
+          oversight_domain: string
+          oversight_tier: string | null
+          stakeholder_negotiation_skill: number | null
+          vision_setting_clarity: number | null
+          year_horizon: number | null
+        }
+        Insert: {
+          ai_delegation_readiness?: number | null
+          computed_at?: string
+          contextual_judgment_index?: number | null
+          created_at?: string
+          ethical_governance_score?: number | null
+          id?: string
+          intervention_effectiveness?: number | null
+          oversight_composite?: number | null
+          oversight_domain: string
+          oversight_tier?: string | null
+          stakeholder_negotiation_skill?: number | null
+          vision_setting_clarity?: number | null
+          year_horizon?: number | null
+        }
+        Update: {
+          ai_delegation_readiness?: number | null
+          computed_at?: string
+          contextual_judgment_index?: number | null
+          created_at?: string
+          ethical_governance_score?: number | null
+          id?: string
+          intervention_effectiveness?: number | null
+          oversight_composite?: number | null
+          oversight_domain?: string
+          oversight_tier?: string | null
+          stakeholder_negotiation_skill?: number | null
+          vision_setting_clarity?: number | null
+          year_horizon?: number | null
+        }
+        Relationships: []
+      }
+      ahcss_talent_evolution: {
+        Row: {
+          ai_collaboration_fluency: number | null
+          competitive_advantage_contribution: number | null
+          computed_at: string
+          created_at: string
+          cross_disciplinary_innovation: number | null
+          data_driven_thinking_score: number | null
+          evolution_composite: number | null
+          evolution_tier: string | null
+          generation_label: string | null
+          id: string
+          reskilling_velocity: number | null
+          skill_domain: string
+          talent_supply_gap: number | null
+          workforce_readiness_index: number | null
+          year_horizon: number | null
+        }
+        Insert: {
+          ai_collaboration_fluency?: number | null
+          competitive_advantage_contribution?: number | null
+          computed_at?: string
+          created_at?: string
+          cross_disciplinary_innovation?: number | null
+          data_driven_thinking_score?: number | null
+          evolution_composite?: number | null
+          evolution_tier?: string | null
+          generation_label?: string | null
+          id?: string
+          reskilling_velocity?: number | null
+          skill_domain: string
+          talent_supply_gap?: number | null
+          workforce_readiness_index?: number | null
+          year_horizon?: number | null
+        }
+        Update: {
+          ai_collaboration_fluency?: number | null
+          competitive_advantage_contribution?: number | null
+          computed_at?: string
+          created_at?: string
+          cross_disciplinary_innovation?: number | null
+          data_driven_thinking_score?: number | null
+          evolution_composite?: number | null
+          evolution_tier?: string | null
+          generation_label?: string | null
+          id?: string
+          reskilling_velocity?: number | null
+          skill_domain?: string
+          talent_supply_gap?: number | null
+          workforce_readiness_index?: number | null
+          year_horizon?: number | null
+        }
+        Relationships: []
+      }
+      ahcss_trust_transparency: {
+        Row: {
+          accountability_clarity: number | null
+          audit_trail_completeness: number | null
+          bias_detection_coverage: number | null
+          computed_at: string
+          created_at: string
+          explainability_score: number | null
+          id: string
+          institutional_confidence: number | null
+          regulatory_compliance_pct: number | null
+          stakeholder_satisfaction: number | null
+          trust_composite: number | null
+          trust_domain: string
+          trust_tier: string | null
+          year_horizon: number | null
+        }
+        Insert: {
+          accountability_clarity?: number | null
+          audit_trail_completeness?: number | null
+          bias_detection_coverage?: number | null
+          computed_at?: string
+          created_at?: string
+          explainability_score?: number | null
+          id?: string
+          institutional_confidence?: number | null
+          regulatory_compliance_pct?: number | null
+          stakeholder_satisfaction?: number | null
+          trust_composite?: number | null
+          trust_domain: string
+          trust_tier?: string | null
+          year_horizon?: number | null
+        }
+        Update: {
+          accountability_clarity?: number | null
+          audit_trail_completeness?: number | null
+          bias_detection_coverage?: number | null
+          computed_at?: string
+          created_at?: string
+          explainability_score?: number | null
+          id?: string
+          institutional_confidence?: number | null
+          regulatory_compliance_pct?: number | null
+          stakeholder_satisfaction?: number | null
+          trust_composite?: number | null
+          trust_domain?: string
+          trust_tier?: string | null
+          year_horizon?: number | null
+        }
+        Relationships: []
+      }
       ai_batch_locks: {
         Row: {
           expires_at: string
