@@ -429,7 +429,7 @@ const MultiStepPropertyForm = () => {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-3 md:space-y-5">
       {/* Tier Feature Banner */}
       <TierFeatureBanner />
 
@@ -446,30 +446,29 @@ const MultiStepPropertyForm = () => {
       )}
 
       {/* Progress Bar */}
-      <div className="space-y-1.5">
-        <div className="flex justify-between text-xs">
-          <span className="font-medium text-foreground">Step {getCurrentStepIndex() + 1} of {steps.length}</span>
+      <div className="space-y-1">
+        <div className="flex justify-between text-[10px] md:text-xs">
+          <span className="font-medium text-foreground">Step {getCurrentStepIndex() + 1}/{steps.length}</span>
           <span className="text-muted-foreground">{Math.round(progress)}%</span>
         </div>
-        <Progress value={progress} multiColor className="h-2" />
+        <Progress value={progress} multiColor className="h-1.5 md:h-2" />
       </div>
 
       {/* Tabs */}
       <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-        <TabsList className={`grid w-full h-11 sm:h-12 p-1 gap-0.5 sm:gap-1 bg-muted/50 border border-border rounded-xl ${steps.length === 7 ? 'grid-cols-7' : 'grid-cols-6'}`}>
+        <TabsList className={`grid w-full h-9 md:h-11 p-0.5 md:p-1 gap-0 bg-muted/50 border border-border rounded-lg md:rounded-xl ${steps.length === 7 ? 'grid-cols-7' : 'grid-cols-6'}`}>
           {steps.map((step, index) => {
             const Icon = step.icon;
             const stepIndex = steps.findIndex(s => s.id === step.id);
             const isCompleted = stepIndex < getCurrentStepIndex();
             const isCurrent = currentTab === step.id;
-            const stepLabel = language === 'id' ? step.labelId : step.label;
             
             return (
               <TabsTrigger
                 key={step.id}
                 value={step.id}
                 className={`
-                  flex items-center justify-center gap-0.5 sm:gap-1 py-1.5 px-1 sm:px-1.5 text-[9px] sm:text-[10px] font-medium relative rounded-lg
+                  flex items-center justify-center py-1 px-0.5 md:px-1.5 text-[8px] md:text-[10px] font-medium relative rounded-md md:rounded-lg
                   transition-all duration-200
                   hover:bg-accent/50
                   data-[state=active]:bg-primary
@@ -478,19 +477,18 @@ const MultiStepPropertyForm = () => {
                 `}
               >
                 {isCompleted && (
-                  <span className="absolute -top-1 -right-1 h-3.5 w-3.5 bg-chart-1 rounded-full flex items-center justify-center shadow-sm border-2 border-background">
-                    <CheckCircle2 className="h-2 w-2 text-primary-foreground" />
+                  <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 md:h-3.5 md:w-3.5 bg-chart-1 rounded-full flex items-center justify-center shadow-sm border border-background md:border-2">
+                    <CheckCircle2 className="h-1.5 w-1.5 md:h-2 md:w-2 text-primary-foreground" />
                   </span>
                 )}
-                <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline truncate">{stepLabel}</span>
+                <Icon className="h-3 w-3 md:h-4 md:w-4" />
               </TabsTrigger>
             );
           })}
         </TabsList>
 
-        <Card className="mt-4 border-border bg-card">
-          <CardContent className="pt-5 pb-4 px-3 sm:px-5">
+        <Card className="mt-2 md:mt-4 border-border bg-card">
+          <CardContent className="pt-3 pb-3 px-2.5 md:pt-5 md:pb-4 md:px-5">
             <TabsContent value="basic" className="mt-0">
               <BasicInfoStep formData={formData} onUpdate={updateFormData} />
             </TabsContent>
@@ -528,13 +526,13 @@ const MultiStepPropertyForm = () => {
       </Tabs>
 
       {/* Navigation Buttons */}
-      <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 pt-2">
-        <div className="flex flex-wrap gap-2">
+      <div className="flex items-center justify-between gap-2 pt-1 md:pt-2">
+        <div className="flex items-center gap-1.5">
           <Button
             type="button"
             variant="outline"
             size="sm"
-            className="h-9 text-xs sm:text-sm border-border"
+            className="h-8 text-[11px] md:text-sm px-2.5 md:px-3 border-border"
             onClick={() => navigate('/dashboard')}
           >
             Cancel
@@ -543,10 +541,10 @@ const MultiStepPropertyForm = () => {
             type="button"
             variant="ghost"
             size="sm"
-            className="h-9 text-xs sm:text-sm"
+            className="h-8 text-[11px] md:text-sm px-2 md:px-3"
             onClick={handleManualSave}
           >
-            <Save className="h-3.5 w-3.5 mr-1.5" />
+            <Save className="h-3 w-3 mr-1" />
             Save
           </Button>
           {hasDraft && (
@@ -555,24 +553,23 @@ const MultiStepPropertyForm = () => {
               variant="ghost"
               size="sm"
               onClick={clearDraft}
-              className="h-9 text-xs sm:text-sm text-destructive hover:text-destructive hover:bg-destructive/10"
+              className="h-8 text-[11px] md:text-sm px-2 text-destructive hover:text-destructive hover:bg-destructive/10"
             >
-              <Trash2 className="h-3.5 w-3.5 mr-1.5" />
-              Clear
+              <Trash2 className="h-3 w-3" />
             </Button>
           )}
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-1.5">
           {currentTab !== 'basic' && (
             <Button
               type="button"
               variant="outline"
               size="sm"
-              className="h-9 text-xs sm:text-sm border-border"
+              className="h-8 text-[11px] md:text-sm px-2.5 border-border"
               onClick={goToPrevTab}
             >
-              Previous
+              Prev
             </Button>
           )}
           
@@ -580,11 +577,11 @@ const MultiStepPropertyForm = () => {
             <Button
               type="button"
               size="sm"
-              className="h-9 text-xs sm:text-sm bg-primary hover:bg-primary/90 text-primary-foreground"
+              className="h-8 text-[11px] md:text-sm px-3 bg-primary hover:bg-primary/90 text-primary-foreground"
               onClick={goToNextTab}
               disabled={!isCurrentStepValid()}
             >
-              Next Step
+              Next
             </Button>
           ) : (
             <Button
@@ -592,18 +589,13 @@ const MultiStepPropertyForm = () => {
               size="sm"
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="h-9 sm:h-10 px-4 sm:px-6 text-xs sm:text-sm bg-primary hover:bg-primary/90 text-primary-foreground"
+              className="h-8 md:h-10 px-3 md:px-6 text-[11px] md:text-sm bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              <Send className="h-3.5 w-3.5 mr-1.5" />
-              {isSubmitting ? 'Submitting...' : 'Submit Property'}
+              <Send className="h-3 w-3 mr-1" />
+              {isSubmitting ? '...' : 'Submit'}
             </Button>
           )}
         </div>
-      </div>
-
-      {/* Helper Text */}
-      <div className="text-center text-xs sm:text-sm text-muted-foreground pt-2">
-        <p>💡 Press <kbd className="px-1.5 py-0.5 bg-muted border border-border rounded text-[10px] sm:text-xs font-mono">Ctrl+S</kbd> to save anytime</p>
       </div>
     </div>
   );
