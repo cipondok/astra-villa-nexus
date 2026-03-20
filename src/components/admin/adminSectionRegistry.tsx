@@ -240,6 +240,7 @@ export const MarketForecastingDashboard = lazyRetry(() => import("./MarketForeca
 export const ExecutionCommandCenter = lazyRetry(() => import("./ExecutionCommandCenter"));
 export const OffPlanProjectManager = lazyRetry(() => import("./OffPlanProjectManager"));
 export const NegotiationAgentPanel = lazyRetry(() => import("./NegotiationAgentPanel"));
+export const GlobalBrandAuthorityPanel = lazyRetry(() => import("./GlobalBrandAuthorityPanel"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
