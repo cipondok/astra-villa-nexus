@@ -552,3 +552,6 @@ verify_jwt = false
 
 [functions.capital-civilization-strategy]
 verify_jwt = false
+
+[functions.founder-power-compounding]
+verify_jwt = false

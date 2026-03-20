@@ -17422,6 +17422,270 @@ export type Database = {
         }
         Relationships: []
       }
+      fspcm_capital_leverage: {
+        Row: {
+          capital_access_multiplier: number | null
+          computed_at: string
+          created_at: string
+          deal_flow_quality: number | null
+          execution_credibility_score: number | null
+          expansion_track_record: number | null
+          fundraising_velocity_days: number | null
+          id: string
+          institutional_network_depth: number | null
+          leverage_composite: number | null
+          leverage_source: string
+          leverage_tier: string | null
+          sovereign_access_level: string | null
+          valuation_premium_pct: number | null
+          year_horizon: number | null
+        }
+        Insert: {
+          capital_access_multiplier?: number | null
+          computed_at?: string
+          created_at?: string
+          deal_flow_quality?: number | null
+          execution_credibility_score?: number | null
+          expansion_track_record?: number | null
+          fundraising_velocity_days?: number | null
+          id?: string
+          institutional_network_depth?: number | null
+          leverage_composite?: number | null
+          leverage_source: string
+          leverage_tier?: string | null
+          sovereign_access_level?: string | null
+          valuation_premium_pct?: number | null
+          year_horizon?: number | null
+        }
+        Update: {
+          capital_access_multiplier?: number | null
+          computed_at?: string
+          created_at?: string
+          deal_flow_quality?: number | null
+          execution_credibility_score?: number | null
+          expansion_track_record?: number | null
+          fundraising_velocity_days?: number | null
+          id?: string
+          institutional_network_depth?: number | null
+          leverage_composite?: number | null
+          leverage_source?: string
+          leverage_tier?: string | null
+          sovereign_access_level?: string | null
+          valuation_premium_pct?: number | null
+          year_horizon?: number | null
+        }
+        Relationships: []
+      }
+      fspcm_decision_compounding: {
+        Row: {
+          competitive_positioning_delta: number | null
+          compounding_rate: number | null
+          compounding_tier: string | null
+          computed_at: string
+          created_at: string
+          cumulative_decisions: number | null
+          decision_domain: string
+          decision_epoch: string
+          decision_quality_score: number | null
+          high_impact_ratio: number | null
+          id: string
+          investor_confidence_index: number | null
+          market_timing_accuracy: number | null
+          opportunity_surface_area: number | null
+          streak_length: number | null
+        }
+        Insert: {
+          competitive_positioning_delta?: number | null
+          compounding_rate?: number | null
+          compounding_tier?: string | null
+          computed_at?: string
+          created_at?: string
+          cumulative_decisions?: number | null
+          decision_domain: string
+          decision_epoch?: string
+          decision_quality_score?: number | null
+          high_impact_ratio?: number | null
+          id?: string
+          investor_confidence_index?: number | null
+          market_timing_accuracy?: number | null
+          opportunity_surface_area?: number | null
+          streak_length?: number | null
+        }
+        Update: {
+          competitive_positioning_delta?: number | null
+          compounding_rate?: number | null
+          compounding_tier?: string | null
+          computed_at?: string
+          created_at?: string
+          cumulative_decisions?: number | null
+          decision_domain?: string
+          decision_epoch?: string
+          decision_quality_score?: number | null
+          high_impact_ratio?: number | null
+          id?: string
+          investor_confidence_index?: number | null
+          market_timing_accuracy?: number | null
+          opportunity_surface_area?: number | null
+          streak_length?: number | null
+        }
+        Relationships: []
+      }
+      fspcm_legacy_influence: {
+        Row: {
+          brand_transcendence_score: number | null
+          computed_at: string
+          created_at: string
+          cultural_principles_adoption: number | null
+          governance_independence: number | null
+          id: string
+          influence_mechanism: string
+          influence_persistence_years: number | null
+          institutional_embedding_score: number | null
+          legacy_composite: number | null
+          legacy_tier: string | null
+          mission_continuity_strength: number | null
+          successor_pipeline_depth: number | null
+          year_horizon: number | null
+        }
+        Insert: {
+          brand_transcendence_score?: number | null
+          computed_at?: string
+          created_at?: string
+          cultural_principles_adoption?: number | null
+          governance_independence?: number | null
+          id?: string
+          influence_mechanism: string
+          influence_persistence_years?: number | null
+          institutional_embedding_score?: number | null
+          legacy_composite?: number | null
+          legacy_tier?: string | null
+          mission_continuity_strength?: number | null
+          successor_pipeline_depth?: number | null
+          year_horizon?: number | null
+        }
+        Update: {
+          brand_transcendence_score?: number | null
+          computed_at?: string
+          created_at?: string
+          cultural_principles_adoption?: number | null
+          governance_independence?: number | null
+          id?: string
+          influence_mechanism?: string
+          influence_persistence_years?: number | null
+          institutional_embedding_score?: number | null
+          legacy_composite?: number | null
+          legacy_tier?: string | null
+          mission_continuity_strength?: number | null
+          successor_pipeline_depth?: number | null
+          year_horizon?: number | null
+        }
+        Relationships: []
+      }
+      fspcm_narrative_authority: {
+        Row: {
+          authority_composite: number | null
+          authority_tier: string | null
+          benchmark_recognition_score: number | null
+          computed_at: string
+          conference_keynote_invitations: number | null
+          created_at: string
+          directional_signal_strength: number | null
+          ecosystem_alignment_index: number | null
+          id: string
+          industry_perception_shift: number | null
+          media_amplification: number | null
+          narrative_domain: string
+          thought_leadership_citations: number | null
+          year_horizon: number | null
+        }
+        Insert: {
+          authority_composite?: number | null
+          authority_tier?: string | null
+          benchmark_recognition_score?: number | null
+          computed_at?: string
+          conference_keynote_invitations?: number | null
+          created_at?: string
+          directional_signal_strength?: number | null
+          ecosystem_alignment_index?: number | null
+          id?: string
+          industry_perception_shift?: number | null
+          media_amplification?: number | null
+          narrative_domain: string
+          thought_leadership_citations?: number | null
+          year_horizon?: number | null
+        }
+        Update: {
+          authority_composite?: number | null
+          authority_tier?: string | null
+          benchmark_recognition_score?: number | null
+          computed_at?: string
+          conference_keynote_invitations?: number | null
+          created_at?: string
+          directional_signal_strength?: number | null
+          ecosystem_alignment_index?: number | null
+          id?: string
+          industry_perception_shift?: number | null
+          media_amplification?: number | null
+          narrative_domain?: string
+          thought_leadership_citations?: number | null
+          year_horizon?: number | null
+        }
+        Relationships: []
+      }
+      fspcm_talent_magnetism: {
+        Row: {
+          computed_at: string
+          created_at: string
+          elite_hire_conversion_pct: number | null
+          employer_brand_score: number | null
+          execution_velocity_multiplier: number | null
+          id: string
+          inbound_application_rate: number | null
+          innovation_output_index: number | null
+          magnetism_composite: number | null
+          magnetism_tier: string | null
+          organizational_resilience: number | null
+          retention_rate_pct: number | null
+          talent_network_reach: number | null
+          talent_segment: string
+          year_horizon: number | null
+        }
+        Insert: {
+          computed_at?: string
+          created_at?: string
+          elite_hire_conversion_pct?: number | null
+          employer_brand_score?: number | null
+          execution_velocity_multiplier?: number | null
+          id?: string
+          inbound_application_rate?: number | null
+          innovation_output_index?: number | null
+          magnetism_composite?: number | null
+          magnetism_tier?: string | null
+          organizational_resilience?: number | null
+          retention_rate_pct?: number | null
+          talent_network_reach?: number | null
+          talent_segment: string
+          year_horizon?: number | null
+        }
+        Update: {
+          computed_at?: string
+          created_at?: string
+          elite_hire_conversion_pct?: number | null
+          employer_brand_score?: number | null
+          execution_velocity_multiplier?: number | null
+          id?: string
+          inbound_application_rate?: number | null
+          innovation_output_index?: number | null
+          magnetism_composite?: number | null
+          magnetism_tier?: string | null
+          organizational_resilience?: number | null
+          retention_rate_pct?: number | null
+          talent_network_reach?: number | null
+          talent_segment?: string
+          year_horizon?: number | null
+        }
+        Relationships: []
+      }
       function_execution_logs: {
         Row: {
           created_at: string | null
