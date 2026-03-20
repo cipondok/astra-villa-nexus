@@ -147,6 +147,13 @@ export const navigationSections = {
       description: "Main dashboard overview and quick stats"
     },
     {
+      key: "execution-command-center",
+      label: "Execution Command Center",
+      icon: Rocket,
+      description: "Real-time operating cockpit — liquidity, pipeline, vendor, revenue & campaign controls",
+      badge: "New"
+    },
+    {
       key: "project-map",
       label: "Project Map",
       icon: Map,
