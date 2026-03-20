@@ -245,6 +245,7 @@ export const GlobalIpoVisionStrategy = lazyRetry(() => import("./GlobalIpoVision
 export const SuperAppEcosystemArchitecture = lazyRetry(() => import("./SuperAppEcosystemArchitecture"));
 export const AIDealClosingAgentSystem = lazyRetry(() => import("./AIDealClosingAgentSystem"));
 export const ProductionSystemOrganizer = lazyRetry(() => import("./ProductionSystemOrganizer"));
+export const PropertyLiquidityAIPanel = lazyRetry(() => import("./PropertyLiquidityAIPanel"));
 export const InvestorCommunityDashboard = lazyRetry(() => import("./InvestorCommunityDashboard"));
 export const GeoExpansionDashboard = lazyRetry(() => import("./GeoExpansionDashboard"));
 export const FounderBrandingDashboard = lazyRetry(() => import("./FounderBrandingDashboard"));
@@ -602,6 +603,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "superapp-ecosystem":         () => <SuperAppEcosystemArchitecture />,
   "ai-deal-closing-agent":      () => <AIDealClosingAgentSystem />,
   "production-system-organizer": () => <ProductionSystemOrganizer />,
+  "liquidity-ai-scoring":       () => <PropertyLiquidityAIPanel />,
   "investor-community":         () => <InvestorCommunityDashboard />,
   "geo-expansion":              () => <GeoExpansionDashboard />,
   "founder-branding":           () => <FounderBrandingDashboard />,

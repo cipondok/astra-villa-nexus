@@ -1533,6 +1533,13 @@ export const navigationSections = {
       badge: "🏭 Production"
     },
     {
+      key: "liquidity-ai-scoring",
+      label: "Liquidity AI Scoring",
+      icon: Activity,
+      description: "Dynamic liquidity scoring engine — sell speed prediction, visibility boost, urgency alerts, district metrics",
+      badge: "💧 Liquidity AI"
+    },
+    {
       key: "investor-community",
       label: "Investor Community",
       icon: Users,
