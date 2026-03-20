@@ -292,6 +292,13 @@ export const navigationSections = {
       badge: "AI"
     },
     {
+      key: "global-expansion-war",
+      label: "Global Expansion War Strategy",
+      icon: Globe,
+      description: "City domination scoring, launch war plans & regional scaling roadmap",
+      badge: "AI"
+    },
+    {
       key: "mortgage-management",
       label: "Mortgage (KPR) Management",
       icon: Calculator,
