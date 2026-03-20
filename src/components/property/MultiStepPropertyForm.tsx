@@ -435,18 +435,14 @@ const MultiStepPropertyForm = () => {
 
       {/* Auto-save Status */}
       {lastSaved && (
-        <Alert className="border-chart-1/30 bg-chart-1/5">
-          <CheckCircle2 className="h-4 w-4 text-chart-1" />
-          <AlertDescription className="flex items-center justify-between flex-wrap gap-2">
-            <span className="text-xs sm:text-sm text-chart-1">
+        <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-50 md:static md:translate-x-0 md:z-auto">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-chart-1/10 border border-chart-1/20 shadow-lg md:shadow-none backdrop-blur-sm">
+            <CheckCircle2 className="h-3 w-3 text-chart-1 shrink-0" />
+            <span className="text-[10px] text-chart-1 font-medium whitespace-nowrap">
               Auto-saved {getTimeSinceLastSave()}
             </span>
-            <Badge variant="secondary" className="text-[10px] sm:text-xs bg-chart-1/10 text-chart-1">
-              <Clock className="h-3 w-3 mr-1" />
-              Session recovery enabled
-            </Badge>
-          </AlertDescription>
-        </Alert>
+          </div>
+        </div>
       )}
 
       {/* Progress Bar */}
