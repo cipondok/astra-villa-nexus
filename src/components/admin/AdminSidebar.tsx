@@ -202,7 +202,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
           <div 
             role="menu" 
             aria-label={sectionTitles[openCategory as keyof typeof sectionTitles]} 
-            className="absolute left-14 top-2 w-56 bg-popover/98 backdrop-blur-xl rounded-xl border border-border/50 shadow-2xl z-[9999] animate-in slide-in-from-left-3 fade-in-0 duration-200 flex flex-col ring-1 ring-black/5" style={{ maxHeight: 'min(calc(100vh - 80px), 420px)' }}
+            className="absolute left-14 top-2 w-56 bg-popover/98 backdrop-blur-xl rounded-xl border border-border/50 shadow-2xl z-[9999] animate-in slide-in-from-left-3 fade-in-0 duration-200 flex flex-col ring-1 ring-black/5" style={{ maxHeight: 'min(calc(100vh - 80px), 680px)' }}
           >
             {/* Panel Header */}
             <div className="flex items-center justify-between px-3 py-2.5 border-b border-border/30 bg-muted/30 shrink-0">
