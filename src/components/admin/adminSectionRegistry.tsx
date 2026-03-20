@@ -603,6 +603,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "superapp-ecosystem":         () => <SuperAppEcosystemArchitecture />,
   "ai-deal-closing-agent":      () => <AIDealClosingAgentSystem />,
   "production-system-organizer": () => <ProductionSystemOrganizer />,
+  "liquidity-ai-scoring":       () => <PropertyLiquidityAIPanel />,
   "investor-community":         () => <InvestorCommunityDashboard />,
   "geo-expansion":              () => <GeoExpansionDashboard />,
   "founder-branding":           () => <FounderBrandingDashboard />,
