@@ -306,6 +306,13 @@ export const navigationSections = {
       badge: "AI"
     },
     {
+      key: "unicorn-narrative",
+      label: "$1B Valuation Narrative",
+      icon: Crown,
+      description: "Unicorn positioning framework, valuation milestones & investor pitch storyline",
+      badge: "Strategy"
+    },
+    {
       key: "mortgage-management",
       label: "Mortgage (KPR) Management",
       icon: Calculator,
