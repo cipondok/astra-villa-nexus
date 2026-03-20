@@ -885,6 +885,7 @@ const AppContent = () => {
                 <Route path="/investor-kpi-framework" element={<InvestorKPIFrameworkPage />} />
                 <Route path="/vendor-acquisition-scripts" element={<VendorAcquisitionScriptsPage />} />
                 <Route path="/feature-impact-matrix" element={<FeatureImpactMatrixPage />} />
+                <Route path="/founder-90-day-calendar" element={<Founder90DayCalendarPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
