@@ -605,6 +605,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ai-deal-closing-agent":      () => <AIDealClosingAgentSystem />,
   "production-system-organizer": () => <ProductionSystemOrganizer />,
   "liquidity-ai-scoring":       () => <PropertyLiquidityAIPanel />,
+  "investor-deal-matching":     () => <InvestorDealMatchingPanel />,
   "investor-community":         () => <InvestorCommunityDashboard />,
   "geo-expansion":              () => <GeoExpansionDashboard />,
   "founder-branding":           () => <FounderBrandingDashboard />,
