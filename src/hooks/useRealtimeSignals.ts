@@ -162,6 +162,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   psnem_engine_cycle: { label: 'Network Effect Model', icon: '📐' },
   gpla_infrastructure_irreplaceable: { label: 'Infrastructure Irreplaceable', icon: '🏛️' },
   gpla_engine_cycle: { label: 'Legacy Architecture', icon: '🏗️' },
+  fycs_megacity_formation: { label: 'Megacity Formation', icon: '🏙️' },
+  fycs_engine_cycle: { label: 'Capital Civilization', icon: '🌍' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
