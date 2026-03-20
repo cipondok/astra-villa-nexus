@@ -1526,6 +1526,13 @@ export const navigationSections = {
       badge: "🤖 Agent AI"
     },
     {
+      key: "production-system-organizer",
+      label: "Production System Audit",
+      icon: CheckCircle,
+      description: "Launch readiness audit — role system, marketplace structure, vendor engine, monetization, admin controls",
+      badge: "🏭 Production"
+    },
+    {
       key: "investor-community",
       label: "Investor Community",
       icon: Users,
