@@ -861,6 +861,7 @@ const AppContent = () => {
                 <Route path="/institutional-saas-blueprint" element={<InstitutionalSaaSBlueprintPage />} />
                 <Route path="/revenue-scaling-blueprint" element={<RevenueScalingBlueprintPage />} />
                 <Route path="/monetization-pricing" element={<MonetizationPricingPage />} />
+                <Route path="/sprint-execution-roadmap" element={<SprintExecutionRoadmapPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
