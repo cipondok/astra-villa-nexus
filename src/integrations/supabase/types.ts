@@ -18747,6 +18747,318 @@ export type Database = {
         }
         Relationships: []
       }
+      geiti_liquidity_pathway: {
+        Row: {
+          assessed_at: string | null
+          capital_raised_usd: number | null
+          complexity_score: number | null
+          cons: Json | null
+          created_at: string | null
+          estimated_valuation_usd: number | null
+          founder_control_post: number | null
+          founder_dilution_pct: number | null
+          id: string
+          liquidity_for_shareholders_usd: number | null
+          pathway_name: string
+          pathway_type: string
+          prerequisites: Json | null
+          pros: Json | null
+          recommended_timing: string | null
+          regulatory_risk: string | null
+          status: string | null
+          suitability_score: number | null
+          time_to_execution_months: number | null
+        }
+        Insert: {
+          assessed_at?: string | null
+          capital_raised_usd?: number | null
+          complexity_score?: number | null
+          cons?: Json | null
+          created_at?: string | null
+          estimated_valuation_usd?: number | null
+          founder_control_post?: number | null
+          founder_dilution_pct?: number | null
+          id?: string
+          liquidity_for_shareholders_usd?: number | null
+          pathway_name: string
+          pathway_type: string
+          prerequisites?: Json | null
+          pros?: Json | null
+          recommended_timing?: string | null
+          regulatory_risk?: string | null
+          status?: string | null
+          suitability_score?: number | null
+          time_to_execution_months?: number | null
+        }
+        Update: {
+          assessed_at?: string | null
+          capital_raised_usd?: number | null
+          complexity_score?: number | null
+          cons?: Json | null
+          created_at?: string | null
+          estimated_valuation_usd?: number | null
+          founder_control_post?: number | null
+          founder_dilution_pct?: number | null
+          id?: string
+          liquidity_for_shareholders_usd?: number | null
+          pathway_name?: string
+          pathway_type?: string
+          prerequisites?: Json | null
+          pros?: Json | null
+          recommended_timing?: string | null
+          regulatory_risk?: string | null
+          status?: string | null
+          suitability_score?: number | null
+          time_to_execution_months?: number | null
+        }
+        Relationships: []
+      }
+      geiti_market_window: {
+        Row: {
+          assessed_at: string | null
+          created_at: string | null
+          global_re_capital_flow: string | null
+          id: string
+          interest_rate_env: string | null
+          ipo_success_rate_pct: number | null
+          macro_signals: Json | null
+          market_sentiment_score: number | null
+          optimal_window_months: number | null
+          risk_of_closure_pct: number | null
+          sector_comparable_multiples: number | null
+          tech_valuation_cycle: string | null
+          vix_level: number | null
+          window_confidence: number | null
+          window_name: string
+          window_status: string
+        }
+        Insert: {
+          assessed_at?: string | null
+          created_at?: string | null
+          global_re_capital_flow?: string | null
+          id?: string
+          interest_rate_env?: string | null
+          ipo_success_rate_pct?: number | null
+          macro_signals?: Json | null
+          market_sentiment_score?: number | null
+          optimal_window_months?: number | null
+          risk_of_closure_pct?: number | null
+          sector_comparable_multiples?: number | null
+          tech_valuation_cycle?: string | null
+          vix_level?: number | null
+          window_confidence?: number | null
+          window_name: string
+          window_status: string
+        }
+        Update: {
+          assessed_at?: string | null
+          created_at?: string | null
+          global_re_capital_flow?: string | null
+          id?: string
+          interest_rate_env?: string | null
+          ipo_success_rate_pct?: number | null
+          macro_signals?: Json | null
+          market_sentiment_score?: number | null
+          optimal_window_months?: number | null
+          risk_of_closure_pct?: number | null
+          sector_comparable_multiples?: number | null
+          tech_valuation_cycle?: string | null
+          vix_level?: number | null
+          window_confidence?: number | null
+          window_name?: string
+          window_status?: string
+        }
+        Relationships: []
+      }
+      geiti_platform_readiness: {
+        Row: {
+          assessed_at: string | null
+          assessment_name: string
+          audit_readiness: boolean | null
+          cities_active: number | null
+          countries_active: number | null
+          created_at: string | null
+          gaps: Json | null
+          geographic_diversification_score: number | null
+          governance_readiness_score: number | null
+          id: string
+          net_revenue_retention_pct: number | null
+          network_effect_maturity: number | null
+          operational_resilience_score: number | null
+          overall_readiness_score: number | null
+          readiness_tier: string | null
+          revenue_arr_usd: number | null
+          revenue_growth_pct: number | null
+          revenue_predictability_score: number | null
+          soc2_compliant: boolean | null
+          team_completeness_score: number | null
+        }
+        Insert: {
+          assessed_at?: string | null
+          assessment_name: string
+          audit_readiness?: boolean | null
+          cities_active?: number | null
+          countries_active?: number | null
+          created_at?: string | null
+          gaps?: Json | null
+          geographic_diversification_score?: number | null
+          governance_readiness_score?: number | null
+          id?: string
+          net_revenue_retention_pct?: number | null
+          network_effect_maturity?: number | null
+          operational_resilience_score?: number | null
+          overall_readiness_score?: number | null
+          readiness_tier?: string | null
+          revenue_arr_usd?: number | null
+          revenue_growth_pct?: number | null
+          revenue_predictability_score?: number | null
+          soc2_compliant?: boolean | null
+          team_completeness_score?: number | null
+        }
+        Update: {
+          assessed_at?: string | null
+          assessment_name?: string
+          audit_readiness?: boolean | null
+          cities_active?: number | null
+          countries_active?: number | null
+          created_at?: string | null
+          gaps?: Json | null
+          geographic_diversification_score?: number | null
+          governance_readiness_score?: number | null
+          id?: string
+          net_revenue_retention_pct?: number | null
+          network_effect_maturity?: number | null
+          operational_resilience_score?: number | null
+          overall_readiness_score?: number | null
+          readiness_tier?: string | null
+          revenue_arr_usd?: number | null
+          revenue_growth_pct?: number | null
+          revenue_predictability_score?: number | null
+          soc2_compliant?: boolean | null
+          team_completeness_score?: number | null
+        }
+        Relationships: []
+      }
+      geiti_post_listing_control: {
+        Row: {
+          activist_defense_score: number | null
+          assessed_at: string | null
+          board_independence_pct: number | null
+          communication_cadence: string | null
+          created_at: string | null
+          earnings_guidance_approach: string | null
+          effectiveness_score: number | null
+          founder_voting_control_pct: number | null
+          id: string
+          investor_relations_strategy: string | null
+          is_active: boolean | null
+          long_term_holder_pct: number | null
+          mechanism_name: string
+          mechanism_type: string
+          short_interest_threshold_pct: number | null
+          vision_protection_score: number | null
+        }
+        Insert: {
+          activist_defense_score?: number | null
+          assessed_at?: string | null
+          board_independence_pct?: number | null
+          communication_cadence?: string | null
+          created_at?: string | null
+          earnings_guidance_approach?: string | null
+          effectiveness_score?: number | null
+          founder_voting_control_pct?: number | null
+          id?: string
+          investor_relations_strategy?: string | null
+          is_active?: boolean | null
+          long_term_holder_pct?: number | null
+          mechanism_name: string
+          mechanism_type: string
+          short_interest_threshold_pct?: number | null
+          vision_protection_score?: number | null
+        }
+        Update: {
+          activist_defense_score?: number | null
+          assessed_at?: string | null
+          board_independence_pct?: number | null
+          communication_cadence?: string | null
+          created_at?: string | null
+          earnings_guidance_approach?: string | null
+          effectiveness_score?: number | null
+          founder_voting_control_pct?: number | null
+          id?: string
+          investor_relations_strategy?: string | null
+          is_active?: boolean | null
+          long_term_holder_pct?: number | null
+          mechanism_name?: string
+          mechanism_type?: string
+          short_interest_threshold_pct?: number | null
+          vision_protection_score?: number | null
+        }
+        Relationships: []
+      }
+      geiti_valuation_maximization: {
+        Row: {
+          assessed_at: string | null
+          base_revenue_usd: number | null
+          comparable_median_multiple: number | null
+          created_at: string | null
+          first_day_pop_target_pct: number | null
+          greenshoe_pct: number | null
+          growth_premium_multiple: number | null
+          id: string
+          implied_valuation_usd: number | null
+          institutional_demand_oversubscription: number | null
+          investor_demand_score: number | null
+          lockup_period_days: number | null
+          narrative_strength_score: number | null
+          premium_over_comparable_pct: number | null
+          pricing_strategy: string | null
+          scarcity_perception_score: number | null
+          scenario_name: string
+          timing_quarter: string
+        }
+        Insert: {
+          assessed_at?: string | null
+          base_revenue_usd?: number | null
+          comparable_median_multiple?: number | null
+          created_at?: string | null
+          first_day_pop_target_pct?: number | null
+          greenshoe_pct?: number | null
+          growth_premium_multiple?: number | null
+          id?: string
+          implied_valuation_usd?: number | null
+          institutional_demand_oversubscription?: number | null
+          investor_demand_score?: number | null
+          lockup_period_days?: number | null
+          narrative_strength_score?: number | null
+          premium_over_comparable_pct?: number | null
+          pricing_strategy?: string | null
+          scarcity_perception_score?: number | null
+          scenario_name: string
+          timing_quarter: string
+        }
+        Update: {
+          assessed_at?: string | null
+          base_revenue_usd?: number | null
+          comparable_median_multiple?: number | null
+          created_at?: string | null
+          first_day_pop_target_pct?: number | null
+          greenshoe_pct?: number | null
+          growth_premium_multiple?: number | null
+          id?: string
+          implied_valuation_usd?: number | null
+          institutional_demand_oversubscription?: number | null
+          investor_demand_score?: number | null
+          lockup_period_days?: number | null
+          narrative_strength_score?: number | null
+          premium_over_comparable_pct?: number | null
+          pricing_strategy?: string | null
+          scarcity_perception_score?: number | null
+          scenario_name?: string
+          timing_quarter?: string
+        }
+        Relationships: []
+      }
       generated_functions: {
         Row: {
           complexity: string | null
