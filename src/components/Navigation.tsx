@@ -16,8 +16,7 @@ import { useHasRole } from "@/hooks/useUserRoles";
 import { useAdminCheck } from "@/hooks/useAdminCheck";
 import { useTranslation } from "@/i18n/useTranslation";
 import { useTheme } from "@/components/ThemeProvider";
-import LanguageToggleSwitch from "./LanguageToggleSwitch";
-import CurrencySelector from "./CurrencySelector";
+import LocaleSelector from "./LocaleSelector";
 import EnhancedAuthModal from "./auth/EnhancedAuthModal";
 import { useNavigate, useLocation } from "react-router-dom";
 import NotificationDropdown from "./NotificationDropdown";
@@ -364,9 +363,8 @@ const Navigation = () => {
                 {theme === "light" ? <Moon className="h-4 w-4 text-foreground/70" /> : <Sun className="h-4 w-4 text-gold-primary" />}
               </Button>
 
-              <div className="hidden lg:flex items-center gap-1.5">
-                <CurrencySelector />
-                <LanguageToggleSwitch />
+              <div className="hidden lg:block">
+                <LocaleSelector />
               </div>
 
               {user && <NotificationDropdown />}
@@ -463,8 +461,7 @@ const Navigation = () => {
                       {theme === "light" ? <Moon className="h-3 w-3 mr-1" /> : <Sun className="h-3 w-3 mr-1" />}
                       {theme === "light" ? "Dark" : "Light"}
                     </Button>
-                    <CurrencySelector />
-                    <LanguageToggleSwitch />
+                    <LocaleSelector />
                   </div>
                   {user && (
                     <Button variant="ghost" className="w-full justify-start h-8 text-[11px] font-medium text-destructive hover:text-destructive hover:bg-destructive/10 rounded-lg" onClick={handleSignOut}>
