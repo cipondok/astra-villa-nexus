@@ -152,6 +152,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   gpes_engine_cycle: { label: 'Endgame Simulation', icon: '🎮' },
   acecm_self_sustaining_loop: { label: 'Self-Sustaining Loop', icon: '♾️' },
   acecm_engine_cycle: { label: 'Capital Empire', icon: '🏰' },
+  umtcs_cycle_inflection: { label: 'Cycle Inflection', icon: '📉' },
+  umtcs_engine_cycle: { label: 'Market Timing', icon: '⏱️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
