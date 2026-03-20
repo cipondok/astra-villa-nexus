@@ -693,6 +693,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "market-heat-intelligence": { label: "Market Heat Intelligence", category: "Investor Management" },
   "opportunity-scoring-engine": { label: "AI Scoring Engine", category: "AI & Tools" },
   "price-prediction-engine": { label: "Price Prediction Engine", category: "AI & Tools" },
+  "price-prediction-analytics": { label: "Price Prediction Analytics", category: "AI & Tools" },
   "ai-command-center": { label: "AI Command Center", category: "AI & Tools" },
   "investor-dna-admin": { label: "Investor DNA Intelligence", category: "Investor Management" },
   "global-macro-intelligence": { label: "Global Macro Intelligence", category: "Investor Management" },
