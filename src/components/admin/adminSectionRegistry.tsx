@@ -931,4 +931,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "launch-execution-kit": { label: "Launch Execution Kit", category: "Features" },
   "cac-ltv-model": { label: "CAC vs LTV Model", category: "Features" },
   "vendor-revenue-optimization": { label: "Vendor Revenue Optimization", category: "Vendor Management" },
+  "city-expansion-command": { label: "City Expansion Command", category: "Features" },
 };
