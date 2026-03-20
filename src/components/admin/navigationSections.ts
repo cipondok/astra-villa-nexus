@@ -265,6 +265,13 @@ export const navigationSections = {
       badge: "AI"
     },
     {
+      key: "ai-negotiation-agent",
+      label: "AI Negotiation Agent",
+      icon: Handshake,
+      description: "Autonomous deal negotiation assistant — offer strategies, counter-offer tactics, risk alerts & closure probability",
+      badge: "🤖 AI Agent"
+    },
+    {
       key: "network-effect-simulator",
       label: "Network Effect Simulator",
       icon: Network,
