@@ -141,6 +141,7 @@ export const AIModelWeightsPanel = lazyRetry(() => import("./AIModelWeightsPanel
 export const InvestorScoringPanel = lazyRetry(() => import("./InvestorScoringPanel"));
 export const VendorIntelligencePanel = lazyRetry(() => import("./VendorIntelligencePanel"));
 export const RevenueFlywheelPanel = lazyRetry(() => import("./RevenueFlywheelPanel"));
+export const DataMoatGovernancePanel = lazyRetry(() => import("./DataMoatGovernancePanel"));
 export const DOMAccuracyReport = lazyRetry(() => import("./DOMAccuracyReport"));
 export const CronJobMonitor = lazyRetry(() => import("./CronJobMonitor"));
 export const WeightTuningHistory = lazyRetry(() => import("./WeightTuningHistory"));
