@@ -48482,6 +48482,258 @@ export type Database = {
           },
         ]
       }
+      umtcs_countercyclical_growth: {
+        Row: {
+          city: string
+          competitor_retrenchment_score: number | null
+          computed_at: string
+          country: string
+          created_at: string
+          cycle_phase: string | null
+          data_acquisition_acceleration: number | null
+          discounted_asset_volume: number | null
+          growth_during_contraction_pct: number | null
+          id: string
+          institutional_inflow_usd: number | null
+          market_share_gain_pct: number | null
+          strategic_investments: Json | null
+          talent_acquisition_index: number | null
+        }
+        Insert: {
+          city: string
+          competitor_retrenchment_score?: number | null
+          computed_at?: string
+          country?: string
+          created_at?: string
+          cycle_phase?: string | null
+          data_acquisition_acceleration?: number | null
+          discounted_asset_volume?: number | null
+          growth_during_contraction_pct?: number | null
+          id?: string
+          institutional_inflow_usd?: number | null
+          market_share_gain_pct?: number | null
+          strategic_investments?: Json | null
+          talent_acquisition_index?: number | null
+        }
+        Update: {
+          city?: string
+          competitor_retrenchment_score?: number | null
+          computed_at?: string
+          country?: string
+          created_at?: string
+          cycle_phase?: string | null
+          data_acquisition_acceleration?: number | null
+          discounted_asset_volume?: number | null
+          growth_during_contraction_pct?: number | null
+          id?: string
+          institutional_inflow_usd?: number | null
+          market_share_gain_pct?: number | null
+          strategic_investments?: Json | null
+          talent_acquisition_index?: number | null
+        }
+        Relationships: []
+      }
+      umtcs_cycle_detection: {
+        Row: {
+          city: string
+          country: string
+          created_at: string
+          cycle_phase: string | null
+          detected_at: string
+          district: string | null
+          financing_cost_trend: number | null
+          id: string
+          inventory_accumulation_rate: number | null
+          investor_sentiment_score: number | null
+          leading_indicators: Json | null
+          liquidity_slowdown_index: number | null
+          months_to_inflection: number | null
+          phase_confidence: number | null
+          transition_probability: number | null
+        }
+        Insert: {
+          city: string
+          country?: string
+          created_at?: string
+          cycle_phase?: string | null
+          detected_at?: string
+          district?: string | null
+          financing_cost_trend?: number | null
+          id?: string
+          inventory_accumulation_rate?: number | null
+          investor_sentiment_score?: number | null
+          leading_indicators?: Json | null
+          liquidity_slowdown_index?: number | null
+          months_to_inflection?: number | null
+          phase_confidence?: number | null
+          transition_probability?: number | null
+        }
+        Update: {
+          city?: string
+          country?: string
+          created_at?: string
+          cycle_phase?: string | null
+          detected_at?: string
+          district?: string | null
+          financing_cost_trend?: number | null
+          id?: string
+          inventory_accumulation_rate?: number | null
+          investor_sentiment_score?: number | null
+          leading_indicators?: Json | null
+          liquidity_slowdown_index?: number | null
+          months_to_inflection?: number | null
+          phase_confidence?: number | null
+          transition_probability?: number | null
+        }
+        Relationships: []
+      }
+      umtcs_defensive_stability: {
+        Row: {
+          activated_at: string | null
+          activation_trigger: string | null
+          assessed_at: string
+          churn_mitigation_effectiveness: number | null
+          created_at: string
+          defensive_actions: Json | null
+          distressed_opportunity_count: number | null
+          id: string
+          is_activated: boolean | null
+          platform_resilience_score: number | null
+          revenue_stability_pct: number | null
+          risk_analytics_adoption_pct: number | null
+          strategy_domain: string
+          vendor_diversification_index: number | null
+        }
+        Insert: {
+          activated_at?: string | null
+          activation_trigger?: string | null
+          assessed_at?: string
+          churn_mitigation_effectiveness?: number | null
+          created_at?: string
+          defensive_actions?: Json | null
+          distressed_opportunity_count?: number | null
+          id?: string
+          is_activated?: boolean | null
+          platform_resilience_score?: number | null
+          revenue_stability_pct?: number | null
+          risk_analytics_adoption_pct?: number | null
+          strategy_domain: string
+          vendor_diversification_index?: number | null
+        }
+        Update: {
+          activated_at?: string | null
+          activation_trigger?: string | null
+          assessed_at?: string
+          churn_mitigation_effectiveness?: number | null
+          created_at?: string
+          defensive_actions?: Json | null
+          distressed_opportunity_count?: number | null
+          id?: string
+          is_activated?: boolean | null
+          platform_resilience_score?: number | null
+          revenue_stability_pct?: number | null
+          risk_analytics_adoption_pct?: number | null
+          strategy_domain?: string
+          vendor_diversification_index?: number | null
+        }
+        Relationships: []
+      }
+      umtcs_recovery_acceleration: {
+        Row: {
+          capital_redeployment_readiness: number | null
+          city: string
+          country: string
+          created_at: string
+          detected_at: string
+          early_mover_advantage_score: number | null
+          expansion_sequence_rank: number | null
+          hotspot_detection_lead_days: number | null
+          id: string
+          liquidity_activation_speed: number | null
+          playbook_actions: Json | null
+          recovery_phase: string | null
+          recovery_signal_strength: number | null
+        }
+        Insert: {
+          capital_redeployment_readiness?: number | null
+          city: string
+          country?: string
+          created_at?: string
+          detected_at?: string
+          early_mover_advantage_score?: number | null
+          expansion_sequence_rank?: number | null
+          hotspot_detection_lead_days?: number | null
+          id?: string
+          liquidity_activation_speed?: number | null
+          playbook_actions?: Json | null
+          recovery_phase?: string | null
+          recovery_signal_strength?: number | null
+        }
+        Update: {
+          capital_redeployment_readiness?: number | null
+          city?: string
+          country?: string
+          created_at?: string
+          detected_at?: string
+          early_mover_advantage_score?: number | null
+          expansion_sequence_rank?: number | null
+          hotspot_detection_lead_days?: number | null
+          id?: string
+          liquidity_activation_speed?: number | null
+          playbook_actions?: Json | null
+          recovery_phase?: string | null
+          recovery_signal_strength?: number | null
+        }
+        Relationships: []
+      }
+      umtcs_timing_advantage: {
+        Row: {
+          accuracy_improvement_rate: number | null
+          advantage_domain: string
+          competitive_timing_gap_months: number | null
+          compounding_intelligence_factor: number | null
+          computed_at: string
+          created_at: string
+          cycles_modeled: number | null
+          data_moat_strength: number | null
+          historical_data_depth_years: number | null
+          id: string
+          investor_trust_index: number | null
+          predictive_accuracy_pct: number | null
+          strategic_positioning_score: number | null
+        }
+        Insert: {
+          accuracy_improvement_rate?: number | null
+          advantage_domain: string
+          competitive_timing_gap_months?: number | null
+          compounding_intelligence_factor?: number | null
+          computed_at?: string
+          created_at?: string
+          cycles_modeled?: number | null
+          data_moat_strength?: number | null
+          historical_data_depth_years?: number | null
+          id?: string
+          investor_trust_index?: number | null
+          predictive_accuracy_pct?: number | null
+          strategic_positioning_score?: number | null
+        }
+        Update: {
+          accuracy_improvement_rate?: number | null
+          advantage_domain?: string
+          competitive_timing_gap_months?: number | null
+          compounding_intelligence_factor?: number | null
+          computed_at?: string
+          created_at?: string
+          cycles_modeled?: number | null
+          data_moat_strength?: number | null
+          historical_data_depth_years?: number | null
+          id?: string
+          investor_trust_index?: number | null
+          predictive_accuracy_pct?: number | null
+          strategic_positioning_score?: number | null
+        }
+        Relationships: []
+      }
       unified_transactions: {
         Row: {
           base_amount: number

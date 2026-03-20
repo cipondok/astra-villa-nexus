@@ -534,3 +534,6 @@ verify_jwt = false
 
 [functions.capital-empire-control]
 verify_jwt = false
+
+[functions.market-timing-crisis]
+verify_jwt = false
