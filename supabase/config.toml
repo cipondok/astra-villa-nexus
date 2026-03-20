@@ -594,3 +594,6 @@ verify_jwt = false
 
 [functions.ipo-execution-timeline]
 verify_jwt = false
+
+[functions.generate-investor-matches]
+verify_jwt = false
