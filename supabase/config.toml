@@ -519,3 +519,6 @@ verify_jwt = false
 
 [functions.exit-ipo-timing]
 verify_jwt = false
+
+[functions.global-proptech-war]
+verify_jwt = false

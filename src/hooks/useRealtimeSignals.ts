@@ -142,6 +142,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   mfcb_engine_cycle: { label: 'Mega-Fund Engine', icon: '🏛️' },
   geiti_window_peak: { label: 'IPO Window Peak', icon: '🔔' },
   geiti_engine_cycle: { label: 'Exit Timing', icon: '⏰' },
+  gpws_unstoppable_momentum: { label: 'Unstoppable Market', icon: '🚀' },
+  gpws_engine_cycle: { label: 'PropTech War', icon: '⚔️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
