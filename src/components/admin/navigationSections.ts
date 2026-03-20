@@ -307,6 +307,13 @@ export const navigationSections = {
       badge: "Strategy"
     },
     {
+      key: "global-brand-authority",
+      label: "Global Brand Authority",
+      icon: Award,
+      description: "Brand positioning, thought leadership, credibility milestones & market trust strategy",
+      badge: "🏆 Brand"
+    },
+    {
       key: "mortgage-management",
       label: "Mortgage (KPR) Management",
       icon: Calculator,
