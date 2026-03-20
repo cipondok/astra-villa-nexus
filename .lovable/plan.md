@@ -1,27 +1,42 @@
 
 
-# Footer Fix & Post-Property Mobile Optimization
+# Modern Language & Currency Selector — Header Update
 
-## Problems Identified
+## What's Changing
 
-1. **Double footer on mobile**: `MobileFooter` (social/contact bar) renders on ALL non-admin routes including `/post-property`, stacking above `MobileBottomTabBar` — two bars at the bottom
-2. **AddProperty page** not optimized for mobile — uses desktop-style layout with `min-h-screen`, no bottom padding for tab bar clearance, header not mobile-optimized
+Replace the current separate Language and Currency dropdown buttons with a single, compact **combined selector** that saves header space and looks modern.
 
-## Changes
+## Design
 
-### 1. Hide MobileFooter on form/action pages (App.tsx)
-- Add `/post-property` and `/add-property` to a list of routes where `MobileFooter` is hidden on mobile
-- These are full-screen task pages where the social footer adds no value and wastes space
+**Combined pill button**: One compact button showing `🇮🇩 ID · Rp` that opens a single dropdown with both language and currency options in organized sections.
 
-### 2. Mobile-optimize AddProperty page (AddProperty.tsx)
-- Use `min-h-[100dvh]` instead of `min-h-screen` for proper mobile viewport
-- Add `pb-20` to main content to clear bottom tab bar
-- Make header slimmer on mobile: reduce padding, smaller text
-- Tighten card padding and tab styling for mobile
-- Reduce form card border radius and shadows for mobile-native feel
+```text
+Before:  [🇮🇩 Bahasa ▾] [🇮🇩 IDR ▾]   ← two separate buttons
+After:   [🇮🇩 ID · Rp ▾]                ← one compact pill
+```
 
-### Files Modified
-- `src/App.tsx` — conditionally hide MobileFooter on post-property/add-property routes
-- `src/pages/AddProperty.tsx` — mobile-first responsive styling
-- `src/components/MobileFooter.tsx` — add route-based hiding logic internally
+**Dropdown panel** — clean two-section layout:
+```text
+┌──────────────────────┐
+│ LANGUAGE             │
+│ 🇬🇧 EN  🇮🇩 ID  🇨🇳 ZH │
+│ 🇯🇵 JA  🇰🇷 KO        │
+│────────────────────── │
+│ CURRENCY             │
+│ 🇮🇩 IDR  🇺🇸 USD      │
+│ 🇸🇬 SGD  🇲🇾 MYR      │
+│ 🇦🇺 AUD              │
+└──────────────────────┘
+```
+
+- Compact grid of pill-shaped options (not a long list)
+- Active selection highlighted with primary color
+- Smooth animation on open/close
+
+## Files
+
+1. **New: `src/components/LocaleSelector.tsx`** — combined language + currency selector component with grid-style dropdown
+2. **Edit: `src/components/Navigation.tsx`** — replace `CurrencySelector` + `LanguageToggleSwitch` with single `LocaleSelector`
+3. **Edit: `src/components/navigation/AuthenticatedNavigation.tsx`** — same replacement
+4. **Both mobile menu sections** in each file — also use `LocaleSelector` inline
 
