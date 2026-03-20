@@ -31411,6 +31411,249 @@ export type Database = {
           },
         ]
       }
+      pgcm_capital_allocation: {
+        Row: {
+          allocation_composite: number
+          allocation_priority: string
+          capital_efficiency_ratio: number
+          computed_at: string
+          country: string
+          created_at: string
+          cross_border_flow_index: number
+          id: string
+          infra_funding_gap_usd: number
+          long_term_return_score: number
+          region: string
+          resilience_trade_off: number
+          risk_adjusted_return: number
+        }
+        Insert: {
+          allocation_composite?: number
+          allocation_priority?: string
+          capital_efficiency_ratio?: number
+          computed_at?: string
+          country?: string
+          created_at?: string
+          cross_border_flow_index?: number
+          id?: string
+          infra_funding_gap_usd?: number
+          long_term_return_score?: number
+          region: string
+          resilience_trade_off?: number
+          risk_adjusted_return?: number
+        }
+        Update: {
+          allocation_composite?: number
+          allocation_priority?: string
+          capital_efficiency_ratio?: number
+          computed_at?: string
+          country?: string
+          created_at?: string
+          cross_border_flow_index?: number
+          id?: string
+          infra_funding_gap_usd?: number
+          long_term_return_score?: number
+          region?: string
+          resilience_trade_off?: number
+          risk_adjusted_return?: number
+        }
+        Relationships: []
+      }
+      pgcm_development_priority: {
+        Row: {
+          climate_adaptation_urgency: number
+          computed_at: string
+          country: string
+          created_at: string
+          development_priority_score: number
+          estimated_investment_usd: number
+          housing_need_index: number
+          id: string
+          mobility_infra_gap: number
+          priority_tier: string
+          region: string
+          sequencing_recommendation: string | null
+          urban_expansion_pressure: number
+        }
+        Insert: {
+          climate_adaptation_urgency?: number
+          computed_at?: string
+          country?: string
+          created_at?: string
+          development_priority_score?: number
+          estimated_investment_usd?: number
+          housing_need_index?: number
+          id?: string
+          mobility_infra_gap?: number
+          priority_tier?: string
+          region: string
+          sequencing_recommendation?: string | null
+          urban_expansion_pressure?: number
+        }
+        Update: {
+          climate_adaptation_urgency?: number
+          computed_at?: string
+          country?: string
+          created_at?: string
+          development_priority_score?: number
+          estimated_investment_usd?: number
+          housing_need_index?: number
+          id?: string
+          mobility_infra_gap?: number
+          priority_tier?: string
+          region?: string
+          sequencing_recommendation?: string | null
+          urban_expansion_pressure?: number
+        }
+        Relationships: []
+      }
+      pgcm_governance_insight: {
+        Row: {
+          action_recommendations: string[] | null
+          capital_deployment_efficiency: number
+          computed_at: string
+          country: string
+          created_at: string
+          development_outcome_score: number
+          governance_composite: number
+          governance_effectiveness: number
+          governance_tier: string
+          id: string
+          region: string
+          transparency_index: number
+        }
+        Insert: {
+          action_recommendations?: string[] | null
+          capital_deployment_efficiency?: number
+          computed_at?: string
+          country?: string
+          created_at?: string
+          development_outcome_score?: number
+          governance_composite?: number
+          governance_effectiveness?: number
+          governance_tier?: string
+          id?: string
+          region: string
+          transparency_index?: number
+        }
+        Update: {
+          action_recommendations?: string[] | null
+          capital_deployment_efficiency?: number
+          computed_at?: string
+          country?: string
+          created_at?: string
+          development_outcome_score?: number
+          governance_composite?: number
+          governance_effectiveness?: number
+          governance_tier?: string
+          id?: string
+          region?: string
+          transparency_index?: number
+        }
+        Relationships: []
+      }
+      pgcm_institutional_coordination: {
+        Row: {
+          active_partnerships: number
+          computed_at: string
+          coordination_composite: number
+          coordination_phase: string
+          country: string
+          created_at: string
+          data_sharing_maturity: number
+          id: string
+          institutional_trust_index: number
+          multi_region_sync_score: number
+          partnership_model: string
+          ppp_readiness_score: number
+          region: string
+        }
+        Insert: {
+          active_partnerships?: number
+          computed_at?: string
+          coordination_composite?: number
+          coordination_phase?: string
+          country?: string
+          created_at?: string
+          data_sharing_maturity?: number
+          id?: string
+          institutional_trust_index?: number
+          multi_region_sync_score?: number
+          partnership_model?: string
+          ppp_readiness_score?: number
+          region: string
+        }
+        Update: {
+          active_partnerships?: number
+          computed_at?: string
+          coordination_composite?: number
+          coordination_phase?: string
+          country?: string
+          created_at?: string
+          data_sharing_maturity?: number
+          id?: string
+          institutional_trust_index?: number
+          multi_region_sync_score?: number
+          partnership_model?: string
+          ppp_readiness_score?: number
+          region?: string
+        }
+        Relationships: []
+      }
+      pgcm_sovereign_simulation: {
+        Row: {
+          computed_at: string
+          country: string
+          created_at: string
+          debt_to_gdp_trajectory: number
+          development_sequencing_efficiency: number
+          employment_creation_index: number
+          fiscal_sustainability_index: number
+          gdp_growth_impact_pct: number
+          id: string
+          policy_alignment_score: number
+          region: string
+          scenario_name: string
+          simulation_status: string
+          success_probability: number
+          time_horizon_years: number
+        }
+        Insert: {
+          computed_at?: string
+          country?: string
+          created_at?: string
+          debt_to_gdp_trajectory?: number
+          development_sequencing_efficiency?: number
+          employment_creation_index?: number
+          fiscal_sustainability_index?: number
+          gdp_growth_impact_pct?: number
+          id?: string
+          policy_alignment_score?: number
+          region: string
+          scenario_name: string
+          simulation_status?: string
+          success_probability?: number
+          time_horizon_years?: number
+        }
+        Update: {
+          computed_at?: string
+          country?: string
+          created_at?: string
+          debt_to_gdp_trajectory?: number
+          development_sequencing_efficiency?: number
+          employment_creation_index?: number
+          fiscal_sustainability_index?: number
+          gdp_growth_impact_pct?: number
+          id?: string
+          policy_alignment_score?: number
+          region?: string
+          scenario_name?: string
+          simulation_status?: string
+          success_probability?: number
+          time_horizon_years?: number
+        }
+        Relationships: []
+      }
       phes_autonomous_productivity: {
         Row: {
           ai_production_capacity_index: number
