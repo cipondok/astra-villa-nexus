@@ -113,50 +113,52 @@ const BasicInfoStep = ({ formData, onUpdate }: BasicInfoStepProps) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="property_type">{t.propertyType} *</Label>
-          <Select 
-            value={formData.property_type} 
-            onValueChange={(value) => onUpdate('property_type', value)}
-          >
-            <SelectTrigger className="mt-2">
-              <SelectValue placeholder={t.selectPropertyType} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="house">{t.house}</SelectItem>
-              <SelectItem value="apartment">{t.apartment}</SelectItem>
-              <SelectItem value="villa">{t.villa}</SelectItem>
-              <SelectItem value="townhouse">{t.townhouse}</SelectItem>
-              <SelectItem value="condo">{t.condo}</SelectItem>
-              <SelectItem value="land">{t.land}</SelectItem>
-              <SelectItem value="commercial">{t.commercial}</SelectItem>
-              <SelectItem value="office">{t.office}</SelectItem>
-              <SelectItem value="virtual_office">{t.virtualOffice}</SelectItem>
-              <SelectItem value="warehouse">{t.warehouse}</SelectItem>
-              <SelectItem value="retail">{t.retail}</SelectItem>
-              <SelectItem value="hotel">{t.hotel}</SelectItem>
-              <SelectItem value="resort">{t.resort}</SelectItem>
-              <SelectItem value="studio">{t.studio}</SelectItem>
-              <SelectItem value="penthouse">{t.penthouse}</SelectItem>
-              <SelectItem value="duplex">{t.duplex}</SelectItem>
-              <SelectItem value="shophouse">{t.shophouse}</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="mt-2">
+            <SearchableSelect
+              value={formData.property_type}
+              onValueChange={(value) => onUpdate('property_type', value)}
+              placeholder={t.selectPropertyType}
+              searchPlaceholder={language === 'id' ? 'Cari tipe...' : 'Search type...'}
+              emptyText={language === 'id' ? 'Tidak ditemukan.' : 'No results.'}
+              options={[
+                { value: 'house', label: t.house },
+                { value: 'apartment', label: t.apartment },
+                { value: 'villa', label: t.villa },
+                { value: 'townhouse', label: t.townhouse },
+                { value: 'condo', label: t.condo },
+                { value: 'land', label: t.land },
+                { value: 'commercial', label: t.commercial },
+                { value: 'office', label: t.office },
+                { value: 'virtual_office', label: t.virtualOffice },
+                { value: 'warehouse', label: t.warehouse },
+                { value: 'retail', label: t.retail },
+                { value: 'hotel', label: t.hotel },
+                { value: 'resort', label: t.resort },
+                { value: 'studio', label: t.studio },
+                { value: 'penthouse', label: t.penthouse },
+                { value: 'duplex', label: t.duplex },
+                { value: 'shophouse', label: t.shophouse },
+              ]}
+            />
+          </div>
         </div>
 
         <div>
           <Label htmlFor="listing_type">{t.listingType} *</Label>
-          <Select 
-            value={formData.listing_type} 
-            onValueChange={(value) => onUpdate('listing_type', value)}
-          >
-            <SelectTrigger className="mt-2">
-              <SelectValue placeholder={t.selectListingType} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="sale">{t.forSale}</SelectItem>
-              <SelectItem value="rent">{t.forRent}</SelectItem>
-              <SelectItem value="lease">{t.forLease}</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="mt-2">
+            <SearchableSelect
+              value={formData.listing_type}
+              onValueChange={(value) => onUpdate('listing_type', value)}
+              placeholder={t.selectListingType}
+              searchPlaceholder={language === 'id' ? 'Cari...' : 'Search...'}
+              emptyText={language === 'id' ? 'Tidak ditemukan.' : 'No results.'}
+              options={[
+                { value: 'sale', label: t.forSale },
+                { value: 'rent', label: t.forRent },
+                { value: 'lease', label: t.forLease },
+              ]}
+            />
+          </div>
         </div>
       </div>
 
