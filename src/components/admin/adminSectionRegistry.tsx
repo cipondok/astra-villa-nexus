@@ -406,6 +406,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "superapp-journey": () => <SuperAppJourneyPanel />,
   "deal-closing-automation": () => <DealClosingAutomationPanel />,
   "network-effect-simulator": () => <NetworkEffectSimulatorPanel />,
+  "global-expansion-war": () => <GlobalExpansionWarPanel />,
 
   // Content
   "homepage-slider":     () => <HomepageSliderSettings />,
