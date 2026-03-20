@@ -284,6 +284,13 @@ export const navigationSections = {
       badge: "AI"
     },
     {
+      key: "network-effect-simulator",
+      label: "Network Effect Simulator",
+      icon: Network,
+      description: "Scenario-test marketplace feedback loops, dominance thresholds & revenue trajectories",
+      badge: "AI"
+    },
+    {
       key: "mortgage-management",
       label: "Mortgage (KPR) Management",
       icon: Calculator,

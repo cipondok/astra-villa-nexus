@@ -938,4 +938,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "city-expansion-command": { label: "City Expansion Command", category: "Features" },
   "superapp-journey": { label: "Super-App User Journey", category: "Features" },
   "deal-closing-automation": { label: "Deal Closing Automation", category: "Transactions" },
+  "network-effect-simulator": { label: "Network Effect Simulator", category: "Features" },
 };
