@@ -468,3 +468,6 @@ verify_jwt = false
 
 [functions.multi-asset-nervous-system]
 verify_jwt = false
+
+[functions.interplanetary-expansion-simulator]
+verify_jwt = false
