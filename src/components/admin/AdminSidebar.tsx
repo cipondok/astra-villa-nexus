@@ -236,7 +236,7 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
             </div>
 
             {/* Panel Content — scrollable list */}
-            <ScrollArea className="flex-1 overflow-auto" style={{ maxHeight: '280px' }}>
+            <ScrollArea className="flex-1 overflow-auto" style={{ maxHeight: '580px' }}>
               <div className="p-1.5 pb-2 space-y-0.5">
                 {/* Category overview link */}
                 <button
