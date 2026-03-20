@@ -123,6 +123,7 @@ export interface NavigationSection {
 
 export const categories = [
   "overview",
+  "operations",
   "investor-management",
   "transactions",
   "astra-token", 
