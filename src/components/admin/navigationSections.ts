@@ -667,6 +667,13 @@ export const navigationSections = {
       label: "Vendors Hub",
       icon: ShoppingBag,
       description: "Comprehensive vendor management platform with all vendor-related functionality including services, categories, KYC, analytics, and control panel"
+    },
+    {
+      key: "vendor-revenue-optimization",
+      label: "Revenue Optimization",
+      icon: TrendingUp,
+      description: "AI-driven vendor scoring, lead routing, pricing intelligence & upsell automation",
+      badge: "AI"
     }
   ],
 
