@@ -851,6 +851,7 @@ const AppContent = () => {
                 <Route path="/planetary-scale-roadmap" element={<PlanetaryScaleRoadmapPage />} />
                 <Route path="/data-moat-intelligence" element={<DataMoatIntelligencePage />} />
                 <Route path="/fundraising-architecture" element={<FundraisingArchitecturePage />} />
+                <Route path="/revenue-layer-architecture" element={<RevenueLayerArchitecturePage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
