@@ -21187,6 +21187,261 @@ export type Database = {
           },
         ]
       }
+      gpids_narrative_leadership: {
+        Row: {
+          analyst_adoption_pct: number | null
+          assessed_at: string
+          category_ownership_index: number | null
+          comparable_premium_pct: number | null
+          competitive_narrative_gap: number | null
+          created_at: string
+          id: string
+          investor_recall_rate: number | null
+          key_proof_points: Json | null
+          media_resonance_score: number | null
+          narrative_consistency: number | null
+          narrative_frame: string
+          positioning_strength: number | null
+        }
+        Insert: {
+          analyst_adoption_pct?: number | null
+          assessed_at?: string
+          category_ownership_index?: number | null
+          comparable_premium_pct?: number | null
+          competitive_narrative_gap?: number | null
+          created_at?: string
+          id?: string
+          investor_recall_rate?: number | null
+          key_proof_points?: Json | null
+          media_resonance_score?: number | null
+          narrative_consistency?: number | null
+          narrative_frame: string
+          positioning_strength?: number | null
+        }
+        Update: {
+          analyst_adoption_pct?: number | null
+          assessed_at?: string
+          category_ownership_index?: number | null
+          comparable_premium_pct?: number | null
+          competitive_narrative_gap?: number | null
+          created_at?: string
+          id?: string
+          investor_recall_rate?: number | null
+          key_proof_points?: Json | null
+          media_resonance_score?: number | null
+          narrative_consistency?: number | null
+          narrative_frame?: string
+          positioning_strength?: number | null
+        }
+        Relationships: []
+      }
+      gpids_postipo_dominance: {
+        Row: {
+          acquisition_targets: number | null
+          capital_allocated_usd: number | null
+          computed_at: string
+          created_at: string
+          deployment_actions: Json | null
+          dominance_probability: number | null
+          execution_timeline_months: number | null
+          expansion_cities_target: number | null
+          expected_roi_multiple: number | null
+          id: string
+          market_share_acceleration_pct: number | null
+          new_products_planned: number | null
+          strategic_power_index: number | null
+          strategy_domain: string
+        }
+        Insert: {
+          acquisition_targets?: number | null
+          capital_allocated_usd?: number | null
+          computed_at?: string
+          created_at?: string
+          deployment_actions?: Json | null
+          dominance_probability?: number | null
+          execution_timeline_months?: number | null
+          expansion_cities_target?: number | null
+          expected_roi_multiple?: number | null
+          id?: string
+          market_share_acceleration_pct?: number | null
+          new_products_planned?: number | null
+          strategic_power_index?: number | null
+          strategy_domain: string
+        }
+        Update: {
+          acquisition_targets?: number | null
+          capital_allocated_usd?: number | null
+          computed_at?: string
+          created_at?: string
+          deployment_actions?: Json | null
+          dominance_probability?: number | null
+          execution_timeline_months?: number | null
+          expansion_cities_target?: number | null
+          expected_roi_multiple?: number | null
+          id?: string
+          market_share_acceleration_pct?: number | null
+          new_products_planned?: number | null
+          strategic_power_index?: number | null
+          strategy_domain?: string
+        }
+        Relationships: []
+      }
+      gpids_preipo_positioning: {
+        Row: {
+          assessed_at: string
+          blocker_risks: Json | null
+          completion_pct: number | null
+          created_at: string
+          current_value: number | null
+          data_moat_maturity: number | null
+          geographic_dominance_index: number | null
+          id: string
+          institutional_adoption_pct: number | null
+          milestone_category: string
+          milestone_name: string
+          months_to_ready: number | null
+          readiness_tier: string | null
+          revenue_predictability_score: number | null
+          target_value: number | null
+        }
+        Insert: {
+          assessed_at?: string
+          blocker_risks?: Json | null
+          completion_pct?: number | null
+          created_at?: string
+          current_value?: number | null
+          data_moat_maturity?: number | null
+          geographic_dominance_index?: number | null
+          id?: string
+          institutional_adoption_pct?: number | null
+          milestone_category: string
+          milestone_name: string
+          months_to_ready?: number | null
+          readiness_tier?: string | null
+          revenue_predictability_score?: number | null
+          target_value?: number | null
+        }
+        Update: {
+          assessed_at?: string
+          blocker_risks?: Json | null
+          completion_pct?: number | null
+          created_at?: string
+          current_value?: number | null
+          data_moat_maturity?: number | null
+          geographic_dominance_index?: number | null
+          id?: string
+          institutional_adoption_pct?: number | null
+          milestone_category?: string
+          milestone_name?: string
+          months_to_ready?: number | null
+          readiness_tier?: string | null
+          revenue_predictability_score?: number | null
+          target_value?: number | null
+        }
+        Relationships: []
+      }
+      gpids_timing_intelligence: {
+        Row: {
+          assessed_at: string
+          competitor_ipo_pipeline: number | null
+          created_at: string
+          geopolitical_risk_score: number | null
+          id: string
+          interest_rate_environment: string | null
+          macro_liquidity_score: number | null
+          optimal_filing_months: number | null
+          recommendation: string | null
+          sector_sentiment_index: number | null
+          tech_valuation_trend: string | null
+          window_durability_months: number | null
+          window_name: string
+          window_openness_pct: number | null
+        }
+        Insert: {
+          assessed_at?: string
+          competitor_ipo_pipeline?: number | null
+          created_at?: string
+          geopolitical_risk_score?: number | null
+          id?: string
+          interest_rate_environment?: string | null
+          macro_liquidity_score?: number | null
+          optimal_filing_months?: number | null
+          recommendation?: string | null
+          sector_sentiment_index?: number | null
+          tech_valuation_trend?: string | null
+          window_durability_months?: number | null
+          window_name: string
+          window_openness_pct?: number | null
+        }
+        Update: {
+          assessed_at?: string
+          competitor_ipo_pipeline?: number | null
+          created_at?: string
+          geopolitical_risk_score?: number | null
+          id?: string
+          interest_rate_environment?: string | null
+          macro_liquidity_score?: number | null
+          optimal_filing_months?: number | null
+          recommendation?: string | null
+          sector_sentiment_index?: number | null
+          tech_valuation_trend?: string | null
+          window_durability_months?: number | null
+          window_name?: string
+          window_openness_pct?: number | null
+        }
+        Relationships: []
+      }
+      gpids_valuation_expansion: {
+        Row: {
+          computed_at: string
+          created_at: string
+          current_multiple: number | null
+          ecosystem_optionality_value: number | null
+          expansion_potential_pct: number | null
+          id: string
+          investor_demand_index: number | null
+          network_effect_strength: number | null
+          operating_leverage_score: number | null
+          recurring_revenue_growth_pct: number | null
+          risk_discount_pct: number | null
+          tam_expansion_factor: number | null
+          target_multiple: number | null
+          valuation_driver: string
+        }
+        Insert: {
+          computed_at?: string
+          created_at?: string
+          current_multiple?: number | null
+          ecosystem_optionality_value?: number | null
+          expansion_potential_pct?: number | null
+          id?: string
+          investor_demand_index?: number | null
+          network_effect_strength?: number | null
+          operating_leverage_score?: number | null
+          recurring_revenue_growth_pct?: number | null
+          risk_discount_pct?: number | null
+          tam_expansion_factor?: number | null
+          target_multiple?: number | null
+          valuation_driver: string
+        }
+        Update: {
+          computed_at?: string
+          created_at?: string
+          current_multiple?: number | null
+          ecosystem_optionality_value?: number | null
+          expansion_potential_pct?: number | null
+          id?: string
+          investor_demand_index?: number | null
+          network_effect_strength?: number | null
+          operating_leverage_score?: number | null
+          recurring_revenue_growth_pct?: number | null
+          risk_discount_pct?: number | null
+          tam_expansion_factor?: number | null
+          target_multiple?: number | null
+          valuation_driver?: string
+        }
+        Relationships: []
+      }
       gpws_battlefield: {
         Row: {
           assessed_at: string | null
