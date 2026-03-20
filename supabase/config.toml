@@ -465,3 +465,6 @@ verify_jwt = false
 
 [functions.urbanization-forecast-grid]
 verify_jwt = false
+
+[functions.multi-asset-nervous-system]
+verify_jwt = false
