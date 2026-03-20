@@ -100,6 +100,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   asci_engine_cycle: { label: 'Sovereign Capital', icon: '👑' },
   gali_critical_mass_reached: { label: 'Liquidity Critical Mass', icon: '🌐' },
   gali_engine_cycle: { label: 'Liquidity Internet', icon: '🔗' },
+  auwcp_prosperity_surge: { label: 'Prosperity Surge', icon: '🏙️' },
+  auwcp_engine_cycle: { label: 'Urban Wealth', icon: '🌆' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
