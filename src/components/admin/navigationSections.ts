@@ -299,6 +299,13 @@ export const navigationSections = {
       badge: "AI"
     },
     {
+      key: "marketplace-optimization-ai",
+      label: "Marketplace Optimization AI",
+      icon: Bot,
+      description: "Self-optimizing AI layer for liquidity, revenue & satisfaction with safety controls",
+      badge: "AI"
+    },
+    {
       key: "mortgage-management",
       label: "Mortgage (KPR) Management",
       icon: Calculator,
