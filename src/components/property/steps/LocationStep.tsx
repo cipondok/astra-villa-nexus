@@ -2,7 +2,7 @@ import LocationSelector from "../LocationSelector";
 import { useTranslation } from '@/i18n/useTranslation';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { MapPin, Home, Navigation } from "lucide-react";
+import { MapPin, Home } from "lucide-react";
 
 interface LocationStepProps {
   formData: any;
@@ -14,54 +14,46 @@ const LocationStep = ({ formData, onUpdate }: LocationStepProps) => {
 
   const t = {
     en: {
-      title: "Property Location",
-      subtitle: "Select the administrative location of your property in Indonesia",
-      addressDetails: "Address Details",
+      title: "Location",
+      subtitle: "Select your property location",
       streetAddress: "Street Address",
       streetAddressPlaceholder: "e.g., Jl. Sudirman No. 123",
       rtRw: "RT/RW",
-      rtRwPlaceholder: "e.g., RT 05/RW 03",
+      rtRwPlaceholder: "RT 05/RW 03",
       postalCode: "Postal Code",
-      postalCodePlaceholder: "e.g., 12930",
-      buildingName: "Building/Complex Name (Optional)",
+      postalCodePlaceholder: "12930",
+      buildingName: "Building/Complex (Optional)",
       buildingNamePlaceholder: "e.g., Apartemen Sudirman Park",
     },
     id: {
-      title: "Lokasi Properti",
-      subtitle: "Pilih lokasi administratif properti Anda di Indonesia",
-      addressDetails: "Detail Alamat",
+      title: "Lokasi",
+      subtitle: "Pilih lokasi properti Anda",
       streetAddress: "Alamat Jalan",
       streetAddressPlaceholder: "Contoh: Jl. Sudirman No. 123",
       rtRw: "RT/RW",
-      rtRwPlaceholder: "Contoh: RT 05/RW 03",
+      rtRwPlaceholder: "RT 05/RW 03",
       postalCode: "Kode Pos",
-      postalCodePlaceholder: "Contoh: 12930",
-      buildingName: "Nama Gedung/Komplek (Opsional)",
+      postalCodePlaceholder: "12930",
+      buildingName: "Gedung/Komplek (Opsional)",
       buildingNamePlaceholder: "Contoh: Apartemen Sudirman Park",
     }
   }[language];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-start gap-3">
-        <div className="p-2 rounded-lg bg-primary/10">
-          <MapPin className="h-5 w-5 text-primary" />
+      <div className="flex items-center gap-2">
+        <div className="p-1.5 rounded-md bg-primary/10">
+          <MapPin className="h-4 w-4 text-primary" />
         </div>
         <div>
-          <h3 className="text-lg font-semibold">{t.title}</h3>
-          <p className="text-sm text-muted-foreground">{t.subtitle}</p>
+          <h3 className="text-sm font-semibold leading-tight">{t.title}</h3>
+          <p className="text-[10px] text-muted-foreground">{t.subtitle}</p>
         </div>
       </div>
 
-      {/* Administrative Location Selector */}
-      <div className="p-4 rounded-lg border bg-card">
-        <div className="flex items-center gap-2 mb-4">
-          <Navigation className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm font-medium">
-            {language === 'id' ? 'Wilayah Administratif' : 'Administrative Region'}
-          </span>
-        </div>
+      {/* Administrative Location */}
+      <div className="p-3 rounded-lg border border-border/60 bg-muted/20">
         <LocationSelector
           selectedState={formData.state}
           selectedCity={formData.city}
@@ -75,67 +67,56 @@ const LocationStep = ({ formData, onUpdate }: LocationStepProps) => {
         />
       </div>
 
-      {/* Essential Address Details */}
-      <div className="p-4 rounded-lg border bg-card space-y-4">
-        <div className="flex items-center gap-2">
-          <Home className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm font-medium">{t.addressDetails}</span>
+      {/* Address Details */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-1.5">
+          <Home className="h-3.5 w-3.5 text-muted-foreground" />
+          <span className="text-xs font-medium">{language === 'id' ? 'Detail Alamat' : 'Address Details'}</span>
         </div>
 
-        {/* Street Address - Required */}
         <div>
-          <Label htmlFor="street_address" className="text-sm font-medium">
-            {t.streetAddress} *
-          </Label>
+          <Label htmlFor="street_address" className="text-xs font-medium">{t.streetAddress} *</Label>
           <Input
             id="street_address"
             value={formData.street_address || ''}
             onChange={(e) => onUpdate('street_address', e.target.value)}
             placeholder={t.streetAddressPlaceholder}
-            className="mt-1.5"
+            className="mt-1 h-9 text-sm"
           />
         </div>
 
-        {/* RT/RW and Postal Code */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <Label htmlFor="rt_rw" className="text-sm font-medium">
-              {t.rtRw}
-            </Label>
+            <Label htmlFor="rt_rw" className="text-xs font-medium">{t.rtRw}</Label>
             <Input
               id="rt_rw"
               value={formData.rt_rw || ''}
               onChange={(e) => onUpdate('rt_rw', e.target.value)}
               placeholder={t.rtRwPlaceholder}
-              className="mt-1.5"
+              className="mt-1 h-9 text-sm"
             />
           </div>
           <div>
-            <Label htmlFor="postal_code" className="text-sm font-medium">
-              {t.postalCode}
-            </Label>
+            <Label htmlFor="postal_code" className="text-xs font-medium">{t.postalCode}</Label>
             <Input
               id="postal_code"
               value={formData.postal_code || ''}
               onChange={(e) => onUpdate('postal_code', e.target.value)}
               placeholder={t.postalCodePlaceholder}
               maxLength={5}
-              className="mt-1.5"
+              className="mt-1 h-9 text-sm"
             />
           </div>
         </div>
 
-        {/* Building/Complex Name - Optional */}
         <div>
-          <Label htmlFor="building_name" className="text-sm font-medium">
-            {t.buildingName}
-          </Label>
+          <Label htmlFor="building_name" className="text-xs font-medium">{t.buildingName}</Label>
           <Input
             id="building_name"
             value={formData.building_name || ''}
             onChange={(e) => onUpdate('building_name', e.target.value)}
             placeholder={t.buildingNamePlaceholder}
-            className="mt-1.5"
+            className="mt-1 h-9 text-sm"
           />
         </div>
       </div>
