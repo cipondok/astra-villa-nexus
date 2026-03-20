@@ -14771,6 +14771,60 @@ export type Database = {
           },
         ]
       }
+      data_moat_metrics: {
+        Row: {
+          competitive_advantage_score: number | null
+          computed_at: string
+          created_at: string
+          data_points_30d: number | null
+          data_points_total: number | null
+          freshness_hours: number | null
+          id: string
+          metric_name: string
+          metric_value: number
+          monetization_ready: boolean | null
+          pillar: string
+          previous_value: number | null
+          replication_difficulty_score: number | null
+          snapshot_date: string
+          unit: string | null
+        }
+        Insert: {
+          competitive_advantage_score?: number | null
+          computed_at?: string
+          created_at?: string
+          data_points_30d?: number | null
+          data_points_total?: number | null
+          freshness_hours?: number | null
+          id?: string
+          metric_name: string
+          metric_value?: number
+          monetization_ready?: boolean | null
+          pillar: string
+          previous_value?: number | null
+          replication_difficulty_score?: number | null
+          snapshot_date?: string
+          unit?: string | null
+        }
+        Update: {
+          competitive_advantage_score?: number | null
+          computed_at?: string
+          created_at?: string
+          data_points_30d?: number | null
+          data_points_total?: number | null
+          freshness_hours?: number | null
+          id?: string
+          metric_name?: string
+          metric_value?: number
+          monetization_ready?: boolean | null
+          pillar?: string
+          previous_value?: number | null
+          replication_difficulty_score?: number | null
+          snapshot_date?: string
+          unit?: string | null
+        }
+        Relationships: []
+      }
       database_error_tracking: {
         Row: {
           created_at: string | null
@@ -28394,6 +28448,39 @@ export type Database = {
           target_properties?: number | null
           total_deal_value_idr?: number | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      intelligence_api_access_log: {
+        Row: {
+          accessed_at: string
+          client_name: string
+          created_at: string
+          data_tier: string | null
+          endpoint: string
+          id: string
+          request_count: number | null
+          revenue_generated: number | null
+        }
+        Insert: {
+          accessed_at?: string
+          client_name: string
+          created_at?: string
+          data_tier?: string | null
+          endpoint: string
+          id?: string
+          request_count?: number | null
+          revenue_generated?: number | null
+        }
+        Update: {
+          accessed_at?: string
+          client_name?: string
+          created_at?: string
+          data_tier?: string | null
+          endpoint?: string
+          id?: string
+          request_count?: number | null
+          revenue_generated?: number | null
         }
         Relationships: []
       }
