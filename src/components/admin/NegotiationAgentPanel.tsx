@@ -268,6 +268,3 @@ export default function NegotiationAgentPanel() {
     </div>
   );
 }
-
-// Need Handshake import
-import { Handshake } from "lucide-react";
