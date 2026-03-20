@@ -66,7 +66,7 @@ const REGIME_CONFIG = {
   },
 };
 
-const ease = [0.16, 1, 0.3, 1];
+const ease = [0.16, 1, 0.3, 1] as [number, number, number, number];
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
 const fadeSlide = {
   hidden: { opacity: 0, y: 16, filter: 'blur(4px)' },
