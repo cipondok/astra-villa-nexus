@@ -124,6 +124,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   ccne_engine_cycle: { label: 'Narrative Engine', icon: '📖' },
   gipd_sentiment_extreme: { label: 'Sentiment Extreme', icon: '🧠' },
   gipd_engine_cycle: { label: 'Psychology Engine', icon: '🎯' },
+  mcbm_blitz_capture: { label: 'Blitz Capture', icon: '⚡' },
+  mcbm_engine_cycle: { label: 'Market Blitzkrieg', icon: '🎯' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
