@@ -123,6 +123,7 @@ export interface NavigationSection {
 
 export const categories = [
   "overview",
+  "operations",
   "investor-management",
   "transactions",
   "astra-token", 
@@ -698,29 +699,44 @@ export const navigationSections = {
     }
   ],
 
-  "vendor-management": [
+  operations: [
     {
-      key: "vendor-management-overview",
-      label: "📊 Vendors Overview",
+      key: "operations-overview",
+      label: "📊 Operations Overview",
       icon: LayoutDashboard,
-      description: "Category dashboard — overview of all vendor management modules"
+      description: "Category dashboard — overview of command, vendor intelligence, workforce, and supply operations"
     },
     {
-      key: "vendors-hub",
-      label: "Vendors Hub",
+      key: "execution-command-center",
+      label: "Execution Command Center",
+      icon: Rocket,
+      description: "Real-time operating cockpit — liquidity, pipeline, vendor, revenue & campaign controls",
+      badge: "New"
+    },
+    {
+      key: "vendor-intelligence-engine",
+      label: "Vendor Intelligence Engine",
+      icon: Store,
+      description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
+      badge: "New"
+    },
+    {
+      key: "vendor-supply-expansion",
+      label: "Vendor Supply Expansion",
       icon: ShoppingBag,
-      description: "Comprehensive vendor management platform with all vendor-related functionality including services, categories, KYC, analytics, and control panel"
+      description: "Detect category shortages, trigger recruitment campaigns, and forecast revenue impact",
+      badge: "AI"
     },
     {
-      key: "vendor-revenue-optimization",
-      label: "Revenue Optimization",
-      icon: TrendingUp,
-      description: "AI-driven vendor scoring, lead routing, pricing intelligence & upsell automation",
-      badge: "AI"
+      key: "workforce-scheduler",
+      label: "Workforce Scheduler",
+      icon: Clock,
+      description: "Staff scheduling, shift management, and team utilization tracking",
+      badge: "New"
     }
   ],
 
-  "analytics-monitoring": [
+  "vendor-management": [
     {
       key: "analytics-monitoring-overview",
       label: "📊 Analytics Overview",
@@ -934,7 +950,7 @@ export const navigationSections = {
       badge: "New"
     },
     {
-      key: "commission-tracker",
+      key: "commission-tracker-analytics",
       label: "Commission Tracker",
       icon: DollarSign,
       description: "Agent commissions, payouts, and revenue splits with trend analysis",
@@ -2046,6 +2062,7 @@ export const sectionCategories = navigationSections;
 
 export const sectionTitles = {
   overview: "Dashboard",
+  operations: "Operations",
   "investor-management": "Investor Management",
   transactions: "Transaction Management",
   "astra-token": "ASTRA Token",
