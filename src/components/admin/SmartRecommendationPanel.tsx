@@ -102,7 +102,7 @@ const SmartRecommendationPanel: React.FC = () => {
                 <p className="ml-12">+ (Opportunity × 0.20) + (Watchlist × 0.15)</p>
                 <p className="ml-12">+ (BaseMatch × 0.10)</p>
                 <p className="mt-2 text-foreground">Boosts: Elite Deal (+12), New Listing (+5)</p>
-                <p className="text-foreground">Penalties: Ignored (-25), Stale >90d (-15)</p>
+                <p className="text-foreground">Penalties: Ignored (-25), Stale {'>'} 90d (-15)</p>
               </div>
             </CardContent>
           </Card>
