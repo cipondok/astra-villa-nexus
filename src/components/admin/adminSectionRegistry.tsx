@@ -291,6 +291,7 @@ export const RevenueProjectionModelPage = lazyRetry(() => import("@/pages/Revenu
 export const InvestorKPIFrameworkPage = lazyRetry(() => import("@/pages/InvestorKPIFrameworkPage"));
 export const VendorAcquisitionScriptsPage = lazyRetry(() => import("@/pages/VendorAcquisitionScriptsPage"));
 export const FeatureImpactMatrixPage = lazyRetry(() => import("@/pages/FeatureImpactMatrixPage"));
+export const LaunchExecutionKitPage = lazyRetry(() => import("@/pages/LaunchExecutionKitPage"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
