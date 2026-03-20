@@ -645,6 +645,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "investor-dna-admin": { label: "Investor DNA Intelligence", category: "Investor Management" },
   "global-macro-intelligence": { label: "Global Macro Intelligence", category: "Investor Management" },
   "global-strategy": { label: "Global Strategy", category: "AI & Tools" },
+  "execution-command-center": { label: "Execution Command Center", category: "Operations" },
   "overview": { label: "Dashboard Overview", category: "" },
   "diagnostic": { label: "Project Diagnostics", category: "System" },
   "project-progress": { label: "Launch Readiness", category: "System" },
