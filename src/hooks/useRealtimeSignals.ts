@@ -170,6 +170,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   hycb_engine_cycle: { label: 'Century Blueprint', icon: '🌐' },
   ahcss_copilot_autonomous: { label: 'Copilot Autonomous', icon: '🤖' },
   ahcss_engine_cycle: { label: 'AI-Human Symbiosis', icon: '🧬' },
+  pesa_critical_volatility: { label: 'Critical Volatility', icon: '🌋' },
+  pesa_engine_cycle: { label: 'Planetary Stability', icon: '🌍' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
