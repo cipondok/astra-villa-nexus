@@ -1839,6 +1839,13 @@ export const navigationSections = {
       icon: Rocket,
       description: "Unified launch command center — checklist, playbook links, milestones, and progress tracking",
       badge: "🚀 Kit"
+    },
+    {
+      key: "cac-ltv-model",
+      label: "CAC vs LTV Model",
+      icon: BarChart3,
+      description: "Dual-sided unit economics — investor 67× and vendor 38× LTV/CAC with channel breakdown",
+      badge: "📊 Economics"
     }
   ],
 
