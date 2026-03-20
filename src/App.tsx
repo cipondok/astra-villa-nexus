@@ -380,6 +380,7 @@ const RevenueProjectionModelPage = lazy(() => import('@/pages/RevenueProjectionM
 const InvestorKPIFrameworkPage = lazy(() => import('@/pages/InvestorKPIFrameworkPage'));
 const VendorAcquisitionScriptsPage = lazy(() => import('@/pages/VendorAcquisitionScriptsPage'));
 const FeatureImpactMatrixPage = lazy(() => import('@/pages/FeatureImpactMatrixPage'));
+const ProfitMaximizationDashboard = lazy(() => import('@/pages/ProfitMaximizationDashboard'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -841,6 +842,7 @@ const AppContent = () => {
                 <Route path="/hnw-investor-strategy" element={<HNWInvestorStrategyPage />} />
                 <Route path="/brand-trust-strategy" element={<BrandTrustStrategyPage />} />
                 <Route path="/revenue-optimization" element={<RevenueOptimizationPage />} />
+                <Route path="/profit-maximization" element={<ProfitMaximizationDashboard />} />
                 <Route path="/geographic-expansion" element={<GeographicExpansionPage />} />
                 <Route path="/unicorn-positioning" element={<UnicornPositioningPage />} />
                 <Route path="/7-day-sprint" element={<SevenDaySprintPage />} />

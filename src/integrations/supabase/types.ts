@@ -42673,6 +42673,270 @@ export type Database = {
           },
         ]
       }
+      profit_audit_log: {
+        Row: {
+          action_type: string
+          admin_override: boolean | null
+          confidence_at_decision: number | null
+          created_at: string | null
+          decided_by: string | null
+          decision: string
+          experiment_id: string | null
+          id: string
+          notes: string | null
+          override_by: string | null
+          revenue_after: number | null
+          revenue_before: number | null
+          risk_assessment: string | null
+          signal_id: string | null
+        }
+        Insert: {
+          action_type: string
+          admin_override?: boolean | null
+          confidence_at_decision?: number | null
+          created_at?: string | null
+          decided_by?: string | null
+          decision: string
+          experiment_id?: string | null
+          id?: string
+          notes?: string | null
+          override_by?: string | null
+          revenue_after?: number | null
+          revenue_before?: number | null
+          risk_assessment?: string | null
+          signal_id?: string | null
+        }
+        Update: {
+          action_type?: string
+          admin_override?: boolean | null
+          confidence_at_decision?: number | null
+          created_at?: string | null
+          decided_by?: string | null
+          decision?: string
+          experiment_id?: string | null
+          id?: string
+          notes?: string | null
+          override_by?: string | null
+          revenue_after?: number | null
+          revenue_before?: number | null
+          risk_assessment?: string | null
+          signal_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profit_audit_log_experiment_id_fkey"
+            columns: ["experiment_id"]
+            isOneToOne: false
+            referencedRelation: "profit_experiments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profit_audit_log_signal_id_fkey"
+            columns: ["signal_id"]
+            isOneToOne: false
+            referencedRelation: "profit_optimization_signals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profit_daily_summary: {
+        Row: {
+          cost_efficiency_score: number | null
+          created_at: string | null
+          experiments_active: number | null
+          experiments_positive: number | null
+          id: string
+          margin_pct: number | null
+          net_profit: number | null
+          partner_retention_rate: number | null
+          revenue_density_per_user: number | null
+          signals_executed: number | null
+          signals_generated: number | null
+          signals_rolled_back: number | null
+          summary_date: string
+          total_costs: number | null
+          total_revenue: number | null
+        }
+        Insert: {
+          cost_efficiency_score?: number | null
+          created_at?: string | null
+          experiments_active?: number | null
+          experiments_positive?: number | null
+          id?: string
+          margin_pct?: number | null
+          net_profit?: number | null
+          partner_retention_rate?: number | null
+          revenue_density_per_user?: number | null
+          signals_executed?: number | null
+          signals_generated?: number | null
+          signals_rolled_back?: number | null
+          summary_date: string
+          total_costs?: number | null
+          total_revenue?: number | null
+        }
+        Update: {
+          cost_efficiency_score?: number | null
+          created_at?: string | null
+          experiments_active?: number | null
+          experiments_positive?: number | null
+          id?: string
+          margin_pct?: number | null
+          net_profit?: number | null
+          partner_retention_rate?: number | null
+          revenue_density_per_user?: number | null
+          signals_executed?: number | null
+          signals_generated?: number | null
+          signals_rolled_back?: number | null
+          summary_date?: string
+          total_costs?: number | null
+          total_revenue?: number | null
+        }
+        Relationships: []
+      }
+      profit_experiments: {
+        Row: {
+          auto_scale_enabled: boolean | null
+          completed_at: string | null
+          confidence_threshold: number | null
+          control_conversions: number | null
+          control_revenue: number | null
+          control_value: number | null
+          created_at: string | null
+          created_by: string | null
+          current_confidence: number | null
+          experiment_name: string
+          hypothesis: string | null
+          id: string
+          partner_retention_impact: number | null
+          revenue_impact: number | null
+          rollback_trigger_threshold: number | null
+          started_at: string | null
+          status: string | null
+          target_domain: string
+          updated_at: string | null
+          variant_conversions: number | null
+          variant_revenue: number | null
+          variant_value: number | null
+        }
+        Insert: {
+          auto_scale_enabled?: boolean | null
+          completed_at?: string | null
+          confidence_threshold?: number | null
+          control_conversions?: number | null
+          control_revenue?: number | null
+          control_value?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          current_confidence?: number | null
+          experiment_name: string
+          hypothesis?: string | null
+          id?: string
+          partner_retention_impact?: number | null
+          revenue_impact?: number | null
+          rollback_trigger_threshold?: number | null
+          started_at?: string | null
+          status?: string | null
+          target_domain: string
+          updated_at?: string | null
+          variant_conversions?: number | null
+          variant_revenue?: number | null
+          variant_value?: number | null
+        }
+        Update: {
+          auto_scale_enabled?: boolean | null
+          completed_at?: string | null
+          confidence_threshold?: number | null
+          control_conversions?: number | null
+          control_revenue?: number | null
+          control_value?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          current_confidence?: number | null
+          experiment_name?: string
+          hypothesis?: string | null
+          id?: string
+          partner_retention_impact?: number | null
+          revenue_impact?: number | null
+          rollback_trigger_threshold?: number | null
+          started_at?: string | null
+          status?: string | null
+          target_domain?: string
+          updated_at?: string | null
+          variant_conversions?: number | null
+          variant_revenue?: number | null
+          variant_value?: number | null
+        }
+        Relationships: []
+      }
+      profit_optimization_signals: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          auto_executable: boolean | null
+          confidence_score: number | null
+          created_at: string | null
+          current_value: number | null
+          executed_at: string | null
+          execution_status: string | null
+          id: string
+          metadata: Json | null
+          projected_impact_pct: number | null
+          projected_revenue_impact: number | null
+          recommended_value: number | null
+          requires_approval: boolean | null
+          risk_level: string | null
+          rollback_reason: string | null
+          signal_domain: string
+          signal_strength: number | null
+          signal_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          auto_executable?: boolean | null
+          confidence_score?: number | null
+          created_at?: string | null
+          current_value?: number | null
+          executed_at?: string | null
+          execution_status?: string | null
+          id?: string
+          metadata?: Json | null
+          projected_impact_pct?: number | null
+          projected_revenue_impact?: number | null
+          recommended_value?: number | null
+          requires_approval?: boolean | null
+          risk_level?: string | null
+          rollback_reason?: string | null
+          signal_domain: string
+          signal_strength?: number | null
+          signal_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          auto_executable?: boolean | null
+          confidence_score?: number | null
+          created_at?: string | null
+          current_value?: number | null
+          executed_at?: string | null
+          execution_status?: string | null
+          id?: string
+          metadata?: Json | null
+          projected_impact_pct?: number | null
+          projected_revenue_impact?: number | null
+          recommended_value?: number | null
+          requires_approval?: boolean | null
+          risk_level?: string | null
+          rollback_reason?: string | null
+          signal_domain?: string
+          signal_strength?: number | null
+          signal_type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       project_leads: {
         Row: {
           budget_range: string | null
@@ -61665,6 +61929,7 @@ export type Database = {
           years_experience: string
         }[]
       }
+      get_profit_optimization_dashboard: { Args: never; Returns: Json }
       get_properties_in_bounds: {
         Args: {
           p_east: number
