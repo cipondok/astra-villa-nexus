@@ -462,3 +462,6 @@ verify_jwt = false
 
 [functions.capital-consciousness-engine]
 verify_jwt = false
+
+[functions.urbanization-forecast-grid]
+verify_jwt = false
