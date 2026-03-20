@@ -114,6 +114,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   cwse_engine_cycle: { label: 'Wealth Stability', icon: '🏛️' },
   lhps_prosperity_surge: { label: 'Prosperity Surge', icon: '🌟' },
   lhps_engine_cycle: { label: 'Prosperity Strategy', icon: '🌍' },
+  phes_automation_surge: { label: 'Automation Surge', icon: '🤖' },
+  phes_engine_cycle: { label: 'Post-Human Economy', icon: '⚙️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
