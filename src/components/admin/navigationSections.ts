@@ -2062,6 +2062,7 @@ export const sectionCategories = navigationSections;
 
 export const sectionTitles = {
   overview: "Dashboard",
+  operations: "Operations",
   "investor-management": "Investor Management",
   transactions: "Transaction Management",
   "astra-token": "ASTRA Token",

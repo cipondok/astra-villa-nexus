@@ -332,6 +332,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "launch-readiness":    (sc) => <LaunchReadinessDashboard onSectionChange={sc} />,
 
   // Category overview dashboards
+  "operations-overview":           (sc) => <CategoryOverviewDashboard category="operations" onSectionChange={sc} />,
   "investor-management-overview":  (sc) => <CategoryOverviewDashboard category="investor-management" onSectionChange={sc} />,
   "transactions-overview":         (sc) => <CategoryOverviewDashboard category="transactions" onSectionChange={sc} />,
   "astra-token-overview":          (sc) => <CategoryOverviewDashboard category="astra-token" onSectionChange={sc} />,
