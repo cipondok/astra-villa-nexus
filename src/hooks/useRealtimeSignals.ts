@@ -164,6 +164,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   gpla_engine_cycle: { label: 'Legacy Architecture', icon: '🏗️' },
   fycs_megacity_formation: { label: 'Megacity Formation', icon: '🏙️' },
   fycs_engine_cycle: { label: 'Capital Civilization', icon: '🌍' },
+  fspcm_exponential_power: { label: 'Exponential Power', icon: '⚡' },
+  fspcm_engine_cycle: { label: 'Founder Power Engine', icon: '👑' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
