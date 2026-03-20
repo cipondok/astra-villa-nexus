@@ -598,6 +598,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ultimate-master-plan": () => <UltimateMasterPlan />,
   "ninety-day-roadmap": () => <NinetyDayRoadmap />,
   "daily-execution-plan": () => <DailyExecutionPlan />,
+  "founder-strategic-kpis": () => <FounderStrategicKPIs />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
