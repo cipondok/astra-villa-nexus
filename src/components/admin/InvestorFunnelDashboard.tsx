@@ -765,8 +765,8 @@ function LivePerformanceTab() {
   );
 }
 
-// ── DollarSign import for LivePerformance ──
-import { DollarSign } from "lucide-react";
+
+
 
 // ── Main Dashboard ──
 
