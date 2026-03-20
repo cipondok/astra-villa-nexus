@@ -743,6 +743,13 @@ export const navigationSections = {
       badge: "AI"
     },
     {
+      key: "growth-experimentation",
+      label: "Growth Experimentation Engine",
+      icon: FlaskConical,
+      description: "Autonomous A/B testing — acquisition, monetization, engagement & liquidity experiments with auto-scaling",
+      badge: "🧪 AI Growth"
+    },
+    {
       key: "workforce-scheduler",
       label: "Workforce Scheduler",
       icon: Clock,
