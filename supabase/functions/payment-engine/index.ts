@@ -383,7 +383,7 @@ serve(async (req) => {
         result = await createCheckout(params, supabase, userId);
         break;
       case 'process_refund':
-        result = await processRefund(params, supabase);
+        result = await processRefund(params, supabase, userId);
         break;
       case 'handle_subscription':
         result = await handleSubscription(params, supabase, userId);
