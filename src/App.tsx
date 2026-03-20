@@ -369,6 +369,7 @@ const FundraisingArchitecturePage = lazy(() => import('@/pages/FundraisingArchit
 const RevenueLayerArchitecturePage = lazy(() => import('@/pages/RevenueLayerArchitecturePage'));
 const VendorMonetizationPyramidPage = lazy(() => import('@/pages/VendorMonetizationPyramidPage'));
 const InstitutionalSaaSBlueprintPage = lazy(() => import('@/pages/InstitutionalSaaSBlueprintPage'));
+const RevenueScalingBlueprintPage = lazy(() => import('@/pages/RevenueScalingBlueprintPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
