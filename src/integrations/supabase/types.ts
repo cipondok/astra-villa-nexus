@@ -7314,6 +7314,315 @@ export type Database = {
         }
         Relationships: []
       }
+      auwcp_investment_sequencing: {
+        Row: {
+          capital_deployed_usd: number | null
+          capital_target_usd: number | null
+          city: string
+          commercial_readiness: number | null
+          created_at: string | null
+          current_phase: number | null
+          district: string
+          estimated_phase_months: number | null
+          id: string
+          infrastructure_readiness: number | null
+          mixed_use_balance_score: number | null
+          next_milestone: string | null
+          phase_name: string | null
+          region: string
+          residential_readiness: number | null
+          sequencing_actions: Json | null
+          sequencing_confidence: number | null
+          total_phases: number | null
+          updated_at: string | null
+          vendor_supply_readiness: number | null
+        }
+        Insert: {
+          capital_deployed_usd?: number | null
+          capital_target_usd?: number | null
+          city: string
+          commercial_readiness?: number | null
+          created_at?: string | null
+          current_phase?: number | null
+          district: string
+          estimated_phase_months?: number | null
+          id?: string
+          infrastructure_readiness?: number | null
+          mixed_use_balance_score?: number | null
+          next_milestone?: string | null
+          phase_name?: string | null
+          region?: string
+          residential_readiness?: number | null
+          sequencing_actions?: Json | null
+          sequencing_confidence?: number | null
+          total_phases?: number | null
+          updated_at?: string | null
+          vendor_supply_readiness?: number | null
+        }
+        Update: {
+          capital_deployed_usd?: number | null
+          capital_target_usd?: number | null
+          city?: string
+          commercial_readiness?: number | null
+          created_at?: string | null
+          current_phase?: number | null
+          district?: string
+          estimated_phase_months?: number | null
+          id?: string
+          infrastructure_readiness?: number | null
+          mixed_use_balance_score?: number | null
+          next_milestone?: string | null
+          phase_name?: string | null
+          region?: string
+          residential_readiness?: number | null
+          sequencing_actions?: Json | null
+          sequencing_confidence?: number | null
+          total_phases?: number | null
+          updated_at?: string | null
+          vendor_supply_readiness?: number | null
+        }
+        Relationships: []
+      }
+      auwcp_opportunity_mapping: {
+        Row: {
+          appreciation_forecast_pct: number | null
+          city: string
+          commercial_cluster_density: number | null
+          composite_opportunity_score: number | null
+          computed_at: string | null
+          created_at: string | null
+          development_potential_score: number | null
+          district: string
+          id: string
+          infrastructure_trigger_score: number | null
+          key_triggers: Json | null
+          land_availability_index: number | null
+          opportunity_tier: string | null
+          population_growth_rate: number | null
+          region: string
+          transit_proximity_score: number | null
+          zoning_flexibility_score: number | null
+        }
+        Insert: {
+          appreciation_forecast_pct?: number | null
+          city: string
+          commercial_cluster_density?: number | null
+          composite_opportunity_score?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          development_potential_score?: number | null
+          district: string
+          id?: string
+          infrastructure_trigger_score?: number | null
+          key_triggers?: Json | null
+          land_availability_index?: number | null
+          opportunity_tier?: string | null
+          population_growth_rate?: number | null
+          region?: string
+          transit_proximity_score?: number | null
+          zoning_flexibility_score?: number | null
+        }
+        Update: {
+          appreciation_forecast_pct?: number | null
+          city?: string
+          commercial_cluster_density?: number | null
+          composite_opportunity_score?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          development_potential_score?: number | null
+          district?: string
+          id?: string
+          infrastructure_trigger_score?: number | null
+          key_triggers?: Json | null
+          land_availability_index?: number | null
+          opportunity_tier?: string | null
+          population_growth_rate?: number | null
+          region?: string
+          transit_proximity_score?: number | null
+          zoning_flexibility_score?: number | null
+        }
+        Relationships: []
+      }
+      auwcp_prosperity_feedback: {
+        Row: {
+          city: string
+          community_satisfaction_proxy: number | null
+          computed_at: string | null
+          created_at: string | null
+          district: string
+          feedback_loop_strength: number | null
+          green_development_pct: number | null
+          id: string
+          liquidity_cycle_health: number | null
+          long_term_viability_score: number | null
+          policy_alignment_score: number | null
+          policy_recommendations: Json | null
+          projected_prosperity_12m: number | null
+          prosperity_momentum: string | null
+          region: string
+          reinvestment_velocity: number | null
+          sustainable_density_index: number | null
+        }
+        Insert: {
+          city: string
+          community_satisfaction_proxy?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          district: string
+          feedback_loop_strength?: number | null
+          green_development_pct?: number | null
+          id?: string
+          liquidity_cycle_health?: number | null
+          long_term_viability_score?: number | null
+          policy_alignment_score?: number | null
+          policy_recommendations?: Json | null
+          projected_prosperity_12m?: number | null
+          prosperity_momentum?: string | null
+          region?: string
+          reinvestment_velocity?: number | null
+          sustainable_density_index?: number | null
+        }
+        Update: {
+          city?: string
+          community_satisfaction_proxy?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          district?: string
+          feedback_loop_strength?: number | null
+          green_development_pct?: number | null
+          id?: string
+          liquidity_cycle_health?: number | null
+          long_term_viability_score?: number | null
+          policy_alignment_score?: number | null
+          policy_recommendations?: Json | null
+          projected_prosperity_12m?: number | null
+          prosperity_momentum?: string | null
+          region?: string
+          reinvestment_velocity?: number | null
+          sustainable_density_index?: number | null
+        }
+        Relationships: []
+      }
+      auwcp_risk_mitigation: {
+        Row: {
+          capital_concentration_risk: number | null
+          city: string
+          composite_risk_score: number | null
+          computed_at: string | null
+          created_at: string | null
+          demand_sustainability_score: number | null
+          district: string
+          early_warning_signals: Json | null
+          forecast_horizon_months: number | null
+          id: string
+          infrastructure_bottleneck_risk: number | null
+          mitigation_actions: Json | null
+          oversupply_probability: number | null
+          region: string
+          risk_tier: string | null
+          speculative_heat_score: number | null
+          stress_test_result: string | null
+        }
+        Insert: {
+          capital_concentration_risk?: number | null
+          city: string
+          composite_risk_score?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          demand_sustainability_score?: number | null
+          district: string
+          early_warning_signals?: Json | null
+          forecast_horizon_months?: number | null
+          id?: string
+          infrastructure_bottleneck_risk?: number | null
+          mitigation_actions?: Json | null
+          oversupply_probability?: number | null
+          region?: string
+          risk_tier?: string | null
+          speculative_heat_score?: number | null
+          stress_test_result?: string | null
+        }
+        Update: {
+          capital_concentration_risk?: number | null
+          city?: string
+          composite_risk_score?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          demand_sustainability_score?: number | null
+          district?: string
+          early_warning_signals?: Json | null
+          forecast_horizon_months?: number | null
+          id?: string
+          infrastructure_bottleneck_risk?: number | null
+          mitigation_actions?: Json | null
+          oversupply_probability?: number | null
+          region?: string
+          risk_tier?: string | null
+          speculative_heat_score?: number | null
+          stress_test_result?: string | null
+        }
+        Relationships: []
+      }
+      auwcp_wealth_impact: {
+        Row: {
+          city: string
+          community_investment_score: number | null
+          created_at: string | null
+          district: string
+          gini_dispersion_index: number | null
+          household_income_impact_pct: number | null
+          id: string
+          impact_tier: string | null
+          jobs_created_30d: number | null
+          jobs_created_cumulative: number | null
+          local_service_growth_pct: number | null
+          measured_at: string | null
+          property_appreciation_avg_pct: number | null
+          property_appreciation_median_pct: number | null
+          prosperity_inclusion_index: number | null
+          region: string
+          small_business_formation_rate: number | null
+        }
+        Insert: {
+          city: string
+          community_investment_score?: number | null
+          created_at?: string | null
+          district: string
+          gini_dispersion_index?: number | null
+          household_income_impact_pct?: number | null
+          id?: string
+          impact_tier?: string | null
+          jobs_created_30d?: number | null
+          jobs_created_cumulative?: number | null
+          local_service_growth_pct?: number | null
+          measured_at?: string | null
+          property_appreciation_avg_pct?: number | null
+          property_appreciation_median_pct?: number | null
+          prosperity_inclusion_index?: number | null
+          region?: string
+          small_business_formation_rate?: number | null
+        }
+        Update: {
+          city?: string
+          community_investment_score?: number | null
+          created_at?: string | null
+          district?: string
+          gini_dispersion_index?: number | null
+          household_income_impact_pct?: number | null
+          id?: string
+          impact_tier?: string | null
+          jobs_created_30d?: number | null
+          jobs_created_cumulative?: number | null
+          local_service_growth_pct?: number | null
+          measured_at?: string | null
+          property_appreciation_avg_pct?: number | null
+          property_appreciation_median_pct?: number | null
+          prosperity_inclusion_index?: number | null
+          region?: string
+          small_business_formation_rate?: number | null
+        }
+        Relationships: []
+      }
       b2b_api_keys: {
         Row: {
           allowed_endpoints: string[] | null
