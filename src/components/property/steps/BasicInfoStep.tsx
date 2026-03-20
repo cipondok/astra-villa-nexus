@@ -162,48 +162,24 @@ const BasicInfoStep = ({ formData, onUpdate }: BasicInfoStepProps) => {
 
       <div>
         <Label htmlFor="price">{t.price} *</Label>
-        
-        {/* Quick price selection */}
-        <div className="mt-2 space-y-2">
-          <p className="text-xs text-muted-foreground">{language === 'id' ? 'Pilihan Cepat:' : 'Quick Selection:'}</p>
-          <div className="flex flex-wrap gap-2">
-            {[1, 5, 10, 25, 50, 100].map(num => (
-              <button
-                key={`jt-${num}`}
-                type="button"
-                onClick={() => onUpdate('price', String(num * 1000000))}
-                className="px-3 py-1.5 text-xs rounded-full border bg-background hover:bg-accent transition-colors"
-              >
-                {num} Jt
-              </button>
-            ))}
-            {[1, 5, 10, 25, 50, 100].map(num => (
-              <button
-                key={`m-${num}`}
-                type="button"
-                onClick={() => onUpdate('price', String(num * 1000000000))}
-                className="px-3 py-1.5 text-xs rounded-full border bg-background hover:bg-accent transition-colors"
-              >
-                {num} M
-              </button>
-            ))}
-          </div>
-        </div>
 
-        <Input
-          id="price"
-          type="text"
-          value={formData.price ? new Intl.NumberFormat('id-ID').format(Number(formData.price)) : ''}
-          onChange={(e) => {
-            const value = e.target.value.replace(/\./g, '');
-            if (value === '' || /^\d+$/.test(value)) {
-              onUpdate('price', value);
-            }
-          }}
-          placeholder={t.pricePlaceholder}
-          className="mt-2"
-        />
-        <p className="text-sm text-muted-foreground mt-1">
+        <div className="relative mt-2">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-medium">Rp</span>
+          <Input
+            id="price"
+            type="text"
+            value={formData.price ? new Intl.NumberFormat('id-ID').format(Number(formData.price)) : ''}
+            onChange={(e) => {
+              const value = e.target.value.replace(/\./g, '');
+              if (value === '' || /^\d+$/.test(value)) {
+                onUpdate('price', value);
+              }
+            }}
+            placeholder="0"
+            className="pl-10 text-right font-medium"
+          />
+        </div>
+        <p className="text-xs text-muted-foreground mt-1">
           {formData.listing_type === 'rent' ? t.monthlyRental : t.salePrice}
         </p>
       </div>
