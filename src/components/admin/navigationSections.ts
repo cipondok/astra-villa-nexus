@@ -109,7 +109,8 @@ import {
   PieChart,
   CalendarClock,
   Sunrise,
-  Orbit
+  Orbit,
+  Network
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -281,6 +282,13 @@ export const navigationSections = {
       label: "Deal Closing Automation",
       icon: Zap,
       description: "7-stage deal state machine with automated tasks, stall detection & orchestration",
+      badge: "AI"
+    },
+    {
+      key: "network-effect-simulator",
+      label: "Network Effect Simulator",
+      icon: Network,
+      description: "Scenario-test marketplace feedback loops, dominance thresholds & revenue trajectories",
       badge: "AI"
     },
     {

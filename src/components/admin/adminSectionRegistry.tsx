@@ -146,6 +146,7 @@ export const VendorRevenueOptimizationPanel = lazyRetry(() => import("./VendorRe
 export const CityExpansionCommandPanel = lazyRetry(() => import("./CityExpansionCommandPanel"));
 export const SuperAppJourneyPanel = lazyRetry(() => import("./SuperAppJourneyPanel"));
 export const DealClosingAutomationPanel = lazyRetry(() => import("./DealClosingAutomationPanel"));
+export const NetworkEffectSimulatorPanel = lazyRetry(() => import("./NetworkEffectSimulatorPanel"));
 export const DOMAccuracyReport = lazyRetry(() => import("./DOMAccuracyReport"));
 export const CronJobMonitor = lazyRetry(() => import("./CronJobMonitor"));
 export const WeightTuningHistory = lazyRetry(() => import("./WeightTuningHistory"));
@@ -403,6 +404,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "city-expansion-command": () => <CityExpansionCommandPanel />,
   "superapp-journey": () => <SuperAppJourneyPanel />,
   "deal-closing-automation": () => <DealClosingAutomationPanel />,
+  "network-effect-simulator": () => <NetworkEffectSimulatorPanel />,
 
   // Content
   "homepage-slider":     () => <HomepageSliderSettings />,
@@ -938,4 +940,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "city-expansion-command": { label: "City Expansion Command", category: "Features" },
   "superapp-journey": { label: "Super-App User Journey", category: "Features" },
   "deal-closing-automation": { label: "Deal Closing Automation", category: "Transactions" },
+  "network-effect-simulator": { label: "Network Effect Simulator", category: "Features" },
 };
