@@ -355,6 +355,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
 
   // Vendor Intelligence
   "vendor-intelligence-engine": () => <VendorIntelligencePanel />,
+  "vendor-supply-expansion": () => <VendorSupplyExpansionPanel />,
 
   // Revenue Flywheel
   "revenue-flywheel-optimizer": () => <RevenueFlywheelPanel />,
