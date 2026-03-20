@@ -965,4 +965,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "marketplace-optimization-ai": { label: "Marketplace Optimization AI", category: "Features" },
   "unicorn-narrative": { label: "$1B Valuation Narrative", category: "Features" },
   "liquidity-index-branding": { label: "Liquidity Index Branding", category: "Features" },
+  "ai-negotiation-agent": { label: "AI Negotiation Agent", category: "Transactions" },
 };
