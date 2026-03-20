@@ -175,6 +175,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "data-moat-governance",
+      label: "Data Moat Governance",
+      icon: Shield,
+      description: "Proprietary intelligence depth, competitive advantage scoring & monetization readiness",
+      badge: "New"
+    },
+    {
       key: "project-map",
       label: "Project Map",
       icon: Map,
