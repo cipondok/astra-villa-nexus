@@ -115,6 +115,7 @@ const UrbanGrowthSimulator = lazy(() => import('@/pages/UrbanGrowthSimulator'));
 const AutonomousClosingSystem = lazy(() => import('@/pages/AutonomousClosingSystem'));
 const RealEstateMacroRadar = lazy(() => import('@/pages/RealEstateMacroRadar'));
 const InvestorBehaviorPrediction = lazy(() => import('@/pages/InvestorBehaviorPrediction'));
+const IPORoadshowPage = lazy(() => import('@/pages/IPORoadshowPage'));
 const MarketplaceOperationsBrain = lazy(() => import('@/pages/MarketplaceOperationsBrain'));
 const SelfLearningValuationCore = lazy(() => import('@/pages/SelfLearningValuationCore'));
 const RealEstateIntelligenceAPIHub = lazy(() => import('@/pages/RealEstateIntelligenceAPIHub'));
