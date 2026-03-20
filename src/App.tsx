@@ -897,6 +897,7 @@ const AppContent = () => {
                 <Route path="/liquidity-scoring" element={<LiquidityScoringPage />} />
                 <Route path="/vendor-job-routing" element={<VendorJobRoutingPage />} />
                 <Route path="/first-10-investor-closing" element={<First10InvestorClosingPage />} />
+                <Route path="/pricing-psychology" element={<PricingPsychologyPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
