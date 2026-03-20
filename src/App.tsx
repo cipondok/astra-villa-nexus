@@ -236,6 +236,7 @@ const EarlyInvestment = lazy(() => import('@/pages/EarlyInvestment'));
 const PortfolioDashboard = lazy(() => import('@/pages/PortfolioDashboard'));
 const InvestorDashboard = lazy(() => import('@/pages/InvestorDashboard'));
 const PortfolioCommandCenter = lazy(() => import('@/pages/PortfolioCommandCenter'));
+const InvestorIntelligenceTerminal = lazy(() => import('@/pages/InvestorIntelligenceTerminal'));
 const PortfolioROITrackerPage = lazy(() => import('@/pages/PortfolioROITrackerPage'));
 const MarketIntelligenceFeedPage = lazy(() => import('@/pages/MarketIntelligenceFeedPage'));
 const AuctionFlashDealsPage = lazy(() => import('@/pages/AuctionFlashDealsPage'));
