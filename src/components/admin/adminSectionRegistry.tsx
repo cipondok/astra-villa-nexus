@@ -599,6 +599,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "100m-arr-model":             () => <HundredMArrOperatingModel />,
   "ipo-vision-strategy":        () => <GlobalIpoVisionStrategy />,
   "superapp-ecosystem":         () => <SuperAppEcosystemArchitecture />,
+  "ai-deal-closing-agent":      () => <AIDealClosingAgentSystem />,
   "investor-community":         () => <InvestorCommunityDashboard />,
   "geo-expansion":              () => <GeoExpansionDashboard />,
   "founder-branding":           () => <FounderBrandingDashboard />,
