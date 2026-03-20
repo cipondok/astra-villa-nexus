@@ -36,9 +36,9 @@ const PIE_COLORS = [
 ];
 
 const fade = (d = 0) => ({
-  initial: { opacity: 0, y: 14, filter: 'blur(4px)' },
-  animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
-  transition: { duration: 0.5, delay: d, ease: [0.16, 1, 0.3, 1] },
+  initial: { opacity: 0, y: 14, filter: 'blur(4px)' } as const,
+  animate: { opacity: 1, y: 0, filter: 'blur(0px)' } as const,
+  transition: { duration: 0.5, delay: d, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
 });
 
 // ── Risk classification ──
