@@ -847,6 +847,7 @@ const AppContent = () => {
                 <Route path="/hedge-fund-defense" element={<HedgeFundDefensePage />} />
                 <Route path="/founder-power-os" element={<FounderPowerOSPage />} />
                 <Route path="/planetary-scale-roadmap" element={<PlanetaryScaleRoadmapPage />} />
+                <Route path="/data-moat-intelligence" element={<DataMoatIntelligencePage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
