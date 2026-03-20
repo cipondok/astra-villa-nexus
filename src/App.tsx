@@ -841,6 +841,7 @@ const AppContent = () => {
                 <Route path="/hnw-investor-strategy" element={<HNWInvestorStrategyPage />} />
                 <Route path="/brand-trust-strategy" element={<BrandTrustStrategyPage />} />
                 <Route path="/revenue-optimization" element={<RevenueOptimizationPage />} />
+                <Route path="/profit-maximization" element={<ProfitMaximizationDashboard />} />
                 <Route path="/geographic-expansion" element={<GeographicExpansionPage />} />
                 <Route path="/unicorn-positioning" element={<UnicornPositioningPage />} />
                 <Route path="/7-day-sprint" element={<SevenDaySprintPage />} />
