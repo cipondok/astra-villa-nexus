@@ -400,6 +400,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "vendor-agent-control": () => <EnhancedVendorAgentControl />,
   "vendor-revenue-optimization": () => <VendorRevenueOptimizationPanel />,
   "city-expansion-command": () => <CityExpansionCommandPanel />,
+  "superapp-journey": () => <SuperAppJourneyPanel />,
 
   // Content
   "homepage-slider":     () => <HomepageSliderSettings />,
