@@ -609,3 +609,6 @@ verify_jwt = false
 
 [functions.deal-state-engine]
 verify_jwt = false
+
+[functions.vendor-supply-optimizer]
+verify_jwt = false

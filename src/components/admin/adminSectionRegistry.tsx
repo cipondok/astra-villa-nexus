@@ -140,6 +140,7 @@ export const AIPerformanceDashboard = lazyRetry(() => import("./AIPerformanceDas
 export const AIModelWeightsPanel = lazyRetry(() => import("./AIModelWeightsPanel"));
 export const InvestorScoringPanel = lazyRetry(() => import("./InvestorScoringPanel"));
 export const VendorIntelligencePanel = lazyRetry(() => import("./VendorIntelligencePanel"));
+export const VendorSupplyExpansionPanel = lazyRetry(() => import("./VendorSupplyExpansionPanel"));
 export const RevenueFlywheelPanel = lazyRetry(() => import("./RevenueFlywheelPanel"));
 export const DataMoatGovernancePanel = lazyRetry(() => import("./DataMoatGovernancePanel"));
 export const VendorRevenueOptimizationPanel = lazyRetry(() => import("./VendorRevenueOptimizationPanel"));
@@ -354,6 +355,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
 
   // Vendor Intelligence
   "vendor-intelligence-engine": () => <VendorIntelligencePanel />,
+  "vendor-supply-expansion": () => <VendorSupplyExpansionPanel />,
 
   // Revenue Flywheel
   "revenue-flywheel-optimizer": () => <RevenueFlywheelPanel />,
@@ -701,6 +703,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "execution-command-center": { label: "Execution Command Center", category: "Operations" },
   "investor-scoring-engine": { label: "Investor Scoring Engine", category: "Investor Management" },
   "vendor-intelligence-engine": { label: "Vendor Intelligence Engine", category: "Operations" },
+  "vendor-supply-expansion": { label: "Vendor Supply Expansion", category: "Operations" },
   "revenue-flywheel-optimizer": { label: "Revenue Flywheel Optimizer", category: "Revenue" },
   "data-moat-governance": { label: "Data Moat Governance", category: "Strategy" },
   "overview": { label: "Dashboard Overview", category: "" },
