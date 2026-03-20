@@ -1519,6 +1519,13 @@ export const navigationSections = {
       badge: "🚀 Ecosystem"
     },
     {
+      key: "ai-deal-closing-agent",
+      label: "AI Deal-Closing Agent",
+      icon: Bot,
+      description: "Semi-autonomous agents for lead qualification, deal matching, negotiation, and transaction orchestration",
+      badge: "🤖 Agent AI"
+    },
+    {
       key: "investor-community",
       label: "Investor Community",
       icon: Users,
