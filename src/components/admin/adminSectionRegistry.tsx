@@ -221,6 +221,7 @@ export const DealHunterAdminPanel = lazyRetry(() => import("./DealHunterAdminPan
 export const MarketHeatIntelligence = lazyRetry(() => import("./MarketHeatIntelligence"));
 export const OpportunityScoringEngine = lazyRetry(() => import("./OpportunityScoringEngine"));
 export const PricePredictionEngine = lazyRetry(() => import("./PricePredictionEngine"));
+export const ExecutionCommandCenter = lazyRetry(() => import("./ExecutionCommandCenter"));
 export const OffPlanProjectManager = lazyRetry(() => import("./OffPlanProjectManager"));
 
 // Feature Enhancement dashboards
