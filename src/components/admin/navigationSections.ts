@@ -1629,6 +1629,13 @@ export const navigationSections = {
       badge: "🎯 Deal Match"
     },
     {
+      key: "institutional-capital-gateway",
+      label: "Institutional Capital Gateway",
+      icon: Landmark,
+      description: "Enterprise capital allocation — portfolio builder, liquidity intelligence, deal execution & investor CRM",
+      badge: "🏛️ Institutional"
+    },
+    {
       key: "investor-community",
       label: "Investor Community",
       icon: Users,
