@@ -582,3 +582,6 @@ verify_jwt = false
 
 [functions.capital-market-perception]
 verify_jwt = false
+
+[functions.ipo-war-strategy]
+verify_jwt = false
