@@ -120,25 +120,19 @@ const AIFooterBot = () => {
   }, []);
 
   return (
-    <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[9999] pointer-events-auto">
+    <div className="fixed bottom-[72px] right-3 md:bottom-6 md:right-6 z-[9999] pointer-events-auto">
       {/* AI Bot Trigger Button - Gold & Navy Theme */}
       {!isOpen && (
         <div className="relative group">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-primary rounded-full blur-lg opacity-60 group-hover:opacity-80 transition-opacity duration-300 animate-pulse" />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-primary rounded-full blur-md opacity-50 group-hover:opacity-70 transition-opacity duration-300 animate-pulse" />
           <Button
             onClick={() => setIsOpen(true)}
-            className="relative h-14 w-14 rounded-full bg-gradient-to-br from-primary via-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-2xl transition-all duration-300 hover:scale-110 border border-primary/30"
+            className="relative h-10 w-10 md:h-14 md:w-14 rounded-full bg-gradient-to-br from-primary via-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-xl transition-all duration-300 hover:scale-110 border border-primary/30"
             size="icon"
             aria-label="Open AI Assistant"
           >
-            <Bot className="h-6 w-6 text-primary-foreground" />
+            <Bot className="h-4 w-4 md:h-6 md:w-6 text-primary-foreground" />
           </Button>
-          <div className="absolute -top-2 -right-2 pointer-events-none">
-            <Badge className="bg-gradient-to-r from-accent to-primary text-primary-foreground shadow-lg border-0">
-              <Sparkles className="h-3 w-3 mr-1" />
-              AI
-            </Badge>
-          </div>
         </div>
       )}
 
