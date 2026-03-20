@@ -597,3 +597,6 @@ verify_jwt = false
 
 [functions.generate-investor-matches]
 verify_jwt = false
+
+[functions.vendor-revenue-optimizer]
+verify_jwt = false

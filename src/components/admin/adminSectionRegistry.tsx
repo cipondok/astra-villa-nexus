@@ -926,4 +926,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "feature-impact-matrix": { label: "Feature Impact Matrix", category: "Features" },
   "launch-execution-kit": { label: "Launch Execution Kit", category: "Features" },
   "cac-ltv-model": { label: "CAC vs LTV Model", category: "Features" },
+  "vendor-revenue-optimization": { label: "Vendor Revenue Optimization", category: "Vendor Management" },
 };
