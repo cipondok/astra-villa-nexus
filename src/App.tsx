@@ -580,6 +580,9 @@ const AppContent = () => {
                 <Route path="/investor-intelligence-terminal" element={<ProtectedRoute />}>
                   <Route index element={<InvestorIntelligenceTerminal />} />
                 </Route>
+                <Route path="/ipo-roadshow" element={<ProtectedRoute />}>
+                  <Route index element={<IPORoadshowPage />} />
+                </Route>
                 <Route path="/portfolio-roi-tracker" element={<ProtectedRoute />}>
                   <Route index element={<PortfolioROITrackerPage />} />
                 </Route>
