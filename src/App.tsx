@@ -381,6 +381,7 @@ const InvestorKPIFrameworkPage = lazy(() => import('@/pages/InvestorKPIFramework
 const VendorAcquisitionScriptsPage = lazy(() => import('@/pages/VendorAcquisitionScriptsPage'));
 const FeatureImpactMatrixPage = lazy(() => import('@/pages/FeatureImpactMatrixPage'));
 const ProfitMaximizationDashboard = lazy(() => import('@/pages/ProfitMaximizationDashboard'));
+const Founder90DayCalendarPage = lazy(() => import('@/pages/Founder90DayCalendarPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
