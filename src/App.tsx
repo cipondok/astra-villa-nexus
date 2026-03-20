@@ -377,6 +377,7 @@ const CityLaunchPlaybookPage = lazy(() => import('@/pages/CityLaunchPlaybookPage
 const RevenueProjectionModelPage = lazy(() => import('@/pages/RevenueProjectionModelPage'));
 const InvestorKPIFrameworkPage = lazy(() => import('@/pages/InvestorKPIFrameworkPage'));
 const VendorAcquisitionScriptsPage = lazy(() => import('@/pages/VendorAcquisitionScriptsPage'));
+const FeatureImpactMatrixPage = lazy(() => import('@/pages/FeatureImpactMatrixPage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -872,6 +873,7 @@ const AppContent = () => {
                 <Route path="/revenue-projection-model" element={<RevenueProjectionModelPage />} />
                 <Route path="/investor-kpi-framework" element={<InvestorKPIFrameworkPage />} />
                 <Route path="/vendor-acquisition-scripts" element={<VendorAcquisitionScriptsPage />} />
+                <Route path="/feature-impact-matrix" element={<FeatureImpactMatrixPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
