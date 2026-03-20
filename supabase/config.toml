@@ -453,3 +453,6 @@ verify_jwt = false
 
 [functions.sovereign-capital-infrastructure]
 verify_jwt = false
+
+[functions.global-asset-liquidity-internet]
+verify_jwt = false
