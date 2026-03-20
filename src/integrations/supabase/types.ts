@@ -48775,6 +48775,126 @@ export type Database = {
         }
         Relationships: []
       }
+      revenue_daily_snapshots: {
+        Row: {
+          active_subscribers: number | null
+          active_vendors: number | null
+          created_at: string
+          deal_count: number | null
+          escrow_fees: number | null
+          id: string
+          premium_slot_revenue: number | null
+          referral_revenue: number | null
+          snapshot_date: string
+          subscription_revenue: number | null
+          total_revenue: number | null
+          transaction_revenue: number | null
+          vendor_revenue: number | null
+        }
+        Insert: {
+          active_subscribers?: number | null
+          active_vendors?: number | null
+          created_at?: string
+          deal_count?: number | null
+          escrow_fees?: number | null
+          id?: string
+          premium_slot_revenue?: number | null
+          referral_revenue?: number | null
+          snapshot_date?: string
+          subscription_revenue?: number | null
+          total_revenue?: number | null
+          transaction_revenue?: number | null
+          vendor_revenue?: number | null
+        }
+        Update: {
+          active_subscribers?: number | null
+          active_vendors?: number | null
+          created_at?: string
+          deal_count?: number | null
+          escrow_fees?: number | null
+          id?: string
+          premium_slot_revenue?: number | null
+          referral_revenue?: number | null
+          snapshot_date?: string
+          subscription_revenue?: number | null
+          total_revenue?: number | null
+          transaction_revenue?: number | null
+          vendor_revenue?: number | null
+        }
+        Relationships: []
+      }
+      revenue_experiments: {
+        Row: {
+          baseline_value: number | null
+          confidence_pct: number | null
+          created_at: string
+          created_by: string | null
+          current_sample_a: number | null
+          current_sample_b: number | null
+          ended_at: string | null
+          experiment_name: string
+          experiment_type: string
+          id: string
+          sample_size_target: number | null
+          started_at: string | null
+          status: string
+          target_metric: string
+          traffic_split_pct: number
+          updated_at: string
+          variant_a: Json
+          variant_a_result: number | null
+          variant_b: Json
+          variant_b_result: number | null
+          winner: string | null
+        }
+        Insert: {
+          baseline_value?: number | null
+          confidence_pct?: number | null
+          created_at?: string
+          created_by?: string | null
+          current_sample_a?: number | null
+          current_sample_b?: number | null
+          ended_at?: string | null
+          experiment_name: string
+          experiment_type?: string
+          id?: string
+          sample_size_target?: number | null
+          started_at?: string | null
+          status?: string
+          target_metric?: string
+          traffic_split_pct?: number
+          updated_at?: string
+          variant_a?: Json
+          variant_a_result?: number | null
+          variant_b?: Json
+          variant_b_result?: number | null
+          winner?: string | null
+        }
+        Update: {
+          baseline_value?: number | null
+          confidence_pct?: number | null
+          created_at?: string
+          created_by?: string | null
+          current_sample_a?: number | null
+          current_sample_b?: number | null
+          ended_at?: string | null
+          experiment_name?: string
+          experiment_type?: string
+          id?: string
+          sample_size_target?: number | null
+          started_at?: string | null
+          status?: string
+          target_metric?: string
+          traffic_split_pct?: number
+          updated_at?: string
+          variant_a?: Json
+          variant_a_result?: number | null
+          variant_b?: Json
+          variant_b_result?: number | null
+          winner?: string | null
+        }
+        Relationships: []
+      }
       review_photos: {
         Row: {
           caption: string | null
