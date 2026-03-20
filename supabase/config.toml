@@ -471,3 +471,6 @@ verify_jwt = false
 
 [functions.interplanetary-expansion-simulator]
 verify_jwt = false
+
+[functions.civilizational-wealth-stability]
+verify_jwt = false
