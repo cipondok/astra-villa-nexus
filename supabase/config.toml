@@ -531,3 +531,6 @@ verify_jwt = false
 
 [functions.proptech-endgame-simulation]
 verify_jwt = false
+
+[functions.capital-empire-control]
+verify_jwt = false
