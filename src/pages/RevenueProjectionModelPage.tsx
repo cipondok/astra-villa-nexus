@@ -158,9 +158,9 @@ export default function RevenueProjectionModelPage() {
   // Scenario comparison data
   const scenarioComparison = Array.from({ length: 24 }, (_, i) => ({
     name: `M${i + 1}`,
-    conservative: Math.round(data.scenarios.conservative.monthly[i]?.totalRevenue / 1e6 ?? 0),
-    base: Math.round(data.scenarios.base.monthly[i]?.totalRevenue / 1e6 ?? 0),
-    aggressive: Math.round(data.scenarios.aggressive.monthly[i]?.totalRevenue / 1e6 ?? 0),
+    conservative: Math.round((data.scenarios.conservative.monthly[i]?.totalRevenue ?? 0) / 1e6),
+    base: Math.round((data.scenarios.base.monthly[i]?.totalRevenue ?? 0) / 1e6),
+    aggressive: Math.round((data.scenarios.aggressive.monthly[i]?.totalRevenue ?? 0) / 1e6),
   }));
 
   // Sensitivity tornado data
