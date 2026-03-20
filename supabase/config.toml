@@ -498,3 +498,6 @@ verify_jwt = false
 
 [functions.network-effect-weaponization]
 verify_jwt = false
+
+[functions.monopoly-defense]
+verify_jwt = false
