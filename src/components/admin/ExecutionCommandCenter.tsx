@@ -112,8 +112,8 @@ const ExecutionCommandCenter = () => {
   const { data: vendorStats } = useQuery({
     queryKey: ['exec-cmd-vendors', refreshKey],
     queryFn: async () => {
-      const { count: total } = await supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true });
-      const { count: verified } = await supabase.from('vendor_business_profiles').select('*', { count: 'exact', head: true }).eq('verification_status', 'verified');
+      const { count: total } = await (supabase as any).from('vendor_business_profiles').select('*', { count: 'exact', head: true });
+      const { count: verified } = await (supabase as any).from('vendor_business_profiles').select('*', { count: 'exact', head: true }).eq('verification_status', 'verified');
       return { total: total ?? 0, verified: verified ?? 0 };
     },
     staleTime: 30_000,
