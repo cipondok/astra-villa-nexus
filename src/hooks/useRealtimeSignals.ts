@@ -148,6 +148,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   cmppm_engine_cycle: { label: 'Capital Positioning', icon: '🎯' },
   dmem_infrastructure_irreversible: { label: 'Infrastructure Irreversible', icon: '🏛️' },
   dmem_engine_cycle: { label: 'Decade Masterplan', icon: '🗺️' },
+  gpes_tipping_point_reached: { label: 'Tipping Point Reached', icon: '⚡' },
+  gpes_engine_cycle: { label: 'Endgame Simulation', icon: '🎮' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
