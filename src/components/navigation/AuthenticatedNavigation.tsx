@@ -250,10 +250,9 @@ const AuthenticatedNavigation = ({
               <ThemeToggleSwitch />
             </div>
             
-            {/* Currency & Language Toggle */}
-            <div className="hidden sm:flex items-center gap-1.5">
-              <CurrencySelector />
-              <LanguageToggleSwitch />
+            {/* Locale Selector */}
+            <div className="hidden sm:block">
+              <LocaleSelector />
             </div>
 
             {/* Notification Center */}
