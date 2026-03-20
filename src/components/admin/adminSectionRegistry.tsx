@@ -949,4 +949,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "network-effect-simulator": { label: "Network Effect Simulator", category: "Features" },
   "global-expansion-war": { label: "Global Expansion War Strategy", category: "Features" },
   "marketplace-optimization-ai": { label: "Marketplace Optimization AI", category: "Features" },
+  "unicorn-narrative": { label: "$1B Valuation Narrative", category: "Features" },
 };
