@@ -869,6 +869,7 @@ const AppContent = () => {
                 <Route path="/marketplace-launch-playbook" element={<MarketplaceLaunchPlaybookPage />} />
                 <Route path="/city-launch-playbook" element={<CityLaunchPlaybookPage />} />
                 <Route path="/revenue-projection-model" element={<RevenueProjectionModelPage />} />
+                <Route path="/investor-kpi-framework" element={<InvestorKPIFrameworkPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
