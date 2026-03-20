@@ -236,6 +236,7 @@ export const MarketHeatIntelligence = lazyRetry(() => import("./MarketHeatIntell
 export const OpportunityScoringEngine = lazyRetry(() => import("./OpportunityScoringEngine"));
 export const PricePredictionEngine = lazyRetry(() => import("./PricePredictionEngine"));
 export const PricePredictionAnalyticsDashboard = lazyRetry(() => import("./PricePredictionAnalyticsDashboard"));
+export const MarketForecastingDashboard = lazyRetry(() => import("./MarketForecastingDashboard"));
 export const ExecutionCommandCenter = lazyRetry(() => import("./ExecutionCommandCenter"));
 export const OffPlanProjectManager = lazyRetry(() => import("./OffPlanProjectManager"));
 
