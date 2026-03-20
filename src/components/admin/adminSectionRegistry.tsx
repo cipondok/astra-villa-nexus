@@ -649,6 +649,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-macro-intelligence": { label: "Global Macro Intelligence", category: "Investor Management" },
   "global-strategy": { label: "Global Strategy", category: "AI & Tools" },
   "execution-command-center": { label: "Execution Command Center", category: "Operations" },
+  "investor-scoring-engine": { label: "Investor Scoring Engine", category: "Investor Management" },
   "overview": { label: "Dashboard Overview", category: "" },
   "diagnostic": { label: "Project Diagnostics", category: "System" },
   "project-progress": { label: "Launch Readiness", category: "System" },
