@@ -193,44 +193,60 @@ const AddProperty = () => {
 
   return (
     <div className="min-h-[100dvh] bg-background pb-20 md:pb-0">
-      {/* Sticky Header */}
+      {/* Compact Header with integrated mode toggle */}
       <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-xl border-b border-border/40 shadow-[0_1px_3px_hsl(var(--foreground)/0.04)]">
-        <div className="flex items-center justify-between px-3 py-2 md:container md:mx-auto md:px-4 md:py-3">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between px-2.5 py-1.5 md:container md:mx-auto md:px-4 md:py-3">
+          <div className="flex items-center gap-1.5">
             <Link to="/">
-              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full md:h-8 md:w-auto md:px-3 md:rounded-md" aria-label="Back">
-                <ArrowLeft className="h-4 w-4" />
+              <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full md:h-8 md:w-auto md:px-3 md:rounded-md" aria-label="Back">
+                <ArrowLeft className="h-3.5 w-3.5" />
                 <span className="hidden md:inline ml-1">Back</span>
               </Button>
             </Link>
-            <div className="flex items-center gap-1.5">
-              <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Plus className="h-4 w-4 text-primary" />
-              </div>
-              <h1 className="text-base font-semibold text-foreground md:text-xl md:font-bold">
+            <div className="flex items-center gap-1">
+              <Plus className="h-3.5 w-3.5 text-primary" />
+              <h1 className="text-sm font-semibold text-foreground md:text-xl">
                 {txt.addProperty}
               </h1>
             </div>
           </div>
           
-          {/* User Role Badges */}
-          {userRoles.length > 0 && (
-            <div className="flex gap-1">
-              {userRoles.slice(0, 1).map(role => (
-                <span 
-                  key={role} 
-                  className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-primary/10 text-primary"
-                >
-                  {role.replace('_', ' ')}
-                </span>
-              ))}
-            </div>
-          )}
+          {/* Mode toggle inline in header */}
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setActiveTab('manual')}
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] md:text-xs font-medium transition-colors ${
+                activeTab === 'manual' 
+                  ? 'bg-primary text-primary-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:bg-muted/50'
+              }`}
+            >
+              <PenTool className="h-2.5 w-2.5 md:h-3 md:w-3" />
+              {txt.createManually}
+            </button>
+            <button
+              onClick={() => setActiveTab('import')}
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] md:text-xs font-medium transition-colors ${
+                activeTab === 'import' 
+                  ? 'bg-primary text-primary-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:bg-muted/50'
+              }`}
+            >
+              <Link2 className="h-2.5 w-2.5 md:h-3 md:w-3" />
+              {txt.importFromUrl}
+            </button>
+            
+            {userRoles.length > 0 && (
+              <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-primary/10 text-primary ml-1">
+                {userRoles[0].replace('_', ' ')}
+              </span>
+            )}
+          </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <div className="px-2.5 md:container md:mx-auto md:px-4 py-3 md:py-6 space-y-3 md:space-y-4">
+      <div className="px-2.5 md:container md:mx-auto md:px-4 py-2 md:py-6 space-y-2 md:space-y-4">
         {/* VIP Limit Warning */}
         {!isAdmin && (
           <VIPLimitAlert
@@ -241,26 +257,8 @@ const AddProperty = () => {
           />
         )}
         
-        {/* Tabs for Manual or Import */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 h-8 md:h-11 bg-muted/50 border border-border rounded-lg md:rounded-xl p-0.5 md:p-1">
-            <TabsTrigger 
-              value="manual" 
-              className="text-[11px] md:text-sm gap-1 rounded-md md:rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
-            >
-              <PenTool className="h-3 w-3 md:h-4 md:w-4" />
-              {txt.createManually}
-            </TabsTrigger>
-            <TabsTrigger 
-              value="import" 
-              className="text-[11px] md:text-sm gap-1 rounded-md md:rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
-            >
-              <Link2 className="h-3 w-3 md:h-4 md:w-4" />
-              {txt.importFromUrl}
-            </TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="manual" className="mt-2 md:mt-4">
+        {/* Content based on active tab - no separate TabsList */}
+        {activeTab === 'manual' && (
             <Card className="border-border bg-card shadow-sm">
               <CardContent className="p-2 md:p-5">
                 <MultiStepPropertyForm />
