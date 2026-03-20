@@ -363,9 +363,8 @@ const Navigation = () => {
                 {theme === "light" ? <Moon className="h-4 w-4 text-foreground/70" /> : <Sun className="h-4 w-4 text-gold-primary" />}
               </Button>
 
-              <div className="hidden lg:flex items-center gap-1.5">
-                <CurrencySelector />
-                <LanguageToggleSwitch />
+              <div className="hidden lg:block">
+                <LocaleSelector />
               </div>
 
               {user && <NotificationDropdown />}
