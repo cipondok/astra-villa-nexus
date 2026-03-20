@@ -150,6 +150,7 @@ export const NetworkEffectSimulatorPanel = lazyRetry(() => import("./NetworkEffe
 export const GlobalExpansionWarPanel = lazyRetry(() => import("./GlobalExpansionWarPanel"));
 export const MarketplaceOptimizationPanel = lazyRetry(() => import("./MarketplaceOptimizationPanel"));
 export const UnicornNarrativePanel = lazyRetry(() => import("./UnicornNarrativePanel"));
+export const LiquidityIndexBrandingPanel = lazyRetry(() => import("./LiquidityIndexBrandingPanel"));
 export const DOMAccuracyReport = lazyRetry(() => import("./DOMAccuracyReport"));
 export const CronJobMonitor = lazyRetry(() => import("./CronJobMonitor"));
 export const WeightTuningHistory = lazyRetry(() => import("./WeightTuningHistory"));
@@ -411,6 +412,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "global-expansion-war": () => <GlobalExpansionWarPanel />,
   "marketplace-optimization-ai": () => <MarketplaceOptimizationPanel />,
   "unicorn-narrative": () => <UnicornNarrativePanel />,
+  "liquidity-index-branding": () => <LiquidityIndexBrandingPanel />,
 
   // Content
   "homepage-slider":     () => <HomepageSliderSettings />,
@@ -950,4 +952,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-expansion-war": { label: "Global Expansion War Strategy", category: "Features" },
   "marketplace-optimization-ai": { label: "Marketplace Optimization AI", category: "Features" },
   "unicorn-narrative": { label: "$1B Valuation Narrative", category: "Features" },
+  "liquidity-index-branding": { label: "Liquidity Index Branding", category: "Features" },
 };
