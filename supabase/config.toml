@@ -510,3 +510,6 @@ verify_jwt = false
 
 [functions.valuation-expansion]
 verify_jwt = false
+
+[functions.founder-capital-strategy]
+verify_jwt = false

@@ -136,6 +136,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   icta_engine_cycle: { label: 'Institutional Trust', icon: '🤝' },
   gvem_valuation_milestone: { label: 'Valuation Milestone', icon: '💎' },
   gvem_engine_cycle: { label: 'Valuation Engine', icon: '📊' },
+  fcss_control_risk: { label: 'Control Risk Alert', icon: '⚠️' },
+  fcss_engine_cycle: { label: 'Founder Capital', icon: '👑' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */

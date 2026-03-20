@@ -15648,6 +15648,327 @@ export type Database = {
           },
         ]
       }
+      fcss_capital_efficiency: {
+        Row: {
+          burn_multiple: number | null
+          capital_efficiency_score: number | null
+          cash_balance_usd: number | null
+          computed_at: string | null
+          created_at: string | null
+          geo_expansion_spend_pct: number | null
+          growth_rate_pct: number | null
+          hiring_spend_pct: number | null
+          id: string
+          marketing_spend_pct: number | null
+          month_offset: number
+          monthly_burn_usd: number | null
+          monthly_revenue_usd: number | null
+          net_burn_usd: number | null
+          product_spend_pct: number | null
+          roi_per_dollar_deployed: number | null
+          runway_months: number | null
+          scenario_name: string
+          strategy_type: string | null
+        }
+        Insert: {
+          burn_multiple?: number | null
+          capital_efficiency_score?: number | null
+          cash_balance_usd?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          geo_expansion_spend_pct?: number | null
+          growth_rate_pct?: number | null
+          hiring_spend_pct?: number | null
+          id?: string
+          marketing_spend_pct?: number | null
+          month_offset?: number
+          monthly_burn_usd?: number | null
+          monthly_revenue_usd?: number | null
+          net_burn_usd?: number | null
+          product_spend_pct?: number | null
+          roi_per_dollar_deployed?: number | null
+          runway_months?: number | null
+          scenario_name: string
+          strategy_type?: string | null
+        }
+        Update: {
+          burn_multiple?: number | null
+          capital_efficiency_score?: number | null
+          cash_balance_usd?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          geo_expansion_spend_pct?: number | null
+          growth_rate_pct?: number | null
+          hiring_spend_pct?: number | null
+          id?: string
+          marketing_spend_pct?: number | null
+          month_offset?: number
+          monthly_burn_usd?: number | null
+          monthly_revenue_usd?: number | null
+          net_burn_usd?: number | null
+          product_spend_pct?: number | null
+          roi_per_dollar_deployed?: number | null
+          runway_months?: number | null
+          scenario_name?: string
+          strategy_type?: string | null
+        }
+        Relationships: []
+      }
+      fcss_control_preservation: {
+        Row: {
+          applicable_stage: string | null
+          board_seats_founder: number | null
+          board_seats_total: number | null
+          computed_at: string | null
+          created_at: string | null
+          effectiveness_score: number | null
+          founder_voting_pct: number | null
+          id: string
+          implementation_complexity: string | null
+          investor_friction_score: number | null
+          is_active: boolean | null
+          legal_jurisdiction: string | null
+          longevity_years: number | null
+          mechanism_name: string
+          mechanism_type: string
+          notes: string | null
+          protective_provisions: Json | null
+        }
+        Insert: {
+          applicable_stage?: string | null
+          board_seats_founder?: number | null
+          board_seats_total?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          effectiveness_score?: number | null
+          founder_voting_pct?: number | null
+          id?: string
+          implementation_complexity?: string | null
+          investor_friction_score?: number | null
+          is_active?: boolean | null
+          legal_jurisdiction?: string | null
+          longevity_years?: number | null
+          mechanism_name: string
+          mechanism_type: string
+          notes?: string | null
+          protective_provisions?: Json | null
+        }
+        Update: {
+          applicable_stage?: string | null
+          board_seats_founder?: number | null
+          board_seats_total?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          effectiveness_score?: number | null
+          founder_voting_pct?: number | null
+          id?: string
+          implementation_complexity?: string | null
+          investor_friction_score?: number | null
+          is_active?: boolean | null
+          legal_jurisdiction?: string | null
+          longevity_years?: number | null
+          mechanism_name?: string
+          mechanism_type?: string
+          notes?: string | null
+          protective_provisions?: Json | null
+        }
+        Relationships: []
+      }
+      fcss_dilution_pathway: {
+        Row: {
+          anti_dilution_type: string | null
+          computed_at: string | null
+          control_score: number | null
+          created_at: string | null
+          cumulative_dilution_pct: number | null
+          dilution_pct: number | null
+          esop_pool_pct: number | null
+          founder_ownership_post: number | null
+          founder_ownership_pre: number | null
+          id: string
+          investor_type: string | null
+          liquidation_preference: number | null
+          notes: string | null
+          participating: boolean | null
+          post_money_valuation_usd: number | null
+          pre_money_valuation_usd: number | null
+          pro_rata_exercised: boolean | null
+          raise_amount_usd: number | null
+          round_order: number
+          round_stage: string
+          scenario_name: string
+          secondary_liquidity_usd: number | null
+        }
+        Insert: {
+          anti_dilution_type?: string | null
+          computed_at?: string | null
+          control_score?: number | null
+          created_at?: string | null
+          cumulative_dilution_pct?: number | null
+          dilution_pct?: number | null
+          esop_pool_pct?: number | null
+          founder_ownership_post?: number | null
+          founder_ownership_pre?: number | null
+          id?: string
+          investor_type?: string | null
+          liquidation_preference?: number | null
+          notes?: string | null
+          participating?: boolean | null
+          post_money_valuation_usd?: number | null
+          pre_money_valuation_usd?: number | null
+          pro_rata_exercised?: boolean | null
+          raise_amount_usd?: number | null
+          round_order?: number
+          round_stage: string
+          scenario_name: string
+          secondary_liquidity_usd?: number | null
+        }
+        Update: {
+          anti_dilution_type?: string | null
+          computed_at?: string | null
+          control_score?: number | null
+          created_at?: string | null
+          cumulative_dilution_pct?: number | null
+          dilution_pct?: number | null
+          esop_pool_pct?: number | null
+          founder_ownership_post?: number | null
+          founder_ownership_pre?: number | null
+          id?: string
+          investor_type?: string | null
+          liquidation_preference?: number | null
+          notes?: string | null
+          participating?: boolean | null
+          post_money_valuation_usd?: number | null
+          pre_money_valuation_usd?: number | null
+          pro_rata_exercised?: boolean | null
+          raise_amount_usd?: number | null
+          round_order?: number
+          round_stage?: string
+          scenario_name?: string
+          secondary_liquidity_usd?: number | null
+        }
+        Relationships: []
+      }
+      fcss_strategic_optionality: {
+        Row: {
+          capital_required_usd: number | null
+          computed_at: string | null
+          created_at: string | null
+          founder_control_impact: number | null
+          id: string
+          independence_score: number | null
+          option_name: string
+          pathway_type: string
+          prerequisite_milestones: Json | null
+          probability_pct: number | null
+          risk_score: number | null
+          status: string | null
+          strategic_value_score: number | null
+          time_to_realization_months: number | null
+          trade_offs: Json | null
+          valuation_impact_pct: number | null
+        }
+        Insert: {
+          capital_required_usd?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          founder_control_impact?: number | null
+          id?: string
+          independence_score?: number | null
+          option_name: string
+          pathway_type: string
+          prerequisite_milestones?: Json | null
+          probability_pct?: number | null
+          risk_score?: number | null
+          status?: string | null
+          strategic_value_score?: number | null
+          time_to_realization_months?: number | null
+          trade_offs?: Json | null
+          valuation_impact_pct?: number | null
+        }
+        Update: {
+          capital_required_usd?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          founder_control_impact?: number | null
+          id?: string
+          independence_score?: number | null
+          option_name?: string
+          pathway_type?: string
+          prerequisite_milestones?: Json | null
+          probability_pct?: number | null
+          risk_score?: number | null
+          status?: string | null
+          strategic_value_score?: number | null
+          time_to_realization_months?: number | null
+          trade_offs?: Json | null
+          valuation_impact_pct?: number | null
+        }
+        Relationships: []
+      }
+      fcss_wealth_projection: {
+        Row: {
+          annual_passive_income_usd: number | null
+          company_valuation_usd: number | null
+          computed_at: string | null
+          created_at: string | null
+          dividends_cumulative_usd: number | null
+          exit_timing_year: number
+          exit_type: string
+          founder_ownership_pct: number | null
+          gross_equity_value_usd: number | null
+          id: string
+          liquidation_waterfall_usd: number | null
+          net_equity_value_usd: number | null
+          post_tax_wealth_usd: number | null
+          scenario_name: string
+          secondary_proceeds_usd: number | null
+          tax_liability_pct: number | null
+          total_wealth_usd: number | null
+          wealth_freedom_score: number | null
+        }
+        Insert: {
+          annual_passive_income_usd?: number | null
+          company_valuation_usd?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          dividends_cumulative_usd?: number | null
+          exit_timing_year?: number
+          exit_type: string
+          founder_ownership_pct?: number | null
+          gross_equity_value_usd?: number | null
+          id?: string
+          liquidation_waterfall_usd?: number | null
+          net_equity_value_usd?: number | null
+          post_tax_wealth_usd?: number | null
+          scenario_name: string
+          secondary_proceeds_usd?: number | null
+          tax_liability_pct?: number | null
+          total_wealth_usd?: number | null
+          wealth_freedom_score?: number | null
+        }
+        Update: {
+          annual_passive_income_usd?: number | null
+          company_valuation_usd?: number | null
+          computed_at?: string | null
+          created_at?: string | null
+          dividends_cumulative_usd?: number | null
+          exit_timing_year?: number
+          exit_type?: string
+          founder_ownership_pct?: number | null
+          gross_equity_value_usd?: number | null
+          id?: string
+          liquidation_waterfall_usd?: number | null
+          net_equity_value_usd?: number | null
+          post_tax_wealth_usd?: number | null
+          scenario_name?: string
+          secondary_proceeds_usd?: number | null
+          tax_liability_pct?: number | null
+          total_wealth_usd?: number | null
+          wealth_freedom_score?: number | null
+        }
+        Relationships: []
+      }
       featured_ads: {
         Row: {
           created_at: string
