@@ -595,6 +595,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "investor-pitch":             () => <InvestorPitchDashboard />,
   "series-b-pitch":             () => <SeriesBPitchNarrative />,
   "100m-arr-model":             () => <HundredMArrOperatingModel />,
+  "ipo-vision-strategy":        () => <GlobalIpoVisionStrategy />,
   "investor-community":         () => <InvestorCommunityDashboard />,
   "geo-expansion":              () => <GeoExpansionDashboard />,
   "founder-branding":           () => <FounderBrandingDashboard />,
