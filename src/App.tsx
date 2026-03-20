@@ -236,6 +236,7 @@ const EarlyInvestment = lazy(() => import('@/pages/EarlyInvestment'));
 const PortfolioDashboard = lazy(() => import('@/pages/PortfolioDashboard'));
 const InvestorDashboard = lazy(() => import('@/pages/InvestorDashboard'));
 const PortfolioCommandCenter = lazy(() => import('@/pages/PortfolioCommandCenter'));
+const InvestorIntelligenceTerminal = lazy(() => import('@/pages/InvestorIntelligenceTerminal'));
 const PortfolioROITrackerPage = lazy(() => import('@/pages/PortfolioROITrackerPage'));
 const MarketIntelligenceFeedPage = lazy(() => import('@/pages/MarketIntelligenceFeedPage'));
 const AuctionFlashDealsPage = lazy(() => import('@/pages/AuctionFlashDealsPage'));
@@ -574,6 +575,9 @@ const AppContent = () => {
                 </Route>
                 <Route path="/portfolio-command-center" element={<ProtectedRoute />}>
                   <Route index element={<PortfolioCommandCenter />} />
+                </Route>
+                <Route path="/investor-intelligence-terminal" element={<ProtectedRoute />}>
+                  <Route index element={<InvestorIntelligenceTerminal />} />
                 </Route>
                 <Route path="/portfolio-roi-tracker" element={<ProtectedRoute />}>
                   <Route index element={<PortfolioROITrackerPage />} />
