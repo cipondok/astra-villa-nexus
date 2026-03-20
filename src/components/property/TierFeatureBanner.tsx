@@ -74,47 +74,51 @@ const TierFeatureBanner: React.FC = () => {
 
   return (
     <Card className="border-border/50 bg-gradient-to-r from-primary/5 via-transparent to-primary/5">
-      <CardContent className="px-3 py-2 sm:p-4">
-        <div className="flex items-center justify-between gap-2 flex-wrap">
-          {/* Current Level */}
-          <div className="flex items-center gap-2">
-            <div className={cn(
-              "w-7 h-7 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center",
-              levelConfig.bgColor,
-              "border",
-              levelConfig.borderColor
-            )}>
-              <Crown className={cn("h-3.5 w-3.5 sm:h-5 sm:w-5", levelConfig.color)} />
-            </div>
-            <div>
-              <p className="text-[10px] leading-tight text-muted-foreground">{t.yourLevel}</p>
-              <p className={cn("font-semibold text-xs sm:text-sm", levelConfig.color)}>
-                {levelConfig.label}
-              </p>
+      <CardContent className="px-2.5 py-2 sm:p-4">
+        {/* Mobile: stacked layout. Desktop: row */}
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+          {/* Level + Badges row on mobile */}
+          <div className="flex items-center gap-2 justify-between sm:justify-start">
+            {/* Current Level */}
+            <div className="flex items-center gap-1.5">
+              <div className={cn(
+                "w-6 h-6 sm:w-10 sm:h-10 rounded-md sm:rounded-lg flex items-center justify-center shrink-0",
+                levelConfig.bgColor,
+                "border",
+                levelConfig.borderColor
+              )}>
+                <Crown className={cn("h-3 w-3 sm:h-5 sm:w-5", levelConfig.color)} />
+              </div>
+              <div>
+                <p className="text-[9px] sm:text-[10px] leading-tight text-muted-foreground">{t.yourLevel}</p>
+                <p className={cn("font-semibold text-[11px] sm:text-sm leading-tight", levelConfig.color)}>
+                  {levelConfig.label}
+                </p>
+              </div>
             </div>
           </div>
 
-          {/* Current Features */}
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="secondary" className="text-xs gap-1">
-              <Image className="h-3 w-3" />
+          {/* Feature badges - scrollable on mobile */}
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+            <Badge variant="secondary" className="text-[10px] sm:text-xs gap-0.5 sm:gap-1 px-1.5 py-0.5 shrink-0">
+              <Image className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
               {maxImages} {t.images}
             </Badge>
             {canUseVirtualTour && (
-              <Badge variant="secondary" className="text-xs gap-1 bg-chart-1/10 text-chart-1 border-chart-1/30">
-                <Box className="h-3 w-3" />
+              <Badge variant="secondary" className="text-[10px] sm:text-xs gap-0.5 sm:gap-1 px-1.5 py-0.5 shrink-0 bg-chart-1/10 text-chart-1 border-chart-1/30">
+                <Box className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 {t.virtualTour}
               </Badge>
             )}
             {canUse3DModel && (
-              <Badge variant="secondary" className="text-xs gap-1 bg-chart-4/10 text-chart-4 border-chart-4/30">
-                <Box className="h-3 w-3" />
+              <Badge variant="secondary" className="text-[10px] sm:text-xs gap-0.5 sm:gap-1 px-1.5 py-0.5 shrink-0 bg-chart-4/10 text-chart-4 border-chart-4/30">
+                <Box className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 {t.model3d}
               </Badge>
             )}
             {canBeFeatured && (
-              <Badge variant="secondary" className="text-xs gap-1 bg-gold-primary/10 text-gold-primary border-gold-primary/30">
-                <Star className="h-3 w-3" />
+              <Badge variant="secondary" className="text-[10px] sm:text-xs gap-0.5 sm:gap-1 px-1.5 py-0.5 shrink-0 bg-gold-primary/10 text-gold-primary border-gold-primary/30">
+                <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                 {t.featuredBadge}
               </Badge>
             )}
