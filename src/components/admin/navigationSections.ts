@@ -757,6 +757,13 @@ export const navigationSections = {
       badge: "⚔️ War Plan"
     },
     {
+      key: "rental-yield-optimization",
+      label: "Rental Yield Optimization",
+      icon: DollarSign,
+      description: "AI rental pricing, occupancy forecasting, renovation ROI & seasonal demand intelligence",
+      badge: "💰 AI Yield"
+    },
+    {
       key: "workforce-scheduler",
       label: "Workforce Scheduler",
       icon: Clock,
