@@ -240,6 +240,7 @@ export const BrandAuthorityDashboard = lazyRetry(() => import("./BrandAuthorityD
 export const MonetizationStrategyDashboard = lazyRetry(() => import("./MonetizationStrategyDashboard"));
 export const InvestorPitchDashboard = lazyRetry(() => import("./InvestorPitchDashboard"));
 export const SeriesBPitchNarrative = lazyRetry(() => import("./SeriesBPitchNarrative"));
+export const HundredMArrOperatingModel = lazyRetry(() => import("./HundredMArrOperatingModel"));
 export const InvestorCommunityDashboard = lazyRetry(() => import("./InvestorCommunityDashboard"));
 export const GeoExpansionDashboard = lazyRetry(() => import("./GeoExpansionDashboard"));
 export const FounderBrandingDashboard = lazyRetry(() => import("./FounderBrandingDashboard"));
@@ -592,6 +593,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "monetization-strategy":      () => <MonetizationStrategyDashboard />,
   "investor-pitch":             () => <InvestorPitchDashboard />,
   "series-b-pitch":             () => <SeriesBPitchNarrative />,
+  "100m-arr-model":             () => <HundredMArrOperatingModel />,
   "investor-community":         () => <InvestorCommunityDashboard />,
   "geo-expansion":              () => <GeoExpansionDashboard />,
   "founder-branding":           () => <FounderBrandingDashboard />,
@@ -851,6 +853,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "monetization-strategy": { label: "Monetization Strategy", category: "Features" },
   "investor-pitch": { label: "Investor Pitch Deck", category: "Features" },
   "series-b-pitch": { label: "Series B Pitch Narrative", category: "Strategy" },
+  "100m-arr-model": { label: "$100M ARR Operating Model", category: "Strategy" },
   "investor-community": { label: "Investor Community", category: "Features" },
   "geo-expansion": { label: "Geographic Expansion", category: "Features" },
   "founder-branding": { label: "Founder Branding", category: "Features" },
