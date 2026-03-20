@@ -21691,6 +21691,270 @@ export type Database = {
         }
         Relationships: []
       }
+      gpewm_competitive_landscape: {
+        Row: {
+          assessed_at: string | null
+          city: string
+          competitor_name: string
+          competitor_type: string | null
+          country: string
+          created_at: string | null
+          digital_maturity_score: number | null
+          displacement_timeline_months: number | null
+          id: string
+          listing_volume: number | null
+          market_share_pct: number | null
+          response_strategy: string | null
+          strategic_notes: string | null
+          vulnerability_score: number | null
+        }
+        Insert: {
+          assessed_at?: string | null
+          city: string
+          competitor_name: string
+          competitor_type?: string | null
+          country?: string
+          created_at?: string | null
+          digital_maturity_score?: number | null
+          displacement_timeline_months?: number | null
+          id?: string
+          listing_volume?: number | null
+          market_share_pct?: number | null
+          response_strategy?: string | null
+          strategic_notes?: string | null
+          vulnerability_score?: number | null
+        }
+        Update: {
+          assessed_at?: string | null
+          city?: string
+          competitor_name?: string
+          competitor_type?: string | null
+          country?: string
+          created_at?: string | null
+          digital_maturity_score?: number | null
+          displacement_timeline_months?: number | null
+          id?: string
+          listing_volume?: number | null
+          market_share_pct?: number | null
+          response_strategy?: string | null
+          strategic_notes?: string | null
+          vulnerability_score?: number | null
+        }
+        Relationships: []
+      }
+      gpewm_demand_acceleration: {
+        Row: {
+          acceleration_lever: string | null
+          acquisition_channel: string | null
+          cac_current: number | null
+          cac_target: number | null
+          city: string
+          computed_at: string | null
+          content_discovery_score: number | null
+          conversion_rate_pct: number | null
+          country: string
+          created_at: string | null
+          demand_growth_rate: number | null
+          funnel_stage: string | null
+          id: string
+          investor_funnel_velocity: number | null
+          recommendation_accuracy: number | null
+        }
+        Insert: {
+          acceleration_lever?: string | null
+          acquisition_channel?: string | null
+          cac_current?: number | null
+          cac_target?: number | null
+          city: string
+          computed_at?: string | null
+          content_discovery_score?: number | null
+          conversion_rate_pct?: number | null
+          country?: string
+          created_at?: string | null
+          demand_growth_rate?: number | null
+          funnel_stage?: string | null
+          id?: string
+          investor_funnel_velocity?: number | null
+          recommendation_accuracy?: number | null
+        }
+        Update: {
+          acceleration_lever?: string | null
+          acquisition_channel?: string | null
+          cac_current?: number | null
+          cac_target?: number | null
+          city?: string
+          computed_at?: string | null
+          content_discovery_score?: number | null
+          conversion_rate_pct?: number | null
+          country?: string
+          created_at?: string | null
+          demand_growth_rate?: number | null
+          funnel_stage?: string | null
+          id?: string
+          investor_funnel_velocity?: number | null
+          recommendation_accuracy?: number | null
+        }
+        Relationships: []
+      }
+      gpewm_market_entry: {
+        Row: {
+          capital_inflow_intensity: number | null
+          city: string
+          composite_priority: number | null
+          country: string
+          created_at: string | null
+          digital_adoption_score: number | null
+          entry_strategy: string | null
+          entry_timing: string | null
+          gdp_per_capita_usd: number | null
+          id: string
+          liquidity_potential: number | null
+          population_millions: number | null
+          proptech_penetration_pct: number | null
+          region_cluster: string | null
+          regulatory_openness: number | null
+          sequenced_at: string | null
+        }
+        Insert: {
+          capital_inflow_intensity?: number | null
+          city: string
+          composite_priority?: number | null
+          country?: string
+          created_at?: string | null
+          digital_adoption_score?: number | null
+          entry_strategy?: string | null
+          entry_timing?: string | null
+          gdp_per_capita_usd?: number | null
+          id?: string
+          liquidity_potential?: number | null
+          population_millions?: number | null
+          proptech_penetration_pct?: number | null
+          region_cluster?: string | null
+          regulatory_openness?: number | null
+          sequenced_at?: string | null
+        }
+        Update: {
+          capital_inflow_intensity?: number | null
+          city?: string
+          composite_priority?: number | null
+          country?: string
+          created_at?: string | null
+          digital_adoption_score?: number | null
+          entry_strategy?: string | null
+          entry_timing?: string | null
+          gdp_per_capita_usd?: number | null
+          id?: string
+          liquidity_potential?: number | null
+          population_millions?: number | null
+          proptech_penetration_pct?: number | null
+          region_cluster?: string | null
+          regulatory_openness?: number | null
+          sequenced_at?: string | null
+        }
+        Relationships: []
+      }
+      gpewm_network_compounding: {
+        Row: {
+          cac_reduction_pct: number | null
+          city: string
+          compounding_phase: string | null
+          compounding_velocity: number | null
+          computed_at: string | null
+          country: string
+          created_at: string | null
+          data_intelligence_accuracy: number | null
+          defensibility_tier: string | null
+          id: string
+          liquidity_density: number | null
+          moat_depth_score: number | null
+          network_density: number | null
+          time_to_dominance_months: number | null
+        }
+        Insert: {
+          cac_reduction_pct?: number | null
+          city: string
+          compounding_phase?: string | null
+          compounding_velocity?: number | null
+          computed_at?: string | null
+          country?: string
+          created_at?: string | null
+          data_intelligence_accuracy?: number | null
+          defensibility_tier?: string | null
+          id?: string
+          liquidity_density?: number | null
+          moat_depth_score?: number | null
+          network_density?: number | null
+          time_to_dominance_months?: number | null
+        }
+        Update: {
+          cac_reduction_pct?: number | null
+          city?: string
+          compounding_phase?: string | null
+          compounding_velocity?: number | null
+          computed_at?: string | null
+          country?: string
+          created_at?: string | null
+          data_intelligence_accuracy?: number | null
+          defensibility_tier?: string | null
+          id?: string
+          liquidity_density?: number | null
+          moat_depth_score?: number | null
+          network_density?: number | null
+          time_to_dominance_months?: number | null
+        }
+        Relationships: []
+      }
+      gpewm_supply_flywheel: {
+        Row: {
+          activation_strategy: string | null
+          city: string
+          computed_at: string | null
+          country: string
+          created_at: string | null
+          demand_match_efficiency: number | null
+          flywheel_phase: string | null
+          flywheel_rpm: number | null
+          id: string
+          incentive_effectiveness: number | null
+          listing_quality_score: number | null
+          supply_onboarding_velocity: number | null
+          supply_sources: Json | null
+          vendor_ecosystem_depth: number | null
+        }
+        Insert: {
+          activation_strategy?: string | null
+          city: string
+          computed_at?: string | null
+          country?: string
+          created_at?: string | null
+          demand_match_efficiency?: number | null
+          flywheel_phase?: string | null
+          flywheel_rpm?: number | null
+          id?: string
+          incentive_effectiveness?: number | null
+          listing_quality_score?: number | null
+          supply_onboarding_velocity?: number | null
+          supply_sources?: Json | null
+          vendor_ecosystem_depth?: number | null
+        }
+        Update: {
+          activation_strategy?: string | null
+          city?: string
+          computed_at?: string | null
+          country?: string
+          created_at?: string | null
+          demand_match_efficiency?: number | null
+          flywheel_phase?: string | null
+          flywheel_rpm?: number | null
+          id?: string
+          incentive_effectiveness?: number | null
+          listing_quality_score?: number | null
+          supply_onboarding_velocity?: number | null
+          supply_sources?: Json | null
+          vendor_ecosystem_depth?: number | null
+        }
+        Relationships: []
+      }
       gpi_index_constituents: {
         Row: {
           added_at: string

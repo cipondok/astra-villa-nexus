@@ -564,3 +564,6 @@ verify_jwt = false
 
 [functions.planetary-stability]
 verify_jwt = false
+
+[functions.proptech-execution-warmap]
+verify_jwt = false

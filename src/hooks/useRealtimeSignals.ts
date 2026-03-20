@@ -172,6 +172,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   ahcss_engine_cycle: { label: 'AI-Human Symbiosis', icon: '🧬' },
   pesa_critical_volatility: { label: 'Critical Volatility', icon: '🌋' },
   pesa_engine_cycle: { label: 'Planetary Stability', icon: '🌍' },
+  gpewm_immediate_entry: { label: 'Immediate Entry', icon: '🚀' },
+  gpewm_engine_cycle: { label: 'Execution Warmap', icon: '🗺️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
