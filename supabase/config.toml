@@ -516,3 +516,6 @@ verify_jwt = false
 
 [functions.mega-fund-blueprint]
 verify_jwt = false
+
+[functions.exit-ipo-timing]
+verify_jwt = false
