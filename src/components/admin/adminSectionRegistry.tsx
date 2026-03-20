@@ -660,6 +660,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "execution-command-center": { label: "Execution Command Center", category: "Operations" },
   "investor-scoring-engine": { label: "Investor Scoring Engine", category: "Investor Management" },
   "vendor-intelligence-engine": { label: "Vendor Intelligence Engine", category: "Operations" },
+  "revenue-flywheel-optimizer": { label: "Revenue Flywheel Optimizer", category: "Revenue" },
   "overview": { label: "Dashboard Overview", category: "" },
   "diagnostic": { label: "Project Diagnostics", category: "System" },
   "project-progress": { label: "Launch Readiness", category: "System" },
