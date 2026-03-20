@@ -567,3 +567,6 @@ verify_jwt = false
 
 [functions.proptech-execution-warmap]
 verify_jwt = false
+
+[functions.capital-deployment-timing]
+verify_jwt = false
