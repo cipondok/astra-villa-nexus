@@ -21442,6 +21442,252 @@ export type Database = {
         }
         Relationships: []
       }
+      gpla_generational_continuity: {
+        Row: {
+          brand_trust_generation: number | null
+          computed_at: string
+          continuity_domain: string
+          continuity_tier: string | null
+          created_at: string
+          developer_ecosystem_size: number | null
+          ecosystem_revenue_pct: number | null
+          generational_transfer_readiness: number | null
+          id: string
+          industry_dependence_score: number | null
+          innovation_velocity: number | null
+          open_api_consumers: number | null
+          third_party_services_count: number | null
+        }
+        Insert: {
+          brand_trust_generation?: number | null
+          computed_at?: string
+          continuity_domain: string
+          continuity_tier?: string | null
+          created_at?: string
+          developer_ecosystem_size?: number | null
+          ecosystem_revenue_pct?: number | null
+          generational_transfer_readiness?: number | null
+          id?: string
+          industry_dependence_score?: number | null
+          innovation_velocity?: number | null
+          open_api_consumers?: number | null
+          third_party_services_count?: number | null
+        }
+        Update: {
+          brand_trust_generation?: number | null
+          computed_at?: string
+          continuity_domain?: string
+          continuity_tier?: string | null
+          created_at?: string
+          developer_ecosystem_size?: number | null
+          ecosystem_revenue_pct?: number | null
+          generational_transfer_readiness?: number | null
+          id?: string
+          industry_dependence_score?: number | null
+          innovation_velocity?: number | null
+          open_api_consumers?: number | null
+          third_party_services_count?: number | null
+        }
+        Relationships: []
+      }
+      gpla_infrastructure_permanence: {
+        Row: {
+          api_integrations_active: number | null
+          assessed_at: string
+          created_at: string
+          dataset_universality_score: number | null
+          embedded_institutions: number | null
+          financial_ecosystem_depth: number | null
+          id: string
+          infrastructure_domain: string
+          permanence_score: number | null
+          permanence_tier: string | null
+          region: string
+          regulatory_compatibility_index: number | null
+          replacement_difficulty_years: number | null
+          workflow_standardization_pct: number | null
+        }
+        Insert: {
+          api_integrations_active?: number | null
+          assessed_at?: string
+          created_at?: string
+          dataset_universality_score?: number | null
+          embedded_institutions?: number | null
+          financial_ecosystem_depth?: number | null
+          id?: string
+          infrastructure_domain: string
+          permanence_score?: number | null
+          permanence_tier?: string | null
+          region?: string
+          regulatory_compatibility_index?: number | null
+          replacement_difficulty_years?: number | null
+          workflow_standardization_pct?: number | null
+        }
+        Update: {
+          api_integrations_active?: number | null
+          assessed_at?: string
+          created_at?: string
+          dataset_universality_score?: number | null
+          embedded_institutions?: number | null
+          financial_ecosystem_depth?: number | null
+          id?: string
+          infrastructure_domain?: string
+          permanence_score?: number | null
+          permanence_tier?: string | null
+          region?: string
+          regulatory_compatibility_index?: number | null
+          replacement_difficulty_years?: number | null
+          workflow_standardization_pct?: number | null
+        }
+        Relationships: []
+      }
+      gpla_legacy_governance: {
+        Row: {
+          assessed_at: string
+          charter_amendment_difficulty: number | null
+          created_at: string
+          founder_transition_readiness: number | null
+          governance_maturity: string | null
+          governance_mechanism: string
+          governance_resilience_score: number | null
+          id: string
+          innovation_mandate_horizon_years: number | null
+          long_horizon_capital_pct: number | null
+          mission_anchor_strength: number | null
+          stewardship_council_size: number | null
+          strategic_independence_score: number | null
+        }
+        Insert: {
+          assessed_at?: string
+          charter_amendment_difficulty?: number | null
+          created_at?: string
+          founder_transition_readiness?: number | null
+          governance_maturity?: string | null
+          governance_mechanism: string
+          governance_resilience_score?: number | null
+          id?: string
+          innovation_mandate_horizon_years?: number | null
+          long_horizon_capital_pct?: number | null
+          mission_anchor_strength?: number | null
+          stewardship_council_size?: number | null
+          strategic_independence_score?: number | null
+        }
+        Update: {
+          assessed_at?: string
+          charter_amendment_difficulty?: number | null
+          created_at?: string
+          founder_transition_readiness?: number | null
+          governance_maturity?: string | null
+          governance_mechanism?: string
+          governance_resilience_score?: number | null
+          id?: string
+          innovation_mandate_horizon_years?: number | null
+          long_horizon_capital_pct?: number | null
+          mission_anchor_strength?: number | null
+          stewardship_council_size?: number | null
+          strategic_independence_score?: number | null
+        }
+        Relationships: []
+      }
+      gpla_reference_standard: {
+        Row: {
+          adoption_regions: number | null
+          assessed_at: string
+          benchmark_authority_score: number | null
+          capital_deployment_reliance: number | null
+          citation_frequency: number | null
+          competitor_reference_gap: number | null
+          created_at: string
+          id: string
+          media_authority_index: number | null
+          regulatory_endorsement_count: number | null
+          standard_domain: string
+          standard_maturity: string | null
+          urban_planning_adoption_pct: number | null
+        }
+        Insert: {
+          adoption_regions?: number | null
+          assessed_at?: string
+          benchmark_authority_score?: number | null
+          capital_deployment_reliance?: number | null
+          citation_frequency?: number | null
+          competitor_reference_gap?: number | null
+          created_at?: string
+          id?: string
+          media_authority_index?: number | null
+          regulatory_endorsement_count?: number | null
+          standard_domain: string
+          standard_maturity?: string | null
+          urban_planning_adoption_pct?: number | null
+        }
+        Update: {
+          adoption_regions?: number | null
+          assessed_at?: string
+          benchmark_authority_score?: number | null
+          capital_deployment_reliance?: number | null
+          citation_frequency?: number | null
+          competitor_reference_gap?: number | null
+          created_at?: string
+          id?: string
+          media_authority_index?: number | null
+          regulatory_endorsement_count?: number | null
+          standard_domain?: string
+          standard_maturity?: string | null
+          urban_planning_adoption_pct?: number | null
+        }
+        Relationships: []
+      }
+      gpla_trust_compounding: {
+        Row: {
+          aum_allocated_via_platform: number | null
+          created_at: string
+          crossborder_credibility: number | null
+          cumulative_trust_index: number | null
+          dependency_irreversibility: number | null
+          id: string
+          institution_name: string | null
+          institution_type: string
+          measured_at: string
+          reliance_duration_years: number | null
+          trust_compounding_rate: number | null
+          trust_depth_score: number | null
+          trust_tier: string | null
+          trust_vintage_years: number | null
+        }
+        Insert: {
+          aum_allocated_via_platform?: number | null
+          created_at?: string
+          crossborder_credibility?: number | null
+          cumulative_trust_index?: number | null
+          dependency_irreversibility?: number | null
+          id?: string
+          institution_name?: string | null
+          institution_type: string
+          measured_at?: string
+          reliance_duration_years?: number | null
+          trust_compounding_rate?: number | null
+          trust_depth_score?: number | null
+          trust_tier?: string | null
+          trust_vintage_years?: number | null
+        }
+        Update: {
+          aum_allocated_via_platform?: number | null
+          created_at?: string
+          crossborder_credibility?: number | null
+          cumulative_trust_index?: number | null
+          dependency_irreversibility?: number | null
+          id?: string
+          institution_name?: string | null
+          institution_type?: string
+          measured_at?: string
+          reliance_duration_years?: number | null
+          trust_compounding_rate?: number | null
+          trust_depth_score?: number | null
+          trust_tier?: string | null
+          trust_vintage_years?: number | null
+        }
+        Relationships: []
+      }
       gpws_battlefield: {
         Row: {
           assessed_at: string | null
