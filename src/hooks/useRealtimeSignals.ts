@@ -146,6 +146,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   gpws_engine_cycle: { label: 'PropTech War', icon: '⚔️' },
   cmppm_narrative_dominant: { label: 'Narrative Dominant', icon: '📣' },
   cmppm_engine_cycle: { label: 'Capital Positioning', icon: '🎯' },
+  dmem_infrastructure_irreversible: { label: 'Infrastructure Irreversible', icon: '🏛️' },
+  dmem_engine_cycle: { label: 'Decade Masterplan', icon: '🗺️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
