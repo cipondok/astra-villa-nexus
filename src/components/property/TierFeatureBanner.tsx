@@ -73,91 +73,58 @@ const TierFeatureBanner: React.FC = () => {
   const topLockedFeatures = lockedFeatures.slice(0, 3);
 
   return (
-    <Card className="border-border/50 bg-gradient-to-r from-primary/5 via-transparent to-primary/5">
-      <CardContent className="px-2.5 py-2 sm:p-4">
-        {/* Mobile: stacked layout. Desktop: row */}
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-          {/* Level + Badges row on mobile */}
-          <div className="flex items-center gap-2 justify-between sm:justify-start">
-            {/* Current Level */}
-            <div className="flex items-center gap-1.5">
-              <div className={cn(
-                "w-6 h-6 sm:w-10 sm:h-10 rounded-md sm:rounded-lg flex items-center justify-center shrink-0",
-                levelConfig.bgColor,
-                "border",
-                levelConfig.borderColor
-              )}>
-                <Crown className={cn("h-3 w-3 sm:h-5 sm:w-5", levelConfig.color)} />
-              </div>
-              <div>
-                <p className="text-[9px] sm:text-[10px] leading-tight text-muted-foreground">{t.yourLevel}</p>
-                <p className={cn("font-semibold text-[11px] sm:text-sm leading-tight", levelConfig.color)}>
-                  {levelConfig.label}
-                </p>
-              </div>
-            </div>
-          </div>
+    <div className="flex items-center gap-1.5 flex-wrap px-2 py-1.5 rounded-md border border-border/40 bg-muted/30">
+      {/* Level indicator */}
+      <div className={cn(
+        "flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium shrink-0",
+        levelConfig.bgColor, levelConfig.color
+      )}>
+        <Crown className="h-3 w-3" />
+        {levelConfig.label}
+      </div>
 
-          {/* Feature badges - scrollable on mobile */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-            <Badge variant="secondary" className="text-[10px] sm:text-xs gap-0.5 sm:gap-1 px-1.5 py-0.5 shrink-0">
-              <Image className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-              {maxImages} {t.images}
-            </Badge>
-            {canUseVirtualTour && (
-              <Badge variant="secondary" className="text-[10px] sm:text-xs gap-0.5 sm:gap-1 px-1.5 py-0.5 shrink-0 bg-chart-1/10 text-chart-1 border-chart-1/30">
-                <Box className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                {t.virtualTour}
-              </Badge>
-            )}
-            {canUse3DModel && (
-              <Badge variant="secondary" className="text-[10px] sm:text-xs gap-0.5 sm:gap-1 px-1.5 py-0.5 shrink-0 bg-chart-4/10 text-chart-4 border-chart-4/30">
-                <Box className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                {t.model3d}
-              </Badge>
-            )}
-            {canBeFeatured && (
-              <Badge variant="secondary" className="text-[10px] sm:text-xs gap-0.5 sm:gap-1 px-1.5 py-0.5 shrink-0 bg-gold-primary/10 text-gold-primary border-gold-primary/30">
-                <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                {t.featuredBadge}
-              </Badge>
-            )}
-          </div>
+      <span className="text-muted-foreground/40 text-[10px]">•</span>
 
-          {/* Locked Features / Upgrade Button */}
-          {topLockedFeatures.length > 0 && (
-            <div className="flex items-center gap-2">
-              <div className="hidden md:flex items-center gap-1.5">
-                {topLockedFeatures.map(feature => {
-                  const Icon = getFeatureIcon(feature.id);
-                  const requiredConfig = MEMBERSHIP_LEVELS[feature.requiredLevel];
-                  return (
-                    <div 
-                      key={feature.id} 
-                      className="flex items-center gap-1 px-2 py-1 rounded-md bg-muted/50 text-muted-foreground"
-                      title={`${language === 'id' ? feature.nameId : feature.name} - ${requiredConfig.shortLabel}+`}
-                    >
-                      <Lock className="h-3 w-3" />
-                      <Icon className="h-3 w-3" />
-                    </div>
-                  );
-                })}
-              </div>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => navigate('/membership')}
-                className="h-8 text-xs gap-1.5 border-primary/30 hover:bg-primary/5"
-              >
-                <Sparkles className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">{t.upgradeNow}</span>
-                <span className="sm:hidden">{t.unlockMore}</span>
-              </Button>
-            </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+      {/* Image count */}
+      <Badge variant="secondary" className="text-[10px] gap-0.5 px-1.5 py-0 h-5 shrink-0">
+        <Image className="h-2.5 w-2.5" />
+        {maxImages} {t.images}
+      </Badge>
+
+      {canUseVirtualTour && (
+        <Badge variant="secondary" className="text-[10px] gap-0.5 px-1.5 py-0 h-5 shrink-0 bg-chart-1/10 text-chart-1 border-chart-1/30">
+          <Box className="h-2.5 w-2.5" />
+          {t.virtualTour}
+        </Badge>
+      )}
+      {canUse3DModel && (
+        <Badge variant="secondary" className="text-[10px] gap-0.5 px-1.5 py-0 h-5 shrink-0 bg-chart-4/10 text-chart-4 border-chart-4/30">
+          <Box className="h-2.5 w-2.5" />
+          {t.model3d}
+        </Badge>
+      )}
+      {canBeFeatured && (
+        <Badge variant="secondary" className="text-[10px] gap-0.5 px-1.5 py-0 h-5 shrink-0 bg-gold-primary/10 text-gold-primary border-gold-primary/30">
+          <Star className="h-2.5 w-2.5" />
+          {t.featuredBadge}
+        </Badge>
+      )}
+
+      {topLockedFeatures.length > 0 && (
+        <>
+          <span className="text-muted-foreground/40 text-[10px]">•</span>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => navigate('/membership')}
+            className="h-5 text-[10px] gap-1 px-1.5 text-muted-foreground hover:text-primary"
+          >
+            <Sparkles className="h-2.5 w-2.5" />
+            Upgrade
+          </Button>
+        </>
+      )}
+    </div>
   );
 };
 
