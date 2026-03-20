@@ -22062,6 +22062,279 @@ export type Database = {
         }
         Relationships: []
       }
+      giws_investor_demand: {
+        Row: {
+          assessed_at: string
+          capital_commitment_indicative_usd: number | null
+          coverage_status: string | null
+          created_at: string
+          demand_source: string
+          due_diligence_stage: string | null
+          ecosystem_visibility_score: number | null
+          engagement_touchpoints: number | null
+          id: string
+          interest_level: string | null
+          last_engagement_at: string | null
+          metadata: Json | null
+          partnership_signal_strength: number | null
+          sentiment_toward_sector: string | null
+          source_name: string | null
+        }
+        Insert: {
+          assessed_at?: string
+          capital_commitment_indicative_usd?: number | null
+          coverage_status?: string | null
+          created_at?: string
+          demand_source?: string
+          due_diligence_stage?: string | null
+          ecosystem_visibility_score?: number | null
+          engagement_touchpoints?: number | null
+          id?: string
+          interest_level?: string | null
+          last_engagement_at?: string | null
+          metadata?: Json | null
+          partnership_signal_strength?: number | null
+          sentiment_toward_sector?: string | null
+          source_name?: string | null
+        }
+        Update: {
+          assessed_at?: string
+          capital_commitment_indicative_usd?: number | null
+          coverage_status?: string | null
+          created_at?: string
+          demand_source?: string
+          due_diligence_stage?: string | null
+          ecosystem_visibility_score?: number | null
+          engagement_touchpoints?: number | null
+          id?: string
+          interest_level?: string | null
+          last_engagement_at?: string | null
+          metadata?: Json | null
+          partnership_signal_strength?: number | null
+          sentiment_toward_sector?: string | null
+          source_name?: string | null
+        }
+        Relationships: []
+      }
+      giws_ipo_readiness: {
+        Row: {
+          assessed_at: string
+          auditor_feedback: string | null
+          compliance_items_met: number | null
+          compliance_items_total: number | null
+          created_at: string
+          critical_blockers: string[] | null
+          domain_label: string
+          estimated_months_to_ready: number | null
+          gap_pct: number | null
+          id: string
+          maturity_score: number
+          metadata: Json | null
+          readiness_domain: string
+          remediation_actions: Json | null
+          target_score: number | null
+        }
+        Insert: {
+          assessed_at?: string
+          auditor_feedback?: string | null
+          compliance_items_met?: number | null
+          compliance_items_total?: number | null
+          created_at?: string
+          critical_blockers?: string[] | null
+          domain_label: string
+          estimated_months_to_ready?: number | null
+          gap_pct?: number | null
+          id?: string
+          maturity_score?: number
+          metadata?: Json | null
+          readiness_domain?: string
+          remediation_actions?: Json | null
+          target_score?: number | null
+        }
+        Update: {
+          assessed_at?: string
+          auditor_feedback?: string | null
+          compliance_items_met?: number | null
+          compliance_items_total?: number | null
+          created_at?: string
+          critical_blockers?: string[] | null
+          domain_label?: string
+          estimated_months_to_ready?: number | null
+          gap_pct?: number | null
+          id?: string
+          maturity_score?: number
+          metadata?: Json | null
+          readiness_domain?: string
+          remediation_actions?: Json | null
+          target_score?: number | null
+        }
+        Relationships: []
+      }
+      giws_listing_timing: {
+        Row: {
+          assessed_at: string
+          capital_market_receptiveness: number | null
+          comparable_ipo_performance: number | null
+          created_at: string
+          id: string
+          internal_milestone_readiness: number | null
+          macro_cycle_phase: string | null
+          metadata: Json | null
+          optimal_window_end: string | null
+          optimal_window_start: string | null
+          recommended_action: string | null
+          risk_if_early: string | null
+          risk_if_late: string | null
+          scenario_name: string
+          sector_sentiment: string | null
+          timing_confidence: number | null
+        }
+        Insert: {
+          assessed_at?: string
+          capital_market_receptiveness?: number | null
+          comparable_ipo_performance?: number | null
+          created_at?: string
+          id?: string
+          internal_milestone_readiness?: number | null
+          macro_cycle_phase?: string | null
+          metadata?: Json | null
+          optimal_window_end?: string | null
+          optimal_window_start?: string | null
+          recommended_action?: string | null
+          risk_if_early?: string | null
+          risk_if_late?: string | null
+          scenario_name: string
+          sector_sentiment?: string | null
+          timing_confidence?: number | null
+        }
+        Update: {
+          assessed_at?: string
+          capital_market_receptiveness?: number | null
+          comparable_ipo_performance?: number | null
+          created_at?: string
+          id?: string
+          internal_milestone_readiness?: number | null
+          macro_cycle_phase?: string | null
+          metadata?: Json | null
+          optimal_window_end?: string | null
+          optimal_window_start?: string | null
+          recommended_action?: string | null
+          risk_if_early?: string | null
+          risk_if_late?: string | null
+          scenario_name?: string
+          sector_sentiment?: string | null
+          timing_confidence?: number | null
+        }
+        Relationships: []
+      }
+      giws_market_positioning: {
+        Row: {
+          assessed_at: string
+          comparable_company: string | null
+          comparable_multiple: number | null
+          created_at: string
+          differentiation_score: number
+          id: string
+          investor_narrative_clarity: number | null
+          key_proof_points: Json | null
+          legacy_gap_advantage: number | null
+          metadata: Json | null
+          narrative_theme: string
+          positioning_axis: string
+          positioning_strength: string | null
+          target_multiple: number | null
+          technology_moat_depth: number | null
+        }
+        Insert: {
+          assessed_at?: string
+          comparable_company?: string | null
+          comparable_multiple?: number | null
+          created_at?: string
+          differentiation_score?: number
+          id?: string
+          investor_narrative_clarity?: number | null
+          key_proof_points?: Json | null
+          legacy_gap_advantage?: number | null
+          metadata?: Json | null
+          narrative_theme: string
+          positioning_axis?: string
+          positioning_strength?: string | null
+          target_multiple?: number | null
+          technology_moat_depth?: number | null
+        }
+        Update: {
+          assessed_at?: string
+          comparable_company?: string | null
+          comparable_multiple?: number | null
+          created_at?: string
+          differentiation_score?: number
+          id?: string
+          investor_narrative_clarity?: number | null
+          key_proof_points?: Json | null
+          legacy_gap_advantage?: number | null
+          metadata?: Json | null
+          narrative_theme?: string
+          positioning_axis?: string
+          positioning_strength?: string | null
+          target_multiple?: number | null
+          technology_moat_depth?: number | null
+        }
+        Relationships: []
+      }
+      giws_post_listing: {
+        Row: {
+          analyst_coverage_count: number | null
+          assessed_at: string
+          communication_cadence: string | null
+          created_at: string
+          current_score: number
+          earnings_beat_streak: number | null
+          id: string
+          lockup_expiry_risk: number | null
+          metadata: Json | null
+          previous_score: number | null
+          roadmap_transparency_index: number | null
+          score_trend: string | null
+          shareholder_concentration_pct: number | null
+          stability_dimension: string
+          stabilization_mechanisms: Json | null
+        }
+        Insert: {
+          analyst_coverage_count?: number | null
+          assessed_at?: string
+          communication_cadence?: string | null
+          created_at?: string
+          current_score?: number
+          earnings_beat_streak?: number | null
+          id?: string
+          lockup_expiry_risk?: number | null
+          metadata?: Json | null
+          previous_score?: number | null
+          roadmap_transparency_index?: number | null
+          score_trend?: string | null
+          shareholder_concentration_pct?: number | null
+          stability_dimension?: string
+          stabilization_mechanisms?: Json | null
+        }
+        Update: {
+          analyst_coverage_count?: number | null
+          assessed_at?: string
+          communication_cadence?: string | null
+          created_at?: string
+          current_score?: number
+          earnings_beat_streak?: number | null
+          id?: string
+          lockup_expiry_risk?: number | null
+          metadata?: Json | null
+          previous_score?: number | null
+          roadmap_transparency_index?: number | null
+          score_trend?: string | null
+          shareholder_concentration_pct?: number | null
+          stability_dimension?: string
+          stabilization_mechanisms?: Json | null
+        }
+        Relationships: []
+      }
       global_expansion_log: {
         Row: {
           created_at: string | null
