@@ -707,6 +707,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "rental-yield-optimization": () => <RentalYieldOptimizationPanel />,
   "developer-supply-acquisition": () => <DeveloperSupplyAcquisitionPanel />,
   "hyper-growth-kpi": () => <HyperGrowthKPIPanel />,
+  "smart-recommendation-engine": () => <SmartRecommendationPanel />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
