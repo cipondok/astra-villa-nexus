@@ -785,6 +785,13 @@ export const navigationSections = {
       badge: "🧠 AI Recs"
     },
     {
+      key: "commission-optimization",
+      label: "Commission Optimization",
+      icon: ArrowUpDown,
+      description: "Dynamic commission tuning, elasticity modeling, incentive campaigns & rollout strategy",
+      badge: "💰 Revenue AI"
+    },
+    {
       key: "workforce-scheduler",
       label: "Workforce Scheduler",
       icon: Clock,
