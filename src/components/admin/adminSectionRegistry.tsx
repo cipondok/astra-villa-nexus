@@ -332,6 +332,9 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   // Investor Scoring
   "investor-scoring-engine": () => <InvestorScoringPanel />,
 
+  // Vendor Intelligence
+  "vendor-intelligence-engine": () => <VendorIntelligencePanel />,
+
   // User management
   "user-management":     (sc) => <UserManagementHub onNavigate={sc} />,
   "user-levels":         (sc) => <UserLevelManagement onNavigate={sc} />,
