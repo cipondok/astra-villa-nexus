@@ -277,6 +277,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "deal-closing-automation",
+      label: "Deal Closing Automation",
+      icon: Zap,
+      description: "7-stage deal state machine with automated tasks, stall detection & orchestration",
+      badge: "AI"
+    },
+    {
       key: "mortgage-management",
       label: "Mortgage (KPR) Management",
       icon: Calculator,

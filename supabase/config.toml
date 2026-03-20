@@ -603,3 +603,6 @@ verify_jwt = false
 
 [functions.city-launch-planner]
 verify_jwt = false
+
+[functions.deal-state-engine]
+verify_jwt = false
