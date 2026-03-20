@@ -243,6 +243,7 @@ export const NegotiationAgentPanel = lazyRetry(() => import("./NegotiationAgentP
 export const GlobalBrandAuthorityPanel = lazyRetry(() => import("./GlobalBrandAuthorityPanel"));
 export const InstitutionalCapitalGatewayPanel = lazyRetry(() => import("./InstitutionalCapitalGatewayPanel"));
 export const GrowthExperimentationPanel = lazyRetry(() => import("./GrowthExperimentationPanel"));
+export const MegaCityDominationPanel = lazyRetry(() => import("./MegaCityDominationPanel"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -698,6 +699,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "global-brand-authority": () => <GlobalBrandAuthorityPanel />,
   "institutional-capital-gateway": () => <InstitutionalCapitalGatewayPanel />,
   "growth-experimentation": () => <GrowthExperimentationPanel />,
+  "mega-city-domination": () => <MegaCityDominationPanel />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -975,4 +977,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-brand-authority": { label: "Global Brand Authority", category: "Strategy" },
   "institutional-capital-gateway": { label: "Institutional Capital Gateway", category: "Investor Management" },
   "growth-experimentation": { label: "Growth Experimentation Engine", category: "Operations" },
+  "mega-city-domination": { label: "Mega-City Domination", category: "Operations" },
 };
