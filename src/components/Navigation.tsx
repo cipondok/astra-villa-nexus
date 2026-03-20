@@ -359,8 +359,8 @@ const Navigation = () => {
                 </form>
               )}
 
-              <Button variant="ghost" size="sm" onClick={toggleTheme} className="w-8 h-8 p-0 rounded-xl bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300">
-                {theme === "light" ? <Moon className="h-4 w-4 text-foreground/70" /> : <Sun className="h-4 w-4 text-gold-primary" />}
+              <Button variant="ghost" size="sm" onClick={toggleTheme} className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 p-0 rounded-lg bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300">
+                {theme === "light" ? <Moon className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-foreground/70" /> : <Sun className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary" />}
               </Button>
 
               <div className="hidden lg:block">
