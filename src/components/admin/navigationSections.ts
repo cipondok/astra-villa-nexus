@@ -787,7 +787,7 @@ export const navigationSections = {
     {
       key: "commission-optimization",
       label: "Commission Optimization",
-      icon: ArrowUpDown,
+      icon: ArrowLeftRight,
       description: "Dynamic commission tuning, elasticity modeling, incentive campaigns & rollout strategy",
       badge: "💰 Revenue AI"
     },
