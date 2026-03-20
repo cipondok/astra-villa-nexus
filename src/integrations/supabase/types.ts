@@ -29611,6 +29611,225 @@ export type Database = {
         }
         Relationships: []
       }
+      ipoex_milestones: {
+        Row: {
+          blockers: string[] | null
+          completed_at: string | null
+          completion_pct: number | null
+          created_at: string
+          dependencies: string[] | null
+          due_date: string | null
+          evidence: Json | null
+          id: string
+          metadata: Json | null
+          milestone_description: string
+          milestone_key: string
+          month_label: string
+          month_offset: number
+          notes: string | null
+          owner_role: string | null
+          phase: number
+          phase_name: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          blockers?: string[] | null
+          completed_at?: string | null
+          completion_pct?: number | null
+          created_at?: string
+          dependencies?: string[] | null
+          due_date?: string | null
+          evidence?: Json | null
+          id?: string
+          metadata?: Json | null
+          milestone_description: string
+          milestone_key: string
+          month_label: string
+          month_offset: number
+          notes?: string | null
+          owner_role?: string | null
+          phase: number
+          phase_name: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          blockers?: string[] | null
+          completed_at?: string | null
+          completion_pct?: number | null
+          created_at?: string
+          dependencies?: string[] | null
+          due_date?: string | null
+          evidence?: Json | null
+          id?: string
+          metadata?: Json | null
+          milestone_description?: string
+          milestone_key?: string
+          month_label?: string
+          month_offset?: number
+          notes?: string | null
+          owner_role?: string | null
+          phase?: number
+          phase_name?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ipoex_phase_readiness: {
+        Row: {
+          assessed_at: string
+          assessed_by: string | null
+          created_at: string
+          critical_path_items: string[] | null
+          go_no_go_status: string | null
+          id: string
+          metadata: Json | null
+          milestones_blocked: number | null
+          milestones_completed: number | null
+          milestones_total: number | null
+          phase: number
+          phase_name: string
+          readiness_score: number
+          risk_factors: Json | null
+        }
+        Insert: {
+          assessed_at?: string
+          assessed_by?: string | null
+          created_at?: string
+          critical_path_items?: string[] | null
+          go_no_go_status?: string | null
+          id?: string
+          metadata?: Json | null
+          milestones_blocked?: number | null
+          milestones_completed?: number | null
+          milestones_total?: number | null
+          phase: number
+          phase_name: string
+          readiness_score?: number
+          risk_factors?: Json | null
+        }
+        Update: {
+          assessed_at?: string
+          assessed_by?: string | null
+          created_at?: string
+          critical_path_items?: string[] | null
+          go_no_go_status?: string | null
+          id?: string
+          metadata?: Json | null
+          milestones_blocked?: number | null
+          milestones_completed?: number | null
+          milestones_total?: number | null
+          phase?: number
+          phase_name?: string
+          readiness_score?: number
+          risk_factors?: Json | null
+        }
+        Relationships: []
+      }
+      ipoex_risk_register: {
+        Row: {
+          created_at: string
+          id: string
+          identified_at: string
+          impact_description: string | null
+          metadata: Json | null
+          mitigation_plan: string | null
+          owner_role: string | null
+          phase_affected: number | null
+          probability: number | null
+          resolved_at: string | null
+          risk_category: string
+          risk_name: string
+          severity: string | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          identified_at?: string
+          impact_description?: string | null
+          metadata?: Json | null
+          mitigation_plan?: string | null
+          owner_role?: string | null
+          phase_affected?: number | null
+          probability?: number | null
+          resolved_at?: string | null
+          risk_category?: string
+          risk_name: string
+          severity?: string | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          identified_at?: string
+          impact_description?: string | null
+          metadata?: Json | null
+          mitigation_plan?: string | null
+          owner_role?: string | null
+          phase_affected?: number | null
+          probability?: number | null
+          resolved_at?: string | null
+          risk_category?: string
+          risk_name?: string
+          severity?: string | null
+          status?: string | null
+        }
+        Relationships: []
+      }
+      ipoex_stakeholders: {
+        Row: {
+          capital_indication_usd: number | null
+          created_at: string
+          engagement_score: number | null
+          engagement_status: string | null
+          id: string
+          key_deliverables: Json | null
+          last_interaction_at: string | null
+          metadata: Json | null
+          notes: string | null
+          role_description: string | null
+          sentiment: string | null
+          stakeholder_name: string
+          stakeholder_type: string
+          updated_at: string
+        }
+        Insert: {
+          capital_indication_usd?: number | null
+          created_at?: string
+          engagement_score?: number | null
+          engagement_status?: string | null
+          id?: string
+          key_deliverables?: Json | null
+          last_interaction_at?: string | null
+          metadata?: Json | null
+          notes?: string | null
+          role_description?: string | null
+          sentiment?: string | null
+          stakeholder_name: string
+          stakeholder_type?: string
+          updated_at?: string
+        }
+        Update: {
+          capital_indication_usd?: number | null
+          created_at?: string
+          engagement_score?: number | null
+          engagement_status?: string | null
+          id?: string
+          key_deliverables?: Json | null
+          last_interaction_at?: string | null
+          metadata?: Json | null
+          notes?: string | null
+          role_description?: string | null
+          sentiment?: string | null
+          stakeholder_name?: string
+          stakeholder_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ivms_confidence_loop: {
         Row: {
           assessed_at: string
