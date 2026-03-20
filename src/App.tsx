@@ -889,6 +889,7 @@ const AppContent = () => {
                 <Route path="/feature-impact-matrix" element={<FeatureImpactMatrixPage />} />
                 <Route path="/founder-90-day-calendar" element={<Founder90DayCalendarPage />} />
                 <Route path="/first-50-deals-playbook" element={<First50DealsPlaybookPage />} />
+                <Route path="/agent-recruitment-system" element={<AgentRecruitmentSystemPage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
