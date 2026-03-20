@@ -166,6 +166,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   fycs_engine_cycle: { label: 'Capital Civilization', icon: '🌍' },
   fspcm_exponential_power: { label: 'Exponential Power', icon: '⚡' },
   fspcm_engine_cycle: { label: 'Founder Power Engine', icon: '👑' },
+  hycb_autonomous_city: { label: 'Autonomous City', icon: '🏙️' },
+  hycb_engine_cycle: { label: 'Century Blueprint', icon: '🌐' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */

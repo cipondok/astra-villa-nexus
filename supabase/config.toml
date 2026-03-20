@@ -555,3 +555,6 @@ verify_jwt = false
 
 [functions.founder-power-compounding]
 verify_jwt = false
+
+[functions.proptech-civilization-blueprint]
+verify_jwt = false
