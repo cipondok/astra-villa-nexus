@@ -148,6 +148,7 @@ export const SuperAppJourneyPanel = lazyRetry(() => import("./SuperAppJourneyPan
 export const DealClosingAutomationPanel = lazyRetry(() => import("./DealClosingAutomationPanel"));
 export const NetworkEffectSimulatorPanel = lazyRetry(() => import("./NetworkEffectSimulatorPanel"));
 export const GlobalExpansionWarPanel = lazyRetry(() => import("./GlobalExpansionWarPanel"));
+export const MarketplaceOptimizationPanel = lazyRetry(() => import("./MarketplaceOptimizationPanel"));
 export const DOMAccuracyReport = lazyRetry(() => import("./DOMAccuracyReport"));
 export const CronJobMonitor = lazyRetry(() => import("./CronJobMonitor"));
 export const WeightTuningHistory = lazyRetry(() => import("./WeightTuningHistory"));
