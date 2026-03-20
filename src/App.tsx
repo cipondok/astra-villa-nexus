@@ -366,6 +366,7 @@ const FounderPowerOSPage = lazy(() => import('@/pages/FounderPowerOSPage'));
 const PlanetaryScaleRoadmapPage = lazy(() => import('@/pages/PlanetaryScaleRoadmapPage'));
 const DataMoatIntelligencePage = lazy(() => import('@/pages/DataMoatIntelligencePage'));
 const FundraisingArchitecturePage = lazy(() => import('@/pages/FundraisingArchitecturePage'));
+const RevenueLayerArchitecturePage = lazy(() => import('@/pages/RevenueLayerArchitecturePage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
