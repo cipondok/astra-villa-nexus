@@ -139,6 +139,7 @@ export const NearbyFacilitiesSettings = lazyRetry(() => import("./settings/Nearb
 export const AIPerformanceDashboard = lazyRetry(() => import("./AIPerformanceDashboard"));
 export const AIModelWeightsPanel = lazyRetry(() => import("./AIModelWeightsPanel"));
 export const InvestorScoringPanel = lazyRetry(() => import("./InvestorScoringPanel"));
+export const VendorIntelligencePanel = lazyRetry(() => import("./VendorIntelligencePanel"));
 export const DOMAccuracyReport = lazyRetry(() => import("./DOMAccuracyReport"));
 export const CronJobMonitor = lazyRetry(() => import("./CronJobMonitor"));
 export const WeightTuningHistory = lazyRetry(() => import("./WeightTuningHistory"));
@@ -330,6 +331,9 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
 
   // Investor Scoring
   "investor-scoring-engine": () => <InvestorScoringPanel />,
+
+  // Vendor Intelligence
+  "vendor-intelligence-engine": () => <VendorIntelligencePanel />,
 
   // User management
   "user-management":     (sc) => <UserManagementHub onNavigate={sc} />,
@@ -651,6 +655,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-strategy": { label: "Global Strategy", category: "AI & Tools" },
   "execution-command-center": { label: "Execution Command Center", category: "Operations" },
   "investor-scoring-engine": { label: "Investor Scoring Engine", category: "Investor Management" },
+  "vendor-intelligence-engine": { label: "Vendor Intelligence Engine", category: "Operations" },
   "overview": { label: "Dashboard Overview", category: "" },
   "diagnostic": { label: "Project Diagnostics", category: "System" },
   "project-progress": { label: "Launch Readiness", category: "System" },
