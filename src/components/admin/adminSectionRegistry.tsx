@@ -327,6 +327,9 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   // Execution Command Center
   "execution-command-center": () => <ExecutionCommandCenter />,
 
+  // Investor Scoring
+  "investor-scoring-engine": () => <InvestorScoringPanel />,
+
   // User management
   "user-management":     (sc) => <UserManagementHub onNavigate={sc} />,
   "user-levels":         (sc) => <UserLevelManagement onNavigate={sc} />,
