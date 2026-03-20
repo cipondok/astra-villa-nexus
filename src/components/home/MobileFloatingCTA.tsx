@@ -60,37 +60,37 @@ export default function MobileFloatingCTA() {
   return (
     <div
       className={cn(
-        "fixed bottom-[72px] left-3 right-3 z-40 md:hidden",
-        "flex items-center gap-2 p-2 rounded-2xl",
-        "bg-card/95 backdrop-blur-md border border-border/60 shadow-lg",
+        "fixed bottom-[64px] left-2 right-2 z-40 md:hidden",
+        "flex items-center gap-1 px-1.5 py-1 rounded-xl",
+        "bg-card/95 backdrop-blur-md border border-border/40 shadow-md",
         visible ? "float-bar-enter" : "float-bar-exit"
       )}
-      style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}
+      style={{ paddingBottom: 'max(4px, env(safe-area-inset-bottom))' }}
     >
       <Button
         size="sm"
-        className="flex-1 h-11 text-xs font-semibold bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5 min-h-[44px] rounded-xl touch-press"
+        className="flex-1 h-8 text-[10px] font-semibold bg-primary hover:bg-primary/90 text-primary-foreground gap-1 rounded-lg"
         onClick={() => {
           haptic('light');
           navigate('/');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
       >
-        <Search className="h-3.5 w-3.5" />
-        Explore Listings
+        <Search className="h-3 w-3" />
+        Explore
       </Button>
 
       <Button
         size="sm"
         variant="outline"
-        className="flex-1 h-11 text-xs font-semibold gap-1.5 min-h-[44px] rounded-xl border-primary/30 text-primary touch-press"
+        className="flex-1 h-8 text-[10px] font-semibold gap-1 rounded-lg border-primary/30 text-primary"
         onClick={() => {
           haptic('light');
           navigate('/post-property');
         }}
       >
-        <Plus className="h-3.5 w-3.5" />
-        List Property
+        <Plus className="h-3 w-3" />
+        List
       </Button>
 
       <button
@@ -98,10 +98,10 @@ export default function MobileFloatingCTA() {
           haptic('selection');
           setDismissed(true);
         }}
-        className="h-9 w-9 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted shrink-0 touch-press min-h-[44px] min-w-[44px]"
+        className="h-6 w-6 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted shrink-0"
         aria-label="Dismiss"
       >
-        <X className="h-3.5 w-3.5" />
+        <X className="h-2.5 w-2.5" />
       </button>
     </div>
   );
