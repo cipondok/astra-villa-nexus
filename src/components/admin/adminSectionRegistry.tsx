@@ -144,6 +144,7 @@ export const RevenueFlywheelPanel = lazyRetry(() => import("./RevenueFlywheelPan
 export const DataMoatGovernancePanel = lazyRetry(() => import("./DataMoatGovernancePanel"));
 export const VendorRevenueOptimizationPanel = lazyRetry(() => import("./VendorRevenueOptimizationPanel"));
 export const CityExpansionCommandPanel = lazyRetry(() => import("./CityExpansionCommandPanel"));
+export const SuperAppJourneyPanel = lazyRetry(() => import("./SuperAppJourneyPanel"));
 export const DOMAccuracyReport = lazyRetry(() => import("./DOMAccuracyReport"));
 export const CronJobMonitor = lazyRetry(() => import("./CronJobMonitor"));
 export const WeightTuningHistory = lazyRetry(() => import("./WeightTuningHistory"));
@@ -399,6 +400,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "vendor-agent-control": () => <EnhancedVendorAgentControl />,
   "vendor-revenue-optimization": () => <VendorRevenueOptimizationPanel />,
   "city-expansion-command": () => <CityExpansionCommandPanel />,
+  "superapp-journey": () => <SuperAppJourneyPanel />,
 
   // Content
   "homepage-slider":     () => <HomepageSliderSettings />,
@@ -932,4 +934,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "cac-ltv-model": { label: "CAC vs LTV Model", category: "Features" },
   "vendor-revenue-optimization": { label: "Vendor Revenue Optimization", category: "Vendor Management" },
   "city-expansion-command": { label: "City Expansion Command", category: "Features" },
+  "superapp-journey": { label: "Super-App User Journey", category: "Features" },
 };

@@ -1951,6 +1951,13 @@ export const navigationSections = {
       icon: BarChart3,
       description: "Dual-sided unit economics — investor 67× and vendor 38× LTV/CAC with channel breakdown",
       badge: "📊 Economics"
+    },
+    {
+      key: "superapp-journey",
+      label: "Super-App Journey",
+      icon: Layers,
+      description: "Unified user experience architecture — discovery, transaction, services, and investment lifecycle",
+      badge: "🧭 UX"
     }
   ],
 
