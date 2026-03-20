@@ -28798,6 +28798,282 @@ export type Database = {
         }
         Relationships: []
       }
+      ivms_confidence_loop: {
+        Row: {
+          assessed_at: string
+          confidence_dimension: string
+          created_at: string
+          credibility_events: Json | null
+          current_score: number
+          decay_risk: number | null
+          feedback_loop_velocity: number | null
+          id: string
+          metadata: Json | null
+          previous_score: number | null
+          reinforcement_strength: number | null
+          score_trend: string | null
+          stakeholder_alignment: number | null
+          transparency_index: number | null
+          trust_signals_count: number | null
+        }
+        Insert: {
+          assessed_at?: string
+          confidence_dimension?: string
+          created_at?: string
+          credibility_events?: Json | null
+          current_score?: number
+          decay_risk?: number | null
+          feedback_loop_velocity?: number | null
+          id?: string
+          metadata?: Json | null
+          previous_score?: number | null
+          reinforcement_strength?: number | null
+          score_trend?: string | null
+          stakeholder_alignment?: number | null
+          transparency_index?: number | null
+          trust_signals_count?: number | null
+        }
+        Update: {
+          assessed_at?: string
+          confidence_dimension?: string
+          created_at?: string
+          credibility_events?: Json | null
+          current_score?: number
+          decay_risk?: number | null
+          feedback_loop_velocity?: number | null
+          id?: string
+          metadata?: Json | null
+          previous_score?: number | null
+          reinforcement_strength?: number | null
+          score_trend?: string | null
+          stakeholder_alignment?: number | null
+          transparency_index?: number | null
+          trust_signals_count?: number | null
+        }
+        Relationships: []
+      }
+      ivms_market_timing: {
+        Row: {
+          assessed_at: string
+          capital_availability_index: number | null
+          comparable_multiples_avg: number | null
+          created_at: string
+          id: string
+          interest_rate_environment: string | null
+          ipo_window_status: string | null
+          liquidity_premium: number | null
+          macro_environment: string
+          metadata: Json | null
+          optimal_timing_window: string | null
+          receptiveness_score: number | null
+          sector_sentiment_score: number
+          tech_sector_pe_ratio: number | null
+          timing_confidence: number | null
+          volatility_index: number | null
+        }
+        Insert: {
+          assessed_at?: string
+          capital_availability_index?: number | null
+          comparable_multiples_avg?: number | null
+          created_at?: string
+          id?: string
+          interest_rate_environment?: string | null
+          ipo_window_status?: string | null
+          liquidity_premium?: number | null
+          macro_environment?: string
+          metadata?: Json | null
+          optimal_timing_window?: string | null
+          receptiveness_score?: number | null
+          sector_sentiment_score?: number
+          tech_sector_pe_ratio?: number | null
+          timing_confidence?: number | null
+          volatility_index?: number | null
+        }
+        Update: {
+          assessed_at?: string
+          capital_availability_index?: number | null
+          comparable_multiples_avg?: number | null
+          created_at?: string
+          id?: string
+          interest_rate_environment?: string | null
+          ipo_window_status?: string | null
+          liquidity_premium?: number | null
+          macro_environment?: string
+          metadata?: Json | null
+          optimal_timing_window?: string | null
+          receptiveness_score?: number | null
+          sector_sentiment_score?: number
+          tech_sector_pe_ratio?: number | null
+          timing_confidence?: number | null
+          volatility_index?: number | null
+        }
+        Relationships: []
+      }
+      ivms_narrative_momentum: {
+        Row: {
+          analyst_consensus: string | null
+          assessed_at: string
+          created_at: string
+          id: string
+          institutional_interest_level: string | null
+          key_catalysts: string[] | null
+          media_coverage_index: number | null
+          metadata: Json | null
+          momentum_velocity: number | null
+          narrative_strength: number | null
+          phase: string
+          phase_duration_months: number | null
+          phase_label: string
+          risk_factors: string[] | null
+          sentiment_score: number
+          transition_probability: number | null
+        }
+        Insert: {
+          analyst_consensus?: string | null
+          assessed_at?: string
+          created_at?: string
+          id?: string
+          institutional_interest_level?: string | null
+          key_catalysts?: string[] | null
+          media_coverage_index?: number | null
+          metadata?: Json | null
+          momentum_velocity?: number | null
+          narrative_strength?: number | null
+          phase?: string
+          phase_duration_months?: number | null
+          phase_label: string
+          risk_factors?: string[] | null
+          sentiment_score?: number
+          transition_probability?: number | null
+        }
+        Update: {
+          analyst_consensus?: string | null
+          assessed_at?: string
+          created_at?: string
+          id?: string
+          institutional_interest_level?: string | null
+          key_catalysts?: string[] | null
+          media_coverage_index?: number | null
+          metadata?: Json | null
+          momentum_velocity?: number | null
+          narrative_strength?: number | null
+          phase?: string
+          phase_duration_months?: number | null
+          phase_label?: string
+          risk_factors?: string[] | null
+          sentiment_score?: number
+          transition_probability?: number | null
+        }
+        Relationships: []
+      }
+      ivms_strategic_milestones: {
+        Row: {
+          achieved_at: string | null
+          completion_pct: number | null
+          created_at: string
+          current_value: number | null
+          dependencies: string[] | null
+          evidence_points: Json | null
+          id: string
+          investor_narrative_weight: number | null
+          metadata: Json | null
+          milestone_category: string
+          milestone_name: string
+          status: string | null
+          target_date: string | null
+          target_value: number | null
+          valuation_impact_multiplier: number | null
+        }
+        Insert: {
+          achieved_at?: string | null
+          completion_pct?: number | null
+          created_at?: string
+          current_value?: number | null
+          dependencies?: string[] | null
+          evidence_points?: Json | null
+          id?: string
+          investor_narrative_weight?: number | null
+          metadata?: Json | null
+          milestone_category?: string
+          milestone_name: string
+          status?: string | null
+          target_date?: string | null
+          target_value?: number | null
+          valuation_impact_multiplier?: number | null
+        }
+        Update: {
+          achieved_at?: string | null
+          completion_pct?: number | null
+          created_at?: string
+          current_value?: number | null
+          dependencies?: string[] | null
+          evidence_points?: Json | null
+          id?: string
+          investor_narrative_weight?: number | null
+          metadata?: Json | null
+          milestone_category?: string
+          milestone_name?: string
+          status?: string | null
+          target_date?: string | null
+          target_value?: number | null
+          valuation_impact_multiplier?: number | null
+        }
+        Relationships: []
+      }
+      ivms_valuation_signals: {
+        Row: {
+          benchmark_percentile: number | null
+          consistency_score: number | null
+          created_at: string
+          current_value: number
+          data_points_count: number | null
+          growth_rate_pct: number | null
+          id: string
+          investor_weight: number | null
+          measured_at: string
+          metadata: Json | null
+          perception_impact: string | null
+          previous_value: number | null
+          signal_category: string
+          signal_name: string
+          trend_direction: string | null
+        }
+        Insert: {
+          benchmark_percentile?: number | null
+          consistency_score?: number | null
+          created_at?: string
+          current_value?: number
+          data_points_count?: number | null
+          growth_rate_pct?: number | null
+          id?: string
+          investor_weight?: number | null
+          measured_at?: string
+          metadata?: Json | null
+          perception_impact?: string | null
+          previous_value?: number | null
+          signal_category?: string
+          signal_name: string
+          trend_direction?: string | null
+        }
+        Update: {
+          benchmark_percentile?: number | null
+          consistency_score?: number | null
+          created_at?: string
+          current_value?: number
+          data_points_count?: number | null
+          growth_rate_pct?: number | null
+          id?: string
+          investor_weight?: number | null
+          measured_at?: string
+          metadata?: Json | null
+          perception_impact?: string | null
+          previous_value?: number | null
+          signal_category?: string
+          signal_name?: string
+          trend_direction?: string | null
+        }
+        Relationships: []
+      }
       keyword_rank_history: {
         Row: {
           clicks: number | null
