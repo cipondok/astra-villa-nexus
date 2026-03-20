@@ -876,4 +876,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "investor-kpi-framework-page": { label: "Investor KPI Framework", category: "Features" },
   "vendor-acquisition-scripts": { label: "Vendor Acquisition Scripts", category: "Features" },
   "feature-impact-matrix": { label: "Feature Impact Matrix", category: "Features" },
+  "launch-execution-kit": { label: "Launch Execution Kit", category: "Features" },
 };
