@@ -279,6 +279,19 @@ export const NinetyDayRoadmap = lazyRetry(() => import("./NinetyDayRoadmap"));
 export const DailyExecutionPlan = lazyRetry(() => import("./DailyExecutionPlan"));
 export const FounderStrategicKPIs = lazyRetry(() => import("./FounderStrategicKPIs"));
 
+// Strategic blueprint pages (from /pages)
+export const VendorMonetizationPyramidPage = lazyRetry(() => import("@/pages/VendorMonetizationPyramidPage"));
+export const InstitutionalSaaSBlueprintPage = lazyRetry(() => import("@/pages/InstitutionalSaaSBlueprintPage"));
+export const RevenueScalingBlueprintPage = lazyRetry(() => import("@/pages/RevenueScalingBlueprintPage"));
+export const MonetizationPricingPage = lazyRetry(() => import("@/pages/MonetizationPricingPage"));
+export const SprintExecutionRoadmapPage = lazyRetry(() => import("@/pages/SprintExecutionRoadmapPage"));
+export const MarketplaceLaunchPlaybookPage = lazyRetry(() => import("@/pages/MarketplaceLaunchPlaybookPage"));
+export const CityLaunchPlaybookPage = lazyRetry(() => import("@/pages/CityLaunchPlaybookPage"));
+export const RevenueProjectionModelPage = lazyRetry(() => import("@/pages/RevenueProjectionModelPage"));
+export const InvestorKPIFrameworkPage = lazyRetry(() => import("@/pages/InvestorKPIFrameworkPage"));
+export const VendorAcquisitionScriptsPage = lazyRetry(() => import("@/pages/VendorAcquisitionScriptsPage"));
+export const FeatureImpactMatrixPage = lazyRetry(() => import("@/pages/FeatureImpactMatrixPage"));
+
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
 // Sections with custom props are listed explicitly; all others are simple <Component />.
