@@ -126,6 +126,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   gipd_engine_cycle: { label: 'Psychology Engine', icon: '🎯' },
   mcbm_blitz_capture: { label: 'Blitz Capture', icon: '⚡' },
   mcbm_engine_cycle: { label: 'Market Blitzkrieg', icon: '🎯' },
+  newf_inescapable_gravity: { label: 'Inescapable Gravity', icon: '🕳️' },
+  newf_engine_cycle: { label: 'Network Weaponization', icon: '🕸️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
