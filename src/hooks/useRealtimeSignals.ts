@@ -156,6 +156,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   umtcs_engine_cycle: { label: 'Market Timing', icon: '⏱️' },
   gpids_ipo_window_open: { label: 'IPO Window Open', icon: '🔔' },
   gpids_engine_cycle: { label: 'IPO Simulator', icon: '🏛️' },
+  swfps_partnership_advancing: { label: 'SWF Partnership Advancing', icon: '🤝' },
+  swfps_engine_cycle: { label: 'Sovereign Strategy', icon: '🏦' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
