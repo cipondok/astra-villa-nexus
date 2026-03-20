@@ -9,7 +9,7 @@ import {
   Search, Bell, BarChart3, Shield, Heart, Trophy, ArrowRight, ChevronRight,
   Zap, Crown, Star, Gift, Mail, Layers, Globe, LineChart, Lock, Sparkles,
   BookOpen, Download, CheckCircle2, Circle, Clock, AlertTriangle,
-  ArrowUpRight, ArrowDownRight, Activity,
+  ArrowUpRight, ArrowDownRight, Activity, DollarSign,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
