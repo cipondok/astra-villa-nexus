@@ -265,7 +265,7 @@ const GridView: React.FC<{
   setHoveredKey: (k: string | null) => void;
   onSectionChange?: (s: string) => void;
 }> = ({ sections, hoveredKey, setHoveredKey, onSectionChange }) => (
-  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-px bg-[hsl(var(--panel-border-subtle))]">
+  <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-px bg-[hsl(var(--panel-border-subtle))]">
     {sections.map((section) => {
       const Icon = section.icon;
       const badgeText = 'badge' in section ? String(section.badge || '') : '';
@@ -280,7 +280,7 @@ const GridView: React.FC<{
           onMouseEnter={() => setHoveredKey(section.key)}
           onMouseLeave={() => setHoveredKey(null)}
           className={cn(
-            "relative flex flex-col items-center gap-1.5 px-2.5 py-3 text-center transition-all duration-100",
+            "relative flex flex-col items-center gap-1 px-1.5 py-2 text-center transition-all duration-100",
             isHovered ? "bg-[hsl(var(--panel-hover))]" : "bg-[hsl(var(--panel-bg))]"
           )}
           style={isHovered ? { boxShadow: 'inset 0 0 24px hsl(var(--panel-accent) / 0.03)' } : undefined}
