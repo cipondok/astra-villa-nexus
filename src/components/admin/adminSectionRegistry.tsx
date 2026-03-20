@@ -691,6 +691,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "feature-impact-matrix": () => <FeatureImpactMatrixPage />,
   "launch-execution-kit": () => <LaunchExecutionKitPage />,
   "cac-ltv-model": () => <CacLtvModelPage />,
+  "ai-negotiation-agent": () => <NegotiationAgentPanel />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
