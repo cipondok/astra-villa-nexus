@@ -118,6 +118,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   phes_engine_cycle: { label: 'Post-Human Economy', icon: '⚙️' },
   pgcm_critical_funding_gap: { label: 'Funding Gap Alert', icon: '💸' },
   pgcm_engine_cycle: { label: 'Planetary Governance', icon: '🌐' },
+  ihwi_prosperity_breakout: { label: 'Prosperity Breakout', icon: '🌅' },
+  ihwi_engine_cycle: { label: 'Infinite Horizon Wealth', icon: '♾️' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */

@@ -483,3 +483,6 @@ verify_jwt = false
 
 [functions.planetary-governance-capital]
 verify_jwt = false
+
+[functions.infinite-horizon-wealth]
+verify_jwt = false
