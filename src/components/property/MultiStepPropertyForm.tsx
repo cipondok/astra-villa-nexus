@@ -526,22 +526,22 @@ const MultiStepPropertyForm = () => {
       </Tabs>
 
       {/* Navigation Buttons */}
-      <div className="flex items-center justify-between gap-2 pt-1 md:pt-2">
-        <div className="flex items-center gap-1.5">
+      <div className="flex items-center justify-between pt-1 md:pt-2">
+        <div className="flex items-center gap-1">
           <Button
             type="button"
             variant="outline"
             size="sm"
-            className="h-8 text-[11px] md:text-sm px-2.5 md:px-3 border-border"
+            className="h-8 text-[11px] md:text-sm px-3 md:px-4 border-border rounded-lg"
             onClick={() => navigate('/dashboard')}
           >
             Cancel
           </Button>
           <Button
             type="button"
-            variant="ghost"
+            variant="outline"
             size="sm"
-            className="h-8 text-[11px] md:text-sm px-2 md:px-3"
+            className="h-8 text-[11px] md:text-sm px-3 md:px-4 border-border rounded-lg"
             onClick={handleManualSave}
           >
             <Save className="h-3 w-3 mr-1" />
@@ -550,23 +550,23 @@ const MultiStepPropertyForm = () => {
           {hasDraft && (
             <Button
               type="button"
-              variant="ghost"
+              variant="outline"
               size="sm"
               onClick={clearDraft}
-              className="h-8 text-[11px] md:text-sm px-2 text-destructive hover:text-destructive hover:bg-destructive/10"
+              className="h-8 text-[11px] md:text-sm px-2.5 border-destructive/30 text-destructive hover:text-destructive hover:bg-destructive/10 rounded-lg"
             >
               <Trash2 className="h-3 w-3" />
             </Button>
           )}
         </div>
 
-        <div className="flex gap-1.5">
+        <div className="flex items-center gap-1">
           {currentTab !== 'basic' && (
             <Button
               type="button"
               variant="outline"
               size="sm"
-              className="h-8 text-[11px] md:text-sm px-2.5 border-border"
+              className="h-8 text-[11px] md:text-sm px-3 md:px-4 border-border rounded-lg"
               onClick={goToPrevTab}
             >
               Prev
@@ -577,7 +577,7 @@ const MultiStepPropertyForm = () => {
             <Button
               type="button"
               size="sm"
-              className="h-8 text-[11px] md:text-sm px-3 bg-primary hover:bg-primary/90 text-primary-foreground"
+              className="h-8 text-[11px] md:text-sm px-4 md:px-5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg"
               onClick={goToNextTab}
               disabled={!isCurrentStepValid()}
             >
@@ -589,7 +589,7 @@ const MultiStepPropertyForm = () => {
               size="sm"
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="h-8 md:h-10 px-3 md:px-6 text-[11px] md:text-sm bg-primary hover:bg-primary/90 text-primary-foreground"
+              className="h-8 text-[11px] md:text-sm px-4 md:px-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg"
             >
               <Send className="h-3 w-3 mr-1" />
               {isSubmitting ? '...' : 'Submit'}
