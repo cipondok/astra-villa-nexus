@@ -543,3 +543,6 @@ verify_jwt = false
 
 [functions.sovereign-wealth-partnership]
 verify_jwt = false
+
+[functions.network-effect-model]
+verify_jwt = false

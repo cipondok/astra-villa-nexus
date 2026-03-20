@@ -41492,6 +41492,273 @@ export type Database = {
           },
         ]
       }
+      psnem_data_compounding: {
+        Row: {
+          accuracy_at_10x_scale: number | null
+          accuracy_at_1x_scale: number | null
+          competitor_replication_years: number | null
+          compounding_rate: number | null
+          computed_at: string
+          created_at: string
+          data_domain: string
+          id: string
+          investor_retention_lift_pct: number | null
+          moat_depth_score: number | null
+          predictive_accuracy_pct: number | null
+          recommendation_quality_score: number | null
+          switching_cost_index: number | null
+          total_data_points: number | null
+        }
+        Insert: {
+          accuracy_at_10x_scale?: number | null
+          accuracy_at_1x_scale?: number | null
+          competitor_replication_years?: number | null
+          compounding_rate?: number | null
+          computed_at?: string
+          created_at?: string
+          data_domain: string
+          id?: string
+          investor_retention_lift_pct?: number | null
+          moat_depth_score?: number | null
+          predictive_accuracy_pct?: number | null
+          recommendation_quality_score?: number | null
+          switching_cost_index?: number | null
+          total_data_points?: number | null
+        }
+        Update: {
+          accuracy_at_10x_scale?: number | null
+          accuracy_at_1x_scale?: number | null
+          competitor_replication_years?: number | null
+          compounding_rate?: number | null
+          computed_at?: string
+          created_at?: string
+          data_domain?: string
+          id?: string
+          investor_retention_lift_pct?: number | null
+          moat_depth_score?: number | null
+          predictive_accuracy_pct?: number | null
+          recommendation_quality_score?: number | null
+          switching_cost_index?: number | null
+          total_data_points?: number | null
+        }
+        Relationships: []
+      }
+      psnem_liquidity_density: {
+        Row: {
+          bid_ask_spread_compression: number | null
+          city: string
+          computed_at: string
+          country: string
+          created_at: string
+          critical_mass_reached: boolean | null
+          deal_success_probability: number | null
+          density_tier: string | null
+          district: string | null
+          geographic_cluster_density: number | null
+          id: string
+          liquidity_depth_score: number | null
+          price_discovery_efficiency: number | null
+          transaction_volume_monthly: number | null
+        }
+        Insert: {
+          bid_ask_spread_compression?: number | null
+          city: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          critical_mass_reached?: boolean | null
+          deal_success_probability?: number | null
+          density_tier?: string | null
+          district?: string | null
+          geographic_cluster_density?: number | null
+          id?: string
+          liquidity_depth_score?: number | null
+          price_discovery_efficiency?: number | null
+          transaction_volume_monthly?: number | null
+        }
+        Update: {
+          bid_ask_spread_compression?: number | null
+          city?: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          critical_mass_reached?: boolean | null
+          deal_success_probability?: number | null
+          density_tier?: string | null
+          district?: string | null
+          geographic_cluster_density?: number | null
+          id?: string
+          liquidity_depth_score?: number | null
+          price_discovery_efficiency?: number | null
+          transaction_volume_monthly?: number | null
+        }
+        Relationships: []
+      }
+      psnem_marketplace_growth: {
+        Row: {
+          city: string
+          computed_at: string
+          country: string
+          created_at: string
+          cross_side_interaction_rate: number | null
+          financial_partner_count: number | null
+          growth_phase: string | null
+          id: string
+          investor_count: number | null
+          marginal_utility_per_user: number | null
+          metcalfe_value_index: number | null
+          platform_utility_score: number | null
+          supply_creator_count: number | null
+          total_participants: number | null
+          vendor_count: number | null
+        }
+        Insert: {
+          city: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          cross_side_interaction_rate?: number | null
+          financial_partner_count?: number | null
+          growth_phase?: string | null
+          id?: string
+          investor_count?: number | null
+          marginal_utility_per_user?: number | null
+          metcalfe_value_index?: number | null
+          platform_utility_score?: number | null
+          supply_creator_count?: number | null
+          total_participants?: number | null
+          vendor_count?: number | null
+        }
+        Update: {
+          city?: string
+          computed_at?: string
+          country?: string
+          created_at?: string
+          cross_side_interaction_rate?: number | null
+          financial_partner_count?: number | null
+          growth_phase?: string | null
+          id?: string
+          investor_count?: number | null
+          marginal_utility_per_user?: number | null
+          metcalfe_value_index?: number | null
+          platform_utility_score?: number | null
+          supply_creator_count?: number | null
+          total_participants?: number | null
+          vendor_count?: number | null
+        }
+        Relationships: []
+      }
+      psnem_optimization_levers: {
+        Row: {
+          computed_at: string
+          cost_to_adjust: number | null
+          created_at: string
+          current_setting: number | null
+          id: string
+          impact_on_growth_pct: number | null
+          impact_on_monetization_pct: number | null
+          impact_on_retention_pct: number | null
+          lever_category: string
+          lever_name: string
+          optimal_setting: number | null
+          recommended_action: string | null
+          roi_of_adjustment: number | null
+          sensitivity_score: number | null
+          simulation_result: Json | null
+        }
+        Insert: {
+          computed_at?: string
+          cost_to_adjust?: number | null
+          created_at?: string
+          current_setting?: number | null
+          id?: string
+          impact_on_growth_pct?: number | null
+          impact_on_monetization_pct?: number | null
+          impact_on_retention_pct?: number | null
+          lever_category: string
+          lever_name: string
+          optimal_setting?: number | null
+          recommended_action?: string | null
+          roi_of_adjustment?: number | null
+          sensitivity_score?: number | null
+          simulation_result?: Json | null
+        }
+        Update: {
+          computed_at?: string
+          cost_to_adjust?: number | null
+          created_at?: string
+          current_setting?: number | null
+          id?: string
+          impact_on_growth_pct?: number | null
+          impact_on_monetization_pct?: number | null
+          impact_on_retention_pct?: number | null
+          lever_category?: string
+          lever_name?: string
+          optimal_setting?: number | null
+          recommended_action?: string | null
+          roi_of_adjustment?: number | null
+          sensitivity_score?: number | null
+          simulation_result?: Json | null
+        }
+        Relationships: []
+      }
+      psnem_tipping_points: {
+        Row: {
+          assessed_at: string
+          brand_reference_score: number | null
+          city: string
+          competitor_entry_barrier: number | null
+          country: string
+          created_at: string
+          current_value: number | null
+          effect_type: string | null
+          id: string
+          is_reached: boolean | null
+          milestone_name: string
+          progress_pct: number | null
+          reached_at: string | null
+          self_reinforcing_strength: number | null
+          threshold_metric: string
+          threshold_value: number
+        }
+        Insert: {
+          assessed_at?: string
+          brand_reference_score?: number | null
+          city: string
+          competitor_entry_barrier?: number | null
+          country?: string
+          created_at?: string
+          current_value?: number | null
+          effect_type?: string | null
+          id?: string
+          is_reached?: boolean | null
+          milestone_name: string
+          progress_pct?: number | null
+          reached_at?: string | null
+          self_reinforcing_strength?: number | null
+          threshold_metric: string
+          threshold_value: number
+        }
+        Update: {
+          assessed_at?: string
+          brand_reference_score?: number | null
+          city?: string
+          competitor_entry_barrier?: number | null
+          country?: string
+          created_at?: string
+          current_value?: number | null
+          effect_type?: string | null
+          id?: string
+          is_reached?: boolean | null
+          milestone_name?: string
+          progress_pct?: number | null
+          reached_at?: string | null
+          self_reinforcing_strength?: number | null
+          threshold_metric?: string
+          threshold_value?: number
+        }
+        Relationships: []
+      }
       psre_abundance_flywheel: {
         Row: {
           abundance_composite_score: number
