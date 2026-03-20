@@ -149,6 +149,7 @@ export const DealClosingAutomationPanel = lazyRetry(() => import("./DealClosingA
 export const NetworkEffectSimulatorPanel = lazyRetry(() => import("./NetworkEffectSimulatorPanel"));
 export const GlobalExpansionWarPanel = lazyRetry(() => import("./GlobalExpansionWarPanel"));
 export const MarketplaceOptimizationPanel = lazyRetry(() => import("./MarketplaceOptimizationPanel"));
+export const UnicornNarrativePanel = lazyRetry(() => import("./UnicornNarrativePanel"));
 export const DOMAccuracyReport = lazyRetry(() => import("./DOMAccuracyReport"));
 export const CronJobMonitor = lazyRetry(() => import("./CronJobMonitor"));
 export const WeightTuningHistory = lazyRetry(() => import("./WeightTuningHistory"));
@@ -409,6 +410,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "network-effect-simulator": () => <NetworkEffectSimulatorPanel />,
   "global-expansion-war": () => <GlobalExpansionWarPanel />,
   "marketplace-optimization-ai": () => <MarketplaceOptimizationPanel />,
+  "unicorn-narrative": () => <UnicornNarrativePanel />,
 
   // Content
   "homepage-slider":     () => <HomepageSliderSettings />,
@@ -947,4 +949,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "network-effect-simulator": { label: "Network Effect Simulator", category: "Features" },
   "global-expansion-war": { label: "Global Expansion War Strategy", category: "Features" },
   "marketplace-optimization-ai": { label: "Marketplace Optimization AI", category: "Features" },
+  "unicorn-narrative": { label: "$1B Valuation Narrative", category: "Features" },
 };
