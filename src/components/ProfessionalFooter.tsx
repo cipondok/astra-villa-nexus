@@ -188,7 +188,7 @@ const ProfessionalFooter = ({ language }: ProfessionalFooterProps) => {
       style={{ contain: 'layout style' }}
     >
       {/* Dock — centered, compact */}
-      <div className="flex justify-center mb-2.5">
+      <div className="flex justify-center mb-1.5">
         <Dock items={allDockItems} />
       </div>
 
