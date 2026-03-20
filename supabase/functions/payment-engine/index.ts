@@ -283,7 +283,8 @@ async function generateInvoice(params: Record<string, any>, supabase: any, userI
   return { success: true, invoice };
 }
 
-async function verifyPayment(params: Record<string, any>, supabase: any) {
+async function verifyPayment(params: Record<string, any>, supabase: any, userId: string | null) {
+  if (!userId) throw new Error("Authentication required for payment verification");
   const { order_id } = params;
   if (!order_id) throw new Error("order_id required");
 
