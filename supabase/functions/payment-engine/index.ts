@@ -392,7 +392,7 @@ serve(async (req) => {
         result = await generateInvoice(params, supabase, userId);
         break;
       case 'verify_payment':
-        result = await verifyPayment(params, supabase);
+        result = await verifyPayment(params, supabase, userId);
         break;
       case 'wallet_operation':
         result = await walletOperation(params, supabase, userId);
