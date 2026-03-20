@@ -1505,6 +1505,13 @@ export const navigationSections = {
       badge: "💎 Scale"
     },
     {
+      key: "ipo-vision-strategy",
+      label: "Global IPO Vision Strategy",
+      icon: Globe,
+      description: "7-year IPO roadmap with readiness pillars, valuation milestones, listing strategy, and public market defense",
+      badge: "🌐 IPO"
+    },
+    {
       key: "investor-community",
       label: "Investor Community",
       icon: Users,
