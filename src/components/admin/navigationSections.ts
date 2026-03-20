@@ -1491,6 +1491,13 @@ export const navigationSections = {
       badge: "🎯 Fundraising"
     },
     {
+      key: "series-b-pitch",
+      label: "Series B Pitch Narrative",
+      icon: Presentation,
+      description: "12-slide Series B storyline with objection handling, valuation framework, and speaker notes",
+      badge: "🚀 Series B"
+    },
+    {
       key: "investor-community",
       label: "Investor Community",
       icon: Users,
