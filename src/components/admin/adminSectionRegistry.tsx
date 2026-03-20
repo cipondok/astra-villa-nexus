@@ -248,6 +248,7 @@ export const RentalYieldOptimizationPanel = lazyRetry(() => import("./RentalYiel
 export const DeveloperSupplyAcquisitionPanel = lazyRetry(() => import("./DeveloperSupplyAcquisitionPanel"));
 export const HyperGrowthKPIPanel = lazyRetry(() => import("./HyperGrowthKPIPanel"));
 export const SmartRecommendationPanel = lazyRetry(() => import("./SmartRecommendationPanel"));
+export const CommissionOptimizationPanel = lazyRetry(() => import("./CommissionOptimizationPanel"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
