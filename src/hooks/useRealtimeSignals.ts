@@ -190,6 +190,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   icd_engine_cycle: { label: 'Capital Domination', icon: '🏛️' },
   pmlg_self_reinforcing: { label: 'Self-Reinforcing Loop', icon: '♾️' },
   pmlg_engine_cycle: { label: 'Market Liquidity', icon: '💧' },
+  ipoex_milestone_blocked: { label: 'Milestone Blocked', icon: '🚫' },
+  ipoex_engine_cycle: { label: 'IPO Timeline', icon: '📅' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
