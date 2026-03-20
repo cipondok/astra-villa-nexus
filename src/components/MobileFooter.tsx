@@ -1,5 +1,6 @@
 import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useLocation } from 'react-router-dom';
 import { 
   Phone, Mail, Facebook, Instagram, 
   MessageCircle, Youtube, Twitter, Music2
@@ -10,6 +11,10 @@ import { cn } from '@/lib/utils';
 const MobileFooter = () => {
   const { isMobile } = useIsMobile();
   const { settings } = useSocialMediaSettings();
+  const { pathname } = useLocation();
+
+  const hiddenRoutes = ['/post-property', '/add-property', '/auth'];
+  const isHiddenRoute = hiddenRoutes.some(r => pathname.startsWith(r));
 
   const socialLinks = [
     { url: settings.facebookUrl, Icon: Facebook, label: 'Facebook' },
@@ -26,7 +31,7 @@ const MobileFooter = () => {
     return link.url.startsWith('http') ? link.url : `https://${link.url}`;
   };
 
-  if (!isMobile) return null;
+  if (!isMobile || isHiddenRoute) return null;
 
   return (
     <footer

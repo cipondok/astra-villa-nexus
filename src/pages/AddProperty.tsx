@@ -192,7 +192,7 @@ const AddProperty = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-[100dvh] bg-background pb-20 md:pb-0">
       {/* Sticky Header */}
       <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
         <div className="container mx-auto px-3 sm:px-4 py-3 flex items-center justify-between">
