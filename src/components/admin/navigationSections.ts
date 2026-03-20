@@ -1755,6 +1755,83 @@ export const navigationSections = {
       icon: Clock,
       description: "Focused daily sprint — product improvement, marketplace supply, investor demand, strategy, and quality",
       badge: "⏱️ Daily"
+    },
+    {
+      key: "vendor-monetization-pyramid",
+      label: "Vendor Monetization Pyramid",
+      icon: DollarSign,
+      description: "5-level vendor revenue flywheel — from free acquisition to enterprise contracts",
+      badge: "💰 Revenue"
+    },
+    {
+      key: "institutional-saas-blueprint",
+      label: "Institutional SaaS Blueprint",
+      icon: Building2,
+      description: "Bloomberg Terminal for real estate — 5 modules for family offices, funds, and pension capital",
+      badge: "🏛️ Institutional"
+    },
+    {
+      key: "revenue-scaling-blueprint",
+      label: "Revenue Scaling Blueprint",
+      icon: TrendingUp,
+      description: "4-stage path from $0 to $100M ARR with revenue mix evolution",
+      badge: "📈 Scaling"
+    },
+    {
+      key: "monetization-pricing-blueprint",
+      label: "Monetization Pricing",
+      icon: Coins,
+      description: "Complete investor, vendor, and transaction fee pricing architecture",
+      badge: "💲 Pricing"
+    },
+    {
+      key: "sprint-execution-roadmap",
+      label: "Sprint Execution Roadmap",
+      icon: Layers,
+      description: "12-week engineering roadmap — 5 sprints, 22 deliverables from decision UI to institutional features",
+      badge: "🏗️ Sprints"
+    },
+    {
+      key: "marketplace-launch-playbook",
+      label: "Marketplace Launch Playbook",
+      icon: Rocket,
+      description: "5-phase go-to-market — supply seeding to marketplace lock-in with network effects",
+      badge: "🚀 GTM"
+    },
+    {
+      key: "city-launch-playbook",
+      label: "City Launch Playbook",
+      icon: MapPin,
+      description: "6-step repeatable blueprint to transform any city into a self-sustaining liquidity hub",
+      badge: "🏙️ Expansion"
+    },
+    {
+      key: "revenue-projection-model",
+      label: "12-Month Revenue Projection",
+      icon: Calculator,
+      description: "Interactive financial model — Rp0 to Rp18B+ ARR across subscriptions, vendor SaaS, and transaction fees",
+      badge: "📊 Finance"
+    },
+    {
+      key: "investor-kpi-framework-page",
+      label: "Investor KPI Framework",
+      icon: Target,
+      description: "24 institutional-grade metrics across liquidity, depth, revenue, network effects, and AI advantage",
+      badge: "📋 KPIs"
+    },
+    {
+      key: "vendor-acquisition-scripts",
+      label: "Vendor Acquisition Scripts",
+      icon: MessageSquare,
+      description: "WhatsApp outreach and follow-up scripts with persuasion psychology breakdowns",
+      badge: "💬 Scripts"
+    },
+    {
+      key: "feature-impact-matrix",
+      label: "Feature Impact Matrix",
+      icon: Flame,
+      description: "3-tier prioritization — high valuation impact features first, growth multipliers second, polish last",
+      badge: "🔥 Priority"
     }
   ],
 

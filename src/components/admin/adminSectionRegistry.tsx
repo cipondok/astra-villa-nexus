@@ -279,6 +279,19 @@ export const NinetyDayRoadmap = lazyRetry(() => import("./NinetyDayRoadmap"));
 export const DailyExecutionPlan = lazyRetry(() => import("./DailyExecutionPlan"));
 export const FounderStrategicKPIs = lazyRetry(() => import("./FounderStrategicKPIs"));
 
+// Strategic blueprint pages (from /pages)
+export const VendorMonetizationPyramidPage = lazyRetry(() => import("@/pages/VendorMonetizationPyramidPage"));
+export const InstitutionalSaaSBlueprintPage = lazyRetry(() => import("@/pages/InstitutionalSaaSBlueprintPage"));
+export const RevenueScalingBlueprintPage = lazyRetry(() => import("@/pages/RevenueScalingBlueprintPage"));
+export const MonetizationPricingPage = lazyRetry(() => import("@/pages/MonetizationPricingPage"));
+export const SprintExecutionRoadmapPage = lazyRetry(() => import("@/pages/SprintExecutionRoadmapPage"));
+export const MarketplaceLaunchPlaybookPage = lazyRetry(() => import("@/pages/MarketplaceLaunchPlaybookPage"));
+export const CityLaunchPlaybookPage = lazyRetry(() => import("@/pages/CityLaunchPlaybookPage"));
+export const RevenueProjectionModelPage = lazyRetry(() => import("@/pages/RevenueProjectionModelPage"));
+export const InvestorKPIFrameworkPage = lazyRetry(() => import("@/pages/InvestorKPIFrameworkPage"));
+export const VendorAcquisitionScriptsPage = lazyRetry(() => import("@/pages/VendorAcquisitionScriptsPage"));
+export const FeatureImpactMatrixPage = lazyRetry(() => import("@/pages/FeatureImpactMatrixPage"));
+
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
 // Sections with custom props are listed explicitly; all others are simple <Component />.
@@ -599,6 +612,19 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ninety-day-roadmap": () => <NinetyDayRoadmap />,
   "daily-execution-plan": () => <DailyExecutionPlan />,
   "founder-strategic-kpis": () => <FounderStrategicKPIs />,
+
+  // Strategic blueprint pages
+  "vendor-monetization-pyramid": () => <VendorMonetizationPyramidPage />,
+  "institutional-saas-blueprint": () => <InstitutionalSaaSBlueprintPage />,
+  "revenue-scaling-blueprint": () => <RevenueScalingBlueprintPage />,
+  "monetization-pricing-blueprint": () => <MonetizationPricingPage />,
+  "sprint-execution-roadmap": () => <SprintExecutionRoadmapPage />,
+  "marketplace-launch-playbook": () => <MarketplaceLaunchPlaybookPage />,
+  "city-launch-playbook": () => <CityLaunchPlaybookPage />,
+  "revenue-projection-model": () => <RevenueProjectionModelPage />,
+  "investor-kpi-framework-page": () => <InvestorKPIFrameworkPage />,
+  "vendor-acquisition-scripts": () => <VendorAcquisitionScriptsPage />,
+  "feature-impact-matrix": () => <FeatureImpactMatrixPage />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -837,4 +863,15 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ninety-day-roadmap": { label: "90-Day Execution Roadmap", category: "Features" },
   "daily-execution-plan": { label: "8-Hour Execution Plan", category: "Features" },
   "founder-strategic-kpis": { label: "Founder Strategic KPIs", category: "Features" },
+  "vendor-monetization-pyramid": { label: "Vendor Monetization Pyramid", category: "Features" },
+  "institutional-saas-blueprint": { label: "Institutional SaaS Blueprint", category: "Features" },
+  "revenue-scaling-blueprint": { label: "Revenue Scaling Blueprint", category: "Features" },
+  "monetization-pricing-blueprint": { label: "Monetization Pricing", category: "Features" },
+  "sprint-execution-roadmap": { label: "Sprint Execution Roadmap", category: "Features" },
+  "marketplace-launch-playbook": { label: "Marketplace Launch Playbook", category: "Features" },
+  "city-launch-playbook": { label: "City Launch Playbook", category: "Features" },
+  "revenue-projection-model": { label: "12-Month Revenue Projection", category: "Features" },
+  "investor-kpi-framework-page": { label: "Investor KPI Framework", category: "Features" },
+  "vendor-acquisition-scripts": { label: "Vendor Acquisition Scripts", category: "Features" },
+  "feature-impact-matrix": { label: "Feature Impact Matrix", category: "Features" },
 };
