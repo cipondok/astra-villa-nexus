@@ -327,8 +327,8 @@ function ExpansionSlide({ slide }: { slide: typeof slides[7] }) {
             <div className="mt-3 text-sm font-medium text-foreground leading-relaxed">{p.cities}</div>
             <div className={cn(
               "mt-3 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full inline-block",
-              i === 0 ? "bg-green-500/10 text-green-700 dark:text-green-400" 
-              : i === 1 ? "bg-amber-500/10 text-amber-700 dark:text-amber-400"
+              i === 0 ? "bg-primary/10 text-primary" 
+              : i === 1 ? "bg-accent text-accent-foreground"
               : "bg-muted text-muted-foreground"
             )}>
               {p.status}
