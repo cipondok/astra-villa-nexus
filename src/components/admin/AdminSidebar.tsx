@@ -26,6 +26,7 @@ import { Input } from '@/components/ui/input';
 
 const categoryIcons: Record<string, LucideIcon> = {
   "overview": LayoutDashboard,
+  "operations": Cpu,
   "investor-management": Globe,
   "transactions": DollarSign,
   "astra-token": Coins,
@@ -37,7 +38,7 @@ const categoryIcons: Record<string, LucideIcon> = {
   "analytics-monitoring": BarChart3,
   "content-settings": Palette,
   "system-settings": Settings,
-  "technical": Cpu,
+  "technical": Settings,
   "features": Sparkles,
   "help": HelpCircle,
 };
