@@ -277,6 +277,7 @@ export const RiskMitigationStrategy = lazyRetry(() => import("./RiskMitigationSt
 export const UltimateMasterPlan = lazyRetry(() => import("./UltimateMasterPlan"));
 export const NinetyDayRoadmap = lazyRetry(() => import("./NinetyDayRoadmap"));
 export const DailyExecutionPlan = lazyRetry(() => import("./DailyExecutionPlan"));
+export const FounderStrategicKPIs = lazyRetry(() => import("./FounderStrategicKPIs"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
@@ -597,6 +598,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ultimate-master-plan": () => <UltimateMasterPlan />,
   "ninety-day-roadmap": () => <NinetyDayRoadmap />,
   "daily-execution-plan": () => <DailyExecutionPlan />,
+  "founder-strategic-kpis": () => <FounderStrategicKPIs />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -834,4 +836,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ultimate-master-plan": { label: "Ultimate Master Plan", category: "Features" },
   "ninety-day-roadmap": { label: "90-Day Execution Roadmap", category: "Features" },
   "daily-execution-plan": { label: "8-Hour Execution Plan", category: "Features" },
+  "founder-strategic-kpis": { label: "Founder Strategic KPIs", category: "Features" },
 };
