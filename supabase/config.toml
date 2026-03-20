@@ -558,3 +558,6 @@ verify_jwt = false
 
 [functions.proptech-civilization-blueprint]
 verify_jwt = false
+
+[functions.ai-human-symbiosis]
+verify_jwt = false

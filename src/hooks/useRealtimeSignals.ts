@@ -168,6 +168,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   fspcm_engine_cycle: { label: 'Founder Power Engine', icon: '👑' },
   hycb_autonomous_city: { label: 'Autonomous City', icon: '🏙️' },
   hycb_engine_cycle: { label: 'Century Blueprint', icon: '🌐' },
+  ahcss_copilot_autonomous: { label: 'Copilot Autonomous', icon: '🤖' },
+  ahcss_engine_cycle: { label: 'AI-Human Symbiosis', icon: '🧬' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */
