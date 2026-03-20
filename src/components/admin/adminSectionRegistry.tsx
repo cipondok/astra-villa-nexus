@@ -292,6 +292,7 @@ export const InvestorKPIFrameworkPage = lazyRetry(() => import("@/pages/Investor
 export const VendorAcquisitionScriptsPage = lazyRetry(() => import("@/pages/VendorAcquisitionScriptsPage"));
 export const FeatureImpactMatrixPage = lazyRetry(() => import("@/pages/FeatureImpactMatrixPage"));
 export const LaunchExecutionKitPage = lazyRetry(() => import("@/pages/LaunchExecutionKitPage"));
+export const CacLtvModelPage = lazyRetry(() => import("@/pages/CacLtvModelPage"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
@@ -627,6 +628,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "vendor-acquisition-scripts": () => <VendorAcquisitionScriptsPage />,
   "feature-impact-matrix": () => <FeatureImpactMatrixPage />,
   "launch-execution-kit": () => <LaunchExecutionKitPage />,
+  "cac-ltv-model": () => <CacLtvModelPage />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -877,4 +879,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "vendor-acquisition-scripts": { label: "Vendor Acquisition Scripts", category: "Features" },
   "feature-impact-matrix": { label: "Feature Impact Matrix", category: "Features" },
   "launch-execution-kit": { label: "Launch Execution Kit", category: "Features" },
+  "cac-ltv-model": { label: "CAC vs LTV Model", category: "Features" },
 };
