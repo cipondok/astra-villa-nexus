@@ -771,6 +771,13 @@ export const navigationSections = {
       badge: "🏗️ Supply AI"
     },
     {
+      key: "hyper-growth-kpi",
+      label: "Hyper-Growth KPI Center",
+      icon: Activity,
+      description: "Real-time KPI command center — liquidity, revenue, user growth & operational efficiency with alerts",
+      badge: "📊 Executive"
+    },
+    {
       key: "workforce-scheduler",
       label: "Workforce Scheduler",
       icon: Clock,
