@@ -480,3 +480,6 @@ verify_jwt = false
 
 [functions.post-human-economic-systems]
 verify_jwt = false
+
+[functions.planetary-governance-capital]
+verify_jwt = false
