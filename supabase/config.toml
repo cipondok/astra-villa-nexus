@@ -486,3 +486,6 @@ verify_jwt = false
 
 [functions.infinite-horizon-wealth]
 verify_jwt = false
+
+[functions.category-creator-narrative]
+verify_jwt = false
