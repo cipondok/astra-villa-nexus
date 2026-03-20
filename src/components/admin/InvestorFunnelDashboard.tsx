@@ -3,13 +3,112 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Target, TrendingUp, Users, Eye, Megaphone, FileText, Youtube, Linkedin,
   Search, Bell, BarChart3, Shield, Heart, Trophy, ArrowRight, ChevronRight,
   Zap, Crown, Star, Gift, Mail, Layers, Globe, LineChart, Lock, Sparkles,
   BookOpen, Download, CheckCircle2, Circle, Clock, AlertTriangle,
+  ArrowUpRight, ArrowDownRight, Activity, DollarSign,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  AreaChart, Area, BarChart, Bar, XAxis, YAxis,
+  CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
+} from "recharts";
+
+// ── Live Metrics Hook ──
+
+function useInvestorFunnelMetrics() {
+  return useQuery({
+    queryKey: ['investor-funnel-metrics'],
+    queryFn: async () => {
+      const now = new Date();
+      const d30 = new Date(now.getTime() - 30 * 86400000).toISOString();
+      const d60 = new Date(now.getTime() - 60 * 86400000).toISOString();
+
+      const [
+        signupsRes,
+        prevSignupsRes,
+        activeSubsRes,
+        offersRes,
+        referralsRes,
+        analyticsRes,
+        churnedRes,
+      ] = await Promise.all([
+        supabase.from('profiles').select('id', { count: 'exact', head: true }).gte('created_at', d30),
+        supabase.from('profiles').select('id', { count: 'exact', head: true }).gte('created_at', d60).lt('created_at', d30),
+        supabase.from('user_subscriptions').select('id', { count: 'exact', head: true }).eq('status', 'active'),
+        supabase.from('property_offers').select('id, status', { count: 'exact' }).gte('created_at', d30),
+        supabase.from('acquisition_referrals').select('id, status', { count: 'exact' }).gte('created_at', d30),
+        supabase.from('acquisition_analytics').select('channel, impressions, clicks, signups, conversions, spend, revenue').gte('date', d30.split('T')[0]),
+        supabase.from('user_subscriptions').select('id', { count: 'exact', head: true }).eq('status', 'cancelled').gte('updated_at', d30),
+      ]);
+
+      const signups30 = signupsRes.count ?? 0;
+      const signupsPrev = prevSignupsRes.count ?? 0;
+      const activeSubs = activeSubsRes.count ?? 0;
+      const offers = offersRes.data ?? [];
+      const totalOffers = offersRes.count ?? 0;
+      const acceptedOffers = offers.filter(o => o.status === 'accepted' || o.status === 'completed').length;
+      const referrals = referralsRes.count ?? 0;
+      const churned = churnedRes.count ?? 0;
+
+      // Channel analytics
+      const analytics = analyticsRes.data ?? [];
+      const totalImpressions = analytics.reduce((s, a) => s + (a.impressions ?? 0), 0);
+      const totalClicks = analytics.reduce((s, a) => s + (a.clicks ?? 0), 0);
+      const totalSpend = analytics.reduce((s, a) => s + (a.spend ?? 0), 0);
+      const totalConversions = analytics.reduce((s, a) => s + (a.conversions ?? 0), 0);
+      const totalRevenue = analytics.reduce((s, a) => s + (a.revenue ?? 0), 0);
+
+      // Channel breakdown
+      const channelMap = new Map<string, { impressions: number; clicks: number; signups: number; spend: number; conversions: number }>();
+      for (const a of analytics) {
+        const ch = a.channel || 'direct';
+        const existing = channelMap.get(ch) ?? { impressions: 0, clicks: 0, signups: 0, spend: 0, conversions: 0 };
+        channelMap.set(ch, {
+          impressions: existing.impressions + (a.impressions ?? 0),
+          clicks: existing.clicks + (a.clicks ?? 0),
+          signups: existing.signups + (a.signups ?? 0),
+          spend: existing.spend + (a.spend ?? 0),
+          conversions: existing.conversions + (a.conversions ?? 0),
+        });
+      }
+      const channels = Array.from(channelMap.entries()).map(([name, data]) => ({
+        name,
+        ...data,
+        ctr: data.impressions > 0 ? (data.clicks / data.impressions * 100) : 0,
+        cpa: data.conversions > 0 ? Math.round(data.spend / data.conversions) : 0,
+      })).sort((a, b) => b.conversions - a.conversions);
+
+      const cpa = totalConversions > 0 ? Math.round(totalSpend / totalConversions) : 0;
+      const signupGrowth = signupsPrev > 0 ? Math.round(((signups30 - signupsPrev) / signupsPrev) * 100) : signups30 > 0 ? 100 : 0;
+      const dealParticipationRate = signups30 > 0 ? Math.round((totalOffers / signups30) * 100) : 0;
+      const subConversionRate = signups30 > 0 ? Math.round((activeSubs / Math.max(signups30, activeSubs)) * 100) : 0;
+      const churnRate = activeSubs > 0 ? Math.round((churned / (activeSubs + churned)) * 100) : 0;
+
+      // Estimated LTV (avg sub price × avg retention months)
+      const avgSubPrice = 500_000;
+      const avgRetentionMonths = churnRate > 0 ? Math.min(24, Math.round(100 / churnRate)) : 16;
+      const ltv = avgSubPrice * avgRetentionMonths;
+      const ltvCacRatio = cpa > 0 ? Math.round((ltv / cpa) * 10) / 10 : 0;
+
+      return {
+        signups30, signupsPrev, signupGrowth,
+        activeSubs, churned, churnRate,
+        totalOffers, acceptedOffers, dealParticipationRate,
+        referrals,
+        totalImpressions, totalClicks, totalSpend, totalConversions, totalRevenue,
+        cpa, subConversionRate, ltv, ltvCacRatio, avgRetentionMonths,
+        channels,
+      };
+    },
+    staleTime: 60_000,
+  });
+}
 
 // ── Funnel Stage Config ──
 
@@ -27,83 +126,58 @@ interface FunnelStage {
 
 const funnelStages: FunnelStage[] = [
   {
-    key: "awareness",
-    label: "1 — Awareness",
-    icon: Eye,
-    color: "text-chart-4",
-    bg: "bg-chart-4/10",
-    border: "border-chart-4/30",
-    targetMetric: "Monthly Impressions",
-    targetValue: "500K+",
+    key: "awareness", label: "1 — Awareness", icon: Eye,
+    color: "text-chart-4", bg: "bg-chart-4/10", border: "border-chart-4/30",
+    targetMetric: "Monthly Impressions", targetValue: "500K+",
     channels: [
-      { name: "SEO Investment Articles", icon: Search, tactic: "Publish 20+ Indonesian property investment trend articles targeting long-tail keywords like 'investasi properti Bali 2026', 'ROI apartemen Jakarta'", kpi: "50K organic visits/mo by Day 90" },
-      { name: "YouTube Educational Series", icon: Youtube, tactic: "Weekly 8-12 min videos: 'AI Property Analysis', 'Hidden Gem Locations', 'Investment Mistakes to Avoid' — Indonesian language", kpi: "10K subscribers, 100K views/mo" },
-      { name: "LinkedIn Thought Leadership", icon: Linkedin, tactic: "Daily posts on property market data, AI insights, investment case studies — target HNW professionals and diaspora investors", kpi: "5K followers, 2% engagement rate" },
-      { name: "Google Ads — Search Intent", icon: Globe, tactic: "Bid on 'beli properti investasi', 'properti ROI tinggi', 'apartemen dijual Jakarta' — landing page with AI valuation preview", kpi: "CPC < Rp 3,000, CTR > 4%" },
+      { name: "SEO Investment Articles", icon: Search, tactic: "Publish 20+ Indonesian property investment trend articles targeting long-tail keywords", kpi: "50K organic visits/mo by Day 90" },
+      { name: "YouTube Educational Series", icon: Youtube, tactic: "Weekly 8-12 min videos: AI Property Analysis, Hidden Gems, Investment Mistakes", kpi: "10K subscribers, 100K views/mo" },
+      { name: "LinkedIn Thought Leadership", icon: Linkedin, tactic: "Daily posts on property market data, AI insights, investment case studies", kpi: "5K followers, 2% engagement" },
+      { name: "Google Ads — Search Intent", icon: Globe, tactic: "Bid on 'beli properti investasi', 'properti ROI tinggi' — AI valuation preview landing", kpi: "CPC < Rp 3K, CTR > 4%" },
     ],
   },
   {
-    key: "lead_capture",
-    label: "2 — Lead Capture",
-    icon: Target,
-    color: "text-primary",
-    bg: "bg-primary/10",
-    border: "border-primary/30",
-    targetMetric: "Monthly Leads",
-    targetValue: "2,000+",
+    key: "lead_capture", label: "2 — Lead Capture", icon: Target,
+    color: "text-primary", bg: "bg-primary/10", border: "border-primary/30",
+    targetMetric: "Monthly Leads", targetValue: "2,000+",
     channels: [
-      { name: "Investment Market Report", icon: Download, tactic: "Quarterly downloadable PDF: 'Indonesia Property Investment Outlook Q2 2026' — gated behind email + phone capture form", kpi: "15% landing page conversion rate" },
-      { name: "AI Opportunity Alerts Subscription", icon: Bell, tactic: "Free alert signup: 'Get notified when AI detects undervalued properties in your target areas' — drip sequence of 5 emails", kpi: "25% email open rate, 8% click rate" },
-      { name: "Investment Calculator Tool", icon: LineChart, tactic: "Interactive ROI calculator: input budget, location, property type → AI projects 5-year returns, rental yield, capital appreciation", kpi: "40% tool completion rate → 20% lead capture" },
-      { name: "WhatsApp Investment Community", icon: Users, tactic: "Exclusive investor group with weekly market updates, deal alerts, and Q&A sessions — funnel from all channels", kpi: "500 active members by Day 60" },
+      { name: "Investment Market Report", icon: Download, tactic: "Quarterly downloadable PDF gated behind email + phone capture form", kpi: "15% landing page CVR" },
+      { name: "AI Opportunity Alerts", icon: Bell, tactic: "Free alert signup with 5-email drip sequence nurturing", kpi: "25% open rate, 8% click rate" },
+      { name: "ROI Calculator Tool", icon: LineChart, tactic: "Interactive tool: input budget → AI projects 5-year returns", kpi: "40% completion → 20% capture" },
+      { name: "WhatsApp Community", icon: Users, tactic: "Exclusive investor group with weekly market updates and deal alerts", kpi: "500 active members by Day 60" },
     ],
   },
   {
-    key: "conversion",
-    label: "3 — Conversion",
-    icon: Zap,
-    color: "text-chart-1",
-    bg: "bg-chart-1/10",
-    border: "border-chart-1/30",
-    targetMetric: "Monthly Conversions",
-    targetValue: "200+",
+    key: "conversion", label: "3 — Conversion", icon: Zap,
+    color: "text-chart-1", bg: "bg-chart-1/10", border: "border-chart-1/30",
+    targetMetric: "Monthly Conversions", targetValue: "200+",
     channels: [
-      { name: "Investor Dashboard Preview", icon: BarChart3, tactic: "Freemium dashboard showing 3 AI-scored properties with blurred premium insights — upgrade CTA after 2nd property view", kpi: "30% free-to-trial conversion" },
-      { name: "Premium Insights Teaser", icon: Lock, tactic: "Show partial AI analysis (investment score, market trend) with 'Unlock Full Report' gate — reveal deal rating, fair value, 5yr forecast", kpi: "15% teaser-to-premium conversion" },
-      { name: "1-on-1 Investment Consultation", icon: Users, tactic: "For leads scoring > 80 on engagement: free 15-min AI-powered portfolio review call with investment advisor", kpi: "40% consultation booking rate" },
-      { name: "Limited-Time Early Investor Offer", icon: Gift, tactic: "First 100 premium subscribers get 3 months at 50% off + exclusive access to pre-launch property deals", kpi: "60% offer acceptance rate" },
+      { name: "Freemium Dashboard", icon: BarChart3, tactic: "Show 3 AI-scored properties with blurred premium insights — upgrade CTA", kpi: "30% free-to-trial" },
+      { name: "Premium Insights Teaser", icon: Lock, tactic: "Partial AI analysis with 'Unlock Full Report' gate", kpi: "15% teaser-to-premium" },
+      { name: "1-on-1 Consultation", icon: Users, tactic: "Free 15-min AI-powered portfolio review for high-score leads", kpi: "40% booking rate" },
+      { name: "Early Investor Offer", icon: Gift, tactic: "First 100 subscribers: 3 months at 50% off + exclusive pre-launch deals", kpi: "60% offer acceptance" },
     ],
   },
   {
-    key: "trust_building",
-    label: "4 — Trust Building",
-    icon: Shield,
-    color: "text-chart-3",
-    bg: "bg-chart-3/10",
-    border: "border-chart-3/30",
-    targetMetric: "Trust Score",
-    targetValue: "85/100",
+    key: "trust_building", label: "4 — Trust Building", icon: Shield,
+    color: "text-chart-3", bg: "bg-chart-3/10", border: "border-chart-3/30",
+    targetMetric: "Trust Score", targetValue: "85/100",
     channels: [
-      { name: "Data-Driven Market Insights", icon: BarChart3, tactic: "Publish weekly 'Market Pulse' reports with real transaction data, price trends, and AI predictions — establish authority as data source", kpi: "30% report share rate" },
-      { name: "Success Case Storytelling", icon: Trophy, tactic: "Monthly investor case studies: 'How Pak Budi found a 12% ROI villa in Bali using AI signals' — video + blog format", kpi: "5 published cases by Day 60" },
-      { name: "Transparent AI Methodology", icon: BookOpen, tactic: "Published scoring methodology page explaining how AI calculates investment scores, data sources, and accuracy metrics", kpi: "2 min avg time on page" },
-      { name: "Community Social Proof", icon: Star, tactic: "Display real-time investor activity feed, total properties analyzed, aggregate portfolio performance — build credibility through scale", kpi: "500+ verified investor reviews" },
+      { name: "Market Pulse Reports", icon: BarChart3, tactic: "Weekly reports with real transaction data, price trends, AI predictions", kpi: "30% report share rate" },
+      { name: "Success Case Studies", icon: Trophy, tactic: "Monthly investor success stories in video + blog format", kpi: "5 published cases by Day 60" },
+      { name: "AI Methodology Page", icon: BookOpen, tactic: "Published scoring methodology with accuracy metrics", kpi: "2 min avg time on page" },
+      { name: "Social Proof Feed", icon: Star, tactic: "Real-time investor activity, aggregate portfolio performance", kpi: "500+ verified reviews" },
     ],
   },
   {
-    key: "retention",
-    label: "5 — Retention Loop",
-    icon: Heart,
-    color: "text-destructive",
-    bg: "bg-destructive/10",
-    border: "border-destructive/30",
-    targetMetric: "Monthly Retention",
-    targetValue: "75%+",
+    key: "retention", label: "5 — Retention Loop", icon: Heart,
+    color: "text-destructive", bg: "bg-destructive/10", border: "border-destructive/30",
+    targetMetric: "Monthly Retention", targetValue: "75%+",
     channels: [
-      { name: "Recurring Opportunity Notifications", icon: Bell, tactic: "AI-triggered alerts when new properties match investor criteria — smart timing based on user activity patterns", kpi: "35% notification open rate" },
-      { name: "Portfolio Performance Tracking", icon: LineChart, tactic: "Monthly portfolio value updates, rental yield tracking, market position comparison — 'Your properties outperformed market by 3.2%'", kpi: "60% monthly active users" },
-      { name: "Investor Loyalty Tiers", icon: Crown, tactic: "Silver → Gold → Platinum → Diamond progression: more AI credits, early deal access, priority support, exclusive events", kpi: "40% tier upgrade rate within 6 months" },
-      { name: "Quarterly Investment Review", icon: FileText, tactic: "Personalized AI-generated investment performance report with next-quarter recommendations and market outlook", kpi: "80% report open rate" },
+      { name: "Smart Notifications", icon: Bell, tactic: "AI-triggered alerts when properties match investor criteria", kpi: "35% notification open rate" },
+      { name: "Portfolio Tracking", icon: LineChart, tactic: "Monthly value updates, yield tracking, market comparison", kpi: "60% monthly active users" },
+      { name: "Loyalty Tiers", icon: Crown, tactic: "Silver → Gold → Platinum → Diamond: AI credits, early access, priority support", kpi: "40% tier upgrade in 6 months" },
+      { name: "Quarterly Review", icon: FileText, tactic: "AI-generated performance report with next-quarter recommendations", kpi: "80% report open rate" },
     ],
   },
 ];
@@ -173,7 +247,7 @@ const weeklyPlan: WeekPlan[] = [
   {
     week: 6, phase: "Phase 2", phaseColor: "text-primary", focus: "Conversion Optimization",
     tasks: [
-      { task: "Launch 1-on-1 investment consultation for high-score leads", owner: "Sales", priority: "critical" },
+      { task: "Launch 1-on-1 consultation for high-score leads", owner: "Sales", priority: "critical" },
       { task: "Deploy early investor offer (100 slots at 50% off)", owner: "Growth", priority: "critical" },
       { task: "Publish 2nd investor success case study", owner: "Content", priority: "high" },
       { task: "Optimize email drip based on open/click data", owner: "Marketing", priority: "medium" },
@@ -183,7 +257,7 @@ const weeklyPlan: WeekPlan[] = [
   {
     week: 7, phase: "Phase 2", phaseColor: "text-primary", focus: "Trust Acceleration",
     tasks: [
-      { task: "Launch weekly 'Market Pulse' report series", owner: "Research", priority: "critical" },
+      { task: "Launch weekly Market Pulse report series", owner: "Research", priority: "critical" },
       { task: "Deploy social proof elements (activity feed, stats)", owner: "Product", priority: "high" },
       { task: "3rd YouTube video + community engagement push", owner: "Content", priority: "high" },
       { task: "Collect and publish first 50 investor reviews", owner: "Community", priority: "medium" },
@@ -203,9 +277,9 @@ const weeklyPlan: WeekPlan[] = [
   {
     week: 9, phase: "Phase 3", phaseColor: "text-chart-1", focus: "Full Funnel Optimization",
     tasks: [
-      { task: "Analyze full funnel metrics — identify biggest drop-off", owner: "Growth", priority: "critical" },
+      { task: "Analyze full funnel — identify biggest drop-off", owner: "Growth", priority: "critical" },
       { task: "Launch retargeting campaigns for abandoned signups", owner: "Performance", priority: "high" },
-      { task: "Articles 16-20 published (complete initial SEO library)", owner: "Content", priority: "high" },
+      { task: "Articles 16-20 (complete initial SEO library)", owner: "Content", priority: "high" },
       { task: "Launch investor loyalty tier system", owner: "Product", priority: "high" },
     ],
     kpis: ["200 premium subscribers", "75% retention rate"],
@@ -215,7 +289,7 @@ const weeklyPlan: WeekPlan[] = [
     tasks: [
       { task: "Launch Enterprise tier for institutional investors", owner: "Product", priority: "critical" },
       { task: "Deploy automated portfolio rebalancing suggestions", owner: "AI", priority: "high" },
-      { task: "Partner with 2 banks for co-branded investment content", owner: "Partnerships", priority: "high" },
+      { task: "Partner with 2 banks for co-branded content", owner: "Partnerships", priority: "high" },
       { task: "5th investor case study + video testimonial", owner: "Content", priority: "medium" },
     ],
     kpis: ["20 Enterprise signups", "Rp 500M tracked portfolio value"],
@@ -223,10 +297,10 @@ const weeklyPlan: WeekPlan[] = [
   {
     week: 11, phase: "Phase 3", phaseColor: "text-chart-1", focus: "Referral Loop",
     tasks: [
-      { task: "Launch investor referral program (refer → get 1 month free)", owner: "Growth", priority: "critical" },
+      { task: "Launch referral program (refer → 1 month free)", owner: "Growth", priority: "critical" },
       { task: "Deploy viral sharing for AI property scores", owner: "Product", priority: "high" },
       { task: "Host first virtual investor meetup event", owner: "Community", priority: "high" },
-      { task: "Publish 'State of Indonesia Property Investment' annual report", owner: "Research", priority: "medium" },
+      { task: "Publish State of Indonesia Property Investment report", owner: "Research", priority: "medium" },
     ],
     kpis: ["50 referral signups", "500 event registrations"],
   },
@@ -234,18 +308,18 @@ const weeklyPlan: WeekPlan[] = [
     week: 12, phase: "Phase 3", phaseColor: "text-chart-1", focus: "Monetization Validation",
     tasks: [
       { task: "Analyze premium revenue vs CAC — validate unit economics", owner: "Finance", priority: "critical" },
-      { task: "Test premium pricing tiers (current vs +20% vs +40%)", owner: "Growth", priority: "critical" },
-      { task: "Launch AI-powered investment newsletter (weekly digest)", owner: "Content", priority: "high" },
-      { task: "Plan Q3 expansion strategy based on Q2 learnings", owner: "Strategy", priority: "high" },
+      { task: "Test premium pricing tiers (+20% vs +40%)", owner: "Growth", priority: "critical" },
+      { task: "Launch AI-powered investment newsletter", owner: "Content", priority: "high" },
+      { task: "Plan Q3 expansion based on Q2 learnings", owner: "Strategy", priority: "high" },
     ],
     kpis: ["Positive unit economics", "LTV:CAC > 3:1"],
   },
   {
     week: 13, phase: "Phase 3", phaseColor: "text-chart-1", focus: "90-Day Review & Scale Plan",
     tasks: [
-      { task: "Full funnel audit — document conversion rates at each stage", owner: "Growth", priority: "critical" },
+      { task: "Full funnel audit — document conversion rates", owner: "Growth", priority: "critical" },
       { task: "Compile investor growth report for stakeholders", owner: "Strategy", priority: "critical" },
-      { task: "Set Q3 targets: 1,000 premium investors, Rp 2T tracked", owner: "Strategy", priority: "high" },
+      { task: "Set Q3 targets: 1,000 premium, Rp 2T tracked", owner: "Strategy", priority: "high" },
       { task: "Identify top 3 scaling levers for next quarter", owner: "Growth", priority: "high" },
     ],
     kpis: ["300+ premium investors", "75% retention", "LTV:CAC > 3:1"],
@@ -254,7 +328,7 @@ const weeklyPlan: WeekPlan[] = [
 
 // ── Funnel Stage Card ──
 
-function FunnelStageCard({ stage, index }: { stage: FunnelStage; index: number }) {
+function FunnelStageCard({ stage }: { stage: FunnelStage }) {
   const Icon = stage.icon;
   return (
     <Card className={cn("rounded-2xl border-border/30 bg-card/80 overflow-hidden")}>
@@ -339,7 +413,10 @@ function WeeklyPlanSection() {
                   <Badge variant="outline" className="text-[9px] h-5 px-2 font-bold text-foreground bg-muted/20">
                     Week {week.week}
                   </Badge>
-                  <Badge variant="outline" className={cn("text-[8px] h-4 px-1.5", week.phaseColor, `${week.phaseColor === "text-chart-4" ? "bg-chart-4/10 border-chart-4/30" : week.phaseColor === "text-primary" ? "bg-primary/10 border-primary/30" : "bg-chart-1/10 border-chart-1/30"}`)}>
+                  <Badge variant="outline" className={cn("text-[8px] h-4 px-1.5", week.phaseColor,
+                    week.phaseColor === "text-chart-4" ? "bg-chart-4/10 border-chart-4/30" :
+                    week.phaseColor === "text-primary" ? "bg-primary/10 border-primary/30" :
+                    "bg-chart-1/10 border-chart-1/30")}>
                     {week.phase}
                   </Badge>
                   <span className="text-[10px] font-semibold text-foreground">{week.focus}</span>
@@ -453,6 +530,244 @@ function UnitEconomicsCard() {
   );
 }
 
+// ── Live Performance Tab ──
+
+const tooltipStyle = {
+  contentStyle: {
+    background: 'hsl(var(--popover))',
+    border: '1px solid hsl(var(--border))',
+    borderRadius: '8px',
+    color: 'hsl(var(--popover-foreground))',
+    fontSize: '11px',
+  },
+  labelStyle: { color: 'hsl(var(--popover-foreground))' },
+};
+
+const fmtIDR = (v: number) => {
+  if (v >= 1e9) return `Rp ${(v / 1e9).toFixed(1)}B`;
+  if (v >= 1e6) return `Rp ${(v / 1e6).toFixed(0)}M`;
+  if (v >= 1e3) return `Rp ${(v / 1e3).toFixed(0)}K`;
+  return `Rp ${v}`;
+};
+
+const CHANNEL_COLORS = [
+  'hsl(var(--primary))',
+  'hsl(var(--chart-2))',
+  'hsl(var(--chart-4))',
+  'hsl(var(--chart-5))',
+  'hsl(var(--chart-3))',
+  'hsl(var(--chart-1))',
+];
+
+function LivePerformanceTab() {
+  const { data: m, isLoading } = useInvestorFunnelMetrics();
+
+  if (isLoading || !m) {
+    return (
+      <div className="space-y-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+          {[...Array(8)].map((_, i) => <Skeleton key={i} className="h-20 rounded-xl" />)}
+        </div>
+        <Skeleton className="h-64 rounded-xl" />
+      </div>
+    );
+  }
+
+  const kpiCards = [
+    {
+      label: "Signups (30d)", value: m.signups30.toLocaleString(),
+      sub: `vs ${m.signupsPrev} prev`,
+      trend: m.signupGrowth, icon: Users,
+    },
+    {
+      label: "Active Subscribers", value: m.activeSubs.toLocaleString(),
+      sub: `${m.subConversionRate}% conversion`,
+      trend: m.subConversionRate, icon: Crown,
+    },
+    {
+      label: "Deal Participation", value: `${m.totalOffers}`,
+      sub: `${m.acceptedOffers} accepted · ${m.dealParticipationRate}% rate`,
+      trend: m.dealParticipationRate, icon: Target,
+    },
+    {
+      label: "Referrals", value: m.referrals.toLocaleString(),
+      sub: "30-day referral signups",
+      trend: m.referrals > 0 ? 100 : 0, icon: Gift,
+    },
+    {
+      label: "CPA", value: fmtIDR(m.cpa),
+      sub: `From ${m.totalConversions} conversions`,
+      trend: m.cpa > 0 ? -1 : 0, icon: DollarSign,
+    },
+    {
+      label: "LTV", value: fmtIDR(m.ltv),
+      sub: `${m.avgRetentionMonths}mo avg retention`,
+      trend: m.ltv > 0 ? 1 : 0, icon: TrendingUp,
+    },
+    {
+      label: "LTV:CAC", value: m.ltvCacRatio > 0 ? `${m.ltvCacRatio}x` : '—',
+      sub: m.ltvCacRatio >= 3 ? 'Healthy' : 'Below target',
+      trend: m.ltvCacRatio >= 3 ? 1 : -1, icon: BarChart3,
+    },
+    {
+      label: "Churn Rate", value: `${m.churnRate}%`,
+      sub: `${m.churned} cancelled / 30d`,
+      trend: m.churnRate <= 5 ? 1 : -1, icon: AlertTriangle,
+    },
+  ];
+
+  // Channel pie data
+  const channelPie = m.channels.slice(0, 6).map((ch, i) => ({
+    name: ch.name,
+    value: ch.conversions,
+    color: CHANNEL_COLORS[i % CHANNEL_COLORS.length],
+  }));
+
+  // Channel bar data
+  const channelBar = m.channels.slice(0, 6).map(ch => ({
+    name: ch.name.length > 10 ? ch.name.substring(0, 10) + '…' : ch.name,
+    CPA: ch.cpa,
+    Conversions: ch.conversions,
+  }));
+
+  return (
+    <div className="space-y-3">
+      {/* KPI Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        {kpiCards.map((kpi) => {
+          const Icon = kpi.icon;
+          return (
+            <Card key={kpi.label} className="rounded-xl border-border/30 bg-card/80">
+              <CardContent className="p-3">
+                <div className="flex items-center justify-between mb-1">
+                  <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+                  {kpi.trend > 0 ? (
+                    <ArrowUpRight className="h-3 w-3 text-chart-1" />
+                  ) : kpi.trend < 0 ? (
+                    <ArrowDownRight className="h-3 w-3 text-destructive" />
+                  ) : null}
+                </div>
+                <p className="text-lg font-black tabular-nums text-foreground">{kpi.value}</p>
+                <p className="text-[9px] text-muted-foreground">{kpi.label}</p>
+                <p className="text-[8px] text-muted-foreground/70 mt-0.5">{kpi.sub}</p>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+
+      {/* Funnel Flow */}
+      <Card className="rounded-2xl border-border/30 bg-card/80">
+        <CardHeader className="p-4 pb-2">
+          <CardTitle className="text-xs font-bold flex items-center gap-2">
+            <Activity className="h-4 w-4 text-primary" />
+            Live Conversion Funnel — 30 Days
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-4 pt-1 space-y-2">
+          {[
+            { label: "Impressions", value: m.totalImpressions, pct: 100, color: "bg-chart-4/30" },
+            { label: "Clicks", value: m.totalClicks, pct: m.totalImpressions > 0 ? (m.totalClicks / m.totalImpressions * 100) : 0, color: "bg-primary/30" },
+            { label: "Signups", value: m.signups30, pct: m.totalClicks > 0 ? (m.signups30 / m.totalClicks * 100) : 0, color: "bg-chart-2/30" },
+            { label: "Subscribers", value: m.activeSubs, pct: m.signups30 > 0 ? (m.activeSubs / m.signups30 * 100) : 0, color: "bg-chart-1/30" },
+            { label: "Deal Offers", value: m.totalOffers, pct: m.activeSubs > 0 ? (m.totalOffers / m.activeSubs * 100) : 0, color: "bg-chart-3/30" },
+          ].map((stage, i) => (
+            <div key={i} className="flex items-center gap-3">
+              <span className="text-[9px] text-muted-foreground w-20 text-right shrink-0">{stage.label}</span>
+              <div className="flex-1 h-6 rounded-lg overflow-hidden bg-muted/10 relative">
+                <div className={cn("h-full rounded-lg flex items-center justify-between px-2", stage.color)}
+                  style={{ width: `${Math.max(8, Math.min(100, i === 0 ? 100 : stage.pct * 3))}%` }}>
+                  <span className="text-[9px] font-bold text-foreground tabular-nums">{stage.value.toLocaleString()}</span>
+                  {i > 0 && <span className="text-[8px] text-muted-foreground">{stage.pct.toFixed(1)}%</span>}
+                </div>
+              </div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      {/* Channel Performance */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <Card className="rounded-2xl border-border/30 bg-card/80">
+          <CardHeader className="p-4 pb-2">
+            <CardTitle className="text-xs font-bold">Channel Conversion Mix</CardTitle>
+          </CardHeader>
+          <CardContent className="p-4 pt-0">
+            {channelPie.length > 0 ? (
+              <>
+                <ResponsiveContainer width="100%" height={180}>
+                  <PieChart>
+                    <Pie data={channelPie} cx="50%" cy="50%" innerRadius={40} outerRadius={65} dataKey="value" paddingAngle={2}>
+                      {channelPie.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                    </Pie>
+                    <Tooltip {...tooltipStyle} />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="space-y-1 mt-1">
+                  {channelPie.map(ch => (
+                    <div key={ch.name} className="flex items-center justify-between text-[9px]">
+                      <div className="flex items-center gap-1.5">
+                        <div className="h-2 w-2 rounded-full" style={{ background: ch.color }} />
+                        <span className="text-muted-foreground">{ch.name}</span>
+                      </div>
+                      <span className="font-bold tabular-nums text-foreground">{ch.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <p className="text-xs text-muted-foreground py-8 text-center">No channel data yet — launch campaigns to see performance</p>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-2xl border-border/30 bg-card/80">
+          <CardHeader className="p-4 pb-2">
+            <CardTitle className="text-xs font-bold">Channel CPA vs Conversions</CardTitle>
+          </CardHeader>
+          <CardContent className="p-4 pt-0">
+            {channelBar.length > 0 ? (
+              <ResponsiveContainer width="100%" height={240}>
+                <BarChart data={channelBar}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="name" tick={{ fontSize: 8, fill: 'hsl(var(--muted-foreground))' }} />
+                  <YAxis yAxisId="left" tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }} />
+                  <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }} />
+                  <Tooltip {...tooltipStyle} />
+                  <Bar yAxisId="left" dataKey="Conversions" fill="hsl(var(--chart-1))" radius={[3, 3, 0, 0]} />
+                  <Bar yAxisId="right" dataKey="CPA" fill="hsl(var(--chart-4))" radius={[3, 3, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <p className="text-xs text-muted-foreground py-8 text-center">No channel data yet</p>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Spend Summary */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        {[
+          { label: "Total Spend", value: fmtIDR(m.totalSpend) },
+          { label: "Total Revenue", value: fmtIDR(m.totalRevenue) },
+          { label: "ROAS", value: m.totalSpend > 0 ? `${(m.totalRevenue / m.totalSpend).toFixed(1)}x` : '—' },
+          { label: "Impressions", value: m.totalImpressions.toLocaleString() },
+        ].map(item => (
+          <Card key={item.label} className="rounded-xl border-border/30 bg-card/80">
+            <CardContent className="p-3 text-center">
+              <p className="text-[8px] text-muted-foreground uppercase tracking-wider">{item.label}</p>
+              <p className="text-base font-black tabular-nums text-foreground mt-0.5">{item.value}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
+
+
 // ── Main Dashboard ──
 
 const InvestorFunnelDashboard = React.memo(function InvestorFunnelDashboard() {
@@ -466,10 +781,10 @@ const InvestorFunnelDashboard = React.memo(function InvestorFunnelDashboard() {
             <div>
               <CardTitle className="text-base font-bold flex items-center gap-2">
                 <TrendingUp className="h-5 w-5 text-chart-1" />
-                Investor Growth Funnel
+                Investor Acquisition & Conversion War Funnel
               </CardTitle>
               <CardDescription className="text-[11px]">
-                Marketing & conversion strategy to attract property investors — awareness to retention
+                Full-stack investor acquisition — awareness through retention with live performance tracking
               </CardDescription>
             </div>
             <Badge variant="outline" className="text-sm h-7 px-3 font-bold text-primary bg-primary/10 border-primary/30">
@@ -497,19 +812,25 @@ const InvestorFunnelDashboard = React.memo(function InvestorFunnelDashboard() {
       </Card>
 
       {/* Tabs */}
-      <Tabs defaultValue="funnel" className="w-full">
+      <Tabs defaultValue="performance" className="w-full">
         <TabsList className="h-8">
+          <TabsTrigger value="performance" className="text-[10px] h-6 px-3">Live Performance</TabsTrigger>
           <TabsTrigger value="funnel" className="text-[10px] h-6 px-3">Funnel Strategy</TabsTrigger>
           <TabsTrigger value="execution" className="text-[10px] h-6 px-3">Weekly Execution</TabsTrigger>
           <TabsTrigger value="economics" className="text-[10px] h-6 px-3">Unit Economics</TabsTrigger>
         </TabsList>
 
+        {/* Live Performance */}
+        <TabsContent value="performance" className="mt-3">
+          <LivePerformanceTab />
+        </TabsContent>
+
         {/* Funnel Strategy */}
         <TabsContent value="funnel" className="mt-3 space-y-3">
           <FunnelVisualization />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-            {funnelStages.map((stage, i) => (
-              <FunnelStageCard key={stage.key} stage={stage} index={i} />
+            {funnelStages.map((stage) => (
+              <FunnelStageCard key={stage.key} stage={stage} />
             ))}
           </div>
         </TabsContent>
