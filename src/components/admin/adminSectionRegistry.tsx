@@ -626,6 +626,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "investor-kpi-framework-page": () => <InvestorKPIFrameworkPage />,
   "vendor-acquisition-scripts": () => <VendorAcquisitionScriptsPage />,
   "feature-impact-matrix": () => <FeatureImpactMatrixPage />,
+  "launch-execution-kit": () => <LaunchExecutionKitPage />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
