@@ -36,7 +36,7 @@ export function useInvestorScore(overrideWeights?: Partial<ScoringWeights>) {
         .eq('user_id', user.id)
         .gte('created_at', sinceStr);
 
-      const evts = (events ?? []) as { event_type: string; created_at: string }[];
+      const evts = (events ?? []) as unknown as { event_type: string; created_at: string }[];
 
       // Count by type
       const countType = (t: string) => evts.filter(e => e.event_type === t).length;
