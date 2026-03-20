@@ -693,6 +693,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "launch-execution-kit": () => <LaunchExecutionKitPage />,
   "cac-ltv-model": () => <CacLtvModelPage />,
   "ai-negotiation-agent": () => <NegotiationAgentPanel />,
+  "global-brand-authority": () => <GlobalBrandAuthorityPanel />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
