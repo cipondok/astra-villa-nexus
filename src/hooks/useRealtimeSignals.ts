@@ -102,6 +102,8 @@ const EVENT_LABELS: Record<string, { label: string; icon: string }> = {
   gali_engine_cycle: { label: 'Liquidity Internet', icon: '🔗' },
   auwcp_prosperity_surge: { label: 'Prosperity Surge', icon: '🏙️' },
   auwcp_engine_cycle: { label: 'Urban Wealth', icon: '🌆' },
+  gcce_systemic_risk_alert: { label: 'Systemic Risk Alert', icon: '⚠️' },
+  gcce_engine_cycle: { label: 'Capital Consciousness', icon: '🧠' },
 };
 
 /** Subscribe to real-time AI event signals and auto-refresh relevant queries */

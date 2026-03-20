@@ -16432,6 +16432,312 @@ export type Database = {
         }
         Relationships: []
       }
+      gcce_capital_flow_awareness: {
+        Row: {
+          city: string
+          computed_at: string | null
+          created_at: string | null
+          cross_border_flow_pct: number | null
+          flow_direction: string | null
+          flow_momentum: string | null
+          id: string
+          inflow_velocity_usd: number | null
+          investor_sentiment_index: number | null
+          liquidity_concentration_pct: number | null
+          net_flow_usd: number | null
+          opportunity_corridor_score: number | null
+          outflow_velocity_usd: number | null
+          period_end: string | null
+          period_start: string | null
+          region: string
+          sector: string | null
+          sector_rotation_signal: string | null
+        }
+        Insert: {
+          city: string
+          computed_at?: string | null
+          created_at?: string | null
+          cross_border_flow_pct?: number | null
+          flow_direction?: string | null
+          flow_momentum?: string | null
+          id?: string
+          inflow_velocity_usd?: number | null
+          investor_sentiment_index?: number | null
+          liquidity_concentration_pct?: number | null
+          net_flow_usd?: number | null
+          opportunity_corridor_score?: number | null
+          outflow_velocity_usd?: number | null
+          period_end?: string | null
+          period_start?: string | null
+          region: string
+          sector?: string | null
+          sector_rotation_signal?: string | null
+        }
+        Update: {
+          city?: string
+          computed_at?: string | null
+          created_at?: string | null
+          cross_border_flow_pct?: number | null
+          flow_direction?: string | null
+          flow_momentum?: string | null
+          id?: string
+          inflow_velocity_usd?: number | null
+          investor_sentiment_index?: number | null
+          liquidity_concentration_pct?: number | null
+          net_flow_usd?: number | null
+          opportunity_corridor_score?: number | null
+          outflow_velocity_usd?: number | null
+          period_end?: string | null
+          period_start?: string | null
+          region?: string
+          sector?: string | null
+          sector_rotation_signal?: string | null
+        }
+        Relationships: []
+      }
+      gcce_decision_support: {
+        Row: {
+          allocation_recommendation: string | null
+          city: string
+          confidence_level: number | null
+          created_at: string | null
+          decision_urgency: string | null
+          generated_at: string | null
+          id: string
+          investment_thesis: string | null
+          key_insight: string | null
+          macro_signal_summary: string | null
+          opportunity_overlay_score: number | null
+          region: string
+          risk_overlay_score: number | null
+          supporting_signals: Json | null
+          target_investor_profile: string | null
+          timing_recommendation: string | null
+        }
+        Insert: {
+          allocation_recommendation?: string | null
+          city: string
+          confidence_level?: number | null
+          created_at?: string | null
+          decision_urgency?: string | null
+          generated_at?: string | null
+          id?: string
+          investment_thesis?: string | null
+          key_insight?: string | null
+          macro_signal_summary?: string | null
+          opportunity_overlay_score?: number | null
+          region: string
+          risk_overlay_score?: number | null
+          supporting_signals?: Json | null
+          target_investor_profile?: string | null
+          timing_recommendation?: string | null
+        }
+        Update: {
+          allocation_recommendation?: string | null
+          city?: string
+          confidence_level?: number | null
+          created_at?: string | null
+          decision_urgency?: string | null
+          generated_at?: string | null
+          id?: string
+          investment_thesis?: string | null
+          key_insight?: string | null
+          macro_signal_summary?: string | null
+          opportunity_overlay_score?: number | null
+          region?: string
+          risk_overlay_score?: number | null
+          supporting_signals?: Json | null
+          target_investor_profile?: string | null
+          timing_recommendation?: string | null
+        }
+        Relationships: []
+      }
+      gcce_opportunity_cycles: {
+        Row: {
+          city: string
+          computed_at: string | null
+          created_at: string | null
+          cycle_phase: string | null
+          cycle_timing_signal: string | null
+          demographic_growth_score: number | null
+          forecast_horizon_years: number | null
+          id: string
+          infrastructure_pipeline_score: number | null
+          long_term_conviction_index: number | null
+          opportunity_window_months: number | null
+          phase_maturity_pct: number | null
+          region: string
+          structural_advantage_score: number | null
+          urban_migration_intensity: number | null
+          yield_compression_rate: number | null
+          yield_spread_vs_benchmark: number | null
+        }
+        Insert: {
+          city: string
+          computed_at?: string | null
+          created_at?: string | null
+          cycle_phase?: string | null
+          cycle_timing_signal?: string | null
+          demographic_growth_score?: number | null
+          forecast_horizon_years?: number | null
+          id?: string
+          infrastructure_pipeline_score?: number | null
+          long_term_conviction_index?: number | null
+          opportunity_window_months?: number | null
+          phase_maturity_pct?: number | null
+          region: string
+          structural_advantage_score?: number | null
+          urban_migration_intensity?: number | null
+          yield_compression_rate?: number | null
+          yield_spread_vs_benchmark?: number | null
+        }
+        Update: {
+          city?: string
+          computed_at?: string | null
+          created_at?: string | null
+          cycle_phase?: string | null
+          cycle_timing_signal?: string | null
+          demographic_growth_score?: number | null
+          forecast_horizon_years?: number | null
+          id?: string
+          infrastructure_pipeline_score?: number | null
+          long_term_conviction_index?: number | null
+          opportunity_window_months?: number | null
+          phase_maturity_pct?: number | null
+          region?: string
+          structural_advantage_score?: number | null
+          urban_migration_intensity?: number | null
+          yield_compression_rate?: number | null
+          yield_spread_vs_benchmark?: number | null
+        }
+        Relationships: []
+      }
+      gcce_scenario_simulation: {
+        Row: {
+          assumptions: Json | null
+          capital_deployed_usd: number | null
+          city: string | null
+          created_at: string | null
+          downside_drawdown_pct: number | null
+          id: string
+          optimal_allocation_pct: number | null
+          projected_irr_pct: number | null
+          projected_multiple: number | null
+          region: string
+          regional_exposure_pct: number | null
+          risk_adjusted_return: number | null
+          scenario_name: string
+          scenario_probability_pct: number | null
+          scenario_type: string | null
+          simulated_at: string | null
+          simulation_result: Json | null
+          stress_resilience_score: number | null
+          upside_potential_pct: number | null
+        }
+        Insert: {
+          assumptions?: Json | null
+          capital_deployed_usd?: number | null
+          city?: string | null
+          created_at?: string | null
+          downside_drawdown_pct?: number | null
+          id?: string
+          optimal_allocation_pct?: number | null
+          projected_irr_pct?: number | null
+          projected_multiple?: number | null
+          region: string
+          regional_exposure_pct?: number | null
+          risk_adjusted_return?: number | null
+          scenario_name: string
+          scenario_probability_pct?: number | null
+          scenario_type?: string | null
+          simulated_at?: string | null
+          simulation_result?: Json | null
+          stress_resilience_score?: number | null
+          upside_potential_pct?: number | null
+        }
+        Update: {
+          assumptions?: Json | null
+          capital_deployed_usd?: number | null
+          city?: string | null
+          created_at?: string | null
+          downside_drawdown_pct?: number | null
+          id?: string
+          optimal_allocation_pct?: number | null
+          projected_irr_pct?: number | null
+          projected_multiple?: number | null
+          region?: string
+          regional_exposure_pct?: number | null
+          risk_adjusted_return?: number | null
+          scenario_name?: string
+          scenario_probability_pct?: number | null
+          scenario_type?: string | null
+          simulated_at?: string | null
+          simulation_result?: Json | null
+          stress_resilience_score?: number | null
+          upside_potential_pct?: number | null
+        }
+        Relationships: []
+      }
+      gcce_systemic_risk: {
+        Row: {
+          capital_withdrawal_rate: number | null
+          city: string
+          composite_systemic_risk: number | null
+          computed_at: string | null
+          contagion_pathways: Json | null
+          created_at: string | null
+          credit_growth_deviation: number | null
+          debt_stress_indicator: number | null
+          early_warnings: Json | null
+          id: string
+          overheat_index: number | null
+          price_to_income_ratio: number | null
+          region: string
+          risk_regime: string | null
+          shock_propagation_risk: number | null
+          stress_test_scenario: string | null
+          vacancy_rate_trend: number | null
+        }
+        Insert: {
+          capital_withdrawal_rate?: number | null
+          city: string
+          composite_systemic_risk?: number | null
+          computed_at?: string | null
+          contagion_pathways?: Json | null
+          created_at?: string | null
+          credit_growth_deviation?: number | null
+          debt_stress_indicator?: number | null
+          early_warnings?: Json | null
+          id?: string
+          overheat_index?: number | null
+          price_to_income_ratio?: number | null
+          region: string
+          risk_regime?: string | null
+          shock_propagation_risk?: number | null
+          stress_test_scenario?: string | null
+          vacancy_rate_trend?: number | null
+        }
+        Update: {
+          capital_withdrawal_rate?: number | null
+          city?: string
+          composite_systemic_risk?: number | null
+          computed_at?: string | null
+          contagion_pathways?: Json | null
+          created_at?: string | null
+          credit_growth_deviation?: number | null
+          debt_stress_indicator?: number | null
+          early_warnings?: Json | null
+          id?: string
+          overheat_index?: number | null
+          price_to_income_ratio?: number | null
+          region?: string
+          risk_regime?: string | null
+          shock_propagation_risk?: number | null
+          stress_test_scenario?: string | null
+          vacancy_rate_trend?: number | null
+        }
+        Relationships: []
+      }
       gccf_allocation_councils: {
         Row: {
           ai_advisor_weight: number
