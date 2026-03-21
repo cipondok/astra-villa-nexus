@@ -786,6 +786,13 @@ export const navigationSections = {
       badge: "🤖 AI"
     },
     {
+      key: "founder-daily-execution",
+      label: "Founder Daily Execution",
+      icon: Clock,
+      description: "Hour-by-hour operational schedule — growth decisions, vendor acquisition, investor activation & war-room reflection",
+      badge: "📋 Daily"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
