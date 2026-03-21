@@ -870,6 +870,7 @@ const AppContent = () => {
                 <Route path="/first-500-investors" element={<First500InvestorsPage />} />
                 <Route path="/automation-checklist" element={<AutomationChecklistPage />} />
                 <Route path="/first-30-days" element={<First30DaysCalendarPage />} />
+                <Route path="/negotiation-scripts" element={<NegotiationScriptsPage />} />
                 <Route path="/founder-schedule" element={<FounderSchedulePage />} />
                 <Route path="/energy-optimization" element={<EnergyOptimizationPage />} />
                 <Route path="/decision-prioritization" element={<DecisionPrioritizationPage />} />
