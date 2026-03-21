@@ -298,6 +298,7 @@ export const DecacornValuationInterface = lazyRetry(() => import("./DecacornValu
 export const AIGrowthBrainDashboard = lazyRetry(() => import("./AIGrowthBrainDashboard"));
 export const GlobalExpansionControl = lazyRetry(() => import("./GlobalExpansionControl"));
 export const IPOReadinessMetrics = lazyRetry(() => import("./IPOReadinessMetrics"));
+export const FounderWarRoom = lazyRetry(() => import("./FounderWarRoom"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -681,6 +682,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ai-growth-brain":             () => <AIGrowthBrainDashboard />,
   "global-expansion-control":    () => <GlobalExpansionControl />,
   "ipo-readiness-metrics":       () => <IPOReadinessMetrics />,
+  "founder-war-room":            () => <FounderWarRoom />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -968,6 +970,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "decacorn-valuation": { label: "Decacorn Valuation", category: "Features" },
   "ai-growth-brain": { label: "AI Growth Brain", category: "Operations" },
   "ipo-readiness-metrics": { label: "IPO Readiness", category: "Features" },
+  "founder-war-room": { label: "Founder War Room", category: "Operations" },
   "global-expansion-control": { label: "Global Expansion Control", category: "Operations" },
   "hyper-execution-plan": { label: "30-Day Hyper Execution", category: "Features" },
   "ninety-day-master-plan": { label: "90-Day Master Execution", category: "Features" },
