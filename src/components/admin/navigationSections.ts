@@ -850,6 +850,13 @@ export const navigationSections = {
       badge: "🚨 Crisis"
     },
     {
+      key: "city-launch-pr-plan",
+      label: "City Launch PR Plan",
+      icon: Globe,
+      description: "Full PR kit — press headlines, founder quotes, social posts, journalist pitch & event copy",
+      badge: "📰 PR"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
