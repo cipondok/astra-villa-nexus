@@ -22,7 +22,8 @@ import { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Camera, MessageSquare, ArrowUp, Sparkles, RefreshCw, ChevronDown, BarChart3 } from "lucide-react";
-import slideHero1 from "@/assets/astra-villa-hero.jpeg";
+import heroDesktop from "@/assets/astra-villa-hero-desktop.jpg";
+import heroMobile from "@/assets/astra-villa-hero-mobile.jpg";
 import { cn } from "@/lib/utils";
 import { SearchErrorBoundary } from "@/components/search/SearchErrorBoundary";
 import { SearchPanelSkeleton } from "@/components/search/SearchSkeleton";
@@ -321,7 +322,7 @@ const Index = () => {
   }, []);
 
   // Hero background image — admin config or default
-  const heroImage = heroConfig?.bannerImages?.[0] || slideHero1;
+  const heroImage = heroConfig?.bannerImages?.[0] || heroDesktop;
 
   // Preload hero image for faster LCP
   useEffect(() => {
@@ -587,15 +588,23 @@ const Index = () => {
         <section className="relative w-full" id="hero-section">
           {/* Full-width promotional banner image */}
           <div className="relative w-full bg-[#0e64be]">
+            {/* Mobile hero */}
             <img
-              src={heroImage}
+              src={heroMobile}
               alt="ASTRA VILLA — Indonesia's Smart Property Platform"
-              width={1920}
-              height={1080}
               fetchPriority="high"
               loading="eager"
               decoding="sync"
-              className="w-full h-auto max-h-[70vh] object-contain mx-auto"
+              className="block sm:hidden w-full h-auto object-contain"
+            />
+            {/* Desktop hero */}
+            <img
+              src={heroImage}
+              alt="ASTRA VILLA — Indonesia's Smart Property Platform"
+              fetchPriority="high"
+              loading="eager"
+              decoding="sync"
+              className="hidden sm:block w-full h-auto object-contain"
             />
           </div>
 
