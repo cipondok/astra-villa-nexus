@@ -292,6 +292,7 @@ export const AdminCommandCenter = lazyRetry(() => import("./AdminCommandCenter")
 export const VendorMarketplaceControlEngine = lazyRetry(() => import("./VendorMarketplaceControlEngine"));
 export const CityLaunchGrowthEngine = lazyRetry(() => import("./CityLaunchGrowthEngine"));
 export const MonetizationEngineControl = lazyRetry(() => import("./MonetizationEngineControl"));
+export const SeriesADataRoom = lazyRetry(() => import("./SeriesADataRoom"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
