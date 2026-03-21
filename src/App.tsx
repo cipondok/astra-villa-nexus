@@ -898,6 +898,7 @@ const AppContent = () => {
                 <Route path="/revenue-flywheel" element={<RevenueFlywheelStrategyPage />} />
                 <Route path="/investor-deal-flow-automation" element={<InvestorDealFlowAutomationPage />} />
                 <Route path="/founder-resilience" element={<FounderResilienceSystemPage />} />
+                <Route path="/first-10m-revenue" element={<First10MRevenueScalingPage />} />
                 <Route path="/founder-schedule" element={<FounderSchedulePage />} />
                 <Route path="/energy-optimization" element={<EnergyOptimizationPage />} />
                 <Route path="/decision-prioritization" element={<DecisionPrioritizationPage />} />
