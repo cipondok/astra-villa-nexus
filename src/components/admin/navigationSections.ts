@@ -112,8 +112,7 @@ import {
   Orbit,
   Network,
   Award,
-  Radio,
-  Settings
+  Radio
 } from "lucide-react";
 
 export interface NavigationSection {
