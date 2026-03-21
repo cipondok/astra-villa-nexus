@@ -882,6 +882,7 @@ const AppContent = () => {
                 <Route path="/investor-follow-up" element={<InvestorFollowUpPage />} />
                 <Route path="/trust-signals" element={<TrustSignalSystemPage />} />
                 <Route path="/6-month-survival" element={<SixMonthSurvivalPlanPage />} />
+                <Route path="/agent-productivity" element={<AgentProductivityIntelligencePage />} />
                 <Route path="/founder-schedule" element={<FounderSchedulePage />} />
                 <Route path="/energy-optimization" element={<EnergyOptimizationPage />} />
                 <Route path="/decision-prioritization" element={<DecisionPrioritizationPage />} />
