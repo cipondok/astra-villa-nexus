@@ -716,6 +716,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "national-expansion-sim":     () => <NationalExpansionSimulator />,
   "investor-fomo-pitch":        () => <InvestorFOMOPitchContent />,
   "kpi-anomaly-detector":       () => <KPIAnomalyDetector />,
+  "competitive-threat-response": () => <CompetitiveThreatResponse />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
