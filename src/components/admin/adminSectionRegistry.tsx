@@ -1127,4 +1127,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "decacorn-projection": { label: "Decacorn Financial Projection", category: "Strategy" },
   "experiment-prioritization": { label: "Experiment Prioritization Engine", category: "Strategy" },
   "partnership-strategy": { label: "Global Partnership Strategy", category: "Strategy" },
+  "flywheel-optimization": { label: "Flywheel Optimization Engine", category: "Strategy" },
 };
