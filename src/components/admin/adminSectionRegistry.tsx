@@ -308,6 +308,7 @@ export const ListingCopyGenerator = lazyRetry(() => import("./ListingCopyGenerat
 export const GrowthExperimentBacklog = lazyRetry(() => import("./GrowthExperimentBacklog"));
 export const InvestorNurturingSequence = lazyRetry(() => import("./InvestorNurturingSequence"));
 export const VendorRetentionScripts = lazyRetry(() => import("./VendorRetentionScripts"));
+export const LiquidityCrisisRecovery = lazyRetry(() => import("./LiquidityCrisisRecovery"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
