@@ -94,6 +94,13 @@ const Search = () => {
     virtual_tour_url: prop.virtual_tour_url,
   }));
 
+  // Pagination
+  const totalPages = Math.ceil(properties.length / ITEMS_PER_PAGE);
+  const paginatedProperties = properties.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
+  // Reset page when filters change
+  useEffect(() => { setCurrentPage(1); }, [searchTerm, selectedType, selectedLocation]);
+
   // Pull-to-refresh
   const {
     isPulling, pullDistance, isRefreshing,
