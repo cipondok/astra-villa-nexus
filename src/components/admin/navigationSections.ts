@@ -864,6 +864,13 @@ export const navigationSections = {
       badge: "🎯 Sales"
     },
     {
+      key: "pricing-experiment-backlog",
+      label: "Pricing Experiment Backlog",
+      icon: FlaskConical,
+      description: "Behavioral economics experiments for boost, subscription & premium access monetization",
+      badge: "🧪 Pricing"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,

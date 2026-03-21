@@ -1070,4 +1070,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "liquidity-crisis-recovery": { label: "Liquidity Crisis Recovery", category: "Strategy" },
   "city-launch-pr-plan": { label: "City Launch PR Plan", category: "Strategy" },
   "closing-conversation-sim": { label: "Closing Conversation Simulator", category: "Strategy" },
+  "pricing-experiment-backlog": { label: "Pricing Experiment Backlog", category: "Strategy" },
 };
