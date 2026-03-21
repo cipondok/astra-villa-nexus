@@ -78,38 +78,8 @@ const SearchAlertSubscribeButton = ({ filters }: SearchAlertSubscribeButtonProps
     return () => { cancelled = true; };
   }, [userId, pType, pCity, pPrice]);
 
-  const checkExistingSubscription = async () => {
-    if (!user) return;
-    try {
-      const { data } = await supabase
-        .from('user_searches')
-        .select('id')
-        .eq('user_id', user.id)
-        .limit(10);
 
-      if (data && data.length > 0) {
-        for (const search of data) {
-          const { data: sub } = await supabase
-            .from('push_subscriptions')
-            .select('id')
-            .eq('user_id', user.id)
-            .eq('search_id', search.id)
-            .eq('is_active', true)
-            .maybeSingle();
 
-          if (sub) {
-            setIsSubscribed(true);
-            setSubscriptionId(sub.id);
-            return;
-          }
-        }
-      }
-      setIsSubscribed(false);
-      setSubscriptionId(null);
-    } catch {
-      // ignore
-    }
-  };
 
   const handleSubscribe = async (channel: Channel) => {
     if (!user) {
