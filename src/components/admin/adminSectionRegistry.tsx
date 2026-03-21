@@ -684,6 +684,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "global-expansion-control":    () => <GlobalExpansionControl />,
   "ipo-readiness-metrics":       () => <IPOReadinessMetrics />,
   "founder-war-room":            () => <FounderWarRoom />,
+  "ai-copilot":                  () => <AdminAICoPilot />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
