@@ -1106,4 +1106,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "autonomous-pricing-intelligence": { label: "Autonomous Pricing Intelligence", category: "Strategy" },
   "global-investor-roadshow": { label: "Global Investor Roadshow", category: "Strategy" },
   "domination-kpi-control": { label: "Domination KPI Control", category: "Strategy" },
+  "ma-acquisition-strategy": { label: "M&A Acquisition Strategy", category: "Strategy" },
 };
