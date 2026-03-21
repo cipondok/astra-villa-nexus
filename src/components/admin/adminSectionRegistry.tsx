@@ -674,6 +674,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "monetization-engine-control": () => <MonetizationEngineControl />,
   "series-a-data-room":          () => <SeriesADataRoom />,
   "first-1m-revenue-system":     () => <FirstMillionRevenueSystem />,
+  "decacorn-valuation":          () => <DecacornValuationInterface />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
