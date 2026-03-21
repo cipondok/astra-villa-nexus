@@ -113,7 +113,8 @@ import {
   Network,
   Award,
   Radio,
-  Mic
+  Mic,
+  MessageSquare
 } from "lucide-react";
 
 export interface NavigationSection {
