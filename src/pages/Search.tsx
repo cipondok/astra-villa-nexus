@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { SEOHead } from '@/components/SEOHead';
 import { useTranslation } from '@/i18n/useTranslation';
 import { useSearchParams } from 'react-router-dom';
-import { Search as SearchIcon, Filter, MapPin, Home, Building2 } from 'lucide-react';
+import { Search as SearchIcon, Filter, MapPin, Home, Building2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import PullToRefreshIndicator from '@/components/ui/PullToRefreshIndicator';
