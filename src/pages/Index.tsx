@@ -848,7 +848,7 @@ const Index = () => {
                     </div>
                   </ScrollReveal>
 
-                  <StaggeredReveal staggerDelay={150} direction="up" className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <StaggeredReveal staggerDelay={150} direction="up" className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                     <Suspense fallback={null}><DealHunterHero /></Suspense>
                     <Suspense fallback={null}><TrendingROIDeals onPropertyClick={handlePropertyClick} /></Suspense>
                   </StaggeredReveal>
