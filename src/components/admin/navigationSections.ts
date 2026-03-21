@@ -751,6 +751,13 @@ export const navigationSections = {
       badge: "🧠 AI"
     },
     {
+      key: "global-expansion-control",
+      label: "Global Expansion Control",
+      icon: Globe,
+      description: "Multi-market performance grid, readiness scoring, capital deployment & network effect visualization",
+      badge: "🌍 Global"
+    },
+    {
       key: "execution-command-center",
       label: "Execution Command Center",
       icon: Rocket,
