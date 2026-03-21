@@ -300,6 +300,7 @@ export const GlobalExpansionControl = lazyRetry(() => import("./GlobalExpansionC
 export const IPOReadinessMetrics = lazyRetry(() => import("./IPOReadinessMetrics"));
 export const FounderWarRoom = lazyRetry(() => import("./FounderWarRoom"));
 export const AdminAICoPilot = lazyRetry(() => import("./AdminAICoPilot"));
+export const FounderDailyExecution = lazyRetry(() => import("./FounderDailyExecution"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
