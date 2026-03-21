@@ -1191,6 +1191,13 @@ export const navigationSections = {
       badge: "📍 Growth"
     },
     {
+      key: "first-500-listings",
+      label: "First 500 Listings",
+      icon: Building2,
+      description: "Supply growth engine, inquiry conversion optimization & local brand authority PR",
+      badge: "🏠 Supply"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
