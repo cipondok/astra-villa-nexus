@@ -13,7 +13,7 @@ const VendorRegistration = () => {
   const { isAuthenticated, loading, user, profile } = useAuth();
   const { language, setLanguage } = useTranslation();
   const navigate = useNavigate();
-  const navigate = useNavigate();
+  
   const [vendorRequest, setVendorRequest] = useState<any>(null);
   const [requestLoading, setRequestLoading] = useState(false);
 
