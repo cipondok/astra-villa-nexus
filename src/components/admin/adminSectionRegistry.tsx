@@ -1058,4 +1058,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "listing-copy-generator": { label: "Listing Copy Generator", category: "Strategy" },
   "growth-experiment-backlog": { label: "Growth Experiment Backlog", category: "Strategy" },
   "investor-nurturing-sequence": { label: "Investor Nurturing Sequence", category: "Strategy" },
+  "vendor-retention-scripts": { label: "Vendor Retention & Upsell", category: "Strategy" },
 };

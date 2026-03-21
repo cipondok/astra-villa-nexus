@@ -836,6 +836,13 @@ export const navigationSections = {
       badge: "🎯 Nurture"
     },
     {
+      key: "vendor-retention-scripts",
+      label: "Vendor Retention & Upsell",
+      icon: Shield,
+      description: "5-step lifecycle scripts — onboarding, performance nudge, premium upsell, urgency & churn prevention",
+      badge: "🛡️ Retain"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
