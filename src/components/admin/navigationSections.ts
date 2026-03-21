@@ -848,6 +848,13 @@ export const navigationSections = {
       icon: Store,
       description: "Service provider metrics, quality scores, and category performance",
       badge: "New"
+    },
+    {
+      key: "vendor-marketplace-control",
+      label: "Marketplace Control Engine",
+      icon: Settings,
+      description: "Vendor performance, listing quality, supply coverage, premium allocation & lead routing command center",
+      badge: "New"
     }
   ],
 
