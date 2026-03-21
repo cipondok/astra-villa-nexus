@@ -146,7 +146,7 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
                 ))}
               </div>
               <div className="mt-2.5 flex items-center justify-between">
-                <span onClick={() => navigate("/portfolio-dashboard")} className="text-[11px] font-bold text-[#006bb3] dark:text-blue-300 cursor-pointer hover:underline">🌍 Foreign Investment Welcome</span>
+                <span onClick={() => navigate("/search?buyer_type=wna")} className="text-[11px] font-bold text-[#006bb3] dark:text-blue-300 cursor-pointer hover:underline">🌍 Foreign Investment Welcome</span>
                 <div className="flex items-center gap-2">
                   <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-[#006bb3] dark:bg-blue-600 text-white shadow-lg">
                     <Eye className="h-3.5 w-3.5" />
