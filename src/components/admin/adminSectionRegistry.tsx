@@ -1109,4 +1109,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-investor-roadshow": { label: "Global Investor Roadshow", category: "Strategy" },
   "domination-kpi-control": { label: "Domination KPI Control", category: "Strategy" },
   "ma-acquisition-strategy": { label: "M&A Acquisition Strategy", category: "Strategy" },
+  "fundraising-milestone-roadmap": { label: "Fundraising Milestone Roadmap", category: "Strategy" },
 };
