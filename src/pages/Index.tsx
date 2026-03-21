@@ -1,4 +1,5 @@
 import { useState, useEffect, lazy, Suspense, useRef, useMemo, useCallback } from "react";
+import { useTheme } from "@/components/ThemeProvider";
 import { useUserBehaviorAnalytics } from "@/hooks/useUserBehaviorAnalytics";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import PullToRefreshIndicator from "@/components/ui/PullToRefreshIndicator";
@@ -23,7 +24,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Camera, MessageSquare, ArrowUp, Sparkles, RefreshCw, ChevronDown, BarChart3 } from "lucide-react";
 import heroDesktop from "@/assets/astra-villa-hero-desktop.jpg";
+import heroDesktopDark from "@/assets/astra-villa-hero-desktop-dark.jpg";
 import heroMobile from "@/assets/astra-villa-hero-mobile.jpg";
+import heroMobileDark from "@/assets/astra-villa-hero-mobile-dark.jpg";
 import { cn } from "@/lib/utils";
 import { SearchErrorBoundary } from "@/components/search/SearchErrorBoundary";
 import { SearchPanelSkeleton } from "@/components/search/SearchSkeleton";
@@ -321,8 +324,11 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Hero background image — admin config or default
-  const heroImage = heroConfig?.bannerImages?.[0] || heroDesktop;
+  // Hero background image — admin config or theme-aware default
+  const { theme } = useTheme();
+  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const heroImage = heroConfig?.bannerImages?.[0] || (isDark ? heroDesktopDark : heroDesktop);
+  const heroMobileImg = isDark ? heroMobileDark : heroMobile;
 
   // Preload hero image for faster LCP
   useEffect(() => {
@@ -587,10 +593,10 @@ const Index = () => {
         <SectionErrorBoundary sectionName="Hero" fallbackMinHeight="400px">
         <section className="relative w-full" id="hero-section">
           {/* Full-width promotional banner image */}
-          <div className="relative w-full bg-[#0e64be]">
+          <div className="relative w-full bg-[#0e64be] dark:bg-[#0a1628]">
             {/* Mobile hero */}
             <img
-              src={heroMobile}
+              src={heroMobileImg}
               alt="ASTRA VILLA — Indonesia's Smart Property Platform"
               fetchPriority="high"
               loading="eager"
