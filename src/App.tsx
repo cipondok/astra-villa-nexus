@@ -371,6 +371,7 @@ const AutomationChecklistPage = lazy(() => import('@/pages/AutomationChecklistPa
 const First30DaysCalendarPage = lazy(() => import('@/pages/First30DaysCalendarPage'));
 const NegotiationScriptsPage = lazy(() => import('@/pages/NegotiationScriptsPage'));
 const WeeklyRevenueTrackingPage = lazy(() => import('@/pages/WeeklyRevenueTrackingPage'));
+const DealSprintExecutionPage = lazy(() => import('@/pages/DealSprintExecutionPage'));
 const FounderSchedulePage = lazy(() => import('@/pages/FounderSchedulePage'));
 const EnergyOptimizationPage = lazy(() => import('@/pages/EnergyOptimizationPage'));
 const DecisionPrioritizationPage = lazy(() => import('@/pages/DecisionPrioritizationPage'));
@@ -873,6 +874,7 @@ const AppContent = () => {
                 <Route path="/first-30-days" element={<First30DaysCalendarPage />} />
                 <Route path="/negotiation-scripts" element={<NegotiationScriptsPage />} />
                 <Route path="/weekly-revenue" element={<WeeklyRevenueTrackingPage />} />
+                <Route path="/deal-sprint-90" element={<DealSprintExecutionPage />} />
                 <Route path="/founder-schedule" element={<FounderSchedulePage />} />
                 <Route path="/energy-optimization" element={<EnergyOptimizationPage />} />
                 <Route path="/decision-prioritization" element={<DecisionPrioritizationPage />} />
