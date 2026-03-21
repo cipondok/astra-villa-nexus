@@ -357,6 +357,7 @@ export const TenMillionGlobalBlueprint = lazyRetry(() => import("./TenMillionGlo
 export const FiftyMillionPlanetaryBlueprint = lazyRetry(() => import("./FiftyMillionPlanetaryBlueprint"));
 export const FirstTenDealsBlueprint = lazyRetry(() => import("./FirstTenDealsBlueprint"));
 export const First100BuyersBlueprint = lazyRetry(() => import("./First100BuyersBlueprint"));
+export const First500ListingsBlueprint = lazyRetry(() => import("./First500ListingsBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -799,6 +800,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "50m-planetary-infrastructure": () => <FiftyMillionPlanetaryBlueprint />,
   "first-10-deals": () => <FirstTenDealsBlueprint />,
   "first-100-buyers": () => <First100BuyersBlueprint />,
+  "first-500-listings": () => <First500ListingsBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1206,4 +1208,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "50m-planetary-infrastructure": { label: "$50M Planetary Infrastructure", category: "Strategy" },
   "first-10-deals": { label: "First 10 Deals", category: "Strategy" },
   "first-100-buyers": { label: "First 100 Buyers & District", category: "Strategy" },
+  "first-500-listings": { label: "First 500 Listings", category: "Strategy" },
 };
