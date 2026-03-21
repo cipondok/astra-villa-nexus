@@ -382,6 +382,7 @@ const ListingDemandForecastPage = lazy(() => import('@/pages/ListingDemandForeca
 const FounderFastDecisionPage = lazy(() => import('@/pages/FounderFastDecisionPage'));
 const RevenueFlywheelStrategyPage = lazy(() => import('@/pages/RevenueFlywheelStrategyPage'));
 const InvestorDealFlowAutomationPage = lazy(() => import('@/pages/InvestorDealFlowAutomationPage'));
+const FounderResilienceSystemPage = lazy(() => import('@/pages/FounderResilienceSystemPage'));
 const FounderSchedulePage = lazy(() => import('@/pages/FounderSchedulePage'));
 const EnergyOptimizationPage = lazy(() => import('@/pages/EnergyOptimizationPage'));
 const DecisionPrioritizationPage = lazy(() => import('@/pages/DecisionPrioritizationPage'));
