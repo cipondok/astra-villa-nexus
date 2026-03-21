@@ -28,7 +28,7 @@ function useFounderDashboardData() {
         supabase.from('vendor_business_profiles').select('id', { count: 'exact', head: true }).eq('is_verified', true),
         supabase.from('web_analytics').select('id', { count: 'exact', head: true })
           .gte('created_at', new Date(Date.now() - 86400000).toISOString()),
-        supabase.from('transactions').select('id', { count: 'exact', head: true })
+        supabase.from('transaction_summary' as any).select('id', { count: 'exact', head: true })
           .gte('created_at', new Date(Date.now() - 86400000).toISOString()),
       ]);
       return {
