@@ -710,6 +710,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "city-launch-pr-plan":         () => <CityLaunchPRPlan />,
   "closing-conversation-sim":    () => <ClosingConversationSimulator />,
   "pricing-experiment-backlog":  () => <PricingExperimentBacklog />,
+  "national-expansion-sim":     () => <NationalExpansionSimulator />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
