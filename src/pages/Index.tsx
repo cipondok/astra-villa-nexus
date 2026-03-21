@@ -831,7 +831,7 @@ const Index = () => {
               </SectionWrapper>
 
               {/* ── SECTION 6: Personalized AI Feed ── */}
-              <SectionWrapper variant="default" id="ai-opportunity-zone" className="py-3 sm:py-4">
+              <SectionWrapper variant="default" id="ai-opportunity-zone" className="py-2 sm:py-3">
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
                   <ScrollReveal direction="up" delay={0}>
                     <div className="text-center mb-3">
