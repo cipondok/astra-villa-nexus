@@ -329,6 +329,7 @@ export const CrisisWarRoom = lazyRetry(() => import("./CrisisWarRoom"));
 export const GlobalBrandAuthority = lazyRetry(() => import("./GlobalBrandAuthority"));
 export const DecacornProjection = lazyRetry(() => import("./DecacornProjection"));
 export const ExperimentPrioritization = lazyRetry(() => import("./ExperimentPrioritization"));
+export const PartnershipStrategy = lazyRetry(() => import("./PartnershipStrategy"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -743,6 +744,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "global-brand-authority-narrative": () => <GlobalBrandAuthority />,
   "decacorn-projection": () => <DecacornProjection />,
   "experiment-prioritization": () => <ExperimentPrioritization />,
+  "partnership-strategy": () => <PartnershipStrategy />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1122,4 +1124,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-brand-authority-narrative": { label: "Global Brand Authority Narrative", category: "Strategy" },
   "decacorn-projection": { label: "Decacorn Financial Projection", category: "Strategy" },
   "experiment-prioritization": { label: "Experiment Prioritization Engine", category: "Strategy" },
+  "partnership-strategy": { label: "Global Partnership Strategy", category: "Strategy" },
 };
