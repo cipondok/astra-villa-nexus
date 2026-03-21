@@ -706,6 +706,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "vendor-retention-scripts":    () => <VendorRetentionScripts />,
   "liquidity-crisis-recovery":   () => <LiquidityCrisisRecovery />,
   "city-launch-pr-plan":         () => <CityLaunchPRPlan />,
+  "closing-conversation-sim":    () => <ClosingConversationSimulator />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
