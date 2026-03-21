@@ -1103,4 +1103,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "strategic-decision-simulator": { label: "Strategic Decision Simulator", category: "Strategy" },
   "autonomous-pricing-intelligence": { label: "Autonomous Pricing Intelligence", category: "Strategy" },
   "global-investor-roadshow": { label: "Global Investor Roadshow", category: "Strategy" },
+  "domination-kpi-control": { label: "Domination KPI Control", category: "Strategy" },
 };
