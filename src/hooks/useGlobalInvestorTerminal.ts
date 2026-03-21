@@ -119,7 +119,7 @@ export function useGlobalInvestorTerminal() {
 
       const opportunities: OpportunityDeal[] = props.slice(0, 8).map((p, i) => {
         const price = p.price || 2_000_000_000;
-        const aiVal = p.ai_valuation || price * (1.05 + Math.random() * 0.2);
+        const aiVal = price * (1.05 + Math.random() * 0.2);
         const underval = Math.round(((aiVal - price) / aiVal) * 100);
         return {
           id: p.id,
