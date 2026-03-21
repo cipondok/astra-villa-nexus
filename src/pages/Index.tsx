@@ -1,4 +1,5 @@
 import { useState, useEffect, lazy, Suspense, useRef, useMemo, useCallback } from "react";
+import { useTheme } from "@/components/ThemeProvider";
 import { useUserBehaviorAnalytics } from "@/hooks/useUserBehaviorAnalytics";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import PullToRefreshIndicator from "@/components/ui/PullToRefreshIndicator";
