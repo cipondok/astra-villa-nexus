@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { CheckCircle, Users, Building2, HardHat, Eye, Rocket, Search, ShoppingBag, Home, Key } from "lucide-react";
+import { CheckCircle, Users, Building2, HardHat, Eye, Rocket, Search, ShoppingBag, Home, Key, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
