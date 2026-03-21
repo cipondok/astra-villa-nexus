@@ -1064,6 +1064,13 @@ export const navigationSections = {
       badge: "🔥 War Plan"
     },
     {
+      key: "ten-million-revenue",
+      label: "$10M Revenue & Category Domination",
+      icon: Rocket,
+      description: "Revenue scaling engine, autonomous control tower & global category leadership strategy",
+      badge: "🚀 $10M"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,

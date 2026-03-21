@@ -339,6 +339,7 @@ export const PlatformMoatStrategy = lazyRetry(() => import("./PlatformMoatStrate
 export const GlobalOSMasterBlueprint = lazyRetry(() => import("./GlobalOSMasterBlueprint"));
 export const RealityExecutionAudit = lazyRetry(() => import("./RealityExecutionAudit"));
 export const SixtyDayDominationBlueprint = lazyRetry(() => import("./SixtyDayDominationBlueprint"));
+export const TenMillionRevenueBlueprint = lazyRetry(() => import("./TenMillionRevenueBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -763,6 +764,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "global-os-master-blueprint": () => <GlobalOSMasterBlueprint />,
   "reality-execution-audit": () => <RealityExecutionAudit />,
   "sixty-day-domination": () => <SixtyDayDominationBlueprint />,
+  "ten-million-revenue": () => <TenMillionRevenueBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1152,4 +1154,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-os-master-blueprint": { label: "Global OS Master Blueprint", category: "Strategy" },
   "reality-execution-audit": { label: "Reality Execution Audit", category: "Strategy" },
   "sixty-day-domination": { label: "60-Day Market Domination", category: "Strategy" },
+  "ten-million-revenue": { label: "$10M Revenue & Category Domination", category: "Strategy" },
 };
