@@ -1154,4 +1154,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-os-master-blueprint": { label: "Global OS Master Blueprint", category: "Strategy" },
   "reality-execution-audit": { label: "Reality Execution Audit", category: "Strategy" },
   "sixty-day-domination": { label: "60-Day Market Domination", category: "Strategy" },
+  "ten-million-revenue": { label: "$10M Revenue & Category Domination", category: "Strategy" },
 };
