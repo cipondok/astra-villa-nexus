@@ -999,6 +999,13 @@ export const navigationSections = {
       badge: "🤝 Alliances"
     },
     {
+      key: "flywheel-optimization",
+      label: "Flywheel Optimization Engine",
+      icon: RefreshCw,
+      description: "6-stage marketplace flywheel health scoring, 24 optimization levers, bottleneck detection & phased execution",
+      badge: "⚙️ Flywheel"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
