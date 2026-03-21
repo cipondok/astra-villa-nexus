@@ -971,9 +971,9 @@ export const navigationSections = {
       badge: "🚨 War Room"
     },
     {
-      key: "global-brand-authority",
-      label: "Global Brand Authority",
-      icon: Globe2,
+      key: "global-brand-authority-narrative",
+      label: "Global Brand Authority Narrative",
+      icon: Globe,
       description: "Keynote narratives, media positioning, website headlines & investor brand perception with persuasion playbooks",
       badge: "🌐 Authority"
     },
