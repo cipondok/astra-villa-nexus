@@ -760,7 +760,7 @@ export const navigationSections = {
     {
       key: "ipo-readiness-metrics",
       label: "IPO Readiness Metrics",
-      icon: Briefcase,
+      icon: BarChart3,
       description: "Financial maturity, marketplace scale, operational efficiency & profitability pathway for public-market readiness",
       badge: "📊 IPO"
     },
