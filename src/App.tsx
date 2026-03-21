@@ -378,6 +378,7 @@ const SixMonthSurvivalPlanPage = lazy(() => import('@/pages/SixMonthSurvivalPlan
 const AgentProductivityIntelligencePage = lazy(() => import('@/pages/AgentProductivityIntelligencePage'));
 const RevenueLeakDetectionPage = lazy(() => import('@/pages/RevenueLeakDetectionPage'));
 const FirstProfitableMonthPage = lazy(() => import('@/pages/FirstProfitableMonthPage'));
+const First100KRevenuePage = lazy(() => import('@/pages/First100KRevenuePage'));
 const ListingDemandForecastPage = lazy(() => import('@/pages/ListingDemandForecastPage'));
 const FounderFastDecisionPage = lazy(() => import('@/pages/FounderFastDecisionPage'));
 const RevenueFlywheelStrategyPage = lazy(() => import('@/pages/RevenueFlywheelStrategyPage'));
