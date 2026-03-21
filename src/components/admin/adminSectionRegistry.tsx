@@ -678,6 +678,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "first-1m-revenue-system":     () => <FirstMillionRevenueSystem />,
   "decacorn-valuation":          () => <DecacornValuationInterface />,
   "ai-growth-brain":             () => <AIGrowthBrainDashboard />,
+  "global-expansion-control":    () => <GlobalExpansionControl />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
