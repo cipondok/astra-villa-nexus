@@ -615,12 +615,6 @@ const Index = () => {
                   <HeroLiveCounters />
                 </Suspense>
               </div>
-              {/* Row 2: Smart CTAs */}
-              <div className="animate-fade-in" style={{ animationDelay: '0.55s', animationFillMode: 'both' }}>
-                <Suspense fallback={null}>
-                  <HeroSmartCTAs />
-                </Suspense>
-              </div>
               {/* Row 3: Social Proof */}
               <div className="animate-fade-in border-t border-border/40 pt-3" style={{ animationDelay: '0.65s', animationFillMode: 'both' }}>
                 <Suspense fallback={null}>
