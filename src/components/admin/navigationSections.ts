@@ -808,6 +808,13 @@ export const navigationSections = {
       badge: "🎙️ Pitch"
     },
     {
+      key: "vendor-outreach-scripts",
+      label: "Vendor Outreach Scripts",
+      icon: MessageSquare,
+      description: "Cold outreach templates for WhatsApp, Email, LinkedIn with follow-ups and urgency closers",
+      badge: "📨 Outreach"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
