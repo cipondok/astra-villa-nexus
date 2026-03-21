@@ -1037,4 +1037,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "commission-optimization": { label: "Commission Optimization Engine", category: "Operations" },
   "listing-optimization-ai": { label: "Listing Optimization AI", category: "Operations" },
   "ai-copilot": { label: "AI Co-Pilot", category: "Operations" },
+  "founder-daily-execution": { label: "Founder Daily Execution", category: "Operations" },
 };
