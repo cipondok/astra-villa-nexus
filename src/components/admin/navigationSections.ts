@@ -116,7 +116,8 @@ import {
   Mic,
   GitBranch,
   Siren,
-  ClipboardCheck
+  ClipboardCheck,
+  Swords
 } from "lucide-react";
 
 export interface NavigationSection {
