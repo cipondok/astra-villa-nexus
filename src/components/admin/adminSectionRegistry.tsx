@@ -1160,4 +1160,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "sixty-day-domination": { label: "60-Day Market Domination", category: "Strategy" },
   "ten-million-revenue": { label: "$10M Revenue & Category Domination", category: "Strategy" },
   "hundred-million-blueprint": { label: "$100M Scale & Global IPO", category: "Strategy" },
+  "global-infra-legacy": { label: "Global Infrastructure & Legacy", category: "Strategy" },
 };
