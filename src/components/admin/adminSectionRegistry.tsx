@@ -1148,4 +1148,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "investor-narrative-dominance": { label: "Investor Narrative Dominance", category: "Strategy" },
   "platform-moat-strategy": { label: "Platform Moat Reinforcement", category: "Strategy" },
   "global-os-master-blueprint": { label: "Global OS Master Blueprint", category: "Strategy" },
+  "reality-execution-audit": { label: "Reality Execution Audit", category: "Strategy" },
 };

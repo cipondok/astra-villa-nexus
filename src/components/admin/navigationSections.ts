@@ -1048,6 +1048,13 @@ export const navigationSections = {
       badge: "🌍 Master OS"
     },
     {
+      key: "reality-execution-audit",
+      label: "Reality Execution Audit",
+      icon: ClipboardCheck,
+      description: "Daily execution checklist, technical architecture audit, investor due-diligence simulation & 60-day survival roadmap",
+      badge: "⚡ Reality"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
