@@ -758,6 +758,13 @@ export const navigationSections = {
       badge: "🌍 Global"
     },
     {
+      key: "ipo-readiness-metrics",
+      label: "IPO Readiness Metrics",
+      icon: Briefcase,
+      description: "Financial maturity, marketplace scale, operational efficiency & profitability pathway for public-market readiness",
+      badge: "📊 IPO"
+    },
+    {
       key: "execution-command-center",
       label: "Execution Command Center",
       icon: Rocket,
