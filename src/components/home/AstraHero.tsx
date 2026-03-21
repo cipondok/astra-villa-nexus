@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { CheckCircle, Users, Building2, HardHat, Eye, Rocket, Search, ShoppingBag, Home, Key } from "lucide-react";
+import { CheckCircle, Users, Building2, HardHat, Eye, Rocket, Search, ShoppingBag, Home, Key, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
@@ -214,6 +214,15 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
               className="border-white/40 text-white hover:bg-white/15 px-6 py-5 text-sm rounded-xl backdrop-blur-sm"
             >
               Invest Now
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => navigate("/vendor/register")}
+              className="border-white/40 text-white hover:bg-white/15 px-6 py-5 text-sm rounded-xl backdrop-blur-sm"
+            >
+              <Store className="mr-2 h-4 w-4" />
+              Become Vendor
             </Button>
           </motion.div>
 
