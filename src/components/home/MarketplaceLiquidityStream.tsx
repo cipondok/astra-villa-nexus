@@ -3,12 +3,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
-import { Activity, CheckCircle, Plus, TrendingUp } from 'lucide-react';
+import { Activity, CheckCircle, Plus, TrendingUp, Coins, Layers } from 'lucide-react';
 import { formatCurrencyIDRShort, formatRelativeTimeID } from '@/lib/indonesianFormat';
 
 interface StreamItem {
   id: string;
-  type: 'sold' | 'new' | 'syndication';
+  type: 'sold' | 'new' | 'syndication' | 'vendor' | 'rental';
   title: string;
   location: string;
   price: number;
@@ -16,9 +16,11 @@ interface StreamItem {
 }
 
 const typeConfig = {
-  sold: { icon: CheckCircle, label: 'Sold', color: 'bg-intel-success/10 text-intel-success border-intel-success/20' },
-  new: { icon: Plus, label: 'New Listing', color: 'bg-intel-blue/10 text-intel-blue border-intel-blue/20' },
-  syndication: { icon: TrendingUp, label: 'Syndication', color: 'bg-intel-purple/10 text-intel-purple border-intel-purple/20' },
+  sold: { icon: CheckCircle, label: 'SOLD', color: 'text-intel-success border-intel-success/20 bg-intel-success/10' },
+  new: { icon: Plus, label: 'NEW', color: 'text-intel-blue border-intel-blue/20 bg-intel-blue/10' },
+  syndication: { icon: Layers, label: 'SYNDICATE', color: 'text-intel-purple border-intel-purple/20 bg-intel-purple/10' },
+  vendor: { icon: TrendingUp, label: 'VENDOR', color: 'text-gold-primary border-gold-primary/20 bg-gold-primary/10' },
+  rental: { icon: Coins, label: 'RENTAL', color: 'text-intel-warning border-intel-warning/20 bg-intel-warning/10' },
 };
 
 const MarketplaceLiquidityStream = () => {
@@ -34,9 +36,10 @@ const MarketplaceLiquidityStream = () => {
         .order('updated_at', { ascending: false })
         .limit(12);
 
+      const types: StreamItem['type'][] = ['new', 'sold', 'syndication', 'vendor', 'rental'];
       return (data || []).map((p: any, i: number) => ({
         id: p.id,
-        type: i % 5 === 0 ? 'sold' : i % 7 === 0 ? 'syndication' : 'new',
+        type: types[i % types.length],
         title: p.title,
         location: p.location || p.city || '',
         price: p.price || 0,
@@ -51,39 +54,44 @@ const MarketplaceLiquidityStream = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-4">
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex items-center gap-3 mb-5">
         <div className="relative">
           <Activity className="h-4 w-4 text-intel-blue" />
           <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-intel-success rounded-full animate-pulse" />
         </div>
-        <h2 className="font-playfair text-lg sm:text-xl font-bold text-foreground">Marketplace Activity</h2>
-        <Badge variant="secondary" className="text-[10px] h-5">Live</Badge>
+        <h2 className="text-lg sm:text-xl font-bold text-white">Marketplace Liquidity Feed</h2>
+        <Badge className="text-[10px] h-5 bg-intel-success/10 text-intel-success border border-intel-success/20">
+          ● LIVE
+        </Badge>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
         <AnimatePresence mode="popLayout">
-          {streamItems.slice(0, 6).map((item, i) => {
+          {streamItems.slice(0, 9).map((item, i) => {
             const config = typeConfig[item.type];
             return (
               <motion.div
                 key={item.id}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ delay: i * 0.05 }}
+                transition={{ delay: i * 0.04 }}
                 onClick={() => navigate(`/properties/${item.id}`)}
-                className="flex items-center gap-3 p-3 rounded-xl glass-effect border border-border/30 hover:border-gold-primary/20 cursor-pointer transition-colors"
+                className="flex items-center gap-3 p-3 rounded-xl border border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] cursor-pointer transition-all group"
               >
-                <div className={`flex items-center justify-center w-8 h-8 rounded-lg border ${config.color}`}>
+                <div className={`flex items-center justify-center w-8 h-8 rounded-lg border flex-shrink-0 ${config.color}`}>
                   <config.icon className="h-3.5 w-3.5" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-semibold text-foreground truncate">{item.title}</p>
-                  <p className="text-[10px] text-muted-foreground truncate">{item.location}</p>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[9px] font-bold uppercase tracking-wider ${config.color.split(' ')[0]}`}>{config.label}</span>
+                  </div>
+                  <p className="text-xs font-medium text-white truncate">{item.title}</p>
+                  <p className="text-[10px] text-white/30 truncate">{item.location}</p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <div className="text-xs font-bold text-foreground">{formatCurrencyIDRShort(item.price)}</div>
-                  <div className="text-[10px] text-muted-foreground">{formatRelativeTimeID(item.time)}</div>
+                  <div className="text-xs font-bold text-white tabular-nums">{formatCurrencyIDRShort(item.price)}</div>
+                  <div className="text-[10px] text-white/30">{formatRelativeTimeID(item.time)}</div>
                 </div>
               </motion.div>
             );
