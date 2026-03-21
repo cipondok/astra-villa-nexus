@@ -730,6 +730,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "first-1m-revenue-system",
+      label: "First $1M Revenue",
+      icon: DollarSign,
+      description: "Tactical revenue execution — boost sales, vendor subs, investor unlocks, momentum alerts & founder actions",
+      badge: "🎯 Revenue"
+    },
+    {
       key: "execution-command-center",
       label: "Execution Command Center",
       icon: Rocket,
