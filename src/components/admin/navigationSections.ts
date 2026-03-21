@@ -1128,6 +1128,13 @@ export const navigationSections = {
       badge: "💰 Revenue"
     },
     {
+      key: "first-50-deals",
+      label: "First 50 Deals Acceleration",
+      icon: Rocket,
+      description: "Deal acceleration, vendor performance ranking & investor urgency funnels",
+      badge: "🚀 Deals"
+    },
+    {
       badge: "New"
     },
     {
