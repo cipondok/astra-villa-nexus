@@ -99,7 +99,7 @@ export default function MapPreviewTeaser() {
             </div>
 
             {/* Right — hotspot list */}
-            <div className="flex-1 p-5 sm:p-6 flex flex-col justify-between">
+            <div className="flex-1 p-4 flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <Flame className="h-4 w-4 text-gold-primary" aria-hidden="true" />
