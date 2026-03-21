@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import vrTourHeroImg from "@/assets/vr-tour-hero.png";
 import { CheckCircle, Users, Building2, HardHat, Eye, Rocket, Search, ShoppingBag, Home, Key, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -126,33 +127,40 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.38, duration: 0.6 }}
-              className="bg-[#ffe14d]/95 dark:bg-amber-500/20 dark:border dark:border-amber-500/30 backdrop-blur-sm rounded-2xl p-4 shadow-xl cursor-pointer hover:scale-[1.01] transition-transform"
+              className="bg-[#ffe14d]/95 dark:bg-amber-500/20 dark:border dark:border-amber-500/30 backdrop-blur-sm rounded-2xl p-4 shadow-xl cursor-pointer hover:scale-[1.01] transition-transform flex gap-3"
               onClick={() => navigate("/vr-tour")}
             >
-              <div className="inline-block px-3 py-1 bg-[#ff8c00] dark:bg-amber-600 rounded-lg mb-2">
-                <span className="text-xs font-black text-white tracking-wide uppercase">
-                  First Time in Indonesia
-                </span>
-              </div>
-              <p className="text-sm font-bold text-gray-900 dark:text-white mb-2">
-                Nikmati Virtual Tour Property:
-              </p>
-              <div className="space-y-1.5">
-                {rightChecks.map((item) => (
-                  <div key={item} className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                    <span className="text-sm text-gray-800 dark:text-gray-200 font-medium">{item}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-2.5 flex items-center justify-between">
-                <span onClick={(e) => { e.stopPropagation(); navigate("/investment"); }} className="text-[11px] font-bold text-[#006bb3] dark:text-blue-300 cursor-pointer hover:underline">🌍 Foreign Investment Program</span>
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-[#006bb3] dark:bg-blue-600 text-white shadow-lg">
-                    <Eye className="h-3.5 w-3.5" />
-                  </div>
-                  <span className="text-[11px] font-bold text-[#006bb3] dark:text-blue-300">360° Virtual Tour</span>
+              {/* Left text content */}
+              <div className="flex-1 min-w-0">
+                <div className="inline-block px-3 py-1 bg-[#ff8c00] dark:bg-amber-600 rounded-lg mb-2">
+                  <span className="text-xs font-black text-white tracking-wide uppercase">
+                    First Time in Indonesia
+                  </span>
                 </div>
+                <p className="text-sm font-bold text-gray-900 dark:text-white mb-2">
+                  Nikmati Virtual Tour Property:
+                </p>
+                <div className="space-y-1.5">
+                  {rightChecks.map((item) => (
+                    <div key={item} className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                      <span className="text-sm text-gray-800 dark:text-gray-200 font-medium">{item}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-2.5 flex items-center justify-between">
+                  <span onClick={(e) => { e.stopPropagation(); navigate("/investment"); }} className="text-[11px] font-bold text-[#006bb3] dark:text-blue-300 cursor-pointer hover:underline">🌍 Foreign Investment Program</span>
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-[#006bb3] dark:bg-blue-600 text-white shadow-lg">
+                      <Eye className="h-3.5 w-3.5" />
+                    </div>
+                    <span className="text-[11px] font-bold text-[#006bb3] dark:text-blue-300">360° Virtual Tour</span>
+                  </div>
+                </div>
+              </div>
+              {/* Right VR image */}
+              <div className="hidden sm:flex items-center justify-center w-28 shrink-0">
+                <img src={vrTourHeroImg} alt="360° Virtual Tour Experience" className="w-full h-auto drop-shadow-lg" />
               </div>
             </motion.div>
           </div>
