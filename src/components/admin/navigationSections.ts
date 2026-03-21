@@ -1149,7 +1149,6 @@ export const navigationSections = {
       badge: "🚀 Scale"
     },
     {
-    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
