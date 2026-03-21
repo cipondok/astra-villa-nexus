@@ -754,6 +754,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "competitive-domination": () => <CompetitiveDomination />,
   "founder-clarity-coach": () => <FounderClarity />,
   "ai-evolution-architecture": () => <AIEvolutionArchitecture />,
+  "investor-narrative-dominance": () => <InvestorNarrativeDominance />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
