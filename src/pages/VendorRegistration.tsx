@@ -100,96 +100,88 @@ const VendorRegistration = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto py-8">
-          {vendorRequest ? (
-            <div className="space-y-6">
-              <div className="text-center">
-                <h1 className="text-3xl font-bold text-foreground mb-2">
-                  Vendor Application Status
-                </h1>
-                <p className="text-muted-foreground">
-                  Track the progress of your vendor application
-                </p>
-              </div>
-
-              <Card className="max-w-2xl mx-auto">
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span>Application Details</span>
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(vendorRequest.status)}
-                      <Badge className={getStatusColor(vendorRequest.status)}>
-                        {vendorRequest.status.toUpperCase()}
-                      </Badge>
-                    </div>
-                  </CardTitle>
-                  <CardDescription>
-                    Submitted on {new Date(vendorRequest.created_at).toLocaleDateString()}
-                  </CardDescription>
-                </CardHeader>
-                
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label className="text-sm font-medium text-muted-foreground">Business Name</Label>
-                      <p className="text-foreground">{vendorRequest.business_name}</p>
-                    </div>
-                    <div>
-                      <Label className="text-sm font-medium text-muted-foreground">Business Type</Label>
-                      <p className="text-foreground">{vendorRequest.business_type}</p>
-                    </div>
-                  </div>
-                  
-                  {vendorRequest.review_notes && (
-                    <div className="p-4 bg-muted rounded-lg">
-                      <Label className="text-sm font-medium text-muted-foreground">Review Notes</Label>
-                      <p className="text-foreground/80 mt-1">
-                        {vendorRequest.review_notes}
-                      </p>
-                    </div>
-                  )}
-                  
-                  <div className="pt-4 border-t">
-                    {vendorRequest.status === 'pending' && (
-                      <p className="text-sm text-muted-foreground">
-                        Your application is being reviewed. We'll notify you once a decision is made.
-                      </p>
-                    )}
-                    {vendorRequest.status === 'approved' && (
-                      <p className="text-sm text-chart-1">
-                        Congratulations! Your application has been approved. You can now access your vendor dashboard.
-                      </p>
-                    )}
-                    {vendorRequest.status === 'rejected' && (
-                      <p className="text-sm text-destructive">
-                        Your application was not approved at this time. Please review the notes above and consider reapplying.
-                      </p>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          ) : (
-            <div className="space-y-6">
-              <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="mb-2 text-muted-foreground hover:text-foreground gap-1.5">
-                  <ArrowLeft className="h-4 w-4" />
-                  Back to Home
-                </Button>
-              <div className="text-center">
-                <h1 className="text-3xl font-bold text-foreground mb-2">
-                  Become a Vendor
-                </h1>
-                <p className="text-muted-foreground">
-                  Join our marketplace and start offering your services
-                </p>
-              </div>
-              
-              <VendorRegistrationForm onSuccess={handleRegistrationSuccess} />
-            </div>
-          )}
+    <div className="min-h-screen bg-gradient-to-b from-primary/5 via-background to-background dark:from-primary/10">
+      {/* Hero header */}
+      <div className="bg-gradient-to-r from-primary via-primary/90 to-chart-1 dark:from-[#0a1628] dark:via-[#0d1f3c] dark:to-[#081225] py-10 sm:py-14">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="mb-4 text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/10 gap-1.5">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </Button>
+          <h1 className="font-playfair text-3xl sm:text-4xl lg:text-5xl font-bold text-primary-foreground mb-3">
+            {vendorRequest ? 'Application Status' : 'Become a Vendor'}
+          </h1>
+          <p className="text-primary-foreground/80 text-base sm:text-lg max-w-2xl">
+            {vendorRequest 
+              ? 'Track the progress of your vendor application' 
+              : 'Join our marketplace and start offering your services to customers across Indonesia'}
+          </p>
         </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+        {vendorRequest ? (
+          <div className="max-w-3xl mx-auto">
+            <Card className="border-border/60 shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span>Application Details</span>
+                  <div className="flex items-center gap-2">
+                    {getStatusIcon(vendorRequest.status)}
+                    <Badge className={getStatusColor(vendorRequest.status)}>
+                      {vendorRequest.status.toUpperCase()}
+                    </Badge>
+                  </div>
+                </CardTitle>
+                <CardDescription>
+                  Submitted on {new Date(vendorRequest.created_at).toLocaleDateString()}
+                </CardDescription>
+              </CardHeader>
+              
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Business Name</Label>
+                    <p className="text-foreground">{vendorRequest.business_name}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Business Type</Label>
+                    <p className="text-foreground">{vendorRequest.business_type}</p>
+                  </div>
+                </div>
+                
+                {vendorRequest.review_notes && (
+                  <div className="p-4 bg-muted rounded-lg">
+                    <Label className="text-sm font-medium text-muted-foreground">Review Notes</Label>
+                    <p className="text-foreground/80 mt-1">
+                      {vendorRequest.review_notes}
+                    </p>
+                  </div>
+                )}
+                
+                <div className="pt-4 border-t">
+                  {vendorRequest.status === 'pending' && (
+                    <p className="text-sm text-muted-foreground">
+                      Your application is being reviewed. We'll notify you once a decision is made.
+                    </p>
+                  )}
+                  {vendorRequest.status === 'approved' && (
+                    <p className="text-sm text-chart-1">
+                      Congratulations! Your application has been approved. You can now access your vendor dashboard.
+                    </p>
+                  )}
+                  {vendorRequest.status === 'rejected' && (
+                    <p className="text-sm text-destructive">
+                      Your application was not approved at this time. Please review the notes above and consider reapplying.
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          <VendorRegistrationForm onSuccess={handleRegistrationSuccess} />
+        )}
       </div>
     </div>
   );
