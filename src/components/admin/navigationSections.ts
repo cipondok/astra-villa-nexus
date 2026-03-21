@@ -1056,6 +1056,13 @@ export const navigationSections = {
       badge: "⚡ Reality"
     },
     {
+      key: "sixty-day-domination",
+      label: "60-Day Market Domination",
+      icon: Swords,
+      description: "City domination plan, revenue engine activation & competitive war-simulation scenarios",
+      badge: "🔥 War Plan"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
