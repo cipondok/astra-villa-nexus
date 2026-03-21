@@ -768,6 +768,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "sixty-day-domination": () => <SixtyDayDominationBlueprint />,
   "ten-million-revenue": () => <TenMillionRevenueBlueprint />,
   "hundred-million-blueprint": () => <HundredMillionBlueprint />,
+  "global-infra-legacy": () => <GlobalInfraLegacyBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
