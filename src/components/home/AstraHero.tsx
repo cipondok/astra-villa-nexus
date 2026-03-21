@@ -33,6 +33,8 @@ const leftChecks = [
   "Pasang & kelola listing properti",
   "Promosikan New Launch Projects",
   "Menjangkau pembeli & investor serius",
+  "AI Smart Price & Market Insights",
+  "Dashboard analytics real-time",
 ];
 
 const rightChecks = [
