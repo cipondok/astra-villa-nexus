@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { TrendingUp, Home, Key, Store } from 'lucide-react';
 
 const ctas = [
-  { label: 'Invest Now', icon: TrendingUp, path: '/investor-portfolio', variant: 'default' as const },
+  { label: 'Invest Now', icon: TrendingUp, path: '/portfolio-dashboard', variant: 'default' as const },
   { label: 'Buy Property', icon: Home, path: '/buy', variant: 'outline' as const },
   { label: 'Rent Instantly', icon: Key, path: '/rent', variant: 'outline' as const },
   { label: 'List as Vendor', icon: Store, path: '/vendor/register', variant: 'outline' as const },

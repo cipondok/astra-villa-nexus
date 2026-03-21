@@ -79,7 +79,7 @@ const InvestorIntelligencePanel = () => {
               ))}
             </div>
             <Button
-              onClick={() => navigate('/investor-portfolio')}
+              onClick={() => navigate('/portfolio-dashboard')}
               className="w-full bg-gradient-to-r from-gold-primary to-gold-secondary text-black font-bold h-11 gap-2 hover:opacity-90"
             >
               <Sparkles className="h-4 w-4" />
