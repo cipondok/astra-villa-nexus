@@ -67,13 +67,13 @@ export function useFounderExitWealth() {
         supabase.from('properties').select('id', { count: 'exact', head: true }).eq('status', 'available'),
         supabase.from('property_offers').select('id', { count: 'exact', head: true }).in('status', ['completed', 'accepted']),
         supabase.from('user_subscriptions').select('id', { count: 'exact', head: true }).eq('status', 'active'),
-        supabase.from('commissions').select('amount').eq('status', 'paid'),
+        supabase.from('acquisition_analytics').select('revenue').not('revenue', 'is', null),
       ]);
 
       const l = listings.count || 0;
       const d = deals.count || 0;
       const s = subs.count || 0;
-      const totalRev = (revenue.data || []).reduce((sum, r) => sum + (r.amount || 0), 0);
+      const totalRev = (revenue.data || []).reduce((sum, r) => sum + (Number(r.revenue) || 0), 0);
       const arrEstimate = s * 3_500_000 * 12;
       const revenueMultiple = 15;
       const impliedVal = Math.max(arrEstimate * revenueMultiple, 25_000_000_000);

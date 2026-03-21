@@ -169,7 +169,7 @@ export default function FounderExitWealthPage() {
                       <div className="flex items-center gap-3">
                         <div className={cn('w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold',
                           gp.status === 'active' ? 'bg-primary/20 text-primary' :
-                          gp.status === 'completed' ? 'bg-chart-2/20 text-chart-2' : 'bg-muted text-muted-foreground')}>
+                          gp.status === 'future' ? 'bg-muted text-muted-foreground' : 'bg-muted text-muted-foreground')}>
                           {i + 1}
                         </div>
                         <div>
