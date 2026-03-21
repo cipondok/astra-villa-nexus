@@ -114,7 +114,8 @@ import {
   Award,
   Radio,
   Mic,
-  GitBranch
+  GitBranch,
+  Siren
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -961,6 +962,13 @@ export const navigationSections = {
       icon: Rocket,
       description: "Seed → Series B milestone gates with KPI thresholds, capital allocation & investor positioning per round",
       badge: "🚀 Fundraising"
+    },
+    {
+      key: "crisis-war-room",
+      label: "Crisis War Room",
+      icon: Siren,
+      description: "DEFCON severity scoring, 28-action checklist across 5 response modules, recovery KPIs & escalation triggers",
+      badge: "🚨 War Room"
     },
     {
       key: "investor-scoring-engine",
