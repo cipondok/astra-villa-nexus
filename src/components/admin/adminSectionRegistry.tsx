@@ -720,6 +720,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "kpi-anomaly-detector":       () => <KPIAnomalyDetector />,
   "competitive-threat-response": () => <CompetitiveThreatResponse />,
   "viral-growth-loops":         () => <ViralGrowthLoops />,
+  "super-app-ecosystem-plan":   () => <SuperAppEcosystemPlan />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
