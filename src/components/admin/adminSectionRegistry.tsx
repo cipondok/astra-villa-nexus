@@ -744,6 +744,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "global-brand-authority-narrative": () => <GlobalBrandAuthority />,
   "decacorn-projection": () => <DecacornProjection />,
   "experiment-prioritization": () => <ExperimentPrioritization />,
+  "partnership-strategy": () => <PartnershipStrategy />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
