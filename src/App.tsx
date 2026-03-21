@@ -360,6 +360,7 @@ const KPICommandCenterPage = lazy(() => import('@/pages/KPICommandCenterPage'));
 const SeriesAReadinessPage = lazy(() => import('@/pages/SeriesAReadinessPage'));
 const CityExpansionMasterPlanPage = lazy(() => import('@/pages/CityExpansionMasterPlanPage'));
 const NetworkEffectAccelerationPage = lazy(() => import('@/pages/NetworkEffectAccelerationPage'));
+const FounderExitWealthPage = lazy(() => import('@/pages/FounderExitWealthPage'));
 const FounderSchedulePage = lazy(() => import('@/pages/FounderSchedulePage'));
 const EnergyOptimizationPage = lazy(() => import('@/pages/EnergyOptimizationPage'));
 const DecisionPrioritizationPage = lazy(() => import('@/pages/DecisionPrioritizationPage'));
