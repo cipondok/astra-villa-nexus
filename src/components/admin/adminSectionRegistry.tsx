@@ -660,6 +660,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "pr-launch-strategy":         () => <PRLaunchStrategyDashboard />,
   "investor-outreach":          () => <InvestorOutreachDashboard />,
   "founder-daily-system":       () => <FounderDailySystem />,
+  "founder-daily-command":      () => <FounderDailyCommandDashboard />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
