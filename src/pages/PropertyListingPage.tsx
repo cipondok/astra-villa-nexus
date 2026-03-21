@@ -135,6 +135,12 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
   });
 
   const listingType = pageType === 'buy' ? 'sale' : pageType === 'rent' ? 'rent' : undefined;
+  const alertFilters = useMemo(() => ({
+    propertyType: filters.propertyType,
+    city: filters.city,
+    priceRange: filters.priceRange,
+    listingType: listingType,
+  }), [filters.propertyType, filters.city, filters.priceRange, listingType]);
   const developmentStatus = pageType === 'buy' || pageType === 'rent'
     ? ['completed', 'ready']
     : pageType === 'new-projects'
