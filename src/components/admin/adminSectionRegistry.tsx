@@ -332,6 +332,7 @@ export const ExperimentPrioritization = lazyRetry(() => import("./ExperimentPrio
 export const PartnershipStrategy = lazyRetry(() => import("./PartnershipStrategy"));
 export const FlywheelOptimization = lazyRetry(() => import("./FlywheelOptimization"));
 export const CompetitiveDomination = lazyRetry(() => import("./CompetitiveDomination"));
+export const FounderClarity = lazyRetry(() => import("./FounderClarity"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
