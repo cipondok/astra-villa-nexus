@@ -942,6 +942,13 @@ export const navigationSections = {
       badge: "🌍 Roadshow"
     },
     {
+      key: "domination-kpi-control",
+      label: "Domination KPI Control",
+      icon: Gauge,
+      description: "Liquidity, demand, monetization & defensibility indices with alert thresholds and automated control actions",
+      badge: "⚡ Command"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
