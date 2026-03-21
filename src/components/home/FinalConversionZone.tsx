@@ -33,13 +33,13 @@ const FinalConversionZone = () => {
             </span>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 leading-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 leading-tight">
             Where Real Estate Meets{' '}
             <span className="bg-gradient-to-r from-gold-primary to-gold-secondary bg-clip-text text-transparent">
               Intelligent Technology
             </span>
           </h2>
-          <p className="text-sm text-white/40 mb-8 max-w-lg mx-auto">
+          <p className="text-sm text-muted-foreground mb-8 max-w-lg mx-auto">
             Indonesia's First AI-Powered Digital Virtual Tour Property Platform — Operating at Global Scale
           </p>
 
@@ -57,8 +57,8 @@ const FinalConversionZone = () => {
                   onClick={() => navigate(p.path)}
                   className={
                     p.primary
-                      ? 'bg-gradient-to-r from-gold-primary to-gold-secondary text-black font-bold gap-2 h-12 px-7 border-0 hover:opacity-90'
-                      : 'border border-white/10 text-white/70 bg-transparent hover:bg-white/5 font-semibold gap-2 h-12 px-6'
+                      ? 'bg-gradient-to-r from-gold-primary to-gold-secondary text-primary-foreground font-bold gap-2 h-12 px-7 border-0 hover:opacity-90'
+                      : 'border border-border text-muted-foreground bg-card hover:bg-accent font-semibold gap-2 h-12 px-6'
                   }
                 >
                   <p.icon className="h-4 w-4" />

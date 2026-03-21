@@ -21,7 +21,7 @@ const InvestorIntelligencePanel = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-4">
-      <div className="rounded-2xl p-5 sm:p-7 border border-white/[0.06] bg-[hsl(220,25%,8%)] backdrop-blur-xl relative overflow-hidden">
+      <div className="rounded-2xl p-5 sm:p-7 border border-border/60 bg-card backdrop-blur-xl relative overflow-hidden shadow-sm">
         {/* Subtle glow */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-intel-blue/[0.03] rounded-full blur-[80px]" />
 
@@ -33,8 +33,8 @@ const InvestorIntelligencePanel = () => {
                 <TrendingUp className="h-4 w-4 text-intel-blue" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-white">ROI Intelligence by City</h3>
-                <p className="text-[10px] text-white/40">AI Forecast — Next 12 months projection</p>
+                <h3 className="text-sm font-bold text-foreground">ROI Intelligence by City</h3>
+                <p className="text-[10px] text-muted-foreground">AI Forecast — Next 12 months projection</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -46,20 +46,20 @@ const InvestorIntelligencePanel = () => {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.08 }}
                   whileHover={{ scale: 1.02 }}
-                  className="p-3.5 rounded-xl border border-white/[0.06] bg-white/[0.02] cursor-pointer hover:border-intel-blue/20 transition-all"
+                  className="p-3.5 rounded-xl border border-border/40 bg-muted/30 cursor-pointer hover:border-intel-blue/30 transition-all"
                   onClick={() => navigate('/investment-map-explorer')}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-1.5">
-                      <MapPin className="h-3 w-3 text-white/30" />
-                      <span className="text-xs font-semibold text-white">{city.name}</span>
+                      <MapPin className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-xs font-semibold text-foreground">{city.name}</span>
                     </div>
                     <span className="text-xs font-bold text-intel-success tabular-nums">
                       {city.roi}%
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-white/30">Signal</span>
+                    <span className="text-[10px] text-muted-foreground">Signal</span>
                     <span className="text-[10px] font-medium text-intel-blue">{city.signal}</span>
                   </div>
                 </motion.div>
@@ -70,17 +70,17 @@ const InvestorIntelligencePanel = () => {
           {/* Trust Badges + CTA */}
           <div className="lg:w-72 flex flex-col justify-between gap-5">
             <div className="space-y-3.5">
-              <h4 className="text-[10px] text-white/30 uppercase tracking-widest font-semibold mb-3">Trust Signals</h4>
+              <h4 className="text-[10px] text-muted-foreground uppercase tracking-widest font-semibold mb-3">Trust Signals</h4>
               {trustBadges.map((badge) => (
-                <div key={badge.label} className="flex items-center gap-3 p-2.5 rounded-lg border border-white/[0.04] bg-white/[0.01]">
+                <div key={badge.label} className="flex items-center gap-3 p-2.5 rounded-lg border border-border/30 bg-muted/20">
                   <badge.icon className="h-4 w-4 text-gold-primary flex-shrink-0" />
-                  <span className="text-xs font-medium text-white/70">{badge.label}</span>
+                  <span className="text-xs font-medium text-muted-foreground">{badge.label}</span>
                 </div>
               ))}
             </div>
             <Button
               onClick={() => navigate('/portfolio-dashboard')}
-              className="w-full bg-gradient-to-r from-gold-primary to-gold-secondary text-black font-bold h-11 gap-2 hover:opacity-90"
+              className="w-full bg-gradient-to-r from-gold-primary to-gold-secondary text-primary-foreground font-bold h-11 gap-2 hover:opacity-90"
             >
               <Sparkles className="h-4 w-4" />
               Start Portfolio

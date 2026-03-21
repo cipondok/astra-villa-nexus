@@ -22,7 +22,7 @@ const scrollTech = [
 const TechnologyAuthorityStrip = () => (
   <div className="relative overflow-hidden">
     {/* Main technology authority section */}
-    <div className="bg-[hsl(220,25%,6%)] py-10 sm:py-14 relative">
+    <div className="bg-secondary/50 py-10 sm:py-14 relative">
       {/* Radial glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-intel-blue/[0.03] rounded-full blur-[100px]" />
 
@@ -32,13 +32,13 @@ const TechnologyAuthorityStrip = () => (
             <Cpu className="h-3 w-3 text-intel-blue" />
             <span className="text-[10px] font-semibold text-intel-blue uppercase tracking-widest">Intelligence Layer</span>
           </div>
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-2">
             ASTRA Intelligence Powering{' '}
             <span className="bg-gradient-to-r from-intel-blue to-intel-purple bg-clip-text text-transparent">
               Future Real Estate Markets
             </span>
           </h2>
-          <p className="text-sm text-white/40 max-w-lg mx-auto">
+          <p className="text-sm text-muted-foreground max-w-lg mx-auto">
             Autonomous systems processing millions of data points to deliver institutional-grade property intelligence
           </p>
         </div>
@@ -51,13 +51,13 @@ const TechnologyAuthorityStrip = () => (
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="p-5 rounded-xl border border-white/[0.06] bg-white/[0.02] hover:border-intel-blue/20 transition-all group"
+              className="p-5 rounded-xl border border-border/60 bg-card hover:border-intel-blue/30 transition-all group shadow-sm"
             >
               <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-intel-blue/10 border border-intel-blue/15 mb-4 group-hover:bg-intel-blue/15 transition-colors">
                 <mod.icon className="h-5 w-5 text-intel-blue" />
               </div>
-              <h3 className="text-sm font-bold text-white mb-1.5">{mod.title}</h3>
-              <p className="text-[11px] text-white/40 leading-relaxed">{mod.desc}</p>
+              <h3 className="text-sm font-bold text-foreground mb-1.5">{mod.title}</h3>
+              <p className="text-[11px] text-muted-foreground leading-relaxed">{mod.desc}</p>
             </motion.div>
           ))}
         </div>
@@ -65,9 +65,9 @@ const TechnologyAuthorityStrip = () => (
     </div>
 
     {/* Scrolling ticker */}
-    <div className="bg-[hsl(220,25%,5%)] border-y border-white/[0.04] py-3.5 relative overflow-hidden">
-      <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[hsl(220,25%,5%)] to-transparent z-10" />
-      <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[hsl(220,25%,5%)] to-transparent z-10" />
+    <div className="bg-muted/50 border-y border-border/40 py-3.5 relative overflow-hidden">
+      <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-muted/50 to-transparent z-10" />
+      <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-muted/50 to-transparent z-10" />
       <motion.div
         className="flex gap-10 whitespace-nowrap"
         animate={{ x: ['0%', '-50%'] }}
@@ -75,10 +75,10 @@ const TechnologyAuthorityStrip = () => (
       >
         {[...scrollTech, ...scrollTech].map((item, i) => (
           <div key={i} className="flex items-center gap-2.5 flex-shrink-0">
-            <div className="flex items-center justify-center w-6 h-6 rounded-md bg-white/[0.03] border border-white/[0.06]">
+            <div className="flex items-center justify-center w-6 h-6 rounded-md bg-primary/5 border border-border/40">
               <item.icon className="h-3 w-3 text-gold-primary" />
             </div>
-            <span className="text-[11px] font-semibold text-white/50 uppercase tracking-wider">
+            <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
               {item.label}
             </span>
           </div>
