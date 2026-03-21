@@ -857,6 +857,13 @@ export const navigationSections = {
       badge: "📰 PR"
     },
     {
+      key: "closing-conversation-sim",
+      label: "Closing Conversation Simulator",
+      icon: MessageSquare,
+      description: "Dialogue scripts, call frameworks & voice-note templates for converting inquiries into viewings",
+      badge: "🎯 Sales"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
