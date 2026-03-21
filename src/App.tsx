@@ -850,6 +850,7 @@ const AppContent = () => {
                 <Route path="/kpi-command-center" element={<KPICommandCenterPage />} />
                 <Route path="/series-a-readiness" element={<SeriesAReadinessPage />} />
                 <Route path="/city-expansion-master-plan" element={<CityExpansionMasterPlanPage />} />
+                <Route path="/network-effect-acceleration" element={<NetworkEffectAccelerationPage />} />
                 <Route path="/founder-schedule" element={<FounderSchedulePage />} />
                 <Route path="/energy-optimization" element={<EnergyOptimizationPage />} />
                 <Route path="/decision-prioritization" element={<DecisionPrioritizationPage />} />
