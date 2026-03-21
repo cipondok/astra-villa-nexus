@@ -748,6 +748,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "experiment-prioritization": () => <ExperimentPrioritization />,
   "partnership-strategy": () => <PartnershipStrategy />,
   "flywheel-optimization": () => <FlywheelOptimization />,
+  "competitive-domination": () => <CompetitiveDomination />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
