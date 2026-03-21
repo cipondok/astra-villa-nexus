@@ -1,13 +1,11 @@
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Eye, Glasses, Sofa, Ruler, Sun, Moon, MapPin,
-  Play, Pause, RotateCcw, Maximize2, Minimize2, Settings,
-  Camera, Share2, Download, ChevronLeft, ChevronRight
+  Play, Pause, Maximize2, Minimize2,
+  Camera, ChevronLeft, ChevronRight, X, Share2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import VRPanoramaViewer from './VRPanoramaViewer';
@@ -43,18 +41,19 @@ interface VRPropertyTourManagerProps {
   onSaveStaging?: (sceneId: string, stagedImageUrl: string) => void;
 }
 
+type ActiveTool = 'none' | 'staging' | 'measure' | 'neighborhood';
+
 const VRPropertyTourManager: React.FC<VRPropertyTourManagerProps> = ({
   property,
   scenes,
   className,
   onSaveStaging
 }) => {
-  const [activeTab, setActiveTab] = useState<'tour' | 'staging' | 'measure' | 'neighborhood'>('tour');
+  const [activeTool, setActiveTool] = useState<ActiveTool>('none');
   const [currentSceneIndex, setCurrentSceneIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isDayMode, setIsDayMode] = useState(true);
-  const [showControls, setShowControls] = useState(true);
   const [isVRMode, setIsVRMode] = useState(false);
   const [stagedImages, setStagedImages] = useState<Record<string, string>>({});
 
@@ -92,163 +91,225 @@ const VRPropertyTourManager: React.FC<VRPropertyTourManagerProps> = ({
     if ('xr' in navigator) setIsVRMode(!isVRMode);
   }, [isVRMode]);
 
+  const toggleTool = (tool: ActiveTool) => {
+    setActiveTool(prev => prev === tool ? 'none' : tool);
+  };
+
   const displayImageUrl = stagedImages[currentScene?.id] || currentScene?.imageUrl;
 
-  const tabs = [
-    { id: 'tour', label: '360°', icon: Eye },
-    { id: 'staging', label: 'Stage', icon: Sofa },
-    { id: 'measure', label: 'Measure', icon: Ruler },
-    { id: 'neighborhood', label: 'Area', icon: MapPin },
+  const tools = [
+    { id: 'staging' as ActiveTool, label: 'AI Stage', icon: Sofa },
+    { id: 'measure' as ActiveTool, label: 'Measure', icon: Ruler },
+    { id: 'neighborhood' as ActiveTool, label: 'Area', icon: MapPin },
   ];
 
   return (
-    <Card className={cn(
-      "overflow-hidden border-border",
-      isFullscreen ? "fixed inset-0 z-50 rounded-none" : "rounded-lg",
+    <div className={cn(
+      "relative overflow-hidden rounded-xl border border-border bg-card",
+      isFullscreen ? "fixed inset-0 z-50 rounded-none" : "",
       className
     )}>
-      <CardContent className="p-0">
-        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)}>
-          {/* Compact toolbar: tabs + controls in one row */}
-          <div className="flex items-center justify-between gap-2 px-2 py-1 bg-secondary/40 border-b border-border">
-            <TabsList className="h-7 bg-background/80 p-0.5 rounded-md border border-border gap-0.5">
-              {tabs.map((tab) => (
-                <TabsTrigger
-                  key={tab.id}
-                  value={tab.id}
-                  className="h-6 px-2 text-[10px] gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded"
-                >
-                  <tab.icon className="h-3 w-3" />
-                  <span className="hidden xs:inline">{tab.label}</span>
-                </TabsTrigger>
-              ))}
-            </TabsList>
+      {/* Main panorama viewer — full area */}
+      <div className={cn(
+        "relative w-full",
+        isFullscreen ? "h-screen" : "h-[60vh] sm:h-[65vh] lg:h-[75vh]"
+      )}>
+        {activeTool === 'none' && currentScene && (
+          <VRPanoramaViewer
+            imageUrl={displayImageUrl}
+            hotspots={currentScene.hotspots || []}
+            onHotspotClick={(hotspot) => {
+              if (hotspot.targetSceneId) handleSceneChange(hotspot.targetSceneId);
+            }}
+            autoRotate={isPlaying}
+            isDayMode={isDayMode}
+            className="w-full h-full"
+          />
+        )}
 
-            <div className="flex items-center gap-0.5">
-              <Badge variant="outline" className="h-5 text-[9px] border-border px-1.5 hidden sm:flex">
-                {scenes.length} rooms
-              </Badge>
-              <DayNightToggle isDayMode={isDayMode} onToggle={() => setIsDayMode(!isDayMode)} />
-              <Button variant="ghost" size="icon" onClick={handleVRMode} className="h-6 w-6">
-                <Glasses className="h-3 w-3" />
-              </Button>
-              <Button variant="ghost" size="icon" onClick={toggleFullscreen} className="h-6 w-6">
-                {isFullscreen ? <Minimize2 className="h-3 w-3" /> : <Maximize2 className="h-3 w-3" />}
-              </Button>
-            </div>
-          </div>
-
-          <TabsContent value="tour" className="m-0">
-            <div className={cn(
-              "relative",
-              isFullscreen ? "h-screen" : "h-[50vh] sm:h-[55vh] lg:h-[65vh]"
-            )}>
-              {currentScene && (
-                <VRPanoramaViewer
-                  imageUrl={displayImageUrl}
-                  hotspots={currentScene.hotspots || []}
-                  onHotspotClick={(hotspot) => {
-                    if (hotspot.targetSceneId) handleSceneChange(hotspot.targetSceneId);
-                  }}
-                  autoRotate={isPlaying}
-                  isDayMode={isDayMode}
-                  className="w-full h-full"
-                />
-              )}
-
-              {/* Scene Navigation — compact */}
-              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10">
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  onClick={handlePrevScene}
-                  className="h-8 w-8 rounded-full bg-card/90 border border-border shadow-lg"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-
-                <div className="flex items-center gap-1 bg-card/90 border border-border rounded-full px-2.5 py-1 shadow-lg">
-                  <Button variant="ghost" size="icon" onClick={() => setIsPlaying(!isPlaying)} className="h-6 w-6">
-                    {isPlaying ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
-                  </Button>
-                  <span className="text-[11px] font-medium px-1 text-foreground">
-                    {currentSceneIndex + 1}/{scenes.length}
-                  </span>
-                  <Button variant="ghost" size="icon" className="h-6 w-6">
-                    <Camera className="h-3 w-3" />
-                  </Button>
-                </div>
-
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  onClick={handleNextScene}
-                  className="h-8 w-8 rounded-full bg-card/90 border border-border shadow-lg"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-              </div>
-
-              {/* Scene Title — top left badge */}
-              <div className="absolute top-2 left-2 z-10">
-                <Badge className="bg-card/90 border border-border text-foreground px-2 py-0.5 text-[10px] shadow-lg">
-                  <Eye className="h-2.5 w-2.5 mr-1" />
-                  {currentScene?.title || 'Loading...'}
-                </Badge>
-              </div>
-
-              {/* Thumbnail Strip — compact */}
-              <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-10">
-                <div className="flex gap-1 bg-card/80 border border-border rounded-lg p-1 shadow-lg">
-                  {scenes.map((scene, index) => (
-                    <button
-                      key={scene.id}
-                      onClick={() => setCurrentSceneIndex(index)}
-                      className={cn(
-                        "w-10 h-7 sm:w-14 sm:h-10 rounded overflow-hidden border-2 transition-all",
-                        index === currentSceneIndex
-                          ? "border-primary ring-1 ring-primary/30"
-                          : "border-transparent hover:border-primary/50"
-                      )}
-                    >
-                      <img
-                        src={scene.thumbnailUrl || scene.imageUrl}
-                        alt={scene.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="staging" className="m-0">
+        {/* Tool panels rendered inside the viewer area */}
+        {activeTool === 'staging' && (
+          <div className="w-full h-full overflow-auto">
             <VirtualStagingPanel
               scene={currentScene}
               onStagingComplete={(stagedUrl) => handleStagingComplete(currentScene?.id, stagedUrl)}
               isFullscreen={isFullscreen}
             />
-          </TabsContent>
-
-          <TabsContent value="measure" className="m-0">
+          </div>
+        )}
+        {activeTool === 'measure' && (
+          <div className="w-full h-full overflow-auto">
             <DistanceMeasurementTool
               imageUrl={displayImageUrl}
               propertyArea={property.area_sqm}
               isFullscreen={isFullscreen}
             />
-          </TabsContent>
-
-          <TabsContent value="neighborhood" className="m-0">
+          </div>
+        )}
+        {activeTool === 'neighborhood' && (
+          <div className="w-full h-full overflow-auto">
             <NeighborhoodVRExplorer
               property={property}
               isDayMode={isDayMode}
               isFullscreen={isFullscreen}
             />
-          </TabsContent>
-        </Tabs>
-      </CardContent>
-    </Card>
+          </div>
+        )}
+
+        {/* ═══════════════════════════════════════════ */}
+        {/* FLOATING TOOLKIT — overlaid on the image   */}
+        {/* ═══════════════════════════════════════════ */}
+
+        {/* Top-left: Scene title + badge */}
+        <div className="absolute top-3 left-3 z-20 flex items-center gap-2">
+          <Badge className="bg-card/80 backdrop-blur-md border border-border/60 text-foreground px-2.5 py-1 text-[11px] shadow-lg">
+            <Eye className="h-3 w-3 mr-1.5 text-primary" />
+            {currentScene?.title || 'Loading...'}
+          </Badge>
+          <Badge className="bg-primary/90 backdrop-blur-md text-primary-foreground px-2 py-1 text-[10px] shadow-lg">
+            {currentSceneIndex + 1}/{scenes.length}
+          </Badge>
+        </div>
+
+        {/* Top-right: Utility controls */}
+        <div className="absolute top-3 right-3 z-20 flex items-center gap-1">
+          <DayNightToggle isDayMode={isDayMode} onToggle={() => setIsDayMode(!isDayMode)} className="scale-75 origin-right" />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleVRMode}
+            className="h-8 w-8 bg-card/70 backdrop-blur-md border border-border/50 shadow-lg hover:bg-card/90"
+          >
+            <Glasses className="h-3.5 w-3.5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleFullscreen}
+            className="h-8 w-8 bg-card/70 backdrop-blur-md border border-border/50 shadow-lg hover:bg-card/90"
+          >
+            {isFullscreen ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+          </Button>
+        </div>
+
+        {/* Left-side: Floating vertical tool strip */}
+        <div className="absolute left-3 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-1.5">
+          {tools.map((tool) => (
+            <motion.button
+              key={tool.id}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => toggleTool(tool.id)}
+              className={cn(
+                "group relative flex items-center justify-center w-10 h-10 rounded-xl shadow-lg transition-all duration-200",
+                "backdrop-blur-md border",
+                activeTool === tool.id
+                  ? "bg-primary text-primary-foreground border-primary/50 shadow-primary/20"
+                  : "bg-card/70 text-foreground border-border/50 hover:bg-card/90"
+              )}
+            >
+              <tool.icon className="h-4 w-4" />
+              {/* Tooltip */}
+              <span className="absolute left-full ml-2 px-2 py-1 rounded-md bg-card/95 backdrop-blur-md border border-border text-[10px] font-medium text-foreground whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity shadow-lg">
+                {tool.label}
+              </span>
+            </motion.button>
+          ))}
+        </div>
+
+        {/* Bottom-center: Scene navigation + thumbnails */}
+        {activeTool === 'none' && (
+          <>
+            {/* Thumbnail strip */}
+            <div className="absolute bottom-14 left-1/2 -translate-x-1/2 z-20">
+              <div className="flex gap-1 bg-card/70 backdrop-blur-md border border-border/50 rounded-lg p-1 shadow-xl">
+                {scenes.map((scene, index) => (
+                  <button
+                    key={scene.id}
+                    onClick={() => setCurrentSceneIndex(index)}
+                    className={cn(
+                      "relative w-12 h-8 sm:w-14 sm:h-10 rounded-md overflow-hidden border-2 transition-all",
+                      index === currentSceneIndex
+                        ? "border-primary ring-1 ring-primary/40 scale-105"
+                        : "border-transparent hover:border-primary/40 opacity-70 hover:opacity-100"
+                    )}
+                  >
+                    <img
+                      src={scene.thumbnailUrl || scene.imageUrl}
+                      alt={scene.title}
+                      className="w-full h-full object-cover"
+                    />
+                    {index === currentSceneIndex && (
+                      <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Playback controls */}
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handlePrevScene}
+                className="h-9 w-9 rounded-full bg-card/70 backdrop-blur-md border border-border/50 shadow-lg hover:bg-card/90"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsPlaying(!isPlaying)}
+                className="h-9 w-9 rounded-full bg-card/70 backdrop-blur-md border border-border/50 shadow-lg hover:bg-card/90"
+              >
+                {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleNextScene}
+                className="h-9 w-9 rounded-full bg-card/70 backdrop-blur-md border border-border/50 shadow-lg hover:bg-card/90"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+
+              <div className="w-px h-5 bg-border/50 mx-0.5" />
+
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9 rounded-full bg-card/70 backdrop-blur-md border border-border/50 shadow-lg hover:bg-card/90"
+              >
+                <Camera className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9 rounded-full bg-card/70 backdrop-blur-md border border-border/50 shadow-lg hover:bg-card/90"
+              >
+                <Share2 className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          </>
+        )}
+
+        {/* Active tool close button */}
+        {activeTool !== 'none' && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            onClick={() => setActiveTool('none')}
+            className="absolute bottom-3 right-3 z-30 flex items-center gap-1.5 px-3 py-2 rounded-full bg-card/80 backdrop-blur-md border border-border/50 shadow-xl text-xs font-medium text-foreground hover:bg-card/95 transition-colors"
+          >
+            <X className="h-3 w-3" />
+            Back to 360°
+          </motion.button>
+        )}
+      </div>
+    </div>
   );
 };
 

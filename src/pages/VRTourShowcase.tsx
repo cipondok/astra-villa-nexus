@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Glasses, Sparkles, Info, Eye } from 'lucide-react';
+import { ArrowLeft, Glasses, Sparkles, Info } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { VRPropertyTourManager, VRTourScene } from '@/components/vr-tours';
-import { BaseProperty } from '@/types/property';
 import { getCurrencyFormatterShort } from '@/stores/currencyStore';
 
 // Demo property data
@@ -84,61 +82,44 @@ const demoScenes: VRTourScene[] = [
 
 const VRTourShowcase: React.FC = () => {
   const [stagedImages, setStagedImages] = useState<Record<string, string>>({});
-
-  const handleSaveStaging = (sceneId: string, stagedImageUrl: string) => {
-    setStagedImages((prev) => ({ ...prev, [sceneId]: stagedImageUrl }));
-  };
-
   const formatPrice = getCurrencyFormatterShort();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Slim Header — merged with property info */}
-      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
-        <div className="container mx-auto px-3 py-1.5 flex items-center justify-between gap-2">
+      {/* Ultra-slim header bar */}
+      <header className="sticky top-0 z-40 bg-card/95 backdrop-blur-md border-b border-border/60">
+        <div className="max-w-[1800px] mx-auto px-3 py-1.5 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
             <Link to="/">
-              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 shrink-0">
+              <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
                 <ArrowLeft className="h-4 w-4" />
               </Button>
             </Link>
-            <Glasses className="h-4 w-4 text-primary shrink-0" />
-            <span className="font-semibold text-sm truncate">{demoProperty.title}</span>
-            <span className="text-xs text-muted-foreground hidden sm:inline">· {demoProperty.city}</span>
+            <div className="flex items-center gap-1.5 min-w-0">
+              <Glasses className="h-4 w-4 text-primary shrink-0" />
+              <span className="font-semibold text-sm truncate">{demoProperty.title}</span>
+              <span className="text-muted-foreground text-xs hidden md:inline">· {demoProperty.city}</span>
+            </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
             <span className="font-bold text-primary text-sm">{formatPrice(demoProperty.price)}</span>
             <span className="text-[10px] text-muted-foreground hidden sm:inline">
               {demoProperty.bedrooms}BR · {demoProperty.bathrooms}BA · {demoProperty.area_sqm}m²
             </span>
-            <Badge variant="outline" className="hidden md:flex h-5 text-[10px] border-primary/30 text-primary px-1.5">
-              <Sparkles className="h-2.5 w-2.5 mr-0.5" />AI
+            <Badge variant="outline" className="hidden lg:flex h-5 text-[10px] border-primary/30 text-primary px-1.5">
+              <Sparkles className="h-2.5 w-2.5 mr-0.5" />AI VR Tour
             </Badge>
           </div>
         </div>
       </header>
 
-      {/* Full-bleed VR content — minimal wrapper */}
-      <main className="container mx-auto px-2 sm:px-3 py-1.5 space-y-1.5">
+      {/* Full-bleed immersive VR experience */}
+      <main className="max-w-[1800px] mx-auto px-1 sm:px-2 py-1">
         <VRPropertyTourManager
           property={demoProperty}
           scenes={demoScenes}
-          onSaveStaging={handleSaveStaging}
+          onSaveStaging={(sceneId, url) => setStagedImages(prev => ({ ...prev, [sceneId]: url }))}
         />
-
-        {/* Inline collapsible help */}
-        <details className="group px-1">
-          <summary className="inline-flex items-center gap-1 cursor-pointer text-[11px] text-muted-foreground hover:text-foreground transition-colors">
-            <Info className="h-3 w-3 text-primary" />
-            How to use
-          </summary>
-          <div className="text-[10px] text-muted-foreground mt-1 ml-4 grid grid-cols-2 sm:grid-cols-4 gap-x-3 gap-y-0.5">
-            <span><strong className="text-foreground">360°:</strong> Drag to look around</span>
-            <span><strong className="text-foreground">AI Stage:</strong> Select style & stage</span>
-            <span><strong className="text-foreground">Measure:</strong> Click two points</span>
-            <span><strong className="text-foreground">Day/Night:</strong> Sun/moon toggle</span>
-          </div>
-        </details>
       </main>
     </div>
   );
