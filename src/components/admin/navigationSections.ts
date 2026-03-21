@@ -723,6 +723,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "monetization-engine-control",
+      label: "Monetization Engine",
+      icon: DollarSign,
+      description: "Pricing tiers, boost revenue, vendor subscriptions, investor monetization & automated optimization",
+      badge: "New"
+    },
+    {
       key: "execution-command-center",
       label: "Execution Command Center",
       icon: Rocket,
