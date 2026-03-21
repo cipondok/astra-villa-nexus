@@ -216,17 +216,18 @@ const Search = () => {
       />
 
       {/* Branded Hero Header */}
-      <div className="bg-gradient-to-r from-primary via-primary/90 to-chart-1 dark:from-[#0a1628] dark:via-[#0d1f3c] dark:to-[#081225] pt-14 md:pt-16 pb-5 sm:pb-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3 mb-3">
-            <BackToHomeLink sectionId="ai-tools-section" alwaysShow />
+      <div className="bg-gradient-to-r from-primary via-primary/90 to-chart-1 dark:from-[#0a1628] dark:via-[#0d1f3c] dark:to-[#081225] pt-12 md:pt-14 pb-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-4">
+          <BackToHomeLink sectionId="ai-tools-section" alwaysShow />
+          <div className="h-5 w-px bg-primary-foreground/20" />
+          <div>
+            <h1 className="font-playfair text-lg sm:text-xl font-bold text-primary-foreground leading-tight">
+              Property Search
+            </h1>
+            <p className="text-primary-foreground/70 text-[11px] sm:text-xs">
+              Discover your perfect property across Indonesia
+            </p>
           </div>
-          <h1 className="font-playfair text-xl sm:text-2xl lg:text-3xl font-bold text-primary-foreground mb-1">
-            Property Search
-          </h1>
-          <p className="text-primary-foreground/70 text-xs sm:text-sm">
-            Discover your perfect property across Indonesia
-          </p>
         </div>
       </div>
 
