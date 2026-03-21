@@ -1,43 +1,40 @@
 
 
-# VR Tour Showcase — Compact Smart Style
+# VR Tour Showcase — Ultra Compact Layout
 
 ## Problem
-The feature highlights section (360° Tours, AI Staging, Measure, Day/Night) uses too much vertical space with a 2x2 grid of padded cards. On mobile this wastes screen real estate before the actual VR tour content.
+Too much vertical space consumed by separate sections (pills, property info card, VR tour, info box) stacked with generous padding and gaps.
 
 ## Solution
-Replace the grid of cards with a compact inline horizontal strip — a single-row scrollable pill/chip layout that takes minimal vertical space while still communicating the features.
+Merge the feature pills and property info into a single compact header strip above the VR tour. Collapse the "How to use" info into a collapsible/tooltip instead of a full card. Reduce all spacing.
 
 ## Changes
 
-### File: `src/pages/VRTourShowcase.tsx` (lines 135-155)
+### File: `src/pages/VRTourShowcase.tsx`
 
-Replace the `grid grid-cols-2 md:grid-cols-4` feature cards with a single horizontal row of compact chips:
+**1. Merge feature pills + property info into one compact bar (lines 133-170)**
 
-- Use `flex flex-wrap gap-1.5` layout instead of grid
-- Each feature becomes a small pill: `inline-flex items-center gap-1.5 bg-card border border-border/60 rounded-full px-3 py-1.5`
-- Icon + title inline, remove description text (already visible from VR tour UI itself)
-- Keeps the motion.div entrance animation
-- Reduces section from ~80px+ height to ~36px single row
+Replace the `space-y-4 sm:space-y-6` main with `space-y-2 sm:space-y-3`. Combine the feature pills row and property info card into a single flex container:
 
-### Before (conceptual)
 ```text
-┌──────────┐ ┌──────────┐
-│ 🔄       │ │ 🛋️       │
-│ 360°Tour │ │ AI Stage │
-│ desc...  │ │ desc...  │
-└──────────┘ └──────────┘
-┌──────────┐ ┌──────────┐
-│ 📏       │ │ 🌙       │
-│ Measure  │ │ Day/Nigh │
-│ desc...  │ │ desc...  │
-└──────────┘ └──────────┘
+[🔄 360°] [🛋️ AI] [📏] [🌙]     Luxury Villa Seminyak · Seminyak, Bali     Rp 8.5B · 4BR 4BA 450m²
 ```
 
-### After (conceptual)
-```text
-[🔄 360° Tours] [🛋️ AI Staging] [📏 Measure] [🌙 Day/Night]
-```
+- Single row with `flex items-center justify-between flex-wrap gap-2`
+- Left: feature pills (as-is)
+- Right: property title, city, price, specs all inline with `·` separators
+- Remove the separate `bg-secondary/50` card wrapper — just inline text
+- Padding reduced to `p-2`
 
-Compact pills in a single flex row, scrollable on very small screens.
+**2. Collapse "How to use" section (lines 179-194)**
+
+Replace the full info card with a small `[? How to use]` pill button that opens a popover/collapsible on click. This saves ~100px of vertical space by default.
+
+**3. Reduce main container spacing**
+
+- `py-4 sm:py-6` → `py-2 sm:py-3`
+- `space-y-4 sm:space-y-6` → `space-y-2 sm:space-y-3`
+
+### Files Modified
+- `src/pages/VRTourShowcase.tsx`
 
