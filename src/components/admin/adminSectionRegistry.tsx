@@ -316,6 +316,7 @@ export const NationalExpansionSimulator = lazyRetry(() => import("./NationalExpa
 export const InvestorFOMOPitchContent = lazyRetry(() => import("./InvestorFOMOPitchContent"));
 export const KPIAnomalyDetector = lazyRetry(() => import("./KPIAnomalyDetector"));
 export const CompetitiveThreatResponse = lazyRetry(() => import("./CompetitiveThreatResponse"));
+export const ViralGrowthLoops = lazyRetry(() => import("./ViralGrowthLoops"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -717,6 +718,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "investor-fomo-pitch":        () => <InvestorFOMOPitchContent />,
   "kpi-anomaly-detector":       () => <KPIAnomalyDetector />,
   "competitive-threat-response": () => <CompetitiveThreatResponse />,
+  "viral-growth-loops":         () => <ViralGrowthLoops />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1083,4 +1085,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "investor-fomo-pitch": { label: "Investor FOMO Pitch Content", category: "Strategy" },
   "kpi-anomaly-detector": { label: "KPI Anomaly Detector", category: "Strategy" },
   "competitive-threat-response": { label: "Competitive Threat Response", category: "Strategy" },
+  "viral-growth-loops": { label: "Viral Growth Loops", category: "Strategy" },
 };
