@@ -338,6 +338,7 @@ export const InvestorNarrativeDominance = lazyRetry(() => import("./InvestorNarr
 export const PlatformMoatStrategy = lazyRetry(() => import("./PlatformMoatStrategy"));
 export const GlobalOSMasterBlueprint = lazyRetry(() => import("./GlobalOSMasterBlueprint"));
 export const RealityExecutionAudit = lazyRetry(() => import("./RealityExecutionAudit"));
+export const SixtyDayDominationBlueprint = lazyRetry(() => import("./SixtyDayDominationBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
