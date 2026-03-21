@@ -896,6 +896,7 @@ const AppContent = () => {
                 <Route path="/revenue-leak-detection" element={<RevenueLeakDetectionPage />} />
                 <Route path="/first-profitable-month" element={<FirstProfitableMonthPage />} />
                 <Route path="/first-100k-revenue" element={<First100KRevenuePage />} />
+                <Route path="/daily-deal-conversion" element={<DailyDealConversionPage />} />
                 <Route path="/listing-demand-forecast" element={<ListingDemandForecastPage />} />
                 <Route path="/founder-fast-decision" element={<FounderFastDecisionPage />} />
                 <Route path="/revenue-flywheel" element={<RevenueFlywheelStrategyPage />} />
