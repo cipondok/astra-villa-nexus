@@ -357,6 +357,7 @@ export const TenMillionGlobalBlueprint = lazyRetry(() => import("./TenMillionGlo
 export const FiftyMillionPlanetaryBlueprint = lazyRetry(() => import("./FiftyMillionPlanetaryBlueprint"));
 export const FirstTenDealsBlueprint = lazyRetry(() => import("./FirstTenDealsBlueprint"));
 export const First100BuyersBlueprint = lazyRetry(() => import("./First100BuyersBlueprint"));
+export const First500ListingsBlueprint = lazyRetry(() => import("./First500ListingsBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
