@@ -82,6 +82,7 @@ const AIInvestmentFeed = lazy(() => import("@/components/home/AIInvestmentFeed")
 
 // Decacorn terminal sections
 // GlobalMarketCommandCenter removed — using original cinematic hero
+const AstraHero = lazy(() => import("@/components/home/AstraHero"));
 const HeroLiveCounters = lazy(() => import("@/components/home/HeroLiveCounters"));
 const HeroSmartCTAs = lazy(() => import("@/components/home/HeroSmartCTAs"));
 const InvestorIntelligencePanel = lazy(() => import("@/components/home/InvestorIntelligencePanel"));
@@ -592,52 +593,35 @@ const Index = () => {
         {/* Hero Section — Full promotional banner + search below */}
         <SectionErrorBoundary sectionName="Hero" fallbackMinHeight="400px">
         <section className="relative w-full" id="hero-section">
-          {/* Full-width promotional banner image */}
-          <div className="relative w-full bg-[#0e64be] dark:bg-[#0a1628]">
-            {/* Mobile hero */}
-            <img
-              src={heroMobileImg}
-              alt="ASTRA VILLA — Indonesia's Smart Property Platform"
-              fetchPriority="high"
-              loading="eager"
-              decoding="sync"
-              className="block sm:hidden w-full h-auto object-contain"
-            />
-            {/* Desktop hero */}
-            <img
-              src={heroImage}
-              alt="ASTRA VILLA — Indonesia's Smart Property Platform"
-              fetchPriority="high"
-              loading="eager"
-              decoding="sync"
-              className="hidden sm:block w-full h-auto object-contain"
-            />
+          {/* Coded Hero Section */}
+          <Suspense fallback={<div className="min-h-[90vh] bg-[#0a1628]" />}>
+            <AstraHero />
+          </Suspense>
 
-            {/* Search panel overlaid on bottom of banner */}
-            <div className="absolute bottom-0 left-0 right-0 z-10 px-4 sm:px-6 lg:px-8 pb-3 sm:pb-5">
-              <div className="w-full max-w-5xl mx-auto">
-                <div className="animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
-                  <SectionErrorBoundary sectionName="Search" fallbackMinHeight="60px">
-                    <Suspense fallback={<SearchPanelSkeleton />}>
-                      <SearchErrorBoundary>
-                        <AstraSearchPanel
-                          language={language}
-                          onSearch={(searchData) => {
-                            setQuickSearch(searchData.searchQuery || "");
-                            handleQuickSearch(searchData);
-                          }}
-                          onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
-                          resultsCount={hasSearched ? searchResults.length : undefined}
-                        />
-                      </SearchErrorBoundary>
-                    </Suspense>
-                  </SectionErrorBoundary>
-                </div>
+          {/* Search panel below hero */}
+          <div className="relative z-10 bg-[#0a1628] pb-6 px-4 sm:px-6 lg:px-8">
+            <div className="w-full max-w-5xl mx-auto">
+              <div className="animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
+                <SectionErrorBoundary sectionName="Search" fallbackMinHeight="60px">
+                  <Suspense fallback={<SearchPanelSkeleton />}>
+                    <SearchErrorBoundary>
+                      <AstraSearchPanel
+                        language={language}
+                        onSearch={(searchData) => {
+                          setQuickSearch(searchData.searchQuery || "");
+                          handleQuickSearch(searchData);
+                        }}
+                        onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
+                        resultsCount={hasSearched ? searchResults.length : undefined}
+                      />
+                    </SearchErrorBoundary>
+                  </Suspense>
+                </SectionErrorBoundary>
               </div>
             </div>
           </div>
 
-          {/* Live Counters + CTAs + Trust below banner */}
+          {/* Live Counters + CTAs + Trust below */}
           <div className="relative z-10 bg-background">
             <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-3 animate-fade-in" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
