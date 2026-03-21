@@ -82,6 +82,7 @@ const AIInvestmentFeed = lazy(() => import("@/components/home/AIInvestmentFeed")
 
 // Decacorn terminal sections
 // GlobalMarketCommandCenter removed — using original cinematic hero
+const AstraHero = lazy(() => import("@/components/home/AstraHero"));
 const HeroLiveCounters = lazy(() => import("@/components/home/HeroLiveCounters"));
 const HeroSmartCTAs = lazy(() => import("@/components/home/HeroSmartCTAs"));
 const InvestorIntelligencePanel = lazy(() => import("@/components/home/InvestorIntelligencePanel"));
