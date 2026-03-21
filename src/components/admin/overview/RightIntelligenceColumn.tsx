@@ -136,81 +136,88 @@ const RightIntelligenceColumn = React.memo(function RightIntelligenceColumn({
           </Collapsible>
         </div>
 
-        {/* ═══ ZONE 2: AI Intelligence ═══ */}
+        {/* ═══ ZONE 2: AI Intelligence (collapsible, default closed) ═══ */}
         {aiLoading ? (
           <ZoneSkeleton label="AI Intelligence" cards={5} />
         ) : (
-        <div className="space-y-3">
-          <div className="flex items-center gap-2 px-1">
-            <div className="h-px flex-1 bg-gradient-to-r from-primary/50 to-transparent" />
-            <span className="text-[11px] font-bold uppercase tracking-widest text-primary">AI Intelligence</span>
-            {aiAgo && <span className="text-[10px] text-muted-foreground">↻ {aiAgo}</span>}
+        <Collapsible defaultOpen={false}>
+          <div className="space-y-3">
+            <CollapsibleTrigger asChild>
+              <button className="w-full flex items-center gap-2 px-1 group cursor-pointer hover:opacity-80 transition-opacity">
+                <div className="h-px flex-1 bg-gradient-to-r from-primary/50 to-transparent" />
+                <span className="text-[11px] font-bold uppercase tracking-widest text-primary">AI Intelligence</span>
+                {aiAgo && <span className="text-[10px] text-muted-foreground">↻ {aiAgo}</span>}
+                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+              </button>
+            </CollapsibleTrigger>
+
+            <CollapsibleContent className="space-y-3">
+              {/* Tier 1 */}
+              <SectionErrorBoundary sectionName="AI Health Summary">
+                <div className="shadow-md rounded-lg border border-primary/30 ring-1 ring-primary/10">
+                  <AIHealthSummaryCard onNavigate={() => onQuickAction('ai-command-center')} data={(aiData as any)?.systemHealth} />
+                </div>
+              </SectionErrorBoundary>
+              <SectionErrorBoundary sectionName="Lead Intelligence">
+                <div className="shadow-md rounded-lg border border-primary/30 ring-1 ring-primary/10">
+                  <LeadIntelligenceCard onNavigate={() => onQuickAction('lead-management')} data={(aiData as any)?.leadIntelligence} />
+                </div>
+              </SectionErrorBoundary>
+              <SectionErrorBoundary sectionName="Market Anomaly">
+                <div className="shadow-md rounded-lg border border-primary/30 ring-1 ring-primary/10">
+                  <MarketAnomalyCard data={(aiData as any)?.marketAnomalies} />
+                </div>
+              </SectionErrorBoundary>
+
+              {/* Tier 2 */}
+              <SectionErrorBoundary sectionName="Market Intelligence">
+                <div className="shadow-sm rounded-lg">
+                  <MarketIntelligenceCard onNavigate={() => onQuickAction('ai-command-center')} data={(aiData as any)?.marketIntelligence} />
+                </div>
+              </SectionErrorBoundary>
+              <SectionErrorBoundary sectionName="Agent Performance">
+                <div className="shadow-sm rounded-lg">
+                  <AgentPerformanceCard onNavigate={() => onQuickAction('agent-management')} data={(aiData as any)?.agentPerformance} />
+                </div>
+              </SectionErrorBoundary>
+              <SectionErrorBoundary sectionName="Deal Pipeline">
+                <div className="shadow-sm rounded-lg">
+                  <DealPipelineCard onNavigate={() => onQuickAction('financial-management')} data={(aiData as any)?.dealPipeline} />
+                </div>
+              </SectionErrorBoundary>
+              <SectionErrorBoundary sectionName="Geo Expansion">
+                <div className="shadow-sm rounded-lg">
+                  <GeoExpansionCard onNavigate={() => onQuickAction('ai-command-center')} data={(aiData as any)?.geoExpansion} />
+                </div>
+              </SectionErrorBoundary>
+              <SectionErrorBoundary sectionName="Investment Attractiveness">
+                <div className="shadow-sm rounded-lg">
+                  <InvestmentAttractivenessCard />
+                </div>
+              </SectionErrorBoundary>
+
+              {/* Tier 3 */}
+              <SectionErrorBoundary sectionName="Buyer-Listing Match">
+                <BuyerListingMatchCard data={(aiData as any)?.buyerListingMatch} />
+              </SectionErrorBoundary>
+              <SectionErrorBoundary sectionName="National Forecast">
+                <NationalForecastCard data={(aiData as any)?.nationalForecast} />
+              </SectionErrorBoundary>
+              <SectionErrorBoundary sectionName="Market Cycle">
+                <MarketCyclePredictionCard data={(aiData as any)?.marketCycle} />
+              </SectionErrorBoundary>
+              <SectionErrorBoundary sectionName="Capital Flow">
+                <CapitalFlowCard data={(aiData as any)?.capitalFlow} />
+              </SectionErrorBoundary>
+              <SectionErrorBoundary sectionName="Portfolio Strategy">
+                <PortfolioStrategyCard />
+              </SectionErrorBoundary>
+              <SectionErrorBoundary sectionName="Deal Timing">
+                <DealTimingSignalCard data={(aiData as any)?.dealTiming} />
+              </SectionErrorBoundary>
+            </CollapsibleContent>
           </div>
-
-          {/* Tier 1 */}
-          <SectionErrorBoundary sectionName="AI Health Summary">
-            <div className="shadow-md rounded-lg border border-primary/30 ring-1 ring-primary/10">
-              <AIHealthSummaryCard onNavigate={() => onQuickAction('ai-command-center')} data={(aiData as any)?.systemHealth} />
-            </div>
-          </SectionErrorBoundary>
-          <SectionErrorBoundary sectionName="Lead Intelligence">
-            <div className="shadow-md rounded-lg border border-primary/30 ring-1 ring-primary/10">
-              <LeadIntelligenceCard onNavigate={() => onQuickAction('lead-management')} data={(aiData as any)?.leadIntelligence} />
-            </div>
-          </SectionErrorBoundary>
-          <SectionErrorBoundary sectionName="Market Anomaly">
-            <div className="shadow-md rounded-lg border border-primary/30 ring-1 ring-primary/10">
-              <MarketAnomalyCard data={(aiData as any)?.marketAnomalies} />
-            </div>
-          </SectionErrorBoundary>
-
-          {/* Tier 2 */}
-          <SectionErrorBoundary sectionName="Market Intelligence">
-            <div className="shadow-sm rounded-lg">
-              <MarketIntelligenceCard onNavigate={() => onQuickAction('ai-command-center')} data={(aiData as any)?.marketIntelligence} />
-            </div>
-          </SectionErrorBoundary>
-          <SectionErrorBoundary sectionName="Agent Performance">
-            <div className="shadow-sm rounded-lg">
-              <AgentPerformanceCard onNavigate={() => onQuickAction('agent-management')} data={(aiData as any)?.agentPerformance} />
-            </div>
-          </SectionErrorBoundary>
-          <SectionErrorBoundary sectionName="Deal Pipeline">
-            <div className="shadow-sm rounded-lg">
-              <DealPipelineCard onNavigate={() => onQuickAction('financial-management')} data={(aiData as any)?.dealPipeline} />
-            </div>
-          </SectionErrorBoundary>
-          <SectionErrorBoundary sectionName="Geo Expansion">
-            <div className="shadow-sm rounded-lg">
-              <GeoExpansionCard onNavigate={() => onQuickAction('ai-command-center')} data={(aiData as any)?.geoExpansion} />
-            </div>
-          </SectionErrorBoundary>
-          <SectionErrorBoundary sectionName="Investment Attractiveness">
-            <div className="shadow-sm rounded-lg">
-              <InvestmentAttractivenessCard />
-            </div>
-          </SectionErrorBoundary>
-
-          {/* Tier 3 */}
-          <SectionErrorBoundary sectionName="Buyer-Listing Match">
-            <BuyerListingMatchCard data={(aiData as any)?.buyerListingMatch} />
-          </SectionErrorBoundary>
-          <SectionErrorBoundary sectionName="National Forecast">
-            <NationalForecastCard data={(aiData as any)?.nationalForecast} />
-          </SectionErrorBoundary>
-          <SectionErrorBoundary sectionName="Market Cycle">
-            <MarketCyclePredictionCard data={(aiData as any)?.marketCycle} />
-          </SectionErrorBoundary>
-          <SectionErrorBoundary sectionName="Capital Flow">
-            <CapitalFlowCard data={(aiData as any)?.capitalFlow} />
-          </SectionErrorBoundary>
-          <SectionErrorBoundary sectionName="Portfolio Strategy">
-            <PortfolioStrategyCard />
-          </SectionErrorBoundary>
-          <SectionErrorBoundary sectionName="Deal Timing">
-            <DealTimingSignalCard data={(aiData as any)?.dealTiming} />
-          </SectionErrorBoundary>
-        </div>
+        </Collapsible>
         )}
 
         {/* ═══ ZONE 3: Operations ═══ */}
