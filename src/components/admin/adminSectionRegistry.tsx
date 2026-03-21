@@ -970,6 +970,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "decacorn-valuation": { label: "Decacorn Valuation", category: "Features" },
   "ai-growth-brain": { label: "AI Growth Brain", category: "Operations" },
   "ipo-readiness-metrics": { label: "IPO Readiness", category: "Features" },
+  "founder-war-room": { label: "Founder War Room", category: "Operations" },
   "global-expansion-control": { label: "Global Expansion Control", category: "Operations" },
   "hyper-execution-plan": { label: "30-Day Hyper Execution", category: "Features" },
   "ninety-day-master-plan": { label: "90-Day Master Execution", category: "Features" },

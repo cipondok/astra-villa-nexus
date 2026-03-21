@@ -765,6 +765,12 @@ export const navigationSections = {
       badge: "📊 IPO"
     },
     {
+      key: "founder-war-room",
+      label: "Founder War Room",
+      icon: Shield,
+      description: "Unified command screen — liquidity, revenue, marketplace force, AI brain, expansion radar & alert skyline",
+      badge: "⚔️ Command"
+    {
       key: "execution-command-center",
       label: "Execution Command Center",
       icon: Rocket,
