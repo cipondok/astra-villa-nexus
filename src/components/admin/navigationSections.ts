@@ -1903,6 +1903,13 @@ export const navigationSections = {
       badge: "🚀 Strategy"
     },
     {
+      key: "series-a-data-room",
+      label: "Series-A Data Room",
+      icon: Shield,
+      description: "Investor-grade data room — liquidity dominance, revenue traction, network effects, AI moat & expansion model",
+      badge: "🎯 Fundraising"
+    },
+    {
       key: "founder-brand-strategy",
       label: "Founder Brand Strategy",
       icon: User,
