@@ -608,19 +608,21 @@ const Index = () => {
 
           {/* Live Counters + CTAs + Trust below */}
           <div className="relative z-10 bg-background">
-            <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 space-y-3">
-              <div className="flex flex-wrap items-center justify-between gap-3 animate-fade-in" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
+            <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5 space-y-4">
+              {/* Row 1: Live Counters */}
+              <div className="animate-fade-in" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
                 <Suspense fallback={null}>
                   <HeroLiveCounters />
                 </Suspense>
+              </div>
+              {/* Row 2: Smart CTAs */}
+              <div className="animate-fade-in" style={{ animationDelay: '0.55s', animationFillMode: 'both' }}>
                 <Suspense fallback={null}>
                   <HeroSmartCTAs />
                 </Suspense>
               </div>
-              <div
-                className="flex items-center gap-4 sm:gap-6 flex-wrap text-muted-foreground animate-fade-in"
-                style={{ animationDelay: '0.65s', animationFillMode: 'both' }}
-              >
+              {/* Row 3: Social Proof */}
+              <div className="animate-fade-in border-t border-border/40 pt-3" style={{ animationDelay: '0.65s', animationFillMode: 'both' }}>
                 <Suspense fallback={null}>
                   <SocialProofStrip />
                 </Suspense>
