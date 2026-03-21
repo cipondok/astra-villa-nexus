@@ -1118,4 +1118,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "fundraising-milestone-roadmap": { label: "Fundraising Milestone Roadmap", category: "Strategy" },
   "crisis-war-room": { label: "Crisis War Room", category: "Strategy" },
   "global-brand-authority-narrative": { label: "Global Brand Authority Narrative", category: "Strategy" },
+  "decacorn-projection": { label: "Decacorn Financial Projection", category: "Strategy" },
 };
