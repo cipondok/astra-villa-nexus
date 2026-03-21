@@ -593,7 +593,7 @@ const Index = () => {
         <SectionErrorBoundary sectionName="Hero" fallbackMinHeight="400px">
         <section className="relative w-full" id="hero-section">
           {/* Full-width promotional banner image */}
-          <div className="relative w-full bg-[#0e64be]">
+          <div className="relative w-full bg-[#0e64be] dark:bg-[#0a1628]">
             {/* Mobile hero */}
             <img
               src={heroMobileImg}
