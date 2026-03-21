@@ -319,6 +319,7 @@ export const CompetitiveThreatResponse = lazyRetry(() => import("./CompetitiveTh
 export const ViralGrowthLoops = lazyRetry(() => import("./ViralGrowthLoops"));
 export const SuperAppEcosystemPlan = lazyRetry(() => import("./SuperAppEcosystemPlan"));
 export const CategoryLeadershipNarrative = lazyRetry(() => import("./CategoryLeadershipNarrative"));
+export const StrategicDecisionSimulator = lazyRetry(() => import("./StrategicDecisionSimulator"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -723,6 +724,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "viral-growth-loops":         () => <ViralGrowthLoops />,
   "super-app-ecosystem-plan":   () => <SuperAppEcosystemPlan />,
   "category-leadership-narrative": () => <CategoryLeadershipNarrative />,
+  "strategic-decision-simulator": () => <StrategicDecisionSimulator />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1092,4 +1094,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "viral-growth-loops": { label: "Viral Growth Loops", category: "Strategy" },
   "super-app-ecosystem-plan": { label: "Super-App Ecosystem Plan", category: "Strategy" },
   "category-leadership-narrative": { label: "Category Leadership Narrative", category: "Strategy" },
+  "strategic-decision-simulator": { label: "Strategic Decision Simulator", category: "Strategy" },
 };

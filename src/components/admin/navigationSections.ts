@@ -113,7 +113,8 @@ import {
   Network,
   Award,
   Radio,
-  Mic
+  Mic,
+  GitBranch
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -918,6 +919,13 @@ export const navigationSections = {
       icon: Crown,
       description: "Category creation framework — manifesto, investor pitch, media soundbites & persuasion playbook",
       badge: "👑 Category"
+    },
+    {
+      key: "strategic-decision-simulator",
+      label: "Strategic Decision Simulator",
+      icon: GitBranch,
+      description: "4 decision scenarios with best/expected/downside modeling, second-order effects & pivot triggers",
+      badge: "🧠 Decisions"
     },
     {
       key: "investor-scoring-engine",
