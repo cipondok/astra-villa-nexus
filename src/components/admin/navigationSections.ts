@@ -971,6 +971,13 @@ export const navigationSections = {
       badge: "🚨 War Room"
     },
     {
+      key: "global-brand-authority",
+      label: "Global Brand Authority",
+      icon: Globe2,
+      description: "Keynote narratives, media positioning, website headlines & investor brand perception with persuasion playbooks",
+      badge: "🌐 Authority"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,

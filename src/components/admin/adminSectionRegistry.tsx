@@ -1115,4 +1115,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ma-acquisition-strategy": { label: "M&A Acquisition Strategy", category: "Strategy" },
   "fundraising-milestone-roadmap": { label: "Fundraising Milestone Roadmap", category: "Strategy" },
   "crisis-war-room": { label: "Crisis War Room", category: "Strategy" },
+  "global-brand-authority": { label: "Global Brand Authority", category: "Strategy" },
 };
