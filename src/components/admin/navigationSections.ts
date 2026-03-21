@@ -1071,6 +1071,13 @@ export const navigationSections = {
       badge: "🚀 $10M"
     },
     {
+      key: "hundred-million-blueprint",
+      label: "$100M Scale & Global IPO",
+      icon: Globe,
+      description: "Revenue scaling to $100M ARR, IPO readiness framework & self-driving marketplace civilization",
+      badge: "🌍 $100M"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
