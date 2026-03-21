@@ -1049,4 +1049,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "first-100k-revenue": { label: "First $100K Revenue Plan", category: "Operations" },
   "investor-narrative-coaching": { label: "Investor Narrative Coaching", category: "Strategy" },
   "vendor-outreach-scripts": { label: "Vendor Outreach Scripts", category: "Strategy" },
+  "listing-copy-generator": { label: "Listing Copy Generator", category: "Strategy" },
 };

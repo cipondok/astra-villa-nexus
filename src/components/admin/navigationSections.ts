@@ -815,6 +815,13 @@ export const navigationSections = {
       badge: "📨 Outreach"
     },
     {
+      key: "listing-copy-generator",
+      label: "Listing Copy Generator",
+      icon: FileText,
+      description: "High-conversion property descriptions in mobile, luxury & investor analytical tones",
+      badge: "✍️ Copy"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
