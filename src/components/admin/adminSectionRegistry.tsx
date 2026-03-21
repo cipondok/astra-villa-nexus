@@ -287,6 +287,7 @@ export const FounderWeeklyRoutine = lazyRetry(() => import("./FounderWeeklyRouti
 export const PRLaunchStrategyDashboard = lazyRetry(() => import("./PRLaunchStrategyDashboard"));
 export const InvestorOutreachDashboard = lazyRetry(() => import("./InvestorOutreachDashboard"));
 export const FounderDailySystem = lazyRetry(() => import("./FounderDailySystem"));
+export const FounderDailyCommandDashboard = lazyRetry(() => import("./FounderDailyCommandDashboard"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -659,6 +660,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "pr-launch-strategy":         () => <PRLaunchStrategyDashboard />,
   "investor-outreach":          () => <InvestorOutreachDashboard />,
   "founder-daily-system":       () => <FounderDailySystem />,
+  "founder-daily-command":      () => <FounderDailyCommandDashboard />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -936,6 +938,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "pr-launch-strategy": { label: "PR Launch Strategy", category: "Features" },
   "investor-outreach": { label: "Investor Outreach Plan", category: "Features" },
   "founder-daily-system": { label: "Founder Daily System", category: "Features" },
+  "founder-daily-command": { label: "Founder Command Center", category: "Operations" },
   "hyper-execution-plan": { label: "30-Day Hyper Execution", category: "Features" },
   "ninety-day-master-plan": { label: "90-Day Master Execution", category: "Features" },
   "uiux-redesign-blueprint": { label: "UI/UX Redesign Blueprint", category: "Features" },

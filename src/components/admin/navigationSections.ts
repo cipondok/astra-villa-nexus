@@ -111,7 +111,8 @@ import {
   Sunrise,
   Orbit,
   Network,
-  Award
+  Award,
+  Radio
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -699,6 +700,13 @@ export const navigationSections = {
       label: "📊 Operations Overview",
       icon: LayoutDashboard,
       description: "Category dashboard — overview of command, vendor intelligence, workforce, and supply operations"
+    },
+    {
+      key: "founder-daily-command",
+      label: "Founder Command Center",
+      icon: Radio,
+      description: "Daily operational command dashboard — Bloomberg-style market control center",
+      badge: "New"
     },
     {
       key: "execution-command-center",
