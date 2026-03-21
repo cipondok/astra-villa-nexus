@@ -556,7 +556,7 @@ const Index = () => {
 
   // Mobile-first responsive layout wrapper
   const content = (
-    <div className="min-h-screen w-full overflow-x-hidden text-foreground relative bg-background" {...pullHandlers}>
+    <div className="min-h-screen w-full overflow-x-hidden text-foreground relative bg-[hsl(220,25%,6%)]" {...pullHandlers}>
       {/* Skip to content link for screen readers */}
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md">
         Skip to main content
