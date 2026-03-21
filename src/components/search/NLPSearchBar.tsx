@@ -257,16 +257,25 @@ export default function NLPSearchBar({ onApplyFilters, className }: NLPSearchBar
         {/* Search suggestions */}
         {!extractedFilters && !query && (
           <div className="flex flex-wrap gap-1.5 pt-1">
-            <span className="text-[10px] text-muted-foreground mr-1">Try:</span>
-            {suggestions.map((s, i) => (
-              <button
-                key={i}
-                onClick={() => handleSuggestionClick(s)}
-                className="text-[10px] px-2 py-0.5 rounded-full bg-muted/50 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors border border-transparent hover:border-primary/20"
-              >
-                {s}
-              </button>
-            ))}
+            <span className="text-[10px] text-muted-foreground mr-1 font-medium">Try:</span>
+            {suggestions.map((s, i) => {
+              const colors = [
+                'bg-primary/10 text-primary border-primary/20 hover:bg-primary/20',
+                'bg-chart-1/10 text-chart-1 border-chart-1/20 hover:bg-chart-1/20',
+                'bg-gold-primary/10 text-gold-primary border-gold-primary/20 hover:bg-gold-primary/20',
+                'bg-chart-4/10 text-chart-4 border-chart-4/20 hover:bg-chart-4/20',
+                'bg-accent/20 text-accent-foreground border-accent/30 hover:bg-accent/30',
+              ];
+              return (
+                <button
+                  key={i}
+                  onClick={() => handleSuggestionClick(s)}
+                  className={`text-[10px] px-2.5 py-1 rounded-full font-medium border transition-colors ${colors[i % colors.length]}`}
+                >
+                  {s}
+                </button>
+              );
+            })}
           </div>
         )}
       </CardContent>
