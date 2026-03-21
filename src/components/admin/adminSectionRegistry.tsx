@@ -315,6 +315,7 @@ export const PricingExperimentBacklog = lazyRetry(() => import("./PricingExperim
 export const NationalExpansionSimulator = lazyRetry(() => import("./NationalExpansionSimulator"));
 export const InvestorFOMOPitchContent = lazyRetry(() => import("./InvestorFOMOPitchContent"));
 export const KPIAnomalyDetector = lazyRetry(() => import("./KPIAnomalyDetector"));
+export const CompetitiveThreatResponse = lazyRetry(() => import("./CompetitiveThreatResponse"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
