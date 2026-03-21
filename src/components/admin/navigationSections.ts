@@ -1121,7 +1121,13 @@ export const navigationSections = {
       badge: "🔥 30 Days"
     },
     {
-      description: "Capital readiness, conversion probability, style classification & weight overrides",
+      key: "first-revenue-closing",
+      label: "First Revenue & Deal Closing",
+      icon: DollarSign,
+      description: "Revenue activation, daily KPI war-room & buyer conversion scripts",
+      badge: "💰 Revenue"
+    },
+    {
       badge: "New"
     },
     {
