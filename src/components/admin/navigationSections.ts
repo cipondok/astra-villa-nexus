@@ -113,7 +113,8 @@ import {
   Network,
   Award,
   Radio,
-  Mic
+  Mic,
+  GitBranch
 } from "lucide-react";
 
 export interface NavigationSection {
