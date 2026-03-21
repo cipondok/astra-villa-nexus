@@ -1078,6 +1078,13 @@ export const navigationSections = {
       badge: "🌍 $100M"
     },
     {
+      key: "global-infra-legacy",
+      label: "Global Infrastructure & Legacy",
+      icon: Landmark,
+      description: "Economic infrastructure domination, founder legacy narrative & post-IPO market control",
+      badge: "🏛 Legacy"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
