@@ -802,6 +802,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "first-10-deals": () => <FirstTenDealsBlueprint />,
   "first-100-buyers": () => <First100BuyersBlueprint />,
   "first-500-listings": () => <First500ListingsBlueprint />,
+  "1000-daily-visitors": () => <ThousandVisitorsBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
