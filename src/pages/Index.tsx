@@ -596,7 +596,7 @@ const Index = () => {
           <div className="relative w-full bg-[#0e64be]">
             {/* Mobile hero */}
             <img
-              src={heroMobile}
+              src={heroMobileImg}
               alt="ASTRA VILLA — Indonesia's Smart Property Platform"
               fetchPriority="high"
               loading="eager"
