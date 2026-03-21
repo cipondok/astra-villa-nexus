@@ -318,6 +318,7 @@ export const KPIAnomalyDetector = lazyRetry(() => import("./KPIAnomalyDetector")
 export const CompetitiveThreatResponse = lazyRetry(() => import("./CompetitiveThreatResponse"));
 export const ViralGrowthLoops = lazyRetry(() => import("./ViralGrowthLoops"));
 export const SuperAppEcosystemPlan = lazyRetry(() => import("./SuperAppEcosystemPlan"));
+export const CategoryLeadershipNarrative = lazyRetry(() => import("./CategoryLeadershipNarrative"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
