@@ -793,9 +793,9 @@ const Index = () => {
               </SectionWrapper>
 
               {/* ── SECTION 4: Market Heat + ASTRA Showcase ── */}
-              <SectionWrapper variant="muted" className="py-3 sm:py-4">
+              <SectionWrapper variant="muted" className="py-2 sm:py-3">
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
-                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-3">
                     <div className="lg:col-span-2">
                       <ScrollReveal direction="left" delay={0}>
                         <Suspense fallback={<div className="h-48 bg-muted/50 rounded-2xl animate-pulse" />}>
