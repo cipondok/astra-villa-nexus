@@ -1076,4 +1076,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "closing-conversation-sim": { label: "Closing Conversation Simulator", category: "Strategy" },
   "pricing-experiment-backlog": { label: "Pricing Experiment Backlog", category: "Strategy" },
   "national-expansion-sim": { label: "National Expansion Simulator", category: "Strategy" },
+  "investor-fomo-pitch": { label: "Investor FOMO Pitch Content", category: "Strategy" },
 };
