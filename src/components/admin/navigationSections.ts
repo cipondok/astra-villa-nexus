@@ -1114,7 +1114,13 @@ export const navigationSections = {
       badge: "🚀 Execution"
     },
     {
-      icon: Target,
+      key: "thirty-day-launch",
+      label: "30-Day Hardcore Launch",
+      icon: Flame,
+      description: "Week-by-week execution, buyer traffic tactics & agent conversion psychology",
+      badge: "🔥 30 Days"
+    },
+    {
       description: "Capital readiness, conversion probability, style classification & weight overrides",
       badge: "New"
     },

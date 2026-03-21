@@ -1175,4 +1175,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "civilization-coordination": { label: "Civilization Market Coordination", category: "Strategy" },
   "post-civilization": { label: "Post-Civilization Intelligence", category: "Strategy" },
   "real-execution": { label: "Real Marketplace Execution", category: "Strategy" },
+  "thirty-day-launch": { label: "30-Day Hardcore Launch", category: "Strategy" },
 };
