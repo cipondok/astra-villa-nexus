@@ -1177,6 +1177,13 @@ export const navigationSections = {
       badge: "🪐 Planetary"
     },
     {
+      key: "first-10-deals",
+      label: "First 10 Deals",
+      icon: Target,
+      description: "Deal closing tactics, daily founder command & real agent persuasion scripts",
+      badge: "🤝 Launch"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,

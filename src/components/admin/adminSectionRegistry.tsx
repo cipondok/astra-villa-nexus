@@ -1202,4 +1202,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "3m-continental-expansion": { label: "$3M Continental Expansion", category: "Strategy" },
   "10m-global-scale": { label: "$10M Global Scale", category: "Strategy" },
   "50m-planetary-infrastructure": { label: "$50M Planetary Infrastructure", category: "Strategy" },
+  "first-10-deals": { label: "First 10 Deals", category: "Strategy" },
 };
