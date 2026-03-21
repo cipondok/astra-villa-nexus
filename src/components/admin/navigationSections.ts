@@ -892,6 +892,13 @@ export const navigationSections = {
       badge: "🚨 Alerts"
     },
     {
+      key: "competitive-threat-response",
+      label: "Competitive Threat Response",
+      icon: Shield,
+      description: "4-scenario defense playbooks with phased timelines, severity scoring & moat-building actions",
+      badge: "⚔️ Defense"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
