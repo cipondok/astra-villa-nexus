@@ -770,6 +770,7 @@ export const navigationSections = {
       icon: Shield,
       description: "Unified command screen — liquidity, revenue, marketplace force, AI brain, expansion radar & alert skyline",
       badge: "⚔️ Command"
+    },
     {
       key: "execution-command-center",
       label: "Execution Command Center",
