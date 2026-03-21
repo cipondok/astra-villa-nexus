@@ -64,7 +64,7 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="font-playfair text-3xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.05] drop-shadow-lg"
+              className="font-orbitron text-3xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.05] drop-shadow-lg tracking-wider"
             >
               ASTRA <span className="text-[#ffe14d]">VILLA</span>
             </motion.h1>
