@@ -28,8 +28,8 @@ export default function MapPreviewTeaser() {
   const inView = useInView(ref, { once: true, margin: '-60px' });
 
   return (
-    <div ref={ref} className="w-full py-6 sm:py-8" id="hotspots">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+    <div ref={ref} className="w-full py-3 sm:py-4" id="hotspots">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -40,8 +40,8 @@ export default function MapPreviewTeaser() {
         >
           <div className="flex flex-col sm:flex-row">
             {/* Left — visual map placeholder with gradient */}
-            <div className="relative w-full sm:w-1/2 min-h-[200px] sm:min-h-[280px] bg-gradient-to-br from-primary/5 via-chart-4/5 to-primary/10 overflow-hidden" aria-hidden="true">
-              {/* Decorative grid dots */}
+            <div className="relative w-full sm:w-1/2 min-h-[180px] sm:min-h-[240px] bg-gradient-to-br from-primary/5 via-chart-4/5 to-primary/10 overflow-hidden" aria-hidden="true">
+              {/* Grid dots */}
               <div
                 className="absolute inset-0 opacity-10"
                 style={{
@@ -49,7 +49,29 @@ export default function MapPreviewTeaser() {
                   backgroundSize: '24px 24px',
                 }}
               />
-              {/* Pulsing hotspot dots with tooltips */}
+              {/* Radar sweep */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <motion.div
+                  className="w-40 h-40 rounded-full border border-primary/10"
+                  animate={{ scale: [1, 1.8], opacity: [0.3, 0] }}
+                  transition={{ repeat: Infinity, duration: 2.5, ease: 'easeOut' }}
+                />
+                <motion.div
+                  className="absolute w-28 h-28 rounded-full border border-gold-primary/15"
+                  animate={{ scale: [1, 1.6], opacity: [0.25, 0] }}
+                  transition={{ repeat: Infinity, duration: 2.5, ease: 'easeOut', delay: 0.8 }}
+                />
+                <motion.div
+                  className="absolute w-16 h-16 rounded-full border border-chart-4/20"
+                  animate={{ scale: [1, 1.5], opacity: [0.3, 0] }}
+                  transition={{ repeat: Infinity, duration: 2.5, ease: 'easeOut', delay: 1.5 }}
+                />
+                {/* Center radar icon */}
+                <div className="absolute p-3 rounded-full bg-background/50 backdrop-blur-sm border border-primary/15">
+                  <MapPin className="h-6 w-6 text-primary" />
+                </div>
+              </div>
+              {/* Pulsing hotspot dots */}
               <TooltipProvider delayDuration={200}>
                 {dotPositions.map((pos, i) => (
                   <motion.div
@@ -74,16 +96,10 @@ export default function MapPreviewTeaser() {
                   </motion.div>
                 ))}
               </TooltipProvider>
-              {/* Center icon */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="p-4 rounded-full bg-background/40 backdrop-blur-sm border border-primary/15">
-                  <MapPin className="h-8 w-8 text-primary" />
-                </div>
-              </div>
             </div>
 
             {/* Right — hotspot list */}
-            <div className="flex-1 p-5 sm:p-6 flex flex-col justify-between">
+            <div className="flex-1 p-4 flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <Flame className="h-4 w-4 text-gold-primary" aria-hidden="true" />
