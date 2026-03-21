@@ -612,32 +612,34 @@ const Index = () => {
               decoding="sync"
               className="hidden sm:block w-full h-auto object-contain"
             />
+
+            {/* Search panel overlaid on bottom of banner */}
+            <div className="absolute bottom-0 left-0 right-0 z-10 px-4 sm:px-6 lg:px-8 pb-3 sm:pb-5">
+              <div className="w-full max-w-5xl mx-auto">
+                <div className="animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
+                  <SectionErrorBoundary sectionName="Search" fallbackMinHeight="60px">
+                    <Suspense fallback={<SearchPanelSkeleton />}>
+                      <SearchErrorBoundary>
+                        <AstraSearchPanel
+                          language={language}
+                          onSearch={(searchData) => {
+                            setQuickSearch(searchData.searchQuery || "");
+                            handleQuickSearch(searchData);
+                          }}
+                          onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
+                          resultsCount={hasSearched ? searchResults.length : undefined}
+                        />
+                      </SearchErrorBoundary>
+                    </Suspense>
+                  </SectionErrorBoundary>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Search + CTAs below banner */}
+          {/* Live Counters + CTAs + Trust below banner */}
           <div className="relative z-10 bg-background">
-            <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4">
-
-              {/* Search Panel */}
-              <div className="animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
-                <SectionErrorBoundary sectionName="Search" fallbackMinHeight="120px">
-                  <Suspense fallback={<SearchPanelSkeleton />}>
-                    <SearchErrorBoundary>
-                      <AstraSearchPanel
-                        language={language}
-                        onSearch={(searchData) => {
-                          setQuickSearch(searchData.searchQuery || "");
-                          handleQuickSearch(searchData);
-                        }}
-                        onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
-                        resultsCount={hasSearched ? searchResults.length : undefined}
-                      />
-                    </SearchErrorBoundary>
-                  </Suspense>
-                </SectionErrorBoundary>
-              </div>
-
-              {/* Live Counters + Smart CTAs inline */}
+            <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-3 animate-fade-in" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
                 <Suspense fallback={null}>
                   <HeroLiveCounters />
@@ -646,8 +648,6 @@ const Index = () => {
                   <HeroSmartCTAs />
                 </Suspense>
               </div>
-
-              {/* Trust metrics */}
               <div
                 className="flex items-center gap-4 sm:gap-6 flex-wrap text-muted-foreground animate-fade-in"
                 style={{ animationDelay: '0.65s', animationFillMode: 'both' }}
