@@ -698,6 +698,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "vendor-outreach-scripts":     () => <VendorOutreachScripts />,
   "listing-copy-generator":      () => <ListingCopyGenerator />,
   "growth-experiment-backlog":   () => <GrowthExperimentBacklog />,
+  "investor-nurturing-sequence": () => <InvestorNurturingSequence />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
