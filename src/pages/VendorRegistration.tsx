@@ -52,9 +52,6 @@ const VendorRegistration = () => {
     }
   };
 
-  const toggleLanguage = () => {
-    setLanguage(language === "en" ? "id" : "en");
-  };
 
   const handleRegistrationSuccess = () => {
     checkExistingRequest();
