@@ -963,6 +963,13 @@ export const navigationSections = {
       badge: "🚀 Fundraising"
     },
     {
+      key: "crisis-war-room",
+      label: "Crisis War Room",
+      icon: Siren,
+      description: "DEFCON severity scoring, 28-action checklist across 5 response modules, recovery KPIs & escalation triggers",
+      badge: "🚨 War Room"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
