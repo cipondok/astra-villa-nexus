@@ -103,14 +103,7 @@ const VendorRegistration = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <AuthenticatedNavigation
-        language={language}
-        onLanguageToggle={toggleLanguage}
-        theme={theme}
-        onThemeToggle={() => setTheme(theme === "light" ? "dark" : "light")}
-      />
-      
-      <div className="pt-16 px-4 sm:px-6 lg:px-8">
+      <div className="px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto py-8">
           {vendorRequest ? (
             <div className="space-y-6">
