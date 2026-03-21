@@ -597,10 +597,9 @@ const Index = () => {
           </div>
         )}
 
-        {/* Refined section divider */}
-        <div className="relative h-2 sm:h-3 overflow-hidden" aria-hidden="true">
-          <div className="absolute inset-0 bg-gradient-to-b from-background/0 to-background" />
-          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gold-primary/15 to-transparent" />
+        {/* Section divider */}
+        <div className="relative h-px overflow-hidden" aria-hidden="true">
+          <div className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-intel-blue/15 to-transparent" />
         </div>
 
         {/* Error State — always accessible */}
