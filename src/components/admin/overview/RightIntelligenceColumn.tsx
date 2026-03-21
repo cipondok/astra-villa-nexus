@@ -220,54 +220,60 @@ const RightIntelligenceColumn = React.memo(function RightIntelligenceColumn({
         </Collapsible>
         )}
 
-        {/* ═══ ZONE 3: Operations ═══ */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2 px-1">
-            <div className="h-px flex-1 bg-gradient-to-r from-chart-3/50 to-transparent" />
-            <span className="text-[11px] font-bold uppercase tracking-widest text-chart-3">Operations</span>
-            <div className="h-px flex-1 bg-gradient-to-l from-chart-3/50 to-transparent" />
-          </div>
+        {/* ═══ ZONE 3: Operations (collapsible, default closed) ═══ */}
+        <Collapsible defaultOpen={false}>
+          <div className="space-y-3">
+            <CollapsibleTrigger asChild>
+              <button className="w-full flex items-center gap-2 px-1 group cursor-pointer hover:opacity-80 transition-opacity">
+                <div className="h-px flex-1 bg-gradient-to-r from-chart-3/50 to-transparent" />
+                <span className="text-[11px] font-bold uppercase tracking-widest text-chart-3">Operations</span>
+                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+              </button>
+            </CollapsibleTrigger>
 
-          <SectionErrorBoundary sectionName="AI Batch Control">
-            <AIBatchControlPanel />
-          </SectionErrorBoundary>
-          <SectionErrorBoundary sectionName="AI Scheduling">
-            <AISchedulingDashboard />
-          </SectionErrorBoundary>
-          <SectionErrorBoundary sectionName="Job Queue Health">
-            <JobQueueHealthCard />
-          </SectionErrorBoundary>
-          <SectionErrorBoundary sectionName="AI Job Observability">
-            <AIJobObservabilityPanel />
-          </SectionErrorBoundary>
-          <SectionErrorBoundary sectionName="Listing Performance">
-            <ListingPerformanceOptimizerCard onNavigate={() => onQuickAction("listing-optimization-center")} />
-          </SectionErrorBoundary>
-          <SectionErrorBoundary sectionName="Pricing Intelligence">
-            <PricingIntelligenceCard />
-          </SectionErrorBoundary>
-          <SectionErrorBoundary sectionName="Deal Closing Timeline">
-            <DealClosingTimelineCard />
-          </SectionErrorBoundary>
-          <SectionErrorBoundary sectionName="Pricing Automation">
-            <PricingAutomationCard />
-          </SectionErrorBoundary>
-          <SectionErrorBoundary sectionName="Marketplace Optimization">
-            <MarketplaceOptimizationCard />
-          </SectionErrorBoundary>
+            <CollapsibleContent className="space-y-3">
+              <SectionErrorBoundary sectionName="AI Batch Control">
+                <AIBatchControlPanel />
+              </SectionErrorBoundary>
+              <SectionErrorBoundary sectionName="AI Scheduling">
+                <AISchedulingDashboard />
+              </SectionErrorBoundary>
+              <SectionErrorBoundary sectionName="Job Queue Health">
+                <JobQueueHealthCard />
+              </SectionErrorBoundary>
+              <SectionErrorBoundary sectionName="AI Job Observability">
+                <AIJobObservabilityPanel />
+              </SectionErrorBoundary>
+              <SectionErrorBoundary sectionName="Listing Performance">
+                <ListingPerformanceOptimizerCard onNavigate={() => onQuickAction("listing-optimization-center")} />
+              </SectionErrorBoundary>
+              <SectionErrorBoundary sectionName="Pricing Intelligence">
+                <PricingIntelligenceCard />
+              </SectionErrorBoundary>
+              <SectionErrorBoundary sectionName="Deal Closing Timeline">
+                <DealClosingTimelineCard />
+              </SectionErrorBoundary>
+              <SectionErrorBoundary sectionName="Pricing Automation">
+                <PricingAutomationCard />
+              </SectionErrorBoundary>
+              <SectionErrorBoundary sectionName="Marketplace Optimization">
+                <MarketplaceOptimizationCard />
+              </SectionErrorBoundary>
+            </CollapsibleContent>
 
-          {/* Quick Actions */}
-          <div className="grid grid-cols-2 gap-2">
-            <Button variant="outline" size="sm" className="h-9 text-xs gap-1.5" onClick={() => onQuickAction('ai-command-center')}>
-              <Zap className="h-3.5 w-3.5" />
-              AI Center
-            </Button>
-            <Button variant="outline" size="sm" className="h-9 text-xs gap-1.5" onClick={() => onQuickAction('diagnostic')}>
-              <Gauge className="h-3.5 w-3.5" />
-              Diagnostics
-            </Button>
+            {/* Quick Actions — always visible */}
+            <div className="grid grid-cols-2 gap-2">
+              <Button variant="outline" size="sm" className="h-9 text-xs gap-1.5" onClick={() => onQuickAction('ai-command-center')}>
+                <Zap className="h-3.5 w-3.5" />
+                AI Center
+              </Button>
+              <Button variant="outline" size="sm" className="h-9 text-xs gap-1.5" onClick={() => onQuickAction('diagnostic')}>
+                <Gauge className="h-3.5 w-3.5" />
+                Diagnostics
+              </Button>
+            </div>
           </div>
-        </div>
+        </Collapsible>
       </SectionErrorBoundary>
     </div>
   );
