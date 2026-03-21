@@ -311,8 +311,8 @@ const ChatButton = forwardRef<HTMLDivElement, ChatButtonProps>(({
   return (
     <div ref={ref}>
     <ContextMenu>
-      <ContextMenuTrigger>
-        {buttonContent}
+      <ContextMenuTrigger asChild onPointerDown={(e) => e?.preventDefault?.()}>
+        <div>{buttonContent}</div>
       </ContextMenuTrigger>
       
       <ContextMenuContent className="w-56 glass-popup">
