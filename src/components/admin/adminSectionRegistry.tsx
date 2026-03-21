@@ -1130,4 +1130,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "experiment-prioritization": { label: "Experiment Prioritization Engine", category: "Strategy" },
   "partnership-strategy": { label: "Global Partnership Strategy", category: "Strategy" },
   "flywheel-optimization": { label: "Flywheel Optimization Engine", category: "Strategy" },
+  "competitive-domination": { label: "Competitive Domination Map", category: "Strategy" },
 };
