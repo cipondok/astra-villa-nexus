@@ -1088,4 +1088,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "kpi-anomaly-detector": { label: "KPI Anomaly Detector", category: "Strategy" },
   "competitive-threat-response": { label: "Competitive Threat Response", category: "Strategy" },
   "viral-growth-loops": { label: "Viral Growth Loops", category: "Strategy" },
+  "super-app-ecosystem-plan": { label: "Super-App Ecosystem Plan", category: "Strategy" },
 };
