@@ -187,7 +187,7 @@ const Search = () => {
   return (
     <div 
       ref={scrollContainerRef}
-      className="min-h-screen bg-background pt-11 md:pt-12"
+      className="min-h-screen bg-background"
       {...pullHandlers}
     >
       <SEOHead
@@ -195,12 +195,6 @@ const Search = () => {
         description={t('seo.search.description')}
         keywords="cari properti indonesia, search properti, filter properti, properti dijual disewa"
       />
-      {/* Luxury Background - matches home page */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
-        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-bl from-primary/10 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-accent/10 to-transparent rounded-full blur-3xl" />
-      </div>
 
       {/* Pull-to-Refresh Indicator */}
       <PullToRefreshIndicator
@@ -212,20 +206,29 @@ const Search = () => {
         threshold={threshold}
       />
 
-      <div className="container mx-auto px-2 md:px-3 py-2">
-        {/* Back Link */}
-        <BackToHomeLink sectionId="ai-tools-section" alwaysShow />
-        
-        {/* AI Tools Tab Bar */}
-        <AIToolsTabBar className="mb-3" />
+      {/* Branded Hero Header */}
+      <div className="bg-gradient-to-r from-primary via-primary/90 to-chart-1 dark:from-[#0a1628] dark:via-[#0d1f3c] dark:to-[#081225] pt-14 md:pt-16 pb-5 sm:pb-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3 mb-3">
+            <BackToHomeLink sectionId="ai-tools-section" alwaysShow />
+          </div>
+          <h1 className="font-playfair text-xl sm:text-2xl lg:text-3xl font-bold text-primary-foreground mb-1">
+            Property Search
+          </h1>
+          <p className="text-primary-foreground/70 text-xs sm:text-sm">
+            Discover your perfect property across Indonesia
+          </p>
+        </div>
+      </div>
 
-        {/* AI Natural Language Search */}
+      {/* AI Tools + NLP Search */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        <AIToolsTabBar className="mb-3" />
         <NLPSearchBar
           onApplyFilters={(params) => {
             if (params.state) setSelectedLocation(params.state.toLowerCase());
             if (params.propertyType) setSelectedType(params.propertyType);
             if (params.query) setSearchTerm(params.query);
-            // Trigger search via URL params
             const urlParams = new URLSearchParams();
             if (params.state) urlParams.set('location', params.state.toLowerCase());
             if (params.propertyType) urlParams.set('type', params.propertyType);
@@ -233,131 +236,118 @@ const Search = () => {
           }}
           className="mb-3"
         />
-
-        {/* Header - Slim, centered */}
-        <div className="text-center mb-3">
-          <div className="flex items-center justify-center gap-2 mb-1">
-            <SearchIcon className="h-4 w-4 md:h-5 md:w-5 text-primary" />
-          </div>
-          <h1 className="text-sm md:text-lg font-bold text-foreground">Property Search</h1>
-          <p className="text-[10px] md:text-xs text-muted-foreground">Find your perfect property</p>
-        </div>
       </div>
 
-      {/* Slim Search Header */}
-      <div className="bg-background/95 backdrop-blur-2xl border-b border-border/30 sticky top-11 md:top-12 z-40 shadow-sm shadow-black/5 dark:shadow-black/20">
-        <div className="container mx-auto px-2 md:px-3 py-2">
-          <div className="space-y-2">
+      {/* Sticky Search & Filter Bar */}
+      <div className="bg-card/95 backdrop-blur-xl border-y border-border/40 sticky top-11 md:top-12 z-40 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5">
+          <div className="flex flex-wrap items-center gap-2">
             {/* Search Input */}
-            <div className="relative">
-              <SearchIcon className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+            <div className="relative flex-1 min-w-[180px] max-w-md">
+              <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search properties, locations..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                className="pl-8 h-9 text-xs bg-muted/30 dark:bg-muted/20 border-border/40 rounded-lg focus:bg-background focus:border-primary/40 transition-colors"
+                className="pl-9 h-10 text-sm bg-muted/30 border-border/40 rounded-xl focus:bg-background focus:border-primary/50 transition-colors"
               />
             </div>
 
-            {/* Compact Filters */}
-            <div className="flex flex-wrap gap-1.5 items-center">
-              <Select value={selectedType} onValueChange={setSelectedType}>
-                <SelectTrigger className="h-8 sm:h-7 text-[10px] md:text-xs w-24 md:w-28 rounded-lg border-border/40 bg-muted/20">
-                  <Home className="h-3 w-3 text-muted-foreground mr-1 shrink-0" />
-                  <SelectValue placeholder="Type" />
-                </SelectTrigger>
-                <SelectContent className="bg-popover border-border z-50">
-                  <SelectItem value="all" className="text-xs">All Types</SelectItem>
-                  <SelectItem value="villa" className="text-xs">Villa</SelectItem>
-                  <SelectItem value="apartment" className="text-xs">Apartment</SelectItem>
-                  <SelectItem value="house" className="text-xs">House</SelectItem>
-                  <SelectItem value="office" className="text-xs">Office</SelectItem>
-                </SelectContent>
-              </Select>
+            {/* Type Filter */}
+            <Select value={selectedType} onValueChange={setSelectedType}>
+              <SelectTrigger className="h-10 text-xs sm:text-sm w-28 sm:w-32 rounded-xl border-border/40 bg-muted/20">
+                <Home className="h-3.5 w-3.5 text-muted-foreground mr-1.5 shrink-0" />
+                <SelectValue placeholder="Type" />
+              </SelectTrigger>
+              <SelectContent className="bg-popover border-border z-50">
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="villa">Villa</SelectItem>
+                <SelectItem value="apartment">Apartment</SelectItem>
+                <SelectItem value="house">House</SelectItem>
+                <SelectItem value="office">Office</SelectItem>
+              </SelectContent>
+            </Select>
 
-              <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-                <SelectTrigger className="h-8 sm:h-7 text-[10px] md:text-xs w-24 md:w-28 rounded-lg border-border/40 bg-muted/20">
-                  <MapPin className="h-3 w-3 text-muted-foreground mr-1 shrink-0" />
-                  <SelectValue placeholder="Location" />
-                </SelectTrigger>
-                <SelectContent className="bg-popover border-border z-50">
-                  <SelectItem value="all" className="text-xs">All Locations</SelectItem>
-                  <SelectItem value="jakarta" className="text-xs">Jakarta</SelectItem>
-                  <SelectItem value="bali" className="text-xs">Bali</SelectItem>
-                  <SelectItem value="bandung" className="text-xs">Bandung</SelectItem>
-                  <SelectItem value="surabaya" className="text-xs">Surabaya</SelectItem>
-                </SelectContent>
-              </Select>
+            {/* Location Filter */}
+            <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+              <SelectTrigger className="h-10 text-xs sm:text-sm w-28 sm:w-32 rounded-xl border-border/40 bg-muted/20">
+                <MapPin className="h-3.5 w-3.5 text-muted-foreground mr-1.5 shrink-0" />
+                <SelectValue placeholder="Location" />
+              </SelectTrigger>
+              <SelectContent className="bg-popover border-border z-50">
+                <SelectItem value="all">All Locations</SelectItem>
+                <SelectItem value="jakarta">Jakarta</SelectItem>
+                <SelectItem value="bali">Bali</SelectItem>
+                <SelectItem value="bandung">Bandung</SelectItem>
+                <SelectItem value="surabaya">Surabaya</SelectItem>
+              </SelectContent>
+            </Select>
 
+            {/* Search Button */}
+            <Button 
+              onClick={handleSearch} 
+              className="h-10 px-5 gap-1.5 rounded-xl bg-primary hover:bg-primary/90 text-sm font-semibold"
+            >
+              <SearchIcon className="h-4 w-4" />
+              Search
+            </Button>
+            
+            {(searchTerm || selectedType !== 'all' || selectedLocation !== 'all') && (
               <Button 
-                onClick={handleSearch} 
-                size="sm"
-                className="h-7 text-[10px] md:text-xs px-3 gap-1 rounded-lg"
+                variant="ghost" 
+                onClick={clearFilters}
+                className="h-10 px-3 text-sm text-muted-foreground hover:text-foreground"
               >
-                <SearchIcon className="h-3 w-3" />
-                Search
+                Clear
               </Button>
-              
-              {(searchTerm || selectedType !== 'all' || selectedLocation !== 'all') && (
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={clearFilters}
-                  className="h-7 text-[10px] md:text-xs px-2 text-muted-foreground hover:text-foreground"
-                >
-                  Clear
-                </Button>
-              )}
-            </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Slim Results */}
-      <div className="container mx-auto px-2 md:px-3 py-3">
-        {/* Active Filters */}
+      {/* Results Area */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
+        {/* Active Filters & Count */}
         {(searchTerm || selectedType !== 'all' || selectedLocation !== 'all') && (
-          <div className="mb-3">
-            <div className="flex flex-wrap gap-1 mb-1">
-              {searchTerm && (
-                <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5">
-                  <SearchIcon className="h-2.5 w-2.5 mr-0.5" />
-                  "{searchTerm}"
-                </Badge>
-              )}
-              {selectedType !== 'all' && (
-                <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5">
-                  <Building2 className="h-2.5 w-2.5 mr-0.5" />
-                  {selectedType}
-                </Badge>
-              )}
-              {selectedLocation !== 'all' && (
-                <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5">
-                  <MapPin className="h-2.5 w-2.5 mr-0.5" />
-                  {selectedLocation}
-                </Badge>
-              )}
-            </div>
-            <p className="text-muted-foreground text-[10px] md:text-xs">
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            {searchTerm && (
+              <Badge variant="secondary" className="text-xs px-2.5 py-1 rounded-lg gap-1">
+                <SearchIcon className="h-3 w-3" />
+                "{searchTerm}"
+              </Badge>
+            )}
+            {selectedType !== 'all' && (
+              <Badge variant="secondary" className="text-xs px-2.5 py-1 rounded-lg gap-1">
+                <Building2 className="h-3 w-3" />
+                {selectedType}
+              </Badge>
+            )}
+            {selectedLocation !== 'all' && (
+              <Badge variant="secondary" className="text-xs px-2.5 py-1 rounded-lg gap-1">
+                <MapPin className="h-3 w-3" />
+                {selectedLocation}
+              </Badge>
+            )}
+            <span className="text-muted-foreground text-xs ml-auto">
               {properties.length} properties found
-            </p>
+            </span>
           </div>
         )}
 
         {/* Loading State */}
         {isLoading && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="animate-pulse rounded-xl overflow-hidden border border-border/30">
+              <div key={i} className="animate-pulse rounded-2xl overflow-hidden border border-border/30 bg-card">
                 <div className="bg-muted aspect-[4/3]" />
-                <div className="p-3 space-y-2">
+                <div className="p-4 space-y-2.5">
                   <div className="h-4 bg-muted rounded-md w-3/4" />
                   <div className="h-3 bg-muted rounded-md w-1/2" />
                   <div className="flex gap-2 pt-1">
-                    <div className="h-3 bg-muted rounded-md w-10" />
-                    <div className="h-3 bg-muted rounded-md w-10" />
                     <div className="h-3 bg-muted rounded-md w-12" />
+                    <div className="h-3 bg-muted rounded-md w-12" />
+                    <div className="h-3 bg-muted rounded-md w-14" />
                   </div>
                 </div>
               </div>
@@ -365,9 +355,9 @@ const Search = () => {
           </div>
         )}
 
-        {/* Compact Results Grid */}
+        {/* Results Grid */}
         {!isLoading && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
             {properties.map((property) => {
               const isNew = newPropertyIds.has(property.id);
               
@@ -375,43 +365,23 @@ const Search = () => {
                 <motion.div
                   key={property.id}
                   initial={isNew ? { scale: 0.95, opacity: 0 } : false}
-                  animate={
-                    isNew 
-                      ? {
-                          scale: [0.95, 1.02, 1],
-                          opacity: [0, 1, 1],
-                        }
-                      : {}
-                  }
-                  transition={{
-                    duration: 0.5,
-                    ease: "easeOut"
-                  }}
+                  animate={isNew ? { scale: [0.95, 1.02, 1], opacity: [0, 1, 1] } : {}}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
                   className={isNew ? "relative" : ""}
                 >
                   {isNew && (
                     <>
-                      {/* Pulse Ring Animation */}
                       <motion.div
-                        className="absolute inset-0 rounded-lg border-2 border-primary pointer-events-none z-10"
+                        className="absolute inset-0 rounded-2xl border-2 border-primary pointer-events-none z-10"
                         initial={{ opacity: 0.8, scale: 1 }}
-                        animate={{
-                          opacity: [0.8, 0.3, 0],
-                          scale: [1, 1.05, 1.1],
-                        }}
-                        transition={{
-                          duration: 2,
-                          repeat: 2,
-                          ease: "easeOut"
-                        }}
+                        animate={{ opacity: [0.8, 0.3, 0], scale: [1, 1.05, 1.1] }}
+                        transition={{ duration: 2, repeat: 2, ease: "easeOut" }}
                       />
-                      
-                      {/* "NEW" Badge */}
                       <motion.div
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
-                        className="absolute top-1 right-1 z-20 bg-primary text-primary-foreground px-1.5 py-0.5 rounded text-[9px] font-bold shadow"
+                        className="absolute top-2 right-2 z-20 bg-primary text-primary-foreground px-2 py-0.5 rounded-lg text-[10px] font-bold shadow-lg"
                       >
                         NEW
                       </motion.div>
@@ -419,10 +389,7 @@ const Search = () => {
                   )}
                   
                   <PropertyCard 
-                    property={{
-                      ...property,
-                      id: parseInt(property.id)
-                    }}
+                    property={{ ...property, id: parseInt(property.id) }}
                   />
                 </motion.div>
               );
@@ -430,30 +397,34 @@ const Search = () => {
           </div>
         )}
 
-        {/* Compact No Results */}
+        {/* No Results */}
         {!isLoading && properties.length === 0 && (searchTerm || selectedType !== 'all' || selectedLocation !== 'all') && (
-          <div className="text-center py-8">
-            <SearchIcon className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
-            <h3 className="text-sm md:text-base font-semibold mb-1">
+          <div className="text-center py-16">
+            <div className="w-16 h-16 rounded-2xl bg-muted/50 flex items-center justify-center mx-auto mb-4">
+              <SearchIcon className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <h3 className="text-base sm:text-lg font-semibold text-foreground mb-1">
               No properties found
             </h3>
-            <p className="text-muted-foreground text-[10px] md:text-xs mb-3">
+            <p className="text-muted-foreground text-sm mb-4">
               Try adjusting your search criteria
             </p>
-            <Button onClick={clearFilters} variant="outline" size="sm" className="h-7 text-xs">
+            <Button onClick={clearFilters} variant="outline" className="rounded-xl">
               Clear filters
             </Button>
           </div>
         )}
 
-        {/* Compact Default State */}
+        {/* Default State */}
         {!isLoading && properties.length === 0 && !searchTerm && selectedType === 'all' && selectedLocation === 'all' && (
-          <div className="text-center py-8">
-            <Home className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
-            <h3 className="text-sm md:text-base font-semibold mb-1">
+          <div className="text-center py-16">
+            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <Home className="h-8 w-8 text-primary" />
+            </div>
+            <h3 className="text-base sm:text-lg font-semibold text-foreground mb-1">
               Start your property search
             </h3>
-            <p className="text-muted-foreground text-[10px] md:text-xs">
+            <p className="text-muted-foreground text-sm">
               Enter a location, property type, or keyword to find your perfect property
             </p>
           </div>
