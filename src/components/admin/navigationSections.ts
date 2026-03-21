@@ -935,6 +935,13 @@ export const navigationSections = {
       badge: "🤖 AI Pricing"
     },
     {
+      key: "global-investor-roadshow",
+      label: "Global Investor Roadshow",
+      icon: Globe,
+      description: "International investor meeting narrative — stage points, conversational scripts, media soundbites & persuasion playbooks",
+      badge: "🌍 Roadshow"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,

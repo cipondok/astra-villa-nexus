@@ -1100,4 +1100,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "category-leadership-narrative": { label: "Category Leadership Narrative", category: "Strategy" },
   "strategic-decision-simulator": { label: "Strategic Decision Simulator", category: "Strategy" },
   "autonomous-pricing-intelligence": { label: "Autonomous Pricing Intelligence", category: "Strategy" },
+  "global-investor-roadshow": { label: "Global Investor Roadshow", category: "Strategy" },
 };
