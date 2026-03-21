@@ -33,7 +33,7 @@ const LeftStatsColumn = React.memo(function LeftStatsColumn({
   platformStats, statsLoading, sparkTrends, statsAgo, pendingItems, onQuickAction,
 }: LeftStatsColumnProps) {
   return (
-    <div className="col-span-12 md:col-span-4 space-y-3">
+    <div className="col-span-12 md:col-span-3 space-y-3">
       <SectionErrorBoundary sectionName="Platform Stats">
         {/* Key Metrics */}
         <Card className="border-border bg-card">

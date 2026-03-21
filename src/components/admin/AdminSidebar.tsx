@@ -138,62 +138,76 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
          <div className="w-12 h-full bg-card/95 backdrop-blur-sm border-r border-border/30 flex flex-col py-2 px-1.5 shadow-lg" role="menubar" aria-label="Section categories">
            {/* IMPORTANT: category list must be scrollable or bottom categories (like Features) become unreachable */}
            <ScrollArea className="flex-1">
-             <div className="flex flex-col gap-0.5">
-               {categories.map((category) => {
-                 const sections = navigationSections[category as keyof typeof navigationSections];
-                 if (!sections || sections.length === 0) return null;
+              <div className="flex flex-col gap-0.5">
+                {categories.map((category) => {
+                  const sections = navigationSections[category as keyof typeof navigationSections];
+                  if (!sections || sections.length === 0) return null;
 
-                 const CategoryIcon = categoryIcons[category] || LayoutDashboard;
-                 const isActive = activeCategory === category;
-                 const isOpen = openCategory === category;
-                 const isHovered = hoveredCategory === category;
+                  const CategoryIcon = categoryIcons[category] || LayoutDashboard;
+                  const isActive = activeCategory === category;
+                  const isOpen = openCategory === category;
+                  const isHovered = hoveredCategory === category;
+                  const sectionCount = sections.length;
 
-                 return (
-                   <div key={category} className="relative">
-                     {/* Icon Button */}
-                      <button
-                        onClick={() => handleCategoryClick(category)}
-                        onMouseEnter={() => setHoveredCategory(category)}
-                        onMouseLeave={() => setHoveredCategory(null)}
-                        aria-label={sectionTitles[category as keyof typeof sectionTitles]}
-                        aria-expanded={isOpen}
-                        aria-haspopup="menu"
-                        role="menuitem"
-                        className={cn(
-                          "w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200 group relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1",
-                          isOpen
-                            ? "bg-primary text-primary-foreground shadow-md shadow-primary/30 scale-105"
-                            : isActive
-                              ? "bg-primary/15 text-primary"
-                              : "hover:bg-muted/60 text-muted-foreground hover:text-foreground hover:scale-105"
+                  return (
+                    <div key={category} className="relative">
+                      {/* Icon Button */}
+                       <button
+                         onClick={() => handleCategoryClick(category)}
+                         onMouseEnter={() => setHoveredCategory(category)}
+                         onMouseLeave={() => setHoveredCategory(null)}
+                         aria-label={sectionTitles[category as keyof typeof sectionTitles]}
+                         aria-expanded={isOpen}
+                         aria-haspopup="menu"
+                         role="menuitem"
+                         className={cn(
+                           "w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200 group relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1",
+                           isOpen
+                             ? "bg-primary text-primary-foreground shadow-md shadow-primary/30 scale-105"
+                             : isActive
+                               ? "bg-primary/15 text-primary"
+                               : "hover:bg-muted/60 text-muted-foreground hover:text-foreground hover:scale-105"
+                         )}
+                      >
+                        <CategoryIcon className="h-4 w-4 transition-transform duration-200" />
+
+                        {/* Section count micro-badge */}
+                        {sectionCount > 1 && !isOpen && (
+                          <span className={cn(
+                            "absolute -bottom-0.5 -right-0.5 h-3.5 min-w-[14px] flex items-center justify-center rounded-full text-[7px] font-bold leading-none",
+                            isActive
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-muted text-muted-foreground border border-border/50"
+                          )}>
+                            {sectionCount}
+                          </span>
                         )}
-                     >
-                       <CategoryIcon className="h-4 w-4 transition-transform duration-200" />
 
-                       {/* Active indicator bar */}
-                       {isActive && !isOpen && (
-                         <span className="absolute -right-0.5 top-1/2 -translate-y-1/2 w-1 h-5 bg-primary rounded-full transition-all duration-300" />
-                       )}
-                       {/* Open indicator bar */}
-                       {isOpen && (
-                         <span className="absolute -right-0.5 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary-foreground/60 rounded-full" />
-                       )}
-                     </button>
+                        {/* Active indicator bar */}
+                        {isActive && !isOpen && (
+                          <span className="absolute -right-0.5 top-1/2 -translate-y-1/2 w-1 h-5 bg-primary rounded-full transition-all duration-300" />
+                        )}
+                        {/* Open indicator bar */}
+                        {isOpen && (
+                          <span className="absolute -right-0.5 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary-foreground/60 rounded-full" />
+                        )}
+                      </button>
 
-                      {/* Hover Tooltip */}
-                      {isHovered && openCategory !== category && (
-                        <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2.5 z-50 animate-in fade-in-0 slide-in-from-left-2 duration-150 pointer-events-none">
-                          <div className="px-2.5 py-1.5 bg-foreground text-background text-xs font-medium rounded-md shadow-xl border border-border/20 whitespace-nowrap">
-                            {sectionTitles[category as keyof typeof sectionTitles]}
-                            {/* Arrow */}
-                            <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-foreground" />
-                          </div>
-                        </div>
-                      )}
-                   </div>
-                 );
-               })}
-             </div>
+                       {/* Hover Tooltip */}
+                       {isHovered && openCategory !== category && (
+                         <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2.5 z-50 animate-in fade-in-0 slide-in-from-left-2 duration-150 pointer-events-none">
+                           <div className="px-2.5 py-1.5 bg-foreground text-background text-xs font-medium rounded-md shadow-xl border border-border/20 whitespace-nowrap">
+                             {sectionTitles[category as keyof typeof sectionTitles]}
+                             <span className="ml-1.5 text-background/60">({sectionCount})</span>
+                             {/* Arrow */}
+                             <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-foreground" />
+                           </div>
+                         </div>
+                       )}
+                    </div>
+                  );
+                })}
+              </div>
            </ScrollArea>
          </div>
 
