@@ -1205,6 +1205,13 @@ export const navigationSections = {
       badge: "🚀 Traffic"
     },
     {
+      key: "buyer-trust-blueprint",
+      label: "Buyer Trust & Follow-Up",
+      icon: Shield,
+      description: "Trust assurance, local influencer campaigns & inquiry conversion scripts",
+      badge: "🛡️ Trust"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
