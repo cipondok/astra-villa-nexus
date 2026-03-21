@@ -367,7 +367,7 @@ const Search = () => {
         {/* Results Grid */}
         {!isLoading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
-            {properties.map((property) => {
+            {paginatedProperties.map((property) => {
               const isNew = newPropertyIds.has(property.id);
               
               return (
@@ -403,6 +403,62 @@ const Search = () => {
                 </motion.div>
               );
             })}
+          </div>
+        )}
+
+        {/* Pagination */}
+        {!isLoading && totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-8 mb-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => { setCurrentPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              disabled={currentPage === 1}
+              className="h-9 px-3 rounded-xl gap-1"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Prev
+            </Button>
+            
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter(page => page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1)
+              .reduce((acc: (number | string)[], page, idx, arr) => {
+                if (idx > 0 && typeof arr[idx - 1] === 'number' && page - (arr[idx - 1] as number) > 1) {
+                  acc.push('...');
+                }
+                acc.push(page);
+                return acc;
+              }, [])
+              .map((item, idx) => 
+                item === '...' ? (
+                  <span key={`dot-${idx}`} className="px-1 text-muted-foreground text-sm">…</span>
+                ) : (
+                  <Button
+                    key={item}
+                    variant={currentPage === item ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => { setCurrentPage(item as number); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    className={`h-9 w-9 rounded-xl text-sm ${currentPage === item ? 'bg-primary text-primary-foreground' : ''}`}
+                  >
+                    {item}
+                  </Button>
+                )
+              )}
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => { setCurrentPage(p => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              disabled={currentPage === totalPages}
+              className="h-9 px-3 rounded-xl gap-1"
+            >
+              Next
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+            
+            <span className="text-xs text-muted-foreground ml-2">
+              {properties.length} total
+            </span>
           </div>
         )}
 
