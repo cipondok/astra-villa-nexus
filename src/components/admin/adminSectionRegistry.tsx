@@ -352,6 +352,7 @@ export const First50DealsBlueprint = lazyRetry(() => import("./First50DealsBluep
 export const RevenueStabilizationBlueprint = lazyRetry(() => import("./RevenueStabilizationBlueprint"));
 export const RevenueScaleBlueprint = lazyRetry(() => import("./RevenueScaleBlueprint"));
 export const MillionRevenueBlueprint = lazyRetry(() => import("./MillionRevenueBlueprint"));
+export const ContinentalExpansionBlueprint = lazyRetry(() => import("./ContinentalExpansionBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
