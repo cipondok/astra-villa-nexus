@@ -692,6 +692,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "founder-daily-execution":     () => <FounderDailyExecution />,
   "first-100k-revenue":          () => <First100KRevenuePlan />,
   "investor-narrative-coaching":  () => <InvestorNarrativeCoaching />,
+  "vendor-outreach-scripts":     () => <VendorOutreachScripts />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
