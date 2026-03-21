@@ -364,6 +364,7 @@ const FounderExitWealthPage = lazy(() => import('@/pages/FounderExitWealthPage')
 const NationalDominationBlueprintPage = lazy(() => import('@/pages/NationalDominationBlueprintPage'));
 const GlobalInvestorTerminalPage = lazy(() => import('@/pages/GlobalInvestorTerminalPage'));
 const FounderPersonalOSPage = lazy(() => import('@/pages/FounderPersonalOSPage'));
+const GlobalProptechEmpirePage = lazy(() => import('@/pages/GlobalProptechEmpirePage'));
 const FounderSchedulePage = lazy(() => import('@/pages/FounderSchedulePage'));
 const EnergyOptimizationPage = lazy(() => import('@/pages/EnergyOptimizationPage'));
 const DecisionPrioritizationPage = lazy(() => import('@/pages/DecisionPrioritizationPage'));
