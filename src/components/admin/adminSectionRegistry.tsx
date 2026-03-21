@@ -321,6 +321,7 @@ export const SuperAppEcosystemPlan = lazyRetry(() => import("./SuperAppEcosystem
 export const CategoryLeadershipNarrative = lazyRetry(() => import("./CategoryLeadershipNarrative"));
 export const StrategicDecisionSimulator = lazyRetry(() => import("./StrategicDecisionSimulator"));
 export const AutonomousPricingIntelligence = lazyRetry(() => import("./AutonomousPricingIntelligence"));
+export const GlobalInvestorRoadshow = lazyRetry(() => import("./GlobalInvestorRoadshow"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -727,6 +728,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "category-leadership-narrative": () => <CategoryLeadershipNarrative />,
   "strategic-decision-simulator": () => <StrategicDecisionSimulator />,
   "autonomous-pricing-intelligence": () => <AutonomousPricingIntelligence />,
+  "global-investor-roadshow": () => <GlobalInvestorRoadshow />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1098,4 +1100,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "category-leadership-narrative": { label: "Category Leadership Narrative", category: "Strategy" },
   "strategic-decision-simulator": { label: "Strategic Decision Simulator", category: "Strategy" },
   "autonomous-pricing-intelligence": { label: "Autonomous Pricing Intelligence", category: "Strategy" },
+  "global-investor-roadshow": { label: "Global Investor Roadshow", category: "Strategy" },
 };
