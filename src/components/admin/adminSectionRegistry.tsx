@@ -325,6 +325,7 @@ export const GlobalInvestorRoadshow = lazyRetry(() => import("./GlobalInvestorRo
 export const DominationKPIControl = lazyRetry(() => import("./DominationKPIControl"));
 export const MAAcquisitionStrategy = lazyRetry(() => import("./MAAcquisitionStrategy"));
 export const FundraisingMilestoneRoadmap = lazyRetry(() => import("./FundraisingMilestoneRoadmap"));
+export const CrisisWarRoom = lazyRetry(() => import("./CrisisWarRoom"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
