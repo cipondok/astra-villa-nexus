@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -70,9 +70,7 @@ const VRPropertyTourManager: React.FC<VRPropertyTourManagerProps> = ({
 
   const handleSceneChange = useCallback((sceneId: string) => {
     const index = scenes.findIndex((s) => s.id === sceneId);
-    if (index !== -1) {
-      setCurrentSceneIndex(index);
-    }
+    if (index !== -1) setCurrentSceneIndex(index);
   }, [scenes]);
 
   const handleStagingComplete = useCallback((sceneId: string, stagedImageUrl: string) => {
@@ -91,90 +89,66 @@ const VRPropertyTourManager: React.FC<VRPropertyTourManagerProps> = ({
   }, []);
 
   const handleVRMode = useCallback(() => {
-    if ('xr' in navigator) {
-      setIsVRMode(!isVRMode);
-      // WebXR session would be initiated here
-    }
+    if ('xr' in navigator) setIsVRMode(!isVRMode);
   }, [isVRMode]);
 
   const displayImageUrl = stagedImages[currentScene?.id] || currentScene?.imageUrl;
 
   const tabs = [
-    { id: 'tour', label: '360° Tour', icon: Eye },
-    { id: 'staging', label: 'AI Staging', icon: Sofa },
+    { id: 'tour', label: '360°', icon: Eye },
+    { id: 'staging', label: 'Stage', icon: Sofa },
     { id: 'measure', label: 'Measure', icon: Ruler },
-    { id: 'neighborhood', label: 'Neighborhood', icon: MapPin },
+    { id: 'neighborhood', label: 'Area', icon: MapPin },
   ];
 
   return (
     <Card className={cn(
       "overflow-hidden border-border",
-      isFullscreen ? "fixed inset-0 z-50 rounded-none" : "rounded-xl",
+      isFullscreen ? "fixed inset-0 z-50 rounded-none" : "rounded-lg",
       className
     )}>
-      <CardHeader className="pb-3 bg-secondary/50 border-b border-border">
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
-              <Glasses className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <span className="text-base sm:text-lg font-semibold text-foreground">VR Property Tour</span>
-              <div className="flex items-center gap-2 mt-1">
-                <Badge variant="outline" className="text-[10px] border-border">
-                  {scenes.length} Scenes
-                </Badge>
-                {isVRMode && (
-                  <Badge className="text-[10px] bg-primary text-primary-foreground">VR Active</Badge>
-                )}
-              </div>
-            </div>
-          </CardTitle>
-
-          <div className="flex items-center gap-1 sm:gap-2">
-            <DayNightToggle isDayMode={isDayMode} onToggle={() => setIsDayMode(!isDayMode)} />
-            
-            <Button variant="ghost" size="icon" onClick={handleVRMode} className="h-8 w-8">
-              <Glasses className="h-4 w-4" />
-            </Button>
-            
-            <Button variant="ghost" size="icon" onClick={toggleFullscreen} className="h-8 w-8">
-              {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-            </Button>
-          </div>
-        </div>
-      </CardHeader>
-
       <CardContent className="p-0">
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)}>
-          <div className="px-3 sm:px-4 py-2 sm:py-3 bg-muted/30 border-b border-border">
-            <TabsList className="grid w-full grid-cols-4 bg-background p-1 rounded-lg border border-border">
+          {/* Compact toolbar: tabs + controls in one row */}
+          <div className="flex items-center justify-between gap-2 px-2 py-1 bg-secondary/40 border-b border-border">
+            <TabsList className="h-7 bg-background/80 p-0.5 rounded-md border border-border gap-0.5">
               {tabs.map((tab) => (
                 <TabsTrigger
                   key={tab.id}
                   value={tab.id}
-                  className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md"
+                  className="h-6 px-2 text-[10px] gap-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded"
                 >
-                  <tab.icon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                  <span className="hidden sm:inline">{tab.label}</span>
+                  <tab.icon className="h-3 w-3" />
+                  <span className="hidden xs:inline">{tab.label}</span>
                 </TabsTrigger>
               ))}
             </TabsList>
+
+            <div className="flex items-center gap-0.5">
+              <Badge variant="outline" className="h-5 text-[9px] border-border px-1.5 hidden sm:flex">
+                {scenes.length} rooms
+              </Badge>
+              <DayNightToggle isDayMode={isDayMode} onToggle={() => setIsDayMode(!isDayMode)} />
+              <Button variant="ghost" size="icon" onClick={handleVRMode} className="h-6 w-6">
+                <Glasses className="h-3 w-3" />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={toggleFullscreen} className="h-6 w-6">
+                {isFullscreen ? <Minimize2 className="h-3 w-3" /> : <Maximize2 className="h-3 w-3" />}
+              </Button>
+            </div>
           </div>
 
           <TabsContent value="tour" className="m-0">
             <div className={cn(
               "relative",
-              isFullscreen ? "h-screen" : "h-[400px] sm:h-[500px] lg:h-[600px]"
+              isFullscreen ? "h-screen" : "h-[50vh] sm:h-[55vh] lg:h-[65vh]"
             )}>
               {currentScene && (
                 <VRPanoramaViewer
                   imageUrl={displayImageUrl}
                   hotspots={currentScene.hotspots || []}
                   onHotspotClick={(hotspot) => {
-                    if (hotspot.targetSceneId) {
-                      handleSceneChange(hotspot.targetSceneId);
-                    }
+                    if (hotspot.targetSceneId) handleSceneChange(hotspot.targetSceneId);
                   }}
                   autoRotate={isPlaying}
                   isDayMode={isDayMode}
@@ -182,33 +156,26 @@ const VRPropertyTourManager: React.FC<VRPropertyTourManagerProps> = ({
                 />
               )}
 
-              {/* Scene Navigation */}
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 sm:gap-3 z-10">
+              {/* Scene Navigation — compact */}
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10">
                 <Button
                   variant="secondary"
                   size="icon"
                   onClick={handlePrevScene}
-                  className="h-9 w-9 sm:h-10 sm:w-10 rounded-full bg-card/90 border border-border shadow-lg"
+                  className="h-8 w-8 rounded-full bg-card/90 border border-border shadow-lg"
                 >
-                  <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <ChevronLeft className="h-4 w-4" />
                 </Button>
 
-                <div className="flex items-center gap-1 sm:gap-2 bg-card/90 border border-border rounded-full px-3 sm:px-4 py-1.5 sm:py-2 shadow-lg">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setIsPlaying(!isPlaying)}
-                    className="h-7 w-7 sm:h-8 sm:w-8"
-                  >
-                    {isPlaying ? <Pause className="h-3 w-3 sm:h-4 sm:w-4" /> : <Play className="h-3 w-3 sm:h-4 sm:w-4" />}
+                <div className="flex items-center gap-1 bg-card/90 border border-border rounded-full px-2.5 py-1 shadow-lg">
+                  <Button variant="ghost" size="icon" onClick={() => setIsPlaying(!isPlaying)} className="h-6 w-6">
+                    {isPlaying ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
                   </Button>
-                  
-                  <span className="text-xs sm:text-sm font-medium px-1 sm:px-2 text-foreground">
-                    {currentSceneIndex + 1} / {scenes.length}
+                  <span className="text-[11px] font-medium px-1 text-foreground">
+                    {currentSceneIndex + 1}/{scenes.length}
                   </span>
-                  
-                  <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8">
-                    <Camera className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <Button variant="ghost" size="icon" className="h-6 w-6">
+                    <Camera className="h-3 w-3" />
                   </Button>
                 </div>
 
@@ -216,31 +183,31 @@ const VRPropertyTourManager: React.FC<VRPropertyTourManagerProps> = ({
                   variant="secondary"
                   size="icon"
                   onClick={handleNextScene}
-                  className="h-9 w-9 sm:h-10 sm:w-10 rounded-full bg-card/90 border border-border shadow-lg"
+                  className="h-8 w-8 rounded-full bg-card/90 border border-border shadow-lg"
                 >
-                  <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
 
-              {/* Scene Title */}
-              <div className="absolute top-4 left-4 z-10">
-                <Badge className="bg-card/90 border border-border text-foreground px-2 sm:px-3 py-1 sm:py-1.5 shadow-lg">
-                  <Eye className="h-3 w-3 mr-1 sm:mr-1.5" />
+              {/* Scene Title — top left badge */}
+              <div className="absolute top-2 left-2 z-10">
+                <Badge className="bg-card/90 border border-border text-foreground px-2 py-0.5 text-[10px] shadow-lg">
+                  <Eye className="h-2.5 w-2.5 mr-1" />
                   {currentScene?.title || 'Loading...'}
                 </Badge>
               </div>
 
-              {/* Thumbnail Strip */}
-              <div className="absolute bottom-16 sm:bottom-20 left-1/2 -translate-x-1/2 z-10">
-                <div className="flex gap-1.5 sm:gap-2 bg-card/80 border border-border rounded-lg sm:rounded-xl p-1.5 sm:p-2 shadow-lg">
+              {/* Thumbnail Strip — compact */}
+              <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-10">
+                <div className="flex gap-1 bg-card/80 border border-border rounded-lg p-1 shadow-lg">
                   {scenes.map((scene, index) => (
                     <button
                       key={scene.id}
                       onClick={() => setCurrentSceneIndex(index)}
                       className={cn(
-                        "w-12 h-9 sm:w-16 sm:h-12 rounded-md sm:rounded-lg overflow-hidden border-2 transition-all",
+                        "w-10 h-7 sm:w-14 sm:h-10 rounded overflow-hidden border-2 transition-all",
                         index === currentSceneIndex
-                          ? "border-primary ring-2 ring-primary/30"
+                          ? "border-primary ring-1 ring-primary/30"
                           : "border-transparent hover:border-primary/50"
                       )}
                     >
