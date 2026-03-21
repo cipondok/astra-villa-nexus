@@ -1085,6 +1085,13 @@ export const navigationSections = {
       badge: "🏛 Legacy"
     },
     {
+      key: "century-vision",
+      label: "100-Year Strategic Vision",
+      icon: Hourglass,
+      description: "Century-scale platform evolution, data power governance & founder leadership evolution",
+      badge: "♾️ Century"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,

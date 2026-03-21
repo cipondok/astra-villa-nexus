@@ -1163,4 +1163,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ten-million-revenue": { label: "$10M Revenue & Category Domination", category: "Strategy" },
   "hundred-million-blueprint": { label: "$100M Scale & Global IPO", category: "Strategy" },
   "global-infra-legacy": { label: "Global Infrastructure & Legacy", category: "Strategy" },
+  "century-vision": { label: "100-Year Strategic Vision", category: "Strategy" },
 };
