@@ -293,6 +293,7 @@ export const VendorMarketplaceControlEngine = lazyRetry(() => import("./VendorMa
 export const CityLaunchGrowthEngine = lazyRetry(() => import("./CityLaunchGrowthEngine"));
 export const MonetizationEngineControl = lazyRetry(() => import("./MonetizationEngineControl"));
 export const SeriesADataRoom = lazyRetry(() => import("./SeriesADataRoom"));
+export const FirstMillionRevenueSystem = lazyRetry(() => import("./FirstMillionRevenueSystem"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
