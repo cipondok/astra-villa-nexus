@@ -102,20 +102,23 @@ const VendorRegistration = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary/5 via-background to-background dark:from-primary/10">
       {/* Hero header */}
-      <div className="bg-gradient-to-r from-primary via-primary/90 to-chart-1 dark:from-[#0a1628] dark:via-[#0d1f3c] dark:to-[#081225] py-10 sm:py-14">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="mb-4 text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/10 gap-1.5">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Home
+      <div className="bg-gradient-to-r from-primary via-primary/90 to-chart-1 dark:from-[#0a1628] dark:via-[#0d1f3c] dark:to-[#081225] py-4 sm:py-5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-4">
+          <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/10 gap-1 h-8 px-2">
+            <ArrowLeft className="h-3.5 w-3.5" />
+            Home
           </Button>
-          <h1 className="font-playfair text-3xl sm:text-4xl lg:text-5xl font-bold text-primary-foreground mb-3">
-            {vendorRequest ? 'Application Status' : 'Become a Vendor'}
-          </h1>
-          <p className="text-primary-foreground/80 text-base sm:text-lg max-w-2xl">
-            {vendorRequest 
-              ? 'Track the progress of your vendor application' 
-              : 'Join our marketplace and start offering your services to customers across Indonesia'}
-          </p>
+          <div className="h-5 w-px bg-primary-foreground/20" />
+          <div>
+            <h1 className="font-playfair text-lg sm:text-xl font-bold text-primary-foreground leading-tight">
+              {vendorRequest ? 'Application Status' : 'Become a Vendor'}
+            </h1>
+            <p className="text-primary-foreground/70 text-[11px] sm:text-xs">
+              {vendorRequest 
+                ? 'Track your vendor application' 
+                : 'Join our marketplace across Indonesia'}
+            </p>
+          </div>
         </div>
       </div>
 
