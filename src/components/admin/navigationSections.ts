@@ -1135,7 +1135,13 @@ export const navigationSections = {
       badge: "🚀 Deals"
     },
     {
-      badge: "New"
+      key: "100k-revenue-stabilization",
+      label: "$100K Revenue Stabilization",
+      icon: TrendingUp,
+      description: "Revenue consistency, market trust building & agent network expansion",
+      badge: "📈 Scale"
+    },
+    {
     },
     {
       key: "vendor-intelligence-engine",
