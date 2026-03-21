@@ -862,7 +862,7 @@ const Index = () => {
               </SectionWrapper>
 
               {/* ── SECTION 7: Marketplace Liquidity Stream (NEW) ── */}
-              <SectionWrapper variant="muted" className="py-4 sm:py-6">
+              <SectionWrapper variant="muted" className="py-2 sm:py-3">
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={<div className="max-w-7xl mx-auto px-4"><div className="h-40 bg-muted/50 rounded-2xl animate-pulse" /></div>}>
                     <MarketplaceLiquidityStream />
