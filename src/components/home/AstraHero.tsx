@@ -148,8 +148,11 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
                     </div>
                   ))}
                 </div>
-                <div className="mt-2.5">
-                  <span onClick={(e) => { e.stopPropagation(); navigate("/investment"); }} className="text-[11px] font-bold text-[#006bb3] dark:text-blue-300 cursor-pointer hover:underline">🌍 Foreign Investment Program</span>
+                <div className="mt-2.5 flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity" onClick={(e) => { e.stopPropagation(); navigate("/investment"); }}>
+                  <div className="flex items-center justify-center w-6 h-6 rounded-lg bg-[#006bb3] dark:bg-blue-600 text-white shadow-lg">
+                    <Globe className="h-3 w-3" />
+                  </div>
+                  <span className="text-[10px] font-bold text-[#006bb3] dark:text-blue-300">Foreign Investment Program</span>
                 </div>
               </div>
               {/* Right VR image */}
