@@ -368,6 +368,7 @@ const GlobalProptechEmpirePage = lazy(() => import('@/pages/GlobalProptechEmpire
 const DailySalesWarCommandPage = lazy(() => import('@/pages/DailySalesWarCommandPage'));
 const First500InvestorsPage = lazy(() => import('@/pages/First500InvestorsPage'));
 const AutomationChecklistPage = lazy(() => import('@/pages/AutomationChecklistPage'));
+const First30DaysCalendarPage = lazy(() => import('@/pages/First30DaysCalendarPage'));
 const FounderSchedulePage = lazy(() => import('@/pages/FounderSchedulePage'));
 const EnergyOptimizationPage = lazy(() => import('@/pages/EnergyOptimizationPage'));
 const DecisionPrioritizationPage = lazy(() => import('@/pages/DecisionPrioritizationPage'));
