@@ -342,6 +342,7 @@ export const SixtyDayDominationBlueprint = lazyRetry(() => import("./SixtyDayDom
 export const TenMillionRevenueBlueprint = lazyRetry(() => import("./TenMillionRevenueBlueprint"));
 export const HundredMillionBlueprint = lazyRetry(() => import("./HundredMillionBlueprint"));
 export const GlobalInfraLegacyBlueprint = lazyRetry(() => import("./GlobalInfraLegacyBlueprint"));
+export const CenturyVisionBlueprint = lazyRetry(() => import("./CenturyVisionBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -769,6 +770,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ten-million-revenue": () => <TenMillionRevenueBlueprint />,
   "hundred-million-blueprint": () => <HundredMillionBlueprint />,
   "global-infra-legacy": () => <GlobalInfraLegacyBlueprint />,
+  "century-vision": () => <CenturyVisionBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1161,4 +1163,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ten-million-revenue": { label: "$10M Revenue & Category Domination", category: "Strategy" },
   "hundred-million-blueprint": { label: "$100M Scale & Global IPO", category: "Strategy" },
   "global-infra-legacy": { label: "Global Infrastructure & Legacy", category: "Strategy" },
+  "century-vision": { label: "100-Year Strategic Vision", category: "Strategy" },
 };
