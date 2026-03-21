@@ -724,6 +724,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "viral-growth-loops":         () => <ViralGrowthLoops />,
   "super-app-ecosystem-plan":   () => <SuperAppEcosystemPlan />,
   "category-leadership-narrative": () => <CategoryLeadershipNarrative />,
+  "strategic-decision-simulator": () => <StrategicDecisionSimulator />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
