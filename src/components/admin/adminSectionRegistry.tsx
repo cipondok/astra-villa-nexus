@@ -342,6 +342,7 @@ export const SixtyDayDominationBlueprint = lazyRetry(() => import("./SixtyDayDom
 export const TenMillionRevenueBlueprint = lazyRetry(() => import("./TenMillionRevenueBlueprint"));
 export const HundredMillionBlueprint = lazyRetry(() => import("./HundredMillionBlueprint"));
 export const GlobalInfraLegacyBlueprint = lazyRetry(() => import("./GlobalInfraLegacyBlueprint"));
+export const CenturyVisionBlueprint = lazyRetry(() => import("./CenturyVisionBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
