@@ -878,6 +878,13 @@ export const navigationSections = {
       badge: "🗺️ Expansion"
     },
     {
+      key: "investor-fomo-pitch",
+      label: "Investor FOMO Pitch Content",
+      icon: Sparkles,
+      description: "7-slide pitch content with speaker notes, persuasion techniques & storytelling sequence",
+      badge: "🔥 Pitch"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,

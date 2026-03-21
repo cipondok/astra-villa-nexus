@@ -313,6 +313,7 @@ export const CityLaunchPRPlan = lazyRetry(() => import("./CityLaunchPRPlan"));
 export const ClosingConversationSimulator = lazyRetry(() => import("./ClosingConversationSimulator"));
 export const PricingExperimentBacklog = lazyRetry(() => import("./PricingExperimentBacklog"));
 export const NationalExpansionSimulator = lazyRetry(() => import("./NationalExpansionSimulator"));
+export const InvestorFOMOPitchContent = lazyRetry(() => import("./InvestorFOMOPitchContent"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -711,6 +712,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "closing-conversation-sim":    () => <ClosingConversationSimulator />,
   "pricing-experiment-backlog":  () => <PricingExperimentBacklog />,
   "national-expansion-sim":     () => <NationalExpansionSimulator />,
+  "investor-fomo-pitch":        () => <InvestorFOMOPitchContent />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1074,4 +1076,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "closing-conversation-sim": { label: "Closing Conversation Simulator", category: "Strategy" },
   "pricing-experiment-backlog": { label: "Pricing Experiment Backlog", category: "Strategy" },
   "national-expansion-sim": { label: "National Expansion Simulator", category: "Strategy" },
+  "investor-fomo-pitch": { label: "Investor FOMO Pitch Content", category: "Strategy" },
 };
