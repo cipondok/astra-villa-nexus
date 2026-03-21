@@ -112,7 +112,8 @@ import {
   Orbit,
   Network,
   Award,
-  Radio
+  Radio,
+  Mic
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -798,6 +799,13 @@ export const navigationSections = {
       icon: DollarSign,
       description: "14-week tactical plan — liquidity foundation, revenue levers, weekly tactics, checklists & risk mitigation",
       badge: "💰 Revenue"
+    },
+    {
+      key: "investor-narrative-coaching",
+      label: "Investor Narrative Coaching",
+      icon: Mic,
+      description: "6-phase meeting flow — power scripts, delivery technique, pacing strategy & language control",
+      badge: "🎙️ Pitch"
     },
     {
       key: "investor-scoring-engine",
