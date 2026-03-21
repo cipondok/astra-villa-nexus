@@ -1097,4 +1097,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "super-app-ecosystem-plan": { label: "Super-App Ecosystem Plan", category: "Strategy" },
   "category-leadership-narrative": { label: "Category Leadership Narrative", category: "Strategy" },
   "strategic-decision-simulator": { label: "Strategic Decision Simulator", category: "Strategy" },
+  "autonomous-pricing-intelligence": { label: "Autonomous Pricing Intelligence", category: "Strategy" },
 };

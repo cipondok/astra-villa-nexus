@@ -928,6 +928,13 @@ export const navigationSections = {
       badge: "🧠 Decisions"
     },
     {
+      key: "autonomous-pricing-intelligence",
+      label: "Autonomous Pricing Intelligence",
+      icon: Cpu,
+      description: "Dynamic surge/drought/upgrade/urgency pricing with confidence gating, governance tiers & learning loops",
+      badge: "🤖 AI Pricing"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
