@@ -372,6 +372,7 @@ const First30DaysCalendarPage = lazy(() => import('@/pages/First30DaysCalendarPa
 const NegotiationScriptsPage = lazy(() => import('@/pages/NegotiationScriptsPage'));
 const WeeklyRevenueTrackingPage = lazy(() => import('@/pages/WeeklyRevenueTrackingPage'));
 const DealSprintExecutionPage = lazy(() => import('@/pages/DealSprintExecutionPage'));
+const InvestorFollowUpPage = lazy(() => import('@/pages/InvestorFollowUpPage'));
 const FounderSchedulePage = lazy(() => import('@/pages/FounderSchedulePage'));
 const EnergyOptimizationPage = lazy(() => import('@/pages/EnergyOptimizationPage'));
 const DecisionPrioritizationPage = lazy(() => import('@/pages/DecisionPrioritizationPage'));
