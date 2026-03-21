@@ -1107,7 +1107,13 @@ export const navigationSections = {
       badge: "🔮 Post-Civ"
     },
     {
-      label: "Investor Scoring Engine",
+      key: "real-execution",
+      label: "Real Marketplace Execution",
+      icon: Rocket,
+      description: "Feature priority, vendor acquisition scripts & first 1,000 listings strategy",
+      badge: "🚀 Execution"
+    },
+    {
       icon: Target,
       description: "Capital readiness, conversion probability, style classification & weight overrides",
       badge: "New"
