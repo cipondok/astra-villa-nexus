@@ -738,6 +738,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ma-acquisition-strategy": () => <MAAcquisitionStrategy />,
   "fundraising-milestone-roadmap": () => <FundraisingMilestoneRoadmap />,
   "crisis-war-room": () => <CrisisWarRoom />,
+  "global-brand-authority": () => <GlobalBrandAuthority />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
