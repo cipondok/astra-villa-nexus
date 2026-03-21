@@ -1082,4 +1082,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "national-expansion-sim": { label: "National Expansion Simulator", category: "Strategy" },
   "investor-fomo-pitch": { label: "Investor FOMO Pitch Content", category: "Strategy" },
   "kpi-anomaly-detector": { label: "KPI Anomaly Detector", category: "Strategy" },
+  "competitive-threat-response": { label: "Competitive Threat Response", category: "Strategy" },
 };
