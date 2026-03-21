@@ -316,6 +316,7 @@ export const NationalExpansionSimulator = lazyRetry(() => import("./NationalExpa
 export const InvestorFOMOPitchContent = lazyRetry(() => import("./InvestorFOMOPitchContent"));
 export const KPIAnomalyDetector = lazyRetry(() => import("./KPIAnomalyDetector"));
 export const CompetitiveThreatResponse = lazyRetry(() => import("./CompetitiveThreatResponse"));
+export const ViralGrowthLoops = lazyRetry(() => import("./ViralGrowthLoops"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
