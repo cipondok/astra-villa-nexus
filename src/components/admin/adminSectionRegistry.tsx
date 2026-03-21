@@ -1052,4 +1052,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "investor-narrative-coaching": { label: "Investor Narrative Coaching", category: "Strategy" },
   "vendor-outreach-scripts": { label: "Vendor Outreach Scripts", category: "Strategy" },
   "listing-copy-generator": { label: "Listing Copy Generator", category: "Strategy" },
+  "growth-experiment-backlog": { label: "Growth Experiment Backlog", category: "Strategy" },
 };

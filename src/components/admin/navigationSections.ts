@@ -822,6 +822,13 @@ export const navigationSections = {
       badge: "✍️ Copy"
     },
     {
+      key: "growth-experiment-backlog",
+      label: "Growth Experiment Backlog",
+      icon: FlaskConical,
+      description: "12 structured experiments across demand, pricing, urgency, AI ranking & referral mechanics",
+      badge: "🧪 Growth"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
