@@ -736,6 +736,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "domination-kpi-control": () => <DominationKPIControl />,
   "ma-acquisition-strategy": () => <MAAcquisitionStrategy />,
   "fundraising-milestone-roadmap": () => <FundraisingMilestoneRoadmap />,
+  "crisis-war-room": () => <CrisisWarRoom />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
