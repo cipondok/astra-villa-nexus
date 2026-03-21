@@ -1006,6 +1006,13 @@ export const navigationSections = {
       badge: "⚙️ Flywheel"
     },
     {
+      key: "competitive-domination",
+      label: "Competitive Domination Map",
+      icon: Target,
+      description: "Capability matrix vs 5 competitor types, 4 domination strategies, early warning signals & 3-phase roadmap",
+      badge: "🎯 Domination"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,

@@ -331,6 +331,7 @@ export const DecacornProjection = lazyRetry(() => import("./DecacornProjection")
 export const ExperimentPrioritization = lazyRetry(() => import("./ExperimentPrioritization"));
 export const PartnershipStrategy = lazyRetry(() => import("./PartnershipStrategy"));
 export const FlywheelOptimization = lazyRetry(() => import("./FlywheelOptimization"));
+export const CompetitiveDomination = lazyRetry(() => import("./CompetitiveDomination"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -747,6 +748,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "experiment-prioritization": () => <ExperimentPrioritization />,
   "partnership-strategy": () => <PartnershipStrategy />,
   "flywheel-optimization": () => <FlywheelOptimization />,
+  "competitive-domination": () => <CompetitiveDomination />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1128,4 +1130,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "experiment-prioritization": { label: "Experiment Prioritization Engine", category: "Strategy" },
   "partnership-strategy": { label: "Global Partnership Strategy", category: "Strategy" },
   "flywheel-optimization": { label: "Flywheel Optimization Engine", category: "Strategy" },
+  "competitive-domination": { label: "Competitive Domination Map", category: "Strategy" },
 };
