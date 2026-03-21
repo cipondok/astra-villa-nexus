@@ -326,6 +326,7 @@ export const DominationKPIControl = lazyRetry(() => import("./DominationKPIContr
 export const MAAcquisitionStrategy = lazyRetry(() => import("./MAAcquisitionStrategy"));
 export const FundraisingMilestoneRoadmap = lazyRetry(() => import("./FundraisingMilestoneRoadmap"));
 export const CrisisWarRoom = lazyRetry(() => import("./CrisisWarRoom"));
+export const GlobalBrandAuthority = lazyRetry(() => import("./GlobalBrandAuthority"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -737,6 +738,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ma-acquisition-strategy": () => <MAAcquisitionStrategy />,
   "fundraising-milestone-roadmap": () => <FundraisingMilestoneRoadmap />,
   "crisis-war-room": () => <CrisisWarRoom />,
+  "global-brand-authority-narrative": () => <GlobalBrandAuthority />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1113,4 +1115,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ma-acquisition-strategy": { label: "M&A Acquisition Strategy", category: "Strategy" },
   "fundraising-milestone-roadmap": { label: "Fundraising Milestone Roadmap", category: "Strategy" },
   "crisis-war-room": { label: "Crisis War Room", category: "Strategy" },
+  "global-brand-authority-narrative": { label: "Global Brand Authority Narrative", category: "Strategy" },
 };
