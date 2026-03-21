@@ -588,15 +588,23 @@ const Index = () => {
         <section className="relative w-full" id="hero-section">
           {/* Full-width promotional banner image */}
           <div className="relative w-full bg-[#0e64be]">
+            {/* Mobile hero */}
             <img
-              src={heroImage}
+              src={heroMobile}
               alt="ASTRA VILLA — Indonesia's Smart Property Platform"
-              width={1920}
-              height={1080}
               fetchPriority="high"
               loading="eager"
               decoding="sync"
-              className="w-full h-auto max-h-[70vh] object-contain mx-auto"
+              className="block sm:hidden w-full h-auto object-contain"
+            />
+            {/* Desktop hero */}
+            <img
+              src={heroImage}
+              alt="ASTRA VILLA — Indonesia's Smart Property Platform"
+              fetchPriority="high"
+              loading="eager"
+              decoding="sync"
+              className="hidden sm:block w-full h-auto object-contain"
             />
           </div>
 
