@@ -215,6 +215,15 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
             >
               Invest Now
             </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => navigate("/vendor/register")}
+              className="border-white/40 text-white hover:bg-white/15 px-6 py-5 text-sm rounded-xl backdrop-blur-sm"
+            >
+              <Store className="mr-2 h-4 w-4" />
+              Become Vendor
+            </Button>
           </motion.div>
 
           {/* Search panel ON the slide */}
