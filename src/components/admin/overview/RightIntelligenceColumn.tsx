@@ -62,7 +62,7 @@ const RightIntelligenceColumn = React.memo(function RightIntelligenceColumn({
   systemHealth, healthAgo, aiData, aiLoading, aiAgo, onQuickAction,
 }: RightIntelligenceColumnProps) {
   return (
-    <div className="col-span-12 md:col-span-3 space-y-3">
+    <div className="col-span-12 md:col-span-4 space-y-3">
       <SectionErrorBoundary sectionName="AI Intelligence & Health">
 
         {/* ═══ ZONE 1: System Health (Compact Collapsible) ═══ */}
