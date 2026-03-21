@@ -1064,4 +1064,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "investor-nurturing-sequence": { label: "Investor Nurturing Sequence", category: "Strategy" },
   "vendor-retention-scripts": { label: "Vendor Retention & Upsell", category: "Strategy" },
   "liquidity-crisis-recovery": { label: "Liquidity Crisis Recovery", category: "Strategy" },
+  "city-launch-pr-plan": { label: "City Launch PR Plan", category: "Strategy" },
 };
