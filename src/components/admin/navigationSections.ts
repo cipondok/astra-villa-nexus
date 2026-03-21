@@ -956,6 +956,13 @@ export const navigationSections = {
       badge: "🏗️ M&A"
     },
     {
+      key: "fundraising-milestone-roadmap",
+      label: "Fundraising Milestone Roadmap",
+      icon: Rocket,
+      description: "Seed → Series B milestone gates with KPI thresholds, capital allocation & investor positioning per round",
+      badge: "🚀 Fundraising"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,

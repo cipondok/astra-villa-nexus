@@ -324,6 +324,7 @@ export const AutonomousPricingIntelligence = lazyRetry(() => import("./Autonomou
 export const GlobalInvestorRoadshow = lazyRetry(() => import("./GlobalInvestorRoadshow"));
 export const DominationKPIControl = lazyRetry(() => import("./DominationKPIControl"));
 export const MAAcquisitionStrategy = lazyRetry(() => import("./MAAcquisitionStrategy"));
+export const FundraisingMilestoneRoadmap = lazyRetry(() => import("./FundraisingMilestoneRoadmap"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -733,6 +734,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "global-investor-roadshow": () => <GlobalInvestorRoadshow />,
   "domination-kpi-control": () => <DominationKPIControl />,
   "ma-acquisition-strategy": () => <MAAcquisitionStrategy />,
+  "fundraising-milestone-roadmap": () => <FundraisingMilestoneRoadmap />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1107,4 +1109,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-investor-roadshow": { label: "Global Investor Roadshow", category: "Strategy" },
   "domination-kpi-control": { label: "Domination KPI Control", category: "Strategy" },
   "ma-acquisition-strategy": { label: "M&A Acquisition Strategy", category: "Strategy" },
+  "fundraising-milestone-roadmap": { label: "Fundraising Milestone Roadmap", category: "Strategy" },
 };
