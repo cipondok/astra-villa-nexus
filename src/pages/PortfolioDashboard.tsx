@@ -83,17 +83,28 @@ const PortfolioDashboard = () => {
 
   useEffect(() => {
     const fetchProperties = async () => {
-      const { data } = await supabase
+      setLoadingProperties(true);
+
+      const { data, error } = await supabase
         .from('properties')
         .select('id, title, city, price, property_type')
-        .eq('status', 'published')
+        .in('status', ['active', 'published'])
+        .not('title', 'is', null)
         .not('price', 'is', null)
         .gt('price', 0)
         .order('created_at', { ascending: false })
         .limit(200);
-      setProperties(data || []);
+
+      if (error) {
+        console.error('Failed to load portfolio properties:', error);
+        setProperties([]);
+      } else {
+        setProperties(data || []);
+      }
+
       setLoadingProperties(false);
     };
+
     fetchProperties();
   }, []);
 
