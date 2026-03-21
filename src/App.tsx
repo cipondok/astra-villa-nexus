@@ -864,6 +864,7 @@ const AppContent = () => {
                 <Route path="/founder-personal-os" element={<FounderPersonalOSPage />} />
                 <Route path="/global-proptech-empire" element={<GlobalProptechEmpirePage />} />
                 <Route path="/daily-sales-command" element={<DailySalesWarCommandPage />} />
+                <Route path="/first-500-investors" element={<First500InvestorsPage />} />
                 <Route path="/founder-schedule" element={<FounderSchedulePage />} />
                 <Route path="/energy-optimization" element={<EnergyOptimizationPage />} />
                 <Route path="/decision-prioritization" element={<DecisionPrioritizationPage />} />
