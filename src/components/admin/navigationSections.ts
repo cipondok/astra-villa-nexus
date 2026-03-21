@@ -117,8 +117,7 @@ import {
   GitBranch,
   Siren,
   ClipboardCheck,
-  Swords,
-  Rocket
+  Swords
 } from "lucide-react";
 
 export interface NavigationSection {
