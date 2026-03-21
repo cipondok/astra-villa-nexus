@@ -959,6 +959,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "monetization-engine-control": { label: "Monetization Engine", category: "Operations" },
   "series-a-data-room": { label: "Series-A Data Room", category: "Features" },
   "first-1m-revenue-system": { label: "First $1M Revenue", category: "Operations" },
+  "decacorn-valuation": { label: "Decacorn Valuation", category: "Features" },
   "hyper-execution-plan": { label: "30-Day Hyper Execution", category: "Features" },
   "ninety-day-master-plan": { label: "90-Day Master Execution", category: "Features" },
   "uiux-redesign-blueprint": { label: "UI/UX Redesign Blueprint", category: "Features" },

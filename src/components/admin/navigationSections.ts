@@ -737,6 +737,13 @@ export const navigationSections = {
       badge: "🎯 Revenue"
     },
     {
+      key: "decacorn-valuation",
+      label: "Decacorn Valuation",
+      icon: Shield,
+      description: "Market dominance, intelligence moat, network effects & revenue scale trajectory — investor confidence interface",
+      badge: "🦄 Valuation"
+    },
+    {
       key: "execution-command-center",
       label: "Execution Command Center",
       icon: Rocket,
