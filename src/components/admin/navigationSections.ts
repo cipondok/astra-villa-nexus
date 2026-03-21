@@ -115,7 +115,8 @@ import {
   Radio,
   Mic,
   GitBranch,
-  Siren
+  Siren,
+  ClipboardCheck
 } from "lucide-react";
 
 export interface NavigationSection {
