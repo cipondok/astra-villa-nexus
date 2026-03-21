@@ -1121,4 +1121,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "crisis-war-room": { label: "Crisis War Room", category: "Strategy" },
   "global-brand-authority-narrative": { label: "Global Brand Authority Narrative", category: "Strategy" },
   "decacorn-projection": { label: "Decacorn Financial Projection", category: "Strategy" },
+  "experiment-prioritization": { label: "Experiment Prioritization Engine", category: "Strategy" },
 };
