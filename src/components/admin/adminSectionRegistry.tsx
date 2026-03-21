@@ -354,6 +354,7 @@ export const RevenueScaleBlueprint = lazyRetry(() => import("./RevenueScaleBluep
 export const MillionRevenueBlueprint = lazyRetry(() => import("./MillionRevenueBlueprint"));
 export const ContinentalExpansionBlueprint = lazyRetry(() => import("./ContinentalExpansionBlueprint"));
 export const TenMillionGlobalBlueprint = lazyRetry(() => import("./TenMillionGlobalBlueprint"));
+export const FiftyMillionPlanetaryBlueprint = lazyRetry(() => import("./FiftyMillionPlanetaryBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -793,6 +794,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "1m-revenue-hyperscale": () => <MillionRevenueBlueprint />,
   "3m-continental-expansion": () => <ContinentalExpansionBlueprint />,
   "10m-global-scale": () => <TenMillionGlobalBlueprint />,
+  "50m-planetary-infrastructure": () => <FiftyMillionPlanetaryBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1197,4 +1199,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "1m-revenue-hyperscale": { label: "$1M Monthly Hyper-Scale", category: "Strategy" },
   "3m-continental-expansion": { label: "$3M Continental Expansion", category: "Strategy" },
   "10m-global-scale": { label: "$10M Global Scale", category: "Strategy" },
+  "50m-planetary-infrastructure": { label: "$50M Planetary Infrastructure", category: "Strategy" },
 };

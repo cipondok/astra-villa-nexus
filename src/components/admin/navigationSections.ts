@@ -1170,6 +1170,13 @@ export const navigationSections = {
       badge: "🌐 Global"
     },
     {
+      key: "50m-planetary-infrastructure",
+      label: "$50M Planetary Infrastructure",
+      icon: Globe,
+      description: "Digital economy leadership, cross-asset intelligence & $600M ARR infrastructure",
+      badge: "🪐 Planetary"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
