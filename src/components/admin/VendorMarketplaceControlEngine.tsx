@@ -173,9 +173,9 @@ const SliderControl = ({ label, icon: Icon, defaultVal = 50, min = 0, max = 100,
 // SECTION 1 — VENDOR PERFORMANCE INTELLIGENCE
 // ══════════════════════════════════════════════════════════════════
 const vendorLeaderboard = [
-  { name: 'PT Bali Property Co', responseMin: 4, conversion: 18.2, rating: 4.9, status: 'active' as const },
-  { name: 'Jakarta Realty Group', responseMin: 7, conversion: 15.8, rating: 4.7, status: 'active' as const },
-  { name: 'Surabaya Homes Ltd', responseMin: 12, conversion: 12.4, rating: 4.5, status: 'active' as const },
+  { name: 'PT Bali Property Co', responseMin: 4, conversion: 18.2, rating: 4.9, status: 'ok' as const },
+  { name: 'Jakarta Realty Group', responseMin: 7, conversion: 15.8, rating: 4.7, status: 'ok' as const },
+  { name: 'Surabaya Homes Ltd', responseMin: 12, conversion: 12.4, rating: 4.5, status: 'ok' as const },
   { name: 'Bandung Estates', responseMin: 18, conversion: 9.1, rating: 4.3, status: 'warn' as const },
   { name: 'Yogya Heritage Props', responseMin: 25, conversion: 7.6, rating: 4.1, status: 'warn' as const },
   { name: 'Semarang Property Hub', responseMin: 42, conversion: 4.2, rating: 3.8, status: 'critical' as const },
