@@ -701,6 +701,13 @@ export const navigationSections = {
       description: "Category dashboard — overview of command, vendor intelligence, workforce, and supply operations"
     },
     {
+      key: "founder-daily-command",
+      label: "Founder Command Center",
+      icon: Radio,
+      description: "Daily operational command dashboard — Bloomberg-style market control center",
+      badge: "New"
+    },
+    {
       key: "execution-command-center",
       label: "Execution Command Center",
       icon: Rocket,
