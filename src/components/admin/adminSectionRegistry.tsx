@@ -1172,4 +1172,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "century-vision": { label: "100-Year Strategic Vision", category: "Strategy" },
   "civilization-coordination": { label: "Civilization Market Coordination", category: "Strategy" },
   "post-civilization": { label: "Post-Civilization Intelligence", category: "Strategy" },
+  "real-execution": { label: "Real Marketplace Execution", category: "Strategy" },
 };
