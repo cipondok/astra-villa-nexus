@@ -1027,6 +1027,13 @@ export const navigationSections = {
       badge: "🧬 Evolution"
     },
     {
+      key: "investor-narrative-dominance",
+      label: "Investor Narrative Dominance",
+      icon: Mic,
+      description: "4 positioning scenarios with psychology, pitch framing, risk mitigation & valuation uplift simulation",
+      badge: "🎯 Narrative"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,

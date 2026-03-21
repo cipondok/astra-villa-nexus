@@ -334,6 +334,7 @@ export const FlywheelOptimization = lazyRetry(() => import("./FlywheelOptimizati
 export const CompetitiveDomination = lazyRetry(() => import("./CompetitiveDomination"));
 export const FounderClarity = lazyRetry(() => import("./FounderClarity"));
 export const AIEvolutionArchitecture = lazyRetry(() => import("./AIEvolutionArchitecture"));
+export const InvestorNarrativeDominance = lazyRetry(() => import("./InvestorNarrativeDominance"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -753,6 +754,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "competitive-domination": () => <CompetitiveDomination />,
   "founder-clarity-coach": () => <FounderClarity />,
   "ai-evolution-architecture": () => <AIEvolutionArchitecture />,
+  "investor-narrative-dominance": () => <InvestorNarrativeDominance />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1137,4 +1139,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "competitive-domination": { label: "Competitive Domination Map", category: "Strategy" },
   "founder-clarity-coach": { label: "Founder Clarity Coach", category: "Strategy" },
   "ai-evolution-architecture": { label: "AI Self-Evolution Architecture", category: "Strategy" },
+  "investor-narrative-dominance": { label: "Investor Narrative Dominance", category: "Strategy" },
 };
