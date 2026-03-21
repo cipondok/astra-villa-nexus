@@ -358,6 +358,7 @@ const First10DealsPage = lazy(() => import('@/pages/First10DealsPage'));
 const MarketDominancePage = lazy(() => import('@/pages/MarketDominancePage'));
 const KPICommandCenterPage = lazy(() => import('@/pages/KPICommandCenterPage'));
 const SeriesAReadinessPage = lazy(() => import('@/pages/SeriesAReadinessPage'));
+const CityExpansionMasterPlanPage = lazy(() => import('@/pages/CityExpansionMasterPlanPage'));
 const FounderSchedulePage = lazy(() => import('@/pages/FounderSchedulePage'));
 const EnergyOptimizationPage = lazy(() => import('@/pages/EnergyOptimizationPage'));
 const DecisionPrioritizationPage = lazy(() => import('@/pages/DecisionPrioritizationPage'));
