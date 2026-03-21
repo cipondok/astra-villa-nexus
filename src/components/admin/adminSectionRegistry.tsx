@@ -336,6 +336,7 @@ export const FounderClarity = lazyRetry(() => import("./FounderClarity"));
 export const AIEvolutionArchitecture = lazyRetry(() => import("./AIEvolutionArchitecture"));
 export const InvestorNarrativeDominance = lazyRetry(() => import("./InvestorNarrativeDominance"));
 export const PlatformMoatStrategy = lazyRetry(() => import("./PlatformMoatStrategy"));
+export const GlobalOSMasterBlueprint = lazyRetry(() => import("./GlobalOSMasterBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
