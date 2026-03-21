@@ -346,6 +346,7 @@ export const CenturyVisionBlueprint = lazyRetry(() => import("./CenturyVisionBlu
 export const CivilizationCoordinationBlueprint = lazyRetry(() => import("./CivilizationCoordinationBlueprint"));
 export const PostCivilizationBlueprint = lazyRetry(() => import("./PostCivilizationBlueprint"));
 export const RealExecutionBlueprint = lazyRetry(() => import("./RealExecutionBlueprint"));
+export const ThirtyDayLaunchBlueprint = lazyRetry(() => import("./ThirtyDayLaunchBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -777,6 +778,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "civilization-coordination": () => <CivilizationCoordinationBlueprint />,
   "post-civilization": () => <PostCivilizationBlueprint />,
   "real-execution": () => <RealExecutionBlueprint />,
+  "thirty-day-launch": () => <ThirtyDayLaunchBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1173,4 +1175,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "civilization-coordination": { label: "Civilization Market Coordination", category: "Strategy" },
   "post-civilization": { label: "Post-Civilization Intelligence", category: "Strategy" },
   "real-execution": { label: "Real Marketplace Execution", category: "Strategy" },
+  "thirty-day-launch": { label: "30-Day Hardcore Launch", category: "Strategy" },
 };
