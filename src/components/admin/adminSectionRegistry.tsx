@@ -1196,4 +1196,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "500k-revenue-scale": { label: "$500K Revenue Scale", category: "Strategy" },
   "1m-revenue-hyperscale": { label: "$1M Monthly Hyper-Scale", category: "Strategy" },
   "3m-continental-expansion": { label: "$3M Continental Expansion", category: "Strategy" },
+  "10m-global-scale": { label: "$10M Global Scale", category: "Strategy" },
 };
