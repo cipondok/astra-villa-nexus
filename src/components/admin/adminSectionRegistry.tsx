@@ -311,6 +311,7 @@ export const VendorRetentionScripts = lazyRetry(() => import("./VendorRetentionS
 export const LiquidityCrisisRecovery = lazyRetry(() => import("./LiquidityCrisisRecovery"));
 export const CityLaunchPRPlan = lazyRetry(() => import("./CityLaunchPRPlan"));
 export const ClosingConversationSimulator = lazyRetry(() => import("./ClosingConversationSimulator"));
+export const PricingExperimentBacklog = lazyRetry(() => import("./PricingExperimentBacklog"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -707,6 +708,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "liquidity-crisis-recovery":   () => <LiquidityCrisisRecovery />,
   "city-launch-pr-plan":         () => <CityLaunchPRPlan />,
   "closing-conversation-sim":    () => <ClosingConversationSimulator />,
+  "pricing-experiment-backlog":  () => <PricingExperimentBacklog />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1068,4 +1070,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "liquidity-crisis-recovery": { label: "Liquidity Crisis Recovery", category: "Strategy" },
   "city-launch-pr-plan": { label: "City Launch PR Plan", category: "Strategy" },
   "closing-conversation-sim": { label: "Closing Conversation Simulator", category: "Strategy" },
+  "pricing-experiment-backlog": { label: "Pricing Experiment Backlog", category: "Strategy" },
 };
