@@ -592,34 +592,19 @@ const Index = () => {
         
         {/* Hero Section — Full promotional banner + search below */}
         <SectionErrorBoundary sectionName="Hero" fallbackMinHeight="400px">
-        <section className="relative w-full" id="hero-section">
-          {/* Coded Hero Section */}
-          <Suspense fallback={<div className="min-h-[90vh] bg-[#0a1628]" />}>
-            <AstraHero />
+        <section className="relative w-full" id="hero-wrapper">
+          {/* Hero with search panel integrated */}
+          <Suspense fallback={<div className="min-h-[80vh] bg-[#0088d4]" />}>
+            <AstraHero
+              language={language}
+              onSearch={(searchData) => {
+                setQuickSearch(searchData.searchQuery || "");
+                handleQuickSearch(searchData);
+              }}
+              onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
+              resultsCount={hasSearched ? searchResults.length : undefined}
+            />
           </Suspense>
-
-          {/* Search panel below hero */}
-          <div className="relative z-10 bg-[#0a1628] pb-6 px-4 sm:px-6 lg:px-8">
-            <div className="w-full max-w-5xl mx-auto">
-              <div className="animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
-                <SectionErrorBoundary sectionName="Search" fallbackMinHeight="60px">
-                  <Suspense fallback={<SearchPanelSkeleton />}>
-                    <SearchErrorBoundary>
-                      <AstraSearchPanel
-                        language={language}
-                        onSearch={(searchData) => {
-                          setQuickSearch(searchData.searchQuery || "");
-                          handleQuickSearch(searchData);
-                        }}
-                        onLiveSearch={(searchTerm) => setQuickSearch(searchTerm)}
-                        resultsCount={hasSearched ? searchResults.length : undefined}
-                      />
-                    </SearchErrorBoundary>
-                  </Suspense>
-                </SectionErrorBoundary>
-              </div>
-            </div>
-          </div>
 
           {/* Live Counters + CTAs + Trust below */}
           <div className="relative z-10 bg-background">
