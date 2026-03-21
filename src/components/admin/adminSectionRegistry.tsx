@@ -1184,4 +1184,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "thirty-day-launch": { label: "30-Day Hardcore Launch", category: "Strategy" },
   "first-revenue-closing": { label: "First Revenue & Deal Closing", category: "Strategy" },
   "first-50-deals": { label: "First 50 Deals Acceleration", category: "Strategy" },
+  "100k-revenue-stabilization": { label: "$100K Revenue Stabilization", category: "Strategy" },
 };
