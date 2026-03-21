@@ -91,7 +91,7 @@ export function useGlobalInvestorTerminal() {
       const d30 = subDays(new Date(), 30).toISOString();
 
       const [listings, deals, subs, inquiries] = await Promise.all([
-        supabase.from('properties').select('id, city, price, ai_valuation', { count: 'exact' }).eq('status', 'available').limit(100),
+        supabase.from('properties').select('id, city, price', { count: 'exact' }).eq('status', 'available').limit(100),
         supabase.from('property_offers').select('id', { count: 'exact', head: true }).in('status', ['completed', 'accepted']),
         supabase.from('user_subscriptions').select('id', { count: 'exact', head: true }).eq('status', 'active'),
         supabase.from('inquiries').select('id', { count: 'exact', head: true }).gte('created_at', d30),
