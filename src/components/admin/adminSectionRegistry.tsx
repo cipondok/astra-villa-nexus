@@ -1079,4 +1079,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "pricing-experiment-backlog": { label: "Pricing Experiment Backlog", category: "Strategy" },
   "national-expansion-sim": { label: "National Expansion Simulator", category: "Strategy" },
   "investor-fomo-pitch": { label: "Investor FOMO Pitch Content", category: "Strategy" },
+  "kpi-anomaly-detector": { label: "KPI Anomaly Detector", category: "Strategy" },
 };
