@@ -919,7 +919,7 @@ const Index = () => {
               <SectionWrapper variant="muted">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
                   <ScrollReveal direction="up" delay={0}>
-                    <h2 className="font-playfair text-lg sm:text-xl md:text-2xl font-bold text-foreground text-center mb-6">
+                    <h2 className="font-playfair text-lg sm:text-xl md:text-2xl font-bold text-foreground text-center mb-4">
                       Why Choose ASTRA
                     </h2>
                     <StaggeredReveal staggerDelay={120} direction="up" className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
