@@ -290,6 +290,7 @@ export const FounderDailySystem = lazyRetry(() => import("./FounderDailySystem")
 export const FounderDailyCommandDashboard = lazyRetry(() => import("./FounderDailyCommandDashboard"));
 export const AdminCommandCenter = lazyRetry(() => import("./AdminCommandCenter"));
 export const VendorMarketplaceControlEngine = lazyRetry(() => import("./VendorMarketplaceControlEngine"));
+export const CityLaunchGrowthEngine = lazyRetry(() => import("./CityLaunchGrowthEngine"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -665,6 +666,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "founder-daily-command":      () => <FounderDailyCommandDashboard />,
   "admin-command-center":       () => <AdminCommandCenter />,
   "vendor-marketplace-control": () => <VendorMarketplaceControlEngine />,
+  "city-launch-growth-engine": () => <CityLaunchGrowthEngine />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -945,6 +947,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "founder-daily-command": { label: "Founder Command Center", category: "Operations" },
   "admin-command-center": { label: "Admin Command Center", category: "Operations" },
   "vendor-marketplace-control": { label: "Vendor Marketplace Control", category: "Vendor Management" },
+  "city-launch-growth-engine": { label: "City Launch Growth Engine", category: "Operations" },
   "hyper-execution-plan": { label: "30-Day Hyper Execution", category: "Features" },
   "ninety-day-master-plan": { label: "90-Day Master Execution", category: "Features" },
   "uiux-redesign-blueprint": { label: "UI/UX Redesign Blueprint", category: "Features" },
