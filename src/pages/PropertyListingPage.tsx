@@ -5,7 +5,7 @@ import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, SlidersHorizontal, MapPin, Home, X, Eye, Heart, Bed, Bath, Maximize, Key, Tag } from 'lucide-react';
+import { Search, SlidersHorizontal, MapPin, Home, X, Heart, Bed, Bath, Maximize, Key, Tag, Sparkles, ArrowUpRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BackToHomeLink from '@/components/common/BackToHomeLink';
 import { getCurrencyFormatterShort } from '@/stores/currencyStore';
@@ -14,6 +14,7 @@ import PropertyListView from '@/components/search/PropertyListView';
 const PropertyListingMapView = lazy(() => import('@/components/property/PropertyListingMapView'));
 import SearchAlertSubscribeButton from '@/components/search/SearchAlertSubscribeButton';
 import PropertyCardSkeleton from '@/components/property/PropertyCardSkeleton';
+
 interface PropertyListingPageProps {
   pageType: 'buy' | 'rent' | 'new-projects' | 'pre-launching';
   title: string;
@@ -132,7 +133,6 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
     city: 'all',
     priceRange: 'all'
   });
-  const language = 'en';
 
   const listingType = pageType === 'buy' ? 'sale' : pageType === 'rent' ? 'rent' : undefined;
   const developmentStatus = pageType === 'buy' || pageType === 'rent'
@@ -155,7 +155,6 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
     pageSize: 12,
   });
 
-  // Fallback to demo data for pre-launching
   const properties = fetchedProperties.length === 0 && !isLoading && pageType === 'pre-launching'
     ? demoPreLaunchingProjects
     : fetchedProperties;
@@ -163,7 +162,7 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
   const handleSearch = async () => {
     setIsSearching(true);
     setHasSearched(true);
-    
+
     try {
       let query = supabase
         .from('properties')
@@ -208,22 +207,30 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
     setSearchQuery('');
   };
 
+  const displayProperties = hasSearched ? searchResults : properties;
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Clean Header */}
-      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
-        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+      {/* Modern Header with gradient accent */}
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-4">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 min-w-0">
               <BackToHomeLink sectionId={`${pageType}-section`} className="mb-0" />
-              <div>
-                <h1 className="text-base sm:text-lg md:text-xl font-bold text-foreground">{title}</h1>
-                <p className="text-xs sm:text-sm text-muted-foreground">
-                  {(hasSearched ? searchResults : properties).length} properti tersedia
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <h1 className="text-lg sm:text-xl font-bold text-foreground truncate">{title}</h1>
+                  <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-semibold uppercase tracking-wider">
+                    <Sparkles className="h-3 w-3" />
+                    AI Enhanced
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {displayProperties.length} properti tersedia
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-shrink-0">
               <SearchAlertSubscribeButton
                 filters={{
                   propertyType: filters.propertyType,
@@ -237,12 +244,12 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                 variant={showFilters ? "default" : "outline"}
                 size="sm"
                 onClick={() => setShowFilters(!showFilters)}
-                className="h-9 px-4 text-sm font-medium rounded-md"
+                className="h-9 px-3 text-xs font-medium rounded-lg gap-1.5"
               >
-                <SlidersHorizontal className="h-4 w-4 mr-2" />
-                Filter
+                <SlidersHorizontal className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Filter</span>
                 {activeFiltersCount > 0 && (
-                  <span className="ml-2 h-5 w-5 flex items-center justify-center text-xs bg-accent text-accent-foreground rounded-full">
+                  <span className="h-4 w-4 flex items-center justify-center text-[10px] bg-primary text-primary-foreground rounded-full">
                     {activeFiltersCount}
                   </span>
                 )}
@@ -252,27 +259,27 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
         </div>
       </div>
 
-      {/* Search Bar */}
-      <div className="bg-secondary/50 border-b border-border">
-        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
-          <div className="flex gap-2 sm:gap-3">
+      {/* Search + Filters */}
+      <div className="border-b border-border/30 bg-muted/30">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-3">
+          <div className="flex gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Cari lokasi, nama properti..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                className="h-10 sm:h-11 pl-10 text-sm bg-background border-border rounded-md focus:ring-2 focus:ring-primary/20"
+                className="h-10 pl-10 text-sm bg-background/80 border-border/50 rounded-lg focus:ring-2 focus:ring-primary/20"
               />
             </div>
-            <Button 
+            <Button
               onClick={handleSearch}
-              className="h-10 sm:h-11 px-6 text-sm font-medium"
+              className="h-10 px-5 text-sm font-medium rounded-lg"
               disabled={isSearching}
             >
-              <Search className="h-4 w-4 mr-2" />
-              {isSearching ? 'Mencari...' : 'Cari'}
+              {isSearching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+              <span className="ml-2 hidden sm:inline">{isSearching ? 'Mencari...' : 'Cari'}</span>
             </Button>
           </div>
 
@@ -286,21 +293,20 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <div className="pt-3 mt-3 border-t border-border">
+                <div className="pt-3 mt-3 border-t border-border/30">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-sm font-medium text-foreground">Filter Properti</span>
                     {activeFiltersCount > 0 && (
-                      <Button variant="ghost" size="sm" onClick={clearFilters} className="h-8 text-xs text-destructive">
+                      <Button variant="ghost" size="sm" onClick={clearFilters} className="h-7 text-xs text-destructive hover:text-destructive">
                         <X className="h-3 w-3 mr-1" />
-                        Reset Filter
+                        Reset
                       </Button>
                     )}
                   </div>
-
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                     <Select value={filters.propertyType} onValueChange={(v) => setFilters(p => ({ ...p, propertyType: v }))}>
-                      <SelectTrigger className="h-10 text-sm bg-background border-border">
-                        <Home className="h-4 w-4 mr-2 text-muted-foreground" />
+                      <SelectTrigger className="h-9 text-xs bg-background/80 border-border/50 rounded-lg">
+                        <Home className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
                         <SelectValue placeholder="Tipe Properti" />
                       </SelectTrigger>
                       <SelectContent>
@@ -312,10 +318,9 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                         <SelectItem value="commercial">Komersial</SelectItem>
                       </SelectContent>
                     </Select>
-
                     <Select value={filters.city} onValueChange={(v) => setFilters(p => ({ ...p, city: v }))}>
-                      <SelectTrigger className="h-10 text-sm bg-background border-border">
-                        <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
+                      <SelectTrigger className="h-9 text-xs bg-background/80 border-border/50 rounded-lg">
+                        <MapPin className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
                         <SelectValue placeholder="Kota" />
                       </SelectTrigger>
                       <SelectContent>
@@ -326,9 +331,8 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                         <SelectItem value="Bandung">Bandung</SelectItem>
                       </SelectContent>
                     </Select>
-
                     <Select value={filters.priceRange} onValueChange={(v) => setFilters(p => ({ ...p, priceRange: v }))}>
-                      <SelectTrigger className="h-10 text-sm bg-background border-border">
+                      <SelectTrigger className="h-9 text-xs bg-background/80 border-border/50 rounded-lg">
                         <SelectValue placeholder="Range Harga" />
                       </SelectTrigger>
                       <SelectContent>
@@ -347,12 +351,12 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
         </div>
       </div>
 
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
-        {/* View Mode Content */}
+      {/* Property Grid */}
+      <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-6">
         {viewMode === 'map' ? (
           <Suspense fallback={<div className="flex items-center justify-center p-8"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}>
             <PropertyListingMapView
-              properties={(hasSearched ? searchResults : properties).map((p: any) => ({
+              properties={displayProperties.map((p: any) => ({
                 id: p.id,
                 title: p.title,
                 price: p.price,
@@ -364,98 +368,131 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
             />
           </Suspense>
         ) : isLoading || isSearching ? (
-          <PropertyCardSkeleton count={8} className="grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4" />
-        ) : (hasSearched ? searchResults : properties).length === 0 ? (
-          <div className="bg-card border border-border rounded-md p-8 sm:p-12">
+          <PropertyCardSkeleton count={8} className="grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" />
+        ) : displayProperties.length === 0 ? (
+          <div className="bg-card/50 backdrop-blur-sm border border-border/40 rounded-2xl p-10 sm:p-16">
             <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                <Home className="h-8 w-8 text-primary" />
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
+                <Home className="h-7 w-7 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">Tidak ada properti ditemukan</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Coba sesuaikan filter pencarian Anda
+              <h3 className="text-lg font-bold text-foreground mb-2">Tidak ada properti ditemukan</h3>
+              <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
+                Coba sesuaikan filter pencarian Anda untuk menemukan properti yang sesuai
               </p>
-              <Button variant="outline" className="h-10 px-6" onClick={clearFilters}>
+              <Button variant="outline" className="h-10 px-6 rounded-lg" onClick={clearFilters}>
                 Reset Filter
               </Button>
             </div>
           </div>
         ) : viewMode === 'list' ? (
           <PropertyListView
-            properties={(hasSearched ? searchResults : properties) as any}
+            properties={displayProperties as any}
             onPropertyClick={(property) => {
-              const nav = window.location.pathname.includes('/disewa') ? `/properties/${property.id}` : `/properties/${property.id}`;
-              window.location.href = nav;
+              window.location.href = `/properties/${property.id}`;
             }}
           />
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-            {(hasSearched ? searchResults : properties).map((property: any) => {
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+            {displayProperties.map((property: any, i: number) => {
               const imageUrl = property.images?.[0] || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800';
               const formatPrice = getCurrencyFormatterShort();
 
               return (
-              <div
-                key={property.id}
-                className="group cursor-pointer overflow-hidden bg-card border border-border rounded-md hover:border-primary/30 hover:shadow-lg transition-all duration-300"
-              >
+                <motion.div
+                  key={property.id}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: Math.min(i * 0.04, 0.4), duration: 0.4 }}
+                  onClick={() => window.location.href = `/properties/${property.id}`}
+                  className="group cursor-pointer rounded-2xl overflow-hidden bg-card border border-border/40 hover:border-primary/30 shadow-sm hover:shadow-xl transition-all duration-300"
+                >
+                  {/* Image */}
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <img
                       src={imageUrl}
                       alt={property.title}
                       loading="lazy"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-[1.06] transition-transform duration-700 ease-out"
                     />
-                    <button className="absolute top-2 right-2 h-8 w-8 p-0 bg-background/90 hover:bg-background rounded-full shadow-md flex items-center justify-center">
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                    {/* Favorite */}
+                    <button
+                      className="absolute top-3 right-3 h-8 w-8 bg-background/80 backdrop-blur-sm hover:bg-background rounded-full shadow-lg flex items-center justify-center transition-transform group-hover:scale-110"
+                      onClick={(e) => e.stopPropagation()}
+                      aria-label="Save property"
+                    >
                       <Heart className="h-4 w-4 text-muted-foreground" />
                     </button>
-                    <div className="absolute top-2 left-2 flex flex-wrap gap-1.5">
-                      <span className={`flex items-center gap-1 px-2 py-0.5 text-xs font-semibold rounded text-primary-foreground ${
-                        property.listing_type === 'rent' ? 'bg-primary' : 'bg-chart-1'
+
+                    {/* Badges */}
+                    <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
+                      <span className={`flex items-center gap-1 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full backdrop-blur-sm shadow-sm ${
+                        property.listing_type === 'rent'
+                          ? 'bg-primary/90 text-primary-foreground'
+                          : 'bg-emerald-500/90 text-white'
                       }`}>
                         {property.listing_type === 'rent' ? <Key className="h-3 w-3" /> : <Tag className="h-3 w-3" />}
                         {property.listing_type === 'rent' ? 'Sewa' : 'Jual'}
                       </span>
                       {pageType === 'pre-launching' && (
-                        <span className="px-2 py-0.5 text-xs font-medium rounded bg-accent text-accent-foreground">
+                        <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-accent/90 text-accent-foreground backdrop-blur-sm">
                           Pre-Launch
                         </span>
                       )}
                     </div>
+
+                    {/* View details indicator */}
+                    <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-1 group-hover:translate-y-0">
+                      <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-background/90 backdrop-blur-sm text-foreground text-[10px] font-semibold shadow-lg">
+                        Lihat Detail
+                        <ArrowUpRight className="h-3 w-3" />
+                      </div>
+                    </div>
                   </div>
-                  <div className="p-3 sm:p-4">
-                    <p className="text-base sm:text-lg font-bold text-primary mb-1">
+
+                  {/* Content */}
+                  <div className="p-4 space-y-2">
+                    <p className="text-base sm:text-lg font-bold text-primary tabular-nums">
                       {formatPrice(property.price)}
                     </p>
-                    <h3 className="text-sm sm:text-base font-semibold text-foreground line-clamp-1 mb-1">
+                    <h3 className="text-sm font-semibold text-foreground line-clamp-1 group-hover:text-primary transition-colors">
                       {property.title}
                     </h3>
-                    <div className="flex items-center gap-1 text-muted-foreground mb-3">
-                      <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
-                      <span className="text-xs sm:text-sm truncate">{property.city || property.location}</span>
+                    <div className="flex items-center gap-1 text-muted-foreground">
+                      <MapPin className="h-3 w-3 flex-shrink-0" />
+                      <span className="text-xs truncate">{property.city || property.location}</span>
                     </div>
-                    <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground border-t border-border pt-3">
+
+                    {/* Property specs */}
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground pt-2 border-t border-border/30">
                       {property.bedrooms > 0 && (
                         <div className="flex items-center gap-1">
                           <Bed className="h-3.5 w-3.5" />
-                          <span>{property.bedrooms}</span>
+                          <span className="font-medium">{property.bedrooms}</span>
                         </div>
                       )}
                       {property.bathrooms > 0 && (
                         <div className="flex items-center gap-1">
                           <Bath className="h-3.5 w-3.5" />
-                          <span>{property.bathrooms}</span>
+                          <span className="font-medium">{property.bathrooms}</span>
                         </div>
                       )}
                       {property.area_sqm > 0 && (
                         <div className="flex items-center gap-1">
                           <Maximize className="h-3.5 w-3.5" />
-                          <span>{property.area_sqm}m²</span>
+                          <span className="font-medium">{property.area_sqm}m²</span>
                         </div>
+                      )}
+                      {property.property_type && (
+                        <span className="ml-auto px-2 py-0.5 rounded-md bg-muted text-[10px] font-medium capitalize">
+                          {property.property_type}
+                        </span>
                       )}
                     </div>
                   </div>
-              </div>
+                </motion.div>
               );
             })}
           </div>
@@ -466,12 +503,12 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
           <>
             <div ref={sentinelRef} className="h-4" />
             {isFetchingMore && (
-              <div className="flex justify-center py-6">
+              <div className="flex justify-center py-8">
                 <Loader2 className="h-6 w-6 animate-spin text-primary" />
               </div>
             )}
             {!hasMore && properties.length > 0 && (
-              <p className="text-center text-sm text-muted-foreground py-6">
+              <p className="text-center text-xs text-muted-foreground py-8">
                 Semua properti telah ditampilkan
               </p>
             )}
