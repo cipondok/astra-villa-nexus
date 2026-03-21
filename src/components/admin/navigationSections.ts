@@ -709,6 +709,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "admin-command-center",
+      label: "Admin Command Center",
+      icon: Settings,
+      description: "Mission control for liquidity, revenue, growth, deal routing & system diagnostics",
+      badge: "New"
+    },
+    {
       key: "execution-command-center",
       label: "Execution Command Center",
       icon: Rocket,
