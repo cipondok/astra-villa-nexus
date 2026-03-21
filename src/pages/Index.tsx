@@ -22,7 +22,7 @@ import { PropertyFilters } from "@/components/search/AdvancedPropertyFilters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Camera, MessageSquare, ArrowUp, Sparkles, RefreshCw, ChevronDown, BarChart3 } from "lucide-react";
-import slideHero1 from "@/assets/home/slide-hero-1.webp";
+import slideHero1 from "@/assets/astra-villa-hero.jpeg";
 import { cn } from "@/lib/utils";
 import { SearchErrorBoundary } from "@/components/search/SearchErrorBoundary";
 import { SearchPanelSkeleton } from "@/components/search/SearchSkeleton";
