@@ -780,6 +780,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "post-civilization": () => <PostCivilizationBlueprint />,
   "real-execution": () => <RealExecutionBlueprint />,
   "thirty-day-launch": () => <ThirtyDayLaunchBlueprint />,
+  "first-revenue-closing": () => <FirstRevenueBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
