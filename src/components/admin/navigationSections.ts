@@ -1100,7 +1100,13 @@ export const navigationSections = {
       badge: "🌍 Civilization"
     },
     {
-      key: "investor-scoring-engine",
+      key: "post-civilization",
+      label: "Post-Civilization Intelligence",
+      icon: Orbit,
+      description: "Economic intelligence evolution, founder immortality legacy & global market consciousness",
+      badge: "🔮 Post-Civ"
+    },
+    {
       label: "Investor Scoring Engine",
       icon: Target,
       description: "Capital readiness, conversion probability, style classification & weight overrides",
