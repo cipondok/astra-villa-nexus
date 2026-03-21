@@ -20,7 +20,7 @@ const anim = { hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } };
 
 const statusIcon = (s: string) =>
   s === 'completed' ? <CheckCircle2 className="w-4 h-4 text-primary" /> :
-  s === 'in_progress' ? <Loader2 className="w-4 h-4 text-yellow-400 animate-spin" /> :
+  s === 'in_progress' ? <Loader2 className="w-4 h-4 text-accent-foreground animate-spin" /> :
   <Circle className="w-4 h-4 text-muted-foreground/40" />;
 
 const phaseIcon = (p: string) => {
