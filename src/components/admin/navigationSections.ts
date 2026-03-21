@@ -1198,6 +1198,13 @@ export const navigationSections = {
       badge: "🏠 Supply"
     },
     {
+      key: "1000-daily-visitors",
+      label: "1,000 Daily Visitors",
+      icon: Globe,
+      description: "Traffic engine, listing presentation quality & agent loyalty retention systems",
+      badge: "🚀 Traffic"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
