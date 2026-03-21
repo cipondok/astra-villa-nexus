@@ -793,9 +793,9 @@ const Index = () => {
               </SectionWrapper>
 
               {/* ── SECTION 4: Market Heat + ASTRA Showcase ── */}
-              <SectionWrapper variant="muted" className="py-3 sm:py-4">
+              <SectionWrapper variant="muted" className="py-2 sm:py-3">
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
-                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-3">
                     <div className="lg:col-span-2">
                       <ScrollReveal direction="left" delay={0}>
                         <Suspense fallback={<div className="h-48 bg-muted/50 rounded-2xl animate-pulse" />}>
@@ -815,7 +815,7 @@ const Index = () => {
               </SectionWrapper>
 
               {/* ── SECTION 5: Rental Cashflow Zone (NEW) ── */}
-              <SectionWrapper variant="default" className="py-4 sm:py-6">
+              <SectionWrapper variant="default" className="py-2 sm:py-3">
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={<div className="max-w-7xl mx-auto px-4"><div className="h-48 bg-muted/50 rounded-2xl animate-pulse" /></div>}>
                     <RentalCashflowZone />
@@ -831,7 +831,7 @@ const Index = () => {
               </SectionWrapper>
 
               {/* ── SECTION 6: Personalized AI Feed ── */}
-              <SectionWrapper variant="default" id="ai-opportunity-zone" className="py-3 sm:py-4">
+              <SectionWrapper variant="default" id="ai-opportunity-zone" className="py-2 sm:py-3">
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
                   <ScrollReveal direction="up" delay={0}>
                     <div className="text-center mb-3">
@@ -848,12 +848,12 @@ const Index = () => {
                     </div>
                   </ScrollReveal>
 
-                  <StaggeredReveal staggerDelay={150} direction="up" className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <StaggeredReveal staggerDelay={150} direction="up" className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                     <Suspense fallback={null}><DealHunterHero /></Suspense>
                     <Suspense fallback={null}><TrendingROIDeals onPropertyClick={handlePropertyClick} /></Suspense>
                   </StaggeredReveal>
 
-                  <div className="mt-4">
+                  <div className="mt-3">
                     <Suspense fallback={null}>
                       <SmartRecommendations limit={6} className="shadow-sm" />
                     </Suspense>
@@ -862,7 +862,7 @@ const Index = () => {
               </SectionWrapper>
 
               {/* ── SECTION 7: Marketplace Liquidity Stream (NEW) ── */}
-              <SectionWrapper variant="muted" className="py-4 sm:py-6">
+              <SectionWrapper variant="muted" className="py-2 sm:py-3">
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={<div className="max-w-7xl mx-auto px-4"><div className="h-40 bg-muted/50 rounded-2xl animate-pulse" /></div>}>
                     <MarketplaceLiquidityStream />
@@ -889,7 +889,7 @@ const Index = () => {
               </SectionWrapper>
 
               {/* ── SECTION 8: Vendor Ecosystem Hub (NEW — replaces AstraVillaFeatures) ── */}
-              <SectionWrapper variant="default" className="py-4 sm:py-6">
+              <SectionWrapper variant="default" className="py-2 sm:py-3">
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={null}>
                     <VendorEcosystemHub />
@@ -917,12 +917,12 @@ const Index = () => {
 
               {/* ── Why ASTRA ── */}
               <SectionWrapper variant="muted">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
                   <ScrollReveal direction="up" delay={0}>
-                    <h2 className="font-playfair text-lg sm:text-xl md:text-2xl font-bold text-foreground text-center mb-6">
+                    <h2 className="font-playfair text-lg sm:text-xl md:text-2xl font-bold text-foreground text-center mb-4">
                       Why Choose ASTRA
                     </h2>
-                    <StaggeredReveal staggerDelay={120} direction="up" className="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-8">
+                    <StaggeredReveal staggerDelay={120} direction="up" className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                       {[
                         { icon: Sparkles, title: 'AI-Powered Scoring', desc: 'Every property scored by AI for investment potential, risk, and fair market value.' },
                         { icon: Search, title: 'Verified Listings', desc: 'All properties reviewed and verified before publication — no fake listings.' },
