@@ -288,6 +288,7 @@ export const PRLaunchStrategyDashboard = lazyRetry(() => import("./PRLaunchStrat
 export const InvestorOutreachDashboard = lazyRetry(() => import("./InvestorOutreachDashboard"));
 export const FounderDailySystem = lazyRetry(() => import("./FounderDailySystem"));
 export const FounderDailyCommandDashboard = lazyRetry(() => import("./FounderDailyCommandDashboard"));
+export const AdminCommandCenter = lazyRetry(() => import("./AdminCommandCenter"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
