@@ -860,6 +860,7 @@ const AppContent = () => {
                 <Route path="/national-domination-blueprint" element={<NationalDominationBlueprintPage />} />
                 <Route path="/global-investor-terminal" element={<GlobalInvestorTerminalPage />} />
                 <Route path="/founder-personal-os" element={<FounderPersonalOSPage />} />
+                <Route path="/global-proptech-empire" element={<GlobalProptechEmpirePage />} />
                 <Route path="/founder-schedule" element={<FounderSchedulePage />} />
                 <Route path="/energy-optimization" element={<EnergyOptimizationPage />} />
                 <Route path="/decision-prioritization" element={<DecisionPrioritizationPage />} />
