@@ -889,7 +889,7 @@ const Index = () => {
               </SectionWrapper>
 
               {/* ── SECTION 8: Vendor Ecosystem Hub (NEW — replaces AstraVillaFeatures) ── */}
-              <SectionWrapper variant="default" className="py-4 sm:py-6">
+              <SectionWrapper variant="default" className="py-2 sm:py-3">
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={null}>
                     <VendorEcosystemHub />
