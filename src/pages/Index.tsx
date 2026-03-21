@@ -324,8 +324,11 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Hero background image — admin config or default
-  const heroImage = heroConfig?.bannerImages?.[0] || heroDesktop;
+  // Hero background image — admin config or theme-aware default
+  const { theme } = useTheme();
+  const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const heroImage = heroConfig?.bannerImages?.[0] || (isDark ? heroDesktopDark : heroDesktop);
+  const heroMobileImg = isDark ? heroMobileDark : heroMobile;
 
   // Preload hero image for faster LCP
   useEffect(() => {
