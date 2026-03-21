@@ -899,6 +899,13 @@ export const navigationSections = {
       badge: "⚔️ Defense"
     },
     {
+      key: "viral-growth-loops",
+      label: "Viral Growth Loops",
+      icon: Share2,
+      description: "8 viral mechanics with psychology triggers, execution steps, KPIs & priority scoring",
+      badge: "🔄 Viral"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
