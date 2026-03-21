@@ -1166,4 +1166,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "hundred-million-blueprint": { label: "$100M Scale & Global IPO", category: "Strategy" },
   "global-infra-legacy": { label: "Global Infrastructure & Legacy", category: "Strategy" },
   "century-vision": { label: "100-Year Strategic Vision", category: "Strategy" },
+  "civilization-coordination": { label: "Civilization Market Coordination", category: "Strategy" },
 };
