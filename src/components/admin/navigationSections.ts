@@ -1156,6 +1156,13 @@ export const navigationSections = {
       badge: "🌍 Hyper-Scale"
     },
     {
+      key: "3m-continental-expansion",
+      label: "$3M Continental Expansion",
+      icon: Globe,
+      description: "Multi-market revenue replication, continental leadership & global alliance command",
+      badge: "🌏 Continental"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
