@@ -668,6 +668,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "admin-command-center":       () => <AdminCommandCenter />,
   "vendor-marketplace-control": () => <VendorMarketplaceControlEngine />,
   "city-launch-growth-engine": () => <CityLaunchGrowthEngine />,
+  "monetization-engine-control": () => <MonetizationEngineControl />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
