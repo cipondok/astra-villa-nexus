@@ -319,6 +319,7 @@ export const CompetitiveThreatResponse = lazyRetry(() => import("./CompetitiveTh
 export const ViralGrowthLoops = lazyRetry(() => import("./ViralGrowthLoops"));
 export const SuperAppEcosystemPlan = lazyRetry(() => import("./SuperAppEcosystemPlan"));
 export const CategoryLeadershipNarrative = lazyRetry(() => import("./CategoryLeadershipNarrative"));
+export const StrategicDecisionSimulator = lazyRetry(() => import("./StrategicDecisionSimulator"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
