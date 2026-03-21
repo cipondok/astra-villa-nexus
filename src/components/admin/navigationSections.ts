@@ -1142,6 +1142,11 @@ export const navigationSections = {
       badge: "📈 Scale"
     },
     {
+      key: "500k-revenue-scale",
+      label: "$500K Revenue Scale",
+      icon: TrendingUp,
+      description: "Revenue depth expansion, regional dominance & institutional partnerships",
+      badge: "🚀 Scale"
     },
     {
       key: "vendor-intelligence-engine",
