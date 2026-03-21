@@ -115,7 +115,8 @@ import {
   Radio,
   Mic,
   GitBranch,
-  Siren
+  Siren,
+  ClipboardCheck
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -1046,6 +1047,13 @@ export const navigationSections = {
       icon: Globe,
       description: "Unified 5-layer OS architecture, founder vision narratives, automation command framework & maturity roadmap",
       badge: "🌍 Master OS"
+    },
+    {
+      key: "reality-execution-audit",
+      label: "Reality Execution Audit",
+      icon: ClipboardCheck,
+      description: "Daily execution checklist, technical architecture audit, investor due-diligence simulation & 60-day survival roadmap",
+      badge: "⚡ Reality"
     },
     {
       key: "investor-scoring-engine",
