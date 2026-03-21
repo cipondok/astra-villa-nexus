@@ -949,6 +949,13 @@ export const navigationSections = {
       badge: "⚡ Command"
     },
     {
+      key: "ma-acquisition-strategy",
+      label: "M&A Acquisition Strategy",
+      icon: Handshake,
+      description: "Listing portal, tech startup, brokerage & data platform acquisition simulations with evaluation scoring",
+      badge: "🏗️ M&A"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
