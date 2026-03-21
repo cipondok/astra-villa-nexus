@@ -871,6 +871,13 @@ export const navigationSections = {
       badge: "🧪 Pricing"
     },
     {
+      key: "national-expansion-sim",
+      label: "National Expansion Simulator",
+      icon: Map,
+      description: "City-level readiness scoring, scenario simulation & phased rollout blueprint for 12 cities",
+      badge: "🗺️ Expansion"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
