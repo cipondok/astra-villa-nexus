@@ -129,45 +129,36 @@ const VRTourShowcase: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
-        {/* Feature highlights */}
+      {/* Main Content — Ultra Compact */}
+      <main className="container mx-auto px-3 sm:px-4 py-2 sm:py-3 space-y-2 sm:space-y-3">
+        {/* Compact header: feature pills + property info merged */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-wrap gap-1.5"
+          className="flex items-center justify-between flex-wrap gap-2 py-1"
         >
-          {[
-            { icon: '🔄', title: '360° Tours' },
-            { icon: '🛋️', title: 'AI Staging' },
-            { icon: '📏', title: 'Measure' },
-            { icon: '🌙', title: 'Day/Night' },
-          ].map((feature, i) => (
-            <div
-              key={i}
-              className="inline-flex items-center gap-1.5 bg-card border border-border/60 rounded-full px-3 py-1.5 hover:border-primary/30 transition-colors"
-            >
-              <span className="text-sm">{feature.icon}</span>
-              <span className="text-xs font-medium text-foreground">{feature.title}</span>
-            </div>
-          ))}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {[
+              { icon: '🔄', title: '360°' },
+              { icon: '🛋️', title: 'AI Stage' },
+              { icon: '📏', title: 'Measure' },
+              { icon: '🌙', title: 'Day/Night' },
+            ].map((f, i) => (
+              <span key={i} className="inline-flex items-center gap-1 bg-card border border-border/60 rounded-full px-2 py-0.5 text-[11px] font-medium text-foreground">
+                <span>{f.icon}</span>{f.title}
+              </span>
+            ))}
+          </div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span className="font-semibold text-foreground text-sm">{demoProperty.title}</span>
+            <span className="hidden sm:inline">·</span>
+            <span className="hidden sm:inline">{demoProperty.city}</span>
+            <span>·</span>
+            <span className="font-bold text-primary text-sm">{formatPrice(demoProperty.price)}</span>
+            <span className="hidden sm:inline">·</span>
+            <span className="hidden sm:inline">{demoProperty.bedrooms}BR {demoProperty.bathrooms}BA {demoProperty.area_sqm}m²</span>
+          </div>
         </motion.div>
-
-        {/* Property Info Card */}
-        <div className="flex items-center justify-between bg-secondary/50 border border-border rounded-xl p-3 sm:p-4">
-          <div>
-            <h2 className="text-base sm:text-lg font-semibold text-foreground">{demoProperty.title}</h2>
-            <p className="text-xs sm:text-sm text-muted-foreground">{demoProperty.city}</p>
-          </div>
-          <div className="text-right">
-            <p className="text-base sm:text-lg font-bold text-primary">
-              {formatPrice(demoProperty.price)}
-            </p>
-            <p className="text-[10px] sm:text-xs text-muted-foreground">
-              {demoProperty.bedrooms} BR • {demoProperty.bathrooms} BA • {demoProperty.area_sqm}m²
-            </p>
-          </div>
-        </div>
 
         {/* VR Tour Manager */}
         <VRPropertyTourManager
@@ -176,22 +167,19 @@ const VRTourShowcase: React.FC = () => {
           onSaveStaging={handleSaveStaging}
         />
 
-        {/* Info section */}
-        <div className="bg-primary/5 border border-primary/20 rounded-xl p-3 sm:p-4">
-          <div className="flex items-start gap-3">
-            <Info className="h-5 w-5 text-primary mt-0.5 shrink-0" />
-            <div>
-              <h3 className="font-medium text-sm text-foreground">How to use VR Tours</h3>
-              <ul className="text-xs text-muted-foreground mt-2 space-y-1">
-                <li>• <strong className="text-foreground">360° Tour:</strong> Click and drag to look around, use hotspots to navigate</li>
-                <li>• <strong className="text-foreground">AI Staging:</strong> Select room type and style, click "Stage This Room"</li>
-                <li>• <strong className="text-foreground">Measure:</strong> Click two points to measure distances</li>
-                <li>• <strong className="text-foreground">Neighborhood:</strong> Explore nearby amenities on the map</li>
-                <li>• <strong className="text-foreground">Day/Night:</strong> Toggle lighting conditions with sun/moon button</li>
-              </ul>
-            </div>
-          </div>
-        </div>
+        {/* Collapsible How-to-use */}
+        <details className="group">
+          <summary className="inline-flex items-center gap-1.5 cursor-pointer text-xs text-muted-foreground hover:text-foreground transition-colors">
+            <Info className="h-3.5 w-3.5 text-primary" />
+            <span>How to use VR Tours</span>
+          </summary>
+          <ul className="text-[11px] text-muted-foreground mt-1.5 ml-5 space-y-0.5">
+            <li>• <strong className="text-foreground">360° Tour:</strong> Drag to look around, use hotspots to navigate</li>
+            <li>• <strong className="text-foreground">AI Staging:</strong> Select style, click "Stage This Room"</li>
+            <li>• <strong className="text-foreground">Measure:</strong> Click two points to measure</li>
+            <li>• <strong className="text-foreground">Day/Night:</strong> Toggle with sun/moon button</li>
+          </ul>
+        </details>
       </main>
     </div>
   );
