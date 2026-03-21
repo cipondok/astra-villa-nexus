@@ -714,6 +714,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "pricing-experiment-backlog":  () => <PricingExperimentBacklog />,
   "national-expansion-sim":     () => <NationalExpansionSimulator />,
   "investor-fomo-pitch":        () => <InvestorFOMOPitchContent />,
+  "kpi-anomaly-detector":       () => <KPIAnomalyDetector />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
