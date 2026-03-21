@@ -308,6 +308,7 @@ export const ListingCopyGenerator = lazyRetry(() => import("./ListingCopyGenerat
 export const GrowthExperimentBacklog = lazyRetry(() => import("./GrowthExperimentBacklog"));
 export const InvestorNurturingSequence = lazyRetry(() => import("./InvestorNurturingSequence"));
 export const VendorRetentionScripts = lazyRetry(() => import("./VendorRetentionScripts"));
+export const LiquidityCrisisRecovery = lazyRetry(() => import("./LiquidityCrisisRecovery"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -701,6 +702,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "growth-experiment-backlog":   () => <GrowthExperimentBacklog />,
   "investor-nurturing-sequence": () => <InvestorNurturingSequence />,
   "vendor-retention-scripts":    () => <VendorRetentionScripts />,
+  "liquidity-crisis-recovery":   () => <LiquidityCrisisRecovery />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1059,4 +1061,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "growth-experiment-backlog": { label: "Growth Experiment Backlog", category: "Strategy" },
   "investor-nurturing-sequence": { label: "Investor Nurturing Sequence", category: "Strategy" },
   "vendor-retention-scripts": { label: "Vendor Retention & Upsell", category: "Strategy" },
+  "liquidity-crisis-recovery": { label: "Liquidity Crisis Recovery", category: "Strategy" },
 };

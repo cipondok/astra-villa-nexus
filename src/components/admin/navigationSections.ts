@@ -843,6 +843,13 @@ export const navigationSections = {
       badge: "🛡️ Retain"
     },
     {
+      key: "liquidity-crisis-recovery",
+      label: "Liquidity Crisis Recovery",
+      icon: AlertTriangle,
+      description: "3-phase emergency framework — 48h stabilization, liquidity rebuild & growth restoration",
+      badge: "🚨 Crisis"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
