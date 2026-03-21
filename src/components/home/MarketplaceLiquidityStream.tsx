@@ -59,7 +59,7 @@ const MarketplaceLiquidityStream = () => {
           <Activity className="h-4 w-4 text-intel-blue" />
           <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-intel-success rounded-full animate-pulse" />
         </div>
-        <h2 className="text-lg sm:text-xl font-bold text-white">Marketplace Liquidity Feed</h2>
+        <h2 className="text-lg sm:text-xl font-bold text-foreground">Marketplace Liquidity Feed</h2>
         <Badge className="text-[10px] h-5 bg-intel-success/10 text-intel-success border border-intel-success/20">
           ● LIVE
         </Badge>
@@ -77,7 +77,7 @@ const MarketplaceLiquidityStream = () => {
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ delay: i * 0.04 }}
                 onClick={() => navigate(`/properties/${item.id}`)}
-                className="flex items-center gap-3 p-3 rounded-xl border border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] cursor-pointer transition-all group"
+                className="flex items-center gap-3 p-3 rounded-xl border border-border/60 bg-card/80 hover:border-primary/30 cursor-pointer transition-all group shadow-sm"
               >
                 <div className={`flex items-center justify-center w-8 h-8 rounded-lg border flex-shrink-0 ${config.color}`}>
                   <config.icon className="h-3.5 w-3.5" />
@@ -86,12 +86,12 @@ const MarketplaceLiquidityStream = () => {
                   <div className="flex items-center gap-2">
                     <span className={`text-[9px] font-bold uppercase tracking-wider ${config.color.split(' ')[0]}`}>{config.label}</span>
                   </div>
-                  <p className="text-xs font-medium text-white truncate">{item.title}</p>
-                  <p className="text-[10px] text-white/30 truncate">{item.location}</p>
+                  <p className="text-xs font-medium text-foreground truncate">{item.title}</p>
+                  <p className="text-[10px] text-muted-foreground truncate">{item.location}</p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <div className="text-xs font-bold text-white tabular-nums">{formatCurrencyIDRShort(item.price)}</div>
-                  <div className="text-[10px] text-white/30">{formatRelativeTimeID(item.time)}</div>
+                  <div className="text-xs font-bold text-foreground tabular-nums">{formatCurrencyIDRShort(item.price)}</div>
+                  <div className="text-[10px] text-muted-foreground">{formatRelativeTimeID(item.time)}</div>
                 </div>
               </motion.div>
             );

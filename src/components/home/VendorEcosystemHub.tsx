@@ -20,10 +20,10 @@ const VendorEcosystemHub = () => {
           <Zap className="h-3 w-3 text-gold-primary" />
           <span className="text-[10px] font-semibold text-gold-primary uppercase tracking-widest">Economic Ecosystem</span>
         </div>
-        <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1">
+        <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground mb-1">
           Vendor Marketplace Partners
         </h2>
-        <p className="text-xs sm:text-sm text-white/40 max-w-md mx-auto">
+        <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto">
           Trusted professionals powering every property transaction
         </p>
       </div>
@@ -37,7 +37,7 @@ const VendorEcosystemHub = () => {
             viewport={{ once: true }}
             transition={{ delay: i * 0.08 }}
             whileHover={{ y: -4 }}
-            className="rounded-xl p-4 border border-white/[0.06] bg-[hsl(220,25%,8%)] hover:border-gold-primary/20 transition-all group cursor-pointer"
+            className="rounded-xl p-4 border border-border/60 bg-card hover:border-gold-primary/30 transition-all group cursor-pointer shadow-sm"
             onClick={() => navigate('/vendors')}
           >
             <div className="flex items-center gap-3 mb-4">
@@ -45,35 +45,35 @@ const VendorEcosystemHub = () => {
                 <seg.icon className="h-5 w-5 text-gold-primary" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-white">{seg.title}</h3>
-                <p className="text-[10px] text-white/30">{seg.desc}</p>
+                <h3 className="text-sm font-bold text-foreground">{seg.title}</h3>
+                <p className="text-[10px] text-muted-foreground">{seg.desc}</p>
               </div>
             </div>
 
             <div className="flex items-center justify-between mb-3 text-xs">
               <div>
-                <span className="text-white/30">Projects</span>
-                <div className="font-bold text-white tabular-nums">{seg.projects}</div>
+                <span className="text-muted-foreground">Projects</span>
+                <div className="font-bold text-foreground tabular-nums">{seg.projects}</div>
               </div>
               <div className="text-right">
-                <span className="text-white/30">Value</span>
-                <div className="font-bold text-white">{seg.value}</div>
+                <span className="text-muted-foreground">Value</span>
+                <div className="font-bold text-foreground">{seg.value}</div>
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-2 border-t border-white/[0.04]">
+            <div className="flex items-center justify-between pt-2 border-t border-border/40">
               <div className="flex items-center gap-1">
                 <Star className="h-3 w-3 fill-gold-primary text-gold-primary" />
-                <span className="text-xs font-bold text-white tabular-nums">{seg.rating}</span>
+                <span className="text-xs font-bold text-foreground tabular-nums">{seg.rating}</span>
               </div>
-              <ArrowRight className="h-3.5 w-3.5 text-white/20 group-hover:text-gold-primary group-hover:translate-x-0.5 transition-all" />
+              <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-gold-primary group-hover:translate-x-0.5 transition-all" />
             </div>
           </motion.div>
         ))}
       </div>
 
       <div className="text-center mt-5">
-        <Button variant="outline" onClick={() => navigate('/vendor/register')} className="gap-2 text-sm border-white/10 text-white/60 bg-transparent hover:bg-white/5">
+        <Button variant="outline" onClick={() => navigate('/vendor/register')} className="gap-2 text-sm">
           Join Marketplace as Vendor
           <ArrowRight className="h-4 w-4" />
         </Button>
