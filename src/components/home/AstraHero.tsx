@@ -145,11 +145,14 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
                   </div>
                 ))}
               </div>
-              <div className="mt-2.5 flex items-center gap-2">
-                <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-[#006bb3] dark:bg-blue-600 text-white shadow-lg">
-                  <Eye className="h-4 w-4" />
+              <div className="mt-2.5 flex items-center justify-between">
+                <span className="text-[11px] font-bold text-gray-700 dark:text-amber-200">🌍 Foreign Investment Welcome</span>
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-[#006bb3] dark:bg-blue-600 text-white shadow-lg">
+                    <Eye className="h-3.5 w-3.5" />
+                  </div>
+                  <span className="text-[11px] font-bold text-[#006bb3] dark:text-blue-300">360° Virtual Tour</span>
                 </div>
-                <span className="text-[11px] font-bold text-[#006bb3] dark:text-blue-300">360° Virtual Tour</span>
               </div>
             </motion.div>
           </div>
