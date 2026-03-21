@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Bell, BellOff, Mail, Smartphone, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import type { SearchFilters } from '@/types/search';
 
 interface SearchAlertSubscribeButtonProps {
   filters: {
@@ -25,49 +24,62 @@ const SearchAlertSubscribeButton = ({ filters }: SearchAlertSubscribeButtonProps
   const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const checkedRef = useRef(false);
 
-  // Check existing subscription on mount / filter change
+  // Check existing subscription once on mount
+  const userId = user?.id;
+  const pType = filters.propertyType;
+  const pCity = filters.city;
+  const pPrice = filters.priceRange;
+
   useEffect(() => {
-    if (!user) {
+    if (!userId) {
       setIsSubscribed(false);
       setSubscriptionId(null);
       return;
     }
-    checkExistingSubscription();
-  }, [user, filters.propertyType, filters.city, filters.priceRange]);
+    let cancelled = false;
+    const check = async () => {
+      try {
+        const { data } = await supabase
+          .from('user_searches')
+          .select('id')
+          .eq('user_id', userId)
+          .limit(10);
 
-  const checkExistingSubscription = async () => {
-    if (!user) return;
-    try {
-      const { data } = await supabase
-        .from('user_searches')
-        .select('id')
-        .eq('user_id', user.id)
-        .limit(10);
+        if (cancelled) return;
+        if (data && data.length > 0) {
+          for (const search of data) {
+            const { data: sub } = await supabase
+              .from('push_subscriptions')
+              .select('id')
+              .eq('user_id', userId)
+              .eq('search_id', search.id)
+              .eq('is_active', true)
+              .maybeSingle();
 
-      if (data && data.length > 0) {
-        for (const search of data) {
-          const { data: sub } = await supabase
-            .from('push_subscriptions')
-            .select('id')
-            .eq('user_id', user.id)
-            .eq('search_id', search.id)
-            .eq('is_active', true)
-            .maybeSingle();
-
-          if (sub) {
-            setIsSubscribed(true);
-            setSubscriptionId(sub.id);
-            return;
+            if (cancelled) return;
+            if (sub) {
+              setIsSubscribed(true);
+              setSubscriptionId(sub.id);
+              return;
+            }
           }
         }
+        if (!cancelled) {
+          setIsSubscribed(false);
+          setSubscriptionId(null);
+        }
+      } catch {
+        // ignore
       }
-      setIsSubscribed(false);
-      setSubscriptionId(null);
-    } catch {
-      // ignore
-    }
-  };
+    };
+    check();
+    return () => { cancelled = true; };
+  }, [userId, pType, pCity, pPrice]);
+
+
+
 
   const handleSubscribe = async (channel: Channel) => {
     if (!user) {
