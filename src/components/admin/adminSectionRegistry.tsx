@@ -345,6 +345,7 @@ export const GlobalInfraLegacyBlueprint = lazyRetry(() => import("./GlobalInfraL
 export const CenturyVisionBlueprint = lazyRetry(() => import("./CenturyVisionBlueprint"));
 export const CivilizationCoordinationBlueprint = lazyRetry(() => import("./CivilizationCoordinationBlueprint"));
 export const PostCivilizationBlueprint = lazyRetry(() => import("./PostCivilizationBlueprint"));
+export const RealExecutionBlueprint = lazyRetry(() => import("./RealExecutionBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
