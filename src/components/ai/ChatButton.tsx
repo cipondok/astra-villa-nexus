@@ -148,22 +148,19 @@ const ChatButton = forwardRef<HTMLDivElement, ChatButtonProps>(({
     }, 300);
   };
 
-  const handleMouseUp = (e: React.MouseEvent) => {
+  const handleMouseUp = (e?: React.MouseEvent) => {
     if (pressTimerRef.current) {
       clearTimeout(pressTimerRef.current);
       pressTimerRef.current = null;
     }
 
     if (isDragging) {
-      // Save position to localStorage
       localStorage.setItem('chat_button_pos', JSON.stringify(position));
       setIsDragging(false);
       setIsLongPress(false);
     } else if (!isLongPress) {
-      // Prevent event from propagating to Radix ContextMenuTrigger
-      e.preventDefault();
-      e.stopPropagation();
-      // Use setTimeout to decouple from the Radix event chain
+      e?.preventDefault?.();
+      e?.stopPropagation?.();
       setTimeout(() => onClick(), 0);
     }
     setIsLongPress(false);
