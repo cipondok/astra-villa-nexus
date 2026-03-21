@@ -700,6 +700,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "listing-copy-generator":      () => <ListingCopyGenerator />,
   "growth-experiment-backlog":   () => <GrowthExperimentBacklog />,
   "investor-nurturing-sequence": () => <InvestorNurturingSequence />,
+  "vendor-retention-scripts":    () => <VendorRetentionScripts />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
