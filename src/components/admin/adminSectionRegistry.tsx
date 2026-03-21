@@ -941,6 +941,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "investor-outreach": { label: "Investor Outreach Plan", category: "Features" },
   "founder-daily-system": { label: "Founder Daily System", category: "Features" },
   "founder-daily-command": { label: "Founder Command Center", category: "Operations" },
+  "admin-command-center": { label: "Admin Command Center", category: "Operations" },
   "hyper-execution-plan": { label: "30-Day Hyper Execution", category: "Features" },
   "ninety-day-master-plan": { label: "90-Day Master Execution", category: "Features" },
   "uiux-redesign-blueprint": { label: "UI/UX Redesign Blueprint", category: "Features" },
