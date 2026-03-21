@@ -302,6 +302,7 @@ export const FounderWarRoom = lazyRetry(() => import("./FounderWarRoom"));
 export const AdminAICoPilot = lazyRetry(() => import("./AdminAICoPilot"));
 export const FounderDailyExecution = lazyRetry(() => import("./FounderDailyExecution"));
 export const First100KRevenuePlan = lazyRetry(() => import("./First100KRevenuePlan"));
+export const InvestorNarrativeCoaching = lazyRetry(() => import("./InvestorNarrativeCoaching"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
