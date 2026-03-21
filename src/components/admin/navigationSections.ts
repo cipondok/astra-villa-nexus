@@ -116,7 +116,8 @@ import {
   Mic,
   GitBranch,
   Siren,
-  ClipboardCheck
+  ClipboardCheck,
+  Swords
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -1054,6 +1055,13 @@ export const navigationSections = {
       icon: ClipboardCheck,
       description: "Daily execution checklist, technical architecture audit, investor due-diligence simulation & 60-day survival roadmap",
       badge: "⚡ Reality"
+    },
+    {
+      key: "sixty-day-domination",
+      label: "60-Day Market Domination",
+      icon: Swords,
+      description: "City domination plan, revenue engine activation & competitive war-simulation scenarios",
+      badge: "🔥 War Plan"
     },
     {
       key: "investor-scoring-engine",
