@@ -885,6 +885,13 @@ export const navigationSections = {
       badge: "🔥 Pitch"
     },
     {
+      key: "kpi-anomaly-detector",
+      label: "KPI Anomaly Detector",
+      icon: Bell,
+      description: "8 anomaly frameworks with detection thresholds, root causes, actions & deviation charts",
+      badge: "🚨 Alerts"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
