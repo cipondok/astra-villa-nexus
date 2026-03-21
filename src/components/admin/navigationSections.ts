@@ -1163,6 +1163,13 @@ export const navigationSections = {
       badge: "🌏 Continental"
     },
     {
+      key: "10m-global-scale",
+      label: "$10M Global Scale",
+      icon: Globe,
+      description: "Worldwide category leadership, institutional capital dominance & $120M ARR infrastructure",
+      badge: "🌐 Global"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
