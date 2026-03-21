@@ -135,21 +135,20 @@ const VRTourShowcase: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3"
+          className="flex flex-wrap gap-1.5"
         >
           {[
-            { icon: '🔄', title: '360° Tours', desc: 'Immersive walkthroughs' },
-            { icon: '🛋️', title: 'AI Staging', desc: 'Virtual furniture' },
-            { icon: '📏', title: 'Measure', desc: 'Distance tools' },
-            { icon: '🌙', title: 'Day/Night', desc: 'Lighting toggle' },
+            { icon: '🔄', title: '360° Tours' },
+            { icon: '🛋️', title: 'AI Staging' },
+            { icon: '📏', title: 'Measure' },
+            { icon: '🌙', title: 'Day/Night' },
           ].map((feature, i) => (
             <div
               key={i}
-              className="bg-card border border-border rounded-xl p-3 text-center hover:border-primary/30 transition-colors"
+              className="inline-flex items-center gap-1.5 bg-card border border-border/60 rounded-full px-3 py-1.5 hover:border-primary/30 transition-colors"
             >
-              <span className="text-xl sm:text-2xl">{feature.icon}</span>
-              <h3 className="text-xs sm:text-sm font-medium mt-1 text-foreground">{feature.title}</h3>
-              <p className="text-[10px] sm:text-xs text-muted-foreground">{feature.desc}</p>
+              <span className="text-sm">{feature.icon}</span>
+              <span className="text-xs font-medium text-foreground">{feature.title}</span>
             </div>
           ))}
         </motion.div>
