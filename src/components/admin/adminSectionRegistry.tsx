@@ -746,6 +746,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "decacorn-projection": () => <DecacornProjection />,
   "experiment-prioritization": () => <ExperimentPrioritization />,
   "partnership-strategy": () => <PartnershipStrategy />,
+  "flywheel-optimization": () => <FlywheelOptimization />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
