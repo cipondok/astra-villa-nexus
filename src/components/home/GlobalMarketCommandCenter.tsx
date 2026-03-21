@@ -149,7 +149,7 @@ const GlobalMarketCommandCenter = () => {
                   </p>
                   <div className="flex gap-3 justify-center lg:justify-start pt-2">
                     <Button
-                      onClick={() => navigate('/investor-portfolio')}
+                      onClick={() => navigate('/portfolio-dashboard')}
                       className="bg-gradient-to-r from-intel-blue to-intel-blue/80 text-white font-semibold gap-2 h-10 px-5 border-0 hover:opacity-90"
                     >
                       <TrendingUp className="h-4 w-4" />
