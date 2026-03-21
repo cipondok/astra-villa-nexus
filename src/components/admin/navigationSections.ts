@@ -716,6 +716,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "city-launch-growth-engine",
+      label: "City Launch Growth Engine",
+      icon: Rocket,
+      description: "Multi-city launch automation — liquidity seeding, demand generation, balance optimization & success metrics",
+      badge: "New"
+    },
+    {
       key: "execution-command-center",
       label: "Execution Command Center",
       icon: Rocket,
