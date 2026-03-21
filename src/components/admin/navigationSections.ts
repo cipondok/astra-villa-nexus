@@ -1013,6 +1013,13 @@ export const navigationSections = {
       badge: "🎯 Domination"
     },
     {
+      key: "founder-clarity-coach",
+      label: "Founder Clarity Coach",
+      icon: Brain,
+      description: "Morning rituals, decision confidence checklist, burnout radar, mindset reframing & weekly self-assessment",
+      badge: "🧠 Clarity"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
