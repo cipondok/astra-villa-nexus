@@ -159,8 +159,14 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
                 </div>
               </div>
               {/* Right VR image */}
-              <div className="hidden sm:flex items-center justify-center w-28 shrink-0">
+              <div className="hidden sm:flex flex-col items-center justify-center w-28 shrink-0 gap-1.5">
                 <img src={vrTourHeroImg} alt="360° Virtual Tour Experience" className="w-full h-auto drop-shadow-lg" />
+                <div className="flex items-center gap-1.5">
+                  <div className="flex items-center justify-center w-6 h-6 rounded-lg bg-[#006bb3] dark:bg-blue-600 text-white shadow-lg">
+                    <Eye className="h-3 w-3" />
+                  </div>
+                  <span className="text-[10px] font-bold text-[#006bb3] dark:text-blue-300">360° Virtual Tour</span>
+                </div>
               </div>
             </motion.div>
           </div>
