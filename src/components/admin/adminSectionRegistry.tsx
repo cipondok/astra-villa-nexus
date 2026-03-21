@@ -1190,4 +1190,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "first-50-deals": { label: "First 50 Deals Acceleration", category: "Strategy" },
   "100k-revenue-stabilization": { label: "$100K Revenue Stabilization", category: "Strategy" },
   "500k-revenue-scale": { label: "$500K Revenue Scale", category: "Strategy" },
+  "1m-revenue-hyperscale": { label: "$1M Monthly Hyper-Scale", category: "Strategy" },
 };

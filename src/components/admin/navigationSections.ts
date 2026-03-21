@@ -1149,6 +1149,13 @@ export const navigationSections = {
       badge: "🚀 Scale"
     },
     {
+      key: "1m-revenue-hyperscale",
+      label: "$1M Monthly Hyper-Scale",
+      icon: Rocket,
+      description: "Revenue hyper-scaling, national brand domination & global capital integration",
+      badge: "🌍 Hyper-Scale"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
