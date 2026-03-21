@@ -113,7 +113,8 @@ import {
   Network,
   Award,
   Radio,
-  Mic
+  Mic,
+  FlaskConical
 } from "lucide-react";
 
 export interface NavigationSection {
