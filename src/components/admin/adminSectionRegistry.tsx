@@ -336,6 +336,7 @@ export const FounderClarity = lazyRetry(() => import("./FounderClarity"));
 export const AIEvolutionArchitecture = lazyRetry(() => import("./AIEvolutionArchitecture"));
 export const InvestorNarrativeDominance = lazyRetry(() => import("./InvestorNarrativeDominance"));
 export const PlatformMoatStrategy = lazyRetry(() => import("./PlatformMoatStrategy"));
+export const GlobalOSMasterBlueprint = lazyRetry(() => import("./GlobalOSMasterBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -757,6 +758,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ai-evolution-architecture": () => <AIEvolutionArchitecture />,
   "investor-narrative-dominance": () => <InvestorNarrativeDominance />,
   "platform-moat-strategy": () => <PlatformMoatStrategy />,
+  "global-os-master-blueprint": () => <GlobalOSMasterBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1143,4 +1145,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ai-evolution-architecture": { label: "AI Self-Evolution Architecture", category: "Strategy" },
   "investor-narrative-dominance": { label: "Investor Narrative Dominance", category: "Strategy" },
   "platform-moat-strategy": { label: "Platform Moat Reinforcement", category: "Strategy" },
+  "global-os-master-blueprint": { label: "Global OS Master Blueprint", category: "Strategy" },
 };

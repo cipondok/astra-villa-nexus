@@ -1041,6 +1041,13 @@ export const navigationSections = {
       badge: "🏰 Moat"
     },
     {
+      key: "global-os-master-blueprint",
+      label: "Global OS Master Blueprint",
+      icon: Globe,
+      description: "Unified 5-layer OS architecture, founder vision narratives, automation command framework & maturity roadmap",
+      badge: "🌍 Master OS"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
