@@ -764,6 +764,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "global-os-master-blueprint": () => <GlobalOSMasterBlueprint />,
   "reality-execution-audit": () => <RealityExecutionAudit />,
   "sixty-day-domination": () => <SixtyDayDominationBlueprint />,
+  "ten-million-revenue": () => <TenMillionRevenueBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
