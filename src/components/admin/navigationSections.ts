@@ -800,6 +800,13 @@ export const navigationSections = {
       badge: "💰 Revenue"
     },
     {
+      key: "investor-narrative-coaching",
+      label: "Investor Narrative Coaching",
+      icon: Mic,
+      description: "6-phase meeting flow — power scripts, delivery technique, pacing strategy & language control",
+      badge: "🎙️ Pitch"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
