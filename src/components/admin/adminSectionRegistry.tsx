@@ -1091,4 +1091,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "competitive-threat-response": { label: "Competitive Threat Response", category: "Strategy" },
   "viral-growth-loops": { label: "Viral Growth Loops", category: "Strategy" },
   "super-app-ecosystem-plan": { label: "Super-App Ecosystem Plan", category: "Strategy" },
+  "category-leadership-narrative": { label: "Category Leadership Narrative", category: "Strategy" },
 };
