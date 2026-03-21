@@ -913,6 +913,13 @@ export const navigationSections = {
       badge: "🏗️ Blueprint"
     },
     {
+      key: "category-leadership-narrative",
+      label: "Category Leadership Narrative",
+      icon: Crown,
+      description: "Category creation framework — manifesto, investor pitch, media soundbites & persuasion playbook",
+      badge: "👑 Category"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
