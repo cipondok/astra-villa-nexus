@@ -886,6 +886,7 @@ const AppContent = () => {
                 <Route path="/6-month-survival" element={<SixMonthSurvivalPlanPage />} />
                 <Route path="/agent-productivity" element={<AgentProductivityIntelligencePage />} />
                 <Route path="/revenue-leak-detection" element={<RevenueLeakDetectionPage />} />
+                <Route path="/first-profitable-month" element={<FirstProfitableMonthPage />} />
                 <Route path="/founder-schedule" element={<FounderSchedulePage />} />
                 <Route path="/energy-optimization" element={<EnergyOptimizationPage />} />
                 <Route path="/decision-prioritization" element={<DecisionPrioritizationPage />} />
