@@ -247,8 +247,120 @@ const DiagnosticDashboard = () => {
     }
   ];
 
+  // Project progress data — real status of what's built and what's next
+  const projectModules = [
+    { name: 'Authentication & Roles', status: 'live' as const, progress: 95, detail: 'Email + Google OAuth, 12-role RBAC, session management' },
+    { name: 'Property Marketplace', status: 'live' as const, progress: 92, detail: '438K+ listings, search, filters, NLP discovery, map view' },
+    { name: 'AI Intelligence Engine', status: 'live' as const, progress: 88, detail: 'Scoring, recommendations, market heat, price predictions' },
+    { name: 'Vendor Ecosystem', status: 'live' as const, progress: 85, detail: 'Registration, services, bookings, categories, payments' },
+    { name: 'Admin Command Center', status: 'live' as const, progress: 90, detail: '16-category sidebar, KPIs, diagnostics, user management' },
+    { name: 'Investor Club & Social', status: 'live' as const, progress: 80, detail: 'Watchlists, social feed, leaderboard, credibility scores' },
+    { name: 'Analytics & Reporting', status: 'live' as const, progress: 82, detail: 'Web analytics, daily stats, market trends, AI observability' },
+    { name: 'Communication System', status: 'live' as const, progress: 78, detail: 'AI chatbot, notifications, inquiries, push alerts' },
+    { name: 'Payment Integration', status: 'partial' as const, progress: 55, detail: 'Tables ready, needs Midtrans/Stripe gateway config' },
+    { name: 'VR Tour Experience', status: 'live' as const, progress: 85, detail: '360° viewer, AI staging, measurement tools' },
+    { name: 'SEO & Performance', status: 'live' as const, progress: 75, detail: 'Meta tags, JSON-LD, lazy loading, PWA support' },
+    { name: 'Email System', status: 'pending' as const, progress: 20, detail: 'Auth email templates scaffolded, needs SMTP/domain setup' },
+  ];
+
+  const nextPriorities = [
+    { priority: 'P0', task: 'Configure payment gateway (Midtrans)', module: 'Payment Integration' },
+    { priority: 'P0', task: 'Seed real property listings from agents', module: 'Property Marketplace' },
+    { priority: 'P0', task: 'Set up email domain & SMTP', module: 'Email System' },
+    { priority: 'P1', task: 'Enable Google OAuth in Supabase dashboard', module: 'Authentication' },
+    { priority: 'P1', task: 'Deploy AI scoring cron jobs', module: 'AI Intelligence Engine' },
+    { priority: 'P2', task: 'Add real agent onboarding flow', module: 'Vendor Ecosystem' },
+    { priority: 'P2', task: 'Implement deal pipeline tracking', module: 'Admin Command Center' },
+    { priority: 'P3', task: 'Add multi-language support (EN/ID)', module: 'SEO & Performance' },
+  ];
+
+  const overallProgress = Math.round(projectModules.reduce((sum, m) => sum + m.progress, 0) / projectModules.length);
+  const liveCount = projectModules.filter(m => m.status === 'live').length;
+  const partialCount = projectModules.filter(m => m.status === 'partial').length;
+  const pendingCount = projectModules.filter(m => m.status === 'pending').length;
+
+  const getModuleStatusColor = (status: string) => {
+    if (status === 'live') return 'bg-chart-2/15 text-chart-2 border-chart-2/30';
+    if (status === 'partial') return 'bg-chart-3/15 text-chart-3 border-chart-3/30';
+    return 'bg-muted text-muted-foreground border-border';
+  };
+
+  const getPriorityColor = (p: string) => {
+    if (p === 'P0') return 'bg-destructive/15 text-destructive border-destructive/30';
+    if (p === 'P1') return 'bg-chart-3/15 text-chart-3 border-chart-3/30';
+    if (p === 'P2') return 'bg-primary/15 text-primary border-primary/30';
+    return 'bg-muted text-muted-foreground border-border';
+  };
+
   return (
     <div className="space-y-3 bg-background min-h-0 rounded-lg">
+      {/* ── Project Progress Overview ── */}
+      <Card className="border-primary/15 bg-gradient-to-br from-card via-card to-primary/3">
+        <CardHeader className="p-3 pb-2">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-sm">
+              <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <Activity className="h-3.5 w-3.5 text-primary-foreground" />
+              </div>
+              <div>
+                <span className="font-bold">Project Progress</span>
+                <Badge className="ml-2 text-[9px] px-1.5 py-0 border-0 bg-primary/10 text-primary">{overallProgress}%</Badge>
+              </div>
+            </CardTitle>
+            <div className="flex items-center gap-2 text-[10px]">
+              <Badge variant="outline" className="bg-chart-2/10 text-chart-2 border-chart-2/30 text-[9px]">{liveCount} Live</Badge>
+              <Badge variant="outline" className="bg-chart-3/10 text-chart-3 border-chart-3/30 text-[9px]">{partialCount} Partial</Badge>
+              <Badge variant="outline" className="text-[9px]">{pendingCount} Pending</Badge>
+            </div>
+          </div>
+          <Progress value={overallProgress} className="h-1.5 mt-2" />
+        </CardHeader>
+        <CardContent className="p-3 pt-0">
+          {/* Module grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-1.5 mb-3">
+            {projectModules.map((mod) => (
+              <div key={mod.name} className="flex items-start gap-2 p-2 rounded-lg border border-border/30 bg-card/50">
+                <div className="mt-0.5">
+                  {mod.status === 'live' ? (
+                    <CheckCircle className="h-3.5 w-3.5 text-chart-2" />
+                  ) : mod.status === 'partial' ? (
+                    <AlertTriangle className="h-3.5 w-3.5 text-chart-3" />
+                  ) : (
+                    <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="text-[10px] font-semibold text-foreground truncate">{mod.name}</span>
+                    <span className="text-[9px] font-bold text-muted-foreground">{mod.progress}%</span>
+                  </div>
+                  <Progress value={mod.progress} className="h-1 mt-1" />
+                  <p className="text-[9px] text-muted-foreground mt-0.5 line-clamp-1">{mod.detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Next Priorities */}
+          <div className="border-t border-border/30 pt-2">
+            <h4 className="text-[10px] font-semibold text-foreground uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+              <Zap className="h-3 w-3 text-gold-primary" />
+              Next Priorities
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
+              {nextPriorities.map((item, i) => (
+                <div key={i} className="flex items-center gap-2 p-1.5 rounded-md bg-muted/20">
+                  <Badge variant="outline" className={`text-[8px] px-1 py-0 font-bold shrink-0 ${getPriorityColor(item.priority)}`}>
+                    {item.priority}
+                  </Badge>
+                  <span className="text-[10px] text-foreground truncate">{item.task}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Header - Slim Style */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 bg-muted/20 rounded-lg border border-border/50">
         <div className="flex-1">
