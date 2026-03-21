@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useInfiniteProperties } from '@/hooks/useInfiniteProperties';
 import { Loader2 } from 'lucide-react';
