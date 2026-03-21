@@ -985,6 +985,13 @@ export const navigationSections = {
       badge: "💎 Decacorn"
     },
     {
+      key: "experiment-prioritization",
+      label: "Experiment Prioritization Engine",
+      icon: FlaskConical,
+      description: "Ranked growth experiment backlog with impact scoring, weekly testing cycles & auto-learning feedback loops",
+      badge: "🧪 Experiments"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
