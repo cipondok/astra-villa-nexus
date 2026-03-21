@@ -365,6 +365,7 @@ const NationalDominationBlueprintPage = lazy(() => import('@/pages/NationalDomin
 const GlobalInvestorTerminalPage = lazy(() => import('@/pages/GlobalInvestorTerminalPage'));
 const FounderPersonalOSPage = lazy(() => import('@/pages/FounderPersonalOSPage'));
 const GlobalProptechEmpirePage = lazy(() => import('@/pages/GlobalProptechEmpirePage'));
+const DailySalesWarCommandPage = lazy(() => import('@/pages/DailySalesWarCommandPage'));
 const FounderSchedulePage = lazy(() => import('@/pages/FounderSchedulePage'));
 const EnergyOptimizationPage = lazy(() => import('@/pages/EnergyOptimizationPage'));
 const DecisionPrioritizationPage = lazy(() => import('@/pages/DecisionPrioritizationPage'));
@@ -861,6 +862,7 @@ const AppContent = () => {
                 <Route path="/global-investor-terminal" element={<GlobalInvestorTerminalPage />} />
                 <Route path="/founder-personal-os" element={<FounderPersonalOSPage />} />
                 <Route path="/global-proptech-empire" element={<GlobalProptechEmpirePage />} />
+                <Route path="/daily-sales-command" element={<DailySalesWarCommandPage />} />
                 <Route path="/founder-schedule" element={<FounderSchedulePage />} />
                 <Route path="/energy-optimization" element={<EnergyOptimizationPage />} />
                 <Route path="/decision-prioritization" element={<DecisionPrioritizationPage />} />
