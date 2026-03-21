@@ -104,13 +104,18 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
-              className="bg-white/95 dark:bg-white/10 dark:border dark:border-white/10 backdrop-blur-sm rounded-2xl p-4 shadow-xl"
+              className="bg-white/95 dark:bg-white/10 dark:border dark:border-white/10 backdrop-blur-sm rounded-2xl p-3 sm:p-4 shadow-xl"
             >
-              <div className="space-y-2">
+              <div className="inline-block px-3 py-1 bg-[#006bb3] dark:bg-blue-600 rounded-lg mb-2">
+                <span className="text-xs font-black text-white tracking-wide uppercase">
+                  For Agents & Owners
+                </span>
+              </div>
+              <div className="space-y-1.5">
                 {leftChecks.map((item) => (
-                  <div key={item} className="flex items-start gap-2.5">
-                    <CheckCircle className="h-4.5 w-4.5 text-emerald-500 shrink-0 mt-0.5" />
-                    <span className="text-sm text-gray-800 dark:text-gray-200 font-medium leading-snug">{item}</span>
+                  <div key={item} className="flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span className="text-[13px] text-gray-800 dark:text-gray-200 font-medium leading-snug">{item}</span>
                   </div>
                 ))}
               </div>
