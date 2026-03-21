@@ -1093,6 +1093,13 @@ export const navigationSections = {
       badge: "♾️ Century"
     },
     {
+      key: "civilization-coordination",
+      label: "Civilization Market Coordination",
+      icon: Globe,
+      description: "Civilization-scale AI coordination, behavioral intelligence universe & founder myth archetype",
+      badge: "🌍 Civilization"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
