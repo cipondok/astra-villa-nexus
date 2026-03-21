@@ -1020,6 +1020,13 @@ export const navigationSections = {
       badge: "🧠 Clarity"
     },
     {
+      key: "ai-evolution-architecture",
+      label: "AI Self-Evolution Architecture",
+      icon: GitBranch,
+      description: "Signal ingestion, predictive modeling, self-learning loops, governance framework & maturity roadmap",
+      badge: "🧬 Evolution"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,

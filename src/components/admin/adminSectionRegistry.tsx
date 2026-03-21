@@ -1136,4 +1136,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "flywheel-optimization": { label: "Flywheel Optimization Engine", category: "Strategy" },
   "competitive-domination": { label: "Competitive Domination Map", category: "Strategy" },
   "founder-clarity-coach": { label: "Founder Clarity Coach", category: "Strategy" },
+  "ai-evolution-architecture": { label: "AI Self-Evolution Architecture", category: "Strategy" },
 };
