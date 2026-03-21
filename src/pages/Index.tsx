@@ -76,6 +76,16 @@ const QuickActionsRow = lazy(() => import("@/components/home/QuickActionsRow"));
 const MarketHeatHighlight = lazy(() => import("@/components/home/MarketHeatHighlight"));
 const AIInvestmentFeed = lazy(() => import("@/components/home/AIInvestmentFeed"));
 
+// New Autonomous Growth Layout sections
+const HeroLiveCounters = lazy(() => import("@/components/home/HeroLiveCounters"));
+const HeroSmartCTAs = lazy(() => import("@/components/home/HeroSmartCTAs"));
+const InvestorIntelligencePanel = lazy(() => import("@/components/home/InvestorIntelligencePanel"));
+const RentalCashflowZone = lazy(() => import("@/components/home/RentalCashflowZone"));
+const MarketplaceLiquidityStream = lazy(() => import("@/components/home/MarketplaceLiquidityStream"));
+const VendorEcosystemHub = lazy(() => import("@/components/home/VendorEcosystemHub"));
+const TechnologyAuthorityStrip = lazy(() => import("@/components/home/TechnologyAuthorityStrip"));
+const FinalConversionZone = lazy(() => import("@/components/home/FinalConversionZone"));
+
 type ViewMode = 'list' | 'grid' | 'map';
 
 const Index = () => {
