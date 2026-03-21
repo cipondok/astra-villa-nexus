@@ -295,6 +295,7 @@ export const MonetizationEngineControl = lazyRetry(() => import("./MonetizationE
 export const SeriesADataRoom = lazyRetry(() => import("./SeriesADataRoom"));
 export const FirstMillionRevenueSystem = lazyRetry(() => import("./FirstMillionRevenueSystem"));
 export const DecacornValuationInterface = lazyRetry(() => import("./DecacornValuationInterface"));
+export const AIGrowthBrainDashboard = lazyRetry(() => import("./AIGrowthBrainDashboard"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -675,6 +676,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "series-a-data-room":          () => <SeriesADataRoom />,
   "first-1m-revenue-system":     () => <FirstMillionRevenueSystem />,
   "decacorn-valuation":          () => <DecacornValuationInterface />,
+  "ai-growth-brain":             () => <AIGrowthBrainDashboard />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -960,6 +962,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "series-a-data-room": { label: "Series-A Data Room", category: "Features" },
   "first-1m-revenue-system": { label: "First $1M Revenue", category: "Operations" },
   "decacorn-valuation": { label: "Decacorn Valuation", category: "Features" },
+  "ai-growth-brain": { label: "AI Growth Brain", category: "Operations" },
   "hyper-execution-plan": { label: "30-Day Hyper Execution", category: "Features" },
   "ninety-day-master-plan": { label: "90-Day Master Execution", category: "Features" },
   "uiux-redesign-blueprint": { label: "UI/UX Redesign Blueprint", category: "Features" },

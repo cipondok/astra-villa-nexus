@@ -744,6 +744,13 @@ export const navigationSections = {
       badge: "🦄 Valuation"
     },
     {
+      key: "ai-growth-brain",
+      label: "AI Growth Brain",
+      icon: Brain,
+      description: "Autonomous intelligence engine — signal ingestion, processing, action recommendations & self-learning loop",
+      badge: "🧠 AI"
+    },
+    {
       key: "execution-command-center",
       label: "Execution Command Center",
       icon: Rocket,
