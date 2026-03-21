@@ -367,6 +367,7 @@ const FounderPersonalOSPage = lazy(() => import('@/pages/FounderPersonalOSPage')
 const GlobalProptechEmpirePage = lazy(() => import('@/pages/GlobalProptechEmpirePage'));
 const DailySalesWarCommandPage = lazy(() => import('@/pages/DailySalesWarCommandPage'));
 const First500InvestorsPage = lazy(() => import('@/pages/First500InvestorsPage'));
+const AutomationChecklistPage = lazy(() => import('@/pages/AutomationChecklistPage'));
 const FounderSchedulePage = lazy(() => import('@/pages/FounderSchedulePage'));
 const EnergyOptimizationPage = lazy(() => import('@/pages/EnergyOptimizationPage'));
 const DecisionPrioritizationPage = lazy(() => import('@/pages/DecisionPrioritizationPage'));
@@ -865,6 +866,7 @@ const AppContent = () => {
                 <Route path="/global-proptech-empire" element={<GlobalProptechEmpirePage />} />
                 <Route path="/daily-sales-command" element={<DailySalesWarCommandPage />} />
                 <Route path="/first-500-investors" element={<First500InvestorsPage />} />
+                <Route path="/automation-checklist" element={<AutomationChecklistPage />} />
                 <Route path="/founder-schedule" element={<FounderSchedulePage />} />
                 <Route path="/energy-optimization" element={<EnergyOptimizationPage />} />
                 <Route path="/decision-prioritization" element={<DecisionPrioritizationPage />} />
