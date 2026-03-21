@@ -796,6 +796,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "3m-continental-expansion": () => <ContinentalExpansionBlueprint />,
   "10m-global-scale": () => <TenMillionGlobalBlueprint />,
   "50m-planetary-infrastructure": () => <FiftyMillionPlanetaryBlueprint />,
+  "first-10-deals": () => <FirstTenDealsBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
