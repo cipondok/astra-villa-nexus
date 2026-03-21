@@ -383,6 +383,7 @@ const FounderFastDecisionPage = lazy(() => import('@/pages/FounderFastDecisionPa
 const RevenueFlywheelStrategyPage = lazy(() => import('@/pages/RevenueFlywheelStrategyPage'));
 const InvestorDealFlowAutomationPage = lazy(() => import('@/pages/InvestorDealFlowAutomationPage'));
 const FounderResilienceSystemPage = lazy(() => import('@/pages/FounderResilienceSystemPage'));
+const First10MRevenueScalingPage = lazy(() => import('@/pages/First10MRevenueScalingPage'));
 const FounderSchedulePage = lazy(() => import('@/pages/FounderSchedulePage'));
 const EnergyOptimizationPage = lazy(() => import('@/pages/EnergyOptimizationPage'));
 const DecisionPrioritizationPage = lazy(() => import('@/pages/DecisionPrioritizationPage'));
@@ -897,6 +898,7 @@ const AppContent = () => {
                 <Route path="/revenue-flywheel" element={<RevenueFlywheelStrategyPage />} />
                 <Route path="/investor-deal-flow-automation" element={<InvestorDealFlowAutomationPage />} />
                 <Route path="/founder-resilience" element={<FounderResilienceSystemPage />} />
+                <Route path="/first-10m-revenue" element={<First10MRevenueScalingPage />} />
                 <Route path="/founder-schedule" element={<FounderSchedulePage />} />
                 <Route path="/energy-optimization" element={<EnergyOptimizationPage />} />
                 <Route path="/decision-prioritization" element={<DecisionPrioritizationPage />} />
