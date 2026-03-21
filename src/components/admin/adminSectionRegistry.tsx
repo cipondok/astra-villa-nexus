@@ -728,6 +728,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "category-leadership-narrative": () => <CategoryLeadershipNarrative />,
   "strategic-decision-simulator": () => <StrategicDecisionSimulator />,
   "autonomous-pricing-intelligence": () => <AutonomousPricingIntelligence />,
+  "global-investor-roadshow": () => <GlobalInvestorRoadshow />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
