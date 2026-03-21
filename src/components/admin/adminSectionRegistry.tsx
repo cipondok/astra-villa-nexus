@@ -300,6 +300,7 @@ export const GlobalExpansionControl = lazyRetry(() => import("./GlobalExpansionC
 export const IPOReadinessMetrics = lazyRetry(() => import("./IPOReadinessMetrics"));
 export const FounderWarRoom = lazyRetry(() => import("./FounderWarRoom"));
 export const AdminAICoPilot = lazyRetry(() => import("./AdminAICoPilot"));
+export const FounderDailyExecution = lazyRetry(() => import("./FounderDailyExecution"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -685,6 +686,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ipo-readiness-metrics":       () => <IPOReadinessMetrics />,
   "founder-war-room":            () => <FounderWarRoom />,
   "ai-copilot":                  () => <AdminAICoPilot />,
+  "founder-daily-execution":     () => <FounderDailyExecution />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1035,4 +1037,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "commission-optimization": { label: "Commission Optimization Engine", category: "Operations" },
   "listing-optimization-ai": { label: "Listing Optimization AI", category: "Operations" },
   "ai-copilot": { label: "AI Co-Pilot", category: "Operations" },
+  "founder-daily-execution": { label: "Founder Daily Execution", category: "Operations" },
 };
