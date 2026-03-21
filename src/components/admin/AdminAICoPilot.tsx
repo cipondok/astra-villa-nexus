@@ -1,0 +1,444 @@
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Brain, Zap, AlertTriangle, Shield, TrendingUp, Send,
+  CheckCircle, Clock, ArrowUpRight, ArrowDownRight,
+  Activity, BarChart3, Target, Settings, Play, Pause,
+  MessageSquare, Lightbulb, ShieldAlert, Eye, RefreshCw
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+interface Recommendation {
+  id: string;
+  type: "growth" | "vendor" | "liquidity" | "monetization";
+  title: string;
+  description: string;
+  confidence: number;
+  impact: string;
+  timeWindow: string;
+  priority: "critical" | "high" | "medium" | "low";
+  status: "pending" | "approved" | "executed" | "dismissed";
+}
+
+interface RiskAlert {
+  id: string;
+  category: "vendor_churn" | "investor_disengage" | "revenue_slow" | "supply_imbalance";
+  severity: "critical" | "warning" | "info";
+  title: string;
+  metric: string;
+  trend: "up" | "down" | "flat";
+  probability: number;
+}
+
+interface PerformanceMetric {
+  label: string;
+  value: number;
+  target: number;
+  trend: "up" | "down" | "flat";
+}
+
+// ─── Mock Data ────────────────────────────────────────────────────────────────
+const mockRecommendations: Recommendation[] = [
+  { id: "r1", type: "growth", title: "Launch Jakarta South campaign", description: "District shows 47% inquiry surge with only 12% listing coverage — high ROI acquisition zone", confidence: 94, impact: "+23% inquiry volume", timeWindow: "Next 48 hours", priority: "critical", status: "pending" },
+  { id: "r2", type: "vendor", title: "Nudge 8 inactive vendors", description: "Vendors with >14 days inactivity but strong historical conversion — automated reactivation recommended", confidence: 87, impact: "+12 active listings", timeWindow: "Today", priority: "high", status: "pending" },
+  { id: "r3", type: "liquidity", title: "Rebalance BSD City inventory", description: "Supply exceeds demand by 3.2x in luxury segment — consider pricing nudge or visibility rotation", confidence: 81, impact: "Reduce oversupply 40%", timeWindow: "This week", priority: "medium", status: "pending" },
+  { id: "r4", type: "monetization", title: "Activate boost surge pricing", description: "Demand spike detected in 3 districts — dynamic pricing can capture 18% more revenue", confidence: 92, impact: "+Rp 4.2M revenue", timeWindow: "Next 6 hours", priority: "critical", status: "pending" },
+  { id: "r5", type: "growth", title: "Trigger investor deal alert batch", description: "42 high-intent investors matched to 15 new exclusive listings — curated push recommended", confidence: 89, impact: "+8 deal initiations", timeWindow: "Next 24 hours", priority: "high", status: "pending" },
+  { id: "r6", type: "vendor", title: "Upgrade 5 vendors to premium", description: "Top performers meeting threshold — automated upgrade prompt for subscription upsell", confidence: 78, impact: "+Rp 2.5M MRR", timeWindow: "This week", priority: "medium", status: "pending" },
+];
+
+const mockRiskAlerts: RiskAlert[] = [
+  { id: "a1", category: "vendor_churn", severity: "critical", title: "12 vendors at churn risk", metric: "Response rate <30% for 7 days", trend: "down", probability: 78 },
+  { id: "a2", category: "investor_disengage", severity: "warning", title: "Investor engagement declining", metric: "Login frequency -22% WoW", trend: "down", probability: 65 },
+  { id: "a3", category: "revenue_slow", severity: "warning", title: "Boost revenue plateau", metric: "Daily boost sales flat for 5 days", trend: "flat", probability: 58 },
+  { id: "a4", category: "supply_imbalance", severity: "info", title: "Tangerang supply gap widening", metric: "Demand/supply ratio: 4.1x", trend: "up", probability: 72 },
+];
+
+const mockPerformance: PerformanceMetric[] = [
+  { label: "Recommendation Success Rate", value: 84.2, target: 90, trend: "up" },
+  { label: "Admin Override Frequency", value: 12.5, target: 10, trend: "down" },
+  { label: "Action-to-Outcome Accuracy", value: 78.8, target: 85, trend: "up" },
+  { label: "Learning Improvement Rate", value: 3.2, target: 5, trend: "up" },
+];
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+const typeColor = (t: string) => {
+  const m: Record<string, string> = { growth: "text-emerald-500", vendor: "text-blue-400", liquidity: "text-cyan-400", monetization: "text-amber-400" };
+  return m[t] || "text-muted-foreground";
+};
+
+const priorityBadge = (p: string) => {
+  const m: Record<string, string> = { critical: "bg-destructive/20 text-destructive", high: "bg-amber-500/20 text-amber-400", medium: "bg-blue-500/20 text-blue-400", low: "bg-muted text-muted-foreground" };
+  return m[p] || "";
+};
+
+const severityIcon = (s: string) => {
+  if (s === "critical") return <AlertTriangle className="h-4 w-4 text-destructive" />;
+  if (s === "warning") return <ShieldAlert className="h-4 w-4 text-amber-400" />;
+  return <Eye className="h-4 w-4 text-blue-400" />;
+};
+
+// ─── Section 1: Recommendation Feed ──────────────────────────────────────────
+function RecommendationFeed() {
+  const [recs, setRecs] = useState(mockRecommendations);
+  const [filter, setFilter] = useState<string>("all");
+
+  const filtered = filter === "all" ? recs : recs.filter(r => r.type === filter);
+
+  const handleAction = (id: string, action: "approved" | "dismissed") => {
+    setRecs(prev => prev.map(r => r.id === id ? { ...r, status: action } : r));
+  };
+
+  return (
+    <Card className="border-border/50 bg-card/80 backdrop-blur">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Lightbulb className="h-5 w-5 text-amber-400" />
+            AI Recommendation Feed
+          </CardTitle>
+          <Badge variant="outline" className="text-xs">{recs.filter(r => r.status === "pending").length} pending</Badge>
+        </div>
+        <div className="flex gap-1.5 mt-2">
+          {["all", "growth", "vendor", "liquidity", "monetization"].map(f => (
+            <Button key={f} size="sm" variant={filter === f ? "default" : "ghost"} className="h-7 text-xs capitalize" onClick={() => setFilter(f)}>
+              {f}
+            </Button>
+          ))}
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-3 max-h-[520px] overflow-y-auto">
+        <AnimatePresence>
+          {filtered.map((rec, i) => (
+            <motion.div key={rec.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ delay: i * 0.05 }}>
+              <div className={`p-3 rounded-lg border border-border/40 bg-background/50 space-y-2 ${rec.status !== "pending" ? "opacity-50" : ""}`}>
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`text-xs font-mono uppercase ${typeColor(rec.type)}`}>{rec.type}</span>
+                      <Badge className={`text-[10px] h-4 ${priorityBadge(rec.priority)}`}>{rec.priority}</Badge>
+                    </div>
+                    <p className="text-sm font-medium text-foreground">{rec.title}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{rec.description}</p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="text-lg font-bold text-primary">{rec.confidence}%</div>
+                    <span className="text-[10px] text-muted-foreground">confidence</span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-3 text-muted-foreground">
+                    <span className="flex items-center gap-1"><TrendingUp className="h-3 w-3" />{rec.impact}</span>
+                    <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{rec.timeWindow}</span>
+                  </div>
+                  {rec.status === "pending" ? (
+                    <div className="flex gap-1.5">
+                      <Button size="sm" className="h-6 text-[10px] px-2" onClick={() => handleAction(rec.id, "approved")}>
+                        <Play className="h-3 w-3 mr-1" />Execute
+                      </Button>
+                      <Button size="sm" variant="ghost" className="h-6 text-[10px] px-2" onClick={() => handleAction(rec.id, "dismissed")}>
+                        Dismiss
+                      </Button>
+                    </div>
+                  ) : (
+                    <Badge variant="outline" className="text-[10px]">
+                      {rec.status === "approved" ? <CheckCircle className="h-3 w-3 mr-1 text-emerald-500" /> : null}
+                      {rec.status}
+                    </Badge>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </CardContent>
+    </Card>
+  );
+}
+
+// ─── Section 2: Natural Language Action Panel ────────────────────────────────
+function NaturalLanguagePanel() {
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState<{ role: "user" | "ai"; text: string }[]>([
+    { role: "ai", text: "Ready. Ask me anything about platform performance, trigger campaigns, or simulate strategies." },
+  ]);
+
+  const exampleCommands = [
+    "What's our revenue trend this week?",
+    "Activate boost campaign for Jakarta",
+    "Simulate 20% price increase impact",
+    "Show top performing vendors",
+  ];
+
+  const handleSend = () => {
+    if (!input.trim()) return;
+    const userMsg = input.trim();
+    setMessages(prev => [...prev, { role: "user", text: userMsg }]);
+    setInput("");
+
+    // Simulated AI response
+    setTimeout(() => {
+      const responses: Record<string, string> = {
+        revenue: "📊 Weekly revenue is Rp 12.4M (+18% WoW). Boost sales contributing 42%, vendor subscriptions 31%, investor unlocks 27%. Momentum is strong — consider activating surge pricing in high-demand districts.",
+        boost: "🚀 Jakarta boost campaign ready. 23 eligible listings in high-demand zones. Estimated impact: +35% visibility, +12 inquiries/day. Shall I execute with standard or premium tier pricing?",
+        simulate: "📈 Simulation complete: A 20% price increase on premium boosts would yield +Rp 1.8M monthly but reduce conversion by ~8%. Net revenue impact: +Rp 1.2M. Recommended: Apply selectively to districts with demand/supply ratio >2.5x.",
+        vendor: "🏆 Top 5 vendors by conversion: (1) PT Graha — 34% close rate, (2) Rays Property — 31%, (3) Era Indonesia — 28%, (4) Century21 — 26%, (5) LJ Hooker — 24%. Average response time: 2.4 hours."
+      };
+      const key = Object.keys(responses).find(k => userMsg.toLowerCase().includes(k));
+      setMessages(prev => [...prev, { role: "ai", text: key ? responses[key] : `Analyzing "${userMsg}"... Based on current platform data, I'd recommend reviewing the Operations dashboard for detailed insights. Would you like me to pull specific metrics?` }]);
+    }, 800);
+  };
+
+  return (
+    <Card className="border-border/50 bg-card/80 backdrop-blur">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <MessageSquare className="h-5 w-5 text-primary" />
+          Natural Language Command
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <div className="flex flex-wrap gap-1.5">
+          {exampleCommands.map(cmd => (
+            <Button key={cmd} size="sm" variant="outline" className="h-6 text-[10px]" onClick={() => { setInput(cmd); }}>
+              {cmd}
+            </Button>
+          ))}
+        </div>
+        <div className="bg-background/50 rounded-lg border border-border/30 p-3 max-h-[280px] overflow-y-auto space-y-2">
+          {messages.map((msg, i) => (
+            <div key={i} className={`text-xs ${msg.role === "ai" ? "text-muted-foreground" : "text-foreground font-medium"}`}>
+              <span className={`text-[10px] font-mono mr-1.5 ${msg.role === "ai" ? "text-primary" : "text-amber-400"}`}>
+                {msg.role === "ai" ? "AI" : "YOU"}
+              </span>
+              {msg.text}
+            </div>
+          ))}
+        </div>
+        <div className="flex gap-2">
+          <Input
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && handleSend()}
+            placeholder="Ask or command..."
+            className="text-sm h-9"
+          />
+          <Button size="sm" className="h-9 px-3" onClick={handleSend}>
+            <Send className="h-4 w-4" />
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// ─── Section 3: Risk Early Warning ───────────────────────────────────────────
+function RiskEarlyWarning() {
+  return (
+    <Card className="border-border/50 bg-card/80 backdrop-blur">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <AlertTriangle className="h-5 w-5 text-amber-400" />
+          Operational Risk Radar
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-2.5">
+        {mockRiskAlerts.map((alert, i) => (
+          <motion.div key={alert.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.08 }}>
+            <div className="flex items-center gap-3 p-2.5 rounded-lg border border-border/30 bg-background/40">
+              {severityIcon(alert.severity)}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-foreground">{alert.title}</p>
+                <p className="text-xs text-muted-foreground">{alert.metric}</p>
+              </div>
+              <div className="text-right shrink-0">
+                <div className="flex items-center gap-1">
+                  {alert.trend === "down" ? <ArrowDownRight className="h-3 w-3 text-destructive" /> : alert.trend === "up" ? <ArrowUpRight className="h-3 w-3 text-emerald-500" /> : <Activity className="h-3 w-3 text-muted-foreground" />}
+                  <span className="text-sm font-bold text-foreground">{alert.probability}%</span>
+                </div>
+                <span className="text-[10px] text-muted-foreground">probability</span>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
+// ─── Section 4: Automation Control ───────────────────────────────────────────
+function AutomationControl() {
+  const [controls, setControls] = useState({
+    lowRiskAuto: true,
+    mediumRiskQueue: true,
+    highRiskLock: true,
+    vendorNudges: true,
+    pricingAdjust: false,
+    campaignTrigger: false,
+  });
+
+  const toggle = (key: keyof typeof controls) => setControls(prev => ({ ...prev, [key]: !prev[key] }));
+
+  const items = [
+    { key: "lowRiskAuto" as const, label: "Auto-approve low-risk actions", desc: "Confidence ≥90%, impact < Rp 1M", tier: "safe" },
+    { key: "mediumRiskQueue" as const, label: "Queue medium-risk for review", desc: "Confidence 75-89%, reviewed before execution", tier: "caution" },
+    { key: "highRiskLock" as const, label: "Lock high-impact actions", desc: "Revenue >Rp 5M or system-wide changes require manual approval", tier: "locked" },
+    { key: "vendorNudges" as const, label: "Automated vendor nudges", desc: "Performance reminders sent to underperforming vendors", tier: "safe" },
+    { key: "pricingAdjust" as const, label: "Dynamic pricing adjustments", desc: "AI adjusts boost pricing based on demand signals", tier: "caution" },
+    { key: "campaignTrigger" as const, label: "Campaign auto-trigger", desc: "Growth campaigns launch when opportunity score ≥85%", tier: "caution" },
+  ];
+
+  const tierColor = (t: string) => {
+    if (t === "safe") return "text-emerald-500";
+    if (t === "caution") return "text-amber-400";
+    return "text-destructive";
+  };
+
+  return (
+    <Card className="border-border/50 bg-card/80 backdrop-blur">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <Settings className="h-5 w-5 text-primary" />
+          Execution Automation Controls
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {items.map(item => (
+          <div key={item.key} className="flex items-center justify-between p-2.5 rounded-lg border border-border/30 bg-background/40">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-medium text-foreground">{item.label}</p>
+                <span className={`text-[10px] font-mono uppercase ${tierColor(item.tier)}`}>{item.tier}</span>
+              </div>
+              <p className="text-xs text-muted-foreground">{item.desc}</p>
+            </div>
+            <Switch checked={controls[item.key]} onCheckedChange={() => toggle(item.key)} />
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
+// ─── Section 5: Performance Transparency ─────────────────────────────────────
+function PerformanceTransparency() {
+  return (
+    <Card className="border-border/50 bg-card/80 backdrop-blur">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <BarChart3 className="h-5 w-5 text-primary" />
+          AI Performance Transparency
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {mockPerformance.map((metric, i) => (
+          <div key={i} className="space-y-1.5">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">{metric.label}</span>
+              <div className="flex items-center gap-1.5">
+                {metric.trend === "up" ? <ArrowUpRight className="h-3 w-3 text-emerald-500" /> : <ArrowDownRight className="h-3 w-3 text-destructive" />}
+                <span className="font-bold text-foreground">{metric.value}%</span>
+                <span className="text-xs text-muted-foreground">/ {metric.target}%</span>
+              </div>
+            </div>
+            <Progress value={(metric.value / metric.target) * 100} className="h-1.5" />
+          </div>
+        ))}
+        <div className="mt-4 p-2.5 rounded-lg border border-border/30 bg-background/40">
+          <div className="flex items-center gap-2 mb-2">
+            <RefreshCw className="h-4 w-4 text-primary" />
+            <span className="text-xs font-medium text-foreground">Learning Loop Status</span>
+          </div>
+          <div className="grid grid-cols-3 gap-2 text-center">
+            {[{ label: "Models Trained", val: "142" }, { label: "Last Calibration", val: "2h ago" }, { label: "Drift Score", val: "0.03" }].map(s => (
+              <div key={s.label} className="p-2 rounded bg-muted/30">
+                <p className="text-sm font-bold text-foreground">{s.val}</p>
+                <p className="text-[10px] text-muted-foreground">{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// ─── Top KPI Strip ───────────────────────────────────────────────────────────
+function CoPilotKPIStrip() {
+  const kpis = [
+    { icon: Brain, label: "AI Actions Today", value: "34", sub: "+12 vs yesterday", color: "text-primary" },
+    { icon: Target, label: "Success Rate", value: "84.2%", sub: "↑ 2.1% WoW", color: "text-emerald-500" },
+    { icon: Zap, label: "Avg Response", value: "1.2s", sub: "Decision latency", color: "text-amber-400" },
+    { icon: Shield, label: "Risk Alerts", value: "4", sub: "2 critical", color: "text-destructive" },
+    { icon: Activity, label: "Automation Rate", value: "67%", sub: "Actions auto-executed", color: "text-cyan-400" },
+  ];
+
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+      {kpis.map((kpi, i) => (
+        <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}>
+          <Card className="border-border/40 bg-card/60 backdrop-blur p-3">
+            <div className="flex items-center gap-2 mb-1">
+              <kpi.icon className={`h-4 w-4 ${kpi.color}`} />
+              <span className="text-[10px] text-muted-foreground uppercase tracking-wider">{kpi.label}</span>
+            </div>
+            <p className="text-xl font-bold text-foreground">{kpi.value}</p>
+            <p className="text-[10px] text-muted-foreground">{kpi.sub}</p>
+          </Card>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+// ─── Main Component ──────────────────────────────────────────────────────────
+const AdminAICoPilot = () => {
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
+            <Brain className="h-6 w-6 text-primary" />
+            AI Co-Pilot Command
+          </h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Intelligent operations assistant — recommendations, risk detection, natural language control & automation governance
+          </p>
+        </div>
+        <Badge variant="outline" className="text-xs h-6 gap-1">
+          <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+          ONLINE
+        </Badge>
+      </div>
+
+      {/* KPI Strip */}
+      <CoPilotKPIStrip />
+
+      {/* Main Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left: Recommendations + NL Panel */}
+        <div className="space-y-6">
+          <RecommendationFeed />
+          <NaturalLanguagePanel />
+        </div>
+
+        {/* Right: Risk + Automation + Performance */}
+        <div className="space-y-6">
+          <RiskEarlyWarning />
+          <AutomationControl />
+          <PerformanceTransparency />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AdminAICoPilot;
