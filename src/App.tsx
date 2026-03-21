@@ -371,6 +371,7 @@ const AutomationChecklistPage = lazy(() => import('@/pages/AutomationChecklistPa
 const First30DaysCalendarPage = lazy(() => import('@/pages/First30DaysCalendarPage'));
 const NegotiationScriptsPage = lazy(() => import('@/pages/NegotiationScriptsPage'));
 const WeeklyRevenueTrackingPage = lazy(() => import('@/pages/WeeklyRevenueTrackingPage'));
+const DealSprintExecutionPage = lazy(() => import('@/pages/DealSprintExecutionPage'));
 const FounderSchedulePage = lazy(() => import('@/pages/FounderSchedulePage'));
 const EnergyOptimizationPage = lazy(() => import('@/pages/EnergyOptimizationPage'));
 const DecisionPrioritizationPage = lazy(() => import('@/pages/DecisionPrioritizationPage'));
