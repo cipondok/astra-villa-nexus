@@ -1211,4 +1211,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "first-10-deals": { label: "First 10 Deals", category: "Strategy" },
   "first-100-buyers": { label: "First 100 Buyers & District", category: "Strategy" },
   "first-500-listings": { label: "First 500 Listings", category: "Strategy" },
+  "1000-daily-visitors": { label: "1,000 Daily Visitors", category: "Strategy" },
 };
