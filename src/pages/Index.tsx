@@ -853,7 +853,7 @@ const Index = () => {
                     <Suspense fallback={null}><TrendingROIDeals onPropertyClick={handlePropertyClick} /></Suspense>
                   </StaggeredReveal>
 
-                  <div className="mt-4">
+                  <div className="mt-3">
                     <Suspense fallback={null}>
                       <SmartRecommendations limit={6} className="shadow-sm" />
                     </Suspense>
