@@ -978,6 +978,13 @@ export const navigationSections = {
       badge: "🌐 Authority"
     },
     {
+      key: "decacorn-projection",
+      label: "Decacorn Financial Projection",
+      icon: TrendingUp,
+      description: "3-5 year valuation simulation with adjustable inputs, 3 scenarios, ARR progression & risk factors",
+      badge: "💎 Decacorn"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
