@@ -76,7 +76,8 @@ const QuickActionsRow = lazy(() => import("@/components/home/QuickActionsRow"));
 const MarketHeatHighlight = lazy(() => import("@/components/home/MarketHeatHighlight"));
 const AIInvestmentFeed = lazy(() => import("@/components/home/AIInvestmentFeed"));
 
-// New Autonomous Growth Layout sections
+// Decacorn terminal sections
+const GlobalMarketCommandCenter = lazy(() => import("@/components/home/GlobalMarketCommandCenter"));
 const HeroLiveCounters = lazy(() => import("@/components/home/HeroLiveCounters"));
 const HeroSmartCTAs = lazy(() => import("@/components/home/HeroSmartCTAs"));
 const InvestorIntelligencePanel = lazy(() => import("@/components/home/InvestorIntelligencePanel"));
