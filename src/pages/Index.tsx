@@ -658,10 +658,30 @@ const Index = () => {
                   </SectionErrorBoundary>
                 </div>
 
+                {/* Live Counters */}
+                <div
+                  className="animate-fade-in"
+                  style={{ animationDelay: '0.65s', animationFillMode: 'both' }}
+                >
+                  <Suspense fallback={null}>
+                    <HeroLiveCounters />
+                  </Suspense>
+                </div>
+
+                {/* Smart CTA Switcher */}
+                <div
+                  className="animate-fade-in"
+                  style={{ animationDelay: '0.8s', animationFillMode: 'both' }}
+                >
+                  <Suspense fallback={null}>
+                    <HeroSmartCTAs />
+                  </Suspense>
+                </div>
+
                 {/* Trust metrics */}
                 <div
                   className="flex items-center gap-4 sm:gap-6 flex-wrap text-muted-foreground animate-fade-in"
-                  style={{ animationDelay: '0.7s', animationFillMode: 'both' }}
+                  style={{ animationDelay: '0.95s', animationFillMode: 'both' }}
                 >
                   <Suspense fallback={null}>
                     <SocialProofStrip />
