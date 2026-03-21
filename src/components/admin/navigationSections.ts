@@ -906,6 +906,13 @@ export const navigationSections = {
       badge: "🔄 Viral"
     },
     {
+      key: "super-app-ecosystem-plan",
+      label: "Super-App Ecosystem Plan",
+      icon: Layers,
+      description: "4-phase blueprint: marketplace → transactions → financial services → lifestyle lock-in with LTV modeling",
+      badge: "🏗️ Blueprint"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
