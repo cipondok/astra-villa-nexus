@@ -1184,6 +1184,13 @@ export const navigationSections = {
       badge: "🤝 Launch"
     },
     {
+      key: "first-100-buyers",
+      label: "First 100 Buyers & District",
+      icon: Users,
+      description: "Buyer acquisition, hyper-local district domination & vendor follow-up automation",
+      badge: "📍 Growth"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
