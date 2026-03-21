@@ -8,14 +8,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { CheckCircle, Clock, XCircle } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
-import { CheckCircle, Clock, XCircle } from "lucide-react";
 
 const VendorRegistration = () => {
   const { isAuthenticated, loading, user, profile } = useAuth();
   const { language, setLanguage } = useTranslation();
-  const { theme, setTheme } = useTheme();
+  const navigate = useNavigate();
   const navigate = useNavigate();
   const [vendorRequest, setVendorRequest] = useState<any>(null);
   const [requestLoading, setRequestLoading] = useState(false);
