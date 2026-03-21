@@ -7,7 +7,8 @@ import VendorRegistrationForm from "@/components/vendor/VendorRegistrationForm";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, Clock, XCircle } from "lucide-react";
+import { CheckCircle, Clock, XCircle, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const VendorRegistration = () => {
   const { isAuthenticated, loading, user, profile } = useAuth();
