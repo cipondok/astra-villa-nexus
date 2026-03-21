@@ -992,6 +992,13 @@ export const navigationSections = {
       badge: "🧪 Experiments"
     },
     {
+      key: "partnership-strategy",
+      label: "Global Partnership Strategy",
+      icon: Handshake,
+      description: "7-category alliance roadmap with liquidity/revenue scoring, phased execution & network effect reinforcement",
+      badge: "🤝 Alliances"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
