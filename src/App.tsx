@@ -359,6 +359,7 @@ const MarketDominancePage = lazy(() => import('@/pages/MarketDominancePage'));
 const KPICommandCenterPage = lazy(() => import('@/pages/KPICommandCenterPage'));
 const SeriesAReadinessPage = lazy(() => import('@/pages/SeriesAReadinessPage'));
 const CityExpansionMasterPlanPage = lazy(() => import('@/pages/CityExpansionMasterPlanPage'));
+const NetworkEffectAccelerationPage = lazy(() => import('@/pages/NetworkEffectAccelerationPage'));
 const FounderSchedulePage = lazy(() => import('@/pages/FounderSchedulePage'));
 const EnergyOptimizationPage = lazy(() => import('@/pages/EnergyOptimizationPage'));
 const DecisionPrioritizationPage = lazy(() => import('@/pages/DecisionPrioritizationPage'));
@@ -849,6 +850,7 @@ const AppContent = () => {
                 <Route path="/kpi-command-center" element={<KPICommandCenterPage />} />
                 <Route path="/series-a-readiness" element={<SeriesAReadinessPage />} />
                 <Route path="/city-expansion-master-plan" element={<CityExpansionMasterPlanPage />} />
+                <Route path="/network-effect-acceleration" element={<NetworkEffectAccelerationPage />} />
                 <Route path="/founder-schedule" element={<FounderSchedulePage />} />
                 <Route path="/energy-optimization" element={<EnergyOptimizationPage />} />
                 <Route path="/decision-prioritization" element={<DecisionPrioritizationPage />} />
