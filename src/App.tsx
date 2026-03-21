@@ -380,6 +380,7 @@ const RevenueLeakDetectionPage = lazy(() => import('@/pages/RevenueLeakDetection
 const FirstProfitableMonthPage = lazy(() => import('@/pages/FirstProfitableMonthPage'));
 const First100KRevenuePage = lazy(() => import('@/pages/First100KRevenuePage'));
 const DailyDealConversionPage = lazy(() => import('@/pages/DailyDealConversionPage'));
+const FounderWeeklyExecutionPage = lazy(() => import('@/pages/FounderWeeklyExecutionPage'));
 const ListingDemandForecastPage = lazy(() => import('@/pages/ListingDemandForecastPage'));
 const FounderFastDecisionPage = lazy(() => import('@/pages/FounderFastDecisionPage'));
 const RevenueFlywheelStrategyPage = lazy(() => import('@/pages/RevenueFlywheelStrategyPage'));
