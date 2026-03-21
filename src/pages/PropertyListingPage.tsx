@@ -232,12 +232,7 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <SearchAlertSubscribeButton
-                filters={{
-                  propertyType: filters.propertyType,
-                  city: filters.city,
-                  priceRange: filters.priceRange,
-                  listingType: listingType,
-                }}
+                filters={alertFilters}
               />
               <PropertyViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
               <Button
