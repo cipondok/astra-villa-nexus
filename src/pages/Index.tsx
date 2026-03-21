@@ -829,7 +829,7 @@ const Index = () => {
                DISCOVERY FLOW — Structured scroll journey
             ══════════════════════════════════════════════════ */
             <>
-              {/* ── SECTION 1: Quick Actions Row — Immediate engagement shortcuts ── */}
+              {/* ── SECTION 1: Quick Actions Row ── */}
               <SectionWrapper variant="default" className="py-2 sm:py-3" id="featured-section">
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
                   <Suspense fallback={null}>
@@ -838,8 +838,17 @@ const Index = () => {
                 </div>
               </SectionWrapper>
 
-              {/* ── SECTION 2: Elite Opportunity Carousel — Premium listings ── */}
-              <SectionWrapper variant="muted" className="py-3 sm:py-4">
+              {/* ── SECTION 2: Investor Intelligence Panel (NEW) ── */}
+              <SectionWrapper variant="muted" className="py-4 sm:py-6">
+                <ScrollReveal direction="up" delay={0}>
+                  <Suspense fallback={<div className="max-w-7xl mx-auto px-4"><div className="h-48 bg-muted/50 rounded-2xl animate-pulse" /></div>}>
+                    <InvestorIntelligencePanel />
+                  </Suspense>
+                </ScrollReveal>
+              </SectionWrapper>
+
+              {/* ── SECTION 3: Elite Opportunity Carousel ── */}
+              <SectionWrapper variant="default" className="py-3 sm:py-4">
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={
                     <div className="py-4 max-w-7xl mx-auto px-3 sm:px-4">
@@ -861,11 +870,10 @@ const Index = () => {
                 </ScrollReveal>
               </SectionWrapper>
 
-              {/* ── SECTION 3: Market Heat + ASTRA Showcase (side-by-side on desktop) ── */}
-              <SectionWrapper variant="default" className="py-3 sm:py-4">
+              {/* ── SECTION 4: Market Heat + ASTRA Showcase ── */}
+              <SectionWrapper variant="muted" className="py-3 sm:py-4">
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
                   <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-                    {/* Market Heat Highlight — compact insight card */}
                     <div className="lg:col-span-2">
                       <ScrollReveal direction="left" delay={0}>
                         <Suspense fallback={<div className="h-48 bg-muted/50 rounded-2xl animate-pulse" />}>
@@ -873,7 +881,6 @@ const Index = () => {
                         </Suspense>
                       </ScrollReveal>
                     </div>
-                    {/* ASTRA Project Showcase */}
                     <div className="lg:col-span-3">
                       <ScrollReveal direction="right" delay={50}>
                         <Suspense fallback={<div className="animate-pulse h-48 bg-muted rounded-xl" />}>
@@ -885,6 +892,15 @@ const Index = () => {
                 </div>
               </SectionWrapper>
 
+              {/* ── SECTION 5: Rental Cashflow Zone (NEW) ── */}
+              <SectionWrapper variant="default" className="py-4 sm:py-6">
+                <ScrollReveal direction="up" delay={0}>
+                  <Suspense fallback={<div className="max-w-7xl mx-auto px-4"><div className="h-48 bg-muted/50 rounded-2xl animate-pulse" /></div>}>
+                    <RentalCashflowZone />
+                  </Suspense>
+                </ScrollReveal>
+              </SectionWrapper>
+
               {/* ── Stats Counter Strip ── */}
               <SectionWrapper variant="muted">
                 <Suspense fallback={null}>
@@ -892,7 +908,7 @@ const Index = () => {
                 </Suspense>
               </SectionWrapper>
 
-              {/* ── SECTION 4: Personalized AI Feed — Sorted by opportunity score + DNA match ── */}
+              {/* ── SECTION 6: Personalized AI Feed ── */}
               <SectionWrapper variant="default" id="ai-opportunity-zone" className="py-3 sm:py-4">
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
                   <ScrollReveal direction="up" delay={0}>
@@ -923,8 +939,17 @@ const Index = () => {
                 </div>
               </SectionWrapper>
 
+              {/* ── SECTION 7: Marketplace Liquidity Stream (NEW) ── */}
+              <SectionWrapper variant="muted" className="py-4 sm:py-6">
+                <ScrollReveal direction="up" delay={0}>
+                  <Suspense fallback={<div className="max-w-7xl mx-auto px-4"><div className="h-40 bg-muted/50 rounded-2xl animate-pulse" /></div>}>
+                    <MarketplaceLiquidityStream />
+                  </Suspense>
+                </ScrollReveal>
+              </SectionWrapper>
+
               {/* ── Interactive Map Preview ── */}
-              <SectionWrapper variant="muted">
+              <SectionWrapper variant="default">
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={null}>
                     <MapPreviewTeaser />
@@ -932,8 +957,8 @@ const Index = () => {
                 </ScrollReveal>
               </SectionWrapper>
 
-              {/* ── SECTION 5: Smart Collections ── */}
-              <SectionWrapper variant="default">
+              {/* ── Smart Collections ── */}
+              <SectionWrapper variant="muted">
                 <ScrollReveal direction="up" delay={0}>
                   <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
                     <SmartCollectionsShowcase />
@@ -941,20 +966,22 @@ const Index = () => {
                 </ScrollReveal>
               </SectionWrapper>
 
-              {/* ── SECTION 6: Investor Path + AI Tools ── */}
+              {/* ── SECTION 8: Vendor Ecosystem Hub (NEW — replaces AstraVillaFeatures) ── */}
+              <SectionWrapper variant="default" className="py-4 sm:py-6">
+                <ScrollReveal direction="up" delay={0}>
+                  <Suspense fallback={null}>
+                    <VendorEcosystemHub />
+                  </Suspense>
+                </ScrollReveal>
+              </SectionWrapper>
+
+              {/* ── Investor Path ── */}
               <SectionWrapper variant="muted">
                 <ScrollReveal direction="up" delay={0}>
                   <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
                     <InvestorPathSelector />
                   </LazyRender>
                 </ScrollReveal>
-                <div className="max-w-7xl mx-auto mt-4">
-                  <ScrollReveal direction="up" delay={100}>
-                    <LazyRender minHeight="0px" rootMargin="400px" fallback={null}>
-                      <AstraVillaFeatures />
-                    </LazyRender>
-                  </ScrollReveal>
-                </div>
               </SectionWrapper>
 
               {/* ── Testimonials ── */}
@@ -966,7 +993,7 @@ const Index = () => {
                 </ScrollReveal>
               </SectionWrapper>
 
-              {/* ── SECTION 7: Why ASTRA — Trust Value Props ── */}
+              {/* ── Why ASTRA ── */}
               <SectionWrapper variant="muted">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
                   <ScrollReveal direction="up" delay={0}>
@@ -992,17 +1019,22 @@ const Index = () => {
                 </div>
               </SectionWrapper>
 
-              {/* ── Newsletter / CTA Banner ── */}
+              {/* ── Technology Authority Strip (NEW) ── */}
+              <Suspense fallback={null}>
+                <TechnologyAuthorityStrip />
+              </Suspense>
+
+              {/* ── Newsletter ── */}
               <SectionWrapper variant="default">
                 <Suspense fallback={null}>
                   <NewsletterBanner />
                 </Suspense>
               </SectionWrapper>
 
-              {/* ── SECTION 8: Final CTA + Trust Footer ── */}
+              {/* ── Final Conversion Zone (NEW — replaces EarlyInvestmentCTA) ── */}
               <SectionWrapper variant="muted" className="py-2 sm:py-3">
                 <Suspense fallback={null}>
-                  <EarlyInvestmentCTA />
+                  <FinalConversionZone />
                 </Suspense>
               </SectionWrapper>
               <Suspense fallback={null}><TrustFooterStrip /></Suspense>
