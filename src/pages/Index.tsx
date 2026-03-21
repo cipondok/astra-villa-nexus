@@ -322,7 +322,7 @@ const Index = () => {
   }, []);
 
   // Hero background image — admin config or default
-  const heroImage = heroConfig?.bannerImages?.[0] || slideHero1;
+  const heroImage = heroConfig?.bannerImages?.[0] || heroDesktop;
 
   // Preload hero image for faster LCP
   useEffect(() => {
