@@ -111,7 +111,8 @@ import {
   Sunrise,
   Orbit,
   Network,
-  Award
+  Award,
+  Radio
 } from "lucide-react";
 
 export interface NavigationSection {
