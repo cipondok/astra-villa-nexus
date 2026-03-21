@@ -296,6 +296,7 @@ export const SeriesADataRoom = lazyRetry(() => import("./SeriesADataRoom"));
 export const FirstMillionRevenueSystem = lazyRetry(() => import("./FirstMillionRevenueSystem"));
 export const DecacornValuationInterface = lazyRetry(() => import("./DecacornValuationInterface"));
 export const AIGrowthBrainDashboard = lazyRetry(() => import("./AIGrowthBrainDashboard"));
+export const GlobalExpansionControl = lazyRetry(() => import("./GlobalExpansionControl"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
