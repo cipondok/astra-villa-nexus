@@ -329,6 +329,7 @@ export const CrisisWarRoom = lazyRetry(() => import("./CrisisWarRoom"));
 export const GlobalBrandAuthority = lazyRetry(() => import("./GlobalBrandAuthority"));
 export const DecacornProjection = lazyRetry(() => import("./DecacornProjection"));
 export const ExperimentPrioritization = lazyRetry(() => import("./ExperimentPrioritization"));
+export const PartnershipStrategy = lazyRetry(() => import("./PartnershipStrategy"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
