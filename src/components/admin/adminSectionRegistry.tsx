@@ -760,6 +760,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "investor-narrative-dominance": () => <InvestorNarrativeDominance />,
   "platform-moat-strategy": () => <PlatformMoatStrategy />,
   "global-os-master-blueprint": () => <GlobalOSMasterBlueprint />,
+  "reality-execution-audit": () => <RealityExecutionAudit />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
