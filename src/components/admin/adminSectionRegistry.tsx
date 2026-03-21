@@ -782,6 +782,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "real-execution": () => <RealExecutionBlueprint />,
   "thirty-day-launch": () => <ThirtyDayLaunchBlueprint />,
   "first-revenue-closing": () => <FirstRevenueBlueprint />,
+  "first-50-deals": () => <First50DealsBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
