@@ -779,6 +779,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "ai-copilot",
+      label: "AI Co-Pilot",
+      icon: Brain,
+      description: "Intelligent operations assistant — recommendations, risk radar, NL commands & automation governance",
+      badge: "🤖 AI"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
