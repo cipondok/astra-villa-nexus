@@ -293,6 +293,7 @@ export const VendorMarketplaceControlEngine = lazyRetry(() => import("./VendorMa
 export const CityLaunchGrowthEngine = lazyRetry(() => import("./CityLaunchGrowthEngine"));
 export const MonetizationEngineControl = lazyRetry(() => import("./MonetizationEngineControl"));
 export const SeriesADataRoom = lazyRetry(() => import("./SeriesADataRoom"));
+export const FirstMillionRevenueSystem = lazyRetry(() => import("./FirstMillionRevenueSystem"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -671,6 +672,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "city-launch-growth-engine": () => <CityLaunchGrowthEngine />,
   "monetization-engine-control": () => <MonetizationEngineControl />,
   "series-a-data-room":          () => <SeriesADataRoom />,
+  "first-1m-revenue-system":     () => <FirstMillionRevenueSystem />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -954,6 +956,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "city-launch-growth-engine": { label: "City Launch Growth Engine", category: "Operations" },
   "monetization-engine-control": { label: "Monetization Engine", category: "Operations" },
   "series-a-data-room": { label: "Series-A Data Room", category: "Features" },
+  "first-1m-revenue-system": { label: "First $1M Revenue", category: "Operations" },
   "hyper-execution-plan": { label: "30-Day Hyper Execution", category: "Features" },
   "ninety-day-master-plan": { label: "90-Day Master Execution", category: "Features" },
   "uiux-redesign-blueprint": { label: "UI/UX Redesign Blueprint", category: "Features" },
