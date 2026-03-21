@@ -114,7 +114,8 @@ import {
   Award,
   Radio,
   Mic,
-  GitBranch
+  GitBranch,
+  Siren
 } from "lucide-react";
 
 export interface NavigationSection {
