@@ -304,6 +304,7 @@ export const FounderDailyExecution = lazyRetry(() => import("./FounderDailyExecu
 export const First100KRevenuePlan = lazyRetry(() => import("./First100KRevenuePlan"));
 export const InvestorNarrativeCoaching = lazyRetry(() => import("./InvestorNarrativeCoaching"));
 export const VendorOutreachScripts = lazyRetry(() => import("./VendorOutreachScripts"));
+export const ListingCopyGenerator = lazyRetry(() => import("./ListingCopyGenerator"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -693,6 +694,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "first-100k-revenue":          () => <First100KRevenuePlan />,
   "investor-narrative-coaching":  () => <InvestorNarrativeCoaching />,
   "vendor-outreach-scripts":     () => <VendorOutreachScripts />,
+  "listing-copy-generator":      () => <ListingCopyGenerator />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1047,4 +1049,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "first-100k-revenue": { label: "First $100K Revenue Plan", category: "Operations" },
   "investor-narrative-coaching": { label: "Investor Narrative Coaching", category: "Strategy" },
   "vendor-outreach-scripts": { label: "Vendor Outreach Scripts", category: "Strategy" },
+  "listing-copy-generator": { label: "Listing Copy Generator", category: "Strategy" },
 };
