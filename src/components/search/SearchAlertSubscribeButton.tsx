@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Bell, BellOff, Mail, Smartphone, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import type { SearchFilters } from '@/types/search';
 
 interface SearchAlertSubscribeButtonProps {
   filters: {
@@ -25,6 +24,7 @@ const SearchAlertSubscribeButton = ({ filters }: SearchAlertSubscribeButtonProps
   const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const checkedRef = useRef(false);
 
   // Check existing subscription on mount / filter change
   useEffect(() => {
