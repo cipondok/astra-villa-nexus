@@ -44,6 +44,8 @@ const Search = () => {
   const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
   const [selectedType, setSelectedType] = useState(searchParams.get('type') || 'all');
   const [selectedLocation, setSelectedLocation] = useState(searchParams.get('location') || 'all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 28;
   
   // Pull-to-refresh state
   const [newPropertyIds, setNewPropertyIds] = useState<Set<string>>(new Set());
