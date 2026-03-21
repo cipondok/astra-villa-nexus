@@ -1034,6 +1034,13 @@ export const navigationSections = {
       badge: "🎯 Narrative"
     },
     {
+      key: "platform-moat-strategy",
+      label: "Platform Moat Reinforcement",
+      icon: Shield,
+      description: "5 defensibility pillars with compounding mechanisms, weakness signals & improvement roadmap",
+      badge: "🏰 Moat"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
