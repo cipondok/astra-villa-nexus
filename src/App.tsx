@@ -718,6 +718,7 @@ const AppContent = () => {
                 <Route path="/marketplace" element={<Marketplace />} />
                 <Route path="/marketplace/category/:categoryId" element={<MarketplaceCategory />} />
                 <Route path="/vendor-registration" element={<VendorRegistration />} />
+                <Route path="/vendor/register" element={<VendorRegistration />} />
                 <Route path="/shared-search/:shareId" element={<SharedSearch />} />
                 <Route path="/development" element={<AstraDevelopment />} />
                 <Route path="/astra-development" element={<AstraDevelopment />} />
