@@ -793,6 +793,13 @@ export const navigationSections = {
       badge: "📋 Daily"
     },
     {
+      key: "first-100k-revenue",
+      label: "First $100K Revenue",
+      icon: DollarSign,
+      description: "14-week tactical plan — liquidity foundation, revenue levers, weekly tactics, checklists & risk mitigation",
+      badge: "💰 Revenue"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
