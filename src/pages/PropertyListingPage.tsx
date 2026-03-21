@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useInfiniteProperties } from '@/hooks/useInfiniteProperties';
 import { Loader2 } from 'lucide-react';
@@ -135,6 +135,12 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
   });
 
   const listingType = pageType === 'buy' ? 'sale' : pageType === 'rent' ? 'rent' : undefined;
+  const alertFilters = useMemo(() => ({
+    propertyType: filters.propertyType,
+    city: filters.city,
+    priceRange: filters.priceRange,
+    listingType: listingType,
+  }), [filters.propertyType, filters.city, filters.priceRange, listingType]);
   const developmentStatus = pageType === 'buy' || pageType === 'rent'
     ? ['completed', 'ready']
     : pageType === 'new-projects'
@@ -232,12 +238,7 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <SearchAlertSubscribeButton
-                filters={{
-                  propertyType: filters.propertyType,
-                  city: filters.city,
-                  priceRange: filters.priceRange,
-                  listingType: listingType,
-                }}
+                filters={alertFilters}
               />
               <PropertyViewModeToggle viewMode={viewMode} onViewModeChange={setViewMode} />
               <Button
