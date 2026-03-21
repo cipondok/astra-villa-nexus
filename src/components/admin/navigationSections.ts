@@ -829,6 +829,13 @@ export const navigationSections = {
       badge: "🧪 Growth"
     },
     {
+      key: "investor-nurturing-sequence",
+      label: "Investor Nurturing Sequence",
+      icon: Users,
+      description: "6-step lifecycle flow from inquiry to paid unlock across WhatsApp, Email & Push",
+      badge: "🎯 Nurture"
+    },
+    {
       key: "investor-scoring-engine",
       label: "Investor Scoring Engine",
       icon: Target,
