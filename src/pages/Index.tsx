@@ -917,7 +917,7 @@ const Index = () => {
 
               {/* ── Why ASTRA ── */}
               <SectionWrapper variant="muted">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
                   <ScrollReveal direction="up" delay={0}>
                     <h2 className="font-playfair text-lg sm:text-xl md:text-2xl font-bold text-foreground text-center mb-6">
                       Why Choose ASTRA
