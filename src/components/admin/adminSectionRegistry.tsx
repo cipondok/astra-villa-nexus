@@ -410,6 +410,7 @@ export const ThousandDealsRevenueCityExpansion = lazyRetry(() => import("./Thous
 export const NationalLiquidityProfitSeriesA = lazyRetry(() => import("./NationalLiquidityProfitSeriesA"));
 export const SeriesBInstitutionalCategoryLeadership = lazyRetry(() => import("./SeriesBInstitutionalCategoryLeadership"));
 export const PreUnicornRiskDeveloperPartnership = lazyRetry(() => import("./PreUnicornRiskDeveloperPartnership"));
+export const UnicornLiquidityInstitutionalAuthority = lazyRetry(() => import("./UnicornLiquidityInstitutionalAuthority"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -905,6 +906,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "national-liquidity-profit-series-a": () => <NationalLiquidityProfitSeriesA />,
   "series-b-institutional-category-leadership": () => <SeriesBInstitutionalCategoryLeadership />,
   "pre-unicorn-risk-developer-partnership": () => <PreUnicornRiskDeveloperPartnership />,
+  "unicorn-liquidity-institutional-authority": () => <UnicornLiquidityInstitutionalAuthority />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,

@@ -1565,6 +1565,13 @@ export const navigationSections = {
       badge: "⚡ Pre-Unicorn"
     },
     {
+      key: "unicorn-liquidity-institutional-authority",
+      label: "Unicorn & Institutional Authority",
+      icon: Crown,
+      description: "Unicorn valuation acceleration, global liquidity synchronization & institutional brand authority",
+      badge: "💎 Unicorn"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
