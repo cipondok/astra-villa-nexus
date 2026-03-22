@@ -747,6 +747,10 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "data-warehouse-analytics": () => <DataWarehouseAnalytics />,
   "load-testing-simulator": () => <LoadTestingSimulator />,
   "incident-reliability-dashboard": () => <IncidentReliabilityDashboard />,
+  "cost-optimization-dashboard": () => <CostOptimizationDashboard />,
+  "dev-velocity-tracker": () => <DevVelocityTracker />,
+  "ai-model-governance": () => <AIModelGovernance />,
+  "ux-quality-monitoring": () => <UXQualityMonitoring />,
 
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
