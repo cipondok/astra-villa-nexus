@@ -739,6 +739,10 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ai-data-pipeline": () => <AIDataPipeline />,
   "recommendation-algorithm-flow": () => <RecommendationAlgorithmFlow />,
   "security-permission-matrix": () => <SecurityPermissionMatrix />,
+  "microservices-decomposition": () => <MicroservicesDecomposition />,
+  "data-warehouse-analytics": () => <DataWarehouseAnalytics />,
+  "load-testing-simulator": () => <LoadTestingSimulator />,
+  "incident-reliability-dashboard": () => <IncidentReliabilityDashboard />,
 
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
