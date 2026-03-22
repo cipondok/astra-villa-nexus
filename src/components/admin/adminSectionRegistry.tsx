@@ -822,6 +822,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "viewing-commitment-elite": () => <ViewingCommitmentBlueprint />,
   "offer-acceptance-commission": () => <OfferAcceptanceBlueprint />,
   "fast-deal-cycle-liquidity": () => <FastDealCycleBlueprint />,
+  "repeat-buyer-pipeline": () => <RepeatBuyerPipelineBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
