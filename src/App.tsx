@@ -316,6 +316,7 @@ const IndexingStrategyPage = lazy(() => import('@/pages/IndexingStrategyPage'));
 const RealtimeArchitecturePage = lazy(() => import('@/pages/RealtimeArchitecturePage'));
 const CronSchedulePage = lazy(() => import('@/pages/CronSchedulePage'));
 const SecurityHardeningPage = lazy(() => import('@/pages/SecurityHardeningPage'));
+const SecurityActivityPage = lazy(() => import('@/pages/SecurityActivityPage'));
 const CloudInfrastructurePage = lazy(() => import('@/pages/CloudInfrastructurePage'));
 const DisasterRecoveryPage = lazy(() => import('@/pages/DisasterRecoveryPage'));
 const BehaviorAnalyticsPage = lazy(() => import('@/pages/BehaviorAnalyticsPage'));
