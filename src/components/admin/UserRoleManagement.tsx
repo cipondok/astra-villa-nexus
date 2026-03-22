@@ -313,7 +313,7 @@ const UserRoleManagement = () => {
                   onClick={() =>
                     bulkAssignMutation.mutate({
                       userIds: [...selectedUserIds],
-                      role: bulkRole,
+                      role: bulkRole as typeof ALL_ROLES[number],
                     })
                   }
                 >
