@@ -1523,6 +1523,13 @@ export const navigationSections = {
       badge: "🎯 50 Deals"
     },
     {
+      key: "first-100-deals-flywheel-agent-referral",
+      label: "First 100 Deals Flywheel & Referral",
+      icon: TrendingUp,
+      description: "Self-reinforcing deal momentum, agent network expansion & buyer referral organic growth loops",
+      badge: "🔄 Flywheel"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
