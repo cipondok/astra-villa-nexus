@@ -393,6 +393,7 @@ export const GlobalIPOAllianceIntelligenceBlueprint = lazyRetry(() => import("./
 export const DailyGlobalRevenueSprintClarityBlueprint = lazyRetry(() => import("./DailyGlobalRevenueSprintClarityBlueprint"));
 export const GlobalFounderWarRoomDealExpansionBlueprint = lazyRetry(() => import("./GlobalFounderWarRoomDealExpansionBlueprint"));
 export const GlobalEconomicIntelligenceLegacyBlueprint = lazyRetry(() => import("./GlobalEconomicIntelligenceLegacyBlueprint"));
+export const First1000DealsLiquidityFounderBlueprint = lazyRetry(() => import("./First1000DealsLiquidityFounderBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
