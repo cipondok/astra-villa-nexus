@@ -253,6 +253,10 @@ export const ListingOptimizationAIPanel = lazyRetry(() => import("./ListingOptim
 export const AIRevenueBrainDashboard = lazyRetry(() => import("./AIRevenueBrainDashboard"));
 export const PlanetScaleMapEngine = lazyRetry(() => import("./PlanetScaleMapEngine"));
 export const VendorEconomySimulation = lazyRetry(() => import("./VendorEconomySimulation"));
+export const GlobalControlTower = lazyRetry(() => import("./GlobalControlTower"));
+export const AutonomousDealFlowEngine = lazyRetry(() => import("./AutonomousDealFlowEngine"));
+export const InstitutionalDataRoom = lazyRetry(() => import("./InstitutionalDataRoom"));
+export const DecacornNarrativeMode = lazyRetry(() => import("./DecacornNarrativeMode"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -799,6 +803,9 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ai-revenue-brain":            () => <AIRevenueBrainDashboard />,
   "planet-scale-map":            () => <PlanetScaleMapEngine />,
   "vendor-economy-simulation":   () => <VendorEconomySimulation />,
+  "global-control-tower":        () => <GlobalControlTower />,
+  "autonomous-deal-flow":        () => <AutonomousDealFlowEngine />,
+  "institutional-data-room":     () => <InstitutionalDataRoom />,
   "global-expansion-control":    () => <GlobalExpansionControl />,
   "ipo-readiness-metrics":       () => <IPOReadinessMetrics />,
   "founder-war-room":            () => <FounderWarRoom />,
@@ -1371,4 +1378,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ai-revenue-brain": { label: "AI Revenue Brain", category: "AI Intelligence" },
   "planet-scale-map": { label: "Planet-Scale Intelligence Map", category: "AI Intelligence" },
   "vendor-economy-simulation": { label: "Vendor Economy Simulation", category: "AI Intelligence" },
+  "global-control-tower": { label: "Global Control Tower", category: "AI Intelligence" },
+  "autonomous-deal-flow": { label: "Autonomous Deal Flow Engine", category: "AI Intelligence" },
+  "institutional-data-room": { label: "Institutional Data Room", category: "AI Intelligence" },
 };

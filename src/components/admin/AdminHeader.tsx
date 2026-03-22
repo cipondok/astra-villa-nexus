@@ -171,6 +171,15 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
               Investor Mode
             </button>
           )}
+          {(window as any).__investorDemoTrigger && (
+            <button
+              onClick={() => (window as any).__narrativeDemoOpen?.()}
+              className="h-7 px-2 text-[9px] gap-1 rounded-md border border-chart-2/20 text-chart-2 hover:bg-chart-2/5 flex items-center font-medium"
+            >
+              <Play className="h-2.5 w-2.5" />
+              Category Story
+            </button>
+          )}
 
           {/* Notifications */}
           <DropdownMenu modal={false} open={notificationsOpen} onOpenChange={setNotificationsOpen}>

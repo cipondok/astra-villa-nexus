@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { DemoModeProvider } from "@/contexts/DemoModeContext";
 import AIIntelligenceSystem from "./AIIntelligenceSystem";
 import { InvestorDemoMode } from "./InvestorDemoMode";
+import DecacornNarrativeMode from "./DecacornNarrativeMode";
 
 const DemoModeController = lazy(() => import("./demo/DemoModeController"));
 const DemoModeOverlay = lazy(() => import("./demo/DemoModeOverlay"));
@@ -25,15 +26,18 @@ const ModernEnhancedAdminDashboard = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [prioritySections, setPrioritySections] = useState<string[]>([]);
   const [investorMode, setInvestorMode] = useState(false);
+  const [narrativeMode, setNarrativeMode] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   // Expose investor demo trigger globally for header
   useEffect(() => {
     (window as any).__investorDemoTrigger = true;
     (window as any).__investorDemoOpen = () => setInvestorMode(true);
+    (window as any).__narrativeDemoOpen = () => setNarrativeMode(true);
     return () => {
       delete (window as any).__investorDemoTrigger;
       delete (window as any).__investorDemoOpen;
+      delete (window as any).__narrativeDemoOpen;
     };
   }, []);
 
@@ -107,6 +111,7 @@ const ModernEnhancedAdminDashboard = () => {
 
       {/* Investor Cinematic Demo Mode */}
       <InvestorDemoMode isActive={investorMode} onClose={() => setInvestorMode(false)} />
+      <DecacornNarrativeMode isActive={narrativeMode} onClose={() => setNarrativeMode(false)} />
 
       {/* Demo Mode overlays */}
       <Suspense fallback={null}>
