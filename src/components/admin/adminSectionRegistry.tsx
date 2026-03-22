@@ -1658,4 +1658,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "planetary-economic-impact": { label: "Planetary Economic Impact", category: "Operations" },
   "founder-legacy-civilization": { label: "Founder Legacy Civilization", category: "Operations" },
   "public-market-investor-story": { label: "Public Market Investor Story", category: "Operations" },
+  "database-architecture": { label: "Database Architecture", category: "Operations" },
+  "api-endpoint-structure": { label: "API Endpoint Structure", category: "Operations" },
+  "frontend-architecture": { label: "Frontend Architecture", category: "Operations" },
+  "deployment-scaling": { label: "Deployment & Scaling", category: "Operations" },
 };
