@@ -381,6 +381,7 @@ export const PreUnicornGlobalBrandMarketplaceOSBlueprint = lazyRetry(() => impor
 export const UnicornCategoryAIControlBlueprint = lazyRetry(() => import("./UnicornCategoryAIControlBlueprint"));
 export const DecacornCapitalIntelligenceBlueprint = lazyRetry(() => import("./DecacornCapitalIntelligenceBlueprint"));
 export const GlobalInfraEcosystemFounderBlueprint = lazyRetry(() => import("./GlobalInfraEcosystemFounderBlueprint"));
+export const DailyDealWeeklyWarCitySprintBlueprint = lazyRetry(() => import("./DailyDealWeeklyWarCitySprintBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -847,6 +848,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "unicorn-category-ai-control": () => <UnicornCategoryAIControlBlueprint />,
   "decacorn-capital-intelligence": () => <DecacornCapitalIntelligenceBlueprint />,
   "global-infra-ecosystem-founder": () => <GlobalInfraEcosystemFounderBlueprint />,
+  "daily-deal-weekly-war-sprint": () => <DailyDealWeeklyWarCitySprintBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1278,4 +1280,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "unicorn-category-ai-control": { label: "Unicorn Valuation & AI Control", category: "Strategy" },
   "decacorn-capital-intelligence": { label: "Decacorn Financial Engine & Intelligence", category: "Strategy" },
   "global-infra-ecosystem-founder": { label: "Global Infrastructure & Founder Command", category: "Strategy" },
+  "daily-deal-weekly-war-sprint": { label: "Daily Deal Closing & Revenue Sprint", category: "Strategy" },
 };

@@ -1362,6 +1362,13 @@ export const navigationSections = {
       badge: "🌍 Global"
     },
     {
+      key: "daily-deal-weekly-war-sprint",
+      label: "Daily Deal Closing & Revenue Sprint",
+      icon: Swords,
+      description: "Daily deal closing machine, weekly founder war plan & city revenue sprint campaigns",
+      badge: "⚔️ War Mode"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
