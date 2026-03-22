@@ -392,6 +392,7 @@ export const GlobalLeadershipValuationLiquidityGridBlueprint = lazyRetry(() => i
 export const GlobalIPOAllianceIntelligenceBlueprint = lazyRetry(() => import("./GlobalIPOAllianceIntelligenceBlueprint"));
 export const DailyGlobalRevenueSprintClarityBlueprint = lazyRetry(() => import("./DailyGlobalRevenueSprintClarityBlueprint"));
 export const GlobalFounderWarRoomDealExpansionBlueprint = lazyRetry(() => import("./GlobalFounderWarRoomDealExpansionBlueprint"));
+export const GlobalEconomicIntelligenceLegacyBlueprint = lazyRetry(() => import("./GlobalEconomicIntelligenceLegacyBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -869,6 +870,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "global-ipo-alliance-intelligence": () => <GlobalIPOAllianceIntelligenceBlueprint />,
   "daily-global-revenue-sprint-clarity": () => <DailyGlobalRevenueSprintClarityBlueprint />,
   "global-founder-warroom-deal-expansion": () => <GlobalFounderWarRoomDealExpansionBlueprint />,
+  "global-economic-intelligence-legacy": () => <GlobalEconomicIntelligenceLegacyBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1311,4 +1313,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-ipo-alliance-intelligence": { label: "Global IPO & Alliance Command", category: "Strategy" },
   "daily-global-revenue-sprint-clarity": { label: "Daily Global Revenue & Founder Clarity", category: "Strategy" },
   "global-founder-warroom-deal-expansion": { label: "Global War-Room & Deal Expansion", category: "Strategy" },
+  "global-economic-intelligence-legacy": { label: "Global Economic Intelligence & Legacy", category: "Strategy" },
 };
