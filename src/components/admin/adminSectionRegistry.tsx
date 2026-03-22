@@ -89,7 +89,7 @@ export const AlgorithmDashboard = lazyRetry(() => import("./AlgorithmDashboard")
 export const AdminNotificationsCenter = lazyRetry(() => import("./AdminNotificationsCenter").then((m) => ({ default: m.AdminNotificationsCenter })));
 export const LaunchReadinessDashboard = lazyRetry(() => import("./LaunchReadinessDashboard"));
 export const AIFeedbackAnalytics = lazyRetry(() => import("./AIFeedbackAnalytics").then((m) => ({ default: m.AIFeedbackAnalytics })));
-export const HomepageSliderSettings = lazyRetry(() => import("./HomepageSliderSettings"));
+
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));

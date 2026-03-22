@@ -70,7 +70,7 @@ const PropertyOwnerOnlyRoute = lazy(() => import('@/components/PropertyOwnerOnly
 
 // All pages — lazy loaded for minimum initial bundle
 const Index = lazy(() => import('@/pages/Index'));
-const LandingPage = lazy(() => import('@/pages/LandingPage'));
+
 const CityInvestmentPage = lazy(() => import('@/pages/CityInvestmentPage'));
 const InvestorOnboarding = lazy(() => import('@/pages/InvestorOnboarding'));
 const AIListingGenerator = lazy(() => import('@/pages/AIListingGenerator'));
@@ -498,7 +498,7 @@ const AppContent = () => {
             <Suspense fallback={<PageLoader />}>
               <Routes location={location}>
                 <Route path="/" element={<Index />} />
-                <Route path="/landing" element={<LandingPage />} />
+                <Route path="/landing" element={<Index />} />
                 <Route path="/investor-landing" element={<InvestorLandingPage />} />
                 <Route path="/onboarding/investor" element={<InvestorOnboarding />} />
                 <Route path="/onboarding/investor-wizard" element={<InvestorOnboardingWizard />} />
