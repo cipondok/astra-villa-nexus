@@ -715,6 +715,10 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "liquidity-exit-strategy": () => <LiquidityExitStrategyPlanner />,
   "dev-opportunity-analyzer": () => <DevOpportunityAnalyzer />,
   "global-leadership-narrative": () => <GlobalLeadershipNarrative />,
+  "global-liquidity-coordination": () => <GlobalLiquidityCoordination />,
+  "planetary-economic-impact": () => <PlanetaryEconomicImpact />,
+  "founder-legacy-civilization": () => <FounderLegacyCivilization />,
+  "public-market-investor-story": () => <PublicMarketInvestorStory />,
 
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
