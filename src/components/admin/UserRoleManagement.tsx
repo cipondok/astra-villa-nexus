@@ -563,7 +563,7 @@ const UserRoleManagement = () => {
               <Button
                 size="sm"
                 disabled={!newUserId || !newRole || assignRoleMutation.isPending}
-                onClick={() => assignRoleMutation.mutate({ userId: newUserId, role: newRole })}
+                onClick={() => assignRoleMutation.mutate({ userId: newUserId, role: newRole as typeof ALL_ROLES[number] })}
               >
                 {assignRoleMutation.isPending ? "Assigning..." : "Assign Role"}
               </Button>
