@@ -253,6 +253,13 @@ export const navigationSections = {
       icon: BarChart3,
       description: "Investor perception signals, AI pricing engine, seller funnel, and unicorn growth metrics",
       badge: "Premium"
+    },
+    {
+      key: "global-expansion-intelligence",
+      label: "Global Expansion Intelligence",
+      icon: Globe,
+      description: "Expansion simulator, AI autonomous growth engine, and planet-scale liquidity vision",
+      badge: "Strategic"
     }
   ],
 
