@@ -691,6 +691,10 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "investor-portfolio-tracking": () => <InvestorPortfolioTracking />,
   "rental-yield-monitoring": () => <RentalYieldMonitoring />,
   "smart-property-recommendations": () => <SmartPropertyRecommendationEngine />,
+  "renovation-roi-calculator": () => <SmartRenovationROICalculator />,
+  "insurance-comparison": () => <PropertyInsuranceComparison />,
+  "resale-opportunity": () => <ResaleOpportunityDashboard />,
+  "wealth-transfer-planner": () => <FamilyWealthTransferPlanner />,
 
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
