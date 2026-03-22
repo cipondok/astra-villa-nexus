@@ -279,7 +279,7 @@ export const navigationSections = {
     {
       key: "deal-ops-closing",
       label: "Deal Ops & Closing",
-      icon: CheckSquare,
+      icon: ClipboardList,
       description: "Agent follow-ups, viewing calendar, negotiation CRM, and closing checklist automation",
       badge: "⚡ Ops"
     }
