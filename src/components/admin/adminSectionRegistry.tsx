@@ -1368,4 +1368,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "first-100-deals-cashflow-stress-proof": { label: "First 100 Deals & Survival", category: "Strategy" },
   "first-20-buyers-agent-hustle-local-takeover": { label: "First 20 Buyers & Local Takeover", category: "Strategy" },
   "first-10-deals-viewing-psychology-agent-motivation": { label: "First 10 Deals & Viewing Psychology", category: "Strategy" },
+  "ai-revenue-brain": { label: "AI Revenue Brain", category: "AI Intelligence" },
+  "planet-scale-map": { label: "Planet-Scale Intelligence Map", category: "AI Intelligence" },
+  "vendor-economy-simulation": { label: "Vendor Economy Simulation", category: "AI Intelligence" },
 };
