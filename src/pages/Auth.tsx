@@ -243,9 +243,9 @@ const Auth = () => {
       if (success) {
         toast({
           title: "Registration successful!",
-          description: "Welcome to Astra Villa",
+          description: "Please check your email to verify your account before logging in.",
         });
-        navigate("/");
+        // Don't navigate to home — show verification message
       } else {
         toast({
           title: "Registration failed",
