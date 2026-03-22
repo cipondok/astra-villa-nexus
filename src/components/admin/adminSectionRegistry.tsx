@@ -1436,4 +1436,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-asset-liquidity": { label: "Global Asset Liquidity Network", category: "AI Intelligence" },
   "founder-intergenerational": { label: "Founder Intergenerational Impact", category: "AI Intelligence" },
   "macro-policy-simulator": { label: "Macro Policy Simulator", category: "AI Intelligence" },
+  "global-property-civilization": { label: "Global Property Civilization OS", category: "AI Intelligence" },
+  "autonomous-wealth-infra": { label: "Autonomous Wealth Infrastructure", category: "AI Intelligence" },
+  "founder-100yr-legacy": { label: "Founder 100-Year Legacy", category: "AI Intelligence" },
+  "planet-scale-storyboard": { label: "Planet-Scale Economic Storyboard", category: "AI Intelligence" },
 };
