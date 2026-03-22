@@ -1187,6 +1187,12 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "smart-recommendation-engine": () => <SmartRecommendationPanel />,
   "commission-optimization": () => <CommissionOptimizationPanel />,
   "listing-optimization-ai": () => <ListingOptimizationAIPanel />,
+
+  // MVP Traction Core
+  "mvp-listings-management": () => <MVPListingsManagement />,
+  "mvp-buyer-inquiry-tracker": () => <MVPBuyerInquiryTracker />,
+  "mvp-viewing-schedule-board": () => <MVPViewingScheduleBoard />,
+  "mvp-deal-pipeline-tracker": () => <MVPDealPipelineTracker />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
