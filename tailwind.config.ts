@@ -166,6 +166,20 @@ const config: Config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        astra: "12px",
+      },
+      spacing: {
+        'astra-1': '4px',
+        'astra-2': '8px',
+        'astra-3': '12px',
+        'astra-4': '16px',
+        'astra-5': '24px',
+        'astra-6': '32px',
+      },
+      boxShadow: {
+        'astra-soft': '0 0 0 1px hsl(var(--admin-border-subtle) / 0.6)',
+        'astra-card': '0 1px 2px hsl(var(--admin-bg-main) / 0.3), 0 0 0 1px hsl(var(--admin-border-subtle) / 0.5)',
+        'astra-hover': '0 2px 8px hsl(var(--admin-bg-main) / 0.4), 0 0 0 1px hsl(var(--admin-border-strong) / 0.5)',
       },
       fontFamily: {
         'sf': ['SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],

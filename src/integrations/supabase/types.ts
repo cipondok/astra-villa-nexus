@@ -4188,10 +4188,14 @@ export type Database = {
         Row: {
           accuracy_pct: number | null
           actual_outcome_value: number | null
+          behavior_source: string | null
           entity_id: string | null
           entity_type: string
           id: string
           metadata: Json | null
+          model_version: string | null
+          outcome_success_score: number | null
+          pattern_detected: string | null
           performance_delta: number | null
           predicted_value: number | null
           prediction_type: string
@@ -4200,10 +4204,14 @@ export type Database = {
         Insert: {
           accuracy_pct?: number | null
           actual_outcome_value?: number | null
+          behavior_source?: string | null
           entity_id?: string | null
           entity_type?: string
           id?: string
           metadata?: Json | null
+          model_version?: string | null
+          outcome_success_score?: number | null
+          pattern_detected?: string | null
           performance_delta?: number | null
           predicted_value?: number | null
           prediction_type: string
@@ -4212,10 +4220,14 @@ export type Database = {
         Update: {
           accuracy_pct?: number | null
           actual_outcome_value?: number | null
+          behavior_source?: string | null
           entity_id?: string | null
           entity_type?: string
           id?: string
           metadata?: Json | null
+          model_version?: string | null
+          outcome_success_score?: number | null
+          pattern_detected?: string | null
           performance_delta?: number | null
           predicted_value?: number | null
           prediction_type?: string
@@ -4834,6 +4846,48 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_signals: {
+        Row: {
+          confidence_score: number | null
+          created_at: string
+          entity_id: string
+          entity_type: string
+          id: string
+          is_resolved: boolean | null
+          predicted_value: Json | null
+          resolved_at: string | null
+          resolved_by: string | null
+          severity: string
+          signal_type: string
+        }
+        Insert: {
+          confidence_score?: number | null
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          id?: string
+          is_resolved?: boolean | null
+          predicted_value?: Json | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string
+          signal_type: string
+        }
+        Update: {
+          confidence_score?: number | null
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          is_resolved?: boolean | null
+          predicted_value?: Json | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string
+          signal_type?: string
+        }
+        Relationships: []
+      }
       ai_strategy_simulations: {
         Row: {
           capital_efficiency: number | null
@@ -4890,6 +4944,104 @@ export type Database = {
           var_95?: number | null
         }
         Relationships: []
+      }
+      ai_surface_rules: {
+        Row: {
+          comparison: string
+          created_at: string
+          id: string
+          is_active: boolean | null
+          rule_name: string
+          threshold_value: number
+          trigger_metric: string
+          ui_surface_location: string
+          updated_at: string
+          urgency_level: string
+        }
+        Insert: {
+          comparison?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          rule_name: string
+          threshold_value: number
+          trigger_metric: string
+          ui_surface_location?: string
+          updated_at?: string
+          urgency_level?: string
+        }
+        Update: {
+          comparison?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          rule_name?: string
+          threshold_value?: number
+          trigger_metric?: string
+          ui_surface_location?: string
+          updated_at?: string
+          urgency_level?: string
+        }
+        Relationships: []
+      }
+      ai_tasks: {
+        Row: {
+          assigned_admin: string | null
+          automation_possible: boolean | null
+          created_at: string
+          executed_at: string | null
+          id: string
+          impact_description: string | null
+          impact_score: number | null
+          recommended_action: string | null
+          signal_id: string | null
+          status: string
+          task_description: string | null
+          task_priority: string
+          task_title: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_admin?: string | null
+          automation_possible?: boolean | null
+          created_at?: string
+          executed_at?: string | null
+          id?: string
+          impact_description?: string | null
+          impact_score?: number | null
+          recommended_action?: string | null
+          signal_id?: string | null
+          status?: string
+          task_description?: string | null
+          task_priority?: string
+          task_title: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_admin?: string | null
+          automation_possible?: boolean | null
+          created_at?: string
+          executed_at?: string | null
+          id?: string
+          impact_description?: string | null
+          impact_score?: number | null
+          recommended_action?: string | null
+          signal_id?: string | null
+          status?: string
+          task_description?: string | null
+          task_priority?: string
+          task_title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_tasks_signal_id_fkey"
+            columns: ["signal_id"]
+            isOneToOne: false
+            referencedRelation: "ai_signals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ai_training_specialists: {
         Row: {

@@ -502,6 +502,108 @@ html, body {
   }
 }
 
+/* ═══ Enterprise Admin Density Utilities ═══ */
+@layer utilities {
+  /* Admin-specific density classes */
+  .admin-density-compact {
+    --admin-row-h: 44px;
+    --admin-cell-px: 12px;
+    --admin-cell-py: 8px;
+    --admin-card-p: 12px;
+    --admin-gap: 8px;
+  }
+
+  .admin-kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+  }
+
+  .admin-kpi-card {
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid hsl(var(--admin-border-subtle));
+    background: hsl(var(--admin-bg-card));
+  }
+
+  .admin-kpi-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+    color: hsl(var(--foreground));
+  }
+
+  .admin-kpi-label {
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Enterprise table density */
+  .admin-table-enterprise th {
+    font-size: 0.625rem;
+    font-weight: 600;
+    padding: 8px 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: hsl(var(--muted-foreground));
+    border-bottom: 1px solid hsl(var(--border));
+    position: sticky;
+    top: 0;
+    background: hsl(var(--background));
+    z-index: 10;
+  }
+
+  .admin-table-enterprise td {
+    padding: 8px 12px;
+    font-size: 0.75rem;
+    vertical-align: middle;
+    border-bottom: 1px solid hsl(var(--border) / 0.4);
+  }
+
+  .admin-table-enterprise tr {
+    height: 44px;
+  }
+
+  .admin-table-enterprise tr:hover {
+    background: hsl(var(--muted) / 0.3);
+  }
+
+  /* Zebra rows */
+  .admin-table-enterprise tbody tr:nth-child(even) {
+    background: hsl(var(--muted) / 0.08);
+  }
+
+  .admin-table-enterprise tbody tr:nth-child(even):hover {
+    background: hsl(var(--muted) / 0.3);
+  }
+
+  /* Smart KPI pulse animation */
+  @keyframes kpi-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 hsl(var(--admin-accent-ai) / 0); }
+    50% { box-shadow: 0 0 0 4px hsl(var(--admin-accent-ai) / 0.15); }
+  }
+
+  .admin-kpi-pulse {
+    animation: kpi-pulse 2s ease-in-out infinite;
+  }
+
+  /* Workspace grid */
+  .admin-workspace-grid {
+    display: grid;
+    grid-template-columns: 3fr 1.2fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 1024px) {
+    .admin-workspace-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
 @layer components {
   /* Glassmorphism Effects - Light Mode */
   .glass-effect {
