@@ -1622,4 +1622,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "insurance-comparison": { label: "Insurance Comparison", category: "Operations" },
   "resale-opportunity": { label: "Resale Opportunity Dashboard", category: "Operations" },
   "wealth-transfer-planner": { label: "Family Wealth Transfer Planner", category: "Operations" },
+  "global-diversification-strategy": { label: "Global Diversification Strategy", category: "Operations" },
+  "economic-trend-forecasting": { label: "Economic Trend Forecasting", category: "Operations" },
+  "smart-financing-optimization": { label: "Smart Financing Optimization", category: "Operations" },
+  "institutional-syndication": { label: "Institutional Portfolio Syndication", category: "Operations" },
 };
