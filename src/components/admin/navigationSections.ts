@@ -1242,6 +1242,13 @@ export const navigationSections = {
       badge: "👍 Confidence"
     },
     {
+      key: "buyer-qualification-heatmap",
+      label: "Buyer Qualification & Liquidity Heatmap",
+      icon: UserCheck,
+      description: "Serious buyer filtering, top agent partnerships & demand signal heatmap intelligence",
+      badge: "🎯 Quality"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,

@@ -364,6 +364,7 @@ export const ViewingConversionBlueprint = lazyRetry(() => import("./ViewingConve
 export const OfferNegotiationBlueprint = lazyRetry(() => import("./OfferNegotiationBlueprint"));
 export const BuyerFinancingBlueprint = lazyRetry(() => import("./BuyerFinancingBlueprint"));
 export const BuyerOfferConfidenceBlueprint = lazyRetry(() => import("./BuyerOfferConfidenceBlueprint"));
+export const BuyerQualificationBlueprint = lazyRetry(() => import("./BuyerQualificationBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -813,6 +814,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "offer-negotiation-blueprint": () => <OfferNegotiationBlueprint />,
   "buyer-financing-blueprint": () => <BuyerFinancingBlueprint />,
   "buyer-offer-confidence": () => <BuyerOfferConfidenceBlueprint />,
+  "buyer-qualification-heatmap": () => <BuyerQualificationBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1227,4 +1229,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "offer-negotiation-blueprint": { label: "Offer Negotiation & Lead Distribution", category: "Strategy" },
   "buyer-financing-blueprint": { label: "Buyer Financing & Premium Upsell", category: "Strategy" },
   "buyer-offer-confidence": { label: "Buyer Offer Confidence & Price Intel", category: "Strategy" },
+  "buyer-qualification-heatmap": { label: "Buyer Qualification & Liquidity Heatmap", category: "Strategy" },
 };
