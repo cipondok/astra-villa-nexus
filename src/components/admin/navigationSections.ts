@@ -1439,6 +1439,13 @@ export const navigationSections = {
       badge: "🌐 Command"
     },
     {
+      key: "global-economic-intelligence-legacy",
+      label: "Global Economic Intelligence & Legacy",
+      icon: Globe,
+      description: "Global economic intelligence network, planet-scale data coordination & founder legacy narrative",
+      badge: "🌍 Civilization"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
