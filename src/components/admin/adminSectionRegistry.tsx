@@ -113,6 +113,10 @@ export const UserOnboardingFlowUI = lazyRetry(() => import("./UserOnboardingFlow
 export const ListingSubmissionUX = lazyRetry(() => import("./ListingSubmissionUX"));
 export const BuyerSearchConversion = lazyRetry(() => import("./BuyerSearchConversion"));
 export const AgentTrainingPortal = lazyRetry(() => import("./AgentTrainingPortal"));
+export const BuyerViewingBookingFlow = lazyRetry(() => import("./BuyerViewingBookingFlow"));
+export const SellerPerformanceInsight = lazyRetry(() => import("./SellerPerformanceInsight"));
+export const AgentMobileHomeScreen = lazyRetry(() => import("./AgentMobileHomeScreen"));
+export const DealOfferSubmissionFlow = lazyRetry(() => import("./DealOfferSubmissionFlow"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
@@ -658,6 +662,12 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "buyer-search-conversion": () => <BuyerSearchConversion />,
   "agent-training-portal": () => <AgentTrainingPortal />,
 
+  // Property Viewing, Seller Insight & Deal Interaction
+  "buyer-viewing-booking": () => <BuyerViewingBookingFlow />,
+  "seller-performance-insight": () => <SellerPerformanceInsight />,
+  "agent-mobile-home": () => <AgentMobileHomeScreen />,
+  "deal-offer-submission": () => <DealOfferSubmissionFlow />,
+
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
   "social-media-settings": () => <SocialMediaSettings />,
@@ -1177,6 +1187,10 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "listing-submission-ux": { label: "Listing Submission", category: "User Experience" },
   "buyer-search-conversion": { label: "Buyer Search", category: "User Experience" },
   "agent-training-portal": { label: "Agent Training", category: "User Experience" },
+  "buyer-viewing-booking": { label: "Viewing Booking", category: "User Experience" },
+  "seller-performance-insight": { label: "Seller Insights", category: "User Experience" },
+  "agent-mobile-home": { label: "Agent Mobile Home", category: "User Experience" },
+  "deal-offer-submission": { label: "Offer Submission", category: "User Experience" },
   "seo-settings": { label: "SEO Hub", category: "Settings" },
   "seo-management": { label: "SEO Management", category: "Marketing" },
   "property-seo-checker": { label: "Property SEO Checker", category: "Core Management" },

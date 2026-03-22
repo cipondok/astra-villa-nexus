@@ -1171,6 +1171,34 @@ export const navigationSections = {
       badge: "🎓 Training"
     },
     {
+      key: "buyer-viewing-booking",
+      label: "Viewing Booking Flow",
+      icon: Calendar,
+      description: "Step-by-step viewing scheduling — date/time selection, contact confirmation & booking status tracker",
+      badge: "📅 Booking"
+    },
+    {
+      key: "seller-performance-insight",
+      label: "Seller Performance",
+      icon: BarChart3,
+      description: "Listing analytics for sellers — views, inquiries, market benchmarks & improvement suggestions",
+      badge: "📊 Insights"
+    },
+    {
+      key: "agent-mobile-home",
+      label: "Agent Mobile Home",
+      icon: Smartphone,
+      description: "Mobile-optimized agent dashboard — schedule, inquiries, listings, deals & commission tracking",
+      badge: "📱 Mobile"
+    },
+    {
+      key: "deal-offer-submission",
+      label: "Offer Submission Flow",
+      icon: Send,
+      description: "Streamlined purchase offer — pricing, financing, seller message & negotiation stage tracking",
+      badge: "💰 Offers"
+    },
+    {
       label: "AI Co-Pilot",
       icon: Brain,
       description: "Intelligent operations assistant — recommendations, risk radar, NL commands & automation governance",
