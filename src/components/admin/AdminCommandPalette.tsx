@@ -85,6 +85,8 @@ function buildIndex(): FlatItem[] {
   for (const [category, sections] of Object.entries(navigationSections)) {
     const catTitle = sectionTitles[category as keyof typeof sectionTitles] || category;
     for (const section of sections) {
+      if (!section?.key || !section?.label || !section?.icon) continue;
+
       items.push({
         id: section.key,
         label: section.label,

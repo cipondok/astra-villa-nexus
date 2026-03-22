@@ -1257,6 +1257,7 @@ export const navigationSections = {
       badge: "✨ AI Recs"
     },
     {
+      key: "ai-copilot",
       label: "AI Co-Pilot",
       icon: Brain,
       description: "Intelligent operations assistant — recommendations, risk radar, NL commands & automation governance",
