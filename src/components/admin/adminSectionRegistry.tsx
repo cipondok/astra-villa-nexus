@@ -129,6 +129,10 @@ export const SmartRenovationROICalculator = lazyRetry(() => import("./SmartRenov
 export const PropertyInsuranceComparison = lazyRetry(() => import("./PropertyInsuranceComparison"));
 export const ResaleOpportunityDashboard = lazyRetry(() => import("./ResaleOpportunityDashboard"));
 export const FamilyWealthTransferPlanner = lazyRetry(() => import("./FamilyWealthTransferPlanner"));
+export const GlobalDiversificationStrategy = lazyRetry(() => import("./GlobalDiversificationStrategy"));
+export const EconomicTrendForecasting = lazyRetry(() => import("./EconomicTrendForecasting"));
+export const SmartFinancingOptimization = lazyRetry(() => import("./SmartFinancingOptimization"));
+export const InstitutionalSyndication = lazyRetry(() => import("./InstitutionalSyndication"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
