@@ -624,6 +624,12 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "agent-training-coaching": () => <AgentTrainingCoachingDashboard />,
   "quarterly-expansion-readiness": () => <QuarterlyExpansionReadinessPanel />,
 
+  // Demand Pulse & Market Leadership
+  "realtime-buyer-demand-pulse": () => <RealTimeBuyerDemandPulse />,
+  "high-value-spotlight-promotion": () => <HighValueSpotlightPromotion />,
+  "agent-referral-growth-flywheel": () => <AgentReferralGrowthFlywheel />,
+  "annual-market-leadership": () => <AnnualMarketLeadershipProgress />,
+
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
   "social-media-settings": () => <SocialMediaSettings />,
