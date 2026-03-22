@@ -2,13 +2,6 @@ import { useState, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { generateDeviceFingerprint, getDeviceInfo } from '@/lib/deviceFingerprint';
 
-// Progressive lockout durations in ms
-const LOCKOUT_TIERS = [
-  { threshold: 5, duration: 5 * 60 * 1000 },    // 5 failures → 5 min
-  { threshold: 10, duration: 10 * 60 * 1000 },   // 10 failures → 10 min
-  { threshold: 15, duration: 30 * 60 * 1000 },   // 15 failures → 30 min
-];
-
 // Common disposable email domains (client-side fast check)
 const DISPOSABLE_DOMAINS_CLIENT = new Set([
   'tempmail.com', 'throwaway.email', 'guerrillamail.com', 'mailinator.com',
@@ -25,95 +18,121 @@ export interface LoginSecurityState {
 }
 
 export const useLoginSecurity = () => {
-  const [failedAttempts, setFailedAttempts] = useState(0);
-  const [lockoutUntil, setLockoutUntil] = useState<number | null>(null);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [isLocked, setIsLocked] = useState(false);
   const [lockoutRemaining, setLockoutRemaining] = useState(0);
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Start countdown timer
-  const startCountdown = useCallback((until: number) => {
+  const startCountdown = useCallback((seconds: number) => {
     if (intervalRef.current) clearInterval(intervalRef.current);
+    setIsLocked(true);
+    setLockoutRemaining(seconds);
+
     intervalRef.current = setInterval(() => {
-      const remaining = until - Date.now();
-      if (remaining <= 0) {
-        setLockoutUntil(null);
-        setLockoutRemaining(0);
-        setFailedAttempts(0);
-        if (intervalRef.current) clearInterval(intervalRef.current);
-      } else {
-        setLockoutRemaining(Math.ceil(remaining / 1000));
-      }
+      setLockoutRemaining((prev) => {
+        if (prev <= 1) {
+          setIsLocked(false);
+          setFailedAttempts(0);
+          if (intervalRef.current) clearInterval(intervalRef.current);
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
   }, []);
 
-  const isLocked = lockoutUntil !== null && Date.now() < lockoutUntil;
+  // Server-side lockout check (called before login attempt)
+  const checkServerLockout = useCallback(async (email: string): Promise<{ locked: boolean; remainingSeconds: number }> => {
+    try {
+      const { data, error } = await supabase.functions.invoke('auth-engine', {
+        body: { action: 'check_lockout', email },
+      });
+      if (error || !data) return { locked: false, remainingSeconds: 0 };
 
-  const getLockoutDuration = useCallback((attempts: number): number => {
-    for (let i = LOCKOUT_TIERS.length - 1; i >= 0; i--) {
-      if (attempts >= LOCKOUT_TIERS[i].threshold) {
-        return LOCKOUT_TIERS[i].duration;
+      if (data.locked) {
+        startCountdown(data.remaining_seconds);
+        return { locked: true, remainingSeconds: data.remaining_seconds };
       }
+      return { locked: false, remainingSeconds: 0 };
+    } catch {
+      return { locked: false, remainingSeconds: 0 };
     }
-    return 0;
-  }, []);
+  }, [startCountdown]);
 
+  // Server-side record attempt
+  const recordAttemptServer = useCallback(async (
+    email: string,
+    success: boolean,
+    userId?: string,
+    failureReason?: string
+  ): Promise<{ locked: boolean; lockDurationMin?: number; attemptsUntilLock?: number }> => {
+    try {
+      let fingerprint = '';
+      try { fingerprint = await generateDeviceFingerprint(); } catch { /* ignore */ }
+
+      const { data, error } = await supabase.functions.invoke('auth-engine', {
+        body: {
+          action: 'record_login_attempt',
+          email,
+          success,
+          failure_reason: failureReason,
+          device_fingerprint: fingerprint,
+          user_id: userId,
+        },
+      });
+
+      if (error || !data) return { locked: false };
+
+      if (data.locked) {
+        const seconds = (data.lockout_duration_min || 5) * 60;
+        startCountdown(seconds);
+        setFailedAttempts(data.total_failures || 0);
+        return {
+          locked: true,
+          lockDurationMin: data.lockout_duration_min,
+        };
+      }
+
+      setFailedAttempts(data.total_failures || 0);
+      return {
+        locked: false,
+        attemptsUntilLock: data.attempts_until_lock,
+      };
+    } catch {
+      return { locked: false };
+    }
+  }, [startCountdown]);
+
+  // Convenience wrappers maintaining backward compatibility
   const recordFailedAttempt = useCallback(() => {
     const newAttempts = failedAttempts + 1;
     setFailedAttempts(newAttempts);
-
-    const lockDuration = getLockoutDuration(newAttempts);
-    if (lockDuration > 0) {
-      const until = Date.now() + lockDuration;
-      setLockoutUntil(until);
-      setLockoutRemaining(Math.ceil(lockDuration / 1000));
-      startCountdown(until);
-    }
-
     return {
       attempts: newAttempts,
-      isLocked: lockDuration > 0,
-      lockDurationMs: lockDuration,
+      isLocked: false,
+      lockDurationMs: 0,
       attemptsUntilLock: Math.max(0, 5 - newAttempts),
     };
-  }, [failedAttempts, getLockoutDuration, startCountdown]);
+  }, [failedAttempts]);
 
   const recordSuccess = useCallback(() => {
     setFailedAttempts(0);
-    setLockoutUntil(null);
+    setIsLocked(false);
     setLockoutRemaining(0);
     if (intervalRef.current) clearInterval(intervalRef.current);
   }, []);
 
-  // Log login activity to database
+  // Log login activity to database (legacy, now handled by server)
   const logLoginActivity = useCallback(async (
     email: string,
     success: boolean,
     userId?: string,
     failureReason?: string
   ) => {
-    try {
-      const deviceInfo = getDeviceInfo();
-      let fingerprint = '';
-      try {
-        fingerprint = await generateDeviceFingerprint();
-      } catch { /* ignore */ }
-
-      await supabase.from('login_activity_log' as any).insert({
-        user_id: userId || null,
-        email,
-        device_fingerprint: fingerprint,
-        device_type: deviceInfo.deviceType,
-        browser: `${deviceInfo.browserName} ${deviceInfo.browserVersion}`,
-        os: `${deviceInfo.osName} ${deviceInfo.osVersion}`.trim(),
-        login_success: success,
-        failure_reason: failureReason || null,
-        risk_score: success ? 0 : Math.min(failedAttempts * 20, 100),
-        is_suspicious: failedAttempts >= 5,
-      });
-    } catch (error) {
-      console.error('Failed to log login activity:', error);
-    }
-  }, [failedAttempts]);
+    // Now delegates to server-side recording
+    await recordAttemptServer(email, success, userId, failureReason);
+  }, [recordAttemptServer]);
 
   // Check if email is disposable (client-side fast check)
   const isDisposableEmail = useCallback((email: string): boolean => {
@@ -127,7 +146,6 @@ export const useLoginSecurity = () => {
     const domain = email.split('@')[1]?.toLowerCase();
     if (!domain) return false;
 
-    // Fast client check first
     if (DISPOSABLE_DOMAINS_CLIENT.has(domain)) return true;
 
     try {
@@ -142,7 +160,6 @@ export const useLoginSecurity = () => {
     }
   }, []);
 
-  // Check if user email is verified
   const isEmailVerified = useCallback(async (): Promise<boolean> => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -154,7 +171,7 @@ export const useLoginSecurity = () => {
 
   return {
     failedAttempts,
-    lockoutUntil,
+    lockoutUntil: null,
     isLocked,
     lockoutRemaining,
     recordFailedAttempt,
@@ -163,5 +180,7 @@ export const useLoginSecurity = () => {
     isDisposableEmail,
     checkDisposableEmailDB,
     isEmailVerified,
+    checkServerLockout,
+    recordAttemptServer,
   };
 };

@@ -316,6 +316,7 @@ const IndexingStrategyPage = lazy(() => import('@/pages/IndexingStrategyPage'));
 const RealtimeArchitecturePage = lazy(() => import('@/pages/RealtimeArchitecturePage'));
 const CronSchedulePage = lazy(() => import('@/pages/CronSchedulePage'));
 const SecurityHardeningPage = lazy(() => import('@/pages/SecurityHardeningPage'));
+const SecurityActivityPage = lazy(() => import('@/pages/SecurityActivityPage'));
 const CloudInfrastructurePage = lazy(() => import('@/pages/CloudInfrastructurePage'));
 const DisasterRecoveryPage = lazy(() => import('@/pages/DisasterRecoveryPage'));
 const BehaviorAnalyticsPage = lazy(() => import('@/pages/BehaviorAnalyticsPage'));
@@ -863,6 +864,7 @@ const AppContent = () => {
                 <Route path="/realtime-architecture" element={<RealtimeArchitecturePage />} />
                 <Route path="/cron-schedule" element={<CronSchedulePage />} />
                 <Route path="/security-hardening" element={<SecurityHardeningPage />} />
+                <Route path="/security-activity" element={<ProtectedRoute><SecurityActivityPage /></ProtectedRoute>} />
                 <Route path="/cloud-infrastructure" element={<CloudInfrastructurePage />} />
                 <Route path="/disaster-recovery" element={<DisasterRecoveryPage />} />
                 <Route path="/behavior-analytics" element={<BehaviorAnalyticsPage />} />
