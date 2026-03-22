@@ -1442,4 +1442,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "autonomous-wealth-infra": { label: "Autonomous Wealth Infrastructure", category: "AI Intelligence" },
   "founder-100yr-legacy": { label: "Founder 100-Year Legacy", category: "AI Intelligence" },
   "planet-scale-storyboard": { label: "Planet-Scale Economic Storyboard", category: "AI Intelligence" },
+  "agent-network-growth": { label: "Agent Network Growth", category: "Operations" },
 };
