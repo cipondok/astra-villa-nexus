@@ -257,6 +257,10 @@ export const GlobalControlTower = lazyRetry(() => import("./GlobalControlTower")
 export const AutonomousDealFlowEngine = lazyRetry(() => import("./AutonomousDealFlowEngine"));
 export const InstitutionalDataRoom = lazyRetry(() => import("./InstitutionalDataRoom"));
 export const DecacornNarrativeMode = lazyRetry(() => import("./DecacornNarrativeMode"));
+export const PlanetaryExpansionSimulator = lazyRetry(() => import("./PlanetaryExpansionSimulator"));
+export const AICapitalAllocationBrain = lazyRetry(() => import("./AICapitalAllocationBrain"));
+export const FounderWarRoom = lazyRetry(() => import("./FounderWarRoom"));
+export const GlobalInfrastructureVision = lazyRetry(() => import("./GlobalInfrastructureVision"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
