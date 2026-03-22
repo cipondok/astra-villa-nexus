@@ -652,6 +652,12 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "global-expansion-capital-simulator": () => <GlobalExpansionCapitalSimulator />,
   "platform-integration-architecture": () => <PlatformIntegrationArchitecture />,
 
+  // Core User Experience & Activation
+  "user-onboarding-flow": () => <UserOnboardingFlowUI />,
+  "listing-submission-ux": () => <ListingSubmissionUX />,
+  "buyer-search-conversion": () => <BuyerSearchConversion />,
+  "agent-training-portal": () => <AgentTrainingPortal />,
+
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
   "social-media-settings": () => <SocialMediaSettings />,
