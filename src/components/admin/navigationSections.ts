@@ -1572,6 +1572,13 @@ export const navigationSections = {
       badge: "💎 Unicorn"
     },
     {
+      key: "decacorn-intelligence-os-legacy",
+      label: "Decacorn & Intelligence OS",
+      icon: Globe,
+      description: "Decacorn strategic simulation, autonomous marketplace intelligence OS & founder category-creator legacy",
+      badge: "🌍 Decacorn"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",

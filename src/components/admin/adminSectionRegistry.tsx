@@ -411,6 +411,7 @@ export const NationalLiquidityProfitSeriesA = lazyRetry(() => import("./National
 export const SeriesBInstitutionalCategoryLeadership = lazyRetry(() => import("./SeriesBInstitutionalCategoryLeadership"));
 export const PreUnicornRiskDeveloperPartnership = lazyRetry(() => import("./PreUnicornRiskDeveloperPartnership"));
 export const UnicornLiquidityInstitutionalAuthority = lazyRetry(() => import("./UnicornLiquidityInstitutionalAuthority"));
+export const DecacornIntelligenceOSLegacy = lazyRetry(() => import("./DecacornIntelligenceOSLegacy"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -907,6 +908,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "series-b-institutional-category-leadership": () => <SeriesBInstitutionalCategoryLeadership />,
   "pre-unicorn-risk-developer-partnership": () => <PreUnicornRiskDeveloperPartnership />,
   "unicorn-liquidity-institutional-authority": () => <UnicornLiquidityInstitutionalAuthority />,
+  "decacorn-intelligence-os-legacy": () => <DecacornIntelligenceOSLegacy />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
