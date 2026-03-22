@@ -1448,4 +1448,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "planet-scale-storyboard": { label: "Planet-Scale Economic Storyboard", category: "AI Intelligence" },
   "agent-network-growth": { label: "Agent Network Growth", category: "Operations" },
   "deal-pipeline-crm": { label: "Deal Pipeline CRM", category: "Operations" },
+  "city-liquidity-heatmap": { label: "City Liquidity Heatmap", category: "Operations" },
 };
