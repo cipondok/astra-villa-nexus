@@ -832,6 +832,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "buyer-decision-district": () => <BuyerDecisionDistrictBlueprint />,
   "second-viewing-leaderboard": () => <SecondViewingLeaderboardBlueprint />,
   "offer-closing-flash": () => <OfferClosingFlashBlueprint />,
+  "post-deal-loyalty-mega": () => <PostDealLoyaltyMegaPortfolioBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
