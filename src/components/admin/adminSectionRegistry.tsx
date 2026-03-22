@@ -90,6 +90,10 @@ export const AdminNotificationsCenter = lazyRetry(() => import("./AdminNotificat
 export const LaunchReadinessDashboard = lazyRetry(() => import("./LaunchReadinessDashboard"));
 export const AIFeedbackAnalytics = lazyRetry(() => import("./AIFeedbackAnalytics").then((m) => ({ default: m.AIFeedbackAnalytics })));
 
+export const FounderDailyPriorityCommand = lazyRetry(() => import("./FounderDailyPriorityCommand"));
+export const AgentTerritoryCoverageMap = lazyRetry(() => import("./AgentTerritoryCoverageMap"));
+export const BuyerViewingFeedbackPanel = lazyRetry(() => import("./BuyerViewingFeedbackPanel"));
+export const MonthlyLiquidityDominancePanel = lazyRetry(() => import("./MonthlyLiquidityDominancePanel"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
@@ -600,7 +604,12 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "unicorn-narrative": () => <UnicornNarrativePanel />,
   "liquidity-index-branding": () => <LiquidityIndexBrandingPanel />,
 
-  // Content
+  // Founder Command & Liquidity Domination
+  "founder-daily-priority": () => <FounderDailyPriorityCommand />,
+  "agent-territory-coverage": () => <AgentTerritoryCoverageMap />,
+  "buyer-viewing-feedback": () => <BuyerViewingFeedbackPanel />,
+  "monthly-liquidity-domination": () => <MonthlyLiquidityDominancePanel />,
+
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
   "social-media-settings": () => <SocialMediaSettings />,
@@ -1097,6 +1106,10 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "tools-management": { label: "Tools Management", category: "System & Tools" },
   "rate-limiting": { label: "API Rate Limiting", category: "System & Tools" },
   "customer-service-control": { label: "CS Control Panel", category: "Support" },
+  "founder-daily-priority": { label: "Founder Daily Priority", category: "Execution Command" },
+  "agent-territory-coverage": { label: "Agent Territory Map", category: "Execution Command" },
+  "buyer-viewing-feedback": { label: "Viewing Feedback", category: "Execution Command" },
+  "monthly-liquidity-domination": { label: "Liquidity Domination", category: "Execution Command" },
   "seo-settings": { label: "SEO Hub", category: "Settings" },
   "seo-management": { label: "SEO Management", category: "Marketing" },
   "property-seo-checker": { label: "Property SEO Checker", category: "Core Management" },
