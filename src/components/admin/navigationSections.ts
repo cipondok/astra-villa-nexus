@@ -129,7 +129,9 @@ import {
   Crosshair,
   Upload,
   PartyPopper,
-  Briefcase
+  Briefcase,
+  Hammer,
+  Crown
 } from "lucide-react";
 
 export interface NavigationSection {
