@@ -85,7 +85,8 @@ const UserDirectoryFixed = () => {
   const { data: users, isLoading } = useQuery({
     queryKey: ['users-with-categories'],
     queryFn: async (): Promise<UserProfile[]> => {
-      const { data, error } = await supabase
+      // Fetch profiles with vendor business profiles
+      const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select(`
           id,
@@ -108,8 +109,26 @@ const UserDirectoryFixed = () => {
         `)
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
-      return data as UserProfile[] || [];
+      if (profilesError) throw profilesError;
+
+      // Fetch roles for all users
+      const { data: rolesData } = await supabase
+        .from('user_roles')
+        .select('user_id, role');
+
+      const roleMap = new Map<string, string>();
+      (rolesData || []).forEach((r: any) => {
+        // If user has multiple roles, prefer non-'user' roles
+        const existing = roleMap.get(r.user_id);
+        if (!existing || existing === 'user') {
+          roleMap.set(r.user_id, r.role);
+        }
+      });
+
+      return (profilesData || []).map((p: any) => ({
+        ...p,
+        role: roleMap.get(p.id) || 'user',
+      })) as UserProfile[];
     }
   });
 
