@@ -121,6 +121,10 @@ export const NegotiationChatInterface = lazyRetry(() => import("./NegotiationCha
 export const DealProgressTimeline = lazyRetry(() => import("./DealProgressTimeline"));
 export const SecurePaymentEscrowFlow = lazyRetry(() => import("./SecurePaymentEscrowFlow"));
 export const ClosingCelebrationScreen = lazyRetry(() => import("./ClosingCelebrationScreen"));
+export const PostClosingOwnershipDashboard = lazyRetry(() => import("./PostClosingOwnershipDashboard"));
+export const InvestorPortfolioTracking = lazyRetry(() => import("./InvestorPortfolioTracking"));
+export const RentalYieldMonitoring = lazyRetry(() => import("./RentalYieldMonitoring"));
+export const SmartPropertyRecommendationEngine = lazyRetry(() => import("./SmartPropertyRecommendationEngine"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
