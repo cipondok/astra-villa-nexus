@@ -1606,4 +1606,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "deal-ops-closing": { label: "Deal Operations & Closing Management", category: "Operations" },
   "performance-deal-warroom": { label: "Performance & Deal War-Room", category: "Operations" },
   "supply-growth-deal-acceleration": { label: "Supply Growth & Deal Acceleration", category: "Operations" },
+  "renovation-roi-calculator": { label: "Renovation ROI Calculator", category: "Operations" },
+  "insurance-comparison": { label: "Insurance Comparison", category: "Operations" },
+  "resale-opportunity": { label: "Resale Opportunity Dashboard", category: "Operations" },
+  "wealth-transfer-planner": { label: "Family Wealth Transfer Planner", category: "Operations" },
 };
