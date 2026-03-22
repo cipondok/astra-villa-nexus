@@ -288,6 +288,7 @@ export const FirstCityDominationCommand = lazyRetry(() => import("./FirstCityDom
 export const DealPriorityRevenueIntelligence = lazyRetry(() => import("./DealPriorityRevenueIntelligence"));
 export const BehavioralGrowthEngine = lazyRetry(() => import("./BehavioralGrowthEngine"));
 export const TrustSafetyIntelligence = lazyRetry(() => import("./TrustSafetyIntelligence"));
+export const ComplianceValuationInstitutional = lazyRetry(() => import("./ComplianceValuationInstitutional"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
