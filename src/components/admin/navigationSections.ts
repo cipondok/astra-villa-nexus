@@ -1212,6 +1212,13 @@ export const navigationSections = {
       badge: "🛡️ Trust"
     },
     {
+      key: "viewing-conversion-blueprint",
+      label: "Viewing Conversion & Dev Partners",
+      icon: Calendar,
+      description: "Viewing conversion optimization, developer partnerships & deal story marketing",
+      badge: "🤝 Deals"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
