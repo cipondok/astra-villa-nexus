@@ -1251,7 +1251,7 @@ export const navigationSections = {
     {
       key: "viewing-commitment-elite",
       label: "Viewing Commitment & Elite Circle",
-      icon: CalendarCheck,
+      icon: CalendarClock,
       description: "Viewing attendance optimization, elite agent ecosystem & demand surge alert system",
       badge: "👁️ Viewing"
     },
