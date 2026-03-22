@@ -1270,6 +1270,13 @@ export const navigationSections = {
       badge: "⚡ Speed"
     },
     {
+      key: "repeat-buyer-pipeline",
+      label: "Repeat Buyer & Pipeline Forecast",
+      icon: RefreshCw,
+      description: "Buyer retention lifecycle, agent pipeline forecasting & supply shortage alert activation",
+      badge: "🔄 Retention"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,

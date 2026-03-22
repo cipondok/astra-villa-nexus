@@ -368,6 +368,7 @@ export const BuyerQualificationBlueprint = lazyRetry(() => import("./BuyerQualif
 export const ViewingCommitmentBlueprint = lazyRetry(() => import("./ViewingCommitmentBlueprint"));
 export const OfferAcceptanceBlueprint = lazyRetry(() => import("./OfferAcceptanceBlueprint"));
 export const FastDealCycleBlueprint = lazyRetry(() => import("./FastDealCycleBlueprint"));
+export const RepeatBuyerPipelineBlueprint = lazyRetry(() => import("./RepeatBuyerPipelineBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -821,6 +822,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "viewing-commitment-elite": () => <ViewingCommitmentBlueprint />,
   "offer-acceptance-commission": () => <OfferAcceptanceBlueprint />,
   "fast-deal-cycle-liquidity": () => <FastDealCycleBlueprint />,
+  "repeat-buyer-pipeline": () => <RepeatBuyerPipelineBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1239,4 +1241,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "viewing-commitment-elite": { label: "Viewing Commitment & Elite Agent Circle", category: "Strategy" },
   "offer-acceptance-commission": { label: "Offer Acceptance & Commission Incentive", category: "Strategy" },
   "fast-deal-cycle-liquidity": { label: "Fast Deal Cycle & Liquidity Score", category: "Strategy" },
+  "repeat-buyer-pipeline": { label: "Repeat Buyer & Agent Pipeline Forecast", category: "Strategy" },
 };
