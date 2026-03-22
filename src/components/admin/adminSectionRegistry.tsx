@@ -283,6 +283,7 @@ export const CityLiquidityHeatmap = lazyRetry(() => import("./CityLiquidityHeatm
 export const PremiumListingsMonetization = lazyRetry(() => import("./PremiumListingsMonetization"));
 export const FounderMobileWarRoom = lazyRetry(() => import("./FounderMobileWarRoom"));
 export const InvestorGrowthIntelligence = lazyRetry(() => import("./InvestorGrowthIntelligence"));
+export const GlobalExpansionIntelligence = lazyRetry(() => import("./GlobalExpansionIntelligence"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
