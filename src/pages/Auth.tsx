@@ -277,18 +277,6 @@ const Auth = () => {
     }
   };
 
-  // Lockout countdown
-  useEffect(() => {
-    if (!lockoutUntil) return;
-    const interval = setInterval(() => {
-      if (Date.now() >= lockoutUntil) {
-        setLockoutUntil(null);
-        setFailedAttempts(0);
-        clearInterval(interval);
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [lockoutUntil]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gold-primary/5 via-background to-accent/5 px-4 py-12">
