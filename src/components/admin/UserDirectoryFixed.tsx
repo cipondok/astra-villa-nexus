@@ -494,7 +494,7 @@ const UserDirectoryFixed = () => {
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline">
-                          {(user.role ?? 'unknown').replace('_', ' ').toUpperCase()}
+                          {(user.role || 'user').replace('_', ' ').toUpperCase()}
                         </Badge>
                       </TableCell>
                       <TableCell>
