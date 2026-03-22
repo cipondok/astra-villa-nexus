@@ -375,6 +375,7 @@ export const SecondViewingLeaderboardBlueprint = lazyRetry(() => import("./Secon
 export const OfferClosingFlashBlueprint = lazyRetry(() => import("./OfferClosingFlashBlueprint"));
 export const PostDealLoyaltyMegaPortfolioBlueprint = lazyRetry(() => import("./PostDealLoyaltyMegaPortfolioBlueprint"));
 export const ReferralMegaProjectCityBlueprint = lazyRetry(() => import("./ReferralMegaProjectCityBlueprint"));
+export const RegionalInstitutionalProfitabilityBlueprint = lazyRetry(() => import("./RegionalInstitutionalProfitabilityBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
