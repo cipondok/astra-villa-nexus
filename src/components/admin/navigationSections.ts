@@ -1544,6 +1544,13 @@ export const navigationSections = {
       badge: "👑 1K Deals"
     },
     {
+      key: "national-liquidity-profit-series-a",
+      label: "National Grid & Series-A",
+      icon: Globe,
+      description: "National liquidity coordination, profit optimization engine & Series-A fundraising narrative execution",
+      badge: "🌐 Series-A"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
