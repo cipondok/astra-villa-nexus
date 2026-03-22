@@ -876,6 +876,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "global-economic-intelligence-legacy": () => <GlobalEconomicIntelligenceLegacyBlueprint />,
   "first-1000-deals-liquidity-founder": () => <First1000DealsLiquidityFounderBlueprint />,
   "first-10k-listings-buyer-pipeline-warroom": () => <First10KListingsBuyerPipelineDealWarRoom />,
+  "100k-traffic-vendor-flywheel-heatmap": () => <Traffic100KVendorFlywheelLiquidityHeatmap />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
