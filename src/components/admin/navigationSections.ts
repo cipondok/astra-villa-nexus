@@ -1488,6 +1488,13 @@ export const navigationSections = {
       badge: "🏛️ IPO Stage"
     },
     {
+      key: "public-market-category-global-liquidity-century-vision",
+      label: "Category Creation & Century Vision",
+      icon: Sparkles,
+      description: "Public market category creation, global liquidity infrastructure & founder century-scale vision",
+      badge: "✨ Century Vision"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
