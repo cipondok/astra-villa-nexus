@@ -1292,6 +1292,13 @@ export const navigationSections = {
       badge: "⏰ Urgency"
     },
     {
+      key: "second-viewing-leaderboard",
+      label: "Second Viewing & Agent Leaderboard",
+      icon: Trophy,
+      description: "Second viewing conversion, territory performance gamification & urgent deal campaigns",
+      badge: "🏆 Performance"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
