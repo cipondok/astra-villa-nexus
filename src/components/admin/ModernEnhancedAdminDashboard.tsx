@@ -33,9 +33,11 @@ const ModernEnhancedAdminDashboard = () => {
   useEffect(() => {
     (window as any).__investorDemoTrigger = true;
     (window as any).__investorDemoOpen = () => setInvestorMode(true);
+    (window as any).__narrativeDemoOpen = () => setNarrativeMode(true);
     return () => {
       delete (window as any).__investorDemoTrigger;
       delete (window as any).__investorDemoOpen;
+      delete (window as any).__narrativeDemoOpen;
     };
   }, []);
 
