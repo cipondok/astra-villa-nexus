@@ -890,6 +890,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "public-market-category-global-liquidity-century-vision": () => <PublicMarketCategoryGlobalLiquidityCenturyVision />,
   "first-100-deals-cashflow-stress-proof": () => <First100DealsCashflowStressProof />,
   "first-20-buyers-agent-hustle-local-takeover": () => <First20BuyersAgentHustleLocalTakeover />,
+  "first-10-deals-viewing-psychology-agent-motivation": () => <First10DealsViewingPsychologyAgentMotivation />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
