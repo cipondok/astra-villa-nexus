@@ -1418,7 +1418,13 @@ export const navigationSections = {
       badge: "🌍 Global"
     },
     {
-      key: "vendor-intelligence-engine",
+      key: "global-ipo-alliance-intelligence",
+      label: "Global IPO & Alliance Command",
+      icon: Landmark,
+      description: "IPO execution roadmap, worldwide strategic alliances & self-evolving economic intelligence",
+      badge: "🏛️ IPO"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
