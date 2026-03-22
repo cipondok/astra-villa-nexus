@@ -1389,4 +1389,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-control-tower": { label: "Global Control Tower", category: "AI Intelligence" },
   "autonomous-deal-flow": { label: "Autonomous Deal Flow Engine", category: "AI Intelligence" },
   "institutional-data-room": { label: "Institutional Data Room", category: "AI Intelligence" },
+  "planetary-expansion-sim": { label: "Planetary Expansion Simulator", category: "AI Intelligence" },
+  "ai-capital-allocation": { label: "AI Capital Allocation Brain", category: "AI Intelligence" },
+  "founder-war-room": { label: "Founder Strategic War Room", category: "AI Intelligence" },
+  "global-infra-vision": { label: "Global Infrastructure Vision", category: "AI Intelligence" },
 };
