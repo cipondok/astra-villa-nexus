@@ -130,7 +130,9 @@ import {
   Upload,
   PartyPopper,
   Briefcase,
-  Hammer
+  Hammer,
+  Server,
+  Code
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -1368,6 +1370,34 @@ export const navigationSections = {
       icon: BarChart3,
       description: "Public market narrative analytics — revenue trajectory, moat strength, IPO timeline & institutional confidence",
       badge: "📈 Narrative"
+    },
+    {
+      key: "database-architecture",
+      label: "Database Architecture",
+      icon: Database,
+      description: "Full relational schema visualization — entity relationships, index recommendations & partition strategy",
+      badge: "🗄️ Schema"
+    },
+    {
+      key: "api-endpoint-structure",
+      label: "API Endpoint Structure",
+      icon: Server,
+      description: "Service endpoint documentation — rate limiting, versioning, request/response schemas & microservice readiness",
+      badge: "🔗 API"
+    },
+    {
+      key: "frontend-architecture",
+      label: "Frontend Architecture",
+      icon: Code,
+      description: "Component folder organization — module domains, reusability patterns, lazy-loading & responsive design",
+      badge: "📁 Structure"
+    },
+    {
+      key: "deployment-scaling",
+      label: "Deployment & Scaling",
+      icon: Cloud,
+      description: "Cloud infrastructure layers — CDN, serverless, database scaling, CI/CD pipeline & disaster recovery",
+      badge: "☁️ Infra"
     },
     {
       key: "ai-copilot",

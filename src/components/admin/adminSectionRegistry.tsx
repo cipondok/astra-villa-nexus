@@ -141,6 +141,10 @@ export const GlobalLiquidityCoordination = lazyRetry(() => import("./GlobalLiqui
 export const PlanetaryEconomicImpact = lazyRetry(() => import("./PlanetaryEconomicImpact"));
 export const FounderLegacyCivilization = lazyRetry(() => import("./FounderLegacyCivilization"));
 export const PublicMarketInvestorStory = lazyRetry(() => import("./PublicMarketInvestorStory"));
+export const DatabaseArchitecture = lazyRetry(() => import("./DatabaseArchitecture"));
+export const APIEndpointStructure = lazyRetry(() => import("./APIEndpointStructure"));
+export const FrontendArchitecture = lazyRetry(() => import("./FrontendArchitecture"));
+export const DeploymentScaling = lazyRetry(() => import("./DeploymentScaling"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
@@ -719,6 +723,10 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "planetary-economic-impact": () => <PlanetaryEconomicImpact />,
   "founder-legacy-civilization": () => <FounderLegacyCivilization />,
   "public-market-investor-story": () => <PublicMarketInvestorStory />,
+  "database-architecture": () => <DatabaseArchitecture />,
+  "api-endpoint-structure": () => <APIEndpointStructure />,
+  "frontend-architecture": () => <FrontendArchitecture />,
+  "deployment-scaling": () => <DeploymentScaling />,
 
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
@@ -1650,4 +1658,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "planetary-economic-impact": { label: "Planetary Economic Impact", category: "Operations" },
   "founder-legacy-civilization": { label: "Founder Legacy Civilization", category: "Operations" },
   "public-market-investor-story": { label: "Public Market Investor Story", category: "Operations" },
+  "database-architecture": { label: "Database Architecture", category: "Operations" },
+  "api-endpoint-structure": { label: "API Endpoint Structure", category: "Operations" },
+  "frontend-architecture": { label: "Frontend Architecture", category: "Operations" },
+  "deployment-scaling": { label: "Deployment & Scaling", category: "Operations" },
 };
