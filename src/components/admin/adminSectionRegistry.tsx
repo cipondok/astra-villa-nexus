@@ -294,6 +294,7 @@ export const PlanetaryIntelligenceCivilizationOS = lazyRetry(() => import("./Pla
 export const FirstTractionExecutionDashboard = lazyRetry(() => import("./FirstTractionExecutionDashboard"));
 export const DealOpsClosingManagement = lazyRetry(() => import("./DealOpsClosingManagement"));
 export const PerformanceDealWarRoom = lazyRetry(() => import("./PerformanceDealWarRoom"));
+export const SupplyGrowthDealAcceleration = lazyRetry(() => import("./SupplyGrowthDealAcceleration"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
