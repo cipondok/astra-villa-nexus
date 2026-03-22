@@ -50327,6 +50327,90 @@ export type Database = {
         }
         Relationships: []
       }
+      server_lockouts: {
+        Row: {
+          created_at: string
+          email: string
+          failed_attempts: number
+          id: string
+          ip_address: string | null
+          is_active: boolean
+          locked_at: string
+          lockout_tier: number
+          unlock_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          failed_attempts?: number
+          id?: string
+          ip_address?: string | null
+          is_active?: boolean
+          locked_at?: string
+          lockout_tier?: number
+          unlock_at: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          failed_attempts?: number
+          id?: string
+          ip_address?: string | null
+          is_active?: boolean
+          locked_at?: string
+          lockout_tier?: number
+          unlock_at?: string
+        }
+        Relationships: []
+      }
+      server_login_attempts: {
+        Row: {
+          city: string | null
+          country: string | null
+          created_at: string
+          device_fingerprint: string | null
+          email: string
+          failure_reason: string | null
+          geo_anomaly: boolean | null
+          id: string
+          ip_address: string | null
+          is_suspicious: boolean | null
+          risk_score: number | null
+          success: boolean
+          user_agent: string | null
+        }
+        Insert: {
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device_fingerprint?: string | null
+          email: string
+          failure_reason?: string | null
+          geo_anomaly?: boolean | null
+          id?: string
+          ip_address?: string | null
+          is_suspicious?: boolean | null
+          risk_score?: number | null
+          success?: boolean
+          user_agent?: string | null
+        }
+        Update: {
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device_fingerprint?: string | null
+          email?: string
+          failure_reason?: string | null
+          geo_anomaly?: boolean | null
+          id?: string
+          ip_address?: string | null
+          is_suspicious?: boolean | null
+          risk_score?: number | null
+          success?: boolean
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       service_area_mappings: {
         Row: {
           area_type: string
@@ -50694,6 +50778,36 @@ export type Database = {
           owner_id?: string
           search_id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      signup_rate_limits: {
+        Row: {
+          attempt_count: number
+          created_at: string
+          email_domain: string | null
+          id: string
+          ip_address: string
+          is_blocked: boolean | null
+          window_start: string
+        }
+        Insert: {
+          attempt_count?: number
+          created_at?: string
+          email_domain?: string | null
+          id?: string
+          ip_address: string
+          is_blocked?: boolean | null
+          window_start?: string
+        }
+        Update: {
+          attempt_count?: number
+          created_at?: string
+          email_domain?: string | null
+          id?: string
+          ip_address?: string
+          is_blocked?: boolean | null
+          window_start?: string
         }
         Relationships: []
       }
@@ -55845,6 +55959,45 @@ export type Database = {
           timestamp?: number
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      user_security_events: {
+        Row: {
+          city: string | null
+          country: string | null
+          created_at: string
+          description: string | null
+          device_info: string | null
+          event_type: string
+          id: string
+          ip_address: string | null
+          risk_level: string | null
+          user_id: string | null
+        }
+        Insert: {
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          description?: string | null
+          device_info?: string | null
+          event_type: string
+          id?: string
+          ip_address?: string | null
+          risk_level?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          description?: string | null
+          device_info?: string | null
+          event_type?: string
+          id?: string
+          ip_address?: string | null
+          risk_level?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
