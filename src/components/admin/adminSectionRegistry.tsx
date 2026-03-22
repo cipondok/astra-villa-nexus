@@ -872,6 +872,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "daily-global-revenue-sprint-clarity": () => <DailyGlobalRevenueSprintClarityBlueprint />,
   "global-founder-warroom-deal-expansion": () => <GlobalFounderWarRoomDealExpansionBlueprint />,
   "global-economic-intelligence-legacy": () => <GlobalEconomicIntelligenceLegacyBlueprint />,
+  "first-1000-deals-liquidity-founder": () => <First1000DealsLiquidityFounderBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
