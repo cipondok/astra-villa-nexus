@@ -1298,4 +1298,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "first-100k-revenue-city-replication": { label: "$100K Revenue & City Replication", category: "Strategy" },
   "revenue-250k-regional-executive": { label: "$250K Revenue & Regional Liquidity", category: "Strategy" },
   "revenue-500k-national-board": { label: "$500K Revenue & National Grid", category: "Strategy" },
+  "revenue-1m-national-ipo": { label: "$1M Revenue & IPO Readiness", category: "Strategy" },
 };
