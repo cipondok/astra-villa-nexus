@@ -1530,6 +1530,13 @@ export const navigationSections = {
       badge: "🔄 Flywheel"
     },
     {
+      key: "300-deals-brand-regional-liquidity",
+      label: "300 Deals & Regional Liquidity",
+      icon: TrendingUp,
+      description: "Transaction scaling engine, brand authority acceleration & multi-district liquidity leadership",
+      badge: "🗺️ Regional"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
