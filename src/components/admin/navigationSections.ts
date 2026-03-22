@@ -173,6 +173,13 @@ export const navigationSections = {
       badge: "Tactical"
     },
     {
+      key: "deal-priority-revenue",
+      label: "Deal Priority & Revenue",
+      icon: BarChart3,
+      description: "AI deal ranking, supply tracker, investor reports, and revenue projection engine",
+      badge: "Intel"
+    },
+    {
       key: "deal-pipeline-crm",
       label: "Deal Pipeline CRM",
       icon: Target,
