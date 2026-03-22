@@ -153,6 +153,10 @@ export const MicroservicesDecomposition = lazyRetry(() => import("./Microservice
 export const DataWarehouseAnalytics = lazyRetry(() => import("./DataWarehouseAnalytics"));
 export const LoadTestingSimulator = lazyRetry(() => import("./LoadTestingSimulator"));
 export const IncidentReliabilityDashboard = lazyRetry(() => import("./IncidentReliabilityDashboard"));
+export const CostOptimizationDashboard = lazyRetry(() => import("./CostOptimizationDashboard"));
+export const DevVelocityTracker = lazyRetry(() => import("./DevVelocityTracker"));
+export const AIModelGovernance = lazyRetry(() => import("./AIModelGovernance"));
+export const UXQualityMonitoring = lazyRetry(() => import("./UXQualityMonitoring"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
@@ -743,6 +747,10 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "data-warehouse-analytics": () => <DataWarehouseAnalytics />,
   "load-testing-simulator": () => <LoadTestingSimulator />,
   "incident-reliability-dashboard": () => <IncidentReliabilityDashboard />,
+  "cost-optimization-dashboard": () => <CostOptimizationDashboard />,
+  "dev-velocity-tracker": () => <DevVelocityTracker />,
+  "ai-model-governance": () => <AIModelGovernance />,
+  "ux-quality-monitoring": () => <UXQualityMonitoring />,
 
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
@@ -1686,4 +1694,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "data-warehouse-analytics": { label: "Data Warehouse & Analytics", category: "Operations" },
   "load-testing-simulator": { label: "Load Testing Simulator", category: "Operations" },
   "incident-reliability-dashboard": { label: "Incident & Reliability", category: "Operations" },
+  "cost-optimization-dashboard": { label: "Cost Optimization", category: "Operations" },
+  "dev-velocity-tracker": { label: "Dev Velocity Tracker", category: "Operations" },
+  "ai-model-governance": { label: "AI Model Governance", category: "Operations" },
+  "ux-quality-monitoring": { label: "UX Quality Monitoring", category: "Operations" },
 };
