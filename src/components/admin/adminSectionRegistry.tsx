@@ -840,6 +840,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "referral-mega-project-city": () => <ReferralMegaProjectCityBlueprint />,
   "regional-institutional-profitability": () => <RegionalInstitutionalProfitabilityBlueprint />,
   "national-data-series-a": () => <NationalDataSeriesABlueprint />,
+  "pre-unicorn-global-brand-os": () => <PreUnicornGlobalBrandMarketplaceOSBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
