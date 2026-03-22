@@ -5,6 +5,7 @@ import AdminHeader from "./AdminHeader";
 import { useNavigate } from "react-router-dom";
 import { DemoModeProvider } from "@/contexts/DemoModeContext";
 import AIIntelligenceSystem from "./AIIntelligenceSystem";
+import { InvestorDemoMode } from "./InvestorDemoMode";
 
 const DemoModeController = lazy(() => import("./demo/DemoModeController"));
 const DemoModeOverlay = lazy(() => import("./demo/DemoModeOverlay"));
@@ -23,7 +24,18 @@ const ModernEnhancedAdminDashboard = () => {
   });
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [prioritySections, setPrioritySections] = useState<string[]>([]);
+  const [investorMode, setInvestorMode] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  // Expose investor demo trigger globally for header
+  useEffect(() => {
+    (window as any).__investorDemoTrigger = true;
+    (window as any).__investorDemoOpen = () => setInvestorMode(true);
+    return () => {
+      delete (window as any).__investorDemoTrigger;
+      delete (window as any).__investorDemoOpen;
+    };
+  }, []);
 
   const handleSectionChange = useCallback((section: string) => {
     const normalized = normalizeSection(section);
@@ -52,6 +64,11 @@ const ModernEnhancedAdminDashboard = () => {
     contentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [activeSection]);
+
+  // Collapse sidebar when investor mode is active
+  useEffect(() => {
+    if (investorMode) setSidebarCollapsed(true);
+  }, [investorMode]);
 
   const handlePriorityChange = useCallback((priorities: string[]) => {
     setPrioritySections(priorities);
@@ -87,6 +104,9 @@ const ModernEnhancedAdminDashboard = () => {
 
       {/* Unified AI Intelligence System */}
       <AIIntelligenceSystem onPriorityChange={handlePriorityChange} />
+
+      {/* Investor Cinematic Demo Mode */}
+      <InvestorDemoMode isActive={investorMode} onClose={() => setInvestorMode(false)} />
 
       {/* Demo Mode overlays */}
       <Suspense fallback={null}>
