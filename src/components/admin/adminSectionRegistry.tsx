@@ -1412,4 +1412,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "autonomous-txn-engine": { label: "Autonomous Transaction Engine", category: "AI Intelligence" },
   "founder-legacy-narrative": { label: "Founder Legacy Narrative", category: "AI Intelligence" },
   "century-evolution-sim": { label: "100-Year Evolution Simulator", category: "AI Intelligence" },
+  "planetary-economic-coord": { label: "Planetary Economic Coordination", category: "AI Intelligence" },
+  "autonomous-urban-growth": { label: "Autonomous Urban Growth Intelligence", category: "AI Intelligence" },
+  "founder-global-influence": { label: "Founder Global Influence Narrative", category: "AI Intelligence" },
+  "post-marketplace-evolution": { label: "Post-Marketplace Evolution", category: "AI Intelligence" },
 };
