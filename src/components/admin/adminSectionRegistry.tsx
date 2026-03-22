@@ -842,6 +842,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "regional-institutional-profitability": () => <RegionalInstitutionalProfitabilityBlueprint />,
   "national-data-series-a": () => <NationalDataSeriesABlueprint />,
   "pre-unicorn-global-brand-os": () => <PreUnicornGlobalBrandMarketplaceOSBlueprint />,
+  "unicorn-category-ai-control": () => <UnicornCategoryAIControlBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
