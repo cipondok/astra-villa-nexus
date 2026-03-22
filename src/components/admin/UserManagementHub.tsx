@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Users, UserCheck, UserX, Shield, Crown, TrendingUp, 
-  Activity, Clock, BarChart3, AlertTriangle 
+  Activity, Clock, BarChart3, AlertTriangle, ShieldCheck, Settings2
 } from "lucide-react";
 import { lazy, Suspense } from "react";
 
@@ -15,6 +15,8 @@ const EnhancedUserManagement = lazy(() => import("./EnhancedUserManagement"));
 const UserLevelManagement = lazy(() => import("./UserLevelManagement"));
 const UserUpgradeApplications = lazy(() => import("./UserUpgradeApplications"));
 const VerificationManagement = lazy(() => import("./VerificationManagement"));
+const UserRoleManagement = lazy(() => import("./UserRoleManagement"));
+const UserAnalyticsDashboard = lazy(() => import("./UserAnalyticsDashboard"));
 
 interface UserStats {
   totalUsers: number;
@@ -94,6 +96,10 @@ const UserManagementHub = ({ onNavigate }: { onNavigate?: (section: string) => v
     customer_service: "bg-accent/10 text-accent-foreground",
   };
 
+  const LoadingFallback = () => (
+    <div className="h-64 flex items-center justify-center text-muted-foreground text-sm">Loading...</div>
+  );
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -102,7 +108,7 @@ const UserManagementHub = ({ onNavigate }: { onNavigate?: (section: string) => v
             <Users className="h-5 w-5 text-primary" />
             User Management Hub
           </h1>
-          <p className="text-xs text-muted-foreground mt-0.5">Overview, user accounts, levels & verification</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Overview, accounts, roles, permissions & analytics</p>
         </div>
       </div>
 
@@ -113,6 +119,14 @@ const UserManagementHub = ({ onNavigate }: { onNavigate?: (section: string) => v
           </TabsTrigger>
           <TabsTrigger value="users" className="text-xs gap-1.5">
             <Users className="h-3.5 w-3.5" /> Users
+          </TabsTrigger>
+          <TabsTrigger value="roles" className="text-xs gap-1.5">
+            <ShieldCheck className="h-3.5 w-3.5" /> Roles
+            <Badge variant="secondary" className="text-[8px] h-4 px-1 ml-0.5">New</Badge>
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="text-xs gap-1.5">
+            <TrendingUp className="h-3.5 w-3.5" /> Analytics
+            <Badge variant="secondary" className="text-[8px] h-4 px-1 ml-0.5">New</Badge>
           </TabsTrigger>
           <TabsTrigger value="levels" className="text-xs gap-1.5">
             <Crown className="h-3.5 w-3.5" /> Levels
@@ -215,9 +229,11 @@ const UserManagementHub = ({ onNavigate }: { onNavigate?: (section: string) => v
               <CardTitle className="text-sm font-semibold">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-3">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
                 {[
                   { label: "Manage Users", tab: "users", icon: Users },
+                  { label: "Roles & Permissions", tab: "roles", icon: ShieldCheck },
+                  { label: "Analytics", tab: "analytics", icon: TrendingUp },
                   { label: "User Levels", tab: "levels", icon: Crown },
                   { label: "Upgrade Apps", tab: "upgrades", icon: UserCheck },
                   { label: "Verification", tab: "verification", icon: Shield },
@@ -238,25 +254,37 @@ const UserManagementHub = ({ onNavigate }: { onNavigate?: (section: string) => v
 
         {/* Sub-pages */}
         <TabsContent value="users" className="mt-4">
-          <Suspense fallback={<div className="h-64 flex items-center justify-center text-muted-foreground text-sm">Loading...</div>}>
+          <Suspense fallback={<LoadingFallback />}>
             <EnhancedUserManagement />
           </Suspense>
         </TabsContent>
 
+        <TabsContent value="roles" className="mt-4">
+          <Suspense fallback={<LoadingFallback />}>
+            <UserRoleManagement />
+          </Suspense>
+        </TabsContent>
+
+        <TabsContent value="analytics" className="mt-4">
+          <Suspense fallback={<LoadingFallback />}>
+            <UserAnalyticsDashboard />
+          </Suspense>
+        </TabsContent>
+
         <TabsContent value="levels" className="mt-4">
-          <Suspense fallback={<div className="h-64 flex items-center justify-center text-muted-foreground text-sm">Loading...</div>}>
+          <Suspense fallback={<LoadingFallback />}>
             <UserLevelManagement onNavigate={onNavigate} />
           </Suspense>
         </TabsContent>
 
         <TabsContent value="upgrades" className="mt-4">
-          <Suspense fallback={<div className="h-64 flex items-center justify-center text-muted-foreground text-sm">Loading...</div>}>
+          <Suspense fallback={<LoadingFallback />}>
             <UserUpgradeApplications />
           </Suspense>
         </TabsContent>
 
         <TabsContent value="verification" className="mt-4">
-          <Suspense fallback={<div className="h-64 flex items-center justify-center text-muted-foreground text-sm">Loading...</div>}>
+          <Suspense fallback={<LoadingFallback />}>
             <VerificationManagement />
           </Suspense>
         </TabsContent>
