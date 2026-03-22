@@ -1378,4 +1378,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ai-revenue-brain": { label: "AI Revenue Brain", category: "AI Intelligence" },
   "planet-scale-map": { label: "Planet-Scale Intelligence Map", category: "AI Intelligence" },
   "vendor-economy-simulation": { label: "Vendor Economy Simulation", category: "AI Intelligence" },
+  "global-control-tower": { label: "Global Control Tower", category: "AI Intelligence" },
+  "autonomous-deal-flow": { label: "Autonomous Deal Flow Engine", category: "AI Intelligence" },
+  "institutional-data-room": { label: "Institutional Data Room", category: "AI Intelligence" },
 };

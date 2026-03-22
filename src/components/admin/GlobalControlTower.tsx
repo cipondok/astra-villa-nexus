@@ -77,8 +77,6 @@ const TIMELINE_ICONS: Record<string, { icon: React.ElementType; color: string }>
   system: { icon: Shield, color: 'text-muted-foreground' },
 };
 
-import { Brain } from 'lucide-react';
-
 const GlobalControlTower = () => {
   const [selectedMarket, setSelectedMarket] = useState<string | null>(null);
 
