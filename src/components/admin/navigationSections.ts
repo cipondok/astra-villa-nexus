@@ -261,6 +261,13 @@ export const navigationSections = {
       icon: Brain,
       description: "Strategic decision AI, city launch simulator, global capital flow dynamics, and infrastructure evolution narrative",
       badge: "🧠 AI"
+    },
+    {
+      key: "planetary-intelligence-civilization-os",
+      label: "Planetary Intelligence & Civilization OS",
+      icon: Globe,
+      description: "Global liquidity grid, wealth infrastructure engine, intergenerational legacy, and civilization-scale coordination",
+      badge: "🌍 Planetary"
     }
   ],
 
