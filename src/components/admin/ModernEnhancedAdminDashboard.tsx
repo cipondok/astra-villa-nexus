@@ -111,6 +111,7 @@ const ModernEnhancedAdminDashboard = () => {
 
       {/* Investor Cinematic Demo Mode */}
       <InvestorDemoMode isActive={investorMode} onClose={() => setInvestorMode(false)} />
+      <DecacornNarrativeMode isActive={narrativeMode} onClose={() => setNarrativeMode(false)} />
 
       {/* Demo Mode overlays */}
       <Suspense fallback={null}>
