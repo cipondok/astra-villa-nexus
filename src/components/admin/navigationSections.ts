@@ -1411,7 +1411,13 @@ export const navigationSections = {
       badge: "👑 $1M"
     },
     {
-      label: "Vendor Intelligence Engine",
+      key: "global-leadership-valuation-grid",
+      label: "Global Leadership & Autonomous Grid",
+      icon: Globe,
+      description: "Global market leadership, public valuation narrative & autonomous liquidity intelligence grid",
+      badge: "🌍 Global"
+    },
+    {
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
       badge: "New"
