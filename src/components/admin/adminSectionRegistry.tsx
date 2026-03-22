@@ -381,6 +381,7 @@ export const PreUnicornGlobalBrandMarketplaceOSBlueprint = lazyRetry(() => impor
 export const UnicornCategoryAIControlBlueprint = lazyRetry(() => import("./UnicornCategoryAIControlBlueprint"));
 export const DecacornCapitalIntelligenceBlueprint = lazyRetry(() => import("./DecacornCapitalIntelligenceBlueprint"));
 export const GlobalInfraEcosystemFounderBlueprint = lazyRetry(() => import("./GlobalInfraEcosystemFounderBlueprint"));
+export const DailyDealWeeklyWarCitySprintBlueprint = lazyRetry(() => import("./DailyDealWeeklyWarCitySprintBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
