@@ -1369,6 +1369,13 @@ export const navigationSections = {
       badge: "⚔️ War Mode"
     },
     {
+      key: "first-10k-revenue-followup",
+      label: "First $10K Revenue & Agent Follow-Up",
+      icon: DollarSign,
+      description: "First $10K weekly revenue plan, agent follow-up command scripts & buyer urgency closing dialogues",
+      badge: "💰 $10K"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
