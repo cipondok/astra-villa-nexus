@@ -112,10 +112,10 @@ const UserRoleManagement = () => {
 
   // Assign role mutation
   const assignRoleMutation = useMutation({
-    mutationFn: async ({ userId, role }: { userId: string; role: string }) => {
+    mutationFn: async ({ userId, role }: { userId: string; role: typeof ALL_ROLES[number] }) => {
       const { error } = await supabase
         .from("user_roles")
-        .upsert({ user_id: userId, role, is_active: true }, { onConflict: "user_id,role" });
+        .upsert({ user_id: userId, role, is_active: true } as any, { onConflict: "user_id,role" });
       if (error) throw error;
     },
     onSuccess: () => {
