@@ -849,6 +849,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "founder-100yr-legacy":        () => <Founder100YearLegacy />,
   "planet-scale-storyboard":     () => <PlanetScaleEconomicStoryboard />,
   "agent-network-growth":        () => <AgentNetworkGrowth />,
+  "deal-pipeline-crm":           () => <DealPipelineCRM />,
   "global-expansion-control":    () => <GlobalExpansionControl />,
   "ipo-readiness-metrics":       () => <IPOReadinessMetrics />,
   "ai-copilot":                  () => <AdminAICoPilot />,
