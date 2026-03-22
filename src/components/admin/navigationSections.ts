@@ -1390,6 +1390,13 @@ export const navigationSections = {
       badge: "💰 $100K"
     },
     {
+      key: "revenue-250k-regional-executive",
+      label: "$250K Revenue & Regional Liquidity",
+      icon: Globe,
+      description: "$250K monthly revenue engine, regional liquidity network & executive KPI command center",
+      badge: "💰 $250K"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
