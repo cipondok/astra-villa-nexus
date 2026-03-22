@@ -129,6 +129,10 @@ export const SmartRenovationROICalculator = lazyRetry(() => import("./SmartRenov
 export const PropertyInsuranceComparison = lazyRetry(() => import("./PropertyInsuranceComparison"));
 export const ResaleOpportunityDashboard = lazyRetry(() => import("./ResaleOpportunityDashboard"));
 export const FamilyWealthTransferPlanner = lazyRetry(() => import("./FamilyWealthTransferPlanner"));
+export const GlobalDiversificationStrategy = lazyRetry(() => import("./GlobalDiversificationStrategy"));
+export const EconomicTrendForecasting = lazyRetry(() => import("./EconomicTrendForecasting"));
+export const SmartFinancingOptimization = lazyRetry(() => import("./SmartFinancingOptimization"));
+export const InstitutionalSyndication = lazyRetry(() => import("./InstitutionalSyndication"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
@@ -695,6 +699,10 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "insurance-comparison": () => <PropertyInsuranceComparison />,
   "resale-opportunity": () => <ResaleOpportunityDashboard />,
   "wealth-transfer-planner": () => <FamilyWealthTransferPlanner />,
+  "global-diversification-strategy": () => <GlobalDiversificationStrategy />,
+  "economic-trend-forecasting": () => <EconomicTrendForecasting />,
+  "smart-financing-optimization": () => <SmartFinancingOptimization />,
+  "institutional-syndication": () => <InstitutionalSyndication />,
 
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
@@ -1614,4 +1622,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "insurance-comparison": { label: "Insurance Comparison", category: "Operations" },
   "resale-opportunity": { label: "Resale Opportunity Dashboard", category: "Operations" },
   "wealth-transfer-planner": { label: "Family Wealth Transfer Planner", category: "Operations" },
+  "global-diversification-strategy": { label: "Global Diversification Strategy", category: "Operations" },
+  "economic-trend-forecasting": { label: "Economic Trend Forecasting", category: "Operations" },
+  "smart-financing-optimization": { label: "Smart Financing Optimization", category: "Operations" },
+  "institutional-syndication": { label: "Institutional Portfolio Syndication", category: "Operations" },
 };

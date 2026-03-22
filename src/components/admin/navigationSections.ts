@@ -1286,6 +1286,34 @@ export const navigationSections = {
       badge: "👨‍👩‍👧‍👦 Legacy"
     },
     {
+      key: "global-diversification-strategy",
+      label: "Global Diversification",
+      icon: Globe,
+      description: "Geographic portfolio diversification — regional allocation, yield comparison & cross-border opportunities",
+      badge: "🌍 Global"
+    },
+    {
+      key: "economic-trend-forecasting",
+      label: "Economic Forecasting",
+      icon: Activity,
+      description: "Macroeconomic cycle intelligence — price trends, supply pipeline, demand projection & factor correlation",
+      badge: "📊 Macro"
+    },
+    {
+      key: "smart-financing-optimization",
+      label: "Financing Optimizer",
+      icon: Calculator,
+      description: "Mortgage & loan optimization — amortization, DSCR, rate sensitivity & cashflow analysis",
+      badge: "💳 Finance"
+    },
+    {
+      key: "institutional-syndication",
+      label: "Portfolio Syndication",
+      icon: Users,
+      description: "Institutional investment coordination — portfolio bundles, due diligence & capital participation tracking",
+      badge: "🏦 Institutional"
+    },
+    {
       key: "ai-copilot",
       label: "AI Co-Pilot",
       icon: Brain,
