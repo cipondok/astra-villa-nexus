@@ -145,6 +145,10 @@ export const DatabaseArchitecture = lazyRetry(() => import("./DatabaseArchitectu
 export const APIEndpointStructure = lazyRetry(() => import("./APIEndpointStructure"));
 export const FrontendArchitecture = lazyRetry(() => import("./FrontendArchitecture"));
 export const DeploymentScaling = lazyRetry(() => import("./DeploymentScaling"));
+export const RealTimeEventArchitecture = lazyRetry(() => import("./RealTimeEventArchitecture"));
+export const AIDataPipeline = lazyRetry(() => import("./AIDataPipeline"));
+export const RecommendationAlgorithmFlow = lazyRetry(() => import("./RecommendationAlgorithmFlow"));
+export const SecurityPermissionMatrix = lazyRetry(() => import("./SecurityPermissionMatrix"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
@@ -727,6 +731,10 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "api-endpoint-structure": () => <APIEndpointStructure />,
   "frontend-architecture": () => <FrontendArchitecture />,
   "deployment-scaling": () => <DeploymentScaling />,
+  "realtime-event-architecture": () => <RealTimeEventArchitecture />,
+  "ai-data-pipeline": () => <AIDataPipeline />,
+  "recommendation-algorithm-flow": () => <RecommendationAlgorithmFlow />,
+  "security-permission-matrix": () => <SecurityPermissionMatrix />,
 
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
@@ -1662,4 +1670,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "api-endpoint-structure": { label: "API Endpoint Structure", category: "Operations" },
   "frontend-architecture": { label: "Frontend Architecture", category: "Operations" },
   "deployment-scaling": { label: "Deployment & Scaling", category: "Operations" },
+  "realtime-event-architecture": { label: "Real-Time Event Architecture", category: "Operations" },
+  "ai-data-pipeline": { label: "AI Data Pipeline", category: "Operations" },
+  "recommendation-algorithm-flow": { label: "Recommendation Algorithm Flow", category: "Operations" },
+  "security-permission-matrix": { label: "Security & Permission Matrix", category: "Operations" },
 };
