@@ -1244,4 +1244,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "offer-acceptance-commission": { label: "Offer Acceptance & Commission Incentive", category: "Strategy" },
   "fast-deal-cycle-liquidity": { label: "Fast Deal Cycle & Liquidity Score", category: "Strategy" },
   "repeat-buyer-pipeline": { label: "Repeat Buyer & Agent Pipeline Forecast", category: "Strategy" },
+  "buyer-nurture-listing": { label: "Buyer Nurture & Listing Performance", category: "Strategy" },
 };

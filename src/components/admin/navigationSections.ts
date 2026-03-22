@@ -1277,6 +1277,13 @@ export const navigationSections = {
       badge: "🔄 Retention"
     },
     {
+      key: "buyer-nurture-listing",
+      label: "Buyer Nurture & Listing Performance",
+      icon: Heart,
+      description: "Long-term buyer engagement, listing optimization & price surge campaign activation",
+      badge: "🌱 Lifecycle"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
