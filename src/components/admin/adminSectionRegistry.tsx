@@ -372,6 +372,7 @@ export const RepeatBuyerPipelineBlueprint = lazyRetry(() => import("./RepeatBuye
 export const BuyerNurtureListingBlueprint = lazyRetry(() => import("./BuyerNurtureListingBlueprint"));
 export const BuyerDecisionDistrictBlueprint = lazyRetry(() => import("./BuyerDecisionDistrictBlueprint"));
 export const SecondViewingLeaderboardBlueprint = lazyRetry(() => import("./SecondViewingLeaderboardBlueprint"));
+export const OfferClosingFlashBlueprint = lazyRetry(() => import("./OfferClosingFlashBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -829,6 +830,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "buyer-nurture-listing": () => <BuyerNurtureListingBlueprint />,
   "buyer-decision-district": () => <BuyerDecisionDistrictBlueprint />,
   "second-viewing-leaderboard": () => <SecondViewingLeaderboardBlueprint />,
+  "offer-closing-flash": () => <OfferClosingFlashBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1251,4 +1253,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "buyer-nurture-listing": { label: "Buyer Nurture & Listing Performance", category: "Strategy" },
   "buyer-decision-district": { label: "Buyer Decision Deadline & District Expansion", category: "Strategy" },
   "second-viewing-leaderboard": { label: "Second Viewing & Agent Leaderboard", category: "Strategy" },
+  "offer-closing-flash": { label: "Offer Closing Psychology & Flash Promotions", category: "Strategy" },
 };
