@@ -14,11 +14,11 @@ interface Criteria {
 export const PasswordStrengthBar = ({ password, showTips = true }: PasswordStrengthBarProps) => {
   const analysis = useMemo(() => {
     const criteria: Criteria[] = [
-      { label: "At least 8 characters", met: password.length >= 8 },
+      { label: "At least 10 characters", met: password.length >= 10 },
       { label: "Contains uppercase letter", met: /[A-Z]/.test(password) },
       { label: "Contains lowercase letter", met: /[a-z]/.test(password) },
       { label: "Contains number", met: /\d/.test(password) },
-      { label: "Contains special character (!@#$%^&*)", met: /[!@#$%^&*(),.?":{}|<>]/.test(password) },
+      { label: "Contains special character (!@#$%^&*)", met: /[!@#$%^&*(),.?":{}|<>_\-+=\[\]~`]/.test(password) },
     ];
 
     const score = criteria.filter(c => c.met).length;

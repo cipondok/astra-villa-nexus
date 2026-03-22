@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SEOHead } from "@/components/SEOHead";
 import { useTranslation } from "@/i18n/useTranslation";
 import { useNavigate } from "react-router-dom";
@@ -39,6 +39,10 @@ const Auth = () => {
   const [loginPassword, setLoginPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
+  // Login rate limiting
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [lockoutUntil, setLockoutUntil] = useState<number | null>(null);
+
   // Register form state
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
@@ -50,6 +54,28 @@ const Auth = () => {
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
 
+  // Load remembered email on mount
+  useEffect(() => {
+    const rememberedEmail = localStorage.getItem('rememberEmail');
+    if (rememberedEmail) {
+      setLoginEmail(rememberedEmail);
+      setRememberMe(true);
+    }
+  }, []);
+
+  // Lockout countdown
+  useEffect(() => {
+    if (!lockoutUntil) return;
+    const interval = setInterval(() => {
+      if (Date.now() >= lockoutUntil) {
+        setLockoutUntil(null);
+        setFailedAttempts(0);
+        clearInterval(interval);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [lockoutUntil]);
+
   // If already authenticated, redirect to home
   if (user) {
     navigate("/");
@@ -58,13 +84,27 @@ const Auth = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Check lockout
+    if (lockoutUntil && Date.now() < lockoutUntil) {
+      const remaining = Math.ceil((lockoutUntil - Date.now()) / 1000);
+      toast({
+        title: "Account temporarily locked",
+        description: `Too many failed attempts. Please wait ${remaining} seconds.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
       const { success, error } = await signIn(loginEmail, loginPassword);
       
       if (success) {
-        // Store remember me preference
+        setFailedAttempts(0);
+        setLockoutUntil(null);
+        
         if (rememberMe) {
           localStorage.setItem('rememberEmail', loginEmail);
         } else {
@@ -77,11 +117,26 @@ const Auth = () => {
         });
         navigate("/");
       } else {
-        toast({
-          title: "Login failed",
-          description: error?.message || "Invalid email or password",
-          variant: "destructive",
-        });
+        const newAttempts = failedAttempts + 1;
+        setFailedAttempts(newAttempts);
+
+        if (newAttempts >= 5) {
+          const lockDuration = 2 * 60 * 1000; // 2 minutes
+          setLockoutUntil(Date.now() + lockDuration);
+          toast({
+            title: "Account temporarily locked",
+            description: "Too many failed login attempts. Please wait 2 minutes before trying again.",
+            variant: "destructive",
+          });
+        } else {
+          const msg = error?.message || "Invalid email or password";
+          const attemptsLeft = 5 - newAttempts;
+          toast({
+            title: "Login failed",
+            description: `${msg}. ${attemptsLeft} attempt${attemptsLeft !== 1 ? 's' : ''} remaining.`,
+            variant: "destructive",
+          });
+        }
       }
     } catch (error: any) {
       toast({
@@ -100,7 +155,7 @@ const Auth = () => {
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-        redirectTo: `${window.location.origin}/auth?reset=true`,
+        redirectTo: `${window.location.origin}/reset-password`,
       });
 
       if (error) {
@@ -177,18 +232,17 @@ const Auth = () => {
       return;
     }
 
-    // Check password strength (minimum 3 criteria)
-    const hasLength = registerPassword.length >= 8;
+    // Strong password policy: 10 chars + all criteria required
+    const hasLength = registerPassword.length >= 10;
     const hasUpper = /[A-Z]/.test(registerPassword);
     const hasLower = /[a-z]/.test(registerPassword);
     const hasNumber = /\d/.test(registerPassword);
-    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(registerPassword);
-    const strengthScore = [hasLength, hasUpper, hasLower, hasNumber, hasSpecial].filter(Boolean).length;
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>_\-+=\[\]~`]/.test(registerPassword);
 
-    if (strengthScore < 3) {
+    if (!hasLength || !hasUpper || !hasLower || !hasNumber || !hasSpecial) {
       toast({
         title: "Password too weak",
-        description: "Please create a stronger password meeting at least 3 criteria",
+        description: "Password must be at least 10 characters with uppercase, lowercase, number, and special character.",
         variant: "destructive",
       });
       return;
@@ -202,9 +256,9 @@ const Auth = () => {
       if (success) {
         toast({
           title: "Registration successful!",
-          description: "Welcome to Astra Villa",
+          description: "Please check your email to verify your account before logging in.",
         });
-        navigate("/");
+        // Don't navigate to home — show verification message
       } else {
         toast({
           title: "Registration failed",
@@ -223,14 +277,6 @@ const Auth = () => {
     }
   };
 
-  // Load remembered email on mount
-  useState(() => {
-    const rememberedEmail = localStorage.getItem('rememberEmail');
-    if (rememberedEmail) {
-      setLoginEmail(rememberedEmail);
-      setRememberMe(true);
-    }
-  });
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gold-primary/5 via-background to-accent/5 px-4 py-12">

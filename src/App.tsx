@@ -77,6 +77,7 @@ const AIListingGenerator = lazy(() => import('@/pages/AIListingGenerator'));
 const Search = lazy(() => import('@/pages/Search'));
 const ErrorPage = lazy(() => import('@/pages/ErrorPage'));
 const Auth = lazy(() => import('@/pages/Auth'));
+const ResetPassword = lazy(() => import('@/pages/ResetPassword'));
 const PropertyDetail = lazy(() => import('@/pages/PropertyDetail'));
 const Dijual = lazy(() => import('@/pages/Dijual'));
 const Disewa = lazy(() => import('@/pages/Disewa'));
@@ -550,6 +551,7 @@ const AppContent = () => {
                 <Route path="/favorites" element={<Saved />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/astra-tokens" element={<AstraTokensPage />} />
                 <Route path="/services" element={<Services />} />
                 <Route path="/services/category/:categoryId" element={<ServiceCategory />} />
