@@ -155,11 +155,11 @@ const ForecastCurve = () => {
 
   if (isLoading || !data) return <div className="flex items-center justify-center h-48"><Loader2 className="h-4 w-4 animate-spin text-muted-foreground" /></div>;
 
-  const chartData = data.scenarios.base.monthlyForecasts.map((m, i) => ({
+  const chartData = data.scenarios.base.monthly.map((m, i) => ({
     month: m.label,
     baseline: m.totalRevenue,
-    optimized: data.scenarios.aggressive.monthlyForecasts[i]?.totalRevenue || m.totalRevenue,
-    conservative: data.scenarios.conservative.monthlyForecasts[i]?.totalRevenue || m.totalRevenue * 0.8,
+    optimized: data.scenarios.aggressive.monthly[i]?.totalRevenue || m.totalRevenue,
+    conservative: data.scenarios.conservative.monthly[i]?.totalRevenue || m.totalRevenue * 0.8,
   }));
 
   return (
