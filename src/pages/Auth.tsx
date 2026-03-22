@@ -63,6 +63,19 @@ const Auth = () => {
     }
   }, []);
 
+  // Lockout countdown
+  useEffect(() => {
+    if (!lockoutUntil) return;
+    const interval = setInterval(() => {
+      if (Date.now() >= lockoutUntil) {
+        setLockoutUntil(null);
+        setFailedAttempts(0);
+        clearInterval(interval);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [lockoutUntil]);
+
   // If already authenticated, redirect to home
   if (user) {
     navigate("/");
