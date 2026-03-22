@@ -1446,6 +1446,13 @@ export const navigationSections = {
       badge: "🌍 Civilization"
     },
     {
+      key: "first-1000-deals-liquidity-founder",
+      label: "First 1,000 Deals & Founder Rhythm",
+      icon: Target,
+      description: "1,000-deal execution roadmap, daily liquidity command & founder growth rhythm system",
+      badge: "🎯 1K Deals"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",

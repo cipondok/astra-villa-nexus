@@ -1316,4 +1316,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "daily-global-revenue-sprint-clarity": { label: "Daily Global Revenue & Founder Clarity", category: "Strategy" },
   "global-founder-warroom-deal-expansion": { label: "Global War-Room & Deal Expansion", category: "Strategy" },
   "global-economic-intelligence-legacy": { label: "Global Economic Intelligence & Legacy", category: "Strategy" },
+  "first-1000-deals-liquidity-founder": { label: "First 1,000 Deals & Founder Rhythm", category: "Strategy" },
 };
