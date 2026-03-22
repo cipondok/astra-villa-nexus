@@ -149,6 +149,10 @@ export const RealTimeEventArchitecture = lazyRetry(() => import("./RealTimeEvent
 export const AIDataPipeline = lazyRetry(() => import("./AIDataPipeline"));
 export const RecommendationAlgorithmFlow = lazyRetry(() => import("./RecommendationAlgorithmFlow"));
 export const SecurityPermissionMatrix = lazyRetry(() => import("./SecurityPermissionMatrix"));
+export const MicroservicesDecomposition = lazyRetry(() => import("./MicroservicesDecomposition"));
+export const DataWarehouseAnalytics = lazyRetry(() => import("./DataWarehouseAnalytics"));
+export const LoadTestingSimulator = lazyRetry(() => import("./LoadTestingSimulator"));
+export const IncidentReliabilityDashboard = lazyRetry(() => import("./IncidentReliabilityDashboard"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
