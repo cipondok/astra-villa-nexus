@@ -376,6 +376,7 @@ export const OfferClosingFlashBlueprint = lazyRetry(() => import("./OfferClosing
 export const PostDealLoyaltyMegaPortfolioBlueprint = lazyRetry(() => import("./PostDealLoyaltyMegaPortfolioBlueprint"));
 export const ReferralMegaProjectCityBlueprint = lazyRetry(() => import("./ReferralMegaProjectCityBlueprint"));
 export const RegionalInstitutionalProfitabilityBlueprint = lazyRetry(() => import("./RegionalInstitutionalProfitabilityBlueprint"));
+export const NationalDataSeriesABlueprint = lazyRetry(() => import("./NationalDataSeriesABlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -837,6 +838,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "post-deal-loyalty-mega": () => <PostDealLoyaltyMegaPortfolioBlueprint />,
   "referral-mega-project-city": () => <ReferralMegaProjectCityBlueprint />,
   "regional-institutional-profitability": () => <RegionalInstitutionalProfitabilityBlueprint />,
+  "national-data-series-a": () => <NationalDataSeriesABlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1263,4 +1265,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "post-deal-loyalty-mega": { label: "Post-Deal Loyalty & Mega-Portfolio", category: "Strategy" },
   "referral-mega-project-city": { label: "Referral Flywheel & City Domination", category: "Strategy" },
   "regional-institutional-profitability": { label: "Regional Expansion & Profitability", category: "Strategy" },
+  "national-data-series-a": { label: "National Leadership & Series-A", category: "Strategy" },
 };

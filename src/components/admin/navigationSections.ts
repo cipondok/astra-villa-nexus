@@ -1327,6 +1327,13 @@ export const navigationSections = {
       badge: "📍 Scale"
     },
     {
+      key: "national-data-series-a",
+      label: "National Leadership & Series-A",
+      icon: Crown,
+      description: "National market dominance, data intelligence monetization & Series-A fundraising readiness",
+      badge: "👑 National"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
