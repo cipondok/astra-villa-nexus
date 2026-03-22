@@ -43,7 +43,8 @@ const Auth = () => {
   // Progressive login security
   const {
     isLocked, lockoutRemaining, recordFailedAttempt, recordSuccess,
-    logLoginActivity, isDisposableEmail, checkDisposableEmailDB
+    logLoginActivity, isDisposableEmail, checkDisposableEmailDB,
+    checkServerLockout, recordAttemptServer
   } = useLoginSecurity();
 
   // Register form state
