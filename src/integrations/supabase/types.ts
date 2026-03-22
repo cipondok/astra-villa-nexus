@@ -13586,6 +13586,36 @@ export type Database = {
         }
         Relationships: []
       }
+      consent_log: {
+        Row: {
+          consent_given: boolean
+          consent_type: string
+          created_at: string
+          id: string
+          ip_address: string | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          consent_given?: boolean
+          consent_type: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          consent_given?: boolean
+          consent_type?: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       content_categories: {
         Row: {
           created_at: string | null
@@ -15772,6 +15802,24 @@ export type Database = {
           total_views?: number | null
           updated_at?: string
           video_url?: string | null
+        }
+        Relationships: []
+      }
+      disposable_email_domains: {
+        Row: {
+          created_at: string
+          domain: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          domain: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          domain?: string
+          id?: string
         }
         Relationships: []
       }
@@ -33011,6 +33059,60 @@ export type Database = {
           subdistrict_code?: string | null
           subdistrict_name?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      login_activity_log: {
+        Row: {
+          browser: string | null
+          country: string | null
+          created_at: string
+          device_fingerprint: string | null
+          device_type: string | null
+          email: string
+          failure_reason: string | null
+          id: string
+          ip_address: string | null
+          is_suspicious: boolean | null
+          login_success: boolean
+          login_timestamp: string
+          os: string | null
+          risk_score: number | null
+          user_id: string | null
+        }
+        Insert: {
+          browser?: string | null
+          country?: string | null
+          created_at?: string
+          device_fingerprint?: string | null
+          device_type?: string | null
+          email: string
+          failure_reason?: string | null
+          id?: string
+          ip_address?: string | null
+          is_suspicious?: boolean | null
+          login_success?: boolean
+          login_timestamp?: string
+          os?: string | null
+          risk_score?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          browser?: string | null
+          country?: string | null
+          created_at?: string
+          device_fingerprint?: string | null
+          device_type?: string | null
+          email?: string
+          failure_reason?: string | null
+          id?: string
+          ip_address?: string | null
+          is_suspicious?: boolean | null
+          login_success?: boolean
+          login_timestamp?: string
+          os?: string | null
+          risk_score?: number | null
+          user_id?: string | null
         }
         Relationships: []
       }
