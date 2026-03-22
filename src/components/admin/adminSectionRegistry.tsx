@@ -117,6 +117,10 @@ export const BuyerViewingBookingFlow = lazyRetry(() => import("./BuyerViewingBoo
 export const SellerPerformanceInsight = lazyRetry(() => import("./SellerPerformanceInsight"));
 export const AgentMobileHomeScreen = lazyRetry(() => import("./AgentMobileHomeScreen"));
 export const DealOfferSubmissionFlow = lazyRetry(() => import("./DealOfferSubmissionFlow"));
+export const NegotiationChatInterface = lazyRetry(() => import("./NegotiationChatInterface"));
+export const DealProgressTimeline = lazyRetry(() => import("./DealProgressTimeline"));
+export const SecurePaymentEscrowFlow = lazyRetry(() => import("./SecurePaymentEscrowFlow"));
+export const ClosingCelebrationScreen = lazyRetry(() => import("./ClosingCelebrationScreen"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
@@ -668,6 +672,12 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "agent-mobile-home": () => <AgentMobileHomeScreen />,
   "deal-offer-submission": () => <DealOfferSubmissionFlow />,
 
+  // Negotiation, Deal Progress & Secure Closing
+  "negotiation-chat": () => <NegotiationChatInterface />,
+  "deal-progress-timeline": () => <DealProgressTimeline />,
+  "secure-payment-escrow": () => <SecurePaymentEscrowFlow />,
+  "closing-celebration": () => <ClosingCelebrationScreen />,
+
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
   "social-media-settings": () => <SocialMediaSettings />,
@@ -1191,6 +1201,10 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "seller-performance-insight": { label: "Seller Insights", category: "User Experience" },
   "agent-mobile-home": { label: "Agent Mobile Home", category: "User Experience" },
   "deal-offer-submission": { label: "Offer Submission", category: "User Experience" },
+  "negotiation-chat": { label: "Negotiation Chat", category: "User Experience" },
+  "deal-progress-timeline": { label: "Deal Progress", category: "User Experience" },
+  "secure-payment-escrow": { label: "Payment & Escrow", category: "User Experience" },
+  "closing-celebration": { label: "Closing Celebration", category: "User Experience" },
   "seo-settings": { label: "SEO Hub", category: "Settings" },
   "seo-management": { label: "SEO Management", category: "Marketing" },
   "property-seo-checker": { label: "Property SEO Checker", category: "Core Management" },

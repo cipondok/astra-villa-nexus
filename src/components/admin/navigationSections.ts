@@ -127,7 +127,8 @@ import {
   Hourglass,
   Timer,
   Crosshair,
-  Upload
+  Upload,
+  PartyPopper
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -1197,6 +1198,34 @@ export const navigationSections = {
       icon: Send,
       description: "Streamlined purchase offer — pricing, financing, seller message & negotiation stage tracking",
       badge: "💰 Offers"
+    },
+    {
+      key: "negotiation-chat",
+      label: "Negotiation Chat",
+      icon: MessageSquare,
+      description: "Deal-specific communication — offer adjustments, price gap visualization & smart message templates",
+      badge: "💬 Chat"
+    },
+    {
+      key: "deal-progress-timeline",
+      label: "Deal Progress Timeline",
+      icon: Target,
+      description: "Visual transaction journey — stage tracking, pending actions & closing estimates",
+      badge: "📍 Timeline"
+    },
+    {
+      key: "secure-payment-escrow",
+      label: "Payment & Escrow",
+      icon: Shield,
+      description: "Protected payment flow — milestones, document verification & escrow deposit tracking",
+      badge: "🔒 Escrow"
+    },
+    {
+      key: "closing-celebration",
+      label: "Closing Celebration",
+      icon: PartyPopper,
+      description: "Deal completion — celebration, agent rating, referral triggers & success sharing",
+      badge: "🎉 Closing"
     },
     {
       label: "AI Co-Pilot",
