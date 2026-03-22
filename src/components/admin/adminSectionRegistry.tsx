@@ -882,6 +882,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "100k-traffic-vendor-flywheel-heatmap": () => <Traffic100KVendorFlywheelLiquidityHeatmap />,
   "1m-visitor-network-effect-investor-narrative": () => <Visitor1MNetworkEffectInvestorNarrative />,
   "national-category-domination-profitability-preipo": () => <NationalCategoryDominationProfitabilityPreIPO />,
+  "ipo-roadshow-capital-allocation-autonomous-os": () => <IPORoadshowCapitalAllocationAutonomousOS />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
