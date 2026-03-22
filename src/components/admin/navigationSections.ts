@@ -1537,6 +1537,13 @@ export const navigationSections = {
       badge: "🗺️ Regional"
     },
     {
+      key: "1000-deals-revenue-city-expansion",
+      label: "1,000 Deals & Multi-City Expansion",
+      icon: Crown,
+      description: "Regional domination engine, revenue predictability systems & structured multi-city expansion playbook",
+      badge: "👑 1K Deals"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
