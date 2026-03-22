@@ -1364,7 +1364,7 @@ export const navigationSections = {
     {
       key: "daily-deal-weekly-war-sprint",
       label: "Daily Deal Closing & Revenue Sprint",
-      icon: Sword,
+      icon: Swords,
       description: "Daily deal closing machine, weekly founder war plan & city revenue sprint campaigns",
       badge: "⚔️ War Mode"
     },
