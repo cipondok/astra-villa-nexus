@@ -403,6 +403,7 @@ export const PublicMarketCategoryGlobalLiquidityCenturyVision = lazyRetry(() => 
 export const First100DealsCashflowStressProof = lazyRetry(() => import("./First100DealsCashflowStressProof"));
 export const First20BuyersAgentHustleLocalTakeover = lazyRetry(() => import("./First20BuyersAgentHustleLocalTakeover"));
 export const First10DealsViewingPsychologyAgentMotivation = lazyRetry(() => import("./First10DealsViewingPsychologyAgentMotivation"));
+export const First50DealsNegotiationTrustDomination = lazyRetry(() => import("./First50DealsNegotiationTrustDomination"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
