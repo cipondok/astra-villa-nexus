@@ -289,6 +289,7 @@ export const DealPriorityRevenueIntelligence = lazyRetry(() => import("./DealPri
 export const BehavioralGrowthEngine = lazyRetry(() => import("./BehavioralGrowthEngine"));
 export const TrustSafetyIntelligence = lazyRetry(() => import("./TrustSafetyIntelligence"));
 export const ComplianceValuationInstitutional = lazyRetry(() => import("./ComplianceValuationInstitutional"));
+export const FounderAICopilotGlobalIntel = lazyRetry(() => import("./FounderAICopilotGlobalIntel"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -1468,4 +1469,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "behavioral-growth-engine": { label: "Behavioral Growth Engine", category: "Operations" },
   "trust-safety-intelligence": { label: "Trust & Safety Intelligence", category: "Operations" },
   "compliance-valuation-institutional": { label: "Compliance, Valuation & Institutional Intelligence", category: "Operations" },
+  "founder-ai-copilot-global-intel": { label: "Founder AI Copilot & Global Intelligence", category: "Operations" },
 };

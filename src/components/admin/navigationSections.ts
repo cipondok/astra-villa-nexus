@@ -254,6 +254,13 @@ export const navigationSections = {
       icon: Scale,
       description: "Regulatory readiness, property valuation index, institutional deal flow, and luxury segment intelligence",
       badge: "⚖️ Institutional"
+    },
+    {
+      key: "founder-ai-copilot-global-intel",
+      label: "AI Copilot & Global Intel",
+      icon: Brain,
+      description: "Strategic decision AI, city launch simulator, global capital flow dynamics, and infrastructure evolution narrative",
+      badge: "🧠 AI"
     }
   ],
 
