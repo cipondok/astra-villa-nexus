@@ -1516,6 +1516,13 @@ export const navigationSections = {
       badge: "🏆 First 10"
     },
     {
+      key: "first-50-deals-negotiation-trust-domination",
+      label: "First 50 Deals & Trust Domination",
+      icon: Trophy,
+      description: "Deal scaling tactics, buyer negotiation confidence scripts & local reputation trust-building",
+      badge: "🎯 50 Deals"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
