@@ -1322,4 +1322,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-economic-intelligence-legacy": { label: "Global Economic Intelligence & Legacy", category: "Strategy" },
   "first-1000-deals-liquidity-founder": { label: "First 1,000 Deals & Founder Rhythm", category: "Strategy" },
   "first-10k-listings-buyer-pipeline-warroom": { label: "10K Listings & Deal War-Room", category: "Strategy" },
+  "100k-traffic-vendor-flywheel-heatmap": { label: "100K Traffic & Vendor Flywheel", category: "Strategy" },
 };
