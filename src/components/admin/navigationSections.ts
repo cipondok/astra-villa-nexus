@@ -282,6 +282,13 @@ export const navigationSections = {
       icon: ClipboardList,
       description: "Agent follow-ups, viewing calendar, negotiation CRM, and closing checklist automation",
       badge: "⚡ Ops"
+    },
+    {
+      key: "performance-deal-warroom",
+      label: "Performance & War-Room",
+      icon: Trophy,
+      description: "Agent incentives, buyer qualification scoring, listing quality optimization, and daily deal war-room",
+      badge: "🎯 Intel"
     }
   ],
 

@@ -1477,4 +1477,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "planetary-intelligence-civilization-os": { label: "Planetary Intelligence & Civilization OS", category: "Operations" },
   "first-traction-execution": { label: "First Traction Execution Dashboard", category: "Operations" },
   "deal-ops-closing": { label: "Deal Operations & Closing Management", category: "Operations" },
+  "performance-deal-warroom": { label: "Performance & Deal War-Room", category: "Operations" },
 };
