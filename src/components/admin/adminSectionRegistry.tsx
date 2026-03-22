@@ -284,6 +284,7 @@ export const PremiumListingsMonetization = lazyRetry(() => import("./PremiumList
 export const FounderMobileWarRoom = lazyRetry(() => import("./FounderMobileWarRoom"));
 export const InvestorGrowthIntelligence = lazyRetry(() => import("./InvestorGrowthIntelligence"));
 export const GlobalExpansionIntelligence = lazyRetry(() => import("./GlobalExpansionIntelligence"));
+export const FirstCityDominationCommand = lazyRetry(() => import("./FirstCityDominationCommand"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
