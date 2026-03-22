@@ -125,6 +125,10 @@ export const PostClosingOwnershipDashboard = lazyRetry(() => import("./PostClosi
 export const InvestorPortfolioTracking = lazyRetry(() => import("./InvestorPortfolioTracking"));
 export const RentalYieldMonitoring = lazyRetry(() => import("./RentalYieldMonitoring"));
 export const SmartPropertyRecommendationEngine = lazyRetry(() => import("./SmartPropertyRecommendationEngine"));
+export const SmartRenovationROICalculator = lazyRetry(() => import("./SmartRenovationROICalculator"));
+export const PropertyInsuranceComparison = lazyRetry(() => import("./PropertyInsuranceComparison"));
+export const ResaleOpportunityDashboard = lazyRetry(() => import("./ResaleOpportunityDashboard"));
+export const FamilyWealthTransferPlanner = lazyRetry(() => import("./FamilyWealthTransferPlanner"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
