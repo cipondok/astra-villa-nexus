@@ -756,7 +756,7 @@ serve(async (req) => {
     const noAuthActions: Action[] = ['check_lockout', 'record_login_attempt', 'rate_limit_check'];
 
     // Actions requiring auth
-    const authRequired: Action[] = ['generate_otp', 'verify_otp', 'send_2fa', 'check_breach', 'verify_document', 'verify_owner', 'verify_vendor', 'get_user_sessions', 'revoke_session', 'revoke_all_sessions', 'get_security_events'];
+    const authRequired: Action[] = ['generate_otp', 'verify_otp', 'send_2fa', 'check_breach', 'verify_document', 'verify_owner', 'verify_vendor', 'get_user_sessions', 'revoke_session', 'revoke_all_sessions', 'get_security_events', 'get_verification_requests'];
     if (authRequired.includes(action) && !userId) {
       return new Response(JSON.stringify({ success: false, error: 'Authentication required' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
