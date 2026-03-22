@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect, lazy, Suspense } from "react";
-import { Bell, Settings, LogOut, Sun, Moon, Wifi, WifiOff, Zap } from "lucide-react";
+import { Bell, Settings, LogOut, Sun, Moon, Wifi, WifiOff, Plus, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -17,7 +17,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AdminCommandPalette } from "./AdminCommandPalette";
-import { AdminBreadcrumb } from "./AdminBreadcrumb";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useIntelligenceSignals } from "@/hooks/useIntelligenceSignals";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -41,13 +40,12 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const { reducedMotion, toggle: toggleMotion } = useReducedMotion();
   useIntelligenceSignals(true);
-  
+
   // Real-time ping indicator
   const [pingMs, setPingMs] = useState<number | null>(null);
   const [pingStatus, setPingStatus] = useState<'ok' | 'slow' | 'offline'>('ok');
-  
+
   useEffect(() => {
     const measurePing = async () => {
       try {
@@ -116,23 +114,31 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
   const unreadCount = notifications.length;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/30 bg-background/60 backdrop-blur-xl shadow-sm">
-      <div className="flex h-12 items-center gap-3 px-4">
-        {/* Breadcrumb */}
-        <div className="flex-1">
-          <AdminBreadcrumb
-            activeSection={activeSection}
-            onSectionChange={onSectionChange}
-          />
+    <header className="sticky top-0 z-50 w-full h-14 border-b border-border/40 bg-background/80 backdrop-blur-md">
+      <div className="flex h-full items-center gap-3 px-4">
+        {/* Left: Page title / breadcrumb area */}
+        <div className="flex items-center gap-2 min-w-0">
+          <h1 className="text-sm font-semibold text-foreground truncate tracking-tight">
+            ASTRA Admin
+          </h1>
+          <span className="text-muted-foreground/40">|</span>
+          <span className="text-xs text-muted-foreground truncate capitalize">
+            {activeSection.replace(/-/g, ' ')}
+          </span>
         </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-2">
-          {/* Ping indicator */}
+        {/* Center: Global search */}
+        <div className="flex-1 flex justify-center max-w-lg mx-auto">
+          <AdminCommandPalette onSectionChange={onSectionChange} />
+        </div>
+
+        {/* Right: Actions */}
+        <div className="flex items-center gap-1.5">
+          {/* Ping */}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-muted/50 border border-border/30 h-8">
+                <div className="flex items-center gap-1 px-2 py-1 rounded-md border border-border/30 h-8">
                   {pingStatus === 'ok' ? (
                     <Wifi className="h-3 w-3 text-chart-1" />
                   ) : pingStatus === 'slow' ? (
@@ -151,30 +157,9 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
             </Tooltip>
           </TooltipProvider>
 
-          {/* Reduced Motion toggle */}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={`h-8 w-8 hover:bg-primary/10 ${reducedMotion ? 'text-chart-3' : ''}`}
-                  onClick={toggleMotion}
-                >
-                  <Zap className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="text-xs">
-                {reducedMotion ? 'Animations off — click to enable' : 'Reduce motion'}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-
           <Suspense fallback={null}>
-            <DemoStartButton className="gap-1.5" />
+            <DemoStartButton className="gap-1.5 h-8" />
           </Suspense>
-
-          <AdminCommandPalette onSectionChange={onSectionChange} />
 
           {/* Notifications */}
           <DropdownMenu modal={false} open={notificationsOpen} onOpenChange={setNotificationsOpen}>
@@ -182,22 +167,17 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="relative h-8 w-8 hover:bg-primary/10"
-                title="Notifications"
+                className="relative h-8 w-8 hover:bg-muted"
               >
                 <Bell className="h-4 w-4" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-destructive rounded-full flex items-center justify-center text-[10px] text-destructive-foreground font-bold overflow-hidden">
-                    <span className="absolute inset-0 rounded-full bg-destructive animate-ping opacity-60" />
-                    <span className="relative">{unreadCount}</span>
+                  <span className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-destructive rounded-full flex items-center justify-center text-[10px] text-destructive-foreground font-bold">
+                    {unreadCount}
                   </span>
                 )}
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              className="w-80 backdrop-blur-xl bg-background/95 border-border/50"
-            >
+            <DropdownMenuContent align="end" className="w-80 border-border/50">
               <DropdownMenuLabel className="py-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold">
@@ -222,25 +202,20 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
                   {notifications.map((n) => (
                     <DropdownMenuItem
                       key={n.id}
-                      className="flex flex-col items-start py-2 px-3 cursor-pointer hover:bg-accent/50"
+                      className="flex flex-col items-start py-2 px-3 cursor-pointer"
                       onClick={() => handleNotificationClick(n.id)}
                     >
                       <div className="flex items-start justify-between w-full mb-1">
                         <p className="text-xs font-medium flex-1 pr-2 line-clamp-1">
                           {n.title}
                         </p>
-                        <span
-                          className={`text-[10px] px-1.5 py-0.5 rounded-full whitespace-nowrap ${priorityColor(n.priority)}`}
-                        >
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full whitespace-nowrap ${priorityColor(n.priority)}`}>
                           {n.priority}
                         </span>
                       </div>
-                      <p className="text-[10px] text-muted-foreground line-clamp-1 mb-1">
+                      <p className="text-[10px] text-muted-foreground line-clamp-1">
                         {n.message}
                       </p>
-                      <span className="text-[10px] text-muted-foreground/70">
-                        {new Date(n.created_at).toLocaleString()}
-                      </span>
                     </DropdownMenuItem>
                   ))}
                 </div>
@@ -256,37 +231,37 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 hover:bg-primary/10"
+            className="h-8 w-8 hover:bg-muted"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            title="Toggle theme"
           >
-            {theme === "dark" ? (
-              <Sun className="h-4 w-4" />
-            ) : (
-              <Moon className="h-4 w-4" />
-            )}
+            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </Button>
+
+          {/* Home */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 hover:bg-muted"
+            onClick={() => navigate("/")}
+          >
+            <Home className="h-4 w-4" />
           </Button>
 
           {/* Profile */}
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="relative h-8 w-8">
-                <Avatar className="h-7 w-7 ring-2 ring-primary/20">
-                  <AvatarFallback className="bg-gradient-to-br from-primary to-primary/60 text-primary-foreground text-xs">
+                <Avatar className="h-7 w-7 ring-1 ring-border">
+                  <AvatarFallback className="bg-primary text-primary-foreground text-xs font-semibold">
                     {profile?.full_name?.charAt(0).toUpperCase() || "A"}
                   </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              className="w-48 backdrop-blur-xl bg-background/95 border-border/50"
-            >
+            <DropdownMenuContent align="end" className="w-48 border-border/50">
               <DropdownMenuLabel className="py-2">
                 <div className="flex flex-col">
-                  <p className="text-xs font-medium">
-                    {profile?.full_name || "Admin"}
-                  </p>
+                  <p className="text-xs font-medium">{profile?.full_name || "Admin"}</p>
                   <p className="text-[10px] text-muted-foreground">Administrator</p>
                 </div>
               </DropdownMenuLabel>
@@ -297,13 +272,6 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
               >
                 <Settings className="h-3.5 w-3.5 mr-2" />
                 Settings
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => navigate("/")}
-                className="text-xs py-1.5"
-              >
-                <Bell className="h-3.5 w-3.5 mr-2" />
-                Go to Home
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem

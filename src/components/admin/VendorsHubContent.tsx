@@ -1,22 +1,14 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getCurrencyFormatterShort } from '@/stores/currencyStore';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { 
-  Store, 
-  Users, 
-  ShoppingBag,
-  UserCheck,
-  ClipboardList,
-  TrendingUp,
-  Shield,
-  FolderTree,
-  Settings,
-  BarChart3,
-  Sliders,
-  FileCheck
+  Store, Users, ShoppingBag, UserCheck, ClipboardList, TrendingUp,
+  Shield, FolderTree, Settings, BarChart3, Sliders, FileCheck,
+  Plus, Filter, Scan, AlertTriangle
 } from 'lucide-react';
 
 import { useQuery } from '@tanstack/react-query';
@@ -33,11 +25,10 @@ import VendorKYCManagement from './VendorKYCManagement';
 import VendorVerificationPanel from './VendorVerificationPanel';
 import ComprehensiveVendorManagement from './ComprehensiveVendorManagement';
 import VendorControlPanel from './VendorControlPanel';
-
 import VendorUserRoleManagement from './VendorUserRoleManagement';
 
 const VendorsHubContent = () => {
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('vendors');
 
   const { data: vendorStats = {
     totalVendors: 0,
@@ -59,7 +50,6 @@ const VendorsHubContent = () => {
         typeof vendorProfilesResult.count === 'number' ? vendorProfilesResult.count : 0,
         typeof vendorBizProfilesResult.count === 'number' ? vendorBizProfilesResult.count : 0
       );
-
       const activeVendors = typeof activeVendorProfilesResult?.count === 'number' ? activeVendorProfilesResult.count : 0;
       const approvedServices = typeof vendorBizProfilesResult?.count === 'number' ? vendorBizProfilesResult.count : 0;
 
@@ -75,198 +65,83 @@ const VendorsHubContent = () => {
     refetchInterval: 60000,
   });
 
+  const kpiItems = [
+    { label: 'Total Vendors', value: vendorStats.totalVendors, icon: Store, color: 'text-foreground' },
+    { label: 'Active', value: vendorStats.activeVendors, icon: UserCheck, color: 'text-chart-1' },
+    { label: 'Pending', value: vendorStats.pendingApplications, icon: ClipboardList, color: 'text-chart-3' },
+    { label: 'Flagged Risk', value: 0, icon: AlertTriangle, color: 'text-destructive' },
+    { label: 'Revenue', value: getCurrencyFormatterShort()(vendorStats.monthlyRevenue), icon: TrendingUp, color: 'text-chart-2', isText: true },
+  ];
+
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-primary/10 via-accent/5 to-chart-3/10 rounded-lg border border-border/50">
-        <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-          <Store className="h-4 w-4 text-primary-foreground" />
+    <div className="space-y-3">
+      {/* Compact Page Header — 72px max */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-base font-semibold text-foreground tracking-tight">Vendors Hub</h2>
+        <div className="flex items-center gap-2">
+          <Button size="sm" variant="outline" className="h-8 text-xs gap-1.5">
+            <Filter className="h-3.5 w-3.5" />
+            Filters
+          </Button>
+          <Button size="sm" variant="outline" className="h-8 text-xs gap-1.5">
+            <Scan className="h-3.5 w-3.5" />
+            AI Scan
+          </Button>
+          <Button size="sm" className="h-8 text-xs gap-1.5">
+            <Plus className="h-3.5 w-3.5" />
+            Add Vendor
+          </Button>
         </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-sm font-bold">Vendor Management Hub</h2>
-            <Badge className="bg-chart-3/20 text-chart-3 text-[9px] px-1.5 py-0 h-4">Enterprise</Badge>
+      </div>
+
+      {/* KPI Strip — 64px max height, single row */}
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+        {kpiItems.map((item) => (
+          <div key={item.label} className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-border/40 bg-card">
+            <item.icon className={`h-4 w-4 shrink-0 ${item.color}`} />
+            <div className="min-w-0">
+              <div className={`text-lg font-bold tabular-nums leading-tight ${item.color}`}>
+                {item.isText ? item.value : item.value}
+              </div>
+              <div className="text-[10px] text-muted-foreground leading-tight truncate">{item.label}</div>
+            </div>
           </div>
-          <p className="text-[10px] text-muted-foreground">Complete vendor lifecycle management</p>
-        </div>
+        ))}
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-3 lg:grid-cols-6 gap-2">
-        <Card className="border-border/50">
-          <CardContent className="p-2">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-primary/10 rounded flex items-center justify-center">
-                <Store className="h-3 w-3 text-primary" />
-              </div>
-              <div>
-                <div className="text-sm font-bold">{vendorStats.totalVendors}</div>
-                <div className="text-[9px] text-muted-foreground">Total</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="border-border/50">
-          <CardContent className="p-2">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-chart-1/10 rounded flex items-center justify-center">
-                <UserCheck className="h-3 w-3 text-chart-1" />
-              </div>
-              <div>
-                <div className="text-sm font-bold text-chart-1">{vendorStats.activeVendors}</div>
-                <div className="text-[9px] text-muted-foreground">Active</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="border-border/50">
-          <CardContent className="p-2">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-chart-3/10 rounded flex items-center justify-center">
-                <ClipboardList className="h-3 w-3 text-chart-3" />
-              </div>
-              <div>
-                <div className="text-sm font-bold text-chart-3">{vendorStats.pendingApplications}</div>
-                <div className="text-[9px] text-muted-foreground">Pending</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="border-border/50">
-          <CardContent className="p-2">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-chart-2/10 rounded flex items-center justify-center">
-                <ShoppingBag className="h-3 w-3 text-chart-2" />
-              </div>
-              <div>
-                <div className="text-sm font-bold text-chart-2">{vendorStats.totalServices}</div>
-                <div className="text-[9px] text-muted-foreground">Services</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="border-border/50">
-          <CardContent className="p-2">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-chart-1/10 rounded flex items-center justify-center">
-                <Shield className="h-3 w-3 text-chart-1" />
-              </div>
-              <div>
-                <div className="text-sm font-bold text-chart-1">{vendorStats.approvedServices}</div>
-                <div className="text-[9px] text-muted-foreground">Approved</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="border-border/50">
-          <CardContent className="p-2">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-chart-5/10 rounded flex items-center justify-center">
-                <TrendingUp className="h-3 w-3 text-chart-5" />
-              </div>
-              <div>
-                <div className="text-[10px] font-bold text-chart-5">{getCurrencyFormatterShort()(vendorStats.monthlyRevenue)}</div>
-                <div className="text-[9px] text-muted-foreground">Revenue</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
-        <TabsList className="grid w-full grid-cols-9 h-8 p-0.5 bg-muted/50">
-          <TabsTrigger value="overview" className="text-[9px] h-7 data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
-            Overview
-          </TabsTrigger>
-          <TabsTrigger value="vendors" className="text-[9px] h-7 data-[state=active]:bg-chart-1/20 data-[state=active]:text-chart-1">
+      {/* Tab Navigation — minimal */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="h-9 bg-muted/40 border border-border/30 p-0.5 w-auto inline-flex">
+          <TabsTrigger value="vendors" className="text-xs h-8 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
             Vendors
           </TabsTrigger>
-          <TabsTrigger value="applications" className="text-[9px] h-7 data-[state=active]:bg-chart-3/20 data-[state=active]:text-chart-3">
-            Apps
+          <TabsTrigger value="applications" className="text-xs h-8 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+            Applications
           </TabsTrigger>
-          <TabsTrigger value="services" className="text-[9px] h-7 data-[state=active]:bg-chart-2/20 data-[state=active]:text-chart-2">
+          <TabsTrigger value="services" className="text-xs h-8 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
             Services
           </TabsTrigger>
-          <TabsTrigger value="categories" className="text-[9px] h-7 data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+          <TabsTrigger value="categories" className="text-xs h-8 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
             Categories
           </TabsTrigger>
-          <TabsTrigger value="category-control" className="text-[9px] h-7 data-[state=active]:bg-chart-4/20 data-[state=active]:text-chart-4">
-            Control
-          </TabsTrigger>
-          <TabsTrigger value="kyc" className="text-[9px] h-7 data-[state=active]:bg-chart-1/20 data-[state=active]:text-chart-1">
+          <TabsTrigger value="kyc" className="text-xs h-8 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
             KYC
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="text-[9px] h-7 data-[state=active]:bg-chart-2/20 data-[state=active]:text-chart-2">
+          <TabsTrigger value="analytics" className="text-xs h-8 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
             Analytics
           </TabsTrigger>
-          <TabsTrigger value="control" className="text-[9px] h-7 data-[state=active]:bg-muted data-[state=active]:text-foreground">
-            Panel
+          <TabsTrigger value="control" className="text-xs h-8 px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+            Control
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="mt-3">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-            <Card className="border-border/50">
-              <CardHeader className="p-3 pb-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-chart-2/10 rounded flex items-center justify-center">
-                    <Users className="h-3 w-3 text-chart-2" />
-                  </div>
-                  <CardTitle className="text-xs">Recent Activity</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="p-3 pt-0">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between p-2 bg-muted/30 rounded-lg">
-                    <span className="text-[10px]">New registrations</span>
-                    <Badge variant="outline" className="text-[9px] h-4 px-1.5">+12 today</Badge>
-                  </div>
-                  <div className="flex items-center justify-between p-2 bg-muted/30 rounded-lg">
-                    <span className="text-[10px]">Service submissions</span>
-                    <Badge variant="outline" className="text-[9px] h-4 px-1.5">+8 pending</Badge>
-                  </div>
-                  <div className="flex items-center justify-between p-2 bg-muted/30 rounded-lg">
-                    <span className="text-[10px]">KYC verifications</span>
-                    <Badge variant="outline" className="text-[9px] h-4 px-1.5">5 pending</Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="border-border/50">
-              <CardHeader className="p-3 pb-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-chart-1/10 rounded flex items-center justify-center">
-                    <Settings className="h-3 w-3 text-chart-1" />
-                  </div>
-                  <CardTitle className="text-xs">Quick Actions</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="p-3 pt-0">
-                <div className="text-[10px] text-muted-foreground p-2 bg-muted/30 rounded-lg">
-                  Use the tabs above to navigate to different vendor management sections.
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-
+        {/* Main workspace — above the fold */}
         <TabsContent value="vendors" className="mt-3">
           <ComprehensiveVendorManagement />
         </TabsContent>
 
         <TabsContent value="applications" className="mt-3">
           <VendorApplicationManagement />
-        </TabsContent>
-
-        <TabsContent value="category-control" className="mt-3">
-          <VendorCategoryController />
         </TabsContent>
 
         <TabsContent value="services" className="mt-3">
@@ -278,7 +153,7 @@ const VendorsHubContent = () => {
         </TabsContent>
 
         <TabsContent value="kyc" className="mt-3">
-          <div className="space-y-4">
+          <div className="space-y-3">
             <VendorKYCManagement />
             <VendorVerificationPanel />
           </div>

@@ -1,24 +1,9 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { navigationSections, sectionTitles, categories } from './navigationSections';
 import { 
-  LayoutDashboard, 
-  Users, 
-  Building2, 
-  Wrench, 
-  Settings, 
-  Cog,
-  Coins,
-  Headphones,
-  Store,
-  BarChart3,
-  HelpCircle,
-  X,
-  ArrowLeftRight,
-  TrendingUp,
-  FileSliders,
-  Sparkles,
-  Server,
-  type LucideIcon 
+  LayoutDashboard, Users, Building2, Wrench, Settings, Cog, Coins, Headphones,
+  Store, BarChart3, HelpCircle, X, ArrowLeftRight, TrendingUp, FileSliders,
+  Sparkles, Server, ChevronLeft, ChevronRight, type LucideIcon 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -46,15 +31,15 @@ const categoryIcons: Record<string, LucideIcon> = {
 interface AdminSidebarProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
-export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarProps) {
+export function AdminSidebar({ activeSection, onSectionChange, collapsed = false, onToggleCollapse }: AdminSidebarProps) {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [openCategory, setOpenCategory] = useState<string | null>(null);
-  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [flyoutQuery, setFlyoutQuery] = useState('');
 
-  // Memoize expensive active category lookup
   const activeCategory = useMemo(() => {
     for (const category of categories) {
       const sections = navigationSections[category as keyof typeof navigationSections];
@@ -70,7 +55,6 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
       onSectionChange('overview');
       setOpenCategory(null);
     } else {
-      // Only toggle the flyout — don't navigate yet
       setOpenCategory(prev => prev === category ? null : category);
     }
   }, [onSectionChange]);
@@ -80,239 +64,201 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
     setOpenCategory(null);
   }, [onSectionChange]);
 
-  // Reset flyout search when category changes/closes
-  useEffect(() => {
-    setFlyoutQuery('');
-  }, [openCategory]);
+  useEffect(() => { setFlyoutQuery(''); }, [openCategory]);
 
-  // Close flyout when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
         setOpenCategory(null);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Close on escape key
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setOpenCategory(null);
-      }
+      if (event.key === 'Escape') setOpenCategory(null);
     };
-
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
   }, []);
 
-  
   const openSections = openCategory ? navigationSections[openCategory as keyof typeof navigationSections] : null;
   const filteredOpenSections = openSections
     ? openSections.filter((section) => {
         if (!flyoutQuery.trim()) return true;
         const q = flyoutQuery.trim().toLowerCase();
-        return (
-          section.label.toLowerCase().includes(q) ||
-          section.key.toLowerCase().includes(q) ||
-          section.description.toLowerCase().includes(q)
-        );
+        return section.label.toLowerCase().includes(q) || section.key.toLowerCase().includes(q);
       })
     : null;
 
+  // Determine if we show labels (expanded mode on lg+)
+  const showLabels = !collapsed;
+
   return (
     <>
-      {/* Backdrop overlay when flyout is open */}
+      {/* Backdrop */}
       {openCategory && (
         <div 
-          className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[9998] animate-in fade-in-0 duration-200"
+          className="fixed inset-0 bg-black/30 z-[9998]"
           onClick={() => setOpenCategory(null)}
         />
       )}
-      
-      <nav ref={sidebarRef} className="relative h-full flex z-[9999]" aria-label="Admin navigation">
-        {/* Icon-only Sidebar - Compact */}
-         <div className="w-12 h-full bg-card/95 backdrop-blur-sm border-r border-border/30 flex flex-col py-2 px-1.5 shadow-lg" role="menubar" aria-label="Section categories">
-           {/* IMPORTANT: category list must be scrollable or bottom categories (like Features) become unreachable */}
-           <ScrollArea className="flex-1">
-              <div className="flex flex-col gap-0.5">
-                {categories.map((category) => {
-                  const sections = navigationSections[category as keyof typeof navigationSections];
-                  if (!sections || sections.length === 0) return null;
 
-                  const CategoryIcon = categoryIcons[category] || LayoutDashboard;
-                  const isActive = activeCategory === category;
-                  const isOpen = openCategory === category;
-                  const isHovered = hoveredCategory === category;
-                  const sectionCount = sections.length;
+      <nav
+        ref={sidebarRef}
+        className={cn(
+          "fixed top-0 left-0 h-screen z-[9999] flex",
+          "transition-all duration-200"
+        )}
+        aria-label="Admin navigation"
+      >
+        {/* Main sidebar column */}
+        <div className={cn(
+          "h-full bg-[hsl(var(--sidebar-background))] border-r border-border/30 flex flex-col transition-all duration-200",
+          showLabels ? "w-14 lg:w-60" : "w-14"
+        )}>
+          {/* Logo area */}
+          <div className="h-14 flex items-center px-3 border-b border-border/20 shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
+              <span className="text-primary-foreground font-bold text-sm">A</span>
+            </div>
+            <span className={cn(
+              "ml-2.5 font-semibold text-sm text-sidebar-foreground tracking-tight transition-opacity duration-200",
+              showLabels ? "hidden lg:block opacity-100" : "hidden opacity-0"
+            )}>
+              ASTRA
+            </span>
+          </div>
 
-                  return (
-                    <div key={category} className="relative">
-                      {/* Icon Button */}
-                       <button
-                         onClick={() => handleCategoryClick(category)}
-                         onMouseEnter={() => setHoveredCategory(category)}
-                         onMouseLeave={() => setHoveredCategory(null)}
-                         aria-label={sectionTitles[category as keyof typeof sectionTitles]}
-                         aria-expanded={isOpen}
-                         aria-haspopup="menu"
-                         role="menuitem"
-                         className={cn(
-                           "w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200 group relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1",
-                           isOpen
-                             ? "bg-primary text-primary-foreground shadow-md shadow-primary/30 scale-105"
-                             : isActive
-                               ? "bg-primary/15 text-primary"
-                               : "hover:bg-muted/60 text-muted-foreground hover:text-foreground hover:scale-105"
-                         )}
-                      >
-                        <CategoryIcon className="h-4 w-4 transition-transform duration-200" />
+          {/* Nav items */}
+          <ScrollArea className="flex-1 py-2">
+            <div className="flex flex-col gap-0.5 px-2">
+              {categories.map((category) => {
+                const sections = navigationSections[category as keyof typeof navigationSections];
+                if (!sections || sections.length === 0) return null;
 
-                        {/* Section count micro-badge */}
-                        {sectionCount > 1 && !isOpen && (
-                          <span className={cn(
-                            "absolute -bottom-0.5 -right-0.5 h-3.5 min-w-[14px] flex items-center justify-center rounded-full text-[7px] font-bold leading-none",
-                            isActive
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-muted text-muted-foreground border border-border/50"
-                          )}>
-                            {sectionCount}
-                          </span>
-                        )}
+                const CategoryIcon = categoryIcons[category] || LayoutDashboard;
+                const isActive = activeCategory === category;
+                const isOpen = openCategory === category;
+                const title = sectionTitles[category as keyof typeof sectionTitles] || category;
 
-                        {/* Active indicator bar */}
-                        {isActive && !isOpen && (
-                          <span className="absolute -right-0.5 top-1/2 -translate-y-1/2 w-1 h-5 bg-primary rounded-full transition-all duration-300" />
-                        )}
-                        {/* Open indicator bar */}
-                        {isOpen && (
-                          <span className="absolute -right-0.5 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary-foreground/60 rounded-full" />
-                        )}
-                      </button>
+                return (
+                  <button
+                    key={category}
+                    onClick={() => handleCategoryClick(category)}
+                    aria-label={title}
+                    aria-expanded={isOpen}
+                    className={cn(
+                      "group relative flex items-center gap-3 h-9 rounded-lg px-2.5 transition-all duration-150 text-left w-full",
+                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                      isOpen
+                        ? "bg-primary text-primary-foreground"
+                        : isActive
+                          ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                          : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                    )}
+                  >
+                    <CategoryIcon className="h-4 w-4 shrink-0" />
+                    <span className={cn(
+                      "text-xs font-medium truncate transition-opacity duration-200",
+                      showLabels ? "hidden lg:block" : "hidden"
+                    )}>
+                      {title}
+                    </span>
+                    
+                    {/* Active indicator */}
+                    {isActive && !isOpen && (
+                      <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-primary rounded-r-full" />
+                    )}
 
-                       {/* Hover Tooltip */}
-                       {isHovered && openCategory !== category && (
-                         <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2.5 z-50 animate-in fade-in-0 slide-in-from-left-2 duration-150 pointer-events-none">
-                           <div className="px-2.5 py-1.5 bg-foreground text-background text-xs font-medium rounded-md shadow-xl border border-border/20 whitespace-nowrap">
-                             {sectionTitles[category as keyof typeof sectionTitles]}
-                             <span className="ml-1.5 text-background/60">({sectionCount})</span>
-                             {/* Arrow */}
-                             <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-foreground" />
-                           </div>
-                         </div>
-                       )}
-                    </div>
-                  );
-                })}
-              </div>
-           </ScrollArea>
-         </div>
+                    {/* Section count */}
+                    {sections.length > 1 && (
+                      <span className={cn(
+                        "text-[9px] tabular-nums font-medium rounded px-1 py-0.5 transition-opacity duration-200",
+                        showLabels ? "hidden lg:block ml-auto" : "hidden",
+                        isOpen ? "bg-primary-foreground/20 text-primary-foreground" :
+                        isActive ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
+                      )}>
+                        {sections.length}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </ScrollArea>
+
+          {/* Collapse toggle */}
+          {onToggleCollapse && (
+            <div className="hidden lg:block border-t border-border/20 p-2 shrink-0">
+              <button
+                onClick={onToggleCollapse}
+                className="w-full flex items-center justify-center h-8 rounded-lg text-sidebar-foreground/50 hover:text-sidebar-foreground hover:bg-sidebar-accent/50 transition-colors"
+              >
+                {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* Flyout Panel */}
         {openCategory && openSections && (
           <div 
-            role="menu" 
-            aria-label={sectionTitles[openCategory as keyof typeof sectionTitles]} 
-            className="absolute left-14 top-2 w-56 bg-popover/98 backdrop-blur-xl rounded-xl border border-border/50 shadow-2xl z-[9999] animate-in slide-in-from-left-3 fade-in-0 duration-200 flex flex-col ring-1 ring-black/5" style={{ maxHeight: 'min(calc(100vh - 80px), 680px)' }}
+            role="menu"
+            className="absolute left-14 lg:left-60 top-2 w-56 bg-popover border border-border/50 rounded-xl shadow-xl z-[9999] flex flex-col"
+            style={{ maxHeight: 'min(calc(100vh - 80px), 680px)' }}
           >
             {/* Panel Header */}
-            <div className="flex items-center justify-between px-3 py-2.5 border-b border-border/30 bg-muted/30 shrink-0">
-              <div className="flex items-center gap-2">
-                {(() => {
-                  const CategoryIcon = categoryIcons[openCategory] || LayoutDashboard;
-                  return <CategoryIcon className="h-3.5 w-3.5 text-primary" />;
-                })()}
-                <h3 className="font-semibold text-xs text-foreground">
-                  {sectionTitles[openCategory as keyof typeof sectionTitles]}
-                </h3>
-              </div>
+            <div className="flex items-center justify-between px-3 py-2.5 border-b border-border/30 shrink-0">
+              <h3 className="font-semibold text-xs text-foreground">
+                {sectionTitles[openCategory as keyof typeof sectionTitles]}
+              </h3>
               <button
                 onClick={() => setOpenCategory(null)}
-                aria-label="Close navigation panel"
-                className="w-5 h-5 rounded-md hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-all duration-150 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                className="w-5 h-5 rounded-md hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground"
               >
                 <X className="h-3 w-3" />
               </button>
             </div>
 
-            {/* Quick search within category */}
-            <div className="px-2.5 py-2 border-b border-border/20 shrink-0">
-              <Input
-                value={flyoutQuery}
-                onChange={(e) => setFlyoutQuery(e.target.value)}
-                placeholder={`Search ${sectionTitles[openCategory as keyof typeof sectionTitles] ?? 'sections'}...`}
-                className="h-7 text-xs bg-background/50"
-                autoFocus
-              />
-            </div>
+            {/* Search */}
+            {(openSections.length > 6) && (
+              <div className="px-2.5 py-2 border-b border-border/20 shrink-0">
+                <Input
+                  value={flyoutQuery}
+                  onChange={(e) => setFlyoutQuery(e.target.value)}
+                  placeholder="Filter…"
+                  className="h-7 text-xs bg-muted/40"
+                  autoFocus
+                />
+              </div>
+            )}
 
-            {/* Panel Content — scrollable list */}
-            <ScrollArea className="flex-1 overflow-auto" style={{ maxHeight: '580px' }}>
-              <div className="p-1.5 pb-2 space-y-0.5">
-                {/* Category overview link */}
-                <button
-                  onClick={() => handleNavClick(`${openCategory}-overview`)}
-                  role="menuitem"
-                  aria-current={activeSection === `${openCategory}-overview` ? 'page' : undefined}
-                  className={cn(
-                    "w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition-all duration-150 text-left group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
-                    activeSection === `${openCategory}-overview`
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "hover:bg-accent/60 text-foreground"
-                  )}
-                >
-                  <LayoutDashboard className={cn(
-                    "h-3.5 w-3.5 shrink-0",
-                    activeSection === `${openCategory}-overview` ? "text-primary-foreground" : "text-primary"
-                  )} />
-                  <span className={cn(
-                    "text-[11px] truncate flex-1 font-semibold",
-                    activeSection === `${openCategory}-overview` ? "text-primary-foreground" : "text-foreground"
-                  )}>
-                    Overview
-                  </span>
-                </button>
-
-                {/* Divider */}
-                <div className="h-px bg-border/30 mx-2 my-1" />
-
-                {filteredOpenSections?.length ? filteredOpenSections.map((section, idx) => {
+            {/* Items */}
+            <ScrollArea className="flex-1 overflow-auto" style={{ maxHeight: '560px' }}>
+              <div className="p-1.5 space-y-0.5">
+                {filteredOpenSections?.length ? filteredOpenSections.map((section) => {
                   const Icon = section.icon;
                   const isActive = section.key === activeSection;
-
                   return (
                     <button
                       key={section.key}
                       onClick={() => handleNavClick(section.key)}
-                      role="menuitem"
-                      aria-current={isActive ? 'page' : undefined}
-                      style={{ animationDelay: `${idx * 20}ms` }}
                       className={cn(
-                        "w-full flex items-center gap-2 px-2.5 py-2 rounded-lg transition-all duration-150 text-left group animate-in fade-in slide-in-from-left-1 duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                        "w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-left transition-colors",
                         isActive
-                          ? "bg-primary text-primary-foreground shadow-sm"
-                          : "hover:bg-accent/60 text-foreground"
+                          ? "bg-primary text-primary-foreground"
+                          : "hover:bg-accent text-foreground"
                       )}
                     >
-                      <Icon className={cn(
-                        "h-3.5 w-3.5 shrink-0 transition-transform duration-150 group-hover:scale-110",
-                        isActive ? "text-primary-foreground" : "text-primary"
-                      )} />
-                      <span className={cn(
-                        "text-[11px] truncate flex-1 font-medium",
-                        isActive ? "text-primary-foreground" : "text-foreground"
-                      )}>
-                        {section.label}
-                      </span>
+                      <Icon className={cn("h-3.5 w-3.5 shrink-0", isActive ? "text-primary-foreground" : "text-muted-foreground")} />
+                      <span className="text-[11px] truncate flex-1 font-medium">{section.label}</span>
                       {'badge' in section && section.badge && (
                         <span className={cn(
-                          "text-[8px] px-1.5 py-0.5 rounded-full font-semibold shrink-0",
-                          isActive
-                            ? "bg-primary-foreground/20 text-primary-foreground"
-                            : "bg-destructive text-destructive-foreground"
+                          "text-[8px] px-1.5 py-0.5 rounded font-semibold shrink-0",
+                          isActive ? "bg-primary-foreground/20 text-primary-foreground" : "bg-accent text-accent-foreground"
                         )}>
                           {String(section.badge)}
                         </span>
@@ -320,8 +266,8 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                     </button>
                   );
                 }) : (
-                  <div className="px-2 py-8 text-center">
-                    <p className="text-[11px] text-muted-foreground">No matches for "{flyoutQuery}"</p>
+                  <div className="px-2 py-6 text-center text-[11px] text-muted-foreground">
+                    No matches
                   </div>
                 )}
               </div>
