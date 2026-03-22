@@ -1634,4 +1634,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "economic-trend-forecasting": { label: "Economic Trend Forecasting", category: "Operations" },
   "smart-financing-optimization": { label: "Smart Financing Optimization", category: "Operations" },
   "institutional-syndication": { label: "Institutional Portfolio Syndication", category: "Operations" },
+  "risk-stress-testing": { label: "Risk Stress Testing Simulator", category: "Operations" },
+  "liquidity-exit-strategy": { label: "Liquidity Exit Strategy Planner", category: "Operations" },
+  "dev-opportunity-analyzer": { label: "Development Opportunity Analyzer", category: "Operations" },
+  "global-leadership-narrative": { label: "Global Leadership Narrative", category: "Operations" },
 };

@@ -1314,6 +1314,34 @@ export const navigationSections = {
       badge: "🏦 Institutional"
     },
     {
+      key: "risk-stress-testing",
+      label: "Risk Stress Testing",
+      icon: AlertTriangle,
+      description: "Scenario analysis simulator — interest rate stress, demand decline, price correction & resilience scoring",
+      badge: "⚡ Risk"
+    },
+    {
+      key: "liquidity-exit-strategy",
+      label: "Exit Strategy Planner",
+      icon: Target,
+      description: "Optimal liquidity timing — listing window, scenario comparison & capital redeployment intelligence",
+      badge: "🚀 Exit"
+    },
+    {
+      key: "dev-opportunity-analyzer",
+      label: "Development Analyzer",
+      icon: Building,
+      description: "AI-powered development opportunity discovery — supply-demand imbalance, infrastructure proximity & ROI projection",
+      badge: "🏗️ Development"
+    },
+    {
+      key: "global-leadership-narrative",
+      label: "Leadership Narrative",
+      icon: Globe,
+      description: "Strategic storytelling dashboard — growth trajectory, milestone timeline & market dominance visualization",
+      badge: "🏆 Vision"
+    },
+    {
       key: "ai-copilot",
       label: "AI Co-Pilot",
       icon: Brain,
