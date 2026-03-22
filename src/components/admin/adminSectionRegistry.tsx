@@ -393,6 +393,7 @@ export const GlobalIPOAllianceIntelligenceBlueprint = lazyRetry(() => import("./
 export const DailyGlobalRevenueSprintClarityBlueprint = lazyRetry(() => import("./DailyGlobalRevenueSprintClarityBlueprint"));
 export const GlobalFounderWarRoomDealExpansionBlueprint = lazyRetry(() => import("./GlobalFounderWarRoomDealExpansionBlueprint"));
 export const GlobalEconomicIntelligenceLegacyBlueprint = lazyRetry(() => import("./GlobalEconomicIntelligenceLegacyBlueprint"));
+export const First1000DealsLiquidityFounderBlueprint = lazyRetry(() => import("./First1000DealsLiquidityFounderBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -871,6 +872,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "daily-global-revenue-sprint-clarity": () => <DailyGlobalRevenueSprintClarityBlueprint />,
   "global-founder-warroom-deal-expansion": () => <GlobalFounderWarRoomDealExpansionBlueprint />,
   "global-economic-intelligence-legacy": () => <GlobalEconomicIntelligenceLegacyBlueprint />,
+  "first-1000-deals-liquidity-founder": () => <First1000DealsLiquidityFounderBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1314,4 +1316,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "daily-global-revenue-sprint-clarity": { label: "Daily Global Revenue & Founder Clarity", category: "Strategy" },
   "global-founder-warroom-deal-expansion": { label: "Global War-Room & Deal Expansion", category: "Strategy" },
   "global-economic-intelligence-legacy": { label: "Global Economic Intelligence & Legacy", category: "Strategy" },
+  "first-1000-deals-liquidity-founder": { label: "First 1,000 Deals & Founder Rhythm", category: "Strategy" },
 };
