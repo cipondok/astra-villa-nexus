@@ -10,12 +10,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Eye, EyeOff, Mail, KeyRound } from "lucide-react";
+import { Eye, EyeOff, Mail, KeyRound, ShieldAlert } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { EmailValidationIndicator } from "@/components/auth/EmailValidationIndicator";
 import { PasswordStrengthBar } from "@/components/auth/PasswordStrengthBar";
 import SignupPromotionBanner from "@/components/auth/SignupPromotionBanner";
+import { useLoginSecurity } from "@/hooks/useLoginSecurity";
 import {
   Dialog,
   DialogContent,
@@ -39,9 +40,11 @@ const Auth = () => {
   const [loginPassword, setLoginPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
-  // Login rate limiting
-  const [failedAttempts, setFailedAttempts] = useState(0);
-  const [lockoutUntil, setLockoutUntil] = useState<number | null>(null);
+  // Progressive login security
+  const {
+    isLocked, lockoutRemaining, recordFailedAttempt, recordSuccess,
+    logLoginActivity, isDisposableEmail, checkDisposableEmailDB
+  } = useLoginSecurity();
 
   // Register form state
   const [registerEmail, setRegisterEmail] = useState("");
@@ -63,18 +66,7 @@ const Auth = () => {
     }
   }, []);
 
-  // Lockout countdown
-  useEffect(() => {
-    if (!lockoutUntil) return;
-    const interval = setInterval(() => {
-      if (Date.now() >= lockoutUntil) {
-        setLockoutUntil(null);
-        setFailedAttempts(0);
-        clearInterval(interval);
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [lockoutUntil]);
+  // No manual lockout countdown needed — useLoginSecurity handles it
 
   // If already authenticated, redirect to home
   if (user) {
@@ -85,12 +77,11 @@ const Auth = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Check lockout
-    if (lockoutUntil && Date.now() < lockoutUntil) {
-      const remaining = Math.ceil((lockoutUntil - Date.now()) / 1000);
+    // Check progressive lockout
+    if (isLocked) {
       toast({
         title: "Account temporarily locked",
-        description: `Too many failed attempts. Please wait ${remaining} seconds.`,
+        description: `Too many failed attempts. Please wait ${lockoutRemaining} seconds.`,
         variant: "destructive",
       });
       return;
@@ -102,8 +93,8 @@ const Auth = () => {
       const { success, error } = await signIn(loginEmail, loginPassword);
       
       if (success) {
-        setFailedAttempts(0);
-        setLockoutUntil(null);
+        recordSuccess();
+        logLoginActivity(loginEmail, true, user?.id);
         
         if (rememberMe) {
           localStorage.setItem('rememberEmail', loginEmail);
@@ -117,23 +108,21 @@ const Auth = () => {
         });
         navigate("/");
       } else {
-        const newAttempts = failedAttempts + 1;
-        setFailedAttempts(newAttempts);
+        const result = recordFailedAttempt();
+        const failureReason = error?.message || "Invalid credentials";
+        logLoginActivity(loginEmail, false, undefined, failureReason);
 
-        if (newAttempts >= 5) {
-          const lockDuration = 2 * 60 * 1000; // 2 minutes
-          setLockoutUntil(Date.now() + lockDuration);
+        if (result.isLocked) {
+          const mins = Math.ceil(result.lockDurationMs / 60000);
           toast({
             title: "Account temporarily locked",
-            description: "Too many failed login attempts. Please wait 2 minutes before trying again.",
+            description: `Too many failed attempts. Please wait ${mins} minute${mins > 1 ? 's' : ''}.`,
             variant: "destructive",
           });
         } else {
-          const msg = error?.message || "Invalid email or password";
-          const attemptsLeft = 5 - newAttempts;
           toast({
             title: "Login failed",
-            description: `${msg}. ${attemptsLeft} attempt${attemptsLeft !== 1 ? 's' : ''} remaining.`,
+            description: `${failureReason}. ${result.attemptsUntilLock} attempt${result.attemptsUntilLock !== 1 ? 's' : ''} remaining.`,
             variant: "destructive",
           });
         }
@@ -222,6 +211,27 @@ const Auth = () => {
       return;
     }
 
+    // Disposable email check (client-side fast)
+    if (isDisposableEmail(registerEmail)) {
+      toast({
+        title: "Registration blocked",
+        description: "Disposable email addresses are not allowed. Please use a permanent email.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Async disposable email check (database)
+    const isDisposable = await checkDisposableEmailDB(registerEmail);
+    if (isDisposable) {
+      toast({
+        title: "Registration blocked",
+        description: "This email domain is not accepted. Please use a valid email provider.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Password validation
     if (registerPassword !== confirmPassword) {
       toast({
@@ -258,7 +268,6 @@ const Auth = () => {
           title: "Registration successful!",
           description: "Please check your email to verify your account before logging in.",
         });
-        // Don't navigate to home — show verification message
       } else {
         toast({
           title: "Registration failed",
