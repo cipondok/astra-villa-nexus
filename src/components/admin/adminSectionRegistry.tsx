@@ -133,6 +133,10 @@ export const GlobalDiversificationStrategy = lazyRetry(() => import("./GlobalDiv
 export const EconomicTrendForecasting = lazyRetry(() => import("./EconomicTrendForecasting"));
 export const SmartFinancingOptimization = lazyRetry(() => import("./SmartFinancingOptimization"));
 export const InstitutionalSyndication = lazyRetry(() => import("./InstitutionalSyndication"));
+export const RiskStressTestingSimulator = lazyRetry(() => import("./RiskStressTestingSimulator"));
+export const LiquidityExitStrategyPlanner = lazyRetry(() => import("./LiquidityExitStrategyPlanner"));
+export const DevOpportunityAnalyzer = lazyRetry(() => import("./DevOpportunityAnalyzer"));
+export const GlobalLeadershipNarrative = lazyRetry(() => import("./GlobalLeadershipNarrative"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
