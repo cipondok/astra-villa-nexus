@@ -672,6 +672,12 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "agent-mobile-home": () => <AgentMobileHomeScreen />,
   "deal-offer-submission": () => <DealOfferSubmissionFlow />,
 
+  // Negotiation, Deal Progress & Secure Closing
+  "negotiation-chat": () => <NegotiationChatInterface />,
+  "deal-progress-timeline": () => <DealProgressTimeline />,
+  "secure-payment-escrow": () => <SecurePaymentEscrowFlow />,
+  "closing-celebration": () => <ClosingCelebrationScreen />,
+
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
   "social-media-settings": () => <SocialMediaSettings />,
