@@ -1226,6 +1226,13 @@ export const navigationSections = {
       badge: "⚖️ Fair"
     },
     {
+      key: "buyer-financing-blueprint",
+      label: "Buyer Financing & Premium Upsell",
+      icon: Wallet,
+      description: "Financing funnel, premium listing upsell psychology & local property events",
+      badge: "💰 Revenue"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
