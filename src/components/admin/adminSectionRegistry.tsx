@@ -1259,4 +1259,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "second-viewing-leaderboard": { label: "Second Viewing & Agent Leaderboard", category: "Strategy" },
   "offer-closing-flash": { label: "Offer Closing Psychology & Flash Promotions", category: "Strategy" },
   "post-deal-loyalty-mega": { label: "Post-Deal Loyalty & Mega-Portfolio", category: "Strategy" },
+  "referral-mega-project-city": { label: "Referral Flywheel & City Domination", category: "Strategy" },
 };
