@@ -121,7 +121,8 @@ import {
   ClipboardCheck,
   Swords,
   Hourglass,
-  Timer
+  Timer,
+  Crosshair
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -163,6 +164,13 @@ export const navigationSections = {
       icon: Sunrise,
       description: "Daily execution metrics, priority tasks, and founder productivity scoring",
       badge: "Command"
+    },
+    {
+      key: "first-city-domination",
+      label: "First City Domination",
+      icon: Crosshair,
+      description: "Tactical operations for city domination — supply, agents, buyers, closing",
+      badge: "Tactical"
     },
     {
       key: "deal-pipeline-crm",

@@ -284,6 +284,7 @@ export const PremiumListingsMonetization = lazyRetry(() => import("./PremiumList
 export const FounderMobileWarRoom = lazyRetry(() => import("./FounderMobileWarRoom"));
 export const InvestorGrowthIntelligence = lazyRetry(() => import("./InvestorGrowthIntelligence"));
 export const GlobalExpansionIntelligence = lazyRetry(() => import("./GlobalExpansionIntelligence"));
+export const FirstCityDominationCommand = lazyRetry(() => import("./FirstCityDominationCommand"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -1458,4 +1459,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "founder-mobile-warroom": { label: "Founder Mobile War-Room", category: "Operations" },
   "investor-growth-intelligence": { label: "Investor Perception & Growth Intelligence", category: "Operations" },
   "global-expansion-intelligence": { label: "Global Expansion & Autonomous Growth", category: "Operations" },
+  "first-city-domination": { label: "First City Domination Command", category: "Operations" },
 };
