@@ -1355,6 +1355,13 @@ export const navigationSections = {
       badge: "👑 Decacorn"
     },
     {
+      key: "global-infra-ecosystem-founder",
+      label: "Global Infrastructure & Founder Command",
+      icon: Globe,
+      description: "Global economic infrastructure positioning, ecosystem expansion & founder strategic decision framework",
+      badge: "🌍 Global"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,

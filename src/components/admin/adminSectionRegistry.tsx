@@ -1277,4 +1277,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "pre-unicorn-global-brand-os": { label: "Pre-Unicorn Growth & Marketplace OS", category: "Strategy" },
   "unicorn-category-ai-control": { label: "Unicorn Valuation & AI Control", category: "Strategy" },
   "decacorn-capital-intelligence": { label: "Decacorn Financial Engine & Intelligence", category: "Strategy" },
+  "global-infra-ecosystem-founder": { label: "Global Infrastructure & Founder Command", category: "Strategy" },
 };
