@@ -1263,6 +1263,13 @@ export const navigationSections = {
       badge: "🤝 Deals"
     },
     {
+      key: "fast-deal-cycle-liquidity",
+      label: "Fast Deal Cycle & Liquidity Score",
+      icon: Activity,
+      description: "Deal cycle optimization, ethical competition signals & district liquidity scoring system",
+      badge: "⚡ Speed"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
