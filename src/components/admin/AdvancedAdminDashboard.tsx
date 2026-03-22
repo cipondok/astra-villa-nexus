@@ -67,7 +67,7 @@ const AdvancedAdminDashboard = () => {
   }, []);
 
   const handleTabChange = (tab: string) => {
-    const mapped = tab === 'vendors-hub' ? 'vendor-management' : tab;
+    const mapped = tab;
     setActiveTab(mapped);
   };
 

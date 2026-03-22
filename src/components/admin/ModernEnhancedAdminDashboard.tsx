@@ -13,7 +13,7 @@ const normalizeSection = (section: string | null) => {
   if (!section) return "overview";
 
   if (section === "settings") return "system-settings";
-  if (section === "vendors-hub") return "vendor-management";
+  
 
   return section;
 };
