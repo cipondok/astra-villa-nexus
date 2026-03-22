@@ -731,6 +731,10 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "api-endpoint-structure": () => <APIEndpointStructure />,
   "frontend-architecture": () => <FrontendArchitecture />,
   "deployment-scaling": () => <DeploymentScaling />,
+  "realtime-event-architecture": () => <RealTimeEventArchitecture />,
+  "ai-data-pipeline": () => <AIDataPipeline />,
+  "recommendation-algorithm-flow": () => <RecommendationAlgorithmFlow />,
+  "security-permission-matrix": () => <SecurityPermissionMatrix />,
 
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
