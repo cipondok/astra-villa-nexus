@@ -282,6 +282,7 @@ export const DealPipelineCRM = lazyRetry(() => import("./DealPipelineCRM"));
 export const CityLiquidityHeatmap = lazyRetry(() => import("./CityLiquidityHeatmap"));
 export const PremiumListingsMonetization = lazyRetry(() => import("./PremiumListingsMonetization"));
 export const FounderMobileWarRoom = lazyRetry(() => import("./FounderMobileWarRoom"));
+export const InvestorGrowthIntelligence = lazyRetry(() => import("./InvestorGrowthIntelligence"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -1454,4 +1455,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "city-liquidity-heatmap": { label: "City Liquidity Heatmap", category: "Operations" },
   "premium-listings-monetization": { label: "Premium Listings Monetization", category: "Operations" },
   "founder-mobile-warroom": { label: "Founder Mobile War-Room", category: "Operations" },
+  "investor-growth-intelligence": { label: "Investor Perception & Growth Intelligence", category: "Operations" },
 };
