@@ -121,7 +121,8 @@ import {
   ClipboardCheck,
   Swords,
   Hourglass,
-  Timer
+  Timer,
+  Crosshair
 } from "lucide-react";
 
 export interface NavigationSection {
