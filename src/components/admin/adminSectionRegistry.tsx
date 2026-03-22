@@ -277,6 +277,7 @@ export const GlobalPropertyCivilizationOS = lazyRetry(() => import("./GlobalProp
 export const AutonomousWealthInfrastructure = lazyRetry(() => import("./AutonomousWealthInfrastructure"));
 export const Founder100YearLegacy = lazyRetry(() => import("./Founder100YearLegacy"));
 export const PlanetScaleEconomicStoryboard = lazyRetry(() => import("./PlanetScaleEconomicStoryboard"));
+export const AgentNetworkGrowth = lazyRetry(() => import("./AgentNetworkGrowth"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
