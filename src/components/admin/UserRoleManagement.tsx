@@ -159,11 +159,11 @@ const UserRoleManagement = () => {
 
   // Bulk assign mutation
   const bulkAssignMutation = useMutation({
-    mutationFn: async ({ userIds, role }: { userIds: string[]; role: string }) => {
+    mutationFn: async ({ userIds, role }: { userIds: string[]; role: typeof ALL_ROLES[number] }) => {
       const records = userIds.map((uid) => ({ user_id: uid, role, is_active: true }));
       const { error } = await supabase
         .from("user_roles")
-        .upsert(records, { onConflict: "user_id,role" });
+        .upsert(records as any, { onConflict: "user_id,role" });
       if (error) throw error;
     },
     onSuccess: () => {
