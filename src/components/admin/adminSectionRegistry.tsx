@@ -265,6 +265,10 @@ export const CivilizationMarketGrid = lazyRetry(() => import("./CivilizationMark
 export const AutonomousTransactionEngine = lazyRetry(() => import("./AutonomousTransactionEngine"));
 export const FounderLegacyNarrative = lazyRetry(() => import("./FounderLegacyNarrative"));
 export const CenturyEvolutionSimulator = lazyRetry(() => import("./CenturyEvolutionSimulator"));
+export const PlanetaryEconomicCoordination = lazyRetry(() => import("./PlanetaryEconomicCoordination"));
+export const AutonomousUrbanGrowth = lazyRetry(() => import("./AutonomousUrbanGrowth"));
+export const FounderGlobalInfluence = lazyRetry(() => import("./FounderGlobalInfluence"));
+export const PostMarketplaceEvolution = lazyRetry(() => import("./PostMarketplaceEvolution"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
