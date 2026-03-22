@@ -601,7 +601,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "liquidity-index-branding": () => <LiquidityIndexBrandingPanel />,
 
   // Content
-  "homepage-slider":     () => <HomepageSliderSettings />,
+  "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
   "social-media-settings": () => <SocialMediaSettings />,
   "content-management":  () => <ContentManagement />,

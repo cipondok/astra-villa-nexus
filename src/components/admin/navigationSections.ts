@@ -2267,9 +2267,9 @@ export const navigationSections = {
     },
     {
       key: "homepage-slider",
-      label: "Homepage Slider",
+      label: "Hero Slider Settings",
       icon: ImageIcon,
-      description: "Manage main page slider images and settings for different devices",
+      description: "Open the current hero slider controls inside Website Settings",
       badge: "New"
     },
     {
