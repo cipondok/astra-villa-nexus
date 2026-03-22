@@ -113,6 +113,10 @@ export const UserOnboardingFlowUI = lazyRetry(() => import("./UserOnboardingFlow
 export const ListingSubmissionUX = lazyRetry(() => import("./ListingSubmissionUX"));
 export const BuyerSearchConversion = lazyRetry(() => import("./BuyerSearchConversion"));
 export const AgentTrainingPortal = lazyRetry(() => import("./AgentTrainingPortal"));
+export const BuyerViewingBookingFlow = lazyRetry(() => import("./BuyerViewingBookingFlow"));
+export const SellerPerformanceInsight = lazyRetry(() => import("./SellerPerformanceInsight"));
+export const AgentMobileHomeScreen = lazyRetry(() => import("./AgentMobileHomeScreen"));
+export const DealOfferSubmissionFlow = lazyRetry(() => import("./DealOfferSubmissionFlow"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
