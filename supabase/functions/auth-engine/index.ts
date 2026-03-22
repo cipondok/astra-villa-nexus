@@ -153,51 +153,7 @@ async function checkLockout(params: Record<string, any>, supabase: any) {
   };
 }
 
-// ─── record_login_attempt (NO AUTH REQUIRED) ────────────────────────
-async function recordLoginAttempt(params: Record<string, any>, supabase: any, req: Request) {
-  const { email, success, failure_reason, device_fingerprint, user_id } = params;
-  if (!email) throw new Error('email required');
 
-  const ip = clientIp(req);
-  const ua = req.headers.get('user-agent') || 'unknown';
-  const emailLower = email.toLowerCase();
-
-  // Geo lookup placeholder — use IP-based estimation
-  let country = null;
-  let city = null;
-  let geoAnomaly = false;
-
-  // Check for impossible travel: different country within 2 hours
-  if (success) {
-    const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
-    const { data: recentLogins } = await supabase
-      .from('server_login_attempts')
-      .select('country, ip_address, created_at')
-      .eq('email', emailLower)
-      .eq('success', true)
-      .gte('created_at', twoHoursAgo)
-      .order('created_at', { ascending: false })
-      .limit(3);
-
-    if (recentLogins?.length && recentLogins[0].ip_address !== ip && recentLogins[0].country && country && recentLogins[0].country !== country) {
-      geoAnomaly = true;
-    }
-  }
-
-  // Calculate risk score
-  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-  const { count: recentFailures } = await supabase
-    .from('server_login_attempts')
-    .select('*', { count: 'exact', head: true })
-    .eq('email', emailLower)
-    .eq('success', false)
-    .gte('created_at', oneHourAgo);
-
-  const riskScore = Math.min(100,
-    (recentFailures || 0) * 15 +
-    (geoAnomaly ? 40 : 0) +
-    (!success ? 10 : 0)
-  );
 
   // ─── record_login_attempt with real geo-IP ──────────────────────────
 async function recordLoginAttempt(params: Record<string, any>, supabase: any, req: Request) {
