@@ -398,6 +398,7 @@ export const First10KListingsBuyerPipelineDealWarRoom = lazyRetry(() => import("
 export const Traffic100KVendorFlywheelLiquidityHeatmap = lazyRetry(() => import("./Traffic100KVendorFlywheelLiquidityHeatmap"));
 export const Visitor1MNetworkEffectInvestorNarrative = lazyRetry(() => import("./Visitor1MNetworkEffectInvestorNarrative"));
 export const NationalCategoryDominationProfitabilityPreIPO = lazyRetry(() => import("./NationalCategoryDominationProfitabilityPreIPO"));
+export const IPORoadshowCapitalAllocationAutonomousOS = lazyRetry(() => import("./IPORoadshowCapitalAllocationAutonomousOS"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
