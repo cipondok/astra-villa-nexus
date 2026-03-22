@@ -1400,4 +1400,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ai-capital-allocation": { label: "AI Capital Allocation Brain", category: "AI Intelligence" },
   
   "global-infra-vision": { label: "Global Infrastructure Vision", category: "AI Intelligence" },
+  "civilization-market-grid": { label: "Civilization Market Intelligence", category: "AI Intelligence" },
+  "autonomous-txn-engine": { label: "Autonomous Transaction Engine", category: "AI Intelligence" },
+  "founder-legacy-narrative": { label: "Founder Legacy Narrative", category: "AI Intelligence" },
+  "century-evolution-sim": { label: "100-Year Evolution Simulator", category: "AI Intelligence" },
 };
