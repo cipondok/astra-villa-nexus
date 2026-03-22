@@ -126,7 +126,8 @@ import {
   Swords,
   Hourglass,
   Timer,
-  Crosshair
+  Crosshair,
+  Upload
 } from "lucide-react";
 
 export interface NavigationSection {
