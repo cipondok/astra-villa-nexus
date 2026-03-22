@@ -165,6 +165,13 @@ export const navigationSections = {
       badge: "Command"
     },
     {
+      key: "first-city-domination",
+      label: "First City Domination",
+      icon: Crosshair,
+      description: "Tactical operations for city domination — supply, agents, buyers, closing",
+      badge: "Tactical"
+    },
+    {
       key: "deal-pipeline-crm",
       label: "Deal Pipeline CRM",
       icon: Target,
