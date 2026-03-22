@@ -161,6 +161,17 @@ const AdminHeader = ({ activeSection, onSectionChange }: AdminHeaderProps) => {
             <DemoStartButton className="gap-1.5 h-8" />
           </Suspense>
 
+          {/* Investor Demo Mode trigger — exposed via prop */}
+          {(window as any).__investorDemoTrigger && (
+            <button
+              onClick={() => (window as any).__investorDemoOpen?.()}
+              className="h-7 px-2 text-[9px] gap-1 rounded-md border border-primary/20 text-primary hover:bg-primary/5 flex items-center font-medium"
+            >
+              <Play className="h-2.5 w-2.5" />
+              Investor Mode
+            </button>
+          )}
+
           {/* Notifications */}
           <DropdownMenu modal={false} open={notificationsOpen} onOpenChange={setNotificationsOpen}>
             <DropdownMenuTrigger asChild>
