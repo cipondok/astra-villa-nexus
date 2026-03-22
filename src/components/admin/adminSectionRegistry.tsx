@@ -853,6 +853,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "agent-network-growth":        () => <AgentNetworkGrowth />,
   "deal-pipeline-crm":           () => <DealPipelineCRM />,
   "city-liquidity-heatmap":      () => <CityLiquidityHeatmap />,
+  "premium-listings-monetization": () => <PremiumListingsMonetization />,
   "global-expansion-control":    () => <GlobalExpansionControl />,
   "ipo-readiness-metrics":       () => <IPOReadinessMetrics />,
   "ai-copilot":                  () => <AdminAICoPilot />,
