@@ -1256,4 +1256,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "buyer-decision-district": { label: "Buyer Decision Deadline & District Expansion", category: "Strategy" },
   "second-viewing-leaderboard": { label: "Second Viewing & Agent Leaderboard", category: "Strategy" },
   "offer-closing-flash": { label: "Offer Closing Psychology & Flash Promotions", category: "Strategy" },
+  "post-deal-loyalty-mega": { label: "Post-Deal Loyalty & Mega-Portfolio", category: "Strategy" },
 };
