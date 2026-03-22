@@ -1570,6 +1570,7 @@ export const navigationSections = {
       icon: Diamond,
       description: "Unicorn valuation acceleration, global liquidity synchronization & institutional brand authority",
       badge: "💎 Unicorn"
+    },
     {
       label: "Vendor Intelligence Engine",
       icon: Store,
