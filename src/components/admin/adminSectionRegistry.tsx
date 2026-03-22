@@ -278,6 +278,7 @@ export const AutonomousWealthInfrastructure = lazyRetry(() => import("./Autonomo
 export const Founder100YearLegacy = lazyRetry(() => import("./Founder100YearLegacy"));
 export const PlanetScaleEconomicStoryboard = lazyRetry(() => import("./PlanetScaleEconomicStoryboard"));
 export const AgentNetworkGrowth = lazyRetry(() => import("./AgentNetworkGrowth"));
+export const DealPipelineCRM = lazyRetry(() => import("./DealPipelineCRM"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
