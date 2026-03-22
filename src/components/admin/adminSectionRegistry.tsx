@@ -273,6 +273,10 @@ export const PlanetaryHabitatGrid = lazyRetry(() => import("./PlanetaryHabitatGr
 export const GlobalAssetLiquidity = lazyRetry(() => import("./GlobalAssetLiquidity"));
 export const FounderIntergenerational = lazyRetry(() => import("./FounderIntergenerational"));
 export const MacroPolicySimulator = lazyRetry(() => import("./MacroPolicySimulator"));
+export const GlobalPropertyCivilizationOS = lazyRetry(() => import("./GlobalPropertyCivilizationOS"));
+export const AutonomousWealthInfrastructure = lazyRetry(() => import("./AutonomousWealthInfrastructure"));
+export const Founder100YearLegacy = lazyRetry(() => import("./Founder100YearLegacy"));
+export const PlanetScaleEconomicStoryboard = lazyRetry(() => import("./PlanetScaleEconomicStoryboard"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -838,6 +842,10 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "global-asset-liquidity":      () => <GlobalAssetLiquidity />,
   "founder-intergenerational":   () => <FounderIntergenerational />,
   "macro-policy-simulator":      () => <MacroPolicySimulator />,
+  "global-property-civilization": () => <GlobalPropertyCivilizationOS />,
+  "autonomous-wealth-infra":     () => <AutonomousWealthInfrastructure />,
+  "founder-100yr-legacy":        () => <Founder100YearLegacy />,
+  "planet-scale-storyboard":     () => <PlanetScaleEconomicStoryboard />,
   "global-expansion-control":    () => <GlobalExpansionControl />,
   "ipo-readiness-metrics":       () => <IPOReadinessMetrics />,
   "ai-copilot":                  () => <AdminAICoPilot />,
@@ -1428,4 +1436,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-asset-liquidity": { label: "Global Asset Liquidity Network", category: "AI Intelligence" },
   "founder-intergenerational": { label: "Founder Intergenerational Impact", category: "AI Intelligence" },
   "macro-policy-simulator": { label: "Macro Policy Simulator", category: "AI Intelligence" },
+  "global-property-civilization": { label: "Global Property Civilization OS", category: "AI Intelligence" },
+  "autonomous-wealth-infra": { label: "Autonomous Wealth Infrastructure", category: "AI Intelligence" },
+  "founder-100yr-legacy": { label: "Founder 100-Year Legacy", category: "AI Intelligence" },
+  "planet-scale-storyboard": { label: "Planet-Scale Economic Storyboard", category: "AI Intelligence" },
 };
