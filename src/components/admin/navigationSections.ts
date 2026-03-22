@@ -130,7 +130,9 @@ import {
   Upload,
   PartyPopper,
   Briefcase,
-  Hammer
+  Hammer,
+  Server,
+  Code
 } from "lucide-react";
 
 export interface NavigationSection {
