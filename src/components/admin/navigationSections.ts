@@ -1313,6 +1313,13 @@ export const navigationSections = {
       badge: "❤️ Retention"
     },
     {
+      key: "referral-mega-project-city",
+      label: "Referral Flywheel & City Domination",
+      icon: Share2,
+      description: "Viral referral growth, mega developer project launches & city-wide liquidity leadership",
+      badge: "🚀 Growth"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
