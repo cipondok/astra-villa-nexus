@@ -253,6 +253,10 @@ export const ListingOptimizationAIPanel = lazyRetry(() => import("./ListingOptim
 export const AIRevenueBrainDashboard = lazyRetry(() => import("./AIRevenueBrainDashboard"));
 export const PlanetScaleMapEngine = lazyRetry(() => import("./PlanetScaleMapEngine"));
 export const VendorEconomySimulation = lazyRetry(() => import("./VendorEconomySimulation"));
+export const GlobalControlTower = lazyRetry(() => import("./GlobalControlTower"));
+export const AutonomousDealFlowEngine = lazyRetry(() => import("./AutonomousDealFlowEngine"));
+export const InstitutionalDataRoom = lazyRetry(() => import("./InstitutionalDataRoom"));
+export const DecacornNarrativeMode = lazyRetry(() => import("./DecacornNarrativeMode"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
