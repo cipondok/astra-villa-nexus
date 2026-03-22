@@ -209,7 +209,7 @@ const OpportunityClusters = () => {
     if (!data) return [];
     return data.opportunities.slice(0, 5).map(opp => ({
       ...opp,
-      formattedRevenue: formatRp(opp.estimatedRevenue),
+      formattedRevenue: formatRp(opp.potentialRevenue),
     }));
   }, [data]);
 
@@ -220,12 +220,12 @@ const OpportunityClusters = () => {
         <div key={i} className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-border/20 bg-card/50">
           <span className="text-[10px] font-bold text-primary tabular-nums w-4">#{i + 1}</span>
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-medium text-foreground truncate">{opp.lever}</p>
+            <p className="text-[10px] font-medium text-foreground truncate">{opp.stream}</p>
             <p className="text-[8px] text-muted-foreground truncate">{opp.rationale}</p>
           </div>
           <div className="text-right shrink-0">
             <p className="text-[10px] font-semibold text-chart-1 tabular-nums">{opp.formattedRevenue}</p>
-            <p className="text-[7px] text-muted-foreground">{opp.priority} priority</p>
+            <p className="text-[7px] text-muted-foreground">+{opp.upliftPct}% uplift</p>
           </div>
         </div>
       ))}
