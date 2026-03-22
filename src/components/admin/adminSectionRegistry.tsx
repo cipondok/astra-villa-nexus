@@ -397,6 +397,7 @@ export const First1000DealsLiquidityFounderBlueprint = lazyRetry(() => import(".
 export const First10KListingsBuyerPipelineDealWarRoom = lazyRetry(() => import("./First10KListingsBuyerPipelineDealWarRoom"));
 export const Traffic100KVendorFlywheelLiquidityHeatmap = lazyRetry(() => import("./Traffic100KVendorFlywheelLiquidityHeatmap"));
 export const Visitor1MNetworkEffectInvestorNarrative = lazyRetry(() => import("./Visitor1MNetworkEffectInvestorNarrative"));
+export const NationalCategoryDominationProfitabilityPreIPO = lazyRetry(() => import("./NationalCategoryDominationProfitabilityPreIPO"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -879,6 +880,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "first-10k-listings-buyer-pipeline-warroom": () => <First10KListingsBuyerPipelineDealWarRoom />,
   "100k-traffic-vendor-flywheel-heatmap": () => <Traffic100KVendorFlywheelLiquidityHeatmap />,
   "1m-visitor-network-effect-investor-narrative": () => <Visitor1MNetworkEffectInvestorNarrative />,
+  "national-category-domination-profitability-preipo": () => <NationalCategoryDominationProfitabilityPreIPO />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1326,4 +1328,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "first-10k-listings-buyer-pipeline-warroom": { label: "10K Listings & Deal War-Room", category: "Strategy" },
   "100k-traffic-vendor-flywheel-heatmap": { label: "100K Traffic & Vendor Flywheel", category: "Strategy" },
   "1m-visitor-network-effect-investor-narrative": { label: "1M Visitor & Network Effects", category: "Strategy" },
+  "national-category-domination-profitability-preipo": { label: "National Domination & Pre-IPO", category: "Strategy" },
 };

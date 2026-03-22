@@ -1474,6 +1474,13 @@ export const navigationSections = {
       badge: "🚀 1M Scale"
     },
     {
+      key: "national-category-domination-profitability-preipo",
+      label: "National Domination & Pre-IPO",
+      icon: Crown,
+      description: "National category leadership, profitability inflection & pre-IPO growth discipline",
+      badge: "👑 Domination"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
