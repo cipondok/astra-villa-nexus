@@ -3130,6 +3130,10 @@ export const sectionCategories = navigationSections;
 
 export const sectionTitles = {
   overview: "Dashboard",
+  "execution-command": "Execution Command",
+  "marketplace-growth": "Marketplace Growth",
+  "market-intelligence": "Market Intelligence",
+  monetization: "Monetization",
   operations: "Operations",
   "investor-management": "Investor Management",
   transactions: "Transaction Management",

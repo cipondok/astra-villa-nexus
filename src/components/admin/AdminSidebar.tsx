@@ -11,6 +11,10 @@ import { Input } from '@/components/ui/input';
 
 const categoryIcons: Record<string, LucideIcon> = {
   "overview": LayoutDashboard,
+  "execution-command": Zap,
+  "marketplace-growth": TrendingUp,
+  "market-intelligence": BarChart3,
+  "monetization": Coins,
   "operations": Cog,
   "investor-management": TrendingUp,
   "transactions": ArrowLeftRight,
