@@ -410,6 +410,7 @@ export const ThousandDealsRevenueCityExpansion = lazyRetry(() => import("./Thous
 export const NationalLiquidityProfitSeriesA = lazyRetry(() => import("./NationalLiquidityProfitSeriesA"));
 export const SeriesBInstitutionalCategoryLeadership = lazyRetry(() => import("./SeriesBInstitutionalCategoryLeadership"));
 export const PreUnicornRiskDeveloperPartnership = lazyRetry(() => import("./PreUnicornRiskDeveloperPartnership"));
+export const UnicornLiquidityInstitutionalAuthority = lazyRetry(() => import("./UnicornLiquidityInstitutionalAuthority"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
