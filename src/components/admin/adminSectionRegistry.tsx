@@ -1286,4 +1286,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-infra-ecosystem-founder": { label: "Global Infrastructure & Founder Command", category: "Strategy" },
   "daily-deal-weekly-war-sprint": { label: "Daily Deal Closing & Revenue Sprint", category: "Strategy" },
   "first-10k-revenue-followup": { label: "First $10K Revenue & Agent Follow-Up", category: "Strategy" },
+  "first-50k-revenue-incentive-pipeline": { label: "First $50K Revenue & Pipeline Forecast", category: "Strategy" },
 };

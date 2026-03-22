@@ -1376,6 +1376,13 @@ export const navigationSections = {
       badge: "💰 $10K"
     },
     {
+      key: "first-50k-revenue-incentive-pipeline",
+      label: "First $50K Revenue & Pipeline Forecast",
+      icon: TrendingUp,
+      description: "$50K monthly revenue war strategy, top closing agent incentives & buyer pipeline forecasting",
+      badge: "💰 $50K"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
