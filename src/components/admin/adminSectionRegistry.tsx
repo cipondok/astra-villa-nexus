@@ -1289,4 +1289,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "daily-deal-weekly-war-sprint": { label: "Daily Deal Closing & Revenue Sprint", category: "Strategy" },
   "first-10k-revenue-followup": { label: "First $10K Revenue & Agent Follow-Up", category: "Strategy" },
   "first-50k-revenue-incentive-pipeline": { label: "First $50K Revenue & Pipeline Forecast", category: "Strategy" },
+  "first-100k-revenue-city-replication": { label: "$100K Revenue & City Replication", category: "Strategy" },
 };

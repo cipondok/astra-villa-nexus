@@ -1383,6 +1383,13 @@ export const navigationSections = {
       badge: "💰 $50K"
     },
     {
+      key: "first-100k-revenue-city-replication",
+      label: "$100K Revenue & City Replication",
+      icon: TrendingUp,
+      description: "$100K monthly revenue acceleration, city deal replication playbook & founder command dashboard",
+      badge: "💰 $100K"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
