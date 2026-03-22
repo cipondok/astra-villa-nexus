@@ -17,7 +17,13 @@ type Action =
   | 'verify_vendor'
   | 'rate_limit_check'
   | 'session_heartbeat'
-  | 'register_device';
+  | 'register_device'
+  | 'check_lockout'
+  | 'record_login_attempt'
+  | 'get_user_sessions'
+  | 'revoke_session'
+  | 'revoke_all_sessions'
+  | 'get_security_events';
 
 interface AuthRequest {
   action: Action;
@@ -33,6 +39,280 @@ function clientIp(req: Request): string {
   return xff ? xff.split(',')[0].trim() : 'unknown';
 }
 
+// ─── Progressive lockout tiers ──────────────────────────────────────
+const LOCKOUT_TIERS = [
+  { threshold: 5, durationMin: 5, tier: 1 },
+  { threshold: 10, durationMin: 15, tier: 2 },
+  { threshold: 15, durationMin: 60, tier: 3 },
+];
+
+// ─── check_lockout (NO AUTH REQUIRED) ───────────────────────────────
+async function checkLockout(params: Record<string, any>, supabase: any) {
+  const { email } = params;
+  if (!email) throw new Error('email required');
+
+  // Check active server lockout
+  const { data: lockout } = await supabase
+    .from('server_lockouts')
+    .select('*')
+    .eq('email', email.toLowerCase())
+    .eq('is_active', true)
+    .gt('unlock_at', new Date().toISOString())
+    .order('locked_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (lockout) {
+    const remainingSec = Math.max(0, Math.ceil((new Date(lockout.unlock_at).getTime() - Date.now()) / 1000));
+    return {
+      locked: true,
+      remaining_seconds: remainingSec,
+      unlock_at: lockout.unlock_at,
+      failed_attempts: lockout.failed_attempts,
+      tier: lockout.lockout_tier,
+    };
+  }
+
+  // Count recent failures (last 60 min) to show warnings
+  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  const { count } = await supabase
+    .from('server_login_attempts')
+    .select('*', { count: 'exact', head: true })
+    .eq('email', email.toLowerCase())
+    .eq('success', false)
+    .gte('created_at', oneHourAgo);
+
+  return {
+    locked: false,
+    recent_failures: count || 0,
+    next_lockout_at: count && count >= 3 ? 5 - (count % 5) : null,
+  };
+}
+
+// ─── record_login_attempt (NO AUTH REQUIRED) ────────────────────────
+async function recordLoginAttempt(params: Record<string, any>, supabase: any, req: Request) {
+  const { email, success, failure_reason, device_fingerprint, user_id } = params;
+  if (!email) throw new Error('email required');
+
+  const ip = clientIp(req);
+  const ua = req.headers.get('user-agent') || 'unknown';
+  const emailLower = email.toLowerCase();
+
+  // Geo lookup placeholder — use IP-based estimation
+  let country = null;
+  let city = null;
+  let geoAnomaly = false;
+
+  // Check for impossible travel: different country within 2 hours
+  if (success) {
+    const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
+    const { data: recentLogins } = await supabase
+      .from('server_login_attempts')
+      .select('country, ip_address, created_at')
+      .eq('email', emailLower)
+      .eq('success', true)
+      .gte('created_at', twoHoursAgo)
+      .order('created_at', { ascending: false })
+      .limit(3);
+
+    if (recentLogins?.length && recentLogins[0].ip_address !== ip && recentLogins[0].country && country && recentLogins[0].country !== country) {
+      geoAnomaly = true;
+    }
+  }
+
+  // Calculate risk score
+  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  const { count: recentFailures } = await supabase
+    .from('server_login_attempts')
+    .select('*', { count: 'exact', head: true })
+    .eq('email', emailLower)
+    .eq('success', false)
+    .gte('created_at', oneHourAgo);
+
+  const riskScore = Math.min(100,
+    (recentFailures || 0) * 15 +
+    (geoAnomaly ? 40 : 0) +
+    (!success ? 10 : 0)
+  );
+
+  // Insert attempt record
+  await supabase.from('server_login_attempts').insert({
+    email: emailLower,
+    ip_address: ip,
+    device_fingerprint: device_fingerprint || null,
+    country,
+    city,
+    user_agent: ua,
+    success: !!success,
+    failure_reason: failure_reason || null,
+    risk_score: riskScore,
+    is_suspicious: riskScore >= 60,
+    geo_anomaly: geoAnomaly,
+  });
+
+  // If failed, check if we need to create/escalate lockout
+  if (!success) {
+    const totalFailures = (recentFailures || 0) + 1;
+
+    // Find appropriate lockout tier
+    let lockTier = null;
+    for (let i = LOCKOUT_TIERS.length - 1; i >= 0; i--) {
+      if (totalFailures >= LOCKOUT_TIERS[i].threshold) {
+        lockTier = LOCKOUT_TIERS[i];
+        break;
+      }
+    }
+
+    if (lockTier) {
+      // Deactivate previous lockouts
+      await supabase
+        .from('server_lockouts')
+        .update({ is_active: false })
+        .eq('email', emailLower);
+
+      const unlockAt = new Date(Date.now() + lockTier.durationMin * 60 * 1000).toISOString();
+
+      await supabase.from('server_lockouts').insert({
+        email: emailLower,
+        unlock_at: unlockAt,
+        failed_attempts: totalFailures,
+        lockout_tier: lockTier.tier,
+        ip_address: ip,
+        is_active: true,
+      });
+
+      // Log security event if user exists
+      if (user_id) {
+        await supabase.from('user_security_events').insert({
+          user_id,
+          event_type: 'account_locked',
+          description: `Account locked for ${lockTier.durationMin} minutes after ${totalFailures} failed attempts`,
+          ip_address: ip,
+          country,
+          city,
+          device_info: ua,
+          risk_level: lockTier.tier >= 3 ? 'critical' : lockTier.tier >= 2 ? 'high' : 'medium',
+        });
+      }
+
+      return {
+        recorded: true,
+        locked: true,
+        lockout_duration_min: lockTier.durationMin,
+        unlock_at: unlockAt,
+        tier: lockTier.tier,
+        total_failures: totalFailures,
+      };
+    }
+
+    return {
+      recorded: true,
+      locked: false,
+      total_failures: totalFailures,
+      attempts_until_lock: Math.max(0, 5 - totalFailures),
+    };
+  }
+
+  // Success: clear active lockouts
+  await supabase
+    .from('server_lockouts')
+    .update({ is_active: false })
+    .eq('email', emailLower);
+
+  // Log successful login security event
+  if (user_id) {
+    await supabase.from('user_security_events').insert({
+      user_id,
+      event_type: 'login_success',
+      description: 'Successful login',
+      ip_address: ip,
+      country,
+      city,
+      device_info: ua,
+      risk_level: geoAnomaly ? 'medium' : 'low',
+    });
+  }
+
+  return {
+    recorded: true,
+    locked: false,
+    risk_score: riskScore,
+    geo_anomaly: geoAnomaly,
+  };
+}
+
+// ─── get_user_sessions ──────────────────────────────────────────────
+async function getUserSessions(supabase: any, userId: string) {
+  const { data, error } = await supabase
+    .from('user_sessions')
+    .select('id, device_name, device_type, browser, os, last_activity_at, is_current, created_at, device_fingerprint')
+    .eq('user_id', userId)
+    .order('last_activity_at', { ascending: false })
+    .limit(20);
+
+  if (error) throw error;
+  return { success: true, sessions: data || [] };
+}
+
+// ─── revoke_session ─────────────────────────────────────────────────
+async function revokeSession(params: Record<string, any>, supabase: any, userId: string, req: Request) {
+  const { session_id } = params;
+  if (!session_id) throw new Error('session_id required');
+
+  const { error } = await supabase
+    .from('user_sessions')
+    .delete()
+    .eq('id', session_id)
+    .eq('user_id', userId);
+
+  if (error) throw error;
+
+  await supabase.from('user_security_events').insert({
+    user_id: userId,
+    event_type: 'session_revoked',
+    description: 'Manually revoked a device session',
+    ip_address: clientIp(req),
+    risk_level: 'low',
+  });
+
+  return { success: true, message: 'Session revoked' };
+}
+
+// ─── revoke_all_sessions ────────────────────────────────────────────
+async function revokeAllSessions(supabase: any, userId: string, currentFingerprint: string, req: Request) {
+  // Delete all sessions except current
+  const { error } = await supabase
+    .from('user_sessions')
+    .delete()
+    .eq('user_id', userId)
+    .neq('device_fingerprint', currentFingerprint || '___none___');
+
+  if (error) throw error;
+
+  await supabase.from('user_security_events').insert({
+    user_id: userId,
+    event_type: 'all_sessions_revoked',
+    description: 'Revoked all other device sessions',
+    ip_address: clientIp(req),
+    risk_level: 'medium',
+  });
+
+  return { success: true, message: 'All other sessions revoked' };
+}
+
+// ─── get_security_events ────────────────────────────────────────────
+async function getSecurityEvents(supabase: any, userId: string, limit = 50) {
+  const { data, error } = await supabase
+    .from('user_security_events')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+  return { success: true, events: data || [] };
+}
+
 // ─── generate_otp ───────────────────────────────────────────────────
 async function generateOtp(params: Record<string, any>, supabase: any, userId: string, userEmail: string, req: Request) {
   const purpose = params.purpose || 'mfa';
@@ -42,7 +322,6 @@ async function generateOtp(params: Record<string, any>, supabase: any, userId: s
   expiresAt.setMinutes(expiresAt.getMinutes() + 10);
   const ip = clientIp(req);
 
-  // Clean old unused codes
   await supabase.from('otp_codes').delete().eq('user_id', userId).eq('purpose', purpose).eq('is_used', false);
 
   const { error: otpError } = await supabase.from('otp_codes').insert({
@@ -53,7 +332,6 @@ async function generateOtp(params: Record<string, any>, supabase: any, userId: s
   });
   if (otpError) throw new Error('Failed to generate OTP');
 
-  // Send email via SMTP if configured
   try {
     const { data: smtpSettings } = await supabase.from('system_settings').select('value').eq('category', 'smtp').eq('key', 'config').single();
     if (smtpSettings?.value?.isEnabled) {
@@ -133,7 +411,6 @@ async function send2fa(params: Record<string, any>, supabase: any, userId: strin
   const { data: settings } = await supabase.from('user_2fa_settings').select('*').eq('user_id', userId).single();
   if (!settings) throw new Error('2FA not configured');
 
-  // In production: verify against TOTP or stored SMS code
   const isValid = code.length === 6 && /^\d+$/.test(code);
 
   await supabase.from('user_2fa_attempts').insert({
@@ -151,11 +428,9 @@ async function checkBreach(params: Record<string, any>, supabase: any, userId: s
   const { email } = params;
   if (!email) throw new Error('email required');
 
-  // Check account_lockouts
   const { data: lockout } = await supabase.from('account_lockouts').select('*').eq('email', email).eq('is_active', true).maybeSingle();
   const isLocked = !!lockout && new Date(lockout.unlock_at) > new Date();
 
-  // Check recent security logs
   const since = new Date(); since.setHours(since.getHours() - 24);
   const { data: recentEvents } = await supabase.from('user_security_logs').select('event_type').eq('user_id', userId).gte('created_at', since.toISOString());
   const failedAttempts = (recentEvents || []).filter((e: any) => e.event_type.includes('failed')).length;
@@ -181,7 +456,6 @@ async function verifyDocument(params: Record<string, any>, supabase: any, userId
   if (kyc_action === 'submit') {
     if (!document_type) throw new Error('document_type required');
 
-    // Simulate liveness
     let livenessResult = null;
     if (verification_type !== 'basic' && selfie_image) {
       await new Promise(r => setTimeout(r, 500));
@@ -189,7 +463,6 @@ async function verifyDocument(params: Record<string, any>, supabase: any, userId
       livenessResult = { passed: score >= 75, score: Math.round(score * 10) / 10 };
     }
 
-    // Simulate face match
     let faceMatchResult = null;
     if (verification_type === 'enhanced' && document_image && selfie_image) {
       await new Promise(r => setTimeout(r, 500));
@@ -197,7 +470,6 @@ async function verifyDocument(params: Record<string, any>, supabase: any, userId
       faceMatchResult = { passed: score >= 80, score: Math.round(score * 10) / 10 };
     }
 
-    // Simulate document extraction
     const confidence = 85 + Math.random() * 14;
 
     let status = 'verified';
@@ -226,7 +498,6 @@ async function verifyDocument(params: Record<string, any>, supabase: any, userId
 
 // ─── verify_owner ───────────────────────────────────────────────────
 async function verifyOwner(params: Record<string, any>, supabase: any, supabaseAuth: any, adminId: string) {
-  // Verify admin
   const { data: isAdmin } = await supabaseAuth.rpc('has_role', { _user_id: adminId, _role: 'admin' });
   if (!isAdmin) throw new Error('Admin access required');
 
@@ -299,19 +570,16 @@ async function rateLimitCheck(params: Record<string, any>, supabase: any) {
 
   if (!ip_address && !user_id && !api_key) throw new Error('Identifier required (ip_address, user_id, or api_key)');
 
-  // Check IP whitelist
   if (ip_address) {
     const { data: wl } = await supabase.from('whitelisted_ips').select('id').eq('ip_address', ip_address).maybeSingle();
     if (wl) return { allowed: true, remaining: 999999, reset: 0, limit: 999999, whitelisted: true };
   }
 
-  // Check IP block
   if (ip_address) {
     const { data: blocked } = await supabase.from('blocked_ips').select('*').eq('ip_address', ip_address).or('expires_at.is.null,expires_at.gt.now()').maybeSingle();
     if (blocked) return { allowed: false, blocked: true, reason: blocked.reason, remaining: 0, reset: blocked.expires_at ? Math.ceil((new Date(blocked.expires_at).getTime() - Date.now()) / 1000) : null };
   }
 
-  // API key validation
   let multiplier = 1.0;
   if (api_key) {
     const { data: keyData } = await supabase.from('partner_api_keys').select('*').eq('api_key', api_key).eq('is_active', true).single();
@@ -322,7 +590,6 @@ async function rateLimitCheck(params: Record<string, any>, supabase: any) {
     if (keyData.is_whitelisted) return { allowed: true, remaining: 999999, reset: 0, limit: 999999, whitelisted: true, partner: keyData.partner_name };
   }
 
-  // Get config
   let { data: config } = await supabase.from('rate_limit_config').select('*').eq('endpoint_pattern', endpoint).eq('is_active', true).maybeSingle();
   if (!config) {
     const { data: def } = await supabase.from('rate_limit_config').select('*').eq('endpoint_pattern', 'default').maybeSingle();
@@ -374,7 +641,7 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
-    // Authenticate (optional for rate_limit_check)
+    // Authenticate (optional for some actions)
     let userId: string | null = null;
     let userEmail = '';
     let supabaseAuth: any = null;
@@ -398,8 +665,11 @@ serve(async (req) => {
     const { action, ...params } = body;
     log("Invoked", { action, userId: userId?.slice(0, 8) });
 
+    // Actions NOT requiring auth
+    const noAuthActions: Action[] = ['check_lockout', 'record_login_attempt', 'rate_limit_check'];
+
     // Actions requiring auth
-    const authRequired: Action[] = ['generate_otp', 'verify_otp', 'send_2fa', 'check_breach', 'verify_document', 'verify_owner', 'verify_vendor'];
+    const authRequired: Action[] = ['generate_otp', 'verify_otp', 'send_2fa', 'check_breach', 'verify_document', 'verify_owner', 'verify_vendor', 'get_user_sessions', 'revoke_session', 'revoke_all_sessions', 'get_security_events'];
     if (authRequired.includes(action) && !userId) {
       return new Response(JSON.stringify({ success: false, error: 'Authentication required' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
@@ -407,6 +677,24 @@ serve(async (req) => {
     let result: Record<string, unknown>;
 
     switch (action) {
+      case 'check_lockout':
+        result = await checkLockout(params, supabase);
+        break;
+      case 'record_login_attempt':
+        result = await recordLoginAttempt(params, supabase, req);
+        break;
+      case 'get_user_sessions':
+        result = await getUserSessions(supabase, userId!);
+        break;
+      case 'revoke_session':
+        result = await revokeSession(params, supabase, userId!, req);
+        break;
+      case 'revoke_all_sessions':
+        result = await revokeAllSessions(supabase, userId!, (params.current_fingerprint as string) || '', req);
+        break;
+      case 'get_security_events':
+        result = await getSecurityEvents(supabase, userId!, (params.limit as number) || 50);
+        break;
       case 'generate_otp':
         result = await generateOtp(params, supabase, userId!, userEmail, req);
         break;
@@ -439,7 +727,6 @@ serve(async (req) => {
         const browser = (params.browser as string) || '';
         const os = (params.os as string) || '';
 
-        // Upsert into user_sessions — update last_activity_at on heartbeat
         try {
           await supabase.from('user_sessions').upsert({
             user_id: userId,
