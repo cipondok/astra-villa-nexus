@@ -1320,6 +1320,13 @@ export const navigationSections = {
       badge: "🚀 Growth"
     },
     {
+      key: "regional-institutional-profitability",
+      label: "Regional Expansion & Profitability",
+      icon: Map,
+      description: "Multi-city scaling playbook, institutional deal pipeline & unit-economics optimization",
+      badge: "📍 Scale"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
