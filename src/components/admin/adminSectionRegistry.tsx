@@ -109,6 +109,10 @@ export const UltimateFounderOneScreen = lazyRetry(() => import("./UltimateFounde
 export const AIAutonomousOperator = lazyRetry(() => import("./AIAutonomousOperator"));
 export const GlobalExpansionCapitalSimulator = lazyRetry(() => import("./GlobalExpansionCapitalSimulator"));
 export const PlatformIntegrationArchitecture = lazyRetry(() => import("./PlatformIntegrationArchitecture"));
+export const UserOnboardingFlowUI = lazyRetry(() => import("./UserOnboardingFlowUI"));
+export const ListingSubmissionUX = lazyRetry(() => import("./ListingSubmissionUX"));
+export const BuyerSearchConversion = lazyRetry(() => import("./BuyerSearchConversion"));
+export const AgentTrainingPortal = lazyRetry(() => import("./AgentTrainingPortal"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
@@ -648,6 +652,12 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "global-expansion-capital-simulator": () => <GlobalExpansionCapitalSimulator />,
   "platform-integration-architecture": () => <PlatformIntegrationArchitecture />,
 
+  // Core User Experience & Activation
+  "user-onboarding-flow": () => <UserOnboardingFlowUI />,
+  "listing-submission-ux": () => <ListingSubmissionUX />,
+  "buyer-search-conversion": () => <BuyerSearchConversion />,
+  "agent-training-portal": () => <AgentTrainingPortal />,
+
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
   "social-media-settings": () => <SocialMediaSettings />,
@@ -1163,6 +1173,10 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ai-autonomous-operator": { label: "Autonomous Operator", category: "AI Intelligence" },
   "global-expansion-capital-simulator": { label: "Expansion Simulator", category: "Strategy" },
   "platform-integration-architecture": { label: "Platform Architecture", category: "Infrastructure" },
+  "user-onboarding-flow": { label: "User Onboarding", category: "User Experience" },
+  "listing-submission-ux": { label: "Listing Submission", category: "User Experience" },
+  "buyer-search-conversion": { label: "Buyer Search", category: "User Experience" },
+  "agent-training-portal": { label: "Agent Training", category: "User Experience" },
   "seo-settings": { label: "SEO Hub", category: "Settings" },
   "seo-management": { label: "SEO Management", category: "Marketing" },
   "property-seo-checker": { label: "Property SEO Checker", category: "Core Management" },
