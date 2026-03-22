@@ -87,7 +87,8 @@ type Action =
   | 'get_user_sessions'
   | 'revoke_session'
   | 'revoke_all_sessions'
-  | 'get_security_events';
+  | 'get_security_events'
+  | 'get_verification_requests';
 
 interface AuthRequest {
   action: Action;
