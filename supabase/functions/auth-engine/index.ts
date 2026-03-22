@@ -1,6 +1,70 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
+import { createClient } from "npm:@supabase/supabase-js@2";
+
+// ─── Geo-IP lookup via Cloudflare headers + fallback API ────────────
+interface GeoData {
+  country: string | null;
+  city: string | null;
+  continent: string | null;
+}
+
+function getGeoFromHeaders(req: Request): GeoData {
+  return {
+    country: req.headers.get('cf-ipcountry') || req.headers.get('x-vercel-ip-country') || null,
+    city: req.headers.get('x-vercel-ip-city') || null,
+    continent: req.headers.get('x-vercel-ip-continent') || null,
+  };
+}
+
+async function resolveGeo(req: Request, ip: string): Promise<GeoData> {
+  const hdr = getGeoFromHeaders(req);
+  if (hdr.country) return hdr;
+
+  // Fallback: free IP-API (no key needed, 45 req/min)
+  try {
+    const resp = await fetch(`http://ip-api.com/json/${ip}?fields=country,city,countryCode,continent`);
+    if (resp.ok) {
+      const d = await resp.json();
+      return {
+        country: d.countryCode || d.country || null,
+        city: d.city || null,
+        continent: d.continent || null,
+      };
+    }
+  } catch { /* non-blocking */ }
+  return { country: null, city: null, continent: null };
+}
+
+// ─── Continent mapping for impossible travel ────────────────────────
+const CONTINENT_MAP: Record<string, string> = {
+  AF: 'Africa', AN: 'Antarctica', AS: 'Asia', EU: 'Europe',
+  NA: 'North America', OC: 'Oceania', SA: 'South America',
+};
+
+const HIGH_RISK_COUNTRIES = new Set(['KP', 'IR', 'SY', 'CU', 'SD']);
+
+// ─── Security alert email helper ────────────────────────────────────
+async function sendSecurityAlertEmail(supabase: any, email: string, alertType: string, details: Record<string, any>) {
+  try {
+    await supabase.functions.invoke('send-transactional-email', {
+      body: {
+        templateName: 'security-alert',
+        recipientEmail: email,
+        idempotencyKey: `security-alert-${alertType}-${email}-${Date.now()}`,
+        templateData: {
+          alert_type: alertType,
+          login_country: details.country || 'Unknown',
+          login_city: details.city || 'Unknown',
+          device_info: details.device || 'Unknown device',
+          ip_address: details.ip || 'Unknown',
+          timestamp: new Date().toISOString(),
+        },
+      },
+    });
+  } catch (e) {
+    log('Security alert email failed (non-blocking)', (e as Error).message);
+  }
+}
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
