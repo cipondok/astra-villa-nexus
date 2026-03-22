@@ -134,6 +134,10 @@ export interface NavigationSection {
 
 export const categories = [
   "overview",
+  "execution-command",
+  "marketplace-growth",
+  "market-intelligence",
+  "monetization",
   "operations",
   "investor-management",
   "transactions",
@@ -152,6 +156,120 @@ export const categories = [
 ];
 
 export const navigationSections = {
+  "execution-command": [
+    {
+      key: "founder-daily-execution",
+      label: "Founder Daily KPI Dashboard",
+      icon: Sunrise,
+      description: "Daily execution metrics, priority tasks, and founder productivity scoring",
+      badge: "Command"
+    },
+    {
+      key: "deal-pipeline-crm",
+      label: "Deal Pipeline CRM",
+      icon: Target,
+      description: "Kanban deal tracking from inquiry to closing with drag-drop and AI insights",
+      badge: "CRM"
+    },
+    {
+      key: "deal-closing-automation",
+      label: "Viewing Scheduler Panel",
+      icon: CalendarClock,
+      description: "Schedule, track, and optimize property viewings with conversion analytics"
+    },
+    {
+      key: "first-100k-revenue",
+      label: "Revenue Trigger Monitor",
+      icon: Zap,
+      description: "Real-time revenue triggers, milestone tracking, and growth acceleration signals",
+      badge: "Live"
+    }
+  ],
+
+  "marketplace-growth": [
+    {
+      key: "listing-management",
+      label: "Listings Supply Dashboard",
+      icon: Building,
+      description: "Monitor listing inventory, activation rates, and supply health across regions"
+    },
+    {
+      key: "market-heat-intelligence",
+      label: "Buyer Demand Analytics",
+      icon: Flame,
+      description: "Buyer intent signals, demand heatmaps, and conversion funnel analysis"
+    },
+    {
+      key: "agent-network-growth",
+      label: "Agent Network Growth",
+      icon: Users,
+      description: "Agent ecosystem KPIs, leaderboard, activation funnel, and recruitment pipeline",
+      badge: "New"
+    },
+    {
+      key: "referral-management",
+      label: "Referral Engine Monitor",
+      icon: Share2,
+      description: "Referral program performance, viral coefficients, and reward tracking"
+    }
+  ],
+
+  "market-intelligence": [
+    {
+      key: "city-liquidity-heatmap",
+      label: "City Liquidity Heatmap",
+      icon: Map,
+      description: "Interactive heatmap with demand, supply, velocity, and price growth layers",
+      badge: "Intel"
+    },
+    {
+      key: "opportunity-scoring-engine",
+      label: "District Performance Ranking",
+      icon: BarChart3,
+      description: "AI-powered district scoring with liquidity, yield, and growth metrics"
+    },
+    {
+      key: "price-prediction-engine",
+      label: "Price Trend Analytics",
+      icon: TrendingUp,
+      description: "Predictive pricing models, FMV analysis, and price elasticity signals"
+    },
+    {
+      key: "global-macro-intelligence",
+      label: "Market Momentum Index",
+      icon: Activity,
+      description: "Composite market momentum scoring with capital flow and cycle detection"
+    }
+  ],
+
+  monetization: [
+    {
+      key: "premium-listings-monetization",
+      label: "Premium Listings Control",
+      icon: Crown,
+      description: "Premium package sales, upsell pipeline, and listing upgrade analytics",
+      badge: "Revenue"
+    },
+    {
+      key: "subscription-management",
+      label: "Vendor Subscription Manager",
+      icon: RefreshCw,
+      description: "Active subscriptions, MRR tracking, churn alerts, and renewal probability"
+    },
+    {
+      key: "commission-management",
+      label: "Commission Tracking Panel",
+      icon: Coins,
+      description: "Agent and platform commission calculations, payouts, and reconciliation"
+    },
+    {
+      key: "revenue-flywheel-optimizer",
+      label: "Revenue Analytics Overview",
+      icon: DollarSign,
+      description: "Holistic revenue analytics with flywheel metrics and growth projections"
+    }
+  ],
+
   overview: [
     { 
       key: "overview", 
@@ -3012,6 +3130,10 @@ export const sectionCategories = navigationSections;
 
 export const sectionTitles = {
   overview: "Dashboard",
+  "execution-command": "Execution Command",
+  "marketplace-growth": "Marketplace Growth",
+  "market-intelligence": "Market Intelligence",
+  monetization: "Monetization",
   operations: "Operations",
   "investor-management": "Investor Management",
   transactions: "Transaction Management",
