@@ -1463,4 +1463,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-expansion-intelligence": { label: "Global Expansion & Autonomous Growth", category: "Operations" },
   "first-city-domination": { label: "First City Domination Command", category: "Operations" },
   "deal-priority-revenue": { label: "Deal Priority & Revenue Intelligence", category: "Operations" },
+  "behavioral-growth-engine": { label: "Behavioral Growth Engine", category: "Operations" },
 };

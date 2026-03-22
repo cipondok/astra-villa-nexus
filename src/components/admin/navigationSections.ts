@@ -233,6 +233,13 @@ export const navigationSections = {
       label: "Referral Engine Monitor",
       icon: Share2,
       description: "Referral program performance, viral coefficients, and reward tracking"
+    },
+    {
+      key: "behavioral-growth-engine",
+      label: "Behavioral Growth Engine",
+      icon: Activity,
+      description: "Agent gamification, seller urgency psychology, marketing ROI, and network effect tracking",
+      badge: "Growth"
     }
   ],
 
