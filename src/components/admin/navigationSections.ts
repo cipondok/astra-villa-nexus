@@ -246,6 +246,13 @@ export const navigationSections = {
       label: "Market Momentum Index",
       icon: Activity,
       description: "Composite market momentum scoring with capital flow and cycle detection"
+    },
+    {
+      key: "investor-growth-intelligence",
+      label: "Investor Growth Intelligence",
+      icon: BarChart3,
+      description: "Investor perception signals, AI pricing engine, seller funnel, and unicorn growth metrics",
+      badge: "Premium"
     }
   ],
 
