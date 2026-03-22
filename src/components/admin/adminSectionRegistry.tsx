@@ -250,6 +250,9 @@ export const HyperGrowthKPIPanel = lazyRetry(() => import("./HyperGrowthKPIPanel
 export const SmartRecommendationPanel = lazyRetry(() => import("./SmartRecommendationPanel"));
 export const CommissionOptimizationPanel = lazyRetry(() => import("./CommissionOptimizationPanel"));
 export const ListingOptimizationAIPanel = lazyRetry(() => import("./ListingOptimizationAIPanel"));
+export const AIRevenueBrainDashboard = lazyRetry(() => import("./AIRevenueBrainDashboard"));
+export const PlanetScaleMapEngine = lazyRetry(() => import("./PlanetScaleMapEngine"));
+export const VendorEconomySimulation = lazyRetry(() => import("./VendorEconomySimulation"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
