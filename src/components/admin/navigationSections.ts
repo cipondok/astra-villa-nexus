@@ -1432,6 +1432,13 @@ export const navigationSections = {
       badge: "⚡ Daily Ops"
     },
     {
+      key: "global-founder-warroom-deal-expansion",
+      label: "Global War-Room & Deal Expansion",
+      icon: Globe,
+      description: "Global founder war-room dashboard, cross-border deal engine & autonomous expansion radar",
+      badge: "🌐 Command"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
