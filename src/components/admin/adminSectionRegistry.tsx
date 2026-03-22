@@ -364,6 +364,7 @@ export const ViewingConversionBlueprint = lazyRetry(() => import("./ViewingConve
 export const OfferNegotiationBlueprint = lazyRetry(() => import("./OfferNegotiationBlueprint"));
 export const BuyerFinancingBlueprint = lazyRetry(() => import("./BuyerFinancingBlueprint"));
 export const BuyerOfferConfidenceBlueprint = lazyRetry(() => import("./BuyerOfferConfidenceBlueprint"));
+export const BuyerQualificationBlueprint = lazyRetry(() => import("./BuyerQualificationBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
