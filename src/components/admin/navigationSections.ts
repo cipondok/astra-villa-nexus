@@ -1249,6 +1249,13 @@ export const navigationSections = {
       badge: "🎯 Quality"
     },
     {
+      key: "viewing-commitment-elite",
+      label: "Viewing Commitment & Elite Circle",
+      icon: CalendarClock,
+      description: "Viewing attendance optimization, elite agent ecosystem & demand surge alert system",
+      badge: "👁️ Viewing"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
