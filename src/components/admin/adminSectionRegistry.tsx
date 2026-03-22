@@ -385,6 +385,7 @@ export const DailyDealWeeklyWarCitySprintBlueprint = lazyRetry(() => import("./D
 export const First10KRevenueAgentFollowUpBlueprint = lazyRetry(() => import("./First10KRevenueAgentFollowUpBlueprint"));
 export const First50KRevenueAgentIncentivePipelineBlueprint = lazyRetry(() => import("./First50KRevenueAgentIncentivePipelineBlueprint"));
 export const First100KRevenueCityReplicationCommandBlueprint = lazyRetry(() => import("./First100KRevenueCityReplicationCommandBlueprint"));
+export const Revenue250KRegionalLiquidityExecutiveBlueprint = lazyRetry(() => import("./Revenue250KRegionalLiquidityExecutiveBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
