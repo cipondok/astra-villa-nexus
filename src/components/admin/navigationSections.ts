@@ -1348,6 +1348,13 @@ export const navigationSections = {
       badge: "💎 Unicorn"
     },
     {
+      key: "decacorn-capital-intelligence",
+      label: "Decacorn Financial Engine & Intelligence",
+      icon: Crown,
+      description: "Decacorn-scale financial engine, global capital dominance & self-evolving marketplace intelligence",
+      badge: "👑 Decacorn"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
