@@ -94,6 +94,10 @@ export const FounderDailyPriorityCommand = lazyRetry(() => import("./FounderDail
 export const AgentTerritoryCoverageMap = lazyRetry(() => import("./AgentTerritoryCoverageMap"));
 export const BuyerViewingFeedbackPanel = lazyRetry(() => import("./BuyerViewingFeedbackPanel"));
 export const MonthlyLiquidityDominancePanel = lazyRetry(() => import("./MonthlyLiquidityDominancePanel"));
+export const DistrictPriceCompetitivenessMonitor = lazyRetry(() => import("./DistrictPriceCompetitivenessMonitor"));
+export const UrgentDealRescuePanel = lazyRetry(() => import("./UrgentDealRescuePanel"));
+export const AgentTrainingCoachingDashboard = lazyRetry(() => import("./AgentTrainingCoachingDashboard"));
+export const QuarterlyExpansionReadinessPanel = lazyRetry(() => import("./QuarterlyExpansionReadinessPanel"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
@@ -610,6 +614,12 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "buyer-viewing-feedback": () => <BuyerViewingFeedbackPanel />,
   "monthly-liquidity-domination": () => <MonthlyLiquidityDominancePanel />,
 
+  // Market Competitiveness & Expansion Readiness
+  "district-price-competitiveness": () => <DistrictPriceCompetitivenessMonitor />,
+  "urgent-deal-rescue": () => <UrgentDealRescuePanel />,
+  "agent-training-coaching": () => <AgentTrainingCoachingDashboard />,
+  "quarterly-expansion-readiness": () => <QuarterlyExpansionReadinessPanel />,
+
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
   "social-media-settings": () => <SocialMediaSettings />,
@@ -1110,6 +1120,10 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "agent-territory-coverage": { label: "Agent Territory Map", category: "Execution Command" },
   "buyer-viewing-feedback": { label: "Viewing Feedback", category: "Execution Command" },
   "monthly-liquidity-domination": { label: "Liquidity Domination", category: "Execution Command" },
+  "district-price-competitiveness": { label: "Price Competitiveness", category: "Market Intelligence" },
+  "urgent-deal-rescue": { label: "Deal Rescue", category: "Execution Command" },
+  "agent-training-coaching": { label: "Agent Training", category: "Operations" },
+  "quarterly-expansion-readiness": { label: "Expansion Readiness", category: "Strategy" },
   "seo-settings": { label: "SEO Hub", category: "Settings" },
   "seo-management": { label: "SEO Management", category: "Marketing" },
   "property-seo-checker": { label: "Property SEO Checker", category: "Core Management" },

@@ -107,6 +107,9 @@ import {
   Presentation,
   MapPin,
   Droplets,
+  GraduationCap,
+
+
   Brain,
   Scale,
   PieChart,
@@ -1032,6 +1035,34 @@ export const navigationSections = {
       icon: Droplets,
       description: "Monthly traction curves, district liquidity index & strategic milestone tracker",
       badge: "💧 Liquidity"
+    },
+    {
+      key: "district-price-competitiveness",
+      label: "Price Competitiveness",
+      icon: DollarSign,
+      description: "District pricing intelligence, overpriced alerts, underpriced opportunities & inquiry correlation",
+      badge: "💲 Pricing"
+    },
+    {
+      key: "urgent-deal-rescue",
+      label: "Deal Rescue Panel",
+      icon: AlertTriangle,
+      description: "At-risk deals, mediation steps, urgency templates & financing delay tracking",
+      badge: "🚨 Rescue"
+    },
+    {
+      key: "agent-training-coaching",
+      label: "Agent Training & Coaching",
+      icon: GraduationCap,
+      description: "Performance scorecards, training modules, growth trends & coaching sessions",
+      badge: "🎓 Training"
+    },
+    {
+      key: "quarterly-expansion-readiness",
+      label: "Expansion Readiness",
+      icon: Compass,
+      description: "Composite readiness radar, district maturity ranking & next city candidates",
+      badge: "🧭 Expand"
     },
     {
       key: "ai-copilot",
