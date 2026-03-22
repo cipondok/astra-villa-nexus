@@ -2321,9 +2321,9 @@ export const navigationSections = {
     },
     {
       key: "design-system",
-      label: "Design System",
+      label: "Website Settings",
       icon: ImageIcon,
-      description: "Configure global design styles, colors, typography, and UI components",
+      description: "Manage the current website design, color scheme, branding, and hero slider in one place",
       badge: "New"
     },
     {

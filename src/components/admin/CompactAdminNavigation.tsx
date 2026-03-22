@@ -138,7 +138,7 @@ const CompactAdminNavigation = ({ activeTab, onTabChange, isAdmin }: CompactAdmi
         { id: "seo-settings", label: "SEO", icon: Globe },
         { id: "booking-payment-settings", label: "Booking & Payments", icon: CreditCard, badge: "New" },
         { id: "property-3d-settings", label: "3D View", icon: Blocks, badge: "New" },
-        { id: "website-design", label: "Design", icon: Paintbrush, badge: "New" },
+        { id: "website-design", label: "Website Settings", icon: Paintbrush, badge: "New" },
         { id: "verification-system-settings", label: "Verification System", icon: Shield, badge: "New" },
       ]
     },
