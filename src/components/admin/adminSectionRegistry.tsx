@@ -686,8 +686,8 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "investor-analytics":      () => <InvestorSettingsHub initialTab="analytics" />,
 
   // Design & monitoring
-  "design-system":       () => <WebsiteDesignControl />,
-  "website-design":      () => <WebsiteDesignControl />,
+  "design-system":       () => <SystemSettings defaultTab="website-design" />,
+  "website-design":      () => <SystemSettings defaultTab="website-design" />,
   "live-monitoring":     () => <LiveMonitoringDashboard />,
   "rental-management":   () => <AdminRentalManagement />,
 
