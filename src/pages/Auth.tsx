@@ -71,13 +71,27 @@ const Auth = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Check lockout
+    if (lockoutUntil && Date.now() < lockoutUntil) {
+      const remaining = Math.ceil((lockoutUntil - Date.now()) / 1000);
+      toast({
+        title: "Account temporarily locked",
+        description: `Too many failed attempts. Please wait ${remaining} seconds.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
       const { success, error } = await signIn(loginEmail, loginPassword);
       
       if (success) {
-        // Store remember me preference
+        setFailedAttempts(0);
+        setLockoutUntil(null);
+        
         if (rememberMe) {
           localStorage.setItem('rememberEmail', loginEmail);
         } else {
@@ -90,11 +104,26 @@ const Auth = () => {
         });
         navigate("/");
       } else {
-        toast({
-          title: "Login failed",
-          description: error?.message || "Invalid email or password",
-          variant: "destructive",
-        });
+        const newAttempts = failedAttempts + 1;
+        setFailedAttempts(newAttempts);
+
+        if (newAttempts >= 5) {
+          const lockDuration = 2 * 60 * 1000; // 2 minutes
+          setLockoutUntil(Date.now() + lockDuration);
+          toast({
+            title: "Account temporarily locked",
+            description: "Too many failed login attempts. Please wait 2 minutes before trying again.",
+            variant: "destructive",
+          });
+        } else {
+          const msg = error?.message || "Invalid email or password";
+          const attemptsLeft = 5 - newAttempts;
+          toast({
+            title: "Login failed",
+            description: `${msg}. ${attemptsLeft} attempt${attemptsLeft !== 1 ? 's' : ''} remaining.`,
+            variant: "destructive",
+          });
+        }
       }
     } catch (error: any) {
       toast({
