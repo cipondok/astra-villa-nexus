@@ -121,6 +121,10 @@ export const NegotiationChatInterface = lazyRetry(() => import("./NegotiationCha
 export const DealProgressTimeline = lazyRetry(() => import("./DealProgressTimeline"));
 export const SecurePaymentEscrowFlow = lazyRetry(() => import("./SecurePaymentEscrowFlow"));
 export const ClosingCelebrationScreen = lazyRetry(() => import("./ClosingCelebrationScreen"));
+export const PostClosingOwnershipDashboard = lazyRetry(() => import("./PostClosingOwnershipDashboard"));
+export const InvestorPortfolioTracking = lazyRetry(() => import("./InvestorPortfolioTracking"));
+export const RentalYieldMonitoring = lazyRetry(() => import("./RentalYieldMonitoring"));
+export const SmartPropertyRecommendationEngine = lazyRetry(() => import("./SmartPropertyRecommendationEngine"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
@@ -678,6 +682,12 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "secure-payment-escrow": () => <SecurePaymentEscrowFlow />,
   "closing-celebration": () => <ClosingCelebrationScreen />,
 
+  // Post-Closing Ownership & Investment Intelligence
+  "post-closing-ownership": () => <PostClosingOwnershipDashboard />,
+  "investor-portfolio-tracking": () => <InvestorPortfolioTracking />,
+  "rental-yield-monitoring": () => <RentalYieldMonitoring />,
+  "smart-property-recommendations": () => <SmartPropertyRecommendationEngine />,
+
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
   "social-media-settings": () => <SocialMediaSettings />,
@@ -1205,6 +1215,10 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "deal-progress-timeline": { label: "Deal Progress", category: "User Experience" },
   "secure-payment-escrow": { label: "Payment & Escrow", category: "User Experience" },
   "closing-celebration": { label: "Closing Celebration", category: "User Experience" },
+  "post-closing-ownership": { label: "Ownership Dashboard", category: "User Experience" },
+  "investor-portfolio-tracking": { label: "Portfolio Tracking", category: "User Experience" },
+  "rental-yield-monitoring": { label: "Rental Yield", category: "User Experience" },
+  "smart-property-recommendations": { label: "Smart Recommendations", category: "User Experience" },
   "seo-settings": { label: "SEO Hub", category: "Settings" },
   "seo-management": { label: "SEO Management", category: "Marketing" },
   "property-seo-checker": { label: "Property SEO Checker", category: "Core Management" },

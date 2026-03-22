@@ -128,7 +128,8 @@ import {
   Timer,
   Crosshair,
   Upload,
-  PartyPopper
+  PartyPopper,
+  Briefcase
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -1226,6 +1227,34 @@ export const navigationSections = {
       icon: PartyPopper,
       description: "Deal completion — celebration, agent rating, referral triggers & success sharing",
       badge: "🎉 Closing"
+    },
+    {
+      key: "post-closing-ownership",
+      label: "Ownership Dashboard",
+      icon: Home,
+      description: "Post-closing property management — appreciation tracking, documents, maintenance & resale timing",
+      badge: "🏠 Ownership"
+    },
+    {
+      key: "investor-portfolio-tracking",
+      label: "Portfolio Tracking",
+      icon: Briefcase,
+      description: "Multi-property portfolio analytics — ROI, diversification, growth momentum & risk exposure",
+      badge: "📊 Portfolio"
+    },
+    {
+      key: "rental-yield-monitoring",
+      label: "Rental Yield Monitor",
+      icon: Wallet,
+      description: "Rental income intelligence — occupancy, yield benchmarks, tenant payments & vacancy alerts",
+      badge: "💰 Yield"
+    },
+    {
+      key: "smart-property-recommendations",
+      label: "Smart Recommendations",
+      icon: Sparkles,
+      description: "AI-powered opportunity discovery — ROI projections, liquidity scores & growth alerts",
+      badge: "✨ AI Recs"
     },
     {
       label: "AI Co-Pilot",
