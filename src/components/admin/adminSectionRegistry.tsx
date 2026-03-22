@@ -1455,4 +1455,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "city-liquidity-heatmap": { label: "City Liquidity Heatmap", category: "Operations" },
   "premium-listings-monetization": { label: "Premium Listings Monetization", category: "Operations" },
   "founder-mobile-warroom": { label: "Founder Mobile War-Room", category: "Operations" },
+  "investor-growth-intelligence": { label: "Investor Perception & Growth Intelligence", category: "Operations" },
 };
