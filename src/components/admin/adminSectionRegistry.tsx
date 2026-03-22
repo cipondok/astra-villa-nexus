@@ -884,6 +884,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "1m-visitor-network-effect-investor-narrative": () => <Visitor1MNetworkEffectInvestorNarrative />,
   "national-category-domination-profitability-preipo": () => <NationalCategoryDominationProfitabilityPreIPO />,
   "ipo-roadshow-capital-allocation-autonomous-os": () => <IPORoadshowCapitalAllocationAutonomousOS />,
+  "public-market-category-global-liquidity-century-vision": () => <PublicMarketCategoryGlobalLiquidityCenturyVision />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
