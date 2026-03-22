@@ -1284,6 +1284,13 @@ export const navigationSections = {
       badge: "🌱 Lifecycle"
     },
     {
+      key: "buyer-decision-district",
+      label: "Decision Deadline & District Expansion",
+      icon: Timer,
+      description: "Buyer urgency acceleration, vendor multi-district scaling & high-demand category spotlight campaigns",
+      badge: "⏰ Urgency"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
