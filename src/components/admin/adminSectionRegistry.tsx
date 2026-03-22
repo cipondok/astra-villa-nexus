@@ -278,6 +278,7 @@ export const AutonomousWealthInfrastructure = lazyRetry(() => import("./Autonomo
 export const Founder100YearLegacy = lazyRetry(() => import("./Founder100YearLegacy"));
 export const PlanetScaleEconomicStoryboard = lazyRetry(() => import("./PlanetScaleEconomicStoryboard"));
 export const AgentNetworkGrowth = lazyRetry(() => import("./AgentNetworkGrowth"));
+export const DealPipelineCRM = lazyRetry(() => import("./DealPipelineCRM"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -848,6 +849,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "founder-100yr-legacy":        () => <Founder100YearLegacy />,
   "planet-scale-storyboard":     () => <PlanetScaleEconomicStoryboard />,
   "agent-network-growth":        () => <AgentNetworkGrowth />,
+  "deal-pipeline-crm":           () => <DealPipelineCRM />,
   "global-expansion-control":    () => <GlobalExpansionControl />,
   "ipo-readiness-metrics":       () => <IPOReadinessMetrics />,
   "ai-copilot":                  () => <AdminAICoPilot />,
@@ -1443,4 +1445,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "founder-100yr-legacy": { label: "Founder 100-Year Legacy", category: "AI Intelligence" },
   "planet-scale-storyboard": { label: "Planet-Scale Economic Storyboard", category: "AI Intelligence" },
   "agent-network-growth": { label: "Agent Network Growth", category: "Operations" },
+  "deal-pipeline-crm": { label: "Deal Pipeline CRM", category: "Operations" },
 };
