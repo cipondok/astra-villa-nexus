@@ -105,6 +105,10 @@ export const AnnualMarketLeadershipProgress = lazyRetry(() => import("./AnnualMa
 export const AIDynamicPricingEngine = lazyRetry(() => import("./AIDynamicPricingEngine"));
 export const BuyerSellerMatchingNotifications = lazyRetry(() => import("./BuyerSellerMatchingNotifications"));
 export const CompetitiveMarketIntelligence = lazyRetry(() => import("./CompetitiveMarketIntelligence"));
+export const UltimateFounderOneScreen = lazyRetry(() => import("./UltimateFounderOneScreen"));
+export const AIAutonomousOperator = lazyRetry(() => import("./AIAutonomousOperator"));
+export const GlobalExpansionCapitalSimulator = lazyRetry(() => import("./GlobalExpansionCapitalSimulator"));
+export const PlatformIntegrationArchitecture = lazyRetry(() => import("./PlatformIntegrationArchitecture"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
@@ -638,6 +642,12 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "buyer-seller-matching": () => <BuyerSellerMatchingNotifications />,
   "competitive-market-intelligence": () => <CompetitiveMarketIntelligence />,
 
+  // Founder Control & Platform Architecture
+  "ultimate-founder-one-screen": () => <UltimateFounderOneScreen />,
+  "ai-autonomous-operator": () => <AIAutonomousOperator />,
+  "global-expansion-capital-simulator": () => <GlobalExpansionCapitalSimulator />,
+  "platform-integration-architecture": () => <PlatformIntegrationArchitecture />,
+
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
   "social-media-settings": () => <SocialMediaSettings />,
@@ -1149,6 +1159,10 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ai-dynamic-pricing-engine": { label: "Dynamic Pricing AI", category: "Market Intelligence" },
   "buyer-seller-matching": { label: "Buyer-Seller Matching", category: "Marketplace Growth" },
   "competitive-market-intelligence": { label: "Competitive Intel", category: "Strategy" },
+  "ultimate-founder-one-screen": { label: "Founder Command", category: "Execution Command" },
+  "ai-autonomous-operator": { label: "Autonomous Operator", category: "AI Intelligence" },
+  "global-expansion-capital-simulator": { label: "Expansion Simulator", category: "Strategy" },
+  "platform-integration-architecture": { label: "Platform Architecture", category: "Infrastructure" },
   "seo-settings": { label: "SEO Hub", category: "Settings" },
   "seo-management": { label: "SEO Management", category: "Marketing" },
   "property-seo-checker": { label: "Property SEO Checker", category: "Core Management" },

@@ -1114,6 +1114,34 @@ export const navigationSections = {
       badge: "🎯 Intel"
     },
     {
+      key: "ultimate-founder-one-screen",
+      label: "Founder One-Screen",
+      icon: Target,
+      description: "Entire business health in 10 seconds — deals, supply, demand, revenue, agents & liquidity",
+      badge: "🎯 Command"
+    },
+    {
+      key: "ai-autonomous-operator",
+      label: "Autonomous Operator",
+      icon: Bot,
+      description: "Self-optimizing marketplace systems — pricing, matching, ranking, referrals & marketing automation",
+      badge: "🤖 Auto"
+    },
+    {
+      key: "global-expansion-capital-simulator",
+      label: "Expansion Simulator",
+      icon: Globe,
+      description: "Model city expansion scenarios — marketing budget, agent targets, deal projections & break-even",
+      badge: "🌍 Expand"
+    },
+    {
+      key: "platform-integration-architecture",
+      label: "Platform Architecture",
+      icon: Layers,
+      description: "End-to-end system connectivity — 5 architecture layers, module health & scalability readiness",
+      badge: "🏗️ Infra"
+    },
+    {
       label: "AI Co-Pilot",
       icon: Brain,
       description: "Intelligent operations assistant — recommendations, risk radar, NL commands & automation governance",
