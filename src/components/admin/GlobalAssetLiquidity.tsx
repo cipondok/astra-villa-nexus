@@ -260,4 +260,4 @@ const PlanetaryAssetLiquidity = () => {
   );
 };
 
-export default GlobalAssetLiquidity;
+export default PlanetaryAssetLiquidity;
