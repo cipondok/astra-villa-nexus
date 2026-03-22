@@ -1238,4 +1238,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "buyer-qualification-heatmap": { label: "Buyer Qualification & Liquidity Heatmap", category: "Strategy" },
   "viewing-commitment-elite": { label: "Viewing Commitment & Elite Agent Circle", category: "Strategy" },
   "offer-acceptance-commission": { label: "Offer Acceptance & Commission Incentive", category: "Strategy" },
+  "fast-deal-cycle-liquidity": { label: "Fast Deal Cycle & Liquidity Score", category: "Strategy" },
 };
