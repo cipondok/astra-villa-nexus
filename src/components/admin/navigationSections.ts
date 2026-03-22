@@ -247,6 +247,13 @@ export const navigationSections = {
       icon: Shield,
       description: "Risk monitoring, fraud detection AI, reputation signals, and secure escrow deal flow",
       badge: "🛡️ Trust"
+    },
+    {
+      key: "compliance-valuation-institutional",
+      label: "Compliance & Institutional",
+      icon: Scale,
+      description: "Regulatory readiness, property valuation index, institutional deal flow, and luxury segment intelligence",
+      badge: "⚖️ Institutional"
     }
   ],
 
