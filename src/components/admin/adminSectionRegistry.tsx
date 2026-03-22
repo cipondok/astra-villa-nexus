@@ -1247,4 +1247,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "fast-deal-cycle-liquidity": { label: "Fast Deal Cycle & Liquidity Score", category: "Strategy" },
   "repeat-buyer-pipeline": { label: "Repeat Buyer & Agent Pipeline Forecast", category: "Strategy" },
   "buyer-nurture-listing": { label: "Buyer Nurture & Listing Performance", category: "Strategy" },
+  "buyer-decision-district": { label: "Buyer Decision Deadline & District Expansion", category: "Strategy" },
 };
