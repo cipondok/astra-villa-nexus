@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect, useCallback, lazy, Suspense } from "react";
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AdminSidebar } from "./AdminSidebar";
 import AdminDashboardContent from "./AdminDashboardContent";
 import AdminHeader from "./AdminHeader";
@@ -11,10 +10,7 @@ const DemoModeOverlay = lazy(() => import("./demo/DemoModeOverlay"));
 
 const normalizeSection = (section: string | null) => {
   if (!section) return "overview";
-
   if (section === "settings") return "system-settings";
-  
-
   return section;
 };
 
@@ -24,6 +20,7 @@ const ModernEnhancedAdminDashboard = () => {
     const params = new URLSearchParams(window.location.search);
     return normalizeSection(params.get("section"));
   });
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const handleSectionChange = useCallback((section: string) => {
@@ -49,7 +46,6 @@ const ModernEnhancedAdminDashboard = () => {
     }
   }, [activeSection]);
 
-  // Scroll to top whenever the active section changes
   useEffect(() => {
     contentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -57,37 +53,39 @@ const ModernEnhancedAdminDashboard = () => {
 
   return (
     <DemoModeProvider>
-      <SidebarProvider defaultOpen={false}>
-        <div className="min-h-screen flex w-full bg-gradient-to-br from-background via-background to-muted/20">
-          <AdminSidebar
+      <div className="min-h-screen flex w-full bg-background">
+        {/* Fixed Left Sidebar */}
+        <AdminSidebar
+          activeSection={activeSection}
+          onSectionChange={handleSectionChange}
+          collapsed={sidebarCollapsed}
+          onToggleCollapse={() => setSidebarCollapsed(prev => !prev)}
+        />
+
+        {/* Main content area */}
+        <div className={`flex-1 flex flex-col min-h-screen transition-all duration-200 ${sidebarCollapsed ? 'ml-14' : 'ml-14 lg:ml-60'}`}>
+          <AdminHeader
             activeSection={activeSection}
             onSectionChange={handleSectionChange}
           />
 
-          <SidebarInset className="flex-1">
-            <AdminHeader
+          <main
+            ref={contentRef}
+            className="flex-1"
+          >
+            <AdminDashboardContent
               activeSection={activeSection}
               onSectionChange={handleSectionChange}
             />
-
-            <main
-              ref={contentRef}
-              className="flex-1 animate-in fade-in slide-in-from-bottom-1 duration-300"
-            >
-              <AdminDashboardContent
-                activeSection={activeSection}
-                onSectionChange={handleSectionChange}
-              />
-            </main>
-          </SidebarInset>
+          </main>
         </div>
+      </div>
 
-        {/* Demo Mode overlays */}
-        <Suspense fallback={null}>
-          <DemoModeController />
-          <DemoModeOverlay />
-        </Suspense>
-      </SidebarProvider>
+      {/* Demo Mode overlays */}
+      <Suspense fallback={null}>
+        <DemoModeController />
+        <DemoModeOverlay />
+      </Suspense>
     </DemoModeProvider>
   );
 };
