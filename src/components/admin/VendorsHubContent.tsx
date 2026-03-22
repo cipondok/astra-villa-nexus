@@ -256,16 +256,9 @@ const VendorsHubContent = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="user-directory" className="mt-3">
-          <UserDirectoryFixed />
-        </TabsContent>
 
         <TabsContent value="vendors" className="mt-3">
           <ComprehensiveVendorManagement />
-        </TabsContent>
-
-        <TabsContent value="user-roles" className="mt-3">
-          <VendorUserRoleManagement />
         </TabsContent>
 
         <TabsContent value="applications" className="mt-3">
