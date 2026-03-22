@@ -408,6 +408,7 @@ export const First100DealsFlywheelAgentReferral = lazyRetry(() => import("./Firs
 export const ThreeHundredDealsBrandRegionalLiquidity = lazyRetry(() => import("./ThreeHundredDealsBrandRegionalLiquidity"));
 export const ThousandDealsRevenueCityExpansion = lazyRetry(() => import("./ThousandDealsRevenueCityExpansion"));
 export const NationalLiquidityProfitSeriesA = lazyRetry(() => import("./NationalLiquidityProfitSeriesA"));
+export const SeriesBInstitutionalCategoryLeadership = lazyRetry(() => import("./SeriesBInstitutionalCategoryLeadership"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
