@@ -289,6 +289,13 @@ export const navigationSections = {
       icon: Trophy,
       description: "Agent incentives, buyer qualification scoring, listing quality optimization, and daily deal war-room",
       badge: "🎯 Intel"
+    },
+    {
+      key: "supply-growth-deal-acceleration",
+      label: "Supply & Deal Acceleration",
+      icon: TrendingUp,
+      description: "Listing acquisition tracker, buyer matchmaking, bottleneck detection, and weekly revenue sprint planner",
+      badge: "📈 Growth"
     }
   ],
 
