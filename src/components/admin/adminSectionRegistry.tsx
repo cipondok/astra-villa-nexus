@@ -385,6 +385,7 @@ export const DailyDealWeeklyWarCitySprintBlueprint = lazyRetry(() => import("./D
 export const First10KRevenueAgentFollowUpBlueprint = lazyRetry(() => import("./First10KRevenueAgentFollowUpBlueprint"));
 export const First50KRevenueAgentIncentivePipelineBlueprint = lazyRetry(() => import("./First50KRevenueAgentIncentivePipelineBlueprint"));
 export const First100KRevenueCityReplicationCommandBlueprint = lazyRetry(() => import("./First100KRevenueCityReplicationCommandBlueprint"));
+export const Revenue250KRegionalLiquidityExecutiveBlueprint = lazyRetry(() => import("./Revenue250KRegionalLiquidityExecutiveBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -855,6 +856,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "first-10k-revenue-followup": () => <First10KRevenueAgentFollowUpBlueprint />,
   "first-50k-revenue-incentive-pipeline": () => <First50KRevenueAgentIncentivePipelineBlueprint />,
   "first-100k-revenue-city-replication": () => <First100KRevenueCityReplicationCommandBlueprint />,
+  "revenue-250k-regional-executive": () => <Revenue250KRegionalLiquidityExecutiveBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1290,4 +1292,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "first-10k-revenue-followup": { label: "First $10K Revenue & Agent Follow-Up", category: "Strategy" },
   "first-50k-revenue-incentive-pipeline": { label: "First $50K Revenue & Pipeline Forecast", category: "Strategy" },
   "first-100k-revenue-city-replication": { label: "$100K Revenue & City Replication", category: "Strategy" },
+  "revenue-250k-regional-executive": { label: "$250K Revenue & Regional Liquidity", category: "Strategy" },
 };
