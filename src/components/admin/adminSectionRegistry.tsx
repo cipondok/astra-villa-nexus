@@ -277,6 +277,7 @@ export const GlobalPropertyCivilizationOS = lazyRetry(() => import("./GlobalProp
 export const AutonomousWealthInfrastructure = lazyRetry(() => import("./AutonomousWealthInfrastructure"));
 export const Founder100YearLegacy = lazyRetry(() => import("./Founder100YearLegacy"));
 export const PlanetScaleEconomicStoryboard = lazyRetry(() => import("./PlanetScaleEconomicStoryboard"));
+export const AgentNetworkGrowth = lazyRetry(() => import("./AgentNetworkGrowth"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -846,6 +847,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "autonomous-wealth-infra":     () => <AutonomousWealthInfrastructure />,
   "founder-100yr-legacy":        () => <Founder100YearLegacy />,
   "planet-scale-storyboard":     () => <PlanetScaleEconomicStoryboard />,
+  "agent-network-growth":        () => <AgentNetworkGrowth />,
   "global-expansion-control":    () => <GlobalExpansionControl />,
   "ipo-readiness-metrics":       () => <IPOReadinessMetrics />,
   "ai-copilot":                  () => <AdminAICoPilot />,
@@ -1440,4 +1442,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "autonomous-wealth-infra": { label: "Autonomous Wealth Infrastructure", category: "AI Intelligence" },
   "founder-100yr-legacy": { label: "Founder 100-Year Legacy", category: "AI Intelligence" },
   "planet-scale-storyboard": { label: "Planet-Scale Economic Storyboard", category: "AI Intelligence" },
+  "agent-network-growth": { label: "Agent Network Growth", category: "Operations" },
 };
