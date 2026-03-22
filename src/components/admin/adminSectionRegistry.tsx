@@ -378,6 +378,7 @@ export const ReferralMegaProjectCityBlueprint = lazyRetry(() => import("./Referr
 export const RegionalInstitutionalProfitabilityBlueprint = lazyRetry(() => import("./RegionalInstitutionalProfitabilityBlueprint"));
 export const NationalDataSeriesABlueprint = lazyRetry(() => import("./NationalDataSeriesABlueprint"));
 export const PreUnicornGlobalBrandMarketplaceOSBlueprint = lazyRetry(() => import("./PreUnicornGlobalBrandMarketplaceOSBlueprint"));
+export const UnicornCategoryAIControlBlueprint = lazyRetry(() => import("./UnicornCategoryAIControlBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
