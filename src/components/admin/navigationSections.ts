@@ -1093,7 +1093,27 @@ export const navigationSections = {
       badge: "👑 Strategy"
     },
     {
-      key: "ai-copilot",
+      key: "ai-dynamic-pricing-engine",
+      label: "Dynamic Pricing AI",
+      icon: DollarSign,
+      description: "Price elasticity simulation, auto-adjust engine, scenario comparison & demand sensitivity",
+      badge: "🤖 Pricing"
+    },
+    {
+      key: "buyer-seller-matching",
+      label: "Buyer-Seller Matching",
+      icon: Zap,
+      description: "Real-time match alerts, compatibility scoring, instant notification triggers & conversion tracking",
+      badge: "⚡ Matching"
+    },
+    {
+      key: "competitive-market-intelligence",
+      label: "Competitive Intelligence",
+      icon: Crosshair,
+      description: "Rival platform tracking, market share trends, strength radar & strategic positioning insights",
+      badge: "🎯 Intel"
+    },
+    {
       label: "AI Co-Pilot",
       icon: Brain,
       description: "Intelligent operations assistant — recommendations, risk radar, NL commands & automation governance",

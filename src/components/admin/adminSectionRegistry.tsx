@@ -102,6 +102,9 @@ export const RealTimeBuyerDemandPulse = lazyRetry(() => import("./RealTimeBuyerD
 export const HighValueSpotlightPromotion = lazyRetry(() => import("./HighValueSpotlightPromotion"));
 export const AgentReferralGrowthFlywheel = lazyRetry(() => import("./AgentReferralGrowthFlywheel"));
 export const AnnualMarketLeadershipProgress = lazyRetry(() => import("./AnnualMarketLeadershipProgress"));
+export const AIDynamicPricingEngine = lazyRetry(() => import("./AIDynamicPricingEngine"));
+export const BuyerSellerMatchingNotifications = lazyRetry(() => import("./BuyerSellerMatchingNotifications"));
+export const CompetitiveMarketIntelligence = lazyRetry(() => import("./CompetitiveMarketIntelligence"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
@@ -630,6 +633,11 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "agent-referral-growth-flywheel": () => <AgentReferralGrowthFlywheel />,
   "annual-market-leadership": () => <AnnualMarketLeadershipProgress />,
 
+  // Automation & Competitive Intelligence
+  "ai-dynamic-pricing-engine": () => <AIDynamicPricingEngine />,
+  "buyer-seller-matching": () => <BuyerSellerMatchingNotifications />,
+  "competitive-market-intelligence": () => <CompetitiveMarketIntelligence />,
+
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
   "social-media-settings": () => <SocialMediaSettings />,
@@ -1138,6 +1146,9 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "high-value-spotlight-promotion": { label: "Spotlight Promotion", category: "Marketing" },
   "agent-referral-growth-flywheel": { label: "Referral Flywheel", category: "Marketplace Growth" },
   "annual-market-leadership": { label: "Market Leadership", category: "Strategy" },
+  "ai-dynamic-pricing-engine": { label: "Dynamic Pricing AI", category: "Market Intelligence" },
+  "buyer-seller-matching": { label: "Buyer-Seller Matching", category: "Marketplace Growth" },
+  "competitive-market-intelligence": { label: "Competitive Intel", category: "Strategy" },
   "seo-settings": { label: "SEO Hub", category: "Settings" },
   "seo-management": { label: "SEO Management", category: "Marketing" },
   "property-seo-checker": { label: "Property SEO Checker", category: "Core Management" },
