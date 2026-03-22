@@ -102,6 +102,9 @@ export const RealTimeBuyerDemandPulse = lazyRetry(() => import("./RealTimeBuyerD
 export const HighValueSpotlightPromotion = lazyRetry(() => import("./HighValueSpotlightPromotion"));
 export const AgentReferralGrowthFlywheel = lazyRetry(() => import("./AgentReferralGrowthFlywheel"));
 export const AnnualMarketLeadershipProgress = lazyRetry(() => import("./AnnualMarketLeadershipProgress"));
+export const AIDynamicPricingEngine = lazyRetry(() => import("./AIDynamicPricingEngine"));
+export const BuyerSellerMatchingNotifications = lazyRetry(() => import("./BuyerSellerMatchingNotifications"));
+export const CompetitiveMarketIntelligence = lazyRetry(() => import("./CompetitiveMarketIntelligence"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
