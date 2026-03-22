@@ -1229,4 +1229,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "offer-negotiation-blueprint": { label: "Offer Negotiation & Lead Distribution", category: "Strategy" },
   "buyer-financing-blueprint": { label: "Buyer Financing & Premium Upsell", category: "Strategy" },
   "buyer-offer-confidence": { label: "Buyer Offer Confidence & Price Intel", category: "Strategy" },
+  "buyer-qualification-heatmap": { label: "Buyer Qualification & Liquidity Heatmap", category: "Strategy" },
 };
