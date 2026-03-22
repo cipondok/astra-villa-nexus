@@ -1495,6 +1495,13 @@ export const navigationSections = {
       badge: "✨ Century Vision"
     },
     {
+      key: "first-100-deals-cashflow-stress-proof",
+      label: "First 100 Deals & Survival",
+      icon: Swords,
+      description: "First 100 deals war plan, cashflow survival discipline & founder stress-proof execution",
+      badge: "⚔️ Survival"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",

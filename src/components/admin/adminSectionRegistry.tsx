@@ -400,6 +400,7 @@ export const Visitor1MNetworkEffectInvestorNarrative = lazyRetry(() => import(".
 export const NationalCategoryDominationProfitabilityPreIPO = lazyRetry(() => import("./NationalCategoryDominationProfitabilityPreIPO"));
 export const IPORoadshowCapitalAllocationAutonomousOS = lazyRetry(() => import("./IPORoadshowCapitalAllocationAutonomousOS"));
 export const PublicMarketCategoryGlobalLiquidityCenturyVision = lazyRetry(() => import("./PublicMarketCategoryGlobalLiquidityCenturyVision"));
+export const First100DealsCashflowStressProof = lazyRetry(() => import("./First100DealsCashflowStressProof"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -885,6 +886,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "national-category-domination-profitability-preipo": () => <NationalCategoryDominationProfitabilityPreIPO />,
   "ipo-roadshow-capital-allocation-autonomous-os": () => <IPORoadshowCapitalAllocationAutonomousOS />,
   "public-market-category-global-liquidity-century-vision": () => <PublicMarketCategoryGlobalLiquidityCenturyVision />,
+  "first-100-deals-cashflow-stress-proof": () => <First100DealsCashflowStressProof />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1335,4 +1337,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "national-category-domination-profitability-preipo": { label: "National Domination & Pre-IPO", category: "Strategy" },
   "ipo-roadshow-capital-allocation-autonomous-os": { label: "IPO Roadshow & Autonomous OS", category: "Strategy" },
   "public-market-category-global-liquidity-century-vision": { label: "Category Creation & Century Vision", category: "Strategy" },
+  "first-100-deals-cashflow-stress-proof": { label: "First 100 Deals & Survival", category: "Strategy" },
 };
