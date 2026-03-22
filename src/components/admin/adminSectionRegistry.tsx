@@ -281,6 +281,7 @@ export const AgentNetworkGrowth = lazyRetry(() => import("./AgentNetworkGrowth")
 export const DealPipelineCRM = lazyRetry(() => import("./DealPipelineCRM"));
 export const CityLiquidityHeatmap = lazyRetry(() => import("./CityLiquidityHeatmap"));
 export const PremiumListingsMonetization = lazyRetry(() => import("./PremiumListingsMonetization"));
+export const FounderMobileWarRoom = lazyRetry(() => import("./FounderMobileWarRoom"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
