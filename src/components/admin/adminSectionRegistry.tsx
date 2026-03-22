@@ -273,6 +273,10 @@ export const PlanetaryHabitatGrid = lazyRetry(() => import("./PlanetaryHabitatGr
 export const GlobalAssetLiquidity = lazyRetry(() => import("./GlobalAssetLiquidity"));
 export const FounderIntergenerational = lazyRetry(() => import("./FounderIntergenerational"));
 export const MacroPolicySimulator = lazyRetry(() => import("./MacroPolicySimulator"));
+export const GlobalPropertyCivilizationOS = lazyRetry(() => import("./GlobalPropertyCivilizationOS"));
+export const AutonomousWealthInfrastructure = lazyRetry(() => import("./AutonomousWealthInfrastructure"));
+export const Founder100YearLegacy = lazyRetry(() => import("./Founder100YearLegacy"));
+export const PlanetScaleEconomicStoryboard = lazyRetry(() => import("./PlanetScaleEconomicStoryboard"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
