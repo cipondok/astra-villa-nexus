@@ -1295,4 +1295,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "first-50k-revenue-incentive-pipeline": { label: "First $50K Revenue & Pipeline Forecast", category: "Strategy" },
   "first-100k-revenue-city-replication": { label: "$100K Revenue & City Replication", category: "Strategy" },
   "revenue-250k-regional-executive": { label: "$250K Revenue & Regional Liquidity", category: "Strategy" },
+  "revenue-500k-national-board": { label: "$500K Revenue & National Grid", category: "Strategy" },
 };

@@ -1397,6 +1397,13 @@ export const navigationSections = {
       badge: "💰 $250K"
     },
     {
+      key: "revenue-500k-national-board",
+      label: "$500K Revenue & National Liquidity Grid",
+      icon: Globe,
+      description: "$500K hyper-scale revenue engine, national liquidity grid & board-level strategic dashboard",
+      badge: "🚀 $500K"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
