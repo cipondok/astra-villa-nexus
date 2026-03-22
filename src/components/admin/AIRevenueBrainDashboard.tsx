@@ -239,13 +239,13 @@ const WeeklyProjectionKPI = () => {
   const { data } = useRevenueForecastInsights(3);
   
   const weeklyRevenue = useMemo(() => {
-    if (!data?.scenarios?.base?.monthlyForecasts?.[0]) return 0;
-    return Math.round(data.scenarios.base.monthlyForecasts[0].totalRevenue / 4);
+    if (!data?.scenarios?.base?.monthly?.[0]) return 0;
+    return Math.round(data.scenarios.base.monthly[0].totalRevenue / 4);
   }, [data]);
 
   const optimizedWeekly = useMemo(() => {
-    if (!data?.scenarios?.aggressive?.monthlyForecasts?.[0]) return 0;
-    return Math.round(data.scenarios.aggressive.monthlyForecasts[0].totalRevenue / 4);
+    if (!data?.scenarios?.aggressive?.monthly?.[0]) return 0;
+    return Math.round(data.scenarios.aggressive.monthly[0].totalRevenue / 4);
   }, [data]);
 
   const unlockable = optimizedWeekly - weeklyRevenue;
