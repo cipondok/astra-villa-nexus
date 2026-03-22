@@ -604,7 +604,12 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "unicorn-narrative": () => <UnicornNarrativePanel />,
   "liquidity-index-branding": () => <LiquidityIndexBrandingPanel />,
 
-  // Content
+  // Founder Command & Liquidity Domination
+  "founder-daily-priority": () => <FounderDailyPriorityCommand />,
+  "agent-territory-coverage": () => <AgentTerritoryCoverageMap />,
+  "buyer-viewing-feedback": () => <BuyerViewingFeedbackPanel />,
+  "monthly-liquidity-domination": () => <MonthlyLiquidityDominancePanel />,
+
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
   "social-media-settings": () => <SocialMediaSettings />,
