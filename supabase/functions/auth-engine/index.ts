@@ -87,7 +87,8 @@ type Action =
   | 'get_user_sessions'
   | 'revoke_session'
   | 'revoke_all_sessions'
-  | 'get_security_events';
+  | 'get_security_events'
+  | 'get_verification_requests';
 
 interface AuthRequest {
   action: Action;
@@ -755,7 +756,7 @@ serve(async (req) => {
     const noAuthActions: Action[] = ['check_lockout', 'record_login_attempt', 'rate_limit_check'];
 
     // Actions requiring auth
-    const authRequired: Action[] = ['generate_otp', 'verify_otp', 'send_2fa', 'check_breach', 'verify_document', 'verify_owner', 'verify_vendor', 'get_user_sessions', 'revoke_session', 'revoke_all_sessions', 'get_security_events'];
+    const authRequired: Action[] = ['generate_otp', 'verify_otp', 'send_2fa', 'check_breach', 'verify_document', 'verify_owner', 'verify_vendor', 'get_user_sessions', 'revoke_session', 'revoke_all_sessions', 'get_security_events', 'get_verification_requests'];
     if (authRequired.includes(action) && !userId) {
       return new Response(JSON.stringify({ success: false, error: 'Authentication required' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
@@ -852,6 +853,71 @@ serve(async (req) => {
         } catch { /* table may not exist yet */ }
 
         result = { success: true, action: 'register_device' };
+        break;
+      }
+      case 'get_verification_requests': {
+        // Check admin
+        const { data: adminCheck } = await supabase
+          .from('admin_users')
+          .select('id')
+          .eq('user_id', userId)
+          .maybeSingle();
+        if (!adminCheck) throw new Error('Admin access required');
+
+        const type = (params.type as string) || 'all';
+        const status = (params.status as string) || 'all';
+
+        // Query owner verifications from profiles
+        let ownerQuery = supabase
+          .from('profiles')
+          .select('id, full_name, email, phone, avatar_url, identity_verified, email_verified, phone_verified, created_at')
+          .order('created_at', { ascending: false })
+          .limit(100);
+
+        if (status === 'pending') {
+          ownerQuery = ownerQuery.or('identity_verified.eq.false,email_verified.eq.false,phone_verified.eq.false');
+        } else if (status === 'verified') {
+          ownerQuery = ownerQuery.eq('identity_verified', true).eq('email_verified', true);
+        }
+
+        const { data: owners } = await ownerQuery;
+
+        // Query vendor verifications
+        let vendorQuery = supabase
+          .from('vendor_profiles')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(100);
+
+        if (status === 'pending') {
+          vendorQuery = vendorQuery.eq('verification_status', 'pending');
+        } else if (status === 'verified') {
+          vendorQuery = vendorQuery.eq('verification_status', 'verified');
+        }
+
+        const { data: vendors } = await vendorQuery;
+
+        // Compute stats
+        const totalOwners = owners?.length || 0;
+        const verifiedOwners = owners?.filter((o: any) => o.identity_verified && o.email_verified)?.length || 0;
+        const totalVendors = vendors?.length || 0;
+        const verifiedVendors = vendors?.filter((v: any) => v.verification_status === 'verified')?.length || 0;
+
+        result = {
+          success: true,
+          data: {
+            owners: type === 'vendors' ? [] : (owners || []),
+            vendors: type === 'owners' ? [] : (vendors || []),
+          },
+          stats: {
+            totalOwners,
+            verifiedOwners,
+            pendingOwners: totalOwners - verifiedOwners,
+            totalVendors,
+            verifiedVendors,
+            pendingVendors: totalVendors - verifiedVendors,
+          },
+        };
         break;
       }
       default:
