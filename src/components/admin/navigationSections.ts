@@ -107,6 +107,8 @@ import {
   Presentation,
   MapPin,
   Droplets,
+  GraduationCap,
+  Compass,
   Brain,
   Scale,
   PieChart,
