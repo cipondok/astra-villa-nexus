@@ -1467,6 +1467,13 @@ export const navigationSections = {
       badge: "📈 100K Traffic"
     },
     {
+      key: "1m-visitor-network-effect-investor-narrative",
+      label: "1M Visitor & Network Effects",
+      icon: TrendingUp,
+      description: "1M visitor scale engine, network effect acceleration & investor growth narrative KPIs",
+      badge: "🚀 1M Scale"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
