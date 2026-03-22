@@ -860,6 +860,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "first-100k-revenue-city-replication": () => <First100KRevenueCityReplicationCommandBlueprint />,
   "revenue-250k-regional-executive": () => <Revenue250KRegionalLiquidityExecutiveBlueprint />,
   "revenue-500k-national-board": () => <Revenue500KNationalLiquidityBoardBlueprint />,
+  "revenue-1m-national-ipo": () => <Revenue1MNationalIPOBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
