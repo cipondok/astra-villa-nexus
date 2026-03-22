@@ -290,6 +290,7 @@ export const BehavioralGrowthEngine = lazyRetry(() => import("./BehavioralGrowth
 export const TrustSafetyIntelligence = lazyRetry(() => import("./TrustSafetyIntelligence"));
 export const ComplianceValuationInstitutional = lazyRetry(() => import("./ComplianceValuationInstitutional"));
 export const FounderAICopilotGlobalIntel = lazyRetry(() => import("./FounderAICopilotGlobalIntel"));
+export const PlanetaryIntelligenceCivilizationOS = lazyRetry(() => import("./PlanetaryIntelligenceCivilizationOS"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
