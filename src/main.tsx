@@ -21,97 +21,47 @@ if (typeof window !== 'undefined' && 'performance' in window) {
   });
 }
 
-// Register Service Worker for PWA - production only (avoid stale chunk caches in dev/preview)
+// Disable service worker caching for now to prevent stale homepage bundles
 if ('serviceWorker' in navigator) {
-  const isProduction = import.meta.env.PROD;
+  const cleanupKey = '__astra_sw_disabled_cleanup_v1__';
 
   const clearServiceWorkersAndCaches = async () => {
     const registrations = await navigator.serviceWorker.getRegistrations();
-    await Promise.all(registrations.map((r) => r.unregister()));
+    await Promise.all(registrations.map((registration) => registration.unregister()));
 
     if ('caches' in window) {
-      const names = await caches.keys();
-      await Promise.all(names.map((n) => caches.delete(n)));
+      const cacheNames = await caches.keys();
+      await Promise.all(cacheNames.map((cacheName) => caches.delete(cacheName)));
     }
   };
 
-  const recoverFromStaleCacheOnce = async () => {
-    const key = '__sw_recovery_attempted__';
-    if (sessionStorage.getItem(key) === '1') return;
-    sessionStorage.setItem(key, '1');
+  const cleanupOnce = async () => {
+    if (localStorage.getItem(cleanupKey) === '1') return;
 
     try {
       await clearServiceWorkersAndCaches();
-    } finally {
-      window.location.reload();
+      localStorage.setItem(cleanupKey, '1');
+
+      if (sessionStorage.getItem(cleanupKey) !== '1') {
+        sessionStorage.setItem(cleanupKey, '1');
+        window.location.reload();
+      }
+    } catch (error) {
+      if (import.meta.env.DEV) {
+        console.log('SW cleanup failed: ', error);
+      }
     }
   };
 
-  // In dev/preview, never keep SW active: it can serve mismatched cached chunks
-  if (!isProduction) {
-    const cleanupKey = '__dev_sw_cleanup_done__';
-    if (sessionStorage.getItem(cleanupKey) !== '1') {
-      sessionStorage.setItem(cleanupKey, '1');
-      clearServiceWorkersAndCaches().finally(() => {
-        window.location.reload();
-      });
+  cleanupOnce();
+
+  window.addEventListener('error', (event: ErrorEvent) => {
+    const message = String(event?.message || '');
+    if (message.includes('Importing a module script failed')) {
+      localStorage.removeItem(cleanupKey);
+      cleanupOnce();
     }
-  } else {
-    // Auto-recover when a chunk/module fails to load (common with stale SW cache)
-    window.addEventListener('error', (event: any) => {
-      const message = String(event?.message || '');
-      if (message.includes('Importing a module script failed')) {
-        recoverFromStaleCacheOnce();
-      }
-    });
-
-    const registerSW = async () => {
-      try {
-        const registration = await navigator.serviceWorker.register('/sw.js');
-        await registration.update();
-
-        // If an update is already waiting, activate it immediately
-        if (registration.waiting && navigator.serviceWorker.controller) {
-          registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-        }
-
-        registration.addEventListener('updatefound', () => {
-          const worker = registration.installing;
-          if (!worker) return;
-          worker.addEventListener('statechange', () => {
-            if (worker.state === 'installed' && navigator.serviceWorker.controller) {
-              // Activate new SW ASAP to prevent mismatched chunks
-              registration.waiting?.postMessage({ type: 'SKIP_WAITING' });
-            }
-          });
-        });
-
-        // Reload when the new SW takes control
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          window.location.reload();
-        });
-
-        // Check for updates periodically
-        setInterval(() => {
-          registration.update();
-        }, 60000);
-
-        if (import.meta.env.DEV) {
-          console.log('SW registered: ', registration);
-        }
-      } catch (registrationError) {
-        if (import.meta.env.DEV) {
-          console.log('SW registration failed: ', registrationError);
-        }
-      }
-    };
-
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(registerSW);
-    } else {
-      setTimeout(registerSW, 100);
-    }
-  }
+  });
 }
 
 // Prevent react-remove-scroll from causing page jumps by making
