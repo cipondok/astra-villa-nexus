@@ -838,6 +838,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "post-deal-loyalty-mega": () => <PostDealLoyaltyMegaPortfolioBlueprint />,
   "referral-mega-project-city": () => <ReferralMegaProjectCityBlueprint />,
   "regional-institutional-profitability": () => <RegionalInstitutionalProfitabilityBlueprint />,
+  "national-data-series-a": () => <NationalDataSeriesABlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
