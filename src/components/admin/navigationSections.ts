@@ -130,8 +130,7 @@ import {
   Upload,
   PartyPopper,
   Briefcase,
-  Hammer,
-  Crown
+  Hammer
 } from "lucide-react";
 
 export interface NavigationSection {
