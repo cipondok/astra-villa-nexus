@@ -257,6 +257,10 @@ export const GlobalControlTower = lazyRetry(() => import("./GlobalControlTower")
 export const AutonomousDealFlowEngine = lazyRetry(() => import("./AutonomousDealFlowEngine"));
 export const InstitutionalDataRoom = lazyRetry(() => import("./InstitutionalDataRoom"));
 export const DecacornNarrativeMode = lazyRetry(() => import("./DecacornNarrativeMode"));
+export const PlanetaryExpansionSimulator = lazyRetry(() => import("./PlanetaryExpansionSimulator"));
+export const AICapitalAllocationBrain = lazyRetry(() => import("./AICapitalAllocationBrain"));
+export const FounderWarRoom = lazyRetry(() => import("./FounderWarRoom"));
+export const GlobalInfrastructureVision = lazyRetry(() => import("./GlobalInfrastructureVision"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -305,7 +309,7 @@ export const DecacornValuationInterface = lazyRetry(() => import("./DecacornValu
 export const AIGrowthBrainDashboard = lazyRetry(() => import("./AIGrowthBrainDashboard"));
 export const GlobalExpansionControl = lazyRetry(() => import("./GlobalExpansionControl"));
 export const IPOReadinessMetrics = lazyRetry(() => import("./IPOReadinessMetrics"));
-export const FounderWarRoom = lazyRetry(() => import("./FounderWarRoom"));
+// FounderWarRoom moved to AI Intelligence section above
 export const AdminAICoPilot = lazyRetry(() => import("./AdminAICoPilot"));
 export const FounderDailyExecution = lazyRetry(() => import("./FounderDailyExecution"));
 export const First100KRevenuePlan = lazyRetry(() => import("./First100KRevenuePlan"));
@@ -806,9 +810,12 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "global-control-tower":        () => <GlobalControlTower />,
   "autonomous-deal-flow":        () => <AutonomousDealFlowEngine />,
   "institutional-data-room":     () => <InstitutionalDataRoom />,
+  "planetary-expansion-sim":     () => <PlanetaryExpansionSimulator />,
+  "ai-capital-allocation":       () => <AICapitalAllocationBrain />,
+  "founder-war-room":            () => <FounderWarRoom />,
+  "global-infra-vision":         () => <GlobalInfrastructureVision />,
   "global-expansion-control":    () => <GlobalExpansionControl />,
   "ipo-readiness-metrics":       () => <IPOReadinessMetrics />,
-  "founder-war-room":            () => <FounderWarRoom />,
   "ai-copilot":                  () => <AdminAICoPilot />,
   "founder-daily-execution":     () => <FounderDailyExecution />,
   "first-100k-revenue":          () => <First100KRevenuePlan />,
@@ -1381,4 +1388,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-control-tower": { label: "Global Control Tower", category: "AI Intelligence" },
   "autonomous-deal-flow": { label: "Autonomous Deal Flow Engine", category: "AI Intelligence" },
   "institutional-data-room": { label: "Institutional Data Room", category: "AI Intelligence" },
+  "planetary-expansion-sim": { label: "Planetary Expansion Simulator", category: "AI Intelligence" },
+  "ai-capital-allocation": { label: "AI Capital Allocation Brain", category: "AI Intelligence" },
+  
+  "global-infra-vision": { label: "Global Infrastructure Vision", category: "AI Intelligence" },
 };
