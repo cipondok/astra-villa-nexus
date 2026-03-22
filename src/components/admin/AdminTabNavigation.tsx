@@ -136,7 +136,7 @@ const AdminTabNavigation = ({ isAdmin }: AdminTabNavigationProps) => {
     },
     { 
       id: "website-design", 
-      label: "Design", 
+      label: "Website Settings", 
       icon: Paintbrush, 
       category: "settings",
       badge: "New"

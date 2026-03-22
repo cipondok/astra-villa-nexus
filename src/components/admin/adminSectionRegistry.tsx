@@ -109,7 +109,7 @@ export const BookingManagement = lazyRetry(() => import("./BookingManagement"));
 export const AdminRentalManagement = lazyRetry(() => import("./AdminRentalManagement"));
 export const TransactionManagementTabs = lazyRetry(() => import("./TransactionManagementTabs"));
 export const InvestorSettingsHub = lazyRetry(() => import("./InvestorSettingsHub"));
-export const WebsiteDesignControl = lazyRetry(() => import("./WebsiteDesignControl"));
+// Legacy WebsiteDesignControl kept in codebase but no longer used by admin navigation
 export const RateLimitingDashboard = lazyRetry(() => import("./RateLimitingDashboard"));
 export const VideoTourManager = lazyRetry(() => import("./VideoTourManager"));
 export const VRTourSettings = lazyRetry(() => import("./VRTourSettings"));
@@ -601,7 +601,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "liquidity-index-branding": () => <LiquidityIndexBrandingPanel />,
 
   // Content
-  "homepage-slider":     () => <HomepageSliderSettings />,
+  "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
   "social-media-settings": () => <SocialMediaSettings />,
   "content-management":  () => <ContentManagement />,
@@ -686,8 +686,8 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "investor-analytics":      () => <InvestorSettingsHub initialTab="analytics" />,
 
   // Design & monitoring
-  "design-system":       () => <WebsiteDesignControl />,
-  "website-design":      () => <WebsiteDesignControl />,
+  "design-system":       () => <SystemSettings defaultTab="website-design" />,
+  "website-design":      () => <SystemSettings defaultTab="website-design" />,
   "live-monitoring":     () => <LiveMonitoringDashboard />,
   "rental-management":   () => <AdminRentalManagement />,
 
@@ -1162,8 +1162,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "verification-system-settings": { label: "Verification System Settings", category: "Settings" },
   "auth-registration-settings": { label: "Auth & Registration", category: "Settings" },
   "ahu-company-checker": { label: "AHU Company Checker", category: "Verification" },
-  "design-system": { label: "Design System", category: "Settings" },
-  "website-design": { label: "Design System", category: "Settings" },
+  "design-system": { label: "Website Settings", category: "Settings" },
+  "website-design": { label: "Website Settings", category: "Settings" },
   "media-network": { label: "Media Network", category: "Features" },
   "user-acquisition": { label: "User Acquisition", category: "Features" },
   "nearby-facilities-settings": { label: "Nearby & Payment Settings", category: "Property System" },

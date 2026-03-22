@@ -92,7 +92,7 @@ const SystemSettings = ({ defaultTab }: SystemSettingsProps) => {
             <TabsList className="inline-flex h-8 w-auto gap-1 bg-muted/40 p-1 rounded-lg border border-border/30">
               <TabsTrigger value="general" className="text-xs h-6 px-3">General</TabsTrigger>
               <TabsTrigger value="seo-hub" className="text-xs h-6 px-3">SEO Hub</TabsTrigger>
-              <TabsTrigger value="website-design" className="text-xs h-6 px-3">Website Design</TabsTrigger>
+              <TabsTrigger value="website-design" className="text-xs h-6 px-3">Color Scheme</TabsTrigger>
               <TabsTrigger value="hero-slider" className="text-xs h-6 px-3">Hero Slider</TabsTrigger>
               <TabsTrigger value="branding" className="text-xs h-6 px-3">Branding</TabsTrigger>
               <TabsTrigger value="social-media" className="text-xs h-6 px-3">Social Media</TabsTrigger>
