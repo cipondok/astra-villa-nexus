@@ -127,7 +127,8 @@ import {
   Hourglass,
   Timer,
   Crosshair,
-  Upload
+  Upload,
+  PartyPopper
 } from "lucide-react";
 
 export interface NavigationSection {
