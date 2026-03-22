@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { useTranslation } from '@/i18n/useTranslation';
 import { cn } from '@/lib/utils';
 import { useWelcomeScreenLogo } from '@/hooks/useBrandingLogo';
+import welcomeBg from '@/assets/welcome-bg.jpg';
+import { Building2, Home, Key } from 'lucide-react';
 
 interface LoadingPageProps {
   message?: string;
@@ -50,7 +51,6 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
     setLogoUrl(brandingLogo);
   }, [brandingLogo]);
 
-  // Animate progress
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress(prev => {
@@ -58,7 +58,6 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
         return prev + Math.random() * 15;
       });
     }, 200);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -66,11 +65,11 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
 
   const getConnectionColor = () => {
     switch (connectionStatus) {
-      case 'connecting': return 'bg-chart-3';
-      case 'connected': return 'bg-chart-1';
-      case 'error': return 'bg-destructive';
-      case 'offline': return 'bg-muted-foreground';
-      default: return 'bg-muted-foreground';
+      case 'connecting': return 'bg-yellow-400';
+      case 'connected': return 'bg-emerald-400';
+      case 'error': return 'bg-red-400';
+      case 'offline': return 'bg-gray-400';
+      default: return 'bg-gray-400';
     }
   };
 
@@ -85,36 +84,39 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
   };
 
   return (
-    <div className="bg-background text-foreground flex items-center justify-center min-h-screen overflow-hidden">
-      {/* Background gradient animation */}
-      <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          className="absolute -inset-[100px] opacity-30"
-          style={{
-            background: 'radial-gradient(circle at 30% 50%, hsl(var(--primary) / 0.3) 0%, transparent 50%), radial-gradient(circle at 70% 50%, hsl(var(--accent) / 0.3) 0%, transparent 50%)'
-          }}
-          animate={{
-            scale: [1, 1.1, 1],
-            rotate: [0, 5, 0]
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        />
+    <div className="flex items-center justify-center min-h-screen overflow-hidden relative">
+      {/* Background image */}
+      <div className="absolute inset-0">
+        <img src={welcomeBg} alt="" className="w-full h-full object-cover" />
       </div>
+      
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
+      
+      {/* Accent glow */}
+      <motion.div
+        className="absolute inset-0"
+        style={{
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(0, 153, 230, 0.12) 0%, transparent 60%)',
+        }}
+        animate={{ opacity: [0.5, 0.8, 0.5] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+      />
 
       <motion.div 
-        className="relative flex flex-col items-center gap-8 z-10"
+        className="relative flex flex-col items-center gap-6 z-10"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        {/* Logo with premium effects */}
+        {/* Logo with glow ring */}
         <motion.div 
           className="relative"
           animate={{ 
             boxShadow: [
-              '0 0 0px hsl(var(--accent) / 0)',
-              '0 0 40px hsl(var(--accent) / 0.4)',
-              '0 0 0px hsl(var(--accent) / 0)'
+              '0 0 0px rgba(0, 153, 230, 0)',
+              '0 0 40px rgba(0, 153, 230, 0.4)',
+              '0 0 0px rgba(0, 153, 230, 0)'
             ]
           }}
           transition={{ duration: 2.5, repeat: Infinity }}
@@ -122,7 +124,7 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
           <motion.img 
             src={logoUrl}
             alt="ASTRA Villa"
-            className="w-24 h-24 md:w-32 md:h-32 object-contain rounded-2xl"
+            className="w-20 h-20 md:w-28 md:h-28 object-contain rounded-2xl"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
@@ -131,8 +133,8 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
           <motion.div
             className="absolute inset-0 rounded-2xl border-2 border-transparent"
             style={{
-              borderTopColor: 'hsl(var(--primary) / 0.6)',
-              borderRightColor: 'hsl(var(--accent) / 0.4)'
+              borderTopColor: 'rgba(0, 153, 230, 0.6)',
+              borderRightColor: 'rgba(212, 175, 55, 0.4)'
             }}
             animate={{ rotate: 360 }}
             transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
@@ -148,19 +150,25 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
         >
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
             <motion.span 
-              className="bg-gradient-to-r from-primary via-accent to-chart-3 bg-clip-text text-transparent"
+              className="inline-block"
+              style={{
+                background: 'linear-gradient(135deg, #0099e6 0%, #00d4ff 50%, #d4af37 100%)',
+                backgroundSize: '200% 200%',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
               animate={{
                 backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
               }}
-              style={{ backgroundSize: '200% 200%' }}
               transition={{ duration: 4, repeat: Infinity }}
             >
               ASTRA
             </motion.span>
-            <span className="text-foreground ml-3">Villa</span>
+            <span className="text-white/90 ml-3">Villa</span>
           </h1>
           <motion.p 
-            className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-muted-foreground mt-2"
+            className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-white/50 mt-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
@@ -174,9 +182,9 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
           {[0, 1, 2, 3, 4].map((i) => (
             <motion.div
               key={i}
-              className="w-2.5 h-2.5 rounded-full"
+              className="w-2 h-2 rounded-full"
               style={{
-                background: i % 3 === 0 ? 'hsl(var(--primary))' : i % 3 === 1 ? 'hsl(var(--accent))' : 'hsl(var(--chart-3))'
+                background: i < 2 ? '#0099e6' : i < 4 ? '#00d4ff' : '#d4af37'
               }}
               animate={{
                 y: [0, -10, 0],
@@ -193,29 +201,32 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
           ))}
         </div>
 
-        {/* Progress bar */}
+        {/* Progress bar in glassmorphic card */}
         <motion.div 
-          className="w-64 md:w-80"
+          className="w-64 md:w-80 rounded-xl p-4"
+          style={{
+            background: 'rgba(255, 255, 255, 0.06)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+          }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          <div className="relative h-1.5 bg-muted/30 rounded-full overflow-hidden">
-            {/* Glow */}
+          <div className="relative h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255, 255, 255, 0.1)' }}>
             <motion.div
-              className="absolute inset-y-0 left-0 rounded-full blur-sm"
+              className="absolute inset-y-0 left-0 rounded-full"
               style={{
-                background: 'linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--chart-3)))',
+                background: 'linear-gradient(90deg, #0099e6, #00d4ff, #d4af37)',
+                filter: 'blur(3px)',
               }}
               initial={{ width: '0%' }}
               animate={{ width: `${Math.min(progress, 100)}%` }}
               transition={{ duration: 0.3 }}
             />
-            {/* Fill */}
             <motion.div
               className="absolute inset-y-0 left-0 rounded-full"
               style={{
-                background: 'linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--chart-3)), hsl(var(--primary)))',
+                background: 'linear-gradient(90deg, #0099e6, #00d4ff, #d4af37, #0099e6)',
                 backgroundSize: '300% 100%'
               }}
               initial={{ width: '0%' }}
@@ -228,7 +239,6 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
                 backgroundPosition: { duration: 2, repeat: Infinity, ease: 'linear' }
               }}
             />
-            {/* Shimmer */}
             <motion.div
               className="absolute inset-0"
               style={{
@@ -240,8 +250,8 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
             />
           </div>
           <div className="flex justify-between mt-2">
-            <span className="text-[10px] text-muted-foreground">{displayMessage}</span>
-            <span className="text-[10px] font-medium bg-gradient-to-r from-primary via-accent to-chart-3 bg-clip-text text-transparent">
+            <span className="text-[10px] text-white/50">{displayMessage}</span>
+            <span className="text-[10px] font-medium" style={{ color: '#00d4ff' }}>
               {Math.round(Math.min(progress, 100))}%
             </span>
           </div>
@@ -250,7 +260,7 @@ const CustomizableLoadingPage: React.FC<LoadingPageProps> = ({
         {/* Connection Status */}
         {propShowConnectionStatus && (
           <motion.div 
-            className="flex items-center gap-2 text-xs text-muted-foreground"
+            className="flex items-center gap-2 text-xs text-white/60"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
