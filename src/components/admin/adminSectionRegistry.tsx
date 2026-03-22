@@ -851,6 +851,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "planet-scale-storyboard":     () => <PlanetScaleEconomicStoryboard />,
   "agent-network-growth":        () => <AgentNetworkGrowth />,
   "deal-pipeline-crm":           () => <DealPipelineCRM />,
+  "city-liquidity-heatmap":      () => <CityLiquidityHeatmap />,
   "global-expansion-control":    () => <GlobalExpansionControl />,
   "ipo-readiness-metrics":       () => <IPOReadinessMetrics />,
   "ai-copilot":                  () => <AdminAICoPilot />,
