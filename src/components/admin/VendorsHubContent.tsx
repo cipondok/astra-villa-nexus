@@ -33,7 +33,7 @@ import VendorKYCManagement from './VendorKYCManagement';
 import VendorVerificationPanel from './VendorVerificationPanel';
 import ComprehensiveVendorManagement from './ComprehensiveVendorManagement';
 import VendorControlPanel from './VendorControlPanel';
-import UserDirectoryFixed from './UserDirectoryFixed';
+
 import VendorUserRoleManagement from './VendorUserRoleManagement';
 
 const VendorsHubContent = () => {
