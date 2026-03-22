@@ -315,6 +315,12 @@ html, body {
     --panel-glow-accent: 43 96% 50%;
     --panel-shadow: 0 1px 3px hsl(220 20% 12% / 0.06), 0 0 0 1px hsl(220 13% 86% / 0.8);
     --panel-shadow-hover: 0 4px 12px hsl(220 20% 12% / 0.08), 0 0 0 1px hsl(43 96% 50% / 0.15);
+
+    /* Sidebar (light mode) */
+    --sidebar-background: 220 16% 97%;
+    --sidebar-foreground: 220 25% 12%;
+    --sidebar-accent: 220 14% 94%;
+    --sidebar-accent-foreground: 220 25% 12%;
   }
 
   .dark {
@@ -423,6 +429,29 @@ html, body {
     --panel-glow-accent: 43 96% 56%;
     --panel-shadow: 0 1px 3px hsl(225 30% 4% / 0.5), 0 0 0 1px hsl(225 12% 19% / 0.9);
     --panel-shadow-hover: 0 4px 16px hsl(225 30% 4% / 0.6), 0 0 0 1px hsl(43 96% 56% / 0.2), 0 0 20px hsl(43 96% 56% / 0.04);
+
+    /* ═══ Enterprise Admin Design System Tokens ═══ */
+    --admin-bg-main: 222 50% 5%;
+    --admin-bg-sidebar: 220 42% 9%;
+    --admin-bg-card: 218 40% 11%;
+    --admin-bg-hover: 218 35% 13%;
+    --admin-bg-glass: 218 35% 13%;
+    --admin-border-subtle: 216 25% 17%;
+    --admin-border-strong: 214 22% 24%;
+    --admin-divider: 0 0% 100%;
+    --admin-text-primary: 213 30% 93%;
+    --admin-text-secondary: 213 18% 67%;
+    --admin-text-muted: 213 14% 49%;
+    --admin-accent-ai: 160 100% 44%;
+    --admin-accent-warning: 36 100% 56%;
+    --admin-accent-danger: 352 100% 67%;
+    --admin-accent-info: 213 100% 65%;
+
+    /* Sidebar specific */
+    --sidebar-background: var(--admin-bg-sidebar);
+    --sidebar-foreground: var(--admin-text-primary);
+    --sidebar-accent: var(--admin-bg-hover);
+    --sidebar-accent-foreground: var(--admin-text-primary);
   }
 
   * {

@@ -4,6 +4,8 @@ import AdminDashboardContent from "./AdminDashboardContent";
 import AdminHeader from "./AdminHeader";
 import { useNavigate } from "react-router-dom";
 import { DemoModeProvider } from "@/contexts/DemoModeContext";
+import AIFloatingWidget from "./AIFloatingWidget";
+import AIControlPanel from "./AIControlPanel";
 
 const DemoModeController = lazy(() => import("./demo/DemoModeController"));
 const DemoModeOverlay = lazy(() => import("./demo/DemoModeOverlay"));
@@ -21,6 +23,7 @@ const ModernEnhancedAdminDashboard = () => {
     return normalizeSection(params.get("section"));
   });
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [aiPanelOpen, setAiPanelOpen] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const handleSectionChange = useCallback((section: string) => {
@@ -80,6 +83,10 @@ const ModernEnhancedAdminDashboard = () => {
           </main>
         </div>
       </div>
+
+      {/* AI Intelligence Panels */}
+      <AIFloatingWidget />
+      <AIControlPanel isOpen={aiPanelOpen} onClose={() => setAiPanelOpen(false)} />
 
       {/* Demo Mode overlays */}
       <Suspense fallback={null}>
