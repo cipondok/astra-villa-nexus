@@ -1328,4 +1328,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "first-10k-listings-buyer-pipeline-warroom": { label: "10K Listings & Deal War-Room", category: "Strategy" },
   "100k-traffic-vendor-flywheel-heatmap": { label: "100K Traffic & Vendor Flywheel", category: "Strategy" },
   "1m-visitor-network-effect-investor-narrative": { label: "1M Visitor & Network Effects", category: "Strategy" },
+  "national-category-domination-profitability-preipo": { label: "National Domination & Pre-IPO", category: "Strategy" },
 };
