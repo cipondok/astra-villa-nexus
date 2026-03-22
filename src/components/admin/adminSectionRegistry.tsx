@@ -908,6 +908,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "series-b-institutional-category-leadership": () => <SeriesBInstitutionalCategoryLeadership />,
   "pre-unicorn-risk-developer-partnership": () => <PreUnicornRiskDeveloperPartnership />,
   "unicorn-liquidity-institutional-authority": () => <UnicornLiquidityInstitutionalAuthority />,
+  "decacorn-intelligence-os-legacy": () => <DecacornIntelligenceOSLegacy />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
