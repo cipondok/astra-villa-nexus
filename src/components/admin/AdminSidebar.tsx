@@ -3,7 +3,7 @@ import { navigationSections, sectionTitles, categories } from './navigationSecti
 import { 
   LayoutDashboard, Users, Building2, Wrench, Settings, Cog, Coins, Headphones,
   Store, BarChart3, HelpCircle, X, ArrowLeftRight, TrendingUp, FileSliders,
-  Sparkles, Server, ChevronLeft, ChevronRight, type LucideIcon 
+  Sparkles, Server, ChevronLeft, ChevronRight, Zap, type LucideIcon 
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
