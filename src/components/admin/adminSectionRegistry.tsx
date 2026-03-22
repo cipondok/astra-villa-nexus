@@ -1274,4 +1274,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "national-data-series-a": { label: "National Leadership & Series-A", category: "Strategy" },
   "pre-unicorn-global-brand-os": { label: "Pre-Unicorn Growth & Marketplace OS", category: "Strategy" },
   "unicorn-category-ai-control": { label: "Unicorn Valuation & AI Control", category: "Strategy" },
+  "decacorn-capital-intelligence": { label: "Decacorn Financial Engine & Intelligence", category: "Strategy" },
 };
