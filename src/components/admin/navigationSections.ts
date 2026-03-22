@@ -1065,6 +1065,34 @@ export const navigationSections = {
       badge: "🧭 Expand"
     },
     {
+      key: "realtime-buyer-demand-pulse",
+      label: "Buyer Demand Pulse",
+      icon: Activity,
+      description: "Live buyer activity ticker, hourly demand trends, district heatmap & surge alerts",
+      badge: "📡 Live"
+    },
+    {
+      key: "high-value-spotlight-promotion",
+      label: "Spotlight Promotion",
+      icon: Sparkles,
+      description: "Featured listing management, promotion ROI tracking & AI placement suggestions",
+      badge: "✨ Promote"
+    },
+    {
+      key: "agent-referral-growth-flywheel",
+      label: "Referral Flywheel",
+      icon: Share2,
+      description: "Referral network growth, bonus tiers, top referrer leaderboard & conversion tracking",
+      badge: "🔄 Growth"
+    },
+    {
+      key: "annual-market-leadership",
+      label: "Market Leadership",
+      icon: Crown,
+      description: "Yearly growth trajectory, district leadership ranking & competitive positioning index",
+      badge: "👑 Strategy"
+    },
+    {
       key: "ai-copilot",
       label: "AI Co-Pilot",
       icon: Brain,
