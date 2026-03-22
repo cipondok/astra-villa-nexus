@@ -1551,6 +1551,13 @@ export const navigationSections = {
       badge: "🌐 Series-A"
     },
     {
+      key: "series-b-institutional-category-leadership",
+      label: "Series-B & Category Leadership",
+      icon: Rocket,
+      description: "Hyper-growth expansion, institutional capital integration & category leadership narrative engine",
+      badge: "🚀 Series-B"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
