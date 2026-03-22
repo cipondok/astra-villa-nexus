@@ -286,6 +286,7 @@ export const InvestorGrowthIntelligence = lazyRetry(() => import("./InvestorGrow
 export const GlobalExpansionIntelligence = lazyRetry(() => import("./GlobalExpansionIntelligence"));
 export const FirstCityDominationCommand = lazyRetry(() => import("./FirstCityDominationCommand"));
 export const DealPriorityRevenueIntelligence = lazyRetry(() => import("./DealPriorityRevenueIntelligence"));
+export const BehavioralGrowthEngine = lazyRetry(() => import("./BehavioralGrowthEngine"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -1462,4 +1463,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-expansion-intelligence": { label: "Global Expansion & Autonomous Growth", category: "Operations" },
   "first-city-domination": { label: "First City Domination Command", category: "Operations" },
   "deal-priority-revenue": { label: "Deal Priority & Revenue Intelligence", category: "Operations" },
+  "behavioral-growth-engine": { label: "Behavioral Growth Engine", category: "Operations" },
 };
