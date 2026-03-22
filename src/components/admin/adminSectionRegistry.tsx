@@ -280,6 +280,7 @@ export const PlanetScaleEconomicStoryboard = lazyRetry(() => import("./PlanetSca
 export const AgentNetworkGrowth = lazyRetry(() => import("./AgentNetworkGrowth"));
 export const DealPipelineCRM = lazyRetry(() => import("./DealPipelineCRM"));
 export const CityLiquidityHeatmap = lazyRetry(() => import("./CityLiquidityHeatmap"));
+export const PremiumListingsMonetization = lazyRetry(() => import("./PremiumListingsMonetization"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -852,6 +853,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "agent-network-growth":        () => <AgentNetworkGrowth />,
   "deal-pipeline-crm":           () => <DealPipelineCRM />,
   "city-liquidity-heatmap":      () => <CityLiquidityHeatmap />,
+  "premium-listings-monetization": () => <PremiumListingsMonetization />,
   "global-expansion-control":    () => <GlobalExpansionControl />,
   "ipo-readiness-metrics":       () => <IPOReadinessMetrics />,
   "ai-copilot":                  () => <AdminAICoPilot />,
@@ -1449,4 +1451,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "agent-network-growth": { label: "Agent Network Growth", category: "Operations" },
   "deal-pipeline-crm": { label: "Deal Pipeline CRM", category: "Operations" },
   "city-liquidity-heatmap": { label: "City Liquidity Heatmap", category: "Operations" },
+  "premium-listings-monetization": { label: "Premium Listings Monetization", category: "Operations" },
 };
