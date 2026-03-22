@@ -371,6 +371,7 @@ export const FastDealCycleBlueprint = lazyRetry(() => import("./FastDealCycleBlu
 export const RepeatBuyerPipelineBlueprint = lazyRetry(() => import("./RepeatBuyerPipelineBlueprint"));
 export const BuyerNurtureListingBlueprint = lazyRetry(() => import("./BuyerNurtureListingBlueprint"));
 export const BuyerDecisionDistrictBlueprint = lazyRetry(() => import("./BuyerDecisionDistrictBlueprint"));
+export const SecondViewingLeaderboardBlueprint = lazyRetry(() => import("./SecondViewingLeaderboardBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
