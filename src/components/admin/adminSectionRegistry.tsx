@@ -1265,4 +1265,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "post-deal-loyalty-mega": { label: "Post-Deal Loyalty & Mega-Portfolio", category: "Strategy" },
   "referral-mega-project-city": { label: "Referral Flywheel & City Domination", category: "Strategy" },
   "regional-institutional-profitability": { label: "Regional Expansion & Profitability", category: "Strategy" },
+  "national-data-series-a": { label: "National Leadership & Series-A", category: "Strategy" },
 };
