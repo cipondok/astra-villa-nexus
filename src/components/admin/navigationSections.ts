@@ -16,6 +16,7 @@ import {
   AlertTriangle,
   User,
   Coins,
+  Wallet,
   Monitor,
   Globe,
   LayoutDashboard,
