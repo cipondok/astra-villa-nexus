@@ -850,6 +850,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "decacorn-capital-intelligence": () => <DecacornCapitalIntelligenceBlueprint />,
   "global-infra-ecosystem-founder": () => <GlobalInfraEcosystemFounderBlueprint />,
   "daily-deal-weekly-war-sprint": () => <DailyDealWeeklyWarCitySprintBlueprint />,
+  "first-10k-revenue-followup": () => <First10KRevenueAgentFollowUpBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
