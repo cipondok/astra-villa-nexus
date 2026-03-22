@@ -723,6 +723,10 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "planetary-economic-impact": () => <PlanetaryEconomicImpact />,
   "founder-legacy-civilization": () => <FounderLegacyCivilization />,
   "public-market-investor-story": () => <PublicMarketInvestorStory />,
+  "database-architecture": () => <DatabaseArchitecture />,
+  "api-endpoint-structure": () => <APIEndpointStructure />,
+  "frontend-architecture": () => <FrontendArchitecture />,
+  "deployment-scaling": () => <DeploymentScaling />,
 
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
