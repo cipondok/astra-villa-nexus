@@ -77,7 +77,7 @@ const Auth = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Check progressive lockout
+    // Server-side lockout check first
     if (isLocked) {
       toast({
         title: "Account temporarily locked",
@@ -90,11 +90,25 @@ const Auth = () => {
     setLoading(true);
 
     try {
+      // Check server lockout before attempting login
+      const lockCheck = await checkServerLockout(loginEmail);
+      if (lockCheck.locked) {
+        const mins = Math.ceil(lockCheck.remainingSeconds / 60);
+        toast({
+          title: "Account temporarily locked",
+          description: `Too many failed attempts. Please wait ${mins} minute${mins > 1 ? 's' : ''}.`,
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
       const { success, error } = await signIn(loginEmail, loginPassword);
       
       if (success) {
         recordSuccess();
-        logLoginActivity(loginEmail, true, user?.id);
+        // Record success on server
+        await recordAttemptServer(loginEmail, true, user?.id);
         
         if (rememberMe) {
           localStorage.setItem('rememberEmail', loginEmail);
@@ -108,21 +122,20 @@ const Auth = () => {
         });
         navigate("/");
       } else {
-        const result = recordFailedAttempt();
         const failureReason = error?.message || "Invalid credentials";
-        logLoginActivity(loginEmail, false, undefined, failureReason);
+        // Record failure on server (handles lockout creation)
+        const result = await recordAttemptServer(loginEmail, false, undefined, failureReason);
 
-        if (result.isLocked) {
-          const mins = Math.ceil(result.lockDurationMs / 60000);
+        if (result.locked) {
           toast({
             title: "Account temporarily locked",
-            description: `Too many failed attempts. Please wait ${mins} minute${mins > 1 ? 's' : ''}.`,
+            description: `Too many failed attempts. Please wait ${result.lockDurationMin} minute${(result.lockDurationMin || 0) > 1 ? 's' : ''}.`,
             variant: "destructive",
           });
         } else {
           toast({
             title: "Login failed",
-            description: `${failureReason}. ${result.attemptsUntilLock} attempt${result.attemptsUntilLock !== 1 ? 's' : ''} remaining.`,
+            description: `${failureReason}. ${result.attemptsUntilLock ?? '?'} attempt${(result.attemptsUntilLock ?? 0) !== 1 ? 's' : ''} remaining.`,
             variant: "destructive",
           });
         }
