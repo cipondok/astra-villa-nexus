@@ -94,6 +94,7 @@ export const FounderDailyPriorityCommand = lazyRetry(() => import("./FounderDail
 export const AgentTerritoryCoverageMap = lazyRetry(() => import("./AgentTerritoryCoverageMap"));
 export const BuyerViewingFeedbackPanel = lazyRetry(() => import("./BuyerViewingFeedbackPanel"));
 export const MonthlyLiquidityDominancePanel = lazyRetry(() => import("./MonthlyLiquidityDominancePanel"));
+export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
 export const CaptchaSettings = lazyRetry(() => import("./CaptchaSettings"));
