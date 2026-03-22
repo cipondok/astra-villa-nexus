@@ -17,6 +17,7 @@ import {
   User,
   Coins,
   Wallet,
+  ThumbsUp,
   Monitor,
   Globe,
   LayoutDashboard,
