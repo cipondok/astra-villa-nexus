@@ -10,12 +10,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Eye, EyeOff, Mail, KeyRound } from "lucide-react";
+import { Eye, EyeOff, Mail, KeyRound, ShieldAlert } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { EmailValidationIndicator } from "@/components/auth/EmailValidationIndicator";
 import { PasswordStrengthBar } from "@/components/auth/PasswordStrengthBar";
 import SignupPromotionBanner from "@/components/auth/SignupPromotionBanner";
+import { useLoginSecurity } from "@/hooks/useLoginSecurity";
 import {
   Dialog,
   DialogContent,
