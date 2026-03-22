@@ -1475,4 +1475,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "founder-ai-copilot-global-intel": { label: "Founder AI Copilot & Global Intelligence", category: "Operations" },
   "planetary-intelligence-civilization-os": { label: "Planetary Intelligence & Civilization OS", category: "Operations" },
   "first-traction-execution": { label: "First Traction Execution Dashboard", category: "Operations" },
+  "deal-ops-closing": { label: "Deal Operations & Closing Management", category: "Operations" },
 };
