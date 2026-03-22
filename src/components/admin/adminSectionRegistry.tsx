@@ -380,6 +380,7 @@ export const NationalDataSeriesABlueprint = lazyRetry(() => import("./NationalDa
 export const PreUnicornGlobalBrandMarketplaceOSBlueprint = lazyRetry(() => import("./PreUnicornGlobalBrandMarketplaceOSBlueprint"));
 export const UnicornCategoryAIControlBlueprint = lazyRetry(() => import("./UnicornCategoryAIControlBlueprint"));
 export const DecacornCapitalIntelligenceBlueprint = lazyRetry(() => import("./DecacornCapitalIntelligenceBlueprint"));
+export const GlobalInfraEcosystemFounderBlueprint = lazyRetry(() => import("./GlobalInfraEcosystemFounderBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
