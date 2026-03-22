@@ -265,6 +265,10 @@ export const CivilizationMarketGrid = lazyRetry(() => import("./CivilizationMark
 export const AutonomousTransactionEngine = lazyRetry(() => import("./AutonomousTransactionEngine"));
 export const FounderLegacyNarrative = lazyRetry(() => import("./FounderLegacyNarrative"));
 export const CenturyEvolutionSimulator = lazyRetry(() => import("./CenturyEvolutionSimulator"));
+export const PlanetaryEconomicCoordination = lazyRetry(() => import("./PlanetaryEconomicCoordination"));
+export const AutonomousUrbanGrowth = lazyRetry(() => import("./AutonomousUrbanGrowth"));
+export const FounderGlobalInfluence = lazyRetry(() => import("./FounderGlobalInfluence"));
+export const PostMarketplaceEvolution = lazyRetry(() => import("./PostMarketplaceEvolution"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -822,6 +826,10 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "autonomous-txn-engine":       () => <AutonomousTransactionEngine />,
   "founder-legacy-narrative":    () => <FounderLegacyNarrative />,
   "century-evolution-sim":       () => <CenturyEvolutionSimulator />,
+  "planetary-economic-coord":     () => <PlanetaryEconomicCoordination />,
+  "autonomous-urban-growth":     () => <AutonomousUrbanGrowth />,
+  "founder-global-influence":    () => <FounderGlobalInfluence />,
+  "post-marketplace-evolution":  () => <PostMarketplaceEvolution />,
   "global-expansion-control":    () => <GlobalExpansionControl />,
   "ipo-readiness-metrics":       () => <IPOReadinessMetrics />,
   "ai-copilot":                  () => <AdminAICoPilot />,
@@ -1404,4 +1412,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "autonomous-txn-engine": { label: "Autonomous Transaction Engine", category: "AI Intelligence" },
   "founder-legacy-narrative": { label: "Founder Legacy Narrative", category: "AI Intelligence" },
   "century-evolution-sim": { label: "100-Year Evolution Simulator", category: "AI Intelligence" },
+  "planetary-economic-coord": { label: "Planetary Economic Coordination", category: "AI Intelligence" },
+  "autonomous-urban-growth": { label: "Autonomous Urban Growth Intelligence", category: "AI Intelligence" },
+  "founder-global-influence": { label: "Founder Global Influence Narrative", category: "AI Intelligence" },
+  "post-marketplace-evolution": { label: "Post-Marketplace Evolution", category: "AI Intelligence" },
 };
