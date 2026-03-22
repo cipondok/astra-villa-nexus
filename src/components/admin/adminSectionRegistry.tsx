@@ -1457,4 +1457,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "premium-listings-monetization": { label: "Premium Listings Monetization", category: "Operations" },
   "founder-mobile-warroom": { label: "Founder Mobile War-Room", category: "Operations" },
   "investor-growth-intelligence": { label: "Investor Perception & Growth Intelligence", category: "Operations" },
+  "global-expansion-intelligence": { label: "Global Expansion & Autonomous Growth", category: "Operations" },
 };
