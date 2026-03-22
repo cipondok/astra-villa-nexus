@@ -17,6 +17,7 @@ import {
   User,
   Coins,
   Wallet,
+  ThumbsUp,
   Monitor,
   Globe,
   LayoutDashboard,
@@ -1232,6 +1233,13 @@ export const navigationSections = {
       icon: Wallet,
       description: "Financing funnel, premium listing upsell psychology & local property events",
       badge: "💰 Revenue"
+    },
+    {
+      key: "buyer-offer-confidence",
+      label: "Buyer Offer Confidence & Price Intel",
+      icon: ThumbsUp,
+      description: "Offer confidence builders, vendor portfolio expansion & district price intelligence",
+      badge: "👍 Confidence"
     },
     {
       key: "vendor-intelligence-engine",
