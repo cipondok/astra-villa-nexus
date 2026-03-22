@@ -1404,7 +1404,13 @@ export const navigationSections = {
       badge: "🚀 $500K"
     },
     {
-      key: "vendor-intelligence-engine",
+      key: "revenue-1m-national-ipo",
+      label: "$1M National Domination & IPO Readiness",
+      icon: Crown,
+      description: "$1M monthly revenue engine, institutional capital control & pre-IPO metrics dashboard",
+      badge: "👑 $1M"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
