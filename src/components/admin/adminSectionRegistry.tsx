@@ -1646,4 +1646,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "liquidity-exit-strategy": { label: "Liquidity Exit Strategy Planner", category: "Operations" },
   "dev-opportunity-analyzer": { label: "Development Opportunity Analyzer", category: "Operations" },
   "global-leadership-narrative": { label: "Global Leadership Narrative", category: "Operations" },
+  "global-liquidity-coordination": { label: "Global Liquidity Coordination", category: "Operations" },
+  "planetary-economic-impact": { label: "Planetary Economic Impact", category: "Operations" },
+  "founder-legacy-civilization": { label: "Founder Legacy Civilization", category: "Operations" },
+  "public-market-investor-story": { label: "Public Market Investor Story", category: "Operations" },
 };
