@@ -1121,10 +1121,7 @@ function App() {
                             <Sonner />
                             <CookieSystem />
                             <Suspense fallback={null}>
-                              <ResponsiveAIChatWidget 
-                                showScrollButton={true}
-                                onScrollToTop={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                              />
+                              <ChatWidgetGuard />
                               
                               <WhatsAppInquiryButton variant="floating" defaultType="general" />
                               
