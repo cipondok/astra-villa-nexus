@@ -89,7 +89,7 @@ export const InvestorDemoMode = ({ isActive, onClose }: InvestorDemoModeProps) =
   useEffect(() => {
     if (!isActive) { setScene(0); return; }
     const timer = setInterval(() => {
-      setScene(prev => (prev < 3 ? prev + 1 : prev));
+      setScene(prev => (prev < 4 ? prev + 1 : prev));
     }, 6000);
     return () => clearInterval(timer);
   }, [isActive]);
