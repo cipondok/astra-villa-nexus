@@ -682,6 +682,12 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "secure-payment-escrow": () => <SecurePaymentEscrowFlow />,
   "closing-celebration": () => <ClosingCelebrationScreen />,
 
+  // Post-Closing Ownership & Investment Intelligence
+  "post-closing-ownership": () => <PostClosingOwnershipDashboard />,
+  "investor-portfolio-tracking": () => <InvestorPortfolioTracking />,
+  "rental-yield-monitoring": () => <RentalYieldMonitoring />,
+  "smart-property-recommendations": () => <SmartPropertyRecommendationEngine />,
+
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
   "social-media-settings": () => <SocialMediaSettings />,
