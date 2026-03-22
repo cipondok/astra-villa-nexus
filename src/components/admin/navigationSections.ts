@@ -120,7 +120,8 @@ import {
   Siren,
   ClipboardCheck,
   Swords,
-  Hourglass
+  Hourglass,
+  Timer
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -1282,6 +1283,13 @@ export const navigationSections = {
       icon: Heart,
       description: "Long-term buyer engagement, listing optimization & price surge campaign activation",
       badge: "🌱 Lifecycle"
+    },
+    {
+      key: "buyer-decision-district",
+      label: "Decision Deadline & District Expansion",
+      icon: Timer,
+      description: "Buyer urgency acceleration, vendor multi-district scaling & high-demand category spotlight campaigns",
+      badge: "⏰ Urgency"
     },
     {
       key: "vendor-intelligence-engine",

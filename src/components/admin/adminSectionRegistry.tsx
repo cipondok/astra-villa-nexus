@@ -370,6 +370,7 @@ export const OfferAcceptanceBlueprint = lazyRetry(() => import("./OfferAcceptanc
 export const FastDealCycleBlueprint = lazyRetry(() => import("./FastDealCycleBlueprint"));
 export const RepeatBuyerPipelineBlueprint = lazyRetry(() => import("./RepeatBuyerPipelineBlueprint"));
 export const BuyerNurtureListingBlueprint = lazyRetry(() => import("./BuyerNurtureListingBlueprint"));
+export const BuyerDecisionDistrictBlueprint = lazyRetry(() => import("./BuyerDecisionDistrictBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -825,6 +826,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "fast-deal-cycle-liquidity": () => <FastDealCycleBlueprint />,
   "repeat-buyer-pipeline": () => <RepeatBuyerPipelineBlueprint />,
   "buyer-nurture-listing": () => <BuyerNurtureListingBlueprint />,
+  "buyer-decision-district": () => <BuyerDecisionDistrictBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1245,4 +1247,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "fast-deal-cycle-liquidity": { label: "Fast Deal Cycle & Liquidity Score", category: "Strategy" },
   "repeat-buyer-pipeline": { label: "Repeat Buyer & Agent Pipeline Forecast", category: "Strategy" },
   "buyer-nurture-listing": { label: "Buyer Nurture & Listing Performance", category: "Strategy" },
+  "buyer-decision-district": { label: "Buyer Decision Deadline & District Expansion", category: "Strategy" },
 };
