@@ -1,6 +1,70 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
+import { createClient } from "npm:@supabase/supabase-js@2";
+
+// ─── Geo-IP lookup via Cloudflare headers + fallback API ────────────
+interface GeoData {
+  country: string | null;
+  city: string | null;
+  continent: string | null;
+}
+
+function getGeoFromHeaders(req: Request): GeoData {
+  return {
+    country: req.headers.get('cf-ipcountry') || req.headers.get('x-vercel-ip-country') || null,
+    city: req.headers.get('x-vercel-ip-city') || null,
+    continent: req.headers.get('x-vercel-ip-continent') || null,
+  };
+}
+
+async function resolveGeo(req: Request, ip: string): Promise<GeoData> {
+  const hdr = getGeoFromHeaders(req);
+  if (hdr.country) return hdr;
+
+  // Fallback: free IP-API (no key needed, 45 req/min)
+  try {
+    const resp = await fetch(`http://ip-api.com/json/${ip}?fields=country,city,countryCode,continent`);
+    if (resp.ok) {
+      const d = await resp.json();
+      return {
+        country: d.countryCode || d.country || null,
+        city: d.city || null,
+        continent: d.continent || null,
+      };
+    }
+  } catch { /* non-blocking */ }
+  return { country: null, city: null, continent: null };
+}
+
+// ─── Continent mapping for impossible travel ────────────────────────
+const CONTINENT_MAP: Record<string, string> = {
+  AF: 'Africa', AN: 'Antarctica', AS: 'Asia', EU: 'Europe',
+  NA: 'North America', OC: 'Oceania', SA: 'South America',
+};
+
+const HIGH_RISK_COUNTRIES = new Set(['KP', 'IR', 'SY', 'CU', 'SD']);
+
+// ─── Security alert email helper ────────────────────────────────────
+async function sendSecurityAlertEmail(supabase: any, email: string, alertType: string, details: Record<string, any>) {
+  try {
+    await supabase.functions.invoke('send-transactional-email', {
+      body: {
+        templateName: 'security-alert',
+        recipientEmail: email,
+        idempotencyKey: `security-alert-${alertType}-${email}-${Date.now()}`,
+        templateData: {
+          alert_type: alertType,
+          login_country: details.country || 'Unknown',
+          login_city: details.city || 'Unknown',
+          device_info: details.device || 'Unknown device',
+          ip_address: details.ip || 'Unknown',
+          timestamp: new Date().toISOString(),
+        },
+      },
+    });
+  } catch (e) {
+    log('Security alert email failed (non-blocking)', (e as Error).message);
+  }
+}
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -89,7 +153,9 @@ async function checkLockout(params: Record<string, any>, supabase: any) {
   };
 }
 
-// ─── record_login_attempt (NO AUTH REQUIRED) ────────────────────────
+
+
+  // ─── record_login_attempt with real geo-IP ──────────────────────────
 async function recordLoginAttempt(params: Record<string, any>, supabase: any, req: Request) {
   const { email, success, failure_reason, device_fingerprint, user_id } = params;
   if (!email) throw new Error('email required');
@@ -98,26 +164,50 @@ async function recordLoginAttempt(params: Record<string, any>, supabase: any, re
   const ua = req.headers.get('user-agent') || 'unknown';
   const emailLower = email.toLowerCase();
 
-  // Geo lookup placeholder — use IP-based estimation
-  let country = null;
-  let city = null;
+  // Real geo-IP resolution
+  const geo = await resolveGeo(req, ip);
+  const country = geo.country;
+  const city = geo.city;
+  const continent = geo.continent;
   let geoAnomaly = false;
+  let impossibleTravel = false;
 
   // Check for impossible travel: different country within 2 hours
-  if (success) {
-    const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
-    const { data: recentLogins } = await supabase
-      .from('server_login_attempts')
-      .select('country, ip_address, created_at')
-      .eq('email', emailLower)
-      .eq('success', true)
-      .gte('created_at', twoHoursAgo)
-      .order('created_at', { ascending: false })
-      .limit(3);
+  const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
+  const { data: recentLogins } = await supabase
+    .from('server_login_attempts')
+    .select('country, continent_code, ip_address, created_at')
+    .eq('email', emailLower)
+    .eq('success', true)
+    .gte('created_at', twoHoursAgo)
+    .order('created_at', { ascending: false })
+    .limit(3);
 
-    if (recentLogins?.length && recentLogins[0].ip_address !== ip && recentLogins[0].country && country && recentLogins[0].country !== country) {
+  if (recentLogins?.length && country) {
+    const lastLogin = recentLogins[0];
+    if (lastLogin.country && lastLogin.country !== country) {
       geoAnomaly = true;
+      // Continent jump = impossible travel
+      if (lastLogin.continent_code && continent && lastLogin.continent_code !== continent) {
+        impossibleTravel = true;
+      }
     }
+  }
+
+  // High-risk country flag
+  const isHighRiskCountry = country ? HIGH_RISK_COUNTRIES.has(country) : false;
+
+  // Check if device is trusted
+  let isTrustedDevice = false;
+  if (user_id && device_fingerprint) {
+    const { data: trusted } = await supabase
+      .from('trusted_devices')
+      .select('id')
+      .eq('user_id', user_id)
+      .eq('device_fingerprint', device_fingerprint)
+      .eq('is_active', true)
+      .maybeSingle();
+    isTrustedDevice = !!trusted;
   }
 
   // Calculate risk score
@@ -131,8 +221,11 @@ async function recordLoginAttempt(params: Record<string, any>, supabase: any, re
 
   const riskScore = Math.min(100,
     (recentFailures || 0) * 15 +
-    (geoAnomaly ? 40 : 0) +
-    (!success ? 10 : 0)
+    (geoAnomaly ? 30 : 0) +
+    (impossibleTravel ? 25 : 0) +
+    (isHighRiskCountry ? 20 : 0) +
+    (!success ? 10 : 0) +
+    (!isTrustedDevice && user_id ? 5 : 0)
   );
 
   // Insert attempt record
@@ -142,19 +235,43 @@ async function recordLoginAttempt(params: Record<string, any>, supabase: any, re
     device_fingerprint: device_fingerprint || null,
     country,
     city,
+    continent_code: continent,
     user_agent: ua,
     success: !!success,
     failure_reason: failure_reason || null,
     risk_score: riskScore,
-    is_suspicious: riskScore >= 60,
+    is_suspicious: riskScore >= 50,
     geo_anomaly: geoAnomaly,
   });
+
+  // Security alerts for high-risk events
+  if (geoAnomaly || impossibleTravel || isHighRiskCountry) {
+    const alertType = impossibleTravel ? 'impossible_travel' : geoAnomaly ? 'new_country_login' : 'high_risk_country';
+    const severity = impossibleTravel ? 'critical' : geoAnomaly ? 'high' : 'medium';
+
+    await supabase.from('security_alerts').insert({
+      user_id: user_id || null,
+      email: emailLower,
+      alert_type: alertType,
+      severity,
+      description: impossibleTravel
+        ? `Login from ${country}/${city} detected — continent jump from previous login`
+        : geoAnomaly
+        ? `Login from new country: ${country}/${city}`
+        : `Login from high-risk country: ${country}`,
+      metadata: { ip, country, city, continent, device: ua, previous_country: recentLogins?.[0]?.country },
+    });
+
+    // Send security alert email
+    if (emailLower) {
+      sendSecurityAlertEmail(supabase, emailLower, alertType, { country, city, device: ua, ip });
+    }
+  }
 
   // If failed, check if we need to create/escalate lockout
   if (!success) {
     const totalFailures = (recentFailures || 0) + 1;
 
-    // Find appropriate lockout tier
     let lockTier = null;
     for (let i = LOCKOUT_TIERS.length - 1; i >= 0; i--) {
       if (totalFailures >= LOCKOUT_TIERS[i].threshold) {
@@ -164,7 +281,6 @@ async function recordLoginAttempt(params: Record<string, any>, supabase: any, re
     }
 
     if (lockTier) {
-      // Deactivate previous lockouts
       await supabase
         .from('server_lockouts')
         .update({ is_active: false })
@@ -181,7 +297,20 @@ async function recordLoginAttempt(params: Record<string, any>, supabase: any, re
         is_active: true,
       });
 
-      // Log security event if user exists
+      // Security alert for lockout tier >= 2
+      if (lockTier.tier >= 2) {
+        await supabase.from('security_alerts').insert({
+          user_id: user_id || null,
+          email: emailLower,
+          alert_type: 'account_lockout_escalated',
+          severity: lockTier.tier >= 3 ? 'critical' : 'high',
+          description: `Account locked tier ${lockTier.tier}: ${totalFailures} failed attempts, locked for ${lockTier.durationMin} min`,
+          metadata: { ip, tier: lockTier.tier, total_failures: totalFailures, duration_min: lockTier.durationMin },
+        });
+
+        sendSecurityAlertEmail(supabase, emailLower, 'account_lockout', { country, city, device: ua, ip });
+      }
+
       if (user_id) {
         await supabase.from('user_security_events').insert({
           user_id,
@@ -219,17 +348,28 @@ async function recordLoginAttempt(params: Record<string, any>, supabase: any, re
     .update({ is_active: false })
     .eq('email', emailLower);
 
+  // Register/update trusted device on successful login
+  if (user_id && device_fingerprint) {
+    await supabase.from('trusted_devices').upsert({
+      user_id,
+      device_fingerprint,
+      device_name: ua.substring(0, 100),
+      last_used_at: new Date().toISOString(),
+      is_active: true,
+    }, { onConflict: 'user_id,device_fingerprint' }).catch(() => {});
+  }
+
   // Log successful login security event
   if (user_id) {
     await supabase.from('user_security_events').insert({
       user_id,
-      event_type: 'login_success',
-      description: 'Successful login',
+      event_type: geoAnomaly ? 'login_new_country' : 'login_success',
+      description: geoAnomaly ? `Login from new location: ${country}/${city}` : 'Successful login',
       ip_address: ip,
       country,
       city,
       device_info: ua,
-      risk_level: geoAnomaly ? 'medium' : 'low',
+      risk_level: impossibleTravel ? 'critical' : geoAnomaly ? 'high' : isHighRiskCountry ? 'medium' : 'low',
     });
   }
 
@@ -238,66 +378,12 @@ async function recordLoginAttempt(params: Record<string, any>, supabase: any, re
     locked: false,
     risk_score: riskScore,
     geo_anomaly: geoAnomaly,
+    impossible_travel: impossibleTravel,
+    is_trusted_device: isTrustedDevice,
+    require_otp: (geoAnomaly || impossibleTravel || isHighRiskCountry) && !isTrustedDevice,
+    country,
+    city,
   };
-}
-
-// ─── get_user_sessions ──────────────────────────────────────────────
-async function getUserSessions(supabase: any, userId: string) {
-  const { data, error } = await supabase
-    .from('user_sessions')
-    .select('id, device_name, device_type, browser, os, last_activity_at, is_current, created_at, device_fingerprint')
-    .eq('user_id', userId)
-    .order('last_activity_at', { ascending: false })
-    .limit(20);
-
-  if (error) throw error;
-  return { success: true, sessions: data || [] };
-}
-
-// ─── revoke_session ─────────────────────────────────────────────────
-async function revokeSession(params: Record<string, any>, supabase: any, userId: string, req: Request) {
-  const { session_id } = params;
-  if (!session_id) throw new Error('session_id required');
-
-  const { error } = await supabase
-    .from('user_sessions')
-    .delete()
-    .eq('id', session_id)
-    .eq('user_id', userId);
-
-  if (error) throw error;
-
-  await supabase.from('user_security_events').insert({
-    user_id: userId,
-    event_type: 'session_revoked',
-    description: 'Manually revoked a device session',
-    ip_address: clientIp(req),
-    risk_level: 'low',
-  });
-
-  return { success: true, message: 'Session revoked' };
-}
-
-// ─── revoke_all_sessions ────────────────────────────────────────────
-async function revokeAllSessions(supabase: any, userId: string, currentFingerprint: string, req: Request) {
-  // Delete all sessions except current
-  const { error } = await supabase
-    .from('user_sessions')
-    .delete()
-    .eq('user_id', userId)
-    .neq('device_fingerprint', currentFingerprint || '___none___');
-
-  if (error) throw error;
-
-  await supabase.from('user_security_events').insert({
-    user_id: userId,
-    event_type: 'all_sessions_revoked',
-    description: 'Revoked all other device sessions',
-    ip_address: clientIp(req),
-    risk_level: 'medium',
-  });
-
-  return { success: true, message: 'All other sessions revoked' };
 }
 
 // ─── get_security_events ────────────────────────────────────────────

@@ -864,7 +864,9 @@ const AppContent = () => {
                 <Route path="/realtime-architecture" element={<RealtimeArchitecturePage />} />
                 <Route path="/cron-schedule" element={<CronSchedulePage />} />
                 <Route path="/security-hardening" element={<SecurityHardeningPage />} />
-                <Route path="/security-activity" element={<ProtectedRoute><SecurityActivityPage /></ProtectedRoute>} />
+                <Route path="/security-activity" element={<ProtectedRoute />}>
+                  <Route index element={<SecurityActivityPage />} />
+                </Route>
                 <Route path="/cloud-infrastructure" element={<CloudInfrastructurePage />} />
                 <Route path="/disaster-recovery" element={<DisasterRecoveryPage />} />
                 <Route path="/behavior-analytics" element={<BehaviorAnalyticsPage />} />
