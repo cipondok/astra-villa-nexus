@@ -33,7 +33,7 @@ import VendorKYCManagement from './VendorKYCManagement';
 import VendorVerificationPanel from './VendorVerificationPanel';
 import ComprehensiveVendorManagement from './ComprehensiveVendorManagement';
 import VendorControlPanel from './VendorControlPanel';
-import UserDirectoryFixed from './UserDirectoryFixed';
+
 import VendorUserRoleManagement from './VendorUserRoleManagement';
 
 const VendorsHubContent = () => {
@@ -179,18 +179,12 @@ const VendorsHubContent = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
-        <TabsList className="grid w-full grid-cols-11 h-8 p-0.5 bg-muted/50">
+        <TabsList className="grid w-full grid-cols-9 h-8 p-0.5 bg-muted/50">
           <TabsTrigger value="overview" className="text-[9px] h-7 data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
             Overview
           </TabsTrigger>
-          <TabsTrigger value="user-directory" className="text-[9px] h-7 data-[state=active]:bg-chart-2/20 data-[state=active]:text-chart-2">
-            Directory
-          </TabsTrigger>
           <TabsTrigger value="vendors" className="text-[9px] h-7 data-[state=active]:bg-chart-1/20 data-[state=active]:text-chart-1">
             Vendors
-          </TabsTrigger>
-          <TabsTrigger value="user-roles" className="text-[9px] h-7 data-[state=active]:bg-chart-5/20 data-[state=active]:text-chart-5">
-            Roles
           </TabsTrigger>
           <TabsTrigger value="applications" className="text-[9px] h-7 data-[state=active]:bg-chart-3/20 data-[state=active]:text-chart-3">
             Apps
@@ -262,16 +256,9 @@ const VendorsHubContent = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="user-directory" className="mt-3">
-          <UserDirectoryFixed />
-        </TabsContent>
 
         <TabsContent value="vendors" className="mt-3">
           <ComprehensiveVendorManagement />
-        </TabsContent>
-
-        <TabsContent value="user-roles" className="mt-3">
-          <VendorUserRoleManagement />
         </TabsContent>
 
         <TabsContent value="applications" className="mt-3">
