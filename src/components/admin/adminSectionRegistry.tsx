@@ -699,6 +699,10 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "insurance-comparison": () => <PropertyInsuranceComparison />,
   "resale-opportunity": () => <ResaleOpportunityDashboard />,
   "wealth-transfer-planner": () => <FamilyWealthTransferPlanner />,
+  "global-diversification-strategy": () => <GlobalDiversificationStrategy />,
+  "economic-trend-forecasting": () => <EconomicTrendForecasting />,
+  "smart-financing-optimization": () => <SmartFinancingOptimization />,
+  "institutional-syndication": () => <InstitutionalSyndication />,
 
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
