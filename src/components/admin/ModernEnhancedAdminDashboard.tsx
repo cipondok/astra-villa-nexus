@@ -26,6 +26,7 @@ const ModernEnhancedAdminDashboard = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [prioritySections, setPrioritySections] = useState<string[]>([]);
   const [investorMode, setInvestorMode] = useState(false);
+  const [narrativeMode, setNarrativeMode] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   // Expose investor demo trigger globally for header
