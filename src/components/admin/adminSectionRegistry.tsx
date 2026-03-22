@@ -864,6 +864,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "revenue-500k-national-board": () => <Revenue500KNationalLiquidityBoardBlueprint />,
   "revenue-1m-national-ipo": () => <Revenue1MNationalIPOBlueprint />,
   "global-leadership-valuation-grid": () => <GlobalLeadershipValuationLiquidityGridBlueprint />,
+  "global-ipo-alliance-intelligence": () => <GlobalIPOAllianceIntelligenceBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
