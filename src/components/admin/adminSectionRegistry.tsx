@@ -117,6 +117,10 @@ export const BuyerViewingBookingFlow = lazyRetry(() => import("./BuyerViewingBoo
 export const SellerPerformanceInsight = lazyRetry(() => import("./SellerPerformanceInsight"));
 export const AgentMobileHomeScreen = lazyRetry(() => import("./AgentMobileHomeScreen"));
 export const DealOfferSubmissionFlow = lazyRetry(() => import("./DealOfferSubmissionFlow"));
+export const NegotiationChatInterface = lazyRetry(() => import("./NegotiationChatInterface"));
+export const DealProgressTimeline = lazyRetry(() => import("./DealProgressTimeline"));
+export const SecurePaymentEscrowFlow = lazyRetry(() => import("./SecurePaymentEscrowFlow"));
+export const ClosingCelebrationScreen = lazyRetry(() => import("./ClosingCelebrationScreen"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
