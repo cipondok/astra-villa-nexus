@@ -4,8 +4,7 @@ import AdminDashboardContent from "./AdminDashboardContent";
 import AdminHeader from "./AdminHeader";
 import { useNavigate } from "react-router-dom";
 import { DemoModeProvider } from "@/contexts/DemoModeContext";
-import AIFloatingWidget from "./AIFloatingWidget";
-import AIControlPanel from "./AIControlPanel";
+import AIIntelligenceSystem from "./AIIntelligenceSystem";
 
 const DemoModeController = lazy(() => import("./demo/DemoModeController"));
 const DemoModeOverlay = lazy(() => import("./demo/DemoModeOverlay"));
@@ -23,7 +22,7 @@ const ModernEnhancedAdminDashboard = () => {
     return normalizeSection(params.get("section"));
   });
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [aiPanelOpen, setAiPanelOpen] = useState(false);
+  const [prioritySections, setPrioritySections] = useState<string[]>([]);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const handleSectionChange = useCallback((section: string) => {
@@ -54,6 +53,10 @@ const ModernEnhancedAdminDashboard = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [activeSection]);
 
+  const handlePriorityChange = useCallback((priorities: string[]) => {
+    setPrioritySections(priorities);
+  }, []);
+
   return (
     <DemoModeProvider>
       <div className="min-h-screen flex w-full bg-background">
@@ -72,21 +75,18 @@ const ModernEnhancedAdminDashboard = () => {
             onSectionChange={handleSectionChange}
           />
 
-          <main
-            ref={contentRef}
-            className="flex-1"
-          >
+          <main ref={contentRef} className="flex-1">
             <AdminDashboardContent
               activeSection={activeSection}
               onSectionChange={handleSectionChange}
+              prioritySections={prioritySections}
             />
           </main>
         </div>
       </div>
 
-      {/* AI Intelligence Panels */}
-      <AIFloatingWidget />
-      <AIControlPanel isOpen={aiPanelOpen} onClose={() => setAiPanelOpen(false)} />
+      {/* Unified AI Intelligence System */}
+      <AIIntelligenceSystem onPriorityChange={handlePriorityChange} />
 
       {/* Demo Mode overlays */}
       <Suspense fallback={null}>
