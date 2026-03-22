@@ -1142,6 +1142,34 @@ export const navigationSections = {
       badge: "🏗️ Infra"
     },
     {
+      key: "user-onboarding-flow",
+      label: "User Onboarding Flow",
+      icon: Users,
+      description: "High-conversion onboarding — role selection, profile setup, preference capture & completion tracking",
+      badge: "👤 UX"
+    },
+    {
+      key: "listing-submission-ux",
+      label: "Listing Submission UX",
+      icon: Upload,
+      description: "Optimized listing upload — quality scoring, photo uploads, price guidance & premium boost prompts",
+      badge: "📋 UX"
+    },
+    {
+      key: "buyer-search-conversion",
+      label: "Buyer Search Conversion",
+      icon: Search,
+      description: "Search-to-inquiry optimization — filters, results grid, conversion funnel & recently viewed tracking",
+      badge: "🔍 UX"
+    },
+    {
+      key: "agent-training-portal",
+      label: "Agent Training Portal",
+      icon: GraduationCap,
+      description: "New agent onboarding — training modules, certification badges, success stories & performance tips",
+      badge: "🎓 Training"
+    },
+    {
       label: "AI Co-Pilot",
       icon: Brain,
       description: "Intelligent operations assistant — recommendations, risk radar, NL commands & automation governance",
