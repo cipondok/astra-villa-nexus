@@ -383,6 +383,7 @@ export const DecacornCapitalIntelligenceBlueprint = lazyRetry(() => import("./De
 export const GlobalInfraEcosystemFounderBlueprint = lazyRetry(() => import("./GlobalInfraEcosystemFounderBlueprint"));
 export const DailyDealWeeklyWarCitySprintBlueprint = lazyRetry(() => import("./DailyDealWeeklyWarCitySprintBlueprint"));
 export const First10KRevenueAgentFollowUpBlueprint = lazyRetry(() => import("./First10KRevenueAgentFollowUpBlueprint"));
+export const First50KRevenueAgentIncentivePipelineBlueprint = lazyRetry(() => import("./First50KRevenueAgentIncentivePipelineBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -851,6 +852,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "global-infra-ecosystem-founder": () => <GlobalInfraEcosystemFounderBlueprint />,
   "daily-deal-weekly-war-sprint": () => <DailyDealWeeklyWarCitySprintBlueprint />,
   "first-10k-revenue-followup": () => <First10KRevenueAgentFollowUpBlueprint />,
+  "first-50k-revenue-incentive-pipeline": () => <First50KRevenueAgentIncentivePipelineBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1284,4 +1286,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-infra-ecosystem-founder": { label: "Global Infrastructure & Founder Command", category: "Strategy" },
   "daily-deal-weekly-war-sprint": { label: "Daily Deal Closing & Revenue Sprint", category: "Strategy" },
   "first-10k-revenue-followup": { label: "First $10K Revenue & Agent Follow-Up", category: "Strategy" },
+  "first-50k-revenue-incentive-pipeline": { label: "First $50K Revenue & Pipeline Forecast", category: "Strategy" },
 };
