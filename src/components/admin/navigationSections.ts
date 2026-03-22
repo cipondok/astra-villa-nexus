@@ -1509,6 +1509,13 @@ export const navigationSections = {
       badge: "🏘️ Street Level"
     },
     {
+      key: "first-10-deals-viewing-psychology-agent-motivation",
+      label: "First 10 Deals & Viewing Psychology",
+      icon: Trophy,
+      description: "Deal acceleration tactics, buyer viewing conversion psychology & agent motivation micro-system",
+      badge: "🏆 First 10"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",

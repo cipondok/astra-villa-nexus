@@ -1343,4 +1343,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "public-market-category-global-liquidity-century-vision": { label: "Category Creation & Century Vision", category: "Strategy" },
   "first-100-deals-cashflow-stress-proof": { label: "First 100 Deals & Survival", category: "Strategy" },
   "first-20-buyers-agent-hustle-local-takeover": { label: "First 20 Buyers & Local Takeover", category: "Strategy" },
+  "first-10-deals-viewing-psychology-agent-motivation": { label: "First 10 Deals & Viewing Psychology", category: "Strategy" },
 };
