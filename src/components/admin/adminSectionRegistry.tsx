@@ -290,6 +290,7 @@ export const BehavioralGrowthEngine = lazyRetry(() => import("./BehavioralGrowth
 export const TrustSafetyIntelligence = lazyRetry(() => import("./TrustSafetyIntelligence"));
 export const ComplianceValuationInstitutional = lazyRetry(() => import("./ComplianceValuationInstitutional"));
 export const FounderAICopilotGlobalIntel = lazyRetry(() => import("./FounderAICopilotGlobalIntel"));
+export const PlanetaryIntelligenceCivilizationOS = lazyRetry(() => import("./PlanetaryIntelligenceCivilizationOS"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -1470,4 +1471,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "trust-safety-intelligence": { label: "Trust & Safety Intelligence", category: "Operations" },
   "compliance-valuation-institutional": { label: "Compliance, Valuation & Institutional Intelligence", category: "Operations" },
   "founder-ai-copilot-global-intel": { label: "Founder AI Copilot & Global Intelligence", category: "Operations" },
+  "planetary-intelligence-civilization-os": { label: "Planetary Intelligence & Civilization OS", category: "Operations" },
 };
