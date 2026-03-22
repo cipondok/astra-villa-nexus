@@ -1005,6 +1005,34 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "founder-daily-priority",
+      label: "Founder Priority Command",
+      icon: Target,
+      description: "Daily top-5 deals, supply gaps, high-intent buyers, expiring revenue & agent tasks",
+      badge: "🎯 Daily"
+    },
+    {
+      key: "agent-territory-coverage",
+      label: "Agent Territory Map",
+      icon: MapPin,
+      description: "District coverage strength, agent density, territory gaps & expansion priorities",
+      badge: "🗺️ Geo"
+    },
+    {
+      key: "buyer-viewing-feedback",
+      label: "Viewing Feedback",
+      icon: Eye,
+      description: "Buyer satisfaction scores, agent ratings, feedback tags & improvement suggestions",
+      badge: "👁️ Quality"
+    },
+    {
+      key: "monthly-liquidity-domination",
+      label: "Liquidity Domination",
+      icon: Droplets,
+      description: "Monthly traction curves, district liquidity index & strategic milestone tracker",
+      badge: "💧 Liquidity"
+    },
+    {
       key: "ai-copilot",
       label: "AI Co-Pilot",
       icon: Brain,
