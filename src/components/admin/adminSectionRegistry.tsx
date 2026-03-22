@@ -408,6 +408,7 @@ export const First100DealsFlywheelAgentReferral = lazyRetry(() => import("./Firs
 export const ThreeHundredDealsBrandRegionalLiquidity = lazyRetry(() => import("./ThreeHundredDealsBrandRegionalLiquidity"));
 export const ThousandDealsRevenueCityExpansion = lazyRetry(() => import("./ThousandDealsRevenueCityExpansion"));
 export const NationalLiquidityProfitSeriesA = lazyRetry(() => import("./NationalLiquidityProfitSeriesA"));
+export const SeriesBInstitutionalCategoryLeadership = lazyRetry(() => import("./SeriesBInstitutionalCategoryLeadership"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -901,6 +902,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "300-deals-brand-regional-liquidity": () => <ThreeHundredDealsBrandRegionalLiquidity />,
   "1000-deals-revenue-city-expansion": () => <ThousandDealsRevenueCityExpansion />,
   "national-liquidity-profit-series-a": () => <NationalLiquidityProfitSeriesA />,
+  "series-b-institutional-category-leadership": () => <SeriesBInstitutionalCategoryLeadership />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
