@@ -1418,6 +1418,8 @@ export const navigationSections = {
       badge: "🌍 Global"
     },
     {
+      key: "vendor-intelligence-engine",
+      label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
       badge: "New"
