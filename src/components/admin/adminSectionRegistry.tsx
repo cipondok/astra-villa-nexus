@@ -133,6 +133,10 @@ export const GlobalDiversificationStrategy = lazyRetry(() => import("./GlobalDiv
 export const EconomicTrendForecasting = lazyRetry(() => import("./EconomicTrendForecasting"));
 export const SmartFinancingOptimization = lazyRetry(() => import("./SmartFinancingOptimization"));
 export const InstitutionalSyndication = lazyRetry(() => import("./InstitutionalSyndication"));
+export const RiskStressTestingSimulator = lazyRetry(() => import("./RiskStressTestingSimulator"));
+export const LiquidityExitStrategyPlanner = lazyRetry(() => import("./LiquidityExitStrategyPlanner"));
+export const DevOpportunityAnalyzer = lazyRetry(() => import("./DevOpportunityAnalyzer"));
+export const GlobalLeadershipNarrative = lazyRetry(() => import("./GlobalLeadershipNarrative"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
@@ -703,6 +707,10 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "economic-trend-forecasting": () => <EconomicTrendForecasting />,
   "smart-financing-optimization": () => <SmartFinancingOptimization />,
   "institutional-syndication": () => <InstitutionalSyndication />,
+  "risk-stress-testing": () => <RiskStressTestingSimulator />,
+  "liquidity-exit-strategy": () => <LiquidityExitStrategyPlanner />,
+  "dev-opportunity-analyzer": () => <DevOpportunityAnalyzer />,
+  "global-leadership-narrative": () => <GlobalLeadershipNarrative />,
 
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
@@ -1626,4 +1634,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "economic-trend-forecasting": { label: "Economic Trend Forecasting", category: "Operations" },
   "smart-financing-optimization": { label: "Smart Financing Optimization", category: "Operations" },
   "institutional-syndication": { label: "Institutional Portfolio Syndication", category: "Operations" },
+  "risk-stress-testing": { label: "Risk Stress Testing Simulator", category: "Operations" },
+  "liquidity-exit-strategy": { label: "Liquidity Exit Strategy Planner", category: "Operations" },
+  "dev-opportunity-analyzer": { label: "Development Opportunity Analyzer", category: "Operations" },
+  "global-leadership-narrative": { label: "Global Leadership Narrative", category: "Operations" },
 };
