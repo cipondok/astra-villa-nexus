@@ -1256,6 +1256,13 @@ export const navigationSections = {
       badge: "👁️ Viewing"
     },
     {
+      key: "offer-acceptance-commission",
+      label: "Offer Acceptance & Commission",
+      icon: Handshake,
+      description: "Offer acceleration, agent commission incentives & micro-district liquidity domination",
+      badge: "🤝 Deals"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
