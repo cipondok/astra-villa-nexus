@@ -1271,4 +1271,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "regional-institutional-profitability": { label: "Regional Expansion & Profitability", category: "Strategy" },
   "national-data-series-a": { label: "National Leadership & Series-A", category: "Strategy" },
   "pre-unicorn-global-brand-os": { label: "Pre-Unicorn Growth & Marketplace OS", category: "Strategy" },
+  "unicorn-category-ai-control": { label: "Unicorn Valuation & AI Control", category: "Strategy" },
 };

@@ -1341,6 +1341,13 @@ export const navigationSections = {
       badge: "🦄 Pre-Unicorn"
     },
     {
+      key: "unicorn-category-ai-control",
+      label: "Unicorn Valuation & AI Control",
+      icon: Gem,
+      description: "Unicorn valuation narrative, global category creation & autonomous AI marketplace control",
+      badge: "💎 Unicorn"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
