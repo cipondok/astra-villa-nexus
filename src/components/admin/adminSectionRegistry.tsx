@@ -642,6 +642,12 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "buyer-seller-matching": () => <BuyerSellerMatchingNotifications />,
   "competitive-market-intelligence": () => <CompetitiveMarketIntelligence />,
 
+  // Founder Control & Platform Architecture
+  "ultimate-founder-one-screen": () => <UltimateFounderOneScreen />,
+  "ai-autonomous-operator": () => <AIAutonomousOperator />,
+  "global-expansion-capital-simulator": () => <GlobalExpansionCapitalSimulator />,
+  "platform-integration-architecture": () => <PlatformIntegrationArchitecture />,
+
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
   "social-media-settings": () => <SocialMediaSettings />,
