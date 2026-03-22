@@ -280,6 +280,7 @@ export const PlanetScaleEconomicStoryboard = lazyRetry(() => import("./PlanetSca
 export const AgentNetworkGrowth = lazyRetry(() => import("./AgentNetworkGrowth"));
 export const DealPipelineCRM = lazyRetry(() => import("./DealPipelineCRM"));
 export const CityLiquidityHeatmap = lazyRetry(() => import("./CityLiquidityHeatmap"));
+export const PremiumListingsMonetization = lazyRetry(() => import("./PremiumListingsMonetization"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
