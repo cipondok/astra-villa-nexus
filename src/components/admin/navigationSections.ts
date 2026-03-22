@@ -1299,6 +1299,13 @@ export const navigationSections = {
       badge: "🏆 Performance"
     },
     {
+      key: "offer-closing-flash",
+      label: "Offer Closing & Flash Promotions",
+      icon: Brain,
+      description: "Deal closing psychology, elite agent revenue share & high-velocity flash campaign activation",
+      badge: "🧠 Closing"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
