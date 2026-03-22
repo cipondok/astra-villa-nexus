@@ -399,6 +399,7 @@ export const Traffic100KVendorFlywheelLiquidityHeatmap = lazyRetry(() => import(
 export const Visitor1MNetworkEffectInvestorNarrative = lazyRetry(() => import("./Visitor1MNetworkEffectInvestorNarrative"));
 export const NationalCategoryDominationProfitabilityPreIPO = lazyRetry(() => import("./NationalCategoryDominationProfitabilityPreIPO"));
 export const IPORoadshowCapitalAllocationAutonomousOS = lazyRetry(() => import("./IPORoadshowCapitalAllocationAutonomousOS"));
+export const PublicMarketCategoryGlobalLiquidityCenturyVision = lazyRetry(() => import("./PublicMarketCategoryGlobalLiquidityCenturyVision"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -883,6 +884,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "1m-visitor-network-effect-investor-narrative": () => <Visitor1MNetworkEffectInvestorNarrative />,
   "national-category-domination-profitability-preipo": () => <NationalCategoryDominationProfitabilityPreIPO />,
   "ipo-roadshow-capital-allocation-autonomous-os": () => <IPORoadshowCapitalAllocationAutonomousOS />,
+  "public-market-category-global-liquidity-century-vision": () => <PublicMarketCategoryGlobalLiquidityCenturyVision />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1332,4 +1334,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "1m-visitor-network-effect-investor-narrative": { label: "1M Visitor & Network Effects", category: "Strategy" },
   "national-category-domination-profitability-preipo": { label: "National Domination & Pre-IPO", category: "Strategy" },
   "ipo-roadshow-capital-allocation-autonomous-os": { label: "IPO Roadshow & Autonomous OS", category: "Strategy" },
+  "public-market-category-global-liquidity-century-vision": { label: "Category Creation & Century Vision", category: "Strategy" },
 };
