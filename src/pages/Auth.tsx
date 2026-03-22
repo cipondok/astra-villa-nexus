@@ -211,6 +211,27 @@ const Auth = () => {
       return;
     }
 
+    // Disposable email check (client-side fast)
+    if (isDisposableEmail(registerEmail)) {
+      toast({
+        title: "Registration blocked",
+        description: "Disposable email addresses are not allowed. Please use a permanent email.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Async disposable email check (database)
+    const isDisposable = await checkDisposableEmailDB(registerEmail);
+    if (isDisposable) {
+      toast({
+        title: "Registration blocked",
+        description: "This email domain is not accepted. Please use a valid email provider.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Password validation
     if (registerPassword !== confirmPassword) {
       toast({
@@ -247,7 +268,6 @@ const Auth = () => {
           title: "Registration successful!",
           description: "Please check your email to verify your account before logging in.",
         });
-        // Don't navigate to home — show verification message
       } else {
         toast({
           title: "Registration failed",
