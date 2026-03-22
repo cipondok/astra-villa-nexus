@@ -1481,6 +1481,13 @@ export const navigationSections = {
       badge: "👑 Domination"
     },
     {
+      key: "ipo-roadshow-capital-allocation-autonomous-os",
+      label: "IPO Roadshow & Autonomous OS",
+      icon: Landmark,
+      description: "IPO roadshow narrative, global capital allocation & autonomous marketplace OS architecture",
+      badge: "🏛️ IPO Stage"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
