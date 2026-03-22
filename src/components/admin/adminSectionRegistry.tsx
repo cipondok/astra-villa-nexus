@@ -1304,4 +1304,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "revenue-500k-national-board": { label: "$500K Revenue & National Grid", category: "Strategy" },
   "revenue-1m-national-ipo": { label: "$1M Revenue & IPO Readiness", category: "Strategy" },
   "global-leadership-valuation-grid": { label: "Global Leadership & Autonomous Grid", category: "Strategy" },
+  "global-ipo-alliance-intelligence": { label: "Global IPO & Alliance Command", category: "Strategy" },
 };
