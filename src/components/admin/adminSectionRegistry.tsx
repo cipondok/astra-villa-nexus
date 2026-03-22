@@ -848,6 +848,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "unicorn-category-ai-control": () => <UnicornCategoryAIControlBlueprint />,
   "decacorn-capital-intelligence": () => <DecacornCapitalIntelligenceBlueprint />,
   "global-infra-ecosystem-founder": () => <GlobalInfraEcosystemFounderBlueprint />,
+  "daily-deal-weekly-war-sprint": () => <DailyDealWeeklyWarCitySprintBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
