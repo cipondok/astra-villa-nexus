@@ -109,6 +109,10 @@ export const UltimateFounderOneScreen = lazyRetry(() => import("./UltimateFounde
 export const AIAutonomousOperator = lazyRetry(() => import("./AIAutonomousOperator"));
 export const GlobalExpansionCapitalSimulator = lazyRetry(() => import("./GlobalExpansionCapitalSimulator"));
 export const PlatformIntegrationArchitecture = lazyRetry(() => import("./PlatformIntegrationArchitecture"));
+export const UserOnboardingFlowUI = lazyRetry(() => import("./UserOnboardingFlowUI"));
+export const ListingSubmissionUX = lazyRetry(() => import("./ListingSubmissionUX"));
+export const BuyerSearchConversion = lazyRetry(() => import("./BuyerSearchConversion"));
+export const AgentTrainingPortal = lazyRetry(() => import("./AgentTrainingPortal"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
