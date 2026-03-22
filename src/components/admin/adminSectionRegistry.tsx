@@ -567,6 +567,12 @@ export const FeatureImpactMatrixPage = lazyRetry(() => import("@/pages/FeatureIm
 export const LaunchExecutionKitPage = lazyRetry(() => import("@/pages/LaunchExecutionKitPage"));
 export const CacLtvModelPage = lazyRetry(() => import("@/pages/CacLtvModelPage"));
 
+// MVP Traction Core
+export const MVPListingsManagement = lazyRetry(() => import("./MVPListingsManagement"));
+export const MVPBuyerInquiryTracker = lazyRetry(() => import("./MVPBuyerInquiryTracker"));
+export const MVPViewingScheduleBoard = lazyRetry(() => import("./MVPViewingScheduleBoard"));
+export const MVPDealPipelineTracker = lazyRetry(() => import("./MVPDealPipelineTracker"));
+
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
 // Sections with custom props are listed explicitly; all others are simple <Component />.
@@ -1187,6 +1193,12 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "smart-recommendation-engine": () => <SmartRecommendationPanel />,
   "commission-optimization": () => <CommissionOptimizationPanel />,
   "listing-optimization-ai": () => <ListingOptimizationAIPanel />,
+
+  // MVP Traction Core
+  "mvp-listings-management": () => <MVPListingsManagement />,
+  "mvp-buyer-inquiry-tracker": () => <MVPBuyerInquiryTracker />,
+  "mvp-viewing-schedule-board": () => <MVPViewingScheduleBoard />,
+  "mvp-deal-pipeline-tracker": () => <MVPDealPipelineTracker />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────

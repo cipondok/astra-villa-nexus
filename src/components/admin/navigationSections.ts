@@ -215,6 +215,34 @@ export const navigationSections = {
       icon: Smartphone,
       description: "Mobile-first executive control dashboard for real-time marketplace monitoring",
       badge: "New"
+    },
+    {
+      key: "mvp-listings-management",
+      label: "Listings Management",
+      icon: Building,
+      description: "Add, edit, and manage real property inventory with status tracking",
+      badge: "MVP"
+    },
+    {
+      key: "mvp-buyer-inquiry-tracker",
+      label: "Buyer Inquiry Tracker",
+      icon: Users,
+      description: "Track all buyer inquiries with call, WhatsApp, and status actions",
+      badge: "MVP"
+    },
+    {
+      key: "mvp-viewing-schedule-board",
+      label: "Viewing Schedule Board",
+      icon: Calendar,
+      description: "Schedule and manage property viewings with confirm and reschedule actions",
+      badge: "MVP"
+    },
+    {
+      key: "mvp-deal-pipeline-tracker",
+      label: "Deal Pipeline Tracker",
+      icon: Target,
+      description: "Manual deal tracking from inquiry to closing with probability scoring",
+      badge: "MVP"
     }
   ],
 
