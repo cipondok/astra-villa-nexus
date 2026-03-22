@@ -269,6 +269,10 @@ export const PlanetaryEconomicCoordination = lazyRetry(() => import("./Planetary
 export const AutonomousUrbanGrowth = lazyRetry(() => import("./AutonomousUrbanGrowth"));
 export const FounderGlobalInfluence = lazyRetry(() => import("./FounderGlobalInfluence"));
 export const PostMarketplaceEvolution = lazyRetry(() => import("./PostMarketplaceEvolution"));
+export const PlanetaryHabitatGrid = lazyRetry(() => import("./PlanetaryHabitatGrid"));
+export const GlobalAssetLiquidity = lazyRetry(() => import("./GlobalAssetLiquidity"));
+export const FounderIntergenerational = lazyRetry(() => import("./FounderIntergenerational"));
+export const MacroPolicySimulator = lazyRetry(() => import("./MacroPolicySimulator"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -830,6 +834,10 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "autonomous-urban-growth":     () => <AutonomousUrbanGrowth />,
   "founder-global-influence":    () => <FounderGlobalInfluence />,
   "post-marketplace-evolution":  () => <PostMarketplaceEvolution />,
+  "planetary-habitat-grid":      () => <PlanetaryHabitatGrid />,
+  "global-asset-liquidity":      () => <GlobalAssetLiquidity />,
+  "founder-intergenerational":   () => <FounderIntergenerational />,
+  "macro-policy-simulator":      () => <MacroPolicySimulator />,
   "global-expansion-control":    () => <GlobalExpansionControl />,
   "ipo-readiness-metrics":       () => <IPOReadinessMetrics />,
   "ai-copilot":                  () => <AdminAICoPilot />,
@@ -1416,4 +1424,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "autonomous-urban-growth": { label: "Autonomous Urban Growth Intelligence", category: "AI Intelligence" },
   "founder-global-influence": { label: "Founder Global Influence Narrative", category: "AI Intelligence" },
   "post-marketplace-evolution": { label: "Post-Marketplace Evolution", category: "AI Intelligence" },
+  "planetary-habitat-grid": { label: "Planetary Habitat Intelligence", category: "AI Intelligence" },
+  "global-asset-liquidity": { label: "Global Asset Liquidity Network", category: "AI Intelligence" },
+  "founder-intergenerational": { label: "Founder Intergenerational Impact", category: "AI Intelligence" },
+  "macro-policy-simulator": { label: "Macro Policy Simulator", category: "AI Intelligence" },
 };
