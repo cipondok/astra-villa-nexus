@@ -1425,6 +1425,13 @@ export const navigationSections = {
       badge: "🏛️ IPO"
     },
     {
+      key: "daily-global-revenue-sprint-clarity",
+      label: "Daily Global Revenue & Founder Clarity",
+      icon: Zap,
+      description: "Daily revenue command, international deal sprint execution & founder strategic clarity system",
+      badge: "⚡ Daily Ops"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",

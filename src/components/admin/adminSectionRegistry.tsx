@@ -390,6 +390,7 @@ export const Revenue500KNationalLiquidityBoardBlueprint = lazyRetry(() => import
 export const Revenue1MNationalIPOBlueprint = lazyRetry(() => import("./Revenue1MNationalIPOBlueprint"));
 export const GlobalLeadershipValuationLiquidityGridBlueprint = lazyRetry(() => import("./GlobalLeadershipValuationLiquidityGridBlueprint"));
 export const GlobalIPOAllianceIntelligenceBlueprint = lazyRetry(() => import("./GlobalIPOAllianceIntelligenceBlueprint"));
+export const DailyGlobalRevenueSprintClarityBlueprint = lazyRetry(() => import("./DailyGlobalRevenueSprintClarityBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -865,6 +866,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "revenue-1m-national-ipo": () => <Revenue1MNationalIPOBlueprint />,
   "global-leadership-valuation-grid": () => <GlobalLeadershipValuationLiquidityGridBlueprint />,
   "global-ipo-alliance-intelligence": () => <GlobalIPOAllianceIntelligenceBlueprint />,
+  "daily-global-revenue-sprint-clarity": () => <DailyGlobalRevenueSprintClarityBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1305,4 +1307,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "revenue-1m-national-ipo": { label: "$1M Revenue & IPO Readiness", category: "Strategy" },
   "global-leadership-valuation-grid": { label: "Global Leadership & Autonomous Grid", category: "Strategy" },
   "global-ipo-alliance-intelligence": { label: "Global IPO & Alliance Command", category: "Strategy" },
+  "daily-global-revenue-sprint-clarity": { label: "Daily Global Revenue & Founder Clarity", category: "Strategy" },
 };
