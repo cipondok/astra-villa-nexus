@@ -904,6 +904,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "1000-deals-revenue-city-expansion": () => <ThousandDealsRevenueCityExpansion />,
   "national-liquidity-profit-series-a": () => <NationalLiquidityProfitSeriesA />,
   "series-b-institutional-category-leadership": () => <SeriesBInstitutionalCategoryLeadership />,
+  "pre-unicorn-risk-developer-partnership": () => <PreUnicornRiskDeveloperPartnership />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,

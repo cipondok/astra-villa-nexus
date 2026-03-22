@@ -1558,6 +1558,13 @@ export const navigationSections = {
       badge: "🚀 Series-B"
     },
     {
+      key: "pre-unicorn-risk-developer-partnership",
+      label: "Pre-Unicorn OS & Mega-Developer",
+      icon: Zap,
+      description: "Pre-unicorn operating system, global risk governance & mega-developer partnership engine",
+      badge: "⚡ Pre-Unicorn"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
