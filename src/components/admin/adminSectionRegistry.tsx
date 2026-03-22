@@ -1268,4 +1268,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "referral-mega-project-city": { label: "Referral Flywheel & City Domination", category: "Strategy" },
   "regional-institutional-profitability": { label: "Regional Expansion & Profitability", category: "Strategy" },
   "national-data-series-a": { label: "National Leadership & Series-A", category: "Strategy" },
+  "pre-unicorn-global-brand-os": { label: "Pre-Unicorn Growth & Marketplace OS", category: "Strategy" },
 };
