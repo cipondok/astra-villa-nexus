@@ -51,7 +51,7 @@ const AdvancedAdminDashboard = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const section = urlParams.get('section');
     if (section) {
-      const mapped = section === 'vendors-hub' ? 'vendor-management' : section;
+      const mapped = section;
       setActiveTab(mapped);
     }
   }, []);
