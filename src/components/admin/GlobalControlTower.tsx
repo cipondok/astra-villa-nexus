@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Globe, TrendingUp, Users, Activity, AlertTriangle, Building2,
   Zap, Shield, MapPin, ArrowUpRight, Clock, ChevronRight, Target,
-  DollarSign, BarChart3
+  DollarSign, BarChart3, Brain
 } from 'lucide-react';
 
 /* ─── Types ─── */
