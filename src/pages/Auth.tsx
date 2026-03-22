@@ -77,12 +77,11 @@ const Auth = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Check lockout
-    if (lockoutUntil && Date.now() < lockoutUntil) {
-      const remaining = Math.ceil((lockoutUntil - Date.now()) / 1000);
+    // Check progressive lockout
+    if (isLocked) {
       toast({
         title: "Account temporarily locked",
-        description: `Too many failed attempts. Please wait ${remaining} seconds.`,
+        description: `Too many failed attempts. Please wait ${lockoutRemaining} seconds.`,
         variant: "destructive",
       });
       return;
@@ -94,8 +93,8 @@ const Auth = () => {
       const { success, error } = await signIn(loginEmail, loginPassword);
       
       if (success) {
-        setFailedAttempts(0);
-        setLockoutUntil(null);
+        recordSuccess();
+        logLoginActivity(loginEmail, true, user?.id);
         
         if (rememberMe) {
           localStorage.setItem('rememberEmail', loginEmail);
@@ -109,23 +108,21 @@ const Auth = () => {
         });
         navigate("/");
       } else {
-        const newAttempts = failedAttempts + 1;
-        setFailedAttempts(newAttempts);
+        const result = recordFailedAttempt();
+        const failureReason = error?.message || "Invalid credentials";
+        logLoginActivity(loginEmail, false, undefined, failureReason);
 
-        if (newAttempts >= 5) {
-          const lockDuration = 2 * 60 * 1000; // 2 minutes
-          setLockoutUntil(Date.now() + lockDuration);
+        if (result.isLocked) {
+          const mins = Math.ceil(result.lockDurationMs / 60000);
           toast({
             title: "Account temporarily locked",
-            description: "Too many failed login attempts. Please wait 2 minutes before trying again.",
+            description: `Too many failed attempts. Please wait ${mins} minute${mins > 1 ? 's' : ''}.`,
             variant: "destructive",
           });
         } else {
-          const msg = error?.message || "Invalid email or password";
-          const attemptsLeft = 5 - newAttempts;
           toast({
             title: "Login failed",
-            description: `${msg}. ${attemptsLeft} attempt${attemptsLeft !== 1 ? 's' : ''} remaining.`,
+            description: `${failureReason}. ${result.attemptsUntilLock} attempt${result.attemptsUntilLock !== 1 ? 's' : ''} remaining.`,
             variant: "destructive",
           });
         }
