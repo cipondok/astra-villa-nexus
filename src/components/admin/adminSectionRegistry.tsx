@@ -362,6 +362,7 @@ export const ThousandVisitorsBlueprint = lazyRetry(() => import("./ThousandVisit
 export const BuyerTrustBlueprint = lazyRetry(() => import("./BuyerTrustBlueprint"));
 export const ViewingConversionBlueprint = lazyRetry(() => import("./ViewingConversionBlueprint"));
 export const OfferNegotiationBlueprint = lazyRetry(() => import("./OfferNegotiationBlueprint"));
+export const BuyerFinancingBlueprint = lazyRetry(() => import("./BuyerFinancingBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -809,6 +810,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "buyer-trust-blueprint": () => <BuyerTrustBlueprint />,
   "viewing-conversion-blueprint": () => <ViewingConversionBlueprint />,
   "offer-negotiation-blueprint": () => <OfferNegotiationBlueprint />,
+  "buyer-financing-blueprint": () => <BuyerFinancingBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1221,4 +1223,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "buyer-trust-blueprint": { label: "Buyer Trust & Follow-Up", category: "Strategy" },
   "viewing-conversion-blueprint": { label: "Viewing Conversion & Dev Partners", category: "Strategy" },
   "offer-negotiation-blueprint": { label: "Offer Negotiation & Lead Distribution", category: "Strategy" },
+  "buyer-financing-blueprint": { label: "Buyer Financing & Premium Upsell", category: "Strategy" },
 };

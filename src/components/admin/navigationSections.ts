@@ -16,6 +16,7 @@ import {
   AlertTriangle,
   User,
   Coins,
+  Wallet,
   Monitor,
   Globe,
   LayoutDashboard,
@@ -1224,6 +1225,13 @@ export const navigationSections = {
       icon: Scale,
       description: "Negotiation support, fair lead allocation & district leadership PR",
       badge: "⚖️ Fair"
+    },
+    {
+      key: "buyer-financing-blueprint",
+      label: "Buyer Financing & Premium Upsell",
+      icon: Wallet,
+      description: "Financing funnel, premium listing upsell psychology & local property events",
+      badge: "💰 Revenue"
     },
     {
       key: "vendor-intelligence-engine",
