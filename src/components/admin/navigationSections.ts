@@ -106,6 +106,7 @@ import {
   Send,
   Presentation,
   MapPin,
+  Droplets,
   Brain,
   Scale,
   PieChart,
