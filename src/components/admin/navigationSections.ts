@@ -1400,6 +1400,34 @@ export const navigationSections = {
       badge: "☁️ Infra"
     },
     {
+      key: "realtime-event-architecture",
+      label: "Real-Time Event Architecture",
+      icon: Zap,
+      description: "Event streaming pipeline — triggers, signal emission, WebSocket channels, notification delivery & latency monitoring",
+      badge: "⚡ Events"
+    },
+    {
+      key: "ai-data-pipeline",
+      label: "AI Data Pipeline",
+      icon: Brain,
+      description: "Intelligence learning loop — data ingestion, feature engineering, model training, prediction service & feedback signals",
+      badge: "🧠 ML Pipeline"
+    },
+    {
+      key: "recommendation-algorithm-flow",
+      label: "Recommendation Algorithm",
+      icon: Sparkles,
+      description: "Matching engine logic — buyer scoring, property similarity, demand balancing, location weighting & confidence output",
+      badge: "✨ Matching"
+    },
+    {
+      key: "security-permission-matrix",
+      label: "Security & Permissions",
+      icon: Shield,
+      description: "RBAC architecture — role-permission matrix, auth lifecycle, RLS enforcement & security monitoring",
+      badge: "🔐 Security"
+    },
+    {
       key: "ai-copilot",
       label: "AI Co-Pilot",
       icon: Brain,

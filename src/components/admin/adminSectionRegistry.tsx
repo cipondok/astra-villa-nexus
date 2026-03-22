@@ -1670,4 +1670,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "api-endpoint-structure": { label: "API Endpoint Structure", category: "Operations" },
   "frontend-architecture": { label: "Frontend Architecture", category: "Operations" },
   "deployment-scaling": { label: "Deployment & Scaling", category: "Operations" },
+  "realtime-event-architecture": { label: "Real-Time Event Architecture", category: "Operations" },
+  "ai-data-pipeline": { label: "AI Data Pipeline", category: "Operations" },
+  "recommendation-algorithm-flow": { label: "Recommendation Algorithm Flow", category: "Operations" },
+  "security-permission-matrix": { label: "Security & Permission Matrix", category: "Operations" },
 };
