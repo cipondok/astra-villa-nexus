@@ -279,6 +279,7 @@ export const Founder100YearLegacy = lazyRetry(() => import("./Founder100YearLega
 export const PlanetScaleEconomicStoryboard = lazyRetry(() => import("./PlanetScaleEconomicStoryboard"));
 export const AgentNetworkGrowth = lazyRetry(() => import("./AgentNetworkGrowth"));
 export const DealPipelineCRM = lazyRetry(() => import("./DealPipelineCRM"));
+export const CityLiquidityHeatmap = lazyRetry(() => import("./CityLiquidityHeatmap"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
