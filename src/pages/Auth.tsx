@@ -40,9 +40,11 @@ const Auth = () => {
   const [loginPassword, setLoginPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
-  // Login rate limiting
-  const [failedAttempts, setFailedAttempts] = useState(0);
-  const [lockoutUntil, setLockoutUntil] = useState<number | null>(null);
+  // Progressive login security
+  const {
+    isLocked, lockoutRemaining, recordFailedAttempt, recordSuccess,
+    logLoginActivity, isDisposableEmail, checkDisposableEmailDB
+  } = useLoginSecurity();
 
   // Register form state
   const [registerEmail, setRegisterEmail] = useState("");
