@@ -1567,7 +1567,7 @@ export const navigationSections = {
     {
       key: "unicorn-liquidity-institutional-authority",
       label: "Unicorn & Institutional Authority",
-      icon: Diamond,
+      icon: Crown,
       description: "Unicorn valuation acceleration, global liquidity synchronization & institutional brand authority",
       badge: "💎 Unicorn"
     },
