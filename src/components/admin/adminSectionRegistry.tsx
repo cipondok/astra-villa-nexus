@@ -1280,4 +1280,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "unicorn-category-ai-control": { label: "Unicorn Valuation & AI Control", category: "Strategy" },
   "decacorn-capital-intelligence": { label: "Decacorn Financial Engine & Intelligence", category: "Strategy" },
   "global-infra-ecosystem-founder": { label: "Global Infrastructure & Founder Command", category: "Strategy" },
+  "daily-deal-weekly-war-sprint": { label: "Daily Deal Closing & Revenue Sprint", category: "Strategy" },
 };
