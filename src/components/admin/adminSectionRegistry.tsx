@@ -98,6 +98,10 @@ export const DistrictPriceCompetitivenessMonitor = lazyRetry(() => import("./Dis
 export const UrgentDealRescuePanel = lazyRetry(() => import("./UrgentDealRescuePanel"));
 export const AgentTrainingCoachingDashboard = lazyRetry(() => import("./AgentTrainingCoachingDashboard"));
 export const QuarterlyExpansionReadinessPanel = lazyRetry(() => import("./QuarterlyExpansionReadinessPanel"));
+export const RealTimeBuyerDemandPulse = lazyRetry(() => import("./RealTimeBuyerDemandPulse"));
+export const HighValueSpotlightPromotion = lazyRetry(() => import("./HighValueSpotlightPromotion"));
+export const AgentReferralGrowthFlywheel = lazyRetry(() => import("./AgentReferralGrowthFlywheel"));
+export const AnnualMarketLeadershipProgress = lazyRetry(() => import("./AnnualMarketLeadershipProgress"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
@@ -620,6 +624,12 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "agent-training-coaching": () => <AgentTrainingCoachingDashboard />,
   "quarterly-expansion-readiness": () => <QuarterlyExpansionReadinessPanel />,
 
+  // Demand Pulse & Market Leadership
+  "realtime-buyer-demand-pulse": () => <RealTimeBuyerDemandPulse />,
+  "high-value-spotlight-promotion": () => <HighValueSpotlightPromotion />,
+  "agent-referral-growth-flywheel": () => <AgentReferralGrowthFlywheel />,
+  "annual-market-leadership": () => <AnnualMarketLeadershipProgress />,
+
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
   "social-media-settings": () => <SocialMediaSettings />,
@@ -1124,6 +1134,10 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "urgent-deal-rescue": { label: "Deal Rescue", category: "Execution Command" },
   "agent-training-coaching": { label: "Agent Training", category: "Operations" },
   "quarterly-expansion-readiness": { label: "Expansion Readiness", category: "Strategy" },
+  "realtime-buyer-demand-pulse": { label: "Buyer Demand Pulse", category: "Market Intelligence" },
+  "high-value-spotlight-promotion": { label: "Spotlight Promotion", category: "Marketing" },
+  "agent-referral-growth-flywheel": { label: "Referral Flywheel", category: "Marketplace Growth" },
+  "annual-market-leadership": { label: "Market Leadership", category: "Strategy" },
   "seo-settings": { label: "SEO Hub", category: "Settings" },
   "seo-management": { label: "SEO Management", category: "Marketing" },
   "property-seo-checker": { label: "Property SEO Checker", category: "Core Management" },
