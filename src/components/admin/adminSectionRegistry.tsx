@@ -401,6 +401,7 @@ export const NationalCategoryDominationProfitabilityPreIPO = lazyRetry(() => imp
 export const IPORoadshowCapitalAllocationAutonomousOS = lazyRetry(() => import("./IPORoadshowCapitalAllocationAutonomousOS"));
 export const PublicMarketCategoryGlobalLiquidityCenturyVision = lazyRetry(() => import("./PublicMarketCategoryGlobalLiquidityCenturyVision"));
 export const First100DealsCashflowStressProof = lazyRetry(() => import("./First100DealsCashflowStressProof"));
+export const First20BuyersAgentHustleLocalTakeover = lazyRetry(() => import("./First20BuyersAgentHustleLocalTakeover"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
