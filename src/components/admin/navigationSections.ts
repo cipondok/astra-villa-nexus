@@ -240,6 +240,13 @@ export const navigationSections = {
       icon: Activity,
       description: "Agent gamification, seller urgency psychology, marketing ROI, and network effect tracking",
       badge: "Growth"
+    },
+    {
+      key: "trust-safety-intelligence",
+      label: "Trust & Safety Intelligence",
+      icon: Shield,
+      description: "Risk monitoring, fraud detection AI, reputation signals, and secure escrow deal flow",
+      badge: "🛡️ Trust"
     }
   ],
 
