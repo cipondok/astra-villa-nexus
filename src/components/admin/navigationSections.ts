@@ -129,9 +129,7 @@ import {
   Crosshair,
   Upload,
   PartyPopper,
-  Briefcase,
-  Wallet,
-  Sparkles
+  Briefcase
 } from "lucide-react";
 
 export interface NavigationSection {
