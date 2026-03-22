@@ -403,6 +403,7 @@ export const PublicMarketCategoryGlobalLiquidityCenturyVision = lazyRetry(() => 
 export const First100DealsCashflowStressProof = lazyRetry(() => import("./First100DealsCashflowStressProof"));
 export const First20BuyersAgentHustleLocalTakeover = lazyRetry(() => import("./First20BuyersAgentHustleLocalTakeover"));
 export const First10DealsViewingPsychologyAgentMotivation = lazyRetry(() => import("./First10DealsViewingPsychologyAgentMotivation"));
+export const First50DealsNegotiationTrustDomination = lazyRetry(() => import("./First50DealsNegotiationTrustDomination"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -891,6 +892,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "first-100-deals-cashflow-stress-proof": () => <First100DealsCashflowStressProof />,
   "first-20-buyers-agent-hustle-local-takeover": () => <First20BuyersAgentHustleLocalTakeover />,
   "first-10-deals-viewing-psychology-agent-motivation": () => <First10DealsViewingPsychologyAgentMotivation />,
+  "first-50-deals-negotiation-trust-domination": () => <First50DealsNegotiationTrustDomination />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
