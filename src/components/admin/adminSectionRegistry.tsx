@@ -153,6 +153,10 @@ export const MicroservicesDecomposition = lazyRetry(() => import("./Microservice
 export const DataWarehouseAnalytics = lazyRetry(() => import("./DataWarehouseAnalytics"));
 export const LoadTestingSimulator = lazyRetry(() => import("./LoadTestingSimulator"));
 export const IncidentReliabilityDashboard = lazyRetry(() => import("./IncidentReliabilityDashboard"));
+export const CostOptimizationDashboard = lazyRetry(() => import("./CostOptimizationDashboard"));
+export const DevVelocityTracker = lazyRetry(() => import("./DevVelocityTracker"));
+export const AIModelGovernance = lazyRetry(() => import("./AIModelGovernance"));
+export const UXQualityMonitoring = lazyRetry(() => import("./UXQualityMonitoring"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
