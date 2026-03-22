@@ -219,18 +219,17 @@ const Auth = () => {
       return;
     }
 
-    // Check password strength (minimum 3 criteria)
-    const hasLength = registerPassword.length >= 8;
+    // Strong password policy: 10 chars + all criteria required
+    const hasLength = registerPassword.length >= 10;
     const hasUpper = /[A-Z]/.test(registerPassword);
     const hasLower = /[a-z]/.test(registerPassword);
     const hasNumber = /\d/.test(registerPassword);
-    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(registerPassword);
-    const strengthScore = [hasLength, hasUpper, hasLower, hasNumber, hasSpecial].filter(Boolean).length;
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>_\-+=\[\]~`]/.test(registerPassword);
 
-    if (strengthScore < 3) {
+    if (!hasLength || !hasUpper || !hasLower || !hasNumber || !hasSpecial) {
       toast({
         title: "Password too weak",
-        description: "Please create a stronger password meeting at least 3 criteria",
+        description: "Password must be at least 10 characters with uppercase, lowercase, number, and special character.",
         variant: "destructive",
       });
       return;
