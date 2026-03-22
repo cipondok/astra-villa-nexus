@@ -395,6 +395,7 @@ export const GlobalFounderWarRoomDealExpansionBlueprint = lazyRetry(() => import
 export const GlobalEconomicIntelligenceLegacyBlueprint = lazyRetry(() => import("./GlobalEconomicIntelligenceLegacyBlueprint"));
 export const First1000DealsLiquidityFounderBlueprint = lazyRetry(() => import("./First1000DealsLiquidityFounderBlueprint"));
 export const First10KListingsBuyerPipelineDealWarRoom = lazyRetry(() => import("./First10KListingsBuyerPipelineDealWarRoom"));
+export const Traffic100KVendorFlywheelLiquidityHeatmap = lazyRetry(() => import("./Traffic100KVendorFlywheelLiquidityHeatmap"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -875,6 +876,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "global-economic-intelligence-legacy": () => <GlobalEconomicIntelligenceLegacyBlueprint />,
   "first-1000-deals-liquidity-founder": () => <First1000DealsLiquidityFounderBlueprint />,
   "first-10k-listings-buyer-pipeline-warroom": () => <First10KListingsBuyerPipelineDealWarRoom />,
+  "100k-traffic-vendor-flywheel-heatmap": () => <Traffic100KVendorFlywheelLiquidityHeatmap />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1320,4 +1322,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-economic-intelligence-legacy": { label: "Global Economic Intelligence & Legacy", category: "Strategy" },
   "first-1000-deals-liquidity-founder": { label: "First 1,000 Deals & Founder Rhythm", category: "Strategy" },
   "first-10k-listings-buyer-pipeline-warroom": { label: "10K Listings & Deal War-Room", category: "Strategy" },
+  "100k-traffic-vendor-flywheel-heatmap": { label: "100K Traffic & Vendor Flywheel", category: "Strategy" },
 };

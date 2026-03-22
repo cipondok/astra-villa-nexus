@@ -1460,6 +1460,13 @@ export const navigationSections = {
       badge: "🏠 10K Supply"
     },
     {
+      key: "100k-traffic-vendor-flywheel-heatmap",
+      label: "100K Traffic & Vendor Flywheel",
+      icon: TrendingUp,
+      description: "100K visitor traffic engine, vendor monetization flywheel & liquidity heatmap intelligence",
+      badge: "📈 100K Traffic"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
