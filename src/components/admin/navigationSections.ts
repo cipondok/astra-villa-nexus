@@ -1502,6 +1502,13 @@ export const navigationSections = {
       badge: "⚔️ Survival"
     },
     {
+      key: "first-20-buyers-agent-hustle-local-takeover",
+      label: "First 20 Buyers & Local Takeover",
+      icon: Users,
+      description: "Grassroots buyer acquisition, agent daily hustle scripts & hyper-local district domination",
+      badge: "🏘️ Street Level"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",

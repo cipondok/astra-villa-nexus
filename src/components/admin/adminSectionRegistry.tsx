@@ -401,6 +401,7 @@ export const NationalCategoryDominationProfitabilityPreIPO = lazyRetry(() => imp
 export const IPORoadshowCapitalAllocationAutonomousOS = lazyRetry(() => import("./IPORoadshowCapitalAllocationAutonomousOS"));
 export const PublicMarketCategoryGlobalLiquidityCenturyVision = lazyRetry(() => import("./PublicMarketCategoryGlobalLiquidityCenturyVision"));
 export const First100DealsCashflowStressProof = lazyRetry(() => import("./First100DealsCashflowStressProof"));
+export const First20BuyersAgentHustleLocalTakeover = lazyRetry(() => import("./First20BuyersAgentHustleLocalTakeover"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -887,6 +888,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ipo-roadshow-capital-allocation-autonomous-os": () => <IPORoadshowCapitalAllocationAutonomousOS />,
   "public-market-category-global-liquidity-century-vision": () => <PublicMarketCategoryGlobalLiquidityCenturyVision />,
   "first-100-deals-cashflow-stress-proof": () => <First100DealsCashflowStressProof />,
+  "first-20-buyers-agent-hustle-local-takeover": () => <First20BuyersAgentHustleLocalTakeover />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1338,4 +1340,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ipo-roadshow-capital-allocation-autonomous-os": { label: "IPO Roadshow & Autonomous OS", category: "Strategy" },
   "public-market-category-global-liquidity-century-vision": { label: "Category Creation & Century Vision", category: "Strategy" },
   "first-100-deals-cashflow-stress-proof": { label: "First 100 Deals & Survival", category: "Strategy" },
+  "first-20-buyers-agent-hustle-local-takeover": { label: "First 20 Buyers & Local Takeover", category: "Strategy" },
 };
