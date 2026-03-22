@@ -1428,6 +1428,34 @@ export const navigationSections = {
       badge: "🔐 Security"
     },
     {
+      key: "microservices-decomposition",
+      label: "Microservices Architecture",
+      icon: Server,
+      description: "Service decomposition — 9 domains, dependency mapping, API gateway, circuit breaker & scaling readiness",
+      badge: "🏗️ Services"
+    },
+    {
+      key: "data-warehouse-analytics",
+      label: "Data Warehouse & Analytics",
+      icon: Database,
+      description: "ETL pipeline, structured data marts, query performance monitoring & BI consumption layer",
+      badge: "📊 Warehouse"
+    },
+    {
+      key: "load-testing-simulator",
+      label: "Load Testing Simulator",
+      icon: Gauge,
+      description: "Interactive stress testing — concurrent users, API burst rate, response time curves & scaling triggers",
+      badge: "🔥 Stress Test"
+    },
+    {
+      key: "incident-reliability-dashboard",
+      label: "Incident & Reliability",
+      icon: ShieldAlert,
+      description: "SRE dashboard — service uptime, active incidents, MTTR tracking, escalation workflow & post-mortems",
+      badge: "🛡️ SRE"
+    },
+    {
       key: "ai-copilot",
       label: "AI Co-Pilot",
       icon: Brain,

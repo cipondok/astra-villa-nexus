@@ -149,6 +149,10 @@ export const RealTimeEventArchitecture = lazyRetry(() => import("./RealTimeEvent
 export const AIDataPipeline = lazyRetry(() => import("./AIDataPipeline"));
 export const RecommendationAlgorithmFlow = lazyRetry(() => import("./RecommendationAlgorithmFlow"));
 export const SecurityPermissionMatrix = lazyRetry(() => import("./SecurityPermissionMatrix"));
+export const MicroservicesDecomposition = lazyRetry(() => import("./MicroservicesDecomposition"));
+export const DataWarehouseAnalytics = lazyRetry(() => import("./DataWarehouseAnalytics"));
+export const LoadTestingSimulator = lazyRetry(() => import("./LoadTestingSimulator"));
+export const IncidentReliabilityDashboard = lazyRetry(() => import("./IncidentReliabilityDashboard"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
@@ -735,6 +739,10 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ai-data-pipeline": () => <AIDataPipeline />,
   "recommendation-algorithm-flow": () => <RecommendationAlgorithmFlow />,
   "security-permission-matrix": () => <SecurityPermissionMatrix />,
+  "microservices-decomposition": () => <MicroservicesDecomposition />,
+  "data-warehouse-analytics": () => <DataWarehouseAnalytics />,
+  "load-testing-simulator": () => <LoadTestingSimulator />,
+  "incident-reliability-dashboard": () => <IncidentReliabilityDashboard />,
 
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
@@ -1674,4 +1682,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ai-data-pipeline": { label: "AI Data Pipeline", category: "Operations" },
   "recommendation-algorithm-flow": { label: "Recommendation Algorithm Flow", category: "Operations" },
   "security-permission-matrix": { label: "Security & Permission Matrix", category: "Operations" },
+  "microservices-decomposition": { label: "Microservices Decomposition", category: "Operations" },
+  "data-warehouse-analytics": { label: "Data Warehouse & Analytics", category: "Operations" },
+  "load-testing-simulator": { label: "Load Testing Simulator", category: "Operations" },
+  "incident-reliability-dashboard": { label: "Incident & Reliability", category: "Operations" },
 };
