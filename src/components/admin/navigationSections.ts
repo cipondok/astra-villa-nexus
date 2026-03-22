@@ -183,6 +183,13 @@ export const navigationSections = {
       icon: Zap,
       description: "Real-time revenue triggers, milestone tracking, and growth acceleration signals",
       badge: "Live"
+    },
+    {
+      key: "founder-mobile-warroom",
+      label: "Mobile War-Room",
+      icon: Smartphone,
+      description: "Mobile-first executive control dashboard for real-time marketplace monitoring",
+      badge: "New"
     }
   ],
 
