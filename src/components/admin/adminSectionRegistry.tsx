@@ -1453,4 +1453,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "deal-pipeline-crm": { label: "Deal Pipeline CRM", category: "Operations" },
   "city-liquidity-heatmap": { label: "City Liquidity Heatmap", category: "Operations" },
   "premium-listings-monetization": { label: "Premium Listings Monetization", category: "Operations" },
+  "founder-mobile-warroom": { label: "Founder Mobile War-Room", category: "Operations" },
 };
