@@ -614,6 +614,12 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "buyer-viewing-feedback": () => <BuyerViewingFeedbackPanel />,
   "monthly-liquidity-domination": () => <MonthlyLiquidityDominancePanel />,
 
+  // Market Competitiveness & Expansion Readiness
+  "district-price-competitiveness": () => <DistrictPriceCompetitivenessMonitor />,
+  "urgent-deal-rescue": () => <UrgentDealRescuePanel />,
+  "agent-training-coaching": () => <AgentTrainingCoachingDashboard />,
+  "quarterly-expansion-readiness": () => <QuarterlyExpansionReadinessPanel />,
+
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
   "social-media-settings": () => <SocialMediaSettings />,
