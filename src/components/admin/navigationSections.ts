@@ -1219,6 +1219,13 @@ export const navigationSections = {
       badge: "🤝 Deals"
     },
     {
+      key: "offer-negotiation-blueprint",
+      label: "Offer Negotiation & Lead Distribution",
+      icon: Scale,
+      description: "Negotiation support, fair lead allocation & district leadership PR",
+      badge: "⚖️ Fair"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
