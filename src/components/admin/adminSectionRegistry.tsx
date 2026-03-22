@@ -125,6 +125,10 @@ export const PostClosingOwnershipDashboard = lazyRetry(() => import("./PostClosi
 export const InvestorPortfolioTracking = lazyRetry(() => import("./InvestorPortfolioTracking"));
 export const RentalYieldMonitoring = lazyRetry(() => import("./RentalYieldMonitoring"));
 export const SmartPropertyRecommendationEngine = lazyRetry(() => import("./SmartPropertyRecommendationEngine"));
+export const SmartRenovationROICalculator = lazyRetry(() => import("./SmartRenovationROICalculator"));
+export const PropertyInsuranceComparison = lazyRetry(() => import("./PropertyInsuranceComparison"));
+export const ResaleOpportunityDashboard = lazyRetry(() => import("./ResaleOpportunityDashboard"));
+export const FamilyWealthTransferPlanner = lazyRetry(() => import("./FamilyWealthTransferPlanner"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
@@ -687,6 +691,10 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "investor-portfolio-tracking": () => <InvestorPortfolioTracking />,
   "rental-yield-monitoring": () => <RentalYieldMonitoring />,
   "smart-property-recommendations": () => <SmartPropertyRecommendationEngine />,
+  "renovation-roi-calculator": () => <SmartRenovationROICalculator />,
+  "insurance-comparison": () => <PropertyInsuranceComparison />,
+  "resale-opportunity": () => <ResaleOpportunityDashboard />,
+  "wealth-transfer-planner": () => <FamilyWealthTransferPlanner />,
 
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
@@ -1602,4 +1610,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "deal-ops-closing": { label: "Deal Operations & Closing Management", category: "Operations" },
   "performance-deal-warroom": { label: "Performance & Deal War-Room", category: "Operations" },
   "supply-growth-deal-acceleration": { label: "Supply Growth & Deal Acceleration", category: "Operations" },
+  "renovation-roi-calculator": { label: "Renovation ROI Calculator", category: "Operations" },
+  "insurance-comparison": { label: "Insurance Comparison", category: "Operations" },
+  "resale-opportunity": { label: "Resale Opportunity Dashboard", category: "Operations" },
+  "wealth-transfer-planner": { label: "Family Wealth Transfer Planner", category: "Operations" },
 };

@@ -129,7 +129,8 @@ import {
   Crosshair,
   Upload,
   PartyPopper,
-  Briefcase
+  Briefcase,
+  Hammer
 } from "lucide-react";
 
 export interface NavigationSection {
@@ -1255,6 +1256,34 @@ export const navigationSections = {
       icon: Sparkles,
       description: "AI-powered opportunity discovery — ROI projections, liquidity scores & growth alerts",
       badge: "✨ AI Recs"
+    },
+    {
+      key: "renovation-roi-calculator",
+      label: "Renovation ROI Calculator",
+      icon: Hammer,
+      description: "Estimate value uplift from renovation improvements — cost vs value, payback period & market demand",
+      badge: "🔨 ROI"
+    },
+    {
+      key: "insurance-comparison",
+      label: "Insurance Comparison",
+      icon: Shield,
+      description: "Compare property insurance options — coverage scope, premiums, claim reliability & risk exposure",
+      badge: "🛡️ Insurance"
+    },
+    {
+      key: "resale-opportunity",
+      label: "Resale Opportunity",
+      icon: TrendingUp,
+      description: "Identify optimal resale timing — market demand, appreciation trends & profit scenarios",
+      badge: "📈 Resale"
+    },
+    {
+      key: "wealth-transfer-planner",
+      label: "Wealth Transfer Planner",
+      icon: Crown,
+      description: "Plan generational wealth transfer — beneficiary allocation, tax implications & legal readiness",
+      badge: "👨‍👩‍👧‍👦 Legacy"
     },
     {
       key: "ai-copilot",
