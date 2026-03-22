@@ -30560,6 +30560,42 @@ export type Database = {
         }
         Relationships: []
       }
+      kyc_provider_config: {
+        Row: {
+          api_endpoint: string | null
+          config: Json | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          provider_name: string
+          provider_type: string
+          updated_at: string | null
+          webhook_endpoint: string | null
+        }
+        Insert: {
+          api_endpoint?: string | null
+          config?: Json | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          provider_name: string
+          provider_type?: string
+          updated_at?: string | null
+          webhook_endpoint?: string | null
+        }
+        Update: {
+          api_endpoint?: string | null
+          config?: Json | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          provider_name?: string
+          provider_type?: string
+          updated_at?: string | null
+          webhook_endpoint?: string | null
+        }
+        Relationships: []
+      }
       kyc_verifications: {
         Row: {
           created_at: string
@@ -50366,6 +50402,7 @@ export type Database = {
       server_login_attempts: {
         Row: {
           city: string | null
+          continent_code: string | null
           country: string | null
           created_at: string
           device_fingerprint: string | null
@@ -50381,6 +50418,7 @@ export type Database = {
         }
         Insert: {
           city?: string | null
+          continent_code?: string | null
           country?: string | null
           created_at?: string
           device_fingerprint?: string | null
@@ -50396,6 +50434,7 @@ export type Database = {
         }
         Update: {
           city?: string | null
+          continent_code?: string | null
           country?: string | null
           created_at?: string
           device_fingerprint?: string | null
@@ -50778,6 +50817,39 @@ export type Database = {
           owner_id?: string
           search_id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      signup_attempts: {
+        Row: {
+          block_reason: string | null
+          created_at: string | null
+          device_fingerprint: string | null
+          email: string | null
+          id: string
+          ip_address: string
+          is_blocked: boolean | null
+          signup_risk_score: number | null
+        }
+        Insert: {
+          block_reason?: string | null
+          created_at?: string | null
+          device_fingerprint?: string | null
+          email?: string | null
+          id?: string
+          ip_address: string
+          is_blocked?: boolean | null
+          signup_risk_score?: number | null
+        }
+        Update: {
+          block_reason?: string | null
+          created_at?: string | null
+          device_fingerprint?: string | null
+          email?: string | null
+          id?: string
+          ip_address?: string
+          is_blocked?: boolean | null
+          signup_risk_score?: number | null
         }
         Relationships: []
       }
@@ -54248,6 +54320,45 @@ export type Database = {
           related_keywords?: string[] | null
           topic?: string
           trend_score?: number | null
+        }
+        Relationships: []
+      }
+      trusted_devices: {
+        Row: {
+          browser: string | null
+          device_fingerprint: string
+          device_name: string | null
+          device_type: string | null
+          id: string
+          is_active: boolean | null
+          last_used_at: string | null
+          os: string | null
+          trusted_at: string | null
+          user_id: string
+        }
+        Insert: {
+          browser?: string | null
+          device_fingerprint: string
+          device_name?: string | null
+          device_type?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_used_at?: string | null
+          os?: string | null
+          trusted_at?: string | null
+          user_id: string
+        }
+        Update: {
+          browser?: string | null
+          device_fingerprint?: string
+          device_name?: string | null
+          device_type?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_used_at?: string | null
+          os?: string | null
+          trusted_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }
