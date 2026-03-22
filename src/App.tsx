@@ -550,6 +550,7 @@ const AppContent = () => {
                 <Route path="/favorites" element={<Saved />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/astra-tokens" element={<AstraTokensPage />} />
                 <Route path="/services" element={<Services />} />
                 <Route path="/services/category/:categoryId" element={<ServiceCategory />} />
