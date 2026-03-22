@@ -29,9 +29,10 @@ export const kycProviderAdapter = {
       .limit(1)
       .maybeSingle();
 
+    const row = data as any;
     return {
-      name: (data?.provider_type as KYCProvider) || 'manual',
-      config: (data?.config as Record<string, any>) || {},
+      name: (row?.provider_type as KYCProvider) || 'manual',
+      config: (row?.config as Record<string, any>) || {},
     };
   },
 
