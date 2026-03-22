@@ -633,6 +633,11 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "agent-referral-growth-flywheel": () => <AgentReferralGrowthFlywheel />,
   "annual-market-leadership": () => <AnnualMarketLeadershipProgress />,
 
+  // Automation & Competitive Intelligence
+  "ai-dynamic-pricing-engine": () => <AIDynamicPricingEngine />,
+  "buyer-seller-matching": () => <BuyerSellerMatchingNotifications />,
+  "competitive-market-intelligence": () => <CompetitiveMarketIntelligence />,
+
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
   "social-media-settings": () => <SocialMediaSettings />,
