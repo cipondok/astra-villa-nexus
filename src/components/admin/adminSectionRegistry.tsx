@@ -1226,4 +1226,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "viewing-conversion-blueprint": { label: "Viewing Conversion & Dev Partners", category: "Strategy" },
   "offer-negotiation-blueprint": { label: "Offer Negotiation & Lead Distribution", category: "Strategy" },
   "buyer-financing-blueprint": { label: "Buyer Financing & Premium Upsell", category: "Strategy" },
+  "buyer-offer-confidence": { label: "Buyer Offer Confidence & Price Intel", category: "Strategy" },
 };

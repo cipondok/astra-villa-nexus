@@ -1234,6 +1234,13 @@ export const navigationSections = {
       badge: "💰 Revenue"
     },
     {
+      key: "buyer-offer-confidence",
+      label: "Buyer Offer Confidence & Price Intel",
+      icon: ThumbsUp,
+      description: "Offer confidence builders, vendor portfolio expansion & district price intelligence",
+      badge: "👍 Confidence"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
