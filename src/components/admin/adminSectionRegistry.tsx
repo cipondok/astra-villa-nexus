@@ -1451,4 +1451,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "agent-network-growth": { label: "Agent Network Growth", category: "Operations" },
   "deal-pipeline-crm": { label: "Deal Pipeline CRM", category: "Operations" },
   "city-liquidity-heatmap": { label: "City Liquidity Heatmap", category: "Operations" },
+  "premium-listings-monetization": { label: "Premium Listings Monetization", category: "Operations" },
 };
