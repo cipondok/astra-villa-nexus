@@ -1337,4 +1337,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "national-category-domination-profitability-preipo": { label: "National Domination & Pre-IPO", category: "Strategy" },
   "ipo-roadshow-capital-allocation-autonomous-os": { label: "IPO Roadshow & Autonomous OS", category: "Strategy" },
   "public-market-category-global-liquidity-century-vision": { label: "Category Creation & Century Vision", category: "Strategy" },
+  "first-100-deals-cashflow-stress-proof": { label: "First 100 Deals & Survival", category: "Strategy" },
 };
