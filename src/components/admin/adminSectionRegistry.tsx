@@ -137,6 +137,10 @@ export const RiskStressTestingSimulator = lazyRetry(() => import("./RiskStressTe
 export const LiquidityExitStrategyPlanner = lazyRetry(() => import("./LiquidityExitStrategyPlanner"));
 export const DevOpportunityAnalyzer = lazyRetry(() => import("./DevOpportunityAnalyzer"));
 export const GlobalLeadershipNarrative = lazyRetry(() => import("./GlobalLeadershipNarrative"));
+export const GlobalLiquidityCoordination = lazyRetry(() => import("./GlobalLiquidityCoordination"));
+export const PlanetaryEconomicImpact = lazyRetry(() => import("./PlanetaryEconomicImpact"));
+export const FounderLegacyCivilization = lazyRetry(() => import("./FounderLegacyCivilization"));
+export const PublicMarketInvestorStory = lazyRetry(() => import("./PublicMarketInvestorStory"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
@@ -711,6 +715,10 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "liquidity-exit-strategy": () => <LiquidityExitStrategyPlanner />,
   "dev-opportunity-analyzer": () => <DevOpportunityAnalyzer />,
   "global-leadership-narrative": () => <GlobalLeadershipNarrative />,
+  "global-liquidity-coordination": () => <GlobalLiquidityCoordination />,
+  "planetary-economic-impact": () => <PlanetaryEconomicImpact />,
+  "founder-legacy-civilization": () => <FounderLegacyCivilization />,
+  "public-market-investor-story": () => <PublicMarketInvestorStory />,
 
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
@@ -1638,4 +1646,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "liquidity-exit-strategy": { label: "Liquidity Exit Strategy Planner", category: "Operations" },
   "dev-opportunity-analyzer": { label: "Development Opportunity Analyzer", category: "Operations" },
   "global-leadership-narrative": { label: "Global Leadership Narrative", category: "Operations" },
+  "global-liquidity-coordination": { label: "Global Liquidity Coordination", category: "Operations" },
+  "planetary-economic-impact": { label: "Planetary Economic Impact", category: "Operations" },
+  "founder-legacy-civilization": { label: "Founder Legacy Civilization", category: "Operations" },
+  "public-market-investor-story": { label: "Public Market Investor Story", category: "Operations" },
 };

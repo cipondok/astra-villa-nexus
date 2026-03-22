@@ -1342,6 +1342,34 @@ export const navigationSections = {
       badge: "🏆 Vision"
     },
     {
+      key: "global-liquidity-coordination",
+      label: "Global Liquidity Coordination",
+      icon: Globe,
+      description: "Autonomous global transaction synchronization — liquidity clusters, capital velocity & cross-regional efficiency",
+      badge: "🌐 Infrastructure"
+    },
+    {
+      key: "planetary-economic-impact",
+      label: "Planetary Economic Impact",
+      icon: TrendingUp,
+      description: "Macro simulation of marketplace expansion impact — housing accessibility, productivity uplift & infrastructure influence",
+      badge: "🌍 Macro"
+    },
+    {
+      key: "founder-legacy-civilization",
+      label: "Founder Legacy Strategy",
+      icon: Crown,
+      description: "Multi-decade evolution planning — 10/25/50-year horizons, innovation roadmap & institutionalization readiness",
+      badge: "♛ Century"
+    },
+    {
+      key: "public-market-investor-story",
+      label: "Investor Story Dashboard",
+      icon: BarChart3,
+      description: "Public market narrative analytics — revenue trajectory, moat strength, IPO timeline & institutional confidence",
+      badge: "📈 Narrative"
+    },
+    {
       key: "ai-copilot",
       label: "AI Co-Pilot",
       icon: Brain,
