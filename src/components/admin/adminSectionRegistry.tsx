@@ -293,6 +293,7 @@ export const FounderAICopilotGlobalIntel = lazyRetry(() => import("./FounderAICo
 export const PlanetaryIntelligenceCivilizationOS = lazyRetry(() => import("./PlanetaryIntelligenceCivilizationOS"));
 export const FirstTractionExecutionDashboard = lazyRetry(() => import("./FirstTractionExecutionDashboard"));
 export const DealOpsClosingManagement = lazyRetry(() => import("./DealOpsClosingManagement"));
+export const PerformanceDealWarRoom = lazyRetry(() => import("./PerformanceDealWarRoom"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
