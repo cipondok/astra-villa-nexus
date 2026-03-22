@@ -1250,4 +1250,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "repeat-buyer-pipeline": { label: "Repeat Buyer & Agent Pipeline Forecast", category: "Strategy" },
   "buyer-nurture-listing": { label: "Buyer Nurture & Listing Performance", category: "Strategy" },
   "buyer-decision-district": { label: "Buyer Decision Deadline & District Expansion", category: "Strategy" },
+  "second-viewing-leaderboard": { label: "Second Viewing & Agent Leaderboard", category: "Strategy" },
 };
