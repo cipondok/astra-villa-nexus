@@ -123,7 +123,7 @@ export const InvestorDemoMode = ({ isActive, onClose }: InvestorDemoModeProps) =
             <div className="flex items-center gap-3">
               {/* Scene dots */}
               <div className="flex items-center gap-1.5">
-                {[0, 1, 2, 3].map(s => (
+                {[0, 1, 2, 3, 4].map(s => (
                   <button
                     key={s}
                     onClick={() => goScene(s)}
