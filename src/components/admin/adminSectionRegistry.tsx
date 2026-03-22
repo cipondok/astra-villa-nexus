@@ -261,6 +261,10 @@ export const PlanetaryExpansionSimulator = lazyRetry(() => import("./PlanetaryEx
 export const AICapitalAllocationBrain = lazyRetry(() => import("./AICapitalAllocationBrain"));
 export const FounderWarRoom = lazyRetry(() => import("./FounderWarRoom"));
 export const GlobalInfrastructureVision = lazyRetry(() => import("./GlobalInfrastructureVision"));
+export const CivilizationMarketGrid = lazyRetry(() => import("./CivilizationMarketGrid"));
+export const AutonomousTransactionEngine = lazyRetry(() => import("./AutonomousTransactionEngine"));
+export const FounderLegacyNarrative = lazyRetry(() => import("./FounderLegacyNarrative"));
+export const CenturyEvolutionSimulator = lazyRetry(() => import("./CenturyEvolutionSimulator"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
