@@ -128,7 +128,10 @@ import {
   Timer,
   Crosshair,
   Upload,
-  PartyPopper
+  PartyPopper,
+  Briefcase,
+  Wallet,
+  Sparkles
 } from "lucide-react";
 
 export interface NavigationSection {
