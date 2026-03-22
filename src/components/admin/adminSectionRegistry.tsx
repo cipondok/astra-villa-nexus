@@ -391,6 +391,7 @@ export const Revenue1MNationalIPOBlueprint = lazyRetry(() => import("./Revenue1M
 export const GlobalLeadershipValuationLiquidityGridBlueprint = lazyRetry(() => import("./GlobalLeadershipValuationLiquidityGridBlueprint"));
 export const GlobalIPOAllianceIntelligenceBlueprint = lazyRetry(() => import("./GlobalIPOAllianceIntelligenceBlueprint"));
 export const DailyGlobalRevenueSprintClarityBlueprint = lazyRetry(() => import("./DailyGlobalRevenueSprintClarityBlueprint"));
+export const GlobalFounderWarRoomDealExpansionBlueprint = lazyRetry(() => import("./GlobalFounderWarRoomDealExpansionBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
@@ -867,6 +868,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "global-leadership-valuation-grid": () => <GlobalLeadershipValuationLiquidityGridBlueprint />,
   "global-ipo-alliance-intelligence": () => <GlobalIPOAllianceIntelligenceBlueprint />,
   "daily-global-revenue-sprint-clarity": () => <DailyGlobalRevenueSprintClarityBlueprint />,
+  "global-founder-warroom-deal-expansion": () => <GlobalFounderWarRoomDealExpansionBlueprint />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
@@ -1308,4 +1310,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-leadership-valuation-grid": { label: "Global Leadership & Autonomous Grid", category: "Strategy" },
   "global-ipo-alliance-intelligence": { label: "Global IPO & Alliance Command", category: "Strategy" },
   "daily-global-revenue-sprint-clarity": { label: "Daily Global Revenue & Founder Clarity", category: "Strategy" },
+  "global-founder-warroom-deal-expansion": { label: "Global War-Room & Deal Expansion", category: "Strategy" },
 };
