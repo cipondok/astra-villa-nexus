@@ -1340,4 +1340,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ipo-roadshow-capital-allocation-autonomous-os": { label: "IPO Roadshow & Autonomous OS", category: "Strategy" },
   "public-market-category-global-liquidity-century-vision": { label: "Category Creation & Century Vision", category: "Strategy" },
   "first-100-deals-cashflow-stress-proof": { label: "First 100 Deals & Survival", category: "Strategy" },
+  "first-20-buyers-agent-hustle-local-takeover": { label: "First 20 Buyers & Local Takeover", category: "Strategy" },
 };
