@@ -707,6 +707,10 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "economic-trend-forecasting": () => <EconomicTrendForecasting />,
   "smart-financing-optimization": () => <SmartFinancingOptimization />,
   "institutional-syndication": () => <InstitutionalSyndication />,
+  "risk-stress-testing": () => <RiskStressTestingSimulator />,
+  "liquidity-exit-strategy": () => <LiquidityExitStrategyPlanner />,
+  "dev-opportunity-analyzer": () => <DevOpportunityAnalyzer />,
+  "global-leadership-narrative": () => <GlobalLeadershipNarrative />,
 
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
