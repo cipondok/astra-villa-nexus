@@ -315,6 +315,12 @@ html, body {
     --panel-glow-accent: 43 96% 50%;
     --panel-shadow: 0 1px 3px hsl(220 20% 12% / 0.06), 0 0 0 1px hsl(220 13% 86% / 0.8);
     --panel-shadow-hover: 0 4px 12px hsl(220 20% 12% / 0.08), 0 0 0 1px hsl(43 96% 50% / 0.15);
+
+    /* Sidebar (light mode) */
+    --sidebar-background: 220 16% 97%;
+    --sidebar-foreground: 220 25% 12%;
+    --sidebar-accent: 220 14% 94%;
+    --sidebar-accent-foreground: 220 25% 12%;
   }
 
   .dark {
