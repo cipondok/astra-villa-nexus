@@ -42,6 +42,18 @@ const GlobalLoadingIndicator = lazy(() => import('@/components/ui/GlobalLoadingI
 
 const ResponsiveAIChatWidget = lazy(() => import('@/components/ai/ResponsiveAIChatWidget'));
 
+const ChatWidgetGuard = () => {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith('/admin');
+  if (isAdmin) return null;
+  return (
+    <ResponsiveAIChatWidget 
+      showScrollButton={true}
+      onScrollToTop={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+    />
+  );
+};
+
 const WhatsAppInquiryButton = lazy(() => import('@/components/WhatsAppInquiryButton'));
 const FloatingThemeToggle = lazy(() => import('@/components/FloatingThemeToggle'));
 const MobileBottomTabBar = lazy(() => import('@/components/navigation/MobileBottomTabBar'));
@@ -1121,10 +1133,7 @@ function App() {
                             <Sonner />
                             <CookieSystem />
                             <Suspense fallback={null}>
-                              <ResponsiveAIChatWidget 
-                                showScrollButton={true}
-                                onScrollToTop={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                              />
+                              <ChatWidgetGuard />
                               
                               <WhatsAppInquiryButton variant="floating" defaultType="general" />
                               
