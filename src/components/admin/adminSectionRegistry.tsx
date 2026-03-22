@@ -888,6 +888,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ipo-roadshow-capital-allocation-autonomous-os": () => <IPORoadshowCapitalAllocationAutonomousOS />,
   "public-market-category-global-liquidity-century-vision": () => <PublicMarketCategoryGlobalLiquidityCenturyVision />,
   "first-100-deals-cashflow-stress-proof": () => <First100DealsCashflowStressProof />,
+  "first-20-buyers-agent-hustle-local-takeover": () => <First20BuyersAgentHustleLocalTakeover />,
   "hyper-execution-plan":       () => <HyperExecutionPlan />,
   "ninety-day-master-plan":     () => <NinetyDayMasterPlan />,
   "uiux-redesign-blueprint":    () => <UIUXRedesignBlueprint />,
