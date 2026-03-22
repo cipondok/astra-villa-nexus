@@ -1265,7 +1265,7 @@ export const navigationSections = {
     {
       key: "fast-deal-cycle-liquidity",
       label: "Fast Deal Cycle & Liquidity Score",
-      icon: Timer,
+      icon: Activity,
       description: "Deal cycle optimization, ethical competition signals & district liquidity scoring system",
       badge: "⚡ Speed"
     },
