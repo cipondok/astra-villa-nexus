@@ -137,6 +137,10 @@ export const RiskStressTestingSimulator = lazyRetry(() => import("./RiskStressTe
 export const LiquidityExitStrategyPlanner = lazyRetry(() => import("./LiquidityExitStrategyPlanner"));
 export const DevOpportunityAnalyzer = lazyRetry(() => import("./DevOpportunityAnalyzer"));
 export const GlobalLeadershipNarrative = lazyRetry(() => import("./GlobalLeadershipNarrative"));
+export const GlobalLiquidityCoordination = lazyRetry(() => import("./GlobalLiquidityCoordination"));
+export const PlanetaryEconomicImpact = lazyRetry(() => import("./PlanetaryEconomicImpact"));
+export const FounderLegacyCivilization = lazyRetry(() => import("./FounderLegacyCivilization"));
+export const PublicMarketInvestorStory = lazyRetry(() => import("./PublicMarketInvestorStory"));
 export const CarouselSettingsManager = lazyRetry(() => import("./CarouselSettingsManager"));
 export const ProjectMapVisualization = lazyRetry(() => import("./ProjectMapVisualization"));
 export const CookieConsentSettings = lazyRetry(() => import("./CookieConsentSettings"));
