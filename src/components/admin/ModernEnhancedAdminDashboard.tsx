@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { DemoModeProvider } from "@/contexts/DemoModeContext";
 import AIIntelligenceSystem from "./AIIntelligenceSystem";
 import { InvestorDemoMode } from "./InvestorDemoMode";
+import DecacornNarrativeMode from "./DecacornNarrativeMode";
 
 const DemoModeController = lazy(() => import("./demo/DemoModeController"));
 const DemoModeOverlay = lazy(() => import("./demo/DemoModeOverlay"));
