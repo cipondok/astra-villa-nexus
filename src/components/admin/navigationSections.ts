@@ -1306,6 +1306,13 @@ export const navigationSections = {
       badge: "🧠 Closing"
     },
     {
+      key: "post-deal-loyalty-mega",
+      label: "Post-Deal Loyalty & Mega-Portfolio",
+      icon: Heart,
+      description: "Customer lifecycle retention, large-scale supply acquisition & hyper-liquidity weekend campaigns",
+      badge: "❤️ Retention"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
