@@ -89,7 +89,7 @@ export const InvestorDemoMode = ({ isActive, onClose }: InvestorDemoModeProps) =
   useEffect(() => {
     if (!isActive) { setScene(0); return; }
     const timer = setInterval(() => {
-      setScene(prev => (prev < 3 ? prev + 1 : prev));
+      setScene(prev => (prev < 4 ? prev + 1 : prev));
     }, 6000);
     return () => clearInterval(timer);
   }, [isActive]);
@@ -123,7 +123,7 @@ export const InvestorDemoMode = ({ isActive, onClose }: InvestorDemoModeProps) =
             <div className="flex items-center gap-3">
               {/* Scene dots */}
               <div className="flex items-center gap-1.5">
-                {[0, 1, 2, 3].map(s => (
+                {[0, 1, 2, 3, 4].map(s => (
                   <button
                     key={s}
                     onClick={() => goScene(s)}
@@ -280,6 +280,67 @@ export const InvestorDemoMode = ({ isActive, onClose }: InvestorDemoModeProps) =
                   </div>
                 </Scene>
               )}
+
+              {scene === 4 && (
+                <Scene key="s4" title="Revenue Momentum">
+                  <div className="max-w-2xl mx-auto">
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.2 }}
+                      className="text-center text-[9px] text-muted-foreground uppercase tracking-widest mb-6"
+                    >
+                      Projected GMV Acceleration After AI Optimization
+                    </motion.p>
+                    <div className="flex items-end justify-center gap-3 h-48">
+                      {[
+                        { label: 'Q1', base: 20, ai: 28 },
+                        { label: 'Q2', base: 35, ai: 52 },
+                        { label: 'Q3', base: 48, ai: 78 },
+                        { label: 'Q4', base: 58, ai: 105 },
+                        { label: 'Q5', base: 65, ai: 138 },
+                        { label: 'Q6', base: 72, ai: 180 },
+                      ].map((q, i) => (
+                        <div key={q.label} className="flex flex-col items-center gap-1">
+                          <div className="flex items-end gap-1">
+                            <motion.div
+                              initial={{ height: 0 }}
+                              animate={{ height: q.base * 1.5 }}
+                              transition={{ delay: 0.3 + i * 0.15, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+                              className="w-5 rounded-t-sm bg-muted-foreground/20"
+                            />
+                            <motion.div
+                              initial={{ height: 0 }}
+                              animate={{ height: q.ai * 1.2 }}
+                              transition={{ delay: 0.5 + i * 0.15, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+                              className="w-5 rounded-t-sm bg-primary"
+                            />
+                          </div>
+                          <span className="text-[8px] text-muted-foreground">{q.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex items-center justify-center gap-6 mt-4">
+                      <div className="flex items-center gap-1.5">
+                        <span className="h-2 w-4 rounded-sm bg-muted-foreground/20" />
+                        <span className="text-[9px] text-muted-foreground">Baseline Growth</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="h-2 w-4 rounded-sm bg-primary" />
+                        <span className="text-[9px] text-muted-foreground">AI-Optimized GMV</span>
+                      </div>
+                    </div>
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 2 }}
+                      className="text-center text-[10px] text-foreground font-medium mt-6"
+                    >
+                      2.5x revenue acceleration through autonomous intelligence
+                    </motion.p>
+                  </div>
+                </Scene>
+              )}
             </AnimatePresence>
           </div>
 
@@ -298,9 +359,9 @@ export const InvestorDemoMode = ({ isActive, onClose }: InvestorDemoModeProps) =
               variant="ghost"
               size="sm"
               className="h-7 text-[10px] gap-1"
-              onClick={() => scene < 3 ? setScene(s => s + 1) : onClose()}
+              onClick={() => scene < 4 ? setScene(s => s + 1) : onClose()}
             >
-              {scene < 3 ? 'Next' : 'Exit'} <ChevronRight className="h-3 w-3" />
+              {scene < 4 ? 'Next' : 'Exit'} <ChevronRight className="h-3 w-3" />
             </Button>
           </div>
         </motion.div>

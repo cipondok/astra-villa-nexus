@@ -250,6 +250,9 @@ export const HyperGrowthKPIPanel = lazyRetry(() => import("./HyperGrowthKPIPanel
 export const SmartRecommendationPanel = lazyRetry(() => import("./SmartRecommendationPanel"));
 export const CommissionOptimizationPanel = lazyRetry(() => import("./CommissionOptimizationPanel"));
 export const ListingOptimizationAIPanel = lazyRetry(() => import("./ListingOptimizationAIPanel"));
+export const AIRevenueBrainDashboard = lazyRetry(() => import("./AIRevenueBrainDashboard"));
+export const PlanetScaleMapEngine = lazyRetry(() => import("./PlanetScaleMapEngine"));
+export const VendorEconomySimulation = lazyRetry(() => import("./VendorEconomySimulation"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -793,6 +796,9 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "first-1m-revenue-system":     () => <FirstMillionRevenueSystem />,
   "decacorn-valuation":          () => <DecacornValuationInterface />,
   "ai-growth-brain":             () => <AIGrowthBrainDashboard />,
+  "ai-revenue-brain":            () => <AIRevenueBrainDashboard />,
+  "planet-scale-map":            () => <PlanetScaleMapEngine />,
+  "vendor-economy-simulation":   () => <VendorEconomySimulation />,
   "global-expansion-control":    () => <GlobalExpansionControl />,
   "ipo-readiness-metrics":       () => <IPOReadinessMetrics />,
   "founder-war-room":            () => <FounderWarRoom />,
@@ -1362,4 +1368,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "first-100-deals-cashflow-stress-proof": { label: "First 100 Deals & Survival", category: "Strategy" },
   "first-20-buyers-agent-hustle-local-takeover": { label: "First 20 Buyers & Local Takeover", category: "Strategy" },
   "first-10-deals-viewing-psychology-agent-motivation": { label: "First 10 Deals & Viewing Psychology", category: "Strategy" },
+  "ai-revenue-brain": { label: "AI Revenue Brain", category: "AI Intelligence" },
+  "planet-scale-map": { label: "Planet-Scale Intelligence Map", category: "AI Intelligence" },
+  "vendor-economy-simulation": { label: "Vendor Economy Simulation", category: "AI Intelligence" },
 };
