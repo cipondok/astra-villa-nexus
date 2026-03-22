@@ -1424,4 +1424,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "autonomous-urban-growth": { label: "Autonomous Urban Growth Intelligence", category: "AI Intelligence" },
   "founder-global-influence": { label: "Founder Global Influence Narrative", category: "AI Intelligence" },
   "post-marketplace-evolution": { label: "Post-Marketplace Evolution", category: "AI Intelligence" },
+  "planetary-habitat-grid": { label: "Planetary Habitat Intelligence", category: "AI Intelligence" },
+  "global-asset-liquidity": { label: "Global Asset Liquidity Network", category: "AI Intelligence" },
+  "founder-intergenerational": { label: "Founder Intergenerational Impact", category: "AI Intelligence" },
+  "macro-policy-simulator": { label: "Macro Policy Simulator", category: "AI Intelligence" },
 };
