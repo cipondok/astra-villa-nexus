@@ -662,6 +662,12 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "buyer-search-conversion": () => <BuyerSearchConversion />,
   "agent-training-portal": () => <AgentTrainingPortal />,
 
+  // Property Viewing, Seller Insight & Deal Interaction
+  "buyer-viewing-booking": () => <BuyerViewingBookingFlow />,
+  "seller-performance-insight": () => <SellerPerformanceInsight />,
+  "agent-mobile-home": () => <AgentMobileHomeScreen />,
+  "deal-offer-submission": () => <DealOfferSubmissionFlow />,
+
   "homepage-slider":     () => <SystemSettings defaultTab="hero-slider" />,
   "carousel-settings":   () => <CarouselSettingsManager />,
   "social-media-settings": () => <SocialMediaSettings />,
