@@ -275,6 +275,13 @@ export const navigationSections = {
       icon: Target,
       description: "30-day traction tracker, agent outreach scripts, buyer conversion assistant, and $100K revenue milestone tracker",
       badge: "🚀 Execution"
+    },
+    {
+      key: "deal-ops-closing",
+      label: "Deal Ops & Closing",
+      icon: ClipboardList,
+      description: "Agent follow-ups, viewing calendar, negotiation CRM, and closing checklist automation",
+      badge: "⚡ Ops"
     }
   ],
 
