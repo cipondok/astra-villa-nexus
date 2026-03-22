@@ -1220,4 +1220,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "1000-daily-visitors": { label: "1,000 Daily Visitors", category: "Strategy" },
   "buyer-trust-blueprint": { label: "Buyer Trust & Follow-Up", category: "Strategy" },
   "viewing-conversion-blueprint": { label: "Viewing Conversion & Dev Partners", category: "Strategy" },
+  "offer-negotiation-blueprint": { label: "Offer Negotiation & Lead Distribution", category: "Strategy" },
 };
