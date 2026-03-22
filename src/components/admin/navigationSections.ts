@@ -1456,6 +1456,34 @@ export const navigationSections = {
       badge: "🛡️ SRE"
     },
     {
+      key: "cost-optimization-dashboard",
+      label: "Cost Optimization",
+      icon: TrendingUp,
+      description: "Cloud cost tracking — per-user & per-transaction costs, service breakdown, efficiency ratios & optimization alerts",
+      badge: "💰 FinOps"
+    },
+    {
+      key: "dev-velocity-tracker",
+      label: "Dev Velocity Tracker",
+      icon: Rocket,
+      description: "Engineering throughput — sprint velocity, deploy frequency, PR cycle time & release history",
+      badge: "🚀 DevOps"
+    },
+    {
+      key: "ai-model-governance",
+      label: "AI Model Governance",
+      icon: Brain,
+      description: "MLOps oversight — model accuracy trends, data drift detection, retraining cycles & AI decision audit log",
+      badge: "🧠 MLOps"
+    },
+    {
+      key: "ux-quality-monitoring",
+      label: "UX Quality Monitoring",
+      icon: Monitor,
+      description: "User experience — Core Web Vitals, conversion funnel, error rates, drop-off analysis & optimization priorities",
+      badge: "🎯 UX"
+    },
+    {
       key: "ai-copilot",
       label: "AI Co-Pilot",
       icon: Brain,

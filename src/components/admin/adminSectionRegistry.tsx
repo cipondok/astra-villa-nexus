@@ -1694,4 +1694,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "data-warehouse-analytics": { label: "Data Warehouse & Analytics", category: "Operations" },
   "load-testing-simulator": { label: "Load Testing Simulator", category: "Operations" },
   "incident-reliability-dashboard": { label: "Incident & Reliability", category: "Operations" },
+  "cost-optimization-dashboard": { label: "Cost Optimization", category: "Operations" },
+  "dev-velocity-tracker": { label: "Dev Velocity Tracker", category: "Operations" },
+  "ai-model-governance": { label: "AI Model Governance", category: "Operations" },
+  "ux-quality-monitoring": { label: "UX Quality Monitoring", category: "Operations" },
 };
