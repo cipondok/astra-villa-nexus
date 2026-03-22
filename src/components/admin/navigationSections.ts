@@ -1334,6 +1334,13 @@ export const navigationSections = {
       badge: "👑 National"
     },
     {
+      key: "pre-unicorn-global-brand-os",
+      label: "Pre-Unicorn Growth & Marketplace OS",
+      icon: Rocket,
+      description: "Hyper-growth acceleration, global brand authority & marketplace operating system architecture",
+      badge: "🦄 Pre-Unicorn"
+    },
+    {
       key: "vendor-intelligence-engine",
       label: "Vendor Intelligence Engine",
       icon: Store,
