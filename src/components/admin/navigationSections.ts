@@ -1453,6 +1453,13 @@ export const navigationSections = {
       badge: "🎯 1K Deals"
     },
     {
+      key: "first-10k-listings-buyer-pipeline-warroom",
+      label: "10K Listings & Deal War-Room",
+      icon: Home,
+      description: "10,000-listing growth engine, serious buyer pipeline scaling & deal closure KPI war-room",
+      badge: "🏠 10K Supply"
+    },
+    {
       label: "Vendor Intelligence Engine",
       icon: Store,
       description: "Smart routing, performance scoring, SLA monitoring & supply gap detection",
