@@ -370,6 +370,7 @@ export const OfferAcceptanceBlueprint = lazyRetry(() => import("./OfferAcceptanc
 export const FastDealCycleBlueprint = lazyRetry(() => import("./FastDealCycleBlueprint"));
 export const RepeatBuyerPipelineBlueprint = lazyRetry(() => import("./RepeatBuyerPipelineBlueprint"));
 export const BuyerNurtureListingBlueprint = lazyRetry(() => import("./BuyerNurtureListingBlueprint"));
+export const BuyerDecisionDistrictBlueprint = lazyRetry(() => import("./BuyerDecisionDistrictBlueprint"));
 export const HyperExecutionPlan = lazyRetry(() => import("./HyperExecutionPlan"));
 export const NinetyDayMasterPlan = lazyRetry(() => import("./NinetyDayMasterPlan"));
 export const UIUXRedesignBlueprint = lazyRetry(() => import("./UIUXRedesignBlueprint"));
