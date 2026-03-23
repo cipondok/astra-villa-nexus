@@ -14,61 +14,115 @@ function json(body: unknown, status = 200) {
   });
 }
 
-// ── ANGLE DEFINITIONS ──
+// ── ANGLE DEFINITIONS (buildings) ──
 const ANGLE_DEFINITIONS: Record<string, { label: string; stage: number; promptSuffix: string }> = {
   main_exterior_front: {
-    label: "Front Exterior",
-    stage: 1,
+    label: "Front Exterior", stage: 1,
     promptSuffix: "Front façade professional real estate photography, straight-on composition, showcasing entrance and full building width, clear sky background.",
   },
   exterior_angle_side: {
-    label: "Side Angle",
-    stage: 2,
+    label: "Side Angle", stage: 2,
     promptSuffix: "Wide-angle perspective from corner view showing depth and architectural volume, emphasizing building scale and side garden or landscape.",
   },
   aerial_drone_view: {
-    label: "Aerial Drone",
-    stage: 2,
+    label: "Aerial Drone", stage: 2,
     promptSuffix: "Top-down cinematic drone shot at 45-degree angle showing roof, surrounding area, neighborhood context, and property boundaries.",
   },
   lifestyle_environment_view: {
-    label: "Lifestyle",
-    stage: 3,
+    label: "Lifestyle", stage: 3,
     promptSuffix: "Lifestyle context showing neighborhood atmosphere, street trees, nearby amenities, warm community feel, environmental storytelling.",
   },
   evening_lighting_view: {
-    label: "Evening",
-    stage: 3,
+    label: "Evening", stage: 3,
     promptSuffix: "Warm sunset golden hour or twilight blue hour architectural lighting, interior lights glowing through windows, dramatic sky, cinematic mood.",
   },
 };
 
+// ── LAND VISION RENDER DEFINITIONS ──
+const VISION_DEFINITIONS: Record<string, { label: string; stage: number; promptSuffix: string }> = {
+  vision_future_concept: {
+    label: "Future Vision", stage: 1,
+    promptSuffix: "Cinematic architectural concept visualization of a completed building on this land plot. Show the finished structure with landscaping, driveway, and surrounding greenery. Aspirational investment concept render.",
+  },
+  vision_aerial_concept: {
+    label: "Vision Aerial", stage: 2,
+    promptSuffix: "Aerial drone perspective architectural concept showing the completed development on this land plot, with visible property boundaries, landscaped gardens, and surrounding neighborhood context from above.",
+  },
+};
+
 const ANGLE_ORDER = ["main_exterior_front", "exterior_angle_side", "aerial_drone_view", "lifestyle_environment_view", "evening_lighting_view"];
+const VISION_ORDER = ["vision_future_concept", "vision_aerial_concept"];
 
-// ── TRAFFIC-AWARE PRIORITY FORMULA ──
-function computeTrafficPriority(
-  views: number, saves: number, inquiries: number, impressions: number,
-  price: number, agentBoosted: boolean
-): { score: number; intent: string } {
-  const viewScore = Math.min(views, 100) * 0.5;
-  const impressionScore = Math.min(impressions, 200) * 0.2;
-  const saveScore = Math.min(saves, 50) * 1.5;
-  const inquiryScore = Math.min(inquiries, 30) * 3.0;
-  const boostScore = agentBoosted ? 20 : 0;
-  const priceWeight = Math.min(10, Math.log10(Math.max(price || 1, 1)) - 5);
-
-  const raw = viewScore + impressionScore + saveScore + inquiryScore + boostScore + priceWeight;
-  const score = Math.min(100, Math.max(0, Math.round(raw)));
-
-  let intent = "general";
-  if (inquiryScore > viewScore && inquiryScore > saveScore) intent = "investment";
-  else if (saveScore > viewScore * 0.3) intent = "luxury";
-  else if (views > 20) intent = "family";
-
-  return { score, intent };
+// ── LAND DETECTION ──
+function isLandListing(property: Record<string, any>): boolean {
+  const type = (property.property_type || "").toLowerCase();
+  if (type === "land" || type === "tanah" || type === "kavling") return true;
+  // No building area and has land area → likely land
+  if (!property.building_area_sqm && property.land_area_sqm) return true;
+  // No bedrooms and no bathrooms → likely land
+  if (!property.bedrooms && !property.bathrooms && property.land_area_sqm) return true;
+  return false;
 }
 
-// ── SMART PROMPT WITH ANGLE ──
+// ── VISION STYLE INTELLIGENCE ──
+function getVisionStyle(property: Record<string, any>, city: string): string {
+  const landArea = property.land_area_sqm || 0;
+  const price = property.price || 0;
+  const cityLower = city.toLowerCase();
+
+  // Tourism / resort areas
+  const isTourism = ["bali", "lombok", "labuan bajo", "nusa", "ubud", "seminyak", "canggu", "kuta", "sanur", "jimbaran", "uluwatu"].some(k => cityLower.includes(k));
+
+  if (price > 10_000_000_000 || (landArea > 2000 && price > 5_000_000_000)) {
+    return isTourism
+      ? "Ultra-luxury tropical resort-style villa with infinity pool overlooking ocean or rice terraces, premium teak and natural stone, lush tropical landscaping, Bali-contemporary architecture"
+      : "Grand luxury estate with expansive gardens, modern Mediterranean architecture, private pool, premium finishes, gated entrance, resort-quality design";
+  }
+
+  if (price > 3_000_000_000 || landArea > 1000) {
+    return isTourism
+      ? "Modern tropical villa with open-air living, private pool, tropical garden, thatched roof accents, contemporary Balinese architecture"
+      : "Elegant modern family compound with multiple structures, swimming pool, landscaped courtyard, high-end residential architecture";
+  }
+
+  if (price > 1_000_000_000 || landArea > 500) {
+    return "Modern tropical family villa with clean lines, covered terrace, neat garden, carport, and warm residential character";
+  }
+
+  if (price > 500_000_000 || landArea > 200) {
+    return "Clean modern minimalist house with compact design, small garden, tidy entrance, suburban residential setting";
+  }
+
+  if (landArea > 100) {
+    return "Simple well-designed compact home with neat facade, small front yard, efficient layout";
+  }
+
+  return "Compact modern micro-house or studio dwelling, clean design, efficient use of space";
+}
+
+// ── VISION PROMPT BUILDER ──
+function buildVisionPrompt(property: Record<string, any>, angleType: string): string {
+  const city = property.city || property.location || property.state || "Indonesia";
+  const landArea = property.land_area_sqm;
+  const price = property.price || 0;
+  const description = (property.description || "").slice(0, 100);
+
+  const visionStyle = getVisionStyle(property, city);
+  const visionDef = VISION_DEFINITIONS[angleType] || VISION_DEFINITIONS.vision_future_concept;
+
+  const landContext = landArea ? `on a ${landArea}sqm land plot` : "on an empty land plot";
+  const terrainHints: string[] = [];
+  const descLower = (property.description || "").toLowerCase();
+  if (descLower.includes("hill") || descLower.includes("bukit")) terrainHints.push("gentle hillside terrain");
+  if (descLower.includes("beach") || descLower.includes("pantai") || descLower.includes("ocean")) terrainHints.push("near beachfront");
+  if (descLower.includes("rice") || descLower.includes("sawah")) terrainHints.push("overlooking rice field");
+  if (descLower.includes("river") || descLower.includes("sungai")) terrainHints.push("riverside setting");
+  const terrainStr = terrainHints.length > 0 ? ` Terrain: ${terrainHints.join(", ")}.` : " Flat tropical terrain with surrounding vegetation.";
+
+  return `Cinematic architectural concept visualization ${landContext} in ${city}. ${visionStyle}. ${visionDef.promptSuffix}${terrainStr} ${description ? `Land context: ${description}.` : ""} Photorealistic architectural render, golden hour lighting, lush tropical vegetation, no text, no watermarks, no people, professional real estate investment concept art, 4K quality.`;
+}
+
+// ── REGULAR ANGLE PROMPT ──
 function buildAnglePrompt(property: Record<string, any>, trafficIntent: string, angleType: string): string {
   const type = property.property_type || "house";
   const city = property.city || property.location || property.state || "Indonesia";
@@ -79,7 +133,6 @@ function buildAnglePrompt(property: Record<string, any>, trafficIntent: string, 
   const price = property.price || 0;
   const description = (property.description || "").slice(0, 120);
 
-  // Intent-adapted style
   let styleGuide: string;
   if (trafficIntent === "luxury" || price > 10_000_000_000) {
     styleGuide = "Ultra-luxury villa with infinity pool, tropical landscaping, premium marble and teak, resort-quality architecture";
@@ -103,6 +156,37 @@ function buildAnglePrompt(property: Record<string, any>, trafficIntent: string, 
   const angleDef = ANGLE_DEFINITIONS[angleType] || ANGLE_DEFINITIONS.main_exterior_front;
 
   return `Professional real estate photograph of a ${type} in ${city}. ${styleGuide}.${sizeStr} ${angleDef.promptSuffix} ${description ? `Context: ${description}.` : ""} Photorealistic, well-lit, no text, no watermarks, no people, architectural photography style, 4K quality.`;
+}
+
+// ── UNIFIED PROMPT DISPATCHER ──
+function buildPrompt(property: Record<string, any>, trafficIntent: string, angleType: string): string {
+  if (angleType.startsWith("vision_")) {
+    return buildVisionPrompt(property, angleType);
+  }
+  return buildAnglePrompt(property, trafficIntent, angleType);
+}
+
+// ── TRAFFIC-AWARE PRIORITY FORMULA ──
+function computeTrafficPriority(
+  views: number, saves: number, inquiries: number, impressions: number,
+  price: number, agentBoosted: boolean
+): { score: number; intent: string } {
+  const viewScore = Math.min(views, 100) * 0.5;
+  const impressionScore = Math.min(impressions, 200) * 0.2;
+  const saveScore = Math.min(saves, 50) * 1.5;
+  const inquiryScore = Math.min(inquiries, 30) * 3.0;
+  const boostScore = agentBoosted ? 20 : 0;
+  const priceWeight = Math.min(10, Math.log10(Math.max(price || 1, 1)) - 5);
+
+  const raw = viewScore + impressionScore + saveScore + inquiryScore + boostScore + priceWeight;
+  const score = Math.min(100, Math.max(0, Math.round(raw)));
+
+  let intent = "general";
+  if (inquiryScore > viewScore && inquiryScore > saveScore) intent = "investment";
+  else if (saveScore > viewScore * 0.3) intent = "luxury";
+  else if (views > 20) intent = "family";
+
+  return { score, intent };
 }
 
 // ── PROMPT HASH ──
@@ -166,8 +250,7 @@ async function processJob(
   const cooldownHours = configData?.cooldown_hours || 72;
 
   const { data: recentDone } = await supabase
-    .from("ai_image_jobs")
-    .select("completed_at")
+    .from("ai_image_jobs").select("completed_at")
     .eq("property_id", job.property_id)
     .eq("angle_type", job.angle_type || "main_exterior_front")
     .eq("status", "done")
@@ -183,7 +266,7 @@ async function processJob(
 
   const angleType = job.angle_type || "main_exterior_front";
   const trafficIntent = job.traffic_intent || "general";
-  const prompt = buildAnglePrompt(property, trafficIntent, angleType);
+  const prompt = buildPrompt(property, trafficIntent, angleType);
   const promptHash = await hashPrompt(prompt);
 
   await supabase.from("ai_image_jobs")
@@ -202,12 +285,12 @@ async function processJob(
 
     if (!aiResponse.ok) {
       const st = aiResponse.status;
-      const body = await aiResponse.text();
+      const respBody = await aiResponse.text();
       if (st === 429) {
         await supabase.from("ai_image_jobs").update({ status: "pending", worker_id: null, started_at: null, updated_at: new Date().toISOString() }).eq("id", job.id);
         return { success: false, error: "Rate limited - requeued" };
       }
-      throw new Error(`AI API error ${st}: ${body.slice(0, 200)}`);
+      throw new Error(`AI API error ${st}: ${respBody.slice(0, 200)}`);
     }
 
     const aiData = await aiResponse.json();
@@ -220,7 +303,7 @@ async function processJob(
     const ext = base64Match[1] === "jpeg" ? "jpg" : base64Match[1];
     const binaryData = Uint8Array.from(atob(base64Match[2]), (c) => c.charCodeAt(0));
 
-    // Structured storage path: ai-generated/{property_id}/{angle_type}.{ext}
+    // Structured storage path
     const fileName = `ai-generated/${property.id}/${angleType}.${ext}`;
     const { error: uploadError } = await supabase.storage
       .from("property-images")
@@ -233,33 +316,38 @@ async function processJob(
 
     // Update property images array
     const updatedImages: string[] = Array.isArray(property.images) ? [...property.images] : [];
-    if (!updatedImages.includes(mainUrl)) {
-      updatedImages.push(mainUrl);
-    }
+    if (!updatedImages.includes(mainUrl)) updatedImages.push(mainUrl);
 
     const updatePayload: Record<string, any> = {
       images: updatedImages,
       ai_generated: true,
       image_generated_at: new Date().toISOString(),
     };
-    // Set thumbnail only for main exterior
-    if (angleType === "main_exterior_front" && !property.thumbnail_url) {
+    // Set thumbnail for main exterior or first vision render
+    const isFirstImage = !property.thumbnail_url;
+    if (isFirstImage && (angleType === "main_exterior_front" || angleType === "vision_future_concept")) {
       updatePayload.thumbnail_url = mainUrl;
     }
 
     await supabase.from("properties").update(updatePayload).eq("id", property.id);
 
+    // Determine style profile
+    const styleProfile = angleType.startsWith("vision_") ? "land_vision" : trafficIntent;
+
     await supabase.from("ai_image_jobs").update({
       status: "done", result_image_url: mainUrl, result_thumbnail_url: thumbnailUrl,
-      ai_style_profile: trafficIntent,
+      ai_style_profile: styleProfile,
       completed_at: new Date().toISOString(), updated_at: new Date().toISOString(),
     }).eq("id", job.id);
 
     await incrementBudget(supabase);
 
-    // After main angle completes, auto-enqueue extra angles if eligible
+    // After main angle/vision completes, auto-enqueue extras if eligible
     if (angleType === "main_exterior_front") {
       await maybeEnqueueExtraAngles(supabase, property, job);
+    }
+    if (angleType === "vision_future_concept") {
+      await maybeEnqueueExtraVision(supabase, property, job);
     }
 
     return { success: true };
@@ -278,12 +366,11 @@ async function processJob(
   }
 }
 
-// ── AUTO-ENQUEUE EXTRA ANGLES ──
+// ── AUTO-ENQUEUE EXTRA ANGLES (buildings) ──
 async function maybeEnqueueExtraAngles(supabase: any, property: any, mainJob: any) {
   const { data: config } = await supabase.from("ai_image_gen_config")
     .select("enabled_angles, extra_angles_min_traffic, extra_angles_min_price, max_images_per_property")
     .eq("id", "default").maybeSingle();
-
   if (!config) return;
 
   const minTraffic = config.extra_angles_min_traffic || 15;
@@ -293,42 +380,53 @@ async function maybeEnqueueExtraAngles(supabase: any, property: any, mainJob: an
 
   const totalTraffic = (mainJob.traffic_views || 0) + (mainJob.traffic_saves || 0) + (mainJob.traffic_inquiries || 0);
   const price = property.price || 0;
-
-  // Only enqueue extra angles if high traffic OR premium price
   if (totalTraffic < minTraffic && price < minPrice) return;
 
-  // Check how many done/pending angles already exist
-  const { data: existing } = await supabase
-    .from("ai_image_jobs")
-    .select("angle_type")
-    .eq("property_id", property.id)
-    .in("status", ["pending", "processing", "done"]);
-
+  const { data: existing } = await supabase.from("ai_image_jobs")
+    .select("angle_type").eq("property_id", property.id).in("status", ["pending", "processing", "done"]);
   const existingAngles = new Set((existing || []).map((j: any) => j.angle_type));
   const angleSetId = crypto.randomUUID();
 
   const extraAngles = enabledAngles
     .filter(a => a !== "main_exterior_front" && !existingAngles.has(a))
-    .slice(0, maxImages - 1); // respect max
-
+    .slice(0, maxImages - 1);
   if (extraAngles.length === 0) return;
 
   const jobs = extraAngles.map(angle => ({
-    property_id: property.id,
-    angle_type: angle,
-    angle_set_id: angleSetId,
+    property_id: property.id, angle_type: angle, angle_set_id: angleSetId,
     generation_stage: ANGLE_DEFINITIONS[angle]?.stage || 2,
     priority_score: Math.max(0, (mainJob.priority_score || 0) - (ANGLE_DEFINITIONS[angle]?.stage || 2) * 5),
     status: "pending",
-    traffic_views: mainJob.traffic_views || 0,
-    traffic_saves: mainJob.traffic_saves || 0,
-    traffic_inquiries: mainJob.traffic_inquiries || 0,
-    traffic_impressions: mainJob.traffic_impressions || 0,
-    traffic_intent: mainJob.traffic_intent || "general",
-    ai_style_profile: mainJob.traffic_intent || "general",
+    traffic_views: mainJob.traffic_views || 0, traffic_saves: mainJob.traffic_saves || 0,
+    traffic_inquiries: mainJob.traffic_inquiries || 0, traffic_impressions: mainJob.traffic_impressions || 0,
+    traffic_intent: mainJob.traffic_intent || "general", ai_style_profile: mainJob.traffic_intent || "general",
   }));
-
   await supabase.from("ai_image_jobs").insert(jobs);
+}
+
+// ── AUTO-ENQUEUE EXTRA VISION (land) ──
+async function maybeEnqueueExtraVision(supabase: any, property: any, mainJob: any) {
+  const totalTraffic = (mainJob.traffic_views || 0) + (mainJob.traffic_saves || 0) + (mainJob.traffic_inquiries || 0);
+  const price = property.price || 0;
+  // Only aerial vision for high-value or high-traffic land
+  if (totalTraffic < 10 && price < 2_000_000_000) return;
+
+  const { data: existing } = await supabase.from("ai_image_jobs")
+    .select("angle_type").eq("property_id", property.id).in("status", ["pending", "processing", "done"]);
+  const existingAngles = new Set((existing || []).map((j: any) => j.angle_type));
+
+  if (existingAngles.has("vision_aerial_concept")) return;
+
+  await supabase.from("ai_image_jobs").insert({
+    property_id: property.id, angle_type: "vision_aerial_concept",
+    angle_set_id: mainJob.angle_set_id || crypto.randomUUID(),
+    generation_stage: 2, ai_style_profile: "land_vision",
+    priority_score: Math.max(0, (mainJob.priority_score || 0) - 10),
+    status: "pending",
+    traffic_views: mainJob.traffic_views || 0, traffic_saves: mainJob.traffic_saves || 0,
+    traffic_inquiries: mainJob.traffic_inquiries || 0, traffic_impressions: mainJob.traffic_impressions || 0,
+    traffic_intent: mainJob.traffic_intent || "general",
+  });
 }
 
 async function markFailed(supabase: any, jobId: string, msg: string) {
@@ -359,37 +457,36 @@ async function aggregateTrafficSignals(supabase: any, propertyId: string) {
   return { views, saves, inquiries, impressions };
 }
 
-// ── SMART ENQUEUE WITH TRAFFIC SIGNALS ──
+// ── ENQUEUE BUILDINGS ──
 async function enqueueWithTraffic(supabase: any, options: { limit: number; minTraffic: number }) {
   const limit = options.limit || 100;
   const minTraffic = options.minTraffic || 5;
 
   const { data: properties, error } = await supabase
     .from("properties")
-    .select("id, price, city, property_type")
+    .select("id, price, city, property_type, land_area_sqm, building_area_sqm, bedrooms, bathrooms")
     .or("thumbnail_url.is.null,ai_generated.is.null")
     .order("created_at", { ascending: false })
     .limit(limit * 2);
 
   if (error) throw new Error(error.message);
-  if (!properties || properties.length === 0) return { enqueued: 0, skipped_low_traffic: 0 };
+  if (!properties || properties.length === 0) return { enqueued: 0, skipped_low_traffic: 0, land_enqueued: 0 };
 
   const propIds = properties.map((p: any) => p.id);
   const { data: existingJobs } = await supabase
     .from("ai_image_jobs").select("property_id, angle_type")
     .in("property_id", propIds).in("status", ["pending", "processing", "done"]);
 
-  // Only skip if main_exterior_front already exists
-  const existingMainSet = new Set(
-    (existingJobs || []).filter((j: any) => j.angle_type === "main_exterior_front").map((j: any) => j.property_id)
+  const existingSet = new Set(
+    (existingJobs || []).map((j: any) => `${j.property_id}:${j.angle_type}`)
   );
-  const candidates = properties.filter((p: any) => !existingMainSet.has(p.id)).slice(0, limit);
 
   const newJobs: any[] = [];
   let skippedLowTraffic = 0;
+  let landEnqueued = 0;
 
-  for (let i = 0; i < candidates.length; i += 10) {
-    const batch = candidates.slice(i, i + 10);
+  for (let i = 0; i < properties.length && newJobs.length < limit; i += 10) {
+    const batch = properties.slice(i, Math.min(i + 10, properties.length));
     const trafficResults = await Promise.all(
       batch.map(async (p: any) => {
         const traffic = await aggregateTrafficSignals(supabase, p.id);
@@ -398,6 +495,7 @@ async function enqueueWithTraffic(supabase: any, options: { limit: number; minTr
     );
 
     for (const { property: p, traffic } of trafficResults) {
+      if (newJobs.length >= limit) break;
       const totalTraffic = traffic.views + traffic.saves + traffic.inquiries;
       if (minTraffic > 0 && totalTraffic < minTraffic) { skippedLowTraffic++; continue; }
 
@@ -406,19 +504,20 @@ async function enqueueWithTraffic(supabase: any, options: { limit: number; minTr
         p.price || 0, false
       );
 
+      const land = isLandListing(p);
+      const angleType = land ? "vision_future_concept" : "main_exterior_front";
+
+      if (existingSet.has(`${p.id}:${angleType}`)) continue;
+
       newJobs.push({
-        property_id: p.id,
-        priority_score: score,
-        status: "pending",
-        angle_type: "main_exterior_front",
-        generation_stage: 1,
-        ai_style_profile: intent,
-        traffic_views: traffic.views,
-        traffic_saves: traffic.saves,
-        traffic_inquiries: traffic.inquiries,
-        traffic_impressions: traffic.impressions,
+        property_id: p.id, priority_score: score, status: "pending",
+        angle_type: angleType, generation_stage: 1,
+        ai_style_profile: land ? "land_vision" : intent,
+        traffic_views: traffic.views, traffic_saves: traffic.saves,
+        traffic_inquiries: traffic.inquiries, traffic_impressions: traffic.impressions,
         traffic_intent: intent,
       });
+      if (land) landEnqueued++;
     }
   }
 
@@ -431,7 +530,73 @@ async function enqueueWithTraffic(supabase: any, options: { limit: number; minTr
     if (!insertErr) enqueued += chunk.length;
   }
 
-  return { enqueued, skipped_low_traffic: skippedLowTraffic, total_candidates: candidates.length };
+  return { enqueued, skipped_low_traffic: skippedLowTraffic, land_enqueued: landEnqueued, total_candidates: properties.length };
+}
+
+// ── ENQUEUE LAND VISIONS ONLY ──
+async function enqueueLandVisions(supabase: any, options: { limit: number; minTraffic: number }) {
+  const limit = options.limit || 50;
+  const minTraffic = options.minTraffic || 0;
+
+  // Find land-type properties without vision renders
+  const { data: properties, error } = await supabase
+    .from("properties")
+    .select("id, price, city, property_type, land_area_sqm, building_area_sqm, bedrooms, bathrooms, description")
+    .or("property_type.ilike.%land%,property_type.ilike.%tanah%,property_type.ilike.%kavling%,building_area_sqm.is.null")
+    .order("price", { ascending: false })
+    .limit(limit * 3);
+
+  if (error) throw new Error(error.message);
+  if (!properties || properties.length === 0) return { enqueued: 0, total_land: 0 };
+
+  // Filter to actual land listings
+  const landProps = properties.filter((p: any) => isLandListing(p));
+
+  const propIds = landProps.map((p: any) => p.id);
+  if (propIds.length === 0) return { enqueued: 0, total_land: 0 };
+
+  const { data: existingJobs } = await supabase
+    .from("ai_image_jobs").select("property_id, angle_type")
+    .in("property_id", propIds.slice(0, 100))
+    .in("status", ["pending", "processing", "done"])
+    .in("angle_type", VISION_ORDER);
+
+  const existingSet = new Set((existingJobs || []).map((j: any) => `${j.property_id}:${j.angle_type}`));
+
+  const newJobs: any[] = [];
+  for (const p of landProps) {
+    if (newJobs.length >= limit) break;
+    if (existingSet.has(`${p.id}:vision_future_concept`)) continue;
+
+    const traffic = await aggregateTrafficSignals(supabase, p.id);
+    const totalTraffic = traffic.views + traffic.saves + traffic.inquiries;
+    if (minTraffic > 0 && totalTraffic < minTraffic) continue;
+
+    const { score } = computeTrafficPriority(
+      traffic.views, traffic.saves, traffic.inquiries, traffic.impressions,
+      p.price || 0, false
+    );
+
+    newJobs.push({
+      property_id: p.id, priority_score: score + 5, // slight boost for land visions
+      status: "pending", angle_type: "vision_future_concept",
+      generation_stage: 1, ai_style_profile: "land_vision",
+      traffic_views: traffic.views, traffic_saves: traffic.saves,
+      traffic_inquiries: traffic.inquiries, traffic_impressions: traffic.impressions,
+      traffic_intent: "investment",
+    });
+  }
+
+  newJobs.sort((a, b) => b.priority_score - a.priority_score);
+
+  let enqueued = 0;
+  for (let i = 0; i < newJobs.length; i += 50) {
+    const chunk = newJobs.slice(i, i + 50);
+    const { error: insertErr } = await supabase.from("ai_image_jobs").insert(chunk);
+    if (!insertErr) enqueued += chunk.length;
+  }
+
+  return { enqueued, total_land: landProps.length };
 }
 
 // ── REPRIORITIZE PENDING JOBS ──
@@ -454,7 +619,6 @@ async function reprioritizePending(supabase: any) {
         prop?.price || 0, false
       );
 
-      // Lower priority for later-stage angles
       const stagePenalty = ((job.generation_stage || 1) - 1) * 5;
 
       await supabase.from("ai_image_jobs").update({
@@ -463,7 +627,6 @@ async function reprioritizePending(supabase: any) {
         traffic_inquiries: traffic.inquiries, traffic_impressions: traffic.impressions,
         traffic_intent: intent, updated_at: new Date().toISOString(),
       }).eq("id", job.id);
-
       updated++;
     }));
   }
@@ -493,7 +656,7 @@ serve(async (req: Request) => {
   const action = body.action || "process";
   const concurrency = Math.min(body.concurrency || 3, 5);
 
-  // ── ENQUEUE (traffic-aware, main angle) ──
+  // ── ENQUEUE (traffic-aware, auto-detects land) ──
   if (action === "enqueue") {
     try {
       const { data: config } = await supabase.from("ai_image_gen_config").select("min_traffic_threshold").eq("id", "default").maybeSingle();
@@ -505,7 +668,17 @@ serve(async (req: Request) => {
     }
   }
 
-  // ── STATS (enhanced with angle breakdown) ──
+  // ── ENQUEUE LAND VISIONS ONLY ──
+  if (action === "enqueue_land_visions") {
+    try {
+      const result = await enqueueLandVisions(supabase, { limit: body.limit || 50, minTraffic: body.min_traffic ?? 0 });
+      return json({ success: true, ...result });
+    } catch (err: any) {
+      return json({ error: err.message }, 500);
+    }
+  }
+
+  // ── STATS (enhanced with vision breakdown) ──
   if (action === "stats") {
     const [
       { count: pending }, { count: processing }, { count: done }, { count: failed },
@@ -520,8 +693,6 @@ serve(async (req: Request) => {
     ]);
 
     const config = configResult.data;
-
-    // Compute angle stats
     const angleCounts: Record<string, { done: number; pending: number }> = {};
     for (const row of (angleBreakdown.data || [])) {
       const a = row.angle_type || "main_exterior_front";
@@ -585,7 +756,7 @@ serve(async (req: Request) => {
     return json({ success: !error });
   }
 
-  // ── PROCESS (default) — prioritize by stage then score ──
+  // ── PROCESS (default) — stage 1 first, then by priority ──
   const budget = await checkBudget(supabase);
   if (!budget.allowed) {
     return json({ processed: 0, message: "Daily budget exhausted", budget_remaining: 0 });
@@ -594,8 +765,7 @@ serve(async (req: Request) => {
   const processLimit = Math.min(concurrency, budget.remaining);
 
   const { data: jobs, error: fetchErr } = await supabase
-    .from("ai_image_jobs")
-    .select("*")
+    .from("ai_image_jobs").select("*")
     .eq("status", "pending")
     .order("generation_stage", { ascending: true })
     .order("priority_score", { ascending: false })
