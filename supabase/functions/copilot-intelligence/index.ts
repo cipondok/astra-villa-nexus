@@ -325,19 +325,25 @@ serve(async (req) => {
       }
     }
 
-    // Fetch strategy + capital allocation intelligence
+    // Fetch strategy + capital allocation + planetary intelligence
     let strategySignals: any[] = [];
     let capitalAllocations: any[] = [];
     let capitalForecasts: any[] = [];
+    let planetarySignals: any[] = [];
+    let liquidityBalance: any[] = [];
     try {
-      const [stratRes, allocRes, forecastRes] = await Promise.all([
+      const [stratRes, allocRes, forecastRes, planetRes, balanceRes] = await Promise.all([
         sb.from("marketplace_strategy_signals").select("city, recommended_strategy, strategy_priority_index, confidence_level, supply_score, demand_score, liquidity_score").order("strategy_priority_index", { ascending: false }).limit(5),
         sb.from("capital_allocation_signals").select("city, capital_efficiency_score, allocation_priority_score, recommended_capital_direction, confidence_level, investor_intent_density").order("allocation_priority_score", { ascending: false }).limit(5),
         sb.from("capital_flow_forecasts").select("city, predicted_inflow_score, hotspot_probability, saturation_risk, rotation_signal, forecast_trend").order("predicted_inflow_score", { ascending: false }).limit(5),
+        sb.from("global_property_signals").select("city, region, urban_growth_score, market_cycle_phase, capital_inflow_intensity, affordability_stress_index, confidence_level").order("signal_timestamp", { ascending: false }).limit(10),
+        sb.from("global_liquidity_balance").select("region, balance_index, systemic_status, capital_concentration_risk").order("computed_at", { ascending: false }).limit(5),
       ]);
       strategySignals = stratRes.data || [];
       capitalAllocations = allocRes.data || [];
       capitalForecasts = forecastRes.data || [];
+      planetarySignals = planetRes.data || [];
+      liquidityBalance = balanceRes.data || [];
     } catch { /* skip */ }
 
     // Strategy-based recommendations
