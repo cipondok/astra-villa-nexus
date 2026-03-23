@@ -89,6 +89,8 @@ export const AlgorithmDashboard = lazyRetry(() => import("./AlgorithmDashboard")
 export const AdminNotificationsCenter = lazyRetry(() => import("./AdminNotificationsCenter").then((m) => ({ default: m.AdminNotificationsCenter })));
 export const LaunchReadinessDashboard = lazyRetry(() => import("./LaunchReadinessDashboard"));
 export const AIFeedbackAnalytics = lazyRetry(() => import("./AIFeedbackAnalytics").then((m) => ({ default: m.AIFeedbackAnalytics })));
+export const InvestorWealthDashboard = lazyRetry(() => import("../investor/InvestorWealthDashboard"));
+export const AdminInvestorEconomics = lazyRetry(() => import("./AdminInvestorEconomics"));
 
 export const FounderDailyPriorityCommand = lazyRetry(() => import("./FounderDailyPriorityCommand"));
 export const AgentTerritoryCoverageMap = lazyRetry(() => import("./AgentTerritoryCoverageMap"));
@@ -802,6 +804,8 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "performance-deal-warroom":        () => <PerformanceDealWarRoom />,
   "supply-growth-deal-acceleration": () => <SupplyGrowthDealAcceleration />,
   "market-intelligence-command": () => <MarketIntelligenceCommandCenter />,
+  "investor-wealth-intelligence": () => <InvestorWealthDashboard />,
+  "investor-economics-command": () => <AdminInvestorEconomics />,
   "report-export":       () => <ReportExportFunction />,
   "enhanced-search":     () => <EnhancedSearchFilters />,
   "system-reports":      () => <SystemReports />,
@@ -1741,4 +1745,6 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-transaction-intelligence": { label: "Global Transaction Intelligence", category: "Transactions" },
   "risk-fraud-intelligence": { label: "Risk & Fraud Intelligence", category: "Marketplace Growth" },
   "market-intelligence-command": { label: "Market Intelligence AI Engine", category: "Market Intelligence" },
+  "investor-wealth-intelligence": { label: "Investor Wealth Intelligence", category: "Investor Management" },
+  "investor-economics-command": { label: "Investor Economics Command", category: "Investor Management" },
 };
