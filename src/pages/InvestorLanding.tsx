@@ -42,9 +42,9 @@ const InvestorLanding = () => {
               </Button>
             </div>
             <div className="flex justify-center gap-6 pt-6 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1.5"><CheckCircle className="h-4 w-4 text-green-500" /> Verified Listings</span>
+              <span className="flex items-center gap-1.5"><CheckCircle className="h-4 w-4 text-primary" /> Verified Listings</span>
               <span className="flex items-center gap-1.5"><Lock className="h-4 w-4 text-primary" /> Escrow Secured</span>
-              <span className="flex items-center gap-1.5"><Globe className="h-4 w-4 text-blue-500" /> Global Access</span>
+              <span className="flex items-center gap-1.5"><Globe className="h-4 w-4 text-accent-foreground" /> Global Access</span>
             </div>
           </motion.div>
         </div>
