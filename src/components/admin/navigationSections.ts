@@ -520,6 +520,20 @@ export const navigationSections = {
       icon: Brain,
       description: "Autonomous AI valuation, price forecasting, undervaluation detection, and investor decision signals",
       badge: "New"
+    },
+    {
+      key: "investor-wealth-intelligence",
+      label: "Wealth Intelligence Engine",
+      icon: Wallet,
+      description: "AI-powered portfolio valuation, wealth forecasting, diversification analysis, and capital allocation recommendations",
+      badge: "🧠 AI"
+    },
+    {
+      key: "investor-economics-command",
+      label: "Investor Economics Command",
+      icon: DollarSign,
+      description: "Platform-wide AUM tracking, investor ROI analytics, city performance, and risk distribution monitoring",
+      badge: "New"
     }
   ],
 
