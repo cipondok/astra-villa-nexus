@@ -599,6 +599,13 @@ export const navigationSections = {
       badge: "🧩 Fractional"
     },
     {
+      key: "fund-reit-management",
+      label: "Fund & REIT Management",
+      icon: Landmark,
+      description: "Investment fund vehicles, NAV tracking, distributions, subscriptions, redemptions, and compliance",
+      badge: "🏛️ REIT"
+    },
+    {
       key: "investor-growth-command",
       label: "Investor Growth Engine",
       icon: Rocket,
