@@ -19629,6 +19629,67 @@ export type Database = {
           },
         ]
       }
+      fund_assets: {
+        Row: {
+          acquisition_cost: number | null
+          acquisition_date: string | null
+          asset_income_generated: number | null
+          asset_status: string | null
+          created_at: string | null
+          current_estimated_value: number | null
+          fund_id: string
+          id: string
+          ownership_percentage: number | null
+          property_id: string | null
+        }
+        Insert: {
+          acquisition_cost?: number | null
+          acquisition_date?: string | null
+          asset_income_generated?: number | null
+          asset_status?: string | null
+          created_at?: string | null
+          current_estimated_value?: number | null
+          fund_id: string
+          id?: string
+          ownership_percentage?: number | null
+          property_id?: string | null
+        }
+        Update: {
+          acquisition_cost?: number | null
+          acquisition_date?: string | null
+          asset_income_generated?: number | null
+          asset_status?: string | null
+          created_at?: string | null
+          current_estimated_value?: number | null
+          fund_id?: string
+          id?: string
+          ownership_percentage?: number | null
+          property_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_assets_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "investment_funds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fund_assets_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fund_assets_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fund_capital_allocations: {
         Row: {
           allocation_matrix: Json
@@ -19682,6 +19743,41 @@ export type Database = {
           wealth_growth_10y?: number | null
         }
         Relationships: []
+      }
+      fund_capital_calls: {
+        Row: {
+          call_amount: number
+          call_status: string | null
+          created_at: string | null
+          due_date: string
+          fund_id: string
+          id: string
+        }
+        Insert: {
+          call_amount: number
+          call_status?: string | null
+          created_at?: string | null
+          due_date: string
+          fund_id: string
+          id?: string
+        }
+        Update: {
+          call_amount?: number
+          call_status?: string | null
+          created_at?: string | null
+          due_date?: string
+          fund_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_capital_calls_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "investment_funds"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       fund_deal_readiness: {
         Row: {
@@ -19816,6 +19912,41 @@ export type Database = {
           },
         ]
       }
+      fund_distributions: {
+        Row: {
+          created_at: string | null
+          distribution_amount: number
+          distribution_date: string | null
+          distribution_type: string | null
+          fund_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string | null
+          distribution_amount: number
+          distribution_date?: string | null
+          distribution_type?: string | null
+          fund_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string | null
+          distribution_amount?: number
+          distribution_date?: string | null
+          distribution_type?: string | null
+          fund_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_distributions_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "investment_funds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fund_entry_signals: {
         Row: {
           city: string
@@ -19915,6 +20046,59 @@ export type Database = {
         }
         Relationships: []
       }
+      fund_investor_positions: {
+        Row: {
+          committed_amount: number | null
+          contributed_amount: number | null
+          created_at: string | null
+          fund_id: string
+          id: string
+          investor_user_id: string
+          nav_per_unit: number | null
+          ownership_units: number | null
+          position_status: string | null
+          realized_distributions: number | null
+          unrealized_value: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          committed_amount?: number | null
+          contributed_amount?: number | null
+          created_at?: string | null
+          fund_id: string
+          id?: string
+          investor_user_id: string
+          nav_per_unit?: number | null
+          ownership_units?: number | null
+          position_status?: string | null
+          realized_distributions?: number | null
+          unrealized_value?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          committed_amount?: number | null
+          contributed_amount?: number | null
+          created_at?: string | null
+          fund_id?: string
+          id?: string
+          investor_user_id?: string
+          nav_per_unit?: number | null
+          ownership_units?: number | null
+          position_status?: string | null
+          realized_distributions?: number | null
+          unrealized_value?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_investor_positions_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "investment_funds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fund_liquidity_pools: {
         Row: {
           available_capital: number
@@ -20005,6 +20189,41 @@ export type Database = {
         }
         Relationships: []
       }
+      fund_nav_history: {
+        Row: {
+          fund_id: string
+          id: string
+          liabilities: number | null
+          nav_per_unit: number
+          total_fund_value: number | null
+          valuation_timestamp: string | null
+        }
+        Insert: {
+          fund_id: string
+          id?: string
+          liabilities?: number | null
+          nav_per_unit?: number
+          total_fund_value?: number | null
+          valuation_timestamp?: string | null
+        }
+        Update: {
+          fund_id?: string
+          id?: string
+          liabilities?: number | null
+          nav_per_unit?: number
+          total_fund_value?: number | null
+          valuation_timestamp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_nav_history_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "investment_funds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fund_opportunity_scores: {
         Row: {
           capital_inflow_momentum: number
@@ -20085,6 +20304,38 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fund_performance_features: {
+        Row: {
+          computed_at: string | null
+          feature_data: Json | null
+          feature_type: string
+          fund_id: string
+          id: string
+        }
+        Insert: {
+          computed_at?: string | null
+          feature_data?: Json | null
+          feature_type: string
+          fund_id: string
+          id?: string
+        }
+        Update: {
+          computed_at?: string | null
+          feature_data?: Json | null
+          feature_type?: string
+          fund_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_performance_features_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "investment_funds"
             referencedColumns: ["id"]
           },
         ]
@@ -20370,6 +20621,47 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      fund_unit_transfers: {
+        Row: {
+          buyer_investor_id: string | null
+          created_at: string | null
+          fund_id: string
+          id: string
+          seller_investor_id: string
+          settlement_status: string | null
+          transfer_price: number
+          units_transferred: number
+        }
+        Insert: {
+          buyer_investor_id?: string | null
+          created_at?: string | null
+          fund_id: string
+          id?: string
+          seller_investor_id: string
+          settlement_status?: string | null
+          transfer_price: number
+          units_transferred: number
+        }
+        Update: {
+          buyer_investor_id?: string | null
+          created_at?: string | null
+          fund_id?: string
+          id?: string
+          seller_investor_id?: string
+          settlement_status?: string | null
+          transfer_price?: number
+          units_transferred?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_unit_transfers_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "investment_funds"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       fund_wealth_simulations: {
         Row: {
@@ -29307,6 +29599,60 @@ export type Database = {
           model_confidence?: number | null
           projected_value_multiplier_10y?: number | null
           wealth_preservation_tier?: string | null
+        }
+        Relationships: []
+      }
+      investment_funds: {
+        Row: {
+          base_currency: string | null
+          committed_capital: number | null
+          created_at: string | null
+          deployed_capital: number | null
+          description: string | null
+          fund_manager_user_id: string | null
+          fund_name: string
+          fund_status: string | null
+          fund_type: string
+          id: string
+          jurisdiction_code: string | null
+          management_fee_percent: number | null
+          performance_fee_percent: number | null
+          target_raise_amount: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          base_currency?: string | null
+          committed_capital?: number | null
+          created_at?: string | null
+          deployed_capital?: number | null
+          description?: string | null
+          fund_manager_user_id?: string | null
+          fund_name: string
+          fund_status?: string | null
+          fund_type?: string
+          id?: string
+          jurisdiction_code?: string | null
+          management_fee_percent?: number | null
+          performance_fee_percent?: number | null
+          target_raise_amount?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          base_currency?: string | null
+          committed_capital?: number | null
+          created_at?: string | null
+          deployed_capital?: number | null
+          description?: string | null
+          fund_manager_user_id?: string | null
+          fund_name?: string
+          fund_status?: string | null
+          fund_type?: string
+          id?: string
+          jurisdiction_code?: string | null
+          management_fee_percent?: number | null
+          performance_fee_percent?: number | null
+          target_raise_amount?: number | null
+          updated_at?: string | null
         }
         Relationships: []
       }

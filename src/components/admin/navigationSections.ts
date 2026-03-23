@@ -541,6 +541,13 @@ export const navigationSections = {
       icon: ArrowLeftRight,
       description: "Secondary market order book, trade matching engine, and liquidity depth analytics",
       badge: "🔄 Exchange"
+    },
+    {
+      key: "institutional-fund-manager",
+      label: "Fund & Asset Management",
+      icon: Briefcase,
+      description: "Institutional investment funds, NAV calculation, capital calls, distributions, and compliance",
+      badge: "🏛️ Fund"
     }
   ],
 
