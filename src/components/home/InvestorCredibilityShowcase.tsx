@@ -66,11 +66,11 @@ const InvestorCredibilityShowcase = () => {
   const { data: agentCount } = useQuery<number>({
     queryKey: ['verified-agent-count'],
     queryFn: async () => {
-      const result: any = await supabase
-        .from('profiles')
+      const { count } = await (supabase
+        .from('profiles') as any)
         .select('*', { count: 'exact', head: true })
         .eq('role', 'agent');
-      return result.count || 0;
+      return (count ?? 0) as number;
     },
     staleTime: 15 * 60 * 1000,
   });
