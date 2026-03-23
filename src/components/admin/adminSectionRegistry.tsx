@@ -435,6 +435,7 @@ export const DailyOpsBattleStation = lazyRetry(() => import("./DailyOpsBattleSta
 export const InvestorCampaignEngine = lazyRetry(() => import("./InvestorCampaignEngine"));
 export const First100DealsWarRoom = lazyRetry(() => import("./First100DealsWarRoom"));
 export const DealRecoveryPlaybook = lazyRetry(() => import("./DealRecoveryPlaybook"));
+export const HNWClosingStrategist = lazyRetry(() => import("./HNWClosingStrategist"));
 export const First100KRevenuePlan = lazyRetry(() => import("./First100KRevenuePlan"));
 export const InvestorNarrativeCoaching = lazyRetry(() => import("./InvestorNarrativeCoaching"));
 export const VendorOutreachScripts = lazyRetry(() => import("./VendorOutreachScripts"));
@@ -1107,6 +1108,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "investor-campaign-engine":    () => <InvestorCampaignEngine />,
   "first-100-deals-warroom":     () => <First100DealsWarRoom />,
   "deal-recovery-playbook":      () => <DealRecoveryPlaybook />,
+  "hnw-closing-strategist":      () => <HNWClosingStrategist />,
   "first-city-domination":       () => <FirstCityDominationCommand />,
   "deal-priority-revenue":       () => <DealPriorityRevenueIntelligence />,
   "founder-mobile-warroom":      () => <FounderMobileWarRoom />,
@@ -1621,6 +1623,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "founder-daily-execution": { label: "Founder Daily Execution", category: "Operations" },
   "first-100-deals-warroom": { label: "First 100 Deals War Room", category: "Execution Command" },
   "deal-recovery-playbook": { label: "Deal Recovery Playbook", category: "Execution Command" },
+  "hnw-closing-strategist": { label: "HNW Closing Strategist", category: "Execution Command" },
   "daily-ops-battle-station": { label: "Daily Ops Battle Station", category: "Execution Command" },
   "first-100k-revenue": { label: "First $100K Revenue Plan", category: "Operations" },
   "investor-narrative-coaching": { label: "Investor Narrative Coaching", category: "Strategy" },

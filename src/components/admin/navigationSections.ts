@@ -197,6 +197,13 @@ export const navigationSections = {
       badge: "🔄 Recovery"
     },
     {
+      key: "hnw-closing-strategist",
+      label: "HNW Closing Strategist",
+      icon: Crown,
+      description: "Premium positioning, trust architecture & closing frameworks for high-net-worth investors",
+      badge: "👑 HNW"
+    },
+    {
       key: "first-city-domination",
       label: "First City Domination",
       icon: Crosshair,
