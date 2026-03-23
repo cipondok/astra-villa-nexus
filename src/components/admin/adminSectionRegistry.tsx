@@ -922,6 +922,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "team-management":     () => <TeamManagement />,
   "viral-growth-campaigns": () => <ViralGrowthCampaigns />,
   "viral-growth-analytics": () => <ViralGrowthAnalyticsDashboard />,
+  "secondary-market-command": () => <SecondaryMarketDashboard />,
   "media-coverage-pr":   () => <MediaCoveragePR />,
   "concierge-service":   () => <ConciergeServiceManagement />,
   "ahu-company-checker": () => <AHUCompanyChecker />,
