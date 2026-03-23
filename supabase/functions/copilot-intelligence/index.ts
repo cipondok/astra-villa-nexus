@@ -210,22 +210,28 @@ serve(async (req) => {
     const recommendations = generateRecommendations(kpis, funnel);
     const riskAlerts = generateRiskAlerts(kpis);
 
-    // Fetch behavioral intelligence
+    // Fetch behavioral + pricing intelligence
     let hotProperties: any[] = [];
     let demandSignals: any[] = [];
     let liquidityMetrics: any[] = [];
     let liquidityForecasts: any[] = [];
+    let pricingSignals: any[] = [];
+    let capitalFlows: any[] = [];
     try {
-      const [hotRes, demandRes, liqRes, forecastRes] = await Promise.all([
+      const [hotRes, demandRes, liqRes, forecastRes, priceRes, capRes] = await Promise.all([
         sb.from("investor_intent_scores").select("property_id, intent_score, intent_level").eq("intent_level", "hot").order("intent_score", { ascending: false }).limit(5),
         sb.from("market_demand_signals").select("city, demand_velocity_score, view_to_inquiry_ratio, total_views, total_inquiries").order("demand_velocity_score", { ascending: false }).limit(5),
         sb.from("liquidity_metrics_daily").select("city, liquidity_velocity_score, absorption_rate, market_classification, demand_pressure_index, listings_active, deals_closed").order("liquidity_velocity_score", { ascending: false }).limit(10),
         sb.from("liquidity_forecasts").select("city, predicted_velocity_score, surge_probability, oversupply_risk, forecast_trend").order("surge_probability", { ascending: false }).limit(5),
+        sb.from("property_price_signals").select("property_id, city, listing_price, demand_adjusted_price, investor_bid_pressure_score, price_volatility_index, confidence_score").order("investor_bid_pressure_score", { ascending: false }).limit(10),
+        sb.from("capital_flow_signals").select("city, segment, capital_inflow_score, avg_ticket_size, capital_volume").order("capital_inflow_score", { ascending: false }).limit(10),
       ]);
       hotProperties = hotRes.data || [];
       demandSignals = demandRes.data || [];
       liquidityMetrics = liqRes.data || [];
       liquidityForecasts = forecastRes.data || [];
+      pricingSignals = priceRes.data || [];
+      capitalFlows = capRes.data || [];
     } catch { /* tables may be empty */ }
 
     // Add demand-based recommendations
