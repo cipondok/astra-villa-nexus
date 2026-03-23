@@ -23,7 +23,7 @@ const GlobalTransactionIntelligence = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const { data: statsData } = await supabase.functions.invoke("deal-engine", { body: { action: "deal_stats" } });
+      const { data: statsData } = await supabase.functions.invoke("deal-transaction-engine", { body: { action: "deal_stats" } });
       setStats(statsData);
 
       const { data: dealsData } = await supabase.from("deal_transactions" as any).select("*").order("created_at", { ascending: false }).limit(50);
