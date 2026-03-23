@@ -30082,6 +30082,42 @@ export type Database = {
           },
         ]
       }
+      inquiry_followup_actions: {
+        Row: {
+          action_status: string | null
+          action_type: string
+          created_at: string | null
+          executed_at: string | null
+          followup_id: string
+          property_id: string | null
+          scheduled_at: string | null
+          trigger_reason: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action_status?: string | null
+          action_type?: string
+          created_at?: string | null
+          executed_at?: string | null
+          followup_id?: string
+          property_id?: string | null
+          scheduled_at?: string | null
+          trigger_reason?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action_status?: string | null
+          action_type?: string
+          created_at?: string | null
+          executed_at?: string | null
+          followup_id?: string
+          property_id?: string | null
+          scheduled_at?: string | null
+          trigger_reason?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       inspection_items: {
         Row: {
           area: string
@@ -30476,6 +30512,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      investor_behavior_events: {
+        Row: {
+          created_at: string | null
+          event_id: string
+          event_type: string
+          intent_level: string | null
+          property_id: string | null
+          session_duration_seconds: number | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_id?: string
+          event_type?: string
+          intent_level?: string | null
+          property_id?: string | null
+          session_duration_seconds?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          event_id?: string
+          event_type?: string
+          intent_level?: string | null
+          property_id?: string | null
+          session_duration_seconds?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
       }
       investor_credibility: {
         Row: {
