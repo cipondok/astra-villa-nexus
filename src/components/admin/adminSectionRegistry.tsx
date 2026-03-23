@@ -1112,6 +1112,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "deal-recovery-playbook":      () => <DealRecoveryPlaybook />,
   "hnw-closing-strategist":      () => <HNWClosingStrategist />,
   "seller-motivation-engine":    () => <SellerMotivationEngine />,
+  "deal-probability-engine":     () => <DealProbabilityDashboard />,
   "first-city-domination":       () => <FirstCityDominationCommand />,
   "deal-priority-revenue":       () => <DealPriorityRevenueIntelligence />,
   "founder-mobile-warroom":      () => <FounderMobileWarRoom />,
