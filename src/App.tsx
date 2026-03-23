@@ -98,6 +98,7 @@ const AddProperty = lazy(() => import('@/pages/AddProperty'));
 const SubmitPropertyListing = lazy(() => import('@/pages/SubmitPropertyListing'));
 const InvestorLandingPage = lazy(() => import('@/pages/InvestorLandingPage'));
 const DealRoom = lazy(() => import('@/pages/DealRoom'));
+const WalletPage = lazy(() => import('@/pages/WalletPage'));
 const LaunchCommandCenter = lazy(() => import('@/pages/LaunchCommandCenter'));
 const PropertyDeepAnalysis = lazy(() => import('@/pages/PropertyDeepAnalysis'));
 const InvestorOnboardingWizard = lazy(() => import('@/pages/InvestorOnboardingWizard'));
@@ -555,6 +556,7 @@ const AppContent = () => {
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/astra-tokens" element={<AstraTokensPage />} />
+                <Route path="/wallet" element={<WalletPage />} />
                 <Route path="/services" element={<Services />} />
                 <Route path="/services/category/:categoryId" element={<ServiceCategory />} />
                 <Route path="/vendor/:vendorId" element={<ServiceProviderProfile />} />
