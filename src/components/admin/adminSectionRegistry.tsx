@@ -1620,6 +1620,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ai-copilot": { label: "AI Co-Pilot", category: "Operations" },
   "founder-daily-execution": { label: "Founder Daily Execution", category: "Operations" },
   "first-100-deals-warroom": { label: "First 100 Deals War Room", category: "Execution Command" },
+  "deal-recovery-playbook": { label: "Deal Recovery Playbook", category: "Execution Command" },
   "daily-ops-battle-station": { label: "Daily Ops Battle Station", category: "Execution Command" },
   "first-100k-revenue": { label: "First $100K Revenue Plan", category: "Operations" },
   "investor-narrative-coaching": { label: "Investor Narrative Coaching", category: "Strategy" },
