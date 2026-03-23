@@ -210,8 +210,39 @@ serve(async (req) => {
     const recommendations = generateRecommendations(kpis, funnel);
     const riskAlerts = generateRiskAlerts(kpis);
 
+    // Fetch behavioral intelligence
+    let hotProperties: any[] = [];
+    let demandSignals: any[] = [];
+    try {
+      const [hotRes, demandRes] = await Promise.all([
+        sb.from("investor_intent_scores").select("property_id, intent_score, intent_level").eq("intent_level", "hot").order("intent_score", { ascending: false }).limit(5),
+        sb.from("market_demand_signals").select("city, demand_velocity_score, view_to_inquiry_ratio, total_views, total_inquiries").order("demand_velocity_score", { ascending: false }).limit(5),
+      ]);
+      hotProperties = hotRes.data || [];
+      demandSignals = demandRes.data || [];
+    } catch { /* tables may be empty */ }
+
+    // Add demand-based recommendations
+    for (const ds of demandSignals) {
+      if (ds.demand_velocity_score > 50 && ds.view_to_inquiry_ratio < 0.05) {
+        recommendations.push({
+          id: `rec-demand-${ds.city}`,
+          type: "growth",
+          title: `Demand spike in ${ds.city} — boost supply`,
+          description: `${ds.total_views} views but only ${ds.total_inquiries} inquiries. Improve listing quality or add inventory.`,
+          confidence: 83,
+          impact: "Capture demand gap",
+          timeWindow: "This week",
+          priority: "high",
+          status: "pending",
+        });
+      }
+    }
+
     return json({
       kpis, funnel, recommendations, risk_alerts: riskAlerts,
+      hot_properties: hotProperties,
+      demand_signals: demandSignals,
       performance: {
         actions_executed_7d: kpis.copilot_actions_7_days,
         ai_signals_7d: kpis.ai_signals_generated_7_days,

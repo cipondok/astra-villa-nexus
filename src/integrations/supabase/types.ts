@@ -31731,6 +31731,39 @@ export type Database = {
         }
         Relationships: []
       }
+      investor_intent_scores: {
+        Row: {
+          computed_at: string
+          id: string
+          intent_level: string
+          intent_score: number
+          last_signal_at: string | null
+          property_id: string | null
+          signal_breakdown: Json | null
+          user_id: string
+        }
+        Insert: {
+          computed_at?: string
+          id?: string
+          intent_level?: string
+          intent_score?: number
+          last_signal_at?: string | null
+          property_id?: string | null
+          signal_breakdown?: Json | null
+          user_id: string
+        }
+        Update: {
+          computed_at?: string
+          id?: string
+          intent_level?: string
+          intent_score?: number
+          last_signal_at?: string | null
+          property_id?: string | null
+          signal_breakdown?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       investor_liquidity_alerts: {
         Row: {
           alert_type: string
@@ -36548,6 +36581,54 @@ export type Database = {
           sentiment_score?: number | null
           transition_probability?: Json | null
           volume_momentum?: number | null
+        }
+        Relationships: []
+      }
+      market_demand_signals: {
+        Row: {
+          city: string
+          computed_at: string
+          demand_velocity_score: number | null
+          id: string
+          investor_engagement_index: number | null
+          period_end: string
+          period_start: string
+          price_band: string | null
+          property_type: string | null
+          total_inquiries: number | null
+          total_saves: number | null
+          total_views: number | null
+          view_to_inquiry_ratio: number | null
+        }
+        Insert: {
+          city: string
+          computed_at?: string
+          demand_velocity_score?: number | null
+          id?: string
+          investor_engagement_index?: number | null
+          period_end: string
+          period_start: string
+          price_band?: string | null
+          property_type?: string | null
+          total_inquiries?: number | null
+          total_saves?: number | null
+          total_views?: number | null
+          view_to_inquiry_ratio?: number | null
+        }
+        Update: {
+          city?: string
+          computed_at?: string
+          demand_velocity_score?: number | null
+          id?: string
+          investor_engagement_index?: number | null
+          period_end?: string
+          period_start?: string
+          price_band?: string | null
+          property_type?: string | null
+          total_inquiries?: number | null
+          total_saves?: number | null
+          total_views?: number | null
+          view_to_inquiry_ratio?: number | null
         }
         Relationships: []
       }
