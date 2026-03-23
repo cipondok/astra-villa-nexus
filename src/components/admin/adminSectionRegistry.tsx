@@ -438,6 +438,7 @@ export const DealRecoveryPlaybook = lazyRetry(() => import("./DealRecoveryPlaybo
 export const HNWClosingStrategist = lazyRetry(() => import("./HNWClosingStrategist"));
 export const SellerMotivationEngine = lazyRetry(() => import("./SellerMotivationEngine"));
 export const DealProbabilityDashboard = lazyRetry(() => import("./DealProbabilityDashboard"));
+export const NegotiationAIDashboard = lazyRetry(() => import("./NegotiationAIDashboard"));
 export const First100KRevenuePlan = lazyRetry(() => import("./First100KRevenuePlan"));
 export const InvestorNarrativeCoaching = lazyRetry(() => import("./InvestorNarrativeCoaching"));
 export const VendorOutreachScripts = lazyRetry(() => import("./VendorOutreachScripts"));
