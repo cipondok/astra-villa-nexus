@@ -119,6 +119,7 @@ export const BuyerViewingBookingFlow = lazyRetry(() => import("./BuyerViewingBoo
 export const SellerPerformanceInsight = lazyRetry(() => import("./SellerPerformanceInsight"));
 export const AgentMobileHomeScreen = lazyRetry(() => import("./AgentMobileHomeScreen"));
 export const DealVelocityCommandCenter = lazyRetry(() => import("./DealVelocityCommandCenter"));
+export const FounderControlTower = lazyRetry(() => import("./FounderControlTower"));
 export const DealOfferSubmissionFlow = lazyRetry(() => import("./DealOfferSubmissionFlow"));
 export const NegotiationChatInterface = lazyRetry(() => import("./NegotiationChatInterface"));
 export const DealProgressTimeline = lazyRetry(() => import("./DealProgressTimeline"));
@@ -820,6 +821,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "investor-growth-command": () => <InvestorGrowthCommandCenter />,
   "supply-growth-command": () => <SupplyGrowthCommandCenter />,
   "deal-velocity-command": () => <DealVelocityCommandCenter />,
+  "founder-control-tower": () => <FounderControlTower />,
   "report-export":       () => <ReportExportFunction />,
   "enhanced-search":     () => <EnhancedSearchFilters />,
   "system-reports":      () => <SystemReports />,
@@ -1767,4 +1769,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "investor-growth-command": { label: "Investor Growth Engine", category: "Investor Management" },
   "supply-growth-command": { label: "Supply Growth Engine", category: "Marketplace Growth" },
   "deal-velocity-command": { label: "Deal Velocity Engine", category: "Marketplace Growth" },
+  "founder-control-tower": { label: "Founder Control Tower", category: "Operations" },
 };
