@@ -110,6 +110,8 @@ const EscrowSafetyModule = lazy(() => import('@/components/property/EscrowSafety
 const DealActionTimeline = lazy(() => import('@/components/property/DealActionTimeline'));
 const WalletFundingCTA = lazy(() => import('@/components/property/WalletFundingCTA'));
 const InvestorMatchSignal = lazy(() => import('@/components/property/InvestorMatchSignal'));
+const SmartInquiryCTA = lazy(() => import('@/components/property/SmartInquiryCTA'));
+const InquiryTrustPopup = lazy(() => import('@/components/property/InquiryTrustPopup'));
 import { formatDistanceToNow } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 
