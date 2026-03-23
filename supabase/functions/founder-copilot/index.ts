@@ -53,11 +53,12 @@ async function gatherFounderContext() {
     safeCount("escrow_transactions", q => q.eq("status", "active")),
   ]);
 
-  // Fetch liquidity + pricing intelligence
+  // Fetch liquidity + pricing + strategy intelligence
   let liquiditySummary = "No liquidity data available";
   let pricingSummary = "No pricing signal data available";
+  let strategySummary = "No strategy signals available";
   try {
-    const [liqRes, priceRes, capRes] = await Promise.all([
+    const [liqRes, priceRes, capRes, stratRes] = await Promise.all([
       supabaseAdmin.from("liquidity_metrics_daily").select("city, liquidity_velocity_score, absorption_rate, market_classification, demand_pressure_index").order("liquidity_velocity_score", { ascending: false }).limit(10),
       supabaseAdmin.from("property_price_signals").select("city, listing_price, demand_adjusted_price, investor_bid_pressure_score, price_volatility_index").order("investor_bid_pressure_score", { ascending: false }).limit(10),
       supabaseAdmin.from("capital_flow_signals").select("city, capital_inflow_score, avg_ticket_size, capital_volume").order("capital_inflow_score", { ascending: false }).limit(5),

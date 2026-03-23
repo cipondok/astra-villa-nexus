@@ -325,6 +325,31 @@ serve(async (req) => {
       }
     }
 
+    // Fetch strategy intelligence
+    let strategySignals: any[] = [];
+    try {
+      const { data } = await sb.from("marketplace_strategy_signals")
+        .select("city, recommended_strategy, strategy_priority_index, confidence_level, supply_score, demand_score, liquidity_score")
+        .order("strategy_priority_index", { ascending: false })
+        .limit(5);
+      strategySignals = data || [];
+    } catch { /* skip */ }
+
+    // Strategy-based recommendations
+    for (const ss of strategySignals) {
+      if (ss.strategy_priority_index > 60 && ss.recommended_strategy !== "maintain_and_monitor") {
+        const label = (ss.recommended_strategy || "").replace(/_/g, " ");
+        recommendations.push({
+          id: `rec-strategy-${ss.city}`,
+          type: "growth",
+          title: `${ss.city}: ${label} (priority ${ss.strategy_priority_index}/100)`,
+          description: `Supply ${ss.supply_score} | Demand ${ss.demand_score} | Liquidity ${ss.liquidity_score}. Confidence: ${ss.confidence_level}.`,
+          confidence: ss.strategy_priority_index, impact: "Strategic growth acceleration",
+          timeWindow: "This week", priority: ss.strategy_priority_index > 80 ? "critical" : "high", status: "pending",
+        });
+      }
+    }
+
     return json({
       kpis, funnel, recommendations, risk_alerts: riskAlerts,
       hot_properties: hotProperties,
@@ -332,6 +357,9 @@ serve(async (req) => {
       pricing_intelligence: {
         top_bid_pressure: pricingSignals.slice(0, 5),
         capital_flows: capitalFlows.slice(0, 5),
+      },
+      strategy_intelligence: {
+        top_opportunities: strategySignals.slice(0, 3),
       },
       liquidity: {
         fastest_cities: liquidityMetrics.filter((m: any) => m.market_classification === "hot").slice(0, 3),
