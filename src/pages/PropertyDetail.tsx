@@ -194,6 +194,8 @@ const PropertyDetail: React.FC = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [showMobileOffer, setShowMobileOffer] = useState(false);
+  const [inquiryPopupOpen, setInquiryPopupOpen] = useState(false);
+  const [inquiryType, setInquiryType] = useState("investment_question");
   
   // Initialize favorites hook with property data once available
   const { toggleFavorite, isFavorite, loading: favLoading } = useFavorites({
