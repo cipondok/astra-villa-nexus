@@ -206,6 +206,7 @@ export const AutomationPlatformManagement = lazyRetry(() => import("./Automation
 export const TeamManagement = lazyRetry(() => import("./TeamManagement"));
 export const ViralGrowthCampaigns = lazyRetry(() => import("./ViralGrowthCampaigns"));
 export const ViralGrowthAnalyticsDashboard = lazyRetry(() => import("./ViralGrowthAnalyticsDashboard"));
+export const SecondaryMarketDashboard = lazyRetry(() => import("./SecondaryMarketDashboard"));
 export const MediaCoveragePR = lazyRetry(() => import("./MediaCoveragePR"));
 export const AHUCompanyChecker = lazyRetry(() => import("./AHUCompanyChecker"));
 export const ConciergeServiceManagement = lazyRetry(() => import("./ConciergeServiceManagement"));
