@@ -184,6 +184,7 @@ export const InvestorGrowthCommandCenter = lazyRetry(() => import("./InvestorGro
 export const AdminCapitalActivationPanel = lazyRetry(() => import("./AdminCapitalActivationPanel"));
 export const InvestorAcquisitionCampaignCommand = lazyRetry(() => import("./InvestorAcquisitionCampaignCommand"));
 export const SignupConversionDashboard = lazyRetry(() => import("./SignupConversionDashboard"));
+export const InquiryConversionDashboard = lazyRetry(() => import("./InquiryConversionDashboard"));
 // Legacy WebsiteDesignControl kept in codebase but no longer used by admin navigation
 export const RateLimitingDashboard = lazyRetry(() => import("./RateLimitingDashboard"));
 export const VideoTourManager = lazyRetry(() => import("./VideoTourManager"));
