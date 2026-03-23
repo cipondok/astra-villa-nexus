@@ -178,6 +178,7 @@ export const BookingManagement = lazyRetry(() => import("./BookingManagement"));
 export const AdminRentalManagement = lazyRetry(() => import("./AdminRentalManagement"));
 export const TransactionManagementTabs = lazyRetry(() => import("./TransactionManagementTabs"));
 export const InvestorSettingsHub = lazyRetry(() => import("./InvestorSettingsHub"));
+export const InvestorGrowthCommandCenter = lazyRetry(() => import("./InvestorGrowthCommandCenter"));
 // Legacy WebsiteDesignControl kept in codebase but no longer used by admin navigation
 export const RateLimitingDashboard = lazyRetry(() => import("./RateLimitingDashboard"));
 export const VideoTourManager = lazyRetry(() => import("./VideoTourManager"));
@@ -814,6 +815,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "liquidity-exchange-command": () => <LiquidityExchangeCommandCenter />,
   "institutional-fund-manager": () => <InstitutionalFundManager />,
   "custody-settlement-command": () => <CustodySettlementCommandCenter />,
+  "investor-growth-command": () => <InvestorGrowthCommandCenter />,
   "report-export":       () => <ReportExportFunction />,
   "enhanced-search":     () => <EnhancedSearchFilters />,
   "system-reports":      () => <SystemReports />,
@@ -1758,4 +1760,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "liquidity-exchange-command": { label: "Liquidity Exchange Command", category: "Investor Management" },
   "institutional-fund-manager": { label: "Institutional Fund Manager", category: "Investor Management" },
   "custody-settlement-command": { label: "Custody & Settlement", category: "Investor Management" },
+  "investor-growth-command": { label: "Investor Growth Engine", category: "Investor Management" },
 };

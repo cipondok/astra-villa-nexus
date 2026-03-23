@@ -555,6 +555,13 @@ export const navigationSections = {
       icon: Shield,
       description: "Asset custody accounts, segregated ledger, settlement routing, SPV structures, and regulatory reporting",
       badge: "🔒 Custody"
+    },
+    {
+      key: "investor-growth-command",
+      label: "Investor Growth Engine",
+      icon: Rocket,
+      description: "Funnel tracking, activation scoring, nudge automation, referrals, experiments, and geo growth analytics",
+      badge: "🚀 Growth"
     }
   ],
 
