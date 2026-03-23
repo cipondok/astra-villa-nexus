@@ -586,6 +586,7 @@ export const MarketIntelligenceCommandCenter = lazyRetry(() => import("./MarketI
 // Liquidity Exchange
 export const LiquidityExchangeCommandCenter = lazyRetry(() => import("./LiquidityExchangeCommandCenter"));
 export const InstitutionalFundManager = lazyRetry(() => import("./InstitutionalFundManager"));
+export const CustodySettlementCommandCenter = lazyRetry(() => import("./CustodySettlementCommandCenter"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
@@ -812,6 +813,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "investor-economics-command": () => <AdminInvestorEconomics />,
   "liquidity-exchange-command": () => <LiquidityExchangeCommandCenter />,
   "institutional-fund-manager": () => <InstitutionalFundManager />,
+  "custody-settlement-command": () => <CustodySettlementCommandCenter />,
   "report-export":       () => <ReportExportFunction />,
   "enhanced-search":     () => <EnhancedSearchFilters />,
   "system-reports":      () => <SystemReports />,
@@ -1755,4 +1757,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "investor-economics-command": { label: "Investor Economics Command", category: "Investor Management" },
   "liquidity-exchange-command": { label: "Liquidity Exchange Command", category: "Investor Management" },
   "institutional-fund-manager": { label: "Institutional Fund Manager", category: "Investor Management" },
+  "custody-settlement-command": { label: "Custody & Settlement", category: "Investor Management" },
 };
