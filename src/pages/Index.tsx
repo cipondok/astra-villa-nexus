@@ -974,6 +974,15 @@ const Index = () => {
                 </Suspense>
               </SectionWrapper>
 
+              {/* ── Investor Credibility Showcase ── */}
+              <SectionWrapper variant="default" className="py-2 sm:py-3">
+                <ScrollReveal direction="up" delay={0}>
+                  <Suspense fallback={null}>
+                    <InvestorCredibilityShowcase />
+                  </Suspense>
+                </ScrollReveal>
+              </SectionWrapper>
+
               {/* ── Final Conversion Zone (NEW — replaces EarlyInvestmentCTA) ── */}
               <SectionWrapper variant="muted" className="py-2 sm:py-3">
                 <Suspense fallback={null}>
