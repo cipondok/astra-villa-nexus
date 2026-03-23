@@ -3826,6 +3826,9 @@ export type Database = {
           cooldown_hours: number
           daily_budget_limit: number
           daily_generated_count: number
+          enabled_angles: string[] | null
+          extra_angles_min_price: number | null
+          extra_angles_min_traffic: number | null
           id: string
           last_budget_reset_at: string | null
           last_reprioritize_at: string | null
@@ -3838,6 +3841,9 @@ export type Database = {
           cooldown_hours?: number
           daily_budget_limit?: number
           daily_generated_count?: number
+          enabled_angles?: string[] | null
+          extra_angles_min_price?: number | null
+          extra_angles_min_traffic?: number | null
           id?: string
           last_budget_reset_at?: string | null
           last_reprioritize_at?: string | null
@@ -3850,6 +3856,9 @@ export type Database = {
           cooldown_hours?: number
           daily_budget_limit?: number
           daily_generated_count?: number
+          enabled_angles?: string[] | null
+          extra_angles_min_price?: number | null
+          extra_angles_min_traffic?: number | null
           id?: string
           last_budget_reset_at?: string | null
           last_reprioritize_at?: string | null
@@ -3861,10 +3870,14 @@ export type Database = {
       }
       ai_image_jobs: {
         Row: {
+          ai_style_profile: string | null
+          angle_set_id: string | null
+          angle_type: string
           completed_at: string | null
           created_at: string
           daily_budget_slot: boolean | null
           error_message: string | null
+          generation_stage: number | null
           id: string
           max_retries: number
           priority_score: number
@@ -3885,10 +3898,14 @@ export type Database = {
           worker_id: string | null
         }
         Insert: {
+          ai_style_profile?: string | null
+          angle_set_id?: string | null
+          angle_type?: string
           completed_at?: string | null
           created_at?: string
           daily_budget_slot?: boolean | null
           error_message?: string | null
+          generation_stage?: number | null
           id?: string
           max_retries?: number
           priority_score?: number
@@ -3909,10 +3926,14 @@ export type Database = {
           worker_id?: string | null
         }
         Update: {
+          ai_style_profile?: string | null
+          angle_set_id?: string | null
+          angle_type?: string
           completed_at?: string | null
           created_at?: string
           daily_budget_slot?: boolean | null
           error_message?: string | null
+          generation_stage?: number | null
           id?: string
           max_retries?: number
           priority_score?: number
