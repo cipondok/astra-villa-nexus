@@ -613,6 +613,13 @@ export const navigationSections = {
       icon: Users,
       description: "Manage mortgage brokers, home inspectors, moving companies, and other partners with referral tracking and payouts",
       badge: "New"
+    },
+    {
+      key: "global-transaction-intelligence",
+      label: "Global Transaction Intelligence",
+      icon: Globe,
+      description: "Cross-border deal analytics, escrow monitoring, dispute resolution, and investor flow intelligence",
+      badge: "🛡️ Intel"
     }
   ],
 

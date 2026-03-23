@@ -1716,4 +1716,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "dev-velocity-tracker": { label: "Dev Velocity Tracker", category: "Operations" },
   "ai-model-governance": { label: "AI Model Governance", category: "Operations" },
   "ux-quality-monitoring": { label: "UX Quality Monitoring", category: "Operations" },
+  "global-transaction-intelligence": { label: "Global Transaction Intelligence", category: "Transactions" },
 };
