@@ -59,7 +59,7 @@ export const useDealTransactions = (role: 'buyer' | 'seller' | 'agent' = 'buyer'
       currency?: string;
       country_origin?: string;
     }) => {
-      const { data, error } = await supabase.functions.invoke('deal-engine', {
+      const { data, error } = await supabase.functions.invoke('deal-transaction-engine', {
         body: { action: 'create_deal', ...params },
       });
       if (error) throw new Error(error.message);
