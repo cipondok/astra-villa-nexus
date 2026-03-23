@@ -66,7 +66,9 @@ const FeaturedPropertiesCarousel = lazy(() => import("@/components/home/Featured
 const SmartCollectionsShowcase = lazy(() => import("@/components/home/SmartCollectionsV2"));
 const TrendingROIDeals = lazy(() => import("@/components/home/TrendingROIDeals"));
 const EarlyInvestmentCTA = lazy(() => import("@/components/home/EarlyInvestmentCTA"));
-const SocialProofStrip = lazy(() => import("@/components/home/SocialProofStrip"));
+const CapitalSafetyStrip = lazy(() => import("@/components/home/CapitalSafetyStrip"));
+const FirstFundingCTA = lazy(() => import("@/components/home/FirstFundingCTA"));
+const InvestorCredibilityShowcase = lazy(() => import("@/components/home/InvestorCredibilityShowcase"));
 const MobileFloatingCTA = lazy(() => import("@/components/home/MobileFloatingCTA"));
 const TrustFooterStrip = lazy(() => import("@/components/home/TrustFooterStrip"));
 const PWAInstallPrompt = lazy(() => import("@/components/pwa/PWAInstallPrompt"));
