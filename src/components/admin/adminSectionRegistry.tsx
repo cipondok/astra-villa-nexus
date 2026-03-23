@@ -585,6 +585,7 @@ export const MarketIntelligenceCommandCenter = lazyRetry(() => import("./MarketI
 
 // Liquidity Exchange
 export const LiquidityExchangeCommandCenter = lazyRetry(() => import("./LiquidityExchangeCommandCenter"));
+export const InstitutionalFundManager = lazyRetry(() => import("./InstitutionalFundManager"));
 
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
