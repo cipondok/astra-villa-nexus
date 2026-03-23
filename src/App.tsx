@@ -42,16 +42,28 @@ const GlobalLoadingIndicator = lazy(() => import('@/components/ui/GlobalLoadingI
 
 const ResponsiveAIChatWidget = lazy(() => import('@/components/ai/ResponsiveAIChatWidget'));
 
+const SHELLLESS_ROUTES = new Set(['/', '/landing', '/investor-landing']);
+
+const isShelllessPath = (pathname: string) => SHELLLESS_ROUTES.has(pathname);
+
 const ChatWidgetGuard = () => {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
-  if (isAdmin) return null;
+  if (isAdmin || isShelllessPath(location.pathname)) return null;
   return (
     <ResponsiveAIChatWidget 
       showScrollButton={true}
       onScrollToTop={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
     />
   );
+};
+
+const GlobalFloatingActions = () => {
+  const location = useLocation();
+
+  if (isShelllessPath(location.pathname)) return null;
+
+  return <WhatsAppInquiryButton variant="floating" defaultType="general" />;
 };
 
 const WhatsAppInquiryButton = lazy(() => import('@/components/WhatsAppInquiryButton'));
@@ -479,6 +491,7 @@ const AppContent = () => {
   const location = useLocation();
   const { language } = useTranslation();
   const isAdminRoute = ['/admin', '/admin-dashboard', '/settings', '/admin/ai-performance', '/admin/listing-review'].includes(location.pathname);
+  const isShelllessRoute = isShelllessPath(location.pathname);
   const { isMobile } = useIsMobile();
   const { isAdmin } = useAdminCheck();
   const { maintenanceMode, maintenanceMessage } = useMaintenanceMode();
@@ -493,9 +506,9 @@ const AppContent = () => {
       <NetworkStatusIndicator />
       <Suspense fallback={null}><AuthenticatedHooks /></Suspense>
       <Suspense fallback={null}><GlobalLoadingIndicator /></Suspense>
-      {!isAdminRoute && <Suspense fallback={null}><Navigation /></Suspense>}
+      {!isAdminRoute && !isShelllessRoute && <Suspense fallback={null}><Navigation /></Suspense>}
       
-      <main className={isAdminRoute ? '' : 'pt-10 md:pt-11 lg:pt-12 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0'}>
+      <main className={isAdminRoute || isShelllessRoute ? '' : 'pt-10 md:pt-11 lg:pt-12 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0'}>
         <AnimatePresence mode="popLayout" initial={false}>
           <PageTransition key={location.pathname}>
             <Suspense fallback={<PageLoader />}>
@@ -1004,13 +1017,13 @@ const AppContent = () => {
           </PageTransition>
         </AnimatePresence>
       </main>
-      {!isAdminRoute && (
+      {!isAdminRoute && !isShelllessRoute && (
         <Suspense fallback={<div style={{ minHeight: isMobile ? '64px' : '180px' }} />}>
           {isMobile ? <MobileFooter /> : <ProfessionalFooter language={language} />}
         </Suspense>
       )}
       {/* Mobile bottom tab bar */}
-      <Suspense fallback={null}><MobileBottomTabBar /></Suspense>
+      {!isShelllessRoute && <Suspense fallback={null}><MobileBottomTabBar /></Suspense>}
     </div>
   );
 };
@@ -1142,9 +1155,7 @@ function App() {
                             <CookieSystem />
                             <Suspense fallback={null}>
                               <ChatWidgetGuard />
-                              
-                              <WhatsAppInquiryButton variant="floating" defaultType="general" />
-                              
+                              <GlobalFloatingActions />
                               <SessionExpirationHandler />
                               <AuthNotificationHandler />
                             </Suspense>
