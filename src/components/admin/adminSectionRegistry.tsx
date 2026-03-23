@@ -1789,6 +1789,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "liquidity-exchange-command": { label: "Liquidity Exchange Command", category: "Investor Management" },
   "institutional-fund-manager": { label: "Institutional Fund Manager", category: "Investor Management" },
   "custody-settlement-command": { label: "Custody & Settlement", category: "Investor Management" },
+  "fractional-investment-command": { label: "Fractional Investment", category: "Investor Management" },
   "investor-growth-command": { label: "Investor Growth Engine", category: "Investor Management" },
   "capital-activation-command": { label: "Capital Activation Engine", category: "Investor Management" },
   "investor-acquisition-campaign": { label: "Investor Acquisition Campaign", category: "Marketplace Growth" },
