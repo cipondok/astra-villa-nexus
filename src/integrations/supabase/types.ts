@@ -19222,6 +19222,87 @@ export type Database = {
         }
         Relationships: []
       }
+      founder_alerts: {
+        Row: {
+          alert_id: string
+          alert_message: string
+          alert_type: string
+          generated_at: string
+          resolved_flag: boolean
+          severity_level: string
+        }
+        Insert: {
+          alert_id?: string
+          alert_message: string
+          alert_type: string
+          generated_at?: string
+          resolved_flag?: boolean
+          severity_level?: string
+        }
+        Update: {
+          alert_id?: string
+          alert_message?: string
+          alert_type?: string
+          generated_at?: string
+          resolved_flag?: boolean
+          severity_level?: string
+        }
+        Relationships: []
+      }
+      founder_capital_flow_metrics: {
+        Row: {
+          escrow_capital_locked: number | null
+          liquidity_exchange_volume: number | null
+          metric_id: string
+          new_capital_inflow_today: number | null
+          payouts_released_today: number | null
+          recorded_at: string
+          wallet_total_balance: number | null
+        }
+        Insert: {
+          escrow_capital_locked?: number | null
+          liquidity_exchange_volume?: number | null
+          metric_id?: string
+          new_capital_inflow_today?: number | null
+          payouts_released_today?: number | null
+          recorded_at?: string
+          wallet_total_balance?: number | null
+        }
+        Update: {
+          escrow_capital_locked?: number | null
+          liquidity_exchange_volume?: number | null
+          metric_id?: string
+          new_capital_inflow_today?: number | null
+          payouts_released_today?: number | null
+          recorded_at?: string
+          wallet_total_balance?: number | null
+        }
+        Relationships: []
+      }
+      founder_daily_kpis: {
+        Row: {
+          created_at: string
+          id: string
+          metric_name: string
+          metric_value: number
+          record_date: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          metric_name: string
+          metric_value?: number
+          record_date?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          metric_name?: string
+          metric_value?: number
+          record_date?: string
+        }
+        Relationships: []
+      }
       founder_deal_pipeline: {
         Row: {
           commission_estimate: number | null
@@ -19305,6 +19386,123 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      founder_deal_velocity_snapshot: {
+        Row: {
+          avg_days_in_pipeline: number | null
+          escrow_to_close_rate: number | null
+          generated_at: string
+          inquiry_to_escrow_rate: number | null
+          snapshot_id: string
+          stalled_deal_count: number | null
+          total_active_deals: number | null
+        }
+        Insert: {
+          avg_days_in_pipeline?: number | null
+          escrow_to_close_rate?: number | null
+          generated_at?: string
+          inquiry_to_escrow_rate?: number | null
+          snapshot_id?: string
+          stalled_deal_count?: number | null
+          total_active_deals?: number | null
+        }
+        Update: {
+          avg_days_in_pipeline?: number | null
+          escrow_to_close_rate?: number | null
+          generated_at?: string
+          inquiry_to_escrow_rate?: number | null
+          snapshot_id?: string
+          stalled_deal_count?: number | null
+          total_active_deals?: number | null
+        }
+        Relationships: []
+      }
+      founder_growth_snapshot: {
+        Row: {
+          generated_at: string
+          repeat_investment_rate: number | null
+          signup_to_wallet_rate: number | null
+          snapshot_id: string
+          top_investor_geo_regions: Json | null
+          wallet_to_escrow_rate: number | null
+        }
+        Insert: {
+          generated_at?: string
+          repeat_investment_rate?: number | null
+          signup_to_wallet_rate?: number | null
+          snapshot_id?: string
+          top_investor_geo_regions?: Json | null
+          wallet_to_escrow_rate?: number | null
+        }
+        Update: {
+          generated_at?: string
+          repeat_investment_rate?: number | null
+          signup_to_wallet_rate?: number | null
+          snapshot_id?: string
+          top_investor_geo_regions?: Json | null
+          wallet_to_escrow_rate?: number | null
+        }
+        Relationships: []
+      }
+      founder_supply_metrics: {
+        Row: {
+          avg_listing_quality_score: number | null
+          high_demand_low_supply_zones: number | null
+          listings_under_verification: number | null
+          metric_id: string
+          new_listings_today: number | null
+          recorded_at: string
+          top_agent_activity_score: number | null
+        }
+        Insert: {
+          avg_listing_quality_score?: number | null
+          high_demand_low_supply_zones?: number | null
+          listings_under_verification?: number | null
+          metric_id?: string
+          new_listings_today?: number | null
+          recorded_at?: string
+          top_agent_activity_score?: number | null
+        }
+        Update: {
+          avg_listing_quality_score?: number | null
+          high_demand_low_supply_zones?: number | null
+          listings_under_verification?: number | null
+          metric_id?: string
+          new_listings_today?: number | null
+          recorded_at?: string
+          top_agent_activity_score?: number | null
+        }
+        Relationships: []
+      }
+      founder_trend_metrics: {
+        Row: {
+          calculated_at: string
+          comparison_baseline: number | null
+          current_value: number | null
+          growth_rate: number | null
+          metric_name: string
+          period_type: string
+          trend_id: string
+        }
+        Insert: {
+          calculated_at?: string
+          comparison_baseline?: number | null
+          current_value?: number | null
+          growth_rate?: number | null
+          metric_name: string
+          period_type?: string
+          trend_id?: string
+        }
+        Update: {
+          calculated_at?: string
+          comparison_baseline?: number | null
+          current_value?: number | null
+          growth_rate?: number | null
+          metric_name?: string
+          period_type?: string
+          trend_id?: string
+        }
+        Relationships: []
       }
       fraud_patterns: {
         Row: {
