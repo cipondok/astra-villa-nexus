@@ -3,13 +3,14 @@ import { safeLocalStorage } from "@/lib/safeStorage";
 import { useCurrencyStore, CURRENCY_META } from "@/stores/currencyStore";
 import { supabase } from "@/integrations/supabase/client";
 
-export type CurrencyCode = "IDR" | "USD" | "SGD" | "AUD";
+export type CurrencyCode = "IDR" | "USD" | "SGD" | "AUD" | "EUR";
 
 interface ExchangeRates {
   IDR: number;
   USD: number;
   SGD: number;
   AUD: number;
+  EUR: number;
 }
 
 interface CurrencyContextProps {
