@@ -363,7 +363,6 @@ export const navigationSections = {
       description: "Investor segmentation, multi-channel campaigns, nurture automation, geo analytics & funnel optimization",
       badge: "🎯 Acquisition"
     }
-    }
   ],
 
   "market-intelligence": [
