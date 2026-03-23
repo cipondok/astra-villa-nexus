@@ -279,6 +279,7 @@ export const LoyaltyProgramManager = lazyRetry(() => import("./LoyaltyProgramMan
 export const MultiLanguageManager = lazyRetry(() => import("./MultiLanguageManager"));
 export const EnvironmentalSustainability = lazyRetry(() => import("./EnvironmentalSustainability"));
 export const AdminSecurityIntelligence = lazyRetry(() => import("./AdminSecurityIntelligence"));
+export const SecurityIntelligenceDashboard = lazyRetry(() => import("./SecurityIntelligenceDashboard"));
 export const ContractTemplateManager = lazyRetry(() => import("./ContractTemplateManager"));
 export const PriceAlertManager = lazyRetry(() => import("./PriceAlertManager"));
 export const DeveloperPortal = lazyRetry(() => import("./DeveloperPortal"));
