@@ -129,11 +129,37 @@ const BuyerDealTrustDashboard = () => {
                       </div>
                     </div>
 
-                    {/* Escrow badge */}
+                    {/* Escrow funded badge */}
                     {deal.deal_status === "deposit_secured_escrow" && (
                       <div className="flex items-center gap-2 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
                         <CheckCircle className="h-4 w-4 text-emerald-400" />
-                        <span className="text-sm text-emerald-400 font-medium">Deposit secured in escrow</span>
+                        <div className="flex-1">
+                          <span className="text-sm text-emerald-400 font-medium">Deposit secured in escrow</span>
+                          <p className="text-[10px] text-muted-foreground mt-0.5">Funds are securely held in ASTRA regulated escrow protection system</p>
+                        </div>
+                        {deal.escrow_status && (
+                          <Badge variant="outline" className="text-[10px]">{deal.escrow_status}</Badge>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Escrow release timeline */}
+                    {deal.escrow_status === "funded" && deal.funds_received_at && (
+                      <div className="flex items-center gap-2 p-3 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
+                        <Clock className="h-4 w-4 text-cyan-400" />
+                        <div>
+                          <span className="text-sm text-cyan-400 font-medium">Cooling period active</span>
+                          <p className="text-[10px] text-muted-foreground mt-0.5">
+                            Escrow will be eligible for release after {deal.cooling_period_hours || 72}h verification period
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {deal.escrow_status === "released" && (
+                      <div className="flex items-center gap-2 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                        <CheckCircle className="h-4 w-4 text-emerald-400" />
+                        <span className="text-sm text-emerald-400 font-medium">Escrow released — transaction complete</span>
                       </div>
                     )}
 

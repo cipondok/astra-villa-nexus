@@ -81,11 +81,27 @@ const SellerDealManagementPanel = () => {
                       </div>
                     </div>
 
-                    {/* Escrow status */}
+                    {/* Escrow status with commission preview */}
                     {deal.escrow_id && (
-                      <div className="flex items-center gap-2 text-xs text-emerald-400">
-                        <Shield className="h-3.5 w-3.5" />
-                        Escrow Active — Ref: {deal.escrow_account_reference || deal.escrow_id.slice(0, 8)}
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2 text-xs text-emerald-400">
+                          <Shield className="h-3.5 w-3.5" />
+                          Escrow Active — Ref: {deal.escrow_account_reference || deal.escrow_id.slice(0, 8)}
+                          {deal.escrow_status && <Badge variant="outline" className="text-[10px] ml-1">{deal.escrow_status}</Badge>}
+                        </div>
+                        {deal.escrow_status === "funded" && (
+                          <p className="text-[10px] text-muted-foreground pl-5">Funds held securely. Payout will be processed after verification & cooling period.</p>
+                        )}
+                        {deal.escrow_status === "ready_for_release" && (
+                          <div className="flex items-center gap-1.5 text-xs text-cyan-400 pl-5">
+                            <Clock className="h-3 w-3" /> Payout processing — funds releasing soon
+                          </div>
+                        )}
+                        {deal.escrow_status === "released" && deal.funds_released_at && (
+                          <div className="flex items-center gap-1.5 text-xs text-emerald-400 pl-5">
+                            <CheckCircle className="h-3 w-3" /> Payout completed
+                          </div>
+                        )}
                       </div>
                     )}
 
