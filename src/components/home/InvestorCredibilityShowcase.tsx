@@ -69,8 +69,8 @@ const InvestorCredibilityShowcase = () => {
       const { count } = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true })
-        .eq('role', 'agent');
-      return count || 0;
+        .eq('role', 'agent') as any;
+      return (count as number) || 0;
     },
     staleTime: 15 * 60 * 1000,
   });
