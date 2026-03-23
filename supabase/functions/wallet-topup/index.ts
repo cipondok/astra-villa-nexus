@@ -144,7 +144,7 @@ async function createTopup(params: Record<string, any>, supabase: any, userId: s
 
   // Create Midtrans Snap session
   const snapPayload: Record<string, any> = {
-    transaction_details: { order_id: orderId, gross_amount: Math.round(amount) },
+    transaction_details: { order_id: orderId, gross_amount: Math.round(idrAmount) },
     customer_details: {
       first_name: profile?.full_name?.split(' ')[0] || 'Investor',
       last_name: profile?.full_name?.split(' ').slice(1).join(' ') || '',
