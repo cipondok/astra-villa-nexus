@@ -10370,6 +10370,39 @@ export type Database = {
         }
         Relationships: []
       }
+      capital_flow_signals: {
+        Row: {
+          avg_ticket_size: number | null
+          capital_inflow_score: number | null
+          capital_volume: number | null
+          city: string
+          created_at: string | null
+          id: string
+          investor_growth_rate: number | null
+          segment: string | null
+        }
+        Insert: {
+          avg_ticket_size?: number | null
+          capital_inflow_score?: number | null
+          capital_volume?: number | null
+          city: string
+          created_at?: string | null
+          id?: string
+          investor_growth_rate?: number | null
+          segment?: string | null
+        }
+        Update: {
+          avg_ticket_size?: number | null
+          capital_inflow_score?: number | null
+          capital_volume?: number | null
+          city?: string
+          created_at?: string | null
+          id?: string
+          investor_growth_rate?: number | null
+          segment?: string | null
+        }
+        Relationships: []
+      }
       capital_influence_actions: {
         Row: {
           action_type: string
@@ -47852,6 +47885,48 @@ export type Database = {
           },
         ]
       }
+      property_bid_signals: {
+        Row: {
+          bid_confidence: number | null
+          created_at: string | null
+          id: string
+          investor_segment: string | null
+          property_id: string | null
+          simulated_bid_price: number | null
+        }
+        Insert: {
+          bid_confidence?: number | null
+          created_at?: string | null
+          id?: string
+          investor_segment?: string | null
+          property_id?: string | null
+          simulated_bid_price?: number | null
+        }
+        Update: {
+          bid_confidence?: number | null
+          created_at?: string | null
+          id?: string
+          investor_segment?: string | null
+          property_id?: string | null
+          simulated_bid_price?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_bid_signals_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_bid_signals_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_bookings: {
         Row: {
           booking_type: string
@@ -49101,6 +49176,69 @@ export type Database = {
           },
           {
             foreignKeyName: "property_price_history_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      property_price_signals: {
+        Row: {
+          city: string | null
+          confidence_score: number | null
+          created_at: string | null
+          demand_adjusted_price: number | null
+          estimated_market_price: number | null
+          id: string
+          investor_bid_pressure_score: number | null
+          liquidity_adjusted_price: number | null
+          listing_price: number | null
+          price_volatility_index: number | null
+          property_id: string | null
+          property_type: string | null
+          signal_source: string | null
+        }
+        Insert: {
+          city?: string | null
+          confidence_score?: number | null
+          created_at?: string | null
+          demand_adjusted_price?: number | null
+          estimated_market_price?: number | null
+          id?: string
+          investor_bid_pressure_score?: number | null
+          liquidity_adjusted_price?: number | null
+          listing_price?: number | null
+          price_volatility_index?: number | null
+          property_id?: string | null
+          property_type?: string | null
+          signal_source?: string | null
+        }
+        Update: {
+          city?: string | null
+          confidence_score?: number | null
+          created_at?: string | null
+          demand_adjusted_price?: number | null
+          estimated_market_price?: number | null
+          id?: string
+          investor_bid_pressure_score?: number | null
+          liquidity_adjusted_price?: number | null
+          listing_price?: number | null
+          price_volatility_index?: number | null
+          property_id?: string | null
+          property_type?: string | null
+          signal_source?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_price_signals_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_price_signals_property_id_fkey"
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "public_properties"

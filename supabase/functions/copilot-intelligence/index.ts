@@ -210,22 +210,28 @@ serve(async (req) => {
     const recommendations = generateRecommendations(kpis, funnel);
     const riskAlerts = generateRiskAlerts(kpis);
 
-    // Fetch behavioral intelligence
+    // Fetch behavioral + pricing intelligence
     let hotProperties: any[] = [];
     let demandSignals: any[] = [];
     let liquidityMetrics: any[] = [];
     let liquidityForecasts: any[] = [];
+    let pricingSignals: any[] = [];
+    let capitalFlows: any[] = [];
     try {
-      const [hotRes, demandRes, liqRes, forecastRes] = await Promise.all([
+      const [hotRes, demandRes, liqRes, forecastRes, priceRes, capRes] = await Promise.all([
         sb.from("investor_intent_scores").select("property_id, intent_score, intent_level").eq("intent_level", "hot").order("intent_score", { ascending: false }).limit(5),
         sb.from("market_demand_signals").select("city, demand_velocity_score, view_to_inquiry_ratio, total_views, total_inquiries").order("demand_velocity_score", { ascending: false }).limit(5),
         sb.from("liquidity_metrics_daily").select("city, liquidity_velocity_score, absorption_rate, market_classification, demand_pressure_index, listings_active, deals_closed").order("liquidity_velocity_score", { ascending: false }).limit(10),
         sb.from("liquidity_forecasts").select("city, predicted_velocity_score, surge_probability, oversupply_risk, forecast_trend").order("surge_probability", { ascending: false }).limit(5),
+        sb.from("property_price_signals").select("property_id, city, listing_price, demand_adjusted_price, investor_bid_pressure_score, price_volatility_index, confidence_score").order("investor_bid_pressure_score", { ascending: false }).limit(10),
+        sb.from("capital_flow_signals").select("city, segment, capital_inflow_score, avg_ticket_size, capital_volume").order("capital_inflow_score", { ascending: false }).limit(10),
       ]);
       hotProperties = hotRes.data || [];
       demandSignals = demandRes.data || [];
       liquidityMetrics = liqRes.data || [];
       liquidityForecasts = forecastRes.data || [];
+      pricingSignals = priceRes.data || [];
+      capitalFlows = capRes.data || [];
     } catch { /* tables may be empty */ }
 
     // Add demand-based recommendations
@@ -281,10 +287,52 @@ serve(async (req) => {
       }
     }
 
+    // Pricing signal recommendations
+    for (const ps of pricingSignals) {
+      if (ps.investor_bid_pressure_score > 60) {
+        recommendations.push({
+          id: `rec-bid-${ps.city}-${ps.property_id?.slice(0,8)}`,
+          type: "monetization",
+          title: `High bid pressure in ${ps.city} — recommend +${Math.round((ps.demand_adjusted_price / ps.listing_price - 1) * 100)}% pricing adjustment`,
+          description: `Bid pressure ${ps.investor_bid_pressure_score}/100. Demand-adjusted price: Rp ${ps.demand_adjusted_price?.toLocaleString()}.`,
+          confidence: ps.confidence_score, impact: "Capture premium value",
+          timeWindow: "This week", priority: "high", status: "pending",
+        });
+      }
+      if (ps.price_volatility_index > 10) {
+        riskAlerts.push({
+          id: `risk-volatility-${ps.city}`,
+          category: "price_instability",
+          severity: ps.price_volatility_index > 15 ? "critical" : "warning",
+          title: `Price volatility spike in ${ps.city} (${ps.price_volatility_index}%)`,
+          metric: `Volatility index: ${ps.price_volatility_index}`,
+          trend: "up", probability: Math.min(ps.price_volatility_index * 5, 95),
+        });
+      }
+    }
+
+    // Capital flow recommendations
+    for (const cf of capitalFlows) {
+      if (cf.capital_inflow_score > 70) {
+        recommendations.push({
+          id: `rec-capital-${cf.city}`,
+          type: "growth",
+          title: `Strong capital inflow in ${cf.city} (${cf.capital_inflow_score}/100)`,
+          description: `Avg ticket: Rp ${cf.avg_ticket_size?.toLocaleString()}. Capital volume: Rp ${cf.capital_volume?.toLocaleString()}.`,
+          confidence: 80, impact: "Prioritize supply acquisition",
+          timeWindow: "This week", priority: "high", status: "pending",
+        });
+      }
+    }
+
     return json({
       kpis, funnel, recommendations, risk_alerts: riskAlerts,
       hot_properties: hotProperties,
       demand_signals: demandSignals,
+      pricing_intelligence: {
+        top_bid_pressure: pricingSignals.slice(0, 5),
+        capital_flows: capitalFlows.slice(0, 5),
+      },
       liquidity: {
         fastest_cities: liquidityMetrics.filter((m: any) => m.market_classification === "hot").slice(0, 3),
         slowest_cities: [...liquidityMetrics].sort((a: any, b: any) => a.liquidity_velocity_score - b.liquidity_velocity_score).slice(0, 3),
