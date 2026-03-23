@@ -1818,7 +1818,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
               : "opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
           )}>
             {/* Scroll to Top */}
-            {showScrollButton && onScrollToTop && (pinnedActions.has('scroll-top') || showQuickActionsHint || !hasSeenQuickActions) && (
+            {showScrollButton && onScrollToTop && showScrollToTop && (
               <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-700 group/action">
                 <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium opacity-0 group-hover/action:opacity-100 group-hover:opacity-100 transition-opacity">
                   Scroll to Top
