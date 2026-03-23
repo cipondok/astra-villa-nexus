@@ -1,12 +1,13 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import Price from '@/components/ui/Price';
 import {
   Wallet, TrendingUp, Lock, ArrowUpRight, AlertTriangle,
-  CheckCircle2, Clock, Loader2, BarChart3
+  CheckCircle2, Clock, Loader2, BarChart3, Globe
 } from 'lucide-react';
 
 const AdminTreasuryPanel = () => {

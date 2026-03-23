@@ -351,10 +351,17 @@ const WalletPage = () => {
           </CardContent>
         </Card>
 
-        {/* Trust Footer */}
-        <div className="mt-6 flex items-center gap-2 justify-center text-xs text-muted-foreground">
-          <Shield className="h-3.5 w-3.5 text-primary" />
-          Funds secured via regulated payment partners and protected by ASTRA escrow workflow
+        {/* IDR Base Currency Notice */}
+        <div className="mt-6 space-y-2">
+          <div className="flex items-center gap-2 justify-center text-xs text-muted-foreground">
+            <Shield className="h-3.5 w-3.5 text-primary" />
+            Funds secured via regulated payment partners and protected by ASTRA escrow workflow
+          </div>
+          <p className="text-center text-[10px] text-muted-foreground/60">
+            All balances and transactions are denominated in Indonesian Rupiah (IDR). 
+            Foreign currency deposits are converted at the live FX rate at the time of deposit. 
+            Final settlement for all property transactions is in IDR.
+          </p>
         </div>
       </div>
     </div>
