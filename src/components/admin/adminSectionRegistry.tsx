@@ -803,6 +803,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "security-intelligence-center": () => <SecurityIntelligenceDashboard />,
   "global-transaction-intelligence": () => <GlobalTransactionIntelligence />,
   "escrow-financial-control": () => <EscrowFinancialDashboard />,
+  "escrow-conversion-dashboard": () => <EscrowConversionDashboard />,
   "risk-fraud-intelligence": () => <RiskFraudIntelligenceDashboard />,
 
   // Marketplace Growth — all section renderers
