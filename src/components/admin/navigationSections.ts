@@ -383,6 +383,13 @@ export const navigationSections = {
       icon: Globe,
       description: "Expansion simulator, AI autonomous growth engine, and planet-scale liquidity vision",
       badge: "Strategic"
+    },
+    {
+      key: "market-intelligence-command",
+      label: "Market Intelligence AI Engine",
+      icon: Brain,
+      description: "AI property scoring, ROI forecasting, anomaly detection & investor recommendations",
+      badge: "🧠 AI Engine"
     }
   ],
 

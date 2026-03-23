@@ -3623,6 +3623,36 @@ export type Database = {
           },
         ]
       }
+      ai_feature_dataset_exports: {
+        Row: {
+          created_at: string
+          export_type: string
+          exported_at: string
+          feature_columns: string[] | null
+          file_path: string | null
+          id: string
+          record_count: number | null
+        }
+        Insert: {
+          created_at?: string
+          export_type: string
+          exported_at?: string
+          feature_columns?: string[] | null
+          file_path?: string | null
+          id?: string
+          record_count?: number | null
+        }
+        Update: {
+          created_at?: string
+          export_type?: string
+          exported_at?: string
+          feature_columns?: string[] | null
+          file_path?: string | null
+          id?: string
+          record_count?: number | null
+        }
+        Relationships: []
+      }
       ai_feature_importance: {
         Row: {
           correlation_with_outcome: number | null
@@ -4507,6 +4537,50 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_model_training_logs: {
+        Row: {
+          accuracy_metrics: Json | null
+          created_at: string
+          id: string
+          model_name: string
+          model_version: string
+          status: string | null
+          trained_at: string
+          training_dataset_id: string | null
+          training_duration_ms: number | null
+        }
+        Insert: {
+          accuracy_metrics?: Json | null
+          created_at?: string
+          id?: string
+          model_name: string
+          model_version: string
+          status?: string | null
+          trained_at?: string
+          training_dataset_id?: string | null
+          training_duration_ms?: number | null
+        }
+        Update: {
+          accuracy_metrics?: Json | null
+          created_at?: string
+          id?: string
+          model_name?: string
+          model_version?: string
+          status?: string | null
+          trained_at?: string
+          training_dataset_id?: string | null
+          training_duration_ms?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_model_training_logs_training_dataset_id_fkey"
+            columns: ["training_dataset_id"]
+            isOneToOne: false
+            referencedRelation: "ai_feature_dataset_exports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_model_weights: {
         Row: {
           factor: string
@@ -4528,6 +4602,42 @@ export type Database = {
           updated_at?: string
           updated_by?: string
           weight?: number
+        }
+        Relationships: []
+      }
+      ai_prediction_accuracy: {
+        Row: {
+          actual_value: number | null
+          created_at: string
+          error_pct: number | null
+          evaluated_at: string
+          id: string
+          model_name: string
+          model_version: string
+          predicted_value: number | null
+          prediction_type: string
+        }
+        Insert: {
+          actual_value?: number | null
+          created_at?: string
+          error_pct?: number | null
+          evaluated_at?: string
+          id?: string
+          model_name: string
+          model_version: string
+          predicted_value?: number | null
+          prediction_type: string
+        }
+        Update: {
+          actual_value?: number | null
+          created_at?: string
+          error_pct?: number | null
+          evaluated_at?: string
+          id?: string
+          model_name?: string
+          model_version?: string
+          predicted_value?: number | null
+          prediction_type?: string
         }
         Relationships: []
       }
@@ -30036,6 +30146,60 @@ export type Database = {
         }
         Relationships: []
       }
+      investor_recommendations: {
+        Row: {
+          confidence_level: number | null
+          created_at: string
+          generated_at: string
+          id: string
+          is_dismissed: boolean | null
+          property_id: string
+          recommendation_reason: string
+          recommendation_type: string | null
+          score_components: Json | null
+          user_id: string
+        }
+        Insert: {
+          confidence_level?: number | null
+          created_at?: string
+          generated_at?: string
+          id?: string
+          is_dismissed?: boolean | null
+          property_id: string
+          recommendation_reason: string
+          recommendation_type?: string | null
+          score_components?: Json | null
+          user_id: string
+        }
+        Update: {
+          confidence_level?: number | null
+          created_at?: string
+          generated_at?: string
+          id?: string
+          is_dismissed?: boolean | null
+          property_id?: string
+          recommendation_reason?: string
+          recommendation_type?: string | null
+          score_components?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_recommendations_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "investor_recommendations_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       investor_scores: {
         Row: {
           avg_session_duration_sec: number | null
@@ -34125,6 +34289,51 @@ export type Database = {
           property_type?: string | null
           trend_type?: string
           value?: string
+        }
+        Relationships: []
+      }
+      market_zone_metrics: {
+        Row: {
+          buyer_demand_index: number | null
+          city: string
+          computed_at: string
+          created_at: string
+          district: string | null
+          escrow_initiation_density: number | null
+          id: string
+          investment_hotspot_rank: number | null
+          listing_conversion_rate: number | null
+          price_momentum_score: number | null
+          search_frequency: number | null
+          seller_supply_index: number | null
+        }
+        Insert: {
+          buyer_demand_index?: number | null
+          city: string
+          computed_at?: string
+          created_at?: string
+          district?: string | null
+          escrow_initiation_density?: number | null
+          id?: string
+          investment_hotspot_rank?: number | null
+          listing_conversion_rate?: number | null
+          price_momentum_score?: number | null
+          search_frequency?: number | null
+          seller_supply_index?: number | null
+        }
+        Update: {
+          buyer_demand_index?: number | null
+          city?: string
+          computed_at?: string
+          created_at?: string
+          district?: string | null
+          escrow_initiation_density?: number | null
+          id?: string
+          investment_hotspot_rank?: number | null
+          listing_conversion_rate?: number | null
+          price_momentum_score?: number | null
+          search_frequency?: number | null
+          seller_supply_index?: number | null
         }
         Relationships: []
       }
@@ -43871,6 +44080,8 @@ export type Database = {
           drone_video_url: string | null
           estimated_completion_date: string | null
           estimated_completion_value: number | null
+          estimated_price_growth: number | null
+          expected_rental_yield: number | null
           floors: number | null
           forecast_score_3m: number | null
           furnishing: string | null
@@ -43894,10 +44105,12 @@ export type Database = {
           is_featured: boolean | null
           is_pre_launch: boolean | null
           land_area_sqm: number | null
+          last_market_evaluated_at: string | null
           latitude: number | null
           launch_date: string | null
           legal_checked: boolean
           legal_status: string | null
+          liquidity_score: number | null
           listed_at: string | null
           listing_type: string
           location: string
@@ -43986,6 +44199,8 @@ export type Database = {
           drone_video_url?: string | null
           estimated_completion_date?: string | null
           estimated_completion_value?: number | null
+          estimated_price_growth?: number | null
+          expected_rental_yield?: number | null
           floors?: number | null
           forecast_score_3m?: number | null
           furnishing?: string | null
@@ -44009,10 +44224,12 @@ export type Database = {
           is_featured?: boolean | null
           is_pre_launch?: boolean | null
           land_area_sqm?: number | null
+          last_market_evaluated_at?: string | null
           latitude?: number | null
           launch_date?: string | null
           legal_checked?: boolean
           legal_status?: string | null
+          liquidity_score?: number | null
           listed_at?: string | null
           listing_type: string
           location: string
@@ -44101,6 +44318,8 @@ export type Database = {
           drone_video_url?: string | null
           estimated_completion_date?: string | null
           estimated_completion_value?: number | null
+          estimated_price_growth?: number | null
+          expected_rental_yield?: number | null
           floors?: number | null
           forecast_score_3m?: number | null
           furnishing?: string | null
@@ -44124,10 +44343,12 @@ export type Database = {
           is_featured?: boolean | null
           is_pre_launch?: boolean | null
           land_area_sqm?: number | null
+          last_market_evaluated_at?: string | null
           latitude?: number | null
           launch_date?: string | null
           legal_checked?: boolean
           legal_status?: string | null
+          liquidity_score?: number | null
           listed_at?: string | null
           listing_type?: string
           location?: string
@@ -45417,6 +45638,63 @@ export type Database = {
           viewing_velocity?: number | null
         }
         Relationships: []
+      }
+      property_market_signals: {
+        Row: {
+          city: string
+          created_at: string
+          data_source: string
+          district: string | null
+          id: string
+          metadata: Json | null
+          property_id: string | null
+          property_type: string | null
+          recorded_at: string
+          signal_type: string
+          signal_value: number
+        }
+        Insert: {
+          city: string
+          created_at?: string
+          data_source?: string
+          district?: string | null
+          id?: string
+          metadata?: Json | null
+          property_id?: string | null
+          property_type?: string | null
+          recorded_at?: string
+          signal_type: string
+          signal_value?: number
+        }
+        Update: {
+          city?: string
+          created_at?: string
+          data_source?: string
+          district?: string | null
+          id?: string
+          metadata?: Json | null
+          property_id?: string | null
+          property_type?: string | null
+          recorded_at?: string
+          signal_type?: string
+          signal_value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_market_signals_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_market_signals_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       property_offers: {
         Row: {
@@ -50287,6 +50565,60 @@ export type Database = {
           prediction_value?: number | null
         }
         Relationships: []
+      }
+      roi_forecasts: {
+        Row: {
+          confidence_score: number | null
+          created_at: string
+          forecast_data: Json | null
+          forecast_horizon_months: number
+          id: string
+          model_version: string | null
+          predicted_appreciation_pct: number | null
+          predicted_price: number | null
+          predicted_rental_income: number | null
+          property_id: string
+        }
+        Insert: {
+          confidence_score?: number | null
+          created_at?: string
+          forecast_data?: Json | null
+          forecast_horizon_months?: number
+          id?: string
+          model_version?: string | null
+          predicted_appreciation_pct?: number | null
+          predicted_price?: number | null
+          predicted_rental_income?: number | null
+          property_id: string
+        }
+        Update: {
+          confidence_score?: number | null
+          created_at?: string
+          forecast_data?: Json | null
+          forecast_horizon_months?: number
+          id?: string
+          model_version?: string | null
+          predicted_appreciation_pct?: number | null
+          predicted_price?: number | null
+          predicted_rental_income?: number | null
+          property_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "roi_forecasts_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "roi_forecasts_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       role_permissions: {
         Row: {

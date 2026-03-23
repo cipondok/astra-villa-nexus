@@ -578,6 +578,9 @@ export const MVPBuyerInquiryTracker = lazyRetry(() => import("./MVPBuyerInquiryT
 export const MVPViewingScheduleBoard = lazyRetry(() => import("./MVPViewingScheduleBoard"));
 export const MVPDealPipelineTracker = lazyRetry(() => import("./MVPDealPipelineTracker"));
 
+// Market Intelligence AI Engine
+export const MarketIntelligenceCommandCenter = lazyRetry(() => import("./MarketIntelligenceCommandCenter"));
+
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
 // Sections with custom props are listed explicitly; all others are simple <Component />.
@@ -798,6 +801,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "deal-ops-closing":                () => <DealOpsClosingManagement />,
   "performance-deal-warroom":        () => <PerformanceDealWarRoom />,
   "supply-growth-deal-acceleration": () => <SupplyGrowthDealAcceleration />,
+  "market-intelligence-command": () => <MarketIntelligenceCommandCenter />,
   "report-export":       () => <ReportExportFunction />,
   "enhanced-search":     () => <EnhancedSearchFilters />,
   "system-reports":      () => <SystemReports />,
@@ -1736,4 +1740,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ux-quality-monitoring": { label: "UX Quality Monitoring", category: "Operations" },
   "global-transaction-intelligence": { label: "Global Transaction Intelligence", category: "Transactions" },
   "risk-fraud-intelligence": { label: "Risk & Fraud Intelligence", category: "Marketplace Growth" },
+  "market-intelligence-command": { label: "Market Intelligence AI Engine", category: "Market Intelligence" },
 };
