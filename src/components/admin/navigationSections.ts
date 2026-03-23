@@ -2948,6 +2948,13 @@ export const navigationSections = {
       description: "Monitor system security and threats"
     },
     {
+      key: "security-intelligence-center",
+      label: "Security Intelligence Center",
+      icon: Shield,
+      description: "Real-time threat monitoring, geo-intelligence, risk investigation, and platform trust health",
+      badge: "🛡️ Intel"
+    },
+    {
       key: "performance-monitor",
       label: "Performance Monitor",
       icon: Cpu,
