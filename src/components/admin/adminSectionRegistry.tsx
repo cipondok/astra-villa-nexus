@@ -343,6 +343,7 @@ export const PostMarketplaceEvolution = lazyRetry(() => import("./PostMarketplac
 export const PlanetaryHabitatGrid = lazyRetry(() => import("./PlanetaryHabitatGrid"));
 export const GlobalAssetLiquidity = lazyRetry(() => import("./GlobalAssetLiquidity"));
 export const FounderIntergenerational = lazyRetry(() => import("./FounderIntergenerational"));
+export const RiskFraudIntelligenceDashboard = lazyRetry(() => import("./RiskFraudIntelligenceDashboard"));
 export const MacroPolicySimulator = lazyRetry(() => import("./MacroPolicySimulator"));
 export const GlobalPropertyCivilizationOS = lazyRetry(() => import("./GlobalPropertyCivilizationOS"));
 export const AutonomousWealthInfrastructure = lazyRetry(() => import("./AutonomousWealthInfrastructure"));
