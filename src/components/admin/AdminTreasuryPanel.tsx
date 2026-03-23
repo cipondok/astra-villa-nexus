@@ -194,6 +194,69 @@ const AdminTreasuryPanel = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* FX Monitoring */}
+      <Card className="border-border">
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <Globe className="h-4 w-4 text-primary" />
+            FX Rate Monitor & Foreign Capital Inflow
+          </CardTitle>
+          <CardDescription>Base currency: IDR — all settlements in Indonesian Rupiah</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Latest FX Rates */}
+            <div>
+              <h4 className="text-sm font-medium text-foreground mb-3">Latest FX Rates (1 Foreign → IDR)</h4>
+              {stats?.latestRates && Object.keys(stats.latestRates).length > 0 ? (
+                <div className="space-y-2">
+                  {Object.entries(stats.latestRates).map(([cur, info]) => (
+                    <div key={cur} className="flex items-center justify-between p-2 rounded border border-border">
+                      <span className="text-sm font-medium text-foreground">{cur}</span>
+                      <div className="text-right">
+                        <span className="text-sm tabular-nums text-foreground">
+                          Rp {Number(info.rate).toLocaleString('id-ID')}
+                        </span>
+                        <p className="text-[10px] text-muted-foreground">{info.date}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">No FX snapshots recorded yet</p>
+              )}
+            </div>
+
+            {/* Foreign Capital Inflow */}
+            <div>
+              <h4 className="text-sm font-medium text-foreground mb-3">Foreign Capital Converted</h4>
+              {stats?.fxByCurrency && Object.keys(stats.fxByCurrency).length > 0 ? (
+                <div className="space-y-2">
+                  {Object.entries(stats.fxByCurrency).map(([cur, data]) => (
+                    <div key={cur} className="flex items-center justify-between p-2 rounded border border-border">
+                      <div>
+                        <span className="text-sm font-medium text-foreground">{cur}</span>
+                        <p className="text-[10px] text-muted-foreground">{data.count} deposits</p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-xs text-muted-foreground">
+                          {cur} {data.originalTotal.toLocaleString()}
+                        </span>
+                        <p className="text-sm font-medium text-foreground">
+                          → <Price amount={data.idrTotal} />
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">No foreign currency deposits yet</p>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
