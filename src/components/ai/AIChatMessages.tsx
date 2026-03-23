@@ -26,7 +26,7 @@ interface AIChatMessagesProps {
 
 const AIChatMessages = ({ messages, isLoading, messagesEndRef, onReaction, onToggleStar, typingStatus, smartReplies, onSmartReplyClick }: AIChatMessagesProps) => {
   return (
-    <div className="h-96 overflow-y-auto p-4 space-y-1">
+    <div className="space-y-1">
       <AnimatePresence mode="popLayout">
         {messages.map((msg, index) => (
           <motion.div 
