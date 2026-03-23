@@ -53,14 +53,16 @@ async function gatherFounderContext() {
     safeCount("escrow_transactions", q => q.eq("status", "active")),
   ]);
 
-  // Fetch liquidity + pricing intelligence
+  // Fetch liquidity + pricing + strategy intelligence
   let liquiditySummary = "No liquidity data available";
   let pricingSummary = "No pricing signal data available";
+  let strategySummary = "No strategy signals available";
   try {
-    const [liqRes, priceRes, capRes] = await Promise.all([
+    const [liqRes, priceRes, capRes, stratRes] = await Promise.all([
       supabaseAdmin.from("liquidity_metrics_daily").select("city, liquidity_velocity_score, absorption_rate, market_classification, demand_pressure_index").order("liquidity_velocity_score", { ascending: false }).limit(10),
       supabaseAdmin.from("property_price_signals").select("city, listing_price, demand_adjusted_price, investor_bid_pressure_score, price_volatility_index").order("investor_bid_pressure_score", { ascending: false }).limit(10),
       supabaseAdmin.from("capital_flow_signals").select("city, capital_inflow_score, avg_ticket_size, capital_volume").order("capital_inflow_score", { ascending: false }).limit(5),
+      supabaseAdmin.from("marketplace_strategy_signals").select("city, recommended_strategy, strategy_priority_index, confidence_level, supply_score, demand_score").order("strategy_priority_index", { ascending: false }).limit(5),
     ]);
     const liq = liqRes.data;
     if (liq?.length) {
@@ -87,6 +89,14 @@ async function gatherFounderContext() {
         pricingSummary += `\n  • ${c.city}: Inflow ${c.capital_inflow_score}/100 | Avg Ticket Rp ${(c.avg_ticket_size || 0).toLocaleString("id-ID")}`;
       }
     }
+    const strats = stratRes.data;
+    if (strats?.length) {
+      strategySummary = "AI Strategy Recommendations:";
+      for (const s of strats) {
+        const label = (s.recommended_strategy || "").replace(/_/g, " ");
+        strategySummary += `\n  • ${s.city}: ${label} (Priority ${s.strategy_priority_index}/100, ${s.confidence_level}) | Supply ${s.supply_score} | Demand ${s.demand_score}`;
+      }
+    }
   } catch { /* skip */ }
 
   return {
@@ -100,6 +110,7 @@ async function gatherFounderContext() {
     escrow_active: escrowActive,
     liquidity_summary: liquiditySummary,
     pricing_summary: pricingSummary,
+    strategy_summary: strategySummary,
     date: today,
   };
 }
@@ -149,6 +160,9 @@ ${context.liquidity_summary}
 
 PRICING & CAPITAL FLOW INTELLIGENCE:
 ${context.pricing_summary}
+
+AUTONOMOUS STRATEGY INTELLIGENCE:
+${context.strategy_summary}
 
 ═══════════════════════════════════════════
 OPERATIONAL EXECUTION MODES (Daily Tasks):
