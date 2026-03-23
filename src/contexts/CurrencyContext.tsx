@@ -87,6 +87,7 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
           USD: data.rates.USD ?? DEFAULT_RATES.USD,
           SGD: data.rates.SGD ?? DEFAULT_RATES.SGD,
           AUD: data.rates.AUD ?? DEFAULT_RATES.AUD,
+          EUR: data.rates.EUR ?? DEFAULT_RATES.EUR,
         };
         setRates(liveRates);
         setRatesSource(data.fallback ? "fallback" : data.cached ? "cached" : "live");

@@ -6,6 +6,7 @@ interface ExchangeRates {
   USD: number;
   SGD: number;
   AUD: number;
+  EUR: number;
 }
 
 const DEFAULT_RATES: ExchangeRates = {
@@ -13,6 +14,7 @@ const DEFAULT_RATES: ExchangeRates = {
   USD: 1 / 16_200,
   SGD: 1 / 11_900,
   AUD: 1 / 10_500,
+  EUR: 1 / 17_500,
 };
 
 export const CURRENCY_META: Record<CurrencyCode, { locale: string; symbol: string; decimals: number; flag: string; label: string }> = {

@@ -57,26 +57,83 @@ async function ensureWallet(supabase: any, userId: string, currency = 'IDR') {
 }
 
 // ─── CREATE TOPUP SESSION ───
-async function createTopup(params: Record<string, any>, supabase: any, userId: string) {
-  const { amount, currency = 'IDR', payment_type } = params;
-  if (!amount || amount < 10000) throw new Error("Minimum deposit is Rp 10,000");
-  if (amount > 500000000) throw new Error("Maximum single deposit is Rp 500,000,000");
+// FX conversion helper — fetches rate from Frankfurter API
+async function convertToIDR(amount: number, fromCurrency: string, supabase: any): Promise<{ idrAmount: number; fxRate: number; source: string }> {
+  if (fromCurrency === 'IDR') return { idrAmount: amount, fxRate: 1, source: 'none' };
 
-  const wallet = await ensureWallet(supabase, userId, currency);
+  // Check cached rate from DB (today)
+  const today = new Date().toISOString().slice(0, 10);
+  const { data: cached } = await supabase
+    .from('daily_fx_snapshots')
+    .select('rate')
+    .eq('target_currency', fromCurrency)
+    .eq('snapshot_date', today)
+    .single();
+
+  if (cached?.rate) {
+    const fxRate = 1 / cached.rate; // rate is stored as IDR per 1 foreign
+    return { idrAmount: Math.round(amount * cached.rate), fxRate: cached.rate, source: 'cached' };
+  }
+
+  // Fetch live rate
+  try {
+    const res = await fetch(`https://api.frankfurter.dev/v1/latest?base=${fromCurrency}&symbols=IDR`);
+    const data = await res.json();
+    const rate = data?.rates?.IDR;
+    if (rate) {
+      // Store snapshot
+      await supabase.from('daily_fx_snapshots').upsert({
+        base_currency: 'IDR',
+        target_currency: fromCurrency,
+        rate: rate,
+        inverse_rate: 1 / rate,
+        snapshot_date: today,
+        source: 'frankfurter',
+      }, { onConflict: 'base_currency,target_currency,snapshot_date' });
+      return { idrAmount: Math.round(amount * rate), fxRate: rate, source: 'live' };
+    }
+  } catch (err) {
+    log("FX fetch failed", { fromCurrency, error: String(err) });
+  }
+
+  // Fallback rates
+  const fallbacks: Record<string, number> = { USD: 16200, SGD: 11900, AUD: 10500, EUR: 17500, GBP: 20500 };
+  const fallbackRate = fallbacks[fromCurrency] || 16000;
+  return { idrAmount: Math.round(amount * fallbackRate), fxRate: fallbackRate, source: 'fallback' };
+}
+
+async function createTopup(params: Record<string, any>, supabase: any, userId: string) {
+  const { amount, currency = 'IDR', deposit_currency, payment_type } = params;
+  const sourceCurrency = deposit_currency || currency;
+  
+  // Convert foreign currency to IDR
+  const { idrAmount, fxRate, source: fxSource } = await convertToIDR(amount, sourceCurrency, supabase);
+  
+  if (idrAmount < 10000) throw new Error("Minimum deposit equivalent is Rp 10,000");
+  if (idrAmount > 500000000) throw new Error("Maximum single deposit equivalent is Rp 500,000,000");
+
+  // Always store wallet in IDR
+  const wallet = await ensureWallet(supabase, userId, 'IDR');
   const orderId = `TOPUP-${userId.slice(0, 8)}-${Date.now()}`;
 
-  // Create pending ledger entry
+  // Create pending ledger entry with FX info
   const { data: ledgerEntry, error: ledgerErr } = await supabase
     .from('wallet_transaction_ledger')
     .insert({
       wallet_id: wallet.id,
       user_id: userId,
       transaction_type: 'deposit',
-      amount,
-      currency,
+      amount: idrAmount,
+      currency: 'IDR',
+      original_currency: sourceCurrency !== 'IDR' ? sourceCurrency : null,
+      original_amount: sourceCurrency !== 'IDR' ? amount : null,
+      fx_rate_used: sourceCurrency !== 'IDR' ? fxRate : null,
+      fx_source: sourceCurrency !== 'IDR' ? fxSource : null,
       external_payment_ref: orderId,
       status: 'pending',
-      description: `Wallet top-up via ${payment_type || 'snap'}`,
+      description: sourceCurrency !== 'IDR'
+        ? `Wallet top-up: ${sourceCurrency} ${amount} → IDR ${idrAmount} (rate: ${fxRate})`
+        : `Wallet top-up via ${payment_type || 'snap'}`,
     })
     .select()
     .single();
