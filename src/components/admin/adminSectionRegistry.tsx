@@ -780,6 +780,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "security-monitoring": () => <SecurityMonitoringDashboard />,
   "security-intelligence": () => <AdminSecurityIntelligence />,
   "security-intelligence-center": () => <SecurityIntelligenceDashboard />,
+  "global-transaction-intelligence": () => <GlobalTransactionIntelligence />,
   "report-export":       () => <ReportExportFunction />,
   "enhanced-search":     () => <EnhancedSearchFilters />,
   "system-reports":      () => <SystemReports />,
