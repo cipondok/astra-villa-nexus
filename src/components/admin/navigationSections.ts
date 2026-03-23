@@ -534,6 +534,13 @@ export const navigationSections = {
       icon: DollarSign,
       description: "Platform-wide AUM tracking, investor ROI analytics, city performance, and risk distribution monitoring",
       badge: "New"
+    },
+    {
+      key: "liquidity-exchange-command",
+      label: "Liquidity Exchange",
+      icon: ArrowLeftRight,
+      description: "Secondary market order book, trade matching engine, and liquidity depth analytics",
+      badge: "🔄 Exchange"
     }
   ],
 

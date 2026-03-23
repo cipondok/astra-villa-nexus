@@ -32481,6 +32481,36 @@ export type Database = {
         }
         Relationships: []
       }
+      liquidity_buy_orders: {
+        Row: {
+          buyer_user_id: string
+          created_at: string
+          desired_percentage: number
+          id: string
+          max_price_per_percent: number
+          order_status: string
+          target_property_id: string
+        }
+        Insert: {
+          buyer_user_id: string
+          created_at?: string
+          desired_percentage: number
+          id?: string
+          max_price_per_percent: number
+          order_status?: string
+          target_property_id: string
+        }
+        Update: {
+          buyer_user_id?: string
+          created_at?: string
+          desired_percentage?: number
+          id?: string
+          max_price_per_percent?: number
+          order_status?: string
+          target_property_id?: string
+        }
+        Relationships: []
+      }
       liquidity_crisis_resilience: {
         Row: {
           capital_protection_rank: number | null
@@ -32661,6 +32691,45 @@ export type Database = {
         }
         Relationships: []
       }
+      liquidity_market_metrics: {
+        Row: {
+          bid_ask_spread: number | null
+          id: string
+          last_trade_price_per_percent: number | null
+          liquidity_depth_score: number | null
+          price_momentum: number | null
+          property_id: string
+          total_buy_orders_open: number | null
+          total_sell_orders_open: number | null
+          updated_at: string
+          volume_30d: number | null
+        }
+        Insert: {
+          bid_ask_spread?: number | null
+          id?: string
+          last_trade_price_per_percent?: number | null
+          liquidity_depth_score?: number | null
+          price_momentum?: number | null
+          property_id: string
+          total_buy_orders_open?: number | null
+          total_sell_orders_open?: number | null
+          updated_at?: string
+          volume_30d?: number | null
+        }
+        Update: {
+          bid_ask_spread?: number | null
+          id?: string
+          last_trade_price_per_percent?: number | null
+          liquidity_depth_score?: number | null
+          price_momentum?: number | null
+          property_id?: string
+          total_buy_orders_open?: number | null
+          total_sell_orders_open?: number | null
+          updated_at?: string
+          volume_30d?: number | null
+        }
+        Relationships: []
+      }
       liquidity_rental_stability: {
         Row: {
           cashflow_reliability_index: number | null
@@ -32702,6 +32771,53 @@ export type Database = {
           vacancy_risk?: number | null
         }
         Relationships: []
+      }
+      liquidity_sell_orders: {
+        Row: {
+          asking_price_total: number
+          created_at: string
+          expiry_timestamp: string | null
+          id: string
+          order_status: string
+          percentage_for_sale: number
+          price_per_percent: number
+          property_id: string
+          seller_user_id: string
+          unit_id: string
+        }
+        Insert: {
+          asking_price_total: number
+          created_at?: string
+          expiry_timestamp?: string | null
+          id?: string
+          order_status?: string
+          percentage_for_sale: number
+          price_per_percent: number
+          property_id: string
+          seller_user_id: string
+          unit_id: string
+        }
+        Update: {
+          asking_price_total?: number
+          created_at?: string
+          expiry_timestamp?: string | null
+          id?: string
+          order_status?: string
+          percentage_for_sale?: number
+          price_per_percent?: number
+          property_id?: string
+          seller_user_id?: string
+          unit_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "liquidity_sell_orders_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "property_ownership_units"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       liquidity_signal_queue: {
         Row: {
@@ -32753,6 +32869,60 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      liquidity_trade_executions: {
+        Row: {
+          buy_order_id: string | null
+          buyer_user_id: string | null
+          executed_at: string
+          executed_percentage: number
+          execution_price: number
+          id: string
+          property_id: string
+          sell_order_id: string | null
+          seller_user_id: string | null
+          settlement_status: string | null
+        }
+        Insert: {
+          buy_order_id?: string | null
+          buyer_user_id?: string | null
+          executed_at?: string
+          executed_percentage: number
+          execution_price: number
+          id?: string
+          property_id: string
+          sell_order_id?: string | null
+          seller_user_id?: string | null
+          settlement_status?: string | null
+        }
+        Update: {
+          buy_order_id?: string | null
+          buyer_user_id?: string | null
+          executed_at?: string
+          executed_percentage?: number
+          execution_price?: number
+          id?: string
+          property_id?: string
+          sell_order_id?: string | null
+          seller_user_id?: string | null
+          settlement_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "liquidity_trade_executions_buy_order_id_fkey"
+            columns: ["buy_order_id"]
+            isOneToOne: false
+            referencedRelation: "liquidity_buy_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "liquidity_trade_executions_sell_order_id_fkey"
+            columns: ["sell_order_id"]
+            isOneToOne: false
+            referencedRelation: "liquidity_sell_orders"
             referencedColumns: ["id"]
           },
         ]
@@ -46178,6 +46348,39 @@ export type Database = {
           street_address?: string | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      property_ownership_units: {
+        Row: {
+          acquisition_reference: string | null
+          created_at: string
+          current_owner_user_id: string | null
+          id: string
+          lock_status: string
+          ownership_percentage: number
+          property_id: string
+          updated_at: string
+        }
+        Insert: {
+          acquisition_reference?: string | null
+          created_at?: string
+          current_owner_user_id?: string | null
+          id?: string
+          lock_status?: string
+          ownership_percentage: number
+          property_id: string
+          updated_at?: string
+        }
+        Update: {
+          acquisition_reference?: string | null
+          created_at?: string
+          current_owner_user_id?: string | null
+          id?: string
+          lock_status?: string
+          ownership_percentage?: number
+          property_id?: string
+          updated_at?: string
         }
         Relationships: []
       }

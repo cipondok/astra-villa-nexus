@@ -583,6 +583,9 @@ export const MVPDealPipelineTracker = lazyRetry(() => import("./MVPDealPipelineT
 // Market Intelligence AI Engine
 export const MarketIntelligenceCommandCenter = lazyRetry(() => import("./MarketIntelligenceCommandCenter"));
 
+// Liquidity Exchange
+export const LiquidityExchangeCommandCenter = lazyRetry(() => import("./LiquidityExchangeCommandCenter"));
+
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
 // Sections with custom props are listed explicitly; all others are simple <Component />.
@@ -806,6 +809,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "market-intelligence-command": () => <MarketIntelligenceCommandCenter />,
   "investor-wealth-intelligence": () => <InvestorWealthDashboard />,
   "investor-economics-command": () => <AdminInvestorEconomics />,
+  "liquidity-exchange-command": () => <LiquidityExchangeCommandCenter />,
   "report-export":       () => <ReportExportFunction />,
   "enhanced-search":     () => <EnhancedSearchFilters />,
   "system-reports":      () => <SystemReports />,
@@ -1747,4 +1751,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "market-intelligence-command": { label: "Market Intelligence AI Engine", category: "Market Intelligence" },
   "investor-wealth-intelligence": { label: "Investor Wealth Intelligence", category: "Investor Management" },
   "investor-economics-command": { label: "Investor Economics Command", category: "Investor Management" },
+  "liquidity-exchange-command": { label: "Liquidity Exchange Command", category: "Investor Management" },
 };
