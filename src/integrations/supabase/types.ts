@@ -49896,12 +49896,16 @@ export type Database = {
           alert_type: string
           created_at: string
           description: string
+          escalation_level: string | null
           id: string
+          investigation_status: string | null
           ip_address: unknown
           is_read: boolean | null
           is_resolved: boolean | null
           location_data: Json | null
           metadata: Json | null
+          resolved_at: string | null
+          resolved_by: string | null
           severity: string
           title: string
           user_id: string
@@ -49910,12 +49914,16 @@ export type Database = {
           alert_type: string
           created_at?: string
           description: string
+          escalation_level?: string | null
           id?: string
+          investigation_status?: string | null
           ip_address?: unknown
           is_read?: boolean | null
           is_resolved?: boolean | null
           location_data?: Json | null
           metadata?: Json | null
+          resolved_at?: string | null
+          resolved_by?: string | null
           severity?: string
           title: string
           user_id: string
@@ -49924,17 +49932,56 @@ export type Database = {
           alert_type?: string
           created_at?: string
           description?: string
+          escalation_level?: string | null
           id?: string
+          investigation_status?: string | null
           ip_address?: unknown
           is_read?: boolean | null
           is_resolved?: boolean | null
           location_data?: Json | null
           metadata?: Json | null
+          resolved_at?: string | null
+          resolved_by?: string | null
           severity?: string
           title?: string
           user_id?: string
         }
         Relationships: []
+      }
+      security_incident_notes: {
+        Row: {
+          action_taken: string | null
+          admin_id: string
+          alert_id: string | null
+          created_at: string | null
+          id: string
+          note: string
+        }
+        Insert: {
+          action_taken?: string | null
+          admin_id: string
+          alert_id?: string | null
+          created_at?: string | null
+          id?: string
+          note: string
+        }
+        Update: {
+          action_taken?: string | null
+          admin_id?: string
+          alert_id?: string | null
+          created_at?: string | null
+          id?: string
+          note?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "security_incident_notes_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "security_alerts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       seo_ai_actions: {
         Row: {
