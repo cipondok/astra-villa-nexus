@@ -53,14 +53,16 @@ async function gatherFounderContext() {
     safeCount("escrow_transactions", q => q.eq("status", "active")),
   ]);
 
-  // Fetch liquidity intelligence
+  // Fetch liquidity + pricing intelligence
   let liquiditySummary = "No liquidity data available";
+  let pricingSummary = "No pricing signal data available";
   try {
-    const { data: liq } = await supabaseAdmin
-      .from("liquidity_metrics_daily")
-      .select("city, liquidity_velocity_score, absorption_rate, market_classification, demand_pressure_index")
-      .order("liquidity_velocity_score", { ascending: false })
-      .limit(10);
+    const [liqRes, priceRes, capRes] = await Promise.all([
+      supabaseAdmin.from("liquidity_metrics_daily").select("city, liquidity_velocity_score, absorption_rate, market_classification, demand_pressure_index").order("liquidity_velocity_score", { ascending: false }).limit(10),
+      supabaseAdmin.from("property_price_signals").select("city, listing_price, demand_adjusted_price, investor_bid_pressure_score, price_volatility_index").order("investor_bid_pressure_score", { ascending: false }).limit(10),
+      supabaseAdmin.from("capital_flow_signals").select("city, capital_inflow_score, avg_ticket_size, capital_volume").order("capital_inflow_score", { ascending: false }).limit(5),
+    ]);
+    const liq = liqRes.data;
     if (liq?.length) {
       const globalVel = Math.round(liq.reduce((s, m) => s + (m.liquidity_velocity_score || 0), 0) / liq.length * 10) / 10;
       const fastest = liq[0];
@@ -68,6 +70,21 @@ async function gatherFounderContext() {
       liquiditySummary = `Global Velocity: ${globalVel}/100 | Fastest: ${fastest.city} (${fastest.liquidity_velocity_score}) | Slowest: ${slowest.city} (${slowest.liquidity_velocity_score})`;
       for (const m of liq.slice(0, 5)) {
         liquiditySummary += `\n  • ${m.city}: Velocity ${m.liquidity_velocity_score} | Absorption ${m.absorption_rate} | Class: ${m.market_classification} | Demand Pressure: ${m.demand_pressure_index}`;
+      }
+    }
+    const prices = priceRes.data;
+    if (prices?.length) {
+      pricingSummary = "Top Bid Pressure Properties:";
+      for (const p of prices.slice(0, 5)) {
+        const premium = p.listing_price > 0 ? Math.round((p.demand_adjusted_price / p.listing_price - 1) * 100) : 0;
+        pricingSummary += `\n  • ${p.city}: Bid Pressure ${p.investor_bid_pressure_score}/100 | Premium ${premium}% | Volatility ${p.price_volatility_index}%`;
+      }
+    }
+    const caps = capRes.data;
+    if (caps?.length) {
+      pricingSummary += "\nCapital Flow Hotspots:";
+      for (const c of caps) {
+        pricingSummary += `\n  • ${c.city}: Inflow ${c.capital_inflow_score}/100 | Avg Ticket Rp ${(c.avg_ticket_size || 0).toLocaleString("id-ID")}`;
       }
     }
   } catch { /* skip */ }
@@ -82,6 +99,7 @@ async function gatherFounderContext() {
     deals_closed: dealsClosed,
     escrow_active: escrowActive,
     liquidity_summary: liquiditySummary,
+    pricing_summary: pricingSummary,
     date: today,
   };
 }

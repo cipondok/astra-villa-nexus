@@ -287,10 +287,52 @@ serve(async (req) => {
       }
     }
 
+    // Pricing signal recommendations
+    for (const ps of pricingSignals) {
+      if (ps.investor_bid_pressure_score > 60) {
+        recommendations.push({
+          id: `rec-bid-${ps.city}-${ps.property_id?.slice(0,8)}`,
+          type: "monetization",
+          title: `High bid pressure in ${ps.city} — recommend +${Math.round((ps.demand_adjusted_price / ps.listing_price - 1) * 100)}% pricing adjustment`,
+          description: `Bid pressure ${ps.investor_bid_pressure_score}/100. Demand-adjusted price: Rp ${ps.demand_adjusted_price?.toLocaleString()}.`,
+          confidence: ps.confidence_score, impact: "Capture premium value",
+          timeWindow: "This week", priority: "high", status: "pending",
+        });
+      }
+      if (ps.price_volatility_index > 10) {
+        riskAlerts.push({
+          id: `risk-volatility-${ps.city}`,
+          category: "price_instability",
+          severity: ps.price_volatility_index > 15 ? "critical" : "warning",
+          title: `Price volatility spike in ${ps.city} (${ps.price_volatility_index}%)`,
+          metric: `Volatility index: ${ps.price_volatility_index}`,
+          trend: "up", probability: Math.min(ps.price_volatility_index * 5, 95),
+        });
+      }
+    }
+
+    // Capital flow recommendations
+    for (const cf of capitalFlows) {
+      if (cf.capital_inflow_score > 70) {
+        recommendations.push({
+          id: `rec-capital-${cf.city}`,
+          type: "growth",
+          title: `Strong capital inflow in ${cf.city} (${cf.capital_inflow_score}/100)`,
+          description: `Avg ticket: Rp ${cf.avg_ticket_size?.toLocaleString()}. Capital volume: Rp ${cf.capital_volume?.toLocaleString()}.`,
+          confidence: 80, impact: "Prioritize supply acquisition",
+          timeWindow: "This week", priority: "high", status: "pending",
+        });
+      }
+    }
+
     return json({
       kpis, funnel, recommendations, risk_alerts: riskAlerts,
       hot_properties: hotProperties,
       demand_signals: demandSignals,
+      pricing_intelligence: {
+        top_bid_pressure: pricingSignals.slice(0, 5),
+        capital_flows: capitalFlows.slice(0, 5),
+      },
       liquidity: {
         fastest_cities: liquidityMetrics.filter((m: any) => m.market_classification === "hot").slice(0, 3),
         slowest_cities: [...liquidityMetrics].sort((a: any, b: any) => a.liquidity_velocity_score - b.liquidity_velocity_score).slice(0, 3),
