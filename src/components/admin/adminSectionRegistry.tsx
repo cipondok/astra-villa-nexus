@@ -343,6 +343,7 @@ export const PostMarketplaceEvolution = lazyRetry(() => import("./PostMarketplac
 export const PlanetaryHabitatGrid = lazyRetry(() => import("./PlanetaryHabitatGrid"));
 export const GlobalAssetLiquidity = lazyRetry(() => import("./GlobalAssetLiquidity"));
 export const FounderIntergenerational = lazyRetry(() => import("./FounderIntergenerational"));
+export const RiskFraudIntelligenceDashboard = lazyRetry(() => import("./RiskFraudIntelligenceDashboard"));
 export const MacroPolicySimulator = lazyRetry(() => import("./MacroPolicySimulator"));
 export const GlobalPropertyCivilizationOS = lazyRetry(() => import("./GlobalPropertyCivilizationOS"));
 export const AutonomousWealthInfrastructure = lazyRetry(() => import("./AutonomousWealthInfrastructure"));
@@ -783,6 +784,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "security-intelligence-center": () => <SecurityIntelligenceDashboard />,
   "global-transaction-intelligence": () => <GlobalTransactionIntelligence />,
   "escrow-financial-control": () => <EscrowFinancialDashboard />,
+  "risk-fraud-intelligence": () => <RiskFraudIntelligenceDashboard />,
   "report-export":       () => <ReportExportFunction />,
   "enhanced-search":     () => <EnhancedSearchFilters />,
   "system-reports":      () => <SystemReports />,
@@ -1720,4 +1722,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ai-model-governance": { label: "AI Model Governance", category: "Operations" },
   "ux-quality-monitoring": { label: "UX Quality Monitoring", category: "Operations" },
   "global-transaction-intelligence": { label: "Global Transaction Intelligence", category: "Transactions" },
+  "risk-fraud-intelligence": { label: "Risk & Fraud Intelligence", category: "Marketplace Growth" },
 };

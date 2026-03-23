@@ -334,6 +334,13 @@ export const navigationSections = {
       icon: TrendingUp,
       description: "Listing acquisition tracker, buyer matchmaking, bottleneck detection, and weekly revenue sprint planner",
       badge: "📈 Growth"
+    },
+    {
+      key: "risk-fraud-intelligence",
+      label: "Risk & Fraud Intelligence",
+      icon: ShieldAlert,
+      description: "AI risk scoring, fraud signal detection, transaction gating, and investigation case management",
+      badge: "🔥 AI Risk"
     }
   ],
 

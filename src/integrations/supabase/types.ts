@@ -43322,6 +43322,7 @@ export type Database = {
           id: string
           is_suspended: boolean | null
           last_profile_change_at: string | null
+          last_risk_evaluated_at: string | null
           last_seen_at: string | null
           license_number: string | null
           npwp_number: string | null
@@ -43330,6 +43331,8 @@ export type Database = {
           profile_change_history: Json | null
           profile_completion_percentage: number | null
           profile_locked_until: string | null
+          risk_level: string | null
+          risk_score: number | null
           specializations: string | null
           subscription_type: string
           suspended_at: string | null
@@ -43355,6 +43358,7 @@ export type Database = {
           id: string
           is_suspended?: boolean | null
           last_profile_change_at?: string | null
+          last_risk_evaluated_at?: string | null
           last_seen_at?: string | null
           license_number?: string | null
           npwp_number?: string | null
@@ -43363,6 +43367,8 @@ export type Database = {
           profile_change_history?: Json | null
           profile_completion_percentage?: number | null
           profile_locked_until?: string | null
+          risk_level?: string | null
+          risk_score?: number | null
           specializations?: string | null
           subscription_type?: string
           suspended_at?: string | null
@@ -43388,6 +43394,7 @@ export type Database = {
           id?: string
           is_suspended?: boolean | null
           last_profile_change_at?: string | null
+          last_risk_evaluated_at?: string | null
           last_seen_at?: string | null
           license_number?: string | null
           npwp_number?: string | null
@@ -43396,6 +43403,8 @@ export type Database = {
           profile_change_history?: Json | null
           profile_completion_percentage?: number | null
           profile_locked_until?: string | null
+          risk_level?: string | null
+          risk_score?: number | null
           specializations?: string | null
           subscription_type?: string
           suspended_at?: string | null
@@ -50131,6 +50140,153 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      risk_cases: {
+        Row: {
+          admin_notes: string | null
+          assigned_admin_id: string | null
+          created_at: string | null
+          id: string
+          related_entity_id: string
+          related_entity_type: string
+          resolved_at: string | null
+          risk_reason: string
+          risk_score: number | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          assigned_admin_id?: string | null
+          created_at?: string | null
+          id?: string
+          related_entity_id: string
+          related_entity_type: string
+          resolved_at?: string | null
+          risk_reason: string
+          risk_score?: number | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          assigned_admin_id?: string | null
+          created_at?: string | null
+          id?: string
+          related_entity_id?: string
+          related_entity_type?: string
+          resolved_at?: string | null
+          risk_reason?: string
+          risk_score?: number | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      risk_events: {
+        Row: {
+          created_at: string | null
+          entity_id: string
+          entity_type: string
+          id: string
+          is_processed: boolean | null
+          metadata_json: Json | null
+          risk_signal_type: string
+          risk_signal_value: number | null
+          severity_level: string
+          source_system: string
+        }
+        Insert: {
+          created_at?: string | null
+          entity_id: string
+          entity_type: string
+          id?: string
+          is_processed?: boolean | null
+          metadata_json?: Json | null
+          risk_signal_type: string
+          risk_signal_value?: number | null
+          severity_level?: string
+          source_system?: string
+        }
+        Update: {
+          created_at?: string | null
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          is_processed?: boolean | null
+          metadata_json?: Json | null
+          risk_signal_type?: string
+          risk_signal_value?: number | null
+          severity_level?: string
+          source_system?: string
+        }
+        Relationships: []
+      }
+      risk_feature_vectors: {
+        Row: {
+          computed_at: string | null
+          entity_id: string
+          entity_type: string
+          feature_data: Json
+          id: string
+          model_version: string | null
+        }
+        Insert: {
+          computed_at?: string | null
+          entity_id: string
+          entity_type: string
+          feature_data?: Json
+          id?: string
+          model_version?: string | null
+        }
+        Update: {
+          computed_at?: string | null
+          entity_id?: string
+          entity_type?: string
+          feature_data?: Json
+          id?: string
+          model_version?: string | null
+        }
+        Relationships: []
+      }
+      risk_model_predictions: {
+        Row: {
+          confidence: number | null
+          created_at: string | null
+          entity_id: string
+          entity_type: string
+          explanation: Json | null
+          id: string
+          model_name: string
+          model_version: string
+          prediction_type: string
+          prediction_value: number | null
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string | null
+          entity_id: string
+          entity_type: string
+          explanation?: Json | null
+          id?: string
+          model_name: string
+          model_version?: string
+          prediction_type: string
+          prediction_value?: number | null
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string | null
+          entity_id?: string
+          entity_type?: string
+          explanation?: Json | null
+          id?: string
+          model_name?: string
+          model_version?: string
+          prediction_type?: string
+          prediction_value?: number | null
+        }
+        Relationships: []
       }
       role_permissions: {
         Row: {
