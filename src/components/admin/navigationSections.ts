@@ -176,6 +176,13 @@ export const navigationSections = {
       badge: "Command"
     },
     {
+      key: "daily-ops-battle-station",
+      label: "Daily Ops Battle Station",
+      icon: Swords,
+      description: "Aggressive daily supply attack, demand activation, deal closing scripts & KPI targeting",
+      badge: "⚔️ Ops"
+    },
+    {
       key: "first-city-domination",
       label: "First City Domination",
       icon: Crosshair,
