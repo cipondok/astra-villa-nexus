@@ -1127,6 +1127,13 @@ export const navigationSections = {
       badge: "New"
     },
     {
+      key: "founder-control-tower",
+      label: "Founder Control Tower",
+      icon: Activity,
+      description: "Real-time KPI aggregation, deal velocity, capital flow, supply health, growth funnel & priority alerts",
+      badge: "🗼 Tower"
+    },
+    {
       key: "founder-daily-priority",
       label: "Founder Priority Command",
       icon: Target,
