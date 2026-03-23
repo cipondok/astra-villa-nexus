@@ -548,6 +548,13 @@ export const navigationSections = {
       icon: Briefcase,
       description: "Institutional investment funds, NAV calculation, capital calls, distributions, and compliance",
       badge: "🏛️ Fund"
+    },
+    {
+      key: "custody-settlement-command",
+      label: "Custody & Settlement",
+      icon: Shield,
+      description: "Asset custody accounts, segregated ledger, settlement routing, SPV structures, and regulatory reporting",
+      badge: "🔒 Custody"
     }
   ],
 

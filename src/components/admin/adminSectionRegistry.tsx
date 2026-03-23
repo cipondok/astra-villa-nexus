@@ -1757,4 +1757,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "investor-economics-command": { label: "Investor Economics Command", category: "Investor Management" },
   "liquidity-exchange-command": { label: "Liquidity Exchange Command", category: "Investor Management" },
   "institutional-fund-manager": { label: "Institutional Fund Manager", category: "Investor Management" },
+  "custody-settlement-command": { label: "Custody & Settlement", category: "Investor Management" },
 };
