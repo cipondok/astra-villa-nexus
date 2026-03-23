@@ -53,6 +53,25 @@ async function gatherFounderContext() {
     safeCount("escrow_transactions", q => q.eq("status", "active")),
   ]);
 
+  // Fetch liquidity intelligence
+  let liquiditySummary = "No liquidity data available";
+  try {
+    const { data: liq } = await supabaseAdmin
+      .from("liquidity_metrics_daily")
+      .select("city, liquidity_velocity_score, absorption_rate, market_classification, demand_pressure_index")
+      .order("liquidity_velocity_score", { ascending: false })
+      .limit(10);
+    if (liq?.length) {
+      const globalVel = Math.round(liq.reduce((s, m) => s + (m.liquidity_velocity_score || 0), 0) / liq.length * 10) / 10;
+      const fastest = liq[0];
+      const slowest = [...liq].sort((a, b) => a.liquidity_velocity_score - b.liquidity_velocity_score)[0];
+      liquiditySummary = `Global Velocity: ${globalVel}/100 | Fastest: ${fastest.city} (${fastest.liquidity_velocity_score}) | Slowest: ${slowest.city} (${slowest.liquidity_velocity_score})`;
+      for (const m of liq.slice(0, 5)) {
+        liquiditySummary += `\n  • ${m.city}: Velocity ${m.liquidity_velocity_score} | Absorption ${m.absorption_rate} | Class: ${m.market_classification} | Demand Pressure: ${m.demand_pressure_index}`;
+      }
+    }
+  } catch { /* skip */ }
+
   return {
     total_active_listings: totalListings.count || 0,
     new_listings_7d: recentListings.data?.length || 0,
@@ -62,6 +81,7 @@ async function gatherFounderContext() {
     deals_open: dealsOpen,
     deals_closed: dealsClosed,
     escrow_active: escrowActive,
+    liquidity_summary: liquiditySummary,
     date: today,
   };
 }
@@ -105,6 +125,9 @@ DEAL PIPELINE:
 • Open Deals: ${context.deals_open}
 • Deals Closed: ${context.deals_closed}
 • Active Escrow: ${context.escrow_active}
+
+LIQUIDITY INTELLIGENCE:
+${context.liquidity_summary}
 
 ═══════════════════════════════════════════
 OPERATIONAL EXECUTION MODES (Daily Tasks):

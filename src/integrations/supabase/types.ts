@@ -34903,6 +34903,57 @@ export type Database = {
         }
         Relationships: []
       }
+      liquidity_forecasts: {
+        Row: {
+          city: string
+          computed_at: string
+          confidence_score: number | null
+          forecast_date: string
+          forecast_trend: string | null
+          id: string
+          model_version: string | null
+          oversupply_risk: number | null
+          predicted_absorption_rate: number | null
+          predicted_avg_days_to_close: number | null
+          predicted_velocity_score: number | null
+          price_band: string | null
+          property_type: string | null
+          surge_probability: number | null
+        }
+        Insert: {
+          city: string
+          computed_at?: string
+          confidence_score?: number | null
+          forecast_date: string
+          forecast_trend?: string | null
+          id?: string
+          model_version?: string | null
+          oversupply_risk?: number | null
+          predicted_absorption_rate?: number | null
+          predicted_avg_days_to_close?: number | null
+          predicted_velocity_score?: number | null
+          price_band?: string | null
+          property_type?: string | null
+          surge_probability?: number | null
+        }
+        Update: {
+          city?: string
+          computed_at?: string
+          confidence_score?: number | null
+          forecast_date?: string
+          forecast_trend?: string | null
+          id?: string
+          model_version?: string | null
+          oversupply_risk?: number | null
+          predicted_absorption_rate?: number | null
+          predicted_avg_days_to_close?: number | null
+          predicted_velocity_score?: number | null
+          price_band?: string | null
+          property_type?: string | null
+          surge_probability?: number | null
+        }
+        Relationships: []
+      }
       liquidity_lock_in_metrics: {
         Row: {
           activity_to_roi_correlation: number | null
@@ -34996,6 +35047,69 @@ export type Database = {
           total_sell_orders_open?: number | null
           updated_at?: string
           volume_30d?: number | null
+        }
+        Relationships: []
+      }
+      liquidity_metrics_daily: {
+        Row: {
+          absorption_rate: number | null
+          avg_days_to_close: number | null
+          avg_days_to_escrow: number | null
+          avg_days_to_inquiry: number | null
+          city: string
+          created_at: string
+          date: string
+          deals_closed: number | null
+          demand_pressure_index: number | null
+          escrow_started: number | null
+          id: string
+          inquiries_count: number | null
+          liquidity_velocity_score: number | null
+          listings_active: number | null
+          market_classification: string | null
+          negotiations_count: number | null
+          price_band: string | null
+          property_type: string | null
+        }
+        Insert: {
+          absorption_rate?: number | null
+          avg_days_to_close?: number | null
+          avg_days_to_escrow?: number | null
+          avg_days_to_inquiry?: number | null
+          city: string
+          created_at?: string
+          date: string
+          deals_closed?: number | null
+          demand_pressure_index?: number | null
+          escrow_started?: number | null
+          id?: string
+          inquiries_count?: number | null
+          liquidity_velocity_score?: number | null
+          listings_active?: number | null
+          market_classification?: string | null
+          negotiations_count?: number | null
+          price_band?: string | null
+          property_type?: string | null
+        }
+        Update: {
+          absorption_rate?: number | null
+          avg_days_to_close?: number | null
+          avg_days_to_escrow?: number | null
+          avg_days_to_inquiry?: number | null
+          city?: string
+          created_at?: string
+          date?: string
+          deals_closed?: number | null
+          demand_pressure_index?: number | null
+          escrow_started?: number | null
+          id?: string
+          inquiries_count?: number | null
+          liquidity_velocity_score?: number | null
+          listings_active?: number | null
+          market_classification?: string | null
+          negotiations_count?: number | null
+          price_band?: string | null
+          property_type?: string | null
         }
         Relationships: []
       }
