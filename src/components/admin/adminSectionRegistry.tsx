@@ -599,6 +599,9 @@ export const LiquidityExchangeCommandCenter = lazyRetry(() => import("./Liquidit
 export const InstitutionalFundManager = lazyRetry(() => import("./InstitutionalFundManager"));
 export const CustodySettlementCommandCenter = lazyRetry(() => import("./CustodySettlementCommandCenter"));
 
+// Fractional Investment
+export const FractionalInvestmentCommandCenter = lazyRetry(() => import("./FractionalInvestmentCommandCenter"));
+
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
 // Sections with custom props are listed explicitly; all others are simple <Component />.
