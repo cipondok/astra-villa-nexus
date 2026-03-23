@@ -1247,6 +1247,34 @@ const PropertyDetail: React.FC = () => {
               />
             </Suspense>
 
+            {/* Escrow Safety Explainer */}
+            <Suspense fallback={null}>
+              <EscrowSafetyModule />
+            </Suspense>
+
+            {/* Deal Action Timeline */}
+            <Suspense fallback={null}>
+              <DealActionTimeline currentStage={0} />
+            </Suspense>
+
+            {/* Wallet Funding CTA */}
+            <Suspense fallback={null}>
+              <WalletFundingCTA
+                propertyPrice={property.price}
+                onAuthRequired={() => setShowAuthModal(true)}
+              />
+            </Suspense>
+
+            {/* Personalized Investor Match Signal */}
+            <Suspense fallback={null}>
+              <InvestorMatchSignal
+                propertyPrice={property.price}
+                propertyType={property.property_type}
+                city={property.city}
+                rentalYield={property.property_type === 'villa' ? 8.5 : property.property_type === 'apartment' ? 6.2 : 5.5}
+              />
+            </Suspense>
+
             {/* KPR Calculator */}
             {property.listing_type === 'sale' && (
               <div className="space-y-2 sm:space-y-3">
