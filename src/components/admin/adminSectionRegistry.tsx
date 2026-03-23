@@ -1629,6 +1629,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "deal-recovery-playbook": { label: "Deal Recovery Playbook", category: "Execution Command" },
   "hnw-closing-strategist": { label: "HNW Closing Strategist", category: "Execution Command" },
   "seller-motivation-engine": { label: "Seller Motivation Engine", category: "Execution Command" },
+  "deal-probability-engine": { label: "Deal Probability Engine", category: "Market Intelligence" },
   "daily-ops-battle-station": { label: "Daily Ops Battle Station", category: "Execution Command" },
   "first-100k-revenue": { label: "First $100K Revenue Plan", category: "Operations" },
   "investor-narrative-coaching": { label: "Investor Narrative Coaching", category: "Strategy" },
