@@ -89,6 +89,8 @@ export const AlgorithmDashboard = lazyRetry(() => import("./AlgorithmDashboard")
 export const AdminNotificationsCenter = lazyRetry(() => import("./AdminNotificationsCenter").then((m) => ({ default: m.AdminNotificationsCenter })));
 export const LaunchReadinessDashboard = lazyRetry(() => import("./LaunchReadinessDashboard"));
 export const AIFeedbackAnalytics = lazyRetry(() => import("./AIFeedbackAnalytics").then((m) => ({ default: m.AIFeedbackAnalytics })));
+export const InvestorWealthDashboard = lazyRetry(() => import("../investor/InvestorWealthDashboard"));
+export const AdminInvestorEconomics = lazyRetry(() => import("./AdminInvestorEconomics"));
 
 export const FounderDailyPriorityCommand = lazyRetry(() => import("./FounderDailyPriorityCommand"));
 export const AgentTerritoryCoverageMap = lazyRetry(() => import("./AgentTerritoryCoverageMap"));
