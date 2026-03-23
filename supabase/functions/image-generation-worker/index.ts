@@ -14,6 +14,37 @@ function json(body: unknown, status = 200) {
   });
 }
 
+// ── ANGLE DEFINITIONS ──
+const ANGLE_DEFINITIONS: Record<string, { label: string; stage: number; promptSuffix: string }> = {
+  main_exterior_front: {
+    label: "Front Exterior",
+    stage: 1,
+    promptSuffix: "Front façade professional real estate photography, straight-on composition, showcasing entrance and full building width, clear sky background.",
+  },
+  exterior_angle_side: {
+    label: "Side Angle",
+    stage: 2,
+    promptSuffix: "Wide-angle perspective from corner view showing depth and architectural volume, emphasizing building scale and side garden or landscape.",
+  },
+  aerial_drone_view: {
+    label: "Aerial Drone",
+    stage: 2,
+    promptSuffix: "Top-down cinematic drone shot at 45-degree angle showing roof, surrounding area, neighborhood context, and property boundaries.",
+  },
+  lifestyle_environment_view: {
+    label: "Lifestyle",
+    stage: 3,
+    promptSuffix: "Lifestyle context showing neighborhood atmosphere, street trees, nearby amenities, warm community feel, environmental storytelling.",
+  },
+  evening_lighting_view: {
+    label: "Evening",
+    stage: 3,
+    promptSuffix: "Warm sunset golden hour or twilight blue hour architectural lighting, interior lights glowing through windows, dramatic sky, cinematic mood.",
+  },
+};
+
+const ANGLE_ORDER = ["main_exterior_front", "exterior_angle_side", "aerial_drone_view", "lifestyle_environment_view", "evening_lighting_view"];
+
 // ── TRAFFIC-AWARE PRIORITY FORMULA ──
 function computeTrafficPriority(
   views: number, saves: number, inquiries: number, impressions: number,
@@ -29,7 +60,6 @@ function computeTrafficPriority(
   const raw = viewScore + impressionScore + saveScore + inquiryScore + boostScore + priceWeight;
   const score = Math.min(100, Math.max(0, Math.round(raw)));
 
-  // Detect dominant traffic intent
   let intent = "general";
   if (inquiryScore > viewScore && inquiryScore > saveScore) intent = "investment";
   else if (saveScore > viewScore * 0.3) intent = "luxury";
@@ -38,8 +68,8 @@ function computeTrafficPriority(
   return { score, intent };
 }
 
-// ── SMART PROMPT WITH TRAFFIC INTENT ──
-function buildSmartPrompt(property: Record<string, any>, trafficIntent: string): string {
+// ── SMART PROMPT WITH ANGLE ──
+function buildAnglePrompt(property: Record<string, any>, trafficIntent: string, angleType: string): string {
   const type = property.property_type || "house";
   const city = property.city || property.location || property.state || "Indonesia";
   const bedrooms = property.bedrooms;
@@ -47,20 +77,20 @@ function buildSmartPrompt(property: Record<string, any>, trafficIntent: string):
   const landArea = property.land_area_sqm;
   const buildingArea = property.building_area_sqm;
   const price = property.price || 0;
-  const description = (property.description || "").slice(0, 150);
+  const description = (property.description || "").slice(0, 120);
 
   // Intent-adapted style
   let styleGuide: string;
   if (trafficIntent === "luxury" || price > 10_000_000_000) {
-    styleGuide = "Ultra-luxury villa with infinity pool, tropical landscaping, premium marble and teak, dramatic ocean or rice field view, resort-quality architecture, drone aerial perspective";
+    styleGuide = "Ultra-luxury villa with infinity pool, tropical landscaping, premium marble and teak, resort-quality architecture";
   } else if (trafficIntent === "investment" || price > 3_000_000_000) {
-    styleGuide = "Modern high-value property, clean architectural lines, impressive entrance, well-lit professional real estate photography emphasizing scale and premium finish, investment-grade visual";
+    styleGuide = "Modern high-value property, clean architectural lines, impressive entrance, investment-grade visual";
   } else if (trafficIntent === "family" || price > 1_000_000_000) {
-    styleGuide = "Warm welcoming family home, lush garden, children-friendly outdoor space, cozy veranda, natural light streaming through windows, neighborhood community feel";
+    styleGuide = "Warm welcoming family home, lush garden, cozy veranda, natural light, neighborhood community feel";
   } else if (price > 500_000_000) {
-    styleGuide = "Clean modern minimalist house, compact but stylish, neat front yard, bright and airy feel, suburban residential setting";
+    styleGuide = "Clean modern minimalist house, compact but stylish, neat front yard, bright and airy";
   } else {
-    styleGuide = "Simple well-maintained Indonesian home, clean facade, tidy entrance, residential neighborhood, natural lighting";
+    styleGuide = "Simple well-maintained Indonesian home, clean facade, tidy entrance, residential neighborhood";
   }
 
   const sizeContext: string[] = [];
@@ -70,7 +100,9 @@ function buildSmartPrompt(property: Record<string, any>, trafficIntent: string):
   if (buildingArea) sizeContext.push(`${buildingArea}sqm building`);
   const sizeStr = sizeContext.length > 0 ? ` Features: ${sizeContext.join(", ")}.` : "";
 
-  return `Professional real estate exterior photograph of a ${type} in ${city}. ${styleGuide}.${sizeStr} ${description ? `Context: ${description}.` : ""} Photorealistic, well-lit, golden hour lighting, no text, no watermarks, no people, architectural photography style, 4K quality.`;
+  const angleDef = ANGLE_DEFINITIONS[angleType] || ANGLE_DEFINITIONS.main_exterior_front;
+
+  return `Professional real estate photograph of a ${type} in ${city}. ${styleGuide}.${sizeStr} ${angleDef.promptSuffix} ${description ? `Context: ${description}.` : ""} Photorealistic, well-lit, no text, no watermarks, no people, architectural photography style, 4K quality.`;
 }
 
 // ── PROMPT HASH ──
@@ -83,19 +115,14 @@ async function hashPrompt(prompt: string): Promise<string> {
 // ── COST GUARDRAIL CHECK ──
 async function checkBudget(supabase: any): Promise<{ allowed: boolean; remaining: number }> {
   const { data: config } = await supabase
-    .from("ai_image_gen_config")
-    .select("*")
-    .eq("id", "default")
-    .maybeSingle();
+    .from("ai_image_gen_config").select("*").eq("id", "default").maybeSingle();
 
   if (!config) return { allowed: true, remaining: 999 };
 
-  // Reset daily counter if new day
   const lastReset = new Date(config.last_budget_reset_at || 0);
   const now = new Date();
   if (now.toDateString() !== lastReset.toDateString()) {
-    await supabase
-      .from("ai_image_gen_config")
+    await supabase.from("ai_image_gen_config")
       .update({ daily_generated_count: 0, last_budget_reset_at: now.toISOString() })
       .eq("id", "default");
     return { allowed: true, remaining: config.daily_budget_limit };
@@ -107,13 +134,8 @@ async function checkBudget(supabase: any): Promise<{ allowed: boolean; remaining
 
 async function incrementBudget(supabase: any) {
   const { data: config } = await supabase
-    .from("ai_image_gen_config")
-    .select("daily_generated_count")
-    .eq("id", "default")
-    .maybeSingle();
-
-  await supabase
-    .from("ai_image_gen_config")
+    .from("ai_image_gen_config").select("daily_generated_count").eq("id", "default").maybeSingle();
+  await supabase.from("ai_image_gen_config")
     .update({ daily_generated_count: (config?.daily_generated_count || 0) + 1, updated_at: new Date().toISOString() })
     .eq("id", "default");
 }
@@ -122,46 +144,34 @@ async function incrementBudget(supabase: any) {
 async function processJob(
   supabase: any, job: any, workerId: string, apiKey: string,
 ): Promise<{ success: boolean; error?: string }> {
-  // Mark as processing
   const { count } = await supabase
     .from("ai_image_jobs")
     .update({ status: "processing", worker_id: workerId, started_at: new Date().toISOString(), updated_at: new Date().toISOString() })
-    .eq("id", job.id)
-    .eq("status", "pending");
+    .eq("id", job.id).eq("status", "pending");
 
   if (count === 0) return { success: false, error: "Job already claimed" };
 
-  // Fetch property
   const { data: property, error: propErr } = await supabase
     .from("properties")
     .select("id, title, description, property_type, city, location, state, bedrooms, bathrooms, land_area_sqm, building_area_sqm, price, images, thumbnail_url")
-    .eq("id", job.property_id)
-    .maybeSingle();
+    .eq("id", job.property_id).maybeSingle();
 
   if (propErr || !property) {
     await markFailed(supabase, job.id, propErr?.message || "Property not found");
     return { success: false, error: "Property not found" };
   }
 
-  // Check max images per property
-  const { data: configData } = await supabase.from("ai_image_gen_config").select("max_images_per_property, cooldown_hours").eq("id", "default").maybeSingle();
-  const maxImages = configData?.max_images_per_property || 3;
+  // Cooldown check (per angle)
+  const { data: configData } = await supabase.from("ai_image_gen_config").select("cooldown_hours").eq("id", "default").maybeSingle();
   const cooldownHours = configData?.cooldown_hours || 72;
 
-  const existingAiImages = (Array.isArray(property.images) ? property.images : []).filter((url: string) => url?.includes("ai-generated"));
-  if (existingAiImages.length >= maxImages) {
-    await markFailed(supabase, job.id, `Max ${maxImages} AI images reached`);
-    return { success: false, error: "Max images reached" };
-  }
-
-  // Cooldown check
   const { data: recentDone } = await supabase
     .from("ai_image_jobs")
     .select("completed_at")
     .eq("property_id", job.property_id)
+    .eq("angle_type", job.angle_type || "main_exterior_front")
     .eq("status", "done")
-    .order("completed_at", { ascending: false })
-    .limit(1);
+    .order("completed_at", { ascending: false }).limit(1);
 
   if (recentDone?.[0]?.completed_at) {
     const hoursSince = (Date.now() - new Date(recentDone[0].completed_at).getTime()) / 3600000;
@@ -171,14 +181,13 @@ async function processJob(
     }
   }
 
+  const angleType = job.angle_type || "main_exterior_front";
   const trafficIntent = job.traffic_intent || "general";
-  const prompt = buildSmartPrompt(property, trafficIntent);
+  const prompt = buildAnglePrompt(property, trafficIntent, angleType);
   const promptHash = await hashPrompt(prompt);
 
-  await supabase
-    .from("ai_image_jobs")
-    .update({ prompt_text: prompt, prompt_hash: promptHash })
-    .eq("id", job.id);
+  await supabase.from("ai_image_jobs")
+    .update({ prompt_text: prompt, prompt_hash: promptHash }).eq("id", job.id);
 
   try {
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -211,32 +220,48 @@ async function processJob(
     const ext = base64Match[1] === "jpeg" ? "jpg" : base64Match[1];
     const binaryData = Uint8Array.from(atob(base64Match[2]), (c) => c.charCodeAt(0));
 
-    const mainFileName = `ai-generated/${property.id}/${Date.now()}.${ext}`;
+    // Structured storage path: ai-generated/{property_id}/{angle_type}.{ext}
+    const fileName = `ai-generated/${property.id}/${angleType}.${ext}`;
     const { error: uploadError } = await supabase.storage
       .from("property-images")
-      .upload(mainFileName, binaryData, { contentType: `image/${base64Match[1]}`, upsert: true });
+      .upload(fileName, binaryData, { contentType: `image/${base64Match[1]}`, upsert: true });
 
     if (uploadError) throw new Error(`Upload failed: ${uploadError.message}`);
 
-    const { data: { publicUrl: mainUrl } } = supabase.storage.from("property-images").getPublicUrl(mainFileName);
+    const { data: { publicUrl: mainUrl } } = supabase.storage.from("property-images").getPublicUrl(fileName);
     const thumbnailUrl = `${mainUrl}?width=350&height=250&resize=cover`;
 
+    // Update property images array
     const updatedImages: string[] = Array.isArray(property.images) ? [...property.images] : [];
-    updatedImages.push(mainUrl);
+    if (!updatedImages.includes(mainUrl)) {
+      updatedImages.push(mainUrl);
+    }
 
-    await supabase.from("properties").update({
+    const updatePayload: Record<string, any> = {
       images: updatedImages,
-      thumbnail_url: property.thumbnail_url || mainUrl,
       ai_generated: true,
       image_generated_at: new Date().toISOString(),
-    }).eq("id", property.id);
+    };
+    // Set thumbnail only for main exterior
+    if (angleType === "main_exterior_front" && !property.thumbnail_url) {
+      updatePayload.thumbnail_url = mainUrl;
+    }
+
+    await supabase.from("properties").update(updatePayload).eq("id", property.id);
 
     await supabase.from("ai_image_jobs").update({
       status: "done", result_image_url: mainUrl, result_thumbnail_url: thumbnailUrl,
+      ai_style_profile: trafficIntent,
       completed_at: new Date().toISOString(), updated_at: new Date().toISOString(),
     }).eq("id", job.id);
 
     await incrementBudget(supabase);
+
+    // After main angle completes, auto-enqueue extra angles if eligible
+    if (angleType === "main_exterior_front") {
+      await maybeEnqueueExtraAngles(supabase, property, job);
+    }
+
     return { success: true };
   } catch (err: any) {
     const msg = err?.message || "Unknown error";
@@ -253,6 +278,59 @@ async function processJob(
   }
 }
 
+// ── AUTO-ENQUEUE EXTRA ANGLES ──
+async function maybeEnqueueExtraAngles(supabase: any, property: any, mainJob: any) {
+  const { data: config } = await supabase.from("ai_image_gen_config")
+    .select("enabled_angles, extra_angles_min_traffic, extra_angles_min_price, max_images_per_property")
+    .eq("id", "default").maybeSingle();
+
+  if (!config) return;
+
+  const minTraffic = config.extra_angles_min_traffic || 15;
+  const minPrice = config.extra_angles_min_price || 1_000_000_000;
+  const maxImages = config.max_images_per_property || 5;
+  const enabledAngles: string[] = config.enabled_angles || ANGLE_ORDER;
+
+  const totalTraffic = (mainJob.traffic_views || 0) + (mainJob.traffic_saves || 0) + (mainJob.traffic_inquiries || 0);
+  const price = property.price || 0;
+
+  // Only enqueue extra angles if high traffic OR premium price
+  if (totalTraffic < minTraffic && price < minPrice) return;
+
+  // Check how many done/pending angles already exist
+  const { data: existing } = await supabase
+    .from("ai_image_jobs")
+    .select("angle_type")
+    .eq("property_id", property.id)
+    .in("status", ["pending", "processing", "done"]);
+
+  const existingAngles = new Set((existing || []).map((j: any) => j.angle_type));
+  const angleSetId = crypto.randomUUID();
+
+  const extraAngles = enabledAngles
+    .filter(a => a !== "main_exterior_front" && !existingAngles.has(a))
+    .slice(0, maxImages - 1); // respect max
+
+  if (extraAngles.length === 0) return;
+
+  const jobs = extraAngles.map(angle => ({
+    property_id: property.id,
+    angle_type: angle,
+    angle_set_id: angleSetId,
+    generation_stage: ANGLE_DEFINITIONS[angle]?.stage || 2,
+    priority_score: Math.max(0, (mainJob.priority_score || 0) - (ANGLE_DEFINITIONS[angle]?.stage || 2) * 5),
+    status: "pending",
+    traffic_views: mainJob.traffic_views || 0,
+    traffic_saves: mainJob.traffic_saves || 0,
+    traffic_inquiries: mainJob.traffic_inquiries || 0,
+    traffic_impressions: mainJob.traffic_impressions || 0,
+    traffic_intent: mainJob.traffic_intent || "general",
+    ai_style_profile: mainJob.traffic_intent || "general",
+  }));
+
+  await supabase.from("ai_image_jobs").insert(jobs);
+}
+
 async function markFailed(supabase: any, jobId: string, msg: string) {
   await supabase.from("ai_image_jobs").update({
     status: "failed", error_message: msg,
@@ -261,16 +339,11 @@ async function markFailed(supabase: any, jobId: string, msg: string) {
 }
 
 // ── TRAFFIC SIGNAL AGGREGATION ──
-async function aggregateTrafficSignals(supabase: any, propertyId: string): Promise<{
-  views: number; saves: number; inquiries: number; impressions: number;
-}> {
+async function aggregateTrafficSignals(supabase: any, propertyId: string) {
   const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString();
-
   const { data: events } = await supabase
-    .from("behavioral_events")
-    .select("event_type")
-    .eq("property_id", propertyId)
-    .gte("created_at", sevenDaysAgo);
+    .from("behavioral_events").select("event_type")
+    .eq("property_id", propertyId).gte("created_at", sevenDaysAgo);
 
   if (!events || events.length === 0) return { views: 0, saves: 0, inquiries: 0, impressions: 0 };
 
@@ -291,29 +364,27 @@ async function enqueueWithTraffic(supabase: any, options: { limit: number; minTr
   const limit = options.limit || 100;
   const minTraffic = options.minTraffic || 5;
 
-  // Get properties without images
   const { data: properties, error } = await supabase
     .from("properties")
     .select("id, price, city, property_type")
     .or("thumbnail_url.is.null,ai_generated.is.null")
     .order("created_at", { ascending: false })
-    .limit(limit * 2); // fetch more since we'll filter
+    .limit(limit * 2);
 
   if (error) throw new Error(error.message);
   if (!properties || properties.length === 0) return { enqueued: 0, skipped_low_traffic: 0 };
 
-  // Check existing jobs
   const propIds = properties.map((p: any) => p.id);
   const { data: existingJobs } = await supabase
-    .from("ai_image_jobs")
-    .select("property_id")
-    .in("property_id", propIds)
-    .in("status", ["pending", "processing", "done"]);
+    .from("ai_image_jobs").select("property_id, angle_type")
+    .in("property_id", propIds).in("status", ["pending", "processing", "done"]);
 
-  const existingSet = new Set((existingJobs || []).map((j: any) => j.property_id));
-  const candidates = properties.filter((p: any) => !existingSet.has(p.id)).slice(0, limit);
+  // Only skip if main_exterior_front already exists
+  const existingMainSet = new Set(
+    (existingJobs || []).filter((j: any) => j.angle_type === "main_exterior_front").map((j: any) => j.property_id)
+  );
+  const candidates = properties.filter((p: any) => !existingMainSet.has(p.id)).slice(0, limit);
 
-  // Aggregate traffic for each candidate (batch in groups of 10)
   const newJobs: any[] = [];
   let skippedLowTraffic = 0;
 
@@ -328,12 +399,7 @@ async function enqueueWithTraffic(supabase: any, options: { limit: number; minTr
 
     for (const { property: p, traffic } of trafficResults) {
       const totalTraffic = traffic.views + traffic.saves + traffic.inquiries;
-
-      // If auto-enqueue mode and traffic below threshold, skip
-      if (minTraffic > 0 && totalTraffic < minTraffic) {
-        skippedLowTraffic++;
-        continue;
-      }
+      if (minTraffic > 0 && totalTraffic < minTraffic) { skippedLowTraffic++; continue; }
 
       const { score, intent } = computeTrafficPriority(
         traffic.views, traffic.saves, traffic.inquiries, traffic.impressions,
@@ -344,6 +410,9 @@ async function enqueueWithTraffic(supabase: any, options: { limit: number; minTr
         property_id: p.id,
         priority_score: score,
         status: "pending",
+        angle_type: "main_exterior_front",
+        generation_stage: 1,
+        ai_style_profile: intent,
         traffic_views: traffic.views,
         traffic_saves: traffic.saves,
         traffic_inquiries: traffic.inquiries,
@@ -353,7 +422,6 @@ async function enqueueWithTraffic(supabase: any, options: { limit: number; minTr
     }
   }
 
-  // Sort by priority before inserting
   newJobs.sort((a, b) => b.priority_score - a.priority_score);
 
   let enqueued = 0;
@@ -369,10 +437,8 @@ async function enqueueWithTraffic(supabase: any, options: { limit: number; minTr
 // ── REPRIORITIZE PENDING JOBS ──
 async function reprioritizePending(supabase: any) {
   const { data: pendingJobs } = await supabase
-    .from("ai_image_jobs")
-    .select("id, property_id")
-    .eq("status", "pending")
-    .limit(200);
+    .from("ai_image_jobs").select("id, property_id, angle_type, generation_stage")
+    .eq("status", "pending").limit(200);
 
   if (!pendingJobs || pendingJobs.length === 0) return { updated: 0 };
 
@@ -381,27 +447,21 @@ async function reprioritizePending(supabase: any) {
     const batch = pendingJobs.slice(i, i + 10);
     await Promise.all(batch.map(async (job: any) => {
       const traffic = await aggregateTrafficSignals(supabase, job.property_id);
-
-      // Get property price for scoring
-      const { data: prop } = await supabase
-        .from("properties")
-        .select("price")
-        .eq("id", job.property_id)
-        .maybeSingle();
+      const { data: prop } = await supabase.from("properties").select("price").eq("id", job.property_id).maybeSingle();
 
       const { score, intent } = computeTrafficPriority(
         traffic.views, traffic.saves, traffic.inquiries, traffic.impressions,
         prop?.price || 0, false
       );
 
+      // Lower priority for later-stage angles
+      const stagePenalty = ((job.generation_stage || 1) - 1) * 5;
+
       await supabase.from("ai_image_jobs").update({
-        priority_score: score,
-        traffic_views: traffic.views,
-        traffic_saves: traffic.saves,
-        traffic_inquiries: traffic.inquiries,
-        traffic_impressions: traffic.impressions,
-        traffic_intent: intent,
-        updated_at: new Date().toISOString(),
+        priority_score: Math.max(0, score - stagePenalty),
+        traffic_views: traffic.views, traffic_saves: traffic.saves,
+        traffic_inquiries: traffic.inquiries, traffic_impressions: traffic.impressions,
+        traffic_intent: intent, updated_at: new Date().toISOString(),
       }).eq("id", job.id);
 
       updated++;
@@ -433,7 +493,7 @@ serve(async (req: Request) => {
   const action = body.action || "process";
   const concurrency = Math.min(body.concurrency || 3, 5);
 
-  // ── ENQUEUE (traffic-aware) ──
+  // ── ENQUEUE (traffic-aware, main angle) ──
   if (action === "enqueue") {
     try {
       const { data: config } = await supabase.from("ai_image_gen_config").select("min_traffic_threshold").eq("id", "default").maybeSingle();
@@ -445,24 +505,36 @@ serve(async (req: Request) => {
     }
   }
 
-  // ── STATS (enhanced) ──
+  // ── STATS (enhanced with angle breakdown) ──
   if (action === "stats") {
     const [
       { count: pending }, { count: processing }, { count: done }, { count: failed },
-      configResult,
+      configResult, angleBreakdown,
     ] = await Promise.all([
       supabase.from("ai_image_jobs").select("id", { count: "exact", head: true }).eq("status", "pending"),
       supabase.from("ai_image_jobs").select("id", { count: "exact", head: true }).eq("status", "processing"),
       supabase.from("ai_image_jobs").select("id", { count: "exact", head: true }).eq("status", "done"),
       supabase.from("ai_image_jobs").select("id", { count: "exact", head: true }).eq("status", "failed"),
       supabase.from("ai_image_gen_config").select("*").eq("id", "default").maybeSingle(),
+      supabase.from("ai_image_jobs").select("angle_type, status").in("status", ["done", "pending", "processing"]).limit(1000),
     ]);
 
     const config = configResult.data;
+
+    // Compute angle stats
+    const angleCounts: Record<string, { done: number; pending: number }> = {};
+    for (const row of (angleBreakdown.data || [])) {
+      const a = row.angle_type || "main_exterior_front";
+      if (!angleCounts[a]) angleCounts[a] = { done: 0, pending: 0 };
+      if (row.status === "done") angleCounts[a].done++;
+      else angleCounts[a].pending++;
+    }
+
     return json({
       pending: pending || 0, processing: processing || 0,
       done: done || 0, failed: failed || 0,
       total: (pending || 0) + (processing || 0) + (done || 0) + (failed || 0),
+      angles: angleCounts,
       budget: {
         daily_limit: config?.daily_budget_limit || 200,
         used_today: config?.daily_generated_count || 0,
@@ -471,17 +543,18 @@ serve(async (req: Request) => {
       config: {
         auto_enqueue: config?.auto_enqueue_enabled || false,
         min_traffic: config?.min_traffic_threshold || 5,
-        max_per_property: config?.max_images_per_property || 3,
+        max_per_property: config?.max_images_per_property || 5,
         cooldown_hours: config?.cooldown_hours || 72,
         last_reprioritize: config?.last_reprioritize_at,
+        extra_angles_min_traffic: config?.extra_angles_min_traffic || 15,
+        extra_angles_min_price: config?.extra_angles_min_price || 1_000_000_000,
       },
     });
   }
 
   // ── RETRY FAILED ──
   if (action === "retry_failed") {
-    const { error } = await supabase
-      .from("ai_image_jobs")
+    const { error } = await supabase.from("ai_image_jobs")
       .update({ status: "pending", retry_count: 0, error_message: null, worker_id: null, updated_at: new Date().toISOString() })
       .eq("status", "failed");
     return json({ success: !error });
@@ -505,13 +578,14 @@ serve(async (req: Request) => {
     if (body.cooldown_hours !== undefined) updates.cooldown_hours = body.cooldown_hours;
     if (body.min_traffic_threshold !== undefined) updates.min_traffic_threshold = body.min_traffic_threshold;
     if (body.auto_enqueue_enabled !== undefined) updates.auto_enqueue_enabled = body.auto_enqueue_enabled;
+    if (body.extra_angles_min_traffic !== undefined) updates.extra_angles_min_traffic = body.extra_angles_min_traffic;
+    if (body.extra_angles_min_price !== undefined) updates.extra_angles_min_price = body.extra_angles_min_price;
 
     const { error } = await supabase.from("ai_image_gen_config").update(updates).eq("id", "default");
     return json({ success: !error });
   }
 
-  // ── PROCESS (default) ──
-  // Budget check
+  // ── PROCESS (default) — prioritize by stage then score ──
   const budget = await checkBudget(supabase);
   if (!budget.allowed) {
     return json({ processed: 0, message: "Daily budget exhausted", budget_remaining: 0 });
@@ -523,6 +597,7 @@ serve(async (req: Request) => {
     .from("ai_image_jobs")
     .select("*")
     .eq("status", "pending")
+    .order("generation_stage", { ascending: true })
     .order("priority_score", { ascending: false })
     .order("created_at", { ascending: true })
     .limit(processLimit);
@@ -537,8 +612,7 @@ serve(async (req: Request) => {
   const succeeded = results.filter(r => r.status === "fulfilled" && (r as any).value?.success).length;
 
   return json({
-    processed: results.length,
-    succeeded,
+    processed: results.length, succeeded,
     failed: results.length - succeeded,
     worker_id: workerId,
     budget_remaining: budget.remaining - succeeded,

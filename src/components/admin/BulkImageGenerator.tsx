@@ -8,9 +8,9 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import {
-  ImageIcon, Loader2, Play, StopCircle, AlertTriangle,
+  ImageIcon, Loader2, Play, StopCircle,
   Zap, RefreshCw, RotateCcw, Upload, Server, TrendingUp,
-  Eye, Heart, MessageSquare, Shield, BarChart3, Settings2
+  Eye, Heart, MessageSquare, Shield, BarChart3, Settings2, Camera
 } from "lucide-react";
 import {
   useImageQueueStats,
@@ -20,6 +20,7 @@ import {
   useRetryFailedImages,
   useReprioritizeJobs,
   useUpdateImageGenConfig,
+  ANGLE_LABELS,
 } from "@/hooks/useImageGenerationQueue";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,7 +32,7 @@ export default function BulkImageGenerator() {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const { data: queueStats, isLoading: statsLoading, refetch: refetchStats } = useImageQueueStats();
-  const { data: recentJobs } = useRecentImageJobs(15);
+  const { data: recentJobs } = useRecentImageJobs(20);
   const enqueue = useEnqueueImages();
   const process = useProcessImages();
   const retryFailed = useRetryFailedImages();
@@ -90,6 +91,8 @@ export default function BulkImageGenerator() {
     }
   };
 
+  const angleInfo = (type: string) => ANGLE_LABELS[type] || { label: type, icon: "📷" };
+
   return (
     <Card>
       <CardHeader>
@@ -97,10 +100,10 @@ export default function BulkImageGenerator() {
           <div>
             <CardTitle className="flex items-center gap-2">
               <ImageIcon className="h-5 w-5 text-primary" />
-              AI Image Generation Engine
+              AI Multi-Angle Image Engine
             </CardTitle>
             <CardDescription>
-              Traffic-aware priority • Smart style adaptation • Cost guardrails
+              5-angle visual storytelling • Traffic-aware priority • Staged generation
             </CardDescription>
           </div>
           <div className="flex items-center gap-2">
@@ -135,6 +138,24 @@ export default function BulkImageGenerator() {
           </div>
         </div>
 
+        {/* Angle Breakdown */}
+        {queueStats?.angles && Object.keys(queueStats.angles).length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {Object.entries(queueStats.angles).map(([angle, counts]) => {
+              const info = angleInfo(angle);
+              return (
+                <div key={angle} className="flex items-center gap-1 rounded-md border border-border/40 bg-muted/20 px-2 py-1">
+                  <span className="text-xs">{info.icon}</span>
+                  <span className="text-[9px] font-medium text-foreground">{info.label}</span>
+                  <Badge variant="outline" className="text-[8px] py-0 h-3.5 px-1">
+                    {counts.done}✓ {counts.pending}◯
+                  </Badge>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         {/* Budget Bar */}
         <div className="space-y-1">
           <div className="flex justify-between text-[10px] text-muted-foreground">
@@ -161,19 +182,18 @@ export default function BulkImageGenerator() {
             <p className="text-xs font-semibold text-foreground">Generation Config</p>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <Label className="text-[10px]">Daily Budget Limit</Label>
+                <Label className="text-[10px]">Max Images Per Property</Label>
                 <div className="flex items-center gap-2">
                   <Slider
-                    value={[queueStats?.config?.max_per_property || 3]}
+                    value={[queueStats?.config?.max_per_property || 5]}
                     min={1} max={5} step={1}
                     onValueChange={([v]) => updateConfig.mutate({ max_images_per_property: v })}
                   />
-                  <span className="text-xs font-mono w-4">{queueStats?.config?.max_per_property || 3}</span>
+                  <span className="text-xs font-mono w-4">{queueStats?.config?.max_per_property || 5}</span>
                 </div>
-                <p className="text-[9px] text-muted-foreground">Max images per property</p>
               </div>
               <div className="space-y-1">
-                <Label className="text-[10px]">Min Traffic Threshold</Label>
+                <Label className="text-[10px]">Min Traffic (Main)</Label>
                 <div className="flex items-center gap-2">
                   <Slider
                     value={[queueStats?.config?.min_traffic || 5]}
@@ -182,7 +202,28 @@ export default function BulkImageGenerator() {
                   />
                   <span className="text-xs font-mono w-4">{queueStats?.config?.min_traffic || 5}</span>
                 </div>
-                <p className="text-[9px] text-muted-foreground">Min views+saves before enqueue</p>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-[10px]">Extra Angles Min Traffic</Label>
+                <div className="flex items-center gap-2">
+                  <Slider
+                    value={[queueStats?.config?.extra_angles_min_traffic || 15]}
+                    min={5} max={50} step={5}
+                    onValueChange={([v]) => updateConfig.mutate({ extra_angles_min_traffic: v })}
+                  />
+                  <span className="text-xs font-mono w-6">{queueStats?.config?.extra_angles_min_traffic || 15}</span>
+                </div>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-[10px]">Extra Angles Min Price (B)</Label>
+                <div className="flex items-center gap-2">
+                  <Slider
+                    value={[(queueStats?.config?.extra_angles_min_price || 1_000_000_000) / 1_000_000_000]}
+                    min={0.5} max={10} step={0.5}
+                    onValueChange={([v]) => updateConfig.mutate({ extra_angles_min_price: v * 1_000_000_000 })}
+                  />
+                  <span className="text-xs font-mono w-6">{((queueStats?.config?.extra_angles_min_price || 1_000_000_000) / 1_000_000_000).toFixed(1)}B</span>
+                </div>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -253,56 +294,57 @@ export default function BulkImageGenerator() {
           </Button>
         </div>
 
-        {/* Recent Jobs with Traffic Signals */}
+        {/* Recent Jobs with Angle Info */}
         {recentJobs && recentJobs.length > 0 && (
-          <div className="space-y-1 max-h-52 overflow-y-auto rounded-lg border border-border/40 p-2">
+          <div className="space-y-1 max-h-60 overflow-y-auto rounded-lg border border-border/40 p-2">
             <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mb-1">
               Recent Jobs ({recentJobs.length})
             </p>
-            {recentJobs.map((job) => (
-              <div key={job.id} className="flex items-center gap-1.5 text-[10px] py-0.5">
-                <span className={
-                  job.status === "done" ? "text-chart-2" :
-                  job.status === "failed" ? "text-destructive" :
-                  job.status === "processing" ? "text-primary" : "text-muted-foreground"
-                }>
-                  {job.status === "done" ? "✓" : job.status === "failed" ? "✗" : job.status === "processing" ? "⟳" : "◯"}
-                </span>
-                <span className="text-foreground truncate font-mono text-[9px] w-20">{job.property_id.slice(0, 12)}…</span>
-                <Badge variant="outline" className="text-[8px] py-0 h-3.5 px-1">P:{job.priority_score}</Badge>
-                {/* Traffic signals */}
-                <span className="flex items-center gap-0.5 text-muted-foreground">
-                  <Eye className="h-2.5 w-2.5" />{job.traffic_views || 0}
-                </span>
-                <span className="flex items-center gap-0.5 text-muted-foreground">
-                  <Heart className="h-2.5 w-2.5" />{job.traffic_saves || 0}
-                </span>
-                <span className="flex items-center gap-0.5 text-muted-foreground">
-                  <MessageSquare className="h-2.5 w-2.5" />{job.traffic_inquiries || 0}
-                </span>
-                <span className={`text-[8px] ${intentColor(job.traffic_intent)}`}>
-                  {job.traffic_intent}
-                </span>
-                {job.error_message && (
-                  <span className="text-destructive truncate max-w-[80px] text-[8px] ml-auto">{job.error_message}</span>
-                )}
-              </div>
-            ))}
+            {recentJobs.map((job) => {
+              const angle = angleInfo(job.angle_type);
+              return (
+                <div key={job.id} className="flex items-center gap-1.5 text-[10px] py-0.5">
+                  <span className={
+                    job.status === "done" ? "text-chart-2" :
+                    job.status === "failed" ? "text-destructive" :
+                    job.status === "processing" ? "text-primary" : "text-muted-foreground"
+                  }>
+                    {job.status === "done" ? "✓" : job.status === "failed" ? "✗" : job.status === "processing" ? "⟳" : "◯"}
+                  </span>
+                  <span className="text-foreground truncate font-mono text-[9px] w-16">{job.property_id.slice(0, 10)}…</span>
+                  <span className="text-[9px]" title={job.angle_type}>{angle.icon}</span>
+                  <Badge variant="outline" className="text-[8px] py-0 h-3.5 px-1">{angle.label}</Badge>
+                  <Badge variant="outline" className="text-[8px] py-0 h-3.5 px-1">P:{job.priority_score}</Badge>
+                  <span className="flex items-center gap-0.5 text-muted-foreground">
+                    <Eye className="h-2.5 w-2.5" />{job.traffic_views || 0}
+                  </span>
+                  <span className="flex items-center gap-0.5 text-muted-foreground">
+                    <Heart className="h-2.5 w-2.5" />{job.traffic_saves || 0}
+                  </span>
+                  <span className={`text-[8px] ${intentColor(job.traffic_intent)}`}>
+                    {job.traffic_intent}
+                  </span>
+                  {job.error_message && (
+                    <span className="text-destructive truncate max-w-[70px] text-[8px] ml-auto">{job.error_message}</span>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
 
         {/* Architecture */}
         <details className="text-xs text-muted-foreground">
           <summary className="cursor-pointer font-medium text-foreground flex items-center gap-1.5">
-            <Server className="h-3.5 w-3.5 text-primary" /> How It Works
+            <Camera className="h-3.5 w-3.5 text-primary" /> Multi-Angle System
           </summary>
           <ul className="mt-2 space-y-1 list-disc pl-5">
-            <li><strong>Traffic-aware priority</strong> — views (0.5×), saves (1.5×), inquiries (3×) from last 7 days</li>
-            <li><strong>Intent-adapted prompts</strong> — luxury/investment/family style based on traffic patterns</li>
-            <li><strong>Daily budget cap</strong> — prevents cost overruns with configurable limit</li>
-            <li><strong>Cooldown + dedup</strong> — no regeneration within 72h, max 3 images per property</li>
-            <li><strong>Reprioritize</strong> — recalculates scores for pending jobs using latest traffic</li>
-            <li><strong>Parallel workers</strong> — up to 5× concurrent with rate-limit awareness</li>
+            <li><strong>5 angles</strong> — Front, Side, Aerial, Lifestyle, Evening per property</li>
+            <li><strong>Staged generation</strong> — Main exterior first, extras only for high-traffic/premium listings</li>
+            <li><strong>Auto-cascade</strong> — Extra angles auto-enqueue when main completes for eligible properties</li>
+            <li><strong>Intent-adapted</strong> — Luxury/investment/family prompts based on traffic patterns</li>
+            <li><strong>Structured storage</strong> — ai-generated/{'{property_id}'}/{'{angle}'}.ext</li>
+            <li><strong>Cost control</strong> — Daily budget, per-property max, cooldown between generations</li>
           </ul>
         </details>
       </CardContent>
