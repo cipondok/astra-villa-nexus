@@ -813,6 +813,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "investor-economics-command": () => <AdminInvestorEconomics />,
   "liquidity-exchange-command": () => <LiquidityExchangeCommandCenter />,
   "institutional-fund-manager": () => <InstitutionalFundManager />,
+  "custody-settlement-command": () => <CustodySettlementCommandCenter />,
   "report-export":       () => <ReportExportFunction />,
   "enhanced-search":     () => <EnhancedSearchFilters />,
   "system-reports":      () => <SystemReports />,
