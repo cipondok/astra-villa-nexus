@@ -16320,6 +16320,63 @@ export type Database = {
         }
         Relationships: []
       }
+      deal_probability_scores: {
+        Row: {
+          city: string | null
+          computed_at: string
+          confidence_level: number | null
+          demand_signal_score: number | null
+          id: string
+          inquiry_velocity: number | null
+          investor_intent_density: number | null
+          liquidity_zone_score: number | null
+          listing_price: number | null
+          negotiation_activity_level: number | null
+          overall_close_probability: number | null
+          predicted_days_to_close: number | null
+          pricing_alignment_score: number | null
+          property_id: string | null
+          seller_flexibility_index: number | null
+          viewing_frequency: number | null
+        }
+        Insert: {
+          city?: string | null
+          computed_at?: string
+          confidence_level?: number | null
+          demand_signal_score?: number | null
+          id?: string
+          inquiry_velocity?: number | null
+          investor_intent_density?: number | null
+          liquidity_zone_score?: number | null
+          listing_price?: number | null
+          negotiation_activity_level?: number | null
+          overall_close_probability?: number | null
+          predicted_days_to_close?: number | null
+          pricing_alignment_score?: number | null
+          property_id?: string | null
+          seller_flexibility_index?: number | null
+          viewing_frequency?: number | null
+        }
+        Update: {
+          city?: string | null
+          computed_at?: string
+          confidence_level?: number | null
+          demand_signal_score?: number | null
+          id?: string
+          inquiry_velocity?: number | null
+          investor_intent_density?: number | null
+          liquidity_zone_score?: number | null
+          listing_price?: number | null
+          negotiation_activity_level?: number | null
+          overall_close_probability?: number | null
+          predicted_days_to_close?: number | null
+          pricing_alignment_score?: number | null
+          property_id?: string | null
+          seller_flexibility_index?: number | null
+          viewing_frequency?: number | null
+        }
+        Relationships: []
+      }
       deal_stage_rules: {
         Row: {
           allowed_roles: string[]
@@ -67374,6 +67431,51 @@ export type Database = {
           verification_status?: string | null
           verification_summary?: never
           verified_at?: string | null
+        }
+        Relationships: []
+      }
+      deal_closure_training_dataset: {
+        Row: {
+          city: string | null
+          computed_at: string | null
+          demand_signal_score: number | null
+          inquiry_velocity: number | null
+          investor_intent_density: number | null
+          liquidity_zone_score: number | null
+          listing_price: number | null
+          negotiation_activity_level: number | null
+          overall_close_probability: number | null
+          pricing_alignment_score: number | null
+          property_id: string | null
+          seller_flexibility_index: number | null
+        }
+        Insert: {
+          city?: string | null
+          computed_at?: string | null
+          demand_signal_score?: number | null
+          inquiry_velocity?: number | null
+          investor_intent_density?: number | null
+          liquidity_zone_score?: number | null
+          listing_price?: number | null
+          negotiation_activity_level?: number | null
+          overall_close_probability?: number | null
+          pricing_alignment_score?: number | null
+          property_id?: string | null
+          seller_flexibility_index?: number | null
+        }
+        Update: {
+          city?: string | null
+          computed_at?: string | null
+          demand_signal_score?: number | null
+          inquiry_velocity?: number | null
+          investor_intent_density?: number | null
+          liquidity_zone_score?: number | null
+          listing_price?: number | null
+          negotiation_activity_level?: number | null
+          overall_close_probability?: number | null
+          pricing_alignment_score?: number | null
+          property_id?: string | null
+          seller_flexibility_index?: number | null
         }
         Relationships: []
       }

@@ -467,6 +467,13 @@ export const navigationSections = {
       icon: Brain,
       description: "AI property scoring, ROI forecasting, anomaly detection & investor recommendations",
       badge: "🧠 AI Engine"
+    },
+    {
+      key: "deal-probability-engine",
+      label: "Deal Probability Engine",
+      icon: Target,
+      description: "AI-predicted close probability scoring for active listings with conversion signals",
+      badge: "🎯 Probability"
     }
   ],
 

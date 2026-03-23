@@ -437,6 +437,7 @@ export const First100DealsWarRoom = lazyRetry(() => import("./First100DealsWarRo
 export const DealRecoveryPlaybook = lazyRetry(() => import("./DealRecoveryPlaybook"));
 export const HNWClosingStrategist = lazyRetry(() => import("./HNWClosingStrategist"));
 export const SellerMotivationEngine = lazyRetry(() => import("./SellerMotivationEngine"));
+export const DealProbabilityDashboard = lazyRetry(() => import("./DealProbabilityDashboard"));
 export const First100KRevenuePlan = lazyRetry(() => import("./First100KRevenuePlan"));
 export const InvestorNarrativeCoaching = lazyRetry(() => import("./InvestorNarrativeCoaching"));
 export const VendorOutreachScripts = lazyRetry(() => import("./VendorOutreachScripts"));
@@ -1111,6 +1112,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "deal-recovery-playbook":      () => <DealRecoveryPlaybook />,
   "hnw-closing-strategist":      () => <HNWClosingStrategist />,
   "seller-motivation-engine":    () => <SellerMotivationEngine />,
+  "deal-probability-engine":     () => <DealProbabilityDashboard />,
   "first-city-domination":       () => <FirstCityDominationCommand />,
   "deal-priority-revenue":       () => <DealPriorityRevenueIntelligence />,
   "founder-mobile-warroom":      () => <FounderMobileWarRoom />,
@@ -1627,6 +1629,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "deal-recovery-playbook": { label: "Deal Recovery Playbook", category: "Execution Command" },
   "hnw-closing-strategist": { label: "HNW Closing Strategist", category: "Execution Command" },
   "seller-motivation-engine": { label: "Seller Motivation Engine", category: "Execution Command" },
+  "deal-probability-engine": { label: "Deal Probability Engine", category: "Market Intelligence" },
   "daily-ops-battle-station": { label: "Daily Ops Battle Station", category: "Execution Command" },
   "first-100k-revenue": { label: "First $100K Revenue Plan", category: "Operations" },
   "investor-narrative-coaching": { label: "Investor Narrative Coaching", category: "Strategy" },
