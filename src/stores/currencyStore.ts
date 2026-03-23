@@ -16,10 +16,11 @@ const DEFAULT_RATES: ExchangeRates = {
 };
 
 export const CURRENCY_META: Record<CurrencyCode, { locale: string; symbol: string; decimals: number; flag: string; label: string }> = {
-  IDR: { locale: "id-ID", symbol: "Rp", decimals: 0, flag: "🇮🇩", label: "IDR" },
-  USD: { locale: "en-US", symbol: "$", decimals: 0, flag: "🇺🇸", label: "USD" },
-  SGD: { locale: "en-SG", symbol: "S$", decimals: 0, flag: "🇸🇬", label: "SGD" },
-  AUD: { locale: "en-AU", symbol: "A$", decimals: 0, flag: "🇦🇺", label: "AUD" },
+  IDR: { locale: "id-ID", symbol: "Rp", decimals: 0, flag: "🇮🇩", label: "IDR — Indonesian Rupiah" },
+  USD: { locale: "en-US", symbol: "$", decimals: 0, flag: "🇺🇸", label: "USD — US Dollar" },
+  SGD: { locale: "en-SG", symbol: "S$", decimals: 0, flag: "🇸🇬", label: "SGD — Singapore Dollar" },
+  AUD: { locale: "en-AU", symbol: "A$", decimals: 0, flag: "🇦🇺", label: "AUD — Australian Dollar" },
+  EUR: { locale: "de-DE", symbol: "€", decimals: 0, flag: "🇪🇺", label: "EUR — Euro" },
 };
 
 interface CurrencyStore {
