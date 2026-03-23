@@ -538,7 +538,7 @@ export const navigationSections = {
     {
       key: "liquidity-exchange-command",
       label: "Liquidity Exchange",
-      icon: ArrowUpDown,
+      icon: ArrowLeftRight,
       description: "Secondary market order book, trade matching engine, and liquidity depth analytics",
       badge: "🔄 Exchange"
     }
