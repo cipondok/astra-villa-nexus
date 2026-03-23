@@ -50,6 +50,8 @@ export const ANGLE_LABELS: Record<string, { label: string; icon: string }> = {
   aerial_drone_view: { label: "Aerial", icon: "🛸" },
   lifestyle_environment_view: { label: "Lifestyle", icon: "🌳" },
   evening_lighting_view: { label: "Evening", icon: "🌅" },
+  vision_future_concept: { label: "Vision", icon: "✨" },
+  vision_aerial_concept: { label: "Vision Air", icon: "🔮" },
 };
 
 export function useImageQueueStats() {
@@ -88,6 +90,23 @@ export function useEnqueueImages() {
     mutationFn: async (params: { limit?: number; minTraffic?: number } = {}) => {
       const { data, error } = await supabase.functions.invoke("image-generation-worker", {
         body: { action: "enqueue", limit: params.limit || 100, min_traffic: params.minTraffic },
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["image-queue-stats"] });
+      qc.invalidateQueries({ queryKey: ["image-jobs-recent"] });
+    },
+  });
+}
+
+export function useEnqueueLandVisions() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (params: { limit?: number; minTraffic?: number } = {}) => {
+      const { data, error } = await supabase.functions.invoke("image-generation-worker", {
+        body: { action: "enqueue_land_visions", limit: params.limit || 50, min_traffic: params.minTraffic || 0 },
       });
       if (error) throw error;
       return data;

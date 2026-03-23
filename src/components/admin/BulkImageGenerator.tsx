@@ -9,13 +9,14 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import {
   ImageIcon, Loader2, Play, StopCircle,
-  Zap, RefreshCw, RotateCcw, Upload, Server, TrendingUp,
-  Eye, Heart, MessageSquare, Shield, BarChart3, Settings2, Camera
+  RefreshCw, RotateCcw, Upload, Server, TrendingUp,
+  Eye, Heart, MessageSquare, Shield, BarChart3, Settings2, Camera, Sparkles, MapPin
 } from "lucide-react";
 import {
   useImageQueueStats,
   useRecentImageJobs,
   useEnqueueImages,
+  useEnqueueLandVisions,
   useProcessImages,
   useRetryFailedImages,
   useReprioritizeJobs,
@@ -31,9 +32,10 @@ export default function BulkImageGenerator() {
   const [showConfig, setShowConfig] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const { data: queueStats, isLoading: statsLoading, refetch: refetchStats } = useImageQueueStats();
+  const { data: queueStats, refetch: refetchStats } = useImageQueueStats();
   const { data: recentJobs } = useRecentImageJobs(20);
   const enqueue = useEnqueueImages();
+  const enqueueLand = useEnqueueLandVisions();
   const process = useProcessImages();
   const retryFailed = useRetryFailedImages();
   const reprioritize = useReprioritizeJobs();
@@ -93,6 +95,10 @@ export default function BulkImageGenerator() {
 
   const angleInfo = (type: string) => ANGLE_LABELS[type] || { label: type, icon: "📷" };
 
+  // Count vision renders in stats
+  const visionDone = (queueStats?.angles?.vision_future_concept?.done || 0) + (queueStats?.angles?.vision_aerial_concept?.done || 0);
+  const visionPending = (queueStats?.angles?.vision_future_concept?.pending || 0) + (queueStats?.angles?.vision_aerial_concept?.pending || 0);
+
   return (
     <Card>
       <CardHeader>
@@ -100,10 +106,10 @@ export default function BulkImageGenerator() {
           <div>
             <CardTitle className="flex items-center gap-2">
               <ImageIcon className="h-5 w-5 text-primary" />
-              AI Multi-Angle Image Engine
+              AI Image & Vision Engine
             </CardTitle>
             <CardDescription>
-              5-angle visual storytelling • Traffic-aware priority • Staged generation
+              Multi-angle • Land vision renders • Traffic-aware priority
             </CardDescription>
           </div>
           <div className="flex items-center gap-2">
@@ -118,8 +124,8 @@ export default function BulkImageGenerator() {
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Property & Budget Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
           <div className="rounded-lg border border-border/50 bg-muted/30 p-2.5 text-center">
             <p className="text-lg font-bold text-foreground">{propertyStats?.noImages?.toLocaleString() || "…"}</p>
             <p className="text-[9px] text-muted-foreground uppercase">Need Images</p>
@@ -132,9 +138,15 @@ export default function BulkImageGenerator() {
             <p className="text-lg font-bold text-primary">{pending}</p>
             <p className="text-[9px] text-muted-foreground uppercase">In Queue</p>
           </div>
+          <div className="rounded-lg border border-chart-4/20 bg-chart-4/5 p-2.5 text-center">
+            <p className="text-lg font-bold text-chart-4">{visionDone}</p>
+            <p className="text-[9px] text-muted-foreground uppercase flex items-center justify-center gap-0.5">
+              <Sparkles className="h-2.5 w-2.5" /> Land Visions
+            </p>
+          </div>
           <div className="rounded-lg border border-chart-1/20 bg-chart-1/5 p-2.5 text-center">
             <p className="text-lg font-bold text-chart-1">{budgetUsed}/{budgetLimit}</p>
-            <p className="text-[9px] text-muted-foreground uppercase">Budget Today</p>
+            <p className="text-[9px] text-muted-foreground uppercase">Budget</p>
           </div>
         </div>
 
@@ -143,8 +155,9 @@ export default function BulkImageGenerator() {
           <div className="flex flex-wrap gap-1.5">
             {Object.entries(queueStats.angles).map(([angle, counts]) => {
               const info = angleInfo(angle);
+              const isVision = angle.startsWith("vision_");
               return (
-                <div key={angle} className="flex items-center gap-1 rounded-md border border-border/40 bg-muted/20 px-2 py-1">
+                <div key={angle} className={`flex items-center gap-1 rounded-md border px-2 py-1 ${isVision ? "border-chart-4/30 bg-chart-4/5" : "border-border/40 bg-muted/20"}`}>
                   <span className="text-xs">{info.icon}</span>
                   <span className="text-[9px] font-medium text-foreground">{info.label}</span>
                   <Badge variant="outline" className="text-[8px] py-0 h-3.5 px-1">
@@ -156,7 +169,7 @@ export default function BulkImageGenerator() {
           </div>
         )}
 
-        {/* Budget Bar */}
+        {/* Budget + Queue Progress */}
         <div className="space-y-1">
           <div className="flex justify-between text-[10px] text-muted-foreground">
             <span className="flex items-center gap-1"><Shield className="h-3 w-3" /> Daily Budget</span>
@@ -165,11 +178,10 @@ export default function BulkImageGenerator() {
           <Progress value={budgetPercent} className="h-1.5" />
         </div>
 
-        {/* Queue Progress */}
         {total > 0 && (
           <div className="space-y-1">
             <div className="flex justify-between text-[10px] text-muted-foreground">
-              <span className="flex items-center gap-1"><BarChart3 className="h-3 w-3" /> Queue Progress</span>
+              <span className="flex items-center gap-1"><BarChart3 className="h-3 w-3" /> Queue</span>
               <span>{done} done • {failed} failed • {processing} active</span>
             </div>
             <Progress value={progressPercent} className="h-1.5" />
@@ -182,55 +194,41 @@ export default function BulkImageGenerator() {
             <p className="text-xs font-semibold text-foreground">Generation Config</p>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <Label className="text-[10px]">Max Images Per Property</Label>
+                <Label className="text-[10px]">Max Per Property</Label>
                 <div className="flex items-center gap-2">
-                  <Slider
-                    value={[queueStats?.config?.max_per_property || 5]}
-                    min={1} max={5} step={1}
-                    onValueChange={([v]) => updateConfig.mutate({ max_images_per_property: v })}
-                  />
+                  <Slider value={[queueStats?.config?.max_per_property || 5]} min={1} max={7} step={1}
+                    onValueChange={([v]) => updateConfig.mutate({ max_images_per_property: v })} />
                   <span className="text-xs font-mono w-4">{queueStats?.config?.max_per_property || 5}</span>
                 </div>
               </div>
               <div className="space-y-1">
                 <Label className="text-[10px]">Min Traffic (Main)</Label>
                 <div className="flex items-center gap-2">
-                  <Slider
-                    value={[queueStats?.config?.min_traffic || 5]}
-                    min={0} max={20} step={1}
-                    onValueChange={([v]) => updateConfig.mutate({ min_traffic_threshold: v })}
-                  />
+                  <Slider value={[queueStats?.config?.min_traffic || 5]} min={0} max={20} step={1}
+                    onValueChange={([v]) => updateConfig.mutate({ min_traffic_threshold: v })} />
                   <span className="text-xs font-mono w-4">{queueStats?.config?.min_traffic || 5}</span>
                 </div>
               </div>
               <div className="space-y-1">
                 <Label className="text-[10px]">Extra Angles Min Traffic</Label>
                 <div className="flex items-center gap-2">
-                  <Slider
-                    value={[queueStats?.config?.extra_angles_min_traffic || 15]}
-                    min={5} max={50} step={5}
-                    onValueChange={([v]) => updateConfig.mutate({ extra_angles_min_traffic: v })}
-                  />
+                  <Slider value={[queueStats?.config?.extra_angles_min_traffic || 15]} min={5} max={50} step={5}
+                    onValueChange={([v]) => updateConfig.mutate({ extra_angles_min_traffic: v })} />
                   <span className="text-xs font-mono w-6">{queueStats?.config?.extra_angles_min_traffic || 15}</span>
                 </div>
               </div>
               <div className="space-y-1">
                 <Label className="text-[10px]">Extra Angles Min Price (B)</Label>
                 <div className="flex items-center gap-2">
-                  <Slider
-                    value={[(queueStats?.config?.extra_angles_min_price || 1_000_000_000) / 1_000_000_000]}
-                    min={0.5} max={10} step={0.5}
-                    onValueChange={([v]) => updateConfig.mutate({ extra_angles_min_price: v * 1_000_000_000 })}
-                  />
+                  <Slider value={[(queueStats?.config?.extra_angles_min_price || 1_000_000_000) / 1_000_000_000]} min={0.5} max={10} step={0.5}
+                    onValueChange={([v]) => updateConfig.mutate({ extra_angles_min_price: v * 1_000_000_000 })} />
                   <span className="text-xs font-mono w-6">{((queueStats?.config?.extra_angles_min_price || 1_000_000_000) / 1_000_000_000).toFixed(1)}B</span>
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Switch
-                checked={queueStats?.config?.auto_enqueue || false}
-                onCheckedChange={(v) => updateConfig.mutate({ auto_enqueue_enabled: v })}
-              />
+              <Switch checked={queueStats?.config?.auto_enqueue || false}
+                onCheckedChange={(v) => updateConfig.mutate({ auto_enqueue_enabled: v })} />
               <Label className="text-xs">Auto-enqueue high-traffic listings</Label>
             </div>
           </div>
@@ -249,11 +247,22 @@ export default function BulkImageGenerator() {
             onClick={async () => {
               try {
                 const r = await enqueue.mutateAsync({ limit: 100 });
-                toast.success(`Enqueued ${r?.enqueued || 0} (skipped ${r?.skipped_low_traffic || 0} low-traffic)`);
+                toast.success(`Enqueued ${r?.enqueued || 0} (${r?.land_enqueued || 0} land visions)`);
               } catch (e: any) { toast.error(e?.message); }
             }}>
             {enqueue.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Upload className="h-3 w-3" />}
-            Enqueue
+            Enqueue All
+          </Button>
+
+          <Button size="sm" variant="outline" className="gap-1 text-xs border-chart-4/30 text-chart-4 hover:bg-chart-4/10" disabled={enqueueLand.isPending}
+            onClick={async () => {
+              try {
+                const r = await enqueueLand.mutateAsync({ limit: 50 });
+                toast.success(`${r?.enqueued || 0} land vision renders queued (${r?.total_land || 0} land listings found)`);
+              } catch (e: any) { toast.error(e?.message); }
+            }}>
+            {enqueueLand.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+            Land Visions
           </Button>
 
           <Button size="sm" variant="outline" className="gap-1 text-xs" disabled={reprioritize.isPending}
@@ -270,22 +279,19 @@ export default function BulkImageGenerator() {
           {!isAutoProcessing ? (
             <Button size="sm" className="gap-1 text-xs" disabled={pending === 0}
               onClick={() => setIsAutoProcessing(true)}>
-              <Play className="h-3 w-3" />
-              Auto-Process
+              <Play className="h-3 w-3" /> Auto-Process
             </Button>
           ) : (
             <Button size="sm" variant="destructive" className="gap-1 text-xs"
               onClick={() => setIsAutoProcessing(false)}>
-              <StopCircle className="h-3 w-3" />
-              Stop
+              <StopCircle className="h-3 w-3" /> Stop
             </Button>
           )}
 
           {failed > 0 && (
             <Button size="sm" variant="outline" className="gap-1 text-xs" disabled={retryFailed.isPending}
               onClick={async () => { await retryFailed.mutateAsync(); toast.success("Failed jobs requeued"); }}>
-              <RotateCcw className="h-3 w-3" />
-              Retry {failed}
+              <RotateCcw className="h-3 w-3" /> Retry {failed}
             </Button>
           )}
 
@@ -294,7 +300,7 @@ export default function BulkImageGenerator() {
           </Button>
         </div>
 
-        {/* Recent Jobs with Angle Info */}
+        {/* Recent Jobs */}
         {recentJobs && recentJobs.length > 0 && (
           <div className="space-y-1 max-h-60 overflow-y-auto rounded-lg border border-border/40 p-2">
             <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mb-1">
@@ -302,6 +308,7 @@ export default function BulkImageGenerator() {
             </p>
             {recentJobs.map((job) => {
               const angle = angleInfo(job.angle_type);
+              const isVision = job.angle_type?.startsWith("vision_");
               return (
                 <div key={job.id} className="flex items-center gap-1.5 text-[10px] py-0.5">
                   <span className={
@@ -313,7 +320,9 @@ export default function BulkImageGenerator() {
                   </span>
                   <span className="text-foreground truncate font-mono text-[9px] w-16">{job.property_id.slice(0, 10)}…</span>
                   <span className="text-[9px]" title={job.angle_type}>{angle.icon}</span>
-                  <Badge variant="outline" className="text-[8px] py-0 h-3.5 px-1">{angle.label}</Badge>
+                  <Badge variant={isVision ? "default" : "outline"} className={`text-[8px] py-0 h-3.5 px-1 ${isVision ? "bg-chart-4/20 text-chart-4 border-chart-4/30" : ""}`}>
+                    {angle.label}
+                  </Badge>
                   <Badge variant="outline" className="text-[8px] py-0 h-3.5 px-1">P:{job.priority_score}</Badge>
                   <span className="flex items-center gap-0.5 text-muted-foreground">
                     <Eye className="h-2.5 w-2.5" />{job.traffic_views || 0}
@@ -333,18 +342,18 @@ export default function BulkImageGenerator() {
           </div>
         )}
 
-        {/* Architecture */}
+        {/* Architecture Info */}
         <details className="text-xs text-muted-foreground">
           <summary className="cursor-pointer font-medium text-foreground flex items-center gap-1.5">
-            <Camera className="h-3.5 w-3.5 text-primary" /> Multi-Angle System
+            <Camera className="h-3.5 w-3.5 text-primary" /> System Architecture
           </summary>
           <ul className="mt-2 space-y-1 list-disc pl-5">
-            <li><strong>5 angles</strong> — Front, Side, Aerial, Lifestyle, Evening per property</li>
-            <li><strong>Staged generation</strong> — Main exterior first, extras only for high-traffic/premium listings</li>
-            <li><strong>Auto-cascade</strong> — Extra angles auto-enqueue when main completes for eligible properties</li>
-            <li><strong>Intent-adapted</strong> — Luxury/investment/family prompts based on traffic patterns</li>
-            <li><strong>Structured storage</strong> — ai-generated/{'{property_id}'}/{'{angle}'}.ext</li>
-            <li><strong>Cost control</strong> — Daily budget, per-property max, cooldown between generations</li>
+            <li><strong>Buildings</strong> — 5 angles (Front, Side, Aerial, Lifestyle, Evening)</li>
+            <li><strong>Land listings</strong> — Auto-detected → Future Vision + Aerial Vision concept renders</li>
+            <li><strong>Vision intelligence</strong> — Style adapts by land size, price, city context (tourism vs suburban)</li>
+            <li><strong>Staged generation</strong> — Main first, extras cascade for high-traffic/premium properties</li>
+            <li><strong>Terrain detection</strong> — Prompts adapt for hillside, beachfront, rice field, riverside</li>
+            <li><strong>Cost control</strong> — Daily budget, cooldown, max per property, engagement threshold</li>
           </ul>
         </details>
       </CardContent>
