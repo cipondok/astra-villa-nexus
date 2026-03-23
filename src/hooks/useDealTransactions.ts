@@ -75,7 +75,7 @@ export const useDealTransactions = (role: 'buyer' | 'seller' | 'agent' = 'buyer'
 
   const transitionDeal = useMutation({
     mutationFn: async (params: { deal_id: string; target_state: DealState; reason?: string }) => {
-      const { data, error } = await supabase.functions.invoke('deal-engine', {
+      const { data, error } = await supabase.functions.invoke('deal-transaction-engine', {
         body: { action: 'transition', ...params },
       });
       if (error) throw new Error(error.message);
