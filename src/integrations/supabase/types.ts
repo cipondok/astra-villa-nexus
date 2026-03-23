@@ -53813,6 +53813,42 @@ export type Database = {
         }
         Relationships: []
       }
+      signup_ab_test_metrics: {
+        Row: {
+          avg_time_to_signup_seconds: number | null
+          conversion_rate: number | null
+          created_at: string | null
+          experiment_name: string
+          impressions: number | null
+          metric_id: string
+          recorded_date: string | null
+          signups: number | null
+          variant: string
+        }
+        Insert: {
+          avg_time_to_signup_seconds?: number | null
+          conversion_rate?: number | null
+          created_at?: string | null
+          experiment_name: string
+          impressions?: number | null
+          metric_id?: string
+          recorded_date?: string | null
+          signups?: number | null
+          variant?: string
+        }
+        Update: {
+          avg_time_to_signup_seconds?: number | null
+          conversion_rate?: number | null
+          created_at?: string | null
+          experiment_name?: string
+          impressions?: number | null
+          metric_id?: string
+          recorded_date?: string | null
+          signups?: number | null
+          variant?: string
+        }
+        Relationships: []
+      }
       signup_attempts: {
         Row: {
           block_reason: string | null
@@ -53843,6 +53879,39 @@ export type Database = {
           ip_address?: string
           is_blocked?: boolean | null
           signup_risk_score?: number | null
+        }
+        Relationships: []
+      }
+      signup_conversion_events: {
+        Row: {
+          created_at: string | null
+          device_type: string | null
+          event_id: string
+          geo_region: string | null
+          signup_success_flag: boolean | null
+          trigger_source: string
+          user_id: string | null
+          visitor_session_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          device_type?: string | null
+          event_id?: string
+          geo_region?: string | null
+          signup_success_flag?: boolean | null
+          trigger_source?: string
+          user_id?: string | null
+          visitor_session_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          device_type?: string | null
+          event_id?: string
+          geo_region?: string | null
+          signup_success_flag?: boolean | null
+          trigger_source?: string
+          user_id?: string | null
+          visitor_session_id?: string | null
         }
         Relationships: []
       }
