@@ -77,7 +77,7 @@ serve(async (req) => {
         event_type: e.event_type,
         property_id: e.property_id || null,
         city: e.city || null,
-        metadata_json: e.metadata || {},
+        metadata: e.metadata || {},
         event_value: e.value ?? null,
       }));
 
