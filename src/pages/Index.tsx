@@ -795,6 +795,15 @@ const Index = () => {
                 </ScrollReveal>
               </SectionWrapper>
 
+              {/* ── Capital Safety Education Strip ── */}
+              <SectionWrapper variant="default" className="py-2 sm:py-3">
+                <ScrollReveal direction="up" delay={0}>
+                  <Suspense fallback={null}>
+                    <CapitalSafetyStrip />
+                  </Suspense>
+                </ScrollReveal>
+              </SectionWrapper>
+
               {/* ── SECTION 4: Market Heat + ASTRA Showcase ── */}
               <SectionWrapper variant="muted" className="py-2 sm:py-3">
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
