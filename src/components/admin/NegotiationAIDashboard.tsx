@@ -359,7 +359,7 @@ Classification:
                 </div>
                 <div className="p-3 bg-red-500/10 rounded border border-red-500/20">
                   <p className="font-medium text-red-400 text-xs">At Risk: Re-engage immediately</p>
-                  <p className="text-xs text-muted-foreground mt-1">Inactive >7 days, widening gap, or declining behavioral signals</p>
+                  <p className="text-xs text-muted-foreground mt-1">Inactive {'>'}7 days, widening gap, or declining behavioral signals</p>
                 </div>
               </div>
             </CardContent>
