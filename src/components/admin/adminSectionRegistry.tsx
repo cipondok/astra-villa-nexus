@@ -278,6 +278,7 @@ export const TaxConfigCenter = lazyRetry(() => import("./TaxConfigCenter"));
 export const LoyaltyProgramManager = lazyRetry(() => import("./LoyaltyProgramManager"));
 export const MultiLanguageManager = lazyRetry(() => import("./MultiLanguageManager"));
 export const EnvironmentalSustainability = lazyRetry(() => import("./EnvironmentalSustainability"));
+export const GlobalTransactionIntelligence = lazyRetry(() => import("./GlobalTransactionIntelligence"));
 export const AdminSecurityIntelligence = lazyRetry(() => import("./AdminSecurityIntelligence"));
 export const SecurityIntelligenceDashboard = lazyRetry(() => import("./SecurityIntelligenceDashboard"));
 export const ContractTemplateManager = lazyRetry(() => import("./ContractTemplateManager"));
