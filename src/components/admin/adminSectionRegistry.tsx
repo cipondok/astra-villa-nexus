@@ -431,6 +431,7 @@ export const IPOReadinessMetrics = lazyRetry(() => import("./IPOReadinessMetrics
 // FounderWarRoom moved to AI Intelligence section above
 export const AdminAICoPilot = lazyRetry(() => import("./AdminAICoPilot"));
 export const FounderDailyExecution = lazyRetry(() => import("./FounderDailyExecution"));
+export const DailyOpsBattleStation = lazyRetry(() => import("./DailyOpsBattleStation"));
 export const First100KRevenuePlan = lazyRetry(() => import("./First100KRevenuePlan"));
 export const InvestorNarrativeCoaching = lazyRetry(() => import("./InvestorNarrativeCoaching"));
 export const VendorOutreachScripts = lazyRetry(() => import("./VendorOutreachScripts"));
