@@ -646,6 +646,7 @@ const AppContent = () => {
                   <Route index element={<PortfolioROITrackerPage />} />
                 </Route>
                 <Route path="/market-intelligence-feed" element={<MarketIntelligenceFeedPage />} />
+                <Route path="/investor-landing" element={<InvestorLanding />} />
                 <Route path="/flash-deals" element={<AuctionFlashDealsPage />} />
                 <Route path="/investment-map-explorer" element={<InvestmentMapExplorerPage />} />
                 <Route path="/ai-autopilot" element={<ProtectedRoute />}>
