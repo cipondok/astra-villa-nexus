@@ -432,6 +432,7 @@ export const IPOReadinessMetrics = lazyRetry(() => import("./IPOReadinessMetrics
 export const AdminAICoPilot = lazyRetry(() => import("./AdminAICoPilot"));
 export const FounderDailyExecution = lazyRetry(() => import("./FounderDailyExecution"));
 export const DailyOpsBattleStation = lazyRetry(() => import("./DailyOpsBattleStation"));
+export const InvestorCampaignEngine = lazyRetry(() => import("./InvestorCampaignEngine"));
 export const First100KRevenuePlan = lazyRetry(() => import("./First100KRevenuePlan"));
 export const InvestorNarrativeCoaching = lazyRetry(() => import("./InvestorNarrativeCoaching"));
 export const VendorOutreachScripts = lazyRetry(() => import("./VendorOutreachScripts"));
@@ -1101,6 +1102,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ai-copilot":                  () => <AdminAICoPilot />,
   "founder-daily-execution":     () => <FounderDailyExecution />,
   "daily-ops-battle-station":    () => <DailyOpsBattleStation />,
+  "investor-campaign-engine":    () => <InvestorCampaignEngine />,
   "first-city-domination":       () => <FirstCityDominationCommand />,
   "deal-priority-revenue":       () => <DealPriorityRevenueIntelligence />,
   "founder-mobile-warroom":      () => <FounderMobileWarRoom />,
@@ -1804,6 +1806,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "investor-growth-command": { label: "Investor Growth Engine", category: "Investor Management" },
   "capital-activation-command": { label: "Capital Activation Engine", category: "Investor Management" },
   "investor-acquisition-campaign": { label: "Investor Acquisition Campaign", category: "Marketplace Growth" },
+  "investor-campaign-engine": { label: "Investor Campaign Engine", category: "Marketplace Growth" },
   "signup-conversion-analytics": { label: "Signup Conversion Analytics", category: "Marketplace Growth" },
   "inquiry-conversion-analytics": { label: "Inquiry Conversion Analytics", category: "Marketplace Growth" },
   "supply-growth-command": { label: "Supply Growth Engine", category: "Marketplace Growth" },
