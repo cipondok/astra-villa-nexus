@@ -1075,7 +1075,7 @@ function App() {
         const loadingDuration =
           typeof settings.welcomeLoadingDuration === 'number'
             ? settings.welcomeLoadingDuration
-            : parseInt(settings.welcomeLoadingDuration) || 2000;
+            : parseInt(settings.welcomeLoadingDuration) || 3000;
 
         setWelcomeEnabled(isEnabled);
 
