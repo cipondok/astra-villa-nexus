@@ -182,6 +182,7 @@ export const TransactionManagementTabs = lazyRetry(() => import("./TransactionMa
 export const InvestorSettingsHub = lazyRetry(() => import("./InvestorSettingsHub"));
 export const InvestorGrowthCommandCenter = lazyRetry(() => import("./InvestorGrowthCommandCenter"));
 export const AdminCapitalActivationPanel = lazyRetry(() => import("./AdminCapitalActivationPanel"));
+export const InvestorAcquisitionCampaignCommand = lazyRetry(() => import("./InvestorAcquisitionCampaignCommand"));
 // Legacy WebsiteDesignControl kept in codebase but no longer used by admin navigation
 export const RateLimitingDashboard = lazyRetry(() => import("./RateLimitingDashboard"));
 export const VideoTourManager = lazyRetry(() => import("./VideoTourManager"));
@@ -821,6 +822,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "custody-settlement-command": () => <CustodySettlementCommandCenter />,
   "investor-growth-command": () => <InvestorGrowthCommandCenter />,
   "capital-activation-command": () => <AdminCapitalActivationPanel />,
+  "investor-acquisition-campaign": () => <InvestorAcquisitionCampaignCommand />,
   "supply-growth-command": () => <SupplyGrowthCommandCenter />,
   "deal-velocity-command": () => <DealVelocityCommandCenter />,
   "founder-control-tower": () => <FounderControlTower />,
@@ -1770,6 +1772,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "custody-settlement-command": { label: "Custody & Settlement", category: "Investor Management" },
   "investor-growth-command": { label: "Investor Growth Engine", category: "Investor Management" },
   "capital-activation-command": { label: "Capital Activation Engine", category: "Investor Management" },
+  "investor-acquisition-campaign": { label: "Investor Acquisition Campaign", category: "Marketplace Growth" },
   "supply-growth-command": { label: "Supply Growth Engine", category: "Marketplace Growth" },
   "deal-velocity-command": { label: "Deal Velocity Engine", category: "Marketplace Growth" },
   "founder-control-tower": { label: "Founder Control Tower", category: "Operations" },

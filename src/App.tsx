@@ -263,6 +263,7 @@ const ListingOptimizerPage = lazy(() => import('@/pages/ListingOptimizerPage'));
 const PropertyMarketDashboard = lazy(() => import('@/pages/PropertyMarketDashboard'));
 const LocationIntelligencePage = lazy(() => import('@/pages/LocationIntelligencePage'));
 const InvestorAlertsPage = lazy(() => import('@/pages/InvestorAlertsPage'));
+const InvestorLanding = lazy(() => import('@/pages/InvestorLanding'));
 const PortfolioBuilderPage = lazy(() => import('@/pages/PortfolioBuilderPage'));
 const FundIntelligencePage = lazy(() => import('@/pages/FundIntelligencePage'));
 const PriceIntelligencePage = lazy(() => import('@/pages/PriceIntelligencePage'));
@@ -645,6 +646,7 @@ const AppContent = () => {
                   <Route index element={<PortfolioROITrackerPage />} />
                 </Route>
                 <Route path="/market-intelligence-feed" element={<MarketIntelligenceFeedPage />} />
+                <Route path="/investor-landing" element={<InvestorLanding />} />
                 <Route path="/flash-deals" element={<AuctionFlashDealsPage />} />
                 <Route path="/investment-map-explorer" element={<InvestmentMapExplorerPage />} />
                 <Route path="/ai-autopilot" element={<ProtectedRoute />}>

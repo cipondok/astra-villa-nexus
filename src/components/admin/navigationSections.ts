@@ -355,6 +355,13 @@ export const navigationSections = {
       icon: Zap,
       description: "Pipeline tracking, conversion scoring, follow-up automation, agent metrics & escrow acceleration",
       badge: "⚡ Velocity"
+    },
+    {
+      key: "investor-acquisition-campaign",
+      label: "Investor Acquisition Campaign",
+      icon: Target,
+      description: "Investor segmentation, multi-channel campaigns, nurture automation, geo analytics & funnel optimization",
+      badge: "🎯 Acquisition"
     }
   ],
 

@@ -10247,6 +10247,57 @@ export type Database = {
         }
         Relationships: []
       }
+      campaign_conversion_metrics: {
+        Row: {
+          campaign_channel: string
+          campaign_name: string
+          clicks: number | null
+          cost_per_acquisition: number | null
+          cost_spent: number | null
+          created_at: string | null
+          escrow_initiated: number | null
+          experiment_type: string | null
+          impressions: number | null
+          metric_id: string
+          recorded_date: string | null
+          roi_estimate: number | null
+          signups: number | null
+          wallet_funded: number | null
+        }
+        Insert: {
+          campaign_channel: string
+          campaign_name: string
+          clicks?: number | null
+          cost_per_acquisition?: number | null
+          cost_spent?: number | null
+          created_at?: string | null
+          escrow_initiated?: number | null
+          experiment_type?: string | null
+          impressions?: number | null
+          metric_id?: string
+          recorded_date?: string | null
+          roi_estimate?: number | null
+          signups?: number | null
+          wallet_funded?: number | null
+        }
+        Update: {
+          campaign_channel?: string
+          campaign_name?: string
+          clicks?: number | null
+          cost_per_acquisition?: number | null
+          cost_spent?: number | null
+          created_at?: string | null
+          escrow_initiated?: number | null
+          experiment_type?: string | null
+          impressions?: number | null
+          metric_id?: string
+          recorded_date?: string | null
+          roi_estimate?: number | null
+          signups?: number | null
+          wallet_funded?: number | null
+        }
+        Relationships: []
+      }
       capital_flow_predictions: {
         Row: {
           capital_gravity_score: number
@@ -30739,6 +30790,45 @@ export type Database = {
         }
         Relationships: []
       }
+      investor_geo_growth_metrics: {
+        Row: {
+          avg_deposit_amount: number | null
+          campaign_source: string | null
+          click_rate: number | null
+          country: string
+          created_at: string | null
+          funding_rate: number | null
+          metric_id: string
+          recorded_date: string | null
+          signup_conversion_rate: number | null
+          total_investors: number | null
+        }
+        Insert: {
+          avg_deposit_amount?: number | null
+          campaign_source?: string | null
+          click_rate?: number | null
+          country: string
+          created_at?: string | null
+          funding_rate?: number | null
+          metric_id?: string
+          recorded_date?: string | null
+          signup_conversion_rate?: number | null
+          total_investors?: number | null
+        }
+        Update: {
+          avg_deposit_amount?: number | null
+          campaign_source?: string | null
+          click_rate?: number | null
+          country?: string
+          created_at?: string | null
+          funding_rate?: number | null
+          metric_id?: string
+          recorded_date?: string | null
+          signup_conversion_rate?: number | null
+          total_investors?: number | null
+        }
+        Relationships: []
+      }
       investor_growth_actions: {
         Row: {
           action_id: string
@@ -30874,6 +30964,56 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_properties"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      investor_nurture_sequences: {
+        Row: {
+          action_status: string | null
+          created_at: string | null
+          message_content: string | null
+          message_type: string
+          scheduled_at: string | null
+          segment_id: string | null
+          sent_at: string | null
+          sequence_id: string
+          stage: string
+          trigger_reason: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action_status?: string | null
+          created_at?: string | null
+          message_content?: string | null
+          message_type?: string
+          scheduled_at?: string | null
+          segment_id?: string | null
+          sent_at?: string | null
+          sequence_id?: string
+          stage?: string
+          trigger_reason?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action_status?: string | null
+          created_at?: string | null
+          message_content?: string | null
+          message_type?: string
+          scheduled_at?: string | null
+          segment_id?: string | null
+          sent_at?: string | null
+          sequence_id?: string
+          stage?: string
+          trigger_reason?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_nurture_sequences_segment_id_fkey"
+            columns: ["segment_id"]
+            isOneToOne: false
+            referencedRelation: "investor_segment_profiles"
+            referencedColumns: ["segment_id"]
           },
         ]
       }
@@ -31463,6 +31603,45 @@ export type Database = {
           weight_search?: number | null
           weight_transactions?: number | null
           weight_viewings?: number | null
+        }
+        Relationships: []
+      }
+      investor_segment_profiles: {
+        Row: {
+          created_at: string | null
+          is_active: boolean | null
+          messaging_pillars: Json | null
+          motivation_type: string
+          preferred_cities: string[] | null
+          risk_tolerance_level: string | null
+          segment_id: string
+          segment_name: string
+          typical_budget_max: number | null
+          typical_budget_min: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          is_active?: boolean | null
+          messaging_pillars?: Json | null
+          motivation_type: string
+          preferred_cities?: string[] | null
+          risk_tolerance_level?: string | null
+          segment_id?: string
+          segment_name: string
+          typical_budget_max?: number | null
+          typical_budget_min?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          is_active?: boolean | null
+          messaging_pillars?: Json | null
+          motivation_type?: string
+          preferred_cities?: string[] | null
+          risk_tolerance_level?: string | null
+          segment_id?: string
+          segment_name?: string
+          typical_budget_max?: number | null
+          typical_budget_min?: number | null
         }
         Relationships: []
       }
