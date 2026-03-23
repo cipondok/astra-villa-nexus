@@ -1207,6 +1207,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
+  "security-intelligence-center": { label: "Security Intelligence Center", category: "System" },
   "deal-hunter-admin": { label: "Deal Hunter Engine", category: "Investor Management" },
   "market-heat-intelligence": { label: "Market Heat Intelligence", category: "Investor Management" },
   "opportunity-scoring-engine": { label: "AI Scoring Engine", category: "AI & Tools" },
