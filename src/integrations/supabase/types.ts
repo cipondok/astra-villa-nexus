@@ -25841,6 +25841,51 @@ export type Database = {
         }
         Relationships: []
       }
+      growth_experiment_metrics: {
+        Row: {
+          conversion_rate: number | null
+          conversions: number | null
+          created_at: string
+          ended_at: string | null
+          experiment_id: string
+          experiment_name: string
+          experiment_type: string | null
+          impressions: number | null
+          is_active: boolean | null
+          revenue_impact: number | null
+          started_at: string | null
+          variant: string | null
+        }
+        Insert: {
+          conversion_rate?: number | null
+          conversions?: number | null
+          created_at?: string
+          ended_at?: string | null
+          experiment_id?: string
+          experiment_name: string
+          experiment_type?: string | null
+          impressions?: number | null
+          is_active?: boolean | null
+          revenue_impact?: number | null
+          started_at?: string | null
+          variant?: string | null
+        }
+        Update: {
+          conversion_rate?: number | null
+          conversions?: number | null
+          created_at?: string
+          ended_at?: string | null
+          experiment_id?: string
+          experiment_name?: string
+          experiment_type?: string | null
+          impressions?: number | null
+          is_active?: boolean | null
+          revenue_impact?: number | null
+          started_at?: string | null
+          variant?: string | null
+        }
+        Relationships: []
+      }
       growth_zone_signals: {
         Row: {
           capital_appreciation_horizon: string | null
@@ -30010,6 +30055,39 @@ export type Database = {
           },
         ]
       }
+      investor_deal_feed: {
+        Row: {
+          clicked_at: string | null
+          created_at: string
+          displayed_at: string | null
+          feed_id: string
+          property_id: string | null
+          ranking_score: number | null
+          recommendation_reason: string | null
+          user_id: string
+        }
+        Insert: {
+          clicked_at?: string | null
+          created_at?: string
+          displayed_at?: string | null
+          feed_id?: string
+          property_id?: string | null
+          ranking_score?: number | null
+          recommendation_reason?: string | null
+          user_id: string
+        }
+        Update: {
+          clicked_at?: string | null
+          created_at?: string
+          displayed_at?: string | null
+          feed_id?: string
+          property_id?: string | null
+          ranking_score?: number | null
+          recommendation_reason?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       investor_dna: {
         Row: {
           budget_range_max: number | null
@@ -30175,6 +30253,75 @@ export type Database = {
           follower_id?: string
           following_id?: string
           id?: string
+        }
+        Relationships: []
+      }
+      investor_growth_actions: {
+        Row: {
+          action_id: string
+          action_status: string | null
+          action_type: string
+          created_at: string
+          executed_at: string | null
+          scheduled_at: string | null
+          trigger_reason: string | null
+          user_id: string
+        }
+        Insert: {
+          action_id?: string
+          action_status?: string | null
+          action_type: string
+          created_at?: string
+          executed_at?: string | null
+          scheduled_at?: string | null
+          trigger_reason?: string | null
+          user_id: string
+        }
+        Update: {
+          action_id?: string
+          action_status?: string | null
+          action_type?: string
+          created_at?: string
+          executed_at?: string | null
+          scheduled_at?: string | null
+          trigger_reason?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      investor_growth_events: {
+        Row: {
+          campaign_tag: string | null
+          created_at: string
+          device_type: string | null
+          event_id: string
+          funnel_stage: string
+          geo_country: string | null
+          session_id: string | null
+          source_channel: string | null
+          user_id: string | null
+        }
+        Insert: {
+          campaign_tag?: string | null
+          created_at?: string
+          device_type?: string | null
+          event_id?: string
+          funnel_stage: string
+          geo_country?: string | null
+          session_id?: string | null
+          source_channel?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          campaign_tag?: string | null
+          created_at?: string
+          device_type?: string | null
+          event_id?: string
+          funnel_stage?: string
+          geo_country?: string | null
+          session_id?: string | null
+          source_channel?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -30718,6 +30865,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      investor_referrals: {
+        Row: {
+          activation_status: string | null
+          created_at: string
+          referral_code: string
+          referral_id: string
+          referral_reward_type: string | null
+          referred_user_id: string | null
+          referrer_user_id: string
+          reward_amount: number | null
+          reward_settled: boolean | null
+        }
+        Insert: {
+          activation_status?: string | null
+          created_at?: string
+          referral_code: string
+          referral_id?: string
+          referral_reward_type?: string | null
+          referred_user_id?: string | null
+          referrer_user_id: string
+          reward_amount?: number | null
+          reward_settled?: boolean | null
+        }
+        Update: {
+          activation_status?: string | null
+          created_at?: string
+          referral_code?: string
+          referral_id?: string
+          referral_reward_type?: string | null
+          referred_user_id?: string | null
+          referrer_user_id?: string
+          reward_amount?: number | null
+          reward_settled?: boolean | null
+        }
+        Relationships: []
       }
       investor_scores: {
         Row: {
