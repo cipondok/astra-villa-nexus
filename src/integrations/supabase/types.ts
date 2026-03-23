@@ -14020,6 +14020,39 @@ export type Database = {
           },
         ]
       }
+      copilot_actions: {
+        Row: {
+          action_type: string
+          created_at: string
+          executed_at: string | null
+          executed_by_admin_id: string | null
+          id: string
+          payload_json: Json | null
+          result_json: Json | null
+          status: string
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          executed_at?: string | null
+          executed_by_admin_id?: string | null
+          id?: string
+          payload_json?: Json | null
+          result_json?: Json | null
+          status?: string
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          executed_at?: string | null
+          executed_by_admin_id?: string | null
+          id?: string
+          payload_json?: Json | null
+          result_json?: Json | null
+          status?: string
+        }
+        Relationships: []
+      }
       copilot_conversations: {
         Row: {
           context_id: string | null
