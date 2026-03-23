@@ -578,6 +578,9 @@ export const MVPBuyerInquiryTracker = lazyRetry(() => import("./MVPBuyerInquiryT
 export const MVPViewingScheduleBoard = lazyRetry(() => import("./MVPViewingScheduleBoard"));
 export const MVPDealPipelineTracker = lazyRetry(() => import("./MVPDealPipelineTracker"));
 
+// Market Intelligence AI Engine
+export const MarketIntelligenceCommandCenter = lazyRetry(() => import("./MarketIntelligenceCommandCenter"));
+
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
 // Sections with custom props are listed explicitly; all others are simple <Component />.
