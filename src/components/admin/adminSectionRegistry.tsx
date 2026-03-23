@@ -370,6 +370,7 @@ export const FirstTractionExecutionDashboard = lazyRetry(() => import("./FirstTr
 export const DealOpsClosingManagement = lazyRetry(() => import("./DealOpsClosingManagement"));
 export const PerformanceDealWarRoom = lazyRetry(() => import("./PerformanceDealWarRoom"));
 export const SupplyGrowthDealAcceleration = lazyRetry(() => import("./SupplyGrowthDealAcceleration"));
+export const SupplyGrowthCommandCenter = lazyRetry(() => import("./SupplyGrowthCommandCenter"));
 
 // Feature Enhancement dashboards
 export const LaunchRoadmapDashboard = lazyRetry(() => import("./LaunchRoadmapDashboard"));
@@ -816,6 +817,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "institutional-fund-manager": () => <InstitutionalFundManager />,
   "custody-settlement-command": () => <CustodySettlementCommandCenter />,
   "investor-growth-command": () => <InvestorGrowthCommandCenter />,
+  "supply-growth-command": () => <SupplyGrowthCommandCenter />,
   "report-export":       () => <ReportExportFunction />,
   "enhanced-search":     () => <EnhancedSearchFilters />,
   "system-reports":      () => <SystemReports />,

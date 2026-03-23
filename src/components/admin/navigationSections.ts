@@ -341,6 +341,13 @@ export const navigationSections = {
       icon: ShieldAlert,
       description: "AI risk scoring, fraud signal detection, transaction gating, and investigation case management",
       badge: "🔥 AI Risk"
+    },
+    {
+      key: "supply-growth-command",
+      label: "Supply Growth Engine",
+      icon: Package,
+      description: "Listing lifecycle tracking, agent scoring, quality intelligence, zone coverage & seller conversion analytics",
+      badge: "🏗️ Supply"
     }
   ],
 
