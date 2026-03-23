@@ -1906,8 +1906,12 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                         setShowTipsPopup(false);
                         localStorage.setItem('chatbot-seen-tips', 'true');
                       }
-                      // Always open chat on click
-                      handleOpen();
+                      // If scroll arrow is showing, scroll to top instead of opening chat
+                      if (showScrollToTop && onScrollToTop) {
+                        onScrollToTop();
+                      } else {
+                        handleOpen();
+                      }
                     }}
                     unreadCount={unreadCount}
                     variant={buttonVariant}

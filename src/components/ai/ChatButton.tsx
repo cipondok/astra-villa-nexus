@@ -207,8 +207,8 @@ const ChatButton = forwardRef<HTMLDivElement, ChatButtonProps>(({
       onMouseEnter={handleMouseEnter}
       whileTap={{ scale: 0.95 }}
       animate={{
-        opacity: isButtonActive ? 1 : 0.5,
-        scale: isButtonActive ? 1 : 0.95,
+        opacity: isButtonActive ? 1 : 0.75,
+        scale: isButtonActive ? 1 : 0.98,
       }}
       transition={{ 
         duration: 0.4,
