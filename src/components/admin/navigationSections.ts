@@ -362,6 +362,13 @@ export const navigationSections = {
       icon: Target,
       description: "Investor segmentation, multi-channel campaigns, nurture automation, geo analytics & funnel optimization",
       badge: "🎯 Acquisition"
+    },
+    {
+      key: "signup-conversion-analytics",
+      label: "Signup Conversion Analytics",
+      icon: Users,
+      description: "Registration funnel performance, trigger source analytics, A/B testing, and geo signup heatmap",
+      badge: "📊 Signups"
     }
   ],
 
