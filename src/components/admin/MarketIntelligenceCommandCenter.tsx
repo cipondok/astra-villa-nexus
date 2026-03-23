@@ -51,7 +51,7 @@ export default function MarketIntelligenceCommandCenter() {
           <p className="text-sm text-muted-foreground">AI-driven property scoring, anomaly detection, ROI forecasting & investor recommendations</p>
         </div>
         <div className="flex gap-2 flex-wrap">
-          <Button size="sm" onClick={() => batchScore.mutate(50)} disabled={isBusy}>
+          <Button size="sm" onClick={() => batchScore.mutate(50 as any)} disabled={isBusy}>
             <Zap className="h-4 w-4 mr-1" /> Batch Score
           </Button>
           <Button size="sm" variant="outline" onClick={() => refreshZones.mutate()} disabled={isBusy}>

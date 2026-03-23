@@ -51,7 +51,7 @@ export function useScoreProperty() {
 export function useBatchScoreProperties() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (limit = 50) => {
+    mutationFn: async (limit: number = 50) => {
       const { data, error } = await supabase.functions.invoke('market-intelligence-engine', {
         body: { mode: 'batch_score', limit },
       });
@@ -59,7 +59,7 @@ export function useBatchScoreProperties() {
       if (data?.error) throw new Error(data.error);
       return data;
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       qc.invalidateQueries({ queryKey: ['market-intelligence-dashboard'] });
       toast.success(`Scored ${data.scored} properties`);
     },
