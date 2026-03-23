@@ -725,6 +725,13 @@ export const navigationSections = {
       icon: Shield,
       description: "Double-entry ledger, webhook logs, payout queue, commission settlement, and reconciliation alerts",
       badge: "💰 Fintech"
+    },
+    {
+      key: "escrow-conversion-dashboard",
+      label: "Escrow Conversion Analytics",
+      icon: Shield,
+      description: "Deal-to-escrow conversion rates, readiness pipeline, volume tracking & agent closing performance",
+      badge: "📊 Conversion"
     }
   ],
 
