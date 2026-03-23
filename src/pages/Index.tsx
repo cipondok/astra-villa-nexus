@@ -66,6 +66,9 @@ const FeaturedPropertiesCarousel = lazy(() => import("@/components/home/Featured
 const SmartCollectionsShowcase = lazy(() => import("@/components/home/SmartCollectionsV2"));
 const TrendingROIDeals = lazy(() => import("@/components/home/TrendingROIDeals"));
 const EarlyInvestmentCTA = lazy(() => import("@/components/home/EarlyInvestmentCTA"));
+const CapitalSafetyStrip = lazy(() => import("@/components/home/CapitalSafetyStrip"));
+const FirstFundingCTA = lazy(() => import("@/components/home/FirstFundingCTA"));
+const InvestorCredibilityShowcase = lazy(() => import("@/components/home/InvestorCredibilityShowcase"));
 const SocialProofStrip = lazy(() => import("@/components/home/SocialProofStrip"));
 const MobileFloatingCTA = lazy(() => import("@/components/home/MobileFloatingCTA"));
 const TrustFooterStrip = lazy(() => import("@/components/home/TrustFooterStrip"));
@@ -792,6 +795,15 @@ const Index = () => {
                 </ScrollReveal>
               </SectionWrapper>
 
+              {/* ── Capital Safety Education Strip ── */}
+              <SectionWrapper variant="default" className="py-2 sm:py-3">
+                <ScrollReveal direction="up" delay={0}>
+                  <Suspense fallback={null}>
+                    <CapitalSafetyStrip />
+                  </Suspense>
+                </ScrollReveal>
+              </SectionWrapper>
+
               {/* ── SECTION 4: Market Heat + ASTRA Showcase ── */}
               <SectionWrapper variant="muted" className="py-2 sm:py-3">
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
@@ -819,6 +831,15 @@ const Index = () => {
                 <ScrollReveal direction="up" delay={0}>
                   <Suspense fallback={<div className="max-w-7xl mx-auto px-4"><div className="h-48 bg-muted/50 rounded-2xl animate-pulse" /></div>}>
                     <RentalCashflowZone />
+                  </Suspense>
+                </ScrollReveal>
+              </SectionWrapper>
+
+              {/* ── First Funding Psychology CTA ── */}
+              <SectionWrapper variant="default" className="py-2 sm:py-3">
+                <ScrollReveal direction="up" delay={0}>
+                  <Suspense fallback={null}>
+                    <FirstFundingCTA />
                   </Suspense>
                 </ScrollReveal>
               </SectionWrapper>
@@ -951,6 +972,15 @@ const Index = () => {
                 <Suspense fallback={null}>
                   <NewsletterBanner />
                 </Suspense>
+              </SectionWrapper>
+
+              {/* ── Investor Credibility Showcase ── */}
+              <SectionWrapper variant="default" className="py-2 sm:py-3">
+                <ScrollReveal direction="up" delay={0}>
+                  <Suspense fallback={null}>
+                    <InvestorCredibilityShowcase />
+                  </Suspense>
+                </ScrollReveal>
               </SectionWrapper>
 
               {/* ── Final Conversion Zone (NEW — replaces EarlyInvestmentCTA) ── */}

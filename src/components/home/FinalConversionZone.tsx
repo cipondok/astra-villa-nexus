@@ -4,11 +4,11 @@ import { Button } from '@/components/ui/button';
 import { TrendingUp, Home, Key, Building2, Store, Sparkles, ArrowRight } from 'lucide-react';
 
 const paths = [
-  { label: 'Invest Capital', icon: TrendingUp, path: '/portfolio-dashboard', primary: true },
-  { label: 'Buy Property', icon: Home, path: '/buy', primary: false },
-  { label: 'Rent Instantly', icon: Key, path: '/rent', primary: false },
+  { label: 'Explore Opportunities', icon: TrendingUp, path: '/search', primary: true },
+  { label: 'Create Account', icon: Home, path: '/auth', primary: false },
+  { label: 'Fund Wallet', icon: Key, path: '/wallet', primary: false },
   { label: 'List Property', icon: Building2, path: '/post-property', primary: false },
-  { label: 'Become Vendor Partner', icon: Store, path: '/vendor/register', primary: false },
+  { label: 'Speak to Advisor', icon: Store, path: '/contact', primary: false },
 ];
 
 const FinalConversionZone = () => {
@@ -34,13 +34,13 @@ const FinalConversionZone = () => {
           </div>
 
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 leading-tight">
-            Where Real Estate Meets{' '}
+            Join Global Investors Building{' '}
             <span className="bg-gradient-to-r from-gold-primary to-gold-secondary bg-clip-text text-transparent">
-              Intelligent Technology
+              Property Wealth in Indonesia
             </span>
           </h2>
           <p className="text-sm text-muted-foreground mb-8 max-w-lg mx-auto">
-            Indonesia's First AI-Powered Digital Virtual Tour Property Platform — Operating at Global Scale
+            AI-Powered Investment Scoring • Escrow-Protected Transactions • Institutional-Grade Infrastructure
           </p>
 
           <div className="flex flex-wrap justify-center gap-3">

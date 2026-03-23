@@ -75,9 +75,19 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
               transition={{ duration: 0.5, delay: 0.15 }}
               className="text-base sm:text-xl lg:text-2xl font-bold text-white mt-1 sm:mt-0 sm:pb-1 drop-shadow"
             >
-              Indonesia's Smart Property Platform
+              Global Property Investment Platform
             </motion.p>
           </div>
+
+          {/* Investor value proposition */}
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.18, duration: 0.5 }}
+            className="text-sm sm:text-base text-white/80 font-medium mb-4 max-w-xl leading-relaxed"
+          >
+            Secure, AI-scored property investments in Indonesia — protected by escrow, backed by market intelligence.
+          </motion.p>
 
           {/* Role pills — clickable links */}
           <motion.div
@@ -194,7 +204,7 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
             </div>
           </motion.div>
 
-          {/* CTA buttons */}
+          {/* CTA buttons — investor focused */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -203,28 +213,20 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
           >
             <Button
               size="lg"
-              onClick={() => navigate("/vendor/register")}
+              onClick={() => navigate("/search")}
               className="bg-gradient-to-r from-[#ffe14d] to-[#ffb800] hover:from-[#ffb800] hover:to-[#ffe14d] text-gray-900 font-bold px-6 py-5 text-sm rounded-xl shadow-lg shadow-yellow-500/30 transition-all duration-300"
             >
-              <Rocket className="mr-2 h-4 w-4" />
-              Start Listing Property
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => navigate("/search")}
-              className="border-white/40 text-white hover:bg-white/15 px-6 py-5 text-sm rounded-xl backdrop-blur-sm"
-            >
               <Search className="mr-2 h-4 w-4" />
-              Explore Smart Deals
+              Explore Investment Opportunities
             </Button>
             <Button
               size="lg"
               variant="outline"
-              onClick={() => navigate("/portfolio-dashboard")}
+              onClick={() => navigate("/wallet")}
               className="border-white/40 text-white hover:bg-white/15 px-6 py-5 text-sm rounded-xl backdrop-blur-sm"
             >
-              Invest Now
+              <Rocket className="mr-2 h-4 w-4" />
+              Start Secure Investment
             </Button>
             <Button
               size="lg"
@@ -233,7 +235,7 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
               className="border-white/40 text-white hover:bg-white/15 px-6 py-5 text-sm rounded-xl backdrop-blur-sm"
             >
               <Store className="mr-2 h-4 w-4" />
-              Become Vendor
+              List Property
             </Button>
           </motion.div>
 
@@ -265,7 +267,7 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
             transition={{ delay: 0.8, duration: 0.5 }}
             className="text-center text-[11px] text-white/60 font-medium pb-3"
           >
-            Trusted by Agents • Developers • Investors Across Indonesia
+            Escrow-Protected Transactions • Verified Listings • AI-Powered Investment Scoring
           </motion.p>
         </div>
       </div>
