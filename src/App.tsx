@@ -36,7 +36,6 @@ import { DataSaverProvider } from '@/contexts/DataSaverContext';
 const Navigation = lazy(() => import('@/components/Navigation'));
 const ProfessionalFooter = lazy(() => import('@/components/ProfessionalFooter'));
 const MobileFooter = lazy(() => import('@/components/MobileFooter'));
-import InitialLoadingScreen from '@/components/ui/InitialLoadingScreen';
 const GlobalLoadingIndicator = lazy(() => import('@/components/ui/GlobalLoadingIndicator'));
 
 
@@ -1032,64 +1031,44 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  // Only show initial loading on first app load (not on navigation)
-  const [isLoading, setIsLoading] = useState(true);
-  const [welcomeEnabled, setWelcomeEnabled] = useState(true);
-
-  // Always show welcome screen for 3 seconds on every load/refresh
-  useEffect(() => {
-    setWelcomeEnabled(true);
-    setIsLoading(true);
-
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        {isLoading && welcomeEnabled ? (
-            <InitialLoadingScreen key="loading" />
-          ) : (
-            <Router key="app" future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-              <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
-                <DesignSystemProvider>
-                  <LanguageProvider>
-                    <CurrencyProvider>
-                    <AlertProvider>
-                      <AuthProvider>
-                        <NotificationProvider>
-                          <DataSaverProvider>
-                          <PropertyComparisonProvider>
-                            <AppContent />
-                            <Suspense fallback={null}>
-                              {React.createElement(lazy(() => import('@/components/property/PropertyComparisonPanel')))}
-                            </Suspense>
-                            <Toaster />
-                            <Sonner />
-                            <CookieSystem />
-                            <Suspense fallback={null}>
-                              <ChatWidgetGuard />
-                              
-                              <WhatsAppInquiryButton variant="floating" defaultType="general" />
-                              
-                              <SessionExpirationHandler />
-                              <AuthNotificationHandler />
-                            </Suspense>
-                          </PropertyComparisonProvider>
-                          </DataSaverProvider>
-                        </NotificationProvider>
-                      </AuthProvider>
-                    </AlertProvider>
-                    </CurrencyProvider>
-                  </LanguageProvider>
-                </DesignSystemProvider>
-              </ThemeProvider>
-            </Router>
-          )}
+        <Router key="app" future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
+            <DesignSystemProvider>
+              <LanguageProvider>
+                <CurrencyProvider>
+                <AlertProvider>
+                  <AuthProvider>
+                    <NotificationProvider>
+                      <DataSaverProvider>
+                      <PropertyComparisonProvider>
+                        <AppContent />
+                        <Suspense fallback={null}>
+                          {React.createElement(lazy(() => import('@/components/property/PropertyComparisonPanel')))}
+                        </Suspense>
+                        <Toaster />
+                        <Sonner />
+                        <CookieSystem />
+                        <Suspense fallback={null}>
+                          <ChatWidgetGuard />
+                          
+                          <WhatsAppInquiryButton variant="floating" defaultType="general" />
+                          
+                          <SessionExpirationHandler />
+                          <AuthNotificationHandler />
+                        </Suspense>
+                      </PropertyComparisonProvider>
+                      </DataSaverProvider>
+                    </NotificationProvider>
+                  </AuthProvider>
+                </AlertProvider>
+                </CurrencyProvider>
+              </LanguageProvider>
+            </DesignSystemProvider>
+          </ThemeProvider>
+        </Router>
       </QueryClientProvider>
     </ErrorBoundary>
   );

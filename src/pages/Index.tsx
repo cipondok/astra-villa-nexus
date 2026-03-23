@@ -597,7 +597,7 @@ const Index = () => {
         <SectionErrorBoundary sectionName="Hero" fallbackMinHeight="400px">
         <section className="relative w-full" id="hero-wrapper">
           {/* Hero with search panel integrated */}
-          <Suspense fallback={<div className="min-h-[80vh] bg-[#0088d4]" />}>
+          <Suspense fallback={<div className="min-h-[80vh] bg-background" />}>
             <AstraHero
               language={language}
               onSearch={(searchData) => {
