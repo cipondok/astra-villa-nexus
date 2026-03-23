@@ -10298,6 +10298,99 @@ export type Database = {
         }
         Relationships: []
       }
+      capital_allocation_signals: {
+        Row: {
+          allocation_priority_score: number | null
+          capital_efficiency_score: number | null
+          city: string
+          confidence_level: string | null
+          created_at: string | null
+          demand_pressure_index: number | null
+          historical_roi_estimate: number | null
+          id: string
+          investor_intent_density: number | null
+          liquidity_velocity_score: number | null
+          price_momentum_score: number | null
+          recommended_capital_direction: string | null
+          region: string | null
+          risk_volatility_score: number | null
+          segment: string | null
+        }
+        Insert: {
+          allocation_priority_score?: number | null
+          capital_efficiency_score?: number | null
+          city: string
+          confidence_level?: string | null
+          created_at?: string | null
+          demand_pressure_index?: number | null
+          historical_roi_estimate?: number | null
+          id?: string
+          investor_intent_density?: number | null
+          liquidity_velocity_score?: number | null
+          price_momentum_score?: number | null
+          recommended_capital_direction?: string | null
+          region?: string | null
+          risk_volatility_score?: number | null
+          segment?: string | null
+        }
+        Update: {
+          allocation_priority_score?: number | null
+          capital_efficiency_score?: number | null
+          city?: string
+          confidence_level?: string | null
+          created_at?: string | null
+          demand_pressure_index?: number | null
+          historical_roi_estimate?: number | null
+          id?: string
+          investor_intent_density?: number | null
+          liquidity_velocity_score?: number | null
+          price_momentum_score?: number | null
+          recommended_capital_direction?: string | null
+          region?: string | null
+          risk_volatility_score?: number | null
+          segment?: string | null
+        }
+        Relationships: []
+      }
+      capital_flow_forecasts: {
+        Row: {
+          city: string
+          created_at: string | null
+          forecast_horizon_days: number | null
+          forecast_trend: string | null
+          hotspot_probability: number | null
+          id: string
+          predicted_inflow_score: number | null
+          rotation_signal: string | null
+          saturation_risk: number | null
+          segment: string | null
+        }
+        Insert: {
+          city: string
+          created_at?: string | null
+          forecast_horizon_days?: number | null
+          forecast_trend?: string | null
+          hotspot_probability?: number | null
+          id?: string
+          predicted_inflow_score?: number | null
+          rotation_signal?: string | null
+          saturation_risk?: number | null
+          segment?: string | null
+        }
+        Update: {
+          city?: string
+          created_at?: string | null
+          forecast_horizon_days?: number | null
+          forecast_trend?: string | null
+          hotspot_probability?: number | null
+          id?: string
+          predicted_inflow_score?: number | null
+          rotation_signal?: string | null
+          saturation_risk?: number | null
+          segment?: string | null
+        }
+        Relationships: []
+      }
       capital_flow_predictions: {
         Row: {
           capital_gravity_score: number
@@ -32003,6 +32096,45 @@ export type Database = {
           segment_type?: string | null
           top_investor_share_pct?: number | null
           unique_investors?: number | null
+        }
+        Relationships: []
+      }
+      investor_portfolio_signals: {
+        Row: {
+          avg_ticket_size: number | null
+          created_at: string | null
+          diversification_score: number | null
+          id: string
+          investor_id: string | null
+          optimal_capital_split_json: Json | null
+          preferred_segments: string[] | null
+          recommended_city_focus: string | null
+          recommended_segment_focus: string | null
+          risk_tolerance_level: string | null
+        }
+        Insert: {
+          avg_ticket_size?: number | null
+          created_at?: string | null
+          diversification_score?: number | null
+          id?: string
+          investor_id?: string | null
+          optimal_capital_split_json?: Json | null
+          preferred_segments?: string[] | null
+          recommended_city_focus?: string | null
+          recommended_segment_focus?: string | null
+          risk_tolerance_level?: string | null
+        }
+        Update: {
+          avg_ticket_size?: number | null
+          created_at?: string | null
+          diversification_score?: number | null
+          id?: string
+          investor_id?: string | null
+          optimal_capital_split_json?: Json | null
+          preferred_segments?: string[] | null
+          recommended_city_focus?: string | null
+          recommended_segment_focus?: string | null
+          risk_tolerance_level?: string | null
         }
         Relationships: []
       }

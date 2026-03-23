@@ -325,14 +325,19 @@ serve(async (req) => {
       }
     }
 
-    // Fetch strategy intelligence
+    // Fetch strategy + capital allocation intelligence
     let strategySignals: any[] = [];
+    let capitalAllocations: any[] = [];
+    let capitalForecasts: any[] = [];
     try {
-      const { data } = await sb.from("marketplace_strategy_signals")
-        .select("city, recommended_strategy, strategy_priority_index, confidence_level, supply_score, demand_score, liquidity_score")
-        .order("strategy_priority_index", { ascending: false })
-        .limit(5);
-      strategySignals = data || [];
+      const [stratRes, allocRes, forecastRes] = await Promise.all([
+        sb.from("marketplace_strategy_signals").select("city, recommended_strategy, strategy_priority_index, confidence_level, supply_score, demand_score, liquidity_score").order("strategy_priority_index", { ascending: false }).limit(5),
+        sb.from("capital_allocation_signals").select("city, capital_efficiency_score, allocation_priority_score, recommended_capital_direction, confidence_level, investor_intent_density").order("allocation_priority_score", { ascending: false }).limit(5),
+        sb.from("capital_flow_forecasts").select("city, predicted_inflow_score, hotspot_probability, saturation_risk, rotation_signal, forecast_trend").order("predicted_inflow_score", { ascending: false }).limit(5),
+      ]);
+      strategySignals = stratRes.data || [];
+      capitalAllocations = allocRes.data || [];
+      capitalForecasts = forecastRes.data || [];
     } catch { /* skip */ }
 
     // Strategy-based recommendations
@@ -350,6 +355,44 @@ serve(async (req) => {
       }
     }
 
+    // Capital allocation recommendations
+    for (const ca of capitalAllocations) {
+      if (ca.recommended_capital_direction === "increase" && ca.allocation_priority_score > 55) {
+        recommendations.push({
+          id: `rec-capital-alloc-${ca.city}`,
+          type: "monetization",
+          title: `Capital efficiency high in ${ca.city} (${ca.capital_efficiency_score}/100) — increase allocation`,
+          description: `Priority ${ca.allocation_priority_score}/100 | Intent density: ${ca.investor_intent_density}. Confidence: ${ca.confidence_level}.`,
+          confidence: ca.capital_efficiency_score, impact: "Optimize capital deployment",
+          timeWindow: "This week", priority: ca.allocation_priority_score > 75 ? "critical" : "high", status: "pending",
+        });
+      }
+      if (ca.recommended_capital_direction === "reduce") {
+        riskAlerts.push({
+          id: `risk-capital-${ca.city}`,
+          category: "capital_risk",
+          severity: ca.capital_efficiency_score < 25 ? "critical" : "warning",
+          title: `Capital efficiency declining in ${ca.city} — reduce exposure`,
+          metric: `Efficiency: ${ca.capital_efficiency_score}/100`,
+          trend: "down", probability: Math.max(70, 100 - ca.capital_efficiency_score),
+        });
+      }
+    }
+
+    // Capital forecast alerts
+    for (const cf of capitalForecasts) {
+      if (cf.saturation_risk > 60) {
+        riskAlerts.push({
+          id: `risk-saturation-${cf.city}`,
+          category: "capital_saturation",
+          severity: cf.saturation_risk > 80 ? "critical" : "warning",
+          title: `Capital saturation risk in ${cf.city} (${cf.saturation_risk}%)`,
+          metric: `Forecast: ${cf.forecast_trend} | Rotation: ${cf.rotation_signal}`,
+          trend: "up", probability: cf.saturation_risk,
+        });
+      }
+    }
+
     return json({
       kpis, funnel, recommendations, risk_alerts: riskAlerts,
       hot_properties: hotProperties,
@@ -360,6 +403,10 @@ serve(async (req) => {
       },
       strategy_intelligence: {
         top_opportunities: strategySignals.slice(0, 3),
+      },
+      capital_intelligence: {
+        top_allocations: capitalAllocations.slice(0, 3),
+        forecasts: capitalForecasts.slice(0, 3),
       },
       liquidity: {
         fastest_cities: liquidityMetrics.filter((m: any) => m.market_classification === "hot").slice(0, 3),
