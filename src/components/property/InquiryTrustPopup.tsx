@@ -56,6 +56,7 @@ const InquiryTrustPopup = ({
         user_id: user?.id,
         message: message.trim(),
         status: "new",
+        inquiry_type: inquiryType,
       });
 
       // Track behavior event
