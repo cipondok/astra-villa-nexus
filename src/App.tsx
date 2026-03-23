@@ -1047,13 +1047,7 @@ function App() {
           return;
         }
 
-        // FIRST: Check if welcome screen was already shown this session
-        const hasLoaded = safeSessionStorage.getItem('astra_app_loaded');
-        if (hasLoaded === 'true') {
-          // Already shown this session - skip immediately
-          setIsLoading(false);
-          return;
-        }
+        // Always show welcome screen on every load/refresh for 3 seconds
 
         // Import supabase client
         const { supabase } = await import('@/integrations/supabase/client');
@@ -1081,7 +1075,7 @@ function App() {
         const loadingDuration =
           typeof settings.welcomeLoadingDuration === 'number'
             ? settings.welcomeLoadingDuration
-            : parseInt(settings.welcomeLoadingDuration) || 2000;
+            : parseInt(settings.welcomeLoadingDuration) || 3000;
 
         setWelcomeEnabled(isEnabled);
 
