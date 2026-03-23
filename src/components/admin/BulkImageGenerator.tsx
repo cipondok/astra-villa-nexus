@@ -34,11 +34,10 @@ export default function BulkImageGenerator() {
   const { data: propertyStats } = useQuery({
     queryKey: ["bulk-image-property-stats"],
     queryFn: async () => {
-      const [{ count: noImages }, { count: total }, { count: aiGenerated }] = await Promise.all([
-        supabase.from("properties").select("id", { count: "exact", head: true }).is("thumbnail_url", null),
-        supabase.from("properties").select("id", { count: "exact", head: true }),
-        supabase.from("properties").select("id", { count: "exact", head: true }).eq("ai_generated" as any, true),
-      ]);
+      const { count: noImages } = await supabase.from("properties").select("id", { count: "exact", head: true }).is("thumbnail_url", null);
+      const { count: total } = await supabase.from("properties").select("id", { count: "exact", head: true });
+      // Count AI generated via the jobs table instead
+      const { count: aiGenerated } = await supabase.from("ai_image_jobs" as any).select("id", { count: "exact", head: true }).eq("status", "done");
       return { noImages: noImages || 0, total: total || 0, aiGenerated: aiGenerated || 0 };
     },
     staleTime: 15_000,
