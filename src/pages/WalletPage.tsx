@@ -1,21 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Price from '@/components/ui/Price';
 import {
   Wallet, ArrowLeft, Plus, ArrowUpRight, ArrowDownLeft, Lock,
-  Shield, Clock, CheckCircle2, XCircle, Loader2, TrendingUp
+  Shield, Clock, CheckCircle2, XCircle, Loader2, TrendingUp,
+  Users, Zap, Star, X, AlertCircle, Sparkles
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useWallet, useWalletTransactions, useCreateTopup, useRequestPayout } from '@/hooks/useWallet';
+import { useTrackFundingEvent, usePlatformFundingStats, useFundingNudges, useDismissNudge } from '@/hooks/useWalletFunding';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const QUICK_AMOUNTS = [500000, 1000000, 5000000, 10000000, 50000000];
+const QUICK_AMOUNTS = [2000000, 5000000, 10000000, 25000000, 50000000];
 const PAYMENT_METHODS = [
   { value: 'bank_transfer_bca', label: 'BCA Transfer' },
   { value: 'bank_transfer_bni', label: 'BNI Transfer' },
@@ -47,6 +49,10 @@ const WalletPage = () => {
   const { data: txData, isLoading: txLoading } = useWalletTransactions(20);
   const createTopup = useCreateTopup();
   const requestPayout = useRequestPayout();
+  const trackEvent = useTrackFundingEvent();
+  const { data: platformStats } = usePlatformFundingStats();
+  const { data: nudgeData } = useFundingNudges();
+  const dismissNudge = useDismissNudge();
 
   const [topupAmount, setTopupAmount] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
@@ -54,6 +60,14 @@ const WalletPage = () => {
   const [payoutAmount, setPayoutAmount] = useState('');
   const [payoutMethod, setPayoutMethod] = useState('');
   const [payoutOpen, setPayoutOpen] = useState(false);
+  const [dismissedNudges, setDismissedNudges] = useState<Set<string>>(new Set());
+
+  // Track wallet view
+  useEffect(() => {
+    if (user?.id) {
+      trackEvent.mutate({ stage: 'wallet_viewed' });
+    }
+  }, [user?.id]);
 
   if (!user) {
     return (
@@ -74,13 +88,30 @@ const WalletPage = () => {
   const lockedBalance = wallet?.locked_balance ?? 0;
   const totalBalance = availableBalance + lockedBalance;
   const transactions = txData?.transactions ?? [];
+  const nudges = (nudgeData?.nudges || []).filter((n: any) => !dismissedNudges.has(n.id));
+
+  const handleFundCTAClick = () => {
+    trackEvent.mutate({ stage: 'funding_cta_clicked' });
+    setTopupOpen(true);
+  };
 
   const handleTopup = () => {
     const amount = parseInt(topupAmount);
     if (!amount || amount < 10000) return;
+    trackEvent.mutate({ stage: 'payment_session_started', amount });
     createTopup.mutate(
       { amount, payment_type: paymentMethod || undefined },
-      { onSuccess: () => { setTopupOpen(false); setTopupAmount(''); setPaymentMethod(''); } }
+      {
+        onSuccess: () => {
+          trackEvent.mutate({ stage: 'payment_completed', amount });
+          setTopupOpen(false);
+          setTopupAmount('');
+          setPaymentMethod('');
+        },
+        onError: () => {
+          trackEvent.mutate({ stage: 'funding_failed', amount });
+        },
+      }
     );
   };
 
@@ -91,6 +122,11 @@ const WalletPage = () => {
       { amount, payout_method: payoutMethod },
       { onSuccess: () => { setPayoutOpen(false); setPayoutAmount(''); setPayoutMethod(''); } }
     );
+  };
+
+  const handleDismissNudge = (nudgeId: string) => {
+    setDismissedNudges(prev => new Set(prev).add(nudgeId));
+    dismissNudge.mutate(nudgeId);
   };
 
   return (
@@ -112,6 +148,71 @@ const WalletPage = () => {
             </div>
           </div>
         </div>
+
+        {/* Trust Signal Banner */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6 rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 via-primary/3 to-transparent p-4"
+        >
+          <div className="flex items-start gap-3">
+            <Shield className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm font-medium text-foreground">Verified Global Investment Platform</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Your funds remain secured until property verification is complete. All transactions protected by ASTRA escrow infrastructure.
+              </p>
+            </div>
+            {platformStats && (
+              <div className="hidden sm:flex items-center gap-4 shrink-0">
+                <div className="text-center">
+                  <p className="text-xs text-muted-foreground">Funded Today</p>
+                  <p className="text-sm font-bold text-foreground">
+                    <Price amount={platformStats.total_funded_today || 0} />
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-muted-foreground">Active Investors</p>
+                  <p className="text-sm font-bold text-foreground flex items-center justify-center gap-1">
+                    <Users className="h-3.5 w-3.5 text-primary" />
+                    {platformStats.active_investors || 0}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </motion.div>
+
+        {/* Smart Nudge Alerts */}
+        <AnimatePresence>
+          {nudges.length > 0 && (
+            <div className="space-y-2 mb-6">
+              {nudges.slice(0, 2).map((nudge: any) => (
+                <motion.div
+                  key={nudge.id}
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="flex items-center gap-3 p-3 rounded-lg border border-amber-500/20 bg-amber-500/5"
+                >
+                  <Sparkles className="h-4 w-4 text-amber-600 shrink-0" />
+                  <p className="text-xs text-foreground flex-1">
+                    {nudge.trigger_condition === 'wallet_viewed_no_funding_7d'
+                      ? 'You\'ve been exploring investment opportunities! Fund your wallet to start securing deals with escrow protection.'
+                      : 'Top investment opportunities are waiting — fund your wallet to get started.'}
+                  </p>
+                  <Button size="sm" variant="outline" className="text-xs shrink-0" onClick={handleFundCTAClick}>
+                    <Zap className="h-3 w-3 mr-1" />
+                    Fund Now
+                  </Button>
+                  <button onClick={() => handleDismissNudge(nudge.id)} className="text-muted-foreground hover:text-foreground">
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </AnimatePresence>
 
         {/* Balance Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
@@ -170,11 +271,45 @@ const WalletPage = () => {
           </Card>
         </div>
 
+        {/* Funding Amount Guidance */}
+        {availableBalance === 0 && !walletLoading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mb-8"
+          >
+            <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+              <CardContent className="p-5">
+                <div className="flex items-start gap-3 mb-4">
+                  <Star className="h-5 w-5 text-primary mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Start Your Investment Journey</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Choose a starting amount. Average investor deposit this week: <Price amount={platformStats?.avg_deposit || 5000000} />
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button size="sm" variant="outline" onClick={() => { setTopupAmount('2000000'); handleFundCTAClick(); }} className="text-xs">
+                    Start with <Price amount={2000000} />
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => { setTopupAmount('5000000'); handleFundCTAClick(); }} className="text-xs">
+                    <Price amount={5000000} /> — Popular
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => { setTopupAmount('10000000'); handleFundCTAClick(); }} className="text-xs">
+                    <Price amount={10000000} /> — Recommended
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
         {/* Actions */}
         <div className="flex flex-wrap gap-3 mb-8">
           <Dialog open={topupOpen} onOpenChange={setTopupOpen}>
             <DialogTrigger asChild>
-              <Button className="gap-2">
+              <Button className="gap-2" onClick={() => trackEvent.mutate({ stage: 'funding_cta_clicked' })}>
                 <Plus className="h-4 w-4" />
                 Fund Wallet
               </Button>
@@ -301,7 +436,11 @@ const WalletPage = () => {
               <div className="text-center py-12">
                 <Wallet className="h-10 w-10 mx-auto mb-3 text-muted-foreground/40" />
                 <p className="text-muted-foreground">No transactions yet</p>
-                <p className="text-xs text-muted-foreground/60 mt-1">Fund your wallet to get started</p>
+                <p className="text-xs text-muted-foreground/60 mt-1">Fund your wallet to start investing in properties</p>
+                <Button size="sm" className="mt-4" onClick={handleFundCTAClick}>
+                  <Zap className="h-3.5 w-3.5 mr-1" />
+                  Make Your First Deposit
+                </Button>
               </div>
             ) : (
               <div className="space-y-2">
@@ -351,15 +490,15 @@ const WalletPage = () => {
           </CardContent>
         </Card>
 
-        {/* IDR Base Currency Notice */}
+        {/* Trust Footer */}
         <div className="mt-6 space-y-2">
           <div className="flex items-center gap-2 justify-center text-xs text-muted-foreground">
             <Shield className="h-3.5 w-3.5 text-primary" />
             Funds secured via regulated payment partners and protected by ASTRA escrow workflow
           </div>
           <p className="text-center text-[10px] text-muted-foreground/60">
-            All balances and transactions are denominated in Indonesian Rupiah (IDR). 
-            Foreign currency deposits are converted at the live FX rate at the time of deposit. 
+            All balances and transactions are denominated in Indonesian Rupiah (IDR).
+            Foreign currency deposits are converted at the live FX rate at the time of deposit.
             Final settlement for all property transactions is in IDR.
           </p>
         </div>
