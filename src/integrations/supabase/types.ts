@@ -18196,6 +18196,74 @@ export type Database = {
           },
         ]
       }
+      exit_listings: {
+        Row: {
+          asking_price_idr: number
+          created_at: string | null
+          estimated_exit_days: number | null
+          expires_at: string | null
+          id: string
+          inquiries_count: number | null
+          liquidity_priority_score: number | null
+          listing_status: string | null
+          listing_visibility: string | null
+          min_acceptable_price_idr: number | null
+          ownership_percentage: number
+          position_id: string
+          premium_discount_pct: number | null
+          property_id: string
+          seller_user_id: string
+          updated_at: string | null
+          views_count: number | null
+        }
+        Insert: {
+          asking_price_idr: number
+          created_at?: string | null
+          estimated_exit_days?: number | null
+          expires_at?: string | null
+          id?: string
+          inquiries_count?: number | null
+          liquidity_priority_score?: number | null
+          listing_status?: string | null
+          listing_visibility?: string | null
+          min_acceptable_price_idr?: number | null
+          ownership_percentage: number
+          position_id: string
+          premium_discount_pct?: number | null
+          property_id: string
+          seller_user_id: string
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Update: {
+          asking_price_idr?: number
+          created_at?: string | null
+          estimated_exit_days?: number | null
+          expires_at?: string | null
+          id?: string
+          inquiries_count?: number | null
+          liquidity_priority_score?: number | null
+          listing_status?: string | null
+          listing_visibility?: string | null
+          min_acceptable_price_idr?: number | null
+          ownership_percentage?: number
+          position_id?: string
+          premium_discount_pct?: number | null
+          property_id?: string
+          seller_user_id?: string
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exit_listings_position_id_fkey"
+            columns: ["position_id"]
+            isOneToOne: false
+            referencedRelation: "investment_positions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       expansion_cities: {
         Row: {
           city_name: string
@@ -30672,6 +30740,51 @@ export type Database = {
           },
         ]
       }
+      investment_positions: {
+        Row: {
+          acquisition_date: string | null
+          acquisition_price_idr: number | null
+          created_at: string | null
+          current_estimated_value_idr: number | null
+          id: string
+          investor_user_id: string
+          notes: string | null
+          ownership_percentage: number | null
+          position_status: string | null
+          property_id: string
+          source_type: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          acquisition_date?: string | null
+          acquisition_price_idr?: number | null
+          created_at?: string | null
+          current_estimated_value_idr?: number | null
+          id?: string
+          investor_user_id: string
+          notes?: string | null
+          ownership_percentage?: number | null
+          position_status?: string | null
+          property_id: string
+          source_type?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          acquisition_date?: string | null
+          acquisition_price_idr?: number | null
+          created_at?: string | null
+          current_estimated_value_idr?: number | null
+          id?: string
+          investor_user_id?: string
+          notes?: string | null
+          ownership_percentage?: number | null
+          position_status?: string | null
+          property_id?: string
+          source_type?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       investor_behavior_events: {
         Row: {
           created_at: string | null
@@ -34515,6 +34628,81 @@ export type Database = {
             columns: ["sell_order_id"]
             isOneToOne: false
             referencedRelation: "liquidity_sell_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      liquidity_transfer_ledger: {
+        Row: {
+          buyer_user_id: string
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          completed_at: string | null
+          created_at: string | null
+          escrow_locked_at: string | null
+          escrow_status: string | null
+          exit_listing_id: string | null
+          id: string
+          ownership_percentage: number
+          ownership_transferred_at: string | null
+          platform_fee_idr: number | null
+          position_id: string | null
+          property_id: string
+          seller_payout_at: string | null
+          seller_user_id: string
+          transfer_amount_idr: number
+        }
+        Insert: {
+          buyer_user_id: string
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          escrow_locked_at?: string | null
+          escrow_status?: string | null
+          exit_listing_id?: string | null
+          id?: string
+          ownership_percentage: number
+          ownership_transferred_at?: string | null
+          platform_fee_idr?: number | null
+          position_id?: string | null
+          property_id: string
+          seller_payout_at?: string | null
+          seller_user_id: string
+          transfer_amount_idr: number
+        }
+        Update: {
+          buyer_user_id?: string
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          escrow_locked_at?: string | null
+          escrow_status?: string | null
+          exit_listing_id?: string | null
+          id?: string
+          ownership_percentage?: number
+          ownership_transferred_at?: string | null
+          platform_fee_idr?: number | null
+          position_id?: string | null
+          property_id?: string
+          seller_payout_at?: string | null
+          seller_user_id?: string
+          transfer_amount_idr?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "liquidity_transfer_ledger_exit_listing_id_fkey"
+            columns: ["exit_listing_id"]
+            isOneToOne: false
+            referencedRelation: "exit_listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "liquidity_transfer_ledger_position_id_fkey"
+            columns: ["position_id"]
+            isOneToOne: false
+            referencedRelation: "investment_positions"
             referencedColumns: ["id"]
           },
         ]
@@ -53112,6 +53300,48 @@ export type Database = {
           search_id?: string
           title?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      secondary_market_metrics: {
+        Row: {
+          active_exit_listings: number | null
+          avg_discount_rate_pct: number | null
+          avg_exit_time_days: number | null
+          avg_premium_rate_pct: number | null
+          created_at: string | null
+          id: string
+          period_date: string
+          repeat_secondary_investors: number | null
+          total_platform_fees_idr: number | null
+          total_secondary_volume_idr: number | null
+          total_transfers: number | null
+        }
+        Insert: {
+          active_exit_listings?: number | null
+          avg_discount_rate_pct?: number | null
+          avg_exit_time_days?: number | null
+          avg_premium_rate_pct?: number | null
+          created_at?: string | null
+          id?: string
+          period_date: string
+          repeat_secondary_investors?: number | null
+          total_platform_fees_idr?: number | null
+          total_secondary_volume_idr?: number | null
+          total_transfers?: number | null
+        }
+        Update: {
+          active_exit_listings?: number | null
+          avg_discount_rate_pct?: number | null
+          avg_exit_time_days?: number | null
+          avg_premium_rate_pct?: number | null
+          created_at?: string | null
+          id?: string
+          period_date?: string
+          repeat_secondary_investors?: number | null
+          total_platform_fees_idr?: number | null
+          total_secondary_volume_idr?: number | null
+          total_transfers?: number | null
         }
         Relationships: []
       }

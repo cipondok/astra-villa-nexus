@@ -206,6 +206,7 @@ export const AutomationPlatformManagement = lazyRetry(() => import("./Automation
 export const TeamManagement = lazyRetry(() => import("./TeamManagement"));
 export const ViralGrowthCampaigns = lazyRetry(() => import("./ViralGrowthCampaigns"));
 export const ViralGrowthAnalyticsDashboard = lazyRetry(() => import("./ViralGrowthAnalyticsDashboard"));
+export const SecondaryMarketDashboard = lazyRetry(() => import("./SecondaryMarketDashboard"));
 export const MediaCoveragePR = lazyRetry(() => import("./MediaCoveragePR"));
 export const AHUCompanyChecker = lazyRetry(() => import("./AHUCompanyChecker"));
 export const ConciergeServiceManagement = lazyRetry(() => import("./ConciergeServiceManagement"));
@@ -921,6 +922,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "team-management":     () => <TeamManagement />,
   "viral-growth-campaigns": () => <ViralGrowthCampaigns />,
   "viral-growth-analytics": () => <ViralGrowthAnalyticsDashboard />,
+  "secondary-market-command": () => <SecondaryMarketDashboard />,
   "media-coverage-pr":   () => <MediaCoveragePR />,
   "concierge-service":   () => <ConciergeServiceManagement />,
   "ahu-company-checker": () => <AHUCompanyChecker />,
@@ -1787,4 +1789,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "deal-velocity-command": { label: "Deal Velocity Engine", category: "Marketplace Growth" },
   "founder-control-tower": { label: "Founder Control Tower", category: "Operations" },
   "viral-growth-analytics": { label: "Viral Growth Analytics", category: "Marketplace Growth" },
+  "secondary-market-command": { label: "Secondary Market Command", category: "Investor Management" },
 };
