@@ -1169,6 +1169,13 @@ export const navigationSections = {
       badge: "🌍 Global"
     },
     {
+      key: "global-expansion-command",
+      label: "Global Marketplace Expansion",
+      icon: Globe,
+      description: "Multi-country configuration, FX routing, partner network, cross-border escrow & compliance infrastructure",
+      badge: "🌐 Expansion"
+    },
+    {
       key: "ipo-readiness-metrics",
       label: "IPO Readiness Metrics",
       icon: BarChart3,
