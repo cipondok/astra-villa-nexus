@@ -826,6 +826,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "capital-activation-command": () => <AdminCapitalActivationPanel />,
   "investor-acquisition-campaign": () => <InvestorAcquisitionCampaignCommand />,
   "signup-conversion-analytics": () => <SignupConversionDashboard />,
+  "inquiry-conversion-analytics": () => <InquiryConversionDashboard />,
   "supply-growth-command": () => <SupplyGrowthCommandCenter />,
   "deal-velocity-command": () => <DealVelocityCommandCenter />,
   "founder-control-tower": () => <FounderControlTower />,
