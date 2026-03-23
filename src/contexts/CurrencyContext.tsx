@@ -49,7 +49,7 @@ const LANG_CURRENCY_MAP: Record<string, CurrencyCode> = {
 export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
   const [currency, setCurrencyState] = useState<CurrencyCode>(() => {
     const saved = safeLocalStorage.getItem("currency");
-    if (saved && ["IDR", "USD", "SGD", "AUD"].includes(saved)) return saved as CurrencyCode;
+    if (saved && ["IDR", "USD", "SGD", "AUD", "EUR"].includes(saved)) return saved as CurrencyCode;
     return "IDR";
   });
 
