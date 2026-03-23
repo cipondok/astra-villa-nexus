@@ -546,23 +546,170 @@ const InfrastructureNarrative = () => (
   </motion.div>
 );
 
+// ─── Tab 5: Live AI Chat ─────────────────────────────────────────────────────
+const quickPrompts = [
+  { label: "Daily Execution Plan", prompt: "Give me my top 5 priority actions for today based on current marketplace data." },
+  { label: "Agent Outreach Script", prompt: "Generate a WhatsApp outreach script for recruiting property agents in Bali focusing on villa listings." },
+  { label: "Investor Response", prompt: "An investor from Singapore is interested in Bali villas with $200K budget seeking 8%+ rental yield. Draft a personalized WhatsApp response." },
+  { label: "Deal Negotiation", prompt: "A buyer offered Rp 2.8B on a villa listed at Rp 3.2B in Seminyak with high demand. What's the optimal counter-offer strategy?" },
+  { label: "Listing Optimization", prompt: "Optimize this listing: 3BR villa in Canggu, 200sqm, rice field views, Rp 4.5B. Target: international investors seeking rental yield." },
+];
+
+const LiveAIChat = () => {
+  const { messages, isStreaming, sendMessage, stopStreaming, clearMessages } = useFounderCopilot();
+  const [input, setInput] = useState("");
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+    }
+  }, [messages]);
+
+  const handleSend = () => {
+    if (!input.trim() || isStreaming) return;
+    sendMessage(input.trim());
+    setInput("");
+  };
+
+  const handleQuickPrompt = (prompt: string) => {
+    if (isStreaming) return;
+    sendMessage(prompt);
+  };
+
+  return (
+    <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-3">
+      <Card className="border-border/40 bg-card/80 backdrop-blur-sm overflow-hidden flex flex-col" style={{ height: "520px" }}>
+        {/* Chat header */}
+        <div className="px-4 py-2.5 border-b border-border/30 flex items-center justify-between bg-muted/10">
+          <div className="flex items-center gap-2">
+            <div className="h-7 w-7 rounded-lg bg-primary/15 flex items-center justify-center">
+              <Brain className="h-3.5 w-3.5 text-primary" />
+            </div>
+            <div>
+              <span className="text-[11px] font-bold text-foreground">ASTRA Founder Copilot</span>
+              <p className="text-[8px] text-muted-foreground">Real-time marketplace intelligence • 5 task modes</p>
+            </div>
+          </div>
+          {messages.length > 0 && (
+            <button onClick={clearMessages} className="p-1.5 rounded-md hover:bg-muted/50 transition-colors">
+              <Trash2 className="h-3.5 w-3.5 text-muted-foreground" />
+            </button>
+          )}
+        </div>
+
+        {/* Messages area */}
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+          {messages.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full space-y-4">
+              <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                <MessageSquare className="h-6 w-6 text-primary" />
+              </div>
+              <div className="text-center">
+                <h3 className="text-sm font-bold text-foreground">Founder AI Copilot</h3>
+                <p className="text-[10px] text-muted-foreground max-w-xs mt-1">
+                  Agent outreach scripts • Investor responses • Deal negotiation • Listing optimization • Daily execution
+                </p>
+              </div>
+              <div className="w-full max-w-md grid grid-cols-1 gap-1.5">
+                {quickPrompts.map((q) => (
+                  <button
+                    key={q.label}
+                    onClick={() => handleQuickPrompt(q.prompt)}
+                    className="text-left px-3 py-2 rounded-lg bg-muted/20 border border-border/30 hover:bg-muted/40 transition-colors"
+                  >
+                    <span className="text-[10px] font-bold text-foreground">{q.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <AnimatePresence initial={false}>
+              {messages.map((msg) => (
+                <motion.div
+                  key={msg.id}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={cn("flex", msg.role === "user" ? "justify-end" : "justify-start")}
+                >
+                  <div className={cn(
+                    "max-w-[80%] rounded-xl px-3.5 py-2.5",
+                    msg.role === "user"
+                      ? "bg-primary text-primary-foreground rounded-br-sm"
+                      : "bg-muted/40 text-foreground rounded-bl-sm border border-border/30"
+                  )}>
+                    {msg.role === "assistant" ? (
+                      <div className="prose prose-sm dark:prose-invert max-w-none text-[11px] leading-relaxed [&_p]:mb-1.5 [&_ul]:my-1 [&_li]:my-0.5 [&_h1]:text-sm [&_h2]:text-xs [&_h3]:text-[11px] [&_strong]:text-foreground">
+                        <ReactMarkdown>{msg.content}</ReactMarkdown>
+                      </div>
+                    ) : (
+                      <p className="text-[11px]">{msg.content}</p>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+              {isStreaming && messages[messages.length - 1]?.role !== "assistant" && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
+                  <div className="bg-muted/40 rounded-xl rounded-bl-sm px-4 py-3 border border-border/30">
+                    <div className="flex gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "0ms" }} />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "150ms" }} />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "300ms" }} />
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          )}
+        </div>
+
+        {/* Input */}
+        <div className="px-4 py-3 border-t border-border/30 bg-muted/5">
+          <div className="flex items-center gap-2">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
+              placeholder="Ask about agents, investors, deals, listings, or daily execution..."
+              className="flex-1 text-[11px] h-9 bg-background/60 border-border/40"
+              disabled={isStreaming}
+            />
+            {isStreaming ? (
+              <button onClick={stopStreaming} className="h-9 w-9 rounded-lg bg-destructive/10 flex items-center justify-center hover:bg-destructive/20 transition-colors shrink-0">
+                <Square className="h-3.5 w-3.5 text-destructive" />
+              </button>
+            ) : (
+              <button onClick={handleSend} disabled={!input.trim()} className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors disabled:opacity-30 shrink-0">
+                <Send className="h-3.5 w-3.5 text-primary" />
+              </button>
+            )}
+          </div>
+        </div>
+      </Card>
+    </motion.div>
+  );
+};
+
 // ─── Main ────────────────────────────────────────────────────────────────────
 const FounderAICopilotGlobalIntel = () => (
   <div className="space-y-4">
     <div className="flex items-center justify-between">
       <div>
         <h1 className="text-lg font-bold text-foreground">Founder AI Copilot & Global Intelligence</h1>
-        <p className="text-[10px] text-muted-foreground">Strategic decision AI • City launch simulator • Capital flow • Infrastructure evolution</p>
+        <p className="text-[10px] text-muted-foreground">Live AI chat • Strategic decision AI • City launch simulator • Capital flow • Infrastructure</p>
       </div>
       <Badge variant="outline" className="text-[9px] h-5 border-primary/30 text-primary">
         <Brain className="h-3 w-3 mr-1" />AI Copilot Active
       </Badge>
     </div>
 
-    <Tabs defaultValue="copilot" className="space-y-3">
+    <Tabs defaultValue="chat" className="space-y-3">
       <TabsList className="bg-muted/30 border border-border/40 h-9">
+        <TabsTrigger value="chat" className="text-[10px] gap-1 data-[state=active]:bg-primary/10 data-[state=active]:text-primary">
+          <MessageSquare className="h-3 w-3" />Live Chat
+        </TabsTrigger>
         <TabsTrigger value="copilot" className="text-[10px] gap-1 data-[state=active]:bg-primary/10 data-[state=active]:text-primary">
-          <Brain className="h-3 w-3" />AI Copilot
+          <Brain className="h-3 w-3" />Dashboard
         </TabsTrigger>
         <TabsTrigger value="launch" className="text-[10px] gap-1 data-[state=active]:bg-primary/10 data-[state=active]:text-primary">
           <Rocket className="h-3 w-3" />City Launch
@@ -575,6 +722,7 @@ const FounderAICopilotGlobalIntel = () => (
         </TabsTrigger>
       </TabsList>
 
+      <TabsContent value="chat"><LiveAIChat /></TabsContent>
       <TabsContent value="copilot"><AICopilot /></TabsContent>
       <TabsContent value="launch"><CityLaunchSimulator /></TabsContent>
       <TabsContent value="capital"><GlobalCapitalFlow /></TabsContent>
