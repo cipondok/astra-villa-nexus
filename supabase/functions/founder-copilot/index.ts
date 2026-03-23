@@ -58,13 +58,15 @@ async function gatherFounderContext() {
   let pricingSummary = "No pricing signal data available";
   let strategySummary = "No strategy signals available";
   let capitalAllocSummary = "No capital allocation data available";
+  let planetarySummary = "No planetary intelligence data available";
   try {
-    const [liqRes, priceRes, capRes, stratRes, allocRes] = await Promise.all([
+    const [liqRes, priceRes, capRes, stratRes, allocRes, planetRes] = await Promise.all([
       supabaseAdmin.from("liquidity_metrics_daily").select("city, liquidity_velocity_score, absorption_rate, market_classification, demand_pressure_index").order("liquidity_velocity_score", { ascending: false }).limit(10),
       supabaseAdmin.from("property_price_signals").select("city, listing_price, demand_adjusted_price, investor_bid_pressure_score, price_volatility_index").order("investor_bid_pressure_score", { ascending: false }).limit(10),
       supabaseAdmin.from("capital_flow_signals").select("city, capital_inflow_score, avg_ticket_size, capital_volume").order("capital_inflow_score", { ascending: false }).limit(5),
       supabaseAdmin.from("marketplace_strategy_signals").select("city, recommended_strategy, strategy_priority_index, confidence_level, supply_score, demand_score").order("strategy_priority_index", { ascending: false }).limit(5),
       supabaseAdmin.from("capital_allocation_signals").select("city, capital_efficiency_score, allocation_priority_score, recommended_capital_direction, confidence_level").order("allocation_priority_score", { ascending: false }).limit(5),
+      supabaseAdmin.from("global_property_signals").select("city, urban_growth_score, market_cycle_phase, capital_inflow_intensity, liquidity_velocity_score, confidence_level").order("signal_timestamp", { ascending: false }).limit(10),
     ]);
     const liq = liqRes.data;
     if (liq?.length) {
@@ -107,6 +109,18 @@ async function gatherFounderContext() {
         capitalAllocSummary += `\n  • ${a.city}: Efficiency ${a.capital_efficiency_score} | Priority ${a.allocation_priority_score} | ${a.recommended_capital_direction} (${a.confidence_level})`;
       }
     }
+    const planet = planetRes.data;
+    if (planet?.length) {
+      const fastest = [...planet].sort((a, b) => (b.urban_growth_score || 0) - (a.urban_growth_score || 0))[0];
+      const highestCap = [...planet].sort((a, b) => (b.capital_inflow_intensity || 0) - (a.capital_inflow_intensity || 0))[0];
+      const phases: Record<string, number> = {};
+      planet.forEach((p: any) => { phases[p.market_cycle_phase] = (phases[p.market_cycle_phase] || 0) + 1; });
+      const dominantPhase = Object.entries(phases).sort((a, b) => b[1] - a[1])[0]?.[0] || "unknown";
+      planetarySummary = `Fastest Growing: ${fastest?.city} (Growth ${fastest?.urban_growth_score}/100) | Highest Capital: ${highestCap?.city} (Inflow ${highestCap?.capital_inflow_intensity}/100) | Global Cycle: ${dominantPhase}`;
+      for (const p of planet.slice(0, 5)) {
+        planetarySummary += `\n  • ${p.city}: Growth ${p.urban_growth_score} | Cycle: ${p.market_cycle_phase} | Capital ${p.capital_inflow_intensity} | Confidence ${p.confidence_level}`;
+      }
+    }
   } catch { /* skip */ }
 
   return {
@@ -122,6 +136,7 @@ async function gatherFounderContext() {
     pricing_summary: pricingSummary,
     strategy_summary: strategySummary,
     capital_allocation_summary: capitalAllocSummary,
+    planetary_summary: planetarySummary,
     date: today,
   };
 }
@@ -177,6 +192,9 @@ ${context.strategy_summary}
 
 GLOBAL CAPITAL ALLOCATION INTELLIGENCE:
 ${context.capital_allocation_summary}
+
+PLANETARY REAL ESTATE INTELLIGENCE GRID:
+${context.planetary_summary}
 
 
 ═══════════════════════════════════════════
