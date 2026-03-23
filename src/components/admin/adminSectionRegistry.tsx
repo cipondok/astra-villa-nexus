@@ -1100,6 +1100,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ipo-readiness-metrics":       () => <IPOReadinessMetrics />,
   "ai-copilot":                  () => <AdminAICoPilot />,
   "founder-daily-execution":     () => <FounderDailyExecution />,
+  "daily-ops-battle-station":    () => <DailyOpsBattleStation />,
   "first-city-domination":       () => <FirstCityDominationCommand />,
   "deal-priority-revenue":       () => <DealPriorityRevenueIntelligence />,
   "founder-mobile-warroom":      () => <FounderMobileWarRoom />,
