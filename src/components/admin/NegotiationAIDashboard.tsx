@@ -351,7 +351,7 @@ Classification:
   80–100 → Hot 🔥
   60–79  → Active 📊
   40–59  → Fragile ⚠️
-  <40    → At Risk 🚨`}</pre>
+  {'<'}40    → At Risk 🚨`}</pre>
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-3 bg-emerald-500/10 rounded border border-emerald-500/20">
                   <p className="font-medium text-emerald-400 text-xs">Hot: Move to escrow</p>
