@@ -323,10 +323,15 @@ const WalletPage = () => {
                             {typeLabels[tx.transaction_type] || tx.transaction_type}
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            {new Date(tx.created_at).toLocaleDateString('en-US', {
-                              month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                            {new Date(tx.created_at).toLocaleDateString('id-ID', {
+                              day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
                             })}
                           </p>
+                          {tx.metadata?.original_currency && (
+                            <p className="text-[10px] text-muted-foreground/70">
+                              {tx.metadata.original_currency} {Number(tx.metadata.original_amount).toLocaleString()} → IDR (rate: {tx.metadata.fx_rate})
+                            </p>
+                          )}
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
