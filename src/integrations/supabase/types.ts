@@ -17736,6 +17736,87 @@ export type Database = {
         }
         Relationships: []
       }
+      escrow_commitment_actions: {
+        Row: {
+          action_type: string
+          created_at: string
+          deal_id: string
+          executed_at: string | null
+          id: string
+          metadata: Json | null
+          scheduled_time: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          deal_id: string
+          executed_at?: string | null
+          id?: string
+          metadata?: Json | null
+          scheduled_time?: string
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          deal_id?: string
+          executed_at?: string | null
+          id?: string
+          metadata?: Json | null
+          scheduled_time?: string
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      escrow_conversion_metrics: {
+        Row: {
+          average_time_to_escrow_hours: number | null
+          computed_at: string
+          created_at: string
+          deals_entering_escrow: number | null
+          deals_reaching_agreement: number | null
+          escrow_conversion_rate: number | null
+          id: string
+          metadata: Json | null
+          period_end: string
+          period_start: string
+          top_closing_agent_id: string | null
+          total_escrow_volume_idr: number | null
+        }
+        Insert: {
+          average_time_to_escrow_hours?: number | null
+          computed_at?: string
+          created_at?: string
+          deals_entering_escrow?: number | null
+          deals_reaching_agreement?: number | null
+          escrow_conversion_rate?: number | null
+          id?: string
+          metadata?: Json | null
+          period_end: string
+          period_start: string
+          top_closing_agent_id?: string | null
+          total_escrow_volume_idr?: number | null
+        }
+        Update: {
+          average_time_to_escrow_hours?: number | null
+          computed_at?: string
+          created_at?: string
+          deals_entering_escrow?: number | null
+          deals_reaching_agreement?: number | null
+          escrow_conversion_rate?: number | null
+          id?: string
+          metadata?: Json | null
+          period_end?: string
+          period_start?: string
+          top_closing_agent_id?: string | null
+          total_escrow_volume_idr?: number | null
+        }
+        Relationships: []
+      }
       escrow_ledger_entries: {
         Row: {
           account_type: string
@@ -17862,6 +17943,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      escrow_readiness_events: {
+        Row: {
+          agreement_probability_score: number | null
+          created_at: string
+          deal_id: string
+          id: string
+          intent_signals: Json | null
+          investor_user_id: string | null
+          negotiation_stage: string
+          price_gap_percentage: number | null
+          readiness_status: string
+        }
+        Insert: {
+          agreement_probability_score?: number | null
+          created_at?: string
+          deal_id: string
+          id?: string
+          intent_signals?: Json | null
+          investor_user_id?: string | null
+          negotiation_stage?: string
+          price_gap_percentage?: number | null
+          readiness_status?: string
+        }
+        Update: {
+          agreement_probability_score?: number | null
+          created_at?: string
+          deal_id?: string
+          id?: string
+          intent_signals?: Json | null
+          investor_user_id?: string | null
+          negotiation_stage?: string
+          price_gap_percentage?: number | null
+          readiness_status?: string
+        }
+        Relationships: []
       }
       escrow_system_events: {
         Row: {

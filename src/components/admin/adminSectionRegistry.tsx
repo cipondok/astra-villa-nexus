@@ -125,6 +125,7 @@ export const NegotiationChatInterface = lazyRetry(() => import("./NegotiationCha
 export const DealProgressTimeline = lazyRetry(() => import("./DealProgressTimeline"));
 export const SecurePaymentEscrowFlow = lazyRetry(() => import("./SecurePaymentEscrowFlow"));
 export const ClosingCelebrationScreen = lazyRetry(() => import("./ClosingCelebrationScreen"));
+export const EscrowConversionDashboard = lazyRetry(() => import("./EscrowConversionDashboard"));
 export const PostClosingOwnershipDashboard = lazyRetry(() => import("./PostClosingOwnershipDashboard"));
 export const InvestorPortfolioTracking = lazyRetry(() => import("./InvestorPortfolioTracking"));
 export const RentalYieldMonitoring = lazyRetry(() => import("./RentalYieldMonitoring"));
@@ -802,6 +803,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "security-intelligence-center": () => <SecurityIntelligenceDashboard />,
   "global-transaction-intelligence": () => <GlobalTransactionIntelligence />,
   "escrow-financial-control": () => <EscrowFinancialDashboard />,
+  "escrow-conversion-dashboard": () => <EscrowConversionDashboard />,
   "risk-fraud-intelligence": () => <RiskFraudIntelligenceDashboard />,
 
   // Marketplace Growth — all section renderers
