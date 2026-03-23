@@ -431,6 +431,7 @@ export const IPOReadinessMetrics = lazyRetry(() => import("./IPOReadinessMetrics
 // FounderWarRoom moved to AI Intelligence section above
 export const AdminAICoPilot = lazyRetry(() => import("./AdminAICoPilot"));
 export const FounderDailyExecution = lazyRetry(() => import("./FounderDailyExecution"));
+export const DailyOpsBattleStation = lazyRetry(() => import("./DailyOpsBattleStation"));
 export const First100KRevenuePlan = lazyRetry(() => import("./First100KRevenuePlan"));
 export const InvestorNarrativeCoaching = lazyRetry(() => import("./InvestorNarrativeCoaching"));
 export const VendorOutreachScripts = lazyRetry(() => import("./VendorOutreachScripts"));
@@ -1099,6 +1100,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ipo-readiness-metrics":       () => <IPOReadinessMetrics />,
   "ai-copilot":                  () => <AdminAICoPilot />,
   "founder-daily-execution":     () => <FounderDailyExecution />,
+  "daily-ops-battle-station":    () => <DailyOpsBattleStation />,
   "first-city-domination":       () => <FirstCityDominationCommand />,
   "deal-priority-revenue":       () => <DealPriorityRevenueIntelligence />,
   "founder-mobile-warroom":      () => <FounderMobileWarRoom />,
@@ -1611,6 +1613,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "listing-optimization-ai": { label: "Listing Optimization AI", category: "Operations" },
   "ai-copilot": { label: "AI Co-Pilot", category: "Operations" },
   "founder-daily-execution": { label: "Founder Daily Execution", category: "Operations" },
+  "daily-ops-battle-station": { label: "Daily Ops Battle Station", category: "Execution Command" },
   "first-100k-revenue": { label: "First $100K Revenue Plan", category: "Operations" },
   "investor-narrative-coaching": { label: "Investor Narrative Coaching", category: "Strategy" },
   "vendor-outreach-scripts": { label: "Vendor Outreach Scripts", category: "Strategy" },
