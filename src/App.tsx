@@ -42,28 +42,16 @@ const GlobalLoadingIndicator = lazy(() => import('@/components/ui/GlobalLoadingI
 
 const ResponsiveAIChatWidget = lazy(() => import('@/components/ai/ResponsiveAIChatWidget'));
 
-const SHELLLESS_ROUTES = new Set(['/', '/landing', '/investor-landing']);
-
-const isShelllessPath = (pathname: string) => SHELLLESS_ROUTES.has(pathname);
-
 const ChatWidgetGuard = () => {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
-  if (isAdmin || isShelllessPath(location.pathname)) return null;
+  if (isAdmin) return null;
   return (
     <ResponsiveAIChatWidget 
       showScrollButton={true}
       onScrollToTop={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
     />
   );
-};
-
-const GlobalFloatingActions = () => {
-  const location = useLocation();
-
-  if (isShelllessPath(location.pathname)) return null;
-
-  return <WhatsAppInquiryButton variant="floating" defaultType="general" />;
 };
 
 const WhatsAppInquiryButton = lazy(() => import('@/components/WhatsAppInquiryButton'));
@@ -491,7 +479,6 @@ const AppContent = () => {
   const location = useLocation();
   const { language } = useTranslation();
   const isAdminRoute = ['/admin', '/admin-dashboard', '/settings', '/admin/ai-performance', '/admin/listing-review'].includes(location.pathname);
-  const isShelllessRoute = isShelllessPath(location.pathname);
   const { isMobile } = useIsMobile();
   const { isAdmin } = useAdminCheck();
   const { maintenanceMode, maintenanceMessage } = useMaintenanceMode();
@@ -506,15 +493,15 @@ const AppContent = () => {
       <NetworkStatusIndicator />
       <Suspense fallback={null}><AuthenticatedHooks /></Suspense>
       <Suspense fallback={null}><GlobalLoadingIndicator /></Suspense>
-      {!isAdminRoute && !isShelllessRoute && <Suspense fallback={null}><Navigation /></Suspense>}
+      {!isAdminRoute && <Suspense fallback={null}><Navigation /></Suspense>}
       
-      <main className={isAdminRoute || isShelllessRoute ? '' : 'pt-10 md:pt-11 lg:pt-12 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0'}>
+      <main className={isAdminRoute ? '' : 'pt-10 md:pt-11 lg:pt-12 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0'}>
         <AnimatePresence mode="popLayout" initial={false}>
           <PageTransition key={location.pathname}>
             <Suspense fallback={<PageLoader />}>
               <Routes location={location}>
-                <Route path="/" element={<InvestorLandingPage />} />
-                <Route path="/landing" element={<InvestorLandingPage />} />
+                <Route path="/" element={<Index />} />
+                <Route path="/landing" element={<Index />} />
                 <Route path="/investor-landing" element={<InvestorLandingPage />} />
                 <Route path="/onboarding/investor" element={<InvestorOnboarding />} />
                 <Route path="/onboarding/investor-wizard" element={<InvestorOnboardingWizard />} />
@@ -659,7 +646,7 @@ const AppContent = () => {
                   <Route index element={<PortfolioROITrackerPage />} />
                 </Route>
                 <Route path="/market-intelligence-feed" element={<MarketIntelligenceFeedPage />} />
-                <Route path="/investor-landing-legacy" element={<InvestorLanding />} />
+                <Route path="/investor-landing" element={<InvestorLanding />} />
                 <Route path="/flash-deals" element={<AuctionFlashDealsPage />} />
                 <Route path="/investment-map-explorer" element={<InvestmentMapExplorerPage />} />
                 <Route path="/ai-autopilot" element={<ProtectedRoute />}>
@@ -1017,13 +1004,13 @@ const AppContent = () => {
           </PageTransition>
         </AnimatePresence>
       </main>
-      {!isAdminRoute && !isShelllessRoute && (
+      {!isAdminRoute && (
         <Suspense fallback={<div style={{ minHeight: isMobile ? '64px' : '180px' }} />}>
           {isMobile ? <MobileFooter /> : <ProfessionalFooter language={language} />}
         </Suspense>
       )}
       {/* Mobile bottom tab bar */}
-      {!isShelllessRoute && <Suspense fallback={null}><MobileBottomTabBar /></Suspense>}
+      <Suspense fallback={null}><MobileBottomTabBar /></Suspense>
     </div>
   );
 };
@@ -1155,7 +1142,9 @@ function App() {
                             <CookieSystem />
                             <Suspense fallback={null}>
                               <ChatWidgetGuard />
-                              <GlobalFloatingActions />
+                              
+                              <WhatsAppInquiryButton variant="floating" defaultType="general" />
+                              
                               <SessionExpirationHandler />
                               <AuthNotificationHandler />
                             </Suspense>
