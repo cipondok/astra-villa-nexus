@@ -69,7 +69,7 @@ const EarlyInvestmentCTA = lazy(() => import("@/components/home/EarlyInvestmentC
 const CapitalSafetyStrip = lazy(() => import("@/components/home/CapitalSafetyStrip"));
 const FirstFundingCTA = lazy(() => import("@/components/home/FirstFundingCTA"));
 const InvestorCredibilityShowcase = lazy(() => import("@/components/home/InvestorCredibilityShowcase"));
-const MobileFloatingCTA = lazy(() => import("@/components/home/MobileFloatingCTA"));
+const SocialProofStrip = lazy(() => import("@/components/home/SocialProofStrip"));
 const TrustFooterStrip = lazy(() => import("@/components/home/TrustFooterStrip"));
 const PWAInstallPrompt = lazy(() => import("@/components/pwa/PWAInstallPrompt"));
 const ExitIntentPopup = lazy(() => import("@/components/home/ExitIntentPopup"));
