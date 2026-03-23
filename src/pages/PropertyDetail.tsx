@@ -1043,6 +1043,28 @@ const PropertyDetail: React.FC = () => {
             </Card>
             </ScrollReveal>
 
+            {/* Investment Hero Summary — top conversion widget */}
+            <Suspense fallback={null}>
+              <InvestmentHeroSummary
+                propertyId={property.id}
+                price={property.price}
+                city={property.city}
+                propertyType={property.property_type}
+                onEscrowClick={() => {
+                  if (!user) { setShowAuthModal(true); return; }
+                  setShowMobileOffer(true);
+                }}
+              />
+            </Suspense>
+
+            {/* Smart Price Positioning Insight */}
+            <Suspense fallback={null}>
+              <SmartPricePositioning
+                propertyId={property.id}
+                currentPrice={property.price}
+              />
+            </Suspense>
+
             {/* Property Details Tabs - Slim */}
             <ScrollReveal direction="up" delay={100}>
             <Card className="border border-gold-primary/10 bg-card backdrop-blur-xl rounded-xl overflow-hidden">
