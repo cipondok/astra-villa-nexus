@@ -371,6 +371,13 @@ export const navigationSections = {
       badge: "🎯 Acquisition"
     },
     {
+      key: "investor-campaign-engine",
+      label: "Investor Campaign Engine",
+      icon: Megaphone,
+      description: "Daily multi-channel investor outreach — WhatsApp, Telegram, LinkedIn, Instagram scripts with follow-up flows",
+      badge: "🚀 Campaigns"
+    },
+    {
       key: "signup-conversion-analytics",
       label: "Signup Conversion Analytics",
       icon: Users,
