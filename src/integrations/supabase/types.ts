@@ -14300,6 +14300,63 @@ export type Database = {
         }
         Relationships: []
       }
+      crossborder_escrow_records: {
+        Row: {
+          asset_country: string
+          compliance_status: string | null
+          converted_amount_idr: number
+          created_at: string
+          custody_partner: string | null
+          deal_id: string | null
+          escrow_id: string | null
+          fx_rate_applied: number | null
+          id: string
+          investor_user_id: string | null
+          jurisdiction_tag: string | null
+          origin_country: string
+          settled_at: string | null
+          settlement_currency: string
+          source_amount: number
+          updated_at: string
+        }
+        Insert: {
+          asset_country: string
+          compliance_status?: string | null
+          converted_amount_idr?: number
+          created_at?: string
+          custody_partner?: string | null
+          deal_id?: string | null
+          escrow_id?: string | null
+          fx_rate_applied?: number | null
+          id?: string
+          investor_user_id?: string | null
+          jurisdiction_tag?: string | null
+          origin_country: string
+          settled_at?: string | null
+          settlement_currency?: string
+          source_amount?: number
+          updated_at?: string
+        }
+        Update: {
+          asset_country?: string
+          compliance_status?: string | null
+          converted_amount_idr?: number
+          created_at?: string
+          custody_partner?: string | null
+          deal_id?: string | null
+          escrow_id?: string | null
+          fx_rate_applied?: number | null
+          id?: string
+          investor_user_id?: string | null
+          jurisdiction_tag?: string | null
+          origin_country?: string
+          settled_at?: string | null
+          settlement_currency?: string
+          source_amount?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       cs_automation_rules: {
         Row: {
           actions: Json
@@ -21796,6 +21853,51 @@ export type Database = {
         }
         Relationships: []
       }
+      fx_conversion_ledger: {
+        Row: {
+          converted_amount: number
+          created_at: string
+          fee_amount: number | null
+          fx_provider: string | null
+          fx_rate: number
+          id: string
+          reference_id: string | null
+          reference_type: string | null
+          source_amount: number
+          source_currency: string
+          target_currency: string
+          user_id: string | null
+        }
+        Insert: {
+          converted_amount: number
+          created_at?: string
+          fee_amount?: number | null
+          fx_provider?: string | null
+          fx_rate: number
+          id?: string
+          reference_id?: string | null
+          reference_type?: string | null
+          source_amount: number
+          source_currency: string
+          target_currency: string
+          user_id?: string | null
+        }
+        Update: {
+          converted_amount?: number
+          created_at?: string
+          fee_amount?: number | null
+          fx_provider?: string | null
+          fx_rate?: number
+          id?: string
+          reference_id?: string | null
+          reference_type?: string | null
+          source_amount?: number
+          source_currency?: string
+          target_currency?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       fx_rate_snapshots: {
         Row: {
           base_currency: string
@@ -22426,6 +22528,51 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      gateway_routing_profiles: {
+        Row: {
+          compliance_notes: string | null
+          country_code: string
+          created_at: string
+          fallback_provider: string | null
+          id: string
+          is_active: boolean | null
+          preferred_provider: string
+          region_label: string | null
+          settlement_currency: string
+          settlement_latency_hours: number | null
+          supported_methods: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          compliance_notes?: string | null
+          country_code: string
+          created_at?: string
+          fallback_provider?: string | null
+          id?: string
+          is_active?: boolean | null
+          preferred_provider?: string
+          region_label?: string | null
+          settlement_currency?: string
+          settlement_latency_hours?: number | null
+          supported_methods?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          compliance_notes?: string | null
+          country_code?: string
+          created_at?: string
+          fallback_provider?: string | null
+          id?: string
+          is_active?: boolean | null
+          preferred_provider?: string
+          region_label?: string | null
+          settlement_currency?: string
+          settlement_latency_hours?: number | null
+          supported_methods?: string[] | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -24536,6 +24683,60 @@ export type Database = {
             referencedColumns: ["region_id"]
           },
         ]
+      }
+      global_market_insights: {
+        Row: {
+          absorption_rate_pct: number | null
+          avg_price_per_sqm_usd: number | null
+          city: string
+          computed_at: string
+          country_code: string
+          created_at: string
+          data_confidence_pct: number | null
+          demand_index: number | null
+          district: string | null
+          id: string
+          investor_inquiry_density: number | null
+          liquidity_score: number | null
+          macro_trend: string | null
+          risk_indicator: string | null
+          yield_benchmark_pct: number | null
+        }
+        Insert: {
+          absorption_rate_pct?: number | null
+          avg_price_per_sqm_usd?: number | null
+          city: string
+          computed_at?: string
+          country_code: string
+          created_at?: string
+          data_confidence_pct?: number | null
+          demand_index?: number | null
+          district?: string | null
+          id?: string
+          investor_inquiry_density?: number | null
+          liquidity_score?: number | null
+          macro_trend?: string | null
+          risk_indicator?: string | null
+          yield_benchmark_pct?: number | null
+        }
+        Update: {
+          absorption_rate_pct?: number | null
+          avg_price_per_sqm_usd?: number | null
+          city?: string
+          computed_at?: string
+          country_code?: string
+          created_at?: string
+          data_confidence_pct?: number | null
+          demand_index?: number | null
+          district?: string | null
+          id?: string
+          investor_inquiry_density?: number | null
+          liquidity_score?: number | null
+          macro_trend?: string | null
+          risk_indicator?: string | null
+          yield_benchmark_pct?: number | null
+        }
+        Relationships: []
       }
       global_opportunity_scores: {
         Row: {
@@ -32121,6 +32322,42 @@ export type Database = {
           referrer_user_id?: string
           reward_amount?: number | null
           reward_settled?: boolean | null
+        }
+        Relationships: []
+      }
+      investor_region_permissions: {
+        Row: {
+          accreditation_level: string | null
+          allowed_country_codes: string[] | null
+          created_at: string
+          cross_border_limit_usd: number | null
+          cross_border_used_usd: number | null
+          id: string
+          investor_user_id: string
+          updated_at: string
+          verified_at: string | null
+        }
+        Insert: {
+          accreditation_level?: string | null
+          allowed_country_codes?: string[] | null
+          created_at?: string
+          cross_border_limit_usd?: number | null
+          cross_border_used_usd?: number | null
+          id?: string
+          investor_user_id: string
+          updated_at?: string
+          verified_at?: string | null
+        }
+        Update: {
+          accreditation_level?: string | null
+          allowed_country_codes?: string[] | null
+          created_at?: string
+          cross_border_limit_usd?: number | null
+          cross_border_used_usd?: number | null
+          id?: string
+          investor_user_id?: string
+          updated_at?: string
+          verified_at?: string | null
         }
         Relationships: []
       }
@@ -44110,6 +44347,72 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_countries: {
+        Row: {
+          base_currency: string
+          compliance_requirements: Json | null
+          country_code: string
+          country_name: string
+          created_at: string
+          escrow_regulation_type: string | null
+          flag_emoji: string | null
+          foreign_ownership_rules: string | null
+          id: string
+          launch_priority_score: number | null
+          launched_at: string | null
+          local_partner_required: boolean | null
+          max_foreign_ownership_pct: number | null
+          min_investment_amount: number | null
+          property_tax_model: string | null
+          regulatory_status: string
+          supported_property_types: string[] | null
+          timezone: string | null
+          updated_at: string
+        }
+        Insert: {
+          base_currency?: string
+          compliance_requirements?: Json | null
+          country_code: string
+          country_name: string
+          created_at?: string
+          escrow_regulation_type?: string | null
+          flag_emoji?: string | null
+          foreign_ownership_rules?: string | null
+          id?: string
+          launch_priority_score?: number | null
+          launched_at?: string | null
+          local_partner_required?: boolean | null
+          max_foreign_ownership_pct?: number | null
+          min_investment_amount?: number | null
+          property_tax_model?: string | null
+          regulatory_status?: string
+          supported_property_types?: string[] | null
+          timezone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          base_currency?: string
+          compliance_requirements?: Json | null
+          country_code?: string
+          country_name?: string
+          created_at?: string
+          escrow_regulation_type?: string | null
+          flag_emoji?: string | null
+          foreign_ownership_rules?: string | null
+          id?: string
+          launch_priority_score?: number | null
+          launched_at?: string | null
+          local_partner_required?: boolean | null
+          max_foreign_ownership_pct?: number | null
+          min_investment_amount?: number | null
+          property_tax_model?: string | null
+          regulatory_status?: string
+          supported_property_types?: string[] | null
+          timezone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       platform_dependency_index: {
         Row: {
           active_offers: number | null
@@ -51436,6 +51739,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      regional_partner_registry: {
+        Row: {
+          contact_email: string | null
+          contact_phone: string | null
+          contract_end_date: string | null
+          contract_start_date: string | null
+          country_code: string
+          created_at: string
+          id: string
+          notes: string | null
+          onboarding_status: string | null
+          partner_name: string
+          partner_type: string
+          reliability_score: number | null
+          service_coverage: string[] | null
+          total_transactions: number | null
+          updated_at: string
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          contract_end_date?: string | null
+          contract_start_date?: string | null
+          country_code: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          onboarding_status?: string | null
+          partner_name: string
+          partner_type: string
+          reliability_score?: number | null
+          service_coverage?: string[] | null
+          total_transactions?: number | null
+          updated_at?: string
+        }
+        Update: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          contract_end_date?: string | null
+          contract_start_date?: string | null
+          country_code?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          onboarding_status?: string | null
+          partner_name?: string
+          partner_type?: string
+          reliability_score?: number | null
+          service_coverage?: string[] | null
+          total_transactions?: number | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       regulatory_reporting_events: {
         Row: {
