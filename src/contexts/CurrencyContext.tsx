@@ -3,13 +3,14 @@ import { safeLocalStorage } from "@/lib/safeStorage";
 import { useCurrencyStore, CURRENCY_META } from "@/stores/currencyStore";
 import { supabase } from "@/integrations/supabase/client";
 
-export type CurrencyCode = "IDR" | "USD" | "SGD" | "AUD";
+export type CurrencyCode = "IDR" | "USD" | "SGD" | "AUD" | "EUR";
 
 interface ExchangeRates {
   IDR: number;
   USD: number;
   SGD: number;
   AUD: number;
+  EUR: number;
 }
 
 interface CurrencyContextProps {
@@ -28,6 +29,7 @@ const DEFAULT_RATES: ExchangeRates = {
   USD: 1 / 16_200,
   SGD: 1 / 11_900,
   AUD: 1 / 10_500,
+  EUR: 1 / 17_500,
 };
 
 const RATES_CACHE_KEY = "exchange_rates_cache";
@@ -47,7 +49,7 @@ const LANG_CURRENCY_MAP: Record<string, CurrencyCode> = {
 export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
   const [currency, setCurrencyState] = useState<CurrencyCode>(() => {
     const saved = safeLocalStorage.getItem("currency");
-    if (saved && ["IDR", "USD", "SGD", "AUD"].includes(saved)) return saved as CurrencyCode;
+    if (saved && ["IDR", "USD", "SGD", "AUD", "EUR"].includes(saved)) return saved as CurrencyCode;
     return "IDR";
   });
 
@@ -85,6 +87,7 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
           USD: data.rates.USD ?? DEFAULT_RATES.USD,
           SGD: data.rates.SGD ?? DEFAULT_RATES.SGD,
           AUD: data.rates.AUD ?? DEFAULT_RATES.AUD,
+          EUR: data.rates.EUR ?? DEFAULT_RATES.EUR,
         };
         setRates(liveRates);
         setRatesSource(data.fallback ? "fallback" : data.cached ? "cached" : "live");

@@ -6,6 +6,7 @@ interface ExchangeRates {
   USD: number;
   SGD: number;
   AUD: number;
+  EUR: number;
 }
 
 const DEFAULT_RATES: ExchangeRates = {
@@ -13,13 +14,15 @@ const DEFAULT_RATES: ExchangeRates = {
   USD: 1 / 16_200,
   SGD: 1 / 11_900,
   AUD: 1 / 10_500,
+  EUR: 1 / 17_500,
 };
 
 export const CURRENCY_META: Record<CurrencyCode, { locale: string; symbol: string; decimals: number; flag: string; label: string }> = {
-  IDR: { locale: "id-ID", symbol: "Rp", decimals: 0, flag: "🇮🇩", label: "IDR" },
-  USD: { locale: "en-US", symbol: "$", decimals: 0, flag: "🇺🇸", label: "USD" },
-  SGD: { locale: "en-SG", symbol: "S$", decimals: 0, flag: "🇸🇬", label: "SGD" },
-  AUD: { locale: "en-AU", symbol: "A$", decimals: 0, flag: "🇦🇺", label: "AUD" },
+  IDR: { locale: "id-ID", symbol: "Rp", decimals: 0, flag: "🇮🇩", label: "IDR — Indonesian Rupiah" },
+  USD: { locale: "en-US", symbol: "$", decimals: 0, flag: "🇺🇸", label: "USD — US Dollar" },
+  SGD: { locale: "en-SG", symbol: "S$", decimals: 0, flag: "🇸🇬", label: "SGD — Singapore Dollar" },
+  AUD: { locale: "en-AU", symbol: "A$", decimals: 0, flag: "🇦🇺", label: "AUD — Australian Dollar" },
+  EUR: { locale: "de-DE", symbol: "€", decimals: 0, flag: "🇪🇺", label: "EUR — Euro" },
 };
 
 interface CurrencyStore {

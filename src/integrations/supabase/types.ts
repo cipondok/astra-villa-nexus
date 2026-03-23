@@ -15039,6 +15039,39 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_fx_snapshots: {
+        Row: {
+          base_currency: string
+          created_at: string
+          id: string
+          inverse_rate: number
+          rate: number
+          snapshot_date: string
+          source: string | null
+          target_currency: string
+        }
+        Insert: {
+          base_currency?: string
+          created_at?: string
+          id?: string
+          inverse_rate: number
+          rate: number
+          snapshot_date?: string
+          source?: string | null
+          target_currency: string
+        }
+        Update: {
+          base_currency?: string
+          created_at?: string
+          id?: string
+          inverse_rate?: number
+          rate?: number
+          snapshot_date?: string
+          source?: string | null
+          target_currency?: string
+        }
+        Relationships: []
+      }
       data_exchange_api_logs: {
         Row: {
           client_id: string | null
@@ -64220,8 +64253,12 @@ export type Database = {
           currency: string
           description: string | null
           external_payment_ref: string | null
+          fx_rate_used: number | null
+          fx_source: string | null
           id: string
           metadata: Json | null
+          original_amount: number | null
+          original_currency: string | null
           status: string
           transaction_type: string
           updated_at: string
@@ -64234,8 +64271,12 @@ export type Database = {
           currency?: string
           description?: string | null
           external_payment_ref?: string | null
+          fx_rate_used?: number | null
+          fx_source?: string | null
           id?: string
           metadata?: Json | null
+          original_amount?: number | null
+          original_currency?: string | null
           status?: string
           transaction_type: string
           updated_at?: string
@@ -64248,8 +64289,12 @@ export type Database = {
           currency?: string
           description?: string | null
           external_payment_ref?: string | null
+          fx_rate_used?: number | null
+          fx_source?: string | null
           id?: string
           metadata?: Json | null
+          original_amount?: number | null
+          original_currency?: string | null
           status?: string
           transaction_type?: string
           updated_at?: string
