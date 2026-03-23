@@ -15178,6 +15178,104 @@ export type Database = {
         }
         Relationships: []
       }
+      deal_commission_rules: {
+        Row: {
+          agent_split_percentage: number
+          commission_percentage: number
+          created_at: string
+          deal_type: string
+          id: string
+          is_active: boolean | null
+          max_deal_value: number | null
+          min_deal_value: number | null
+          referral_fee_percentage: number | null
+          updated_at: string
+        }
+        Insert: {
+          agent_split_percentage?: number
+          commission_percentage?: number
+          created_at?: string
+          deal_type?: string
+          id?: string
+          is_active?: boolean | null
+          max_deal_value?: number | null
+          min_deal_value?: number | null
+          referral_fee_percentage?: number | null
+          updated_at?: string
+        }
+        Update: {
+          agent_split_percentage?: number
+          commission_percentage?: number
+          created_at?: string
+          deal_type?: string
+          id?: string
+          is_active?: boolean | null
+          max_deal_value?: number | null
+          min_deal_value?: number | null
+          referral_fee_percentage?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      deal_disputes: {
+        Row: {
+          created_at: string
+          deal_id: string
+          description: string | null
+          dispute_type: string
+          escrow_frozen: boolean | null
+          evidence_urls: string[] | null
+          id: string
+          raised_by: string
+          refund_amount: number | null
+          resolution_notes: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          deal_id: string
+          description?: string | null
+          dispute_type?: string
+          escrow_frozen?: boolean | null
+          evidence_urls?: string[] | null
+          id?: string
+          raised_by: string
+          refund_amount?: number | null
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          deal_id?: string
+          description?: string | null
+          dispute_type?: string
+          escrow_frozen?: boolean | null
+          evidence_urls?: string[] | null
+          id?: string
+          raised_by?: string
+          refund_amount?: number | null
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_disputes_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deal_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       deal_dominance_feedback: {
         Row: {
           boost_id: string | null
@@ -15485,6 +15583,154 @@ export type Database = {
           to_stage?: string
         }
         Relationships: []
+      }
+      deal_state_log: {
+        Row: {
+          created_at: string
+          deal_id: string
+          from_state: string | null
+          id: string
+          metadata: Json | null
+          to_state: string
+          trigger_reason: string | null
+          triggered_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          deal_id: string
+          from_state?: string | null
+          id?: string
+          metadata?: Json | null
+          to_state: string
+          trigger_reason?: string | null
+          triggered_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          deal_id?: string
+          from_state?: string | null
+          id?: string
+          metadata?: Json | null
+          to_state?: string
+          trigger_reason?: string | null
+          triggered_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_state_log_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deal_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      deal_transactions: {
+        Row: {
+          agent_id: string | null
+          agreed_price: number | null
+          buyer_user_id: string
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          completed_at: string | null
+          country_origin: string | null
+          created_at: string
+          currency: string
+          deal_status: string
+          deposit_amount: number | null
+          deposit_deadline: string | null
+          escrow_account_reference: string | null
+          escrow_id: string | null
+          fx_rate_snapshot: number | null
+          fx_snapshot_at: string | null
+          id: string
+          offer_id: string | null
+          property_id: string
+          risk_score: number | null
+          seller_user_id: string | null
+          state_history: Json | null
+          updated_at: string
+        }
+        Insert: {
+          agent_id?: string | null
+          agreed_price?: number | null
+          buyer_user_id: string
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          completed_at?: string | null
+          country_origin?: string | null
+          created_at?: string
+          currency?: string
+          deal_status?: string
+          deposit_amount?: number | null
+          deposit_deadline?: string | null
+          escrow_account_reference?: string | null
+          escrow_id?: string | null
+          fx_rate_snapshot?: number | null
+          fx_snapshot_at?: string | null
+          id?: string
+          offer_id?: string | null
+          property_id: string
+          risk_score?: number | null
+          seller_user_id?: string | null
+          state_history?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          agent_id?: string | null
+          agreed_price?: number | null
+          buyer_user_id?: string
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          completed_at?: string | null
+          country_origin?: string | null
+          created_at?: string
+          currency?: string
+          deal_status?: string
+          deposit_amount?: number | null
+          deposit_deadline?: string | null
+          escrow_account_reference?: string | null
+          escrow_id?: string | null
+          fx_rate_snapshot?: number | null
+          fx_snapshot_at?: string | null
+          id?: string
+          offer_id?: string | null
+          property_id?: string
+          risk_score?: number | null
+          seller_user_id?: string | null
+          state_history?: Json | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_transactions_escrow_id_fkey"
+            columns: ["escrow_id"]
+            isOneToOne: false
+            referencedRelation: "escrow_transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deal_transactions_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "property_offers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deal_transactions_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deal_transactions_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       deal_visibility_ranking: {
         Row: {

@@ -278,6 +278,7 @@ export const TaxConfigCenter = lazyRetry(() => import("./TaxConfigCenter"));
 export const LoyaltyProgramManager = lazyRetry(() => import("./LoyaltyProgramManager"));
 export const MultiLanguageManager = lazyRetry(() => import("./MultiLanguageManager"));
 export const EnvironmentalSustainability = lazyRetry(() => import("./EnvironmentalSustainability"));
+export const GlobalTransactionIntelligence = lazyRetry(() => import("./GlobalTransactionIntelligence"));
 export const AdminSecurityIntelligence = lazyRetry(() => import("./AdminSecurityIntelligence"));
 export const SecurityIntelligenceDashboard = lazyRetry(() => import("./SecurityIntelligenceDashboard"));
 export const ContractTemplateManager = lazyRetry(() => import("./ContractTemplateManager"));
@@ -779,6 +780,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "security-monitoring": () => <SecurityMonitoringDashboard />,
   "security-intelligence": () => <AdminSecurityIntelligence />,
   "security-intelligence-center": () => <SecurityIntelligenceDashboard />,
+  "global-transaction-intelligence": () => <GlobalTransactionIntelligence />,
   "report-export":       () => <ReportExportFunction />,
   "enhanced-search":     () => <EnhancedSearchFilters />,
   "system-reports":      () => <SystemReports />,
@@ -1715,4 +1717,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "dev-velocity-tracker": { label: "Dev Velocity Tracker", category: "Operations" },
   "ai-model-governance": { label: "AI Model Governance", category: "Operations" },
   "ux-quality-monitoring": { label: "UX Quality Monitoring", category: "Operations" },
+  "global-transaction-intelligence": { label: "Global Transaction Intelligence", category: "Transactions" },
 };
