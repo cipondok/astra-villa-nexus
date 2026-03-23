@@ -1102,6 +1102,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "ai-copilot":                  () => <AdminAICoPilot />,
   "founder-daily-execution":     () => <FounderDailyExecution />,
   "daily-ops-battle-station":    () => <DailyOpsBattleStation />,
+  "investor-campaign-engine":    () => <InvestorCampaignEngine />,
   "first-city-domination":       () => <FirstCityDominationCommand />,
   "deal-priority-revenue":       () => <DealPriorityRevenueIntelligence />,
   "founder-mobile-warroom":      () => <FounderMobileWarRoom />,
