@@ -183,6 +183,13 @@ export const navigationSections = {
       badge: "⚔️ Ops"
     },
     {
+      key: "first-100-deals-warroom",
+      label: "First 100 Deals War Room",
+      icon: Trophy,
+      description: "Deal sourcing, investor matching, negotiation acceleration, closing workflow & momentum engine",
+      badge: "🏆 Deals"
+    },
+    {
       key: "first-city-domination",
       label: "First City Domination",
       icon: Crosshair,
