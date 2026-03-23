@@ -1809,4 +1809,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "viral-growth-analytics": { label: "Viral Growth Analytics", category: "Marketplace Growth" },
   "secondary-market-command": { label: "Secondary Market Command", category: "Investor Management" },
   "fund-reit-management": { label: "Fund & REIT Management", category: "Investor Management" },
+  "global-expansion-command": { label: "Global Expansion Command", category: "Strategy" },
 };
