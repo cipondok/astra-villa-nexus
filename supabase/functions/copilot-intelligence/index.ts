@@ -213,13 +213,19 @@ serve(async (req) => {
     // Fetch behavioral intelligence
     let hotProperties: any[] = [];
     let demandSignals: any[] = [];
+    let liquidityMetrics: any[] = [];
+    let liquidityForecasts: any[] = [];
     try {
-      const [hotRes, demandRes] = await Promise.all([
+      const [hotRes, demandRes, liqRes, forecastRes] = await Promise.all([
         sb.from("investor_intent_scores").select("property_id, intent_score, intent_level").eq("intent_level", "hot").order("intent_score", { ascending: false }).limit(5),
         sb.from("market_demand_signals").select("city, demand_velocity_score, view_to_inquiry_ratio, total_views, total_inquiries").order("demand_velocity_score", { ascending: false }).limit(5),
+        sb.from("liquidity_metrics_daily").select("city, liquidity_velocity_score, absorption_rate, market_classification, demand_pressure_index, listings_active, deals_closed").order("liquidity_velocity_score", { ascending: false }).limit(10),
+        sb.from("liquidity_forecasts").select("city, predicted_velocity_score, surge_probability, oversupply_risk, forecast_trend").order("surge_probability", { ascending: false }).limit(5),
       ]);
       hotProperties = hotRes.data || [];
       demandSignals = demandRes.data || [];
+      liquidityMetrics = liqRes.data || [];
+      liquidityForecasts = forecastRes.data || [];
     } catch { /* tables may be empty */ }
 
     // Add demand-based recommendations
@@ -239,10 +245,54 @@ serve(async (req) => {
       }
     }
 
+    // Liquidity-based recommendations
+    for (const lm of liquidityMetrics) {
+      if (lm.market_classification === "slow" && lm.listings_active > 5) {
+        recommendations.push({
+          id: `rec-liq-slow-${lm.city}`,
+          type: "liquidity",
+          title: `${lm.city} showing slow liquidity (${lm.liquidity_velocity_score}/100)`,
+          description: `${lm.listings_active} listings, ${lm.deals_closed} deals. Consider pricing optimization or demand campaigns.`,
+          confidence: 80, impact: "Improve velocity", timeWindow: "This week",
+          priority: "high", status: "pending",
+        });
+      }
+    }
+    for (const fc of liquidityForecasts) {
+      if (fc.oversupply_risk > 60) {
+        riskAlerts.push({
+          id: `risk-oversupply-${fc.city}`,
+          category: "supply_imbalance",
+          severity: fc.oversupply_risk > 80 ? "critical" : "warning",
+          title: `Oversupply risk in ${fc.city} (${fc.oversupply_risk}%)`,
+          metric: `Forecast trend: ${fc.forecast_trend}`,
+          trend: "up", probability: fc.oversupply_risk,
+        });
+      }
+      if (fc.surge_probability > 70) {
+        recommendations.push({
+          id: `rec-surge-${fc.city}`,
+          type: "growth",
+          title: `Liquidity surge likely in ${fc.city} (${fc.surge_probability}%)`,
+          description: `Predicted velocity: ${fc.predicted_velocity_score}. Prioritize supply acquisition.`,
+          confidence: Math.round(fc.surge_probability * 0.9), impact: "Capture growth wave",
+          timeWindow: "Next 30 days", priority: "critical", status: "pending",
+        });
+      }
+    }
+
     return json({
       kpis, funnel, recommendations, risk_alerts: riskAlerts,
       hot_properties: hotProperties,
       demand_signals: demandSignals,
+      liquidity: {
+        fastest_cities: liquidityMetrics.filter((m: any) => m.market_classification === "hot").slice(0, 3),
+        slowest_cities: [...liquidityMetrics].sort((a: any, b: any) => a.liquidity_velocity_score - b.liquidity_velocity_score).slice(0, 3),
+        global_velocity: liquidityMetrics.length > 0
+          ? Math.round(liquidityMetrics.reduce((s: number, m: any) => s + (m.liquidity_velocity_score || 0), 0) / liquidityMetrics.length * 10) / 10
+          : 0,
+        forecasts: liquidityForecasts,
+      },
       performance: {
         actions_executed_7d: kpis.copilot_actions_7_days,
         ai_signals_7d: kpis.ai_signals_generated_7_days,
