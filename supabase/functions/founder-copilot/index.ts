@@ -147,6 +147,9 @@ DEAL PIPELINE:
 LIQUIDITY INTELLIGENCE:
 ${context.liquidity_summary}
 
+PRICING & CAPITAL FLOW INTELLIGENCE:
+${context.pricing_summary}
+
 ═══════════════════════════════════════════
 OPERATIONAL EXECUTION MODES (Daily Tasks):
 ═══════════════════════════════════════════
