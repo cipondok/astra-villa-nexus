@@ -3820,10 +3820,50 @@ export type Database = {
           },
         ]
       }
+      ai_image_gen_config: {
+        Row: {
+          auto_enqueue_enabled: boolean
+          cooldown_hours: number
+          daily_budget_limit: number
+          daily_generated_count: number
+          id: string
+          last_budget_reset_at: string | null
+          last_reprioritize_at: string | null
+          max_images_per_property: number
+          min_traffic_threshold: number
+          updated_at: string | null
+        }
+        Insert: {
+          auto_enqueue_enabled?: boolean
+          cooldown_hours?: number
+          daily_budget_limit?: number
+          daily_generated_count?: number
+          id?: string
+          last_budget_reset_at?: string | null
+          last_reprioritize_at?: string | null
+          max_images_per_property?: number
+          min_traffic_threshold?: number
+          updated_at?: string | null
+        }
+        Update: {
+          auto_enqueue_enabled?: boolean
+          cooldown_hours?: number
+          daily_budget_limit?: number
+          daily_generated_count?: number
+          id?: string
+          last_budget_reset_at?: string | null
+          last_reprioritize_at?: string | null
+          max_images_per_property?: number
+          min_traffic_threshold?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       ai_image_jobs: {
         Row: {
           completed_at: string | null
           created_at: string
+          daily_budget_slot: boolean | null
           error_message: string | null
           id: string
           max_retries: number
@@ -3836,12 +3876,18 @@ export type Database = {
           retry_count: number
           started_at: string | null
           status: string
+          traffic_impressions: number | null
+          traffic_inquiries: number | null
+          traffic_intent: string | null
+          traffic_saves: number | null
+          traffic_views: number | null
           updated_at: string
           worker_id: string | null
         }
         Insert: {
           completed_at?: string | null
           created_at?: string
+          daily_budget_slot?: boolean | null
           error_message?: string | null
           id?: string
           max_retries?: number
@@ -3854,12 +3900,18 @@ export type Database = {
           retry_count?: number
           started_at?: string | null
           status?: string
+          traffic_impressions?: number | null
+          traffic_inquiries?: number | null
+          traffic_intent?: string | null
+          traffic_saves?: number | null
+          traffic_views?: number | null
           updated_at?: string
           worker_id?: string | null
         }
         Update: {
           completed_at?: string | null
           created_at?: string
+          daily_budget_slot?: boolean | null
           error_message?: string | null
           id?: string
           max_retries?: number
@@ -3872,6 +3924,11 @@ export type Database = {
           retry_count?: number
           started_at?: string | null
           status?: string
+          traffic_impressions?: number | null
+          traffic_inquiries?: number | null
+          traffic_intent?: string | null
+          traffic_saves?: number | null
+          traffic_views?: number | null
           updated_at?: string
           worker_id?: string | null
         }
