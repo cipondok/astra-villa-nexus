@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.10";
+import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -19,6 +19,15 @@ const supabaseAdmin = createClient(
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
 );
 
+async function safeCount(table: string, filters?: (q: any) => any) {
+  try {
+    let q = supabaseAdmin.from(table).select("id", { count: "exact", head: true });
+    if (filters) q = filters(q);
+    const { count } = await q;
+    return count || 0;
+  } catch { return 0; }
+}
+
 // ── Gather real-time marketplace context ──
 
 async function gatherFounderContext() {
@@ -31,11 +40,17 @@ async function gatherFounderContext() {
     recentListings,
     hotspots,
     recentProfiles,
+    dealsOpen,
+    dealsClosed,
+    escrowActive,
   ] = await Promise.all([
     supabaseAdmin.from("properties").select("id", { count: "exact", head: true }).eq("status", "available"),
     supabaseAdmin.from("properties").select("id, title, city, property_type, price, investment_score, demand_heat_score").eq("status", "available").gte("created_at", sevenDaysAgo).order("created_at", { ascending: false }).limit(10),
     supabaseAdmin.from("investment_hotspots").select("city, hotspot_score, growth_score, rental_score, trend, property_count").order("hotspot_score", { ascending: false }).limit(10),
     supabaseAdmin.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", sevenDaysAgo),
+    safeCount("deal_transactions", q => q.in("status", ["negotiation", "pending", "in_progress"])),
+    safeCount("deal_transactions", q => q.eq("status", "completed")),
+    safeCount("escrow_transactions", q => q.eq("status", "active")),
   ]);
 
   return {
@@ -44,6 +59,9 @@ async function gatherFounderContext() {
     recent_listings: (recentListings.data || []).slice(0, 5),
     new_signups_7d: recentProfiles.count || 0,
     hotspots: hotspots.data || [],
+    deals_open: dealsOpen,
+    deals_closed: dealsClosed,
+    escrow_active: escrowActive,
     date: today,
   };
 }
@@ -82,6 +100,11 @@ ${recentListingsSummary}
 
 MARKET HOTSPOTS:
 ${hotspotSummary}
+
+DEAL PIPELINE:
+• Open Deals: ${context.deals_open}
+• Deals Closed: ${context.deals_closed}
+• Active Escrow: ${context.escrow_active}
 
 ═══════════════════════════════════════════
 OPERATIONAL EXECUTION MODES (Daily Tasks):
