@@ -21259,6 +21259,72 @@ export type Database = {
         }
         Relationships: []
       }
+      funding_experiment_metrics: {
+        Row: {
+          converted: boolean | null
+          created_at: string
+          experiment_name: string
+          funding_amount: number | null
+          id: string
+          metadata: Json | null
+          user_id: string | null
+          variant: string
+        }
+        Insert: {
+          converted?: boolean | null
+          created_at?: string
+          experiment_name: string
+          funding_amount?: number | null
+          id?: string
+          metadata?: Json | null
+          user_id?: string | null
+          variant?: string
+        }
+        Update: {
+          converted?: boolean | null
+          created_at?: string
+          experiment_name?: string
+          funding_amount?: number | null
+          id?: string
+          metadata?: Json | null
+          user_id?: string | null
+          variant?: string
+        }
+        Relationships: []
+      }
+      funding_nudge_actions: {
+        Row: {
+          action_status: string
+          created_at: string
+          id: string
+          nudge_type: string
+          scheduled_at: string
+          sent_at: string | null
+          trigger_condition: string
+          user_id: string
+        }
+        Insert: {
+          action_status?: string
+          created_at?: string
+          id?: string
+          nudge_type: string
+          scheduled_at?: string
+          sent_at?: string | null
+          trigger_condition: string
+          user_id: string
+        }
+        Update: {
+          action_status?: string
+          created_at?: string
+          id?: string
+          nudge_type?: string
+          scheduled_at?: string
+          sent_at?: string | null
+          trigger_condition?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       fx_rate_snapshots: {
         Row: {
           base_currency: string
@@ -64243,6 +64309,39 @@ export type Database = {
           updated_at?: string
           user_id?: string
           wallet_status?: string
+        }
+        Relationships: []
+      }
+      wallet_funding_events: {
+        Row: {
+          amount: number | null
+          created_at: string
+          device_type: string | null
+          geo_country: string | null
+          id: string
+          metadata: Json | null
+          stage: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          device_type?: string | null
+          geo_country?: string | null
+          id?: string
+          metadata?: Json | null
+          stage: string
+          user_id: string
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          device_type?: string | null
+          geo_country?: string | null
+          id?: string
+          metadata?: Json | null
+          stage?: string
+          user_id?: string
         }
         Relationships: []
       }
