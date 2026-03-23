@@ -20931,6 +20931,7 @@ export type Database = {
       }
       fund_investor_positions: {
         Row: {
+          average_entry_nav: number | null
           committed_amount: number | null
           contributed_amount: number | null
           created_at: string | null
@@ -20945,6 +20946,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          average_entry_nav?: number | null
           committed_amount?: number | null
           contributed_amount?: number | null
           created_at?: string | null
@@ -20959,6 +20961,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          average_entry_nav?: number | null
           committed_amount?: number | null
           contributed_amount?: number | null
           created_at?: string | null
@@ -21368,6 +21371,67 @@ export type Database = {
           },
         ]
       }
+      fund_property_allocations: {
+        Row: {
+          acquired_at: string | null
+          acquisition_value_idr: number
+          allocation_percentage: number | null
+          created_at: string
+          current_estimated_value_idr: number
+          fund_id: string
+          id: string
+          property_id: string
+          rental_income_monthly_idr: number | null
+          updated_at: string
+        }
+        Insert: {
+          acquired_at?: string | null
+          acquisition_value_idr?: number
+          allocation_percentage?: number | null
+          created_at?: string
+          current_estimated_value_idr?: number
+          fund_id: string
+          id?: string
+          property_id: string
+          rental_income_monthly_idr?: number | null
+          updated_at?: string
+        }
+        Update: {
+          acquired_at?: string | null
+          acquisition_value_idr?: number
+          allocation_percentage?: number | null
+          created_at?: string
+          current_estimated_value_idr?: number
+          fund_id?: string
+          id?: string
+          property_id?: string
+          rental_income_monthly_idr?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_property_allocations_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "investment_funds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fund_property_allocations_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fund_property_allocations_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fund_rebalance_signals: {
         Row: {
           auto_executable: boolean
@@ -21504,6 +21568,72 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      fund_redemption_requests: {
+        Row: {
+          created_at: string
+          estimated_payout_idr: number | null
+          expected_settlement_date: string | null
+          fund_id: string
+          id: string
+          investor_user_id: string
+          nav_at_request: number | null
+          position_id: string
+          redemption_status: string
+          rejection_reason: string | null
+          requested_at: string
+          requested_units: number
+          settled_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          estimated_payout_idr?: number | null
+          expected_settlement_date?: string | null
+          fund_id: string
+          id?: string
+          investor_user_id: string
+          nav_at_request?: number | null
+          position_id: string
+          redemption_status?: string
+          rejection_reason?: string | null
+          requested_at?: string
+          requested_units: number
+          settled_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          estimated_payout_idr?: number | null
+          expected_settlement_date?: string | null
+          fund_id?: string
+          id?: string
+          investor_user_id?: string
+          nav_at_request?: number | null
+          position_id?: string
+          redemption_status?: string
+          rejection_reason?: string | null
+          requested_at?: string
+          requested_units?: number
+          settled_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fund_redemption_requests_fund_id_fkey"
+            columns: ["fund_id"]
+            isOneToOne: false
+            referencedRelation: "investment_funds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fund_redemption_requests_position_id_fkey"
+            columns: ["position_id"]
+            isOneToOne: false
+            referencedRelation: "fund_investor_positions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       fund_unit_transfers: {
         Row: {
@@ -30642,12 +30772,17 @@ export type Database = {
           fund_manager_user_id: string | null
           fund_name: string
           fund_status: string | null
+          fund_strategy_type: string | null
           fund_type: string
           id: string
+          inception_date: string | null
           jurisdiction_code: string | null
           management_fee_percent: number | null
+          min_subscription_amount: number | null
+          nav_currency: string | null
           performance_fee_percent: number | null
           target_raise_amount: number | null
+          total_units_outstanding: number | null
           updated_at: string | null
         }
         Insert: {
@@ -30659,12 +30794,17 @@ export type Database = {
           fund_manager_user_id?: string | null
           fund_name: string
           fund_status?: string | null
+          fund_strategy_type?: string | null
           fund_type?: string
           id?: string
+          inception_date?: string | null
           jurisdiction_code?: string | null
           management_fee_percent?: number | null
+          min_subscription_amount?: number | null
+          nav_currency?: string | null
           performance_fee_percent?: number | null
           target_raise_amount?: number | null
+          total_units_outstanding?: number | null
           updated_at?: string | null
         }
         Update: {
@@ -30676,12 +30816,17 @@ export type Database = {
           fund_manager_user_id?: string | null
           fund_name?: string
           fund_status?: string | null
+          fund_strategy_type?: string | null
           fund_type?: string
           id?: string
+          inception_date?: string | null
           jurisdiction_code?: string | null
           management_fee_percent?: number | null
+          min_subscription_amount?: number | null
+          nav_currency?: string | null
           performance_fee_percent?: number | null
           target_raise_amount?: number | null
+          total_units_outstanding?: number | null
           updated_at?: string | null
         }
         Relationships: []
