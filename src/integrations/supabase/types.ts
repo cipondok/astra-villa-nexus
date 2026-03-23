@@ -29872,6 +29872,54 @@ export type Database = {
         }
         Relationships: []
       }
+      investor_portfolios: {
+        Row: {
+          base_currency: string
+          created_at: string
+          current_estimated_value: number | null
+          diversification_score: number | null
+          id: string
+          last_evaluated_at: string | null
+          portfolio_liquidity_score: number | null
+          realized_profit: number | null
+          risk_exposure_score: number | null
+          total_invested_amount: number | null
+          unrealized_gain_loss: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          base_currency?: string
+          created_at?: string
+          current_estimated_value?: number | null
+          diversification_score?: number | null
+          id?: string
+          last_evaluated_at?: string | null
+          portfolio_liquidity_score?: number | null
+          realized_profit?: number | null
+          risk_exposure_score?: number | null
+          total_invested_amount?: number | null
+          unrealized_gain_loss?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          base_currency?: string
+          created_at?: string
+          current_estimated_value?: number | null
+          diversification_score?: number | null
+          id?: string
+          last_evaluated_at?: string | null
+          portfolio_liquidity_score?: number | null
+          realized_profit?: number | null
+          risk_exposure_score?: number | null
+          total_invested_amount?: number | null
+          unrealized_gain_loss?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       investor_post_comments: {
         Row: {
           author_id: string
@@ -42535,6 +42583,108 @@ export type Database = {
         }
         Relationships: []
       }
+      portfolio_assets: {
+        Row: {
+          acquisition_date: string | null
+          acquisition_price: number
+          asset_roi: number | null
+          asset_status: string
+          created_at: string
+          current_estimated_value: number | null
+          id: string
+          ownership_percentage: number | null
+          portfolio_id: string
+          property_id: string | null
+          rental_income_accumulated: number | null
+          updated_at: string
+        }
+        Insert: {
+          acquisition_date?: string | null
+          acquisition_price?: number
+          asset_roi?: number | null
+          asset_status?: string
+          created_at?: string
+          current_estimated_value?: number | null
+          id?: string
+          ownership_percentage?: number | null
+          portfolio_id: string
+          property_id?: string | null
+          rental_income_accumulated?: number | null
+          updated_at?: string
+        }
+        Update: {
+          acquisition_date?: string | null
+          acquisition_price?: number
+          asset_roi?: number | null
+          asset_status?: string
+          created_at?: string
+          current_estimated_value?: number | null
+          id?: string
+          ownership_percentage?: number | null
+          portfolio_id?: string
+          property_id?: string | null
+          rental_income_accumulated?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_assets_portfolio_id_fkey"
+            columns: ["portfolio_id"]
+            isOneToOne: false
+            referencedRelation: "investor_portfolios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portfolio_assets_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portfolio_assets_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portfolio_feature_datasets: {
+        Row: {
+          created_at: string
+          dataset_version: string | null
+          feature_vector: Json
+          id: string
+          label_data: Json | null
+          portfolio_id: string
+        }
+        Insert: {
+          created_at?: string
+          dataset_version?: string | null
+          feature_vector?: Json
+          id?: string
+          label_data?: Json | null
+          portfolio_id: string
+        }
+        Update: {
+          created_at?: string
+          dataset_version?: string | null
+          feature_vector?: Json
+          id?: string
+          label_data?: Json | null
+          portfolio_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_feature_datasets_portfolio_id_fkey"
+            columns: ["portfolio_id"]
+            isOneToOne: false
+            referencedRelation: "investor_portfolios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portfolio_intelligence: {
         Row: {
           avg_opportunity_score: number | null
@@ -42786,6 +42936,143 @@ export type Database = {
           weight_pct?: number | null
         }
         Relationships: []
+      }
+      portfolio_recommendations: {
+        Row: {
+          created_at: string
+          expected_impact_score: number | null
+          id: string
+          portfolio_id: string
+          reasoning_text: string | null
+          suggested_action: string
+          target_property_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          expected_impact_score?: number | null
+          id?: string
+          portfolio_id: string
+          reasoning_text?: string | null
+          suggested_action: string
+          target_property_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          expected_impact_score?: number | null
+          id?: string
+          portfolio_id?: string
+          reasoning_text?: string | null
+          suggested_action?: string
+          target_property_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_recommendations_portfolio_id_fkey"
+            columns: ["portfolio_id"]
+            isOneToOne: false
+            referencedRelation: "investor_portfolios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portfolio_recommendations_target_property_id_fkey"
+            columns: ["target_property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portfolio_recommendations_target_property_id_fkey"
+            columns: ["target_property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portfolio_risk_metrics: {
+        Row: {
+          alerts: Json | null
+          city_concentration_ratio: number | null
+          computed_at: string
+          high_risk_asset_pct: number | null
+          id: string
+          liquidity_exposure: number | null
+          portfolio_id: string
+          property_type_allocation: Json | null
+        }
+        Insert: {
+          alerts?: Json | null
+          city_concentration_ratio?: number | null
+          computed_at?: string
+          high_risk_asset_pct?: number | null
+          id?: string
+          liquidity_exposure?: number | null
+          portfolio_id: string
+          property_type_allocation?: Json | null
+        }
+        Update: {
+          alerts?: Json | null
+          city_concentration_ratio?: number | null
+          computed_at?: string
+          high_risk_asset_pct?: number | null
+          id?: string
+          liquidity_exposure?: number | null
+          portfolio_id?: string
+          property_type_allocation?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_risk_metrics_portfolio_id_fkey"
+            columns: ["portfolio_id"]
+            isOneToOne: false
+            referencedRelation: "investor_portfolios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portfolio_value_history: {
+        Row: {
+          asset_count: number | null
+          created_at: string
+          id: string
+          portfolio_id: string
+          snapshot_date: string
+          total_invested: number
+          total_value: number
+          unrealized_gain: number | null
+          weighted_roi: number | null
+        }
+        Insert: {
+          asset_count?: number | null
+          created_at?: string
+          id?: string
+          portfolio_id: string
+          snapshot_date?: string
+          total_invested?: number
+          total_value?: number
+          unrealized_gain?: number | null
+          weighted_roi?: number | null
+        }
+        Update: {
+          asset_count?: number | null
+          created_at?: string
+          id?: string
+          portfolio_id?: string
+          snapshot_date?: string
+          total_invested?: number
+          total_value?: number
+          unrealized_gain?: number | null
+          weighted_roi?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_value_history_portfolio_id_fkey"
+            columns: ["portfolio_id"]
+            isOneToOne: false
+            referencedRelation: "investor_portfolios"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ppop_feedback_loop: {
         Row: {
@@ -62428,6 +62715,47 @@ export type Database = {
           trend_direction?: string | null
         }
         Relationships: []
+      }
+      wealth_forecasts: {
+        Row: {
+          confidence_score: number | null
+          forecast_horizon_months: number
+          generated_at: string
+          id: string
+          model_version: string | null
+          portfolio_id: string
+          projected_cashflow: number | null
+          projected_portfolio_value: number | null
+        }
+        Insert: {
+          confidence_score?: number | null
+          forecast_horizon_months: number
+          generated_at?: string
+          id?: string
+          model_version?: string | null
+          portfolio_id: string
+          projected_cashflow?: number | null
+          projected_portfolio_value?: number | null
+        }
+        Update: {
+          confidence_score?: number | null
+          forecast_horizon_months?: number
+          generated_at?: string
+          id?: string
+          model_version?: string | null
+          portfolio_id?: string
+          projected_cashflow?: number | null
+          projected_portfolio_value?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wealth_forecasts_portfolio_id_fkey"
+            columns: ["portfolio_id"]
+            isOneToOne: false
+            referencedRelation: "investor_portfolios"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       wealth_risk_radar: {
         Row: {
