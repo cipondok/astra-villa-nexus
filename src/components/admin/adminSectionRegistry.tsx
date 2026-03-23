@@ -1276,6 +1276,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   // Fractional Investment
   "fractional-investment-command": () => <FractionalInvestmentCommandCenter />,
   "fund-reit-management": () => <FundManagementCommandCenter />,
+  "global-expansion-command": () => <GlobalExpansionCommandCenter />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
