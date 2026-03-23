@@ -110,6 +110,8 @@ const EscrowSafetyModule = lazy(() => import('@/components/property/EscrowSafety
 const DealActionTimeline = lazy(() => import('@/components/property/DealActionTimeline'));
 const WalletFundingCTA = lazy(() => import('@/components/property/WalletFundingCTA'));
 const InvestorMatchSignal = lazy(() => import('@/components/property/InvestorMatchSignal'));
+const SmartInquiryCTA = lazy(() => import('@/components/property/SmartInquiryCTA'));
+const InquiryTrustPopup = lazy(() => import('@/components/property/InquiryTrustPopup'));
 import { formatDistanceToNow } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 
@@ -192,6 +194,8 @@ const PropertyDetail: React.FC = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [showMobileOffer, setShowMobileOffer] = useState(false);
+  const [inquiryPopupOpen, setInquiryPopupOpen] = useState(false);
+  const [inquiryType, setInquiryType] = useState("investment_question");
   
   // Initialize favorites hook with property data once available
   const { toggleFavorite, isFavorite, loading: favLoading } = useFavorites({
@@ -1257,6 +1261,26 @@ const PropertyDetail: React.FC = () => {
             {/* Deal Action Timeline */}
             <Suspense fallback={null}>
               <DealActionTimeline currentStage={0} />
+            </Suspense>
+
+            {/* Smart Inquiry CTA */}
+            <Suspense fallback={null}>
+              <SmartInquiryCTA
+                intentLevel="medium"
+                onInquiry={(type) => { setInquiryType(type); setInquiryPopupOpen(true); }}
+                propertyTitle={property.title}
+              />
+            </Suspense>
+
+            {/* Inquiry Trust Popup */}
+            <Suspense fallback={null}>
+              <InquiryTrustPopup
+                open={inquiryPopupOpen}
+                onOpenChange={setInquiryPopupOpen}
+                propertyId={property.id}
+                propertyTitle={property.title}
+                inquiryType={inquiryType}
+              />
             </Suspense>
 
             {/* Wallet Funding CTA */}

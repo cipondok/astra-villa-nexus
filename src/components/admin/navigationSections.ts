@@ -369,6 +369,13 @@ export const navigationSections = {
       icon: Users,
       description: "Registration funnel performance, trigger source analytics, A/B testing, and geo signup heatmap",
       badge: "📊 Signups"
+    },
+    {
+      key: "inquiry-conversion-analytics",
+      label: "Inquiry Conversion Analytics",
+      icon: MessageSquare,
+      description: "Intent detection, inquiry funnel optimization, follow-up automation, and agent response tracking",
+      badge: "💬 Inquiries"
     }
   ],
 

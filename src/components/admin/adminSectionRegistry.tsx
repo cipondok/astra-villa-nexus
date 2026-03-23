@@ -184,6 +184,7 @@ export const InvestorGrowthCommandCenter = lazyRetry(() => import("./InvestorGro
 export const AdminCapitalActivationPanel = lazyRetry(() => import("./AdminCapitalActivationPanel"));
 export const InvestorAcquisitionCampaignCommand = lazyRetry(() => import("./InvestorAcquisitionCampaignCommand"));
 export const SignupConversionDashboard = lazyRetry(() => import("./SignupConversionDashboard"));
+export const InquiryConversionDashboard = lazyRetry(() => import("./InquiryConversionDashboard"));
 // Legacy WebsiteDesignControl kept in codebase but no longer used by admin navigation
 export const RateLimitingDashboard = lazyRetry(() => import("./RateLimitingDashboard"));
 export const VideoTourManager = lazyRetry(() => import("./VideoTourManager"));
@@ -825,6 +826,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "capital-activation-command": () => <AdminCapitalActivationPanel />,
   "investor-acquisition-campaign": () => <InvestorAcquisitionCampaignCommand />,
   "signup-conversion-analytics": () => <SignupConversionDashboard />,
+  "inquiry-conversion-analytics": () => <InquiryConversionDashboard />,
   "supply-growth-command": () => <SupplyGrowthCommandCenter />,
   "deal-velocity-command": () => <DealVelocityCommandCenter />,
   "founder-control-tower": () => <FounderControlTower />,
@@ -1776,6 +1778,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "capital-activation-command": { label: "Capital Activation Engine", category: "Investor Management" },
   "investor-acquisition-campaign": { label: "Investor Acquisition Campaign", category: "Marketplace Growth" },
   "signup-conversion-analytics": { label: "Signup Conversion Analytics", category: "Marketplace Growth" },
+  "inquiry-conversion-analytics": { label: "Inquiry Conversion Analytics", category: "Marketplace Growth" },
   "supply-growth-command": { label: "Supply Growth Engine", category: "Marketplace Growth" },
   "deal-velocity-command": { label: "Deal Velocity Engine", category: "Marketplace Growth" },
   "founder-control-tower": { label: "Founder Control Tower", category: "Operations" },
