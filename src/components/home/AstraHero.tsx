@@ -204,7 +204,7 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
             </div>
           </motion.div>
 
-          {/* CTA buttons */}
+          {/* CTA buttons — investor focused */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -213,28 +213,20 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
           >
             <Button
               size="lg"
-              onClick={() => navigate("/vendor/register")}
+              onClick={() => navigate("/search")}
               className="bg-gradient-to-r from-[#ffe14d] to-[#ffb800] hover:from-[#ffb800] hover:to-[#ffe14d] text-gray-900 font-bold px-6 py-5 text-sm rounded-xl shadow-lg shadow-yellow-500/30 transition-all duration-300"
             >
-              <Rocket className="mr-2 h-4 w-4" />
-              Start Listing Property
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => navigate("/search")}
-              className="border-white/40 text-white hover:bg-white/15 px-6 py-5 text-sm rounded-xl backdrop-blur-sm"
-            >
               <Search className="mr-2 h-4 w-4" />
-              Explore Smart Deals
+              Explore Investment Opportunities
             </Button>
             <Button
               size="lg"
               variant="outline"
-              onClick={() => navigate("/portfolio-dashboard")}
+              onClick={() => navigate("/wallet")}
               className="border-white/40 text-white hover:bg-white/15 px-6 py-5 text-sm rounded-xl backdrop-blur-sm"
             >
-              Invest Now
+              <Rocket className="mr-2 h-4 w-4" />
+              Start Secure Investment
             </Button>
             <Button
               size="lg"
@@ -243,7 +235,7 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
               className="border-white/40 text-white hover:bg-white/15 px-6 py-5 text-sm rounded-xl backdrop-blur-sm"
             >
               <Store className="mr-2 h-4 w-4" />
-              Become Vendor
+              List Property
             </Button>
           </motion.div>
 
