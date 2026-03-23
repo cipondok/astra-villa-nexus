@@ -204,6 +204,13 @@ export const navigationSections = {
       badge: "👑 HNW"
     },
     {
+      key: "seller-motivation-engine",
+      label: "Seller Motivation Engine",
+      icon: Home,
+      description: "Accelerate seller decisions with rational urgency, market data & trust-based persuasion",
+      badge: "🏠 Sellers"
+    },
+    {
       key: "first-city-domination",
       label: "First City Domination",
       icon: Crosshair,
