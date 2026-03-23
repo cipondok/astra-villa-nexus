@@ -1722,4 +1722,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "ai-model-governance": { label: "AI Model Governance", category: "Operations" },
   "ux-quality-monitoring": { label: "UX Quality Monitoring", category: "Operations" },
   "global-transaction-intelligence": { label: "Global Transaction Intelligence", category: "Transactions" },
+  "risk-fraud-intelligence": { label: "Risk & Fraud Intelligence", category: "Marketplace Growth" },
 };
