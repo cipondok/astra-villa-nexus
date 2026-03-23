@@ -1,17 +1,21 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Brain, Rocket, Globe, Building, TrendingUp, ArrowUpRight, ArrowDownRight,
   Target, Zap, Shield, DollarSign, Users, BarChart3, Activity,
   MapPin, Clock, Star, AlertTriangle, ChevronRight, Lightbulb,
   Play, Pause, RefreshCw, Radio, Crown, Sparkles, Eye,
-  ArrowRight, CheckCircle, Lock, Compass, Layers
+  ArrowRight, CheckCircle, Lock, Compass, Layers, Send, Square, Trash2, MessageSquare
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
+import { Input } from "@/components/ui/input";
+import { useFounderCopilot } from "@/hooks/useFounderCopilot";
+import ReactMarkdown from "react-markdown";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   AreaChart, Area, BarChart, Bar, LineChart, Line,
