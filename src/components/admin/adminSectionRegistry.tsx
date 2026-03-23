@@ -119,6 +119,7 @@ export const BuyerViewingBookingFlow = lazyRetry(() => import("./BuyerViewingBoo
 export const SellerPerformanceInsight = lazyRetry(() => import("./SellerPerformanceInsight"));
 export const AgentMobileHomeScreen = lazyRetry(() => import("./AgentMobileHomeScreen"));
 export const DealVelocityCommandCenter = lazyRetry(() => import("./DealVelocityCommandCenter"));
+export const FounderControlTower = lazyRetry(() => import("./FounderControlTower"));
 export const DealOfferSubmissionFlow = lazyRetry(() => import("./DealOfferSubmissionFlow"));
 export const NegotiationChatInterface = lazyRetry(() => import("./NegotiationChatInterface"));
 export const DealProgressTimeline = lazyRetry(() => import("./DealProgressTimeline"));
