@@ -18,8 +18,7 @@ const AdminTreasuryPanel = () => {
       today.setHours(0, 0, 0, 0);
       const todayISO = today.toISOString();
 
-      // Parallel queries
-      const [wallets, todayDeposits, pendingPayouts, failedToday, escrowLocked] = await Promise.all([
+      const [wallets, todayDeposits, pendingPayouts, failedToday, escrowLocked, fxSnapshots, fxDeposits] = await Promise.all([
         supabase.from('wallet_accounts').select('available_balance, locked_balance'),
         supabase.from('wallet_transaction_ledger')
           .select('amount')
@@ -35,12 +34,38 @@ const AdminTreasuryPanel = () => {
           .gte('created_at', todayISO),
         supabase.from('wallet_accounts')
           .select('locked_balance'),
+        supabase.from('daily_fx_snapshots')
+          .select('target_currency, rate, inverse_rate, snapshot_date')
+          .order('snapshot_date', { ascending: false })
+          .limit(20),
+        supabase.from('wallet_transaction_ledger')
+          .select('original_currency, original_amount, amount')
+          .not('original_currency', 'is', null)
+          .eq('status', 'confirmed'),
       ]);
 
-      const totalAvailable = (wallets.data || []).reduce((s, w) => s + Number(w.available_balance), 0);
-      const totalLocked = (escrowLocked.data || []).reduce((s, w) => s + Number(w.locked_balance), 0);
-      const dailyDepositVol = (todayDeposits.data || []).reduce((s, d) => s + Number(d.amount), 0);
-      const pendingPayoutVol = (pendingPayouts.data || []).reduce((s, p) => s + Number(p.amount), 0);
+      const totalAvailable = (wallets.data || []).reduce((s: number, w: any) => s + Number(w.available_balance), 0);
+      const totalLocked = (escrowLocked.data || []).reduce((s: number, w: any) => s + Number(w.locked_balance), 0);
+      const dailyDepositVol = (todayDeposits.data || []).reduce((s: number, d: any) => s + Number(d.amount), 0);
+      const pendingPayoutVol = (pendingPayouts.data || []).reduce((s: number, p: any) => s + Number(p.amount), 0);
+
+      // Aggregate FX deposits by currency
+      const fxByCurrency: Record<string, { originalTotal: number; idrTotal: number; count: number }> = {};
+      (fxDeposits.data || []).forEach((d: any) => {
+        const cur = d.original_currency;
+        if (!fxByCurrency[cur]) fxByCurrency[cur] = { originalTotal: 0, idrTotal: 0, count: 0 };
+        fxByCurrency[cur].originalTotal += Number(d.original_amount);
+        fxByCurrency[cur].idrTotal += Number(d.amount);
+        fxByCurrency[cur].count++;
+      });
+
+      // Latest FX rates grouped by currency
+      const latestRates: Record<string, { rate: number; date: string }> = {};
+      (fxSnapshots.data || []).forEach((r: any) => {
+        if (!latestRates[r.target_currency]) {
+          latestRates[r.target_currency] = { rate: r.rate, date: r.snapshot_date };
+        }
+      });
 
       return {
         totalAvailable,
@@ -51,6 +76,8 @@ const AdminTreasuryPanel = () => {
         pendingPayouts: pendingPayouts.data?.length || 0,
         pendingPayoutVolume: pendingPayoutVol,
         failedToday: failedToday.count || 0,
+        fxByCurrency,
+        latestRates,
       };
     },
     staleTime: 30_000,
