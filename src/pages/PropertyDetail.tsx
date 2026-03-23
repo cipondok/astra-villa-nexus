@@ -575,6 +575,7 @@ const PropertyDetail: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Suspense fallback={null}><InvestorSignupPrompt triggerSource="listing_view" /></Suspense>
       {property && (
         <SEOHead
           title={property.title}
