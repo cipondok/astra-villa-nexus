@@ -1769,6 +1769,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "institutional-fund-manager": { label: "Institutional Fund Manager", category: "Investor Management" },
   "custody-settlement-command": { label: "Custody & Settlement", category: "Investor Management" },
   "investor-growth-command": { label: "Investor Growth Engine", category: "Investor Management" },
+  "capital-activation-command": { label: "Capital Activation Engine", category: "Investor Management" },
   "supply-growth-command": { label: "Supply Growth Engine", category: "Marketplace Growth" },
   "deal-velocity-command": { label: "Deal Velocity Engine", category: "Marketplace Growth" },
   "founder-control-tower": { label: "Founder Control Tower", category: "Operations" },
