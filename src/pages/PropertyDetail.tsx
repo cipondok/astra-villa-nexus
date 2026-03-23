@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef, useMemo, lazy, Suspense } from 'react';
+const InvestorSignupPrompt = lazy(() => import('@/components/auth/InvestorSignupPrompt'));
 import ScrollReveal from '@/components/ui/ScrollReveal';
 import { useUserBehaviorAnalytics } from '@/hooks/useUserBehaviorAnalytics';
 import { useTranslation } from '@/i18n/useTranslation';
@@ -574,6 +575,7 @@ const PropertyDetail: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Suspense fallback={null}><InvestorSignupPrompt triggerSource="listing_view" /></Suspense>
       {property && (
         <SEOHead
           title={property.title}
