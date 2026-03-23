@@ -1813,7 +1813,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
           {/* Quick Action Items - Show on hover, hint, or if pinned */}
           <div className={cn(
             "absolute bottom-[140px] right-0 transition-all duration-700 flex flex-col gap-3",
-            showQuickActionsHint || pinnedActions.size > 0
+            showScrollToTop || showQuickActionsHint || pinnedActions.size > 0
               ? "opacity-100 pointer-events-auto" 
               : "opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
           )}>
