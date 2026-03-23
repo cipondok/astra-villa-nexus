@@ -33,16 +33,8 @@ interface AdminCategoryTabsProps {
 }
 
 export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCategoryTabsProps) {
-  const [visitHistory, setVisitHistory] = useState<Record<string, number>>(getVisitHistory);
   const [expanded, setExpanded] = useState(false);
   const [query, setQuery] = useState('');
-
-  useEffect(() => {
-    if (activeSection) {
-      recordVisit(activeSection);
-      setVisitHistory(getVisitHistory());
-    }
-  }, [activeSection]);
 
   const activeCategory = useMemo((): string | null => {
     for (const category of categories) {
@@ -57,18 +49,10 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
     [activeCategory]
   );
 
-  const sortedSections = useMemo(() => {
-    return [...categorySections].sort((a, b) => {
-      if (a.key === activeSection) return -1;
-      if (b.key === activeSection) return 1;
-      return (visitHistory[b.key] || 0) - (visitHistory[a.key] || 0);
-    });
-  }, [categorySections, activeSection, visitHistory]);
-
   const filteredSections = useMemo(() => {
-    if (!query.trim()) return sortedSections;
+    if (!query.trim()) return categorySections;
     const q = query.toLowerCase();
-    return sortedSections.filter(s => s.label.toLowerCase().includes(q));
+    return categorySections.filter(s => s.label.toLowerCase().includes(q));
   }, [sortedSections, query]);
 
   const handleSectionClick = useCallback((key: string) => {
