@@ -25,23 +25,7 @@ const categoryIcons: Record<string, LucideIcon> = {
   "help": HelpCircle,
 };
 
-const STORAGE_KEY = 'admin-tab-visit-history';
 const COLLAPSED_VISIBLE = 12;
-
-function getVisitHistory(): Record<string, number> {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : {};
-  } catch { return {}; }
-}
-
-function recordVisit(sectionKey: string) {
-  try {
-    const history = getVisitHistory();
-    history[sectionKey] = Date.now();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
-  } catch {}
-}
 
 interface AdminCategoryTabsProps {
   activeSection: string;
