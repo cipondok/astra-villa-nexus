@@ -548,6 +548,7 @@ const InfrastructureNarrative = () => (
 
 // ─── Tab 5: Live AI Chat ─────────────────────────────────────────────────────
 const quickPrompts = [
+  { label: "📊 Weekly Board Report", prompt: "Generate my weekly board strategy report. Use the current marketplace data you have access to. Structure it as: Executive Summary, Marketplace Traction Metrics, Capital Flow & Revenue Signals, Strategic Insights, Risks & Bottlenecks, Experimentation & Learning, Next Week Priorities, and Investor Storyline Signal. Make it investor-grade quality." },
   { label: "Daily Execution Plan", prompt: "Give me my top 5 priority actions for today based on current marketplace data." },
   { label: "Agent Outreach Script", prompt: "Generate a WhatsApp outreach script for recruiting property agents in Bali focusing on villa listings." },
   { label: "Investor Response", prompt: "An investor from Singapore is interested in Bali villas with $200K budget seeking 8%+ rental yield. Draft a personalized WhatsApp response." },
