@@ -308,7 +308,14 @@ const ChatButton = forwardRef<HTMLDivElement, ChatButtonProps>(({
   return (
     <div ref={ref}>
     <ContextMenu>
-      <ContextMenuTrigger asChild onPointerDown={(e) => e?.preventDefault?.()}>
+      <ContextMenuTrigger
+        asChild
+        onPointerDown={(e) => {
+          if (e.button === 2) {
+            e.preventDefault();
+          }
+        }}
+      >
         <div>{buttonContent}</div>
       </ContextMenuTrigger>
       
