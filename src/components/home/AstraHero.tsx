@@ -267,7 +267,7 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
             transition={{ delay: 0.8, duration: 0.5 }}
             className="text-center text-[11px] text-white/60 font-medium pb-3"
           >
-            Trusted by Agents • Developers • Investors Across Indonesia
+            Escrow-Protected Transactions • Verified Listings • AI-Powered Investment Scoring
           </motion.p>
         </div>
       </div>
