@@ -920,6 +920,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "automation-platform": () => <AutomationPlatformManagement />,
   "team-management":     () => <TeamManagement />,
   "viral-growth-campaigns": () => <ViralGrowthCampaigns />,
+  "viral-growth-analytics": () => <ViralGrowthAnalyticsDashboard />,
   "media-coverage-pr":   () => <MediaCoveragePR />,
   "concierge-service":   () => <ConciergeServiceManagement />,
   "ahu-company-checker": () => <AHUCompanyChecker />,
