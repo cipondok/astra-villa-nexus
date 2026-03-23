@@ -7399,6 +7399,51 @@ export type Database = {
           },
         ]
       }
+      asset_spv_entities: {
+        Row: {
+          beneficial_owner_mapping: Json | null
+          created_at: string | null
+          id: string
+          jurisdiction_code: string | null
+          legal_structure_type: string | null
+          property_id: string | null
+          trustee_entity: string | null
+        }
+        Insert: {
+          beneficial_owner_mapping?: Json | null
+          created_at?: string | null
+          id?: string
+          jurisdiction_code?: string | null
+          legal_structure_type?: string | null
+          property_id?: string | null
+          trustee_entity?: string | null
+        }
+        Update: {
+          beneficial_owner_mapping?: Json | null
+          created_at?: string | null
+          id?: string
+          jurisdiction_code?: string | null
+          legal_structure_type?: string | null
+          property_id?: string | null
+          trustee_entity?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_spv_entities_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "asset_spv_entities_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       astra_daily_checkins: {
         Row: {
           bonus_multiplier: number | null
@@ -14323,6 +14368,86 @@ export type Database = {
           working_hours?: string
         }
         Relationships: []
+      }
+      custody_accounts: {
+        Row: {
+          base_currency: string | null
+          created_at: string | null
+          custody_provider_code: string | null
+          custody_status: string | null
+          entity_reference_id: string | null
+          entity_type: string
+          id: string
+          jurisdiction_code: string | null
+        }
+        Insert: {
+          base_currency?: string | null
+          created_at?: string | null
+          custody_provider_code?: string | null
+          custody_status?: string | null
+          entity_reference_id?: string | null
+          entity_type?: string
+          id?: string
+          jurisdiction_code?: string | null
+        }
+        Update: {
+          base_currency?: string | null
+          created_at?: string | null
+          custody_provider_code?: string | null
+          custody_status?: string | null
+          entity_reference_id?: string | null
+          entity_type?: string
+          id?: string
+          jurisdiction_code?: string | null
+        }
+        Relationships: []
+      }
+      custody_ledger_entries: {
+        Row: {
+          asset_type: string
+          balance_snapshot: number | null
+          created_at: string | null
+          credit_amount: number | null
+          currency: string | null
+          custody_account_id: string
+          debit_amount: number | null
+          entry_reason: string | null
+          id: string
+          reference_transaction: string | null
+        }
+        Insert: {
+          asset_type?: string
+          balance_snapshot?: number | null
+          created_at?: string | null
+          credit_amount?: number | null
+          currency?: string | null
+          custody_account_id: string
+          debit_amount?: number | null
+          entry_reason?: string | null
+          id?: string
+          reference_transaction?: string | null
+        }
+        Update: {
+          asset_type?: string
+          balance_snapshot?: number | null
+          created_at?: string | null
+          credit_amount?: number | null
+          currency?: string | null
+          custody_account_id?: string
+          debit_amount?: number | null
+          entry_reason?: string | null
+          id?: string
+          reference_transaction?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custody_ledger_entries_custody_account_id_fkey"
+            columns: ["custody_account_id"]
+            isOneToOne: false
+            referencedRelation: "custody_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       customer_complaints: {
         Row: {
@@ -49557,6 +49682,33 @@ export type Database = {
           },
         ]
       }
+      regulatory_reporting_events: {
+        Row: {
+          generated_at: string | null
+          id: string
+          jurisdiction_code: string | null
+          related_entity_id: string | null
+          report_payload: Json | null
+          report_type: string
+        }
+        Insert: {
+          generated_at?: string | null
+          id?: string
+          jurisdiction_code?: string | null
+          related_entity_id?: string | null
+          report_payload?: Json | null
+          report_type: string
+        }
+        Update: {
+          generated_at?: string | null
+          id?: string
+          jurisdiction_code?: string | null
+          related_entity_id?: string | null
+          report_payload?: Json | null
+          report_type?: string
+        }
+        Relationships: []
+      }
       rejection_codes: {
         Row: {
           auto_resubmit_allowed: boolean | null
@@ -52567,6 +52719,85 @@ export type Database = {
           },
         ]
       }
+      settlement_reconciliation_records: {
+        Row: {
+          actual_balance: number | null
+          custody_account_id: string
+          discrepancy_flag: boolean | null
+          expected_balance: number | null
+          id: string
+          reconciliation_date: string | null
+        }
+        Insert: {
+          actual_balance?: number | null
+          custody_account_id: string
+          discrepancy_flag?: boolean | null
+          expected_balance?: number | null
+          id?: string
+          reconciliation_date?: string | null
+        }
+        Update: {
+          actual_balance?: number | null
+          custody_account_id?: string
+          discrepancy_flag?: boolean | null
+          expected_balance?: number | null
+          id?: string
+          reconciliation_date?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "settlement_reconciliation_records_custody_account_id_fkey"
+            columns: ["custody_account_id"]
+            isOneToOne: false
+            referencedRelation: "custody_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      settlement_routing_profiles: {
+        Row: {
+          active_flag: boolean | null
+          bank_account_reference: string | null
+          created_at: string | null
+          custody_account_id: string
+          id: string
+          settlement_currency: string | null
+          settlement_mode: string | null
+          settlement_partner_code: string | null
+          swift_bic: string | null
+        }
+        Insert: {
+          active_flag?: boolean | null
+          bank_account_reference?: string | null
+          created_at?: string | null
+          custody_account_id: string
+          id?: string
+          settlement_currency?: string | null
+          settlement_mode?: string | null
+          settlement_partner_code?: string | null
+          swift_bic?: string | null
+        }
+        Update: {
+          active_flag?: boolean | null
+          bank_account_reference?: string | null
+          created_at?: string | null
+          custody_account_id?: string
+          id?: string
+          settlement_currency?: string | null
+          settlement_mode?: string | null
+          settlement_partner_code?: string | null
+          swift_bic?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "settlement_routing_profiles_custody_account_id_fkey"
+            columns: ["custody_account_id"]
+            isOneToOne: false
+            referencedRelation: "custody_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       share_analytics: {
         Row: {
           created_at: string
@@ -53286,6 +53517,48 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      spv_investor_units: {
+        Row: {
+          created_at: string | null
+          custody_account_id: string | null
+          id: string
+          investor_user_id: string
+          ownership_percentage: number | null
+          spv_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          custody_account_id?: string | null
+          id?: string
+          investor_user_id: string
+          ownership_percentage?: number | null
+          spv_id: string
+        }
+        Update: {
+          created_at?: string | null
+          custody_account_id?: string | null
+          id?: string
+          investor_user_id?: string
+          ownership_percentage?: number | null
+          spv_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "spv_investor_units_custody_account_id_fkey"
+            columns: ["custody_account_id"]
+            isOneToOne: false
+            referencedRelation: "custody_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "spv_investor_units_spv_id_fkey"
+            columns: ["spv_id"]
+            isOneToOne: false
+            referencedRelation: "asset_spv_entities"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       stress_crisis_strategies: {
         Row: {
