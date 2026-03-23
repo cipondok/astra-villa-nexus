@@ -103,6 +103,12 @@ import HeroOpportunityOverlay from '@/components/property/HeroOpportunityOverlay
 import PropertyUrgencySignals from '@/components/property/PropertyUrgencySignals';
 const MakeOfferDialog = lazy(() => import('@/components/offers/MakeOfferDialog'));
 const PropertyInvestmentDashboard = lazy(() => import('@/components/property/PropertyInvestmentDashboard'));
+const InvestmentHeroSummary = lazy(() => import('@/components/property/InvestmentHeroSummary'));
+const SmartPricePositioning = lazy(() => import('@/components/property/SmartPricePositioning'));
+const EscrowSafetyModule = lazy(() => import('@/components/property/EscrowSafetyModule'));
+const DealActionTimeline = lazy(() => import('@/components/property/DealActionTimeline'));
+const WalletFundingCTA = lazy(() => import('@/components/property/WalletFundingCTA'));
+const InvestorMatchSignal = lazy(() => import('@/components/property/InvestorMatchSignal'));
 import { formatDistanceToNow } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 
