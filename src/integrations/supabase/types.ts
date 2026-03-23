@@ -16130,6 +16130,48 @@ export type Database = {
           },
         ]
       }
+      deal_success_highlights: {
+        Row: {
+          anonymized_investor_profile: Json | null
+          campaign_snippet: string | null
+          city: string | null
+          city_growth_context: string | null
+          created_at: string | null
+          highlight_summary: string | null
+          id: string
+          investment_return_projection: number | null
+          is_published: boolean | null
+          property_id: string | null
+          spotlight_title: string | null
+        }
+        Insert: {
+          anonymized_investor_profile?: Json | null
+          campaign_snippet?: string | null
+          city?: string | null
+          city_growth_context?: string | null
+          created_at?: string | null
+          highlight_summary?: string | null
+          id?: string
+          investment_return_projection?: number | null
+          is_published?: boolean | null
+          property_id?: string | null
+          spotlight_title?: string | null
+        }
+        Update: {
+          anonymized_investor_profile?: Json | null
+          campaign_snippet?: string | null
+          city?: string | null
+          city_growth_context?: string | null
+          created_at?: string | null
+          highlight_summary?: string | null
+          id?: string
+          investment_return_projection?: number | null
+          is_published?: boolean | null
+          property_id?: string | null
+          spotlight_title?: string | null
+        }
+        Relationships: []
+      }
       deal_transactions: {
         Row: {
           agent_id: string | null
@@ -31705,6 +31747,57 @@ export type Database = {
           referrer_user_id?: string
           reward_amount?: number | null
           reward_settled?: boolean | null
+        }
+        Relationships: []
+      }
+      investor_reviews: {
+        Row: {
+          agent_user_id: string | null
+          created_at: string | null
+          deal_id: string
+          id: string
+          investor_user_id: string
+          is_published: boolean | null
+          overall_score: number | null
+          property_id: string | null
+          rating_agent: number | null
+          rating_platform: number | null
+          rating_transaction: number | null
+          review_text: string | null
+          updated_at: string | null
+          verification_status: string | null
+        }
+        Insert: {
+          agent_user_id?: string | null
+          created_at?: string | null
+          deal_id: string
+          id?: string
+          investor_user_id: string
+          is_published?: boolean | null
+          overall_score?: number | null
+          property_id?: string | null
+          rating_agent?: number | null
+          rating_platform?: number | null
+          rating_transaction?: number | null
+          review_text?: string | null
+          updated_at?: string | null
+          verification_status?: string | null
+        }
+        Update: {
+          agent_user_id?: string | null
+          created_at?: string | null
+          deal_id?: string
+          id?: string
+          investor_user_id?: string
+          is_published?: boolean | null
+          overall_score?: number | null
+          property_id?: string | null
+          rating_agent?: number | null
+          rating_platform?: number | null
+          rating_transaction?: number | null
+          review_text?: string | null
+          updated_at?: string | null
+          verification_status?: string | null
         }
         Relationships: []
       }
@@ -50541,6 +50634,45 @@ export type Database = {
         }
         Relationships: []
       }
+      referral_growth_metrics: {
+        Row: {
+          average_referral_ltv: number | null
+          created_at: string | null
+          id: string
+          period_end: string
+          period_start: string
+          referral_funding_rate: number | null
+          referral_signup_rate: number | null
+          top_referrers: Json | null
+          total_referrals: number | null
+          viral_coefficient: number | null
+        }
+        Insert: {
+          average_referral_ltv?: number | null
+          created_at?: string | null
+          id?: string
+          period_end: string
+          period_start: string
+          referral_funding_rate?: number | null
+          referral_signup_rate?: number | null
+          top_referrers?: Json | null
+          total_referrals?: number | null
+          viral_coefficient?: number | null
+        }
+        Update: {
+          average_referral_ltv?: number | null
+          created_at?: string | null
+          id?: string
+          period_end?: string
+          period_start?: string
+          referral_funding_rate?: number | null
+          referral_signup_rate?: number | null
+          top_referrers?: Json | null
+          total_referrals?: number | null
+          viral_coefficient?: number | null
+        }
+        Relationships: []
+      }
       referral_milestone_campaigns: {
         Row: {
           campaign_id: string | null
@@ -50610,6 +50742,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      referral_rewards: {
+        Row: {
+          awarded_at: string | null
+          created_at: string | null
+          id: string
+          milestone_trigger: string | null
+          new_investor_user_id: string | null
+          referrer_user_id: string
+          reward_amount: number | null
+          reward_status: string | null
+          reward_type: string | null
+        }
+        Insert: {
+          awarded_at?: string | null
+          created_at?: string | null
+          id?: string
+          milestone_trigger?: string | null
+          new_investor_user_id?: string | null
+          referrer_user_id: string
+          reward_amount?: number | null
+          reward_status?: string | null
+          reward_type?: string | null
+        }
+        Update: {
+          awarded_at?: string | null
+          created_at?: string | null
+          id?: string
+          milestone_trigger?: string | null
+          new_investor_user_id?: string | null
+          referrer_user_id?: string
+          reward_amount?: number | null
+          reward_status?: string | null
+          reward_type?: string | null
+        }
+        Relationships: []
       }
       referral_tracking: {
         Row: {
@@ -52201,6 +52369,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      retention_actions: {
+        Row: {
+          created_at: string | null
+          executed_at: string | null
+          id: string
+          message_content: string | null
+          message_type: string
+          scheduled_time: string | null
+          status: string | null
+          trigger_condition: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          executed_at?: string | null
+          id?: string
+          message_content?: string | null
+          message_type: string
+          scheduled_time?: string | null
+          status?: string | null
+          trigger_condition: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          executed_at?: string | null
+          id?: string
+          message_content?: string | null
+          message_type?: string
+          scheduled_time?: string | null
+          status?: string | null
+          trigger_condition?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       revenue_alert_config: {
         Row: {

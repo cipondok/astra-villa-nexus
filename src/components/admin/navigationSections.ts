@@ -732,6 +732,13 @@ export const navigationSections = {
       icon: Shield,
       description: "Deal-to-escrow conversion rates, readiness pipeline, volume tracking & agent closing performance",
       badge: "📊 Conversion"
+    },
+    {
+      key: "viral-growth-analytics",
+      label: "Viral Growth & Trust Analytics",
+      icon: TrendingUp,
+      description: "Post-deal reviews, referral funnel, viral coefficient, trust tier distribution & growth metrics",
+      badge: "🚀 Growth"
     }
   ],
 
