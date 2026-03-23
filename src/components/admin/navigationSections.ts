@@ -739,6 +739,13 @@ export const navigationSections = {
       icon: TrendingUp,
       description: "Post-deal reviews, referral funnel, viral coefficient, trust tier distribution & growth metrics",
       badge: "🚀 Growth"
+    },
+    {
+      key: "secondary-market-command",
+      label: "Secondary Market Command",
+      icon: ArrowLeftRight,
+      description: "Liquidity exchange volume, exit listings, transfer pipeline, pricing trends & platform fees",
+      badge: "💧 Liquidity"
     }
   ],
 
