@@ -222,7 +222,7 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
             <Button
               size="lg"
               variant="outline"
-              onClick={() => navigate("/wallet")}
+              onClick={() => navigate("/onboarding/investor")}
               className="border-white/40 text-white hover:bg-white/15 px-6 py-5 text-sm rounded-xl backdrop-blur-sm"
             >
               <Rocket className="mr-2 h-4 w-4" />
