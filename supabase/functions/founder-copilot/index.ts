@@ -193,6 +193,9 @@ ${context.strategy_summary}
 GLOBAL CAPITAL ALLOCATION INTELLIGENCE:
 ${context.capital_allocation_summary}
 
+PLANETARY REAL ESTATE INTELLIGENCE GRID:
+${context.planetary_summary}
+
 
 ═══════════════════════════════════════════
 OPERATIONAL EXECUTION MODES (Daily Tasks):

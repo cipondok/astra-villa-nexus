@@ -399,6 +399,43 @@ serve(async (req) => {
       }
     }
 
+    // Planetary intelligence recommendations
+    for (const ps of planetarySignals) {
+      if (ps.urban_growth_score > 60) {
+        recommendations.push({
+          id: `rec-planet-growth-${ps.city}`,
+          type: "growth",
+          title: `${ps.city} emerging growth corridor (urban growth ${ps.urban_growth_score}/100)`,
+          description: `Market cycle: ${ps.market_cycle_phase} | Capital inflow: ${ps.capital_inflow_intensity}/100. Prioritize supply acquisition.`,
+          confidence: ps.confidence_level, impact: "Capture emerging market",
+          timeWindow: "Next 30 days", priority: ps.urban_growth_score > 80 ? "critical" : "high", status: "pending",
+        });
+      }
+      if (ps.affordability_stress_index > 70) {
+        riskAlerts.push({
+          id: `risk-afford-${ps.city}`,
+          category: "affordability_risk",
+          severity: ps.affordability_stress_index > 85 ? "critical" : "warning",
+          title: `Affordability stress in ${ps.city} (${ps.affordability_stress_index}/100)`,
+          metric: `Cycle: ${ps.market_cycle_phase}`,
+          trend: "up", probability: ps.affordability_stress_index,
+        });
+      }
+    }
+
+    for (const lb of liquidityBalance) {
+      if (lb.systemic_status === "overheating") {
+        riskAlerts.push({
+          id: `risk-overheat-${lb.region}`,
+          category: "systemic_overheating",
+          severity: "critical",
+          title: `Systemic overheating in ${lb.region} (balance ${lb.balance_index}/100)`,
+          metric: `Concentration risk: ${lb.capital_concentration_risk}%`,
+          trend: "up", probability: lb.balance_index,
+        });
+      }
+    }
+
     return json({
       kpis, funnel, recommendations, risk_alerts: riskAlerts,
       hot_properties: hotProperties,
@@ -413,6 +450,11 @@ serve(async (req) => {
       capital_intelligence: {
         top_allocations: capitalAllocations.slice(0, 3),
         forecasts: capitalForecasts.slice(0, 3),
+      },
+      planetary_intelligence: {
+        top_growth_cities: planetarySignals.filter((p: any) => p.urban_growth_score > 40).slice(0, 5),
+        cycle_distribution: planetarySignals.reduce((acc: any, s: any) => { acc[s.market_cycle_phase] = (acc[s.market_cycle_phase] || 0) + 1; return acc; }, {}),
+        liquidity_balance: liquidityBalance.slice(0, 3),
       },
       liquidity: {
         fastest_cities: liquidityMetrics.filter((m: any) => m.market_classification === "hot").slice(0, 3),
