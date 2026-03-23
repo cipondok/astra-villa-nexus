@@ -1906,13 +1906,8 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
                         setShowTipsPopup(false);
                         localStorage.setItem('chatbot-seen-tips', 'true');
                       }
-                      // When scrolled down, scroll to top first
-                      if (showScrollToTop) {
-                        scrollToTop();
-                      } else {
-                        // When at top, open chat
-                        handleOpen();
-                      }
+                      // Always open chat on click
+                      handleOpen();
                     }}
                     unreadCount={unreadCount}
                     variant={buttonVariant}
