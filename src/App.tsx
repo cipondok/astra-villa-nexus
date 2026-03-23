@@ -500,8 +500,8 @@ const AppContent = () => {
           <PageTransition key={location.pathname}>
             <Suspense fallback={<PageLoader />}>
               <Routes location={location}>
-                <Route path="/" element={<Index />} />
-                <Route path="/landing" element={<Index />} />
+                <Route path="/" element={<InvestorLandingPage />} />
+                <Route path="/landing" element={<InvestorLandingPage />} />
                 <Route path="/investor-landing" element={<InvestorLandingPage />} />
                 <Route path="/onboarding/investor" element={<InvestorOnboarding />} />
                 <Route path="/onboarding/investor-wizard" element={<InvestorOnboardingWizard />} />
@@ -646,7 +646,7 @@ const AppContent = () => {
                   <Route index element={<PortfolioROITrackerPage />} />
                 </Route>
                 <Route path="/market-intelligence-feed" element={<MarketIntelligenceFeedPage />} />
-                <Route path="/investor-landing" element={<InvestorLanding />} />
+                <Route path="/investor-landing-legacy" element={<InvestorLanding />} />
                 <Route path="/flash-deals" element={<AuctionFlashDealsPage />} />
                 <Route path="/investment-map-explorer" element={<InvestmentMapExplorerPage />} />
                 <Route path="/ai-autopilot" element={<ProtectedRoute />}>
