@@ -232,7 +232,7 @@ const DailyOpsBattleStation: React.FC = () => {
             <motion.div variants={anim}>
               <Card className="h-full">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2"><Sunrise className="w-4 h-4 text-amber-500" /> Morning: Supply Attack</CardTitle>
+                  <CardTitle className="text-sm flex items-center gap-2"><Sunrise className="w-4 h-4 text-primary" /> Morning: Supply Attack</CardTitle>
                   <p className="text-xs text-muted-foreground">7:00 — 11:00 AM</p>
                 </CardHeader>
                 <CardContent><TaskList tasks={morningTasks} /></CardContent>
@@ -241,7 +241,7 @@ const DailyOpsBattleStation: React.FC = () => {
             <motion.div variants={anim}>
               <Card className="h-full">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2"><Flame className="w-4 h-4 text-orange-500" /> Midday: Demand Activation</CardTitle>
+                  <CardTitle className="text-sm flex items-center gap-2"><Flame className="w-4 h-4 text-primary" /> Midday: Demand Activation</CardTitle>
                   <p className="text-xs text-muted-foreground">11:00 AM — 3:00 PM</p>
                 </CardHeader>
                 <CardContent><TaskList tasks={middayTasks} /></CardContent>
@@ -250,7 +250,7 @@ const DailyOpsBattleStation: React.FC = () => {
             <motion.div variants={anim}>
               <Card className="h-full">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2"><Shield className="w-4 h-4 text-blue-500" /> Evening: Deal Acceleration</CardTitle>
+                  <CardTitle className="text-sm flex items-center gap-2"><Shield className="w-4 h-4 text-primary" /> Evening: Deal Acceleration</CardTitle>
                   <p className="text-xs text-muted-foreground">3:00 — 7:00 PM</p>
                 </CardHeader>
                 <CardContent><TaskList tasks={eveningTasks} /></CardContent>
