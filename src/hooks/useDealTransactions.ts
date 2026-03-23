@@ -91,7 +91,7 @@ export const useDealTransactions = (role: 'buyer' | 'seller' | 'agent' = 'buyer'
 
   const raiseDispute = useMutation({
     mutationFn: async (params: { deal_id: string; dispute_type?: string; description?: string; evidence_urls?: string[] }) => {
-      const { data, error } = await supabase.functions.invoke('deal-engine', {
+      const { data, error } = await supabase.functions.invoke('deal-transaction-engine', {
         body: { action: 'raise_dispute', ...params },
       });
       if (error) throw new Error(error.message);
