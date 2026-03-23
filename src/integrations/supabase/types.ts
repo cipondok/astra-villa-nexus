@@ -41715,6 +41715,33 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_gateway_profiles: {
+        Row: {
+          config: Json | null
+          created_at: string
+          id: string
+          is_active: boolean
+          provider_name: string
+          supported_currencies: string[]
+        }
+        Insert: {
+          config?: Json | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          provider_name: string
+          supported_currencies?: string[]
+        }
+        Update: {
+          config?: Json | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          provider_name?: string
+          supported_currencies?: string[]
+        }
+        Relationships: []
+      }
       payment_logs: {
         Row: {
           amount: number
@@ -64153,6 +64180,92 @@ export type Database = {
           },
         ]
       }
+      wallet_accounts: {
+        Row: {
+          available_balance: number
+          created_at: string
+          currency: string
+          id: string
+          locked_balance: number
+          updated_at: string
+          user_id: string
+          wallet_status: string
+        }
+        Insert: {
+          available_balance?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          locked_balance?: number
+          updated_at?: string
+          user_id: string
+          wallet_status?: string
+        }
+        Update: {
+          available_balance?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          locked_balance?: number
+          updated_at?: string
+          user_id?: string
+          wallet_status?: string
+        }
+        Relationships: []
+      }
+      wallet_transaction_ledger: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          description: string | null
+          external_payment_ref: string | null
+          id: string
+          metadata: Json | null
+          status: string
+          transaction_type: string
+          updated_at: string
+          user_id: string
+          wallet_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          description?: string | null
+          external_payment_ref?: string | null
+          id?: string
+          metadata?: Json | null
+          status?: string
+          transaction_type: string
+          updated_at?: string
+          user_id: string
+          wallet_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          description?: string | null
+          external_payment_ref?: string | null
+          id?: string
+          metadata?: Json | null
+          status?: string
+          transaction_type?: string
+          updated_at?: string
+          user_id?: string
+          wallet_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallet_transaction_ledger_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "wallet_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wealth_concentration_heatmap: {
         Row: {
           asset_density_per_sqkm: number | null
@@ -65529,6 +65642,10 @@ export type Database = {
       get_my_property_booking_count: { Args: never; Returns: number }
       get_national_property_market_index: { Args: never; Returns: Json }
       get_opportunity_score_stats: { Args: never; Returns: Json }
+      get_or_create_wallet: {
+        Args: { p_currency?: string; p_user_id: string }
+        Returns: string
+      }
       get_own_vendor_profile_secure: {
         Args: never
         Returns: {
