@@ -175,6 +175,10 @@ ${context.pricing_summary}
 AUTONOMOUS STRATEGY INTELLIGENCE:
 ${context.strategy_summary}
 
+GLOBAL CAPITAL ALLOCATION INTELLIGENCE:
+${context.capital_allocation_summary}
+
+
 ═══════════════════════════════════════════
 OPERATIONAL EXECUTION MODES (Daily Tasks):
 ═══════════════════════════════════════════
