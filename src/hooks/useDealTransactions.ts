@@ -40,7 +40,7 @@ export const useDealTransactions = (role: 'buyer' | 'seller' | 'agent' = 'buyer'
   const dealsQuery = useQuery({
     queryKey: ['deal-transactions', role],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke('deal-engine', {
+      const { data, error } = await supabase.functions.invoke('deal-transaction-engine', {
         body: { action: 'list_deals', role },
       });
       if (error) throw error;
