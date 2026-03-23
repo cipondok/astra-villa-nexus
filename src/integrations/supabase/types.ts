@@ -2764,6 +2764,39 @@ export type Database = {
           },
         ]
       }
+      agent_deal_metrics: {
+        Row: {
+          agent_user_id: string
+          avg_deal_closure_days: number | null
+          deal_success_rate: number | null
+          escrow_conversion_rate: number | null
+          metric_id: string
+          negotiation_efficiency_score: number | null
+          recorded_at: string
+          total_deals: number | null
+        }
+        Insert: {
+          agent_user_id: string
+          avg_deal_closure_days?: number | null
+          deal_success_rate?: number | null
+          escrow_conversion_rate?: number | null
+          metric_id?: string
+          negotiation_efficiency_score?: number | null
+          recorded_at?: string
+          total_deals?: number | null
+        }
+        Update: {
+          agent_user_id?: string
+          avg_deal_closure_days?: number | null
+          deal_success_rate?: number | null
+          escrow_conversion_rate?: number | null
+          metric_id?: string
+          negotiation_efficiency_score?: number | null
+          recorded_at?: string
+          total_deals?: number | null
+        }
+        Relationships: []
+      }
       agent_leaderboard_rewards: {
         Row: {
           agent_id: string | null
@@ -15452,6 +15485,33 @@ export type Database = {
         }
         Relationships: []
       }
+      deal_conversion_feature_dataset: {
+        Row: {
+          created_at: string
+          deal_id: string
+          features: Json
+          id: string
+          model_version: string | null
+          outcome: string | null
+        }
+        Insert: {
+          created_at?: string
+          deal_id: string
+          features?: Json
+          id?: string
+          model_version?: string | null
+          outcome?: string | null
+        }
+        Update: {
+          created_at?: string
+          deal_id?: string
+          features?: Json
+          id?: string
+          model_version?: string | null
+          outcome?: string | null
+        }
+        Relationships: []
+      }
       deal_disputes: {
         Row: {
           created_at: string
@@ -15566,6 +15626,66 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      deal_escrow_acceleration_metrics: {
+        Row: {
+          conversion_score: number | null
+          deal_id: string
+          demand_urgency_level: string | null
+          fast_escrow_eligible: boolean | null
+          metric_id: string
+          recorded_at: string
+          wallet_funded: boolean | null
+        }
+        Insert: {
+          conversion_score?: number | null
+          deal_id: string
+          demand_urgency_level?: string | null
+          fast_escrow_eligible?: boolean | null
+          metric_id?: string
+          recorded_at?: string
+          wallet_funded?: boolean | null
+        }
+        Update: {
+          conversion_score?: number | null
+          deal_id?: string
+          demand_urgency_level?: string | null
+          fast_escrow_eligible?: boolean | null
+          metric_id?: string
+          recorded_at?: string
+          wallet_funded?: boolean | null
+        }
+        Relationships: []
+      }
+      deal_followup_actions: {
+        Row: {
+          action_id: string
+          action_status: string
+          action_type: string
+          created_at: string
+          deal_id: string
+          scheduled_at: string | null
+          trigger_reason: string | null
+        }
+        Insert: {
+          action_id?: string
+          action_status?: string
+          action_type: string
+          created_at?: string
+          deal_id: string
+          scheduled_at?: string | null
+          trigger_reason?: string | null
+        }
+        Update: {
+          action_id?: string
+          action_status?: string
+          action_type?: string
+          created_at?: string
+          deal_id?: string
+          scheduled_at?: string | null
+          trigger_reason?: string | null
+        }
+        Relationships: []
       }
       deal_gravity_index: {
         Row: {
@@ -15785,6 +15905,72 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      deal_negotiation_insights: {
+        Row: {
+          ai_confidence: number | null
+          deal_id: string
+          generated_at: string
+          insight_id: string
+          market_comparison_score: number | null
+          suggested_price_range: Json | null
+          urgency_signal: string | null
+        }
+        Insert: {
+          ai_confidence?: number | null
+          deal_id: string
+          generated_at?: string
+          insight_id?: string
+          market_comparison_score?: number | null
+          suggested_price_range?: Json | null
+          urgency_signal?: string | null
+        }
+        Update: {
+          ai_confidence?: number | null
+          deal_id?: string
+          generated_at?: string
+          insight_id?: string
+          market_comparison_score?: number | null
+          suggested_price_range?: Json | null
+          urgency_signal?: string | null
+        }
+        Relationships: []
+      }
+      deal_pipeline_events: {
+        Row: {
+          buyer_user_id: string | null
+          created_at: string
+          deal_id: string
+          event_id: string
+          pipeline_stage: string
+          property_id: string | null
+          seller_user_id: string | null
+          source_channel: string | null
+          stage_timestamp: string
+        }
+        Insert: {
+          buyer_user_id?: string | null
+          created_at?: string
+          deal_id: string
+          event_id?: string
+          pipeline_stage?: string
+          property_id?: string | null
+          seller_user_id?: string | null
+          source_channel?: string | null
+          stage_timestamp?: string
+        }
+        Update: {
+          buyer_user_id?: string | null
+          created_at?: string
+          deal_id?: string
+          event_id?: string
+          pipeline_stage?: string
+          property_id?: string | null
+          seller_user_id?: string | null
+          source_channel?: string | null
+          stage_timestamp?: string
+        }
+        Relationships: []
       }
       deal_stage_rules: {
         Row: {

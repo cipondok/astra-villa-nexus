@@ -118,6 +118,7 @@ export const AgentTrainingPortal = lazyRetry(() => import("./AgentTrainingPortal
 export const BuyerViewingBookingFlow = lazyRetry(() => import("./BuyerViewingBookingFlow"));
 export const SellerPerformanceInsight = lazyRetry(() => import("./SellerPerformanceInsight"));
 export const AgentMobileHomeScreen = lazyRetry(() => import("./AgentMobileHomeScreen"));
+export const DealVelocityCommandCenter = lazyRetry(() => import("./DealVelocityCommandCenter"));
 export const DealOfferSubmissionFlow = lazyRetry(() => import("./DealOfferSubmissionFlow"));
 export const NegotiationChatInterface = lazyRetry(() => import("./NegotiationChatInterface"));
 export const DealProgressTimeline = lazyRetry(() => import("./DealProgressTimeline"));
@@ -818,6 +819,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "custody-settlement-command": () => <CustodySettlementCommandCenter />,
   "investor-growth-command": () => <InvestorGrowthCommandCenter />,
   "supply-growth-command": () => <SupplyGrowthCommandCenter />,
+  "deal-velocity-command": () => <DealVelocityCommandCenter />,
   "report-export":       () => <ReportExportFunction />,
   "enhanced-search":     () => <EnhancedSearchFilters />,
   "system-reports":      () => <SystemReports />,
@@ -1763,4 +1765,6 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "institutional-fund-manager": { label: "Institutional Fund Manager", category: "Investor Management" },
   "custody-settlement-command": { label: "Custody & Settlement", category: "Investor Management" },
   "investor-growth-command": { label: "Investor Growth Engine", category: "Investor Management" },
+  "supply-growth-command": { label: "Supply Growth Engine", category: "Marketplace Growth" },
+  "deal-velocity-command": { label: "Deal Velocity Engine", category: "Marketplace Growth" },
 };
