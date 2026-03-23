@@ -801,6 +801,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "deal-ops-closing":                () => <DealOpsClosingManagement />,
   "performance-deal-warroom":        () => <PerformanceDealWarRoom />,
   "supply-growth-deal-acceleration": () => <SupplyGrowthDealAcceleration />,
+  "market-intelligence-command": () => <MarketIntelligenceCommandCenter />,
   "report-export":       () => <ReportExportFunction />,
   "enhanced-search":     () => <EnhancedSearchFilters />,
   "system-reports":      () => <SystemReports />,
