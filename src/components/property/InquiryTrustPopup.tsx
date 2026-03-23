@@ -55,6 +55,7 @@ const InquiryTrustPopup = ({
         property_id: propertyId,
         user_id: user?.id,
         message: message.trim(),
+        subject: `Investment inquiry: ${propertyTitle || "Property"}`,
         status: "new",
         inquiry_type: inquiryType,
       });
