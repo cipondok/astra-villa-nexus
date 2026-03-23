@@ -1263,6 +1263,26 @@ const PropertyDetail: React.FC = () => {
               <DealActionTimeline currentStage={0} />
             </Suspense>
 
+            {/* Smart Inquiry CTA */}
+            <Suspense fallback={null}>
+              <SmartInquiryCTA
+                intentLevel="medium"
+                onInquiry={(type) => { setInquiryType(type); setInquiryPopupOpen(true); }}
+                propertyTitle={property.title}
+              />
+            </Suspense>
+
+            {/* Inquiry Trust Popup */}
+            <Suspense fallback={null}>
+              <InquiryTrustPopup
+                open={inquiryPopupOpen}
+                onOpenChange={setInquiryPopupOpen}
+                propertyId={property.id}
+                propertyTitle={property.title}
+                inquiryType={inquiryType}
+              />
+            </Suspense>
+
             {/* Wallet Funding CTA */}
             <Suspense fallback={null}>
               <WalletFundingCTA
