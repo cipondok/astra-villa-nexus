@@ -181,6 +181,7 @@ export const AdminRentalManagement = lazyRetry(() => import("./AdminRentalManage
 export const TransactionManagementTabs = lazyRetry(() => import("./TransactionManagementTabs"));
 export const InvestorSettingsHub = lazyRetry(() => import("./InvestorSettingsHub"));
 export const InvestorGrowthCommandCenter = lazyRetry(() => import("./InvestorGrowthCommandCenter"));
+export const AdminCapitalActivationPanel = lazyRetry(() => import("./AdminCapitalActivationPanel"));
 // Legacy WebsiteDesignControl kept in codebase but no longer used by admin navigation
 export const RateLimitingDashboard = lazyRetry(() => import("./RateLimitingDashboard"));
 export const VideoTourManager = lazyRetry(() => import("./VideoTourManager"));
@@ -819,6 +820,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "institutional-fund-manager": () => <InstitutionalFundManager />,
   "custody-settlement-command": () => <CustodySettlementCommandCenter />,
   "investor-growth-command": () => <InvestorGrowthCommandCenter />,
+  "capital-activation-command": () => <AdminCapitalActivationPanel />,
   "supply-growth-command": () => <SupplyGrowthCommandCenter />,
   "deal-velocity-command": () => <DealVelocityCommandCenter />,
   "founder-control-tower": () => <FounderControlTower />,
@@ -1767,6 +1769,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "institutional-fund-manager": { label: "Institutional Fund Manager", category: "Investor Management" },
   "custody-settlement-command": { label: "Custody & Settlement", category: "Investor Management" },
   "investor-growth-command": { label: "Investor Growth Engine", category: "Investor Management" },
+  "capital-activation-command": { label: "Capital Activation Engine", category: "Investor Management" },
   "supply-growth-command": { label: "Supply Growth Engine", category: "Marketplace Growth" },
   "deal-velocity-command": { label: "Deal Velocity Engine", category: "Marketplace Growth" },
   "founder-control-tower": { label: "Founder Control Tower", category: "Operations" },

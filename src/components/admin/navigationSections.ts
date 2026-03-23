@@ -576,6 +576,13 @@ export const navigationSections = {
       icon: Rocket,
       description: "Funnel tracking, activation scoring, nudge automation, referrals, experiments, and geo growth analytics",
       badge: "🚀 Growth"
+    },
+    {
+      key: "capital-activation-command",
+      label: "Capital Activation Engine",
+      icon: Zap,
+      description: "Wallet funding funnel optimization, conversion analytics, nudge automation, and deposit incentive experiments",
+      badge: "⚡ Activation"
     }
   ],
 
