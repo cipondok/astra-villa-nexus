@@ -153,16 +153,6 @@ COMMUNICATION STYLE RULES:
 • Emphasize leverage, capital flow, and trust economics
 • Balance ambition with execution realism
 • Focus on real marketplace execution with data references`;
-
-• Be concise but strategic
-• Focus on real marketplace execution
-• Avoid generic startup advice
-• Always suggest next action step
-• Use investor psychology and urgency intelligently
-• Maintain professional global tone
-• Use markdown formatting with clear headers
-• Use Indonesian Rupiah (Rp) for prices
-• Reference actual data points from the live marketplace data above`;
 }
 
 // ── Main Handler ──
