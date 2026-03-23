@@ -602,6 +602,9 @@ export const CustodySettlementCommandCenter = lazyRetry(() => import("./CustodyS
 // Fractional Investment
 export const FractionalInvestmentCommandCenter = lazyRetry(() => import("./FractionalInvestmentCommandCenter"));
 
+// Fund & REIT Management
+export const FundManagementCommandCenter = lazyRetry(() => import("./FundManagementCommandCenter"));
+
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
 // Sections with custom props are listed explicitly; all others are simple <Component />.
@@ -1269,6 +1272,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
 
   // Fractional Investment
   "fractional-investment-command": () => <FractionalInvestmentCommandCenter />,
+  "fund-reit-management": () => <FundManagementCommandCenter />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -1800,4 +1804,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "founder-control-tower": { label: "Founder Control Tower", category: "Operations" },
   "viral-growth-analytics": { label: "Viral Growth Analytics", category: "Marketplace Growth" },
   "secondary-market-command": { label: "Secondary Market Command", category: "Investor Management" },
+  "fund-reit-management": { label: "Fund & REIT Management", category: "Investor Management" },
 };
