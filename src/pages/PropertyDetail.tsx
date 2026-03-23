@@ -103,6 +103,12 @@ import HeroOpportunityOverlay from '@/components/property/HeroOpportunityOverlay
 import PropertyUrgencySignals from '@/components/property/PropertyUrgencySignals';
 const MakeOfferDialog = lazy(() => import('@/components/offers/MakeOfferDialog'));
 const PropertyInvestmentDashboard = lazy(() => import('@/components/property/PropertyInvestmentDashboard'));
+const InvestmentHeroSummary = lazy(() => import('@/components/property/InvestmentHeroSummary'));
+const SmartPricePositioning = lazy(() => import('@/components/property/SmartPricePositioning'));
+const EscrowSafetyModule = lazy(() => import('@/components/property/EscrowSafetyModule'));
+const DealActionTimeline = lazy(() => import('@/components/property/DealActionTimeline'));
+const WalletFundingCTA = lazy(() => import('@/components/property/WalletFundingCTA'));
+const InvestorMatchSignal = lazy(() => import('@/components/property/InvestorMatchSignal'));
 import { formatDistanceToNow } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 
@@ -1037,6 +1043,28 @@ const PropertyDetail: React.FC = () => {
             </Card>
             </ScrollReveal>
 
+            {/* Investment Hero Summary — top conversion widget */}
+            <Suspense fallback={null}>
+              <InvestmentHeroSummary
+                propertyId={property.id}
+                price={property.price}
+                city={property.city}
+                propertyType={property.property_type}
+                onEscrowClick={() => {
+                  if (!user) { setShowAuthModal(true); return; }
+                  setShowMobileOffer(true);
+                }}
+              />
+            </Suspense>
+
+            {/* Smart Price Positioning Insight */}
+            <Suspense fallback={null}>
+              <SmartPricePositioning
+                propertyId={property.id}
+                currentPrice={property.price}
+              />
+            </Suspense>
+
             {/* Property Details Tabs - Slim */}
             <ScrollReveal direction="up" delay={100}>
             <Card className="border border-gold-primary/10 bg-card backdrop-blur-xl rounded-xl overflow-hidden">
@@ -1216,6 +1244,34 @@ const PropertyDetail: React.FC = () => {
                   const bookingEl = document.querySelector('[data-booking-trigger]');
                   bookingEl?.scrollIntoView({ behavior: 'smooth' });
                 }}
+              />
+            </Suspense>
+
+            {/* Escrow Safety Explainer */}
+            <Suspense fallback={null}>
+              <EscrowSafetyModule />
+            </Suspense>
+
+            {/* Deal Action Timeline */}
+            <Suspense fallback={null}>
+              <DealActionTimeline currentStage={0} />
+            </Suspense>
+
+            {/* Wallet Funding CTA */}
+            <Suspense fallback={null}>
+              <WalletFundingCTA
+                propertyPrice={property.price}
+                onAuthRequired={() => setShowAuthModal(true)}
+              />
+            </Suspense>
+
+            {/* Personalized Investor Match Signal */}
+            <Suspense fallback={null}>
+              <InvestorMatchSignal
+                propertyPrice={property.price}
+                propertyType={property.property_type}
+                city={property.city}
+                rentalYield={property.property_type === 'villa' ? 8.5 : property.property_type === 'apartment' ? 6.2 : 5.5}
               />
             </Suspense>
 
