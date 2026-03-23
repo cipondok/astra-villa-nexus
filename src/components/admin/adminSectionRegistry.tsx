@@ -1806,6 +1806,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "investor-growth-command": { label: "Investor Growth Engine", category: "Investor Management" },
   "capital-activation-command": { label: "Capital Activation Engine", category: "Investor Management" },
   "investor-acquisition-campaign": { label: "Investor Acquisition Campaign", category: "Marketplace Growth" },
+  "investor-campaign-engine": { label: "Investor Campaign Engine", category: "Marketplace Growth" },
   "signup-conversion-analytics": { label: "Signup Conversion Analytics", category: "Marketplace Growth" },
   "inquiry-conversion-analytics": { label: "Inquiry Conversion Analytics", category: "Marketplace Growth" },
   "supply-growth-command": { label: "Supply Growth Engine", category: "Marketplace Growth" },
