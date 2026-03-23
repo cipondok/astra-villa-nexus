@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useCopilotIntelligence, CopilotIntelligence } from "@/hooks/useCopilotIntelligence";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -29,44 +31,13 @@ interface Recommendation {
 
 interface RiskAlert {
   id: string;
-  category: "vendor_churn" | "investor_disengage" | "revenue_slow" | "supply_imbalance";
+  category: string;
   severity: "critical" | "warning" | "info";
   title: string;
   metric: string;
   trend: "up" | "down" | "flat";
   probability: number;
 }
-
-interface PerformanceMetric {
-  label: string;
-  value: number;
-  target: number;
-  trend: "up" | "down" | "flat";
-}
-
-// ─── Mock Data ────────────────────────────────────────────────────────────────
-const mockRecommendations: Recommendation[] = [
-  { id: "r1", type: "growth", title: "Launch Jakarta South campaign", description: "District shows 47% inquiry surge with only 12% listing coverage — high ROI acquisition zone", confidence: 94, impact: "+23% inquiry volume", timeWindow: "Next 48 hours", priority: "critical", status: "pending" },
-  { id: "r2", type: "vendor", title: "Nudge 8 inactive vendors", description: "Vendors with >14 days inactivity but strong historical conversion — automated reactivation recommended", confidence: 87, impact: "+12 active listings", timeWindow: "Today", priority: "high", status: "pending" },
-  { id: "r3", type: "liquidity", title: "Rebalance BSD City inventory", description: "Supply exceeds demand by 3.2x in luxury segment — consider pricing nudge or visibility rotation", confidence: 81, impact: "Reduce oversupply 40%", timeWindow: "This week", priority: "medium", status: "pending" },
-  { id: "r4", type: "monetization", title: "Activate boost surge pricing", description: "Demand spike detected in 3 districts — dynamic pricing can capture 18% more revenue", confidence: 92, impact: "+Rp 4.2M revenue", timeWindow: "Next 6 hours", priority: "critical", status: "pending" },
-  { id: "r5", type: "growth", title: "Trigger investor deal alert batch", description: "42 high-intent investors matched to 15 new exclusive listings — curated push recommended", confidence: 89, impact: "+8 deal initiations", timeWindow: "Next 24 hours", priority: "high", status: "pending" },
-  { id: "r6", type: "vendor", title: "Upgrade 5 vendors to premium", description: "Top performers meeting threshold — automated upgrade prompt for subscription upsell", confidence: 78, impact: "+Rp 2.5M MRR", timeWindow: "This week", priority: "medium", status: "pending" },
-];
-
-const mockRiskAlerts: RiskAlert[] = [
-  { id: "a1", category: "vendor_churn", severity: "critical", title: "12 vendors at churn risk", metric: "Response rate <30% for 7 days", trend: "down", probability: 78 },
-  { id: "a2", category: "investor_disengage", severity: "warning", title: "Investor engagement declining", metric: "Login frequency -22% WoW", trend: "down", probability: 65 },
-  { id: "a3", category: "revenue_slow", severity: "warning", title: "Boost revenue plateau", metric: "Daily boost sales flat for 5 days", trend: "flat", probability: 58 },
-  { id: "a4", category: "supply_imbalance", severity: "info", title: "Tangerang supply gap widening", metric: "Demand/supply ratio: 4.1x", trend: "up", probability: 72 },
-];
-
-const mockPerformance: PerformanceMetric[] = [
-  { label: "Recommendation Success Rate", value: 84.2, target: 90, trend: "up" },
-  { label: "Admin Override Frequency", value: 12.5, target: 10, trend: "down" },
-  { label: "Action-to-Outcome Accuracy", value: 78.8, target: 85, trend: "up" },
-  { label: "Learning Improvement Rate", value: 3.2, target: 5, trend: "up" },
-];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const typeColor = (t: string) => {
@@ -86,14 +57,16 @@ const severityIcon = (s: string) => {
 };
 
 // ─── Section 1: Recommendation Feed ──────────────────────────────────────────
-function RecommendationFeed() {
-  const [recs, setRecs] = useState(mockRecommendations);
+function RecommendationFeed({ recommendations, onAction }: { recommendations: Recommendation[]; onAction: (id: string, action: string) => void }) {
+  const [localStatus, setLocalStatus] = useState<Record<string, string>>({});
   const [filter, setFilter] = useState<string>("all");
 
+  const recs = recommendations.map(r => ({ ...r, status: localStatus[r.id] || r.status }));
   const filtered = filter === "all" ? recs : recs.filter(r => r.type === filter);
 
   const handleAction = (id: string, action: "approved" | "dismissed") => {
-    setRecs(prev => prev.map(r => r.id === id ? { ...r, status: action } : r));
+    setLocalStatus(prev => ({ ...prev, [id]: action }));
+    onAction(id, action === "approved" ? "approve_recommendation" : "dismiss_recommendation");
   };
 
   return (
@@ -164,7 +137,7 @@ function RecommendationFeed() {
 }
 
 // ─── Section 2: Natural Language Action Panel ────────────────────────────────
-function NaturalLanguagePanel() {
+function NaturalLanguagePanel({ kpiContext }: { kpiContext?: string }) {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<{ role: "user" | "ai"; text: string }[]>([
     { role: "ai", text: "Ready. Ask me anything about platform performance, trigger campaigns, or simulate strategies." },
@@ -185,14 +158,9 @@ function NaturalLanguagePanel() {
 
     // Simulated AI response
     setTimeout(() => {
-      const responses: Record<string, string> = {
-        revenue: "📊 Weekly revenue is Rp 12.4M (+18% WoW). Boost sales contributing 42%, vendor subscriptions 31%, investor unlocks 27%. Momentum is strong — consider activating surge pricing in high-demand districts.",
-        boost: "🚀 Jakarta boost campaign ready. 23 eligible listings in high-demand zones. Estimated impact: +35% visibility, +12 inquiries/day. Shall I execute with standard or premium tier pricing?",
-        simulate: "📈 Simulation complete: A 20% price increase on premium boosts would yield +Rp 1.8M monthly but reduce conversion by ~8%. Net revenue impact: +Rp 1.2M. Recommended: Apply selectively to districts with demand/supply ratio >2.5x.",
-        vendor: "🏆 Top 5 vendors by conversion: (1) PT Graha — 34% close rate, (2) Rays Property — 31%, (3) Era Indonesia — 28%, (4) Century21 — 26%, (5) LJ Hooker — 24%. Average response time: 2.4 hours."
-      };
-      const key = Object.keys(responses).find(k => userMsg.toLowerCase().includes(k));
-      setMessages(prev => [...prev, { role: "ai", text: key ? responses[key] : `Analyzing "${userMsg}"... Based on current platform data, I'd recommend reviewing the Operations dashboard for detailed insights. Would you like me to pull specific metrics?` }]);
+      setMessages(prev => [...prev, { role: "ai", text: kpiContext
+        ? `Based on live data: ${kpiContext}\n\nFor deeper analysis, use the Founder AI Copilot which has full streaming AI with marketplace context.`
+        : `Use the Founder AI Copilot for real-time AI-powered analysis with live marketplace data.` }]);
     }, 800);
   };
 
@@ -240,7 +208,7 @@ function NaturalLanguagePanel() {
 }
 
 // ─── Section 3: Risk Early Warning ───────────────────────────────────────────
-function RiskEarlyWarning() {
+function RiskEarlyWarning({ alerts }: { alerts: RiskAlert[] }) {
   return (
     <Card className="border-border/50 bg-card/80 backdrop-blur">
       <CardHeader className="pb-3">
@@ -250,7 +218,9 @@ function RiskEarlyWarning() {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2.5">
-        {mockRiskAlerts.map((alert, i) => (
+        {alerts.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-4">No active risk alerts — system healthy</p>
+        ) : alerts.map((alert, i) => (
           <motion.div key={alert.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.08 }}>
             <div className="flex items-center gap-3 p-2.5 rounded-lg border border-border/30 bg-background/40">
               {severityIcon(alert.severity)}
@@ -328,7 +298,11 @@ function AutomationControl() {
 }
 
 // ─── Section 5: Performance Transparency ─────────────────────────────────────
-function PerformanceTransparency() {
+function PerformanceTransparency({ performance }: { performance: { actions_executed_7d: number; ai_signals_7d: number } }) {
+  const metrics = [
+    { label: "Actions Executed (7d)", value: performance.actions_executed_7d, target: 10 },
+    { label: "AI Signals Generated (7d)", value: performance.ai_signals_7d, target: 50 },
+  ];
   return (
     <Card className="border-border/50 bg-card/80 backdrop-blur">
       <CardHeader className="pb-3">
@@ -338,32 +312,20 @@ function PerformanceTransparency() {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        {mockPerformance.map((metric, i) => (
+        {metrics.map((metric, i) => (
           <div key={i} className="space-y-1.5">
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">{metric.label}</span>
               <div className="flex items-center gap-1.5">
-                {metric.trend === "up" ? <ArrowUpRight className="h-3 w-3 text-emerald-500" /> : <ArrowDownRight className="h-3 w-3 text-destructive" />}
-                <span className="font-bold text-foreground">{metric.value}%</span>
-                <span className="text-xs text-muted-foreground">/ {metric.target}%</span>
+                <span className="font-bold text-foreground">{metric.value}</span>
+                <span className="text-xs text-muted-foreground">/ {metric.target} target</span>
               </div>
             </div>
-            <Progress value={(metric.value / metric.target) * 100} className="h-1.5" />
+            <Progress value={Math.min((metric.value / metric.target) * 100, 100)} className="h-1.5" />
           </div>
         ))}
-        <div className="mt-4 p-2.5 rounded-lg border border-border/30 bg-background/40">
-          <div className="flex items-center gap-2 mb-2">
-            <RefreshCw className="h-4 w-4 text-primary" />
-            <span className="text-xs font-medium text-foreground">Learning Loop Status</span>
-          </div>
-          <div className="grid grid-cols-3 gap-2 text-center">
-            {[{ label: "Models Trained", val: "142" }, { label: "Last Calibration", val: "2h ago" }, { label: "Drift Score", val: "0.03" }].map(s => (
-              <div key={s.label} className="p-2 rounded bg-muted/30">
-                <p className="text-sm font-bold text-foreground">{s.val}</p>
-                <p className="text-[10px] text-muted-foreground">{s.label}</p>
-              </div>
-            ))}
-          </div>
+        <div className="mt-4 p-2.5 rounded-lg border border-border/30 bg-background/40 text-center">
+          <p className="text-xs text-muted-foreground">Intelligence powered by live database queries</p>
         </div>
       </CardContent>
     </Card>
@@ -371,13 +333,24 @@ function PerformanceTransparency() {
 }
 
 // ─── Top KPI Strip ───────────────────────────────────────────────────────────
-function CoPilotKPIStrip() {
+function CoPilotKPIStrip({ data }: { data?: CopilotIntelligence }) {
+  if (!data) {
+    return (
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Skeleton key={i} className="h-24 rounded-lg" />
+        ))}
+      </div>
+    );
+  }
+
+  const k = data.kpis;
   const kpis = [
-    { icon: Brain, label: "AI Actions Today", value: "34", sub: "+12 vs yesterday", color: "text-primary" },
-    { icon: Target, label: "Success Rate", value: "84.2%", sub: "↑ 2.1% WoW", color: "text-emerald-500" },
-    { icon: Zap, label: "Avg Response", value: "1.2s", sub: "Decision latency", color: "text-amber-400" },
-    { icon: Shield, label: "Risk Alerts", value: "4", sub: "2 critical", color: "text-destructive" },
-    { icon: Activity, label: "Automation Rate", value: "67%", sub: "Actions auto-executed", color: "text-cyan-400" },
+    { icon: Brain, label: "Total Listings", value: String(k.total_properties), sub: `${k.active_listings_last_30_days} new (30d)`, color: "text-primary" },
+    { icon: Target, label: "Users", value: String(k.total_users), sub: `+${k.new_users_last_7_days} this week`, color: "text-emerald-500" },
+    { icon: Zap, label: "Deals Open", value: String(k.deals_open), sub: `${k.deals_closed_30_days} closed (30d)`, color: "text-amber-400" },
+    { icon: Shield, label: "Risk Alerts", value: String(data.risk_alerts.length), sub: `${data.risk_alerts.filter(a => a.severity === "critical").length} critical`, color: "text-destructive" },
+    { icon: Activity, label: "Escrow Active", value: String(k.escrow_active), sub: `${data.funnel.conversion_rate}% conv rate`, color: "text-cyan-400" },
   ];
 
   return (
@@ -400,6 +373,14 @@ function CoPilotKPIStrip() {
 
 // ─── Main Component ──────────────────────────────────────────────────────────
 const AdminAICoPilot = () => {
+  const { data, isLoading, executeAction } = useCopilotIntelligence();
+
+  const handleAction = (recId: string, actionType: string) => {
+    executeAction.mutate({ actionType, payload: { recommendation_id: recId } });
+  };
+
+  const kpiContext = data ? `${data.kpis.total_properties} listings, ${data.kpis.total_users} users, ${data.kpis.deals_open} open deals, ${data.kpis.escrow_active} active escrow, ${data.funnel.conversion_rate}% conversion` : undefined;
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -420,21 +401,24 @@ const AdminAICoPilot = () => {
       </div>
 
       {/* KPI Strip */}
-      <CoPilotKPIStrip />
+      <CoPilotKPIStrip data={data} />
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Recommendations + NL Panel */}
         <div className="space-y-6">
-          <RecommendationFeed />
-          <NaturalLanguagePanel />
+          <RecommendationFeed
+            recommendations={data?.recommendations || []}
+            onAction={handleAction}
+          />
+          <NaturalLanguagePanel kpiContext={kpiContext} />
         </div>
 
         {/* Right: Risk + Automation + Performance */}
         <div className="space-y-6">
-          <RiskEarlyWarning />
+          <RiskEarlyWarning alerts={data?.risk_alerts || []} />
           <AutomationControl />
-          <PerformanceTransparency />
+          <PerformanceTransparency performance={data?.performance || { actions_executed_7d: 0, ai_signals_7d: 0 }} />
         </div>
       </div>
     </div>
