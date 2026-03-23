@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { navigationSections, sectionTitles, categories } from './navigationSections';
@@ -25,23 +25,7 @@ const categoryIcons: Record<string, LucideIcon> = {
   "help": HelpCircle,
 };
 
-const STORAGE_KEY = 'admin-tab-visit-history';
 const COLLAPSED_VISIBLE = 12;
-
-function getVisitHistory(): Record<string, number> {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : {};
-  } catch { return {}; }
-}
-
-function recordVisit(sectionKey: string) {
-  try {
-    const history = getVisitHistory();
-    history[sectionKey] = Date.now();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
-  } catch {}
-}
 
 interface AdminCategoryTabsProps {
   activeSection: string;
@@ -49,16 +33,8 @@ interface AdminCategoryTabsProps {
 }
 
 export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCategoryTabsProps) {
-  const [visitHistory, setVisitHistory] = useState<Record<string, number>>(getVisitHistory);
   const [expanded, setExpanded] = useState(false);
   const [query, setQuery] = useState('');
-
-  useEffect(() => {
-    if (activeSection) {
-      recordVisit(activeSection);
-      setVisitHistory(getVisitHistory());
-    }
-  }, [activeSection]);
 
   const activeCategory = useMemo((): string | null => {
     for (const category of categories) {
@@ -73,19 +49,11 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
     [activeCategory]
   );
 
-  const sortedSections = useMemo(() => {
-    return [...categorySections].sort((a, b) => {
-      if (a.key === activeSection) return -1;
-      if (b.key === activeSection) return 1;
-      return (visitHistory[b.key] || 0) - (visitHistory[a.key] || 0);
-    });
-  }, [categorySections, activeSection, visitHistory]);
-
   const filteredSections = useMemo(() => {
-    if (!query.trim()) return sortedSections;
+    if (!query.trim()) return categorySections;
     const q = query.toLowerCase();
-    return sortedSections.filter(s => s.label.toLowerCase().includes(q));
-  }, [sortedSections, query]);
+    return categorySections.filter(s => s.label.toLowerCase().includes(q));
+  }, [categorySections, query]);
 
   const handleSectionClick = useCallback((key: string) => {
     onSectionChange?.(key);
