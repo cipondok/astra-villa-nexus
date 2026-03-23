@@ -190,6 +190,13 @@ export const navigationSections = {
       badge: "🏆 Deals"
     },
     {
+      key: "deal-recovery-playbook",
+      label: "Deal Recovery Playbook",
+      icon: MessageSquare,
+      description: "Re-activate stalled investor conversations with psychological precision",
+      badge: "🔄 Recovery"
+    },
+    {
       key: "first-city-domination",
       label: "First City Domination",
       icon: Crosshair,
