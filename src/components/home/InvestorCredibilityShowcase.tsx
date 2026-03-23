@@ -63,14 +63,14 @@ function getTimeAgo(dateStr: string): string {
 }
 
 const InvestorCredibilityShowcase = () => {
-  const { data: agentCount } = useQuery({
+  const { data: agentCount } = useQuery<number>({
     queryKey: ['verified-agent-count'],
     queryFn: async () => {
-      const { count } = await supabase
+      const result: any = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true })
-        .eq('role', 'agent') as any;
-      return (count as number) || 0;
+        .eq('role', 'agent');
+      return result.count || 0;
     },
     staleTime: 15 * 60 * 1000,
   });
