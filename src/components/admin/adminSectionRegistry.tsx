@@ -1751,4 +1751,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "market-intelligence-command": { label: "Market Intelligence AI Engine", category: "Market Intelligence" },
   "investor-wealth-intelligence": { label: "Investor Wealth Intelligence", category: "Investor Management" },
   "investor-economics-command": { label: "Investor Economics Command", category: "Investor Management" },
+  "liquidity-exchange-command": { label: "Liquidity Exchange Command", category: "Investor Management" },
 };
