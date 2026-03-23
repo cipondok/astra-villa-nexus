@@ -835,6 +835,15 @@ const Index = () => {
                 </ScrollReveal>
               </SectionWrapper>
 
+              {/* ── First Funding Psychology CTA ── */}
+              <SectionWrapper variant="default" className="py-2 sm:py-3">
+                <ScrollReveal direction="up" delay={0}>
+                  <Suspense fallback={null}>
+                    <FirstFundingCTA />
+                  </Suspense>
+                </ScrollReveal>
+              </SectionWrapper>
+
               {/* ── Stats Counter Strip ── */}
               <SectionWrapper variant="muted">
                 <Suspense fallback={null}>
