@@ -41359,6 +41359,69 @@ export type Database = {
         }
         Relationships: []
       }
+      negotiation_deal_intelligence: {
+        Row: {
+          ai_confidence_level: number | null
+          buyer_id: string | null
+          buyer_intent_strength: number | null
+          buyer_offer_price: number | null
+          created_at: string
+          deal_id: string | null
+          id: string
+          interaction_frequency_score: number | null
+          last_updated_at: string
+          negotiation_momentum_score: number | null
+          negotiation_stage: string
+          price_gap_percentage: number | null
+          property_id: string | null
+          recommended_next_action: string | null
+          risk_of_drop_probability: number | null
+          seller_counter_price: number | null
+          seller_flexibility_score: number | null
+          seller_id: string | null
+        }
+        Insert: {
+          ai_confidence_level?: number | null
+          buyer_id?: string | null
+          buyer_intent_strength?: number | null
+          buyer_offer_price?: number | null
+          created_at?: string
+          deal_id?: string | null
+          id?: string
+          interaction_frequency_score?: number | null
+          last_updated_at?: string
+          negotiation_momentum_score?: number | null
+          negotiation_stage?: string
+          price_gap_percentage?: number | null
+          property_id?: string | null
+          recommended_next_action?: string | null
+          risk_of_drop_probability?: number | null
+          seller_counter_price?: number | null
+          seller_flexibility_score?: number | null
+          seller_id?: string | null
+        }
+        Update: {
+          ai_confidence_level?: number | null
+          buyer_id?: string | null
+          buyer_intent_strength?: number | null
+          buyer_offer_price?: number | null
+          created_at?: string
+          deal_id?: string | null
+          id?: string
+          interaction_frequency_score?: number | null
+          last_updated_at?: string
+          negotiation_momentum_score?: number | null
+          negotiation_stage?: string
+          price_gap_percentage?: number | null
+          property_id?: string | null
+          recommended_next_action?: string | null
+          risk_of_drop_probability?: number | null
+          seller_counter_price?: number | null
+          seller_flexibility_score?: number | null
+          seller_id?: string | null
+        }
+        Relationships: []
+      }
       negotiation_intelligence: {
         Row: {
           avg_counter_offer_discount_pct: number | null
