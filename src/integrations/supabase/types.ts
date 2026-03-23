@@ -33854,6 +33854,42 @@ export type Database = {
           },
         ]
       }
+      listing_quality_signals: {
+        Row: {
+          description_completeness_score: number | null
+          evaluated_at: string
+          id: string
+          image_quality_score: number | null
+          market_demand_alignment: number | null
+          price_fairness_score: number | null
+          property_id: string
+          quality_score: number | null
+          verification_status: string | null
+        }
+        Insert: {
+          description_completeness_score?: number | null
+          evaluated_at?: string
+          id?: string
+          image_quality_score?: number | null
+          market_demand_alignment?: number | null
+          price_fairness_score?: number | null
+          property_id: string
+          quality_score?: number | null
+          verification_status?: string | null
+        }
+        Update: {
+          description_completeness_score?: number | null
+          evaluated_at?: string
+          id?: string
+          image_quality_score?: number | null
+          market_demand_alignment?: number | null
+          price_fairness_score?: number | null
+          property_id?: string
+          quality_score?: number | null
+          verification_status?: string | null
+        }
+        Relationships: []
+      }
       listing_syndication_networks: {
         Row: {
           api_endpoint: string | null
@@ -52095,6 +52131,36 @@ export type Database = {
           },
         ]
       }
+      seller_conversion_metrics: {
+        Row: {
+          escrow_to_close_rate: number | null
+          id: string
+          inquiry_to_visit_rate: number | null
+          property_id: string
+          recorded_at: string
+          view_to_inquiry_rate: number | null
+          visit_to_escrow_rate: number | null
+        }
+        Insert: {
+          escrow_to_close_rate?: number | null
+          id?: string
+          inquiry_to_visit_rate?: number | null
+          property_id: string
+          recorded_at?: string
+          view_to_inquiry_rate?: number | null
+          visit_to_escrow_rate?: number | null
+        }
+        Update: {
+          escrow_to_close_rate?: number | null
+          id?: string
+          inquiry_to_visit_rate?: number | null
+          property_id?: string
+          recorded_at?: string
+          view_to_inquiry_rate?: number | null
+          visit_to_escrow_rate?: number | null
+        }
+        Relationships: []
+      }
       seo_ai_actions: {
         Row: {
           action_type: string
@@ -54579,6 +54645,108 @@ export type Database = {
         }
         Relationships: []
       }
+      supply_growth_actions: {
+        Row: {
+          action_status: string | null
+          action_type: string
+          agent_user_id: string | null
+          created_at: string
+          id: string
+          scheduled_at: string | null
+          trigger_reason: string | null
+        }
+        Insert: {
+          action_status?: string | null
+          action_type: string
+          agent_user_id?: string | null
+          created_at?: string
+          id?: string
+          scheduled_at?: string | null
+          trigger_reason?: string | null
+        }
+        Update: {
+          action_status?: string | null
+          action_type?: string
+          agent_user_id?: string | null
+          created_at?: string
+          id?: string
+          scheduled_at?: string | null
+          trigger_reason?: string | null
+        }
+        Relationships: []
+      }
+      supply_growth_events: {
+        Row: {
+          agent_user_id: string | null
+          city: string | null
+          created_at: string
+          funnel_stage: string
+          id: string
+          property_id: string | null
+          property_type: string | null
+          source_channel: string | null
+        }
+        Insert: {
+          agent_user_id?: string | null
+          city?: string | null
+          created_at?: string
+          funnel_stage: string
+          id?: string
+          property_id?: string | null
+          property_type?: string | null
+          source_channel?: string | null
+        }
+        Update: {
+          agent_user_id?: string | null
+          city?: string | null
+          created_at?: string
+          funnel_stage?: string
+          id?: string
+          property_id?: string | null
+          property_type?: string | null
+          source_channel?: string | null
+        }
+        Relationships: []
+      }
+      supply_growth_feature_dataset: {
+        Row: {
+          agent_density: number | null
+          city: string
+          computed_at: string
+          conversion_rate: number | null
+          demand_score: number | null
+          gap_score: number | null
+          id: string
+          listing_quality_avg: number | null
+          property_type: string | null
+          supply_score: number | null
+        }
+        Insert: {
+          agent_density?: number | null
+          city: string
+          computed_at?: string
+          conversion_rate?: number | null
+          demand_score?: number | null
+          gap_score?: number | null
+          id?: string
+          listing_quality_avg?: number | null
+          property_type?: string | null
+          supply_score?: number | null
+        }
+        Update: {
+          agent_density?: number | null
+          city?: string
+          computed_at?: string
+          conversion_rate?: number | null
+          demand_score?: number | null
+          gap_score?: number | null
+          id?: string
+          listing_quality_avg?: number | null
+          property_type?: string | null
+          supply_score?: number | null
+        }
+        Relationships: []
+      }
       supply_quality_standards: {
         Row: {
           created_at: string
@@ -54609,6 +54777,39 @@ export type Database = {
           rule_category?: string
           rule_name?: string
           severity?: string
+        }
+        Relationships: []
+      }
+      supply_zone_metrics: {
+        Row: {
+          active_listing_count: number | null
+          avg_listing_quality: number | null
+          city: string
+          district: string | null
+          id: string
+          investor_demand_index: number | null
+          supply_gap_score: number | null
+          updated_at: string
+        }
+        Insert: {
+          active_listing_count?: number | null
+          avg_listing_quality?: number | null
+          city: string
+          district?: string | null
+          id?: string
+          investor_demand_index?: number | null
+          supply_gap_score?: number | null
+          updated_at?: string
+        }
+        Update: {
+          active_listing_count?: number | null
+          avg_listing_quality?: number | null
+          city?: string
+          district?: string | null
+          id?: string
+          investor_demand_index?: number | null
+          supply_gap_score?: number | null
+          updated_at?: string
         }
         Relationships: []
       }
