@@ -136,6 +136,7 @@ async function gatherFounderContext() {
     pricing_summary: pricingSummary,
     strategy_summary: strategySummary,
     capital_allocation_summary: capitalAllocSummary,
+    planetary_summary: planetarySummary,
     date: today,
   };
 }
