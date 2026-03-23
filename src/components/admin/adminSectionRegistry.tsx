@@ -605,6 +605,9 @@ export const FractionalInvestmentCommandCenter = lazyRetry(() => import("./Fract
 // Fund & REIT Management
 export const FundManagementCommandCenter = lazyRetry(() => import("./FundManagementCommandCenter"));
 
+// Global Expansion
+export const GlobalExpansionCommandCenter = lazyRetry(() => import("./GlobalExpansionCommandCenter"));
+
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
 // Sections with custom props are listed explicitly; all others are simple <Component />.
