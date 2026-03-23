@@ -178,6 +178,7 @@ export const BookingManagement = lazyRetry(() => import("./BookingManagement"));
 export const AdminRentalManagement = lazyRetry(() => import("./AdminRentalManagement"));
 export const TransactionManagementTabs = lazyRetry(() => import("./TransactionManagementTabs"));
 export const InvestorSettingsHub = lazyRetry(() => import("./InvestorSettingsHub"));
+export const InvestorGrowthCommandCenter = lazyRetry(() => import("./InvestorGrowthCommandCenter"));
 // Legacy WebsiteDesignControl kept in codebase but no longer used by admin navigation
 export const RateLimitingDashboard = lazyRetry(() => import("./RateLimitingDashboard"));
 export const VideoTourManager = lazyRetry(() => import("./VideoTourManager"));
