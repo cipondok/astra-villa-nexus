@@ -809,6 +809,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "market-intelligence-command": () => <MarketIntelligenceCommandCenter />,
   "investor-wealth-intelligence": () => <InvestorWealthDashboard />,
   "investor-economics-command": () => <AdminInvestorEconomics />,
+  "liquidity-exchange-command": () => <LiquidityExchangeCommandCenter />,
   "report-export":       () => <ReportExportFunction />,
   "enhanced-search":     () => <EnhancedSearchFilters />,
   "system-reports":      () => <SystemReports />,
