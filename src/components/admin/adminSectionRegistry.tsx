@@ -1789,4 +1789,5 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "deal-velocity-command": { label: "Deal Velocity Engine", category: "Marketplace Growth" },
   "founder-control-tower": { label: "Founder Control Tower", category: "Operations" },
   "viral-growth-analytics": { label: "Viral Growth Analytics", category: "Marketplace Growth" },
+  "secondary-market-command": { label: "Secondary Market Command", category: "Investor Management" },
 };
