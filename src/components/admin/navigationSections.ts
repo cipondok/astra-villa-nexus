@@ -211,6 +211,13 @@ export const navigationSections = {
       badge: "🏠 Sellers"
     },
     {
+      key: "negotiation-ai-assistant",
+      label: "Negotiation AI Assistant",
+      icon: Handshake,
+      description: "Real-time momentum scoring, drop risk prediction & AI message generation for negotiations",
+      badge: "🤝 Negotiate"
+    },
+    {
       key: "first-city-domination",
       label: "First City Domination",
       icon: Crosshair,
