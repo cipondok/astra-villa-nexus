@@ -31029,6 +31029,39 @@ export type Database = {
         }
         Relationships: []
       }
+      inventory_allocation_signals: {
+        Row: {
+          boost_multiplier: number | null
+          city: string
+          created_at: string | null
+          id: string
+          oversupply_flag: boolean | null
+          ranking_adjustment: number | null
+          rebalance_action: string | null
+          segment: string | null
+        }
+        Insert: {
+          boost_multiplier?: number | null
+          city: string
+          created_at?: string | null
+          id?: string
+          oversupply_flag?: boolean | null
+          ranking_adjustment?: number | null
+          rebalance_action?: string | null
+          segment?: string | null
+        }
+        Update: {
+          boost_multiplier?: number | null
+          city?: string
+          created_at?: string | null
+          id?: string
+          oversupply_flag?: boolean | null
+          ranking_adjustment?: number | null
+          rebalance_action?: string | null
+          segment?: string | null
+        }
+        Relationships: []
+      }
       investment_funds: {
         Row: {
           base_currency: string | null
@@ -37127,6 +37160,57 @@ export type Database = {
           price_momentum_score?: number | null
           search_frequency?: number | null
           seller_supply_index?: number | null
+        }
+        Relationships: []
+      }
+      marketplace_strategy_signals: {
+        Row: {
+          capital_flow_score: number | null
+          city: string
+          confidence_level: string | null
+          created_at: string | null
+          demand_score: number | null
+          id: string
+          investor_sentiment_score: number | null
+          liquidity_score: number | null
+          pricing_momentum_score: number | null
+          recommended_strategy: string | null
+          region: string | null
+          segment: string | null
+          strategy_priority_index: number | null
+          supply_score: number | null
+        }
+        Insert: {
+          capital_flow_score?: number | null
+          city: string
+          confidence_level?: string | null
+          created_at?: string | null
+          demand_score?: number | null
+          id?: string
+          investor_sentiment_score?: number | null
+          liquidity_score?: number | null
+          pricing_momentum_score?: number | null
+          recommended_strategy?: string | null
+          region?: string | null
+          segment?: string | null
+          strategy_priority_index?: number | null
+          supply_score?: number | null
+        }
+        Update: {
+          capital_flow_score?: number | null
+          city?: string
+          confidence_level?: string | null
+          created_at?: string | null
+          demand_score?: number | null
+          id?: string
+          investor_sentiment_score?: number | null
+          liquidity_score?: number | null
+          pricing_momentum_score?: number | null
+          recommended_strategy?: string | null
+          region?: string | null
+          segment?: string | null
+          strategy_priority_index?: number | null
+          supply_score?: number | null
         }
         Relationships: []
       }
@@ -56211,6 +56295,90 @@ export type Database = {
             columns: ["spv_id"]
             isOneToOne: false
             referencedRelation: "asset_spv_entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      strategy_execution_log: {
+        Row: {
+          action_payload_json: Json | null
+          city: string | null
+          executed_at: string | null
+          execution_mode: string | null
+          expected_impact_score: number | null
+          id: string
+          outcome_metric_json: Json | null
+          region: string | null
+          status: string | null
+          strategy_type: string
+        }
+        Insert: {
+          action_payload_json?: Json | null
+          city?: string | null
+          executed_at?: string | null
+          execution_mode?: string | null
+          expected_impact_score?: number | null
+          id?: string
+          outcome_metric_json?: Json | null
+          region?: string | null
+          status?: string | null
+          strategy_type: string
+        }
+        Update: {
+          action_payload_json?: Json | null
+          city?: string | null
+          executed_at?: string | null
+          execution_mode?: string | null
+          expected_impact_score?: number | null
+          id?: string
+          outcome_metric_json?: Json | null
+          region?: string | null
+          status?: string | null
+          strategy_type?: string
+        }
+        Relationships: []
+      }
+      strategy_outcome_training: {
+        Row: {
+          actual_impact: number | null
+          execution_id: string | null
+          expected_impact: number | null
+          id: string
+          measured_at: string | null
+          roi_efficiency: number | null
+          strategy_signal_id: string | null
+        }
+        Insert: {
+          actual_impact?: number | null
+          execution_id?: string | null
+          expected_impact?: number | null
+          id?: string
+          measured_at?: string | null
+          roi_efficiency?: number | null
+          strategy_signal_id?: string | null
+        }
+        Update: {
+          actual_impact?: number | null
+          execution_id?: string | null
+          expected_impact?: number | null
+          id?: string
+          measured_at?: string | null
+          roi_efficiency?: number | null
+          strategy_signal_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "strategy_outcome_training_execution_id_fkey"
+            columns: ["execution_id"]
+            isOneToOne: false
+            referencedRelation: "strategy_execution_log"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "strategy_outcome_training_strategy_signal_id_fkey"
+            columns: ["strategy_signal_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_strategy_signals"
             referencedColumns: ["id"]
           },
         ]
