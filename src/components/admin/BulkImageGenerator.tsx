@@ -1,179 +1,106 @@
-import React, { useState, useRef, useCallback } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
-import { ImageIcon, Loader2, Play, StopCircle, AlertTriangle, CheckCircle, Zap, RefreshCw } from "lucide-react";
-
-const BATCH_SIZE = 5;
-const DELAY_BETWEEN_IMAGES = 2000;
-const DELAY_BETWEEN_BATCHES = 4000;
+import {
+  ImageIcon, Loader2, Play, StopCircle, AlertTriangle, CheckCircle,
+  Zap, RefreshCw, RotateCcw, Upload, Server, Clock, TrendingUp
+} from "lucide-react";
+import {
+  useImageQueueStats,
+  useRecentImageJobs,
+  useEnqueueImages,
+  useProcessImages,
+  useRetryFailedImages,
+} from "@/hooks/useImageGenerationQueue";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function BulkImageGenerator() {
-  const queryClient = useQueryClient();
-  const [isRunning, setIsRunning] = useState(false);
-  const [processed, setProcessed] = useState(0);
-  const [succeeded, setSucceeded] = useState(0);
-  const [failed, setFailed] = useState(0);
-  const [currentProperty, setCurrentProperty] = useState("");
-  const [currentBatch, setCurrentBatch] = useState(0);
-  const [lastError, setLastError] = useState<string | null>(null);
-  const [log, setLog] = useState<{ id: string; title: string; status: "ok" | "fail"; msg?: string }[]>([]);
-  const cancelRef = useRef(false);
-  const [offset, setOffset] = useState(0);
+  const [concurrency, setConcurrency] = useState(3);
+  const [isAutoProcessing, setIsAutoProcessing] = useState(false);
+  const [batchLimit, setBatchLimit] = useState(100);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const { data: stats, isLoading: statsLoading, refetch: refetchStats } = useQuery({
-    queryKey: ["bulk-image-stats"],
+  const { data: queueStats, isLoading: statsLoading, refetch: refetchStats } = useImageQueueStats();
+  const { data: recentJobs } = useRecentImageJobs(15);
+  const enqueue = useEnqueueImages();
+  const process = useProcessImages();
+  const retryFailed = useRetryFailedImages();
+
+  const { data: propertyStats } = useQuery({
+    queryKey: ["bulk-image-property-stats"],
     queryFn: async () => {
-      const { count: noImages } = await supabase
-        .from("properties")
-        .select("id", { count: "exact", head: true })
-        .is("thumbnail_url", null);
-
-      const { count: total } = await supabase
-        .from("properties")
-        .select("id", { count: "exact", head: true });
-
-      return {
-        noImages: noImages || 0,
-        total: total || 0,
-        withImages: (total || 0) - (noImages || 0),
-      };
+      const { count: noImages } = await supabase.from("properties").select("id", { count: "exact", head: true }).is("thumbnail_url", null);
+      const { count: total } = await supabase.from("properties").select("id", { count: "exact", head: true });
+      // Count AI generated via the jobs table instead
+      const { count: aiGenerated } = await supabase.from("ai_image_jobs" as any).select("id", { count: "exact", head: true }).eq("status", "done");
+      return { noImages: noImages || 0, total: total || 0, aiGenerated: aiGenerated || 0 };
     },
-    staleTime: 30_000,
+    staleTime: 15_000,
   });
 
-  const addLog = useCallback((entry: { id: string; title: string; status: "ok" | "fail"; msg?: string }) => {
-    setLog(prev => [entry, ...prev].slice(0, 50));
-  }, []);
-
-  const runBulkGeneration = useCallback(async () => {
-    cancelRef.current = false;
-    setIsRunning(true);
-    setLastError(null);
-    let currentOffset = offset;
-    let batchNum = currentBatch;
-
-    while (!cancelRef.current) {
-      try {
-        const { data: properties, error: fetchErr } = await supabase
-          .from("properties")
-          .select("id, title, property_type, city, location, description")
-          .is("thumbnail_url", null)
-          .order("created_at", { ascending: false })
-          .range(currentOffset, currentOffset + BATCH_SIZE - 1);
-
-        if (fetchErr) {
-          setLastError(`Fetch error: ${fetchErr.message}`);
-          toast.error(`Fetch error: ${fetchErr.message}`);
-          break;
-        }
-
-        if (!properties || properties.length === 0) {
-          toast.success("🎉 No more properties without images!");
-          break;
-        }
-
-        batchNum++;
-        setCurrentBatch(batchNum);
-
-        for (let i = 0; i < properties.length; i++) {
-          if (cancelRef.current) break;
-
-          const prop = properties[i];
-          const shortTitle = prop.title?.slice(0, 50) || `Property ${prop.id.slice(0, 8)}`;
-          setCurrentProperty(shortTitle);
-          setProcessed(prev => prev + 1);
-
-          try {
-            const { data, error } = await supabase.functions.invoke("ai-engine", {
-              body: {
-                mode: "generate_image",
-                payload: {
-                  propertyId: prop.id,
-                  title: prop.title || "Property",
-                  description: prop.description?.slice(0, 200),
-                  propertyType: prop.property_type || "house",
-                  location: prop.location || prop.city || "Indonesia",
-                },
-              },
-            });
-
-            if (error) {
-              const errMsg = error.message || "Edge Function error";
-              console.error(`Image gen failed for ${prop.id}:`, errMsg);
-              setFailed(prev => prev + 1);
-              setLastError(errMsg);
-              addLog({ id: prop.id, title: shortTitle, status: "fail", msg: errMsg });
-            } else if (data?.error) {
-              console.error(`AI error for ${prop.id}:`, data.error);
-              setFailed(prev => prev + 1);
-              setLastError(data.error);
-              addLog({ id: prop.id, title: shortTitle, status: "fail", msg: data.error });
-            } else {
-              setSucceeded(prev => prev + 1);
-              setLastError(null);
-              addLog({ id: prop.id, title: shortTitle, status: "ok", msg: data?.newImageUrl?.slice(-30) });
-            }
-          } catch (err: any) {
-            const errMsg = err?.message || "Network error";
-            console.error(`Exception for ${prop.id}:`, err);
-            setFailed(prev => prev + 1);
-            setLastError(errMsg);
-            addLog({ id: prop.id, title: shortTitle, status: "fail", msg: errMsg });
-          }
-
-          // Rate limit
-          if (i < properties.length - 1 && !cancelRef.current) {
-            await new Promise(r => setTimeout(r, DELAY_BETWEEN_IMAGES));
-          }
-        }
-
-        currentOffset += BATCH_SIZE;
-        setOffset(currentOffset);
-
-        if (!cancelRef.current) {
-          await new Promise(r => setTimeout(r, DELAY_BETWEEN_BATCHES));
-        }
-      } catch (err: any) {
-        const errMsg = err?.message || "Unknown error";
-        setLastError(errMsg);
-        toast.error(errMsg);
-        break;
+  // Auto-processing loop
+  const processOnce = useCallback(async () => {
+    if (process.isPending) return;
+    try {
+      const result = await process.mutateAsync(concurrency);
+      if (result?.processed === 0) {
+        setIsAutoProcessing(false);
+        toast.info("Queue empty — auto-processing stopped");
       }
+    } catch {
+      // will retry next interval
     }
+  }, [concurrency, process]);
 
-    setIsRunning(false);
-    setCurrentProperty("");
-    refetchStats();
-    queryClient.invalidateQueries({ queryKey: ["bulk-image-stats"] });
-  }, [offset, currentBatch, refetchStats, queryClient, addLog]);
+  useEffect(() => {
+    if (isAutoProcessing) {
+      processOnce();
+      intervalRef.current = setInterval(processOnce, 8000);
+    } else if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+  }, [isAutoProcessing, processOnce]);
 
-  const stopGeneration = () => {
-    cancelRef.current = true;
-    toast.info("Stopping after current image...");
+  const handleEnqueue = async () => {
+    try {
+      const result = await enqueue.mutateAsync(batchLimit);
+      toast.success(`Enqueued ${result?.enqueued || 0} properties for image generation`);
+    } catch (err: any) {
+      toast.error(err?.message || "Enqueue failed");
+    }
   };
 
-  const resetAll = () => {
-    setOffset(0);
-    setProcessed(0);
-    setSucceeded(0);
-    setFailed(0);
-    setCurrentBatch(0);
-    setLastError(null);
-    setLog([]);
+  const handleProcessOnce = async () => {
+    try {
+      const result = await process.mutateAsync(concurrency);
+      toast.success(`Processed ${result?.succeeded || 0}/${result?.processed || 0} images`);
+    } catch (err: any) {
+      toast.error(err?.message || "Processing failed");
+    }
   };
 
-  const progressPercent = stats?.noImages
-    ? Math.min(100, (succeeded / Math.max(1, stats.noImages)) * 100)
-    : 0;
+  const handleRetryFailed = async () => {
+    try {
+      await retryFailed.mutateAsync();
+      toast.success("Failed jobs re-queued for retry");
+    } catch (err: any) {
+      toast.error(err?.message || "Retry failed");
+    }
+  };
 
-  const etaMinutes = isRunning && succeeded > 0 && stats?.noImages
-    ? Math.round(((stats.noImages - succeeded) * (DELAY_BETWEEN_IMAGES / 1000 + 1.5)) / 60)
-    : null;
+  const pending = queueStats?.pending || 0;
+  const done = queueStats?.done || 0;
+  const failed = queueStats?.failed || 0;
+  const processing = queueStats?.processing || 0;
+  const total = queueStats?.total || 0;
+  const progressPercent = total > 0 ? Math.round((done / total) * 100) : 0;
 
   return (
     <Card>
@@ -182,165 +109,167 @@ export default function BulkImageGenerator() {
           <div>
             <CardTitle className="flex items-center gap-2">
               <ImageIcon className="h-5 w-5 text-primary" />
-              Bulk AI Image Generator
+              AI Image Generation Engine
             </CardTitle>
             <CardDescription>
-              Generate AI property photos via Lovable AI Gateway (Gemini Flash Image)
+              Server-side queue with parallel processing, smart prompts & retry logic
             </CardDescription>
           </div>
-          <Badge variant={isRunning ? "default" : "secondary"} className="gap-1">
-            {isRunning ? <Loader2 className="h-3 w-3 animate-spin" /> : <Zap className="h-3 w-3" />}
-            {isRunning ? "Running" : "Idle"}
+          <Badge variant={isAutoProcessing ? "default" : "secondary"} className="gap-1">
+            {isAutoProcessing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Server className="h-3 w-3" />}
+            {isAutoProcessing ? "Auto-Processing" : "Idle"}
           </Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-5">
-        {/* Stats */}
+        {/* Property Stats */}
         <div className="grid grid-cols-3 gap-3">
           <div className="rounded-lg border border-border/50 bg-muted/30 p-3 text-center">
-            <p className="text-xl font-bold text-foreground">
-              {statsLoading ? "..." : stats?.total?.toLocaleString()}
-            </p>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Total</p>
+            <p className="text-xl font-bold text-foreground">{propertyStats?.total?.toLocaleString() || "..."}</p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Total Properties</p>
           </div>
           <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-center">
-            <p className="text-xl font-bold text-destructive">
-              {statsLoading ? "..." : stats?.noImages?.toLocaleString()}
-            </p>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">No Image</p>
+            <p className="text-xl font-bold text-destructive">{propertyStats?.noImages?.toLocaleString() || "..."}</p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Need Images</p>
           </div>
           <div className="rounded-lg border border-chart-2/20 bg-chart-2/5 p-3 text-center">
-            <p className="text-xl font-bold text-chart-2">
-              {statsLoading ? "..." : stats?.withImages?.toLocaleString()}
-            </p>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Has Image</p>
+            <p className="text-xl font-bold text-chart-2">{propertyStats?.aiGenerated?.toLocaleString() || "..."}</p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">AI Generated</p>
           </div>
         </div>
 
-        {/* Live Progress */}
-        {(isRunning || processed > 0) && (
-          <div className="space-y-3 rounded-lg border border-border/50 bg-muted/20 p-4">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground font-medium">Session Progress</span>
-              <span className="font-semibold text-foreground">Batch #{currentBatch}</span>
+        {/* Queue Stats */}
+        <div className="grid grid-cols-4 gap-2">
+          <div className="rounded-lg border border-chart-1/20 bg-chart-1/5 p-2 text-center">
+            <p className="text-lg font-bold text-chart-1">{pending}</p>
+            <p className="text-[9px] text-muted-foreground uppercase">Pending</p>
+          </div>
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-2 text-center">
+            <p className="text-lg font-bold text-primary">{processing}</p>
+            <p className="text-[9px] text-muted-foreground uppercase">Processing</p>
+          </div>
+          <div className="rounded-lg border border-chart-2/20 bg-chart-2/5 p-2 text-center">
+            <p className="text-lg font-bold text-chart-2">{done}</p>
+            <p className="text-[9px] text-muted-foreground uppercase">Done</p>
+          </div>
+          <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-2 text-center">
+            <p className="text-lg font-bold text-destructive">{failed}</p>
+            <p className="text-[9px] text-muted-foreground uppercase">Failed</p>
+          </div>
+        </div>
+
+        {total > 0 && (
+          <div className="space-y-1">
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>Queue Progress</span>
+              <span>{progressPercent}% complete</span>
             </div>
-
-            <Progress value={progressPercent} className="h-2.5" />
-
-            <div className="grid grid-cols-4 gap-2 text-center">
-              <div>
-                <p className="text-lg font-bold text-foreground">{processed}</p>
-                <p className="text-[9px] text-muted-foreground uppercase">Processed</p>
-              </div>
-              <div>
-                <p className="text-lg font-bold text-chart-2">{succeeded}</p>
-                <p className="text-[9px] text-chart-2 uppercase">✓ OK</p>
-              </div>
-              <div>
-                <p className="text-lg font-bold text-destructive">{failed}</p>
-                <p className="text-[9px] text-destructive uppercase">✗ Fail</p>
-              </div>
-              <div>
-                <p className="text-lg font-bold text-foreground">{offset}</p>
-                <p className="text-[9px] text-muted-foreground uppercase">Offset</p>
-              </div>
-            </div>
-
-            {currentProperty && isRunning && (
-              <div className="flex items-center gap-2 pt-1">
-                <Loader2 className="h-3 w-3 animate-spin text-primary shrink-0" />
-                <p className="text-xs text-muted-foreground truncate">
-                  Generating: {currentProperty}
-                </p>
-              </div>
-            )}
-
-            {etaMinutes !== null && (
-              <p className="text-[10px] text-muted-foreground text-center">
-                ~{etaMinutes} min remaining at current pace
-              </p>
-            )}
+            <Progress value={progressPercent} className="h-2" />
           </div>
         )}
 
-        {/* Last error */}
-        {lastError && (
-          <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 flex items-start gap-2">
-            <AlertTriangle className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
-            <div>
-              <p className="text-xs font-medium text-destructive">Last Error</p>
-              <p className="text-xs text-muted-foreground mt-0.5 break-all">{lastError}</p>
-            </div>
+        {/* Concurrency Slider */}
+        <div className="space-y-2 rounded-lg border border-border/50 bg-muted/20 p-3">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground flex items-center gap-1.5">
+              <TrendingUp className="h-3.5 w-3.5" />
+              Parallel Workers
+            </span>
+            <Badge variant="outline">{concurrency}</Badge>
           </div>
-        )}
+          <Slider
+            value={[concurrency]}
+            onValueChange={([v]) => setConcurrency(v)}
+            min={1} max={5} step={1}
+            className="py-1"
+          />
+          <div className="flex justify-between text-[9px] text-muted-foreground">
+            <span>1 (safe)</span>
+            <span>3 (balanced)</span>
+            <span>5 (fast)</span>
+          </div>
+        </div>
 
-        {/* Recent activity log */}
-        {log.length > 0 && (
-          <div className="space-y-1 max-h-40 overflow-y-auto rounded-lg border border-border/40 p-2">
+        {/* Controls */}
+        <div className="flex flex-wrap items-center gap-2">
+          <Button onClick={handleEnqueue} variant="outline" className="gap-1.5" disabled={enqueue.isPending}>
+            {enqueue.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
+            Enqueue {batchLimit}
+          </Button>
+
+          {!isAutoProcessing ? (
+            <>
+              <Button onClick={handleProcessOnce} className="gap-1.5" disabled={process.isPending || pending === 0}>
+                {process.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Zap className="h-3.5 w-3.5" />}
+                Process Batch
+              </Button>
+              <Button onClick={() => setIsAutoProcessing(true)} variant="default" className="gap-1.5" disabled={pending === 0}>
+                <Play className="h-3.5 w-3.5" />
+                Auto-Process
+              </Button>
+            </>
+          ) : (
+            <Button onClick={() => setIsAutoProcessing(false)} variant="destructive" className="gap-1.5">
+              <StopCircle className="h-3.5 w-3.5" />
+              Stop
+            </Button>
+          )}
+
+          {failed > 0 && (
+            <Button onClick={handleRetryFailed} variant="outline" className="gap-1.5" disabled={retryFailed.isPending}>
+              <RotateCcw className="h-3.5 w-3.5" />
+              Retry {failed} Failed
+            </Button>
+          )}
+
+          <Button variant="ghost" size="sm" onClick={() => refetchStats()} className="gap-1">
+            <RefreshCw className="h-3 w-3" />
+          </Button>
+        </div>
+
+        {/* Recent Jobs */}
+        {recentJobs && recentJobs.length > 0 && (
+          <div className="space-y-1 max-h-48 overflow-y-auto rounded-lg border border-border/40 p-2">
             <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mb-1">
-              Recent Activity ({log.length})
+              Recent Jobs ({recentJobs.length})
             </p>
-            {log.map((entry, i) => (
-              <div key={`${entry.id}-${i}`} className="flex items-center gap-2 text-[11px] py-0.5">
-                <span className={entry.status === "ok" ? "text-chart-2" : "text-destructive"}>
-                  {entry.status === "ok" ? "✓" : "✗"}
+            {recentJobs.map((job) => (
+              <div key={job.id} className="flex items-center gap-2 text-[11px] py-0.5">
+                <span className={
+                  job.status === "done" ? "text-chart-2" :
+                  job.status === "failed" ? "text-destructive" :
+                  job.status === "processing" ? "text-primary" : "text-muted-foreground"
+                }>
+                  {job.status === "done" ? "✓" : job.status === "failed" ? "✗" : job.status === "processing" ? "⟳" : "◯"}
                 </span>
-                <span className="text-foreground truncate flex-1">{entry.title}</span>
-                {entry.msg && (
-                  <span className="text-muted-foreground truncate max-w-[120px]">{entry.msg}</span>
+                <span className="text-foreground truncate flex-1 font-mono text-[10px]">{job.property_id.slice(0, 12)}…</span>
+                <Badge variant="outline" className="text-[9px] py-0 h-4">
+                  P:{job.priority_score}
+                </Badge>
+                {job.retry_count > 0 && (
+                  <span className="text-chart-1 text-[9px]">R:{job.retry_count}</span>
+                )}
+                {job.error_message && (
+                  <span className="text-destructive truncate max-w-[100px] text-[9px]">{job.error_message}</span>
                 )}
               </div>
             ))}
           </div>
         )}
 
-        {/* Controls */}
-        <div className="flex items-center gap-3 flex-wrap">
-          {!isRunning ? (
-            <Button onClick={runBulkGeneration} className="gap-2" disabled={statsLoading}>
-              <Play className="h-4 w-4" />
-              {offset > 0 ? `Resume (offset: ${offset})` : "Start Generation"}
-            </Button>
-          ) : (
-            <Button onClick={stopGeneration} variant="destructive" className="gap-2">
-              <StopCircle className="h-4 w-4" />
-              Stop
-            </Button>
-          )}
-
-          {offset > 0 && !isRunning && (
-            <Button variant="outline" onClick={resetAll}>
-              Reset
-            </Button>
-          )}
-
-          <Button variant="ghost" size="sm" onClick={() => refetchStats()} className="gap-1.5">
-            <RefreshCw className="h-3.5 w-3.5" />
-            Refresh
-          </Button>
-        </div>
-
-        {/* Completion summary */}
-        {!isRunning && succeeded > 0 && (
-          <div className="rounded-lg border border-chart-2/20 bg-chart-2/5 p-3 flex items-center gap-2">
-            <CheckCircle className="h-4 w-4 text-chart-2 shrink-0" />
-            <p className="text-sm text-foreground">
-              <strong>{succeeded}</strong> generated, <strong>{failed}</strong> failed of <strong>{processed}</strong> processed.
-            </p>
-          </div>
-        )}
-
-        {/* How it works */}
+        {/* Architecture Info */}
         <details className="text-xs text-muted-foreground">
           <summary className="cursor-pointer font-medium text-foreground flex items-center gap-1.5">
-            <AlertTriangle className="h-3.5 w-3.5 text-chart-1" />
-            How it works
+            <Server className="h-3.5 w-3.5 text-primary" />
+            Architecture Details
           </summary>
           <ul className="mt-2 space-y-1 list-disc pl-5">
-            <li>Calls <code>ai-engine</code> → <code>generate_image</code> mode using Lovable AI Gateway (Gemini Flash Image)</li>
-            <li>Processes {BATCH_SIZE} properties per batch with {DELAY_BETWEEN_IMAGES / 1000}s delay between images</li>
-            <li>Images uploaded to <code>property-images</code> bucket and linked to the property record</li>
-            <li>Stop & resume anytime — offset tracking persists within session</li>
+            <li><strong>Server-side queue</strong> — jobs persist in <code>ai_image_jobs</code> table, runs even if browser closes</li>
+            <li><strong>Parallel processing</strong> — up to 5 concurrent workers per batch</li>
+            <li><strong>Smart prompts</strong> — price-tier styling (luxury/mid/budget), size context, city-specific</li>
+            <li><strong>Retry + backoff</strong> — 3 retries with exponential backoff, rate-limit aware</li>
+            <li><strong>Deduplication</strong> — unique constraint prevents duplicate jobs per property</li>
+            <li><strong>Priority scoring</strong> — higher-priced listings generated first</li>
           </ul>
         </details>
       </CardContent>

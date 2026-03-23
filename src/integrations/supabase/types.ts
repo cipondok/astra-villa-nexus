@@ -3820,6 +3820,78 @@ export type Database = {
           },
         ]
       }
+      ai_image_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          error_message: string | null
+          id: string
+          max_retries: number
+          priority_score: number
+          prompt_hash: string | null
+          prompt_text: string | null
+          property_id: string
+          result_image_url: string | null
+          result_thumbnail_url: string | null
+          retry_count: number
+          started_at: string | null
+          status: string
+          updated_at: string
+          worker_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          max_retries?: number
+          priority_score?: number
+          prompt_hash?: string | null
+          prompt_text?: string | null
+          property_id: string
+          result_image_url?: string | null
+          result_thumbnail_url?: string | null
+          retry_count?: number
+          started_at?: string | null
+          status?: string
+          updated_at?: string
+          worker_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          max_retries?: number
+          priority_score?: number
+          prompt_hash?: string | null
+          prompt_text?: string | null
+          property_id?: string
+          result_image_url?: string | null
+          result_thumbnail_url?: string | null
+          retry_count?: number
+          started_at?: string | null
+          status?: string
+          updated_at?: string
+          worker_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_image_jobs_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_image_jobs_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_intelligence_cache: {
         Row: {
           cache_tier: string
@@ -47703,6 +47775,7 @@ export type Database = {
           advance_booking_days: number | null
           agent_id: string | null
           ai_estimated_price: number | null
+          ai_generated: boolean | null
           ai_price_confidence: number | null
           ai_staging_images: string[] | null
           approval_status: string | null
@@ -47746,6 +47819,7 @@ export type Database = {
           has_pool: boolean | null
           has_vr: boolean | null
           id: string
+          image_generated_at: string | null
           image_urls: string[] | null
           images: string[] | null
           inquiry_count: number | null
@@ -47822,6 +47896,7 @@ export type Database = {
           advance_booking_days?: number | null
           agent_id?: string | null
           ai_estimated_price?: number | null
+          ai_generated?: boolean | null
           ai_price_confidence?: number | null
           ai_staging_images?: string[] | null
           approval_status?: string | null
@@ -47865,6 +47940,7 @@ export type Database = {
           has_pool?: boolean | null
           has_vr?: boolean | null
           id?: string
+          image_generated_at?: string | null
           image_urls?: string[] | null
           images?: string[] | null
           inquiry_count?: number | null
@@ -47941,6 +48017,7 @@ export type Database = {
           advance_booking_days?: number | null
           agent_id?: string | null
           ai_estimated_price?: number | null
+          ai_generated?: boolean | null
           ai_price_confidence?: number | null
           ai_staging_images?: string[] | null
           approval_status?: string | null
@@ -47984,6 +48061,7 @@ export type Database = {
           has_pool?: boolean | null
           has_vr?: boolean | null
           id?: string
+          image_generated_at?: string | null
           image_urls?: string[] | null
           images?: string[] | null
           inquiry_count?: number | null
