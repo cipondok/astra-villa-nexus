@@ -821,6 +821,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "investor-growth-command": () => <InvestorGrowthCommandCenter />,
   "supply-growth-command": () => <SupplyGrowthCommandCenter />,
   "deal-velocity-command": () => <DealVelocityCommandCenter />,
+  "founder-control-tower": () => <FounderControlTower />,
   "report-export":       () => <ReportExportFunction />,
   "enhanced-search":     () => <EnhancedSearchFilters />,
   "system-reports":      () => <SystemReports />,
