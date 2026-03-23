@@ -15633,6 +15633,7 @@ export type Database = {
           cancellation_reason: string | null
           cancelled_at: string | null
           completed_at: string | null
+          cooling_period_hours: number | null
           country_origin: string | null
           created_at: string
           currency: string
@@ -15641,6 +15642,9 @@ export type Database = {
           deposit_deadline: string | null
           escrow_account_reference: string | null
           escrow_id: string | null
+          escrow_status: string | null
+          funds_received_at: string | null
+          funds_released_at: string | null
           fx_rate_snapshot: number | null
           fx_snapshot_at: string | null
           id: string
@@ -15650,6 +15654,7 @@ export type Database = {
           seller_user_id: string | null
           state_history: Json | null
           updated_at: string
+          version: number | null
         }
         Insert: {
           agent_id?: string | null
@@ -15658,6 +15663,7 @@ export type Database = {
           cancellation_reason?: string | null
           cancelled_at?: string | null
           completed_at?: string | null
+          cooling_period_hours?: number | null
           country_origin?: string | null
           created_at?: string
           currency?: string
@@ -15666,6 +15672,9 @@ export type Database = {
           deposit_deadline?: string | null
           escrow_account_reference?: string | null
           escrow_id?: string | null
+          escrow_status?: string | null
+          funds_received_at?: string | null
+          funds_released_at?: string | null
           fx_rate_snapshot?: number | null
           fx_snapshot_at?: string | null
           id?: string
@@ -15675,6 +15684,7 @@ export type Database = {
           seller_user_id?: string | null
           state_history?: Json | null
           updated_at?: string
+          version?: number | null
         }
         Update: {
           agent_id?: string | null
@@ -15683,6 +15693,7 @@ export type Database = {
           cancellation_reason?: string | null
           cancelled_at?: string | null
           completed_at?: string | null
+          cooling_period_hours?: number | null
           country_origin?: string | null
           created_at?: string
           currency?: string
@@ -15691,6 +15702,9 @@ export type Database = {
           deposit_deadline?: string | null
           escrow_account_reference?: string | null
           escrow_id?: string | null
+          escrow_status?: string | null
+          funds_received_at?: string | null
+          funds_released_at?: string | null
           fx_rate_snapshot?: number | null
           fx_snapshot_at?: string | null
           id?: string
@@ -15700,6 +15714,7 @@ export type Database = {
           seller_user_id?: string | null
           state_history?: Json | null
           updated_at?: string
+          version?: number | null
         }
         Relationships: [
           {
@@ -17215,6 +17230,171 @@ export type Database = {
           user_ip?: unknown
         }
         Relationships: []
+      }
+      escrow_ledger_entries: {
+        Row: {
+          account_type: string
+          balance_snapshot: number | null
+          created_at: string | null
+          credit_amount: number | null
+          currency: string | null
+          deal_id: string | null
+          debit_amount: number | null
+          entry_reason: string
+          escrow_id: string
+          id: string
+          idempotency_key: string | null
+          reference_id: string | null
+          reference_type: string | null
+        }
+        Insert: {
+          account_type: string
+          balance_snapshot?: number | null
+          created_at?: string | null
+          credit_amount?: number | null
+          currency?: string | null
+          deal_id?: string | null
+          debit_amount?: number | null
+          entry_reason: string
+          escrow_id: string
+          id?: string
+          idempotency_key?: string | null
+          reference_id?: string | null
+          reference_type?: string | null
+        }
+        Update: {
+          account_type?: string
+          balance_snapshot?: number | null
+          created_at?: string | null
+          credit_amount?: number | null
+          currency?: string | null
+          deal_id?: string | null
+          debit_amount?: number | null
+          entry_reason?: string
+          escrow_id?: string
+          id?: string
+          idempotency_key?: string | null
+          reference_id?: string | null
+          reference_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escrow_ledger_entries_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deal_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escrow_payout_queue: {
+        Row: {
+          amount: number
+          approved_at: string | null
+          approved_by: string | null
+          cooling_period_ends_at: string | null
+          created_at: string | null
+          currency: string | null
+          deal_id: string
+          escrow_id: string
+          failure_reason: string | null
+          id: string
+          idempotency_key: string | null
+          payout_type: string | null
+          processed_at: string | null
+          recipient_type: string
+          recipient_user_id: string | null
+          release_conditions_met: boolean | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          approved_at?: string | null
+          approved_by?: string | null
+          cooling_period_ends_at?: string | null
+          created_at?: string | null
+          currency?: string | null
+          deal_id: string
+          escrow_id: string
+          failure_reason?: string | null
+          id?: string
+          idempotency_key?: string | null
+          payout_type?: string | null
+          processed_at?: string | null
+          recipient_type: string
+          recipient_user_id?: string | null
+          release_conditions_met?: boolean | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          cooling_period_ends_at?: string | null
+          created_at?: string | null
+          currency?: string | null
+          deal_id?: string
+          escrow_id?: string
+          failure_reason?: string | null
+          id?: string
+          idempotency_key?: string | null
+          payout_type?: string | null
+          processed_at?: string | null
+          recipient_type?: string
+          recipient_user_id?: string | null
+          release_conditions_met?: boolean | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escrow_payout_queue_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deal_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escrow_system_events: {
+        Row: {
+          created_at: string | null
+          deal_id: string | null
+          details: Json | null
+          escrow_id: string | null
+          event_type: string
+          id: string
+          triggered_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          deal_id?: string | null
+          details?: Json | null
+          escrow_id?: string | null
+          event_type: string
+          id?: string
+          triggered_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          deal_id?: string | null
+          details?: Json | null
+          escrow_id?: string | null
+          event_type?: string
+          id?: string
+          triggered_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escrow_system_events_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deal_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       escrow_transactions: {
         Row: {
@@ -40170,28 +40350,55 @@ export type Database = {
       }
       payment_webhook_logs: {
         Row: {
+          amount: number | null
           created_at: string | null
+          currency: string | null
+          deal_id: string | null
+          error_message: string | null
+          escrow_id: string | null
           event_type: string | null
+          gateway: string | null
           id: string
           order_id: string | null
           payload: Json | null
           processed: boolean | null
+          processing_status: string | null
+          signature_valid: boolean | null
+          webhook_event_id: string | null
         }
         Insert: {
+          amount?: number | null
           created_at?: string | null
+          currency?: string | null
+          deal_id?: string | null
+          error_message?: string | null
+          escrow_id?: string | null
           event_type?: string | null
+          gateway?: string | null
           id?: string
           order_id?: string | null
           payload?: Json | null
           processed?: boolean | null
+          processing_status?: string | null
+          signature_valid?: boolean | null
+          webhook_event_id?: string | null
         }
         Update: {
+          amount?: number | null
           created_at?: string | null
+          currency?: string | null
+          deal_id?: string | null
+          error_message?: string | null
+          escrow_id?: string | null
           event_type?: string | null
+          gateway?: string | null
           id?: string
           order_id?: string | null
           payload?: Json | null
           processed?: boolean | null
+          processing_status?: string | null
+          signature_valid?: boolean | null
+          webhook_event_id?: string | null
         }
         Relationships: []
       }
@@ -54339,6 +54546,7 @@ export type Database = {
       transaction_commissions: {
         Row: {
           affiliate_reward_amount: number | null
+          agent_amount: number | null
           agent_split_amount: number | null
           approved_at: string | null
           approved_by: string | null
@@ -54347,22 +54555,30 @@ export type Database = {
           commission_rate: number
           commission_type: string | null
           created_at: string
+          deal_amount: number | null
+          deal_id: string | null
           gross_amount: number
           hold_until: string | null
           id: string
+          locked_at: string | null
           metadata: Json | null
           net_amount: number
           offer_id: string | null
           paid_at: string | null
           payment_reference: string | null
           payout_id: string | null
+          platform_amount: number | null
           platform_fee_amount: number | null
+          referral_amount: number | null
           referral_id: string | null
           released_at: string | null
           seller_id: string
+          settled_at: string | null
           settlement_status: string | null
           status: string
           tax_amount: number | null
+          tax_reserve_amount: number | null
+          total_commission: number | null
           transaction_id: string
           transaction_type: string
           updated_at: string
@@ -54370,6 +54586,7 @@ export type Database = {
         }
         Insert: {
           affiliate_reward_amount?: number | null
+          agent_amount?: number | null
           agent_split_amount?: number | null
           approved_at?: string | null
           approved_by?: string | null
@@ -54378,22 +54595,30 @@ export type Database = {
           commission_rate: number
           commission_type?: string | null
           created_at?: string
+          deal_amount?: number | null
+          deal_id?: string | null
           gross_amount: number
           hold_until?: string | null
           id?: string
+          locked_at?: string | null
           metadata?: Json | null
           net_amount: number
           offer_id?: string | null
           paid_at?: string | null
           payment_reference?: string | null
           payout_id?: string | null
+          platform_amount?: number | null
           platform_fee_amount?: number | null
+          referral_amount?: number | null
           referral_id?: string | null
           released_at?: string | null
           seller_id: string
+          settled_at?: string | null
           settlement_status?: string | null
           status?: string
           tax_amount?: number | null
+          tax_reserve_amount?: number | null
+          total_commission?: number | null
           transaction_id: string
           transaction_type: string
           updated_at?: string
@@ -54401,6 +54626,7 @@ export type Database = {
         }
         Update: {
           affiliate_reward_amount?: number | null
+          agent_amount?: number | null
           agent_split_amount?: number | null
           approved_at?: string | null
           approved_by?: string | null
@@ -54409,22 +54635,30 @@ export type Database = {
           commission_rate?: number
           commission_type?: string | null
           created_at?: string
+          deal_amount?: number | null
+          deal_id?: string | null
           gross_amount?: number
           hold_until?: string | null
           id?: string
+          locked_at?: string | null
           metadata?: Json | null
           net_amount?: number
           offer_id?: string | null
           paid_at?: string | null
           payment_reference?: string | null
           payout_id?: string | null
+          platform_amount?: number | null
           platform_fee_amount?: number | null
+          referral_amount?: number | null
           referral_id?: string | null
           released_at?: string | null
           seller_id?: string
+          settled_at?: string | null
           settlement_status?: string | null
           status?: string
           tax_amount?: number | null
+          tax_reserve_amount?: number | null
+          total_commission?: number | null
           transaction_id?: string
           transaction_type?: string
           updated_at?: string

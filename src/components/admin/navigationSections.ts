@@ -620,6 +620,13 @@ export const navigationSections = {
       icon: Globe,
       description: "Cross-border deal analytics, escrow monitoring, dispute resolution, and investor flow intelligence",
       badge: "🛡️ Intel"
+    },
+    {
+      key: "escrow-financial-control",
+      label: "Escrow Financial Control",
+      icon: Shield,
+      description: "Double-entry ledger, webhook logs, payout queue, commission settlement, and reconciliation alerts",
+      badge: "💰 Fintech"
     }
   ],
 

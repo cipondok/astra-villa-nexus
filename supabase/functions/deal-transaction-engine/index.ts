@@ -108,9 +108,11 @@ Deno.serve(async (req) => {
       const history = Array.isArray(deal.state_history) ? deal.state_history : [];
       history.push({ state: target_state, at: new Date().toISOString(), by: user.id, reason });
 
+      const currentVersion = deal.version || 1;
       const updates: Record<string, any> = {
         deal_status: target_state,
         state_history: history,
+        version: currentVersion + 1,
         updated_at: new Date().toISOString(),
       };
       if (target_state === "completed") updates.completed_at = new Date().toISOString();
@@ -119,13 +121,15 @@ Deno.serve(async (req) => {
         updates.cancellation_reason = reason || "Cancelled by participant";
       }
 
+      // Optimistic concurrency: only update if version matches
       const { data: updated, error: upErr } = await supabase
         .from("deal_transactions")
         .update(updates)
         .eq("id", deal_id)
+        .eq("version", currentVersion)
         .select()
         .single();
-      if (upErr) throw upErr;
+      if (upErr || !updated) throw new Error("Concurrency conflict — please retry");
 
       await supabase.from("deal_state_log").insert({
         deal_id,
@@ -135,6 +139,7 @@ Deno.serve(async (req) => {
         trigger_reason: reason || `Transition to ${target_state}`,
       });
 
+      // On completion: persist commission to transaction_commissions
       if (target_state === "completed" && updated.agreed_price) {
         const { data: rules } = await supabase
           .from("deal_commission_rules")
@@ -145,18 +150,41 @@ Deno.serve(async (req) => {
 
         if (rules && rules.length > 0) {
           const rule = rules[0];
-          const totalCommission = Number(updated.agreed_price) * (Number(rule.commission_percentage) / 100);
-          const agentAmount = totalCommission * (Number(rule.agent_split_percentage) / 100);
+          const dealAmount = Number(updated.agreed_price);
+          const totalCommission = dealAmount * (Number(rule.commission_percentage) / 100);
+          const agentAmount = totalCommission * (Number(rule.agent_split_percentage || 0) / 100);
           const platformAmount = totalCommission - agentAmount;
+          const taxReserve = totalCommission * 0.1;
 
-          await supabase.from("deal_state_log").insert({
-            deal_id,
-            from_state: "completed",
-            to_state: "completed",
-            triggered_by: user.id,
-            trigger_reason: "Commission calculated",
-            metadata: { total_commission: totalCommission, agent_amount: agentAmount, platform_amount: platformAmount, rule_id: rule.id },
-          });
+          // Check if commission already exists (idempotent)
+          const { data: existingComm } = await supabase
+            .from("transaction_commissions")
+            .select("id")
+            .eq("deal_id", deal_id)
+            .limit(1);
+
+          if (!existingComm || existingComm.length === 0) {
+            await supabase.from("transaction_commissions").insert({
+              deal_id,
+              transaction_id: deal_id,
+              transaction_type: "deal_completion",
+              seller_id: updated.seller_user_id,
+              buyer_id: updated.buyer_user_id,
+              gross_amount: dealAmount,
+              commission_rate: Number(rule.commission_percentage),
+              commission_amount: totalCommission,
+              net_amount: dealAmount - totalCommission,
+              deal_amount: dealAmount,
+              total_commission: totalCommission,
+              platform_amount: platformAmount,
+              agent_amount: agentAmount,
+              tax_reserve_amount: taxReserve,
+              currency: updated.currency || "IDR",
+              settlement_status: updated.escrow_status === "funded" ? "locked_in_escrow" : "pending",
+              locked_at: updated.escrow_status === "funded" ? new Date().toISOString() : null,
+              status: "pending",
+            });
+          }
         }
       }
 

@@ -279,6 +279,7 @@ export const LoyaltyProgramManager = lazyRetry(() => import("./LoyaltyProgramMan
 export const MultiLanguageManager = lazyRetry(() => import("./MultiLanguageManager"));
 export const EnvironmentalSustainability = lazyRetry(() => import("./EnvironmentalSustainability"));
 export const GlobalTransactionIntelligence = lazyRetry(() => import("./GlobalTransactionIntelligence"));
+export const EscrowFinancialDashboard = lazyRetry(() => import("./EscrowFinancialDashboard"));
 export const AdminSecurityIntelligence = lazyRetry(() => import("./AdminSecurityIntelligence"));
 export const SecurityIntelligenceDashboard = lazyRetry(() => import("./SecurityIntelligenceDashboard"));
 export const ContractTemplateManager = lazyRetry(() => import("./ContractTemplateManager"));
@@ -781,6 +782,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "security-intelligence": () => <AdminSecurityIntelligence />,
   "security-intelligence-center": () => <SecurityIntelligenceDashboard />,
   "global-transaction-intelligence": () => <GlobalTransactionIntelligence />,
+  "escrow-financial-control": () => <EscrowFinancialDashboard />,
   "report-export":       () => <ReportExportFunction />,
   "enhanced-search":     () => <EnhancedSearchFilters />,
   "system-reports":      () => <SystemReports />,
