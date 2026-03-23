@@ -19815,6 +19815,69 @@ export type Database = {
         }
         Relationships: []
       }
+      fractional_offers: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          expected_annual_yield_pct: number | null
+          funding_deadline: string | null
+          id: string
+          minimum_investment_ticket_idr: number
+          offer_status: string
+          price_per_share_idr: number | null
+          property_id: string
+          shares_allocated: number
+          total_property_value_idr: number
+          total_shares_available: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          expected_annual_yield_pct?: number | null
+          funding_deadline?: string | null
+          id?: string
+          minimum_investment_ticket_idr?: number
+          offer_status?: string
+          price_per_share_idr?: number | null
+          property_id: string
+          shares_allocated?: number
+          total_property_value_idr: number
+          total_shares_available?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          expected_annual_yield_pct?: number | null
+          funding_deadline?: string | null
+          id?: string
+          minimum_investment_ticket_idr?: number
+          offer_status?: string
+          price_per_share_idr?: number | null
+          property_id?: string
+          shares_allocated?: number
+          total_property_value_idr?: number
+          total_shares_available?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fractional_offers_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fractional_offers_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fraud_patterns: {
         Row: {
           auto_reject: boolean | null
@@ -31127,6 +31190,59 @@ export type Database = {
           id?: string
         }
         Relationships: []
+      }
+      investor_fractional_positions: {
+        Row: {
+          confirmed_at: string | null
+          created_at: string
+          funded_at: string | null
+          id: string
+          invested_amount_idr: number
+          investor_user_id: string
+          offer_id: string
+          ownership_percentage: number
+          position_status: string
+          reserved_at: string
+          share_units: number
+          updated_at: string
+        }
+        Insert: {
+          confirmed_at?: string | null
+          created_at?: string
+          funded_at?: string | null
+          id?: string
+          invested_amount_idr: number
+          investor_user_id: string
+          offer_id: string
+          ownership_percentage?: number
+          position_status?: string
+          reserved_at?: string
+          share_units?: number
+          updated_at?: string
+        }
+        Update: {
+          confirmed_at?: string | null
+          created_at?: string
+          funded_at?: string | null
+          id?: string
+          invested_amount_idr?: number
+          investor_user_id?: string
+          offer_id?: string
+          ownership_percentage?: number
+          position_status?: string
+          reserved_at?: string
+          share_units?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investor_fractional_positions_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "fractional_offers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       investor_geo_growth_metrics: {
         Row: {
@@ -44494,6 +44610,53 @@ export type Database = {
         }
         Relationships: []
       }
+      pooled_escrow_records: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          escrow_status: string
+          execution_started_at: string | null
+          funding_completion_pct: number
+          id: string
+          offer_id: string
+          threshold_met_at: string | null
+          total_amount_committed_idr: number
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          escrow_status?: string
+          execution_started_at?: string | null
+          funding_completion_pct?: number
+          id?: string
+          offer_id: string
+          threshold_met_at?: string | null
+          total_amount_committed_idr?: number
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          escrow_status?: string
+          execution_started_at?: string | null
+          funding_completion_pct?: number
+          id?: string
+          offer_id?: string
+          threshold_met_at?: string | null
+          total_amount_committed_idr?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pooled_escrow_records_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: true
+            referencedRelation: "fractional_offers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portal_tier_requirements: {
         Row: {
           auto_upgrade: boolean | null
@@ -56630,6 +56793,50 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      syndication_roles: {
+        Row: {
+          created_at: string
+          governance_permissions: Json | null
+          id: string
+          is_active: boolean
+          lead_investor_user_id: string
+          offer_id: string
+          role_type: string
+          sponsor_fee_pct: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          governance_permissions?: Json | null
+          id?: string
+          is_active?: boolean
+          lead_investor_user_id: string
+          offer_id: string
+          role_type?: string
+          sponsor_fee_pct?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          governance_permissions?: Json | null
+          id?: string
+          is_active?: boolean
+          lead_investor_user_id?: string
+          offer_id?: string
+          role_type?: string
+          sponsor_fee_pct?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "syndication_roles_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "fractional_offers"
             referencedColumns: ["id"]
           },
         ]

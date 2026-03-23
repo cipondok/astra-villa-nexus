@@ -599,6 +599,9 @@ export const LiquidityExchangeCommandCenter = lazyRetry(() => import("./Liquidit
 export const InstitutionalFundManager = lazyRetry(() => import("./InstitutionalFundManager"));
 export const CustodySettlementCommandCenter = lazyRetry(() => import("./CustodySettlementCommandCenter"));
 
+// Fractional Investment
+export const FractionalInvestmentCommandCenter = lazyRetry(() => import("./FractionalInvestmentCommandCenter"));
+
 // ── Section render map ────────────────────────────────────────────────────────
 // Maps section keys to a factory that returns JSX given an optional onSectionChange.
 // Sections with custom props are listed explicitly; all others are simple <Component />.
@@ -1263,6 +1266,9 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "mvp-buyer-inquiry-tracker": () => <MVPBuyerInquiryTracker />,
   "mvp-viewing-schedule-board": () => <MVPViewingScheduleBoard />,
   "mvp-deal-pipeline-tracker": () => <MVPDealPipelineTracker />,
+
+  // Fractional Investment
+  "fractional-investment-command": () => <FractionalInvestmentCommandCenter />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
@@ -1783,6 +1789,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "liquidity-exchange-command": { label: "Liquidity Exchange Command", category: "Investor Management" },
   "institutional-fund-manager": { label: "Institutional Fund Manager", category: "Investor Management" },
   "custody-settlement-command": { label: "Custody & Settlement", category: "Investor Management" },
+  "fractional-investment-command": { label: "Fractional Investment", category: "Investor Management" },
   "investor-growth-command": { label: "Investor Growth Engine", category: "Investor Management" },
   "capital-activation-command": { label: "Capital Activation Engine", category: "Investor Management" },
   "investor-acquisition-campaign": { label: "Investor Acquisition Campaign", category: "Marketplace Growth" },
