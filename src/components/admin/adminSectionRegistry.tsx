@@ -432,6 +432,7 @@ export const IPOReadinessMetrics = lazyRetry(() => import("./IPOReadinessMetrics
 export const AdminAICoPilot = lazyRetry(() => import("./AdminAICoPilot"));
 export const FounderDailyExecution = lazyRetry(() => import("./FounderDailyExecution"));
 export const DailyOpsBattleStation = lazyRetry(() => import("./DailyOpsBattleStation"));
+export const InvestorCampaignEngine = lazyRetry(() => import("./InvestorCampaignEngine"));
 export const First100KRevenuePlan = lazyRetry(() => import("./First100KRevenuePlan"));
 export const InvestorNarrativeCoaching = lazyRetry(() => import("./InvestorNarrativeCoaching"));
 export const VendorOutreachScripts = lazyRetry(() => import("./VendorOutreachScripts"));
