@@ -363,7 +363,7 @@ const InvestigationDialog = ({ alert, open, onClose }: {
 
   const handleSuspendAccount = async () => {
     if (!alert?.user_id) return;
-    await supabase.from('profiles').update({ status: 'suspended' }).eq('id', alert.user_id);
+    await supabase.from('profiles').update({ availability_status: 'suspended' } as any).eq('id', alert.user_id);
     toast.success('Account suspended');
   };
 
