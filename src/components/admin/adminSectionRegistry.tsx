@@ -279,6 +279,7 @@ export const LoyaltyProgramManager = lazyRetry(() => import("./LoyaltyProgramMan
 export const MultiLanguageManager = lazyRetry(() => import("./MultiLanguageManager"));
 export const EnvironmentalSustainability = lazyRetry(() => import("./EnvironmentalSustainability"));
 export const AdminSecurityIntelligence = lazyRetry(() => import("./AdminSecurityIntelligence"));
+export const SecurityIntelligenceDashboard = lazyRetry(() => import("./SecurityIntelligenceDashboard"));
 export const ContractTemplateManager = lazyRetry(() => import("./ContractTemplateManager"));
 export const PriceAlertManager = lazyRetry(() => import("./PriceAlertManager"));
 export const DeveloperPortal = lazyRetry(() => import("./DeveloperPortal"));
@@ -777,6 +778,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "database-management": () => <DatabaseTableManagement />,
   "security-monitoring": () => <SecurityMonitoringDashboard />,
   "security-intelligence": () => <AdminSecurityIntelligence />,
+  "security-intelligence-center": () => <SecurityIntelligenceDashboard />,
   "report-export":       () => <ReportExportFunction />,
   "enhanced-search":     () => <EnhancedSearchFilters />,
   "system-reports":      () => <SystemReports />,
@@ -1205,6 +1207,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
 export const sectionLabels: Record<string, { label: string; category: string }> = {
+  "security-intelligence-center": { label: "Security Intelligence Center", category: "System" },
   "deal-hunter-admin": { label: "Deal Hunter Engine", category: "Investor Management" },
   "market-heat-intelligence": { label: "Market Heat Intelligence", category: "Investor Management" },
   "opportunity-scoring-engine": { label: "AI Scoring Engine", category: "AI & Tools" },
