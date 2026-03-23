@@ -10391,6 +10391,54 @@ export type Database = {
         }
         Relationships: []
       }
+      capital_flow_network: {
+        Row: {
+          capital_movement_probability: number | null
+          created_at: string
+          flow_volume_usd: number | null
+          id: string
+          investment_migration_score: number | null
+          investor_cluster_size: number | null
+          measured_at: string
+          portfolio_diversification_flow: number | null
+          segment: string | null
+          source_city: string
+          source_country: string
+          target_city: string
+          target_country: string
+        }
+        Insert: {
+          capital_movement_probability?: number | null
+          created_at?: string
+          flow_volume_usd?: number | null
+          id?: string
+          investment_migration_score?: number | null
+          investor_cluster_size?: number | null
+          measured_at?: string
+          portfolio_diversification_flow?: number | null
+          segment?: string | null
+          source_city: string
+          source_country?: string
+          target_city: string
+          target_country?: string
+        }
+        Update: {
+          capital_movement_probability?: number | null
+          created_at?: string
+          flow_volume_usd?: number | null
+          id?: string
+          investment_migration_score?: number | null
+          investor_cluster_size?: number | null
+          measured_at?: string
+          portfolio_diversification_flow?: number | null
+          segment?: string | null
+          source_city?: string
+          source_country?: string
+          target_city?: string
+          target_country?: string
+        }
+        Relationships: []
+      }
       capital_flow_predictions: {
         Row: {
           capital_gravity_score: number
@@ -24843,6 +24891,45 @@ export type Database = {
           },
         ]
       }
+      global_liquidity_balance: {
+        Row: {
+          affordability_stress: number | null
+          balance_index: number | null
+          capital_concentration_risk: number | null
+          computed_at: string
+          created_at: string
+          cross_country_absorption: number | null
+          id: string
+          inventory_risk_score: number | null
+          region: string
+          systemic_status: string | null
+        }
+        Insert: {
+          affordability_stress?: number | null
+          balance_index?: number | null
+          capital_concentration_risk?: number | null
+          computed_at?: string
+          created_at?: string
+          cross_country_absorption?: number | null
+          id?: string
+          inventory_risk_score?: number | null
+          region: string
+          systemic_status?: string | null
+        }
+        Update: {
+          affordability_stress?: number | null
+          balance_index?: number | null
+          capital_concentration_risk?: number | null
+          computed_at?: string
+          created_at?: string
+          cross_country_absorption?: number | null
+          id?: string
+          inventory_risk_score?: number | null
+          region?: string
+          systemic_status?: string | null
+        }
+        Relationships: []
+      }
       global_market_insights: {
         Row: {
           absorption_rate_pct: number | null
@@ -24970,6 +25057,63 @@ export type Database = {
             referencedColumns: ["region_id"]
           },
         ]
+      }
+      global_property_signals: {
+        Row: {
+          affordability_stress_index: number | null
+          capital_inflow_intensity: number | null
+          city: string
+          confidence_level: number | null
+          country: string
+          created_at: string
+          housing_supply_pressure: number | null
+          id: string
+          infrastructure_development_score: number | null
+          liquidity_velocity_score: number | null
+          market_cycle_phase: string | null
+          population_mobility_index: number | null
+          region: string
+          rental_yield_trend: number | null
+          signal_timestamp: string
+          urban_growth_score: number | null
+        }
+        Insert: {
+          affordability_stress_index?: number | null
+          capital_inflow_intensity?: number | null
+          city: string
+          confidence_level?: number | null
+          country?: string
+          created_at?: string
+          housing_supply_pressure?: number | null
+          id?: string
+          infrastructure_development_score?: number | null
+          liquidity_velocity_score?: number | null
+          market_cycle_phase?: string | null
+          population_mobility_index?: number | null
+          region: string
+          rental_yield_trend?: number | null
+          signal_timestamp?: string
+          urban_growth_score?: number | null
+        }
+        Update: {
+          affordability_stress_index?: number | null
+          capital_inflow_intensity?: number | null
+          city?: string
+          confidence_level?: number | null
+          country?: string
+          created_at?: string
+          housing_supply_pressure?: number | null
+          id?: string
+          infrastructure_development_score?: number | null
+          liquidity_velocity_score?: number | null
+          market_cycle_phase?: string | null
+          population_mobility_index?: number | null
+          region?: string
+          rental_yield_trend?: number | null
+          signal_timestamp?: string
+          urban_growth_score?: number | null
+        }
+        Relationships: []
       }
       global_regions: {
         Row: {
