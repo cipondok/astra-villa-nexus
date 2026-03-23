@@ -53,7 +53,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
     if (!query.trim()) return categorySections;
     const q = query.toLowerCase();
     return categorySections.filter(s => s.label.toLowerCase().includes(q));
-  }, [sortedSections, query]);
+  }, [categorySections, query]);
 
   const handleSectionClick = useCallback((key: string) => {
     onSectionChange?.(key);
