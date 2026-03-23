@@ -161,6 +161,9 @@ ${context.liquidity_summary}
 PRICING & CAPITAL FLOW INTELLIGENCE:
 ${context.pricing_summary}
 
+AUTONOMOUS STRATEGY INTELLIGENCE:
+${context.strategy_summary}
+
 ═══════════════════════════════════════════
 OPERATIONAL EXECUTION MODES (Daily Tasks):
 ═══════════════════════════════════════════
