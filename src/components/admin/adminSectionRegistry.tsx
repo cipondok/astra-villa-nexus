@@ -1743,4 +1743,6 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "global-transaction-intelligence": { label: "Global Transaction Intelligence", category: "Transactions" },
   "risk-fraud-intelligence": { label: "Risk & Fraud Intelligence", category: "Marketplace Growth" },
   "market-intelligence-command": { label: "Market Intelligence AI Engine", category: "Market Intelligence" },
+  "investor-wealth-intelligence": { label: "Investor Wealth Intelligence", category: "Investor Management" },
+  "investor-economics-command": { label: "Investor Economics Command", category: "Investor Management" },
 };
