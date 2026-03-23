@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
 async function invokeEngine(mode: string, params?: Record<string, unknown>) {
-  const { data, error } = await supabase.functions.invoke('institutional-fund-engine', {
+  const { data, error } = await supabase.functions.invoke('institutional-fund-manager', {
     body: { mode, params: params || {} },
   });
   if (error) throw error;
