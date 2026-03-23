@@ -29,6 +29,7 @@ const DEFAULT_RATES: ExchangeRates = {
   USD: 1 / 16_200,
   SGD: 1 / 11_900,
   AUD: 1 / 10_500,
+  EUR: 1 / 17_500,
 };
 
 const RATES_CACHE_KEY = "exchange_rates_cache";
