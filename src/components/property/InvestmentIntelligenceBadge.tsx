@@ -68,7 +68,7 @@ export default function InvestmentIntelligenceBadge({
             </div>
           </div>
           <div className="flex items-center gap-1.5">
-            <Flame className="h-3.5 w-3.5 text-orange-500" />
+            <Flame className="h-3.5 w-3.5 text-chart-5" />
             <div>
               <p className="text-[10px] text-muted-foreground">Demand</p>
               <p className="text-xs font-semibold text-foreground">{demandScore}/100</p>

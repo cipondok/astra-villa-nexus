@@ -130,7 +130,7 @@ export default function MarketIntelligenceCommandCenter() {
         <TabsContent value="hot-zones">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2"><Flame className="h-4 w-4 text-orange-500" /> Market Zone Heatmap</CardTitle>
+              <CardTitle className="text-sm flex items-center gap-2"><Flame className="h-4 w-4 text-chart-5" /> Market Zone Heatmap</CardTitle>
             </CardHeader>
             <CardContent>
               {!stats?.hot_zones?.length ? (
