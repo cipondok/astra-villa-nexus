@@ -348,6 +348,13 @@ export const navigationSections = {
       icon: Package,
       description: "Listing lifecycle tracking, agent scoring, quality intelligence, zone coverage & seller conversion analytics",
       badge: "🏗️ Supply"
+    },
+    {
+      key: "deal-velocity-command",
+      label: "Deal Velocity Engine",
+      icon: Zap,
+      description: "Pipeline tracking, conversion scoring, follow-up automation, agent metrics & escrow acceleration",
+      badge: "⚡ Velocity"
     }
   ],
 
