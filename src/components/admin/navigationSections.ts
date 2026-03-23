@@ -592,6 +592,13 @@ export const navigationSections = {
       badge: "🔒 Custody"
     },
     {
+      key: "fractional-investment-command",
+      label: "Fractional Investment",
+      icon: PieChart,
+      description: "Fractional ownership offers, pooled escrow, syndication governance, and share allocation management",
+      badge: "🧩 Fractional"
+    },
+    {
       key: "investor-growth-command",
       label: "Investor Growth Engine",
       icon: Rocket,

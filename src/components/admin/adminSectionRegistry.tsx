@@ -1263,6 +1263,9 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "mvp-buyer-inquiry-tracker": () => <MVPBuyerInquiryTracker />,
   "mvp-viewing-schedule-board": () => <MVPViewingScheduleBoard />,
   "mvp-deal-pipeline-tracker": () => <MVPDealPipelineTracker />,
+
+  // Fractional Investment
+  "fractional-investment-command": () => <FractionalInvestmentCommandCenter />,
 };
 
 // ─── Section labels metadata ──────────────────────────────────────────────────
