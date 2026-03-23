@@ -1817,38 +1817,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
               ? "opacity-100 pointer-events-auto" 
               : "opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
           )}>
-            {/* Scroll to Top */}
-            {showScrollButton && onScrollToTop && showScrollToTop && (
-              <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-5 duration-700 group/action">
-                <span className="bg-background/95 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg border text-xs font-medium opacity-0 group-hover/action:opacity-100 group-hover:opacity-100 transition-opacity">
-                  Scroll to Top
-                </span>
-                <div className="relative">
-                  <Button
-                    onClick={onScrollToTop}
-                    className="h-12 w-12 rounded-full bg-gradient-to-r from-chart-3 to-destructive hover:from-chart-3/80 hover:to-destructive/80 shadow-2xl border-2 border-background/20"
-                    size="icon"
-                  >
-                    <ArrowUp className="h-5 w-5 text-primary-foreground" />
-                  </Button>
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      togglePinAction('scroll-top');
-                    }}
-                    className="absolute -top-1 -left-1 h-5 w-5 rounded-full bg-background border shadow-sm opacity-0 group-hover/action:opacity-100 transition-opacity"
-                    size="icon"
-                    variant="ghost"
-                  >
-                    {pinnedActions.has('scroll-top') ? (
-                      <PinOff className="h-3 w-3" />
-                    ) : (
-                      <Pin className="h-3 w-3" />
-                    )}
-                  </Button>
-                </div>
-              </div>
-            )}
+            {/* Scroll to Top is now integrated into the main chat button to avoid dual icons */}
             
             {/* Image Search */}
             {onImageSearch && (pinnedActions.has('image-search') || showQuickActionsHint || !hasSeenQuickActions) && (
