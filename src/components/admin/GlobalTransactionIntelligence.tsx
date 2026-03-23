@@ -40,7 +40,7 @@ const GlobalTransactionIntelligence = () => {
   useEffect(() => { fetchData(); }, []);
 
   const resolveDispute = async (disputeId: string, resolution: string, refundAmount?: number) => {
-    await supabase.functions.invoke("deal-engine", {
+    await supabase.functions.invoke("deal-transaction-engine", {
       body: { action: "resolve_dispute", dispute_id: disputeId, resolution, notes: resolveNotes, refund_amount: refundAmount },
     });
     setResolveNotes("");
