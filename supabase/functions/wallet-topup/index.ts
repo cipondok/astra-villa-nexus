@@ -153,7 +153,7 @@ async function createTopup(params: Record<string, any>, supabase: any, userId: s
     },
     item_details: [{
       id: 'wallet-topup',
-      price: Math.round(amount),
+      price: Math.round(idrAmount),
       quantity: 1,
       name: 'ASTRA Wallet Top-Up',
     }],
