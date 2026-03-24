@@ -4,7 +4,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 function json(body: unknown, status = 200) {
@@ -459,8 +459,8 @@ async function aggregateTrafficSignals(supabase: any, propertyId: string) {
 
 // ── ENQUEUE BUILDINGS ──
 async function enqueueWithTraffic(supabase: any, options: { limit: number; minTraffic: number }) {
-  const limit = options.limit || 100;
-  const minTraffic = options.minTraffic || 5;
+  const limit = options.limit ?? 100;
+  const minTraffic = options.minTraffic ?? 0;
 
   const { data: properties, error } = await supabase
     .from("properties")
@@ -535,8 +535,8 @@ async function enqueueWithTraffic(supabase: any, options: { limit: number; minTr
 
 // ── ENQUEUE LAND VISIONS ONLY ──
 async function enqueueLandVisions(supabase: any, options: { limit: number; minTraffic: number }) {
-  const limit = options.limit || 50;
-  const minTraffic = options.minTraffic || 0;
+  const limit = options.limit ?? 50;
+  const minTraffic = options.minTraffic ?? 0;
 
   // Find land-type properties without vision renders
   const { data: properties, error } = await supabase
@@ -729,6 +729,12 @@ serve(async (req: Request) => {
       .update({ status: "pending", retry_count: 0, error_message: null, worker_id: null, updated_at: new Date().toISOString() })
       .eq("status", "failed");
     return json({ success: !error });
+  }
+
+  // ── RESET STUCK JOBS ──
+  if (action === "reset_stuck") {
+    const { data, error } = await supabase.rpc("reset_stuck_image_jobs");
+    return json({ success: !error, reset_count: data ?? 0 });
   }
 
   // ── REPRIORITIZE ──
