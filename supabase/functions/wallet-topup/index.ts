@@ -239,8 +239,16 @@ async function handleWebhook(params: Record<string, any>, supabase: any) {
     return { success: true, message: 'Not a wallet topup order' };
   }
 
-  // Verify signature if server key available
-  if (MIDTRANS_SERVER_KEY && signature_key) {
+  // Verify webhook signature — always required
+  if (!signature_key) {
+    log("Missing webhook signature", { order_id });
+    throw new Error("Missing webhook signature");
+  }
+  if (!MIDTRANS_SERVER_KEY) {
+    log("Midtrans server key not configured", { order_id });
+    throw new Error("Server key not configured");
+  }
+  {
     const crypto = globalThis.crypto;
     const data = `${order_id}${status_code}${gross_amount}${MIDTRANS_SERVER_KEY}`;
     const encoder = new TextEncoder();
