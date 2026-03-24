@@ -44,11 +44,14 @@ export const useAstraToken = () => {
     queryFn: async () => {
       if (!user?.id) return null;
       
-      const { data } = await supabase.functions.invoke('core-engine', {
+      const { data, error } = await supabase.functions.invoke('core-engine', {
         body: { mode: 'astra_token', payload: { action: 'get_balance', userId: user.id } }
       });
       
-      return data?.balance as TokenBalance;
+      if (error || !data?.balance) {
+        return { total_tokens: 0, available_tokens: 0, locked_tokens: 0, lifetime_earned: 0 } as TokenBalance;
+      }
+      return data.balance as TokenBalance;
     },
     enabled: !!user?.id,
     refetchInterval: 30000 // Refresh every 30 seconds
@@ -64,10 +67,13 @@ export const useAstraToken = () => {
     queryFn: async () => {
       if (!user?.id) return null;
       
-      const { data } = await supabase.functions.invoke('core-engine', {
+      const { data, error } = await supabase.functions.invoke('core-engine', {
         body: { mode: 'astra_token', payload: { action: 'get_checkin_status', userId: user.id } }
       });
       
+      if (error || !data) {
+        return { hasCheckedInToday: false, currentStreak: 0 } as CheckinStatus;
+      }
       return data as CheckinStatus;
     },
     enabled: !!user?.id,
@@ -84,11 +90,11 @@ export const useAstraToken = () => {
     queryFn: async () => {
       if (!user?.id) return [];
       
-      const { data } = await supabase.functions.invoke('core-engine', {
+      const { data, error } = await supabase.functions.invoke('core-engine', {
         body: { mode: 'astra_token', payload: { action: 'get_transactions', userId: user.id } }
       });
       
-      return data?.transactions as TokenTransaction[];
+      return (data?.transactions || []) as TokenTransaction[];
     },
     enabled: !!user?.id
   });

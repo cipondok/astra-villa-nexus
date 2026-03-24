@@ -11294,6 +11294,321 @@ Project Details:
       });
     }
 
+    // ── ASTRA Token ──
+    if (mode === 'astra_token') {
+      const payload = body.payload || {};
+      const action = payload.action;
+      const targetUserId = payload.userId || userId;
+
+      if (action === 'get_balance') {
+        const { data: bal } = await supabase
+          .from('astra_token_balances')
+          .select('total_tokens, available_tokens, locked_tokens, lifetime_earned')
+          .eq('user_id', targetUserId)
+          .single();
+
+        return new Response(JSON.stringify({
+          balance: bal || { total_tokens: 0, available_tokens: 0, locked_tokens: 0, lifetime_earned: 0 },
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      if (action === 'get_transactions') {
+        const { data: txs } = await supabase
+          .from('astra_token_transactions')
+          .select('id, transaction_type, amount, description, created_at, status, reference_type')
+          .eq('user_id', targetUserId)
+          .order('created_at', { ascending: false })
+          .limit(50);
+
+        return new Response(JSON.stringify({ transactions: txs || [] }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      if (action === 'get_checkin_status') {
+        const today = new Date().toISOString().split('T')[0];
+        const { data: todayCheckin } = await supabase
+          .from('astra_daily_checkins')
+          .select('tokens_earned, bonus_multiplier, streak_count')
+          .eq('user_id', targetUserId)
+          .eq('checkin_date', today)
+          .single();
+
+        const { data: latestCheckin } = await supabase
+          .from('astra_daily_checkins')
+          .select('streak_count')
+          .eq('user_id', targetUserId)
+          .order('checkin_date', { ascending: false })
+          .limit(1)
+          .single();
+
+        return new Response(JSON.stringify({
+          hasCheckedInToday: !!todayCheckin,
+          currentStreak: todayCheckin?.streak_count || latestCheckin?.streak_count || 0,
+          todayCheckin: todayCheckin ? {
+            tokens_earned: todayCheckin.tokens_earned,
+            bonus_multiplier: todayCheckin.bonus_multiplier,
+          } : undefined,
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      if (action === 'daily_checkin') {
+        const today = new Date().toISOString().split('T')[0];
+
+        // Check if already checked in
+        const { data: existing } = await supabase
+          .from('astra_daily_checkins')
+          .select('id')
+          .eq('user_id', targetUserId)
+          .eq('checkin_date', today)
+          .single();
+
+        if (existing) {
+          return new Response(JSON.stringify({ success: false, message: 'Already checked in today!' }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        // Get previous streak
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+        const { data: prevCheckin } = await supabase
+          .from('astra_daily_checkins')
+          .select('streak_count')
+          .eq('user_id', targetUserId)
+          .eq('checkin_date', yesterdayStr)
+          .single();
+
+        const newStreak = prevCheckin ? prevCheckin.streak_count + 1 : 1;
+        const baseReward = 10;
+        const multiplier = newStreak >= 30 ? 3 : newStreak >= 14 ? 2 : newStreak >= 7 ? 1.5 : 1;
+        const tokensEarned = Math.round(baseReward * multiplier);
+
+        // Insert checkin
+        await supabase.from('astra_daily_checkins').insert({
+          user_id: targetUserId,
+          checkin_date: today,
+          streak_count: newStreak,
+          tokens_earned: tokensEarned,
+          bonus_multiplier: multiplier,
+        });
+
+        // Record transaction
+        await supabase.from('astra_token_transactions').insert({
+          user_id: targetUserId,
+          transaction_type: 'daily_checkin',
+          amount: tokensEarned,
+          description: `Daily check-in reward (Day ${newStreak}, ${multiplier}x bonus)`,
+          status: 'completed',
+        });
+
+        // Upsert balance
+        const { data: curBal } = await supabase
+          .from('astra_token_balances')
+          .select('total_tokens, available_tokens, lifetime_earned')
+          .eq('user_id', targetUserId)
+          .single();
+
+        if (curBal) {
+          await supabase.from('astra_token_balances').update({
+            total_tokens: curBal.total_tokens + tokensEarned,
+            available_tokens: curBal.available_tokens + tokensEarned,
+            lifetime_earned: curBal.lifetime_earned + tokensEarned,
+            updated_at: new Date().toISOString(),
+          }).eq('user_id', targetUserId);
+        } else {
+          await supabase.from('astra_token_balances').insert({
+            user_id: targetUserId,
+            total_tokens: tokensEarned,
+            available_tokens: tokensEarned,
+            locked_tokens: 0,
+            lifetime_earned: tokensEarned,
+          });
+        }
+
+        return new Response(JSON.stringify({
+          success: true,
+          message: `Earned ${tokensEarned} ASTRA tokens! (Day ${newStreak} streak, ${multiplier}x bonus)`,
+          tokensEarned,
+          streak: newStreak,
+          multiplier,
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      if (action === 'get_transfers') {
+        const { data: sent } = await supabase
+          .from('astra_token_transfers')
+          .select('*')
+          .eq('sender_id', targetUserId)
+          .order('created_at', { ascending: false })
+          .limit(25);
+
+        const { data: received } = await supabase
+          .from('astra_token_transfers')
+          .select('*')
+          .eq('recipient_id', targetUserId)
+          .order('created_at', { ascending: false })
+          .limit(25);
+
+        const all = [...(sent || []), ...(received || [])]
+          .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+          .slice(0, 50);
+
+        return new Response(JSON.stringify({ transfers: all }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      if (action === 'welcome_bonus') {
+        // Check if already claimed
+        const { data: existingTx } = await supabase
+          .from('astra_token_transactions')
+          .select('id')
+          .eq('user_id', targetUserId)
+          .eq('transaction_type', 'welcome_bonus')
+          .limit(1)
+          .single();
+
+        if (existingTx) {
+          return new Response(JSON.stringify({ success: false, message: 'Welcome bonus already claimed.' }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        const bonusAmount = 50;
+        await supabase.from('astra_token_transactions').insert({
+          user_id: targetUserId, transaction_type: 'welcome_bonus',
+          amount: bonusAmount, description: 'Welcome bonus tokens', status: 'completed',
+        });
+
+        const { data: curBal } = await supabase
+          .from('astra_token_balances').select('total_tokens, available_tokens, lifetime_earned')
+          .eq('user_id', targetUserId).single();
+
+        if (curBal) {
+          await supabase.from('astra_token_balances').update({
+            total_tokens: curBal.total_tokens + bonusAmount,
+            available_tokens: curBal.available_tokens + bonusAmount,
+            lifetime_earned: curBal.lifetime_earned + bonusAmount,
+            updated_at: new Date().toISOString(),
+          }).eq('user_id', targetUserId);
+        } else {
+          await supabase.from('astra_token_balances').insert({
+            user_id: targetUserId, total_tokens: bonusAmount, available_tokens: bonusAmount,
+            locked_tokens: 0, lifetime_earned: bonusAmount,
+          });
+        }
+
+        return new Response(JSON.stringify({ success: true, message: `Claimed ${bonusAmount} ASTRA welcome bonus!` }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      if (action === 'award_tokens' || action === 'transaction_reward') {
+        const amount = Number(payload.amount) || 0;
+        if (amount <= 0) {
+          return new Response(JSON.stringify({ success: false, message: 'Invalid amount' }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        await supabase.from('astra_token_transactions').insert({
+          user_id: targetUserId, transaction_type: payload.transactionType || payload.referenceType || 'reward',
+          amount, description: payload.description || 'Token reward', status: 'completed',
+          reference_type: payload.referenceType,
+        });
+
+        const { data: curBal } = await supabase
+          .from('astra_token_balances').select('total_tokens, available_tokens, lifetime_earned')
+          .eq('user_id', targetUserId).single();
+
+        if (curBal) {
+          await supabase.from('astra_token_balances').update({
+            total_tokens: curBal.total_tokens + amount,
+            available_tokens: curBal.available_tokens + amount,
+            lifetime_earned: curBal.lifetime_earned + amount,
+            updated_at: new Date().toISOString(),
+          }).eq('user_id', targetUserId);
+        } else {
+          await supabase.from('astra_token_balances').insert({
+            user_id: targetUserId, total_tokens: amount, available_tokens: amount,
+            locked_tokens: 0, lifetime_earned: amount,
+          });
+        }
+
+        return new Response(JSON.stringify({ success: true, tokensAwarded: amount, message: `Awarded ${amount} ASTRA tokens` }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      if (action === 'transfer_tokens') {
+        const amount = Number(payload.amount) || 0;
+        const recipientId = payload.recipientId;
+        if (amount <= 0 || !recipientId) {
+          return new Response(JSON.stringify({ success: false, message: 'Invalid transfer parameters' }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        const { data: senderBal } = await supabase
+          .from('astra_token_balances').select('available_tokens')
+          .eq('user_id', targetUserId).single();
+
+        if (!senderBal || senderBal.available_tokens < amount) {
+          return new Response(JSON.stringify({ success: false, message: 'Insufficient balance' }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        const fee = Math.round(amount * 0.02);
+        const net = amount - fee;
+
+        // Deduct from sender
+        await supabase.from('astra_token_balances').update({
+          total_tokens: senderBal.available_tokens - amount,
+          available_tokens: senderBal.available_tokens - amount,
+          updated_at: new Date().toISOString(),
+        }).eq('user_id', targetUserId);
+
+        // Credit recipient
+        const { data: recipBal } = await supabase
+          .from('astra_token_balances').select('total_tokens, available_tokens, lifetime_earned')
+          .eq('user_id', recipientId).single();
+
+        if (recipBal) {
+          await supabase.from('astra_token_balances').update({
+            total_tokens: recipBal.total_tokens + net,
+            available_tokens: recipBal.available_tokens + net,
+            lifetime_earned: recipBal.lifetime_earned + net,
+            updated_at: new Date().toISOString(),
+          }).eq('user_id', recipientId);
+        } else {
+          await supabase.from('astra_token_balances').insert({
+            user_id: recipientId, total_tokens: net, available_tokens: net,
+            locked_tokens: 0, lifetime_earned: net,
+          });
+        }
+
+        // Record transfer
+        await supabase.from('astra_token_transfers').insert({
+          sender_id: targetUserId, recipient_id: recipientId,
+          amount, transfer_fee: fee, net_amount: net,
+          status: 'completed', message: payload.message || '',
+        });
+
+        return new Response(JSON.stringify({
+          success: true, message: `Transferred ${net} ASTRA tokens (fee: ${fee})`,
+          netAmount: net, fee,
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      return new Response(JSON.stringify({ error: 'Unknown astra_token action' }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     // ── System Health Check ──
     if (mode === 'system_health_check') {
       return new Response(JSON.stringify({
