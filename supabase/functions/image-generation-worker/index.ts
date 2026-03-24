@@ -535,8 +535,8 @@ async function enqueueWithTraffic(supabase: any, options: { limit: number; minTr
 
 // ── ENQUEUE LAND VISIONS ONLY ──
 async function enqueueLandVisions(supabase: any, options: { limit: number; minTraffic: number }) {
-  const limit = options.limit || 50;
-  const minTraffic = options.minTraffic || 0;
+  const limit = options.limit ?? 50;
+  const minTraffic = options.minTraffic ?? 0;
 
   // Find land-type properties without vision renders
   const { data: properties, error } = await supabase
