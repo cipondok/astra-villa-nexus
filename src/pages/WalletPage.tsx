@@ -399,13 +399,20 @@ const WalletPage = () => {
                 <p className="text-sm text-muted-foreground">
                   Available: <Price amount={availableBalance} />
                 </p>
-                <Input
-                  type="number"
-                  placeholder="Amount (min Rp 50,000)"
-                  value={payoutAmount}
-                  onChange={(e) => setPayoutAmount(e.target.value)}
-                  min={50000}
-                />
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-medium">Rp</span>
+                  <Input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="50.000"
+                    value={payoutAmount ? parseInt(payoutAmount).toLocaleString('id-ID') : ''}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(/\D/g, '');
+                      setPayoutAmount(raw);
+                    }}
+                    className="pl-10"
+                  />
+                </div>
                 <Select value={payoutMethod} onValueChange={setPayoutMethod}>
                   <SelectTrigger>
                     <SelectValue placeholder="Withdrawal method" />
