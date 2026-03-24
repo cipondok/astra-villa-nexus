@@ -421,7 +421,7 @@ const WalletPage = () => {
                     className="pl-10"
                   />
                 </div>
-                <Select value={payoutMethod} onValueChange={setPayoutMethod}>
+                <Select value={payoutMethod} onValueChange={(v) => { setPayoutMethod(v); setPayoutBankName(''); }}>
                   <SelectTrigger>
                     <SelectValue placeholder="Withdrawal method" />
                   </SelectTrigger>
@@ -430,9 +430,62 @@ const WalletPage = () => {
                     <SelectItem value="ewallet">E-Wallet</SelectItem>
                   </SelectContent>
                 </Select>
+                {payoutMethod === 'bank_transfer' && (
+                  <div className="space-y-3">
+                    <Select value={payoutBankName} onValueChange={setPayoutBankName}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select bank" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="bca">BCA</SelectItem>
+                        <SelectItem value="mandiri">Bank Mandiri</SelectItem>
+                        <SelectItem value="bni">BNI</SelectItem>
+                        <SelectItem value="bri">BRI</SelectItem>
+                        <SelectItem value="cimb">CIMB Niaga</SelectItem>
+                        <SelectItem value="permata">Permata Bank</SelectItem>
+                        <SelectItem value="danamon">Bank Danamon</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Input
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="Account number"
+                      value={payoutAccountNumber}
+                      onChange={(e) => setPayoutAccountNumber(e.target.value.replace(/\D/g, ''))}
+                    />
+                    <Input
+                      type="text"
+                      placeholder="Account holder name"
+                      value={payoutAccountHolder}
+                      onChange={(e) => setPayoutAccountHolder(e.target.value)}
+                    />
+                  </div>
+                )}
+                {payoutMethod === 'ewallet' && (
+                  <div className="space-y-3">
+                    <Select value={payoutBankName} onValueChange={setPayoutBankName}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select e-wallet" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="gopay">GoPay</SelectItem>
+                        <SelectItem value="ovo">OVO</SelectItem>
+                        <SelectItem value="dana">DANA</SelectItem>
+                        <SelectItem value="shopeepay">ShopeePay</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Input
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="Phone number (e.g. 08123456789)"
+                      value={payoutAccountNumber}
+                      onChange={(e) => setPayoutAccountNumber(e.target.value.replace(/\D/g, ''))}
+                    />
+                  </div>
+                )}
                 <Button
                   onClick={handlePayout}
-                  disabled={!payoutAmount || parseInt(payoutAmount) < 50000 || !payoutMethod || requestPayout.isPending}
+                  disabled={!payoutAmount || parseInt(payoutAmount) < 50000 || !payoutMethod || !payoutBankName || !payoutAccountNumber || (payoutMethod === 'bank_transfer' && !payoutAccountHolder) || requestPayout.isPending}
                   className="w-full"
                 >
                   {requestPayout.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
