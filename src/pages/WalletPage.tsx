@@ -321,13 +321,20 @@ const WalletPage = () => {
               <div className="space-y-4 pt-2">
                 <div>
                   <label className="text-sm font-medium text-foreground mb-2 block">Amount (IDR)</label>
-                  <Input
-                    type="number"
-                    placeholder="Enter amount (min Rp 10,000)"
-                    value={topupAmount}
-                    onChange={(e) => setTopupAmount(e.target.value)}
-                    min={10000}
-                  />
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-medium">Rp</span>
+                    <Input
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="10.000"
+                      value={topupAmount ? parseInt(topupAmount).toLocaleString('id-ID') : ''}
+                      onChange={(e) => {
+                        const raw = e.target.value.replace(/\D/g, '');
+                        setTopupAmount(raw);
+                      }}
+                      className="pl-10"
+                    />
+                  </div>
                   <div className="flex flex-wrap gap-2 mt-3">
                     {QUICK_AMOUNTS.map((amt) => (
                       <Button
