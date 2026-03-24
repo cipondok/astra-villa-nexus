@@ -67,10 +67,13 @@ export const useAstraToken = () => {
     queryFn: async () => {
       if (!user?.id) return null;
       
-      const { data } = await supabase.functions.invoke('core-engine', {
+      const { data, error } = await supabase.functions.invoke('core-engine', {
         body: { mode: 'astra_token', payload: { action: 'get_checkin_status', userId: user.id } }
       });
       
+      if (error || !data) {
+        return { hasCheckedInToday: false, currentStreak: 0 } as CheckinStatus;
+      }
       return data as CheckinStatus;
     },
     enabled: !!user?.id,
