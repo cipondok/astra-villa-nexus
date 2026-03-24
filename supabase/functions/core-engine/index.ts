@@ -11618,16 +11618,6 @@ Project Details:
         uptime: true,
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-      return new Response(JSON.stringify({
-        status: 'ok',
-        mode: 'system_health_check',
-        timestamp: new Date().toISOString(),
-        uptime: true,
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
     }
 
     return new Response(JSON.stringify({ error: 'Unknown mode or unhandled request' }), {
