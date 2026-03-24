@@ -1,5 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
-import { createHmac } from "node:crypto";
+import { createHash } from "node:crypto";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -52,13 +52,91 @@ Deno.serve(async (req) => {
       const serverKey = Deno.env.get("MIDTRANS_SERVER_KEY");
       if (serverKey && payload.signature_key) {
         const raw = `${payload.order_id}${payload.status_code}${payload.gross_amount}${serverKey}`;
-        const hash = createHmac("sha512", "").update(raw).digest("hex");
+        const hash = createHash("sha512").update(raw).digest("hex");
         signatureValid = hash === payload.signature_key;
       }
     } else if (gateway === "paypal") {
-      // PayPal webhook signature verification placeholder
+      // PayPal webhook signature verification using PayPal Verify API
       const webhookId = Deno.env.get("PAYPAL_WEBHOOK_ID");
-      signatureValid = !!webhookId; // simplified; production uses PayPal verify API
+      const clientId = Deno.env.get("PAYPAL_CLIENT_ID");
+      const clientSecret = Deno.env.get("PAYPAL_CLIENT_SECRET");
+      const isProduction = Deno.env.get("PAYPAL_IS_PRODUCTION") === "true";
+      const baseUrl = isProduction
+        ? "https://api-m.paypal.com"
+        : "https://api-m.sandbox.paypal.com";
+
+      if (webhookId && clientId && clientSecret) {
+        try {
+          // Get OAuth token
+          const tokenRes = await fetch(`${baseUrl}/v1/oauth2/token`, {
+            method: "POST",
+            headers: {
+              "Authorization": `Basic ${btoa(`${clientId}:${clientSecret}`)}`,
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: "grant_type=client_credentials",
+          });
+          const tokenData = await tokenRes.json();
+
+          if (tokenData.access_token) {
+            // Verify webhook signature via PayPal API
+            const transmissionId = req.headers.get("paypal-transmission-id");
+            const transmissionTime = req.headers.get("paypal-transmission-time");
+            const certUrl = req.headers.get("paypal-cert-url");
+            const transmissionSig = req.headers.get("paypal-transmission-sig");
+            const authAlgo = req.headers.get("paypal-auth-algo");
+
+            if (transmissionId && transmissionTime && certUrl && transmissionSig && authAlgo) {
+              const verifyRes = await fetch(`${baseUrl}/v1/notifications/verify-webhook-signature`, {
+                method: "POST",
+                headers: {
+                  "Authorization": `Bearer ${tokenData.access_token}`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  auth_algo: authAlgo,
+                  cert_url: certUrl,
+                  transmission_id: transmissionId,
+                  transmission_sig: transmissionSig,
+                  transmission_time: transmissionTime,
+                  webhook_id: webhookId,
+                  webhook_event: payload,
+                }),
+              });
+              const verifyData = await verifyRes.json();
+              signatureValid = verifyData.verification_status === "SUCCESS";
+            }
+          }
+        } catch (verifyErr) {
+          console.error("PayPal verification error:", verifyErr);
+          signatureValid = false;
+        }
+      }
+    }
+
+    // ---- Log webhook ----
+    const logId = crypto.randomUUID();
+    await supabase.from("payment_webhook_logs").insert({
+      id: logId,
+      gateway,
+      webhook_event_id: webhookEventId,
+      event_type: payload.transaction_status || payload.event_type || "unknown",
+      payload,
+      processing_status: "processing",
+      amount: 0,
+      currency: "IDR",
+      signature_valid: signatureValid,
+    });
+
+    // ---- ENFORCE signature validity — reject forged requests ----
+    if (!signatureValid) {
+      await supabase.from("payment_webhook_logs")
+        .update({ processing_status: "rejected", error_message: "Invalid signature" })
+        .eq("id", logId);
+      return new Response(JSON.stringify({ error: "Invalid signature" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     // ---- Extract transaction details ----
@@ -68,7 +146,7 @@ Deno.serve(async (req) => {
     let orderId = "";
 
     if (gateway === "midtrans") {
-      txStatus = payload.transaction_status; // capture, settlement, pending, deny, cancel, expire
+      txStatus = payload.transaction_status;
       amount = parseFloat(payload.gross_amount || "0");
       currency = payload.currency || "IDR";
       orderId = payload.order_id || "";
@@ -80,19 +158,10 @@ Deno.serve(async (req) => {
       orderId = resource.id || resource.parent_payment || "";
     }
 
-    // ---- Log webhook ----
-    const logId = crypto.randomUUID();
-    await supabase.from("payment_webhook_logs").insert({
-      id: logId,
-      gateway,
-      webhook_event_id: webhookEventId,
-      event_type: txStatus,
-      payload,
-      processing_status: "processing",
-      amount,
-      currency,
-      signature_valid: signatureValid,
-    });
+    // Update log with extracted amount/currency
+    await supabase.from("payment_webhook_logs")
+      .update({ amount, currency, event_type: txStatus })
+      .eq("id", logId);
 
     // ---- Process payment confirmation ----
     const isConfirmed =
@@ -110,7 +179,6 @@ Deno.serve(async (req) => {
       if (deals && deals.length > 0) {
         const deal = deals[0];
 
-        // ---- Row-level locking via version check (optimistic concurrency) ----
         const currentVersion = deal.version || 1;
         const { data: updated, error: upErr } = await supabase
           .from("deal_transactions")
@@ -135,7 +203,6 @@ Deno.serve(async (req) => {
           });
         }
 
-        // ---- Double-entry ledger: buyer_wallet → escrow_holding ----
         const escrowId = deal.escrow_id || deal.id;
         const idempKey = `funding_${deal.id}_${webhookEventId}`;
         await supabase.from("escrow_ledger_entries").insert([
@@ -151,7 +218,6 @@ Deno.serve(async (req) => {
           },
         ]);
 
-        // ---- Lock commission immediately (Phase 4) ----
         const { data: rules } = await supabase
           .from("deal_commission_rules")
           .select("*")
@@ -165,7 +231,7 @@ Deno.serve(async (req) => {
           const totalComm = dealAmount * (Number(rule.commission_percentage) / 100);
           const agentAmt = totalComm * (Number(rule.agent_split_percentage || 0) / 100);
           const platformAmt = totalComm - agentAmt;
-          const taxReserve = totalComm * 0.1; // 10% tax reserve
+          const taxReserve = totalComm * 0.1;
 
           await supabase.from("transaction_commissions").insert({
             deal_id: deal.id,
@@ -189,7 +255,6 @@ Deno.serve(async (req) => {
           });
         }
 
-        // ---- Log state transition ----
         await supabase.from("deal_state_log").insert({
           deal_id: deal.id,
           from_state: deal.deal_status,
@@ -198,12 +263,10 @@ Deno.serve(async (req) => {
           trigger_reason: `${gateway} payment confirmed: ${webhookEventId}`,
         });
 
-        // Update webhook log
         await supabase.from("payment_webhook_logs")
           .update({ processing_status: "processed", deal_id: deal.id, escrow_id: escrowId, processed_at: new Date().toISOString() })
           .eq("id", logId);
 
-        // Log system event
         await supabase.from("escrow_system_events").insert({
           event_type: "payment_confirmed",
           deal_id: deal.id,
@@ -227,7 +290,7 @@ Deno.serve(async (req) => {
     });
   } catch (err) {
     console.error("Webhook error:", err);
-    return new Response(JSON.stringify({ error: err.message }), {
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
