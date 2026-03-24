@@ -11618,6 +11618,7 @@ Project Details:
         uptime: true,
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     return new Response(JSON.stringify({ error: 'Unknown mode or unhandled request' }), {
