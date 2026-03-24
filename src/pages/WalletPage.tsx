@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -118,6 +119,10 @@ const WalletPage = () => {
   const handlePayout = () => {
     const amount = parseInt(payoutAmount);
     if (!amount || amount < 50000 || !payoutMethod) return;
+    if (amount > availableBalance) {
+      toast.error("Insufficient Funds", { description: `Your available balance is Rp ${availableBalance.toLocaleString('id-ID')}. Please enter a smaller amount.` });
+      return;
+    }
     requestPayout.mutate(
       { amount, payout_method: payoutMethod },
       { onSuccess: () => { setPayoutOpen(false); setPayoutAmount(''); setPayoutMethod(''); } }
