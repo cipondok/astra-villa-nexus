@@ -459,8 +459,8 @@ async function aggregateTrafficSignals(supabase: any, propertyId: string) {
 
 // ── ENQUEUE BUILDINGS ──
 async function enqueueWithTraffic(supabase: any, options: { limit: number; minTraffic: number }) {
-  const limit = options.limit || 100;
-  const minTraffic = options.minTraffic || 5;
+  const limit = options.limit ?? 100;
+  const minTraffic = options.minTraffic ?? 0;
 
   const { data: properties, error } = await supabase
     .from("properties")
