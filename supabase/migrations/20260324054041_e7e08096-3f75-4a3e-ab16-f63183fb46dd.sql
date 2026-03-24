@@ -1,0 +1,1 @@
+UPDATE public.ai_image_gen_config SET min_traffic_threshold = 0, updated_at = now() WHERE id = 'default'
