@@ -44,11 +44,14 @@ export const useAstraToken = () => {
     queryFn: async () => {
       if (!user?.id) return null;
       
-      const { data } = await supabase.functions.invoke('core-engine', {
+      const { data, error } = await supabase.functions.invoke('core-engine', {
         body: { mode: 'astra_token', payload: { action: 'get_balance', userId: user.id } }
       });
       
-      return data?.balance as TokenBalance;
+      if (error || !data?.balance) {
+        return { total_tokens: 0, available_tokens: 0, locked_tokens: 0, lifetime_earned: 0 } as TokenBalance;
+      }
+      return data.balance as TokenBalance;
     },
     enabled: !!user?.id,
     refetchInterval: 30000 // Refresh every 30 seconds
