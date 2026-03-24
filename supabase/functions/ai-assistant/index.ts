@@ -53,7 +53,13 @@ serve(async (req) => {
 
     // Forward to ai-engine
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const authHeader = req.headers.get("authorization") || `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`;
+    const authHeader = req.headers.get("authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(
+        JSON.stringify({ error: "Missing authorization" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     const targetUrl = `${supabaseUrl}/functions/v1/ai-engine`;
 
