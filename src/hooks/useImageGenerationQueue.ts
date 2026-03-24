@@ -89,7 +89,7 @@ export function useEnqueueImages() {
   return useMutation({
     mutationFn: async (params: { limit?: number; minTraffic?: number } = {}) => {
       const { data, error } = await supabase.functions.invoke("image-generation-worker", {
-        body: { action: "enqueue", limit: params.limit || 100, min_traffic: params.minTraffic },
+        body: { action: "enqueue", limit: params.limit || 100, min_traffic: params.minTraffic ?? 0 },
       });
       if (error) throw error;
       return data;
