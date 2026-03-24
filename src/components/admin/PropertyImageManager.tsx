@@ -110,6 +110,34 @@ const PropertyImageManager = () => {
   // Bulk AI regenerate all broken images for selected properties
   const handleBulkRegenerate = async () => {
     const selectedProps = properties.filter(p => selectedPropertyIds.has(p.id));
+    
+    // Auto-run health check if no results exist for selected properties
+    const allUrls = selectedProps.flatMap(p => getImages(p));
+    const hasResults = allUrls.some(url => healthResults[url]);
+    
+    if (!hasResults && allUrls.length > 0) {
+      showSuccess("Running health check", "Scanning images before regeneration...");
+      const results = await checkAllImages(allUrls);
+      // Now use fresh results
+      const brokenFromCheck: { url: string; property: any }[] = [];
+      for (const prop of selectedProps) {
+        for (const url of getImages(prop)) {
+          if (results[url]?.status === 'broken') {
+            brokenFromCheck.push({ url, property: prop });
+          }
+        }
+      }
+      if (brokenFromCheck.length === 0) {
+        showSuccess("All images healthy", `Checked ${allUrls.length} images — no broken images found.`);
+        return;
+      }
+      // Continue with broken entries from fresh check
+      setBulkRegenerating(true);
+      setBulkProgress({ done: 0, total: brokenFromCheck.length });
+      await processBulkRegenerate(brokenFromCheck);
+      return;
+    }
+
     const brokenEntries: { url: string; property: any }[] = [];
     for (const prop of selectedProps) {
       const imgs = getImages(prop);
@@ -120,7 +148,7 @@ const PropertyImageManager = () => {
       }
     }
     if (brokenEntries.length === 0) {
-      showError("No broken images", "Run health check first to find broken images in selected properties.");
+      showSuccess("All images healthy", "No broken images found in selected properties.");
       return;
     }
 
