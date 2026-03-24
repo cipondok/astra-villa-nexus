@@ -654,6 +654,43 @@ const PropertyImageManager = () => {
       ? properties.filter(p => selectedPropertyIds.has(p.id))
       : paginatedProperties;
 
+    // Auto-run health check if no results exist
+    const allUrls = targetProps.flatMap(p => getImages(p));
+    const hasResults = allUrls.some(url => healthResults[url]);
+    
+    if (!hasResults && allUrls.length > 0) {
+      showSuccess("Running health check", "Scanning images first...");
+      const results = await checkAllImages(allUrls);
+      // Re-run with fresh results
+      let totalRemoved = 0;
+      for (const prop of targetProps) {
+        const imgs = getImages(prop);
+        const brokenUrls = new Set(imgs.filter(url => results[url]?.status === 'broken'));
+        if (brokenUrls.size === 0) continue;
+
+        const validImages = imgs.filter(url => !brokenUrls.has(url));
+        const newThumb = brokenUrls.has(prop.thumbnail_url) ? (validImages[0] || null) : prop.thumbnail_url;
+        const cleanImageUrls = Array.isArray(prop.image_urls) ? prop.image_urls.filter((u: string) => !brokenUrls.has(u)) : [];
+
+        try {
+          const { error } = await supabase.from("properties")
+            .update({ images: validImages, image_urls: cleanImageUrls, thumbnail_url: newThumb })
+            .eq("id", prop.id);
+          if (!error) totalRemoved += brokenUrls.size;
+        } catch { /* continue */ }
+      }
+
+      if (totalRemoved > 0) {
+        showSuccess("Bulk Cleanup", `Deleted ${totalRemoved} broken image(s)`);
+        queryClient.invalidateQueries({ queryKey: ["admin-property-images"] });
+        queryClient.invalidateQueries({ queryKey: ["simple-properties"] });
+        clearResults();
+      } else {
+        showSuccess("All images healthy", `Checked ${allUrls.length} images — no broken images found.`);
+      }
+      return;
+    }
+
     let totalRemoved = 0;
     for (const prop of targetProps) {
       const imgs = getImages(prop);
@@ -684,7 +721,7 @@ const PropertyImageManager = () => {
       queryClient.invalidateQueries({ queryKey: ["simple-properties"] });
       clearResults();
     } else {
-      showError("No broken images", "Run health check first to detect broken images.");
+      showSuccess("All images healthy", "No broken images found in selected properties.");
     }
   };
 
