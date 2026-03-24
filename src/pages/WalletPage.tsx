@@ -128,7 +128,7 @@ const WalletPage = () => {
     }
     requestPayout.mutate(
       { amount, payout_method: payoutMethod },
-      { onSuccess: () => { setPayoutOpen(false); setPayoutAmount(''); setPayoutMethod(''); } }
+      { onSuccess: () => { setPayoutOpen(false); setPayoutAmount(''); setPayoutMethod(''); setPayoutBankName(''); setPayoutAccountNumber(''); setPayoutAccountHolder(''); } }
     );
   };
 
