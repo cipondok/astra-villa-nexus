@@ -120,7 +120,7 @@ const WalletPage = () => {
     const amount = parseInt(payoutAmount);
     if (!amount || amount < 50000 || !payoutMethod) return;
     if (amount > availableBalance) {
-      showError("Insufficient Funds", `Your available balance is Rp ${availableBalance.toLocaleString('id-ID')}. Please enter a smaller amount.`);
+      toast.error("Insufficient Funds", { description: `Your available balance is Rp ${availableBalance.toLocaleString('id-ID')}. Please enter a smaller amount.` });
       return;
     }
     requestPayout.mutate(
