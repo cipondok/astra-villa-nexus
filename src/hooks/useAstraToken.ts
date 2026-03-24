@@ -90,11 +90,11 @@ export const useAstraToken = () => {
     queryFn: async () => {
       if (!user?.id) return [];
       
-      const { data } = await supabase.functions.invoke('core-engine', {
+      const { data, error } = await supabase.functions.invoke('core-engine', {
         body: { mode: 'astra_token', payload: { action: 'get_transactions', userId: user.id } }
       });
       
-      return data?.transactions as TokenTransaction[];
+      return (data?.transactions || []) as TokenTransaction[];
     },
     enabled: !!user?.id
   });
