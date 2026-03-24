@@ -731,6 +731,12 @@ serve(async (req: Request) => {
     return json({ success: !error });
   }
 
+  // ── RESET STUCK JOBS ──
+  if (action === "reset_stuck") {
+    const { data, error } = await supabase.rpc("reset_stuck_image_jobs");
+    return json({ success: !error, reset_count: data ?? 0 });
+  }
+
   // ── REPRIORITIZE ──
   if (action === "reprioritize") {
     try {
