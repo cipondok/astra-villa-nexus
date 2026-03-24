@@ -60,6 +60,9 @@ const WalletPage = () => {
   const [topupOpen, setTopupOpen] = useState(false);
   const [payoutAmount, setPayoutAmount] = useState('');
   const [payoutMethod, setPayoutMethod] = useState('');
+  const [payoutBankName, setPayoutBankName] = useState('');
+  const [payoutAccountNumber, setPayoutAccountNumber] = useState('');
+  const [payoutAccountHolder, setPayoutAccountHolder] = useState('');
   const [payoutOpen, setPayoutOpen] = useState(false);
   const [dismissedNudges, setDismissedNudges] = useState<Set<string>>(new Set());
 
