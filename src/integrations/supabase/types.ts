@@ -69330,6 +69330,7 @@ export type Database = {
       recover_stalled_jobs: { Args: never; Returns: number }
       release_batch_lock: { Args: { p_job_type: string }; Returns: undefined }
       reset_admin_password: { Args: { new_password: string }; Returns: string }
+      reset_stuck_image_jobs: { Args: never; Returns: number }
       resolve_database_error: {
         Args: {
           p_error_signature: string
