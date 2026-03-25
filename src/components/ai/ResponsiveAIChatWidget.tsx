@@ -1791,7 +1791,7 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
     <>
       {/* Floating chat button with quick actions on hover - draggable and always visible */}
       {!isOpen && (
-        <div className="fixed bottom-4 right-4 z-[99999] flex flex-col-reverse items-center gap-3 group" onMouseEnter={handleFirstHover}>
+        <div className={cn("fixed right-4 z-[99999] flex flex-col-reverse items-center gap-3 group", isMobile ? "bottom-[68px]" : "bottom-4")} onMouseEnter={handleFirstHover}>
           {/* Pulsing glow hint animation for first-time users */}
           {!hasSeenQuickActions && !showQuickActionsHint && (
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/30 to-accent/30 animate-pulse blur-xl" />

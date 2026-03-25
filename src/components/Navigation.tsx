@@ -347,21 +347,34 @@ const Navigation = () => {
             </div>
 
             {/* Right Section */}
-            <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+            <div className="flex items-center gap-1 sm:gap-1.5 lg:gap-2 flex-shrink-0 min-w-0">
               {pastHero && isHomePage && (
-                <form onSubmit={handleHeaderSearch} className="flex items-center gap-0.5">
+                <form onSubmit={handleHeaderSearch} className="hidden sm:flex items-center gap-0.5">
                   <div className="relative">
-                    <Search className="absolute left-1.5 top-1/2 -translate-y-1/2 h-2.5 w-2.5 sm:h-3 sm:w-3 text-muted-foreground pointer-events-none" />
-                    <Input type="text" value={headerSearchQuery} onChange={(e) => setHeaderSearchQuery(e.target.value)} placeholder={t('common.search') + '...'} className="pl-5 pr-2 h-6 sm:h-7 w-24 sm:w-32 lg:w-44 xl:w-56 text-[10px] sm:text-xs bg-muted/50 border-border/50 rounded-md focus:bg-background focus:border-gold-primary/30 focus:w-32 sm:focus:w-44 lg:focus:w-56 transition-all duration-300" />
+                    <Search className="absolute left-1.5 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground pointer-events-none" />
+                    <Input type="text" value={headerSearchQuery} onChange={(e) => setHeaderSearchQuery(e.target.value)} placeholder={t('common.search') + '...'} className="pl-6 pr-2 h-7 w-28 sm:w-32 lg:w-44 xl:w-56 text-xs bg-muted/50 border-border/50 rounded-md focus:bg-background focus:border-gold-primary/30 sm:focus:w-44 lg:focus:w-56 transition-all duration-300" />
                   </div>
-                  <Button type="submit" size="sm" className="h-6 sm:h-7 w-6 sm:w-7 p-0 rounded-md bg-gold-primary/90 hover:bg-gold-primary text-background shadow-sm">
-                    <Search className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                  <Button type="submit" size="sm" className="h-7 w-7 p-0 rounded-md bg-gold-primary/90 hover:bg-gold-primary text-background shadow-sm">
+                    <Search className="h-3 w-3" />
                   </Button>
                 </form>
               )}
 
-              <Button variant="ghost" size="sm" onClick={toggleTheme} className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 p-0 rounded-lg bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300">
-                {theme === "light" ? <Moon className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-foreground/70" /> : <Sun className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary" />}
+              {/* Mobile search icon - compact for small screens */}
+              {pastHero && isHomePage && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate('/?search=true')}
+                  className="sm:hidden w-7 h-7 p-0 rounded-lg bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 transition-all duration-300"
+                  aria-label="Search"
+                >
+                  <Search className="h-3.5 w-3.5 text-foreground/70" />
+                </Button>
+              )}
+
+              <Button variant="ghost" size="sm" onClick={toggleTheme} className="w-7 h-7 lg:w-8 lg:h-8 p-0 rounded-lg bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 hover:scale-105 transition-all duration-300" aria-label="Toggle theme">
+                {theme === "light" ? <Moon className="h-3.5 w-3.5 text-foreground/70" /> : <Sun className="h-3.5 w-3.5 text-gold-primary" />}
               </Button>
 
               <div className="hidden lg:block">
@@ -376,17 +389,17 @@ const Navigation = () => {
                 <Button
                   onClick={() => setShowAuthModal(true)}
                   size="sm"
-                  className="h-7 sm:h-8 px-3 sm:px-4 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 hover:scale-105 transition-all duration-300 text-[11px] sm:text-xs font-semibold gap-1.5"
+                  className="h-7 sm:h-8 px-2 sm:px-3 lg:px-4 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 hover:scale-105 transition-all duration-300 text-[11px] sm:text-xs font-semibold gap-1"
                 >
-                  <User className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                  <User className="h-3.5 w-3.5" />
                   <span className="hidden sm:inline">{t('auth.signIn')}</span>
                   <span className="sm:hidden">Login</span>
                 </Button>
               )}
 
               <div className="lg:hidden flex items-center">
-                <Button ref={menuButtonRef} variant="ghost" size="sm" className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 p-0 rounded-lg bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 transition-all duration-300 text-foreground/70" onClick={toggleMenu}>
-                  {isMenuOpen ? <X className="h-3 w-3 sm:h-3.5 sm:w-3.5" /> : <Menu className="h-3 w-3 sm:h-3.5 sm:w-3.5" />}
+                <Button ref={menuButtonRef} variant="ghost" size="sm" className="w-7 h-7 lg:w-8 lg:h-8 p-0 rounded-lg bg-muted/50 border border-border/50 hover:bg-gold-primary/10 hover:border-gold-primary/30 transition-all duration-300 text-foreground/70" onClick={toggleMenu} aria-label="Menu">
+                  {isMenuOpen ? <X className="h-3.5 w-3.5" /> : <Menu className="h-3.5 w-3.5" />}
                 </Button>
               </div>
             </div>
