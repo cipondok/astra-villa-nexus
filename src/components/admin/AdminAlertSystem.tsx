@@ -1249,6 +1249,35 @@ const AdminAlertSystem = () => {
                 <strong>Created:</strong> {new Date(selectedAlert.created_at).toLocaleString()}
               </div>
               
+              {/* Reference in Chat button */}
+              <div className="flex justify-start pt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-xs gap-1.5"
+                  onClick={() => {
+                    const alertContext = [
+                      `🔧 System Alert Reference:`,
+                      `Title: ${selectedAlert.title}`,
+                      `Type: ${selectedAlert.type}`,
+                      `Priority: ${selectedAlert.priority}`,
+                      selectedAlert.message ? `Message: ${selectedAlert.message}` : '',
+                      selectedAlert.reference_type ? `Reference: ${selectedAlert.reference_type} (${selectedAlert.reference_id?.slice(0, 8)}...)` : '',
+                      selectedAlert.metadata?.error_code ? `Error Code: ${selectedAlert.metadata.error_code}` : '',
+                      selectedAlert.metadata?.stack_trace ? `Stack: ${selectedAlert.metadata.stack_trace.slice(0, 200)}` : '',
+                      ``,
+                      `Please analyze this system issue, identify the root cause, and suggest a fix.`
+                    ].filter(Boolean).join('\n');
+
+                    window.dispatchEvent(new CustomEvent('open-chat-with-message', { detail: { message: alertContext } }));
+                    setIsDialogOpen(false);
+                  }}
+                >
+                  <MessageSquare className="h-3.5 w-3.5" />
+                  Reference in Chat
+                </Button>
+              </div>
+
               {/* Action buttons */}
               <div className="flex flex-col sm:flex-row justify-end gap-2 pt-4">
                 {/* Verification action buttons */}
