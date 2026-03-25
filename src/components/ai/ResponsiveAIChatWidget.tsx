@@ -462,6 +462,25 @@ const ResponsiveAIChatWidget = ({
     return () => clearInterval(intervalId);
   }, [autoCollapseEnabled, autoCollapseDuration, isOpen, viewMode, isMinimized, lastActivityTime, isAutoCollapsePaused, toast, showCollapseWarning, playNotification, haptic, hasCustomSound, playCustomSound]);
 
+  // Listen for global "open chat with prefilled message" events
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.message) {
+        setIsOpen(true);
+        setIsMinimized(false);
+        setViewMode('full');
+        localStorage.setItem('chatbot-view-mode', 'full');
+        // Small delay to let chat open, then send the message
+        setTimeout(() => {
+          handleSendMessage(detail.message);
+        }, 300);
+      }
+    };
+    window.addEventListener('open-chat-with-message', handler);
+    return () => window.removeEventListener('open-chat-with-message', handler);
+  }, [messages, isLoading, conversationId, user]);
+
   // Auto-scroll to bottom when messages change
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
