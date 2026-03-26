@@ -86,6 +86,7 @@ const FeatureControlPanel = lazy(() => import('@/pages/admin/FeatureControlPanel
 const PlatformIntelligenceDashboard = lazy(() => import('@/pages/admin/PlatformIntelligenceDashboard'));
 const FounderCommandCenter = lazy(() => import('@/pages/admin/FounderCommandCenter'));
 const StrategicIntelligenceDashboard = lazy(() => import('@/pages/admin/StrategicIntelligenceDashboard'));
+const GlobalGrowthEngineDashboard = lazy(() => import('@/pages/admin/GlobalGrowthEngineDashboard'));
 const AdminAnalytics = lazy(() => import('@/pages/AdminAnalytics'));
 const ProvinceProperties = lazy(() => import('@/pages/ProvinceProperties'));
 const LocationAnalyticsDashboard = lazy(() => import('@/pages/LocationAnalyticsDashboard'));
@@ -483,6 +484,7 @@ const AppContent = () => {
                   <Route path="/admin/platform-intelligence" element={<PlatformIntelligenceDashboard />} />
                   <Route path="/admin/founder-command" element={<FounderCommandCenter />} />
                   <Route path="/admin/strategic-intelligence" element={<StrategicIntelligenceDashboard />} />
+                  <Route path="/admin/global-growth" element={<GlobalGrowthEngineDashboard />} />
                 </Route>
                 <Route path="/agent-dashboard" element={<AgentDashboard />} />
                 <Route path="/agent-crm" element={<ProtectedRoute />}>
