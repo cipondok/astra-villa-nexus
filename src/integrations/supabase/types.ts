@@ -7716,6 +7716,30 @@ export type Database = {
         }
         Relationships: []
       }
+      astra_platform_metrics: {
+        Row: {
+          id: string
+          metric_key: string
+          metric_status: string
+          metric_value: number
+          recorded_at: string
+        }
+        Insert: {
+          id?: string
+          metric_key: string
+          metric_status?: string
+          metric_value?: number
+          recorded_at?: string
+        }
+        Update: {
+          id?: string
+          metric_key?: string
+          metric_status?: string
+          metric_value?: number
+          recorded_at?: string
+        }
+        Relationships: []
+      }
       astra_referrals: {
         Row: {
           completed_at: string | null
@@ -68466,6 +68490,22 @@ export type Database = {
         Args: { p_property_id: string }
         Returns: Json
       }
+      get_latest_platform_metrics: {
+        Args: never
+        Returns: {
+          id: string
+          metric_key: string
+          metric_status: string
+          metric_value: number
+          recorded_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "astra_platform_metrics"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       get_lead_intelligence_summary: { Args: never; Returns: Json }
       get_learning_stats: { Args: never; Returns: Json }
       get_listing_optimization_alerts: { Args: never; Returns: Json }
@@ -68534,6 +68574,22 @@ export type Database = {
           updated_at: string
           vendor_id: string
         }[]
+      }
+      get_platform_metric_trends: {
+        Args: { p_limit?: number; p_metric_key: string }
+        Returns: {
+          id: string
+          metric_key: string
+          metric_status: string
+          metric_value: number
+          recorded_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "astra_platform_metrics"
+          isOneToOne: false
+          isSetofReturn: true
+        }
       }
       get_platform_stats: {
         Args: never

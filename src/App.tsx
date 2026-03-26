@@ -81,6 +81,7 @@ const PropertyDetail = lazy(() => import('@/pages/PropertyDetail'));
 const Dijual = lazy(() => import('@/pages/Dijual'));
 const Disewa = lazy(() => import('@/pages/Disewa'));
 const AdminDashboard = lazy(() => import('@/pages/AdminDashboard'));
+const SystemHealthDashboard = lazy(() => import('@/pages/admin/SystemHealthDashboard'));
 const AdminAnalytics = lazy(() => import('@/pages/AdminAnalytics'));
 const ProvinceProperties = lazy(() => import('@/pages/ProvinceProperties'));
 const LocationAnalyticsDashboard = lazy(() => import('@/pages/LocationAnalyticsDashboard'));
@@ -473,6 +474,7 @@ const AppContent = () => {
                 <Route element={<AdminOnlyRoute />}>
                   <Route path="/admin/ai-performance" element={<AIPerformanceDashboard />} />
                   <Route path="/admin/listing-review" element={<AdminListingReview />} />
+                  <Route path="/admin/system-health" element={<SystemHealthDashboard />} />
                 </Route>
                 <Route path="/agent-dashboard" element={<AgentDashboard />} />
                 <Route path="/agent-crm" element={<ProtectedRoute />}>
