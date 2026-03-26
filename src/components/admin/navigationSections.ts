@@ -144,7 +144,6 @@ export interface NavigationSection {
 }
 
 export const categories = [
-  "overview",
   "execution-command",
   "marketplace-growth",
   "market-intelligence",
@@ -515,9 +514,15 @@ export const navigationSections = {
   overview: [
     { 
       key: "overview", 
-      label: "Dashboard Overview", 
+      label: "Execution Command Center", 
       icon: Home,
-      description: "Main dashboard overview and quick stats"
+      description: "Main execution command dashboard — KPIs, actions, and growth tracking"
+    },
+    {
+      key: "system-overview",
+      label: "System Overview",
+      icon: LayoutDashboard,
+      description: "Legacy system overview and platform health stats"
     },
     {
       key: "revenue-flywheel-optimizer",
@@ -3959,7 +3964,7 @@ export const navigationSections = {
 export const sectionCategories = navigationSections;
 
 export const sectionTitles = {
-  overview: "Dashboard",
+  overview: "System Tools",
   "execution-command": "Execution Command",
   "marketplace-growth": "Marketplace Growth",
   "market-intelligence": "Market Intelligence",
