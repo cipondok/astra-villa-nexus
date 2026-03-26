@@ -514,9 +514,15 @@ export const navigationSections = {
   overview: [
     { 
       key: "overview", 
-      label: "Dashboard Overview", 
+      label: "Execution Command Center", 
       icon: Home,
-      description: "Main dashboard overview and quick stats"
+      description: "Main execution command dashboard — KPIs, actions, and growth tracking"
+    },
+    {
+      key: "system-overview",
+      label: "System Overview",
+      icon: LayoutDashboard,
+      description: "Legacy system overview and platform health stats"
     },
     {
       key: "revenue-flywheel-optimizer",
