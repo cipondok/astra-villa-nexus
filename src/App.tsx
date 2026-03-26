@@ -117,7 +117,6 @@ const DemandSentimentAnalyzer = lazy(() => import('@/pages/DemandSentimentAnalyz
 const CapitalAllocationOptimizer = lazy(() => import('@/pages/CapitalAllocationOptimizer'));
 const DealSyndicationHub = lazy(() => import('@/pages/DealSyndicationHub'));
 const GrowthIntelligenceBrain = lazy(() => import('@/pages/GrowthIntelligenceBrain'));
-const GlobalExpansionSimulator = lazy(() => import('@/pages/GlobalExpansionSimulator'));
 const PropertyTokenizationHub = lazy(() => import('@/pages/PropertyTokenizationHub'));
 const MarketCyclePredictionEngine = lazy(() => import('@/pages/MarketCyclePredictionEngine'));
 const CrossBorderInvestorGateway = lazy(() => import('@/pages/CrossBorderInvestorGateway'));
@@ -128,20 +127,16 @@ const UrbanGrowthSimulator = lazy(() => import('@/pages/UrbanGrowthSimulator'));
 const AutonomousClosingSystem = lazy(() => import('@/pages/AutonomousClosingSystem'));
 const RealEstateMacroRadar = lazy(() => import('@/pages/RealEstateMacroRadar'));
 const InvestorBehaviorPrediction = lazy(() => import('@/pages/InvestorBehaviorPrediction'));
-const IPORoadshowPage = lazy(() => import('@/pages/IPORoadshowPage'));
 const MarketplaceOperationsBrain = lazy(() => import('@/pages/MarketplaceOperationsBrain'));
 const SelfLearningValuationCore = lazy(() => import('@/pages/SelfLearningValuationCore'));
 const RealEstateIntelligenceAPIHub = lazy(() => import('@/pages/RealEstateIntelligenceAPIHub'));
 const AIWealthAdvisor = lazy(() => import('@/pages/AIWealthAdvisor'));
 const AutonomousGlobalPropertyExchange = lazy(() => import('@/pages/AutonomousGlobalPropertyExchange'));
 const RealEstateIntelligenceOS = lazy(() => import('@/pages/RealEstateIntelligenceOS'));
-const WealthUniverseEngine = lazy(() => import('@/pages/WealthUniverseEngine'));
 const GlobalInvestorNetworkAI = lazy(() => import('@/pages/GlobalInvestorNetworkAI'));
-const SelfOptimizingEcosystem = lazy(() => import('@/pages/SelfOptimizingEcosystem'));
 const InvestorAcquisitionFunnel = lazy(() => import('@/pages/InvestorAcquisitionFunnel'));
 const ListingSEOTrafficEngine = lazy(() => import('@/pages/ListingSEOTrafficEngine'));
 const PropertyContentEngine = lazy(() => import('@/pages/PropertyContentEngine'));
-const MarketplaceEvolution = lazy(() => import('@/pages/MarketplaceEvolution'));
 const LiquidityIntelligenceEngine = lazy(() => import('@/pages/LiquidityIntelligenceEngine'));
 const BookingPage = lazy(() => import('@/pages/BookingPage'));
 const BookingSuccessPage = lazy(() => import('@/pages/BookingSuccessPage'));
@@ -308,135 +303,25 @@ const MacroPredictionTerminal = lazy(() => import('@/pages/MacroPredictionTermin
 const GlobalPredictiveAnalyticsPage = lazy(() => import('@/pages/GlobalPredictiveAnalyticsPage'));
 const InvestorSocialNetwork = lazy(() => import('@/pages/InvestorSocialNetwork'));
 const VirtualPropertyExplorer = lazy(() => import('@/pages/VirtualPropertyExplorer'));
-const ProductArchitecturePage = lazy(() => import('@/pages/ProductArchitecturePage'));
-const SuperappBlueprintPage = lazy(() => import('@/pages/SuperappBlueprintPage'));
-const DevelopmentRoadmapPage = lazy(() => import('@/pages/DevelopmentRoadmapPage'));
-const SchemaArchitecturePage = lazy(() => import('@/pages/SchemaArchitecturePage'));
-const ApiArchitecturePage = lazy(() => import('@/pages/ApiArchitecturePage'));
-const IndexingStrategyPage = lazy(() => import('@/pages/IndexingStrategyPage'));
-const RealtimeArchitecturePage = lazy(() => import('@/pages/RealtimeArchitecturePage'));
-const CronSchedulePage = lazy(() => import('@/pages/CronSchedulePage'));
-const SecurityHardeningPage = lazy(() => import('@/pages/SecurityHardeningPage'));
 const SecurityActivityPage = lazy(() => import('@/pages/SecurityActivityPage'));
-const CloudInfrastructurePage = lazy(() => import('@/pages/CloudInfrastructurePage'));
-const DisasterRecoveryPage = lazy(() => import('@/pages/DisasterRecoveryPage'));
-const BehaviorAnalyticsPage = lazy(() => import('@/pages/BehaviorAnalyticsPage'));
 const UserActivationDashboard = lazy(() => import('@/pages/UserActivationDashboard'));
-const AILearningFrameworkPage = lazy(() => import('@/pages/AILearningFrameworkPage'));
-const ABTestingFrameworkPage = lazy(() => import('@/pages/ABTestingFrameworkPage'));
-const GoToMarketStrategyPage = lazy(() => import('@/pages/GoToMarketStrategyPage'));
-const First1000UsersPage = lazy(() => import('@/pages/First1000UsersPage'));
-const DealConversionPipelinePage = lazy(() => import('@/pages/DealConversionPipelinePage'));
-const SalesScriptsPage = lazy(() => import('@/pages/SalesScriptsPage'));
-const AgentOnboardingScriptsPage = lazy(() => import('@/pages/AgentOnboardingScriptsPage'));
-const LiveDemoPresentationPage = lazy(() => import('@/pages/LiveDemoPresentationPage'));
-const DailyLeadGenPlanPage = lazy(() => import('@/pages/DailyLeadGenPlanPage'));
-const SocialMediaStrategyPage = lazy(() => import('@/pages/SocialMediaStrategyPage'));
-const FundraisingChecklistPage = lazy(() => import('@/pages/FundraisingChecklistPage'));
-const DailyGrowthMonitorPage = lazy(() => import('@/pages/DailyGrowthMonitorPage'));
-const NegotiationPsychologyPage = lazy(() => import('@/pages/NegotiationPsychologyPage'));
-const HNWInvestorStrategyPage = lazy(() => import('@/pages/HNWInvestorStrategyPage'));
-const BrandTrustStrategyPage = lazy(() => import('@/pages/BrandTrustStrategyPage'));
-const RevenueOptimizationPage = lazy(() => import('@/pages/RevenueOptimizationPage'));
-const GeographicExpansionPage = lazy(() => import('@/pages/GeographicExpansionPage'));
-const UnicornPositioningPage = lazy(() => import('@/pages/UnicornPositioningPage'));
-const SevenDaySprintPage = lazy(() => import('@/pages/SevenDaySprintPage'));
-const LocalDominancePage = lazy(() => import('@/pages/LocalDominancePage'));
-const RevenueActivationPage = lazy(() => import('@/pages/RevenueActivationPage'));
-const FirstDealClosurePage = lazy(() => import('@/pages/FirstDealClosurePage'));
-const InvestorPresentationScript = lazy(() => import('@/pages/InvestorPresentationScript'));
-const AgentIncentivesPage = lazy(() => import('@/pages/AgentIncentivesPage'));
-const LaunchDayPage = lazy(() => import('@/pages/LaunchDayPage'));
 const DealPipelinePage = lazy(() => import('@/pages/DealPipelinePage'));
-const ContentStrategyPage = lazy(() => import('@/pages/ContentStrategyPage'));
 const DealCRMPage = lazy(() => import('@/pages/DealCRMPage'));
-const FollowUpTemplatesPage = lazy(() => import('@/pages/FollowUpTemplatesPage'));
-const AgentRetentionPage = lazy(() => import('@/pages/AgentRetentionPage'));
-const SuccessStoryPage = lazy(() => import('@/pages/SuccessStoryPage'));
 const ROICalculatorPage = lazy(() => import('@/pages/ROICalculatorPage'));
-const AgentEffectivenessPage = lazy(() => import('@/pages/AgentEffectivenessPage'));
-const ViralGrowthPage = lazy(() => import('@/pages/ViralGrowthPage'));
 const InvestorClubPage = lazy(() => import('@/pages/InvestorClubPage'));
-const DataMoatPage = lazy(() => import('@/pages/DataMoatPage'));
-const RevenueScalingPage = lazy(() => import('@/pages/RevenueScalingPage'));
-const CityExpansionPage = lazy(() => import('@/pages/CityExpansionPage'));
-const EcosystemPartnershipsPage = lazy(() => import('@/pages/EcosystemPartnershipsPage'));
 const MarketingPerformancePage = lazy(() => import('@/pages/MarketingPerformancePage'));
 const CompanyDashboardPage = lazy(() => import('@/pages/CompanyDashboardPage'));
 const ExecutiveKPIsPage = lazy(() => import('@/pages/ExecutiveKPIsPage'));
-const ScalingRoadmapPage = lazy(() => import('@/pages/ScalingRoadmapPage'));
-const ExecutionRoadmapPage = lazy(() => import('@/pages/ExecutionRoadmapPage'));
-const FeaturePrioritizationPage = lazy(() => import('@/pages/FeaturePrioritizationPage'));
-const LaunchReadinessPage = lazy(() => import('@/pages/LaunchReadinessPage'));
-const First30DaysPage = lazy(() => import('@/pages/First30DaysPage'));
-const First10DealsPage = lazy(() => import('@/pages/First10DealsPage'));
-const MarketDominancePage = lazy(() => import('@/pages/MarketDominancePage'));
 const KPICommandCenterPage = lazy(() => import('@/pages/KPICommandCenterPage'));
-const SeriesAReadinessPage = lazy(() => import('@/pages/SeriesAReadinessPage'));
-const CityExpansionMasterPlanPage = lazy(() => import('@/pages/CityExpansionMasterPlanPage'));
-const NetworkEffectAccelerationPage = lazy(() => import('@/pages/NetworkEffectAccelerationPage'));
-const FounderExitWealthPage = lazy(() => import('@/pages/FounderExitWealthPage'));
-const NationalDominationBlueprintPage = lazy(() => import('@/pages/NationalDominationBlueprintPage'));
 const GlobalInvestorTerminalPage = lazy(() => import('@/pages/GlobalInvestorTerminalPage'));
-const FounderPersonalOSPage = lazy(() => import('@/pages/FounderPersonalOSPage'));
-const GlobalProptechEmpirePage = lazy(() => import('@/pages/GlobalProptechEmpirePage'));
-const DailySalesWarCommandPage = lazy(() => import('@/pages/DailySalesWarCommandPage'));
-const First500InvestorsPage = lazy(() => import('@/pages/First500InvestorsPage'));
-const AutomationChecklistPage = lazy(() => import('@/pages/AutomationChecklistPage'));
-const First30DaysCalendarPage = lazy(() => import('@/pages/First30DaysCalendarPage'));
-const NegotiationScriptsPage = lazy(() => import('@/pages/NegotiationScriptsPage'));
-const WeeklyRevenueTrackingPage = lazy(() => import('@/pages/WeeklyRevenueTrackingPage'));
-const DealSprintExecutionPage = lazy(() => import('@/pages/DealSprintExecutionPage'));
-const InvestorFollowUpPage = lazy(() => import('@/pages/InvestorFollowUpPage'));
-const TrustSignalSystemPage = lazy(() => import('@/pages/TrustSignalSystemPage'));
-const SixMonthSurvivalPlanPage = lazy(() => import('@/pages/SixMonthSurvivalPlanPage'));
 const AgentProductivityIntelligencePage = lazy(() => import('@/pages/AgentProductivityIntelligencePage'));
-const RevenueLeakDetectionPage = lazy(() => import('@/pages/RevenueLeakDetectionPage'));
-const FirstProfitableMonthPage = lazy(() => import('@/pages/FirstProfitableMonthPage'));
-const First100KRevenuePage = lazy(() => import('@/pages/First100KRevenuePage'));
-const DailyDealConversionPage = lazy(() => import('@/pages/DailyDealConversionPage'));
-const FounderWeeklyExecutionPage = lazy(() => import('@/pages/FounderWeeklyExecutionPage'));
 const ListingDemandForecastPage = lazy(() => import('@/pages/ListingDemandForecastPage'));
-const FounderFastDecisionPage = lazy(() => import('@/pages/FounderFastDecisionPage'));
-const RevenueFlywheelStrategyPage = lazy(() => import('@/pages/RevenueFlywheelStrategyPage'));
 const InvestorDealFlowAutomationPage = lazy(() => import('@/pages/InvestorDealFlowAutomationPage'));
-const FounderResilienceSystemPage = lazy(() => import('@/pages/FounderResilienceSystemPage'));
-const First10MRevenueScalingPage = lazy(() => import('@/pages/First10MRevenueScalingPage'));
-const FounderSchedulePage = lazy(() => import('@/pages/FounderSchedulePage'));
 const EnergyOptimizationPage = lazy(() => import('@/pages/EnergyOptimizationPage'));
-const DecisionPrioritizationPage = lazy(() => import('@/pages/DecisionPrioritizationPage'));
-const ResilienceFrameworkPage = lazy(() => import('@/pages/ResilienceFrameworkPage'));
-const NegotiationMindsetPage = lazy(() => import('@/pages/NegotiationMindsetPage'));
-const VisionFrameworkPage = lazy(() => import('@/pages/VisionFrameworkPage'));
-const InvestorSentimentDashboardPage = lazy(() => import('@/pages/InvestorSentimentDashboardPage'));
-const HedgeFundDefensePage = lazy(() => import('@/pages/HedgeFundDefensePage'));
-const FounderPowerOSPage = lazy(() => import('@/pages/FounderPowerOSPage'));
-const PlanetaryScaleRoadmapPage = lazy(() => import('@/pages/PlanetaryScaleRoadmapPage'));
-const DataMoatIntelligencePage = lazy(() => import('@/pages/DataMoatIntelligencePage'));
-const FundraisingArchitecturePage = lazy(() => import('@/pages/FundraisingArchitecturePage'));
-const RevenueLayerArchitecturePage = lazy(() => import('@/pages/RevenueLayerArchitecturePage'));
-const VendorMonetizationPyramidPage = lazy(() => import('@/pages/VendorMonetizationPyramidPage'));
-const InstitutionalSaaSBlueprintPage = lazy(() => import('@/pages/InstitutionalSaaSBlueprintPage'));
-const RevenueScalingBlueprintPage = lazy(() => import('@/pages/RevenueScalingBlueprintPage'));
-const MonetizationPricingPage = lazy(() => import('@/pages/MonetizationPricingPage'));
-const SprintExecutionRoadmapPage = lazy(() => import('@/pages/SprintExecutionRoadmapPage'));
-const MarketplaceLaunchPlaybookPage = lazy(() => import('@/pages/MarketplaceLaunchPlaybookPage'));
-const CityLaunchPlaybookPage = lazy(() => import('@/pages/CityLaunchPlaybookPage'));
-const RevenueProjectionModelPage = lazy(() => import('@/pages/RevenueProjectionModelPage'));
-const InvestorKPIFrameworkPage = lazy(() => import('@/pages/InvestorKPIFrameworkPage'));
-const VendorAcquisitionScriptsPage = lazy(() => import('@/pages/VendorAcquisitionScriptsPage'));
-const FeatureImpactMatrixPage = lazy(() => import('@/pages/FeatureImpactMatrixPage'));
-const ProfitMaximizationDashboard = lazy(() => import('@/pages/ProfitMaximizationDashboard'));
-const Founder90DayCalendarPage = lazy(() => import('@/pages/Founder90DayCalendarPage'));
-const First50DealsPlaybookPage = lazy(() => import('@/pages/First50DealsPlaybookPage'));
-const AgentRecruitmentSystemPage = lazy(() => import('@/pages/AgentRecruitmentSystemPage'));
 const LiquidityScoringPage = lazy(() => import('@/pages/LiquidityScoringPage'));
 const VendorJobRoutingPage = lazy(() => import('@/pages/VendorJobRoutingPage'));
-const First10InvestorClosingPage = lazy(() => import('@/pages/First10InvestorClosingPage'));
-const PricingPsychologyPage = lazy(() => import('@/pages/PricingPsychologyPage'));
 const DealRiskDetectionPage = lazy(() => import('@/pages/DealRiskDetectionPage'));
 const AgentLeaderboardPage = lazy(() => import('@/pages/AgentLeaderboardPage'));
-const RevenueMilestonePage = lazy(() => import('@/pages/RevenueMilestonePage'));
 // Minimal lazy loading fallback - just shows content area skeleton
 const PageLoader = () => (
   <div className="min-h-[50vh] flex items-center justify-center">
@@ -521,7 +406,6 @@ const AppContent = () => {
                 <Route path="/capital-allocation" element={<CapitalAllocationOptimizer />} />
                 <Route path="/deal-syndication" element={<DealSyndicationHub />} />
                 <Route path="/growth-intelligence" element={<GrowthIntelligenceBrain />} />
-                <Route path="/global-expansion" element={<GlobalExpansionSimulator />} />
                 <Route path="/property-tokenization" element={<PropertyTokenizationHub />} />
                 <Route path="/market-cycle" element={<MarketCyclePredictionEngine />} />
                 <Route path="/cross-border-gateway" element={<CrossBorderInvestorGateway />} />
@@ -538,13 +422,10 @@ const AppContent = () => {
                 <Route path="/wealth-advisor" element={<AIWealthAdvisor />} />
                 <Route path="/global-exchange" element={<AutonomousGlobalPropertyExchange />} />
                 <Route path="/intelligence-os" element={<RealEstateIntelligenceOS />} />
-                <Route path="/wealth-universe" element={<WealthUniverseEngine />} />
                 <Route path="/investor-network" element={<GlobalInvestorNetworkAI />} />
-                <Route path="/self-optimizing-ecosystem" element={<SelfOptimizingEcosystem />} />
                 <Route path="/investor-funnel" element={<InvestorAcquisitionFunnel />} />
                 <Route path="/seo-traffic-engine" element={<ListingSEOTrafficEngine />} />
                 <Route path="/content-engine" element={<PropertyContentEngine />} />
-                <Route path="/marketplace-evolution" element={<MarketplaceEvolution />} />
                 <Route path="/liquidity-intelligence" element={<LiquidityIntelligenceEngine />} />
                 <Route path="/invest/:citySlug" element={<CityInvestmentPage />} />
                 <Route path="/search" element={<Search />} />
@@ -641,7 +522,6 @@ const AppContent = () => {
                   <Route index element={<InvestorIntelligenceTerminal />} />
                 </Route>
                 <Route path="/ipo-roadshow" element={<ProtectedRoute />}>
-                  <Route index element={<IPORoadshowPage />} />
                 </Route>
                 <Route path="/portfolio-roi-tracker" element={<ProtectedRoute />}>
                   <Route index element={<PortfolioROITrackerPage />} />
@@ -858,137 +738,27 @@ const AppContent = () => {
                 <Route path="/investor-social" element={<InvestorSocialNetwork />} />
                 <Route path="/global-predictive-analytics" element={<GlobalPredictiveAnalyticsPage />} />
                 <Route path="/virtual-explorer" element={<VirtualPropertyExplorer />} />
-                <Route path="/product-architecture" element={<ProductArchitecturePage />} />
-                <Route path="/superapp-blueprint" element={<SuperappBlueprintPage />} />
-                <Route path="/development-roadmap" element={<DevelopmentRoadmapPage />} />
-                <Route path="/schema-architecture" element={<SchemaArchitecturePage />} />
-                <Route path="/api-architecture" element={<ApiArchitecturePage />} />
-                <Route path="/indexing-strategy" element={<IndexingStrategyPage />} />
-                <Route path="/realtime-architecture" element={<RealtimeArchitecturePage />} />
-                <Route path="/cron-schedule" element={<CronSchedulePage />} />
-                <Route path="/security-hardening" element={<SecurityHardeningPage />} />
                 <Route path="/security-activity" element={<ProtectedRoute />}>
                   <Route index element={<SecurityActivityPage />} />
                 </Route>
-                <Route path="/cloud-infrastructure" element={<CloudInfrastructurePage />} />
-                <Route path="/disaster-recovery" element={<DisasterRecoveryPage />} />
-                <Route path="/behavior-analytics" element={<BehaviorAnalyticsPage />} />
                 <Route path="/user-activation" element={<UserActivationDashboard />} />
-                <Route path="/ai-learning-framework" element={<AILearningFrameworkPage />} />
-                <Route path="/ab-testing" element={<ABTestingFrameworkPage />} />
-                <Route path="/go-to-market" element={<GoToMarketStrategyPage />} />
-                <Route path="/first-1000-users" element={<First1000UsersPage />} />
-                <Route path="/deal-conversion-pipeline" element={<DealConversionPipelinePage />} />
-                <Route path="/sales-scripts" element={<SalesScriptsPage />} />
-                <Route path="/agent-onboarding-scripts" element={<AgentOnboardingScriptsPage />} />
-                <Route path="/live-demo" element={<LiveDemoPresentationPage />} />
-                <Route path="/daily-lead-gen" element={<DailyLeadGenPlanPage />} />
-                <Route path="/social-media-strategy" element={<SocialMediaStrategyPage />} />
-                <Route path="/fundraising-checklist" element={<FundraisingChecklistPage />} />
-                <Route path="/daily-growth-monitor" element={<DailyGrowthMonitorPage />} />
                 <Route path="/marketing-performance" element={<MarketingPerformancePage />} />
                 <Route path="/company-dashboard" element={<CompanyDashboardPage />} />
                 <Route path="/executive-kpis" element={<ExecutiveKPIsPage />} />
-                <Route path="/scaling-roadmap" element={<ScalingRoadmapPage />} />
-                <Route path="/execution-roadmap" element={<ExecutionRoadmapPage />} />
-                <Route path="/feature-prioritization" element={<FeaturePrioritizationPage />} />
-                <Route path="/launch-readiness" element={<LaunchReadinessPage />} />
-                <Route path="/first-30-days" element={<First30DaysPage />} />
-                <Route path="/first-10-deals" element={<First10DealsPage />} />
-                <Route path="/market-dominance" element={<MarketDominancePage />} />
                 <Route path="/kpi-command-center" element={<KPICommandCenterPage />} />
-                <Route path="/series-a-readiness" element={<SeriesAReadinessPage />} />
-                <Route path="/city-expansion-master-plan" element={<CityExpansionMasterPlanPage />} />
-                <Route path="/network-effect-acceleration" element={<NetworkEffectAccelerationPage />} />
-                <Route path="/founder-exit-wealth-strategy" element={<FounderExitWealthPage />} />
-                <Route path="/national-domination-blueprint" element={<NationalDominationBlueprintPage />} />
                 <Route path="/global-investor-terminal" element={<GlobalInvestorTerminalPage />} />
-                <Route path="/founder-personal-os" element={<FounderPersonalOSPage />} />
-                <Route path="/global-proptech-empire" element={<GlobalProptechEmpirePage />} />
-                <Route path="/daily-sales-command" element={<DailySalesWarCommandPage />} />
-                <Route path="/first-500-investors" element={<First500InvestorsPage />} />
-                <Route path="/automation-checklist" element={<AutomationChecklistPage />} />
-                <Route path="/first-30-days" element={<First30DaysCalendarPage />} />
-                <Route path="/negotiation-scripts" element={<NegotiationScriptsPage />} />
-                <Route path="/weekly-revenue" element={<WeeklyRevenueTrackingPage />} />
-                <Route path="/deal-sprint-90" element={<DealSprintExecutionPage />} />
-                <Route path="/investor-follow-up" element={<InvestorFollowUpPage />} />
-                <Route path="/trust-signals" element={<TrustSignalSystemPage />} />
-                <Route path="/6-month-survival" element={<SixMonthSurvivalPlanPage />} />
                 <Route path="/agent-productivity" element={<AgentProductivityIntelligencePage />} />
-                <Route path="/revenue-leak-detection" element={<RevenueLeakDetectionPage />} />
-                <Route path="/first-profitable-month" element={<FirstProfitableMonthPage />} />
-                <Route path="/first-100k-revenue" element={<First100KRevenuePage />} />
-                <Route path="/daily-deal-conversion" element={<DailyDealConversionPage />} />
-                <Route path="/founder-weekly-execution" element={<FounderWeeklyExecutionPage />} />
                 <Route path="/listing-demand-forecast" element={<ListingDemandForecastPage />} />
-                <Route path="/founder-fast-decision" element={<FounderFastDecisionPage />} />
-                <Route path="/revenue-flywheel" element={<RevenueFlywheelStrategyPage />} />
                 <Route path="/investor-deal-flow-automation" element={<InvestorDealFlowAutomationPage />} />
-                <Route path="/founder-resilience" element={<FounderResilienceSystemPage />} />
-                <Route path="/first-10m-revenue" element={<First10MRevenueScalingPage />} />
-                <Route path="/founder-schedule" element={<FounderSchedulePage />} />
                 <Route path="/energy-optimization" element={<EnergyOptimizationPage />} />
-                <Route path="/decision-prioritization" element={<DecisionPrioritizationPage />} />
-                <Route path="/founder-resilience" element={<ResilienceFrameworkPage />} />
-                <Route path="/negotiation-mindset" element={<NegotiationMindsetPage />} />
-                <Route path="/vision-framework" element={<VisionFrameworkPage />} />
-                <Route path="/negotiation-psychology" element={<NegotiationPsychologyPage />} />
-                <Route path="/hnw-investor-strategy" element={<HNWInvestorStrategyPage />} />
-                <Route path="/brand-trust-strategy" element={<BrandTrustStrategyPage />} />
-                <Route path="/revenue-optimization" element={<RevenueOptimizationPage />} />
-                <Route path="/profit-maximization" element={<ProfitMaximizationDashboard />} />
-                <Route path="/geographic-expansion" element={<GeographicExpansionPage />} />
-                <Route path="/unicorn-positioning" element={<UnicornPositioningPage />} />
-                <Route path="/7-day-sprint" element={<SevenDaySprintPage />} />
-                <Route path="/local-dominance" element={<LocalDominancePage />} />
-                <Route path="/revenue-activation" element={<RevenueActivationPage />} />
-                <Route path="/first-deal-closure" element={<FirstDealClosurePage />} />
-                <Route path="/investor-script" element={<InvestorPresentationScript />} />
-                <Route path="/agent-incentives" element={<AgentIncentivesPage />} />
-                <Route path="/launch-day" element={<LaunchDayPage />} />
                 <Route path="/deal-pipeline" element={<DealPipelinePage />} />
-                <Route path="/content-strategy" element={<ContentStrategyPage />} />
                 <Route path="/deal-crm" element={<DealCRMPage />} />
-                <Route path="/follow-up-templates" element={<FollowUpTemplatesPage />} />
-                <Route path="/agent-retention" element={<AgentRetentionPage />} />
-                <Route path="/success-story" element={<SuccessStoryPage />} />
                 <Route path="/roi-calculator" element={<ROICalculatorPage />} />
-                <Route path="/agent-effectiveness" element={<AgentEffectivenessPage />} />
-                <Route path="/viral-growth" element={<ViralGrowthPage />} />
                 <Route path="/investor-club" element={<InvestorClubPage />} />
-                <Route path="/data-moat" element={<DataMoatPage />} />
-                <Route path="/revenue-scaling" element={<RevenueScalingPage />} />
-                <Route path="/city-expansion" element={<CityExpansionPage />} />
-                <Route path="/ecosystem-partnerships" element={<EcosystemPartnershipsPage />} />
-                <Route path="/investor-sentiment-dashboard" element={<InvestorSentimentDashboardPage />} />
-                <Route path="/hedge-fund-defense" element={<HedgeFundDefensePage />} />
-                <Route path="/founder-power-os" element={<FounderPowerOSPage />} />
-                <Route path="/planetary-scale-roadmap" element={<PlanetaryScaleRoadmapPage />} />
-                <Route path="/data-moat-intelligence" element={<DataMoatIntelligencePage />} />
-                <Route path="/fundraising-architecture" element={<FundraisingArchitecturePage />} />
-                <Route path="/revenue-layer-architecture" element={<RevenueLayerArchitecturePage />} />
-                <Route path="/vendor-monetization-pyramid" element={<VendorMonetizationPyramidPage />} />
-                <Route path="/institutional-saas-blueprint" element={<InstitutionalSaaSBlueprintPage />} />
-                <Route path="/revenue-scaling-blueprint" element={<RevenueScalingBlueprintPage />} />
-                <Route path="/monetization-pricing" element={<MonetizationPricingPage />} />
-                <Route path="/sprint-execution-roadmap" element={<SprintExecutionRoadmapPage />} />
-                <Route path="/marketplace-launch-playbook" element={<MarketplaceLaunchPlaybookPage />} />
-                <Route path="/city-launch-playbook" element={<CityLaunchPlaybookPage />} />
-                <Route path="/revenue-projection-model" element={<RevenueProjectionModelPage />} />
-                <Route path="/investor-kpi-framework" element={<InvestorKPIFrameworkPage />} />
-                <Route path="/vendor-acquisition-scripts" element={<VendorAcquisitionScriptsPage />} />
-                <Route path="/feature-impact-matrix" element={<FeatureImpactMatrixPage />} />
-                <Route path="/founder-90-day-calendar" element={<Founder90DayCalendarPage />} />
-                <Route path="/first-50-deals-playbook" element={<First50DealsPlaybookPage />} />
-                <Route path="/agent-recruitment-system" element={<AgentRecruitmentSystemPage />} />
                 <Route path="/liquidity-scoring" element={<LiquidityScoringPage />} />
                 <Route path="/vendor-job-routing" element={<VendorJobRoutingPage />} />
-                <Route path="/first-10-investor-closing" element={<First10InvestorClosingPage />} />
-                <Route path="/pricing-psychology" element={<PricingPsychologyPage />} />
                 <Route path="/deal-risk-detection" element={<DealRiskDetectionPage />} />
                 <Route path="/agent-leaderboard" element={<AgentLeaderboardPage />} />
-                <Route path="/revenue-milestone" element={<RevenueMilestonePage />} />
                 {/* Mobile investor screens */}
                 <Route path="/mobile/feed" element={<MobileHomeFeed />} />
                 <Route path="/mobile/property/:id" element={<MobilePropertyDetail />} />
