@@ -59,7 +59,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
     onSectionChange?.(key);
   }, [onSectionChange]);
 
-  if (!activeCategory || activeSection === 'overview') return null;
+  if (!activeCategory) return null;
 
   const categoryTitle = sectionTitles[activeCategory as keyof typeof sectionTitles] || activeCategory;
   const totalCount = categorySections.length;
