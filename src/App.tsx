@@ -311,7 +311,7 @@ const ROICalculatorPage = lazy(() => import('@/pages/ROICalculatorPage'));
 const InvestorClubPage = lazy(() => import('@/pages/InvestorClubPage'));
 const MarketingPerformancePage = lazy(() => import('@/pages/MarketingPerformancePage'));
 const CompanyDashboardPage = lazy(() => import('@/pages/CompanyDashboardPage'));
-const ExecutiveKPIsPage = lazy(() => import('@/pages/ExecutiveKPIsPage'));
+
 const KPICommandCenterPage = lazy(() => import('@/pages/KPICommandCenterPage'));
 const GlobalInvestorTerminalPage = lazy(() => import('@/pages/GlobalInvestorTerminalPage'));
 const AgentProductivityIntelligencePage = lazy(() => import('@/pages/AgentProductivityIntelligencePage'));
