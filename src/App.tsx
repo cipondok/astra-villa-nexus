@@ -88,6 +88,7 @@ const FounderCommandCenter = lazy(() => import('@/pages/admin/FounderCommandCent
 const StrategicIntelligenceDashboard = lazy(() => import('@/pages/admin/StrategicIntelligenceDashboard'));
 const GlobalGrowthEngineDashboard = lazy(() => import('@/pages/admin/GlobalGrowthEngineDashboard'));
 const CapitalIntelligenceDashboard = lazy(() => import('@/pages/admin/CapitalIntelligenceDashboard'));
+const FounderExecutionDashboard = lazy(() => import('@/pages/admin/FounderExecutionDashboard'));
 const AdminAnalytics = lazy(() => import('@/pages/AdminAnalytics'));
 const ProvinceProperties = lazy(() => import('@/pages/ProvinceProperties'));
 const LocationAnalyticsDashboard = lazy(() => import('@/pages/LocationAnalyticsDashboard'));
