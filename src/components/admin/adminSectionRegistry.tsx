@@ -1297,7 +1297,7 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "revenue-flywheel-optimizer": { label: "Revenue Flywheel Optimizer", category: "Revenue" },
   "data-moat-governance": { label: "Data Moat Governance", category: "Strategy" },
   "overview": { label: "System Overview", category: "System" },
-  "execution-command-center": { label: "Execution Command Center", category: "Command" },
+  
   "diagnostic": { label: "Project Diagnostics", category: "System" },
   "project-progress": { label: "Launch Readiness", category: "System" },
   "launch-readiness": { label: "Launch Readiness", category: "System" },
