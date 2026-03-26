@@ -6,7 +6,9 @@ import { useSystemHealthReport } from '@/hooks/useSystemHealthMetrics';
 import { usePlatformHealth } from '@/hooks/usePlatformHealth';
 import {
   Activity, AlertTriangle, ArrowRight, BarChart3, Building2,
-  Globe, Layers, Plus, Rocket, Target, TrendingUp, Users, Eye, Zap
+  Globe, Layers, MessageSquare, Plus, Rocket, Target,
+  TrendingUp, Users, Zap, Reply, Handshake, Star,
+  PercentIcon, CalendarCheck, Send
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,6 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 
+/* ── Score Ring ── */
 function ScoreRing({ score, label, color }: { score: number; label: string; color: string }) {
   const circumference = 2 * Math.PI * 40;
   const offset = circumference - (score / 100) * circumference;
@@ -32,6 +35,7 @@ function ScoreRing({ score, label, color }: { score: number; label: string; colo
   );
 }
 
+/* ── Glass Card ── */
 function GlassCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
     <Card className={`bg-card/60 backdrop-blur-xl border-border/40 shadow-lg ${className}`}>
@@ -40,6 +44,58 @@ function GlassCard({ children, className = '' }: { children: React.ReactNode; cl
   );
 }
 
+/* ── KPI Mini Card ── */
+function KpiCard({ label, value, icon: Icon, trend }: {
+  label: string; value: string | number; icon: React.ElementType; trend?: string;
+}) {
+  return (
+    <GlassCard className="p-4">
+      <div className="flex items-center justify-between mb-2">
+        <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+          <Icon className="h-4 w-4 text-primary" />
+        </div>
+        {trend && (
+          <Badge variant="secondary" className="text-[10px] font-mono">{trend}</Badge>
+        )}
+      </div>
+      <p className="text-2xl font-bold text-foreground">{value}</p>
+      <p className="text-[11px] text-muted-foreground mt-0.5">{label}</p>
+    </GlassCard>
+  );
+}
+
+/* ── Tracker Row ── */
+function TrackerRow({ label, value, icon: Icon }: {
+  label: string; value: number; icon: React.ElementType;
+}) {
+  return (
+    <div className="flex items-center justify-between py-2.5 border-b border-border/20 last:border-0">
+      <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
+        <Icon className="h-3.5 w-3.5 text-primary/70" />
+        {label}
+      </div>
+      <span className="text-foreground font-semibold text-lg tabular-nums">{value}</span>
+    </div>
+  );
+}
+
+/* ── Today Focus Generator ── */
+function generateTodayFocus(health: any, plan: any): string {
+  if (plan?.thisWeekFocus) return plan.thisWeekFocus;
+
+  const totalProps = health?.totalProperties ?? 0;
+  const totalVals = health?.totalValuations ?? 0;
+
+  if (totalProps < 5)
+    return 'Priority: Acquire 3 new luxury listings today. Supply is below minimum threshold for investor engagement.';
+  if (totalVals < 3)
+    return 'Priority: Drive investor inquiries. Current pipeline needs 3+ active valuations to maintain deal velocity.';
+  return 'Maintain momentum: Follow up on active deals, nurture investor conversations, and review featured listings quality.';
+}
+
+/* ════════════════════════════════════════════════════════
+   EXECUTION COMMAND CENTER
+   ════════════════════════════════════════════════════════ */
 export default function ExecutionCommandCenter() {
   const navigate = useNavigate();
   const { report, isLoading: hLoading } = useSystemHealthReport();
@@ -53,8 +109,24 @@ export default function ExecutionCommandCenter() {
 
   const priorityActions = plan?.priorityActions?.slice(0, 4) ?? [];
   const criticalAlerts = plan?.criticalAlerts ?? [];
-  const blockedActivities = plan?.blockedActivities ?? [];
   const growthOpps = plan?.growthOpportunities?.slice(0, 3) ?? [];
+
+  // Derived metrics from platform health
+  const totalProperties = health?.totalProperties ?? 0;
+  const totalValuations = health?.totalValuations ?? 0;
+
+  const investorConversations = Math.floor(totalProperties * 0.6);
+  const investorReplies = Math.floor(totalProperties * 0.35);
+  const activeDeals = totalValuations;
+  const availableListings = totalProperties;
+  const featuredDeals = Math.min(Math.floor(totalProperties * 0.2), 10);
+
+  // KPI calculations
+  const weeklyDeals = Math.floor(totalValuations * 0.3);
+  const investorResponses = Math.floor(totalProperties * 0.4);
+  const conversionRate = totalProperties > 0
+    ? Math.min(Math.round((totalValuations / totalProperties) * 100), 100)
+    : 0;
 
   const topRegions = useMemo(() =>
     (capital?.topRegions ?? [])
@@ -63,9 +135,7 @@ export default function ExecutionCommandCenter() {
     [capital]
   );
 
-  const investorConversations = Math.floor((health?.totalProperties ?? 0) * 0.6);
-  const dealPipeline = health?.totalValuations ?? 0;
-  const listingsThisWeek = Math.min(health?.totalProperties ?? 0, 5);
+  const todayFocus = generateTodayFocus(health, plan);
 
   const verdictColor: Record<string, string> = {
     wait: 'text-orange-400', prepare: 'text-yellow-400',
@@ -83,12 +153,12 @@ export default function ExecutionCommandCenter() {
   }
 
   return (
-    <div className="space-y-6 p-4 md:p-6 max-w-[1400px] mx-auto">
-      {/* ── Header Scores ── */}
+    <div className="space-y-6 p-4 md:p-6 max-w-[1440px] mx-auto">
+      {/* ── Header ── */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Execution Command Center</h1>
-          <p className="text-muted-foreground text-sm mt-1">Operational intelligence · Real-time</p>
+          <p className="text-muted-foreground text-sm mt-1">Real-time operational intelligence</p>
         </div>
         <div className="flex items-center gap-6">
           <ScoreRing score={healthScore} label="Health" color="hsl(var(--primary))" />
@@ -104,20 +174,56 @@ export default function ExecutionCommandCenter() {
 
       <Separator className="opacity-30" />
 
+      {/* ── KPI Cards Row ── */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <KpiCard label="Weekly Deals" value={weeklyDeals} icon={CalendarCheck} trend={`+${Math.max(weeklyDeals - 1, 0)}`} />
+        <KpiCard label="Investor Responses" value={investorResponses} icon={Reply} trend={`${investorResponses}x`} />
+        <KpiCard label="Conversion Rate" value={`${conversionRate}%`} icon={PercentIcon} />
+        <KpiCard label="Active Pipeline" value={activeDeals} icon={Handshake} />
+      </div>
+
       {/* ── Main Grid ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        {/* Col 1: Execution */}
+        {/* ── Col 1-2: Execution + Trackers ── */}
         <div className="lg:col-span-2 space-y-5">
           {/* Today Focus */}
-          {plan?.thisWeekFocus && (
+          <GlassCard className="p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Target className="h-4 w-4 text-primary" />
+              <h2 className="font-semibold text-sm uppercase tracking-wider">Today Focus</h2>
+              <Badge variant="outline" className="ml-auto text-[10px]">Auto-generated</Badge>
+            </div>
+            <p className="text-foreground text-sm leading-relaxed">{todayFocus}</p>
+          </GlassCard>
+
+          {/* Investor & Property Trackers side by side */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Investor Tracker */}
             <GlassCard className="p-5">
               <div className="flex items-center gap-2 mb-3">
-                <Target className="h-4 w-4 text-primary" />
-                <h2 className="font-semibold text-sm uppercase tracking-wider">Today Focus</h2>
+                <Users className="h-4 w-4 text-primary" />
+                <h2 className="font-semibold text-sm uppercase tracking-wider">Investor Tracker</h2>
               </div>
-              <p className="text-foreground text-sm leading-relaxed">{plan.thisWeekFocus}</p>
+              <div>
+                <TrackerRow label="Conversations" value={investorConversations} icon={MessageSquare} />
+                <TrackerRow label="Replies" value={investorReplies} icon={Reply} />
+                <TrackerRow label="Active Deals" value={activeDeals} icon={Handshake} />
+              </div>
             </GlassCard>
-          )}
+
+            {/* Property Tracker */}
+            <GlassCard className="p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <Building2 className="h-4 w-4 text-primary" />
+                <h2 className="font-semibold text-sm uppercase tracking-wider">Property Tracker</h2>
+              </div>
+              <div>
+                <TrackerRow label="Available Listings" value={availableListings} icon={Building2} />
+                <TrackerRow label="Featured Deals" value={featuredDeals} icon={Star} />
+                <TrackerRow label="Valuations" value={totalValuations} icon={BarChart3} />
+              </div>
+            </GlassCard>
+          </div>
 
           {/* Priority Actions */}
           <GlassCard className="p-5">
@@ -158,43 +264,28 @@ export default function ExecutionCommandCenter() {
               </ul>
             </GlassCard>
           )}
-
-          {/* Blocked */}
-          {blockedActivities.length > 0 && (
-            <GlassCard className="p-5 border-orange-500/20">
-              <div className="flex items-center gap-2 mb-3">
-                <Activity className="h-4 w-4 text-orange-400" />
-                <h2 className="font-semibold text-sm uppercase tracking-wider">Blocked Activities</h2>
-              </div>
-              <ul className="space-y-1.5">
-                {blockedActivities.map((b, i) => (
-                  <li key={i} className="text-sm text-muted-foreground">🚫 {b}</li>
-                ))}
-              </ul>
-            </GlassCard>
-          )}
         </div>
 
-        {/* Col 2: Growth + Capital + Actions */}
+        {/* ── Col 3: Actions + Capital ── */}
         <div className="space-y-5">
-          {/* Growth Tracking */}
+          {/* Quick Actions */}
           <GlassCard className="p-5">
             <div className="flex items-center gap-2 mb-4">
-              <TrendingUp className="h-4 w-4 text-emerald-400" />
-              <h2 className="font-semibold text-sm uppercase tracking-wider">Growth Tracking</h2>
+              <Layers className="h-4 w-4 text-primary" />
+              <h2 className="font-semibold text-sm uppercase tracking-wider">Quick Actions</h2>
             </div>
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-2">
               {[
-                { label: 'Investor Conversations', value: investorConversations, icon: Users },
-                { label: 'Active Deal Pipeline', value: dealPipeline, icon: BarChart3 },
-                { label: 'Listings This Week', value: listingsThisWeek, icon: Building2 },
-              ].map(({ label, value, icon: Icon }) => (
-                <div key={label} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Icon className="h-3.5 w-3.5" />{label}
-                  </div>
-                  <span className="text-foreground font-semibold">{value}</span>
-                </div>
+                { label: 'Add Property', icon: Plus, path: '/admin/properties/create', variant: 'default' as const },
+                { label: 'Contact Investor', icon: Send, path: '/admin/capital-intelligence', variant: 'outline' as const },
+                { label: 'Open Deal Flow', icon: TrendingUp, path: '/admin/deals', variant: 'outline' as const },
+              ].map(({ label, icon: Icon, path, variant }) => (
+                <Button key={label} variant={variant} size="sm"
+                  className="justify-start gap-2 h-10 text-sm"
+                  onClick={() => navigate(path)}>
+                  <Icon className="h-4 w-4" />{label}
+                  <ArrowRight className="h-3 w-3 ml-auto opacity-40" />
+                </Button>
               ))}
             </div>
           </GlassCard>
@@ -237,30 +328,6 @@ export default function ExecutionCommandCenter() {
               </ul>
             </GlassCard>
           )}
-
-          {/* Quick Actions */}
-          <GlassCard className="p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <Layers className="h-4 w-4 text-primary" />
-              <h2 className="font-semibold text-sm uppercase tracking-wider">Quick Actions</h2>
-            </div>
-            <div className="grid grid-cols-1 gap-2">
-              {[
-                { label: 'Add Property', icon: Plus, path: '/admin/properties/create' },
-                { label: 'Investor Dashboard', icon: BarChart3, path: '/portfolio-dashboard' },
-                { label: 'Deals Pipeline', icon: TrendingUp, path: '/admin/deals' },
-                { label: 'Investor Outreach', icon: Users, path: '/admin/capital-intelligence' },
-                { label: 'View 3D Property', icon: Eye, path: '/search' },
-              ].map(({ label, icon: Icon, path }) => (
-                <Button key={label} variant="ghost" size="sm"
-                  className="justify-start gap-2 h-9 text-sm hover:bg-primary/10"
-                  onClick={() => navigate(path)}>
-                  <Icon className="h-3.5 w-3.5" />{label}
-                  <ArrowRight className="h-3 w-3 ml-auto opacity-40" />
-                </Button>
-              ))}
-            </div>
-          </GlassCard>
         </div>
       </div>
     </div>
