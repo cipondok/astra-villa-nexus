@@ -85,6 +85,7 @@ const SystemHealthDashboard = lazy(() => import('@/pages/admin/SystemHealthDashb
 const FeatureControlPanel = lazy(() => import('@/pages/admin/FeatureControlPanel'));
 const PlatformIntelligenceDashboard = lazy(() => import('@/pages/admin/PlatformIntelligenceDashboard'));
 const FounderCommandCenter = lazy(() => import('@/pages/admin/FounderCommandCenter'));
+const StrategicIntelligenceDashboard = lazy(() => import('@/pages/admin/StrategicIntelligenceDashboard'));
 const AdminAnalytics = lazy(() => import('@/pages/AdminAnalytics'));
 const ProvinceProperties = lazy(() => import('@/pages/ProvinceProperties'));
 const LocationAnalyticsDashboard = lazy(() => import('@/pages/LocationAnalyticsDashboard'));
