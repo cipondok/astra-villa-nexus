@@ -478,6 +478,7 @@ const AppContent = () => {
                   <Route path="/admin/listing-review" element={<AdminListingReview />} />
                   <Route path="/admin/system-health" element={<SystemHealthDashboard />} />
                   <Route path="/admin/feature-controls" element={<FeatureControlPanel />} />
+                  <Route path="/admin/platform-intelligence" element={<PlatformIntelligenceDashboard />} />
                 </Route>
                 <Route path="/agent-dashboard" element={<AgentDashboard />} />
                 <Route path="/agent-crm" element={<ProtectedRoute />}>
