@@ -7716,6 +7716,66 @@ export type Database = {
         }
         Relationships: []
       }
+      astra_feature_controls: {
+        Row: {
+          description: string | null
+          feature_key: string
+          id: string
+          label: string
+          last_updated: string
+          performance_impact_score: number
+          status: string
+        }
+        Insert: {
+          description?: string | null
+          feature_key: string
+          id?: string
+          label?: string
+          last_updated?: string
+          performance_impact_score?: number
+          status?: string
+        }
+        Update: {
+          description?: string | null
+          feature_key?: string
+          id?: string
+          label?: string
+          last_updated?: string
+          performance_impact_score?: number
+          status?: string
+        }
+        Relationships: []
+      }
+      astra_performance_logs: {
+        Row: {
+          id: string
+          metadata: Json | null
+          metric_type: string
+          metric_value: number
+          page: string | null
+          recorded_at: string
+          risk_level: string | null
+        }
+        Insert: {
+          id?: string
+          metadata?: Json | null
+          metric_type: string
+          metric_value?: number
+          page?: string | null
+          recorded_at?: string
+          risk_level?: string | null
+        }
+        Update: {
+          id?: string
+          metadata?: Json | null
+          metric_type?: string
+          metric_value?: number
+          page?: string | null
+          recorded_at?: string
+          risk_level?: string | null
+        }
+        Relationships: []
+      }
       astra_platform_metrics: {
         Row: {
           id: string

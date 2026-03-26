@@ -1,0 +1,1 @@
+INSERT INTO public.astra_feature_controls (feature_key, label, status, performance_impact_score, description) VALUES ('demo_mode', 'Investor Demo Mode', 'disabled', 1, 'Optimizes platform for investor presentations') ON CONFLICT (feature_key) DO NOTHING;
