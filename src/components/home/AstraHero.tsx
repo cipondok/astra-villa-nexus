@@ -48,227 +48,217 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
   const navigate = useNavigate();
 
   return (
-    <section className="relative w-full overflow-hidden" id="hero-section">
-      {/* Background — light: sky blue gradient, dark: deep navy */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0099e6] via-[#0088d4] to-[#006bb3] dark:from-[#0a1628] dark:via-[#0d1f3c] dark:to-[#081225]" />
-      <div className="absolute bottom-0 left-0 right-0 h-[40%] bg-gradient-to-t from-[#005a9e]/40 dark:from-[#060e1a]/60 to-transparent" />
-
-      {/* Decorative glows */}
-      <div className="absolute top-[10%] right-[5%] w-64 h-64 rounded-full bg-white/5 dark:bg-blue-500/8 blur-xl" />
-      <div className="absolute bottom-[20%] left-[-5%] w-48 h-48 rounded-full bg-white/5 dark:bg-cyan-500/5 blur-lg" />
+    <section className="relative w-full overflow-hidden border-b border-border/30 bg-background" id="hero-section">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,hsl(var(--primary)/0.16),transparent_28%),radial-gradient(circle_at_top_right,hsl(var(--accent)/0.12),transparent_30%),linear-gradient(180deg,hsl(var(--background)),hsl(var(--muted)/0.35))]" />
+      <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(hsl(var(--border)/0.18)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--border)/0.18)_1px,transparent_1px)] [background-size:36px_36px]" />
+      <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
 
       <div className="relative z-10">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-3 sm:pt-5 lg:pt-8 pb-3">
-          {/* Header: Title + Subtitle */}
-          <div className="flex flex-col sm:flex-row sm:items-end sm:gap-4 mb-4 sm:mb-5">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 lg:pt-16 pb-6 sm:pb-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid gap-6 lg:grid-cols-[1.25fr_0.9fr] lg:gap-8 items-start">
+              <div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.55 }}
+                  className="mb-4"
+                >
+                  <div className="inline-flex items-center rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
+                    Luxury Property Intelligence
+                  </div>
+                </motion.div>
+
+                <motion.h1
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.05 }}
+                  className="max-w-4xl font-playfair text-4xl sm:text-5xl lg:text-7xl font-bold leading-[0.95] tracking-tight text-foreground"
+                >
+                  ASTRA <span className="text-primary">VILLA</span>
+                </motion.h1>
+
+                <motion.p
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.55, delay: 0.12 }}
+                  className="mt-4 text-lg sm:text-xl font-semibold text-foreground/90"
+                >
+                  Global Property Investment Platform
+                </motion.p>
+
+                <motion.p
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.55, delay: 0.18 }}
+                  className="mt-4 max-w-2xl text-sm sm:text-base leading-relaxed text-muted-foreground"
+                >
+                  Secure, AI-scored property investments in Indonesia — protected by escrow, backed by market intelligence.
+                </motion.p>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.24 }}
+                  className="mt-5 flex flex-wrap gap-2.5"
+                >
+                  {rolePills.map((p) => (
+                    <button
+                      key={p.label}
+                      onClick={() => navigate(p.path)}
+                      className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/70 px-4 py-2 text-xs sm:text-sm font-medium text-foreground backdrop-blur-md transition-all hover:border-primary/40 hover:bg-card"
+                    >
+                      <p.icon className="h-3.5 w-3.5 text-primary" />
+                      {p.label}
+                    </button>
+                  ))}
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.55, delay: 0.3 }}
+                  className="mt-8 flex flex-col sm:flex-row gap-3"
+                >
+                  <Button
+                    size="lg"
+                    onClick={() => navigate("/search")}
+                    className="h-12 px-6 text-sm font-semibold"
+                  >
+                    <Search className="mr-2 h-4 w-4" />
+                    Explore Investment Opportunities
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    onClick={() => navigate("/onboarding/investor")}
+                    className="h-12 px-6 text-sm font-semibold border-border/70 bg-card/30"
+                  >
+                    <Rocket className="mr-2 h-4 w-4" />
+                    Start Secure Investment
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="ghost"
+                    onClick={() => navigate("/vendor/register")}
+                    className="h-12 px-6 text-sm font-semibold"
+                  >
+                    <Store className="mr-2 h-4 w-4" />
+                    List Property
+                  </Button>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.38 }}
+                  className="mt-8"
+                >
+                  <div className="flex flex-wrap gap-2">
+                    {quickLinks.map((link) => (
+                      <button
+                        key={link.label}
+                        onClick={() => navigate(link.path)}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-border/50 bg-background/50 px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+                      >
+                        <link.icon className="h-3.5 w-3.5 text-primary" />
+                        {link.label}
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 24 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.65, delay: 0.18 }}
+                className="grid gap-4"
+              >
+                <div className="rounded-3xl border border-border/50 bg-card/75 p-5 shadow-xl backdrop-blur-xl">
+                  <div className="mb-3 inline-flex rounded-lg border border-primary/20 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
+                    For Agents & Owners
+                  </div>
+                  <div className="space-y-2.5">
+                    {leftChecks.map((item) => (
+                      <div key={item} className="flex items-start gap-2.5">
+                        <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                        <span className="text-sm leading-snug text-foreground/90">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div
+                  className="group rounded-3xl border border-primary/20 bg-gradient-to-br from-card via-card to-primary/10 p-5 shadow-xl backdrop-blur-xl transition-transform hover:-translate-y-0.5 cursor-pointer"
+                  onClick={() => navigate("/vr-tour")}
+                >
+                  <div className="grid gap-4 sm:grid-cols-[1fr_116px] sm:items-center">
+                    <div>
+                      <div className="mb-3 inline-flex rounded-lg border border-accent/20 bg-accent/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-foreground">
+                        Immersive Viewing
+                      </div>
+                      <p className="text-base font-semibold text-foreground mb-2">Nikmati Virtual Tour Property</p>
+                      <div className="space-y-2">
+                        {rightChecks.map((item) => (
+                          <div key={item} className="flex items-center gap-2">
+                            <CheckCircle className="h-4 w-4 shrink-0 text-primary" />
+                            <span className="text-sm text-muted-foreground">{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div
+                        className="mt-4 inline-flex items-center gap-2 rounded-full border border-border/50 bg-background/50 px-3 py-1.5 text-[11px] font-semibold text-primary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate("/investment");
+                        }}
+                      >
+                        <Globe className="h-3.5 w-3.5" />
+                        Foreign Investment Program
+                      </div>
+                    </div>
+                    <div className="hidden sm:flex flex-col items-center gap-2">
+                      <img src={vrTourHeroImg} alt="360° Virtual Tour Experience" className="w-24 h-auto drop-shadow-xl" />
+                      <div className="inline-flex items-center gap-1.5 rounded-full border border-border/50 bg-background/60 px-2.5 py-1 text-[10px] font-semibold text-primary">
+                        <Eye className="h-3 w-3" />
+                        360° Virtual Tour
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="font-playfair text-3xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.05] drop-shadow-lg tracking-wide"
+              transition={{ duration: 0.6, delay: 0.45 }}
+              className="mt-8 rounded-[28px] border border-border/50 bg-card/55 p-2 shadow-2xl backdrop-blur-xl"
             >
-              ASTRA <span className="text-[#ffe14d]">VILLA</span>
-            </motion.h1>
+              <SectionErrorBoundary sectionName="Search" fallbackMinHeight="60px">
+                <Suspense fallback={<SearchPanelSkeleton />}>
+                  <SearchErrorBoundary>
+                    <AstraSearchPanel
+                      language={language}
+                      onSearch={onSearch || (() => {})}
+                      onLiveSearch={onLiveSearch || (() => {})}
+                      resultsCount={resultsCount}
+                    />
+                  </SearchErrorBoundary>
+                </Suspense>
+              </SectionErrorBoundary>
+            </motion.div>
+
             <motion.p
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="text-base sm:text-xl lg:text-2xl font-bold text-white mt-1 sm:mt-0 sm:pb-1 drop-shadow"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7, duration: 0.5 }}
+              className="pt-4 text-center text-[11px] font-medium text-muted-foreground"
             >
-              Global Property Investment Platform
+              Escrow-Protected Transactions • Verified Listings • AI-Powered Investment Scoring
             </motion.p>
           </div>
-
-          {/* Investor value proposition */}
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.18, duration: 0.5 }}
-            className="text-sm sm:text-base text-white/80 font-medium mb-4 max-w-xl leading-relaxed"
-          >
-            Secure, AI-scored property investments in Indonesia — protected by escrow, backed by market intelligence.
-          </motion.p>
-
-          {/* Role pills — clickable links */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="flex flex-wrap gap-2 mb-4 sm:mb-5"
-          >
-            {rolePills.map((p) => (
-              <button
-                key={p.label}
-                onClick={() => navigate(p.path)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 dark:bg-white/15 text-[#006bb3] dark:text-white text-xs sm:text-sm font-semibold shadow-md backdrop-blur-sm hover:bg-white hover:dark:bg-white/25 transition-colors duration-200 cursor-pointer"
-              >
-                <p.icon className="h-3.5 w-3.5" />
-                {p.label}
-              </button>
-            ))}
-          </motion.div>
-
-          {/* Two-column info cards */}
-          <div className="grid sm:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-5">
-            {/* Left card */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-              className="bg-white/95 dark:bg-white/10 dark:border dark:border-white/10 backdrop-blur-sm rounded-2xl p-3 sm:p-4 shadow-xl"
-            >
-              <div className="inline-block px-3 py-1 bg-[#006bb3] dark:bg-blue-600 rounded-lg mb-2">
-                <span className="text-xs font-black text-white tracking-wide uppercase">
-                  For Agents & Owners
-                </span>
-              </div>
-              <div className="space-y-1.5">
-                {leftChecks.map((item) => (
-                  <div key={item} className="flex items-start gap-2">
-                    <CheckCircle className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                    <span className="text-[13px] text-gray-800 dark:text-gray-200 font-medium leading-snug">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Right card — VR tour */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.38, duration: 0.6 }}
-              className="bg-[#ffe14d]/95 dark:bg-amber-500/20 dark:border dark:border-amber-500/30 backdrop-blur-sm rounded-2xl p-4 shadow-xl cursor-pointer hover:scale-[1.01] transition-transform flex gap-3"
-              onClick={() => navigate("/vr-tour")}
-            >
-              {/* Left text content */}
-              <div className="flex-1 min-w-0">
-                <div className="inline-block px-3 py-1 bg-[#ff8c00] dark:bg-amber-600 rounded-lg mb-2">
-                  <span className="text-xs font-black text-white tracking-wide uppercase">
-                    First Time in Indonesia
-                  </span>
-                </div>
-                <p className="text-sm font-bold text-gray-900 dark:text-white mb-2">
-                  Nikmati Virtual Tour Property:
-                </p>
-                <div className="space-y-1.5">
-                  {rightChecks.map((item) => (
-                    <div key={item} className="flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                      <span className="text-sm text-gray-800 dark:text-gray-200 font-medium">{item}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-2.5 flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity" onClick={(e) => { e.stopPropagation(); navigate("/investment"); }}>
-                  <div className="flex items-center justify-center w-6 h-6 rounded-lg bg-[#006bb3] dark:bg-blue-600 text-white shadow-lg">
-                    <Globe className="h-3 w-3" />
-                  </div>
-                  <span className="text-[10px] font-bold text-[#006bb3] dark:text-blue-300">Foreign Investment Program</span>
-                </div>
-              </div>
-              {/* Right VR image */}
-              <div className="hidden sm:flex flex-col items-center justify-center w-28 shrink-0 gap-1.5">
-                <img src={vrTourHeroImg} alt="360° Virtual Tour Experience" className="w-full h-auto drop-shadow-lg" />
-                <div className="flex items-center gap-1.5">
-                  <div className="flex items-center justify-center w-6 h-6 rounded-lg bg-[#006bb3] dark:bg-blue-600 text-white shadow-lg">
-                    <Eye className="h-3 w-3" />
-                  </div>
-                  <span className="text-[10px] font-bold text-[#006bb3] dark:text-blue-300">360° Virtual Tour</span>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Tagline + Quick links row */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.48, duration: 0.5 }}
-            className="mb-4 sm:mb-5"
-          >
-            <p className="text-sm sm:text-base lg:text-lg font-black text-white drop-shadow-md mb-3">
-              One Platform. <span className="text-[#ffe14d]">Full Access.</span> Smart Property Experience.
-            </p>
-
-            {/* Quick action links */}
-            <div className="flex flex-wrap gap-2">
-              {quickLinks.map((link) => (
-                <button
-                  key={link.label}
-                  onClick={() => navigate(link.path)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/20 dark:bg-white/10 text-white text-xs font-semibold hover:bg-white/30 dark:hover:bg-white/20 transition-colors backdrop-blur-sm border border-white/20"
-                >
-                  <link.icon className="h-3.5 w-3.5" />
-                  {link.label}
-                </button>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* CTA buttons — investor focused */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.55, duration: 0.5 }}
-            className="flex flex-col sm:flex-row gap-2.5 mb-4 sm:mb-5"
-          >
-            <Button
-              size="lg"
-              onClick={() => navigate("/search")}
-              className="bg-gradient-to-r from-[#ffe14d] to-[#ffb800] hover:from-[#ffb800] hover:to-[#ffe14d] text-gray-900 font-bold px-6 py-5 text-sm rounded-xl shadow-lg shadow-yellow-500/30 transition-all duration-300"
-            >
-              <Search className="mr-2 h-4 w-4" />
-              Explore Investment Opportunities
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => navigate("/onboarding/investor")}
-              className="border-white/40 text-white hover:bg-white/15 px-6 py-5 text-sm rounded-xl backdrop-blur-sm"
-            >
-              <Rocket className="mr-2 h-4 w-4" />
-              Start Secure Investment
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => navigate("/vendor/register")}
-              className="border-white/40 text-white hover:bg-white/15 px-6 py-5 text-sm rounded-xl backdrop-blur-sm"
-            >
-              <Store className="mr-2 h-4 w-4" />
-              List Property
-            </Button>
-          </motion.div>
-
-          {/* Search panel ON the slide */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.65, duration: 0.6 }}
-            className="w-full max-w-5xl mx-auto pb-4 sm:pb-6"
-          >
-            <SectionErrorBoundary sectionName="Search" fallbackMinHeight="60px">
-              <Suspense fallback={<SearchPanelSkeleton />}>
-                <SearchErrorBoundary>
-                  <AstraSearchPanel
-                    language={language}
-                    onSearch={onSearch || (() => {})}
-                    onLiveSearch={onLiveSearch || (() => {})}
-                    resultsCount={resultsCount}
-                  />
-                </SearchErrorBoundary>
-              </Suspense>
-            </SectionErrorBoundary>
-          </motion.div>
-
-          {/* Trust footer */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.5 }}
-            className="text-center text-[11px] text-white/60 font-medium pb-3"
-          >
-            Escrow-Protected Transactions • Verified Listings • AI-Powered Investment Scoring
-          </motion.p>
         </div>
       </div>
     </section>
