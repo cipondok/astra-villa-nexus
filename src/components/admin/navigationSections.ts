@@ -144,7 +144,6 @@ export interface NavigationSection {
 }
 
 export const categories = [
-  "overview",
   "execution-command",
   "marketplace-growth",
   "market-intelligence",
