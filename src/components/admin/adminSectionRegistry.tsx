@@ -640,8 +640,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "features-overview":             (sc) => <CategoryOverviewDashboard category="features" onSectionChange={sc} />,
   "help-overview":                 (sc) => <CategoryOverviewDashboard category="help" onSectionChange={sc} />,
 
-  // Execution Command Center
-  "execution-command-center": () => <ExecutionCommandCenter />,
+  // Execution Command Center (mapped above at line 621)
 
   // Investor Scoring
   "investor-scoring-engine": () => <InvestorScoringPanel />,
