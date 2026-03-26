@@ -616,8 +616,9 @@ export const GlobalExpansionCommandCenter = lazyRetry(() => import("./GlobalExpa
 type SectionRenderer = (onSectionChange?: (s: string) => void) => React.ReactNode;
 
 export const sectionRenderMap: Record<string, SectionRenderer> = {
-  // Overview & diagnostics
-  "overview":            (sc) => <AdminOverview onSectionChange={sc} />,
+  // Overview = Execution Command Center (primary dashboard)
+  "overview":            () => <ExecutionCommandCenter />,
+  "system-overview":     (sc) => <AdminOverview onSectionChange={sc} />,
   "diagnostic":          () => <ProjectDiagnosticSystem />,
   "project-progress":    (sc) => <LaunchReadinessDashboard onSectionChange={sc} />,
   "launch-readiness":    (sc) => <LaunchReadinessDashboard onSectionChange={sc} />,
@@ -1296,7 +1297,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "vendor-supply-expansion": { label: "Vendor Supply Expansion", category: "Operations" },
   "revenue-flywheel-optimizer": { label: "Revenue Flywheel Optimizer", category: "Revenue" },
   "data-moat-governance": { label: "Data Moat Governance", category: "Strategy" },
-  "overview": { label: "Dashboard Overview", category: "" },
+  "overview": { label: "Execution Command", category: "" },
+  "system-overview": { label: "System Overview", category: "System" },
   "diagnostic": { label: "Project Diagnostics", category: "System" },
   "project-progress": { label: "Launch Readiness", category: "System" },
   "launch-readiness": { label: "Launch Readiness", category: "System" },
