@@ -578,18 +578,11 @@ export const NinetyDayRoadmap = lazyRetry(() => import("./NinetyDayRoadmap"));
 export const DailyExecutionPlan = lazyRetry(() => import("./DailyExecutionPlan"));
 export const FounderStrategicKPIs = lazyRetry(() => import("./FounderStrategicKPIs"));
 
-// Strategic blueprint pages (from /pages)
-export const VendorMonetizationPyramidPage = lazyRetry(() => import("@/pages/VendorMonetizationPyramidPage"));
-export const InstitutionalSaaSBlueprintPage = lazyRetry(() => import("@/pages/InstitutionalSaaSBlueprintPage"));
-export const RevenueScalingBlueprintPage = lazyRetry(() => import("@/pages/RevenueScalingBlueprintPage"));
-export const MonetizationPricingPage = lazyRetry(() => import("@/pages/MonetizationPricingPage"));
-export const SprintExecutionRoadmapPage = lazyRetry(() => import("@/pages/SprintExecutionRoadmapPage"));
-export const MarketplaceLaunchPlaybookPage = lazyRetry(() => import("@/pages/MarketplaceLaunchPlaybookPage"));
-export const CityLaunchPlaybookPage = lazyRetry(() => import("@/pages/CityLaunchPlaybookPage"));
-export const RevenueProjectionModelPage = lazyRetry(() => import("@/pages/RevenueProjectionModelPage"));
-export const InvestorKPIFrameworkPage = lazyRetry(() => import("@/pages/InvestorKPIFrameworkPage"));
-export const VendorAcquisitionScriptsPage = lazyRetry(() => import("@/pages/VendorAcquisitionScriptsPage"));
-export const FeatureImpactMatrixPage = lazyRetry(() => import("@/pages/FeatureImpactMatrixPage"));
+// Strategic blueprint pages — ARCHIVED (moved to src/_archived/pages/)
+// VendorMonetizationPyramidPage, InstitutionalSaaSBlueprintPage, RevenueScalingBlueprintPage,
+// MonetizationPricingPage, SprintExecutionRoadmapPage, MarketplaceLaunchPlaybookPage,
+// CityLaunchPlaybookPage, RevenueProjectionModelPage, InvestorKPIFrameworkPage,
+// VendorAcquisitionScriptsPage, FeatureImpactMatrixPage
 export const LaunchExecutionKitPage = lazyRetry(() => import("@/pages/LaunchExecutionKitPage"));
 export const CacLtvModelPage = lazyRetry(() => import("@/pages/CacLtvModelPage"));
 
@@ -1257,18 +1250,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "daily-execution-plan": () => <DailyExecutionPlan />,
   "founder-strategic-kpis": () => <FounderStrategicKPIs />,
 
-  // Strategic blueprint pages
-  "vendor-monetization-pyramid": () => <VendorMonetizationPyramidPage />,
-  "institutional-saas-blueprint": () => <InstitutionalSaaSBlueprintPage />,
-  "revenue-scaling-blueprint": () => <RevenueScalingBlueprintPage />,
-  "monetization-pricing-blueprint": () => <MonetizationPricingPage />,
-  "sprint-execution-roadmap": () => <SprintExecutionRoadmapPage />,
-  "marketplace-launch-playbook": () => <MarketplaceLaunchPlaybookPage />,
-  "city-launch-playbook": () => <CityLaunchPlaybookPage />,
-  "revenue-projection-model": () => <RevenueProjectionModelPage />,
-  "investor-kpi-framework-page": () => <InvestorKPIFrameworkPage />,
-  "vendor-acquisition-scripts": () => <VendorAcquisitionScriptsPage />,
-  "feature-impact-matrix": () => <FeatureImpactMatrixPage />,
+  // Strategic blueprint pages — ARCHIVED (Phase-1 cleanup)
   "launch-execution-kit": () => <LaunchExecutionKitPage />,
   "cac-ltv-model": () => <CacLtvModelPage />,
   "ai-negotiation-agent": () => <NegotiationAgentPanel />,
