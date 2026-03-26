@@ -55,8 +55,9 @@ export function AdminSidebar({ activeSection, onSectionChange, collapsed = false
   }, [activeSection]);
 
   const handleCategoryClick = useCallback((category: string) => {
-    if (category === 'overview') {
-      onSectionChange('overview');
+    const sections = navigationSections[category as keyof typeof navigationSections];
+    if (sections && sections.length === 1) {
+      onSectionChange(sections[0].key);
       setOpenCategory(null);
     } else {
       setOpenCategory(prev => prev === category ? null : category);
