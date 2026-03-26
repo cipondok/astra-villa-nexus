@@ -123,8 +123,7 @@ const EnhancedVendorDashboard = () => {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-          {/* Enhanced Booking Status Overview with Samsung Gradient */}
-          <Card className="samsung-gradient border-0 shadow-lg mb-6">
+          <Card className="bg-primary border-0 shadow-lg mb-6">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>

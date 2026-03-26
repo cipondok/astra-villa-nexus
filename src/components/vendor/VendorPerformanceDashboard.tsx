@@ -138,7 +138,7 @@ const VendorPerformanceDashboard = () => {
 
   return (
     <div className="space-y-6">
-      <Card className="samsung-gradient border-0 shadow-lg">
+      <Card className="bg-primary border-0 shadow-lg">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>

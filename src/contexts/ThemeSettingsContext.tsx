@@ -64,13 +64,6 @@ export const ThemeSettingsProvider: React.FC<{ children: React.ReactNode }> = ({
     document.documentElement.style.setProperty('--primary-color-rgb', `${r}, ${g}, ${b}`);
     document.documentElement.style.setProperty('--primary-color-hover', `rgb(${Math.max(0, r-20)}, ${Math.max(0, g-20)}, ${Math.max(0, b-20)})`);
     
-    document.documentElement.style.setProperty('--samsung-blue-primary', '214 100% 47%');
-    document.documentElement.style.setProperty('--samsung-blue-light', '217 91% 60%');
-    document.documentElement.style.setProperty('--samsung-blue-dark', '215 50% 35%');
-    document.documentElement.style.setProperty('--titanium-light', '220 30% 85%');
-    document.documentElement.style.setProperty('--titanium-medium', '220 30% 65%');
-    document.documentElement.style.setProperty('--titanium-dark', '220 30% 25%');
-    document.documentElement.style.setProperty('--titanium-white', '220 15% 96%');
   }, [allSettings]);
 
   const updateThemeSettings = (newSettings: Partial<ThemeSettings>) => {

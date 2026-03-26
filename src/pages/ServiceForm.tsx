@@ -145,7 +145,7 @@ const ServiceForm = () => {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="bg-samsung-blue hover:bg-samsung-blue-dark"
+                  className="bg-primary hover:bg-primary/90"
                 >
                   <Save className="h-4 w-4 mr-2" />
                   {loading ? 'Creating...' : 'Create Service'}
