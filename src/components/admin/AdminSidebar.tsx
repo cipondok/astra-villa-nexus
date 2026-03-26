@@ -10,7 +10,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
 
 const categoryIcons: Record<string, LucideIcon> = {
-  "overview": LayoutDashboard,
+  "execution-command": Zap,
   "execution-command": Zap,
   "marketplace-growth": TrendingUp,
   "market-intelligence": BarChart3,
