@@ -484,6 +484,7 @@ const AppContent = () => {
                   <Route path="/admin/platform-intelligence" element={<PlatformIntelligenceDashboard />} />
                   <Route path="/admin/founder-command" element={<FounderCommandCenter />} />
                   <Route path="/admin/strategic-intelligence" element={<StrategicIntelligenceDashboard />} />
+                  <Route path="/admin/global-growth" element={<GlobalGrowthEngineDashboard />} />
                 </Route>
                 <Route path="/agent-dashboard" element={<AgentDashboard />} />
                 <Route path="/agent-crm" element={<ProtectedRoute />}>
