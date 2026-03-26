@@ -168,17 +168,11 @@ export const categories = [
 export const navigationSections = {
   "execution-command": [
     {
-      key: "overview",
+      key: "execution-command-center",
       label: "Execution Command Center",
       icon: Zap,
       description: "Main command dashboard — KPIs, investor tracker, property metrics, and quick actions",
-      badge: "Overview"
-    },
-    {
-      key: "system-overview",
-      label: "System Overview",
-      icon: LayoutDashboard,
-      description: "Legacy system overview and platform health stats"
+      badge: "Command"
     },
     {
       key: "founder-daily-execution",
