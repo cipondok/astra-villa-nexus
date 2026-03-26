@@ -10,10 +10,12 @@ export function useMarketDominanceStrategy(): {
 
   const strategy = useMemo(() => {
     if (!health) return null;
+    const estimatedInquiries = Math.round(health.totalValuations * 0.8);
+    const estimatedDealVelocity = health.totalValuations > 0 ? Math.max(Math.round(45 / Math.max(health.totalValuations * 0.2, 1)), 5) : 30;
     return computeMarketDominance(
-      health.totalProperties ?? 0,
-      health.totalInquiries ?? 0,
-      health.avgDealVelocityDays ?? 30
+      health.totalProperties,
+      estimatedInquiries,
+      estimatedDealVelocity
     );
   }, [health]);
 
