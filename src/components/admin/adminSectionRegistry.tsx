@@ -616,9 +616,9 @@ export const GlobalExpansionCommandCenter = lazyRetry(() => import("./GlobalExpa
 type SectionRenderer = (onSectionChange?: (s: string) => void) => React.ReactNode;
 
 export const sectionRenderMap: Record<string, SectionRenderer> = {
-  // Overview = Execution Command Center (primary dashboard)
-  "overview":            () => <ExecutionCommandCenter />,
-  "system-overview":     (sc) => <AdminOverview onSectionChange={sc} />,
+  // Overview = original System Overview (default landing)
+  "overview":            (sc) => <AdminOverview onSectionChange={sc} />,
+  "execution-command-center": () => <ExecutionCommandCenter />,
   "diagnostic":          () => <ProjectDiagnosticSystem />,
   "project-progress":    (sc) => <LaunchReadinessDashboard onSectionChange={sc} />,
   "launch-readiness":    (sc) => <LaunchReadinessDashboard onSectionChange={sc} />,
@@ -640,8 +640,7 @@ export const sectionRenderMap: Record<string, SectionRenderer> = {
   "features-overview":             (sc) => <CategoryOverviewDashboard category="features" onSectionChange={sc} />,
   "help-overview":                 (sc) => <CategoryOverviewDashboard category="help" onSectionChange={sc} />,
 
-  // Execution Command Center
-  "execution-command-center": () => <ExecutionCommandCenter />,
+  // Execution Command Center (mapped above at line 621)
 
   // Investor Scoring
   "investor-scoring-engine": () => <InvestorScoringPanel />,
@@ -1297,8 +1296,8 @@ export const sectionLabels: Record<string, { label: string; category: string }> 
   "vendor-supply-expansion": { label: "Vendor Supply Expansion", category: "Operations" },
   "revenue-flywheel-optimizer": { label: "Revenue Flywheel Optimizer", category: "Revenue" },
   "data-moat-governance": { label: "Data Moat Governance", category: "Strategy" },
-  "overview": { label: "Execution Command", category: "" },
-  "system-overview": { label: "System Overview", category: "System" },
+  "overview": { label: "System Overview", category: "System" },
+  
   "diagnostic": { label: "Project Diagnostics", category: "System" },
   "project-progress": { label: "Launch Readiness", category: "System" },
   "launch-readiness": { label: "Launch Readiness", category: "System" },
