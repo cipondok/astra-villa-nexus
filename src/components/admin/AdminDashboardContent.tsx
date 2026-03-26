@@ -70,10 +70,12 @@ const AdminDashboardContent = ({
     <div className="flex-1 p-2 lg:p-3">
       {priorityBanner}
       <div key={activeSection}>
-        <AdminCategoryTabs
-          activeSection={activeSection}
-          onSectionChange={onSectionChange}
-        />
+        {!isOverview && (
+          <AdminCategoryTabs
+            activeSection={activeSection}
+            onSectionChange={onSectionChange}
+          />
+        )}
         <SectionErrorBoundary>
           <Suspense fallback={<LoadingFallback />}>
             {renderSection(activeSection, onSectionChange)}

@@ -10,6 +10,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
 
 const categoryIcons: Record<string, LucideIcon> = {
+  "overview": LayoutDashboard,
   "execution-command": Zap,
   "marketplace-growth": TrendingUp,
   "market-intelligence": BarChart3,
@@ -50,12 +51,17 @@ export function AdminSidebar({ activeSection, onSectionChange, collapsed = false
         return category;
       }
     }
-    return 'execution-command';
+    return 'overview';
   }, [activeSection]);
 
   const handleCategoryClick = useCallback((category: string) => {
-    setOpenCategory(prev => prev === category ? null : category);
-  }, []);
+    if (category === 'overview') {
+      onSectionChange('overview');
+      setOpenCategory(null);
+    } else {
+      setOpenCategory(prev => prev === category ? null : category);
+    }
+  }, [onSectionChange]);
 
   const handleNavClick = useCallback((key: string) => {
     onSectionChange(key);

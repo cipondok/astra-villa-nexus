@@ -144,6 +144,7 @@ export interface NavigationSection {
 }
 
 export const categories = [
+  "overview",
   "execution-command",
   "marketplace-growth",
   "market-intelligence",
@@ -167,13 +168,6 @@ export const categories = [
 
 export const navigationSections = {
   "execution-command": [
-    {
-      key: "execution-command-center",
-      label: "Execution Command Center",
-      icon: Zap,
-      description: "Main command dashboard — KPIs, investor tracker, property metrics, and quick actions",
-      badge: "Command"
-    },
     {
       key: "founder-daily-execution",
       label: "Founder Daily KPI Dashboard",
@@ -521,15 +515,9 @@ export const navigationSections = {
   overview: [
     { 
       key: "overview", 
-      label: "Execution Command Center", 
+      label: "Dashboard Overview", 
       icon: Home,
-      description: "Main execution command dashboard — KPIs, actions, and growth tracking"
-    },
-    {
-      key: "system-overview",
-      label: "System Overview",
-      icon: LayoutDashboard,
-      description: "Legacy system overview and platform health stats"
+      description: "Main dashboard overview and quick stats"
     },
     {
       key: "revenue-flywheel-optimizer",
@@ -3971,7 +3959,7 @@ export const navigationSections = {
 export const sectionCategories = navigationSections;
 
 export const sectionTitles = {
-  overview: "System Tools",
+  overview: "Dashboard",
   "execution-command": "Execution Command",
   "marketplace-growth": "Marketplace Growth",
   "market-intelligence": "Market Intelligence",

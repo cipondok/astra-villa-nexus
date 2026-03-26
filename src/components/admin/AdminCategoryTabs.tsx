@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 
 const categoryIcons: Record<string, LucideIcon> = {
-  "execution-command": LayoutDashboard,
+  "overview": LayoutDashboard,
   "transactions": DollarSign,
   "astra-token": Coins,
   "tools": Wrench,
@@ -59,7 +59,7 @@ export function AdminCategoryTabs({ activeSection, onSectionChange }: AdminCateg
     onSectionChange?.(key);
   }, [onSectionChange]);
 
-  if (!activeCategory) return null;
+  if (!activeCategory || activeSection === 'overview') return null;
 
   const categoryTitle = sectionTitles[activeCategory as keyof typeof sectionTitles] || activeCategory;
   const totalCount = categorySections.length;
