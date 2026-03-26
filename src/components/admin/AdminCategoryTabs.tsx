@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 
 const categoryIcons: Record<string, LucideIcon> = {
-  "overview": LayoutDashboard,
+  "execution-command": LayoutDashboard,
   "transactions": DollarSign,
   "astra-token": Coins,
   "tools": Wrench,
