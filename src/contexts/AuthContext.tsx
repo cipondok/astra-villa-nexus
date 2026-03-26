@@ -56,7 +56,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = React.useState<User | null>(null);
   const [profile, setProfile] = React.useState<Profile | null>(null);
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
   const [session, setSession] = React.useState<Session | null>(null);
 
   const fetchProfile = async (userId: string) => {
