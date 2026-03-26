@@ -1,47 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* =================================
    MOBILE-FIRST RESPONSIVE DESIGN
    ================================= */
-
-/* Core Mobile-First Base Styles */
-@layer base {
-  /* Ensure proper viewport and font sizing */
-  html {
-    font-size: 16px; /* Base 16px for accessibility */
-    -webkit-text-size-adjust: 100%;
-    -webkit-tap-highlight-color: transparent;
-    scroll-behavior: auto;
-  }
-
-  body {
-    font-size: 1rem; /* 16px base */
-    line-height: 1.6;
-    overflow-x: hidden; /* Prevent horizontal scroll */
-    -webkit-overflow-scrolling: touch;
-    width: 100%;
-    max-width: 100%;
-    min-height: 100svh;
-  }
-
-  /* Ensure all images are responsive by default */
-  img,
-  video,
-  iframe {
-    max-width: 100%;
-    height: auto;
-    display: block;
-  }
-
-  /* Canvas responsiveness for 3D models */
-  canvas {
-    max-width: 100% !important;
-    height: auto !important;
-    display: block;
-  }
-}
 
 /* =================================
    MOBILE-FIRST LAYOUT UTILITIES

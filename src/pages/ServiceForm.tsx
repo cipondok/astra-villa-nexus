@@ -50,7 +50,7 @@ const ServiceForm = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-samsung-gradient shadow-sm border-b">
+      <div className="bg-primary shadow-sm border-b">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center gap-4">
             <Button
@@ -145,7 +145,7 @@ const ServiceForm = () => {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="bg-samsung-blue hover:bg-samsung-blue-dark"
+                  className="bg-primary hover:bg-primary/90"
                 >
                   <Save className="h-4 w-4 mr-2" />
                   {loading ? 'Creating...' : 'Create Service'}

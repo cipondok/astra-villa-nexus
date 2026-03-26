@@ -11,8 +11,23 @@ class DesignSystemErrorBoundary extends Component<{ children: ReactNode }, { has
   }
 }
 
+const DESIGN_SYSTEM_VERSION = 2;
+
 function DesignSystemApplier({ children }: { children: ReactNode }) {
-  const { config } = useDesignSystem();
+  const { config, resetConfig } = useDesignSystem();
+
+  useEffect(() => {
+    const stored = localStorage.getItem('design-system-config');
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (!parsed.state?._version || parsed.state._version < DESIGN_SYSTEM_VERSION) {
+          localStorage.removeItem('design-system-config');
+          resetConfig();
+        }
+      } catch { /* corrupted — clear it */ localStorage.removeItem('design-system-config'); }
+    }
+  }, [resetConfig])
 
   useEffect(() => {
     const root = document.documentElement;

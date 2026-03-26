@@ -180,7 +180,7 @@ const VendorSmartSummary = () => {
   return (
     <div className="space-y-6">
       {/* Property Type Header */}
-      <Card className="samsung-gradient border-0 shadow-lg">
+      <Card className="bg-primary border-0 shadow-lg">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -210,7 +210,7 @@ const VendorSmartSummary = () => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {summaryCards.map((card, index) => (
-          <Card key={index} className="samsung-gradient border-0 shadow-lg">
+          <Card key={index} className="bg-primary border-0 shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-2">
