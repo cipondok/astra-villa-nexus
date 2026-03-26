@@ -3964,7 +3964,7 @@ export const navigationSections = {
 export const sectionCategories = navigationSections;
 
 export const sectionTitles = {
-  overview: "Dashboard",
+  overview: "System Tools",
   "execution-command": "Execution Command",
   "marketplace-growth": "Marketplace Growth",
   "market-intelligence": "Market Intelligence",

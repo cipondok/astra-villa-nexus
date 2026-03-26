@@ -51,11 +51,11 @@ export function AdminSidebar({ activeSection, onSectionChange, collapsed = false
         return category;
       }
     }
-    return 'overview';
+    return 'execution-command';
   }, [activeSection]);
 
   const handleCategoryClick = useCallback((category: string) => {
-    if (category === 'overview') {
+    if (category === 'execution-command') {
       onSectionChange('overview');
       setOpenCategory(null);
     } else {
