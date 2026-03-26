@@ -54,13 +54,8 @@ export function AdminSidebar({ activeSection, onSectionChange, collapsed = false
   }, [activeSection]);
 
   const handleCategoryClick = useCallback((category: string) => {
-    if (category === 'execution-command') {
-      onSectionChange('overview');
-      setOpenCategory(null);
-    } else {
-      setOpenCategory(prev => prev === category ? null : category);
-    }
-  }, [onSectionChange]);
+    setOpenCategory(prev => prev === category ? null : category);
+  }, []);
 
   const handleNavClick = useCallback((key: string) => {
     onSectionChange(key);
