@@ -11,7 +11,6 @@ import { Input } from '@/components/ui/input';
 
 const categoryIcons: Record<string, LucideIcon> = {
   "execution-command": Zap,
-  "execution-command": Zap,
   "marketplace-growth": TrendingUp,
   "market-intelligence": BarChart3,
   "monetization": Coins,
