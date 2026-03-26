@@ -1,46 +1,61 @@
 
 
-# Fix: Daily Check-in "Edge Function returned non-2xx" Error
+# Fix Dual/Legacy Style Conflicts in ASTRA Villa
 
-## Root Cause
+## Problem Diagnosis
 
-The `core-engine` edge function has `astra_token` listed as a valid mode and in `NO_PROPERTY_ID_MODES`, but **there is no handler implemented for it**. Every call with `mode: 'astra_token'` falls through to the catch-all at line 11309 returning `400: "Unknown mode or unhandled request"`.
+The platform displays inconsistent "old style" and "new style" due to **5 root causes**:
 
-This affects:
-- **Daily check-in** (AstraTokenHub calls `core-engine` with `{ mode: 'astra_token', action: 'daily_checkin' }`)
-- **Balance queries** (`useAstraToken` hook calls `core-engine` with `action: 'get_balance'`) — causes the `"Query data cannot be undefined"` console errors
-- **Transaction queries** (`action: 'get_transactions'`)
-- **Check-in status** (`action: 'get_checkin_status'`)
+### 1. Duplicate `@tailwind` Directives (Critical)
+- `src/index.css` has `@tailwind base/components/utilities` at lines 11-13
+- `src/styles/mobile-first-responsive.css` **also** has `@tailwind base/components/utilities` at lines 1-3
+- This file is `@import`ed at the top of `index.css`, causing Tailwind's base styles to be injected **twice**, with unpredictable cascade ordering
 
-## Two Affected Flows
+### 2. ThemeSettingsContext Injects Legacy Samsung/Titanium Variables
+- `ThemeSettingsContext.tsx` (lines 67-72) dynamically sets `--samsung-blue-primary`, `--samsung-blue-light`, `--samsung-blue-dark`, `--titanium-light/medium/dark/white` CSS variables on every render
+- These are **old brand tokens** that conflict with the current Sky Blue + Gold theme defined in `index.css`
 
-| Flow | Location | Method |
-|------|----------|--------|
-| DailyLoginReward popup | `useGamification.ts` | `supabase.rpc('process_daily_login')` — works (DB function exists) |
-| AstraTokenHub check-in button | `AstraTokenHub.tsx` + `useAstraToken.ts` | `supabase.functions.invoke('core-engine', { mode: 'astra_token' })` — **BROKEN** |
+### 3. DesignSystemProvider Overrides CSS Variables
+- `DesignSystemProvider.tsx` sets font, spacing, radius, shadow, and animation CSS variables from a Zustand store with **persisted state**
+- If a user visited the site during an older design iteration, stale values persist in localStorage (`design-system-config`), overriding current theme
 
-## Fix Plan
+### 4. Competing `@layer base` Blocks
+- `index.css` line 215: `@layer base { :root { ... } }` — the main theme
+- `mobile-first-responsive.css` line 10: `@layer base { html { ... } body { ... } }` — sets conflicting `line-height: 1.6` vs `index.css`'s `line-height: 1.5`, and `font-size: 1rem` vs `14px`
 
-### Step 1: Add `astra_token` handler to `core-engine` edge function
+### 5. Inline Hardcoded Colors in Components
+- 518 matches of inline `style={{ background/color: '#...' }}` across 40 files
+- Components like `ServiceForm.tsx` use `bg-samsung-gradient`, `bg-samsung-blue` — legacy class names
+- `VendorSmartSummary.tsx`, `VendorPerformanceDashboard.tsx`, `EnhancedVendorDashboard.tsx` use `samsung-gradient` class
 
-Add a handler block before the final fallback that processes these actions by querying the database directly (no AI needed):
+---
 
-- `get_balance` — query `astra_token_balances` for user
-- `get_transactions` — query `astra_token_transactions` for user (last 50)
-- `get_checkin_status` — query `astra_daily_checkins` for today's date
-- `daily_checkin` — insert into `astra_daily_checkins`, update streak, credit tokens via `astra_token_transactions` + `astra_token_balances`
-- `get_transfers` — query transfers for user
-- `welcome_bonus` / `award_tokens` / `transfer` — existing mutation actions
+## Implementation Plan
 
-### Step 2: Fix `useAstraToken` query functions to return fallback values
+### Step 1: Remove Duplicate @tailwind from mobile-first-responsive.css
+Remove lines 1-3 (`@tailwind base/components/utilities`) from `src/styles/mobile-first-responsive.css`. The file is already imported into `index.css` which has its own `@tailwind` directives.
 
-Ensure `queryFn` returns a default value (not `undefined`) when the edge function fails, preventing the React Query "data cannot be undefined" error.
+### Step 2: Remove Legacy Samsung/Titanium Variable Injection
+In `src/contexts/ThemeSettingsContext.tsx`, remove the 6 lines (67-72) that set `--samsung-blue-*` and `--titanium-*` CSS variables. These are already defined statically in `index.css` `:root` and `.dark` blocks with the correct current values.
 
-### Step 3: Redeploy the edge function
+### Step 3: Clear Stale DesignSystem localStorage
+In `src/components/DesignSystemProvider.tsx`, add a version check that clears the persisted `design-system-config` if it was saved under an older schema version, ensuring users always get the current defaults.
 
-The function will auto-deploy after code changes.
+### Step 4: Resolve Conflicting @layer base Rules
+In `src/styles/mobile-first-responsive.css`, remove the `@layer base` block (lines 10-44) that conflicts with `index.css` base styles. Keep only `@layer utilities` and `@layer components` rules in that file.
 
-## Technical Details
+### Step 5: Replace Legacy samsung-gradient References in Components
+Update 4 files that use `samsung-gradient` or `bg-samsung-blue` classes to use the current theme tokens instead (e.g., `bg-primary` gradient equivalent).
 
-The handler will be ~150 lines of Supabase client queries using the service role client (already available in core-engine). Each action reads/writes to existing `astra_*` tables. No new tables or migrations needed.
+### Step 6: Audit and Fix Critical Inline Styles
+Replace the most impactful hardcoded inline color styles in page components with theme-aware CSS variable references, prioritizing user-facing pages.
+
+---
+
+## Expected Outcome
+- Single consistent theme application (no flash of old styles)
+- No duplicate Tailwind injection
+- No stale design tokens from localStorage
+- Clean cascade: one `@layer base` source of truth in `index.css`
+- Estimated CSS reduction: ~50 lines of duplicate/conflicting rules removed
 
