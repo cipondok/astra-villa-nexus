@@ -180,7 +180,7 @@ const VendorSmartSummary = () => {
   return (
     <div className="space-y-6">
       {/* Property Type Header */}
-      <Card className="samsung-gradient border-0 shadow-lg">
+      <Card className="bg-primary border-0 shadow-lg">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
