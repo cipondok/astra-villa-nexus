@@ -744,7 +744,7 @@ const AppContent = () => {
                 <Route path="/user-activation" element={<UserActivationDashboard />} />
                 <Route path="/marketing-performance" element={<MarketingPerformancePage />} />
                 <Route path="/company-dashboard" element={<CompanyDashboardPage />} />
-                <Route path="/executive-kpis" element={<ExecutiveKPIsPage />} />
+                
                 <Route path="/kpi-command-center" element={<KPICommandCenterPage />} />
                 <Route path="/global-investor-terminal" element={<GlobalInvestorTerminalPage />} />
                 <Route path="/agent-productivity" element={<AgentProductivityIntelligencePage />} />
