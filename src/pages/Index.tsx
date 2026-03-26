@@ -597,7 +597,58 @@ const Index = () => {
         <SectionErrorBoundary sectionName="Hero" fallbackMinHeight="400px">
         <section className="relative w-full" id="hero-wrapper">
           {/* Hero with search panel integrated */}
-          <Suspense fallback={<div className="min-h-[80vh] bg-background" />}>
+          <Suspense
+            fallback={
+              <section className="relative w-full overflow-hidden border-b border-border/30 bg-background">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,hsl(var(--primary)/0.16),transparent_28%),radial-gradient(circle_at_top_right,hsl(var(--accent)/0.12),transparent_30%),linear-gradient(180deg,hsl(var(--background)),hsl(var(--muted)/0.35))]" />
+                <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(hsl(var(--border)/0.18)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--border)/0.18)_1px,transparent_1px)] [background-size:36px_36px]" />
+                <div className="relative z-10">
+                  <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 lg:pt-16 pb-6 sm:pb-8">
+                    <div className="max-w-6xl mx-auto grid gap-6 lg:grid-cols-[1.25fr_0.9fr] lg:gap-8 items-start animate-pulse">
+                      <div>
+                        <div className="mb-4 h-7 w-44 rounded-full border border-primary/20 bg-primary/10" />
+                        <div className="h-14 sm:h-16 lg:h-24 max-w-2xl rounded-2xl bg-card/70" />
+                        <div className="mt-4 h-6 w-72 rounded-xl bg-card/60" />
+                        <div className="mt-4 space-y-2 max-w-2xl">
+                          <div className="h-4 rounded-xl bg-muted/60" />
+                          <div className="h-4 w-11/12 rounded-xl bg-muted/50" />
+                        </div>
+                        <div className="mt-5 flex flex-wrap gap-2.5">
+                          <div className="h-10 w-32 rounded-full border border-border/60 bg-card/70" />
+                          <div className="h-10 w-36 rounded-full border border-border/60 bg-card/70" />
+                          <div className="h-10 w-28 rounded-full border border-border/60 bg-card/70" />
+                        </div>
+                        <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                          <div className="h-12 w-64 rounded-xl bg-primary/20" />
+                          <div className="h-12 w-56 rounded-xl border border-border/60 bg-card/50" />
+                        </div>
+                      </div>
+                      <div className="grid gap-4">
+                        <div className="rounded-3xl border border-border/50 bg-card/75 p-5 backdrop-blur-xl">
+                          <div className="mb-3 h-6 w-36 rounded-lg bg-primary/10" />
+                          <div className="space-y-3">
+                            <div className="h-4 rounded-xl bg-muted/60" />
+                            <div className="h-4 rounded-xl bg-muted/50" />
+                            <div className="h-4 w-5/6 rounded-xl bg-muted/40" />
+                          </div>
+                        </div>
+                        <div className="rounded-3xl border border-border/50 bg-card/75 p-5 backdrop-blur-xl">
+                          <div className="mb-3 h-6 w-32 rounded-lg bg-accent/10" />
+                          <div className="space-y-3">
+                            <div className="h-4 rounded-xl bg-muted/60" />
+                            <div className="h-4 w-4/5 rounded-xl bg-muted/50" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-8 rounded-[28px] border border-border/50 bg-card/55 p-2 shadow-2xl backdrop-blur-xl">
+                      <SearchPanelSkeleton />
+                    </div>
+                  </div>
+                </div>
+              </section>
+            }
+          >
             <AstraHero
               language={language}
               onSearch={(searchData) => {
