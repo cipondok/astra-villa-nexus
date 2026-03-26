@@ -616,8 +616,9 @@ export const GlobalExpansionCommandCenter = lazyRetry(() => import("./GlobalExpa
 type SectionRenderer = (onSectionChange?: (s: string) => void) => React.ReactNode;
 
 export const sectionRenderMap: Record<string, SectionRenderer> = {
-  // Overview & diagnostics
-  "overview":            (sc) => <AdminOverview onSectionChange={sc} />,
+  // Overview = Execution Command Center (primary dashboard)
+  "overview":            () => <ExecutionCommandCenter />,
+  "system-overview":     (sc) => <AdminOverview onSectionChange={sc} />,
   "diagnostic":          () => <ProjectDiagnosticSystem />,
   "project-progress":    (sc) => <LaunchReadinessDashboard onSectionChange={sc} />,
   "launch-readiness":    (sc) => <LaunchReadinessDashboard onSectionChange={sc} />,
