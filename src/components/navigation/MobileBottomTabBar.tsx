@@ -58,7 +58,7 @@ export default function MobileBottomTabBar() {
               onClick={() => handleTap(tab.path)}
               className={cn(
                 "flex flex-col items-center justify-center gap-0.5 flex-1",
-                "min-h-[52px] py-1.5 rounded-lg transition-colors duration-150",
+                "min-h-[56px] py-1.5 rounded-lg transition-colors duration-150",
                 "active:scale-95 active:bg-muted/40",
                 tab.accent && !active && "text-primary",
                 active ? "text-primary" : !tab.accent && "text-muted-foreground",
