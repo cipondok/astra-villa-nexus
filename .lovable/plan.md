@@ -1,61 +1,57 @@
 
 
-# Fix Dual/Legacy Style Conflicts in ASTRA Villa
+# Mobile Style Upgrade — Header, Login Button & Element Layout
 
-## Problem Diagnosis
+## Current Issues (from screenshot at 390px)
+1. **Login button** is small (`h-8 px-3 text-xs`) — barely meets tap targets
+2. **Header actions** (theme toggle, language toggle, login, hamburger) are all cramped in a single row with `space-x-2`
+3. **Language toggle button** takes excessive space on mobile showing text
+4. **Theme toggle** adds visual clutter at small sizes
+5. **No clear visual hierarchy** — all header actions compete equally
 
-The platform displays inconsistent "old style" and "new style" due to **5 root causes**:
+## Plan
 
-### 1. Duplicate `@tailwind` Directives (Critical)
-- `src/index.css` has `@tailwind base/components/utilities` at lines 11-13
-- `src/styles/mobile-first-responsive.css` **also** has `@tailwind base/components/utilities` at lines 1-3
-- This file is `@import`ed at the top of `index.css`, causing Tailwind's base styles to be injected **twice**, with unpredictable cascade ordering
+### Step 1: Optimize Mobile Header Actions in `EnhancedNavigation.tsx`
 
-### 2. ThemeSettingsContext Injects Legacy Samsung/Titanium Variables
-- `ThemeSettingsContext.tsx` (lines 67-72) dynamically sets `--samsung-blue-primary`, `--samsung-blue-light`, `--samsung-blue-dark`, `--titanium-light/medium/dark/white` CSS variables on every render
-- These are **old brand tokens** that conflict with the current Sky Blue + Gold theme defined in `index.css`
+**Login button (unauthenticated state):**
+- Increase to `h-10 px-4 text-sm` on mobile (44px tap target compliant)
+- Add stronger visual weight — full primary fill with slight shadow
+- Make it the most prominent element in the header
 
-### 3. DesignSystemProvider Overrides CSS Variables
-- `DesignSystemProvider.tsx` sets font, spacing, radius, shadow, and animation CSS variables from a Zustand store with **persisted state**
-- If a user visited the site during an older design iteration, stale values persist in localStorage (`design-system-config`), overriding current theme
+**Language toggle:**
+- On mobile, reduce to a compact icon-sized button (`h-8 w-8`) showing just flag/code abbreviation
+- Keep full text version for `md:` and up
 
-### 4. Competing `@layer base` Blocks
-- `index.css` line 215: `@layer base { :root { ... } }` — the main theme
-- `mobile-first-responsive.css` line 10: `@layer base { html { ... } body { ... } }` — sets conflicting `line-height: 1.6` vs `index.css`'s `line-height: 1.5`, and `font-size: 1rem` vs `14px`
+**Theme toggle:**
+- Move into the mobile hamburger menu instead of always-visible in header
+- Keeps header cleaner on small screens
 
-### 5. Inline Hardcoded Colors in Components
-- 518 matches of inline `style={{ background/color: '#...' }}` across 40 files
-- Components like `ServiceForm.tsx` use `bg-samsung-gradient`, `bg-samsung-blue` — legacy class names
-- `VendorSmartSummary.tsx`, `VendorPerformanceDashboard.tsx`, `EnhancedVendorDashboard.tsx` use `samsung-gradient` class
+**Hamburger menu button:**
+- Keep at `h-10 w-10` (already close to compliant)
 
----
+**Header height:**
+- Maintain `h-12` on mobile — adequate for the cleaned-up actions
 
-## Implementation Plan
+### Step 2: Improve Mobile Menu Drawer in `EnhancedNavigation.tsx`
 
-### Step 1: Remove Duplicate @tailwind from mobile-first-responsive.css
-Remove lines 1-3 (`@tailwind base/components/utilities`) from `src/styles/mobile-first-responsive.css`. The file is already imported into `index.css` which has its own `@tailwind` directives.
+- Add theme toggle inside the mobile dropdown menu
+- Increase menu item touch targets to `min-h-[48px]` with `py-3`
+- Add language toggle as a full-width row in the menu
+- Login button inside menu: full-width, `h-11`, prominent styling
 
-### Step 2: Remove Legacy Samsung/Titanium Variable Injection
-In `src/contexts/ThemeSettingsContext.tsx`, remove the 6 lines (67-72) that set `--samsung-blue-*` and `--titanium-*` CSS variables. These are already defined statically in `index.css` `:root` and `.dark` blocks with the correct current values.
+### Step 3: Refine Bottom Tab Bar in `MobileBottomTabBar.tsx`
 
-### Step 3: Clear Stale DesignSystem localStorage
-In `src/components/DesignSystemProvider.tsx`, add a version check that clears the persisted `design-system-config` if it was saved under an older schema version, ensuring users always get the current defaults.
+- Increase minimum height from `52px` to `56px` for better tap compliance
+- Slightly larger icon sizes on the non-accent tabs (`h-[22px] w-[22px]`)
+- Active indicator dot more visible
 
-### Step 4: Resolve Conflicting @layer base Rules
-In `src/styles/mobile-first-responsive.css`, remove the `@layer base` block (lines 10-44) that conflicts with `index.css` base styles. Keep only `@layer utilities` and `@layer components` rules in that file.
+## Files Modified
+1. `src/components/navigation/EnhancedNavigation.tsx` — header action layout, login button sizing, move theme/language toggles into mobile menu
+2. `src/components/navigation/MobileBottomTabBar.tsx` — minor size refinements
 
-### Step 5: Replace Legacy samsung-gradient References in Components
-Update 4 files that use `samsung-gradient` or `bg-samsung-blue` classes to use the current theme tokens instead (e.g., `bg-primary` gradient equivalent).
-
-### Step 6: Audit and Fix Critical Inline Styles
-Replace the most impactful hardcoded inline color styles in page components with theme-aware CSS variable references, prioritizing user-facing pages.
-
----
-
-## Expected Outcome
-- Single consistent theme application (no flash of old styles)
-- No duplicate Tailwind injection
-- No stale design tokens from localStorage
-- Clean cascade: one `@layer base` source of truth in `index.css`
-- Estimated CSS reduction: ~50 lines of duplicate/conflicting rules removed
+## Architecture Notes
+- No new dependencies
+- All styling via Tailwind responsive prefixes (mobile-first)
+- Maintains existing i18n integration
+- Preserves all existing functionality (admin button, CS dashboard, notifications)
 
