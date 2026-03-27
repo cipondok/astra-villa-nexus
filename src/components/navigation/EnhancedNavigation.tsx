@@ -215,27 +215,33 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
           className="lg:hidden dropdown-ios border-t border-border/30 mt-2 mx-3 mb-3"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="p-4 space-y-3">
+          <div className="p-4 space-y-1">
             {navItems.map((item) => (
               <button
                 key={item.name}
                 onClick={() => handleNavClick(item.path)}
                 title={item.name}
-                className="flex items-center gap-2 w-full text-left text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 py-3 min-h-[44px] active:bg-muted/40 rounded-lg px-2"
+                className="flex items-center gap-2.5 w-full text-left text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200 min-h-[48px] active:bg-muted/40 rounded-lg px-3"
               >
                 {item.icon && <item.icon className="h-4 w-4" />}
                 {item.name}
               </button>
             ))}
+
+            {/* Theme & Language in mobile menu */}
+            <div className="flex items-center justify-between min-h-[48px] px-3 border-t border-border/30 mt-2 pt-2">
+              <span className="text-xs text-muted-foreground font-medium">Theme</span>
+              <ThemeToggleSwitch language={language} />
+            </div>
             
             {user ? (
-              <div className="space-y-2 pt-3 border-t border-border/30">
+              <div className="space-y-1 pt-2 border-t border-border/30">
                 {adminData && (
                   <Button
                     onClick={handleAdminClick}
                     variant="ghost"
                     size="sm"
-                    className="w-full justify-start bg-destructive/10 hover:bg-destructive/20 text-destructive h-9 text-sm"
+                    className="w-full justify-start bg-destructive/10 hover:bg-destructive/20 text-destructive min-h-[48px] text-sm"
                   >
                     <Shield className="h-4 w-4 mr-2" />
                     {t('nav.adminPanel')}
@@ -250,7 +256,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                     }}
                     variant="default"
                     size="sm"
-                    className="w-full justify-start bg-primary hover:bg-primary/90 text-primary-foreground font-medium h-9 text-sm"
+                    className="w-full justify-start bg-primary hover:bg-primary/90 text-primary-foreground font-medium min-h-[48px] text-sm"
                   >
                     <Headphones className="h-4 w-4 mr-2" />
                     CS Dashboard
@@ -261,7 +267,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                   onClick={handleSignOut}
                   variant="ghost"
                   size="sm"
-                  className="w-full justify-start text-muted-foreground hover:text-foreground h-9 text-sm"
+                  className="w-full justify-start text-muted-foreground hover:text-foreground min-h-[48px] text-sm"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
                   {t('auth.signOut')}
@@ -276,7 +282,7 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
                       setIsOpen(false);
                     }}
                     size="sm"
-                    className="w-full btn-primary-ios h-9 text-sm"
+                    className="w-full btn-primary-ios h-11 text-sm font-semibold shadow-md"
                   >
                     {t('auth.signIn')}
                   </Button>

@@ -74,7 +74,7 @@ export default function MobileBottomTabBar() {
                   <tab.icon className="h-4 w-4" />
                 </div>
               ) : (
-                <tab.icon className={cn("h-5 w-5", active && "drop-shadow-[0_0_4px_hsl(var(--primary)/0.4)]")} />
+                <tab.icon className={cn("h-[22px] w-[22px]", active && "drop-shadow-[0_0_4px_hsl(var(--primary)/0.4)]")} />
               )}
               <span className={cn(
                 "text-[9px] font-medium leading-none",
