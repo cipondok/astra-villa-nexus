@@ -353,6 +353,7 @@ const PropertyModelViewer3D: React.FC<PropertyModelViewer3DProps> = ({
           modelPath={modelPath} scale={scale} position={position} environment={envPreset}
           hotspots={resolvedHotspots} activeHotspot={activeHotspot} onHotspotClick={handleHotspotClick}
           autoRotate={autoRotate} controlsRef={controlsRef} cameraTarget={cameraTarget} onCameraComplete={handleCameraComplete}
+          isNight={isNight}
         />
       </Canvas>
 
