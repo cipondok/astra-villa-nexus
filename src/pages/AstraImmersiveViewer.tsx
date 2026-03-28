@@ -97,7 +97,7 @@ export default function AstraImmersiveViewer() {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -320, opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="w-[320px] min-w-[320px] border-r border-[hsl(var(--border))]/8 flex flex-col overflow-y-auto z-10"
+            className="col-span-3 border-r border-[hsl(var(--border))]/8 flex flex-col overflow-y-auto z-10"
             style={{ background: 'linear-gradient(180deg, rgba(11,11,11,0.95) 0%, rgba(15,15,15,0.98) 100%)' }}
           >
             {/* Header */}
