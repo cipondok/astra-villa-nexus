@@ -40,73 +40,78 @@ function EmissiveWindow({ position, isNight }: { position: [number, number, numb
   );
 }
 
-// ── Procedural Modern Villa ──
+// ── Procedural Modern Villa (optimized geometry) ──
 function VillaStructure({ isNight }: { isNight: boolean }) {
   const ref = useRef<THREE.Group>(null);
 
-  const windowPositions: [number, number, number][] = [
+  const windowPositions: [number, number, number][] = useMemo(() => [
     [-2.5, 1.5, 2.01], [0, 1.5, 2.01], [2.5, 1.5, 2.01], [1.5, 4, 2.26],
-  ];
+  ], []);
+
+  // Memoize reused materials to avoid re-creation
+  const materials = useMemo(() => ({
+    wall1: new THREE.MeshStandardMaterial({ color: '#f5f0e8', roughness: 0.3, metalness: 0.05 }),
+    wall2: new THREE.MeshStandardMaterial({ color: '#ede8de', roughness: 0.35, metalness: 0.05 }),
+    pool: new THREE.MeshStandardMaterial({ color: '#4da8c4', roughness: 0.1, metalness: 0.2, transparent: true, opacity: 0.85 }),
+    poolEdge: new THREE.MeshStandardMaterial({ color: '#d4cfc2', roughness: 0.6 }),
+    roof: new THREE.MeshStandardMaterial({ color: '#2a2a2a', roughness: 0.5, metalness: 0.3 }),
+    pillar: new THREE.MeshStandardMaterial({ color: '#1a1a1a', roughness: 0.3, metalness: 0.5 }),
+    ground: new THREE.MeshStandardMaterial({ color: '#3d6b3d', roughness: 0.9 }),
+    path: new THREE.MeshStandardMaterial({ color: '#c8b896', roughness: 0.7 }),
+    trunk: new THREE.MeshStandardMaterial({ color: '#5a3825', roughness: 0.8 }),
+    leaves: new THREE.MeshStandardMaterial({ color: '#2d5a2d', roughness: 0.7 }),
+  }), []);
+
+  // Memoize shared geometries (low-poly)
+  const geos = useMemo(() => ({
+    mainBody: new THREE.BoxGeometry(6, 2.8, 4),
+    wing: new THREE.BoxGeometry(4, 2.5, 3.5),
+    pool: new THREE.BoxGeometry(4, 0.3, 2),
+    poolEdge: new THREE.BoxGeometry(4.2, 0.4, 2.2),
+    roofMain: new THREE.BoxGeometry(7, 0.12, 5),
+    roofWing: new THREE.BoxGeometry(5, 0.12, 4.5),
+    pillar: new THREE.CylinderGeometry(0.08, 0.08, 2.8, 6),
+    ground: new THREE.BoxGeometry(16, 0.08, 14),
+    path: new THREE.BoxGeometry(1.5, 0.05, 5),
+    trunk: new THREE.CylinderGeometry(0.08, 0.12, 2, 5),
+    canopy: new THREE.SphereGeometry(0.9, 6, 6),
+  }), []);
 
   return (
     <group ref={ref} position={[0, 0, 0]}>
       {/* Main body */}
-      <RoundedBox args={[6, 2.8, 4]} radius={0.08} position={[0, 1.4, 0]}>
-        <meshPhysicalMaterial color="#f5f0e8" roughness={0.3} metalness={0.05} clearcoat={0.4} />
-      </RoundedBox>
+      <mesh geometry={geos.mainBody} material={materials.wall1} position={[0, 1.4, 0]} />
+      {/* Second floor */}
+      <mesh geometry={geos.wing} material={materials.wall2} position={[1.5, 4, 0.5]} />
 
-      {/* Second floor offset wing */}
-      <RoundedBox args={[4, 2.5, 3.5]} radius={0.06} position={[1.5, 4, 0.5]}>
-        <meshPhysicalMaterial color="#ede8de" roughness={0.35} metalness={0.05} clearcoat={0.3} />
-      </RoundedBox>
-
-      {/* Glass panels (emissive at night) */}
+      {/* Windows (emissive at night) */}
       {windowPositions.map((pos, i) => (
         <EmissiveWindow key={`w-${i}`} position={pos} isNight={isNight} />
       ))}
 
-      {/* Infinity pool */}
-      <Box args={[4, 0.3, 2]} position={[-1, 0.15, 3.5]}>
-        <meshPhysicalMaterial color="#4da8c4" roughness={0.05} metalness={0.2} transmission={0.4} thickness={1} opacity={0.85} transparent />
-      </Box>
-      <Box args={[4.2, 0.4, 2.2]} position={[-1, 0.05, 3.5]}>
-        <meshPhysicalMaterial color="#d4cfc2" roughness={0.6} metalness={0} />
-      </Box>
+      {/* Pool */}
+      <mesh geometry={geos.pool} material={materials.pool} position={[-1, 0.15, 3.5]} />
+      <mesh geometry={geos.poolEdge} material={materials.poolEdge} position={[-1, 0.05, 3.5]} />
 
-      {/* Roof overhang */}
-      <Box args={[7, 0.12, 5]} position={[0, 2.85, 0]}>
-        <meshPhysicalMaterial color="#2a2a2a" roughness={0.5} metalness={0.3} />
-      </Box>
-      <Box args={[5, 0.12, 4.5]} position={[1.5, 5.3, 0.5]}>
-        <meshPhysicalMaterial color="#2a2a2a" roughness={0.5} metalness={0.3} />
-      </Box>
+      {/* Roof overhangs */}
+      <mesh geometry={geos.roofMain} material={materials.roof} position={[0, 2.85, 0]} />
+      <mesh geometry={geos.roofWing} material={materials.roof} position={[1.5, 5.3, 0.5]} />
 
       {/* Pillars */}
       {[[-3, 1.4, 2.2], [3, 1.4, 2.2]].map((pos, i) => (
-        <Cylinder key={`p-${i}`} args={[0.08, 0.08, 2.8, 8]} position={pos as [number, number, number]}>
-          <meshPhysicalMaterial color="#1a1a1a" roughness={0.3} metalness={0.5} />
-        </Cylinder>
+        <mesh key={`p-${i}`} geometry={geos.pillar} material={materials.pillar} position={pos as [number, number, number]} />
       ))}
 
-      {/* Ground plane / garden */}
-      <Box args={[16, 0.08, 14]} position={[0, -0.04, 0]}>
-        <meshPhysicalMaterial color="#3d6b3d" roughness={0.9} metalness={0} />
-      </Box>
-
+      {/* Ground */}
+      <mesh geometry={geos.ground} material={materials.ground} position={[0, -0.04, 0]} />
       {/* Pathway */}
-      <Box args={[1.5, 0.05, 5]} position={[0, 0.01, 5]}>
-        <meshPhysicalMaterial color="#c8b896" roughness={0.7} metalness={0} />
-      </Box>
+      <mesh geometry={geos.path} material={materials.path} position={[0, 0.01, 5]} />
 
-      {/* Tropical trees */}
+      {/* Trees (low-poly) */}
       {[[-5, 0, 2], [5, 0, -3], [-4, 0, -4], [6, 0, 3]].map((pos, i) => (
         <group key={`tree-${i}`} position={pos as [number, number, number]}>
-          <Cylinder args={[0.08, 0.12, 2, 6]} position={[0, 1, 0]}>
-            <meshPhysicalMaterial color="#5a3825" roughness={0.8} />
-          </Cylinder>
-          <Sphere args={[0.9, 8, 8]} position={[0, 2.5, 0]}>
-            <meshPhysicalMaterial color="#2d5a2d" roughness={0.7} />
-          </Sphere>
+          <mesh geometry={geos.trunk} material={materials.trunk} position={[0, 1, 0]} />
+          <mesh geometry={geos.canopy} material={materials.leaves} position={[0, 2.5, 0]} />
         </group>
       ))}
     </group>
