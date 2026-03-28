@@ -90,6 +90,7 @@ const GlobalGrowthEngineDashboard = lazy(() => import('@/pages/admin/GlobalGrowt
 const CapitalIntelligenceDashboard = lazy(() => import('@/pages/admin/CapitalIntelligenceDashboard'));
 const FounderExecutionDashboard = lazy(() => import('@/pages/admin/FounderExecutionDashboard'));
 const ExecutionCommandCenter = lazy(() => import('@/pages/admin/ExecutionCommandCenter'));
+const DealExecutionCommandCenter = lazy(() => import('@/pages/admin/DealExecutionCommandCenter'));
 const AdminAnalytics = lazy(() => import('@/pages/AdminAnalytics'));
 const ProvinceProperties = lazy(() => import('@/pages/ProvinceProperties'));
 const LocationAnalyticsDashboard = lazy(() => import('@/pages/LocationAnalyticsDashboard'));
