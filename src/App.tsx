@@ -601,6 +601,9 @@ const AppContent = () => {
                 <Route path="/investment-advisor" element={<ProtectedRoute />}>
                   <Route index element={<InvestmentAdvisorPage />} />
                 </Route>
+                <Route path="/ai-advisor" element={<ProtectedRoute />}>
+                  <Route index element={<AIInvestmentAdvisorChat />} />
+                </Route>
                 <Route path="/visual-search" element={<VisualSearchPage />} />
                 <Route path="/listing-predictor" element={<ProtectedRoute />}>
                   <Route index element={<ListingPredictorPage />} />
