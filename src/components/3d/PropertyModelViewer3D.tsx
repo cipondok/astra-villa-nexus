@@ -2,7 +2,7 @@ import React, { Suspense, useRef, useState, useCallback, useEffect } from 'react
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Environment, useGLTF, Center, ContactShadows, Html, useProgress, Float, Text, Sphere } from '@react-three/drei';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Maximize2, Minimize2, Sun, Sunset, Building2, RotateCw, Eye, ArrowUp, Home, X } from 'lucide-react';
+import { Maximize2, Minimize2, Sun, Moon, Sunset, Building2, RotateCw, Eye, ArrowUp, Home, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import * as THREE from 'three';
 
