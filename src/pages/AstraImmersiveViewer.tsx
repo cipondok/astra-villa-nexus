@@ -176,10 +176,13 @@ export default function AstraImmersiveViewer() {
               </GlassCard>
             </div>
 
-            {/* CTA */}
-            <div className="px-5 pb-6 mt-auto">
-              <button className="w-full h-11 rounded-xl bg-gradient-to-r from-[#C8A96A] to-[#B8955A] text-[#0B0B0B] text-sm font-bold flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-[#C8A96A]/20 transition-all">
-                <Shield className="h-4 w-4" /> Schedule Private Viewing
+            {/* CTAs */}
+            <div className="px-5 pb-6 mt-auto space-y-2">
+              <button className="w-full h-12 rounded-xl bg-gradient-to-r from-[#C8A96A] to-[#B8955A] text-[#0B0B0B] text-sm font-bold flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-[#C8A96A]/20 transition-all">
+                <DollarSign className="h-4 w-4" /> Invest Now
+              </button>
+              <button className="w-full h-10 rounded-xl border border-[#C8A96A]/20 text-[#C8A96A] text-xs font-semibold flex items-center justify-center gap-2 hover:bg-[#C8A96A]/5 transition-all">
+                <Shield className="h-3.5 w-3.5" /> Schedule Private Viewing
               </button>
             </div>
           </motion.aside>
