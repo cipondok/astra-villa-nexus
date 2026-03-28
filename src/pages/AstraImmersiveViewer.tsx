@@ -1,4 +1,4 @@
-import React, { useState, Suspense, lazy } from 'react';
+import React, { useState, useCallback, Suspense, lazy } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -7,7 +7,7 @@ import {
   Sparkles, Building2, PanelLeftClose, PanelRightClose, Sun, Moon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { PropertyScene } from '@/components/3d/PropertyScene';
+import { PropertyScene, type CameraCommandKey } from '@/components/3d/PropertyScene';
 import AIPanelContent from '@/components/3d/AIPanelContent';
 
 // ── Property data ──
@@ -78,11 +78,21 @@ export default function AstraImmersiveViewer() {
   const [showRight, setShowRight] = useState(true);
   const [activeHotspot, setActiveHotspot] = useState<string | null>(null);
   const [isNight, setIsNight] = useState(false);
+  const [cameraCommand, setCameraCommand] = useState<CameraCommandKey | null>(null);
 
   const handleHotspotClick = (label: string) => {
     setActiveHotspot(label);
     setShowRight(true);
   };
+
+  const handleCameraCommand = useCallback((cmd: CameraCommandKey) => {
+    setAutoRotate(false);
+    setCameraCommand(cmd);
+  }, []);
+
+  const handleCameraCommandComplete = useCallback(() => {
+    setCameraCommand(null);
+  }, []);
 
   return (
     <div className={cn(
@@ -202,7 +212,7 @@ export default function AstraImmersiveViewer() {
           >
             <color attach="background" args={['#0B0B0B']} />
             <fog attach="fog" args={['#0B0B0B', 20, 40]} />
-            <PropertyScene onHotspotClick={handleHotspotClick} autoRotate={autoRotate} isNight={isNight} />
+            <PropertyScene onHotspotClick={handleHotspotClick} autoRotate={autoRotate} isNight={isNight} cameraCommand={cameraCommand} onCameraCommandComplete={handleCameraCommandComplete} />
           </Canvas>
         </Suspense>
 
@@ -295,7 +305,7 @@ export default function AstraImmersiveViewer() {
             className="col-span-3 border-l border-[hsl(var(--border))]/8 flex flex-col z-10"
             style={{ background: 'linear-gradient(180deg, rgba(11,11,11,0.95) 0%, rgba(15,15,15,0.98) 100%)' }}
           >
-            <AIPanelContent />
+            <AIPanelContent onCameraCommand={handleCameraCommand} />
           </motion.aside>
         )}
       </AnimatePresence>
