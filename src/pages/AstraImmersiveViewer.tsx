@@ -109,13 +109,17 @@ function StaticFallback({ onRequestLoad }: { onRequestLoad: () => void }) {
 
 // ── Main Page ──
 export default function AstraImmersiveViewer() {
+  const { isWeak, isMobile } = useDeviceCapability();
+  const [forceLoad, setForceLoad] = useState(false);
+  const [dprCap, setDprCap] = useState(1.5);
   const [autoRotate, setAutoRotate] = useState(true);
   const [fullscreen, setFullscreen] = useState(false);
-  const [showLeft, setShowLeft] = useState(true);
-  const [showRight, setShowRight] = useState(true);
+  const [showLeft, setShowLeft] = useState(!isMobile);
+  const [showRight, setShowRight] = useState(!isMobile);
   const [activeHotspot, setActiveHotspot] = useState<string | null>(null);
   const [isNight, setIsNight] = useState(false);
   const [cameraCommand, setCameraCommand] = useState<CameraCommandKey | null>(null);
+  const show3D = !isWeak || forceLoad;
 
   const handleHotspotClick = (label: string) => {
     setActiveHotspot(label);
