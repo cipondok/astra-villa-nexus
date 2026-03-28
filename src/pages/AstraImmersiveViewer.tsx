@@ -77,6 +77,7 @@ export default function AstraImmersiveViewer() {
   const [showLeft, setShowLeft] = useState(true);
   const [showRight, setShowRight] = useState(true);
   const [activeHotspot, setActiveHotspot] = useState<string | null>(null);
+  const [isNight, setIsNight] = useState(false);
 
   const handleHotspotClick = (label: string) => {
     setActiveHotspot(label);
