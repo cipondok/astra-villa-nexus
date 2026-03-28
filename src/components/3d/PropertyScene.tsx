@@ -12,9 +12,10 @@ function useLerpedValue(target: number, speed = 0.04) {
 
 // ── Emissive Window (glows at night) ──
 function EmissiveWindow({ position, isNight }: { position: [number, number, number]; isNight: boolean }) {
-  const matRef = useRef<THREE.MeshPhysicalMaterial>(null);
+  const matRef = useRef<THREE.MeshStandardMaterial>(null);
   const emissiveTarget = isNight ? 1.8 : 0;
   const emissiveRef = useLerpedValue(emissiveTarget, 0.03);
+  const geo = useMemo(() => new THREE.BoxGeometry(1.6, 1.8, 0.05), []);
 
   useFrame(() => {
     if (matRef.current) {
@@ -23,20 +24,18 @@ function EmissiveWindow({ position, isNight }: { position: [number, number, numb
   });
 
   return (
-    <Box args={[1.6, 1.8, 0.05]} position={position}>
-      <meshPhysicalMaterial
+    <mesh geometry={geo} position={position}>
+      <meshStandardMaterial
         ref={matRef}
         color={isNight ? '#ffecd2' : '#88c8e8'}
         emissive={isNight ? '#ffb347' : '#000000'}
         emissiveIntensity={0}
         roughness={0.05}
         metalness={0.1}
-        transmission={isNight ? 0.1 : 0.6}
-        thickness={0.3}
-        opacity={isNight ? 0.95 : 0.7}
         transparent
+        opacity={isNight ? 0.95 : 0.7}
       />
-    </Box>
+    </mesh>
   );
 }
 
