@@ -271,9 +271,14 @@ function AdaptiveLighting({ isNight }: { isNight: boolean }) {
   return (
     <>
       <ambientLight ref={ambientRef} intensity={0.4} color={isNight ? '#1a2a4a' : '#ffffff'} />
-      <directionalLight ref={sunRef} position={[8, 12, 5]} intensity={1.2} castShadow shadow-mapSize={1024} color={isNight ? '#2244aa' : '#ffffff'} />
+      <directionalLight ref={sunRef} position={[8, 12, 5]} intensity={1.2} castShadow
+        shadow-mapSize-width={512} shadow-mapSize-height={512}
+        shadow-camera-far={20} shadow-camera-near={1}
+        shadow-camera-left={-8} shadow-camera-right={8}
+        shadow-camera-top={8} shadow-camera-bottom={-8}
+        color={isNight ? '#2244aa' : '#ffffff'}
+      />
       <directionalLight ref={fillRef} position={[-5, 8, -3]} intensity={0.4} color={isNight ? '#1a3366' : '#ffe4c4'} />
-      {/* Moonlight point light */}
       <pointLight ref={moonRef} position={[-8, 15, -5]} intensity={0} color="#6688cc" distance={40} />
     </>
   );
