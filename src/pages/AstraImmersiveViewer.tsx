@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Maximize2, Minimize2, RotateCcw, Play, Pause, Eye, MapPin,
   DollarSign, TrendingUp, Bed, Bath, Ruler, Star, Shield, ChevronRight,
-  Sparkles, Building2, PanelLeftClose, PanelRightClose
+  Sparkles, Building2, PanelLeftClose, PanelRightClose, Sun, Moon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PropertyScene } from '@/components/3d/PropertyScene';
@@ -77,6 +77,7 @@ export default function AstraImmersiveViewer() {
   const [showLeft, setShowLeft] = useState(true);
   const [showRight, setShowRight] = useState(true);
   const [activeHotspot, setActiveHotspot] = useState<string | null>(null);
+  const [isNight, setIsNight] = useState(false);
 
   const handleHotspotClick = (label: string) => {
     setActiveHotspot(label);
@@ -194,7 +195,7 @@ export default function AstraImmersiveViewer() {
           >
             <color attach="background" args={['#0B0B0B']} />
             <fog attach="fog" args={['#0B0B0B', 20, 40]} />
-            <PropertyScene onHotspotClick={handleHotspotClick} autoRotate={autoRotate} />
+            <PropertyScene onHotspotClick={handleHotspotClick} autoRotate={autoRotate} isNight={isNight} />
           </Canvas>
         </Suspense>
 
@@ -219,6 +220,17 @@ export default function AstraImmersiveViewer() {
         {/* Floating Controls */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
           <GlassCard className="flex items-center gap-1 p-1.5">
+            <button
+              onClick={() => setIsNight(!isNight)}
+              className={cn(
+                'w-9 h-9 rounded-xl flex items-center justify-center transition-all',
+                isNight ? 'bg-[#C8A96A]/20 text-[#C8A96A]' : 'text-muted-foreground hover:text-foreground'
+              )}
+              title={isNight ? 'Switch to Day' : 'Switch to Night'}
+            >
+              {isNight ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            </button>
+            <div className="w-px h-5 bg-[hsl(var(--border))]/10 mx-0.5" />
             <button
               onClick={() => setAutoRotate(!autoRotate)}
               className={cn(

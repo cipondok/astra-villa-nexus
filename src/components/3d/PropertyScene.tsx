@@ -1,11 +1,52 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Environment, ContactShadows, Float, Text, Box, Sphere, Cylinder, RoundedBox } from '@react-three/drei';
 import * as THREE from 'three';
 
+// ── Smooth lerped value hook ──
+function useLerpedValue(target: number, speed = 0.04) {
+  const ref = useRef(target);
+  useFrame(() => { ref.current += (target - ref.current) * speed; });
+  return ref;
+}
+
+// ── Emissive Window (glows at night) ──
+function EmissiveWindow({ position, isNight }: { position: [number, number, number]; isNight: boolean }) {
+  const matRef = useRef<THREE.MeshPhysicalMaterial>(null);
+  const emissiveTarget = isNight ? 1.8 : 0;
+  const emissiveRef = useLerpedValue(emissiveTarget, 0.03);
+
+  useFrame(() => {
+    if (matRef.current) {
+      matRef.current.emissiveIntensity = emissiveRef.current;
+    }
+  });
+
+  return (
+    <Box args={[1.6, 1.8, 0.05]} position={position}>
+      <meshPhysicalMaterial
+        ref={matRef}
+        color={isNight ? '#ffecd2' : '#88c8e8'}
+        emissive={isNight ? '#ffb347' : '#000000'}
+        emissiveIntensity={0}
+        roughness={0.05}
+        metalness={0.1}
+        transmission={isNight ? 0.1 : 0.6}
+        thickness={0.3}
+        opacity={isNight ? 0.95 : 0.7}
+        transparent
+      />
+    </Box>
+  );
+}
+
 // ── Procedural Modern Villa ──
-function VillaStructure() {
+function VillaStructure({ isNight }: { isNight: boolean }) {
   const ref = useRef<THREE.Group>(null);
+
+  const windowPositions: [number, number, number][] = [
+    [-2.5, 1.5, 2.01], [0, 1.5, 2.01], [2.5, 1.5, 2.01], [1.5, 4, 2.26],
+  ];
 
   return (
     <group ref={ref} position={[0, 0, 0]}>
@@ -19,11 +60,9 @@ function VillaStructure() {
         <meshPhysicalMaterial color="#ede8de" roughness={0.35} metalness={0.05} clearcoat={0.3} />
       </RoundedBox>
 
-      {/* Glass panels (windows) */}
-      {[[-2.5, 1.5, 2.01], [0, 1.5, 2.01], [2.5, 1.5, 2.01], [1.5, 4, 2.26]].map((pos, i) => (
-        <Box key={`w-${i}`} args={[1.6, 1.8, 0.05]} position={pos as [number, number, number]}>
-          <meshPhysicalMaterial color="#88c8e8" roughness={0.05} metalness={0.1} transmission={0.6} thickness={0.3} opacity={0.7} transparent />
-        </Box>
+      {/* Glass panels (emissive at night) */}
+      {windowPositions.map((pos, i) => (
+        <EmissiveWindow key={`w-${i}`} position={pos} isNight={isNight} />
       ))}
 
       {/* Infinity pool */}
@@ -168,8 +207,38 @@ function HotspotMarker({ position, label, onClick }: { position: [number, number
   );
 }
 
+// ── Adaptive Lighting System ──
+function AdaptiveLighting({ isNight }: { isNight: boolean }) {
+  const ambientRef = useRef<THREE.AmbientLight>(null);
+  const sunRef = useRef<THREE.DirectionalLight>(null);
+  const fillRef = useRef<THREE.DirectionalLight>(null);
+  const moonRef = useRef<THREE.PointLight>(null);
+
+  const ambientTarget = useLerpedValue(isNight ? 0.08 : 0.4, 0.03);
+  const sunTarget = useLerpedValue(isNight ? 0.05 : 1.2, 0.03);
+  const fillTarget = useLerpedValue(isNight ? 0.02 : 0.4, 0.03);
+  const moonTarget = useLerpedValue(isNight ? 0.6 : 0, 0.03);
+
+  useFrame(() => {
+    if (ambientRef.current) ambientRef.current.intensity = ambientTarget.current;
+    if (sunRef.current) sunRef.current.intensity = sunTarget.current;
+    if (fillRef.current) fillRef.current.intensity = fillTarget.current;
+    if (moonRef.current) moonRef.current.intensity = moonTarget.current;
+  });
+
+  return (
+    <>
+      <ambientLight ref={ambientRef} intensity={0.4} color={isNight ? '#1a2a4a' : '#ffffff'} />
+      <directionalLight ref={sunRef} position={[8, 12, 5]} intensity={1.2} castShadow shadow-mapSize={1024} color={isNight ? '#2244aa' : '#ffffff'} />
+      <directionalLight ref={fillRef} position={[-5, 8, -3]} intensity={0.4} color={isNight ? '#1a3366' : '#ffe4c4'} />
+      {/* Moonlight point light */}
+      <pointLight ref={moonRef} position={[-8, 15, -5]} intensity={0} color="#6688cc" distance={40} />
+    </>
+  );
+}
+
 // ── Scene composition ──
-export function PropertyScene({ onHotspotClick, autoRotate }: { onHotspotClick: (label: string) => void; autoRotate: boolean }) {
+export function PropertyScene({ onHotspotClick, autoRotate, isNight = false }: { onHotspotClick: (label: string) => void; autoRotate: boolean; isNight?: boolean }) {
   const hotspots: { position: [number, number, number]; label: string }[] = [
     { position: [3, 1, 2], label: 'Infinity Pool' },
     { position: [-2.5, 2, 0], label: 'Master Suite' },
@@ -179,11 +248,9 @@ export function PropertyScene({ onHotspotClick, autoRotate }: { onHotspotClick: 
 
   return (
     <>
-      <ambientLight intensity={0.4} />
-      <directionalLight position={[8, 12, 5]} intensity={1.2} castShadow shadow-mapSize={1024} />
-      <directionalLight position={[-5, 8, -3]} intensity={0.4} color="#ffe4c4" />
+      <AdaptiveLighting isNight={isNight} />
 
-      <VillaStructure />
+      <VillaStructure isNight={isNight} />
       <FloatingParticles />
       <AutoRotate enabled={autoRotate} />
 
@@ -191,8 +258,8 @@ export function PropertyScene({ onHotspotClick, autoRotate }: { onHotspotClick: 
         <HotspotMarker key={hs.label} position={hs.position} label={hs.label} onClick={() => onHotspotClick(hs.label)} />
       ))}
 
-      <ContactShadows position={[0, -0.01, 0]} opacity={0.4} scale={20} blur={2} far={8} />
-      <Environment preset="sunset" />
+      <ContactShadows position={[0, -0.01, 0]} opacity={isNight ? 0.2 : 0.4} scale={20} blur={2} far={8} />
+      <Environment preset={isNight ? 'night' : 'sunset'} />
       {!autoRotate && <OrbitControls makeDefault target={[0, 2, 0]} minDistance={5} maxDistance={25} maxPolarAngle={Math.PI / 2.1} enableDamping dampingFactor={0.05} />}
     </>
   );

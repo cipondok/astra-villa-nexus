@@ -2,7 +2,7 @@ import React, { Suspense, useRef, useState, useCallback, useEffect } from 'react
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Environment, useGLTF, Center, ContactShadows, Html, useProgress, Float, Text, Sphere } from '@react-three/drei';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Maximize2, Minimize2, Sun, Sunset, Building2, RotateCw, Eye, ArrowUp, Home, X } from 'lucide-react';
+import { Maximize2, Minimize2, Sun, Moon, Sunset, Building2, RotateCw, Eye, ArrowUp, Home, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import * as THREE from 'three';
 
@@ -209,24 +209,49 @@ function CanvasLoader() {
   );
 }
 
+// ── Smooth Light Lerp ──
+function LerpedLight({ lightRef, target }: { lightRef: React.RefObject<THREE.Light>; target: number }) {
+  useFrame(() => {
+    if (lightRef.current) lightRef.current.intensity += (target - lightRef.current.intensity) * 0.04;
+  });
+  return null;
+}
+
 // ── Scene ──
 function SceneContent({
-  modelPath, scale, position, environment, hotspots, activeHotspot, onHotspotClick, autoRotate, controlsRef, cameraTarget, onCameraComplete,
+  modelPath, scale, position, environment, hotspots, activeHotspot, onHotspotClick, autoRotate, controlsRef, cameraTarget, onCameraComplete, isNight,
 }: {
   modelPath: string; scale: number; position: [number, number, number]; environment: EnvPreset;
   hotspots: Hotspot[]; activeHotspot: string | null; onHotspotClick: (h: Hotspot) => void;
   autoRotate: boolean; controlsRef: React.RefObject<any>;
   cameraTarget: { position: THREE.Vector3; lookAt: THREE.Vector3 } | null;
   onCameraComplete: () => void;
+  isNight: boolean;
 }) {
+  const ambientRef = useRef<THREE.AmbientLight>(null);
+  const sunRef = useRef<THREE.DirectionalLight>(null);
+  const fillRef = useRef<THREE.DirectionalLight>(null);
+  const moonRef = useRef<THREE.PointLight>(null);
+
   return (
     <>
-      <ambientLight intensity={0.35} />
-      <directionalLight position={[8, 12, 5]} intensity={1.4} castShadow
+      {/* Adaptive lighting */}
+      <ambientLight ref={ambientRef} intensity={isNight ? 0.08 : 0.35} color={isNight ? '#1a2a4a' : '#ffffff'} />
+      <LerpedLight lightRef={ambientRef} target={isNight ? 0.08 : 0.35} />
+
+      <directionalLight ref={sunRef} position={[8, 12, 5]} intensity={isNight ? 0.05 : 1.4} castShadow
         shadow-mapSize-width={2048} shadow-mapSize-height={2048}
         shadow-camera-far={30} shadow-camera-left={-10} shadow-camera-right={10}
-        shadow-camera-top={10} shadow-camera-bottom={-10} shadow-bias={-0.0005} />
-      <directionalLight position={[-5, 6, -3]} intensity={0.3} color="#ffe8d0" />
+        shadow-camera-top={10} shadow-camera-bottom={-10} shadow-bias={-0.0005}
+        color={isNight ? '#2244aa' : '#ffffff'} />
+      <LerpedLight lightRef={sunRef} target={isNight ? 0.05 : 1.4} />
+
+      <directionalLight ref={fillRef} position={[-5, 6, -3]} intensity={isNight ? 0.02 : 0.3} color={isNight ? '#1a3366' : '#ffe8d0'} />
+      <LerpedLight lightRef={fillRef} target={isNight ? 0.02 : 0.3} />
+
+      {/* Moonlight */}
+      <pointLight ref={moonRef} position={[-8, 15, -5]} intensity={isNight ? 0.5 : 0} color="#6688cc" distance={40} />
+      <LerpedLight lightRef={moonRef} target={isNight ? 0.5 : 0} />
 
       <Suspense fallback={<CanvasLoader />}>
         <GLBModel url={modelPath} scale={scale} position={position} />
@@ -236,8 +261,8 @@ function SceneContent({
         <HotspotMarker key={h.id} hotspot={h} isActive={activeHotspot === h.id} onClick={() => onHotspotClick(h)} />
       ))}
 
-      <ContactShadows position={[0, -0.01, 0]} opacity={0.5} scale={20} blur={2.5} far={8} resolution={512} />
-      <Environment preset={environment} />
+      <ContactShadows position={[0, -0.01, 0]} opacity={isNight ? 0.2 : 0.5} scale={20} blur={2.5} far={8} resolution={512} />
+      <Environment preset={isNight ? 'night' : environment} />
 
       <SmoothCameraController
         targetPosition={cameraTarget?.position || null}
@@ -271,6 +296,7 @@ const PropertyModelViewer3D: React.FC<PropertyModelViewer3DProps> = ({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [envPreset, setEnvPreset] = useState<EnvPreset>(environment);
   const [autoRotate, setAutoRotate] = useState(false);
+  const [isNight, setIsNight] = useState(false);
   const [activeHotspot, setActiveHotspot] = useState<string | null>(null);
   const [hotspotInfo, setHotspotInfo] = useState<Hotspot | null>(null);
   const [cameraTarget, setCameraTarget] = useState<{ position: THREE.Vector3; lookAt: THREE.Vector3 } | null>(null);
@@ -327,6 +353,7 @@ const PropertyModelViewer3D: React.FC<PropertyModelViewer3DProps> = ({
           modelPath={modelPath} scale={scale} position={position} environment={envPreset}
           hotspots={resolvedHotspots} activeHotspot={activeHotspot} onHotspotClick={handleHotspotClick}
           autoRotate={autoRotate} controlsRef={controlsRef} cameraTarget={cameraTarget} onCameraComplete={handleCameraComplete}
+          isNight={isNight}
         />
       </Canvas>
 
@@ -344,6 +371,10 @@ const PropertyModelViewer3D: React.FC<PropertyModelViewer3DProps> = ({
       {/* ── Bottom Toolbar ── */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10">
         <div className="flex items-center gap-1 px-2 py-1.5 rounded-2xl bg-[#0B0B0B]/70 backdrop-blur-xl border border-[hsl(var(--border))]/10 shadow-2xl">
+          <ToolBtn onClick={() => setIsNight(!isNight)} active={isNight} title={isNight ? 'Switch to Day' : 'Switch to Night'}>
+            {isNight ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+          </ToolBtn>
+          <div className="w-px h-5 bg-[hsl(var(--border))]/10 mx-0.5" />
           <ToolBtn onClick={() => setAutoRotate(!autoRotate)} active={autoRotate} title={autoRotate ? 'Stop rotation' : 'Auto rotate'}>
             <RotateCw className={cn('h-4 w-4', autoRotate && 'animate-spin')} style={autoRotate ? { animationDuration: '3s' } : {}} />
           </ToolBtn>
@@ -359,9 +390,11 @@ const PropertyModelViewer3D: React.FC<PropertyModelViewer3DProps> = ({
 
       {/* ── Environment Label ── */}
       <AnimatePresence>
-        <motion.div key={envPreset} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+        <motion.div key={`${envPreset}-${isNight}`} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
           className="absolute top-3 right-3 px-3 py-1 rounded-lg bg-[#0B0B0B]/60 backdrop-blur-sm border border-[hsl(var(--border))]/10 z-10">
-          <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">{envPreset}</span>
+          <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
+            {isNight ? '🌙 night' : `☀️ ${envPreset}`}
+          </span>
         </motion.div>
       </AnimatePresence>
 
