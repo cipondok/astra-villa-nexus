@@ -1,11 +1,11 @@
-import React, { useState, lazy, Suspense } from 'react';
+import React, { useState } from 'react';
 import { DndContext, closestCorners, DragEndEvent, DragOverlay, DragStartEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BarChart3, Users, Briefcase, TrendingUp, Target, Zap, ArrowRight, Bot, MessageSquare, DollarSign, Eye, Handshake, CheckCircle2, ChevronRight, Plus, LayoutDashboard, PieChart, Settings, FileText } from 'lucide-react';
+import { BarChart3, Users, Briefcase, TrendingUp, Target, Zap, ArrowRight, Bot, MessageSquare, DollarSign, Eye, Handshake, CheckCircle2, Plus, LayoutDashboard, PieChart, Settings, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// ── Types ──
 interface DealCard {
   id: string;
   investor: string;
@@ -14,7 +14,6 @@ interface DealCard {
   score: number;
   daysInStage: number;
   lastActivity: string;
-  avatar?: string;
 }
 
 type Stage = 'lead' | 'interested' | 'negotiation' | 'closed';
@@ -26,7 +25,6 @@ const STAGE_META: Record<Stage, { label: string; icon: React.ElementType; accent
   closed: { label: 'Closed', icon: CheckCircle2, accent: 'border-emerald-500/40' },
 };
 
-// ── Mock data ──
 const INITIAL_DEALS: Record<Stage, DealCard[]> = {
   lead: [
     { id: '1', investor: 'Marcus Chen', property: 'Seminyak Villa #12', value: '$420K', score: 72, daysInStage: 3, lastActivity: 'Viewed listing' },
@@ -46,40 +44,42 @@ const INITIAL_DEALS: Record<Stage, DealCard[]> = {
 };
 
 const AI_SUGGESTIONS = [
-  { type: 'urgent', text: 'Li Wei Zhang has been in "Interested" for 5 days. Send ROI comparison to accelerate.' },
-  { type: 'opportunity', text: 'David Kim's counter-offer gap is only 4%. Suggest splitting the difference.' },
-  { type: 'insight', text: 'Sarah Al-Rashid matches high-intent investor profile. Prioritize personal outreach.' },
-  { type: 'alert', text: 'James Porter inquiry is 1 day old. 24hr follow-up window closing.' },
+  { type: 'urgent' as const, text: "Li Wei Zhang has been in Interested for 5 days. Send ROI comparison to accelerate." },
+  { type: 'opportunity' as const, text: "David Kim's counter-offer gap is only 4%. Suggest splitting the difference." },
+  { type: 'insight' as const, text: 'Sarah Al-Rashid matches high-intent investor profile. Prioritize personal outreach.' },
+  { type: 'alert' as const, text: 'James Porter inquiry is 1 day old. 24hr follow-up window closing.' },
 ];
 
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: 'Pipeline', active: true },
-  { icon: Users, label: 'Investors' },
-  { icon: BarChart3, label: 'Analytics' },
-  { icon: PieChart, label: 'Reports' },
-  { icon: FileText, label: 'Documents' },
-  { icon: Settings, label: 'Settings' },
+  { icon: Users, label: 'Investors', active: false },
+  { icon: BarChart3, label: 'Analytics', active: false },
+  { icon: PieChart, label: 'Reports', active: false },
+  { icon: FileText, label: 'Documents', active: false },
+  { icon: Settings, label: 'Settings', active: false },
 ];
 
-// ── Deal Card Component ──
-const DealCardItem = React.forwardRef<HTMLDivElement, { deal: DealCard; isDragging?: boolean; onClick?: () => void }>(
-  ({ deal, isDragging, onClick }, ref) => {
-    const scoreColor = deal.score >= 80 ? 'text-emerald-400' : deal.score >= 60 ? 'text-amber-400' : 'text-red-400';
-    return (
+// ── Sortable Deal Card ──
+function SortableDealCard({ deal, onClick }: { deal: DealCard; onClick: () => void }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: deal.id });
+  const style = { transform: CSS.Transform.toString(transform), transition };
+  const scoreColor = deal.score >= 80 ? 'text-emerald-400' : deal.score >= 60 ? 'text-amber-400' : 'text-red-400';
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <motion.div
-        ref={ref}
         layout
         onClick={onClick}
         className={cn(
           'p-3 rounded-xl cursor-grab active:cursor-grabbing transition-all duration-200',
-          'bg-[#0F1726]/80 border border-[hsl(var(--border))]/20 hover:border-[hsl(var(--primary))]/40',
-          'backdrop-blur-sm shadow-lg hover:shadow-xl hover:shadow-[hsl(var(--primary))]/5',
+          'bg-[hsl(var(--card))]/80 border border-[hsl(var(--border))]/20 hover:border-primary/40',
+          'backdrop-blur-sm shadow-lg hover:shadow-xl',
           isDragging && 'opacity-50 scale-95'
         )}
       >
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--primary))]/60 flex items-center justify-center text-[10px] font-bold text-primary-foreground">
+            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-[10px] font-bold text-primary-foreground">
               {deal.investor.split(' ').map(n => n[0]).join('')}
             </div>
             <span className="text-xs font-semibold text-foreground truncate max-w-[100px]">{deal.investor}</span>
@@ -88,24 +88,26 @@ const DealCardItem = React.forwardRef<HTMLDivElement, { deal: DealCard; isDraggi
         </div>
         <p className="text-[11px] text-muted-foreground truncate">{deal.property}</p>
         <div className="flex items-center justify-between mt-2">
-          <span className="text-xs font-semibold text-[hsl(var(--primary))]">{deal.value}</span>
+          <span className="text-xs font-semibold text-primary">{deal.value}</span>
           <span className="text-[10px] text-muted-foreground">{deal.daysInStage}d</span>
         </div>
       </motion.div>
-    );
-  }
-);
-DealCardItem.displayName = 'DealCardItem';
+    </div>
+  );
+}
 
-// ── Sortable wrapper ──
-function SortableDealCard({ deal, onClick }: { deal: DealCard; onClick: () => void }) {
-  const { useSortable } = require('@dnd-kit/sortable');
-  const { CSS } = require('@dnd-kit/utilities');
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: deal.id });
-  const style = { transform: CSS.Transform.toString(transform), transition };
+// ── Overlay Card (not sortable) ──
+function OverlayCard({ deal }: { deal: DealCard }) {
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <DealCardItem deal={deal} isDragging={isDragging} onClick={onClick} />
+    <div className="p-3 rounded-xl bg-[hsl(var(--card))] border border-primary/40 shadow-2xl w-[220px]">
+      <div className="flex items-center gap-2 mb-2">
+        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-[10px] font-bold text-primary-foreground">
+          {deal.investor.split(' ').map(n => n[0]).join('')}
+        </div>
+        <span className="text-xs font-semibold text-foreground">{deal.investor}</span>
+      </div>
+      <p className="text-[11px] text-muted-foreground">{deal.property}</p>
+      <span className="text-xs font-semibold text-primary mt-1 block">{deal.value}</span>
     </div>
   );
 }
@@ -115,13 +117,13 @@ function PipelineColumn({ stage, deals, onCardClick }: { stage: Stage; deals: De
   const meta = STAGE_META[stage];
   const Icon = meta.icon;
   return (
-    <div className={cn('flex flex-col min-w-[240px] flex-1 rounded-2xl border-t-2 bg-[#0B1220]/60 backdrop-blur-sm', meta.accent)}>
+    <div className={cn('flex flex-col min-w-[240px] flex-1 rounded-2xl border-t-2 bg-[hsl(var(--card))]/30 backdrop-blur-sm', meta.accent)}>
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <div className="flex items-center gap-2">
           <Icon className="h-4 w-4 text-muted-foreground" />
           <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground">{meta.label}</h3>
         </div>
-        <span className="text-[10px] font-mono bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] px-2 py-0.5 rounded-full">
+        <span className="text-[10px] font-mono bg-primary/10 text-primary px-2 py-0.5 rounded-full">
           {deals.length}
         </span>
       </div>
@@ -141,9 +143,9 @@ function PipelineColumn({ stage, deals, onCardClick }: { stage: Stage; deals: De
 // ── KPI Card ──
 function KpiCard({ icon: Icon, label, value, trend }: { icon: React.ElementType; label: string; value: string; trend?: string }) {
   return (
-    <div className="flex items-center gap-3 p-3 rounded-xl bg-[#0F1726]/60 border border-[hsl(var(--border))]/10">
-      <div className="p-2 rounded-lg bg-[hsl(var(--primary))]/10">
-        <Icon className="h-4 w-4 text-[hsl(var(--primary))]" />
+    <div className="flex items-center gap-3 p-3 rounded-xl bg-[hsl(var(--card))]/60 border border-[hsl(var(--border))]/10">
+      <div className="p-2 rounded-lg bg-primary/10">
+        <Icon className="h-4 w-4 text-primary" />
       </div>
       <div>
         <p className="text-lg font-bold text-foreground leading-none">{value}</p>
@@ -201,10 +203,10 @@ export default function DealExecutionCommandCenter() {
     .reduce((sum, d) => sum + parseFloat(d.value.replace(/[$KM,]/g, '')) * (d.value.includes('M') ? 1000 : 1), 0);
 
   return (
-    <div className="flex h-screen bg-[#070B14] text-foreground overflow-hidden">
-      {/* ── Left Sidebar ── */}
-      <aside className="w-16 flex flex-col items-center py-6 gap-6 border-r border-[hsl(var(--border))]/10 bg-[#0B1220]/80">
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--primary))]/50 flex items-center justify-center mb-4">
+    <div className="flex h-screen bg-background text-foreground overflow-hidden">
+      {/* Left Sidebar */}
+      <aside className="w-16 flex flex-col items-center py-6 gap-6 border-r border-[hsl(var(--border))]/10 bg-[hsl(var(--card))]/40">
+        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary/50 flex items-center justify-center mb-4">
           <Zap className="h-4 w-4 text-primary-foreground" />
         </div>
         {NAV_ITEMS.map((item, i) => (
@@ -213,8 +215,8 @@ export default function DealExecutionCommandCenter() {
             className={cn(
               'w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200',
               item.active
-                ? 'bg-[hsl(var(--primary))]/15 text-[hsl(var(--primary))] shadow-lg shadow-[hsl(var(--primary))]/10'
-                : 'text-muted-foreground hover:text-foreground hover:bg-[hsl(var(--border))]/10'
+                ? 'bg-primary/15 text-primary shadow-lg shadow-primary/10'
+                : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
             )}
             title={item.label}
           >
@@ -223,30 +225,25 @@ export default function DealExecutionCommandCenter() {
         ))}
       </aside>
 
-      {/* ── Center Panel ── */}
+      {/* Center Panel */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
         <header className="px-6 py-4 border-b border-[hsl(var(--border))]/10 flex items-center justify-between">
           <div>
             <h1 className="text-lg font-bold tracking-tight">Deal Command Center</h1>
             <p className="text-xs text-muted-foreground mt-0.5">Real-time pipeline intelligence</p>
           </div>
-          <div className="flex items-center gap-2">
-            <button className="h-9 px-4 rounded-xl bg-[hsl(var(--primary))] text-primary-foreground text-xs font-semibold flex items-center gap-1.5 hover:opacity-90 transition-opacity">
-              <Plus className="h-3.5 w-3.5" /> New Deal
-            </button>
-          </div>
+          <button className="h-9 px-4 rounded-xl bg-primary text-primary-foreground text-xs font-semibold flex items-center gap-1.5 hover:opacity-90 transition-opacity">
+            <Plus className="h-3.5 w-3.5" /> New Deal
+          </button>
         </header>
 
-        {/* KPIs */}
         <div className="grid grid-cols-4 gap-3 px-6 py-4">
           <KpiCard icon={Briefcase} label="Active Deals" value={String(totalDeals)} trend="12%" />
           <KpiCard icon={Target} label="Avg Deal Score" value={String(avgScore)} />
-          <KpiCard icon={DollarSign} label="Pipeline Value" value={`$${(pipelineValue).toFixed(0)}K`} trend="8%" />
+          <KpiCard icon={DollarSign} label="Pipeline Value" value={`$${pipelineValue.toFixed(0)}K`} trend="8%" />
           <KpiCard icon={TrendingUp} label="Conversion" value="34%" trend="5%" />
         </div>
 
-        {/* Pipeline Columns */}
         <div className="flex-1 overflow-x-auto px-6 pb-6">
           <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             <div className="flex gap-4 h-full min-w-max">
@@ -254,16 +251,13 @@ export default function DealExecutionCommandCenter() {
                 <PipelineColumn key={stage} stage={stage} deals={deals[stage]} onCardClick={setSelectedDeal} />
               ))}
             </div>
-            <DragOverlay>
-              {activeDeal && <DealCardItem deal={activeDeal} />}
-            </DragOverlay>
+            <DragOverlay>{activeDeal && <OverlayCard deal={activeDeal} />}</DragOverlay>
           </DndContext>
         </div>
       </div>
 
-      {/* ── Right Panel ── */}
-      <aside className="w-80 border-l border-[hsl(var(--border))]/10 bg-[#0B1220]/60 flex flex-col overflow-hidden">
-        {/* Investor Profile */}
+      {/* Right Panel */}
+      <aside className="w-80 border-l border-[hsl(var(--border))]/10 bg-[hsl(var(--card))]/30 flex flex-col overflow-hidden">
         <div className="p-5 border-b border-[hsl(var(--border))]/10">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
             {selectedDeal ? 'Investor Profile' : 'Select a Deal'}
@@ -271,7 +265,7 @@ export default function DealExecutionCommandCenter() {
           {selectedDeal ? (
             <div className="space-y-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--primary))]/40 flex items-center justify-center text-sm font-bold text-primary-foreground">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/40 flex items-center justify-center text-sm font-bold text-primary-foreground">
                   {selectedDeal.investor.split(' ').map(n => n[0]).join('')}
                 </div>
                 <div>
@@ -280,20 +274,20 @@ export default function DealExecutionCommandCenter() {
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <div className="p-2 rounded-lg bg-[#0F1726]/80">
+                <div className="p-2 rounded-lg bg-[hsl(var(--card))]/80">
                   <p className="text-[10px] text-muted-foreground">Deal Value</p>
-                  <p className="text-sm font-bold text-[hsl(var(--primary))]">{selectedDeal.value}</p>
+                  <p className="text-sm font-bold text-primary">{selectedDeal.value}</p>
                 </div>
-                <div className="p-2 rounded-lg bg-[#0F1726]/80">
+                <div className="p-2 rounded-lg bg-[hsl(var(--card))]/80">
                   <p className="text-[10px] text-muted-foreground">Score</p>
                   <p className="text-sm font-bold">{selectedDeal.score}/100</p>
                 </div>
-                <div className="p-2 rounded-lg bg-[#0F1726]/80 col-span-2">
+                <div className="p-2 rounded-lg bg-[hsl(var(--card))]/80 col-span-2">
                   <p className="text-[10px] text-muted-foreground">Last Activity</p>
                   <p className="text-xs">{selectedDeal.lastActivity}</p>
                 </div>
               </div>
-              <button className="w-full h-9 rounded-xl bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] text-xs font-semibold hover:bg-[hsl(var(--primary))]/20 transition-colors flex items-center justify-center gap-1.5">
+              <button className="w-full h-9 rounded-xl bg-primary/10 text-primary text-xs font-semibold hover:bg-primary/20 transition-colors flex items-center justify-center gap-1.5">
                 Contact Investor <ArrowRight className="h-3 w-3" />
               </button>
             </div>
@@ -302,10 +296,9 @@ export default function DealExecutionCommandCenter() {
           )}
         </div>
 
-        {/* AI Suggestions */}
         <div className="flex-1 overflow-y-auto p-5">
           <div className="flex items-center gap-2 mb-3">
-            <Bot className="h-4 w-4 text-[hsl(var(--primary))]" />
+            <Bot className="h-4 w-4 text-primary" />
             <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">AI Suggestions</h2>
           </div>
           <div className="space-y-2">
@@ -317,10 +310,10 @@ export default function DealExecutionCommandCenter() {
                 transition={{ delay: i * 0.1 }}
                 className={cn(
                   'p-3 rounded-xl border text-xs leading-relaxed',
-                  s.type === 'urgent' && 'bg-red-500/5 border-red-500/20 text-red-300',
-                  s.type === 'opportunity' && 'bg-emerald-500/5 border-emerald-500/20 text-emerald-300',
-                  s.type === 'insight' && 'bg-amber-500/5 border-amber-500/20 text-amber-300',
-                  s.type === 'alert' && 'bg-blue-500/5 border-blue-500/20 text-blue-300',
+                  s.type === 'urgent' && 'bg-destructive/5 border-destructive/20 text-destructive',
+                  s.type === 'opportunity' && 'bg-emerald-500/5 border-emerald-500/20 text-emerald-400',
+                  s.type === 'insight' && 'bg-amber-500/5 border-amber-500/20 text-amber-400',
+                  s.type === 'alert' && 'bg-blue-500/5 border-blue-500/20 text-blue-400',
                 )}
               >
                 {s.text}
