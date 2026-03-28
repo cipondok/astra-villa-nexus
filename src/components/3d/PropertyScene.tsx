@@ -3,9 +3,50 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Environment, ContactShadows, Float, Text, Box, Sphere, Cylinder, RoundedBox } from '@react-three/drei';
 import * as THREE from 'three';
 
+// ── Smooth lerped value hook ──
+function useLerpedValue(target: number, speed = 0.04) {
+  const ref = useRef(target);
+  useFrame(() => { ref.current += (target - ref.current) * speed; });
+  return ref;
+}
+
+// ── Emissive Window (glows at night) ──
+function EmissiveWindow({ position, isNight }: { position: [number, number, number]; isNight: boolean }) {
+  const matRef = useRef<THREE.MeshPhysicalMaterial>(null);
+  const emissiveTarget = isNight ? 1.8 : 0;
+  const emissiveRef = useLerpedValue(emissiveTarget, 0.03);
+
+  useFrame(() => {
+    if (matRef.current) {
+      matRef.current.emissiveIntensity = emissiveRef.current;
+    }
+  });
+
+  return (
+    <Box args={[1.6, 1.8, 0.05]} position={position}>
+      <meshPhysicalMaterial
+        ref={matRef}
+        color={isNight ? '#ffecd2' : '#88c8e8'}
+        emissive={isNight ? '#ffb347' : '#000000'}
+        emissiveIntensity={0}
+        roughness={0.05}
+        metalness={0.1}
+        transmission={isNight ? 0.1 : 0.6}
+        thickness={0.3}
+        opacity={isNight ? 0.95 : 0.7}
+        transparent
+      />
+    </Box>
+  );
+}
+
 // ── Procedural Modern Villa ──
-function VillaStructure() {
+function VillaStructure({ isNight }: { isNight: boolean }) {
   const ref = useRef<THREE.Group>(null);
+
+  const windowPositions: [number, number, number][] = [
+    [-2.5, 1.5, 2.01], [0, 1.5, 2.01], [2.5, 1.5, 2.01], [1.5, 4, 2.26],
+  ];
 
   return (
     <group ref={ref} position={[0, 0, 0]}>
@@ -19,11 +60,9 @@ function VillaStructure() {
         <meshPhysicalMaterial color="#ede8de" roughness={0.35} metalness={0.05} clearcoat={0.3} />
       </RoundedBox>
 
-      {/* Glass panels (windows) */}
-      {[[-2.5, 1.5, 2.01], [0, 1.5, 2.01], [2.5, 1.5, 2.01], [1.5, 4, 2.26]].map((pos, i) => (
-        <Box key={`w-${i}`} args={[1.6, 1.8, 0.05]} position={pos as [number, number, number]}>
-          <meshPhysicalMaterial color="#88c8e8" roughness={0.05} metalness={0.1} transmission={0.6} thickness={0.3} opacity={0.7} transparent />
-        </Box>
+      {/* Glass panels (emissive at night) */}
+      {windowPositions.map((pos, i) => (
+        <EmissiveWindow key={`w-${i}`} position={pos} isNight={isNight} />
       ))}
 
       {/* Infinity pool */}
