@@ -256,7 +256,7 @@ export default function AstraImmersiveViewer() {
                 depth: true,
               }}
               style={{ background: '#0B0B0B' }}
-              frameloop="demand"
+              frameloop="always"
             >
               <PerformanceMonitor
                 onDecline={() => setDprCap(1)}
