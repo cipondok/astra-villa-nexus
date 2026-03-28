@@ -33,7 +33,7 @@ export async function trackInteraction(
     user_id: user.id,
     event_type: type,
     property_id: propertyId,
-    metadata: metadata || {},
+    metadata: (metadata || {}) as Json,
   }]);
 }
 
