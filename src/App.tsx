@@ -373,7 +373,7 @@ const AppContent = () => {
   
   const location = useLocation();
   const { language } = useTranslation();
-  const isAdminRoute = ['/admin', '/admin-dashboard', '/settings', '/admin/ai-performance', '/admin/listing-review'].includes(location.pathname);
+  const isAdminRoute = ['/admin', '/admin-dashboard', '/settings', '/admin/ai-performance', '/admin/listing-review', '/admin/deal-command'].includes(location.pathname) || location.pathname.startsWith('/admin/');
   const { isMobile } = useIsMobile();
   const { isAdmin } = useAdminCheck();
   const { maintenanceMode, maintenanceMessage } = useMaintenanceMode();
