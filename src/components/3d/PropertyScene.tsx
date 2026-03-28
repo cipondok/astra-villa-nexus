@@ -275,7 +275,13 @@ function AdaptiveLighting({ isNight }: { isNight: boolean }) {
 }
 
 // ── Scene composition ──
-export function PropertyScene({ onHotspotClick, autoRotate, isNight = false }: { onHotspotClick: (label: string) => void; autoRotate: boolean; isNight?: boolean }) {
+export function PropertyScene({ onHotspotClick, autoRotate, isNight = false, cameraCommand = null, onCameraCommandComplete }: {
+  onHotspotClick: (label: string) => void;
+  autoRotate: boolean;
+  isNight?: boolean;
+  cameraCommand?: CameraCommandKey | null;
+  onCameraCommandComplete?: () => void;
+}) {
   const hotspots: { position: [number, number, number]; label: string }[] = [
     { position: [3, 1, 2], label: 'Infinity Pool' },
     { position: [-2.5, 2, 0], label: 'Master Suite' },
@@ -289,7 +295,7 @@ export function PropertyScene({ onHotspotClick, autoRotate, isNight = false }: {
 
       <VillaStructure isNight={isNight} />
       <FloatingParticles />
-      <AutoRotate enabled={autoRotate} />
+      <CameraController command={cameraCommand} onComplete={onCameraCommandComplete || (() => {})} autoRotate={autoRotate} />
 
       {hotspots.map(hs => (
         <HotspotMarker key={hs.label} position={hs.position} label={hs.label} onClick={() => onHotspotClick(hs.label)} />
@@ -297,7 +303,7 @@ export function PropertyScene({ onHotspotClick, autoRotate, isNight = false }: {
 
       <ContactShadows position={[0, -0.01, 0]} opacity={isNight ? 0.2 : 0.4} scale={20} blur={2} far={8} />
       <Environment preset={isNight ? 'night' : 'sunset'} />
-      {!autoRotate && <OrbitControls makeDefault target={[0, 2, 0]} minDistance={5} maxDistance={25} maxPolarAngle={Math.PI / 2.1} enableDamping dampingFactor={0.05} />}
+      {!autoRotate && !cameraCommand && <OrbitControls makeDefault target={[0, 2, 0]} minDistance={5} maxDistance={25} maxPolarAngle={Math.PI / 2.1} enableDamping dampingFactor={0.05} />}
     </>
   );
 }
