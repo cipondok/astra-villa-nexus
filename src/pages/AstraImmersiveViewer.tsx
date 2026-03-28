@@ -78,11 +78,21 @@ export default function AstraImmersiveViewer() {
   const [showRight, setShowRight] = useState(true);
   const [activeHotspot, setActiveHotspot] = useState<string | null>(null);
   const [isNight, setIsNight] = useState(false);
+  const [cameraCommand, setCameraCommand] = useState<CameraCommandKey | null>(null);
 
   const handleHotspotClick = (label: string) => {
     setActiveHotspot(label);
     setShowRight(true);
   };
+
+  const handleCameraCommand = useCallback((cmd: CameraCommandKey) => {
+    setAutoRotate(false);
+    setCameraCommand(cmd);
+  }, []);
+
+  const handleCameraCommandComplete = useCallback(() => {
+    setCameraCommand(null);
+  }, []);
 
   return (
     <div className={cn(
