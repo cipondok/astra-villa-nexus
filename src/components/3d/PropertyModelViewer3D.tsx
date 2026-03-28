@@ -371,6 +371,10 @@ const PropertyModelViewer3D: React.FC<PropertyModelViewer3DProps> = ({
       {/* ── Bottom Toolbar ── */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10">
         <div className="flex items-center gap-1 px-2 py-1.5 rounded-2xl bg-[#0B0B0B]/70 backdrop-blur-xl border border-[hsl(var(--border))]/10 shadow-2xl">
+          <ToolBtn onClick={() => setIsNight(!isNight)} active={isNight} title={isNight ? 'Switch to Day' : 'Switch to Night'}>
+            {isNight ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+          </ToolBtn>
+          <div className="w-px h-5 bg-[hsl(var(--border))]/10 mx-0.5" />
           <ToolBtn onClick={() => setAutoRotate(!autoRotate)} active={autoRotate} title={autoRotate ? 'Stop rotation' : 'Auto rotate'}>
             <RotateCw className={cn('h-4 w-4', autoRotate && 'animate-spin')} style={autoRotate ? { animationDuration: '3s' } : {}} />
           </ToolBtn>
