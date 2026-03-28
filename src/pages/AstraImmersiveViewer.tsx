@@ -1,5 +1,6 @@
-import React, { useState, useCallback, Suspense, lazy } from 'react';
+import React, { useState, useCallback, useMemo, Suspense, lazy } from 'react';
 import { Canvas } from '@react-three/fiber';
+import { AdaptiveDpr, PerformanceMonitor } from '@react-three/drei';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Maximize2, Minimize2, RotateCcw, Play, Pause, Eye, MapPin,
