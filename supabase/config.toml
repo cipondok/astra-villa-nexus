@@ -10,6 +10,9 @@ project_id = "zymrajuuyyfkzdmptebl"
   [functions.ai-assistant]
     verify_jwt = false
 
+  [functions.investment-advisor-chat]
+    verify_jwt = false
+
   [functions.deal-engine]
     verify_jwt = false
 

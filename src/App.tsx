@@ -284,6 +284,7 @@ const InvestorFeedPage = lazy(() => import('@/pages/InvestorFeedPage'));
 const TourPlannerPage = lazy(() => import('@/pages/TourPlannerPage'));
 const InvestmentAssistantPage = lazy(() => import('@/pages/InvestmentAssistantPage'));
 const InvestmentAdvisorPage = lazy(() => import('@/pages/InvestmentAdvisorPage'));
+const AIInvestmentAdvisorChat = lazy(() => import('@/pages/AIInvestmentAdvisorChat'));
 const AISearchAssistantPage = lazy(() => import('@/pages/AISearchAssistantPage'));
 const InvestmentLeaderboardPage = lazy(() => import('@/pages/InvestmentLeaderboardPage'));
 const VisualSearchPage = lazy(() => import('@/pages/VisualSearchPage'));
@@ -599,6 +600,9 @@ const AppContent = () => {
                 </Route>
                 <Route path="/investment-advisor" element={<ProtectedRoute />}>
                   <Route index element={<InvestmentAdvisorPage />} />
+                </Route>
+                <Route path="/ai-advisor" element={<ProtectedRoute />}>
+                  <Route index element={<AIInvestmentAdvisorChat />} />
                 </Route>
                 <Route path="/visual-search" element={<VisualSearchPage />} />
                 <Route path="/listing-predictor" element={<ProtectedRoute />}>
