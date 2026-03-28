@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Maximize2, Minimize2, RotateCcw, Play, Pause, Eye, MapPin,
   DollarSign, TrendingUp, Bed, Bath, Ruler, Star, Shield, ChevronRight,
-  Sparkles, Building2, PanelLeftClose, PanelRightClose
+  Sparkles, Building2, PanelLeftClose, PanelRightClose, Sun, Moon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PropertyScene } from '@/components/3d/PropertyScene';
