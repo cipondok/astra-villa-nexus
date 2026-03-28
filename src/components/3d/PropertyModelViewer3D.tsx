@@ -390,9 +390,11 @@ const PropertyModelViewer3D: React.FC<PropertyModelViewer3DProps> = ({
 
       {/* ── Environment Label ── */}
       <AnimatePresence>
-        <motion.div key={envPreset} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+        <motion.div key={`${envPreset}-${isNight}`} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
           className="absolute top-3 right-3 px-3 py-1 rounded-lg bg-[#0B0B0B]/60 backdrop-blur-sm border border-[hsl(var(--border))]/10 z-10">
-          <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">{envPreset}</span>
+          <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
+            {isNight ? '🌙 night' : `☀️ ${envPreset}`}
+          </span>
         </motion.div>
       </AnimatePresence>
 
