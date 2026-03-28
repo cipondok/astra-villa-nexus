@@ -28,12 +28,12 @@ export async function trackInteraction(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return;
 
-  await supabase.from('behavioral_events').insert({
+  await supabase.from('behavioral_events').insert([{
     user_id: user.id,
     event_type: type,
     property_id: propertyId,
     metadata: metadata || {},
-  });
+  }]);
 }
 
 export async function fetchInvestorMetrics(): Promise<InvestorMetrics> {

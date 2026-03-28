@@ -8,19 +8,21 @@ export interface PropertySummary {
   id: string;
   title: string;
   city: string | null;
-  price: number;
-  property_type: string | null;
-  listing_type: string | null;
+  price: number | null;
+  property_type: string;
+  listing_type: string;
   bedrooms: number | null;
   bathrooms: number | null;
-  building_area: number | null;
-  land_area: number | null;
-  image_url: string | null;
-  status: string | null;
+  building_area_sqm: number | null;
+  land_area_sqm: number | null;
+  image_urls: string[] | null;
+  status: string;
   investment_score: number | null;
-  rental_yield: number | null;
-  created_at: string;
+  expected_rental_yield: number | null;
+  created_at: string | null;
 }
+
+const PROPERTY_SELECT = 'id, title, city, price, property_type, listing_type, bedrooms, bathrooms, building_area_sqm, land_area_sqm, image_urls, status, investment_score, expected_rental_yield, created_at';
 
 export interface PropertyFilters {
   city?: string;
@@ -37,7 +39,7 @@ export interface PropertyFilters {
 export async function fetchProperties(filters: PropertyFilters = {}): Promise<{ data: PropertySummary[]; count: number }> {
   let query = supabase
     .from('properties')
-    .select('id, title, city, price, property_type, listing_type, bedrooms, bathrooms, building_area, land_area, image_url, status, investment_score, rental_yield, created_at', { count: 'exact' })
+    .select(PROPERTY_SELECT, { count: 'exact' })
     .eq('status', 'active');
 
   if (filters.city) query = query.eq('city', filters.city);
@@ -54,7 +56,7 @@ export async function fetchProperties(filters: PropertyFilters = {}): Promise<{ 
 
   const { data, error, count } = await query;
   if (error) throw error;
-  return { data: (data || []) as PropertySummary[], count: count || 0 };
+  return { data: (data || []) as unknown as PropertySummary[], count: count || 0 };
 }
 
 export async function fetchPropertyById(id: string) {
@@ -70,10 +72,10 @@ export async function fetchPropertyById(id: string) {
 export async function fetchFeaturedProperties(limit = 6): Promise<PropertySummary[]> {
   const { data, error } = await supabase
     .from('properties')
-    .select('id, title, city, price, property_type, listing_type, bedrooms, bathrooms, building_area, land_area, image_url, status, investment_score, rental_yield, created_at')
+    .select(PROPERTY_SELECT)
     .eq('status', 'active')
     .order('investment_score', { ascending: false })
     .limit(limit);
   if (error) throw error;
-  return (data || []) as PropertySummary[];
+  return (data || []) as unknown as PropertySummary[];
 }
