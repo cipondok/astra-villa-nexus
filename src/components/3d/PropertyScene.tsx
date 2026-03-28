@@ -118,11 +118,11 @@ function VillaStructure({ isNight }: { isNight: boolean }) {
   );
 }
 
-// ── Ambient particles ──
+// ── Ambient particles (reduced count) ──
 function FloatingParticles() {
   const ref = useRef<THREE.Points>(null);
-  const count = 80;
-  const positions = React.useMemo(() => {
+  const count = 40; // Reduced from 80
+  const positions = useMemo(() => {
     const arr = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
       arr[i * 3] = (Math.random() - 0.5) * 20;
