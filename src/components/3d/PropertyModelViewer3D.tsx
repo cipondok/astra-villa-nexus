@@ -209,24 +209,49 @@ function CanvasLoader() {
   );
 }
 
+// ── Smooth Light Lerp ──
+function LerpedLight({ lightRef, target }: { lightRef: React.RefObject<THREE.Light>; target: number }) {
+  useFrame(() => {
+    if (lightRef.current) lightRef.current.intensity += (target - lightRef.current.intensity) * 0.04;
+  });
+  return null;
+}
+
 // ── Scene ──
 function SceneContent({
-  modelPath, scale, position, environment, hotspots, activeHotspot, onHotspotClick, autoRotate, controlsRef, cameraTarget, onCameraComplete,
+  modelPath, scale, position, environment, hotspots, activeHotspot, onHotspotClick, autoRotate, controlsRef, cameraTarget, onCameraComplete, isNight,
 }: {
   modelPath: string; scale: number; position: [number, number, number]; environment: EnvPreset;
   hotspots: Hotspot[]; activeHotspot: string | null; onHotspotClick: (h: Hotspot) => void;
   autoRotate: boolean; controlsRef: React.RefObject<any>;
   cameraTarget: { position: THREE.Vector3; lookAt: THREE.Vector3 } | null;
   onCameraComplete: () => void;
+  isNight: boolean;
 }) {
+  const ambientRef = useRef<THREE.AmbientLight>(null);
+  const sunRef = useRef<THREE.DirectionalLight>(null);
+  const fillRef = useRef<THREE.DirectionalLight>(null);
+  const moonRef = useRef<THREE.PointLight>(null);
+
   return (
     <>
-      <ambientLight intensity={0.35} />
-      <directionalLight position={[8, 12, 5]} intensity={1.4} castShadow
+      {/* Adaptive lighting */}
+      <ambientLight ref={ambientRef} intensity={isNight ? 0.08 : 0.35} color={isNight ? '#1a2a4a' : '#ffffff'} />
+      <LerpedLight lightRef={ambientRef} target={isNight ? 0.08 : 0.35} />
+
+      <directionalLight ref={sunRef} position={[8, 12, 5]} intensity={isNight ? 0.05 : 1.4} castShadow
         shadow-mapSize-width={2048} shadow-mapSize-height={2048}
         shadow-camera-far={30} shadow-camera-left={-10} shadow-camera-right={10}
-        shadow-camera-top={10} shadow-camera-bottom={-10} shadow-bias={-0.0005} />
-      <directionalLight position={[-5, 6, -3]} intensity={0.3} color="#ffe8d0" />
+        shadow-camera-top={10} shadow-camera-bottom={-10} shadow-bias={-0.0005}
+        color={isNight ? '#2244aa' : '#ffffff'} />
+      <LerpedLight lightRef={sunRef} target={isNight ? 0.05 : 1.4} />
+
+      <directionalLight ref={fillRef} position={[-5, 6, -3]} intensity={isNight ? 0.02 : 0.3} color={isNight ? '#1a3366' : '#ffe8d0'} />
+      <LerpedLight lightRef={fillRef} target={isNight ? 0.02 : 0.3} />
+
+      {/* Moonlight */}
+      <pointLight ref={moonRef} position={[-8, 15, -5]} intensity={isNight ? 0.5 : 0} color="#6688cc" distance={40} />
+      <LerpedLight lightRef={moonRef} target={isNight ? 0.5 : 0} />
 
       <Suspense fallback={<CanvasLoader />}>
         <GLBModel url={modelPath} scale={scale} position={position} />
@@ -236,8 +261,8 @@ function SceneContent({
         <HotspotMarker key={h.id} hotspot={h} isActive={activeHotspot === h.id} onClick={() => onHotspotClick(h)} />
       ))}
 
-      <ContactShadows position={[0, -0.01, 0]} opacity={0.5} scale={20} blur={2.5} far={8} resolution={512} />
-      <Environment preset={environment} />
+      <ContactShadows position={[0, -0.01, 0]} opacity={isNight ? 0.2 : 0.5} scale={20} blur={2.5} far={8} resolution={512} />
+      <Environment preset={isNight ? 'night' : environment} />
 
       <SmoothCameraController
         targetPosition={cameraTarget?.position || null}
