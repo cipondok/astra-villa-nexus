@@ -85,8 +85,11 @@ export default function AstraImmersiveViewer() {
   };
 
   return (
-    <div className="h-screen w-full bg-[#0B0B0B] text-foreground flex overflow-hidden relative">
-      {/* ── Left Panel: Property Info ── */}
+    <div className={cn(
+      "h-screen w-full bg-[#0B0B0B] text-foreground overflow-hidden relative",
+      fullscreen ? "flex" : "grid grid-cols-12"
+    )}>
+      {/* ── Left Panel: Property Info (3 cols) ── */}
       <AnimatePresence>
         {showLeft && !fullscreen && (
           <motion.aside
@@ -94,7 +97,7 @@ export default function AstraImmersiveViewer() {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -320, opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="w-[320px] min-w-[320px] border-r border-[hsl(var(--border))]/8 flex flex-col overflow-y-auto z-10"
+            className="col-span-3 border-r border-[hsl(var(--border))]/8 flex flex-col overflow-y-auto z-10"
             style={{ background: 'linear-gradient(180deg, rgba(11,11,11,0.95) 0%, rgba(15,15,15,0.98) 100%)' }}
           >
             {/* Header */}
@@ -173,10 +176,13 @@ export default function AstraImmersiveViewer() {
               </GlassCard>
             </div>
 
-            {/* CTA */}
-            <div className="px-5 pb-6 mt-auto">
-              <button className="w-full h-11 rounded-xl bg-gradient-to-r from-[#C8A96A] to-[#B8955A] text-[#0B0B0B] text-sm font-bold flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-[#C8A96A]/20 transition-all">
-                <Shield className="h-4 w-4" /> Schedule Private Viewing
+            {/* CTAs */}
+            <div className="px-5 pb-6 mt-auto space-y-2">
+              <button className="w-full h-12 rounded-xl bg-gradient-to-r from-[#C8A96A] to-[#B8955A] text-[#0B0B0B] text-sm font-bold flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-[#C8A96A]/20 transition-all">
+                <DollarSign className="h-4 w-4" /> Invest Now
+              </button>
+              <button className="w-full h-10 rounded-xl border border-[#C8A96A]/20 text-[#C8A96A] text-xs font-semibold flex items-center justify-center gap-2 hover:bg-[#C8A96A]/5 transition-all">
+                <Shield className="h-3.5 w-3.5" /> Schedule Private Viewing
               </button>
             </div>
           </motion.aside>
@@ -184,7 +190,8 @@ export default function AstraImmersiveViewer() {
       </AnimatePresence>
 
       {/* ── Center: 3D Viewer ── */}
-      <div className="flex-1 relative">
+      {/* ── Center: 3D Viewer (6 cols or full) ── */}
+      <div className={cn("relative", fullscreen ? "flex-1" : "col-span-6")}>
         <Suspense fallback={<ViewerLoader />}>
           <Canvas
             camera={{ position: [10, 6, 10], fov: 45, near: 0.1, far: 100 }}
@@ -285,7 +292,7 @@ export default function AstraImmersiveViewer() {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: 320, opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="w-[320px] min-w-[320px] border-l border-[hsl(var(--border))]/8 flex flex-col z-10"
+            className="col-span-3 border-l border-[hsl(var(--border))]/8 flex flex-col z-10"
             style={{ background: 'linear-gradient(180deg, rgba(11,11,11,0.95) 0%, rgba(15,15,15,0.98) 100%)' }}
           >
             <AIPanelContent />
