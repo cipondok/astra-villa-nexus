@@ -221,6 +221,17 @@ export default function AstraImmersiveViewer() {
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
           <GlassCard className="flex items-center gap-1 p-1.5">
             <button
+              onClick={() => setIsNight(!isNight)}
+              className={cn(
+                'w-9 h-9 rounded-xl flex items-center justify-center transition-all',
+                isNight ? 'bg-[#C8A96A]/20 text-[#C8A96A]' : 'text-muted-foreground hover:text-foreground'
+              )}
+              title={isNight ? 'Switch to Day' : 'Switch to Night'}
+            >
+              {isNight ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            </button>
+            <div className="w-px h-5 bg-[hsl(var(--border))]/10 mx-0.5" />
+            <button
               onClick={() => setAutoRotate(!autoRotate)}
               className={cn(
                 'w-9 h-9 rounded-xl flex items-center justify-center transition-all',
