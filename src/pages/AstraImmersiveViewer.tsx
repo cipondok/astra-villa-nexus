@@ -57,6 +57,17 @@ function StatRow({ icon: Icon, label, value, accent }: { icon: React.ElementType
   );
 }
 
+// ── Device capability detection ──
+function useDeviceCapability() {
+  return useMemo(() => {
+    if (typeof navigator === 'undefined') return { isWeak: false, isMobile: false };
+    const cores = navigator.hardwareConcurrency || 2;
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
+    const isWeak = isMobile && cores <= 4;
+    return { isWeak, isMobile };
+  }, []);
+}
+
 // ── 3D Viewer Loading ──
 function ViewerLoader() {
   return (
@@ -67,6 +78,31 @@ function ViewerLoader() {
         className="w-10 h-10 rounded-full border-2 border-[#C8A96A]/20 border-t-[#C8A96A]"
       />
       <p className="text-xs text-[#C8A96A]/60 mt-3 font-mono tracking-wider">LOADING 3D MODEL</p>
+    </div>
+  );
+}
+
+// ── Static fallback for weak devices ──
+function StaticFallback({ onRequestLoad }: { onRequestLoad: () => void }) {
+  return (
+    <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0B0B0B]">
+      <div className="text-center px-6 max-w-sm">
+        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#C8A96A]/20 to-[#C8A96A]/5 border border-[#C8A96A]/15 flex items-center justify-center mx-auto mb-5">
+          <Building2 className="h-9 w-9 text-[#C8A96A]" />
+        </div>
+        <h3 className="text-lg font-bold text-foreground mb-2">Villa Serenity</h3>
+        <p className="text-xs text-muted-foreground mb-1">Canggu, Bali • 450 m² • 4 BD / 5 BA</p>
+        <p className="text-sm font-semibold text-[#C8A96A] mb-5">Rp 12.5B</p>
+        <p className="text-[11px] text-muted-foreground mb-4">
+          3D viewer uses simplified mode on this device for best performance.
+        </p>
+        <button
+          onClick={onRequestLoad}
+          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#C8A96A] to-[#B8955A] text-[#0B0B0B] text-xs font-bold hover:shadow-lg hover:shadow-[#C8A96A]/20 transition-all"
+        >
+          Load 3D Viewer Anyway
+        </button>
+      </div>
     </div>
   );
 }
