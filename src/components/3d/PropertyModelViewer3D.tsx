@@ -296,6 +296,7 @@ const PropertyModelViewer3D: React.FC<PropertyModelViewer3DProps> = ({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [envPreset, setEnvPreset] = useState<EnvPreset>(environment);
   const [autoRotate, setAutoRotate] = useState(false);
+  const [isNight, setIsNight] = useState(false);
   const [activeHotspot, setActiveHotspot] = useState<string | null>(null);
   const [hotspotInfo, setHotspotInfo] = useState<Hotspot | null>(null);
   const [cameraTarget, setCameraTarget] = useState<{ position: THREE.Vector3; lookAt: THREE.Vector3 } | null>(null);
