@@ -141,13 +141,50 @@ function FloatingParticles() {
   );
 }
 
-// ── Camera auto-orbit ──
-function AutoRotate({ enabled }: { enabled: boolean }) {
+// ── Camera command targets ──
+export const CAMERA_COMMANDS = {
+  'front': { position: [0, 3, 14], lookAt: [0, 2, 0] },
+  'living_room': { position: [1, 2.5, 5], lookAt: [0, 1.5, 2.5] },
+  'master_suite': { position: [-5, 3, 2], lookAt: [-2.5, 2, 0] },
+  'pool': { position: [6, 2, 4], lookAt: [3, 1, 2] },
+  'sky_terrace': { position: [4, 6, 4], lookAt: [2, 4, 1] },
+  'overview': { position: [10, 6, 10], lookAt: [0, 2, 0] },
+  'roi_highlight': { position: [0, 8, 12], lookAt: [0, 2, 0] },
+} as const;
+
+export type CameraCommandKey = keyof typeof CAMERA_COMMANDS;
+
+// ── Smooth camera fly-to ──
+function CameraController({ command, onComplete, autoRotate }: { command: CameraCommandKey | null; onComplete: () => void; autoRotate: boolean }) {
   const { camera } = useThree();
   const angle = useRef(0);
+  const targetPos = useRef(new THREE.Vector3());
+  const targetLook = useRef(new THREE.Vector3());
+  const currentLook = useRef(new THREE.Vector3(0, 2, 0));
+  const isFlying = useRef(false);
+
+  React.useEffect(() => {
+    if (!command) return;
+    const cmd = CAMERA_COMMANDS[command];
+    targetPos.current.set(...(cmd.position as [number, number, number]));
+    targetLook.current.set(...(cmd.lookAt as [number, number, number]));
+    isFlying.current = true;
+  }, [command]);
 
   useFrame((_, dt) => {
-    if (!enabled) return;
+    if (isFlying.current) {
+      camera.position.lerp(targetPos.current, 0.04);
+      currentLook.current.lerp(targetLook.current, 0.04);
+      camera.lookAt(currentLook.current);
+
+      if (camera.position.distanceTo(targetPos.current) < 0.05) {
+        isFlying.current = false;
+        onComplete();
+      }
+      return;
+    }
+
+    if (!autoRotate) return;
     angle.current += dt * 0.15;
     const r = 12;
     camera.position.x = Math.sin(angle.current) * r;
