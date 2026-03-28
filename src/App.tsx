@@ -313,6 +313,7 @@ const MacroPredictionTerminal = lazy(() => import('@/pages/MacroPredictionTermin
 const GlobalPredictiveAnalyticsPage = lazy(() => import('@/pages/GlobalPredictiveAnalyticsPage'));
 const InvestorSocialNetwork = lazy(() => import('@/pages/InvestorSocialNetwork'));
 const VirtualPropertyExplorer = lazy(() => import('@/pages/VirtualPropertyExplorer'));
+const AstraImmersiveViewer = lazy(() => import('@/pages/AstraImmersiveViewer'));
 const SecurityActivityPage = lazy(() => import('@/pages/SecurityActivityPage'));
 const UserActivationDashboard = lazy(() => import('@/pages/UserActivationDashboard'));
 const DealPipelinePage = lazy(() => import('@/pages/DealPipelinePage'));
