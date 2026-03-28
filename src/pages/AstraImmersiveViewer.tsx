@@ -305,7 +305,7 @@ export default function AstraImmersiveViewer() {
             className="col-span-3 border-l border-[hsl(var(--border))]/8 flex flex-col z-10"
             style={{ background: 'linear-gradient(180deg, rgba(11,11,11,0.95) 0%, rgba(15,15,15,0.98) 100%)' }}
           >
-            <AIPanelContent />
+            <AIPanelContent onCameraCommand={handleCameraCommand} />
           </motion.aside>
         )}
       </AnimatePresence>
