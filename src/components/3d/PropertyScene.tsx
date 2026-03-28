@@ -1,6 +1,6 @@
 import React, { useRef, useState, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Environment, ContactShadows, Float, Text, Box, Sphere, Cylinder, RoundedBox } from '@react-three/drei';
+import { OrbitControls, Environment, ContactShadows, Float, Text, Sphere } from '@react-three/drei';
 import * as THREE from 'three';
 
 // ── Smooth lerped value hook ──
