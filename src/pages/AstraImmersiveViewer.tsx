@@ -212,7 +212,7 @@ export default function AstraImmersiveViewer() {
           >
             <color attach="background" args={['#0B0B0B']} />
             <fog attach="fog" args={['#0B0B0B', 20, 40]} />
-            <PropertyScene onHotspotClick={handleHotspotClick} autoRotate={autoRotate} isNight={isNight} />
+            <PropertyScene onHotspotClick={handleHotspotClick} autoRotate={autoRotate} isNight={isNight} cameraCommand={cameraCommand} onCameraCommandComplete={handleCameraCommandComplete} />
           </Canvas>
         </Suspense>
 
