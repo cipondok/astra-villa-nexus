@@ -1,4 +1,4 @@
-import React, { useState, Suspense, lazy } from 'react';
+import React, { useState, useCallback, Suspense, lazy } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -7,7 +7,7 @@ import {
   Sparkles, Building2, PanelLeftClose, PanelRightClose, Sun, Moon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { PropertyScene } from '@/components/3d/PropertyScene';
+import { PropertyScene, type CameraCommandKey } from '@/components/3d/PropertyScene';
 import AIPanelContent from '@/components/3d/AIPanelContent';
 
 // ── Property data ──
