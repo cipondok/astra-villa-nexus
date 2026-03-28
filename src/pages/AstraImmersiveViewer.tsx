@@ -85,8 +85,11 @@ export default function AstraImmersiveViewer() {
   };
 
   return (
-    <div className="h-screen w-full bg-[#0B0B0B] text-foreground flex overflow-hidden relative">
-      {/* ── Left Panel: Property Info ── */}
+    <div className={cn(
+      "h-screen w-full bg-[#0B0B0B] text-foreground overflow-hidden relative",
+      fullscreen ? "flex" : "grid grid-cols-12"
+    )}>
+      {/* ── Left Panel: Property Info (3 cols) ── */}
       <AnimatePresence>
         {showLeft && !fullscreen && (
           <motion.aside
