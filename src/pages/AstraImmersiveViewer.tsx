@@ -190,7 +190,8 @@ export default function AstraImmersiveViewer() {
       </AnimatePresence>
 
       {/* ── Center: 3D Viewer ── */}
-      <div className="flex-1 relative">
+      {/* ── Center: 3D Viewer (6 cols or full) ── */}
+      <div className={cn("relative", fullscreen ? "flex-1" : "col-span-6")}>
         <Suspense fallback={<ViewerLoader />}>
           <Canvas
             camera={{ position: [10, 6, 10], fov: 45, near: 0.1, far: 100 }}
