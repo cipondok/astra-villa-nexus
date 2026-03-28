@@ -90,6 +90,7 @@ const GlobalGrowthEngineDashboard = lazy(() => import('@/pages/admin/GlobalGrowt
 const CapitalIntelligenceDashboard = lazy(() => import('@/pages/admin/CapitalIntelligenceDashboard'));
 const FounderExecutionDashboard = lazy(() => import('@/pages/admin/FounderExecutionDashboard'));
 const ExecutionCommandCenter = lazy(() => import('@/pages/admin/ExecutionCommandCenter'));
+const DealExecutionCommandCenter = lazy(() => import('@/pages/admin/DealExecutionCommandCenter'));
 const AdminAnalytics = lazy(() => import('@/pages/AdminAnalytics'));
 const ProvinceProperties = lazy(() => import('@/pages/ProvinceProperties'));
 const LocationAnalyticsDashboard = lazy(() => import('@/pages/LocationAnalyticsDashboard'));
@@ -372,7 +373,7 @@ const AppContent = () => {
   
   const location = useLocation();
   const { language } = useTranslation();
-  const isAdminRoute = ['/admin', '/admin-dashboard', '/settings', '/admin/ai-performance', '/admin/listing-review'].includes(location.pathname);
+  const isAdminRoute = ['/admin', '/admin-dashboard', '/settings', '/admin/ai-performance', '/admin/listing-review', '/admin/deal-command'].includes(location.pathname) || location.pathname.startsWith('/admin/');
   const { isMobile } = useIsMobile();
   const { isAdmin } = useAdminCheck();
   const { maintenanceMode, maintenanceMessage } = useMaintenanceMode();
@@ -492,6 +493,7 @@ const AppContent = () => {
                   <Route path="/admin/founder-execution" element={<FounderExecutionDashboard />} />
                   <Route path="/admin/execution-command" element={<ExecutionCommandCenter />} />
                   <Route path="/admin/execution" element={<ExecutionCommandCenter />} />
+                  <Route path="/admin/deal-command" element={<DealExecutionCommandCenter />} />
                 </Route>
                 <Route path="/agent-dashboard" element={<AgentDashboard />} />
                 <Route path="/agent-crm" element={<ProtectedRoute />}>
