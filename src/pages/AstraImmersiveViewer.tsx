@@ -1,5 +1,6 @@
-import React, { useState, useCallback, Suspense, lazy } from 'react';
+import React, { useState, useCallback, useMemo, Suspense, lazy } from 'react';
 import { Canvas } from '@react-three/fiber';
+import { AdaptiveDpr, PerformanceMonitor } from '@react-three/drei';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Maximize2, Minimize2, RotateCcw, Play, Pause, Eye, MapPin,
@@ -56,6 +57,17 @@ function StatRow({ icon: Icon, label, value, accent }: { icon: React.ElementType
   );
 }
 
+// ── Device capability detection ──
+function useDeviceCapability() {
+  return useMemo(() => {
+    if (typeof navigator === 'undefined') return { isWeak: false, isMobile: false };
+    const cores = navigator.hardwareConcurrency || 2;
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
+    const isWeak = isMobile && cores <= 4;
+    return { isWeak, isMobile };
+  }, []);
+}
+
 // ── 3D Viewer Loading ──
 function ViewerLoader() {
   return (
@@ -70,15 +82,44 @@ function ViewerLoader() {
   );
 }
 
+// ── Static fallback for weak devices ──
+function StaticFallback({ onRequestLoad }: { onRequestLoad: () => void }) {
+  return (
+    <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0B0B0B]">
+      <div className="text-center px-6 max-w-sm">
+        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#C8A96A]/20 to-[#C8A96A]/5 border border-[#C8A96A]/15 flex items-center justify-center mx-auto mb-5">
+          <Building2 className="h-9 w-9 text-[#C8A96A]" />
+        </div>
+        <h3 className="text-lg font-bold text-foreground mb-2">Villa Serenity</h3>
+        <p className="text-xs text-muted-foreground mb-1">Canggu, Bali • 450 m² • 4 BD / 5 BA</p>
+        <p className="text-sm font-semibold text-[#C8A96A] mb-5">Rp 12.5B</p>
+        <p className="text-[11px] text-muted-foreground mb-4">
+          3D viewer uses simplified mode on this device for best performance.
+        </p>
+        <button
+          onClick={onRequestLoad}
+          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#C8A96A] to-[#B8955A] text-[#0B0B0B] text-xs font-bold hover:shadow-lg hover:shadow-[#C8A96A]/20 transition-all"
+        >
+          Load 3D Viewer Anyway
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ── Main Page ──
 export default function AstraImmersiveViewer() {
+  const { isWeak, isMobile } = useDeviceCapability();
+  const [forceLoad, setForceLoad] = useState(false);
+  const [dprCap, setDprCap] = useState(1.5);
   const [autoRotate, setAutoRotate] = useState(true);
   const [fullscreen, setFullscreen] = useState(false);
-  const [showLeft, setShowLeft] = useState(true);
-  const [showRight, setShowRight] = useState(true);
+  const [showLeft, setShowLeft] = useState(!isMobile);
+  const [showRight, setShowRight] = useState(!isMobile);
   const [activeHotspot, setActiveHotspot] = useState<string | null>(null);
   const [isNight, setIsNight] = useState(false);
   const [cameraCommand, setCameraCommand] = useState<CameraCommandKey | null>(null);
+  const show3D = !isWeak || forceLoad;
 
   const handleHotspotClick = (label: string) => {
     setActiveHotspot(label);
@@ -199,22 +240,37 @@ export default function AstraImmersiveViewer() {
         )}
       </AnimatePresence>
 
-      {/* ── Center: 3D Viewer ── */}
       {/* ── Center: 3D Viewer (6 cols or full) ── */}
-      <div className={cn("relative", fullscreen ? "flex-1" : "col-span-6")}>
-        <Suspense fallback={<ViewerLoader />}>
-          <Canvas
-            camera={{ position: [10, 6, 10], fov: 45, near: 0.1, far: 100 }}
-            shadows
-            dpr={[1, 1.5]}
-            gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
-            style={{ background: '#0B0B0B' }}
-          >
-            <color attach="background" args={['#0B0B0B']} />
-            <fog attach="fog" args={['#0B0B0B', 20, 40]} />
-            <PropertyScene onHotspotClick={handleHotspotClick} autoRotate={autoRotate} isNight={isNight} cameraCommand={cameraCommand} onCameraCommandComplete={handleCameraCommandComplete} />
-          </Canvas>
-        </Suspense>
+      <div className={cn("relative", fullscreen ? "flex-1" : isMobile ? "col-span-12" : "col-span-6")}>
+        {show3D ? (
+          <Suspense fallback={<ViewerLoader />}>
+            <Canvas
+              camera={{ position: [10, 6, 10], fov: 45, near: 0.1, far: isMobile ? 50 : 100 }}
+              shadows={!isMobile}
+              dpr={[1, dprCap]}
+              gl={{
+                antialias: !isMobile,
+                alpha: false,
+                powerPreference: 'high-performance',
+                stencil: false,
+                depth: true,
+              }}
+              style={{ background: '#0B0B0B' }}
+              frameloop="always"
+            >
+              <PerformanceMonitor
+                onDecline={() => setDprCap(1)}
+                onIncline={() => setDprCap(Math.min(1.5, window.devicePixelRatio))}
+              />
+              <AdaptiveDpr pixelated />
+              <color attach="background" args={['#0B0B0B']} />
+              <fog attach="fog" args={['#0B0B0B', 20, 40]} />
+              <PropertyScene onHotspotClick={handleHotspotClick} autoRotate={autoRotate} isNight={isNight} cameraCommand={cameraCommand} onCameraCommandComplete={handleCameraCommandComplete} />
+            </Canvas>
+          </Suspense>
+        ) : (
+          <StaticFallback onRequestLoad={() => setForceLoad(true)} />
+        )}
 
         {/* Hotspot notification */}
         <AnimatePresence>
