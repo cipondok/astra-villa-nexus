@@ -240,22 +240,37 @@ export default function AstraImmersiveViewer() {
         )}
       </AnimatePresence>
 
-      {/* ── Center: 3D Viewer ── */}
       {/* ── Center: 3D Viewer (6 cols or full) ── */}
-      <div className={cn("relative", fullscreen ? "flex-1" : "col-span-6")}>
-        <Suspense fallback={<ViewerLoader />}>
-          <Canvas
-            camera={{ position: [10, 6, 10], fov: 45, near: 0.1, far: 100 }}
-            shadows
-            dpr={[1, 1.5]}
-            gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
-            style={{ background: '#0B0B0B' }}
-          >
-            <color attach="background" args={['#0B0B0B']} />
-            <fog attach="fog" args={['#0B0B0B', 20, 40]} />
-            <PropertyScene onHotspotClick={handleHotspotClick} autoRotate={autoRotate} isNight={isNight} cameraCommand={cameraCommand} onCameraCommandComplete={handleCameraCommandComplete} />
-          </Canvas>
-        </Suspense>
+      <div className={cn("relative", fullscreen ? "flex-1" : isMobile ? "col-span-12" : "col-span-6")}>
+        {show3D ? (
+          <Suspense fallback={<ViewerLoader />}>
+            <Canvas
+              camera={{ position: [10, 6, 10], fov: 45, near: 0.1, far: isMobile ? 50 : 100 }}
+              shadows={!isMobile}
+              dpr={[1, dprCap]}
+              gl={{
+                antialias: !isMobile,
+                alpha: false,
+                powerPreference: 'high-performance',
+                stencil: false,
+                depth: true,
+              }}
+              style={{ background: '#0B0B0B' }}
+              frameloop="demand"
+            >
+              <PerformanceMonitor
+                onDecline={() => setDprCap(1)}
+                onIncline={() => setDprCap(Math.min(1.5, window.devicePixelRatio))}
+              />
+              <AdaptiveDpr pixelated />
+              <color attach="background" args={['#0B0B0B']} />
+              <fog attach="fog" args={['#0B0B0B', 20, 40]} />
+              <PropertyScene onHotspotClick={handleHotspotClick} autoRotate={autoRotate} isNight={isNight} cameraCommand={cameraCommand} onCameraCommandComplete={handleCameraCommandComplete} />
+            </Canvas>
+          </Suspense>
+        ) : (
+          <StaticFallback onRequestLoad={() => setForceLoad(true)} />
+        )}
 
         {/* Hotspot notification */}
         <AnimatePresence>
