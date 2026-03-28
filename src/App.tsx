@@ -313,6 +313,7 @@ const MacroPredictionTerminal = lazy(() => import('@/pages/MacroPredictionTermin
 const GlobalPredictiveAnalyticsPage = lazy(() => import('@/pages/GlobalPredictiveAnalyticsPage'));
 const InvestorSocialNetwork = lazy(() => import('@/pages/InvestorSocialNetwork'));
 const VirtualPropertyExplorer = lazy(() => import('@/pages/VirtualPropertyExplorer'));
+const AstraImmersiveViewer = lazy(() => import('@/pages/AstraImmersiveViewer'));
 const SecurityActivityPage = lazy(() => import('@/pages/SecurityActivityPage'));
 const UserActivationDashboard = lazy(() => import('@/pages/UserActivationDashboard'));
 const DealPipelinePage = lazy(() => import('@/pages/DealPipelinePage'));
@@ -373,7 +374,7 @@ const AppContent = () => {
   
   const location = useLocation();
   const { language } = useTranslation();
-  const isAdminRoute = ['/admin', '/admin-dashboard', '/settings', '/admin/ai-performance', '/admin/listing-review', '/admin/deal-command'].includes(location.pathname) || location.pathname.startsWith('/admin/');
+  const isAdminRoute = ['/admin', '/admin-dashboard', '/settings', '/admin/ai-performance', '/admin/listing-review', '/admin/deal-command', '/immersive-viewer'].includes(location.pathname) || location.pathname.startsWith('/admin/');
   const { isMobile } = useIsMobile();
   const { isAdmin } = useAdminCheck();
   const { maintenanceMode, maintenanceMessage } = useMaintenanceMode();
@@ -759,6 +760,7 @@ const AppContent = () => {
                 <Route path="/investor-social" element={<InvestorSocialNetwork />} />
                 <Route path="/global-predictive-analytics" element={<GlobalPredictiveAnalyticsPage />} />
                 <Route path="/virtual-explorer" element={<VirtualPropertyExplorer />} />
+                <Route path="/immersive-viewer" element={<AstraImmersiveViewer />} />
                 <Route path="/security-activity" element={<ProtectedRoute />}>
                   <Route index element={<SecurityActivityPage />} />
                 </Route>
