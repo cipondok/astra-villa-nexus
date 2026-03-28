@@ -760,6 +760,7 @@ const AppContent = () => {
                 <Route path="/investor-social" element={<InvestorSocialNetwork />} />
                 <Route path="/global-predictive-analytics" element={<GlobalPredictiveAnalyticsPage />} />
                 <Route path="/virtual-explorer" element={<VirtualPropertyExplorer />} />
+                <Route path="/immersive-viewer" element={<AstraImmersiveViewer />} />
                 <Route path="/security-activity" element={<ProtectedRoute />}>
                   <Route index element={<SecurityActivityPage />} />
                 </Route>
