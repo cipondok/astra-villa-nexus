@@ -207,8 +207,38 @@ function HotspotMarker({ position, label, onClick }: { position: [number, number
   );
 }
 
+// ── Adaptive Lighting System ──
+function AdaptiveLighting({ isNight }: { isNight: boolean }) {
+  const ambientRef = useRef<THREE.AmbientLight>(null);
+  const sunRef = useRef<THREE.DirectionalLight>(null);
+  const fillRef = useRef<THREE.DirectionalLight>(null);
+  const moonRef = useRef<THREE.PointLight>(null);
+
+  const ambientTarget = useLerpedValue(isNight ? 0.08 : 0.4, 0.03);
+  const sunTarget = useLerpedValue(isNight ? 0.05 : 1.2, 0.03);
+  const fillTarget = useLerpedValue(isNight ? 0.02 : 0.4, 0.03);
+  const moonTarget = useLerpedValue(isNight ? 0.6 : 0, 0.03);
+
+  useFrame(() => {
+    if (ambientRef.current) ambientRef.current.intensity = ambientTarget.current;
+    if (sunRef.current) sunRef.current.intensity = sunTarget.current;
+    if (fillRef.current) fillRef.current.intensity = fillTarget.current;
+    if (moonRef.current) moonRef.current.intensity = moonTarget.current;
+  });
+
+  return (
+    <>
+      <ambientLight ref={ambientRef} intensity={0.4} color={isNight ? '#1a2a4a' : '#ffffff'} />
+      <directionalLight ref={sunRef} position={[8, 12, 5]} intensity={1.2} castShadow shadow-mapSize={1024} color={isNight ? '#2244aa' : '#ffffff'} />
+      <directionalLight ref={fillRef} position={[-5, 8, -3]} intensity={0.4} color={isNight ? '#1a3366' : '#ffe4c4'} />
+      {/* Moonlight point light */}
+      <pointLight ref={moonRef} position={[-8, 15, -5]} intensity={0} color="#6688cc" distance={40} />
+    </>
+  );
+}
+
 // ── Scene composition ──
-export function PropertyScene({ onHotspotClick, autoRotate }: { onHotspotClick: (label: string) => void; autoRotate: boolean }) {
+export function PropertyScene({ onHotspotClick, autoRotate, isNight = false }: { onHotspotClick: (label: string) => void; autoRotate: boolean; isNight?: boolean }) {
   const hotspots: { position: [number, number, number]; label: string }[] = [
     { position: [3, 1, 2], label: 'Infinity Pool' },
     { position: [-2.5, 2, 0], label: 'Master Suite' },
@@ -218,11 +248,9 @@ export function PropertyScene({ onHotspotClick, autoRotate }: { onHotspotClick: 
 
   return (
     <>
-      <ambientLight intensity={0.4} />
-      <directionalLight position={[8, 12, 5]} intensity={1.2} castShadow shadow-mapSize={1024} />
-      <directionalLight position={[-5, 8, -3]} intensity={0.4} color="#ffe4c4" />
+      <AdaptiveLighting isNight={isNight} />
 
-      <VillaStructure />
+      <VillaStructure isNight={isNight} />
       <FloatingParticles />
       <AutoRotate enabled={autoRotate} />
 
@@ -230,8 +258,8 @@ export function PropertyScene({ onHotspotClick, autoRotate }: { onHotspotClick: 
         <HotspotMarker key={hs.label} position={hs.position} label={hs.label} onClick={() => onHotspotClick(hs.label)} />
       ))}
 
-      <ContactShadows position={[0, -0.01, 0]} opacity={0.4} scale={20} blur={2} far={8} />
-      <Environment preset="sunset" />
+      <ContactShadows position={[0, -0.01, 0]} opacity={isNight ? 0.2 : 0.4} scale={20} blur={2} far={8} />
+      <Environment preset={isNight ? 'night' : 'sunset'} />
       {!autoRotate && <OrbitControls makeDefault target={[0, 2, 0]} minDistance={5} maxDistance={25} maxPolarAngle={Math.PI / 2.1} enableDamping dampingFactor={0.05} />}
     </>
   );
