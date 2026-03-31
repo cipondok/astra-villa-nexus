@@ -58454,6 +58454,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "syndicated_listings_network_id_fkey"
+            columns: ["network_id"]
+            isOneToOne: false
+            referencedRelation: "public_listing_syndication_networks"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "syndicated_listings_property_id_fkey"
             columns: ["property_id"]
             isOneToOne: false
@@ -67833,6 +67840,60 @@ export type Database = {
           segment_type?: string | null
           supply_indicator?: never
           viewing_count_30d?: number | null
+        }
+        Relationships: []
+      }
+      public_listing_syndication_networks: {
+        Row: {
+          commission_rate: number | null
+          created_at: string | null
+          id: string | null
+          is_active: boolean | null
+          last_sync_at: string | null
+          listing_fee: number | null
+          logo_url: string | null
+          network_name: string | null
+          network_type: string | null
+          supported_property_types: string[] | null
+          supported_regions: string[] | null
+          sync_frequency_hours: number | null
+          total_leads_received: number | null
+          total_listings_shared: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          commission_rate?: number | null
+          created_at?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          last_sync_at?: string | null
+          listing_fee?: number | null
+          logo_url?: string | null
+          network_name?: string | null
+          network_type?: string | null
+          supported_property_types?: string[] | null
+          supported_regions?: string[] | null
+          sync_frequency_hours?: number | null
+          total_leads_received?: number | null
+          total_listings_shared?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          commission_rate?: number | null
+          created_at?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          last_sync_at?: string | null
+          listing_fee?: number | null
+          logo_url?: string | null
+          network_name?: string | null
+          network_type?: string | null
+          supported_property_types?: string[] | null
+          supported_regions?: string[] | null
+          sync_frequency_hours?: number | null
+          total_leads_received?: number | null
+          total_listings_shared?: number | null
+          updated_at?: string | null
         }
         Relationships: []
       }
