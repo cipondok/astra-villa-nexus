@@ -116,9 +116,13 @@ const MobileAIChat: React.FC = () => {
               <Bot className="h-8 w-8 text-gold-primary" />
             </motion.div>
             <div className="text-center">
-              <h2 className="text-lg font-bold text-foreground mb-1">Ask me anything</h2>
+              <h2 className="text-lg font-bold text-foreground mb-1">
+                {chatMode === 'investment' ? 'Ask me anything' : 'How can we help?'}
+              </h2>
               <p className="text-xs text-muted-foreground max-w-[240px]">
-                Property valuations, market trends, investment strategies, and more.
+                {chatMode === 'investment'
+                  ? 'Property valuations, market trends, investment strategies, and more.'
+                  : 'Report issues, check statuses, and get system-verified resolutions.'}
               </p>
             </div>
             <div className="w-full space-y-2 max-w-sm">
