@@ -10130,6 +10130,97 @@ async function handleSupportAssistant(payload: Record<string, unknown>, authHead
     legalTimelines = data || [];
   }
 
+  // ── Step 1.5: Auto-Fix Engine — detect and resolve common sync issues ──
+  const autoFixActions: string[] = [];
+  let autoFixApplied = false;
+
+  // Auto-fix: KYC verified in profile but not reflected (e.g. status stuck on pending/submitted)
+  if (profile && profile.kyc_status && !["verified", "approved"].includes(profile.kyc_status)) {
+    // Check activity logs for a completed KYC verification event
+    const kycCompletionLog = (activityLogs || []).find((a: any) =>
+      (a.activity_type === "kyc_verified" || a.activity_type === "identity_verified") ||
+      (a.activity_description && /kyc.*(verified|approved|completed)/i.test(a.activity_description))
+    );
+    if (kycCompletionLog) {
+      const { error: kycFixErr } = await sb.from("profiles").update({ kyc_status: "verified" }).eq("id", userId);
+      if (!kycFixErr) {
+        autoFixActions.push(`AUTO-FIX APPLIED: KYC status synced to 'verified' (was '${profile.kyc_status}'). Evidence: activity log '${kycCompletionLog.activity_type}' at ${kycCompletionLog.created_at}.`);
+        profile.kyc_status = "verified";
+        autoFixApplied = true;
+      }
+    }
+  }
+
+  // Auto-fix: Escrow payment completed but status stuck on earlier stage
+  const stuckEscrowStatuses = ["pending_payment", "payment_pending", "awaiting_payment"];
+  for (const eTxn of escrowTxns) {
+    if (stuckEscrowStatuses.includes(eTxn.status)) {
+      // Look for a matching payment confirmation in activity logs
+      const paymentLog = (activityLogs || []).find((a: any) =>
+        (a.activity_type === "payment_completed" || a.activity_type === "escrow_payment") &&
+        a.activity_description && a.activity_description.includes(eTxn.id?.slice(0, 8))
+      );
+      if (paymentLog) {
+        const { error: escrowFixErr } = await sb.from("escrow_transactions").update({ status: "payment_confirmed" }).eq("id", eTxn.id);
+        if (!escrowFixErr) {
+          autoFixActions.push(`AUTO-FIX APPLIED: Escrow ${eTxn.id.slice(0, 8)} status updated to 'payment_confirmed' (was '${eTxn.status}'). Evidence: activity '${paymentLog.activity_type}' at ${paymentLog.created_at}.`);
+          eTxn.status = "payment_confirmed";
+          autoFixApplied = true;
+        }
+      }
+    }
+  }
+
+  // Auto-fix: Legal request stuck on 'documents_required' but documents already uploaded
+  for (const req of (legalRequests || [])) {
+    if (req.status === "documents_required" || req.status === "pending_documents") {
+      const matchingDocs = (legalDocs || []).filter((d: any) => d.request_id === req.id);
+      if (matchingDocs.length > 0) {
+        const { error: docFixErr } = await sb.from("legal_service_requests").update({ status: "documents_submitted" }).eq("id", req.id);
+        if (!docFixErr) {
+          autoFixActions.push(`AUTO-FIX APPLIED: Legal request ${req.id.slice(0, 8)} status updated to 'documents_submitted' (was '${req.status}'). ${matchingDocs.length} document(s) already on file.`);
+          req.status = "documents_submitted";
+          autoFixApplied = true;
+        }
+      }
+    }
+  }
+
+  // Auto-fix: Support ticket marked 'open' for an issue that is already resolved in the system
+  for (const ticket of (supportTickets || [])) {
+    if (ticket.status === "open" || ticket.status === "pending") {
+      const subjectLower = (ticket.subject || "").toLowerCase();
+      const categoryLower = (ticket.category || "").toLowerCase();
+      // If ticket is about KYC and KYC is now verified, auto-close
+      if ((subjectLower.includes("kyc") || categoryLower.includes("kyc") || categoryLower.includes("verification")) && profile?.kyc_status === "verified") {
+        const { error: ticketFixErr } = await sb.from("support_tickets").update({ status: "resolved", resolved_at: new Date().toISOString() }).eq("id", ticket.id);
+        if (!ticketFixErr) {
+          autoFixActions.push(`AUTO-FIX APPLIED: Support ticket #${ticket.ticket_number} auto-resolved — KYC is now verified.`);
+          ticket.status = "resolved";
+          autoFixApplied = true;
+        }
+      }
+    }
+  }
+
+  // Record auto-fix case in support_cases table if any fixes were applied
+  let autoFixCaseId: string | null = null;
+  if (autoFixApplied) {
+    autoFixCaseId = `ASTRA-SUP-${new Date().getFullYear()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
+    await sb.from("support_cases").insert({
+      case_id: autoFixCaseId,
+      user_id: userId,
+      issue_type: "auto_fix_sync",
+      status: "resolved",
+      priority: "medium",
+      conflict_detected: true,
+      confidence_score: 0.95,
+      summary: autoFixActions.join(" | "),
+      resolution_notes: "Automatically resolved by ASTRA self-healing engine.",
+      resolved_at: new Date().toISOString(),
+    });
+  }
+
   // ── Step 2: Build system context for AI ──
   const systemData: string[] = [];
 
@@ -10186,29 +10277,38 @@ You have FULL access to this user's real-time system data below. Use it as your 
 LIVE SYSTEM DATA FOR USER: ${profile?.full_name || user.email}
 ═══════════════════════════════════════
 ${systemData.length > 0 ? systemData.join("\n\n") : "⚠ No system records found for this user."}
+${autoFixActions.length > 0 ? `\n═══════════════════════════════════════\nAUTO-FIX ACTIONS ALREADY APPLIED BY SYSTEM:\n${autoFixActions.join("\n")}\nCase Reference: ${autoFixCaseId}\n═══════════════════════════════════════` : ""}
 ═══════════════════════════════════════
 
 CORE DIRECTIVES:
 
 1. SYSTEM DATA IS TRUTH — Always base answers on the data above, never on assumptions.
 
-2. CONFLICT DETECTION (CRITICAL):
+2. AUTO-FIX AWARENESS (NEW — CRITICAL):
+   - If the AUTO-FIX ACTIONS section above shows fixes were applied, you MUST:
+     a) Inform the user their issue was detected AND already resolved automatically.
+     b) Use this exact phrasing: "This issue was caused by a system sync delay and has now been resolved automatically."
+     c) Reference the Case Reference ID provided.
+     d) Reassure no further action is needed from the user.
+   - NEVER re-investigate an issue that was already auto-fixed.
+
+3. CONFLICT DETECTION (CRITICAL):
    - If user claims they completed a step (payment, upload, verification, document submission):
      a) CHECK the system data above for matching records
      b) If data CONFIRMS completion → This is a SYSTEM CONFLICT. Acknowledge completion, explain the display/sync error, reassure NO repeat needed, provide resolution.
      c) If data shows NOT completed → Guide step-by-step without blame.
      d) If data is ambiguous → Ask exactly ONE precise clarification question.
 
-3. NEVER ask a user to repeat a confirmed-completed action. This is an absolute rule.
+4. NEVER ask a user to repeat a confirmed-completed action. This is an absolute rule.
 
-4. ESCALATION PROTOCOL:
+5. ESCALATION PROTOCOL:
    - If a conflict cannot be auto-resolved, you MUST escalate.
    - Use EXACTLY this case ID (do not invent your own): CASE_ID::ASTRA-SUP-${new Date().getFullYear()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}
    - Include the case ID in your response using the exact format above so the system can extract it.
    - Mark case as escalated to human agent
    - Provide the case ID and estimated timeline to the user
 
-5. CROSS-REFERENCE actively:
+6. CROSS-REFERENCE actively:
    - Match escrow statuses against activity logs
    - Compare document upload timestamps against legal request statuses
    - Check if support tickets already exist for the same issue
@@ -10270,6 +10370,9 @@ STYLE RULES:
   // Clean the CASE_ID:: prefix from the displayed response
   const cleanResponse = response.replace(/CASE_ID::/g, "");
 
+  // If auto-fix was applied and AI didn't generate its own case ID, use the auto-fix one
+  const finalCaseId = caseId || autoFixCaseId;
+
   return json({
     response: cleanResponse,
     support_meta: {
@@ -10278,8 +10381,10 @@ STYLE RULES:
       legal_requests_found: legalRequests?.length || 0,
       escrow_transactions_found: escrowTxns?.length || 0,
       documents_found: legalDocs?.length || 0,
-      conflict_detected: hasConflict,
-      case_id: caseId,
+      conflict_detected: hasConflict || autoFixApplied,
+      case_id: finalCaseId,
+      auto_fix_applied: autoFixApplied,
+      auto_fix_actions: autoFixActions,
     },
   });
 }

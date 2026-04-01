@@ -10,6 +10,8 @@ export interface SupportMeta {
   documents_found: number;
   conflict_detected: boolean;
   case_id: string | null;
+  auto_fix_applied?: boolean;
+  auto_fix_actions?: string[];
 }
 
 export function useSupportAssistant() {
