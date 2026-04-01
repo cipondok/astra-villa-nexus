@@ -1,20 +1,37 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, Sparkles, Trash2 } from 'lucide-react';
+import { Bot, Sparkles, Trash2, HeadphonesIcon, TrendingUp } from 'lucide-react';
 import { useInvestmentAssistant, AssistantMessage } from '@/hooks/useInvestmentAssistant';
+import { useSupportAssistant } from '@/hooks/useSupportAssistant';
 import AIChatInput from '@/components/ai/AIChatInput';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '@/lib/utils';
 
-const suggestedQuestions = [
+type ChatMode = 'investment' | 'support';
+
+const investmentQuestions = [
   'Best areas for investment in Bali?',
   'Properties with highest rental yield?',
   'Compare villas vs apartments ROI',
   'Market trends in Jakarta 2026',
 ];
 
+const supportQuestions = [
+  'I already uploaded my documents but system asks again',
+  'My payment was completed but status not updated',
+  'Check my escrow transaction status',
+  'My KYC verification seems stuck',
+];
+
 const MobileAIChat: React.FC = () => {
-  const { messages, isLoading, sendMessage, clearChat } = useInvestmentAssistant();
+  const [chatMode, setChatMode] = useState<ChatMode>('investment');
+  const investment = useInvestmentAssistant();
+  const support = useSupportAssistant();
+  
+  const active = chatMode === 'investment' ? investment : support;
+  const { messages, isLoading, sendMessage, clearChat } = active;
+  const suggestedQuestions = chatMode === 'investment' ? investmentQuestions : supportQuestions;
+
   const [input, setInput] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -33,21 +50,58 @@ const MobileAIChat: React.FC = () => {
   return (
     <div className="flex flex-col h-[calc(100dvh-80px)] bg-background">
       {/* Header */}
-      <div className="shrink-0 px-4 py-3 border-b border-border/30 flex items-center justify-between bg-background/95 backdrop-blur-xl">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-gold-primary/10 flex items-center justify-center">
-            <Sparkles className="h-4 w-4 text-gold-primary" />
+      <div className="shrink-0 px-4 py-3 border-b border-border/30 bg-background/95 backdrop-blur-xl">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-full bg-gold-primary/10 flex items-center justify-center">
+              {chatMode === 'investment' ? (
+                <Sparkles className="h-4 w-4 text-gold-primary" />
+              ) : (
+                <HeadphonesIcon className="h-4 w-4 text-gold-primary" />
+              )}
+            </div>
+            <div>
+              <h1 className="text-sm font-bold text-foreground">
+                {chatMode === 'investment' ? 'ASTRA AI Advisor' : 'ASTRA AI Support'}
+              </h1>
+              <p className="text-[10px] text-muted-foreground">
+                {chatMode === 'investment' ? 'Property & investment advisor' : 'System-aware support assistant'}
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-sm font-bold text-foreground">ASTRA AI Assistant</h1>
-            <p className="text-[10px] text-muted-foreground">Property & investment advisor</p>
-          </div>
+          {messages.length > 0 && (
+            <button onClick={clearChat} className="p-2 rounded-full hover:bg-muted/50 active:scale-95 transition-transform">
+              <Trash2 className="h-4 w-4 text-muted-foreground" />
+            </button>
+          )}
         </div>
-        {messages.length > 0 && (
-          <button onClick={clearChat} className="p-2 rounded-full hover:bg-muted/50 active:scale-95 transition-transform">
-            <Trash2 className="h-4 w-4 text-muted-foreground" />
+        {/* Mode Switcher */}
+        <div className="flex gap-1.5 bg-muted/30 rounded-xl p-1">
+          <button
+            onClick={() => setChatMode('investment')}
+            className={cn(
+              "flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all",
+              chatMode === 'investment'
+                ? "bg-gold-primary text-background shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            <TrendingUp className="h-3 w-3" />
+            Investment
           </button>
-        )}
+          <button
+            onClick={() => setChatMode('support')}
+            className={cn(
+              "flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all",
+              chatMode === 'support'
+                ? "bg-gold-primary text-background shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            <HeadphonesIcon className="h-3 w-3" />
+            Support
+          </button>
+        </div>
       </div>
 
       {/* Messages */}
@@ -62,9 +116,13 @@ const MobileAIChat: React.FC = () => {
               <Bot className="h-8 w-8 text-gold-primary" />
             </motion.div>
             <div className="text-center">
-              <h2 className="text-lg font-bold text-foreground mb-1">Ask me anything</h2>
+              <h2 className="text-lg font-bold text-foreground mb-1">
+                {chatMode === 'investment' ? 'Ask me anything' : 'How can we help?'}
+              </h2>
               <p className="text-xs text-muted-foreground max-w-[240px]">
-                Property valuations, market trends, investment strategies, and more.
+                {chatMode === 'investment'
+                  ? 'Property valuations, market trends, investment strategies, and more.'
+                  : 'Report issues, check statuses, and get system-verified resolutions.'}
               </p>
             </div>
             <div className="w-full space-y-2 max-w-sm">

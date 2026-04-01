@@ -10079,13 +10079,176 @@ Buat konten SEO landing page lengkap untuk lokasi ini.`;
   }
 }
 
+// ── Support Assistant — System-aware conflict detection ─────────────
+async function handleSupportAssistant(payload: Record<string, unknown>, authHeader: string) {
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+  if (!LOVABLE_API_KEY) return json({ error: "AI gateway not configured" }, 500);
+
+  const sb = createClient(supabaseUrl, serviceKey);
+
+  // Extract user from JWT
+  const token = authHeader.replace("Bearer ", "");
+  const { data: { user }, error: authErr } = await createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY") || serviceKey).auth.getUser(token);
+  if (authErr || !user) return json({ error: "Authentication required" }, 401);
+
+  const userId = user.id;
+  const query = String(payload.query || "").trim();
+  const conversationHistory = Array.isArray(payload.conversation_history) ? payload.conversation_history : [];
+
+  if (!query) return json({ error: "query is required" }, 400);
+
+  // ── Step 1: Gather all system data for this user ──
+  const [
+    { data: supportTickets },
+    { data: legalRequests },
+    { data: escrowTxns },
+    { data: legalDocs },
+    { data: activityLogs },
+    { data: profile },
+  ] = await Promise.all([
+    sb.from("support_tickets").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(10),
+    sb.from("legal_service_requests").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(10),
+    sb.from("escrow_transactions").select("*").eq("buyer_id", userId).order("created_at", { ascending: false }).limit(10),
+    sb.from("legal_service_documents").select("*").eq("uploaded_by", userId).order("created_at", { ascending: false }).limit(20),
+    sb.from("activity_logs").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(20),
+    sb.from("profiles").select("*").eq("id", userId).maybeSingle(),
+  ]);
+
+  // Also fetch timeline for recent legal requests
+  const recentLegalIds = (legalRequests || []).slice(0, 3).map((r: any) => r.id);
+  let legalTimelines: any[] = [];
+  if (recentLegalIds.length > 0) {
+    const { data } = await sb.from("legal_service_timeline").select("*").in("request_id", recentLegalIds).order("created_at", { ascending: true });
+    legalTimelines = data || [];
+  }
+
+  // ── Step 2: Build system context for AI ──
+  const systemData: string[] = [];
+
+  if (profile) {
+    systemData.push(`USER PROFILE: Name: ${profile.full_name || "N/A"}, Email: ${profile.email || user.email}, Role: ${profile.role || "user"}, KYC: ${profile.kyc_status || "not_started"}`);
+  }
+
+  if (supportTickets?.length) {
+    systemData.push(`SUPPORT TICKETS (${supportTickets.length}):\n${supportTickets.map((t: any) =>
+      `- #${t.ticket_number} | ${t.category} | Status: ${t.status} | Priority: ${t.priority} | Created: ${t.created_at} | Subject: ${t.subject}`
+    ).join("\n")}`);
+  }
+
+  if (legalRequests?.length) {
+    systemData.push(`LEGAL SERVICE REQUESTS (${legalRequests.length}):\n${legalRequests.map((r: any) =>
+      `- ID: ${r.id.slice(0, 8)} | Type: ${r.service_type} | Status: ${r.status} | Title: ${r.title} | Fee Approved: ${r.fee_approved_at ? "Yes" : "No"} | Created: ${r.created_at}`
+    ).join("\n")}`);
+  }
+
+  if (escrowTxns?.length) {
+    systemData.push(`ESCROW TRANSACTIONS (${escrowTxns.length}):\n${escrowTxns.map((e: any) =>
+      `- ID: ${e.id.slice(0, 8)} | Status: ${e.status} | Amount: IDR ${e.amount?.toLocaleString() || "N/A"} | Created: ${e.created_at}`
+    ).join("\n")}`);
+  }
+
+  if (legalDocs?.length) {
+    systemData.push(`UPLOADED DOCUMENTS (${legalDocs.length}):\n${legalDocs.map((d: any) =>
+      `- ${d.document_name} | Type: ${d.document_type} | Request: ${d.request_id?.slice(0, 8) || "N/A"} | Uploaded: ${d.created_at}`
+    ).join("\n")}`);
+  }
+
+  if (legalTimelines.length) {
+    systemData.push(`LEGAL TIMELINES:\n${legalTimelines.map((t: any) =>
+      `- [${t.request_id?.slice(0, 8)}] ${t.event_type}: ${t.description} (${t.created_at})`
+    ).join("\n")}`);
+  }
+
+  if (activityLogs?.length) {
+    systemData.push(`RECENT ACTIVITY (${activityLogs.length}):\n${activityLogs.slice(0, 10).map((a: any) =>
+      `- ${a.activity_type}: ${a.activity_description} (${a.created_at})`
+    ).join("\n")}`);
+  }
+
+  const systemPrompt = `You are ASTRA Villa AI Support, a system-aware assistant connected to internal project data.
+
+YOUR CORE MISSION:
+- Read system data to detect inconsistencies
+- Prevent duplicate actions — NEVER ask user to repeat a completed step
+- Provide clear resolution paths with ownership
+
+SYSTEM DATA FOR THIS USER:
+${systemData.length > 0 ? systemData.join("\n\n") : "No system data found for this user."}
+
+CONFLICT DETECTION RULES:
+1. If user says they completed a step (payment, upload, verification), CHECK the system data above
+2. If the data confirms completion → acknowledge it, explain the system inconsistency, provide next step
+3. If the data shows NOT completed → guide them step-by-step without blame
+4. If data is unclear → ask ONE targeted clarification question
+
+RESPONSE FORMAT (use markdown):
+**Current Status:** [what the system shows]
+**What We Found:** [data-driven findings]
+**Issue Identified:** [if conflict detected, explain it]
+**What You Need To Do:** [clear next step for user]
+**What We Will Do:** [platform action — escalation, manual override, etc.]
+
+RULES:
+- Never give generic template replies
+- Never blame the user
+- Always show ownership of the issue
+- If conflict cannot be auto-resolved, create escalation with case ID
+- Respond in the same language as the user's query
+- Be professional, calm, and confident`;
+
+  const chatMessages = [
+    { role: "system", content: systemPrompt },
+    ...conversationHistory.slice(-10),
+    { role: "user", content: query },
+  ];
+
+  const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ model: "google/gemini-3-flash-preview", messages: chatMessages }),
+  });
+
+  if (!aiResponse.ok) {
+    const status = aiResponse.status;
+    if (status === 429) return json({ error: "Rate limited. Please try again." }, 429);
+    if (status === 402) return json({ error: "AI credits required." }, 402);
+    return json({ error: "AI response generation failed" }, 500);
+  }
+
+  const aiData = await aiResponse.json();
+  const response = aiData.choices?.[0]?.message?.content || "Maaf, saya tidak bisa merespons saat ini.";
+
+  // Detect if AI identified a conflict for metadata
+  const hasConflict = response.toLowerCase().includes("inconsisten") ||
+    response.toLowerCase().includes("conflict") ||
+    response.toLowerCase().includes("mismatch") ||
+    response.toLowerCase().includes("sudah selesai") ||
+    response.toLowerCase().includes("already completed");
+
+  return json({
+    response,
+    support_meta: {
+      user_id: userId,
+      tickets_found: supportTickets?.length || 0,
+      legal_requests_found: legalRequests?.length || 0,
+      escrow_transactions_found: escrowTxns?.length || 0,
+      documents_found: legalDocs?.length || 0,
+      conflict_detected: hasConflict,
+    },
+  });
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { mode, payload = {} } = await req.json();
+    const bodyText = await req.text();
+    const { mode, payload = {} } = JSON.parse(bodyText);
+    const authHeader = req.headers.get("authorization") || "";
 
     if (!mode) {
       return json({ error: "mode is required" }, 400);
@@ -10154,6 +10317,8 @@ serve(async (req) => {
         return await handleInvestmentAssistant(payload);
       case "seo_landing_content":
         return await handleSeoLandingContent(payload);
+      case "support_assistant":
+        return await handleSupportAssistant(payload, authHeader);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }

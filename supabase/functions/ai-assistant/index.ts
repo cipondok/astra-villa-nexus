@@ -26,6 +26,7 @@ const VALID_MODES = new Set([
   "transcribe_audio",
   "recommendations",
   "match_property",
+  "support_assistant",
 ]);
 
 serve(async (req) => {
