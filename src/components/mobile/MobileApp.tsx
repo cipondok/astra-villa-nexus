@@ -15,7 +15,7 @@ import { useAuth } from '@/contexts/AuthContext';
  */
 
 // Critical pages - load immediately
-import Index from '@/pages/Index';
+import InvestorLandingPage from '@/pages/InvestorLandingPage';
 import Search from '@/pages/Search';
 import PropertyDetail from '@/pages/PropertyDetail';
 
