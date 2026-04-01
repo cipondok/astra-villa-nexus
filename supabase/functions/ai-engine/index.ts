@@ -10317,6 +10317,8 @@ serve(async (req) => {
         return await handleInvestmentAssistant(payload);
       case "seo_landing_content":
         return await handleSeoLandingContent(payload);
+      case "support_assistant":
+        return await handleSupportAssistant(payload, authHeader);
       default:
         return json({ error: `Invalid AI mode: ${mode}` }, 400);
     }
