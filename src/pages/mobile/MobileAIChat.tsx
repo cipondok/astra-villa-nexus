@@ -50,21 +50,58 @@ const MobileAIChat: React.FC = () => {
   return (
     <div className="flex flex-col h-[calc(100dvh-80px)] bg-background">
       {/* Header */}
-      <div className="shrink-0 px-4 py-3 border-b border-border/30 flex items-center justify-between bg-background/95 backdrop-blur-xl">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-gold-primary/10 flex items-center justify-center">
-            <Sparkles className="h-4 w-4 text-gold-primary" />
+      <div className="shrink-0 px-4 py-3 border-b border-border/30 bg-background/95 backdrop-blur-xl">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-full bg-gold-primary/10 flex items-center justify-center">
+              {chatMode === 'investment' ? (
+                <Sparkles className="h-4 w-4 text-gold-primary" />
+              ) : (
+                <HeadphonesIcon className="h-4 w-4 text-gold-primary" />
+              )}
+            </div>
+            <div>
+              <h1 className="text-sm font-bold text-foreground">
+                {chatMode === 'investment' ? 'ASTRA AI Advisor' : 'ASTRA AI Support'}
+              </h1>
+              <p className="text-[10px] text-muted-foreground">
+                {chatMode === 'investment' ? 'Property & investment advisor' : 'System-aware support assistant'}
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-sm font-bold text-foreground">ASTRA AI Assistant</h1>
-            <p className="text-[10px] text-muted-foreground">Property & investment advisor</p>
-          </div>
+          {messages.length > 0 && (
+            <button onClick={clearChat} className="p-2 rounded-full hover:bg-muted/50 active:scale-95 transition-transform">
+              <Trash2 className="h-4 w-4 text-muted-foreground" />
+            </button>
+          )}
         </div>
-        {messages.length > 0 && (
-          <button onClick={clearChat} className="p-2 rounded-full hover:bg-muted/50 active:scale-95 transition-transform">
-            <Trash2 className="h-4 w-4 text-muted-foreground" />
+        {/* Mode Switcher */}
+        <div className="flex gap-1.5 bg-muted/30 rounded-xl p-1">
+          <button
+            onClick={() => setChatMode('investment')}
+            className={cn(
+              "flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all",
+              chatMode === 'investment'
+                ? "bg-gold-primary text-background shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            <TrendingUp className="h-3 w-3" />
+            Investment
           </button>
-        )}
+          <button
+            onClick={() => setChatMode('support')}
+            className={cn(
+              "flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all",
+              chatMode === 'support'
+                ? "bg-gold-primary text-background shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            <HeadphonesIcon className="h-3 w-3" />
+            Support
+          </button>
+        </div>
       </div>
 
       {/* Messages */}
