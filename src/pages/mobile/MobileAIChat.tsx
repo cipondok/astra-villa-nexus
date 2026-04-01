@@ -30,6 +30,7 @@ const MobileAIChat: React.FC = () => {
   
   const active = chatMode === 'investment' ? investment : support;
   const { messages, isLoading, sendMessage, clearChat } = active;
+  const lastMeta = chatMode === 'support' ? support.lastMeta : null;
   const suggestedQuestions = chatMode === 'investment' ? investmentQuestions : supportQuestions;
 
   const [input, setInput] = useState('');
