@@ -10370,6 +10370,9 @@ STYLE RULES:
   // Clean the CASE_ID:: prefix from the displayed response
   const cleanResponse = response.replace(/CASE_ID::/g, "");
 
+  // If auto-fix was applied and AI didn't generate its own case ID, use the auto-fix one
+  const finalCaseId = caseId || autoFixCaseId;
+
   return json({
     response: cleanResponse,
     support_meta: {
@@ -10378,8 +10381,10 @@ STYLE RULES:
       legal_requests_found: legalRequests?.length || 0,
       escrow_transactions_found: escrowTxns?.length || 0,
       documents_found: legalDocs?.length || 0,
-      conflict_detected: hasConflict,
-      case_id: caseId,
+      conflict_detected: hasConflict || autoFixApplied,
+      case_id: finalCaseId,
+      auto_fix_applied: autoFixApplied,
+      auto_fix_actions: autoFixActions,
     },
   });
 }
