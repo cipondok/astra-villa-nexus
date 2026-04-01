@@ -103,7 +103,26 @@ const MobileAIChat: React.FC = () => {
             Support
           </button>
         </div>
-      </div>
+        </div>
+        {/* Support Meta Banner */}
+        {lastMeta && chatMode === 'support' && (lastMeta.conflict_detected || lastMeta.case_id) && (
+          <div className={cn(
+            "mt-2 flex items-center gap-2 px-3 py-2 rounded-lg text-[10px] font-medium",
+            lastMeta.conflict_detected
+              ? "bg-destructive/10 text-destructive border border-destructive/20"
+              : "bg-gold-primary/10 text-gold-primary border border-gold-primary/20"
+          )}>
+            {lastMeta.conflict_detected ? (
+              <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
+            ) : (
+              <ShieldCheck className="h-3.5 w-3.5 shrink-0" />
+            )}
+            <span>
+              {lastMeta.conflict_detected && "System conflict detected. "}
+              {lastMeta.case_id && `Case ID: ${lastMeta.case_id}`}
+            </span>
+          </div>
+        )}
 
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain px-4 py-3 space-y-3">
