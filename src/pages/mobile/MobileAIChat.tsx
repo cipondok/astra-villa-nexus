@@ -1,16 +1,26 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, Sparkles, Trash2 } from 'lucide-react';
+import { Bot, Sparkles, Trash2, HeadphonesIcon, TrendingUp } from 'lucide-react';
 import { useInvestmentAssistant, AssistantMessage } from '@/hooks/useInvestmentAssistant';
+import { useSupportAssistant } from '@/hooks/useSupportAssistant';
 import AIChatInput from '@/components/ai/AIChatInput';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '@/lib/utils';
 
-const suggestedQuestions = [
+type ChatMode = 'investment' | 'support';
+
+const investmentQuestions = [
   'Best areas for investment in Bali?',
   'Properties with highest rental yield?',
   'Compare villas vs apartments ROI',
   'Market trends in Jakarta 2026',
+];
+
+const supportQuestions = [
+  'I already uploaded my documents but system asks again',
+  'My payment was completed but status not updated',
+  'Check my escrow transaction status',
+  'My KYC verification seems stuck',
 ];
 
 const MobileAIChat: React.FC = () => {
