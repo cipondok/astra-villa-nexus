@@ -10103,18 +10103,24 @@ async function handleSupportAssistant(payload: Record<string, unknown>, authHead
   const [
     { data: supportTickets },
     { data: legalRequests },
-    { data: escrowTxns },
+    { data: escrowBuyer },
+    { data: escrowSeller },
     { data: legalDocs },
     { data: activityLogs },
     { data: profile },
+    { data: propertyOffers },
   ] = await Promise.all([
     sb.from("support_tickets").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(10),
     sb.from("legal_service_requests").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(10),
     sb.from("escrow_transactions").select("*").eq("buyer_id", userId).order("created_at", { ascending: false }).limit(10),
+    sb.from("escrow_transactions").select("*").eq("seller_id", userId).order("created_at", { ascending: false }).limit(10),
     sb.from("legal_service_documents").select("*").eq("uploaded_by", userId).order("created_at", { ascending: false }).limit(20),
     sb.from("activity_logs").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(20),
     sb.from("profiles").select("*").eq("id", userId).maybeSingle(),
+    sb.from("property_offers").select("*").or(`buyer_id.eq.${userId},seller_id.eq.${userId}`).order("created_at", { ascending: false }).limit(10),
   ]);
+
+  const escrowTxns = [...(escrowBuyer || []), ...(escrowSeller || [])].sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 15);
 
   // Also fetch timeline for recent legal requests
   const recentLegalIds = (legalRequests || []).slice(0, 3).map((r: any) => r.id);
