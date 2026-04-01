@@ -24,7 +24,14 @@ const supportQuestions = [
 ];
 
 const MobileAIChat: React.FC = () => {
-  const { messages, isLoading, sendMessage, clearChat } = useInvestmentAssistant();
+  const [chatMode, setChatMode] = useState<ChatMode>('investment');
+  const investment = useInvestmentAssistant();
+  const support = useSupportAssistant();
+  
+  const active = chatMode === 'investment' ? investment : support;
+  const { messages, isLoading, sendMessage, clearChat } = active;
+  const suggestedQuestions = chatMode === 'investment' ? investmentQuestions : supportQuestions;
+
   const [input, setInput] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
 
