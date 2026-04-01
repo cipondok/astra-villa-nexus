@@ -10277,6 +10277,7 @@ You have FULL access to this user's real-time system data below. Use it as your 
 LIVE SYSTEM DATA FOR USER: ${profile?.full_name || user.email}
 ═══════════════════════════════════════
 ${systemData.length > 0 ? systemData.join("\n\n") : "⚠ No system records found for this user."}
+${autoFixActions.length > 0 ? `\n═══════════════════════════════════════\nAUTO-FIX ACTIONS ALREADY APPLIED BY SYSTEM:\n${autoFixActions.join("\n")}\nCase Reference: ${autoFixCaseId}\n═══════════════════════════════════════` : ""}
 ═══════════════════════════════════════
 
 CORE DIRECTIVES:
