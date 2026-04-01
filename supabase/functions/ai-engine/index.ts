@@ -10130,6 +10130,97 @@ async function handleSupportAssistant(payload: Record<string, unknown>, authHead
     legalTimelines = data || [];
   }
 
+  // ── Step 1.5: Auto-Fix Engine — detect and resolve common sync issues ──
+  const autoFixActions: string[] = [];
+  let autoFixApplied = false;
+
+  // Auto-fix: KYC verified in profile but not reflected (e.g. status stuck on pending/submitted)
+  if (profile && profile.kyc_status && !["verified", "approved"].includes(profile.kyc_status)) {
+    // Check activity logs for a completed KYC verification event
+    const kycCompletionLog = (activityLogs || []).find((a: any) =>
+      (a.activity_type === "kyc_verified" || a.activity_type === "identity_verified") ||
+      (a.activity_description && /kyc.*(verified|approved|completed)/i.test(a.activity_description))
+    );
+    if (kycCompletionLog) {
+      const { error: kycFixErr } = await sb.from("profiles").update({ kyc_status: "verified" }).eq("id", userId);
+      if (!kycFixErr) {
+        autoFixActions.push(`AUTO-FIX APPLIED: KYC status synced to 'verified' (was '${profile.kyc_status}'). Evidence: activity log '${kycCompletionLog.activity_type}' at ${kycCompletionLog.created_at}.`);
+        profile.kyc_status = "verified";
+        autoFixApplied = true;
+      }
+    }
+  }
+
+  // Auto-fix: Escrow payment completed but status stuck on earlier stage
+  const stuckEscrowStatuses = ["pending_payment", "payment_pending", "awaiting_payment"];
+  for (const eTxn of escrowTxns) {
+    if (stuckEscrowStatuses.includes(eTxn.status)) {
+      // Look for a matching payment confirmation in activity logs
+      const paymentLog = (activityLogs || []).find((a: any) =>
+        (a.activity_type === "payment_completed" || a.activity_type === "escrow_payment") &&
+        a.activity_description && a.activity_description.includes(eTxn.id?.slice(0, 8))
+      );
+      if (paymentLog) {
+        const { error: escrowFixErr } = await sb.from("escrow_transactions").update({ status: "payment_confirmed" }).eq("id", eTxn.id);
+        if (!escrowFixErr) {
+          autoFixActions.push(`AUTO-FIX APPLIED: Escrow ${eTxn.id.slice(0, 8)} status updated to 'payment_confirmed' (was '${eTxn.status}'). Evidence: activity '${paymentLog.activity_type}' at ${paymentLog.created_at}.`);
+          eTxn.status = "payment_confirmed";
+          autoFixApplied = true;
+        }
+      }
+    }
+  }
+
+  // Auto-fix: Legal request stuck on 'documents_required' but documents already uploaded
+  for (const req of (legalRequests || [])) {
+    if (req.status === "documents_required" || req.status === "pending_documents") {
+      const matchingDocs = (legalDocs || []).filter((d: any) => d.request_id === req.id);
+      if (matchingDocs.length > 0) {
+        const { error: docFixErr } = await sb.from("legal_service_requests").update({ status: "documents_submitted" }).eq("id", req.id);
+        if (!docFixErr) {
+          autoFixActions.push(`AUTO-FIX APPLIED: Legal request ${req.id.slice(0, 8)} status updated to 'documents_submitted' (was '${req.status}'). ${matchingDocs.length} document(s) already on file.`);
+          req.status = "documents_submitted";
+          autoFixApplied = true;
+        }
+      }
+    }
+  }
+
+  // Auto-fix: Support ticket marked 'open' for an issue that is already resolved in the system
+  for (const ticket of (supportTickets || [])) {
+    if (ticket.status === "open" || ticket.status === "pending") {
+      const subjectLower = (ticket.subject || "").toLowerCase();
+      const categoryLower = (ticket.category || "").toLowerCase();
+      // If ticket is about KYC and KYC is now verified, auto-close
+      if ((subjectLower.includes("kyc") || categoryLower.includes("kyc") || categoryLower.includes("verification")) && profile?.kyc_status === "verified") {
+        const { error: ticketFixErr } = await sb.from("support_tickets").update({ status: "resolved", resolved_at: new Date().toISOString() }).eq("id", ticket.id);
+        if (!ticketFixErr) {
+          autoFixActions.push(`AUTO-FIX APPLIED: Support ticket #${ticket.ticket_number} auto-resolved — KYC is now verified.`);
+          ticket.status = "resolved";
+          autoFixApplied = true;
+        }
+      }
+    }
+  }
+
+  // Record auto-fix case in support_cases table if any fixes were applied
+  let autoFixCaseId: string | null = null;
+  if (autoFixApplied) {
+    autoFixCaseId = `ASTRA-SUP-${new Date().getFullYear()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
+    await sb.from("support_cases").insert({
+      case_id: autoFixCaseId,
+      user_id: userId,
+      issue_type: "auto_fix_sync",
+      status: "resolved",
+      priority: "medium",
+      conflict_detected: true,
+      confidence_score: 0.95,
+      summary: autoFixActions.join(" | "),
+      resolution_notes: "Automatically resolved by ASTRA self-healing engine.",
+      resolved_at: new Date().toISOString(),
+    });
+  }
+
   // ── Step 2: Build system context for AI ──
   const systemData: string[] = [];
 
