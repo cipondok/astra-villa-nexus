@@ -10263,8 +10263,15 @@ STYLE RULES:
   ];
   const hasConflict = conflictSignals.some(s => responseLower.includes(s.toLowerCase()));
 
+  // Extract case_id from AI response if present (format: CASE_ID::ASTRA-SUP-YYYY-XXXXXXXX)
+  const caseIdMatch = response.match(/CASE_ID::([A-Z0-9-]+)/i) || response.match(/(ASTRA-SUP-\d{4}-[A-Z0-9]{6,8})/i);
+  const caseId = caseIdMatch ? (caseIdMatch[1] || caseIdMatch[0]).replace("CASE_ID::", "") : null;
+
+  // Clean the CASE_ID:: prefix from the displayed response
+  const cleanResponse = response.replace(/CASE_ID::/g, "");
+
   return json({
-    response,
+    response: cleanResponse,
     support_meta: {
       user_id: userId,
       tickets_found: supportTickets?.length || 0,
@@ -10272,6 +10279,7 @@ STYLE RULES:
       escrow_transactions_found: escrowTxns?.length || 0,
       documents_found: legalDocs?.length || 0,
       conflict_detected: hasConflict,
+      case_id: caseId,
     },
   });
 }
