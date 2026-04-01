@@ -58158,39 +58158,57 @@ export type Database = {
       support_smart_alerts: {
         Row: {
           affected_area: string
+          alert_hash: string | null
           alert_type: string
           created_at: string | null
           dismissed_at: string | null
           dismissed_by: string | null
+          group_key: string | null
           id: string
           is_dismissed: boolean | null
           message: string
+          notification_channels: Json | null
+          notification_message: string | null
+          notified_at: string | null
+          notified_externally: boolean | null
           recommended_action: string | null
           severity: string
           title: string
         }
         Insert: {
           affected_area: string
+          alert_hash?: string | null
           alert_type: string
           created_at?: string | null
           dismissed_at?: string | null
           dismissed_by?: string | null
+          group_key?: string | null
           id?: string
           is_dismissed?: boolean | null
           message: string
+          notification_channels?: Json | null
+          notification_message?: string | null
+          notified_at?: string | null
+          notified_externally?: boolean | null
           recommended_action?: string | null
           severity?: string
           title: string
         }
         Update: {
           affected_area?: string
+          alert_hash?: string | null
           alert_type?: string
           created_at?: string | null
           dismissed_at?: string | null
           dismissed_by?: string | null
+          group_key?: string | null
           id?: string
           is_dismissed?: boolean | null
           message?: string
+          notification_channels?: Json | null
+          notification_message?: string | null
+          notified_at?: string | null
+          notified_externally?: boolean | null
           recommended_action?: string | null
           severity?: string
           title?: string
