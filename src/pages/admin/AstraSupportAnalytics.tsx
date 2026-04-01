@@ -208,11 +208,11 @@ const AstraSupportAnalytics: React.FC = () => {
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {([
-          { label: 'Total Cases (7d)', value: metrics.total, icon: Activity, color: '#3B82F6' },
+          { label: 'Total Cases (7d)', value: metrics.total, icon: Activity, color: '#3B82F6', alert: false },
           { label: 'Conflict Rate', value: `${metrics.conflictRate}%`, icon: AlertTriangle, color: metrics.conflictRateNum > 30 ? '#EF4444' : '#F59E0B', alert: metrics.conflictRateNum > 30 },
-          { label: 'Auto-Resolution Rate', value: `${metrics.autoResRate}%`, icon: CheckCircle2, color: '#00E0A4' },
-          { label: 'Avg Resolution Time', value: metrics.avgResTime, icon: Clock, color: '#8B5CF6' },
-        ] as const).map((m) => (
+          { label: 'Auto-Resolution Rate', value: `${metrics.autoResRate}%`, icon: CheckCircle2, color: '#00E0A4', alert: false },
+          { label: 'Avg Resolution Time', value: metrics.avgResTime, icon: Clock, color: '#8B5CF6', alert: false },
+        ]).map((m) => (
           <Card key={m.label} className="border-0" style={{ background: CARD_BG, boxShadow: m.alert ? '0 0 20px rgba(239,68,68,0.15)' : 'none' }}>
             <CardContent className="p-5 flex items-center gap-4">
               <div className="w-11 h-11 rounded-lg flex items-center justify-center" style={{ background: `${m.color}15` }}>
