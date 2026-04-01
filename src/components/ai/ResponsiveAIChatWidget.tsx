@@ -915,8 +915,8 @@ ${propertyId ? "🌟 I see you're viewing a property! Ask me anything about it -
     return replies.slice(0, 4);
   };
 
-  const handleSendMessage = async (quickMessage?: string) => {
-    const messageToSend = quickMessage || message;
+  const handleSendMessage = async (quickMessage?: string | React.SyntheticEvent) => {
+    const messageToSend = (typeof quickMessage === 'string' ? quickMessage : '') || message;
     if (!messageToSend.trim() || isLoading) return;
 
     // Expand if minimized
