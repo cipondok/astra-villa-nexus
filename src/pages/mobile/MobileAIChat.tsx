@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, Sparkles, Trash2, HeadphonesIcon, TrendingUp } from 'lucide-react';
+import { Bot, Sparkles, Trash2, HeadphonesIcon, TrendingUp, AlertTriangle, ShieldCheck } from 'lucide-react';
 import { useInvestmentAssistant, AssistantMessage } from '@/hooks/useInvestmentAssistant';
 import { useSupportAssistant } from '@/hooks/useSupportAssistant';
 import AIChatInput from '@/components/ai/AIChatInput';
