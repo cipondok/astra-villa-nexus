@@ -9,6 +9,7 @@ export interface SupportMeta {
   escrow_transactions_found: number;
   documents_found: number;
   conflict_detected: boolean;
+  case_id: string | null;
 }
 
 export function useSupportAssistant() {
