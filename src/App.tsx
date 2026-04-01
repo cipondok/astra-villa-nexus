@@ -164,6 +164,7 @@ const Profile = lazy(() => import('@/pages/Profile'));
 const ProfileEditPage = lazy(() => import('@/pages/ProfileEditPage'));
 const Settings = lazy(() => import('@/pages/Settings'));
 const DesignSystemSettings = lazy(() => import('@/pages/admin/DesignSystemSettings'));
+const AstraSupportDashboard = lazy(() => import('@/pages/admin/AstraSupportDashboard'));
 const Services = lazy(() => import('@/pages/Services'));
 const ServiceCategory = lazy(() => import('@/pages/ServiceCategory'));
 const ServiceProviderProfile = lazy(() => import('@/pages/ServiceProviderProfile'));
@@ -496,6 +497,7 @@ const AppContent = () => {
                   <Route path="/admin/execution-command" element={<ExecutionCommandCenter />} />
                   <Route path="/admin/execution" element={<ExecutionCommandCenter />} />
                   <Route path="/admin/deal-command" element={<DealExecutionCommandCenter />} />
+                  <Route path="/admin/support-dashboard" element={<AstraSupportDashboard />} />
                 </Route>
                 <Route path="/agent-dashboard" element={<AgentDashboard />} />
                 <Route path="/agent-crm" element={<ProtectedRoute />}>

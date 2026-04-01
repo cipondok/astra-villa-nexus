@@ -58023,6 +58023,54 @@ export type Database = {
         }
         Relationships: []
       }
+      support_cases: {
+        Row: {
+          case_id: string
+          confidence_score: number | null
+          conflict_detected: boolean
+          created_at: string
+          id: string
+          issue_type: string
+          priority: string
+          resolution_notes: string | null
+          resolved_at: string | null
+          status: string
+          summary: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          case_id: string
+          confidence_score?: number | null
+          conflict_detected?: boolean
+          created_at?: string
+          id?: string
+          issue_type?: string
+          priority?: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          status?: string
+          summary?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          case_id?: string
+          confidence_score?: number | null
+          conflict_detected?: boolean
+          created_at?: string
+          id?: string
+          issue_type?: string
+          priority?: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          status?: string
+          summary?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       support_tickets: {
         Row: {
           assigned_to: string | null
