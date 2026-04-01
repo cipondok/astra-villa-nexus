@@ -10252,11 +10252,14 @@ STYLE RULES:
   const response = aiData.choices?.[0]?.message?.content || "Maaf, saya tidak bisa merespons saat ini.";
 
   // Detect if AI identified a conflict for metadata
-  const hasConflict = response.toLowerCase().includes("inconsisten") ||
-    response.toLowerCase().includes("conflict") ||
-    response.toLowerCase().includes("mismatch") ||
-    response.toLowerCase().includes("sudah selesai") ||
-    response.toLowerCase().includes("already completed");
+  const responseLower = response.toLowerCase();
+  const conflictSignals = [
+    "inconsisten", "conflict", "mismatch", "sudah selesai", "already completed",
+    "system conflict", "out of sync", "display error", "sync error",
+    "tidak perlu diulang", "no repeat needed", "sudah tercatat", "already recorded",
+    "ASTRA-SUP-", "escalat", "case id"
+  ];
+  const hasConflict = conflictSignals.some(s => responseLower.includes(s.toLowerCase()));
 
   return json({
     response,
