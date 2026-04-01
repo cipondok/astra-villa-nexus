@@ -58071,6 +58071,132 @@ export type Database = {
         }
         Relationships: []
       }
+      support_predictions: {
+        Row: {
+          affected_area: string
+          confidence_score: number | null
+          created_at: string | null
+          data_points: Json | null
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          predicted_at: string | null
+          prediction_text: string
+          prediction_type: string
+          severity: string
+        }
+        Insert: {
+          affected_area: string
+          confidence_score?: number | null
+          created_at?: string | null
+          data_points?: Json | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          predicted_at?: string | null
+          prediction_text: string
+          prediction_type: string
+          severity?: string
+        }
+        Update: {
+          affected_area?: string
+          confidence_score?: number | null
+          created_at?: string | null
+          data_points?: Json | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          predicted_at?: string | null
+          prediction_text?: string
+          prediction_type?: string
+          severity?: string
+        }
+        Relationships: []
+      }
+      support_risk_signals: {
+        Row: {
+          created_at: string | null
+          description: string
+          evidence: Json | null
+          id: string
+          is_reviewed: boolean | null
+          related_case_ids: string[] | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          risk_level: string
+          risk_type: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          evidence?: Json | null
+          id?: string
+          is_reviewed?: boolean | null
+          related_case_ids?: string[] | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          risk_level?: string
+          risk_type: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          evidence?: Json | null
+          id?: string
+          is_reviewed?: boolean | null
+          related_case_ids?: string[] | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          risk_level?: string
+          risk_type?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      support_smart_alerts: {
+        Row: {
+          affected_area: string
+          alert_type: string
+          created_at: string | null
+          dismissed_at: string | null
+          dismissed_by: string | null
+          id: string
+          is_dismissed: boolean | null
+          message: string
+          recommended_action: string | null
+          severity: string
+          title: string
+        }
+        Insert: {
+          affected_area: string
+          alert_type: string
+          created_at?: string | null
+          dismissed_at?: string | null
+          dismissed_by?: string | null
+          id?: string
+          is_dismissed?: boolean | null
+          message: string
+          recommended_action?: string | null
+          severity?: string
+          title: string
+        }
+        Update: {
+          affected_area?: string
+          alert_type?: string
+          created_at?: string | null
+          dismissed_at?: string | null
+          dismissed_by?: string | null
+          id?: string
+          is_dismissed?: boolean | null
+          message?: string
+          recommended_action?: string | null
+          severity?: string
+          title?: string
+        }
+        Relationships: []
+      }
       support_tickets: {
         Row: {
           assigned_to: string | null
