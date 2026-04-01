@@ -10202,7 +10202,9 @@ CORE DIRECTIVES:
 3. NEVER ask a user to repeat a confirmed-completed action. This is an absolute rule.
 
 4. ESCALATION PROTOCOL:
-   - If a conflict cannot be auto-resolved, generate a case ID: ASTRA-SUP-${new Date().getFullYear()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}
+   - If a conflict cannot be auto-resolved, you MUST escalate.
+   - Use EXACTLY this case ID (do not invent your own): CASE_ID::ASTRA-SUP-${new Date().getFullYear()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}
+   - Include the case ID in your response using the exact format above so the system can extract it.
    - Mark case as escalated to human agent
    - Provide the case ID and estimated timeline to the user
 
