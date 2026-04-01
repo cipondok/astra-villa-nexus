@@ -10246,7 +10246,9 @@ serve(async (req) => {
   }
 
   try {
-    const { mode, payload = {} } = await req.json();
+    const bodyText = await req.text();
+    const { mode, payload = {} } = JSON.parse(bodyText);
+    const authHeader = req.headers.get("authorization") || "";
 
     if (!mode) {
       return json({ error: "mode is required" }, 400);
