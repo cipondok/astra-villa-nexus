@@ -81,6 +81,7 @@ const MobileApp: React.FC = () => {
           <Route path="/mobile/journey" element={<JourneyPage />} />
           
           {/* Redirect common paths */}
+          <Route path="/landing" element={<InvestorLandingPage />} />
           <Route path="/dijual" element={<Navigate to="/search?type=sale" />} />
           <Route path="/disewa" element={<Navigate to="/search?type=rent" />} />
           <Route path="/buy" element={<Navigate to="/search?type=sale" />} />
