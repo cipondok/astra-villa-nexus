@@ -54,7 +54,7 @@ const MobileApp: React.FC = () => {
       <Suspense fallback={<MobileLoader />}>
         <Routes>
           {/* Core investor flows */}
-          <Route path="/" element={<Index />} />
+          <Route path="/" element={<InvestorLandingPage />} />
           <Route path="/search" element={<Search />} />
           <Route path="/properties/:id" element={<PropertyDetail />} />
           <Route path="/saved" element={<Saved />} />
