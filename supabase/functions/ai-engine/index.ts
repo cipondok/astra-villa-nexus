@@ -10173,6 +10173,12 @@ async function handleSupportAssistant(payload: Record<string, unknown>, authHead
     ).join("\n")}`);
   }
 
+  if (propertyOffers?.length) {
+    systemData.push(`PROPERTY OFFERS (${propertyOffers.length}):\n${(propertyOffers as any[]).map((o: any) =>
+      `- Offer ${o.id?.slice(0, 8)} | Role: ${o.buyer_id === userId ? "Buyer" : "Seller"} | Status: ${o.status} | Amount: IDR ${o.offer_amount?.toLocaleString() || "N/A"} | Created: ${o.created_at}`
+    ).join("\n")}`);
+  }
+
   const systemPrompt = `You are ASTRA Villa AI Support — the platform's intelligence layer, NOT a generic support bot.
 You have FULL access to this user's real-time system data below. Use it as your primary source of truth.
 
