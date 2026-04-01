@@ -165,6 +165,7 @@ const ProfileEditPage = lazy(() => import('@/pages/ProfileEditPage'));
 const Settings = lazy(() => import('@/pages/Settings'));
 const DesignSystemSettings = lazy(() => import('@/pages/admin/DesignSystemSettings'));
 const AstraSupportDashboard = lazy(() => import('@/pages/admin/AstraSupportDashboard'));
+const AstraSupportAnalytics = lazy(() => import('@/pages/admin/AstraSupportAnalytics'));
 const Services = lazy(() => import('@/pages/Services'));
 const ServiceCategory = lazy(() => import('@/pages/ServiceCategory'));
 const ServiceProviderProfile = lazy(() => import('@/pages/ServiceProviderProfile'));
