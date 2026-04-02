@@ -484,6 +484,7 @@ const AppContent = () => {
                 <Route path="/province-properties" element={<ProvinceProperties />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/admin/design-system" element={<DesignSystemSettings />} />
+                <Route path="/admin/style-settings" element={<DesignSystemSettings />} />
                 <Route element={<AdminOnlyRoute />}>
                   <Route path="/admin/ai-performance" element={<AIPerformanceDashboard />} />
                   <Route path="/admin/listing-review" element={<AdminListingReview />} />
