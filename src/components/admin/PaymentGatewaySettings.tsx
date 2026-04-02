@@ -117,32 +117,31 @@ const PaymentGatewaySettings = () => {
 
   const loadSettings = async () => {
     try {
+      // Use secure masked RPC instead of direct table access
       const { data, error } = await supabase
-        .from('api_settings')
-        .select('*')
-        .in('api_name', ['midtrans', 'paypal']);
+        .rpc('get_masked_api_settings');
 
       if (error) throw error;
 
       const newConfig = { ...config };
       
-      data?.forEach((setting) => {
+      (data as any[])?.forEach((setting: any) => {
         if (setting.api_name === 'midtrans') {
           newConfig.midtrans = {
             enabled: setting.is_active || false,
-            serverKey: setting.api_key || '',
-            clientKey: setting.api_endpoint || '', // Using api_endpoint for client key
+            serverKey: '', // Never load plaintext keys to client
+            clientKey: '', // Never load plaintext keys to client
             isProduction: setting.description?.includes('production') || false,
           };
-          setConnectionStatus(prev => ({ ...prev, midtrans: !!setting.api_key }));
+          setConnectionStatus(prev => ({ ...prev, midtrans: !!setting.api_key_masked }));
         } else if (setting.api_name === 'paypal') {
           newConfig.paypal = {
             enabled: setting.is_active || false,
-            clientId: setting.api_key || '',
-            clientSecret: setting.api_endpoint || '', // Using api_endpoint for secret
+            clientId: '', // Never load plaintext keys to client
+            clientSecret: '', // Never load plaintext keys to client
             isProduction: setting.description?.includes('production') || false,
           };
-          setConnectionStatus(prev => ({ ...prev, paypal: !!setting.api_key }));
+          setConnectionStatus(prev => ({ ...prev, paypal: !!setting.api_key_masked }));
         }
       });
 
