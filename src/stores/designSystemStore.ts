@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+export const DESIGN_SYSTEM_STORAGE_KEY = 'design-system-config';
+export const DESIGN_SYSTEM_VERSION = 3;
+
 export interface DesignSystemConfig {
   // Typography
   fontFamily: {
@@ -144,6 +147,8 @@ interface DesignSystemStore {
   resetConfig: () => void;
 }
 
+type PersistedDesignSystemState = Pick<DesignSystemStore, 'config'>;
+
 export const useDesignSystem = create<DesignSystemStore>()(
   persist(
     (set) => ({
@@ -155,7 +160,22 @@ export const useDesignSystem = create<DesignSystemStore>()(
       resetConfig: () => set({ config: defaultConfig }),
     }),
     {
-      name: 'design-system-config',
+      name: DESIGN_SYSTEM_STORAGE_KEY,
+      version: DESIGN_SYSTEM_VERSION,
+      partialize: (state): PersistedDesignSystemState => ({
+        config: state.config,
+      }),
+      migrate: (persistedState, version): PersistedDesignSystemState => {
+        if (!persistedState || version !== DESIGN_SYSTEM_VERSION) {
+          return { config: defaultConfig };
+        }
+
+        const state = persistedState as Partial<PersistedDesignSystemState>;
+
+        return {
+          config: state.config ?? defaultConfig,
+        };
+      },
     }
   )
 );
