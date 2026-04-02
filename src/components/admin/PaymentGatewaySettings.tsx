@@ -155,27 +155,36 @@ const PaymentGatewaySettings = () => {
     setIsSaving(true);
     
     try {
-      // Save Midtrans settings
-      await supabase.from('api_settings').upsert({
-        api_name: 'midtrans',
-        api_key: config.midtrans.serverKey,
-        api_endpoint: config.midtrans.clientKey,
-        is_active: config.midtrans.enabled,
-        description: config.midtrans.isProduction ? 'production' : 'sandbox',
-        updated_at: new Date().toISOString(),
-      }, { onConflict: 'api_name' });
+      // Save Midtrans settings using secure RPC (encrypts keys server-side)
+      if (config.midtrans.serverKey) {
+        await supabase.rpc('insert_api_setting_secure', {
+          p_api_name: 'midtrans',
+          p_api_key: config.midtrans.serverKey,
+          p_api_endpoint: config.midtrans.clientKey || null,
+          p_description: config.midtrans.isProduction ? 'production' : 'sandbox',
+          p_is_active: config.midtrans.enabled,
+        });
+      }
 
-      // Save PayPal settings
-      await supabase.from('api_settings').upsert({
-        api_name: 'paypal',
-        api_key: config.paypal.clientId,
-        api_endpoint: config.paypal.clientSecret,
-        is_active: config.paypal.enabled,
-        description: config.paypal.isProduction ? 'production' : 'sandbox',
-        updated_at: new Date().toISOString(),
-      }, { onConflict: 'api_name' });
+      // Save PayPal settings using secure RPC (encrypts keys server-side)
+      if (config.paypal.clientId) {
+        await supabase.rpc('insert_api_setting_secure', {
+          p_api_name: 'paypal',
+          p_api_key: config.paypal.clientId,
+          p_api_endpoint: config.paypal.clientSecret || null,
+          p_description: config.paypal.isProduction ? 'production' : 'sandbox',
+          p_is_active: config.paypal.enabled,
+        });
+      }
 
       toast.success('Payment settings saved successfully');
+      // Clear sensitive fields from memory after save
+      setConfig(prev => ({
+        ...prev,
+        midtrans: { ...prev.midtrans, serverKey: '', clientKey: '' },
+        paypal: { ...prev.paypal, clientId: '', clientSecret: '' },
+      }));
+      loadSettings(); // Reload masked data
     } catch (error) {
       console.error('Error saving payment settings:', error);
       toast.error('Failed to save payment settings');
