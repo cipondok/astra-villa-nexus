@@ -675,14 +675,52 @@ async function rateLimitCheck(params: Record<string, any>, supabase: any) {
     if (blocked) return { allowed: false, blocked: true, reason: blocked.reason, remaining: 0, reset: blocked.expires_at ? Math.ceil((new Date(blocked.expires_at).getTime() - Date.now()) / 1000) : null };
   }
 
+  const normalizedApiKey = typeof api_key === 'string' ? api_key.trim() : '';
+  const apiKeyHash = normalizedApiKey ? await sha256Hex(normalizedApiKey) : null;
+  const apiKeyPrefix = normalizedApiKey ? normalizedApiKey.slice(0, 10) : null;
+
   let multiplier = 1.0;
-  if (api_key) {
-    const { data: keyData } = await supabase.from('partner_api_keys').select('*').eq('api_key', api_key).eq('is_active', true).single();
+  if (normalizedApiKey) {
+    const keyColumns = 'id, expires_at, rate_limit_multiplier, is_whitelisted, partner_name, total_requests';
+
+    const { data: hashedKeyData } = await supabase
+      .from('partner_api_keys')
+      .select(keyColumns)
+      .eq('api_key', apiKeyHash)
+      .eq('is_active', true)
+      .maybeSingle();
+
+    const { data: legacyKeyData } = hashedKeyData
+      ? { data: null }
+      : await supabase
+          .from('partner_api_keys')
+          .select(keyColumns)
+          .eq('api_key', normalizedApiKey)
+          .eq('is_active', true)
+          .maybeSingle();
+
+    const keyData = hashedKeyData || legacyKeyData;
+
     if (!keyData) throw new Error('Invalid API key');
     if (keyData.expires_at && new Date(keyData.expires_at) < new Date()) throw new Error('API key expired');
+
     multiplier = keyData.rate_limit_multiplier || 1.0;
-    await supabase.from('partner_api_keys').update({ last_used_at: new Date().toISOString(), total_requests: (keyData.total_requests || 0) + 1 }).eq('id', keyData.id);
-    if (keyData.is_whitelisted) return { allowed: true, remaining: 999999, reset: 0, limit: 999999, whitelisted: true, partner: keyData.partner_name };
+
+    await supabase
+      .from('partner_api_keys')
+      .update({ last_used_at: new Date().toISOString(), total_requests: (keyData.total_requests || 0) + 1 })
+      .eq('id', keyData.id);
+
+    if (keyData.is_whitelisted) {
+      return {
+        allowed: true,
+        remaining: 999999,
+        reset: 0,
+        limit: 999999,
+        whitelisted: true,
+        partner: keyData.partner_name,
+      };
+    }
   }
 
   let { data: config } = await supabase.from('rate_limit_config').select('*').eq('endpoint_pattern', endpoint).eq('is_active', true).maybeSingle();
@@ -692,8 +730,8 @@ async function rateLimitCheck(params: Record<string, any>, supabase: any) {
   }
   if (!config) return { allowed: true, remaining: 999, reset: 60, limit: 999 };
 
-  const identifier = api_key || user_id || ip_address;
-  const identifierType = api_key ? 'api_key' : user_id ? 'user' : 'ip';
+  const identifier = apiKeyHash || user_id || ip_address;
+  const identifierType = normalizedApiKey ? 'api_key' : user_id ? 'user' : 'ip';
   const now = new Date();
   const windowMs = config.window_seconds * 1000;
   const windowEnd = new Date(now.getTime() + windowMs);
@@ -717,7 +755,18 @@ async function rateLimitCheck(params: Record<string, any>, supabase: any) {
   const reset = Math.ceil(windowMs / 1000);
 
   if (!allowed) {
-    await supabase.from('rate_limit_violations').insert({ identifier, identifier_type: identifierType, endpoint_pattern: endpoint, user_agent, request_path, metadata: { ip_address, user_id, api_key } });
+    await supabase.from('rate_limit_violations').insert({
+      identifier,
+      identifier_type: identifierType,
+      endpoint_pattern: endpoint,
+      user_agent,
+      request_path,
+      metadata: {
+        ip_address,
+        user_id,
+        api_key_prefix: apiKeyPrefix,
+      },
+    });
   }
 
   return { allowed, remaining, reset, limit: effectiveLimit, retryAfter: allowed ? undefined : reset };
