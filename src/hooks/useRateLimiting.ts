@@ -128,13 +128,13 @@ export const useRateLimiting = () => {
     }
   });
 
-  // Fetch partner API keys
+  // Fetch partner API keys without returning stored key hashes to the browser
   const { data: apiKeys = [], isLoading: loadingAPIKeys } = useQuery({
     queryKey: ['partner-api-keys'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('partner_api_keys')
-        .select('*')
+        .select('id, partner_name, partner_email, is_active, is_whitelisted, rate_limit_multiplier, custom_limits, allowed_endpoints, total_requests, last_used_at, expires_at, created_at')
         .order('created_at', { ascending: false });
       if (error) throw error;
       return data as PartnerAPIKey[];
