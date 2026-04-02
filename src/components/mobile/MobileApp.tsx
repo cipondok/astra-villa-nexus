@@ -15,6 +15,7 @@ import { useAuth } from '@/contexts/AuthContext';
  */
 
 // Critical pages - load immediately
+import Index from '@/pages/Index';
 import InvestorLandingPage from '@/pages/InvestorLandingPage';
 import Search from '@/pages/Search';
 import PropertyDetail from '@/pages/PropertyDetail';
@@ -54,7 +55,7 @@ const MobileApp: React.FC = () => {
       <Suspense fallback={<MobileLoader />}>
         <Routes>
           {/* Core investor flows */}
-          <Route path="/" element={<InvestorLandingPage />} />
+          <Route path="/" element={<Index />} />
           <Route path="/search" element={<Search />} />
           <Route path="/properties/:id" element={<PropertyDetail />} />
           <Route path="/saved" element={<Saved />} />
