@@ -30,7 +30,7 @@ export interface BlockedIP {
 
 export interface PartnerAPIKey {
   id: string;
-  api_key: string;
+  api_key?: string;
   partner_name: string;
   partner_email: string;
   is_active: boolean;
@@ -78,6 +78,14 @@ export interface WhitelistedIP {
   created_at: string;
 }
 
+const sha256Hex = async (value: string) => {
+  const data = new TextEncoder().encode(value);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+};
+
 export const useRateLimiting = () => {
   const queryClient = useQueryClient();
 
@@ -120,13 +128,13 @@ export const useRateLimiting = () => {
     }
   });
 
-  // Fetch partner API keys
+  // Fetch partner API keys without returning stored key hashes to the browser
   const { data: apiKeys = [], isLoading: loadingAPIKeys } = useQuery({
     queryKey: ['partner-api-keys'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('partner_api_keys')
-        .select('*')
+        .select('id, partner_name, partner_email, is_active, is_whitelisted, rate_limit_multiplier, custom_limits, allowed_endpoints, total_requests, last_used_at, expires_at, created_at')
         .order('created_at', { ascending: false });
       if (error) throw error;
       return data as PartnerAPIKey[];
@@ -258,15 +266,16 @@ export const useRateLimiting = () => {
       expires_at?: string;
     }) => {
       const apiKey = `pk_${crypto.randomUUID().replace(/-/g, '')}`;
+      const apiKeyHash = await sha256Hex(apiKey);
       const { error } = await supabase
         .from('partner_api_keys')
-        .insert({ ...data, api_key: apiKey });
+        .insert({ ...data, api_key: apiKeyHash });
       if (error) throw error;
       return apiKey;
     },
-    onSuccess: (apiKey) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['partner-api-keys'] });
-      toast.success(`API key created: ${apiKey.substring(0, 20)}...`);
+      toast.success('API key created securely and only shown once.');
     },
     onError: () => toast.error('Failed to create API key')
   });

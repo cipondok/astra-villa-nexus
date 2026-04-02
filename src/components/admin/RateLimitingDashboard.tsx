@@ -539,7 +539,7 @@ const RateLimitingDashboard: React.FC = () => {
                   <TableHeader>
                     <TableRow>
                       <TableHead className="text-xs">Partner</TableHead>
-                      <TableHead className="text-xs">API Key</TableHead>
+                      <TableHead className="text-xs">Key Storage</TableHead>
                       <TableHead className="text-xs">Requests</TableHead>
                       <TableHead className="text-xs">Multiplier</TableHead>
                       <TableHead className="text-xs">Status</TableHead>
@@ -556,26 +556,9 @@ const RateLimitingDashboard: React.FC = () => {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="flex items-center gap-2">
-                            <code className="text-xs bg-muted px-2 py-1 rounded">
-                              {showApiKeys[key.id] ? key.api_key : `${key.api_key.substring(0, 12)}...`}
-                            </code>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 w-6 p-0"
-                              onClick={() => setShowApiKeys(prev => ({ ...prev, [key.id]: !prev[key.id] }))}
-                            >
-                              {showApiKeys[key.id] ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 w-6 p-0"
-                              onClick={() => copyToClipboard(key.api_key)}
-                            >
-                              <Copy className="h-3 w-3" />
-                            </Button>
+                          <div className="flex flex-col gap-1">
+                            <Badge variant="outline" className="w-fit text-[10px]">Hashed at rest</Badge>
+                            <span className="text-xs text-muted-foreground">Shown only when created</span>
                           </div>
                         </TableCell>
                         <TableCell className="text-xs">
