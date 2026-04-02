@@ -104,6 +104,14 @@ function clientIp(req: Request): string {
   return xff ? xff.split(',')[0].trim() : 'unknown';
 }
 
+async function sha256Hex(value: string): Promise<string> {
+  const data = new TextEncoder().encode(value);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+}
+
 // ─── Progressive lockout tiers ──────────────────────────────────────
 const LOCKOUT_TIERS = [
   { threshold: 5, durationMin: 5, tier: 1 },

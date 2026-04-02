@@ -266,15 +266,16 @@ export const useRateLimiting = () => {
       expires_at?: string;
     }) => {
       const apiKey = `pk_${crypto.randomUUID().replace(/-/g, '')}`;
+      const apiKeyHash = await sha256Hex(apiKey);
       const { error } = await supabase
         .from('partner_api_keys')
-        .insert({ ...data, api_key: apiKey });
+        .insert({ ...data, api_key: apiKeyHash });
       if (error) throw error;
       return apiKey;
     },
-    onSuccess: (apiKey) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['partner-api-keys'] });
-      toast.success(`API key created: ${apiKey.substring(0, 20)}...`);
+      toast.success('API key created securely and only shown once.');
     },
     onError: () => toast.error('Failed to create API key')
   });
