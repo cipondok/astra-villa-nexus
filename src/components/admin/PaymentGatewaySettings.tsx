@@ -166,12 +166,13 @@ const PaymentGatewaySettings = () => {
         });
       }
 
-      // Save PayPal settings using secure RPC (encrypts keys server-side)
-      if (config.paypal.clientId) {
+      // Save PayPal settings with the secret encrypted server-side.
+      // Client ID is not treated as a secret and can remain in the endpoint/meta field.
+      if (config.paypal.clientSecret || config.paypal.clientId) {
         await supabase.rpc('insert_api_setting_secure', {
           p_api_name: 'paypal',
-          p_api_key: config.paypal.clientId,
-          p_api_endpoint: config.paypal.clientSecret || null,
+          p_api_key: config.paypal.clientSecret || config.paypal.clientId,
+          p_api_endpoint: config.paypal.clientId || null,
           p_description: config.paypal.isProduction ? 'production' : 'sandbox',
           p_is_active: config.paypal.enabled,
         });
