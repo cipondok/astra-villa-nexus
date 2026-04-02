@@ -106,13 +106,13 @@ const CloudflareSettings = () => {
     is_active: false,
   });
 
-  // Fetch existing Cloudflare settings
+  // Fetch existing Cloudflare settings (excludes sensitive api_token)
   const { data: existingConfig, isLoading } = useQuery({
     queryKey: ['cloudflare-settings'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('cloudflare_settings' as any)
-        .select('*')
+        .select('id, account_id, zone_id, cdn_enabled, auto_minify_enabled, auto_minify_css, auto_minify_js, auto_minify_html, cache_level, browser_cache_ttl, edge_cache_ttl, always_online, development_mode, rocket_loader, mirage, polish, webp_enabled, brotli_enabled, http2_enabled, http3_enabled, early_hints, ssl_mode, always_use_https, automatic_https_rewrites, tls_version, rate_limiting_enabled, ddos_protection, challenge_passage, image_resizing_enabled, image_optimization_quality, analytics_enabled, web_analytics_token, is_active, sync_status, last_sync_at, created_at, updated_at')
         .order('created_at', { ascending: false })
         .limit(1)
         .single();
@@ -127,33 +127,53 @@ const CloudflareSettings = () => {
 
   useEffect(() => {
     if (existingConfig) {
-      setConfig(existingConfig as any);
+      // Never populate api_token from DB — admin must re-enter it each time
+      const { ...safeConfig } = existingConfig as any;
+      delete safeConfig.api_token;
+      delete safeConfig.api_email;
+      setConfig(prev => ({ ...prev, ...safeConfig }));
     }
   }, [existingConfig]);
 
   // Save configuration mutation
   const saveMutation = useMutation({
     mutationFn: async (data: CloudflareConfig) => {
+      // Strip sensitive fields before sending — they should be stored via Vault
+      const { api_token, api_email, ...safeData } = data;
+      
       if (config.id) {
         const { error } = await supabase
           .from('cloudflare_settings' as any)
-          .update({ ...data, updated_at: new Date().toISOString() })
+          .update({ ...safeData, updated_at: new Date().toISOString() })
           .eq('id', config.id);
         
         if (error) throw error;
       } else {
         const { error } = await supabase
           .from('cloudflare_settings' as any)
-          .insert(data as any);
+          .insert(safeData as any);
         
         if (error) throw error;
+      }
+
+      // If user provided a new API token, store it encrypted via RPC
+      if (api_token) {
+        await supabase.rpc('insert_api_setting_secure', {
+          p_api_name: 'cloudflare_api_token',
+          p_api_key: api_token,
+          p_api_endpoint: null,
+          p_description: 'Cloudflare API Token (encrypted)',
+          p_is_active: true,
+        });
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cloudflare-settings'] });
+      // Clear sensitive fields from memory
+      setConfig(prev => ({ ...prev, api_token: '', api_email: '' }));
       toast({
         title: "Configuration Saved",
-        description: "Cloudflare settings have been saved successfully.",
+        description: "Cloudflare settings have been saved successfully. API token stored securely.",
       });
     },
     onError: (error: any) => {
