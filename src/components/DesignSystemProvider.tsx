@@ -1,5 +1,5 @@
 import React, { useEffect, Component, type ReactNode } from 'react';
-import { useDesignSystem, type DesignSystemConfig } from '@/stores/designSystemStore';
+import { DESIGN_SYSTEM_STORAGE_KEY, DESIGN_SYSTEM_VERSION, useDesignSystem } from '@/stores/designSystemStore';
 
 // ErrorBoundary to catch zustand dual-React crashes
 class DesignSystemErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
@@ -11,23 +11,39 @@ class DesignSystemErrorBoundary extends Component<{ children: ReactNode }, { has
   }
 }
 
-const DESIGN_SYSTEM_VERSION = 2;
+type PersistedDesignSystemValue = {
+  state?: {
+    config?: unknown;
+  };
+  version?: number;
+};
+
+const hasValidPersistedConfig = (value: PersistedDesignSystemValue) => {
+  return Boolean(value.state?.config && typeof value.state.config === 'object');
+};
 
 function DesignSystemApplier({ children }: { children: ReactNode }) {
   const { config, resetConfig } = useDesignSystem();
 
   useEffect(() => {
-    const stored = localStorage.getItem('design-system-config');
+    const stored = localStorage.getItem(DESIGN_SYSTEM_STORAGE_KEY);
+
+    if (!stored) return;
+
     if (stored) {
       try {
-        const parsed = JSON.parse(stored);
-        if (!parsed.state?._version || parsed.state._version < DESIGN_SYSTEM_VERSION) {
-          localStorage.removeItem('design-system-config');
+        const parsed = JSON.parse(stored) as PersistedDesignSystemValue;
+
+        if (parsed.version !== DESIGN_SYSTEM_VERSION || !hasValidPersistedConfig(parsed)) {
+          localStorage.removeItem(DESIGN_SYSTEM_STORAGE_KEY);
           resetConfig();
         }
-      } catch { /* corrupted — clear it */ localStorage.removeItem('design-system-config'); }
+      } catch {
+        localStorage.removeItem(DESIGN_SYSTEM_STORAGE_KEY);
+        resetConfig();
+      }
     }
-  }, [resetConfig])
+  }, [resetConfig]);
 
   useEffect(() => {
     const root = document.documentElement;
