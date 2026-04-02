@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export const DESIGN_SYSTEM_STORAGE_KEY = 'design-system-config';
-export const DESIGN_SYSTEM_VERSION = 3;
+export const DESIGN_SYSTEM_VERSION = 4;
 
 export interface DesignSystemConfig {
   // Typography
