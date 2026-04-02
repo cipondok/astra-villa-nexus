@@ -30,7 +30,7 @@ export interface BlockedIP {
 
 export interface PartnerAPIKey {
   id: string;
-  api_key: string;
+  api_key?: string;
   partner_name: string;
   partner_email: string;
   is_active: boolean;
