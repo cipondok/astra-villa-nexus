@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useAlert } from "@/contexts/AlertContext";
-import { UserPlus, Search, Ban, UserCheck, UserX, Shield, AlertTriangle, Monitor, MapPin, Clock, KeyRound, Bell, Mail, Send, Loader2 } from "lucide-react";
+import { UserPlus, Users, Search, Ban, UserCheck, UserX, Shield, AlertTriangle, Monitor, MapPin, Clock, KeyRound, Bell, Mail, Send, Loader2 } from "lucide-react";
 import { formatMemberDuration } from "@/utils/dateUtils";
 import VIPLevelBadge from "@/components/ui/VIPLevelBadge";
 import UserStatusBadge from "@/components/ui/UserStatusBadge";
@@ -69,7 +69,7 @@ interface SessionTracking {
 }
 
 // Row height for the virtual table (px)
-const ROW_HEIGHT = 44;
+const ROW_HEIGHT = 56;
 
 interface VirtualUserTableProps {
   users: EnhancedUser[];
@@ -102,53 +102,57 @@ const VirtualUserTable = ({
 
   if (users.length === 0) {
     return (
-      <div className="text-center py-8 text-[10px] text-muted-foreground">No users match the current filters.</div>
+      <div className="text-center py-12 text-sm text-muted-foreground">
+        <Users className="h-8 w-8 mx-auto mb-3 text-muted-foreground/40" />
+        No users match the current filters.
+      </div>
     );
   }
 
   return (
-    <div className="text-[10px]">
+    <div className="text-xs">
       {/* Fixed header */}
-      <table className="w-full table-fixed text-[10px]">
+      <table className="w-full table-fixed">
         <colgroup>
-          <col className="w-[28%]" />
-          <col className="w-[14%]" />
-          <col className="w-[12%]" />
+          <col className="w-[26%]" />
+          <col className="w-[13%]" />
+          <col className="w-[11%]" />
           <col className="w-[16%]" />
           <col className="w-[14%]" />
-          <col className="w-[16%]" />
+          <col className="w-[20%]" />
         </colgroup>
         <thead>
-          <tr className="bg-muted/30 border-b border-border/50">
-            <th className="text-[9px] font-semibold py-1.5 px-2 text-left">User</th>
-            <th className="text-[9px] font-semibold py-1.5 px-2 text-left">Role</th>
-            <th className="text-[9px] font-semibold py-1.5 px-2 text-left">Level</th>
-            <th className="text-[9px] font-semibold py-1.5 px-2 text-left">Status</th>
-            <th className="text-[9px] font-semibold py-1.5 px-2 text-left">Member</th>
-            <th className="text-[9px] font-semibold py-1.5 px-2 text-left">Actions</th>
+          <tr className="bg-card border-b-2 border-border/60">
+            <th className="text-[11px] font-semibold py-3 px-3 text-left uppercase tracking-wider text-muted-foreground">User</th>
+            <th className="text-[11px] font-semibold py-3 px-3 text-left uppercase tracking-wider text-muted-foreground">Role</th>
+            <th className="text-[11px] font-semibold py-3 px-3 text-left uppercase tracking-wider text-muted-foreground">Level</th>
+            <th className="text-[11px] font-semibold py-3 px-3 text-left uppercase tracking-wider text-muted-foreground">Status</th>
+            <th className="text-[11px] font-semibold py-3 px-3 text-left uppercase tracking-wider text-muted-foreground">Member Since</th>
+            <th className="text-[11px] font-semibold py-3 px-3 text-left uppercase tracking-wider text-muted-foreground">Actions</th>
           </tr>
         </thead>
       </table>
 
       {/* Virtualized scrollable body */}
-      <div ref={parentRef} className="overflow-auto" style={{ height: Math.min(users.length * ROW_HEIGHT, 480) }}>
+      <div ref={parentRef} className="overflow-auto" style={{ height: Math.min(users.length * ROW_HEIGHT, 560) }}>
         <div style={{ height: rowVirtualizer.getTotalSize(), position: 'relative' }}>
-          <table className="w-full table-fixed text-[10px]">
+          <table className="w-full table-fixed">
             <colgroup>
-              <col className="w-[28%]" />
-              <col className="w-[14%]" />
-              <col className="w-[12%]" />
+              <col className="w-[26%]" />
+              <col className="w-[13%]" />
+              <col className="w-[11%]" />
               <col className="w-[16%]" />
               <col className="w-[14%]" />
-              <col className="w-[16%]" />
+              <col className="w-[20%]" />
             </colgroup>
             <tbody>
               {rowVirtualizer.getVirtualItems().map((virtualRow) => {
                 const u = users[virtualRow.index];
+                const isEven = virtualRow.index % 2 === 0;
                 return (
                   <tr
                     key={u.id}
-                    className="hover:bg-muted/20 border-b border-border/20"
+                    className={`border-b border-border/30 transition-colors duration-150 ${isEven ? 'bg-background' : 'bg-muted/10'} hover:bg-accent/10`}
                     style={{
                       position: 'absolute',
                       top: 0,
@@ -158,80 +162,106 @@ const VirtualUserTable = ({
                       transform: `translateY(${virtualRow.start}px)`,
                     }}
                   >
-                    <td className="py-1.5 px-2">
-                      <div>
-                        <div className="text-[10px] font-medium truncate max-w-[120px]">{u.full_name || 'No Name'}</div>
-                        <div className="text-[9px] text-muted-foreground truncate max-w-[120px]">{u.email}</div>
-                        {u.is_suspended && <div className="text-[8px] text-destructive">Suspended</div>}
+                    {/* User info */}
+                    <td className="py-2 px-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="h-8 w-8 rounded-full bg-primary/15 border border-primary/20 flex items-center justify-center shrink-0">
+                          <span className="text-[11px] font-bold text-primary">
+                            {(u.full_name || u.email || '?')[0].toUpperCase()}
+                          </span>
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-[12px] font-semibold truncate text-foreground leading-tight">{u.full_name || 'Unnamed User'}</div>
+                          <div className="text-[10px] text-muted-foreground truncate leading-tight mt-0.5">{u.email}</div>
+                          {u.is_suspended && (
+                            <Badge variant="destructive" className="text-[8px] h-3.5 px-1 mt-0.5">SUSPENDED</Badge>
+                          )}
+                        </div>
                       </div>
                     </td>
-                    <td className="py-1.5 px-2">
+
+                    {/* Role */}
+                    <td className="py-2 px-3">
                       <Select value={u.role || 'general_user'} onValueChange={(role: UserRole) => onRoleChange(u.id, role)}>
-                        <SelectTrigger className="w-[80px] h-5 text-[9px]"><SelectValue /></SelectTrigger>
+                        <SelectTrigger className="w-[90px] h-7 text-[11px] bg-background border-border/50">
+                          <SelectValue />
+                        </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="general_user" className="text-[10px]">User</SelectItem>
-                          <SelectItem value="property_owner" className="text-[10px]">Owner</SelectItem>
-                          <SelectItem value="agent" className="text-[10px]">Agent</SelectItem>
-                          <SelectItem value="vendor" className="text-[10px]">Vendor</SelectItem>
-                          <SelectItem value="customer_service" className="text-[10px]">CS</SelectItem>
-                          <SelectItem value="admin" className="text-[10px]">Admin</SelectItem>
+                          <SelectItem value="general_user" className="text-xs">User</SelectItem>
+                          <SelectItem value="property_owner" className="text-xs">Owner</SelectItem>
+                          <SelectItem value="agent" className="text-xs">Agent</SelectItem>
+                          <SelectItem value="vendor" className="text-xs">Vendor</SelectItem>
+                          <SelectItem value="customer_service" className="text-xs">CS</SelectItem>
+                          <SelectItem value="admin" className="text-xs">Admin</SelectItem>
                         </SelectContent>
                       </Select>
                     </td>
-                    <td className="py-1.5 px-2">
+
+                    {/* Level */}
+                    <td className="py-2 px-3">
                       {u.user_levels ? (
                         <VIPLevelBadge level={u.user_levels.name} size="xs" showLabel showTooltip={false} />
                       ) : (
                         <Select value={u.user_level_id || ""} onValueChange={(v) => onLevelChange(u.id, v)}>
-                          <SelectTrigger className="w-[70px] h-5 text-[9px]"><SelectValue placeholder="--" /></SelectTrigger>
+                          <SelectTrigger className="w-[80px] h-7 text-[11px] bg-background border-border/50">
+                            <SelectValue placeholder="—" />
+                          </SelectTrigger>
                           <SelectContent>
                             {userLevels?.map((level) => (
-                              <SelectItem key={level.id} value={level.id} className="text-[10px]">{level.name}</SelectItem>
+                              <SelectItem key={level.id} value={level.id} className="text-xs">{level.name}</SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
                       )}
                     </td>
-                    <td className="py-1.5 px-2">
-                      <div className="flex items-center gap-1">
+
+                    {/* Status */}
+                    <td className="py-2 px-3">
+                      <div className="flex items-center gap-1.5">
                         <UserStatusBadge status={u.verification_status} size="xs" />
                         <Select value={u.verification_status || 'pending'} onValueChange={(s) => onVerificationChange(u.id, s)}>
-                          <SelectTrigger className="w-[75px] h-5 text-[9px]"><SelectValue /></SelectTrigger>
+                          <SelectTrigger className="w-[85px] h-7 text-[11px] bg-background border-border/50">
+                            <SelectValue />
+                          </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="pending" className="text-[10px]">Pending</SelectItem>
-                            <SelectItem value="verified" className="text-[10px]">Verified</SelectItem>
-                            <SelectItem value="approved" className="text-[10px]">Approved</SelectItem>
-                            <SelectItem value="rejected" className="text-[10px]">Rejected</SelectItem>
-                            <SelectItem value="suspended" className="text-[10px]">Suspended</SelectItem>
-                            <SelectItem value="unverified" className="text-[10px]">Unverified</SelectItem>
+                            <SelectItem value="pending" className="text-xs">Pending</SelectItem>
+                            <SelectItem value="verified" className="text-xs">Verified</SelectItem>
+                            <SelectItem value="approved" className="text-xs">Approved</SelectItem>
+                            <SelectItem value="rejected" className="text-xs">Rejected</SelectItem>
+                            <SelectItem value="suspended" className="text-xs">Suspended</SelectItem>
+                            <SelectItem value="unverified" className="text-xs">Unverified</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                     </td>
-                    <td className="py-1.5 px-2">
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-2.5 w-2.5 text-muted-foreground" />
-                        <span className="text-[9px] font-medium">{formatMemberDuration(u.created_at)}</span>
+
+                    {/* Member since */}
+                    <td className="py-2 px-3">
+                      <div className="flex items-center gap-1.5">
+                        <Clock className="h-3 w-3 text-muted-foreground/60" />
+                        <span className="text-[11px] text-muted-foreground font-medium">{formatMemberDuration(u.created_at)}</span>
                       </div>
                     </td>
-                    <td className="py-1.5 px-2">
-                      <div className="flex gap-0.5 flex-wrap">
-                        <Button size="icon" variant="ghost" className="h-5 w-5" title="Security & Sessions" onClick={() => onSecurityView(u.id)}>
-                          <Monitor className="h-3 w-3" />
+
+                    {/* Actions */}
+                    <td className="py-2 px-3">
+                      <div className="flex items-center gap-1">
+                        <Button size="icon" variant="outline" className="h-7 w-7 border-border/40 hover:bg-accent/20" title="Security & Sessions" onClick={() => onSecurityView(u.id)}>
+                          <Monitor className="h-3.5 w-3.5" />
                         </Button>
-                        <Button size="icon" variant="ghost" className="h-5 w-5 text-primary" title="Reset Password" onClick={() => onResetPassword(u.email)} disabled={resetPending}>
-                          <KeyRound className="h-3 w-3" />
+                        <Button size="icon" variant="outline" className="h-7 w-7 border-primary/30 text-primary hover:bg-primary/10" title="Reset Password" onClick={() => onResetPassword(u.email)} disabled={resetPending}>
+                          <KeyRound className="h-3.5 w-3.5" />
                         </Button>
-                        <Button size="icon" variant="ghost" className="h-5 w-5 text-chart-2" title="Send Notice" onClick={() => onSendNotice(u.email)}>
-                          <Bell className="h-3 w-3" />
+                        <Button size="icon" variant="outline" className="h-7 w-7 border-chart-2/30 text-chart-2 hover:bg-chart-2/10" title="Send Notice" onClick={() => onSendNotice(u.email)}>
+                          <Bell className="h-3.5 w-3.5" />
                         </Button>
                         {u.is_suspended ? (
-                          <Button size="icon" variant="ghost" className="h-5 w-5 text-chart-1" title="Unsuspend" onClick={() => onUnsuspend(u.id)} disabled={unsuspendPending}>
-                            <UserCheck className="h-3 w-3" />
+                          <Button size="icon" variant="outline" className="h-7 w-7 border-chart-1/30 text-chart-1 hover:bg-chart-1/10" title="Unsuspend" onClick={() => onUnsuspend(u.id)} disabled={unsuspendPending}>
+                            <UserCheck className="h-3.5 w-3.5" />
                           </Button>
                         ) : (
-                          <Button size="icon" variant="ghost" className="h-5 w-5 text-destructive" title="Suspend" onClick={() => onSuspend(u)}>
-                            <Ban className="h-3 w-3" />
+                          <Button size="icon" variant="outline" className="h-7 w-7 border-destructive/30 text-destructive hover:bg-destructive/10" title="Suspend" onClick={() => onSuspend(u)}>
+                            <Ban className="h-3.5 w-3.5" />
                           </Button>
                         )}
                       </div>
@@ -538,28 +568,28 @@ const EnhancedUserManagement = () => {
   };
 
   return (
-    <div className="space-y-3 p-1 md:p-0">
+    <div className="space-y-4 p-1 md:p-0">
       {/* Professional Header */}
-      <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-primary text-primary-foreground shadow-lg">
-              <Shield className="h-4 w-4" />
+      <div className="rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 to-transparent p-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-primary text-primary-foreground shadow-lg">
+              <Shield className="h-5 w-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-sm font-bold text-foreground">User Management</h2>
-                <Badge className="bg-primary/20 text-primary border-primary/30 text-[9px] px-1.5 py-0 h-4">
+              <div className="flex items-center gap-2.5">
+                <h2 className="text-base font-bold text-foreground">User Management</h2>
+                <Badge className="bg-primary/15 text-primary border-primary/25 text-[11px] px-2 py-0.5">
                   {filteredUsers.length} Users
                 </Badge>
               </div>
-              <p className="text-[10px] text-muted-foreground">Manage users, roles, levels & permissions</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Manage users, roles, levels & permissions</p>
             </div>
           </div>
           <Dialog>
             <DialogTrigger asChild>
-              <Button size="sm" className="h-7 text-[10px] px-2">
-                <UserPlus className="h-3 w-3 mr-1" />
+              <Button size="sm" className="h-8 text-xs px-3">
+                <UserPlus className="h-3.5 w-3.5 mr-1.5" />
                 Add User
               </Button>
             </DialogTrigger>
@@ -568,22 +598,22 @@ const EnhancedUserManagement = () => {
       </div>
 
       {/* Filters */}
-      <Card className="border-border/50">
-        <CardContent className="p-2">
-          <div className="flex flex-wrap gap-1.5">
-            <div className="flex-1 min-w-[180px]">
+      <Card className="border-border/40">
+        <CardContent className="p-3">
+          <div className="flex flex-wrap gap-2">
+            <div className="flex-1 min-w-[200px]">
               <div className="relative">
-                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground h-3 w-3" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-3.5 w-3.5" />
                 <Input
                   placeholder="Search name, email, phone, company..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-7 h-7 text-[10px]"
+                  className="pl-9 h-8 text-xs"
                 />
               </div>
             </div>
             <Select value={roleFilter} onValueChange={setRoleFilter}>
-              <SelectTrigger className="w-[120px] h-7 text-[10px]">
+              <SelectTrigger className="w-[130px] h-8 text-xs">
                 <SelectValue placeholder="Role" />
               </SelectTrigger>
               <SelectContent>
@@ -597,7 +627,7 @@ const EnhancedUserManagement = () => {
               </SelectContent>
             </Select>
             <Select value={suspensionFilter} onValueChange={setSuspensionFilter}>
-              <SelectTrigger className="w-[100px] h-7 text-[10px]">
+              <SelectTrigger className="w-[110px] h-8 text-xs">
                 <SelectValue placeholder="Account" />
               </SelectTrigger>
               <SelectContent>
@@ -607,7 +637,7 @@ const EnhancedUserManagement = () => {
               </SelectContent>
             </Select>
             <Select value={verificationFilter} onValueChange={setVerificationFilter}>
-              <SelectTrigger className="w-[110px] h-7 text-[10px]">
+              <SelectTrigger className="w-[120px] h-8 text-xs">
                 <SelectValue placeholder="Verification" />
               </SelectTrigger>
               <SelectContent>
@@ -621,7 +651,7 @@ const EnhancedUserManagement = () => {
               </SelectContent>
             </Select>
             <Select value={dateFilter} onValueChange={setDateFilter}>
-              <SelectTrigger className="w-[100px] h-7 text-[10px]">
+              <SelectTrigger className="w-[110px] h-8 text-xs">
                 <SelectValue placeholder="Joined" />
               </SelectTrigger>
               <SelectContent>
@@ -636,7 +666,7 @@ const EnhancedUserManagement = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-7 text-[10px] px-2 text-muted-foreground hover:text-foreground"
+                className="h-8 text-xs px-3 text-muted-foreground hover:text-foreground"
                 onClick={() => {
                   setRoleFilter("all");
                   setSuspensionFilter("all");
@@ -653,14 +683,14 @@ const EnhancedUserManagement = () => {
       </Card>
 
       {/* Users Table */}
-      <Card className="border-accent/50">
-        <CardHeader className="py-2 px-3">
-          <CardTitle className="text-xs font-medium flex items-center gap-1.5">
-            <Shield className="h-3.5 w-3.5 text-accent" />
+      <Card className="border-border/40 overflow-hidden">
+        <CardHeader className="py-3 px-4 border-b border-border/30">
+          <CardTitle className="text-sm font-semibold flex items-center gap-2">
+            <Users className="h-4 w-4 text-primary" />
             Users ({filteredUsers.length})
           </CardTitle>
           {usersError && (
-            <CardDescription className="text-[9px]">
+            <CardDescription className="text-xs mt-1">
               Signed in as: {user?.email || user?.id}
               <br />
               {String((usersError as any)?.message || usersError)}
@@ -669,7 +699,10 @@ const EnhancedUserManagement = () => {
         </CardHeader>
         <CardContent className="p-0">
           {isLoading ? (
-            <div className="text-center py-6 text-[10px] text-muted-foreground">Loading users...</div>
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-6 w-6 animate-spin text-primary mr-2" />
+              <span className="text-sm text-muted-foreground">Loading users...</span>
+            </div>
           ) : (
             <VirtualUserTable
               users={filteredUsers}
