@@ -80,7 +80,10 @@ interface VirtualUserTableProps {
   onRoleChange: (userId: string, role: UserRole) => void;
   onLevelChange: (userId: string, levelId: string) => void;
   onVerificationChange: (userId: string, status: string) => void;
+  onResetPassword: (email: string) => void;
+  onSendNotice: (email: string) => void;
   unsuspendPending: boolean;
+  resetPending: boolean;
 }
 
 const VirtualUserTable = ({
