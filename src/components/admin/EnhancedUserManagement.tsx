@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useAlert } from "@/contexts/AlertContext";
-import { UserPlus, Search, Ban, UserCheck, UserX, Shield, AlertTriangle, Monitor, MapPin, Clock } from "lucide-react";
+import { UserPlus, Search, Ban, UserCheck, UserX, Shield, AlertTriangle, Monitor, MapPin, Clock, KeyRound, Bell, Mail, Send, Loader2 } from "lucide-react";
 import { formatMemberDuration } from "@/utils/dateUtils";
 import VIPLevelBadge from "@/components/ui/VIPLevelBadge";
 import UserStatusBadge from "@/components/ui/UserStatusBadge";
