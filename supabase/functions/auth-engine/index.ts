@@ -991,8 +991,8 @@ serve(async (req) => {
           .maybeSingle();
         if (!adminRoleCheck) throw new Error('Admin access required');
 
-        // Use Supabase Auth admin to send password reset
-        const { error: resetError } = await supabaseAuth.auth.admin.generateLink({
+        // Use service-role client for admin password reset
+        const { error: resetError } = await supabase.auth.admin.generateLink({
           type: 'recovery',
           email: targetEmail,
         });
