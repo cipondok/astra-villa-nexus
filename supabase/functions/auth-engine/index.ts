@@ -1048,7 +1048,7 @@ serve(async (req) => {
         await supabase.from('user_security_logs').insert({
           user_id: userId,
           event_type: 'admin_notice_sent',
-          ip_address: clientIp,
+          ip_address: clientIp(req),
           user_agent: req.headers.get('user-agent') || '',
           risk_score: 0,
           is_flagged: false,
