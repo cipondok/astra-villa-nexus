@@ -248,6 +248,9 @@ const EnhancedUserManagement = () => {
   const [selectedUser, setSelectedUser] = useState<EnhancedUser | null>(null);
   const [suspensionReason, setSuspensionReason] = useState("");
   const [securityModalUser, setSecurityModalUser] = useState<string | null>(null);
+  const [noticeMessage, setNoticeMessage] = useState("");
+  const [noticeUserEmail, setNoticeUserEmail] = useState<string | null>(null);
+  const [resetPasswordEmail, setResetPasswordEmail] = useState<string | null>(null);
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
