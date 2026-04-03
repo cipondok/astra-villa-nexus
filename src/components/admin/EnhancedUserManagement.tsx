@@ -422,7 +422,43 @@ const EnhancedUserManagement = () => {
     },
   });
 
-  // Update user role mutation
+  // Admin trigger password reset for a user
+  const resetPasswordMutation = useMutation({
+    mutationFn: async (email: string) => {
+      const { error } = await supabase.functions.invoke('auth-engine', {
+        body: { action: 'admin_password_reset', email },
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      showSuccess("Password Reset Sent", "A password reset email has been sent to the user.");
+      setResetPasswordEmail(null);
+    },
+    onError: (error: any) => {
+      showError("Reset Failed", error.message || "Could not send password reset email.");
+      setResetPasswordEmail(null);
+    },
+  });
+
+  // Admin send notice/notification to a user
+  const sendNoticeMutation = useMutation({
+    mutationFn: async ({ email, message }: { email: string; message: string }) => {
+      const { error } = await supabase.functions.invoke('auth-engine', {
+        body: { action: 'admin_send_notice', email, message },
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      showSuccess("Notice Sent", "Notification has been sent to the user.");
+      setNoticeUserEmail(null);
+      setNoticeMessage("");
+    },
+    onError: (error: any) => {
+      showError("Notice Failed", error.message || "Could not send notification.");
+      setNoticeUserEmail(null);
+      setNoticeMessage("");
+    },
+  });
   const updateUserRoleMutation = useMutation({
     mutationFn: async ({ userId, role }: { userId: string; role: UserRole }) => {
       const { error } = await supabase
