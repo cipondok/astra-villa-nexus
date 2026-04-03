@@ -88,7 +88,8 @@ interface VirtualUserTableProps {
 
 const VirtualUserTable = ({
   users, userLevels, onSuspend, onUnsuspend, onSecurityView,
-  onRoleChange, onLevelChange, onVerificationChange, unsuspendPending
+  onRoleChange, onLevelChange, onVerificationChange, onResetPassword, onSendNotice,
+  unsuspendPending, resetPending
 }: VirtualUserTableProps) => {
   const parentRef = useRef<HTMLDivElement>(null);
 
