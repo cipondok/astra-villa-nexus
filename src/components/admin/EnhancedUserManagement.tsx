@@ -674,7 +674,10 @@ const EnhancedUserManagement = () => {
               onRoleChange={(userId, role) => updateUserRoleMutation.mutate({ userId, role })}
               onLevelChange={(userId, levelId) => updateUserLevelMutation.mutate({ userId, levelId })}
               onVerificationChange={(userId, status) => updateVerificationStatusMutation.mutate({ userId, status })}
+              onResetPassword={(email) => setResetPasswordEmail(email)}
+              onSendNotice={(email) => setNoticeUserEmail(email)}
               unsuspendPending={unsuspendUserMutation.isPending}
+              resetPending={resetPasswordMutation.isPending}
             />
           )}
         </CardContent>
