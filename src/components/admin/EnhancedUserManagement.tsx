@@ -215,16 +215,22 @@ const VirtualUserTable = ({
                       </div>
                     </td>
                     <td className="py-1.5 px-2">
-                      <div className="flex gap-1">
-                        <Button size="icon" variant="ghost" className="h-5 w-5" onClick={() => onSecurityView(u.id)}>
+                      <div className="flex gap-0.5 flex-wrap">
+                        <Button size="icon" variant="ghost" className="h-5 w-5" title="Security & Sessions" onClick={() => onSecurityView(u.id)}>
                           <Monitor className="h-3 w-3" />
                         </Button>
+                        <Button size="icon" variant="ghost" className="h-5 w-5 text-primary" title="Reset Password" onClick={() => onResetPassword(u.email)} disabled={resetPending}>
+                          <KeyRound className="h-3 w-3" />
+                        </Button>
+                        <Button size="icon" variant="ghost" className="h-5 w-5 text-chart-2" title="Send Notice" onClick={() => onSendNotice(u.email)}>
+                          <Bell className="h-3 w-3" />
+                        </Button>
                         {u.is_suspended ? (
-                          <Button size="icon" variant="ghost" className="h-5 w-5 text-chart-1" onClick={() => onUnsuspend(u.id)} disabled={unsuspendPending}>
+                          <Button size="icon" variant="ghost" className="h-5 w-5 text-chart-1" title="Unsuspend" onClick={() => onUnsuspend(u.id)} disabled={unsuspendPending}>
                             <UserCheck className="h-3 w-3" />
                           </Button>
                         ) : (
-                          <Button size="icon" variant="ghost" className="h-5 w-5 text-destructive" onClick={() => onSuspend(u)}>
+                          <Button size="icon" variant="ghost" className="h-5 w-5 text-destructive" title="Suspend" onClick={() => onSuspend(u)}>
                             <Ban className="h-3 w-3" />
                           </Button>
                         )}
