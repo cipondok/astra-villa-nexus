@@ -568,28 +568,28 @@ const EnhancedUserManagement = () => {
   };
 
   return (
-    <div className="space-y-3 p-1 md:p-0">
+    <div className="space-y-4 p-1 md:p-0">
       {/* Professional Header */}
-      <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-primary text-primary-foreground shadow-lg">
-              <Shield className="h-4 w-4" />
+      <div className="rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 to-transparent p-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-primary text-primary-foreground shadow-lg">
+              <Shield className="h-5 w-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-sm font-bold text-foreground">User Management</h2>
-                <Badge className="bg-primary/20 text-primary border-primary/30 text-[9px] px-1.5 py-0 h-4">
+              <div className="flex items-center gap-2.5">
+                <h2 className="text-base font-bold text-foreground">User Management</h2>
+                <Badge className="bg-primary/15 text-primary border-primary/25 text-[11px] px-2 py-0.5">
                   {filteredUsers.length} Users
                 </Badge>
               </div>
-              <p className="text-[10px] text-muted-foreground">Manage users, roles, levels & permissions</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Manage users, roles, levels & permissions</p>
             </div>
           </div>
           <Dialog>
             <DialogTrigger asChild>
-              <Button size="sm" className="h-7 text-[10px] px-2">
-                <UserPlus className="h-3 w-3 mr-1" />
+              <Button size="sm" className="h-8 text-xs px-3">
+                <UserPlus className="h-3.5 w-3.5 mr-1.5" />
                 Add User
               </Button>
             </DialogTrigger>
@@ -598,22 +598,22 @@ const EnhancedUserManagement = () => {
       </div>
 
       {/* Filters */}
-      <Card className="border-border/50">
-        <CardContent className="p-2">
-          <div className="flex flex-wrap gap-1.5">
-            <div className="flex-1 min-w-[180px]">
+      <Card className="border-border/40">
+        <CardContent className="p-3">
+          <div className="flex flex-wrap gap-2">
+            <div className="flex-1 min-w-[200px]">
               <div className="relative">
-                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground h-3 w-3" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-3.5 w-3.5" />
                 <Input
                   placeholder="Search name, email, phone, company..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-7 h-7 text-[10px]"
+                  className="pl-9 h-8 text-xs"
                 />
               </div>
             </div>
             <Select value={roleFilter} onValueChange={setRoleFilter}>
-              <SelectTrigger className="w-[120px] h-7 text-[10px]">
+              <SelectTrigger className="w-[130px] h-8 text-xs">
                 <SelectValue placeholder="Role" />
               </SelectTrigger>
               <SelectContent>
@@ -627,7 +627,7 @@ const EnhancedUserManagement = () => {
               </SelectContent>
             </Select>
             <Select value={suspensionFilter} onValueChange={setSuspensionFilter}>
-              <SelectTrigger className="w-[100px] h-7 text-[10px]">
+              <SelectTrigger className="w-[110px] h-8 text-xs">
                 <SelectValue placeholder="Account" />
               </SelectTrigger>
               <SelectContent>
@@ -637,7 +637,7 @@ const EnhancedUserManagement = () => {
               </SelectContent>
             </Select>
             <Select value={verificationFilter} onValueChange={setVerificationFilter}>
-              <SelectTrigger className="w-[110px] h-7 text-[10px]">
+              <SelectTrigger className="w-[120px] h-8 text-xs">
                 <SelectValue placeholder="Verification" />
               </SelectTrigger>
               <SelectContent>
@@ -651,7 +651,7 @@ const EnhancedUserManagement = () => {
               </SelectContent>
             </Select>
             <Select value={dateFilter} onValueChange={setDateFilter}>
-              <SelectTrigger className="w-[100px] h-7 text-[10px]">
+              <SelectTrigger className="w-[110px] h-8 text-xs">
                 <SelectValue placeholder="Joined" />
               </SelectTrigger>
               <SelectContent>
@@ -666,7 +666,7 @@ const EnhancedUserManagement = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-7 text-[10px] px-2 text-muted-foreground hover:text-foreground"
+                className="h-8 text-xs px-3 text-muted-foreground hover:text-foreground"
                 onClick={() => {
                   setRoleFilter("all");
                   setSuspensionFilter("all");
@@ -683,14 +683,14 @@ const EnhancedUserManagement = () => {
       </Card>
 
       {/* Users Table */}
-      <Card className="border-accent/50">
-        <CardHeader className="py-2 px-3">
-          <CardTitle className="text-xs font-medium flex items-center gap-1.5">
-            <Shield className="h-3.5 w-3.5 text-accent" />
+      <Card className="border-border/40 overflow-hidden">
+        <CardHeader className="py-3 px-4 border-b border-border/30">
+          <CardTitle className="text-sm font-semibold flex items-center gap-2">
+            <Users className="h-4 w-4 text-primary" />
             Users ({filteredUsers.length})
           </CardTitle>
           {usersError && (
-            <CardDescription className="text-[9px]">
+            <CardDescription className="text-xs mt-1">
               Signed in as: {user?.email || user?.id}
               <br />
               {String((usersError as any)?.message || usersError)}
@@ -699,7 +699,10 @@ const EnhancedUserManagement = () => {
         </CardHeader>
         <CardContent className="p-0">
           {isLoading ? (
-            <div className="text-center py-6 text-[10px] text-muted-foreground">Loading users...</div>
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-6 w-6 animate-spin text-primary mr-2" />
+              <span className="text-sm text-muted-foreground">Loading users...</span>
+            </div>
           ) : (
             <VirtualUserTable
               users={filteredUsers}
