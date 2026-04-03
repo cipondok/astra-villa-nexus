@@ -69,7 +69,7 @@ interface SessionTracking {
 }
 
 // Row height for the virtual table (px)
-const ROW_HEIGHT = 44;
+const ROW_HEIGHT = 56;
 
 interface VirtualUserTableProps {
   users: EnhancedUser[];
