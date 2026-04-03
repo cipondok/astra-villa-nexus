@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useAlert } from "@/contexts/AlertContext";
-import { UserPlus, Search, Ban, UserCheck, UserX, Shield, AlertTriangle, Monitor, MapPin, Clock } from "lucide-react";
+import { UserPlus, Search, Ban, UserCheck, UserX, Shield, AlertTriangle, Monitor, MapPin, Clock, KeyRound, Bell, Mail, Send, Loader2 } from "lucide-react";
 import { formatMemberDuration } from "@/utils/dateUtils";
 import VIPLevelBadge from "@/components/ui/VIPLevelBadge";
 import UserStatusBadge from "@/components/ui/UserStatusBadge";
@@ -80,12 +80,16 @@ interface VirtualUserTableProps {
   onRoleChange: (userId: string, role: UserRole) => void;
   onLevelChange: (userId: string, levelId: string) => void;
   onVerificationChange: (userId: string, status: string) => void;
+  onResetPassword: (email: string) => void;
+  onSendNotice: (email: string) => void;
   unsuspendPending: boolean;
+  resetPending: boolean;
 }
 
 const VirtualUserTable = ({
   users, userLevels, onSuspend, onUnsuspend, onSecurityView,
-  onRoleChange, onLevelChange, onVerificationChange, unsuspendPending
+  onRoleChange, onLevelChange, onVerificationChange, onResetPassword, onSendNotice,
+  unsuspendPending, resetPending
 }: VirtualUserTableProps) => {
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -211,16 +215,22 @@ const VirtualUserTable = ({
                       </div>
                     </td>
                     <td className="py-1.5 px-2">
-                      <div className="flex gap-1">
-                        <Button size="icon" variant="ghost" className="h-5 w-5" onClick={() => onSecurityView(u.id)}>
+                      <div className="flex gap-0.5 flex-wrap">
+                        <Button size="icon" variant="ghost" className="h-5 w-5" title="Security & Sessions" onClick={() => onSecurityView(u.id)}>
                           <Monitor className="h-3 w-3" />
                         </Button>
+                        <Button size="icon" variant="ghost" className="h-5 w-5 text-primary" title="Reset Password" onClick={() => onResetPassword(u.email)} disabled={resetPending}>
+                          <KeyRound className="h-3 w-3" />
+                        </Button>
+                        <Button size="icon" variant="ghost" className="h-5 w-5 text-chart-2" title="Send Notice" onClick={() => onSendNotice(u.email)}>
+                          <Bell className="h-3 w-3" />
+                        </Button>
                         {u.is_suspended ? (
-                          <Button size="icon" variant="ghost" className="h-5 w-5 text-chart-1" onClick={() => onUnsuspend(u.id)} disabled={unsuspendPending}>
+                          <Button size="icon" variant="ghost" className="h-5 w-5 text-chart-1" title="Unsuspend" onClick={() => onUnsuspend(u.id)} disabled={unsuspendPending}>
                             <UserCheck className="h-3 w-3" />
                           </Button>
                         ) : (
-                          <Button size="icon" variant="ghost" className="h-5 w-5 text-destructive" onClick={() => onSuspend(u)}>
+                          <Button size="icon" variant="ghost" className="h-5 w-5 text-destructive" title="Suspend" onClick={() => onSuspend(u)}>
                             <Ban className="h-3 w-3" />
                           </Button>
                         )}
@@ -248,6 +258,9 @@ const EnhancedUserManagement = () => {
   const [selectedUser, setSelectedUser] = useState<EnhancedUser | null>(null);
   const [suspensionReason, setSuspensionReason] = useState("");
   const [securityModalUser, setSecurityModalUser] = useState<string | null>(null);
+  const [noticeMessage, setNoticeMessage] = useState("");
+  const [noticeUserEmail, setNoticeUserEmail] = useState<string | null>(null);
+  const [resetPasswordEmail, setResetPasswordEmail] = useState<string | null>(null);
 
   const { showSuccess, showError } = useAlert();
   const queryClient = useQueryClient();
@@ -419,7 +432,43 @@ const EnhancedUserManagement = () => {
     },
   });
 
-  // Update user role mutation
+  // Admin trigger password reset for a user
+  const resetPasswordMutation = useMutation({
+    mutationFn: async (email: string) => {
+      const { error } = await supabase.functions.invoke('auth-engine', {
+        body: { action: 'admin_password_reset', email },
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      showSuccess("Password Reset Sent", "A password reset email has been sent to the user.");
+      setResetPasswordEmail(null);
+    },
+    onError: (error: any) => {
+      showError("Reset Failed", error.message || "Could not send password reset email.");
+      setResetPasswordEmail(null);
+    },
+  });
+
+  // Admin send notice/notification to a user
+  const sendNoticeMutation = useMutation({
+    mutationFn: async ({ email, message }: { email: string; message: string }) => {
+      const { error } = await supabase.functions.invoke('auth-engine', {
+        body: { action: 'admin_send_notice', email, message },
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      showSuccess("Notice Sent", "Notification has been sent to the user.");
+      setNoticeUserEmail(null);
+      setNoticeMessage("");
+    },
+    onError: (error: any) => {
+      showError("Notice Failed", error.message || "Could not send notification.");
+      setNoticeUserEmail(null);
+      setNoticeMessage("");
+    },
+  });
   const updateUserRoleMutation = useMutation({
     mutationFn: async ({ userId, role }: { userId: string; role: UserRole }) => {
       const { error } = await supabase
@@ -631,7 +680,10 @@ const EnhancedUserManagement = () => {
               onRoleChange={(userId, role) => updateUserRoleMutation.mutate({ userId, role })}
               onLevelChange={(userId, levelId) => updateUserLevelMutation.mutate({ userId, levelId })}
               onVerificationChange={(userId, status) => updateVerificationStatusMutation.mutate({ userId, status })}
+              onResetPassword={(email) => setResetPasswordEmail(email)}
+              onSendNotice={(email) => setNoticeUserEmail(email)}
               unsuspendPending={unsuspendUserMutation.isPending}
+              resetPending={resetPasswordMutation.isPending}
             />
           )}
         </CardContent>
@@ -683,6 +735,7 @@ const EnhancedUserManagement = () => {
       )}
 
       {/* Security & Session Modal */}
+      {/* Security & Session Modal */}
       {securityModalUser && (
         <Dialog open={!!securityModalUser} onOpenChange={() => setSecurityModalUser(null)}>
           <DialogContent className="max-w-4xl">
@@ -697,29 +750,36 @@ const EnhancedUserManagement = () => {
                   Security Logs
                 </h4>
                 <div className="space-y-2 max-h-60 overflow-auto">
-                  {securityLogs?.map((log) => (
-                    <div key={log.id} className="p-3 border rounded-lg">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <AlertTriangle className="h-4 w-4 text-chart-3" />
-                          <span className="font-medium">{log.event_type}</span>
-                          {getRiskBadge(log.risk_score)}
-                        </div>
-                        <span className="text-sm text-muted-foreground">
-                          {new Date(log.created_at).toLocaleString()}
-                        </span>
-                      </div>
-                      <div className="mt-2 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          IP: {log.ip_address || 'Unknown'}
-                        </div>
-                        {log.user_agent && (
-                          <div className="truncate">Device: {log.user_agent}</div>
-                        )}
-                      </div>
+                  {!securityLogs || securityLogs.length === 0 ? (
+                    <div className="text-center py-6 text-sm text-muted-foreground border rounded-lg bg-muted/20">
+                      <Shield className="h-8 w-8 mx-auto mb-2 text-muted-foreground/50" />
+                      No security logs found for this user
                     </div>
-                  ))}
+                  ) : (
+                    securityLogs.map((log) => (
+                      <div key={log.id} className="p-3 border rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <AlertTriangle className="h-4 w-4 text-chart-3" />
+                            <span className="font-medium">{log.event_type}</span>
+                            {getRiskBadge(log.risk_score)}
+                          </div>
+                          <span className="text-sm text-muted-foreground">
+                            {new Date(log.created_at).toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="mt-2 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <MapPin className="h-3 w-3" />
+                            IP: {log.ip_address || 'Unknown'}
+                          </div>
+                          {log.user_agent && (
+                            <div className="truncate">Device: {log.user_agent}</div>
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
 
@@ -730,28 +790,116 @@ const EnhancedUserManagement = () => {
                   Session History
                 </h4>
                 <div className="space-y-2 max-h-60 overflow-auto">
-                  {sessionData?.map((session) => (
-                    <div key={session.id} className="p-3 border rounded-lg">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${session.is_active ? 'bg-chart-1' : 'bg-muted-foreground'}`} />
-                          <span className="font-medium">Session {session.session_id.slice(0, 8)}...</span>
-                          {session.is_active && <Badge variant="outline">Active</Badge>}
-                        </div>
-                        <span className="text-sm text-muted-foreground">
-                          {new Date(session.login_time).toLocaleString()}
-                        </span>
-                      </div>
-                      <div className="mt-2 text-sm text-muted-foreground">
-                        <div>IP: {session.ip_address || 'Unknown'}</div>
-                        {session.logout_time && (
-                          <div>Logout: {new Date(session.logout_time).toLocaleString()}</div>
-                        )}
-                        <div>Last Activity: {new Date(session.last_activity).toLocaleString()}</div>
-                      </div>
+                  {!sessionData || sessionData.length === 0 ? (
+                    <div className="text-center py-6 text-sm text-muted-foreground border rounded-lg bg-muted/20">
+                      <Monitor className="h-8 w-8 mx-auto mb-2 text-muted-foreground/50" />
+                      No session history found for this user
                     </div>
-                  ))}
+                  ) : (
+                    sessionData.map((session) => (
+                      <div key={session.id} className="p-3 border rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full ${session.is_active ? 'bg-chart-1' : 'bg-muted-foreground'}`} />
+                            <span className="font-medium">Session {session.session_id.slice(0, 8)}...</span>
+                            {session.is_active && <Badge variant="outline">Active</Badge>}
+                          </div>
+                          <span className="text-sm text-muted-foreground">
+                            {new Date(session.login_time).toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="mt-2 text-sm text-muted-foreground">
+                          <div>IP: {session.ip_address || 'Unknown'}</div>
+                          {session.logout_time && (
+                            <div>Logout: {new Date(session.logout_time).toLocaleString()}</div>
+                          )}
+                          <div>Last Activity: {new Date(session.last_activity).toLocaleString()}</div>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Password Reset Confirmation Modal */}
+      {resetPasswordEmail && (
+        <Dialog open={!!resetPasswordEmail} onOpenChange={() => setResetPasswordEmail(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <KeyRound className="h-5 w-5 text-primary" />
+                Reset User Password
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Send a password reset email to <strong>{resetPasswordEmail}</strong>? 
+                The user will receive a link to set a new password.
+              </p>
+              <div className="flex gap-2 pt-2">
+                <Button
+                  onClick={() => resetPasswordMutation.mutate(resetPasswordEmail)}
+                  disabled={resetPasswordMutation.isPending}
+                  className="flex-1"
+                >
+                  {resetPasswordMutation.isPending ? (
+                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Sending...</>
+                  ) : (
+                    <><Send className="h-4 w-4 mr-2" /> Send Reset Email</>
+                  )}
+                </Button>
+                <Button variant="outline" onClick={() => setResetPasswordEmail(null)} className="flex-1">
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Send Notice Modal */}
+      {noticeUserEmail && (
+        <Dialog open={!!noticeUserEmail} onOpenChange={() => { setNoticeUserEmail(null); setNoticeMessage(""); }}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Bell className="h-5 w-5 text-chart-2" />
+                Send Notice to User
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label>Recipient</Label>
+                <p className="text-sm text-muted-foreground">{noticeUserEmail}</p>
+              </div>
+              <div>
+                <Label>Message</Label>
+                <Textarea
+                  value={noticeMessage}
+                  onChange={(e) => setNoticeMessage(e.target.value)}
+                  placeholder="Enter notification message for the user..."
+                  rows={4}
+                />
+              </div>
+              <div className="flex gap-2 pt-2">
+                <Button
+                  onClick={() => sendNoticeMutation.mutate({ email: noticeUserEmail, message: noticeMessage })}
+                  disabled={sendNoticeMutation.isPending || !noticeMessage.trim()}
+                  className="flex-1"
+                >
+                  {sendNoticeMutation.isPending ? (
+                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Sending...</>
+                  ) : (
+                    <><Send className="h-4 w-4 mr-2" /> Send Notice</>
+                  )}
+                </Button>
+                <Button variant="outline" onClick={() => { setNoticeUserEmail(null); setNoticeMessage(""); }} className="flex-1">
+                  Cancel
+                </Button>
               </div>
             </div>
           </DialogContent>
