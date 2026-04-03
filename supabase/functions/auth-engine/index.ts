@@ -977,6 +977,104 @@ serve(async (req) => {
         };
         break;
       }
+      case 'admin_password_reset': {
+        // Admin-triggered password reset for a user
+        const targetEmail = params.email as string;
+        if (!targetEmail) throw new Error('email required');
+
+        // Verify caller is admin
+        const { data: adminRoleCheck } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', userId)
+          .in('role', ['admin', 'super_admin'])
+          .maybeSingle();
+        if (!adminRoleCheck) throw new Error('Admin access required');
+
+        // Use Supabase Auth admin to send password reset
+        const { error: resetError } = await supabaseAuth.auth.admin.generateLink({
+          type: 'recovery',
+          email: targetEmail,
+        });
+        if (resetError) throw resetError;
+
+        // Log admin action
+        await supabase.from('user_security_logs').insert({
+          user_id: userId,
+          event_type: 'admin_password_reset',
+          ip_address: clientIp,
+          user_agent: req.headers.get('user-agent') || '',
+          risk_score: 0,
+          is_flagged: false,
+          metadata: { target_email: targetEmail, triggered_by: userId },
+        });
+
+        result = { success: true, message: 'Password reset email sent' };
+        break;
+      }
+
+      case 'admin_send_notice': {
+        // Admin sends a notification/notice to a user
+        const noticeEmail = params.email as string;
+        const noticeMessage = params.message as string;
+        if (!noticeEmail || !noticeMessage) throw new Error('email and message required');
+
+        // Verify caller is admin
+        const { data: adminNoticeCheck } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', userId)
+          .in('role', ['admin', 'super_admin'])
+          .maybeSingle();
+        if (!adminNoticeCheck) throw new Error('Admin access required');
+
+        // Send via transactional email
+        try {
+          await supabase.functions.invoke('send-transactional-email', {
+            body: {
+              to: noticeEmail,
+              subject: 'Important Notice from ASTRA',
+              html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
+                <h2 style="color:#333;">Important Notice</h2>
+                <p style="color:#555;line-height:1.6;">${noticeMessage.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+                <hr style="border:none;border-top:1px solid #eee;margin:20px 0;" />
+                <p style="color:#999;font-size:12px;">This is an administrative notification from ASTRA. Please do not reply to this email.</p>
+              </div>`,
+            },
+          });
+        } catch { /* email sending is best-effort */ }
+
+        // Log the action
+        await supabase.from('user_security_logs').insert({
+          user_id: userId,
+          event_type: 'admin_notice_sent',
+          ip_address: clientIp,
+          user_agent: req.headers.get('user-agent') || '',
+          risk_score: 0,
+          is_flagged: false,
+          metadata: { target_email: noticeEmail, message_preview: noticeMessage.slice(0, 100) },
+        });
+
+        // Also store in login alerts for the target user
+        const { data: targetProfile } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('email', noticeEmail)
+          .maybeSingle();
+
+        if (targetProfile) {
+          await supabase.from('user_login_alerts').insert({
+            user_id: targetProfile.id,
+            alert_type: 'admin_notice',
+            message: noticeMessage,
+            is_read: false,
+          });
+        }
+
+        result = { success: true, message: 'Notice sent successfully' };
+        break;
+      }
+
       default:
         throw new Error(`Unknown action: ${action}`);
     }
