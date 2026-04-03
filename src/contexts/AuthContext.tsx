@@ -121,7 +121,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           .limit(1)
           .maybeSingle();
         
-        setProfile(data);
+        setProfile({
+          ...data,
+          role: (rolesData?.role as UserRole) || 'general_user',
+        });
         setLoading(false);
       } catch (fetchError) {
         clearTimeout(timeoutId);
