@@ -77,6 +77,7 @@ const Search = lazy(() => import('@/pages/Search'));
 const ErrorPage = lazy(() => import('@/pages/ErrorPage'));
 const Auth = lazy(() => import('@/pages/Auth'));
 const ResetPassword = lazy(() => import('@/pages/ResetPassword'));
+const Unsubscribe = lazy(() => import('@/pages/Unsubscribe'));
 const PropertyDetail = lazy(() => import('@/pages/PropertyDetail'));
 const Dijual = lazy(() => import('@/pages/Dijual'));
 const Disewa = lazy(() => import('@/pages/Disewa'));
