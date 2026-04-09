@@ -449,6 +449,7 @@ const AppContent = () => {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/unsubscribe" element={<Unsubscribe />} />
                 <Route path="/astra-tokens" element={<AstraTokensPage />} />
                 <Route path="/wallet" element={<WalletPage />} />
                 <Route path="/services" element={<Services />} />
