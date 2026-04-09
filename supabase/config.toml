@@ -621,3 +621,6 @@ verify_jwt = false
 
 [functions.negotiation-agent]
 verify_jwt = false
+
+[functions.auth-email-hook]
+verify_jwt = false
