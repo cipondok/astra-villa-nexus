@@ -13,7 +13,7 @@ interface SEOHeadProps {
 
 const SITE_NAME = 'ASTRA Villa Realty';
 const DEFAULT_OG_IMAGE = 'https://lovable.dev/opengraph-image-p98pqg.png';
-const SITE_URL = 'https://astra-villa-realty.lovable.app';
+const SITE_URL = 'https://www.astravilla.com';
 
 export const SEOHead = ({
   title,
