@@ -95,6 +95,7 @@ const DealExecutionCommandCenter = lazy(() => import('@/pages/admin/DealExecutio
 const AdminAnalytics = lazy(() => import('@/pages/AdminAnalytics'));
 const ConversionAnalyticsPage = lazy(() => import('@/pages/ConversionAnalyticsPage'));
 const AIOptimizationDashboard = lazy(() => import('@/pages/AIOptimizationDashboard'));
+const TrustRiskDashboard = lazy(() => import('@/pages/TrustRiskDashboard'));
 const ProvinceProperties = lazy(() => import('@/pages/ProvinceProperties'));
 const LocationAnalyticsDashboard = lazy(() => import('@/pages/LocationAnalyticsDashboard'));
 const AIPerformanceDashboard = lazy(() => import('@/components/admin/AIPerformanceDashboard'));
@@ -486,6 +487,7 @@ const AppContent = () => {
                 <Route path="/admin/analytics" element={<AdminAnalytics />} />
                 <Route path="/admin/conversion-analytics" element={<ConversionAnalyticsPage />} />
                 <Route path="/admin/ai-optimization" element={<AIOptimizationDashboard />} />
+                <Route path="/admin/trust-risk" element={<TrustRiskDashboard />} />
                 <Route path="/admin/location-analytics" element={<LocationAnalyticsDashboard />} />
                 <Route path="/province-properties" element={<ProvinceProperties />} />
                 <Route path="/settings" element={<Settings />} />
