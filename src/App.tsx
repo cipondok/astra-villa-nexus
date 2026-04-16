@@ -97,6 +97,7 @@ const ConversionAnalyticsPage = lazy(() => import('@/pages/ConversionAnalyticsPa
 const AIOptimizationDashboard = lazy(() => import('@/pages/AIOptimizationDashboard'));
 const TrustRiskDashboard = lazy(() => import('@/pages/TrustRiskDashboard'));
 const AdminKYCPanel = lazy(() => import('@/pages/AdminKYCPanel'));
+const InvestmentIntelligenceDashboard = lazy(() => import('@/pages/InvestmentIntelligenceDashboard'));
 const ProvinceProperties = lazy(() => import('@/pages/ProvinceProperties'));
 const LocationAnalyticsDashboard = lazy(() => import('@/pages/LocationAnalyticsDashboard'));
 const AIPerformanceDashboard = lazy(() => import('@/components/admin/AIPerformanceDashboard'));
