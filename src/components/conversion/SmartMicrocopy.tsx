@@ -1,17 +1,14 @@
 import { memo, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, MessageCircle, TrendingUp, Wallet, X, HelpCircle } from 'lucide-react';
+import { Shield, Wallet, X, HelpCircle, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from '@/i18n/useTranslation';
 import { useHesitationDetector, type HesitationSignal } from '@/hooks/useHesitationDetector';
-import { useBehaviorTracking } from '@/hooks/useBehaviorTracking';
+import { useConversionTracking } from '@/hooks/useConversionTracking';
 
 interface SmartMicrocopyProps {
-  /** Context for the microcopy — affects which messages appear */
   context?: 'property' | 'escrow' | 'wallet' | 'checkout';
-  /** Whether user has insufficient wallet balance */
   lowBalance?: boolean;
-  /** Whether this is a high-value property */
   highValue?: boolean;
   className?: string;
 }
@@ -28,7 +25,6 @@ interface MicrocopyMessage {
 /**
  * Smart microcopy system that dynamically shows contextual trust/guidance
  * messages based on user hesitation patterns.
- * 
  * Non-intrusive — appears as a subtle inline banner, NOT a popup.
  */
 const SmartMicrocopy = memo(({
@@ -39,17 +35,15 @@ const SmartMicrocopy = memo(({
 }: SmartMicrocopyProps) => {
   const { t } = useTranslation();
   const { isHesitating, signals, dismiss } = useHesitationDetector();
-  const { trackEvent } = useBehaviorTracking();
+  const { trackEvent } = useConversionTracking();
   const [dismissed, setDismissed] = useState(false);
   const [activeMessage, setActiveMessage] = useState<MicrocopyMessage | null>(null);
 
-  // Build context-aware message pool
   useEffect(() => {
     if (dismissed) return;
 
     const messages: MicrocopyMessage[] = [];
 
-    // Hesitation-triggered messages
     if (isHesitating && signals.includes('long_dwell')) {
       messages.push({
         id: 'escrow-protection',
@@ -83,7 +77,6 @@ const SmartMicrocopy = memo(({
       });
     }
 
-    // Balance-triggered messages
     if (lowBalance) {
       messages.push({
         id: 'low-balance',
@@ -95,7 +88,6 @@ const SmartMicrocopy = memo(({
       });
     }
 
-    // High-value property messages
     if (highValue && context === 'property') {
       messages.push({
         id: 'high-value',
@@ -107,7 +99,6 @@ const SmartMicrocopy = memo(({
       });
     }
 
-    // Context-specific defaults (show after 10s even without hesitation)
     if (context === 'escrow' && messages.length === 0) {
       messages.push({
         id: 'escrow-default',
@@ -130,15 +121,13 @@ const SmartMicrocopy = memo(({
       });
     }
 
-    // Pick highest priority
     const best = messages.sort((a, b) => b.priority - a.priority)[0] || null;
-    
+
     if (best && best.id !== activeMessage?.id) {
       setActiveMessage(best);
       trackEvent({
         eventType: 'click',
-        elementId: `microcopy-shown-${best.id}`,
-        metadata: { trigger: best.trigger, context },
+        metadata: { microcopy_shown: best.id, trigger: best.trigger, context },
       });
     }
   }, [isHesitating, signals, lowBalance, highValue, context, dismissed, t, activeMessage?.id, trackEvent]);
@@ -149,8 +138,7 @@ const SmartMicrocopy = memo(({
     if (activeMessage) {
       trackEvent({
         eventType: 'click',
-        elementId: `microcopy-dismissed-${activeMessage.id}`,
-        metadata: { context },
+        metadata: { microcopy_dismissed: activeMessage.id, context },
       });
     }
   };
