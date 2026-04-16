@@ -14,6 +14,7 @@ const detectBrowserLanguage = (): Language => {
       if (prefix === "zh") return "zh";
       if (prefix === "ja") return "ja";
       if (prefix === "ko") return "ko";
+      if (prefix === "ru") return "ru";
       if (prefix === "id" || prefix === "ms") return "id";
       if (prefix === "en") return "en";
     }
@@ -34,7 +35,8 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguageState] = useState<Language>(() => {
     const saved = safeLocalStorage.getItem("language");
     if (saved && VALID_LANGS.includes(saved as Language)) return saved as Language;
-    return "id";
+    // Auto-detect browser language for first-time visitors
+    return detectBrowserLanguage();
   });
 
   useEffect(() => {
@@ -44,7 +46,6 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    // Trigger currency auto-switch via storage event listener in CurrencyContext
     safeLocalStorage.setItem("language", lang);
   };
 
