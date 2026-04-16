@@ -437,11 +437,11 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                           : 'bg-emerald-500/90 text-white'
                       }`}>
                         {property.listing_type === 'rent' ? <Key className="h-3 w-3" /> : <Tag className="h-3 w-3" />}
-                        {property.listing_type === 'rent' ? 'Sewa' : 'Jual'}
+                        {property.listing_type === 'rent' ? t('listingPage.forRent') : t('listingPage.forSale')}
                       </span>
                       {pageType === 'pre-launching' && (
                         <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-accent/90 text-accent-foreground backdrop-blur-sm">
-                          Pre-Launch
+                          {t('listingPage.preLaunch')}
                         </span>
                       )}
                     </div>
@@ -449,7 +449,7 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                     {/* View details indicator */}
                     <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-1 group-hover:translate-y-0">
                       <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-background/90 backdrop-blur-sm text-foreground text-[10px] font-semibold shadow-lg">
-                        Lihat Detail
+                        {t('listingPage.viewDetails')}
                         <ArrowUpRight className="h-3 w-3" />
                       </div>
                     </div>
