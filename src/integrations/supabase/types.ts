@@ -32100,6 +32100,60 @@ export type Database = {
           },
         ]
       }
+      investment_outcomes: {
+        Row: {
+          actual_price: number | null
+          actual_roi: number | null
+          created_at: string
+          id: string
+          investment_amount: number
+          metadata: Json | null
+          model_version: string | null
+          outcome_date: string | null
+          predicted_price: number | null
+          predicted_roi: number | null
+          profit_loss: number | null
+          property_id: string
+          success: boolean | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          actual_price?: number | null
+          actual_roi?: number | null
+          created_at?: string
+          id?: string
+          investment_amount: number
+          metadata?: Json | null
+          model_version?: string | null
+          outcome_date?: string | null
+          predicted_price?: number | null
+          predicted_roi?: number | null
+          profit_loss?: number | null
+          property_id: string
+          success?: boolean | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          actual_price?: number | null
+          actual_roi?: number | null
+          created_at?: string
+          id?: string
+          investment_amount?: number
+          metadata?: Json | null
+          model_version?: string | null
+          outcome_date?: string | null
+          predicted_price?: number | null
+          predicted_roi?: number | null
+          profit_loss?: number | null
+          property_id?: string
+          success?: boolean | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       investment_positions: {
         Row: {
           acquisition_date: string | null
@@ -40868,6 +40922,95 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      model_experiment_assignments: {
+        Row: {
+          created_at: string
+          experiment_id: string
+          id: string
+          user_id: string
+          variant: string
+        }
+        Insert: {
+          created_at?: string
+          experiment_id: string
+          id?: string
+          user_id: string
+          variant: string
+        }
+        Update: {
+          created_at?: string
+          experiment_id?: string
+          id?: string
+          user_id?: string
+          variant?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "model_experiment_assignments_experiment_id_fkey"
+            columns: ["experiment_id"]
+            isOneToOne: false
+            referencedRelation: "model_experiments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      model_experiments: {
+        Row: {
+          challenger_avg_roi: number | null
+          challenger_conversions: number | null
+          challenger_impressions: number | null
+          challenger_version: string
+          champion_avg_roi: number | null
+          champion_conversions: number | null
+          champion_impressions: number | null
+          champion_version: string
+          created_at: string
+          ended_at: string | null
+          experiment_name: string
+          id: string
+          started_at: string | null
+          status: string
+          traffic_split: number | null
+          winner: string | null
+        }
+        Insert: {
+          challenger_avg_roi?: number | null
+          challenger_conversions?: number | null
+          challenger_impressions?: number | null
+          challenger_version: string
+          champion_avg_roi?: number | null
+          champion_conversions?: number | null
+          champion_impressions?: number | null
+          champion_version: string
+          created_at?: string
+          ended_at?: string | null
+          experiment_name: string
+          id?: string
+          started_at?: string | null
+          status?: string
+          traffic_split?: number | null
+          winner?: string | null
+        }
+        Update: {
+          challenger_avg_roi?: number | null
+          challenger_conversions?: number | null
+          challenger_impressions?: number | null
+          challenger_version?: string
+          champion_avg_roi?: number | null
+          champion_conversions?: number | null
+          champion_impressions?: number | null
+          champion_version?: string
+          created_at?: string
+          ended_at?: string | null
+          experiment_name?: string
+          id?: string
+          started_at?: string | null
+          status?: string
+          traffic_split?: number | null
+          winner?: string | null
+        }
+        Relationships: []
       }
       mortgage_applications: {
         Row: {
@@ -60368,6 +60511,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      training_runs: {
+        Row: {
+          accuracy: number | null
+          comparison_metrics: Json | null
+          completed_at: string | null
+          created_at: string
+          feature_importance: Json | null
+          id: string
+          loss: number | null
+          model_version: string
+          new_weights: Json | null
+          old_weights: Json | null
+          started_at: string | null
+          status: string
+          training_samples: number | null
+          trigger_type: string
+        }
+        Insert: {
+          accuracy?: number | null
+          comparison_metrics?: Json | null
+          completed_at?: string | null
+          created_at?: string
+          feature_importance?: Json | null
+          id?: string
+          loss?: number | null
+          model_version: string
+          new_weights?: Json | null
+          old_weights?: Json | null
+          started_at?: string | null
+          status?: string
+          training_samples?: number | null
+          trigger_type?: string
+        }
+        Update: {
+          accuracy?: number | null
+          comparison_metrics?: Json | null
+          completed_at?: string | null
+          created_at?: string
+          feature_importance?: Json | null
+          id?: string
+          loss?: number | null
+          model_version?: string
+          new_weights?: Json | null
+          old_weights?: Json | null
+          started_at?: string | null
+          status?: string
+          training_samples?: number | null
+          trigger_type?: string
+        }
+        Relationships: []
       }
       transaction_alerts: {
         Row: {
