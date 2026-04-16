@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Sun, Moon, Globe, Menu, User, LogOut, Settings, Home, Wallet } from "lucide-react";
+import LanguageToggleSwitch from "@/components/LanguageToggleSwitch";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -111,10 +112,7 @@ const RoleBasedNavigation = ({
           </div>
 
           <div className="hidden md:flex items-center space-x-2">
-            <Button variant="ghost" size="sm" onClick={onLanguageToggle} className="header-button-ios px-2 py-1 h-8">
-              <Globe className="h-3.5 w-3.5 mr-1" />
-              <span className="text-xs font-medium">{language.toUpperCase()}</span>
-            </Button>
+            <LanguageToggleSwitch />
             <Button variant="ghost" size="sm" onClick={onThemeToggle} className="header-button-ios px-2 py-1 h-8">
               {theme === "light" ? <Moon className="h-3.5 w-3.5" /> : <Sun className="h-3.5 w-3.5" />}
             </Button>
@@ -207,10 +205,7 @@ const RoleBasedNavigation = ({
           <div className="md:hidden absolute top-16 left-0 right-0 bg-card/95 backdrop-blur-xl border-t border-border/20 shadow-2xl rounded-b-2xl">
             <div className="px-4 pt-4 pb-6 space-y-3">
               <div className="flex justify-between items-center p-3 border-b border-border/50 bg-muted/50 rounded-xl">
-                <Button variant="ghost" size="sm" onClick={onLanguageToggle} className="flex-1 mr-2 bg-card/70 hover:bg-card/90 text-foreground border border-border/50 rounded-lg">
-                  <Globe className="h-4 w-4 mr-1" />
-                  {language.toUpperCase()}
-                </Button>
+                <LanguageToggleSwitch className="flex-1 mr-2" />
                 <Button variant="ghost" size="sm" onClick={onThemeToggle} className="flex-1 bg-card/70 hover:bg-card/90 text-foreground border border-border/50 rounded-lg">
                   {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
                 </Button>
