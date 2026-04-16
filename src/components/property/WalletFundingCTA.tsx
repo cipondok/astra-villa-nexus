@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Price from '@/components/ui/Price';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface WalletFundingCTAProps {
   propertyPrice: number;
@@ -14,8 +15,9 @@ interface WalletFundingCTAProps {
 const WalletFundingCTA = memo(({ propertyPrice, onAuthRequired }: WalletFundingCTAProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
 
-  const minDeposit = Math.max(2_000_000, Math.round(propertyPrice * 0.01)); // 1% or Rp 2M minimum
+  const minDeposit = Math.max(2_000_000, Math.round(propertyPrice * 0.01));
 
   const handleFunding = () => {
     if (!user) {
@@ -38,15 +40,15 @@ const WalletFundingCTA = memo(({ propertyPrice, onAuthRequired }: WalletFundingC
             <Wallet className="h-3.5 w-3.5 text-gold-primary" />
           </div>
           <div>
-            <h3 className="text-xs font-bold text-foreground">Ready to Invest?</h3>
-            <p className="text-[9px] text-muted-foreground">Fund your wallet to reserve this property</p>
+            <h3 className="text-xs font-bold text-foreground">{t('wallet.readyToInvest')}</h3>
+            <p className="text-[9px] text-muted-foreground">{t('wallet.fundWalletToReserve')}</p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 p-2 rounded-lg bg-muted/30 border border-border/30">
           <Shield className="h-3 w-3 text-emerald-500 flex-shrink-0" />
           <p className="text-[10px] text-muted-foreground">
-            Start with <span className="font-bold text-foreground"><Price amount={minDeposit} short /></span> reservation deposit
+            {t('wallet.startWith')} <span className="font-bold text-foreground"><Price amount={minDeposit} short /></span> {t('wallet.reservationDeposit')}
           </p>
         </div>
 
@@ -55,12 +57,12 @@ const WalletFundingCTA = memo(({ propertyPrice, onAuthRequired }: WalletFundingC
           className="w-full h-8 text-[10px] font-semibold bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background gap-1.5 active:scale-95 transition-transform"
         >
           <Wallet className="h-3 w-3" />
-          Fund Wallet & Reserve
+          {t('wallet.fundWalletAndReserve')}
           <ArrowRight className="h-3 w-3" />
         </Button>
 
         <p className="text-[8px] text-muted-foreground text-center italic">
-          Funds secured via regulated payment partners and protected by escrow workflow.
+          {t('wallet.fundsSecuredNote')}
         </p>
       </div>
     </motion.div>
