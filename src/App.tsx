@@ -93,6 +93,7 @@ const FounderExecutionDashboard = lazy(() => import('@/pages/admin/FounderExecut
 const ExecutionCommandCenter = lazy(() => import('@/pages/admin/ExecutionCommandCenter'));
 const DealExecutionCommandCenter = lazy(() => import('@/pages/admin/DealExecutionCommandCenter'));
 const AdminAnalytics = lazy(() => import('@/pages/AdminAnalytics'));
+const ConversionAnalyticsPage = lazy(() => import('@/pages/ConversionAnalyticsPage'));
 const ProvinceProperties = lazy(() => import('@/pages/ProvinceProperties'));
 const LocationAnalyticsDashboard = lazy(() => import('@/pages/LocationAnalyticsDashboard'));
 const AIPerformanceDashboard = lazy(() => import('@/components/admin/AIPerformanceDashboard'));
@@ -482,6 +483,7 @@ const AppContent = () => {
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 <Route path="/dashboard/admin" element={<AdminDashboard />} />
                 <Route path="/admin/analytics" element={<AdminAnalytics />} />
+                <Route path="/admin/conversion-analytics" element={<ConversionAnalyticsPage />} />
                 <Route path="/admin/location-analytics" element={<LocationAnalyticsDashboard />} />
                 <Route path="/province-properties" element={<ProvinceProperties />} />
                 <Route path="/settings" element={<Settings />} />

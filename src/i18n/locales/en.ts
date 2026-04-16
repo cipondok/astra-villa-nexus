@@ -2190,6 +2190,53 @@ const en: TranslationMap = {
     fundWalletAndReserve: 'Fund Wallet & Reserve',
     fundsSecuredNote: 'Funds secured via regulated payment partners and protected by escrow workflow.',
   },
+  // Smart microcopy (contextual trust messages)
+  smartMicrocopy: {
+    fundsProtected: 'Your funds are fully protected under escrow until all conditions are met',
+    needHelp: 'Need assistance? Our investment advisors are available to help',
+    verifiedProperty: 'This property has been legally verified with ownership documents confirmed',
+    smallerDeposit: 'Start with a smaller secured deposit — as low as 1% of property value',
+    premiumInvestment: 'Premium properties consistently outperform market averages by 12-18% annually',
+    escrowDefault: 'Escrow deposits are fully refundable if verification conditions are not met',
+    checkoutDefault: 'Your transaction is protected by institutional-grade escrow and dispute resolution',
+  },
+  // Social proof
+  socialProof: {
+    viewingNow: '{count} investors viewing now',
+    viewsToday: '{count} views today',
+    inquiriesWeek: '{count} inquiries this week',
+    highDemand: 'High demand — properties like this sell fast',
+  },
+  // Trust bar
+  trustBar: {
+    escrowProtected: 'Escrow Protected',
+    verified: 'Verified Property',
+    legalCleared: 'Legal Cleared',
+    certifiedDev: 'Certified Developer',
+    refundable: 'Refundable Deposit',
+  },
+  // Conversion analytics dashboard
+  conversionAnalytics: {
+    title: 'Conversion Analytics',
+    subtitle: 'Track user behavior, drop-off rates, and CTA performance',
+    conversionFunnel: 'Conversion Funnel',
+    dropOffRates: 'Drop-Off Rates',
+    ctaPerformance: 'CTA Performance',
+    flow: 'Flow',
+    started: 'Started',
+    completed: 'Completed',
+    abandoned: 'Abandoned',
+    completionRate: 'Completion Rate',
+    element: 'Element',
+    page: 'Page',
+    clicks: 'Clicks',
+    uniqueUsers: 'Unique Users',
+    noData: 'No conversion data yet. Events will appear as users interact with the platform.',
+    period: 'Period',
+    last7Days: 'Last 7 Days',
+    last30Days: 'Last 30 Days',
+    last90Days: 'Last 90 Days',
+  },
 };
 
 export default en;

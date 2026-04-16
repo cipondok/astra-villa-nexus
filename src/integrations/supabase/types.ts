@@ -10003,6 +10003,48 @@ export type Database = {
         }
         Relationships: []
       }
+      behavior_events: {
+        Row: {
+          created_at: string
+          duration_ms: number | null
+          element_id: string | null
+          event_type: string
+          flow_name: string | null
+          flow_step: number | null
+          id: string
+          metadata: Json | null
+          page_path: string
+          session_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          duration_ms?: number | null
+          element_id?: string | null
+          event_type: string
+          flow_name?: string | null
+          flow_step?: number | null
+          id?: string
+          metadata?: Json | null
+          page_path: string
+          session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          duration_ms?: number | null
+          element_id?: string | null
+          event_type?: string
+          flow_name?: string | null
+          flow_step?: number | null
+          id?: string
+          metadata?: Json | null
+          page_path?: string
+          session_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       behavioral_events: {
         Row: {
           created_at: string
@@ -68647,6 +68689,15 @@ export type Database = {
           verification_date: string
         }[]
       }
+      get_conversion_funnel: {
+        Args: { p_days?: number; p_flow_name: string }
+        Returns: {
+          event_type: string
+          flow_step: number
+          total_events: number
+          unique_sessions: number
+        }[]
+      }
       get_cron_job_runs: {
         Args: { p_limit?: number }
         Returns: {
@@ -68671,6 +68722,15 @@ export type Database = {
           nodeport: number
           schedule: string
           username: string
+        }[]
+      }
+      get_cta_performance: {
+        Args: { p_days?: number }
+        Returns: {
+          click_count: number
+          element_id: string
+          page_path: string
+          unique_clickers: number
         }[]
       }
       get_customer_own_survey_bookings: {
@@ -68728,6 +68788,16 @@ export type Database = {
           district_name: string
           subdistrict_code: string
           subdistrict_name: string
+        }[]
+      }
+      get_dropoff_rates: {
+        Args: { p_days?: number }
+        Returns: {
+          abandoned: number
+          completed: number
+          completion_rate: number
+          flow_name: string
+          started: number
         }[]
       }
       get_email_log_entries: {
