@@ -1,13 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Clock, Flame } from 'lucide-react';
+import { useTranslation } from '@/i18n/useTranslation';
 
-/**
- * Urgency timer strip — shows a countdown to the next "deal refresh" cycle.
- * Creates FOMO without being deceptive (resets daily at 6 AM local).
- */
 export default function UrgencyTimerStrip() {
   const [timeLeft, setTimeLeft] = useState('');
+  const { t } = useTranslation();
 
   const targetTime = useMemo(() => {
     const now = new Date();
@@ -21,7 +19,7 @@ export default function UrgencyTimerStrip() {
     const tick = () => {
       const diff = targetTime - Date.now();
       if (diff <= 0) {
-        setTimeLeft('Refreshing...');
+        setTimeLeft(t('homeComponents.refreshing'));
         return;
       }
       const h = Math.floor(diff / 3600000);
@@ -32,20 +30,20 @@ export default function UrgencyTimerStrip() {
     tick();
     const interval = setInterval(tick, 1000);
     return () => clearInterval(interval);
-  }, [targetTime]);
+  }, [targetTime, t]);
 
   return (
     <div className="flex items-center justify-center gap-2 py-2 px-3 bg-gradient-to-r from-destructive/5 via-destructive/10 to-destructive/5 border-y border-destructive/10">
       <Flame className="h-3.5 w-3.5 text-destructive animate-pulse" />
       <span className="text-[11px] sm:text-xs font-medium text-foreground">
-        Today's AI deals refresh in
+        {t('homeComponents.todayDealsRefresh')}
       </span>
       <Badge variant="outline" className="text-[10px] h-5 px-2 gap-1 text-destructive border-destructive/30 bg-destructive/5 tabular-nums font-bold">
         <Clock className="h-3 w-3" />
         {timeLeft}
       </Badge>
       <span className="text-[10px] text-muted-foreground hidden sm:inline">
-        • New undervalued properties daily
+        • {t('homeComponents.newUndervaluedDaily')}
       </span>
     </div>
   );

@@ -4,10 +4,11 @@ import { motion } from 'framer-motion';
 import { Heart, PieChart, Sparkles, Search, TrendingUp, Bell } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface QuickAction {
   icon: typeof Heart;
-  label: string;
+  labelKey: string;
   path: string;
   color: string;
   bg: string;
@@ -15,24 +16,25 @@ interface QuickAction {
 }
 
 const actions: QuickAction[] = [
-  { icon: Heart, label: 'Watchlist', path: '/saved', color: 'text-destructive', bg: 'bg-destructive/10 border-destructive/20', requireAuth: true },
-  { icon: PieChart, label: 'Portfolio', path: '/portfolio-command-center', color: 'text-primary', bg: 'bg-primary/10 border-primary/20', requireAuth: true },
-  { icon: Sparkles, label: 'AI Assistant', path: '/ai-search', color: 'text-chart-2', bg: 'bg-chart-2/10 border-chart-2/20' },
-  { icon: TrendingUp, label: 'Deal Finder', path: '/deal-finder', color: 'text-chart-1', bg: 'bg-chart-1/10 border-chart-1/20' },
-  { icon: Search, label: 'Advanced Search', path: '/advanced-search', color: 'text-chart-4', bg: 'bg-chart-4/10 border-chart-4/20' },
-  { icon: Bell, label: 'Alerts', path: '/notifications', color: 'text-chart-3', bg: 'bg-chart-3/10 border-chart-3/20', requireAuth: true },
+  { icon: Heart, labelKey: 'homeComponents.watchlist', path: '/saved', color: 'text-destructive', bg: 'bg-destructive/10 border-destructive/20', requireAuth: true },
+  { icon: PieChart, labelKey: 'homeComponents.portfolio', path: '/portfolio-command-center', color: 'text-primary', bg: 'bg-primary/10 border-primary/20', requireAuth: true },
+  { icon: Sparkles, labelKey: 'homeComponents.aiAssistant', path: '/ai-search', color: 'text-chart-2', bg: 'bg-chart-2/10 border-chart-2/20' },
+  { icon: TrendingUp, labelKey: 'homeComponents.dealFinder', path: '/deal-finder', color: 'text-chart-1', bg: 'bg-chart-1/10 border-chart-1/20' },
+  { icon: Search, labelKey: 'homeComponents.advancedSearch', path: '/advanced-search', color: 'text-chart-4', bg: 'bg-chart-4/10 border-chart-4/20' },
+  { icon: Bell, labelKey: 'homeComponents.alerts', path: '/notifications', color: 'text-chart-3', bg: 'bg-chart-3/10 border-chart-3/20', requireAuth: true },
 ];
 
 const QuickActionsRow = memo(() => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   return (
     <div className="w-full overflow-x-auto scrollbar-hide py-1">
       <div className="flex items-center gap-2 px-1 min-w-max">
         {actions.map((action, i) => (
           <motion.button
-            key={action.label}
+            key={action.labelKey}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05, duration: 0.3 }}
@@ -51,7 +53,7 @@ const QuickActionsRow = memo(() => {
             )}
           >
             <action.icon className={cn('h-5 w-5', action.color)} />
-            <span className="text-[10px] font-semibold text-foreground whitespace-nowrap">{action.label}</span>
+            <span className="text-[10px] font-semibold text-foreground whitespace-nowrap">{t(action.labelKey)}</span>
           </motion.button>
         ))}
       </div>
