@@ -97,6 +97,7 @@ const ConversionAnalyticsPage = lazy(() => import('@/pages/ConversionAnalyticsPa
 const AIOptimizationDashboard = lazy(() => import('@/pages/AIOptimizationDashboard'));
 const TrustRiskDashboard = lazy(() => import('@/pages/TrustRiskDashboard'));
 const AdminKYCPanel = lazy(() => import('@/pages/AdminKYCPanel'));
+const InvestmentIntelligenceDashboard = lazy(() => import('@/pages/InvestmentIntelligenceDashboard'));
 const ProvinceProperties = lazy(() => import('@/pages/ProvinceProperties'));
 const LocationAnalyticsDashboard = lazy(() => import('@/pages/LocationAnalyticsDashboard'));
 const AIPerformanceDashboard = lazy(() => import('@/components/admin/AIPerformanceDashboard'));
@@ -412,6 +413,7 @@ const AppContent = () => {
                 <Route path="/referral-engine" element={<InvestorReferralEngine />} />
                 <Route path="/market-heatmap" element={<MarketIntelligenceHeatmap />} />
                 <Route path="/smart-deal-matching" element={<SmartDealMatching />} />
+                <Route path="/investment-intelligence" element={<InvestmentIntelligenceDashboard />} />
                 <Route path="/investor-reports" element={<InvestorIntelligenceReports />} />
                 <Route path="/liquidity-forecast" element={<LiquidityForecastEngine />} />
                 <Route path="/investor-deck" element={<InvestorIntelligenceDeck />} />

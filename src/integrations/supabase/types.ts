@@ -31845,6 +31845,75 @@ export type Database = {
         }
         Relationships: []
       }
+      investment_forecasts: {
+        Row: {
+          city: string | null
+          computed_at: string
+          confidence_score: number | null
+          created_at: string
+          district: string | null
+          forecast_horizon_months: number
+          growth_drivers: string[] | null
+          id: string
+          model_version: string | null
+          predicted_appreciation_pct: number | null
+          predicted_price: number | null
+          predicted_yield_pct: number | null
+          property_id: string | null
+          property_type: string | null
+          risk_factors: string[] | null
+        }
+        Insert: {
+          city?: string | null
+          computed_at?: string
+          confidence_score?: number | null
+          created_at?: string
+          district?: string | null
+          forecast_horizon_months?: number
+          growth_drivers?: string[] | null
+          id?: string
+          model_version?: string | null
+          predicted_appreciation_pct?: number | null
+          predicted_price?: number | null
+          predicted_yield_pct?: number | null
+          property_id?: string | null
+          property_type?: string | null
+          risk_factors?: string[] | null
+        }
+        Update: {
+          city?: string | null
+          computed_at?: string
+          confidence_score?: number | null
+          created_at?: string
+          district?: string | null
+          forecast_horizon_months?: number
+          growth_drivers?: string[] | null
+          id?: string
+          model_version?: string | null
+          predicted_appreciation_pct?: number | null
+          predicted_price?: number | null
+          predicted_yield_pct?: number | null
+          property_id?: string | null
+          property_type?: string | null
+          risk_factors?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "investment_forecasts_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "investment_forecasts_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       investment_funds: {
         Row: {
           base_currency: string | null
@@ -37823,6 +37892,72 @@ export type Database = {
           updated_at?: string
           viewing_count_30d?: number | null
           viewing_velocity_score?: number
+        }
+        Relationships: []
+      }
+      market_price_trends: {
+        Row: {
+          avg_price_per_sqm: number | null
+          city: string
+          created_at: string
+          data_source: string | null
+          demand_index: number | null
+          district: string | null
+          gdp_growth_pct: number | null
+          id: string
+          inflation_rate: number | null
+          interest_rate: number | null
+          median_price: number | null
+          occupancy_rate_pct: number | null
+          period_end: string
+          period_start: string
+          price_change_pct: number | null
+          property_type: string
+          rental_yield_pct: number | null
+          supply_index: number | null
+          transaction_volume: number | null
+        }
+        Insert: {
+          avg_price_per_sqm?: number | null
+          city: string
+          created_at?: string
+          data_source?: string | null
+          demand_index?: number | null
+          district?: string | null
+          gdp_growth_pct?: number | null
+          id?: string
+          inflation_rate?: number | null
+          interest_rate?: number | null
+          median_price?: number | null
+          occupancy_rate_pct?: number | null
+          period_end: string
+          period_start: string
+          price_change_pct?: number | null
+          property_type?: string
+          rental_yield_pct?: number | null
+          supply_index?: number | null
+          transaction_volume?: number | null
+        }
+        Update: {
+          avg_price_per_sqm?: number | null
+          city?: string
+          created_at?: string
+          data_source?: string | null
+          demand_index?: number | null
+          district?: string | null
+          gdp_growth_pct?: number | null
+          id?: string
+          inflation_rate?: number | null
+          interest_rate?: number | null
+          median_price?: number | null
+          occupancy_rate_pct?: number | null
+          period_end?: string
+          period_start?: string
+          price_change_pct?: number | null
+          property_type?: string
+          rental_yield_pct?: number | null
+          supply_index?: number | null
+          transaction_volume?: number | null
         }
         Relationships: []
       }
@@ -46481,6 +46616,75 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      portfolio_allocations: {
+        Row: {
+          city: string | null
+          created_at: string
+          current_value: number | null
+          expected_roi_pct: number | null
+          id: string
+          invested_amount: number | null
+          liquidity_score: number | null
+          optimization_strategy: string | null
+          property_id: string | null
+          property_type: string | null
+          risk_score: number | null
+          status: string | null
+          target_allocation_pct: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string
+          current_value?: number | null
+          expected_roi_pct?: number | null
+          id?: string
+          invested_amount?: number | null
+          liquidity_score?: number | null
+          optimization_strategy?: string | null
+          property_id?: string | null
+          property_type?: string | null
+          risk_score?: number | null
+          status?: string | null
+          target_allocation_pct?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          city?: string | null
+          created_at?: string
+          current_value?: number | null
+          expected_roi_pct?: number | null
+          id?: string
+          invested_amount?: number | null
+          liquidity_score?: number | null
+          optimization_strategy?: string | null
+          property_id?: string | null
+          property_type?: string | null
+          risk_score?: number | null
+          status?: string | null
+          target_allocation_pct?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_allocations_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portfolio_allocations_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       portfolio_assets: {
         Row: {
