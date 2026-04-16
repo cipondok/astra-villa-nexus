@@ -1,16 +1,18 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { TrendingUp, Home, Key, Store } from 'lucide-react';
-
-const ctas = [
-  { label: 'Invest Now', icon: TrendingUp, path: '/portfolio-dashboard', variant: 'default' as const },
-  { label: 'Buy Property', icon: Home, path: '/buy', variant: 'outline' as const },
-  { label: 'Rent Instantly', icon: Key, path: '/rent', variant: 'outline' as const },
-  { label: 'List as Vendor', icon: Store, path: '/vendor/register', variant: 'outline' as const },
-];
+import { useTranslation } from '@/i18n/useTranslation';
 
 const HeroSmartCTAs = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const ctas = [
+    { label: t('homeComponents.investNow'), icon: TrendingUp, path: '/portfolio-dashboard', variant: 'default' as const },
+    { label: t('homeComponents.buyProperty'), icon: Home, path: '/buy', variant: 'outline' as const },
+    { label: t('homeComponents.rentInstantly'), icon: Key, path: '/rent', variant: 'outline' as const },
+    { label: t('homeComponents.listAsVendor'), icon: Store, path: '/vendor/register', variant: 'outline' as const },
+  ];
 
   return (
     <div className="flex flex-wrap gap-2 sm:gap-3">

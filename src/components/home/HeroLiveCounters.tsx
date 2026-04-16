@@ -1,6 +1,7 @@
 import { useHomepageLiveMetrics } from '@/hooks/useHomepageLiveMetrics';
 import { motion } from 'framer-motion';
 import { TrendingUp, Users, Percent, Zap } from 'lucide-react';
+import { useTranslation } from '@/i18n/useTranslation';
 
 const CounterItem = ({ icon: Icon, value, label, suffix = '' }: { icon: any; value: number; label: string; suffix?: string }) => (
   <motion.div
@@ -22,18 +23,19 @@ const CounterItem = ({ icon: Icon, value, label, suffix = '' }: { icon: any; val
 
 const HeroLiveCounters = () => {
   const { data: metrics } = useHomepageLiveMetrics();
+  const { t } = useTranslation();
 
   if (!metrics) return null;
 
   return (
     <div className="flex flex-wrap items-center gap-4 sm:gap-6 lg:gap-8 py-2">
-      <CounterItem icon={TrendingUp} value={metrics.totalListings} label="Active Listings" />
+      <CounterItem icon={TrendingUp} value={metrics.totalListings} label={t('homeComponents.activeListings')} />
       <div className="hidden sm:block w-px h-8 bg-border/50" />
-      <CounterItem icon={Users} value={metrics.activeInvestors} label="Investors" />
+      <CounterItem icon={Users} value={metrics.activeInvestors} label={t('homeComponents.investors')} />
       <div className="hidden sm:block w-px h-8 bg-border/50" />
-      <CounterItem icon={Percent} value={metrics.avgYield} label="Avg Yield" suffix="%" />
+      <CounterItem icon={Percent} value={metrics.avgYield} label={t('homeComponents.avgYield')} suffix="%" />
       <div className="hidden sm:block w-px h-8 bg-border/50" />
-      <CounterItem icon={Zap} value={metrics.transactionVelocity} label="Deals / Month" />
+      <CounterItem icon={Zap} value={metrics.transactionVelocity} label={t('homeComponents.dealsPerMonth')} />
     </div>
   );
 };
