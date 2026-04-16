@@ -120,7 +120,7 @@ export function useSmartRecommendationEngine(input: RecommendationInput = {}) {
     queryFn: async () => {
       let query = supabase
         .from('properties')
-        .select('id, title, city, district, price, property_type, image_url, bedrooms, bathrooms, area, status, investment_score')
+        .select('id, title, city, location, price, property_type, thumbnail_url, bedrooms, bathrooms, area, status, investment_score')
         .eq('status', 'active')
         .limit(100);
 
@@ -141,9 +141,9 @@ export function useSmartRecommendationEngine(input: RecommendationInput = {}) {
     queryFn: async () => {
       const { data } = await supabase
         .from('property_analytics')
-        .select('property_id, view_count');
+        .select('property_id, views');
       const map: Record<string, number> = {};
-      data?.forEach(r => { map[r.property_id] = r.view_count || 0; });
+      data?.forEach(r => { map[r.property_id] = r.views || 0; });
       return map;
     },
     staleTime: 10 * 60 * 1000,
@@ -160,9 +160,9 @@ export function useSmartRecommendationEngine(input: RecommendationInput = {}) {
       return {
         propertyId: p.id,
         title: p.title,
-        location: `${p.district || ''}, ${p.city}`.replace(/^, /, ''),
+        location: p.location || p.city || '',
         price: p.price || 0,
-        imageUrl: p.image_url || '',
+        imageUrl: p.thumbnail_url || '',
         propertyType: p.property_type || 'villa',
         score: Math.min(score + learningBoost, 100),
         reasons,

@@ -46,8 +46,9 @@ export function useUnifiedAIOrchestrator(input: OrchestratorInput = {}) {
   const copy = useLuxuryMicrocopy();
 
   const makeDecision = useCallback((): OrchestratorDecision => {
-    const fraudScore = fraud.getLastScore?.()?.score ?? 0;
-    const fraudStatus = fraud.getLastScore?.()?.status ?? 'safe';
+    const fraudProfile = fraud.getLastScore?.();
+    const fraudScore = fraudProfile?.score ?? 0;
+    const fraudStatus = fraudProfile?.level ?? 'safe';
     const segment = input.segment || 'visitor';
     const context = input.pageContext || 'listing';
 
