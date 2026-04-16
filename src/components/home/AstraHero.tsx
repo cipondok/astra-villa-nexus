@@ -7,6 +7,7 @@ import { lazy, Suspense } from "react";
 import { SearchPanelSkeleton } from "@/components/search/SearchSkeleton";
 import { SearchErrorBoundary } from "@/components/search/SearchErrorBoundary";
 import SectionErrorBoundary from "@/components/ui/SectionErrorBoundary";
+import { useTranslation } from "@/i18n/useTranslation";
 
 const AstraSearchPanel = lazy(() => import("@/components/AstraSearchPanel"));
 
@@ -17,35 +18,36 @@ interface AstraHeroProps {
   resultsCount?: number;
 }
 
-const rolePills = [
-  { label: "Property Agent", icon: Users, path: "/agent-dashboard" },
-  { label: "Property Owner", icon: Building2, path: "/dashboard/property-owner" },
-  { label: "Developer", icon: HardHat, path: "/vendor/register" },
-  { label: "Marketplace", icon: ShoppingBag, path: "/search" },
-];
-
-const quickLinks = [
-  { label: "Buy Now", icon: Home, path: "/buy" },
-  { label: "Rent Now", icon: Key, path: "/rent" },
-  { label: "360° Virtual Tour", icon: Eye, path: "/vr-tour" },
-];
-
-const leftChecks = [
-  "Pasang & kelola listing properti",
-  "Promosikan New Launch Projects",
-  "Menjangkau pembeli & investor serius",
-  "AI Smart Price & Market Insights",
-  "Dashboard analytics real-time",
-];
-
-const rightChecks = [
-  "Apartment",
-  "Branded Residence",
-  "Project Baru (New Launch)",
-];
-
 const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: AstraHeroProps) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const rolePills = [
+    { label: t('hero.propertyAgent'), icon: Users, path: "/agent-dashboard" },
+    { label: t('hero.propertyOwner'), icon: Building2, path: "/dashboard/property-owner" },
+    { label: t('hero.developer'), icon: HardHat, path: "/vendor/register" },
+    { label: t('hero.marketplace'), icon: ShoppingBag, path: "/search" },
+  ];
+
+  const quickLinks = [
+    { label: t('hero.buyNow'), icon: Home, path: "/buy" },
+    { label: t('hero.rentNow'), icon: Key, path: "/rent" },
+    { label: t('hero.virtualTour'), icon: Eye, path: "/vr-tour" },
+  ];
+
+  const leftChecks = [
+    t('hero.listManage'),
+    t('hero.promoteNewLaunch'),
+    t('hero.reachBuyers'),
+    t('hero.aiSmartPrice'),
+    t('hero.realtimeDashboard'),
+  ];
+
+  const rightChecks = [
+    t('hero.apartment'),
+    t('hero.brandedResidence'),
+    t('hero.newLaunchProject'),
+  ];
 
   return (
     <section className="relative w-full overflow-hidden" id="hero-section">
@@ -75,7 +77,7 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
               transition={{ duration: 0.5, delay: 0.15 }}
               className="text-base sm:text-xl lg:text-2xl font-bold text-white mt-1 sm:mt-0 sm:pb-1 drop-shadow"
             >
-              Global Property Investment Platform
+              {t('hero.subtitle')}
             </motion.p>
           </div>
 
@@ -86,7 +88,7 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
             transition={{ delay: 0.18, duration: 0.5 }}
             className="text-sm sm:text-base text-white/80 font-medium mb-4 max-w-xl leading-relaxed"
           >
-            Secure, AI-scored property investments in Indonesia — protected by escrow, backed by market intelligence.
+            {t('hero.investorValue')}
           </motion.p>
 
           {/* Role pills — clickable links */}
@@ -119,7 +121,7 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
             >
               <div className="inline-block px-3 py-1 bg-[#006bb3] dark:bg-blue-600 rounded-lg mb-2">
                 <span className="text-xs font-black text-white tracking-wide uppercase">
-                  For Agents & Owners
+                  {t('hero.forAgentsOwners')}
                 </span>
               </div>
               <div className="space-y-1.5">
@@ -144,11 +146,11 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
               <div className="flex-1 min-w-0">
                 <div className="inline-block px-3 py-1 bg-[#ff8c00] dark:bg-amber-600 rounded-lg mb-2">
                   <span className="text-xs font-black text-white tracking-wide uppercase">
-                    First Time in Indonesia
+                    {t('hero.firstTimeIndonesia')}
                   </span>
                 </div>
                 <p className="text-sm font-bold text-gray-900 dark:text-white mb-2">
-                  Nikmati Virtual Tour Property:
+                  {t('hero.enjoyVirtualTour')}
                 </p>
                 <div className="space-y-1.5">
                   {rightChecks.map((item) => (
@@ -162,7 +164,7 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
                   <div className="flex items-center justify-center w-6 h-6 rounded-lg bg-[#006bb3] dark:bg-blue-600 text-white shadow-lg">
                     <Globe className="h-3 w-3" />
                   </div>
-                  <span className="text-[10px] font-bold text-[#006bb3] dark:text-blue-300">Foreign Investment Program</span>
+                  <span className="text-[10px] font-bold text-[#006bb3] dark:text-blue-300">{t('hero.foreignInvestment')}</span>
                 </div>
               </div>
               {/* Right VR image */}
@@ -172,7 +174,7 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
                   <div className="flex items-center justify-center w-6 h-6 rounded-lg bg-[#006bb3] dark:bg-blue-600 text-white shadow-lg">
                     <Eye className="h-3 w-3" />
                   </div>
-                  <span className="text-[10px] font-bold text-[#006bb3] dark:text-blue-300">360° Virtual Tour</span>
+                  <span className="text-[10px] font-bold text-[#006bb3] dark:text-blue-300">{t('hero.virtualTour')}</span>
                 </div>
               </div>
             </motion.div>
@@ -186,7 +188,7 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
             className="mb-4 sm:mb-5"
           >
             <p className="text-sm sm:text-base lg:text-lg font-black text-white drop-shadow-md mb-3">
-              One Platform. <span className="text-[#ffe14d]">Full Access.</span> Smart Property Experience.
+              {t('hero.onePlatform')} <span className="text-[#ffe14d]">{t('hero.fullAccess')}</span> {t('hero.smartExperience')}
             </p>
 
             {/* Quick action links */}
@@ -217,7 +219,7 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
               className="bg-gradient-to-r from-[#ffe14d] to-[#ffb800] hover:from-[#ffb800] hover:to-[#ffe14d] text-gray-900 font-bold px-6 py-5 text-sm rounded-xl shadow-lg shadow-yellow-500/30 transition-all duration-300"
             >
               <Search className="mr-2 h-4 w-4" />
-              Explore Investment Opportunities
+              {t('hero.exploreInvestment')}
             </Button>
             <Button
               size="lg"
@@ -226,7 +228,7 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
               className="border-white/40 text-white hover:bg-white/15 px-6 py-5 text-sm rounded-xl backdrop-blur-sm"
             >
               <Rocket className="mr-2 h-4 w-4" />
-              Start Secure Investment
+              {t('hero.startSecure')}
             </Button>
             <Button
               size="lg"
@@ -235,7 +237,7 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
               className="border-white/40 text-white hover:bg-white/15 px-6 py-5 text-sm rounded-xl backdrop-blur-sm"
             >
               <Store className="mr-2 h-4 w-4" />
-              List Property
+              {t('hero.listProperty')}
             </Button>
           </motion.div>
 
@@ -267,7 +269,7 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
             transition={{ delay: 0.8, duration: 0.5 }}
             className="text-center text-[11px] text-white/60 font-medium pb-3"
           >
-            Escrow-Protected Transactions • Verified Listings • AI-Powered Investment Scoring
+            {t('hero.trustFooter')}
           </motion.p>
         </div>
       </div>
