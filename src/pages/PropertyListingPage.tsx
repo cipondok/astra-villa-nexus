@@ -324,10 +324,10 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                     <Select value={filters.city} onValueChange={(v) => setFilters(p => ({ ...p, city: v }))}>
                       <SelectTrigger className="h-9 text-xs bg-background/80 border-border/50 rounded-lg">
                         <MapPin className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
-                        <SelectValue placeholder="Kota" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Semua Kota</SelectItem>
+                         <SelectValue placeholder={t('listingPage.city')} />
+                       </SelectTrigger>
+                       <SelectContent>
+                         <SelectItem value="all">{t('listingPage.allCities')}</SelectItem>
                         <SelectItem value="Jakarta">Jakarta</SelectItem>
                         <SelectItem value="Bali">Bali</SelectItem>
                         <SelectItem value="Surabaya">Surabaya</SelectItem>
@@ -336,10 +336,10 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                     </Select>
                     <Select value={filters.priceRange} onValueChange={(v) => setFilters(p => ({ ...p, priceRange: v }))}>
                       <SelectTrigger className="h-9 text-xs bg-background/80 border-border/50 rounded-lg">
-                        <SelectValue placeholder="Range Harga" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Semua Harga</SelectItem>
+                         <SelectValue placeholder={t('listingPage.priceRange')} />
+                       </SelectTrigger>
+                       <SelectContent>
+                         <SelectItem value="all">{t('listingPage.allPrices')}</SelectItem>
                         <SelectItem value="0-500m">&lt; 500 Jt</SelectItem>
                         <SelectItem value="500m-1b">500 Jt - 1 M</SelectItem>
                         <SelectItem value="1b-5b">1 - 5 M</SelectItem>
