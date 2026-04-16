@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { TrendingUp, Shield, Award, Sparkles, MapPin, ChevronRight, Globe } from 'lucide-react';
+import { useTranslation } from '@/i18n/useTranslation';
 
 const cities = [
   { name: 'Jakarta', roi: 12.4, trend: 'up', signal: 'Strong' },
@@ -10,67 +11,49 @@ const cities = [
   { name: 'Bandung', roi: 11.1, trend: 'up', signal: 'Strong' },
 ];
 
-const trustBadges = [
-  { icon: Shield, label: 'Institutional Grade Verification' },
-  { icon: Award, label: 'AI-Scored Investment Quality' },
-  { icon: Globe, label: 'Global Investor Network' },
-];
-
 const InvestorIntelligencePanel = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const trustBadges = [
+    { icon: Shield, label: t('homeComponents.institutionalGradeVerification') },
+    { icon: Award, label: t('homeComponents.aiScoredInvestmentQuality') },
+    { icon: Globe, label: t('homeComponents.globalInvestorNetwork') },
+  ];
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-4">
       <div className="rounded-2xl p-5 sm:p-7 border border-border/60 bg-card backdrop-blur-xl relative overflow-hidden shadow-sm">
-        {/* Subtle glow */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-intel-blue/[0.03] rounded-full blur-[80px]" />
-
         <div className="relative flex flex-col lg:flex-row gap-6">
-          {/* ROI Heatmap */}
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-5">
               <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-intel-blue/10 border border-intel-blue/20">
                 <TrendingUp className="h-4 w-4 text-intel-blue" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-foreground">ROI Intelligence by City</h3>
-                <p className="text-[10px] text-muted-foreground">AI Forecast — Next 12 months projection</p>
+                <h3 className="text-sm font-bold text-foreground">{t('homeComponents.roiIntelligenceByCity')}</h3>
+                <p className="text-[10px] text-muted-foreground">{t('homeComponents.aiForecast12Months')}</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               {cities.map((city, i) => (
-                <motion.div
-                  key={city.name}
-                  initial={{ opacity: 0, y: 8 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
-                  whileHover={{ scale: 1.02 }}
-                  className="p-3.5 rounded-xl border border-border/40 bg-muted/30 cursor-pointer hover:border-intel-blue/30 transition-all"
-                  onClick={() => navigate('/investment-map-explorer')}
-                >
+                <motion.div key={city.name} initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }} whileHover={{ scale: 1.02 }} className="p-3.5 rounded-xl border border-border/40 bg-muted/30 cursor-pointer hover:border-intel-blue/30 transition-all" onClick={() => navigate('/investment-map-explorer')}>
                   <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-1.5">
-                      <MapPin className="h-3 w-3 text-muted-foreground" />
-                      <span className="text-xs font-semibold text-foreground">{city.name}</span>
-                    </div>
-                    <span className="text-xs font-bold text-intel-success tabular-nums">
-                      {city.roi}%
-                    </span>
+                    <div className="flex items-center gap-1.5"><MapPin className="h-3 w-3 text-muted-foreground" /><span className="text-xs font-semibold text-foreground">{city.name}</span></div>
+                    <span className="text-xs font-bold text-intel-success tabular-nums">{city.roi}%</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-muted-foreground">Signal</span>
+                    <span className="text-[10px] text-muted-foreground">{t('homeComponents.signal')}</span>
                     <span className="text-[10px] font-medium text-intel-blue">{city.signal}</span>
                   </div>
                 </motion.div>
               ))}
             </div>
           </div>
-
-          {/* Trust Badges + CTA */}
           <div className="lg:w-72 flex flex-col justify-between gap-5">
             <div className="space-y-3.5">
-              <h4 className="text-[10px] text-muted-foreground uppercase tracking-widest font-semibold mb-3">Trust Signals</h4>
+              <h4 className="text-[10px] text-muted-foreground uppercase tracking-widest font-semibold mb-3">{t('homeComponents.trustSignals')}</h4>
               {trustBadges.map((badge) => (
                 <div key={badge.label} className="flex items-center gap-3 p-2.5 rounded-lg border border-border/30 bg-muted/20">
                   <badge.icon className="h-4 w-4 text-gold-primary flex-shrink-0" />
@@ -78,12 +61,9 @@ const InvestorIntelligencePanel = () => {
                 </div>
               ))}
             </div>
-            <Button
-              onClick={() => navigate('/portfolio-dashboard')}
-              className="w-full bg-gradient-to-r from-gold-primary to-gold-secondary text-primary-foreground font-bold h-11 gap-2 hover:opacity-90"
-            >
+            <Button onClick={() => navigate('/portfolio-dashboard')} className="w-full bg-gradient-to-r from-gold-primary to-gold-secondary text-primary-foreground font-bold h-11 gap-2 hover:opacity-90">
               <Sparkles className="h-4 w-4" />
-              Start Portfolio
+              {t('homeComponents.startPortfolio')}
               <ChevronRight className="h-3.5 w-3.5" />
             </Button>
           </div>
