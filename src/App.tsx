@@ -413,7 +413,7 @@ const AppContent = () => {
                 <Route path="/referral-engine" element={<InvestorReferralEngine />} />
                 <Route path="/market-heatmap" element={<MarketIntelligenceHeatmap />} />
                 <Route path="/smart-deal-matching" element={<SmartDealMatching />} />
-                <Route path="/investment-intelligence" element={<ProtectedRoute><InvestmentIntelligenceDashboard /></ProtectedRoute>} />
+                <Route path="/investment-intelligence" element={<InvestmentIntelligenceDashboard />} />
                 <Route path="/investor-reports" element={<InvestorIntelligenceReports />} />
                 <Route path="/liquidity-forecast" element={<LiquidityForecastEngine />} />
                 <Route path="/investor-deck" element={<InvestorIntelligenceDeck />} />
