@@ -123,6 +123,7 @@ const demoPreLaunchingProjects = [
 ];
 
 const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageProps) => {
+  const { t } = useTranslation();
   const [hasSearched, setHasSearched] = useState(false);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
