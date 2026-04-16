@@ -54,15 +54,15 @@ export function useUnifiedAIOrchestrator(input: OrchestratorInput = {}) {
 
     // Base restrictions from fraud
     const restrictions = {
-      canTransact: fraudStatus !== 'blocked' && fraudStatus !== 'high_risk',
+      canTransact: fraudStatus !== 'blocked' && fraudStatus !== 'suspicious',
       requiresKYC: fraudScore > 40 || geoProfile.compliance.requiresKYC,
-      maxAmount: fraudStatus === 'high_risk' ? 0 : geoProfile.compliance.maxTransactionWithoutKYC,
+      maxAmount: fraudStatus === 'suspicious' ? 0 : geoProfile.compliance.maxTransactionWithoutKYC,
       reason: fraudStatus === 'blocked' ? 'Account flagged for security review' : undefined,
     };
 
     // Determine UI variant
     let uiVariant: OrchestratorDecision['uiVariant'] = 'luxury_default';
-    if (fraudStatus === 'blocked' || fraudStatus === 'high_risk') {
+    if (fraudStatus === 'blocked' || fraudStatus === 'suspicious') {
       uiVariant = 'restricted';
     } else if (segment === 'high_intent' || segment === 'investor_ready') {
       uiVariant = 'urgency';
