@@ -314,6 +314,63 @@ export type Database = {
         }
         Relationships: []
       }
+      ab_test_variants: {
+        Row: {
+          click_rate: number | null
+          clicks: number | null
+          conversion_rate: number | null
+          conversions: number | null
+          created_at: string | null
+          id: string
+          impressions: number | null
+          is_active: boolean | null
+          is_winner: boolean | null
+          promoted_at: string | null
+          target_segment: string[] | null
+          test_name: string
+          updated_at: string | null
+          variant_key: string
+          variant_style: Json | null
+          variant_text: string
+        }
+        Insert: {
+          click_rate?: number | null
+          clicks?: number | null
+          conversion_rate?: number | null
+          conversions?: number | null
+          created_at?: string | null
+          id?: string
+          impressions?: number | null
+          is_active?: boolean | null
+          is_winner?: boolean | null
+          promoted_at?: string | null
+          target_segment?: string[] | null
+          test_name: string
+          updated_at?: string | null
+          variant_key: string
+          variant_style?: Json | null
+          variant_text: string
+        }
+        Update: {
+          click_rate?: number | null
+          clicks?: number | null
+          conversion_rate?: number | null
+          conversions?: number | null
+          created_at?: string | null
+          id?: string
+          impressions?: number | null
+          is_active?: boolean | null
+          is_winner?: boolean | null
+          promoted_at?: string | null
+          target_segment?: string[] | null
+          test_name?: string
+          updated_at?: string | null
+          variant_key?: string
+          variant_style?: Json | null
+          variant_text?: string
+        }
+        Relationships: []
+      }
       account_lockouts: {
         Row: {
           created_at: string | null
@@ -14469,6 +14526,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      conversion_scores: {
+        Row: {
+          created_at: string | null
+          factors: Json | null
+          id: string
+          last_computed_at: string | null
+          recommended_actions: string[] | null
+          risk_level: string | null
+          score: number | null
+          session_id: string | null
+          trend: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          factors?: Json | null
+          id?: string
+          last_computed_at?: string | null
+          recommended_actions?: string[] | null
+          risk_level?: string | null
+          score?: number | null
+          session_id?: string | null
+          trend?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          factors?: Json | null
+          id?: string
+          last_computed_at?: string | null
+          recommended_actions?: string[] | null
+          risk_level?: string | null
+          score?: number | null
+          session_id?: string | null
+          trend?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
       }
       copilot_actions: {
         Row: {
@@ -42509,6 +42608,51 @@ export type Database = {
         }
         Relationships: []
       }
+      optimization_logs: {
+        Row: {
+          changes_made: Json | null
+          created_at: string | null
+          cycle_type: string
+          id: string
+          metrics_after: Json | null
+          metrics_before: Json | null
+          notes: string | null
+          performance_delta: number | null
+          segments_updated: number | null
+          tests_evaluated: number | null
+          variants_disabled: number | null
+          variants_promoted: number | null
+        }
+        Insert: {
+          changes_made?: Json | null
+          created_at?: string | null
+          cycle_type: string
+          id?: string
+          metrics_after?: Json | null
+          metrics_before?: Json | null
+          notes?: string | null
+          performance_delta?: number | null
+          segments_updated?: number | null
+          tests_evaluated?: number | null
+          variants_disabled?: number | null
+          variants_promoted?: number | null
+        }
+        Update: {
+          changes_made?: Json | null
+          created_at?: string | null
+          cycle_type?: string
+          id?: string
+          metrics_after?: Json | null
+          metrics_before?: Json | null
+          notes?: string | null
+          performance_delta?: number | null
+          segments_updated?: number | null
+          tests_evaluated?: number | null
+          variants_disabled?: number | null
+          variants_promoted?: number | null
+        }
+        Relationships: []
+      }
       order_activity_logs: {
         Row: {
           action: string
@@ -62154,6 +62298,63 @@ export type Database = {
         }
         Relationships: []
       }
+      user_segments: {
+        Row: {
+          behavior_type: string | null
+          budget_tier: string | null
+          confidence: number | null
+          created_at: string | null
+          ctas_clicked: number | null
+          id: string
+          intent_score: number | null
+          last_activity_at: string | null
+          location_type: string | null
+          page_views: number | null
+          properties_viewed: number | null
+          segment_tags: string[]
+          session_id: string | null
+          total_time_seconds: number | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          behavior_type?: string | null
+          budget_tier?: string | null
+          confidence?: number | null
+          created_at?: string | null
+          ctas_clicked?: number | null
+          id?: string
+          intent_score?: number | null
+          last_activity_at?: string | null
+          location_type?: string | null
+          page_views?: number | null
+          properties_viewed?: number | null
+          segment_tags?: string[]
+          session_id?: string | null
+          total_time_seconds?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          behavior_type?: string | null
+          budget_tier?: string | null
+          confidence?: number | null
+          created_at?: string | null
+          ctas_clicked?: number | null
+          id?: string
+          intent_score?: number | null
+          last_activity_at?: string | null
+          location_type?: string | null
+          page_views?: number | null
+          properties_viewed?: number | null
+          segment_tags?: string[]
+          session_id?: string | null
+          total_time_seconds?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_session_tracking: {
         Row: {
           device_info: Json | null
@@ -69438,6 +69639,13 @@ export type Database = {
           search_query: string
         }[]
       }
+      get_segment_distribution: {
+        Args: never
+        Returns: {
+          segment_tag: string
+          user_count: number
+        }[]
+      }
       get_survey_booking_stats_secure: {
         Args: { p_property_id?: string }
         Returns: Json
@@ -69462,6 +69670,21 @@ export type Database = {
           status: string
           survey_type: string
           updated_at: string
+        }[]
+      }
+      get_top_variants: {
+        Args: { limit_count?: number }
+        Returns: {
+          click_rate: number
+          clicks: number
+          conversion_rate: number
+          conversions: number
+          id: string
+          impressions: number
+          is_winner: boolean
+          test_name: string
+          variant_key: string
+          variant_text: string
         }[]
       }
       get_total_user_count: { Args: never; Returns: number }
