@@ -74,16 +74,21 @@ export function useWalletTransactions(limit = 20) {
 
 export function useCreateTopup() {
   const queryClient = useQueryClient();
+  const { checkFraud } = useFraudGuard();
 
   return useMutation({
     mutationFn: async (params: { amount: number; currency?: string; payment_type?: string }) => {
+      await checkFraud({
+        action: 'wallet_topup',
+        amount: params.amount,
+        currency: params.currency || 'IDR',
+      });
       return await invokeWallet('create_topup', params);
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['wallet'] });
       queryClient.invalidateQueries({ queryKey: ['wallet-transactions'] });
       
-      // Open Midtrans Snap if token available
       if (data.redirect_url) {
         window.open(data.redirect_url, '_blank');
       }
@@ -95,9 +100,16 @@ export function useCreateTopup() {
 
 export function useLockEscrow() {
   const queryClient = useQueryClient();
+  const { checkFraud } = useFraudGuard();
 
   return useMutation({
     mutationFn: async (params: { amount: number; deal_id?: string; property_id?: string }) => {
+      await checkFraud({
+        action: 'escrow_initiation',
+        amount: params.amount,
+        entity_id: params.deal_id || params.property_id,
+        entity_type: params.deal_id ? 'deal' : 'property',
+      });
       return await invokeWallet('lock_escrow', params);
     },
     onSuccess: () => {
@@ -111,9 +123,14 @@ export function useLockEscrow() {
 
 export function useRequestPayout() {
   const queryClient = useQueryClient();
+  const { checkFraud } = useFraudGuard();
 
   return useMutation({
     mutationFn: async (params: { amount: number; payout_method: string; payout_details?: Record<string, any> }) => {
+      await checkFraud({
+        action: 'payout',
+        amount: params.amount,
+      });
       return await invokeWallet('request_payout', params);
     },
     onSuccess: () => {
