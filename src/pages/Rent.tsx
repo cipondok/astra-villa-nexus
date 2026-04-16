@@ -1,12 +1,13 @@
-
 import PropertyListingPage from "./PropertyListingPage";
+import { useTranslation } from "@/i18n/useTranslation";
 
 const Rent = () => {
+  const { t } = useTranslation();
   return (
     <PropertyListingPage
       pageType="rent"
-      title="Rent Properties"
-      subtitle="Find rental properties - Residential, Commercial & Short-term rentals"
+      title={t('listingPage.rentTitle')}
+      subtitle={t('listingPage.rentSubtitle')}
     />
   );
 };

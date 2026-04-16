@@ -314,7 +314,7 @@ const Auth = () => {
             Astra Villa
           </CardTitle>
           <CardDescription>
-            Login or create an account to continue
+            {t('authModal.orDivider', 'Login or create an account to continue')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -326,8 +326,8 @@ const Auth = () => {
           
           <Tabs defaultValue="login" className="w-full">
             <TabsList className="grid w-full grid-cols-2 bg-primary-foreground/5 rounded-lg border border-gold-primary/10">
-              <TabsTrigger value="login" className="rounded-md data-[state=active]:bg-gold-primary data-[state=active]:text-background">Login</TabsTrigger>
-              <TabsTrigger value="register" className="rounded-md data-[state=active]:bg-gold-primary data-[state=active]:text-background">Register</TabsTrigger>
+               <TabsTrigger value="login" className="rounded-md data-[state=active]:bg-gold-primary data-[state=active]:text-background">{t('authModal.login')}</TabsTrigger>
+               <TabsTrigger value="register" className="rounded-md data-[state=active]:bg-gold-primary data-[state=active]:text-background">{t('authModal.register')}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="login" className="space-y-4 mt-4">
@@ -345,7 +345,7 @@ const Auth = () => {
                     <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                     <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                   </svg>
-                  Continue with Google
+                  {t('authModal.googleLogin')}
                 </Button>
                 <Button
                   type="button"
@@ -356,7 +356,7 @@ const Auth = () => {
                   <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                   </svg>
-                  Continue with Facebook
+                  {t('auth.orContinueWith', 'Continue with Facebook')}
                 </Button>
               </div>
 
@@ -366,14 +366,14 @@ const Auth = () => {
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
                   <span className="bg-background px-2 text-muted-foreground">
-                    Or continue with email
+                    {t('authModal.orDivider')}
                   </span>
                 </div>
               </div>
 
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="login-email">Email</Label>
+                  <Label htmlFor="login-email">{t('authModal.email')}</Label>
                   <Input
                     id="login-email"
                     type="email"
@@ -385,7 +385,7 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="login-password">Password</Label>
+                  <Label htmlFor="login-password">{t('authModal.password')}</Label>
                   <div className="relative">
                     <Input
                       id="login-password"
@@ -415,29 +415,29 @@ const Auth = () => {
                       onCheckedChange={(checked) => setRememberMe(checked as boolean)}
                     />
                     <Label htmlFor="remember-me" className="text-sm font-normal cursor-pointer">
-                      Remember me
+                       {t('authModal.rememberMe')}
                     </Label>
                   </div>
                   
                   <Dialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
                     <DialogTrigger asChild>
                       <Button variant="link" className="px-0 h-auto text-sm text-gold-primary hover:text-gold-primary/80">
-                        Forgot password?
+                        {t('authModal.forgotPassword')}
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-md">
                       <DialogHeader>
                         <DialogTitle className="flex items-center gap-2">
                           <KeyRound className="h-5 w-5" />
-                          Reset Password
-                        </DialogTitle>
-                        <DialogDescription>
-                          Enter your email address and we'll send you a link to reset your password.
-                        </DialogDescription>
+                           {t('authModal.resetPassword')}
+                         </DialogTitle>
+                         <DialogDescription>
+                           {t('authModal.resetDescription')}
+                         </DialogDescription>
                       </DialogHeader>
                       <form onSubmit={handlePasswordReset} className="space-y-4 mt-4">
                         <div className="space-y-2">
-                          <Label htmlFor="reset-email">Email address</Label>
+                          <Label htmlFor="reset-email">{t('authModal.email')}</Label>
                           <Input
                             id="reset-email"
                             type="email"
@@ -449,7 +449,7 @@ const Auth = () => {
                           <EmailValidationIndicator email={resetEmail} />
                         </div>
                         <Button type="submit" className="w-full" disabled={resetLoading}>
-                          {resetLoading ? "Sending..." : "Send Reset Link"}
+                          {resetLoading ? t('common.loading') : t('authModal.sendResetLink')}
                         </Button>
                       </form>
                     </DialogContent>
@@ -461,7 +461,7 @@ const Auth = () => {
                   className="w-full h-11 rounded-lg bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:opacity-90 text-background font-semibold shadow-md shadow-gold-primary/20 hover:shadow-lg hover:shadow-gold-primary/30 transition-all"
                   disabled={loading}
                 >
-                  {loading ? "Signing in..." : "Sign In"}
+                  {loading ? t('authModal.signingIn') : t('authModal.loginBtn')}
                 </Button>
               </form>
             </TabsContent>
@@ -481,7 +481,7 @@ const Auth = () => {
                     <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                     <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                   </svg>
-                  Sign up with Google
+                  {t('authModal.googleLogin', 'Sign up with Google')}
                 </Button>
                 <Button
                   type="button"
@@ -492,7 +492,7 @@ const Auth = () => {
                   <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                   </svg>
-                  Sign up with Facebook
+                  {t('auth.orContinueWith', 'Sign up with Facebook')}
                 </Button>
               </div>
 
@@ -502,14 +502,14 @@ const Auth = () => {
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
                   <span className="bg-background px-2 text-muted-foreground">
-                    Or register with email
+                    Or {t('authModal.register').toLowerCase()} with email
                   </span>
                 </div>
               </div>
 
               <form onSubmit={handleRegister} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="register-name">Full Name</Label>
+                  <Label htmlFor="register-name">{t('authModal.fullName')}</Label>
                   <Input
                     id="register-name"
                     type="text"
@@ -521,7 +521,7 @@ const Auth = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="register-email">Email</Label>
+                  <Label htmlFor="register-email">{t('authModal.email')}</Label>
                   <Input
                     id="register-email"
                     type="email"
@@ -534,7 +534,7 @@ const Auth = () => {
                   <EmailValidationIndicator email={registerEmail} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="register-password">Password</Label>
+                  <Label htmlFor="register-password">{t('authModal.password')}</Label>
                   <div className="relative">
                     <Input
                       id="register-password"
@@ -556,7 +556,7 @@ const Auth = () => {
                   <PasswordStrengthBar password={registerPassword} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="confirm-password">Confirm Password</Label>
+                  <Label htmlFor="confirm-password">{t('authModal.confirmPassword')}</Label>
                   <Input
                     id="confirm-password"
                     type={showRegisterPassword ? "text" : "password"}
@@ -567,7 +567,7 @@ const Auth = () => {
                     required
                   />
                   {confirmPassword && registerPassword !== confirmPassword && (
-                    <p className="text-xs text-destructive mt-1">Passwords do not match</p>
+                    <p className="text-xs text-destructive mt-1">{t('authModal.passwordsDontMatch')}</p>
                   )}
                   {confirmPassword && registerPassword === confirmPassword && confirmPassword.length > 0 && (
                     <p className="text-xs text-chart-1 mt-1">✓ Passwords match</p>
@@ -578,7 +578,7 @@ const Auth = () => {
                   className="w-full h-11 rounded-lg bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:opacity-90 text-background font-semibold shadow-md shadow-gold-primary/20 hover:shadow-lg hover:shadow-gold-primary/30 transition-all"
                   disabled={loading}
                 >
-                  {loading ? "Creating account..." : "Create Account"}
+                  {loading ? t('authModal.creatingAccount') : t('authModal.registerBtn')}
                 </Button>
               </form>
             </TabsContent>

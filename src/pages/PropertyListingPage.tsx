@@ -14,6 +14,7 @@ import PropertyListView from '@/components/search/PropertyListView';
 const PropertyListingMapView = lazy(() => import('@/components/property/PropertyListingMapView'));
 import SearchAlertSubscribeButton from '@/components/search/SearchAlertSubscribeButton';
 import PropertyCardSkeleton from '@/components/property/PropertyCardSkeleton';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface PropertyListingPageProps {
   pageType: 'buy' | 'rent' | 'new-projects' | 'pre-launching';
@@ -122,6 +123,7 @@ const demoPreLaunchingProjects = [
 ];
 
 const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageProps) => {
+  const { t } = useTranslation();
   const [hasSearched, setHasSearched] = useState(false);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -226,14 +228,14 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
                   <h1 className="text-lg sm:text-xl font-bold text-foreground truncate">{title}</h1>
-                  <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-semibold uppercase tracking-wider">
-                    <Sparkles className="h-3 w-3" />
-                    AI Enhanced
-                  </span>
-                </div>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {displayProperties.length} properti tersedia
-                </p>
+                   <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-semibold uppercase tracking-wider">
+                     <Sparkles className="h-3 w-3" />
+                     {t('listingPage.aiEnhanced')}
+                   </span>
+                 </div>
+                 <p className="text-xs text-muted-foreground mt-0.5">
+                   {displayProperties.length} {t('listingPage.propertiesAvailable')}
+                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
@@ -248,7 +250,7 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                 className="h-9 px-3 text-xs font-medium rounded-lg gap-1.5"
               >
                 <SlidersHorizontal className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Filter</span>
+                <span className="hidden sm:inline">{t('common.filter')}</span>
                 {activeFiltersCount > 0 && (
                   <span className="h-4 w-4 flex items-center justify-center text-[10px] bg-primary text-primary-foreground rounded-full">
                     {activeFiltersCount}
@@ -265,22 +267,22 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-3">
           <div className="flex gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Cari lokasi, nama properti..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                className="h-10 pl-10 text-sm bg-background/80 border-border/50 rounded-lg focus:ring-2 focus:ring-primary/20"
-              />
-            </div>
-            <Button
-              onClick={handleSearch}
-              className="h-10 px-5 text-sm font-medium rounded-lg"
-              disabled={isSearching}
-            >
-              {isSearching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
-              <span className="ml-2 hidden sm:inline">{isSearching ? 'Mencari...' : 'Cari'}</span>
+               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+               <Input
+                 placeholder={t('listingPage.searchPlaceholder')}
+                 value={searchQuery}
+                 onChange={(e) => setSearchQuery(e.target.value)}
+                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                 className="h-10 pl-10 text-sm bg-background/80 border-border/50 rounded-lg focus:ring-2 focus:ring-primary/20"
+               />
+             </div>
+             <Button
+               onClick={handleSearch}
+               className="h-10 px-5 text-sm font-medium rounded-lg"
+               disabled={isSearching}
+             >
+               {isSearching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+               <span className="ml-2 hidden sm:inline">{isSearching ? t('listingPage.searching') : t('listingPage.searchBtn')}</span>
             </Button>
           </div>
 
@@ -295,37 +297,37 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                 className="overflow-hidden"
               >
                 <div className="pt-3 mt-3 border-t border-border/30">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-medium text-foreground">Filter Properti</span>
-                    {activeFiltersCount > 0 && (
-                      <Button variant="ghost" size="sm" onClick={clearFilters} className="h-7 text-xs text-destructive hover:text-destructive">
-                        <X className="h-3 w-3 mr-1" />
-                        Reset
-                      </Button>
+                   <div className="flex items-center justify-between mb-3">
+                     <span className="text-sm font-medium text-foreground">{t('listingPage.filterProperties')}</span>
+                     {activeFiltersCount > 0 && (
+                       <Button variant="ghost" size="sm" onClick={clearFilters} className="h-7 text-xs text-destructive hover:text-destructive">
+                         <X className="h-3 w-3 mr-1" />
+                         {t('listingPage.reset')}
+                       </Button>
                     )}
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                     <Select value={filters.propertyType} onValueChange={(v) => setFilters(p => ({ ...p, propertyType: v }))}>
-                      <SelectTrigger className="h-9 text-xs bg-background/80 border-border/50 rounded-lg">
-                        <Home className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
-                        <SelectValue placeholder="Tipe Properti" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Semua Tipe</SelectItem>
-                        <SelectItem value="apartment">Apartemen</SelectItem>
-                        <SelectItem value="house">Rumah</SelectItem>
-                        <SelectItem value="villa">Villa</SelectItem>
-                        <SelectItem value="land">Tanah</SelectItem>
-                        <SelectItem value="commercial">Komersial</SelectItem>
+                       <SelectTrigger className="h-9 text-xs bg-background/80 border-border/50 rounded-lg">
+                         <Home className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+                         <SelectValue placeholder={t('listingPage.propertyType')} />
+                       </SelectTrigger>
+                       <SelectContent>
+                         <SelectItem value="all">{t('listingPage.allTypes')}</SelectItem>
+                         <SelectItem value="apartment">{t('listingPage.apartment')}</SelectItem>
+                         <SelectItem value="house">{t('listingPage.house')}</SelectItem>
+                         <SelectItem value="villa">{t('listingPage.villa')}</SelectItem>
+                         <SelectItem value="land">{t('listingPage.land')}</SelectItem>
+                         <SelectItem value="commercial">{t('listingPage.commercial')}</SelectItem>
                       </SelectContent>
                     </Select>
                     <Select value={filters.city} onValueChange={(v) => setFilters(p => ({ ...p, city: v }))}>
                       <SelectTrigger className="h-9 text-xs bg-background/80 border-border/50 rounded-lg">
                         <MapPin className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
-                        <SelectValue placeholder="Kota" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Semua Kota</SelectItem>
+                         <SelectValue placeholder={t('listingPage.city')} />
+                       </SelectTrigger>
+                       <SelectContent>
+                         <SelectItem value="all">{t('listingPage.allCities')}</SelectItem>
                         <SelectItem value="Jakarta">Jakarta</SelectItem>
                         <SelectItem value="Bali">Bali</SelectItem>
                         <SelectItem value="Surabaya">Surabaya</SelectItem>
@@ -334,10 +336,10 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                     </Select>
                     <Select value={filters.priceRange} onValueChange={(v) => setFilters(p => ({ ...p, priceRange: v }))}>
                       <SelectTrigger className="h-9 text-xs bg-background/80 border-border/50 rounded-lg">
-                        <SelectValue placeholder="Range Harga" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Semua Harga</SelectItem>
+                         <SelectValue placeholder={t('listingPage.priceRange')} />
+                       </SelectTrigger>
+                       <SelectContent>
+                         <SelectItem value="all">{t('listingPage.allPrices')}</SelectItem>
                         <SelectItem value="0-500m">&lt; 500 Jt</SelectItem>
                         <SelectItem value="500m-1b">500 Jt - 1 M</SelectItem>
                         <SelectItem value="1b-5b">1 - 5 M</SelectItem>
@@ -376,13 +378,13 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
               <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
                 <Home className="h-7 w-7 text-primary" />
               </div>
-              <h3 className="text-lg font-bold text-foreground mb-2">Tidak ada properti ditemukan</h3>
-              <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
-                Coba sesuaikan filter pencarian Anda untuk menemukan properti yang sesuai
-              </p>
-              <Button variant="outline" className="h-10 px-6 rounded-lg" onClick={clearFilters}>
-                Reset Filter
-              </Button>
+               <h3 className="text-lg font-bold text-foreground mb-2">{t('listingPage.noProperties')}</h3>
+               <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
+                 {t('listingPage.adjustFilters')}
+               </p>
+               <Button variant="outline" className="h-10 px-6 rounded-lg" onClick={clearFilters}>
+                 {t('listingPage.resetFilters')}
+               </Button>
             </div>
           </div>
         ) : viewMode === 'list' ? (
@@ -435,11 +437,11 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                           : 'bg-emerald-500/90 text-white'
                       }`}>
                         {property.listing_type === 'rent' ? <Key className="h-3 w-3" /> : <Tag className="h-3 w-3" />}
-                        {property.listing_type === 'rent' ? 'Sewa' : 'Jual'}
+                        {property.listing_type === 'rent' ? t('listingPage.forRent') : t('listingPage.forSale')}
                       </span>
                       {pageType === 'pre-launching' && (
                         <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-accent/90 text-accent-foreground backdrop-blur-sm">
-                          Pre-Launch
+                          {t('listingPage.preLaunch')}
                         </span>
                       )}
                     </div>
@@ -447,7 +449,7 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
                     {/* View details indicator */}
                     <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-1 group-hover:translate-y-0">
                       <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-background/90 backdrop-blur-sm text-foreground text-[10px] font-semibold shadow-lg">
-                        Lihat Detail
+                        {t('listingPage.viewDetails')}
                         <ArrowUpRight className="h-3 w-3" />
                       </div>
                     </div>
@@ -510,7 +512,7 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
             )}
             {!hasMore && properties.length > 0 && (
               <p className="text-center text-xs text-muted-foreground py-8">
-                Semua properti telah ditampilkan
+                {t('listingPage.allDisplayed')}
               </p>
             )}
           </>

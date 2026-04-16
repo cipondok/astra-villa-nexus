@@ -1,12 +1,13 @@
-
 import PropertyListingPage from "./PropertyListingPage";
+import { useTranslation } from "@/i18n/useTranslation";
 
 const Buy = () => {
+  const { t } = useTranslation();
   return (
     <PropertyListingPage
       pageType="buy"
-      title="Buy Properties"
-      subtitle="Browse properties available for sale - Houses, Apartments, Commercial & Land"
+      title={t('listingPage.buyTitle')}
+      subtitle={t('listingPage.buySubtitle')}
     />
   );
 };
