@@ -20607,6 +20607,42 @@ export type Database = {
         }
         Relationships: []
       }
+      fraud_signals: {
+        Row: {
+          created_at: string
+          id: string
+          is_resolved: boolean | null
+          metadata_json: Json | null
+          session_id: string | null
+          severity: string
+          signal_type: string
+          signal_value: number
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_resolved?: boolean | null
+          metadata_json?: Json | null
+          session_id?: string | null
+          severity?: string
+          signal_type: string
+          signal_value?: number
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_resolved?: boolean | null
+          metadata_json?: Json | null
+          session_id?: string | null
+          severity?: string
+          signal_type?: string
+          signal_value?: number
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       fscc_org_alignment: {
         Row: {
           alignment_score: number | null
@@ -31695,6 +31731,42 @@ export type Database = {
           model_confidence?: number | null
           projected_value_multiplier_10y?: number | null
           wealth_preservation_tier?: string | null
+        }
+        Relationships: []
+      }
+      intervention_logs: {
+        Row: {
+          action_taken: string
+          conversion_score: number | null
+          created_at: string
+          fraud_score: number | null
+          id: string
+          intervention_type: string
+          metadata_json: Json | null
+          trigger_reason: string
+          user_id: string | null
+        }
+        Insert: {
+          action_taken: string
+          conversion_score?: number | null
+          created_at?: string
+          fraud_score?: number | null
+          id?: string
+          intervention_type: string
+          metadata_json?: Json | null
+          trigger_reason: string
+          user_id?: string | null
+        }
+        Update: {
+          action_taken?: string
+          conversion_score?: number | null
+          created_at?: string
+          fraud_score?: number | null
+          id?: string
+          intervention_type?: string
+          metadata_json?: Json | null
+          trigger_reason?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -69049,6 +69121,7 @@ export type Database = {
           priority: string
         }[]
       }
+      get_fraud_dashboard_stats: { Args: never; Returns: Json }
       get_full_rejection_data: {
         Args: { rejection_code?: string }
         Returns: {
