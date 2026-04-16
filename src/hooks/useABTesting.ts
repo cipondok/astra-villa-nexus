@@ -34,8 +34,6 @@ async function flushCounters() {
   CLICK_BATCH.clear();
 
   for (const [id, count] of impressions) {
-    await supabase.rpc('increment_ab_impressions' as any, { variant_id: id, amount: count }).catch(() => {});
-    // Fallback: direct update
     const { data } = await supabase.from('ab_test_variants' as any).select('impressions, clicks').eq('id', id).single();
     if (data) {
       const newImpressions = ((data as any).impressions || 0) + count;
