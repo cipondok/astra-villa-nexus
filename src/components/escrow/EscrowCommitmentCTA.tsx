@@ -6,6 +6,8 @@ import { Progress } from '@/components/ui/progress';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '@/i18n/useTranslation';
+import { useLocalization } from '@/i18n/useLocalization';
 
 interface EscrowCommitmentCTAProps {
   suggestedDeposit: number;
@@ -17,10 +19,6 @@ interface EscrowCommitmentCTAProps {
   className?: string;
 }
 
-const formatIDR = (amount: number) => {
-  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(amount);
-};
-
 const EscrowCommitmentCTA = ({
   suggestedDeposit,
   walletBalance = 0,
@@ -30,6 +28,8 @@ const EscrowCommitmentCTA = ({
   className,
 }: EscrowCommitmentCTAProps) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { formatCurrency } = useLocalization();
   const hasSufficientBalance = walletBalance >= suggestedDeposit;
   const depositPercentage = propertyPrice > 0 ? ((suggestedDeposit / propertyPrice) * 100).toFixed(1) : '1';
 
@@ -44,31 +44,30 @@ const EscrowCommitmentCTA = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Shield className="h-5 w-5 text-primary" />
-              <h3 className="font-semibold text-foreground text-sm">Secure Property via Escrow</h3>
+              <h3 className="font-semibold text-foreground text-sm">{t('escrow.securePropertyViaEscrow')}</h3>
             </div>
             {probability > 0 && (
               <Badge variant="outline" className="text-[10px] border-primary/30 text-primary">
                 <TrendingUp className="h-3 w-3 mr-1" />
-                {probability}% match
+                {probability}% {t('escrow.match')}
               </Badge>
             )}
           </div>
 
           <p className="text-xs text-muted-foreground">
-            Escrow allows you to reserve the property while completing due diligence. 
-            Your deposit ({depositPercentage}%) is fully protected.
+            {t('escrow.depositProtected')}
           </p>
 
           {/* Deposit amount */}
           <div className="bg-muted/50 rounded-lg p-3 border border-border/50 space-y-2">
             <div className="flex justify-between items-center text-xs">
-              <span className="text-muted-foreground">Reservation Deposit</span>
-              <span className="font-semibold text-foreground">{formatIDR(suggestedDeposit)}</span>
+              <span className="text-muted-foreground">{t('escrow.reservationDeposit')}</span>
+              <span className="font-semibold text-foreground">{formatCurrency(suggestedDeposit)}</span>
             </div>
             <div className="flex justify-between items-center text-xs">
-              <span className="text-muted-foreground">Your Wallet Balance</span>
+              <span className="text-muted-foreground">{t('escrow.walletBalance')}</span>
               <span className={cn('font-medium', hasSufficientBalance ? 'text-chart-1' : 'text-destructive')}>
-                {formatIDR(walletBalance)}
+                {formatCurrency(walletBalance)}
               </span>
             </div>
             {walletBalance > 0 && (
@@ -85,7 +84,7 @@ const EscrowCommitmentCTA = ({
                 size="sm"
               >
                 <Shield className="h-4 w-4 mr-2" />
-                Secure via Escrow
+                {t('escrow.secureViaEscrow')}
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             ) : (
@@ -97,7 +96,7 @@ const EscrowCommitmentCTA = ({
                   size="sm"
                 >
                   <Wallet className="h-4 w-4 mr-2" />
-                  Fund Wallet
+                  {t('escrow.fundWallet')}
                 </Button>
                 <Button
                   onClick={onInitiateEscrow}
@@ -107,7 +106,7 @@ const EscrowCommitmentCTA = ({
                   disabled
                 >
                   <Shield className="h-4 w-4 mr-2" />
-                  Secure via Escrow
+                  {t('escrow.secureViaEscrow')}
                 </Button>
               </>
             )}
@@ -115,7 +114,7 @@ const EscrowCommitmentCTA = ({
 
           {/* Trust microcopy */}
           <p className="text-[10px] text-muted-foreground text-center">
-            Funds remain protected until transaction conditions are satisfied. Full refund if verification fails.
+            {t('escrow.fundsProtectedUntil')}
           </p>
         </CardContent>
       </Card>

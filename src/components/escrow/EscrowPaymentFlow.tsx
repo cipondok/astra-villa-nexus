@@ -3,11 +3,12 @@ import { Shield, CheckCircle2, CreditCard, ArrowRight, ArrowLeft } from 'lucide-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/i18n/useTranslation';
+import { useLocalization } from '@/i18n/useLocalization';
 
 interface EscrowPaymentFlowProps {
   propertyTitle: string;
@@ -19,11 +20,6 @@ interface EscrowPaymentFlowProps {
   className?: string;
 }
 
-const formatIDR = (amount: number) =>
-  new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(amount);
-
-const STEPS = ['Confirm Terms', 'Choose Deposit', 'Confirm Transaction'];
-
 const EscrowPaymentFlow = ({
   propertyTitle,
   propertyPrice,
@@ -33,13 +29,17 @@ const EscrowPaymentFlow = ({
   onCancel,
   className,
 }: EscrowPaymentFlowProps) => {
+  const { t } = useTranslation();
+  const { formatCurrency } = useLocalization();
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedDeposit, setSelectedDeposit] = useState(suggestedDeposit.toString());
 
+  const STEPS = [t('escrow.confirmTerms'), t('escrow.chooseDeposit'), t('escrow.confirmTransaction')];
+
   const depositOptions = [
-    { value: Math.max(2000000, Math.round(propertyPrice * 0.01)), label: '1% Deposit' },
-    { value: Math.max(5000000, Math.round(propertyPrice * 0.02)), label: '2% Deposit' },
-    { value: Math.max(10000000, Math.round(propertyPrice * 0.05)), label: '5% Deposit' },
+    { value: Math.max(2000000, Math.round(propertyPrice * 0.01)), label: t('escrow.deposit1Pct') },
+    { value: Math.max(5000000, Math.round(propertyPrice * 0.02)), label: t('escrow.deposit2Pct') },
+    { value: Math.max(10000000, Math.round(propertyPrice * 0.05)), label: t('escrow.deposit5Pct') },
   ];
 
   const chosenAmount = parseInt(selectedDeposit) || suggestedDeposit;
@@ -51,25 +51,17 @@ const EscrowPaymentFlow = ({
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
             <Shield className="h-4 w-4 text-primary" />
-            Escrow Payment
+            {t('escrow.escrowPayment')}
           </CardTitle>
           <Badge variant="secondary" className="text-[10px]">
-            Step {currentStep + 1}/{STEPS.length}
+            {t('escrow.step')} {currentStep + 1}/{STEPS.length}
           </Badge>
         </div>
-        {/* Progress bar */}
         <div className="flex gap-1 mt-2">
           {STEPS.map((step, i) => (
-            <div key={step} className="flex-1 flex flex-col items-center gap-1">
-              <div
-                className={cn(
-                  'h-1.5 w-full rounded-full transition-colors',
-                  i <= currentStep ? 'bg-primary' : 'bg-muted'
-                )}
-              />
-              <span className={cn('text-[9px]', i <= currentStep ? 'text-primary font-medium' : 'text-muted-foreground')}>
-                {step}
-              </span>
+            <div key={i} className="flex-1 flex flex-col items-center gap-1">
+              <div className={cn('h-1.5 w-full rounded-full transition-colors', i <= currentStep ? 'bg-primary' : 'bg-muted')} />
+              <span className={cn('text-[9px]', i <= currentStep ? 'text-primary font-medium' : 'text-muted-foreground')}>{step}</span>
             </div>
           ))}
         </div>
@@ -82,14 +74,14 @@ const EscrowPaymentFlow = ({
               <div className="bg-muted/50 rounded-lg p-3 border border-border/50 space-y-2">
                 <p className="text-xs font-medium text-foreground">{propertyTitle}</p>
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>Property Price</span>
-                  <span className="font-semibold text-foreground">{formatIDR(propertyPrice)}</span>
+                  <span>{t('escrow.propertyPrice')}</span>
+                  <span className="font-semibold text-foreground">{formatCurrency(propertyPrice)}</span>
                 </div>
               </div>
               <ul className="space-y-2 text-[11px] text-muted-foreground">
-                <li className="flex items-start gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-chart-1 mt-0.5 flex-shrink-0" />Funds held in secure escrow until verification complete</li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-chart-1 mt-0.5 flex-shrink-0" />Full refund if property fails verification</li>
-                <li className="flex items-start gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-chart-1 mt-0.5 flex-shrink-0" />Dispute resolution support included</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-chart-1 mt-0.5 flex-shrink-0" />{t('escrow.fundsHeldSecure')}</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-chart-1 mt-0.5 flex-shrink-0" />{t('escrow.fullRefundIfFails')}</li>
+                <li className="flex items-start gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-chart-1 mt-0.5 flex-shrink-0" />{t('escrow.disputeResolution')}</li>
               </ul>
             </motion.div>
           )}
@@ -102,15 +94,15 @@ const EscrowPaymentFlow = ({
                     <RadioGroupItem value={opt.value.toString()} id={`dep-${opt.value}`} />
                     <Label htmlFor={`dep-${opt.value}`} className="flex-1 cursor-pointer flex justify-between">
                       <span className="text-xs">{opt.label}</span>
-                      <span className="text-xs font-semibold">{formatIDR(opt.value)}</span>
+                      <span className="text-xs font-semibold">{formatCurrency(opt.value)}</span>
                     </Label>
                   </div>
                 ))}
               </RadioGroup>
               <div className="flex justify-between text-xs text-muted-foreground bg-muted/30 rounded-lg p-2">
-                <span>Wallet Balance</span>
+                <span>{t('escrow.walletBalance')}</span>
                 <span className={cn('font-medium', canProceed ? 'text-chart-1' : 'text-destructive')}>
-                  {formatIDR(walletBalance)}
+                  {formatCurrency(walletBalance)}
                 </span>
               </div>
             </motion.div>
@@ -119,31 +111,30 @@ const EscrowPaymentFlow = ({
           {currentStep === 2 && (
             <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-3">
               <div className="bg-primary/5 rounded-lg p-4 border border-primary/20 space-y-2">
-                <p className="text-xs font-medium text-foreground">Transaction Summary</p>
-                <div className="flex justify-between text-xs"><span className="text-muted-foreground">Property</span><span className="font-medium text-foreground truncate ml-2 max-w-[200px]">{propertyTitle}</span></div>
-                <div className="flex justify-between text-xs"><span className="text-muted-foreground">Escrow Deposit</span><span className="font-semibold text-primary">{formatIDR(chosenAmount)}</span></div>
-                <div className="flex justify-between text-xs"><span className="text-muted-foreground">Remaining Balance</span><span>{formatIDR(walletBalance - chosenAmount)}</span></div>
+                <p className="text-xs font-medium text-foreground">{t('escrow.transactionSummary')}</p>
+                <div className="flex justify-between text-xs"><span className="text-muted-foreground">{t('escrow.property')}</span><span className="font-medium text-foreground truncate ml-2 max-w-[200px]">{propertyTitle}</span></div>
+                <div className="flex justify-between text-xs"><span className="text-muted-foreground">{t('escrow.escrowDeposit')}</span><span className="font-semibold text-primary">{formatCurrency(chosenAmount)}</span></div>
+                <div className="flex justify-between text-xs"><span className="text-muted-foreground">{t('escrow.remainingBalance')}</span><span>{formatCurrency(walletBalance - chosenAmount)}</span></div>
               </div>
               <p className="text-[10px] text-muted-foreground text-center">
-                By confirming, you agree to the escrow terms. Funds are protected until conditions are met.
+                {t('escrow.confirmEscrowTerms')}
               </p>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Navigation */}
         <div className="flex gap-2 pt-2">
           {currentStep > 0 ? (
             <Button variant="outline" size="sm" onClick={() => setCurrentStep((s) => s - 1)} className="flex-1">
-              <ArrowLeft className="h-3 w-3 mr-1" /> Back
+              <ArrowLeft className="h-3 w-3 mr-1" /> {t('escrow.back')}
             </Button>
           ) : (
-            <Button variant="ghost" size="sm" onClick={onCancel} className="flex-1">Cancel</Button>
+            <Button variant="ghost" size="sm" onClick={onCancel} className="flex-1">{t('escrow.cancel')}</Button>
           )}
 
           {currentStep < 2 ? (
             <Button size="sm" onClick={() => setCurrentStep((s) => s + 1)} className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground">
-              Next <ArrowRight className="h-3 w-3 ml-1" />
+              {t('escrow.next')} <ArrowRight className="h-3 w-3 ml-1" />
             </Button>
           ) : (
             <Button
@@ -153,7 +144,7 @@ const EscrowPaymentFlow = ({
               className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20"
             >
               <CreditCard className="h-3 w-3 mr-1" />
-              Confirm Escrow
+              {t('escrow.confirmEscrow')}
             </Button>
           )}
         </div>
