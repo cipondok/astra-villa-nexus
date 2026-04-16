@@ -54899,6 +54899,54 @@ export type Database = {
           },
         ]
       }
+      risk_action_logs: {
+        Row: {
+          action_type: string
+          blocked_reason: string | null
+          created_at: string
+          decision: string
+          device_fingerprint: string | null
+          fraud_score: number
+          id: string
+          ip_address: unknown
+          related_entity_id: string | null
+          related_entity_type: string | null
+          request_metadata: Json | null
+          risk_level: string
+          user_id: string | null
+        }
+        Insert: {
+          action_type: string
+          blocked_reason?: string | null
+          created_at?: string
+          decision?: string
+          device_fingerprint?: string | null
+          fraud_score?: number
+          id?: string
+          ip_address?: unknown
+          related_entity_id?: string | null
+          related_entity_type?: string | null
+          request_metadata?: Json | null
+          risk_level?: string
+          user_id?: string | null
+        }
+        Update: {
+          action_type?: string
+          blocked_reason?: string | null
+          created_at?: string
+          decision?: string
+          device_fingerprint?: string | null
+          fraud_score?: number
+          id?: string
+          ip_address?: unknown
+          related_entity_id?: string | null
+          related_entity_type?: string | null
+          request_metadata?: Json | null
+          risk_level?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       risk_cases: {
         Row: {
           admin_notes: string | null
@@ -68725,6 +68773,7 @@ export type Database = {
       compute_portfolio_snapshots: { Args: never; Returns: number }
       compute_price_predictions: { Args: { p_limit?: number }; Returns: Json }
       compute_risk_levels: { Args: { p_limit?: number }; Returns: Json }
+      compute_server_fraud_score: { Args: { p_user_id: string }; Returns: Json }
       count_admin_alerts: { Args: never; Returns: number }
       count_admin_alerts_by_status: { Args: never; Returns: Json }
       count_admin_alerts_by_type: { Args: never; Returns: Json }

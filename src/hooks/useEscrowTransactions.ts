@@ -1,9 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useFraudGuard } from './useFraudGuard';
 
 export const useEscrowTransactions = (offerId?: string) => {
   const queryClient = useQueryClient();
+  const { checkFraud } = useFraudGuard();
 
   const escrowQuery = useQuery({
     queryKey: ['escrow-transactions', offerId],
@@ -23,6 +25,13 @@ export const useEscrowTransactions = (offerId?: string) => {
       payment_gateway?: string;
       payment_method?: string;
     }) => {
+      // Server-side fraud check before escrow
+      await checkFraud({
+        action: 'escrow_initiation',
+        entity_id: params.offer_id,
+        entity_type: 'offer',
+      });
+
       const { data, error } = await supabase.functions.invoke('initiate-escrow', {
         body: params,
       });
