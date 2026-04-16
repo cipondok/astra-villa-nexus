@@ -7,22 +7,16 @@ import { Button } from '@/components/ui/button';
 import { Wallet, BarChart3, Sofa, Wifi, Eye, TrendingUp } from 'lucide-react';
 import { formatCurrencyIDRShort } from '@/lib/indonesianFormat';
 import { BaseProperty } from '@/types/property';
+import { useTranslation } from '@/i18n/useTranslation';
 
 const RentalCashflowZone = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const { data: rentals = [] } = useQuery({
     queryKey: ['rental-cashflow-zone'],
     queryFn: async () => {
-      const { data } = await supabase
-        .from('properties')
-        .select('id, title, price, location, city, bedrooms, bathrooms, area_sqm, images, thumbnail_url, listing_type, property_type')
-        .eq('status', 'active')
-        .eq('approval_status', 'approved')
-        .eq('listing_type', 'rent')
-        .not('title', 'is', null)
-        .order('created_at', { ascending: false })
-        .limit(8);
+      const { data } = await supabase.from('properties').select('id, title, price, location, city, bedrooms, bathrooms, area_sqm, images, thumbnail_url, listing_type, property_type').eq('status', 'active').eq('approval_status', 'approved').eq('listing_type', 'rent').not('title', 'is', null).order('created_at', { ascending: false }).limit(8);
       return (data || []) as BaseProperty[];
     },
     staleTime: 5 * 60 * 1000,
@@ -35,72 +29,35 @@ const RentalCashflowZone = () => {
       <div className="flex items-center justify-between mb-5">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-intel-success/10 border border-intel-success/20">
-              <Wallet className="h-3.5 w-3.5 text-intel-success" />
-            </div>
-            <h2 className="text-lg sm:text-xl font-bold text-foreground">Live Income Assets Generating Cashflow Now</h2>
+            <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-intel-success/10 border border-intel-success/20"><Wallet className="h-3.5 w-3.5 text-intel-success" /></div>
+            <h2 className="text-lg sm:text-xl font-bold text-foreground">{t('homeComponents.liveIncomeAssets')}</h2>
           </div>
-          <p className="text-xs text-muted-foreground ml-9">Yield-optimized units with passive income estimates</p>
+          <p className="text-xs text-muted-foreground ml-9">{t('homeComponents.yieldOptimizedUnits')}</p>
         </div>
-        <Button variant="outline" size="sm" onClick={() => navigate('/rent')} className="text-xs h-8">
-          View All
-        </Button>
+        <Button variant="outline" size="sm" onClick={() => navigate('/rent')} className="text-xs h-8">{t('homeComponents.viewAllBtn')}</Button>
       </div>
-
       <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 snap-x">
         {rentals.map((property, i) => {
           const monthlyIncome = property.price || 0;
           const occupancyScore = 78 + Math.floor(Math.random() * 18);
           const demandVelocity = 60 + Math.floor(Math.random() * 35);
           const img = property.thumbnail_url || property.images?.[0] || '';
-
           return (
-            <motion.div
-              key={property.id}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.05 }}
-              className="flex-shrink-0 w-[260px] sm:w-[300px] snap-start rounded-xl overflow-hidden border border-border/60 bg-card hover:border-intel-success/30 transition-all cursor-pointer group shadow-sm"
-              onClick={() => navigate(`/properties/${property.id}`)}
-            >
+            <motion.div key={property.id} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }} className="flex-shrink-0 w-[260px] sm:w-[300px] snap-start rounded-xl overflow-hidden border border-border/60 bg-card hover:border-intel-success/30 transition-all cursor-pointer group shadow-sm" onClick={() => navigate(`/properties/${property.id}`)}>
               <div className="relative h-36 overflow-hidden">
-                {img ? (
-                  <img src={img} alt={property.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                ) : (
-                  <div className="w-full h-full bg-muted" />
-                )}
+                {img ? <img src={img} alt={property.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" /> : <div className="w-full h-full bg-muted" />}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                <div className="absolute top-2 left-2 flex gap-1">
-                  <Badge className="bg-intel-success/20 text-intel-success text-[10px] h-5 border border-intel-success/20 backdrop-blur-sm">
-                    <Sofa className="h-2.5 w-2.5 mr-1" /> Furnished
-                  </Badge>
-                </div>
-                <div className="absolute bottom-2 right-2">
-                  <div className="text-sm font-bold text-intel-success tabular-nums bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-white">
-                    {formatCurrencyIDRShort(monthlyIncome)}<span className="text-[10px] text-white/60">/mo</span>
-                  </div>
-                </div>
+                <div className="absolute top-2 left-2 flex gap-1"><Badge className="bg-intel-success/20 text-intel-success text-[10px] h-5 border border-intel-success/20 backdrop-blur-sm"><Sofa className="h-2.5 w-2.5 mr-1" /> {t('homeComponents.furnished')}</Badge></div>
+                <div className="absolute bottom-2 right-2"><div className="text-sm font-bold text-intel-success tabular-nums bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-white">{formatCurrencyIDRShort(monthlyIncome)}<span className="text-[10px] text-white/60">{t('homeComponents.perMonth')}</span></div></div>
               </div>
               <div className="p-3 space-y-2.5">
                 <h3 className="text-sm font-semibold text-foreground truncate">{property.title}</h3>
                 <p className="text-[10px] text-muted-foreground truncate">{property.location || property.city}</p>
                 <div className="flex items-center justify-between">
-                  <div>
-                    <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                      <BarChart3 className="h-3 w-3" /> Occupancy AI
-                    </div>
-                    <div className="text-sm font-bold text-foreground tabular-nums">{occupancyScore}%</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                      <TrendingUp className="h-3 w-3" /> Demand
-                    </div>
-                    <div className="text-sm font-bold text-intel-blue tabular-nums">{demandVelocity}%</div>
-                  </div>
+                  <div><div className="flex items-center gap-1 text-[10px] text-muted-foreground"><BarChart3 className="h-3 w-3" /> {t('homeComponents.occupancyAI')}</div><div className="text-sm font-bold text-foreground tabular-nums">{occupancyScore}%</div></div>
+                  <div className="text-right"><div className="flex items-center gap-1 text-[10px] text-muted-foreground"><TrendingUp className="h-3 w-3" /> {t('homeComponents.demandLabel')}</div><div className="text-sm font-bold text-intel-blue tabular-nums">{demandVelocity}%</div></div>
                 </div>
-                <Button variant="outline" size="sm" className="w-full h-8 text-xs gap-1">
-                  <Eye className="h-3 w-3" /> Reserve Viewing
-                </Button>
+                <Button variant="outline" size="sm" className="w-full h-8 text-xs gap-1"><Eye className="h-3 w-3" /> {t('homeComponents.reserveViewing')}</Button>
               </div>
             </motion.div>
           );
