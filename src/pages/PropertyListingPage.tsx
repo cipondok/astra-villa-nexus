@@ -512,7 +512,7 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
             )}
             {!hasMore && properties.length > 0 && (
               <p className="text-center text-xs text-muted-foreground py-8">
-                Semua properti telah ditampilkan
+                {t('listingPage.allDisplayed')}
               </p>
             )}
           </>
