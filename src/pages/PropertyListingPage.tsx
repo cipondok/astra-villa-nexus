@@ -14,6 +14,7 @@ import PropertyListView from '@/components/search/PropertyListView';
 const PropertyListingMapView = lazy(() => import('@/components/property/PropertyListingMapView'));
 import SearchAlertSubscribeButton from '@/components/search/SearchAlertSubscribeButton';
 import PropertyCardSkeleton from '@/components/property/PropertyCardSkeleton';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface PropertyListingPageProps {
   pageType: 'buy' | 'rent' | 'new-projects' | 'pre-launching';
