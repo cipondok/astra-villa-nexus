@@ -378,13 +378,13 @@ const PropertyListingPage = ({ pageType, title, subtitle }: PropertyListingPageP
               <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
                 <Home className="h-7 w-7 text-primary" />
               </div>
-              <h3 className="text-lg font-bold text-foreground mb-2">Tidak ada properti ditemukan</h3>
-              <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
-                Coba sesuaikan filter pencarian Anda untuk menemukan properti yang sesuai
-              </p>
-              <Button variant="outline" className="h-10 px-6 rounded-lg" onClick={clearFilters}>
-                Reset Filter
-              </Button>
+               <h3 className="text-lg font-bold text-foreground mb-2">{t('listingPage.noProperties')}</h3>
+               <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
+                 {t('listingPage.adjustFilters')}
+               </p>
+               <Button variant="outline" className="h-10 px-6 rounded-lg" onClick={clearFilters}>
+                 {t('listingPage.resetFilters')}
+               </Button>
             </div>
           </div>
         ) : viewMode === 'list' ? (
