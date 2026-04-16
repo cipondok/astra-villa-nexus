@@ -14,6 +14,7 @@ const LANGUAGES: { code: Language; label: string; flag: string }[] = [
   { code: "zh", label: "中文", flag: "🇨🇳" },
   { code: "ja", label: "日本語", flag: "🇯🇵" },
   { code: "ko", label: "한국어", flag: "🇰🇷" },
+  { code: "ru", label: "Русский", flag: "🇷🇺" },
 ];
 
 const LanguageToggleSwitch: React.FC<LanguageToggleSwitchProps> = ({ className = "" }) => {

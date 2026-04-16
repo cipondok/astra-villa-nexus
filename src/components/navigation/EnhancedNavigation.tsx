@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useHeaderLogo } from "@/hooks/useBrandingLogo";
 import ThemeToggleSwitch from "@/components/ThemeToggleSwitch";
 import AnimatedLogo from "@/components/AnimatedLogo";
+import LanguageToggleSwitch from "@/components/LanguageToggleSwitch";
 import { useTranslation } from "@/i18n/useTranslation";
 
 interface EnhancedNavigationProps {
@@ -123,17 +124,8 @@ const EnhancedNavigation = ({ onLoginClick, language, onLanguageToggle }: Enhanc
               <ThemeToggleSwitch language={language} />
             </div>
 
-            {/* Language Toggle - compact on mobile */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onLanguageToggle}
-              title={language === 'en' ? 'Switch to Indonesian' : 'Ganti ke Bahasa Inggris'}
-              className="text-muted-foreground hover:text-foreground border border-border/30 hover:bg-foreground/10 transition-all duration-200 h-8 w-8 p-0 text-xs md:h-9 md:w-auto md:px-3 md:text-sm"
-            >
-              <span className="md:hidden text-sm">{language === 'en' ? '🇬🇧' : '🇮🇩'}</span>
-              <span className="hidden md:inline">{t('nav2.languageToggle')}</span>
-            </Button>
+            {/* Language Toggle - full dropdown */}
+            <LanguageToggleSwitch />
 
             {/* Notification Center */}
             {user && <NotificationCenter />}
