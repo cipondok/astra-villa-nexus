@@ -6505,6 +6505,48 @@ export type Database = {
         }
         Relationships: []
       }
+      aml_screenings: {
+        Row: {
+          adverse_media: boolean
+          created_at: string
+          full_name: string
+          id: string
+          matches: Json | null
+          pep_match: boolean
+          risk_level: string
+          sanctions_match: boolean
+          score: number
+          screened_at: string
+          user_id: string
+        }
+        Insert: {
+          adverse_media?: boolean
+          created_at?: string
+          full_name: string
+          id?: string
+          matches?: Json | null
+          pep_match?: boolean
+          risk_level?: string
+          sanctions_match?: boolean
+          score?: number
+          screened_at?: string
+          user_id: string
+        }
+        Update: {
+          adverse_media?: boolean
+          created_at?: string
+          full_name?: string
+          id?: string
+          matches?: Json | null
+          pep_match?: boolean
+          risk_level?: string
+          sanctions_match?: boolean
+          score?: number
+          screened_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       analytics_settings: {
         Row: {
           configuration: Json | null
