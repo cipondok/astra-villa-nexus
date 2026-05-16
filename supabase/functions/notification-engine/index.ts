@@ -456,14 +456,24 @@ serve(async (req) => {
         result = await pushNotification(params, supabase, req, isInternalCall);
         break;
       case 'schedule_email':
-        result = await scheduleEmail(params, supabase);
-        break;
       case 'lease_alert':
-        result = await leaseAlert(params, supabase);
+      case 'visit_reminder': {
+        // Bulk/admin-only operations — require internal secret or admin role
+        if (!isInternalCall) {
+          const authHeader = req.headers.get('Authorization');
+          if (!authHeader?.startsWith('Bearer ')) throw new Error('Authorization required');
+          const supabaseAuth = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: authHeader } } });
+          const token = authHeader.replace('Bearer ', '');
+          const { data: userData, error: userError } = await supabaseAuth.auth.getUser(token);
+          if (userError || !userData?.user) throw new Error('Invalid token');
+          const { data: isAdmin } = await supabase.rpc('has_role', { user_id: userData.user.id, role: 'admin' });
+          if (!isAdmin) throw new Error('Forbidden: admin role required');
+        }
+        if (action === 'schedule_email') result = await scheduleEmail(params, supabase);
+        else if (action === 'lease_alert') result = await leaseAlert(params, supabase);
+        else result = await visitReminder(params, supabase);
         break;
-      case 'visit_reminder':
-        result = await visitReminder(params, supabase);
-        break;
+      }
       default:
         throw new Error(`Unknown action: ${action}`);
     }
