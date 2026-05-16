@@ -215,8 +215,7 @@ async function handleSubscription(params: Record<string, any>, supabase: any, us
       //      which is then re-verified against Midtrans before activation.
       if (!order_id) throw new Error("order_id required");
 
-      const cronSecret = params.__cron_secret as string | undefined;
-      const isServerCall = !!cronSecret && cronSecret === Deno.env.get("CRON_SECRET");
+      const isServerCall = !!(params as any).__is_cron;
 
       if (!isServerCall && !userId) {
         throw new Error("Authentication required");
@@ -275,8 +274,7 @@ async function handleSubscription(params: Record<string, any>, supabase: any, us
 
     case 'renew': {
       // Server/cron only — must not be triggerable by clients.
-      const cronSecret = params.__cron_secret as string | undefined;
-      const isServerCall = !!cronSecret && cronSecret === Deno.env.get("CRON_SECRET");
+      const isServerCall = !!(params as any).__is_cron;
       if (!isServerCall) {
         if (!userId) throw new Error("Authentication required");
         const { data: isAdmin } = await supabase.rpc('has_role', { _user_id: userId, _role: 'admin' });
@@ -419,7 +417,13 @@ serve(async (req) => {
 
     const body: PaymentRequest = await req.json();
     const { action, ...params } = body;
-    log("Invoked", { action, userId: userId?.slice(0, 8) });
+    // Header-based server-to-server bypass; never accept body-level secrets.
+    const headerCronSecret = req.headers.get('x-cron-secret') || '';
+    const isCronCall = !!headerCronSecret && headerCronSecret === Deno.env.get('CRON_SECRET');
+    // Strip any client-supplied body secret to prevent body-based bypass.
+    if ('__cron_secret' in (params as any)) delete (params as any).__cron_secret;
+    (params as any).__is_cron = isCronCall;
+    log("Invoked", { action, userId: userId?.slice(0, 8), isCronCall });
 
     let result: Record<string, unknown>;
 

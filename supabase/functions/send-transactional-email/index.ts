@@ -30,9 +30,11 @@ function generateToken(): string {
     .join('')
 }
 
-// Auth note: this function uses verify_jwt = true in config.toml, so Supabase's
-// gateway validates the caller's JWT (anon or service_role) before the request
-// reaches this code. No in-function auth check is needed.
+// Auth: in-function check. Callers must be either:
+//   1. An internal server-to-server caller with x-internal-secret matching INTERNAL_SECRET, or
+//   2. An authenticated end-user (valid JWT) — recipientEmail is then forced to their own email.
+// Service-role calls (edge-function-to-edge-function) are detected via the Authorization header
+// matching SUPABASE_SERVICE_ROLE_KEY.
 
 Deno.serve(async (req) => {
   // Handle CORS preflight
@@ -42,6 +44,40 @@ Deno.serve(async (req) => {
 
   const supabaseUrl = Deno.env.get('SUPABASE_URL')
   const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+  const internalSecret = Deno.env.get('INTERNAL_SECRET') || ''
+  const headerInternalSecret = req.headers.get('x-internal-secret') || ''
+  const authHeader = req.headers.get('Authorization') || ''
+  const bearer = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : ''
+
+  const isInternalCall =
+    (!!internalSecret && headerInternalSecret === internalSecret) ||
+    (!!supabaseServiceKey && bearer === supabaseServiceKey)
+
+  let callerEmail: string | null = null
+  if (!isInternalCall) {
+    if (!bearer || !supabaseUrl || !supabaseServiceKey) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+    try {
+      const authClient = createClient(supabaseUrl, supabaseServiceKey, { auth: { persistSession: false } })
+      const { data, error } = await authClient.auth.getUser(bearer)
+      if (error || !data?.user?.email) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+          status: 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
+      callerEmail = data.user.email
+    } catch {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+  }
 
   if (!supabaseUrl || !supabaseServiceKey) {
     console.error('Missing required environment variables')
