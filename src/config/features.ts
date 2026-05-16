@@ -21,5 +21,5 @@ export const FEATURE_FLAGS = {
 export type FeatureKey = keyof typeof FEATURE_FLAGS;
 
 export function isFeatureEnabled(key: FeatureKey): boolean {
-  return FEATURE_FLAGS[key] === true;
+  return Boolean(FEATURE_FLAGS[key]);
 }
