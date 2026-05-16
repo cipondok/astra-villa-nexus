@@ -152,8 +152,42 @@ async function sendEmail(params: Record<string, any>, supabase: any, req: Reques
 }
 
 // ─── push_notification ──────────────────────────────────────────────
-async function pushNotification(params: Record<string, any>, supabase: any) {
+async function pushNotification(params: Record<string, any>, supabase: any, req: Request, isInternalCall: boolean) {
   const { push_action = 'send_to_user', userId, notification, subscription } = params;
+
+  // Authenticate caller for all push actions. Internal callers use the
+  // x-internal-secret header (verified upstream). External callers must present a JWT.
+  let callerId: string | null = null;
+  let callerIsAdmin = false;
+  if (!isInternalCall) {
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) throw new Error('Authorization required');
+    const supabaseAuth = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: authHeader } } });
+    const token = authHeader.replace('Bearer ', '');
+    const { data: userData, error: userError } = await supabaseAuth.auth.getUser(token);
+    if (userError || !userData?.user) throw new Error('Invalid token');
+    callerId = userData.user.id;
+    const { data: isAdmin } = await supabase.rpc('has_role', { user_id: callerId, role: 'admin' });
+    callerIsAdmin = !!isAdmin;
+  }
+
+  // For subscribe/unsubscribe, the user can only manage their own subscription
+  if ((push_action === 'subscribe' || push_action === 'unsubscribe') && !isInternalCall && !callerIsAdmin) {
+    if (!callerId || (userId && userId !== callerId)) {
+      throw new Error('You can only manage your own push subscriptions');
+    }
+  }
+
+  // For send_to_user / send_bulk / get_stats, only admins or internal callers may target other users
+  if ((push_action === 'send_to_user' || push_action === 'send_bulk' || push_action === 'get_stats') && !isInternalCall && !callerIsAdmin) {
+    const targets: string[] = params.userIds || (userId ? [userId] : []);
+    if (push_action === 'send_bulk' || push_action === 'get_stats') {
+      throw new Error('Forbidden: admin role required');
+    }
+    if (!targets.every((t) => t === callerId)) {
+      throw new Error('Forbidden: can only send push notifications to yourself');
+    }
+  }
 
   if (push_action === 'subscribe') {
     if (!userId || !subscription) throw new Error('userId and subscription required');
