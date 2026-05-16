@@ -407,8 +407,28 @@ serve(async (req) => {
   }
 
   try {
+    // ── Auth check ──
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return json({ error: "Unauthorized" }, 401);
+    }
+    const { data: authData, error: authErr } = await supabaseAdmin.auth.getUser(authHeader.slice(7));
+    if (authErr || !authData?.user) {
+      return json({ error: "Unauthorized" }, 401);
+    }
+    const callerId = authData.user.id;
+    const { data: roleRows } = await supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", callerId)
+      .in("role", ["admin", "super_admin"]);
+    const isAdmin = !!roleRows?.length;
+
     const body = await req.json();
-    const { mode, messages, property_id, user_id, conversation_id } = body;
+    const { mode, messages, property_id, conversation_id } = body;
+    // Force user_id to caller unless admin explicitly requests another user
+    const requestedUserId = body.user_id;
+    const user_id = isAdmin && requestedUserId ? requestedUserId : callerId;
 
     // Non-streaming modes
     if (mode === "generate_deal_insight") {

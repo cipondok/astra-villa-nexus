@@ -237,21 +237,103 @@ async function getRiskDashboardStats() {
   };
 }
 
+const ADMIN_ACTIONS = new Set([
+  "batch_recalculate",
+  "dashboard_stats",
+  "check_transaction_risk",
+]);
+const SYSTEM_ONLY_SIGNALS = new Set([
+  "tor_vpn_detected",
+  "impossible_travel",
+  "escrow_dispute",
+  "payment_reversal",
+  "price_manipulation",
+  "fake_listing_report",
+  "high_refund_ratio",
+  "bulk_deposit_pattern",
+]);
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
     const body = await req.json();
     const { action } = body;
+
+    // ── Authentication: cron-secret OR JWT ──
+    const cronSecret = req.headers.get("x-cron-secret");
+    const internalSecret = Deno.env.get("INTERNAL_SECRET") || Deno.env.get("CRON_SECRET");
+    const isInternalCall = !!internalSecret && cronSecret === internalSecret;
+
+    let callerId: string | null = null;
+    let isAdmin = false;
+
+    if (!isInternalCall) {
+      const authHeader = req.headers.get("Authorization");
+      if (!authHeader?.startsWith("Bearer ")) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const { data: authData, error: authErr } = await supabase.auth.getUser(authHeader.slice(7));
+      if (authErr || !authData?.user) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      callerId = authData.user.id;
+      const { data: roleRows } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", callerId)
+        .in("role", ["admin", "super_admin"]);
+      isAdmin = !!roleRows?.length;
+    }
+
+    // Admin-only actions
+    if (ADMIN_ACTIONS.has(action) && !isInternalCall && !isAdmin) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     let result: unknown;
 
     switch (action) {
-      case "emit_risk_event":
+      case "emit_risk_event": {
+        // Non-admin users can only emit events targeting themselves, and cannot
+        // emit privileged system-only signal types
+        if (!isInternalCall && !isAdmin) {
+          if (body.entity_type !== "user" || body.entity_id !== callerId) {
+            return new Response(JSON.stringify({ error: "Forbidden" }), {
+              status: 403,
+              headers: { ...corsHeaders, "Content-Type": "application/json" },
+            });
+          }
+          if (SYSTEM_ONLY_SIGNALS.has(body.risk_signal_type)) {
+            return new Response(JSON.stringify({ error: "Forbidden signal type" }), {
+              status: 403,
+              headers: { ...corsHeaders, "Content-Type": "application/json" },
+            });
+          }
+        }
         result = await emitRiskEvent(body);
         break;
-      case "calculate_user_risk":
-        result = await calculateUserRiskScore(body.user_id);
+      }
+      case "calculate_user_risk": {
+        const target = isInternalCall || isAdmin ? body.user_id : callerId;
+        if (!target) {
+          return new Response(JSON.stringify({ error: "user_id required" }), {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+        result = await calculateUserRiskScore(target);
         break;
+      }
       case "check_transaction_risk":
         result = await checkTransactionRisk(body);
         break;
