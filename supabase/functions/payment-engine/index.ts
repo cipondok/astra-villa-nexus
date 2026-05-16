@@ -96,6 +96,7 @@ function buildMidtransPayload(params: Record<string, any>) {
 // ─── action handlers ────────────────────────────────────────────────
 
 async function createCheckout(params: Record<string, any>, supabase: any, userId: string | null) {
+  if (!userId) throw new Error("Authentication required for checkout");
   const payload = buildMidtransPayload(params);
   const res = await fetch(MIDTRANS_SNAP_URL, {
     method: "POST",
