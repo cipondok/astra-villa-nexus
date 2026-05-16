@@ -2637,7 +2637,7 @@ Deno.serve(async (req) => {
     // MODE: buyer_profile
     // ═══════════════════════════════════════════
     if (mode === 'buyer_profile') {
-      const targetUserId = body.user_id || userId;
+      const targetUserId = resolveTargetUserId(body.user_id);
       if (!targetUserId) {
         return new Response(JSON.stringify({ error: 'user_id is required' }), {
           status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -2834,7 +2834,7 @@ Deno.serve(async (req) => {
     // MODE: lead_score
     // ═══════════════════════════════════════════
     if (mode === 'lead_score') {
-      const targetUserId = body.user_id || userId;
+      const targetUserId = resolveTargetUserId(body.user_id);
       if (!targetUserId) {
         return new Response(JSON.stringify({ error: 'user_id is required' }), {
           status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -2897,7 +2897,7 @@ Deno.serve(async (req) => {
     // ═══════════════════════════════════════════
     if (mode === 'ai_brain') {
       const t0 = Date.now();
-      const targetUserId = body.user_id || userId;
+      const targetUserId = resolveTargetUserId(body.user_id);
       if (!targetUserId) {
         return new Response(JSON.stringify({ error: 'user_id is required' }), {
           status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -3670,7 +3670,7 @@ Deno.serve(async (req) => {
     // MODE: buyer_intent — Purchase likelihood predictor
     // ═══════════════════════════════════════════
     if (mode === 'buyer_intent') {
-      const targetUserId = body.user_id || userId;
+      const targetUserId = resolveTargetUserId(body.user_id);
       if (!targetUserId) {
         return new Response(JSON.stringify({ error: 'user_id is required' }), {
           status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -6015,7 +6015,7 @@ Respond ONLY with a JSON array of strings, one explanation per property in same 
     // ██  PORTFOLIO MANAGER MODE
     // ═══════════════════════════════════════════════════════════
     if (mode === 'portfolio_manager') {
-      const targetUserId = body.user_id || userId;
+      const targetUserId = resolveTargetUserId(body.user_id);
       const serviceClient = createClient(supabaseUrl, serviceKey);
 
       // 1. Fetch owned properties
@@ -10755,7 +10755,7 @@ Project Details:
     // ── COMPUTE INVESTOR DNA ──
     // ═══════════════════════════════════════════
     if (mode === 'compute_investor_dna') {
-      const targetUserId = body.target_user_id || userId;
+      const targetUserId = resolveTargetUserId(body.target_user_id);
       if (!targetUserId) {
         return new Response(JSON.stringify({ error: 'User ID required' }), {
           status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -11317,7 +11317,7 @@ Project Details:
     if (mode === 'astra_token') {
       const payload = body.payload || {};
       const action = payload.action;
-      const targetUserId = payload.userId || userId;
+      const targetUserId = resolveTargetUserId(payload.userId);
 
       if (action === 'get_balance') {
         const { data: bal } = await supabase
