@@ -434,16 +434,26 @@ serve(async (req) => {
 
     const body = await req.json();
     const { action, ...params } = body;
-    log('Invoked', { action });
+
+    // Determine internal-call status from a server-side secret header
+    // (never trust a body-level flag like `skipAuth`).
+    const internalSecret = req.headers.get('x-internal-secret');
+    const expectedSecret = Deno.env.get('INTERNAL_SECRET');
+    const isInternalCall = !!expectedSecret && internalSecret === expectedSecret;
+
+    // Reject any client-supplied skipAuth flag — bypass must be header-based only.
+    if ('skipAuth' in params) delete (params as any).skipAuth;
+
+    log('Invoked', { action, internal: isInternalCall });
 
     let result: Record<string, unknown>;
 
     switch (action as Action) {
       case 'send_email':
-        result = await sendEmail(params, supabase, req);
+        result = await sendEmail(params, supabase, req, isInternalCall);
         break;
       case 'push_notification':
-        result = await pushNotification(params, supabase);
+        result = await pushNotification(params, supabase, req, isInternalCall);
         break;
       case 'schedule_email':
         result = await scheduleEmail(params, supabase);
