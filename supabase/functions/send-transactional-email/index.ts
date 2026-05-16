@@ -113,6 +113,7 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
     )
+  }
 
   // Non-internal callers may only send to their own email (prevents phishing/spam abuse).
   if (!isInternalCall && callerEmail) {
