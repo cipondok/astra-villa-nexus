@@ -77,16 +77,34 @@ Deno.serve(async (req) => {
   );
 
   try {
-    const body = await req.json().catch(() => ({}));
-    const userId = body.user_id || body.userId;
-    const topN = body.top_n ?? 5;
-
-    if (!userId) {
+    // ── Auth check ──
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
       return new Response(
-        JSON.stringify({ error: "user_id required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+    const { data: authData, error: authErr } = await supabase.auth.getUser(authHeader.slice(7));
+    if (authErr || !authData?.user) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    const callerId = authData.user.id;
+    const { data: roleRows } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", callerId)
+      .in("role", ["admin", "super_admin"]);
+    const isAdmin = !!roleRows?.length;
+
+    const body = await req.json().catch(() => ({}));
+    const requested = body.user_id || body.userId;
+    // Non-admins are always scoped to themselves
+    const userId = isAdmin && requested ? requested : callerId;
+    const topN = body.top_n ?? 5;
 
     // 1. Fetch investor DNA
     const { data: dna } = await supabase
