@@ -113,6 +113,16 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
     )
+
+  // Non-internal callers may only send to their own email (prevents phishing/spam abuse).
+  if (!isInternalCall && callerEmail) {
+    if (recipientEmail && recipientEmail.toLowerCase() !== callerEmail.toLowerCase()) {
+      return new Response(
+        JSON.stringify({ error: 'Forbidden: can only send to your own email' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+    recipientEmail = callerEmail
   }
 
   if (!templateName) {
