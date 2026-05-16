@@ -83,6 +83,25 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, serviceKey);
 
+    // ── Admin check for cross-user data access ──
+    // Only admins (or service-role internal callers) may override the target user via body.user_id.
+    let isAdminCaller = isServiceRole;
+    if (!isAdminCaller && userId) {
+      const { data: adminRow } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .eq('role', 'admin')
+        .maybeSingle();
+      isAdminCaller = !!adminRow;
+    }
+    // Helper: resolve an explicit target user id. Non-admins are ALWAYS scoped to themselves
+    // to prevent IDOR access to other users' private data via body.user_id.
+    const resolveTargetUserId = (requested: unknown): string => {
+      if (isAdminCaller && typeof requested === 'string' && requested) return requested;
+      return userId;
+    };
+
     // ── Fetch user subscription tier for server-side gating ──
     let subscriptionType = 'free';
     if (userId) {
@@ -2618,7 +2637,7 @@ Deno.serve(async (req) => {
     // MODE: buyer_profile
     // ═══════════════════════════════════════════
     if (mode === 'buyer_profile') {
-      const targetUserId = body.user_id || userId;
+      const targetUserId = resolveTargetUserId(body.user_id);
       if (!targetUserId) {
         return new Response(JSON.stringify({ error: 'user_id is required' }), {
           status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -2815,7 +2834,7 @@ Deno.serve(async (req) => {
     // MODE: lead_score
     // ═══════════════════════════════════════════
     if (mode === 'lead_score') {
-      const targetUserId = body.user_id || userId;
+      const targetUserId = resolveTargetUserId(body.user_id);
       if (!targetUserId) {
         return new Response(JSON.stringify({ error: 'user_id is required' }), {
           status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -2878,7 +2897,7 @@ Deno.serve(async (req) => {
     // ═══════════════════════════════════════════
     if (mode === 'ai_brain') {
       const t0 = Date.now();
-      const targetUserId = body.user_id || userId;
+      const targetUserId = resolveTargetUserId(body.user_id);
       if (!targetUserId) {
         return new Response(JSON.stringify({ error: 'user_id is required' }), {
           status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -3651,7 +3670,7 @@ Deno.serve(async (req) => {
     // MODE: buyer_intent — Purchase likelihood predictor
     // ═══════════════════════════════════════════
     if (mode === 'buyer_intent') {
-      const targetUserId = body.user_id || userId;
+      const targetUserId = resolveTargetUserId(body.user_id);
       if (!targetUserId) {
         return new Response(JSON.stringify({ error: 'user_id is required' }), {
           status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -5996,7 +6015,7 @@ Respond ONLY with a JSON array of strings, one explanation per property in same 
     // ██  PORTFOLIO MANAGER MODE
     // ═══════════════════════════════════════════════════════════
     if (mode === 'portfolio_manager') {
-      const targetUserId = body.user_id || userId;
+      const targetUserId = resolveTargetUserId(body.user_id);
       const serviceClient = createClient(supabaseUrl, serviceKey);
 
       // 1. Fetch owned properties
@@ -10736,7 +10755,7 @@ Project Details:
     // ── COMPUTE INVESTOR DNA ──
     // ═══════════════════════════════════════════
     if (mode === 'compute_investor_dna') {
-      const targetUserId = body.target_user_id || userId;
+      const targetUserId = resolveTargetUserId(body.target_user_id);
       if (!targetUserId) {
         return new Response(JSON.stringify({ error: 'User ID required' }), {
           status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -11298,7 +11317,7 @@ Project Details:
     if (mode === 'astra_token') {
       const payload = body.payload || {};
       const action = payload.action;
-      const targetUserId = payload.userId || userId;
+      const targetUserId = resolveTargetUserId(payload.userId);
 
       if (action === 'get_balance') {
         const { data: bal } = await supabase

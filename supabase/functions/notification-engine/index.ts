@@ -70,11 +70,12 @@ function buildEmailHtml(branding: any, headerText: string, bodyContent: string, 
 }
 
 // ─── send_email ─────────────────────────────────────────────────────
-async function sendEmail(params: Record<string, any>, supabase: any, req: Request) {
-  const { to, subject, template, variables, html, skipAuth } = params;
+async function sendEmail(params: Record<string, any>, supabase: any, req: Request, isInternalCall: boolean) {
+  const { to, subject, template, variables, html } = params;
 
-  // Auth check for non-system emails
-  if (!skipAuth) {
+  // Auth check for non-system (external) callers. Internal callers are authenticated
+  // via the x-internal-secret header verified upstream — never via a body flag.
+  if (!isInternalCall) {
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) throw new Error('Authorization required');
     const supabaseAuth = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: authHeader } } });
@@ -151,8 +152,42 @@ async function sendEmail(params: Record<string, any>, supabase: any, req: Reques
 }
 
 // ─── push_notification ──────────────────────────────────────────────
-async function pushNotification(params: Record<string, any>, supabase: any) {
+async function pushNotification(params: Record<string, any>, supabase: any, req: Request, isInternalCall: boolean) {
   const { push_action = 'send_to_user', userId, notification, subscription } = params;
+
+  // Authenticate caller for all push actions. Internal callers use the
+  // x-internal-secret header (verified upstream). External callers must present a JWT.
+  let callerId: string | null = null;
+  let callerIsAdmin = false;
+  if (!isInternalCall) {
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) throw new Error('Authorization required');
+    const supabaseAuth = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: authHeader } } });
+    const token = authHeader.replace('Bearer ', '');
+    const { data: userData, error: userError } = await supabaseAuth.auth.getUser(token);
+    if (userError || !userData?.user) throw new Error('Invalid token');
+    callerId = userData.user.id;
+    const { data: isAdmin } = await supabase.rpc('has_role', { user_id: callerId, role: 'admin' });
+    callerIsAdmin = !!isAdmin;
+  }
+
+  // For subscribe/unsubscribe, the user can only manage their own subscription
+  if ((push_action === 'subscribe' || push_action === 'unsubscribe') && !isInternalCall && !callerIsAdmin) {
+    if (!callerId || (userId && userId !== callerId)) {
+      throw new Error('You can only manage your own push subscriptions');
+    }
+  }
+
+  // For send_to_user / send_bulk / get_stats, only admins or internal callers may target other users
+  if ((push_action === 'send_to_user' || push_action === 'send_bulk' || push_action === 'get_stats') && !isInternalCall && !callerIsAdmin) {
+    const targets: string[] = params.userIds || (userId ? [userId] : []);
+    if (push_action === 'send_bulk' || push_action === 'get_stats') {
+      throw new Error('Forbidden: admin role required');
+    }
+    if (!targets.every((t) => t === callerId)) {
+      throw new Error('Forbidden: can only send push notifications to yourself');
+    }
+  }
 
   if (push_action === 'subscribe') {
     if (!userId || !subscription) throw new Error('userId and subscription required');
@@ -241,7 +276,7 @@ async function scheduleEmail(params: Record<string, any>, supabase: any) {
       const { data: userData } = await supabase.auth.admin.getUserById(userId);
       if (!userData?.user?.email) continue;
       const { data: profile } = await supabase.from('profiles').select('full_name').eq('id', userId).single();
-      const { error } = await supabase.functions.invoke('notification-engine', { body: { action: 'send_email', to: userData.user.email, template: sch.templateId, variables: { user_name: profile?.full_name || userData.user.email.split('@')[0] }, skipAuth: true } });
+      const { error } = await supabase.functions.invoke('notification-engine', { body: { action: 'send_email', to: userData.user.email, template: sch.templateId, variables: { user_name: profile?.full_name || userData.user.email.split('@')[0] } }, headers: { 'x-internal-secret': Deno.env.get('INTERNAL_SECRET') ?? '' } });
       if (!error) emailsSent++;
       results.push({ schedule: sch.name, sent: error ? 0 : 1, errors: error ? [error.message] : [] });
     }
@@ -268,7 +303,7 @@ async function scheduleEmail(params: Record<string, any>, supabase: any) {
       }
 
       for (const user of users) {
-        const { error } = await supabase.functions.invoke('notification-engine', { body: { action: 'send_email', to: user.email, template: sch.templateId, variables: { user_name: user.full_name || user.email.split('@')[0] }, skipAuth: true } });
+        const { error } = await supabase.functions.invoke('notification-engine', { body: { action: 'send_email', to: user.email, template: sch.templateId, variables: { user_name: user.full_name || user.email.split('@')[0] } }, headers: { 'x-internal-secret': Deno.env.get('INTERNAL_SECRET') ?? '' } });
         if (!error) { sr.sent++; emailsSent++; }
         else sr.errors.push(`${user.email}: ${error.message}`);
         await new Promise(r => setTimeout(r, 100));
@@ -399,26 +434,46 @@ serve(async (req) => {
 
     const body = await req.json();
     const { action, ...params } = body;
-    log('Invoked', { action });
+
+    // Determine internal-call status from a server-side secret header
+    // (never trust a body-level flag like `skipAuth`).
+    const internalSecret = req.headers.get('x-internal-secret');
+    const expectedSecret = Deno.env.get('INTERNAL_SECRET');
+    const isInternalCall = !!expectedSecret && internalSecret === expectedSecret;
+
+    // Reject any client-supplied skipAuth flag — bypass must be header-based only.
+    if ('skipAuth' in params) delete (params as any).skipAuth;
+
+    log('Invoked', { action, internal: isInternalCall });
 
     let result: Record<string, unknown>;
 
     switch (action as Action) {
       case 'send_email':
-        result = await sendEmail(params, supabase, req);
+        result = await sendEmail(params, supabase, req, isInternalCall);
         break;
       case 'push_notification':
-        result = await pushNotification(params, supabase);
+        result = await pushNotification(params, supabase, req, isInternalCall);
         break;
       case 'schedule_email':
-        result = await scheduleEmail(params, supabase);
-        break;
       case 'lease_alert':
-        result = await leaseAlert(params, supabase);
+      case 'visit_reminder': {
+        // Bulk/admin-only operations — require internal secret or admin role
+        if (!isInternalCall) {
+          const authHeader = req.headers.get('Authorization');
+          if (!authHeader?.startsWith('Bearer ')) throw new Error('Authorization required');
+          const supabaseAuth = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: authHeader } } });
+          const token = authHeader.replace('Bearer ', '');
+          const { data: userData, error: userError } = await supabaseAuth.auth.getUser(token);
+          if (userError || !userData?.user) throw new Error('Invalid token');
+          const { data: isAdmin } = await supabase.rpc('has_role', { user_id: userData.user.id, role: 'admin' });
+          if (!isAdmin) throw new Error('Forbidden: admin role required');
+        }
+        if (action === 'schedule_email') result = await scheduleEmail(params, supabase);
+        else if (action === 'lease_alert') result = await leaseAlert(params, supabase);
+        else result = await visitReminder(params, supabase);
         break;
-      case 'visit_reminder':
-        result = await visitReminder(params, supabase);
-        break;
+      }
       default:
         throw new Error(`Unknown action: ${action}`);
     }

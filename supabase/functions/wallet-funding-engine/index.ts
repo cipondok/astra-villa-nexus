@@ -25,6 +25,25 @@ serve(async (req) => {
 
     const { action, payload } = await req.json();
 
+    // ── Auth policy ──
+    // Admin/cron-only actions (analytics + nudge generation).
+    const adminOnly = new Set(["funnel_analytics", "platform_stats", "activation_dashboard", "generate_nudges"]);
+    // User-scoped actions require any authenticated user.
+    const userScoped = new Set(["track_event", "get_nudges", "dismiss_nudge"]);
+
+    if (adminOnly.has(action)) {
+      // Allow cron via CRON_SECRET header (server-to-server) or admin user role.
+      const cronSecret = req.headers.get("x-cron-secret");
+      const isCron = !!cronSecret && cronSecret === Deno.env.get("CRON_SECRET");
+      if (!isCron) {
+        if (!userId) return json({ error: "Unauthorized" }, 401);
+        const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+        if (!isAdmin) return json({ error: "Forbidden: admin role required" }, 403);
+      }
+    } else if (userScoped.has(action)) {
+      if (!userId) return json({ error: "Unauthorized" }, 401);
+    }
+
     switch (action) {
       case "track_event": {
         const { stage, device_type, geo_country, amount, metadata } = payload || {};
