@@ -70,11 +70,12 @@ function buildEmailHtml(branding: any, headerText: string, bodyContent: string, 
 }
 
 // ─── send_email ─────────────────────────────────────────────────────
-async function sendEmail(params: Record<string, any>, supabase: any, req: Request) {
-  const { to, subject, template, variables, html, skipAuth } = params;
+async function sendEmail(params: Record<string, any>, supabase: any, req: Request, isInternalCall: boolean) {
+  const { to, subject, template, variables, html } = params;
 
-  // Auth check for non-system emails
-  if (!skipAuth) {
+  // Auth check for non-system (external) callers. Internal callers are authenticated
+  // via the x-internal-secret header verified upstream — never via a body flag.
+  if (!isInternalCall) {
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) throw new Error('Authorization required');
     const supabaseAuth = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: authHeader } } });
