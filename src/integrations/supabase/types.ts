@@ -1035,20 +1035,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "acquisition_bank_leads_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "acquisition_bank_leads_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "acquisition_bank_leads_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -1387,20 +1373,6 @@ export type Database = {
             columns: ["influencer_id"]
             isOneToOne: false
             referencedRelation: "acquisition_influencers"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "acquisition_influencer_campaigns_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "acquisition_influencer_campaigns_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -1914,20 +1886,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "acquisition_university_students_placement_property_id_fkey"
-            columns: ["placement_property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "acquisition_university_students_placement_property_id_fkey"
-            columns: ["placement_property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "acquisition_university_students_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -2101,52 +2059,18 @@ export type Database = {
       }
       admin_users: {
         Row: {
-          created_at: string | null
-          id: string
-          is_super_admin: boolean | null
-          role_id: string | null
-          updated_at: string | null
-          user_id: string | null
+          created_at: string
+          email: string
         }
         Insert: {
-          created_at?: string | null
-          id?: string
-          is_super_admin?: boolean | null
-          role_id?: string | null
-          updated_at?: string | null
-          user_id?: string | null
+          created_at?: string
+          email: string
         }
         Update: {
-          created_at?: string | null
-          id?: string
-          is_super_admin?: boolean | null
-          role_id?: string | null
-          updated_at?: string | null
-          user_id?: string | null
+          created_at?: string
+          email?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "admin_users_role_id_fkey"
-            columns: ["role_id"]
-            isOneToOne: false
-            referencedRelation: "admin_roles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "admin_users_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "admin_users_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       admin_vendor_service_controls: {
         Row: {
@@ -2804,22 +2728,7 @@ export type Database = {
           status?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "agent_crm_leads_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "agent_crm_leads_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       agent_deal_metrics: {
         Row: {
@@ -3114,22 +3023,7 @@ export type Database = {
           title?: string | null
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "agent_reviews_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "agent_reviews_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       ahcss_capital_copilot: {
         Row: {
@@ -3449,20 +3343,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "ai_behavior_tracking_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "ai_behavior_tracking_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "ai_behavior_tracking_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
@@ -3696,22 +3576,7 @@ export type Database = {
           severity?: string | null
           supporting_signals?: Json | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "ai_exit_advisories_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "ai_exit_advisories_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       ai_feature_dataset_exports: {
         Row: {
@@ -3821,22 +3686,7 @@ export type Database = {
           user_action?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "ai_feedback_signals_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "ai_feedback_signals_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       ai_generated_content: {
         Row: {
@@ -3860,22 +3710,7 @@ export type Database = {
           id?: string
           property_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "ai_generated_content_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "ai_generated_content_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       ai_image_gen_config: {
         Row: {
@@ -4010,22 +3845,7 @@ export type Database = {
           updated_at?: string
           worker_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "ai_image_jobs_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "ai_image_jobs_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       ai_intelligence_cache: {
         Row: {
@@ -4073,22 +3893,7 @@ export type Database = {
           source_table?: string | null
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "ai_intelligence_cache_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "ai_intelligence_cache_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       ai_investment_recommendations: {
         Row: {
@@ -4139,22 +3944,7 @@ export type Database = {
           timing_window?: string | null
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "ai_investment_recommendations_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "ai_investment_recommendations_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       ai_investor_cluster_membership: {
         Row: {
@@ -5052,22 +4842,7 @@ export type Database = {
           property_id?: string | null
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "ai_recommendation_events_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "ai_recommendation_events_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       ai_recommendation_outcomes: {
         Row: {
@@ -5110,20 +4885,6 @@ export type Database = {
           success?: boolean | null
         }
         Relationships: [
-          {
-            foreignKeyName: "ai_recommendation_outcomes_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "ai_recommendation_outcomes_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "ai_recommendation_outcomes_recommendation_id_fkey"
             columns: ["recommendation_id"]
@@ -7664,22 +7425,7 @@ export type Database = {
           unrealized_gain_pct?: number | null
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "asset_lifecycle_tracker_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "asset_lifecycle_tracker_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       asset_spv_entities: {
         Row: {
@@ -7709,22 +7455,7 @@ export type Database = {
           property_id?: string | null
           trustee_entity?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "asset_spv_entities_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "asset_spv_entities_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       astra_daily_checkins: {
         Row: {
@@ -10172,22 +9903,7 @@ export type Database = {
           session_id?: string | null
           user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "behavioral_events_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "behavioral_events_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       billing_plans: {
         Row: {
@@ -12381,20 +12097,6 @@ export type Database = {
             referencedRelation: "rental_bookings"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "checkin_checkout_records_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "checkin_checkout_records_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
         ]
       }
       city_developer_opportunities: {
@@ -14110,20 +13812,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "concierge_requests_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "concierge_requests_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "concierge_requests_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -14546,20 +14234,6 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "conversations_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "conversations_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "conversations_service_booking_id_fkey"
             columns: ["service_booking_id"]
@@ -16155,22 +15829,7 @@ export type Database = {
           title?: string
           user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "deal_alerts_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "deal_alerts_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       deal_boost_signals: {
         Row: {
@@ -16654,22 +16313,7 @@ export type Database = {
           updated_at?: string | null
           urgency_score?: number
         }
-        Relationships: [
-          {
-            foreignKeyName: "deal_hunter_opportunities_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: true
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "deal_hunter_opportunities_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: true
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       deal_negotiation_insights: {
         Row: {
@@ -17016,20 +16660,6 @@ export type Database = {
             referencedRelation: "property_offers"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "deal_transactions_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "deal_transactions_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
         ]
       }
       deal_visibility_ranking: {
@@ -17192,20 +16822,6 @@ export type Database = {
             columns: ["booking_id"]
             isOneToOne: true
             referencedRelation: "rental_bookings"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "deposit_escrows_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "deposit_escrows_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -19392,22 +19008,7 @@ export type Database = {
           property_id?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "favorites_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "favorites_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       fcss_capital_efficiency: {
         Row: {
@@ -19767,22 +19368,7 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "featured_ads_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "featured_ads_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       feedback_monitoring: {
         Row: {
@@ -20116,22 +19702,7 @@ export type Database = {
           updated_at?: string
           views_count?: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "flash_deals_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "flash_deals_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       flywheel_sync_state: {
         Row: {
@@ -20419,22 +19990,7 @@ export type Database = {
           updated_at?: string
           urgency_level?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "founder_deal_pipeline_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "founder_deal_pipeline_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       founder_deal_velocity_snapshot: {
         Row: {
@@ -20599,22 +20155,7 @@ export type Database = {
           total_shares_available?: number
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "fractional_offers_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fractional_offers_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       fraud_patterns: {
         Row: {
@@ -21331,20 +20872,6 @@ export type Database = {
             referencedRelation: "investment_funds"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "fund_assets_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fund_assets_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
         ]
       }
       fund_capital_allocations: {
@@ -21551,20 +21078,6 @@ export type Database = {
             columns: ["pool_id"]
             isOneToOne: false
             referencedRelation: "fund_liquidity_pools"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fund_deployments_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fund_deployments_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -21951,22 +21464,7 @@ export type Database = {
           risk_grade?: string | null
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "fund_opportunity_scores_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fund_opportunity_scores_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       fund_performance_features: {
         Row: {
@@ -22190,20 +21688,6 @@ export type Database = {
             referencedRelation: "investment_funds"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "fund_property_allocations_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fund_property_allocations_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
         ]
       }
       fund_rebalance_signals: {
@@ -22274,20 +21758,6 @@ export type Database = {
             columns: ["pool_id"]
             isOneToOne: false
             referencedRelation: "fund_liquidity_pools"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fund_rebalance_signals_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fund_rebalance_signals_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -30762,22 +30232,7 @@ export type Database = {
           type?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "in_app_notifications_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "in_app_notifications_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       indonesian_business_categories: {
         Row: {
@@ -31499,22 +30954,7 @@ export type Database = {
           updated_at?: string | null
           user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "inquiries_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "inquiries_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       inquiry_followup_actions: {
         Row: {
@@ -31897,22 +31337,7 @@ export type Database = {
           property_type?: string | null
           risk_factors?: string[] | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "investment_forecasts_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "investment_forecasts_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       investment_funds: {
         Row: {
@@ -32083,22 +31508,7 @@ export type Database = {
           risk_level?: string | null
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "investment_metrics_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: true
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "investment_metrics_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: true
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       investment_outcomes: {
         Row: {
@@ -32788,22 +32198,7 @@ export type Database = {
           triggered_at?: string | null
           urgency_score?: number
         }
-        Relationships: [
-          {
-            foreignKeyName: "investor_liquidity_alerts_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "investor_liquidity_alerts_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       investor_nurture_sequences: {
         Row: {
@@ -33196,22 +32591,7 @@ export type Database = {
           updated_at?: string
           views_count?: number
         }
-        Relationships: [
-          {
-            foreignKeyName: "investor_posts_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "investor_posts_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       investor_preferences: {
         Row: {
@@ -33349,22 +32729,7 @@ export type Database = {
           score_components?: Json | null
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "investor_recommendations_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "investor_recommendations_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       investor_referrals: {
         Row: {
@@ -33709,20 +33074,6 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "investor_watchlist_categories"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "investor_watchlist_items_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "investor_watchlist_items_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -34978,6 +34329,50 @@ export type Database = {
         }
         Relationships: []
       }
+      leads: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          phone: string | null
+          property_id: string | null
+          source: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message?: string
+          name: string
+          phone?: string | null
+          property_id?: string | null
+          source?: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          phone?: string | null
+          property_id?: string | null
+          source?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leads_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       learned_preferences: {
         Row: {
           confidence_score: number | null
@@ -35119,20 +34514,6 @@ export type Database = {
             referencedRelation: "rental_bookings"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "lease_contracts_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "lease_contracts_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
         ]
       }
       lease_extension_requests: {
@@ -35199,20 +34580,6 @@ export type Database = {
             columns: ["booking_id"]
             isOneToOne: false
             referencedRelation: "rental_bookings"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "lease_extension_requests_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "lease_extension_requests_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -35331,22 +34698,7 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "legal_service_requests_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "legal_service_requests_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       legal_service_timeline: {
         Row: {
@@ -36250,22 +35602,7 @@ export type Database = {
           signal_type?: string
           signal_weight?: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "liquidity_signal_queue_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "liquidity_signal_queue_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       liquidity_trade_executions: {
         Row: {
@@ -36544,20 +35881,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "listing_competition_entries_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "listing_competition_entries_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "listing_competition_entries_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -36652,22 +35975,7 @@ export type Database = {
           tip_title?: string
           tip_type?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "listing_improvement_tips_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "listing_improvement_tips_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       listing_quality_signals: {
         Row: {
@@ -37589,20 +36897,6 @@ export type Database = {
             columns: ["booking_id"]
             isOneToOne: false
             referencedRelation: "rental_bookings"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "maintenance_requests_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "maintenance_requests_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -39253,22 +38547,7 @@ export type Database = {
           youtube_id?: string
           youtube_url?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "media_videos_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "media_videos_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       message_automation_config: {
         Row: {
@@ -39931,20 +39210,6 @@ export type Database = {
             referencedRelation: "ml_valuation_predictions"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "ml_valuation_feedback_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "ml_valuation_feedback_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
         ]
       }
       ml_valuation_models: {
@@ -40079,20 +39344,6 @@ export type Database = {
             referencedRelation: "ml_valuation_models"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "ml_valuation_predictions_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "ml_valuation_predictions_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
         ]
       }
       ml_valuation_training_runs: {
@@ -40204,20 +39455,6 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "mobile_ar_sessions_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mobile_ar_sessions_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "mobile_ar_sessions_user_id_fkey"
             columns: ["user_id"]
@@ -40405,20 +39642,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "mobile_chat_messages_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mobile_chat_messages_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "mobile_chat_messages_reply_to_id_fkey"
             columns: ["reply_to_id"]
             isOneToOne: false
@@ -40595,20 +39818,6 @@ export type Database = {
             referencedRelation: "mobile_property_journeys"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "mobile_journey_milestones_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mobile_journey_milestones_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
         ]
       }
       mobile_live_auctions: {
@@ -40688,20 +39897,6 @@ export type Database = {
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mobile_live_auctions_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mobile_live_auctions_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -41133,20 +40328,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "mortgage_applications_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mortgage_applications_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "mortgage_applications_simulation_id_fkey"
             columns: ["simulation_id"]
             isOneToOne: false
@@ -41300,20 +40481,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "mortgage_inquiries_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mortgage_inquiries_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "mortgage_inquiries_simulation_id_fkey"
             columns: ["simulation_id"]
             isOneToOne: false
@@ -41413,20 +40580,6 @@ export type Database = {
             columns: ["bank_partner_id"]
             isOneToOne: false
             referencedRelation: "acquisition_bank_partnerships"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mortgage_preapproval_requests_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mortgage_preapproval_requests_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
           {
@@ -41589,20 +40742,6 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "mortgage_simulations_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mortgage_simulations_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "mortgage_simulations_selected_bank_id_fkey"
             columns: ["selected_bank_id"]
@@ -42816,20 +41955,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "off_market_deals_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "off_market_deals_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "off_market_deals_seller_id_fkey"
             columns: ["seller_id"]
             isOneToOne: false
@@ -43162,20 +42287,6 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "orders_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "orders_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "orders_user_id_fkey"
             columns: ["user_id"]
@@ -44294,22 +43405,7 @@ export type Database = {
           total_supply?: number
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "pate_tokenized_assets_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "pate_tokenized_assets_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       pate_yield_streams: {
         Row: {
@@ -45789,20 +44885,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "photo_contest_entries_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "photo_contest_entries_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "photo_contest_entries_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -46812,22 +45894,7 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "portfolio_allocations_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "portfolio_allocations_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       portfolio_assets: {
         Row: {
@@ -46878,20 +45945,6 @@ export type Database = {
             columns: ["portfolio_id"]
             isOneToOne: false
             referencedRelation: "investor_portfolios"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "portfolio_assets_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "portfolio_assets_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -47217,20 +46270,6 @@ export type Database = {
             columns: ["portfolio_id"]
             isOneToOne: false
             referencedRelation: "investor_portfolios"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "portfolio_recommendations_target_property_id_fkey"
-            columns: ["target_property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "portfolio_recommendations_target_property_id_fkey"
-            columns: ["target_property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -48581,384 +47620,69 @@ export type Database = {
       }
       properties: {
         Row: {
-          advance_booking_days: number | null
-          agent_id: string | null
-          ai_estimated_price: number | null
-          ai_generated: boolean | null
-          ai_price_confidence: number | null
-          ai_staging_images: string[] | null
-          approval_status: string | null
-          area: string | null
-          area_sqm: number | null
-          available_from: string | null
-          available_until: string | null
-          bathrooms: number | null
-          bedrooms: number | null
-          booking_type: string | null
-          building_area_sqm: number | null
-          city: string | null
-          completion_percentage: number | null
-          construction_phase: string | null
-          construction_phases: Json | null
-          created_at: string | null
-          days_on_market: number | null
-          deal_score: number | null
-          demand_heat_score: number | null
-          demand_score: number | null
-          demand_trend: string | null
-          description: string | null
-          developer_certified: boolean
-          developer_id: string | null
-          development_status: string
-          discount_percentage: number | null
-          drone_video_url: string | null
-          estimated_completion_date: string | null
-          estimated_completion_value: number | null
-          estimated_price_growth: number | null
-          expected_rental_yield: number | null
-          floors: number | null
-          forecast_score_3m: number | null
-          furnishing: string | null
-          garage_count: number | null
-          glb_model_url: string | null
-          handover_year: number | null
-          has_360_view: boolean | null
-          has_drone_video: boolean | null
-          has_interactive_floorplan: boolean | null
-          has_pool: boolean | null
-          has_vr: boolean | null
+          address: string
+          bathrooms: number
+          bedrooms: number
+          building_sqm: number
+          city: string
+          cover_image: string | null
+          created_at: string
+          description: string
+          featured: boolean
           id: string
-          image_generated_at: string | null
-          image_urls: string[] | null
-          images: string[] | null
-          inquiry_count: number | null
-          inquiry_velocity: number | null
-          investment_risk_level: string | null
-          investment_score: number | null
-          investor_highlight: boolean | null
-          is_early_bird: boolean | null
-          is_featured: boolean | null
-          is_pre_launch: boolean | null
-          land_area_sqm: number | null
-          last_market_evaluated_at: string | null
-          latitude: number | null
-          launch_date: string | null
-          legal_checked: boolean
-          legal_status: string | null
-          liquidity_score: number | null
-          listed_at: string | null
+          images: string[]
+          land_sqm: number
           listing_type: string
-          location: string
-          longitude: number | null
-          luxury_index: number | null
-          luxury_index_score: number | null
-          market_heat_score: number | null
-          minimum_rental_days: number | null
-          nearby_facilities: Json | null
-          online_booking_enabled: boolean | null
-          opportunity_score: number | null
-          owner_id: string
-          owner_type: string | null
-          ownership_verified: boolean
-          panorama_360_urls: string[] | null
-          payment_methods: Json | null
-          payment_plan_available: boolean | null
-          predicted_days_to_sell: number | null
-          premium_partner: boolean
-          price: number | null
-          price_action_hint: string | null
-          price_forecast_12m: number | null
-          price_forecast_3m: number | null
-          price_forecast_6m: number | null
-          price_predicted_at: string | null
-          price_trend_signal: string | null
-          property_features: Json | null
-          property_type: string
-          rental_periods: string[] | null
-          rental_terms: Json | null
-          rental_yield: number | null
-          rental_yield_percentage: number | null
-          risk_level: string | null
-          roi_percentage: number | null
-          roi_projection: number | null
-          saves_count: number | null
-          score_updated_at: string | null
-          seo_description: string | null
-          seo_title: string | null
-          sold_at: string | null
-          state: string | null
-          status: string | null
-          three_d_model_url: string | null
-          thumbnail_url: string | null
+          meta: Json
+          price_idr: number
+          slug: string
+          status: string
           title: string
-          total_units: number | null
-          units_sold: number | null
-          updated_at: string | null
-          valuation_gap_pct: number | null
-          valuation_label: string | null
-          view_type: string | null
-          views_count: number | null
-          virtual_tour_url: string | null
-          wna_eligible: boolean | null
+          updated_at: string
         }
         Insert: {
-          advance_booking_days?: number | null
-          agent_id?: string | null
-          ai_estimated_price?: number | null
-          ai_generated?: boolean | null
-          ai_price_confidence?: number | null
-          ai_staging_images?: string[] | null
-          approval_status?: string | null
-          area?: string | null
-          area_sqm?: number | null
-          available_from?: string | null
-          available_until?: string | null
-          bathrooms?: number | null
-          bedrooms?: number | null
-          booking_type?: string | null
-          building_area_sqm?: number | null
-          city?: string | null
-          completion_percentage?: number | null
-          construction_phase?: string | null
-          construction_phases?: Json | null
-          created_at?: string | null
-          days_on_market?: number | null
-          deal_score?: number | null
-          demand_heat_score?: number | null
-          demand_score?: number | null
-          demand_trend?: string | null
-          description?: string | null
-          developer_certified?: boolean
-          developer_id?: string | null
-          development_status?: string
-          discount_percentage?: number | null
-          drone_video_url?: string | null
-          estimated_completion_date?: string | null
-          estimated_completion_value?: number | null
-          estimated_price_growth?: number | null
-          expected_rental_yield?: number | null
-          floors?: number | null
-          forecast_score_3m?: number | null
-          furnishing?: string | null
-          garage_count?: number | null
-          glb_model_url?: string | null
-          handover_year?: number | null
-          has_360_view?: boolean | null
-          has_drone_video?: boolean | null
-          has_interactive_floorplan?: boolean | null
-          has_pool?: boolean | null
-          has_vr?: boolean | null
+          address?: string
+          bathrooms?: number
+          bedrooms?: number
+          building_sqm?: number
+          city?: string
+          cover_image?: string | null
+          created_at?: string
+          description?: string
+          featured?: boolean
           id?: string
-          image_generated_at?: string | null
-          image_urls?: string[] | null
-          images?: string[] | null
-          inquiry_count?: number | null
-          inquiry_velocity?: number | null
-          investment_risk_level?: string | null
-          investment_score?: number | null
-          investor_highlight?: boolean | null
-          is_early_bird?: boolean | null
-          is_featured?: boolean | null
-          is_pre_launch?: boolean | null
-          land_area_sqm?: number | null
-          last_market_evaluated_at?: string | null
-          latitude?: number | null
-          launch_date?: string | null
-          legal_checked?: boolean
-          legal_status?: string | null
-          liquidity_score?: number | null
-          listed_at?: string | null
-          listing_type: string
-          location: string
-          longitude?: number | null
-          luxury_index?: number | null
-          luxury_index_score?: number | null
-          market_heat_score?: number | null
-          minimum_rental_days?: number | null
-          nearby_facilities?: Json | null
-          online_booking_enabled?: boolean | null
-          opportunity_score?: number | null
-          owner_id: string
-          owner_type?: string | null
-          ownership_verified?: boolean
-          panorama_360_urls?: string[] | null
-          payment_methods?: Json | null
-          payment_plan_available?: boolean | null
-          predicted_days_to_sell?: number | null
-          premium_partner?: boolean
-          price?: number | null
-          price_action_hint?: string | null
-          price_forecast_12m?: number | null
-          price_forecast_3m?: number | null
-          price_forecast_6m?: number | null
-          price_predicted_at?: string | null
-          price_trend_signal?: string | null
-          property_features?: Json | null
-          property_type: string
-          rental_periods?: string[] | null
-          rental_terms?: Json | null
-          rental_yield?: number | null
-          rental_yield_percentage?: number | null
-          risk_level?: string | null
-          roi_percentage?: number | null
-          roi_projection?: number | null
-          saves_count?: number | null
-          score_updated_at?: string | null
-          seo_description?: string | null
-          seo_title?: string | null
-          sold_at?: string | null
-          state?: string | null
-          status?: string | null
-          three_d_model_url?: string | null
-          thumbnail_url?: string | null
+          images?: string[]
+          land_sqm?: number
+          listing_type?: string
+          meta?: Json
+          price_idr?: number
+          slug: string
+          status?: string
           title: string
-          total_units?: number | null
-          units_sold?: number | null
-          updated_at?: string | null
-          valuation_gap_pct?: number | null
-          valuation_label?: string | null
-          view_type?: string | null
-          views_count?: number | null
-          virtual_tour_url?: string | null
-          wna_eligible?: boolean | null
+          updated_at?: string
         }
         Update: {
-          advance_booking_days?: number | null
-          agent_id?: string | null
-          ai_estimated_price?: number | null
-          ai_generated?: boolean | null
-          ai_price_confidence?: number | null
-          ai_staging_images?: string[] | null
-          approval_status?: string | null
-          area?: string | null
-          area_sqm?: number | null
-          available_from?: string | null
-          available_until?: string | null
-          bathrooms?: number | null
-          bedrooms?: number | null
-          booking_type?: string | null
-          building_area_sqm?: number | null
-          city?: string | null
-          completion_percentage?: number | null
-          construction_phase?: string | null
-          construction_phases?: Json | null
-          created_at?: string | null
-          days_on_market?: number | null
-          deal_score?: number | null
-          demand_heat_score?: number | null
-          demand_score?: number | null
-          demand_trend?: string | null
-          description?: string | null
-          developer_certified?: boolean
-          developer_id?: string | null
-          development_status?: string
-          discount_percentage?: number | null
-          drone_video_url?: string | null
-          estimated_completion_date?: string | null
-          estimated_completion_value?: number | null
-          estimated_price_growth?: number | null
-          expected_rental_yield?: number | null
-          floors?: number | null
-          forecast_score_3m?: number | null
-          furnishing?: string | null
-          garage_count?: number | null
-          glb_model_url?: string | null
-          handover_year?: number | null
-          has_360_view?: boolean | null
-          has_drone_video?: boolean | null
-          has_interactive_floorplan?: boolean | null
-          has_pool?: boolean | null
-          has_vr?: boolean | null
+          address?: string
+          bathrooms?: number
+          bedrooms?: number
+          building_sqm?: number
+          city?: string
+          cover_image?: string | null
+          created_at?: string
+          description?: string
+          featured?: boolean
           id?: string
-          image_generated_at?: string | null
-          image_urls?: string[] | null
-          images?: string[] | null
-          inquiry_count?: number | null
-          inquiry_velocity?: number | null
-          investment_risk_level?: string | null
-          investment_score?: number | null
-          investor_highlight?: boolean | null
-          is_early_bird?: boolean | null
-          is_featured?: boolean | null
-          is_pre_launch?: boolean | null
-          land_area_sqm?: number | null
-          last_market_evaluated_at?: string | null
-          latitude?: number | null
-          launch_date?: string | null
-          legal_checked?: boolean
-          legal_status?: string | null
-          liquidity_score?: number | null
-          listed_at?: string | null
+          images?: string[]
+          land_sqm?: number
           listing_type?: string
-          location?: string
-          longitude?: number | null
-          luxury_index?: number | null
-          luxury_index_score?: number | null
-          market_heat_score?: number | null
-          minimum_rental_days?: number | null
-          nearby_facilities?: Json | null
-          online_booking_enabled?: boolean | null
-          opportunity_score?: number | null
-          owner_id?: string
-          owner_type?: string | null
-          ownership_verified?: boolean
-          panorama_360_urls?: string[] | null
-          payment_methods?: Json | null
-          payment_plan_available?: boolean | null
-          predicted_days_to_sell?: number | null
-          premium_partner?: boolean
-          price?: number | null
-          price_action_hint?: string | null
-          price_forecast_12m?: number | null
-          price_forecast_3m?: number | null
-          price_forecast_6m?: number | null
-          price_predicted_at?: string | null
-          price_trend_signal?: string | null
-          property_features?: Json | null
-          property_type?: string
-          rental_periods?: string[] | null
-          rental_terms?: Json | null
-          rental_yield?: number | null
-          rental_yield_percentage?: number | null
-          risk_level?: string | null
-          roi_percentage?: number | null
-          roi_projection?: number | null
-          saves_count?: number | null
-          score_updated_at?: string | null
-          seo_description?: string | null
-          seo_title?: string | null
-          sold_at?: string | null
-          state?: string | null
-          status?: string | null
-          three_d_model_url?: string | null
-          thumbnail_url?: string | null
+          meta?: Json
+          price_idr?: number
+          slug?: string
+          status?: string
           title?: string
-          total_units?: number | null
-          units_sold?: number | null
-          updated_at?: string | null
-          valuation_gap_pct?: number | null
-          valuation_label?: string | null
-          view_type?: string | null
-          views_count?: number | null
-          virtual_tour_url?: string | null
-          wna_eligible?: boolean | null
+          updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "properties_owner_id_fkey"
-            columns: ["owner_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "properties_owner_id_fkey"
-            columns: ["owner_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_ai_insights: {
         Row: {
@@ -49057,22 +47781,7 @@ export type Database = {
           search_name?: string | null
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_alerts_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_alerts_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_analytics: {
         Row: {
@@ -49114,22 +47823,7 @@ export type Database = {
           updated_at?: string
           views?: number
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_analytics_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_analytics_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_announcements: {
         Row: {
@@ -49184,20 +47878,6 @@ export type Database = {
             columns: ["owner_id"]
             isOneToOne: false
             referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_announcements_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_announcements_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -49277,22 +47957,7 @@ export type Database = {
           property_id?: string | null
           simulated_bid_price?: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_bid_signals_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_bid_signals_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_bookings: {
         Row: {
@@ -49385,20 +48050,6 @@ export type Database = {
             columns: ["owner_id"]
             isOneToOne: false
             referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_bookings_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_bookings_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
           {
@@ -49597,22 +48248,7 @@ export type Database = {
           undervaluation_percent?: number
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_deal_analysis_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: true
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_deal_analysis_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: true
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_engagement_scores: {
         Row: {
@@ -49663,22 +48299,7 @@ export type Database = {
           updated_at?: string | null
           views_total?: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_engagement_scores_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: true
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_engagement_scores_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: true
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_expenses: {
         Row: {
@@ -49747,20 +48368,6 @@ export type Database = {
             referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "property_expenses_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_expenses_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
         ]
       }
       property_facilities: {
@@ -49794,22 +48401,7 @@ export type Database = {
           name?: string
           property_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_facilities_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_facilities_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_filter_configurations: {
         Row: {
@@ -49902,22 +48494,7 @@ export type Database = {
           image_url?: string
           property_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_image_features_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_image_features_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_images: {
         Row: {
@@ -49947,22 +48524,7 @@ export type Database = {
           image_url?: string
           property_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_images_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_images_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_inspections: {
         Row: {
@@ -50024,20 +48586,6 @@ export type Database = {
             referencedRelation: "rental_bookings"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "property_inspections_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_inspections_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
         ]
       }
       property_investment_scores: {
@@ -50092,22 +48640,7 @@ export type Database = {
           risk_level?: string | null
           roi_forecast?: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_investment_scores_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: true
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_investment_scores_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: true
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_leads: {
         Row: {
@@ -50158,22 +48691,7 @@ export type Database = {
           status?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_leads_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_leads_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_liquidity_scores: {
         Row: {
@@ -50260,22 +48778,7 @@ export type Database = {
           signal_type?: string
           signal_value?: number
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_market_signals_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_market_signals_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_offers: {
         Row: {
@@ -50368,22 +48871,7 @@ export type Database = {
           updated_at?: string
           viewing_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_offers_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_offers_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_owner_requests: {
         Row: {
@@ -50533,22 +49021,7 @@ export type Database = {
           old_price?: number
           property_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_price_history_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_price_history_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_price_signals: {
         Row: {
@@ -50596,22 +49069,7 @@ export type Database = {
           property_type?: string | null
           signal_source?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_price_signals_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_price_signals_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_questions: {
         Row: {
@@ -50758,36 +49216,7 @@ export type Database = {
           recommended_property_id?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_recommendations_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_recommendations_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_recommendations_recommended_property_id_fkey"
-            columns: ["recommended_property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_recommendations_recommended_property_id_fkey"
-            columns: ["recommended_property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_rental_items: {
         Row: {
@@ -50823,22 +49252,7 @@ export type Database = {
           quantity?: number | null
           replacement_cost?: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_rental_items_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_rental_items_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_rental_terms: {
         Row: {
@@ -50871,22 +49285,7 @@ export type Database = {
           term_type?: string
           title?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_rental_terms_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_rental_terms_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_reviews: {
         Row: {
@@ -50982,20 +49381,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "property_reviews_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_reviews_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "property_reviews_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -51041,20 +49426,6 @@ export type Database = {
             referencedRelation: "market_trends"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "property_revival_log_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_revival_log_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
         ]
       }
       property_roi_forecast: {
@@ -51097,22 +49468,7 @@ export type Database = {
           property_id?: string
           rental_yield?: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_roi_forecast_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: true
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_roi_forecast_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: true
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_seo_analysis: {
         Row: {
@@ -51199,22 +49555,7 @@ export type Database = {
           title_score?: number | null
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_seo_analysis_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: true
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_seo_analysis_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: true
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_service_bookings: {
         Row: {
@@ -51281,20 +49622,6 @@ export type Database = {
           vendor_response?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "property_service_bookings_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_service_bookings_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "property_service_bookings_service_id_fkey"
             columns: ["service_id"]
@@ -51424,22 +49751,7 @@ export type Database = {
           shared_at?: string
           user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_shares_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_shares_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_survey_bookings: {
         Row: {
@@ -51550,22 +49862,7 @@ export type Database = {
           valuation_factors?: Json | null
           valuation_method?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_valuations_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_valuations_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_verification_badges: {
         Row: {
@@ -51604,22 +49901,7 @@ export type Database = {
           verified_at?: string
           verified_by?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_verification_badges_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_verification_badges_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_viewings: {
         Row: {
@@ -51763,22 +50045,7 @@ export type Database = {
           visitor_name?: string | null
           visitor_phone?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_visits_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_visits_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       property_watermark_settings: {
         Row: {
@@ -51844,22 +50111,7 @@ export type Database = {
           watermark_image_url?: string | null
           watermark_type?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "property_watermark_settings_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "property_watermark_settings_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       psnem_data_compounding: {
         Row: {
@@ -53647,20 +51899,6 @@ export type Database = {
             referencedRelation: "rental_bookings"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "renewal_requests_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "renewal_requests_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
         ]
       }
       rental_bookings: {
@@ -53776,20 +52014,6 @@ export type Database = {
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "rental_bookings_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "rental_bookings_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -53926,20 +52150,6 @@ export type Database = {
             columns: ["booking_id"]
             isOneToOne: false
             referencedRelation: "rental_bookings"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "rental_invoices_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "rental_invoices_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -55520,22 +53730,7 @@ export type Database = {
           predicted_rental_income?: number | null
           property_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "roi_forecasts_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "roi_forecasts_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       role_permissions: {
         Row: {
@@ -56698,20 +54893,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "service_quotation_requests_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "service_quotation_requests_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "service_quotation_requests_service_id_fkey"
             columns: ["service_id"]
             isOneToOne: false
@@ -57405,20 +55586,6 @@ export type Database = {
             columns: ["platform_id"]
             isOneToOne: false
             referencedRelation: "social_commerce_platforms"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "social_commerce_listings_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "social_commerce_listings_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -58116,22 +56283,7 @@ export type Database = {
           property_id?: string | null
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "superapp_discovery_index_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "superapp_discovery_index_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       superapp_identity: {
         Row: {
@@ -58338,22 +56490,7 @@ export type Database = {
           updated_at?: string
           vendor_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "superapp_service_hub_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "superapp_service_hub_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       superapp_transaction_pipeline: {
         Row: {
@@ -58422,22 +56559,7 @@ export type Database = {
           urgency_score?: number
           viewing_scheduled_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "superapp_transaction_pipeline_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "superapp_transaction_pipeline_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       supply_acquisition_targets: {
         Row: {
@@ -59347,20 +57469,6 @@ export type Database = {
             referencedRelation: "public_listing_syndication_networks"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "syndicated_listings_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "syndicated_listings_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
         ]
       }
       syndication_roles: {
@@ -60003,22 +58111,7 @@ export type Database = {
           verified_at?: string | null
           verified_by?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "tenant_documents_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tenant_documents_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       tenant_reviews: {
         Row: {
@@ -60078,20 +58171,6 @@ export type Database = {
             columns: ["booking_id"]
             isOneToOne: false
             referencedRelation: "rental_bookings"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tenant_reviews_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tenant_reviews_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -60253,22 +58332,7 @@ export type Database = {
           updated_at?: string
           uploaded_by?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "threed_assets_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "threed_assets_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       ticket_activities: {
         Row: {
@@ -60931,20 +58995,6 @@ export type Database = {
             columns: ["legal_request_id"]
             isOneToOne: false
             referencedRelation: "legal_service_requests"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "transaction_documents_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "transaction_documents_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -62664,22 +60714,7 @@ export type Database = {
           property_id?: string | null
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "user_property_activity_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_property_activity_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       user_role_audit: {
         Row: {
@@ -65525,20 +63560,6 @@ export type Database = {
             referencedRelation: "vendor_business_profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "vendor_match_results_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "vendor_match_results_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
         ]
       }
       vendor_membership_levels: {
@@ -66688,22 +64709,7 @@ export type Database = {
           updated_at?: string
           urgency?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "vendor_service_requests_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "vendor_service_requests_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       vendor_services: {
         Row: {
@@ -67547,22 +65553,7 @@ export type Database = {
           updated_at?: string
           view_count?: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "video_tours_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "video_tours_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       video_verification_reviews: {
         Row: {
@@ -67993,20 +65984,6 @@ export type Database = {
             columns: ["assigned_agent_id"]
             isOneToOne: false
             referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "virtual_tour_bookings_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "virtual_tour_bookings_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
           {
@@ -68947,114 +66924,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      public_properties: {
-        Row: {
-          advance_booking_days: number | null
-          area: string | null
-          area_sqm: number | null
-          available_from: string | null
-          available_until: string | null
-          bathrooms: number | null
-          bedrooms: number | null
-          booking_type: string | null
-          city: string | null
-          created_at: string | null
-          description: string | null
-          development_status: string | null
-          id: string | null
-          image_urls: string[] | null
-          images: string[] | null
-          listing_type: string | null
-          location: string | null
-          minimum_rental_days: number | null
-          online_booking_enabled: boolean | null
-          price: number | null
-          property_features: Json | null
-          property_type: string | null
-          rental_periods: string[] | null
-          rental_terms: Json | null
-          seo_description: string | null
-          seo_title: string | null
-          state: string | null
-          status: string | null
-          three_d_model_url: string | null
-          thumbnail_url: string | null
-          title: string | null
-          updated_at: string | null
-          virtual_tour_url: string | null
-        }
-        Insert: {
-          advance_booking_days?: number | null
-          area?: string | null
-          area_sqm?: number | null
-          available_from?: string | null
-          available_until?: string | null
-          bathrooms?: number | null
-          bedrooms?: number | null
-          booking_type?: string | null
-          city?: string | null
-          created_at?: string | null
-          description?: string | null
-          development_status?: string | null
-          id?: string | null
-          image_urls?: string[] | null
-          images?: string[] | null
-          listing_type?: string | null
-          location?: string | null
-          minimum_rental_days?: number | null
-          online_booking_enabled?: boolean | null
-          price?: number | null
-          property_features?: Json | null
-          property_type?: string | null
-          rental_periods?: string[] | null
-          rental_terms?: Json | null
-          seo_description?: string | null
-          seo_title?: string | null
-          state?: string | null
-          status?: string | null
-          three_d_model_url?: string | null
-          thumbnail_url?: string | null
-          title?: string | null
-          updated_at?: string | null
-          virtual_tour_url?: string | null
-        }
-        Update: {
-          advance_booking_days?: number | null
-          area?: string | null
-          area_sqm?: number | null
-          available_from?: string | null
-          available_until?: string | null
-          bathrooms?: number | null
-          bedrooms?: number | null
-          booking_type?: string | null
-          city?: string | null
-          created_at?: string | null
-          description?: string | null
-          development_status?: string | null
-          id?: string | null
-          image_urls?: string[] | null
-          images?: string[] | null
-          listing_type?: string | null
-          location?: string | null
-          minimum_rental_days?: number | null
-          online_booking_enabled?: boolean | null
-          price?: number | null
-          property_features?: Json | null
-          property_type?: string | null
-          rental_periods?: string[] | null
-          rental_terms?: Json | null
-          seo_description?: string | null
-          seo_title?: string | null
-          state?: string | null
-          status?: string | null
-          three_d_model_url?: string | null
-          thumbnail_url?: string | null
-          title?: string | null
-          updated_at?: string | null
-          virtual_tour_url?: string | null
-        }
-        Relationships: []
       }
       public_social_platforms: {
         Row: {
@@ -70412,6 +68281,7 @@ export type Database = {
         }
         Returns: string
       }
+      is_admin: { Args: never; Returns: boolean }
       is_admin_secure: { Args: { _user_id: string }; Returns: boolean }
       is_admin_user: { Args: never; Returns: boolean }
       is_authenticated: { Args: never; Returns: boolean }
