@@ -273,6 +273,14 @@ async function handleSubscription(params: Record<string, any>, supabase: any, us
     }
 
     case 'renew': {
+      // Server/cron only — must not be triggerable by clients.
+      const cronSecret = params.__cron_secret as string | undefined;
+      const isServerCall = !!cronSecret && cronSecret === Deno.env.get("CRON_SECRET");
+      if (!isServerCall) {
+        if (!userId) throw new Error("Authentication required");
+        const { data: isAdmin } = await supabase.rpc('has_role', { _user_id: userId, _role: 'admin' });
+        if (!isAdmin) throw new Error("Forbidden: admin or cron secret required");
+      }
       const now = new Date();
       const { data: expiring } = await supabase.from('user_subscriptions').select('*, plan:subscription_plans(*)').eq('status', 'active').eq('cancel_at_period_end', false).lte('current_period_end', new Date(now.getTime() + 86400000).toISOString());
       let renewed = 0, cancelled = 0;
