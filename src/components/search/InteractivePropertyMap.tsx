@@ -735,9 +735,9 @@ export default function InteractivePropertyMap() {
             white-space: nowrap;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
           ">
-            ${trendEmoji} ${h.city.slice(0, 8)}
+            ${trendEmoji} ${String(h.city || '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c] as string)).slice(0, 8)}
             <br/>
-            <span style="font-size: 9px; opacity: 0.7;">${score}★ ${h.property_count || 0}p</span>
+            <span style="font-size: 9px; opacity: 0.7;">${Number(score) || 0}★ ${Number(h.property_count) || 0}p</span>
           </div>
         </div>
       `;
