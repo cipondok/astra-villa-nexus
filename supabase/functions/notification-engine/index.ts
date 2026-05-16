@@ -276,7 +276,7 @@ async function scheduleEmail(params: Record<string, any>, supabase: any) {
       const { data: userData } = await supabase.auth.admin.getUserById(userId);
       if (!userData?.user?.email) continue;
       const { data: profile } = await supabase.from('profiles').select('full_name').eq('id', userId).single();
-      const { error } = await supabase.functions.invoke('notification-engine', { body: { action: 'send_email', to: userData.user.email, template: sch.templateId, variables: { user_name: profile?.full_name || userData.user.email.split('@')[0] }, skipAuth: true } });
+      const { error } = await supabase.functions.invoke('notification-engine', { body: { action: 'send_email', to: userData.user.email, template: sch.templateId, variables: { user_name: profile?.full_name || userData.user.email.split('@')[0] } }, headers: { 'x-internal-secret': Deno.env.get('INTERNAL_SECRET') ?? '' } });
       if (!error) emailsSent++;
       results.push({ schedule: sch.name, sent: error ? 0 : 1, errors: error ? [error.message] : [] });
     }
@@ -303,7 +303,7 @@ async function scheduleEmail(params: Record<string, any>, supabase: any) {
       }
 
       for (const user of users) {
-        const { error } = await supabase.functions.invoke('notification-engine', { body: { action: 'send_email', to: user.email, template: sch.templateId, variables: { user_name: user.full_name || user.email.split('@')[0] }, skipAuth: true } });
+        const { error } = await supabase.functions.invoke('notification-engine', { body: { action: 'send_email', to: user.email, template: sch.templateId, variables: { user_name: user.full_name || user.email.split('@')[0] } }, headers: { 'x-internal-secret': Deno.env.get('INTERNAL_SECRET') ?? '' } });
         if (!error) { sr.sent++; emailsSent++; }
         else sr.errors.push(`${user.email}: ${error.message}`);
         await new Promise(r => setTimeout(r, 100));
