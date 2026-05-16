@@ -1,118 +1,34 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, viewport-fit=cover, user-scalable=yes" />
-    <title>ASTRA Villa Realty - Platform Properti Premium Indonesia</title>
-    <meta name="description" content="Platform properti premium Indonesia. Temukan villa, apartemen, dan rumah mewah dengan teknologi 3D &amp; AI terdepan. Jual, beli, dan sewa properti terbaik.">
-    <meta name="keywords" content="properti Indonesia, villa mewah, apartemen Jakarta, rumah dijual, properti Bali, investasi properti, real estate Indonesia" />
-    <meta name="author" content="ASTRA Villa Realty" />
-    <meta name="robots" content="index, follow" />
-    <meta name="language" content="Indonesian" />
-    <meta name="geo.region" content="ID" />
-    <meta name="geo.placename" content="Indonesia" />
-    
-    <!-- PWA Configuration -->
-    <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#1e40af" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="ASTRA Villa" />
-    
-    <!-- PWA Icons -->
-    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0B0B0B" />
+    <link rel="icon" type="image/png" href="/astra-logo.png" />
 
-    <!-- Preload critical assets -->
-    <link rel="preload" as="image" href="/src/assets/astra-logo.svg" type="image/svg+xml" />
-    <link rel="preload" as="image" href="/src/assets/home/slide-hero-1.png" />
+    <title>ASTRA Villa — Luxury Villa Sales & Rentals in Indonesia</title>
+    <meta name="description" content="Curated luxury villas for sale and rent across Indonesia. Speak directly with our team via WhatsApp." />
+    <link rel="canonical" href="https://astravilla.com/" />
 
-    <!-- Preconnect to critical origins -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://zymrajuuyyfkzdmptebl.supabase.co" crossorigin>
-    <link rel="dns-prefetch" href="https://zymrajuuyyfkzdmptebl.supabase.co">
-
-    <!-- Non-blocking font loading — Inter + Playfair Display -->
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" onload="this.rel='stylesheet'">
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" onload="this.rel='stylesheet'">
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" onload="this.rel='stylesheet'">
-    <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap">
-    </noscript>
-    
-    <!-- Font Awesome deferred (icons are non-critical) -->
-    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onload="this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
-
-    <!-- Open Graph -->
-    
-    
+    <meta property="og:title" content="ASTRA Villa — Luxury Villa Sales & Rentals" />
+    <meta property="og:description" content="Curated luxury villas for sale and rent across Indonesia." />
+    <meta property="og:url" content="https://astravilla.com/" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://astra-villa-realty.lovable.app" />
-    <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/1e01fbcd-8525-4d03-a27c-d6256ddbd579?Expires=1773135187&amp;GoogleAccessId=go-api-on-aws%40gpt-engineer-390607.iam.gserviceaccount.com&amp;Signature=tylH8zpeirZBXFYXsRjxmXtzZ94u6mldtm38sH3axPJCp0FXmAWX2u8bDLas3Mw%2FW5gQZKfM1I7tqJMrA70fOH%2BU%2Fw%2BoM2E6fw5imr9bW371X22AjSumZ9opBx85cI%2F3qm8TiWqJjHNePAWk8Cjt5g8nWVRSQc%2BQMxA3w%2BrPL3AG%2F6p6QA6cv4nr7g1ALbHZ2zBvlQQFiNdz1LYgyyWLzGrozMZSPrEO2j8ZS6rghvQD%2B0zXUzhjbxdM5KL4AnmFzu%2FSKQK%2BujmrMCfmr54bD6jO2Gh1toPoUgFx4TkHq%2FqCpna1PafkD6rVFSyx9aT6j3gEeeOLDws5s0MVeuo1CA%3D%3D">
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:site_name" content="ASTRA Villa Realty" />
-    <meta property="og:locale" content="id_ID" />
+    <meta property="og:site_name" content="ASTRA Villa" />
 
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@astravilla" />
-    
-    
-    <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/1e01fbcd-8525-4d03-a27c-d6256ddbd579?Expires=1773135187&amp;GoogleAccessId=go-api-on-aws%40gpt-engineer-390607.iam.gserviceaccount.com&amp;Signature=tylH8zpeirZBXFYXsRjxmXtzZ94u6mldtm38sH3axPJCp0FXmAWX2u8bDLas3Mw%2FW5gQZKfM1I7tqJMrA70fOH%2BU%2Fw%2BoM2E6fw5imr9bW371X22AjSumZ9opBx85cI%2F3qm8TiWqJjHNePAWk8Cjt5g8nWVRSQc%2BQMxA3w%2BrPL3AG%2F6p6QA6cv4nr7g1ALbHZ2zBvlQQFiNdz1LYgyyWLzGrozMZSPrEO2j8ZS6rghvQD%2B0zXUzhjbxdM5KL4AnmFzu%2FSKQK%2BujmrMCfmr54bD6jO2Gh1toPoUgFx4TkHq%2FqCpna1PafkD6rVFSyx9aT6j3gEeeOLDws5s0MVeuo1CA%3D%3D">
-    
-    <!-- Canonical -->
-    <link rel="canonical" href="https://astra-villa-realty.lovable.app" />
-    
-    <!-- Google Analytics 4 - Loaded dynamically via GoogleAnalytics.ts -->
 
-    <!-- JSON-LD: Organization -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "ASTRA Villa Realty",
-      "url": "https://astra-villa-realty.lovable.app",
-      "logo": "https://astra-villa-realty.lovable.app/icon-512.png",
-      "description": "Platform properti premium Indonesia. Temukan villa, apartemen, dan rumah mewah dengan teknologi 3D & AI terdepan.",
-      "areaServed": "Indonesia",
-      "knowsAbout": ["Real Estate", "Property Investment", "Luxury Villas", "Apartments", "Indonesia Property"],
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "contactType": "customer support",
-        "availableLanguage": ["Indonesian", "English"]
-      },
-      "sameAs": ["https://twitter.com/astravilla"]
-    }
-    </script>
-
-    <!-- JSON-LD: WebSite with SearchAction -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "ASTRA Villa Realty",
-      "url": "https://astra-villa-realty.lovable.app",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": "https://astra-villa-realty.lovable.app/search?q={search_term_string}"
-        },
-        "query-input": "required name=search_term_string"
+      {
+        "@context": "https://schema.org",
+        "@type": "RealEstateAgent",
+        "name": "ASTRA Villa",
+        "url": "https://astravilla.com",
+        "description": "Luxury villa sales and rentals across Indonesia.",
+        "areaServed": "Indonesia"
       }
-    }
     </script>
-    <meta property="og:title" content="ASTRA Villa Realty - Platform Properti Premium Indonesia">
-  <meta name="twitter:title" content="ASTRA Villa Realty - Platform Properti Premium Indonesia">
-  <meta property="og:description" content="Platform properti premium Indonesia. Temukan villa, apartemen, dan rumah mewah dengan teknologi 3D &amp; AI terdepan. Jual, beli, dan sewa properti terbaik.">
-  <meta name="twitter:description" content="Platform properti premium Indonesia. Temukan villa, apartemen, dan rumah mewah dengan teknologi 3D &amp; AI terdepan. Jual, beli, dan sewa properti terbaik.">
-</head>
-
+  </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
