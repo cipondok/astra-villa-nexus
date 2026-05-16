@@ -343,6 +343,57 @@ async function releaseEscrow(params: Record<string, any>, supabase: any, userId:
   const { amount, deal_id, release_to_user_id, currency = 'IDR' } = params;
   if (!amount || amount <= 0) throw new Error("Invalid release amount");
 
+  // ── SECURITY: validate counterparty + deal state before allowing payout ──
+  // Prevent arbitrary wallet-to-wallet transfers by requiring that
+  // release_to_user_id matches the recorded counterparty on the deal,
+  // that the caller is a party to the deal, and that the deal is in a
+  // releasable state.
+  if (release_to_user_id) {
+    if (!deal_id) throw new Error("deal_id required when releasing to another user");
+
+    // Look up deal — prefer deal_transactions, fall back to property_offers.
+    const { data: deal } = await supabase
+      .from('deal_transactions')
+      .select('id, buyer_id, seller_id, status')
+      .eq('id', deal_id)
+      .maybeSingle();
+
+    let buyerId: string | null = null;
+    let sellerId: string | null = null;
+    let status: string | null = null;
+
+    if (deal) {
+      buyerId = deal.buyer_id;
+      sellerId = deal.seller_id;
+      status = deal.status;
+    } else {
+      const { data: offer } = await supabase
+        .from('property_offers')
+        .select('id, buyer_id, seller_id, status')
+        .eq('id', deal_id)
+        .maybeSingle();
+      if (!offer) throw new Error("Deal not found");
+      buyerId = (offer as any).buyer_id ?? null;
+      sellerId = (offer as any).seller_id ?? null;
+      status = (offer as any).status ?? null;
+    }
+
+    // Caller must be a party to the deal
+    if (userId !== buyerId && userId !== sellerId) {
+      throw new Error("Forbidden: caller is not a party to this deal");
+    }
+    // Recipient must be the OTHER party (not self / not arbitrary user)
+    const expectedRecipient = userId === buyerId ? sellerId : buyerId;
+    if (!expectedRecipient || release_to_user_id !== expectedRecipient) {
+      throw new Error("Forbidden: release_to_user_id is not the deal counterparty");
+    }
+    // Deal must be in a state where release is allowed
+    const releasableStates = new Set(['closed', 'completed', 'released', 'accepted', 'funded']);
+    if (!status || !releasableStates.has(status)) {
+      throw new Error(`Forbidden: deal is not in a releasable state (status=${status})`);
+    }
+  }
+
   const wallet = await ensureWallet(supabase, userId, currency);
   if (Number(wallet.locked_balance) < amount) {
     throw new Error("Insufficient locked balance for release");
