@@ -206,8 +206,22 @@ async function handleSubscription(params: Record<string, any>, supabase: any, us
     }
 
     case 'activate_payment': {
+      // SECURITY: This action marks invoices as paid and activates subscriptions.
+      // It must NEVER be callable by an unauthenticated user with only an order_id.
+      // Allowed callers:
+      //   1. Internal server-to-server (Midtrans webhook handler) with x-cron-secret header.
+      //   2. The authenticated owner of the invoice (e.g. post-checkout client confirmation),
+      //      which is then re-verified against Midtrans before activation.
       if (!order_id) throw new Error("order_id required");
-      let invoice = null;
+
+      const cronSecret = params.__cron_secret as string | undefined;
+      const isServerCall = !!cronSecret && cronSecret === Deno.env.get("CRON_SECRET");
+
+      if (!isServerCall && !userId) {
+        throw new Error("Authentication required");
+      }
+
+      let invoice: any = null;
       const { data: inv1 } = await supabase.from('subscription_invoices')
         .select('*, subscription:user_subscriptions(*)').eq('payment_order_id', order_id).maybeSingle();
       invoice = inv1;
@@ -217,6 +231,28 @@ async function handleSubscription(params: Record<string, any>, supabase: any, us
         invoice = inv2;
       }
       if (!invoice) return { success: false, message: 'Invoice not found' };
+
+      // Ownership check for authenticated user calls
+      if (!isServerCall && invoice.user_id !== userId) {
+        throw new Error("Forbidden: invoice does not belong to caller");
+      }
+
+      // For user-initiated activation, re-verify with Midtrans gateway before flipping status
+      if (!isServerCall) {
+        try {
+          const vr = await fetch(`${MIDTRANS_BASE_URL}/v2/${order_id}/status`, {
+            method: "GET",
+            headers: { Accept: "application/json", Authorization: midtransAuth() },
+          });
+          const vResult = await vr.json();
+          const mapped = mapMidtransStatus(vResult.transaction_status, vResult.fraud_status);
+          if (mapped !== "completed") {
+            return { success: false, message: 'Payment not confirmed by gateway', gateway_status: mapped };
+          }
+        } catch (e) {
+          throw new Error("Unable to verify payment with gateway");
+        }
+      }
 
       await supabase.from('subscription_invoices').update({ status: 'paid', paid_at: new Date().toISOString(), payment_order_id: order_id }).eq('id', invoice.id);
       if (invoice.subscription_id) {
@@ -237,6 +273,14 @@ async function handleSubscription(params: Record<string, any>, supabase: any, us
     }
 
     case 'renew': {
+      // Server/cron only — must not be triggerable by clients.
+      const cronSecret = params.__cron_secret as string | undefined;
+      const isServerCall = !!cronSecret && cronSecret === Deno.env.get("CRON_SECRET");
+      if (!isServerCall) {
+        if (!userId) throw new Error("Authentication required");
+        const { data: isAdmin } = await supabase.rpc('has_role', { _user_id: userId, _role: 'admin' });
+        if (!isAdmin) throw new Error("Forbidden: admin or cron secret required");
+      }
       const now = new Date();
       const { data: expiring } = await supabase.from('user_subscriptions').select('*, plan:subscription_plans(*)').eq('status', 'active').eq('cancel_at_period_end', false).lte('current_period_end', new Date(now.getTime() + 86400000).toISOString());
       let renewed = 0, cancelled = 0;
