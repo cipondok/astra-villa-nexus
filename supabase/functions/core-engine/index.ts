@@ -83,6 +83,25 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, serviceKey);
 
+    // ── Admin check for cross-user data access ──
+    // Only admins (or service-role internal callers) may override the target user via body.user_id.
+    let isAdminCaller = isServiceRole;
+    if (!isAdminCaller && userId) {
+      const { data: adminRow } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .eq('role', 'admin')
+        .maybeSingle();
+      isAdminCaller = !!adminRow;
+    }
+    // Helper: resolve an explicit target user id. Non-admins are ALWAYS scoped to themselves
+    // to prevent IDOR access to other users' private data via body.user_id.
+    const resolveTargetUserId = (requested: unknown): string => {
+      if (isAdminCaller && typeof requested === 'string' && requested) return requested;
+      return userId;
+    };
+
     // ── Fetch user subscription tier for server-side gating ──
     let subscriptionType = 'free';
     if (userId) {
