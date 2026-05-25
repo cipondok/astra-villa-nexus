@@ -159,6 +159,31 @@ export default function LuxeExperience() {
         }
         @keyframes luxeFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
         .luxe-float { animation: luxeFloat 6s ease-in-out infinite; }
+        @keyframes luxeBloomA { 0%,100% { transform: translate3d(0,0,0) scale(1); opacity:.55 } 50% { transform: translate3d(3%,-2%,0) scale(1.08); opacity:.8 } }
+        @keyframes luxeBloomB { 0%,100% { transform: translate3d(0,0,0) scale(1); opacity:.4 } 50% { transform: translate3d(-2%,3%,0) scale(1.12); opacity:.65 } }
+        @keyframes luxeKenBurns { 0% { transform: scale(1.05) translate3d(0,0,0) } 100% { transform: scale(1.14) translate3d(-1.5%,-1%,0) } }
+        @keyframes luxeShimmer { 0% { background-position: -200% 0 } 100% { background-position: 200% 0 } }
+        @keyframes luxeCue { 0%,100% { transform: translateY(0); opacity:.5 } 50% { transform: translateY(6px); opacity:1 } }
+        @keyframes luxeSpark { 0% { opacity:0; transform: translateY(0) } 10% { opacity:.6 } 100% { opacity:0; transform: translateY(-80px) } }
+        .luxe-bloom-a { animation: luxeBloomA 14s ease-in-out infinite; }
+        .luxe-bloom-b { animation: luxeBloomB 18s ease-in-out infinite; }
+        .luxe-kenburns { animation: luxeKenBurns 22s ease-in-out infinite alternate; }
+        .luxe-cue { animation: luxeCue 2.4s ease-in-out infinite; }
+        .luxe-gold-shimmer {
+          background: linear-gradient(90deg, #C8A96B 0%, #F2E0B2 45%, #C8A96B 60%, #B6914F 100%);
+          background-size: 200% 100%;
+          -webkit-background-clip: text; background-clip: text; color: transparent;
+          animation: luxeShimmer 7s linear infinite;
+        }
+        .luxe-particles { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+        .luxe-particles span {
+          position:absolute; bottom:-10px; width:2px; height:2px; border-radius:9999px;
+          background: rgba(231,206,150,0.55); box-shadow: 0 0 6px rgba(231,206,150,0.6);
+          animation: luxeSpark 9s linear infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .luxe-float,.luxe-bloom-a,.luxe-bloom-b,.luxe-kenburns,.luxe-cue,.luxe-gold-shimmer,.luxe-particles span { animation: none !important; }
+        }
       `}</style>
 
       {/* ============== NAV ============== */}
