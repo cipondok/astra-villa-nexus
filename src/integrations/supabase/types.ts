@@ -47621,84 +47621,117 @@ export type Database = {
       properties: {
         Row: {
           address: string
+          approval_status: string | null
+          area: string | null
           area_sqm: number | null
           bathrooms: number
           bedrooms: number
           building_sqm: number
           city: string
+          construction_phase: string | null
           cover_image: string | null
           created_at: string
+          days_on_market: number | null
           description: string
+          development_status: string | null
           featured: boolean
           id: string
+          image_urls: string[] | null
           images: string[]
           land_sqm: number
           listing_type: string
           location: string | null
           meta: Json
           owner_id: string | null
+          owner_type: string | null
+          predicted_days_to_sell: number | null
           price: number | null
           price_idr: number
           property_type: string | null
           slug: string
+          state: string | null
           status: string
+          three_d_model_url: string | null
           thumbnail_url: string | null
           title: string
           updated_at: string
+          virtual_tour_url: string | null
         }
         Insert: {
           address?: string
+          approval_status?: string | null
+          area?: string | null
           area_sqm?: number | null
           bathrooms?: number
           bedrooms?: number
           building_sqm?: number
           city?: string
+          construction_phase?: string | null
           cover_image?: string | null
           created_at?: string
+          days_on_market?: number | null
           description?: string
+          development_status?: string | null
           featured?: boolean
           id?: string
+          image_urls?: string[] | null
           images?: string[]
           land_sqm?: number
           listing_type?: string
           location?: string | null
           meta?: Json
           owner_id?: string | null
+          owner_type?: string | null
+          predicted_days_to_sell?: number | null
           price?: number | null
           price_idr?: number
           property_type?: string | null
           slug: string
+          state?: string | null
           status?: string
+          three_d_model_url?: string | null
           thumbnail_url?: string | null
           title: string
           updated_at?: string
+          virtual_tour_url?: string | null
         }
         Update: {
           address?: string
+          approval_status?: string | null
+          area?: string | null
           area_sqm?: number | null
           bathrooms?: number
           bedrooms?: number
           building_sqm?: number
           city?: string
+          construction_phase?: string | null
           cover_image?: string | null
           created_at?: string
+          days_on_market?: number | null
           description?: string
+          development_status?: string | null
           featured?: boolean
           id?: string
+          image_urls?: string[] | null
           images?: string[]
           land_sqm?: number
           listing_type?: string
           location?: string | null
           meta?: Json
           owner_id?: string | null
+          owner_type?: string | null
+          predicted_days_to_sell?: number | null
           price?: number | null
           price_idr?: number
           property_type?: string | null
           slug?: string
+          state?: string | null
           status?: string
+          three_d_model_url?: string | null
           thumbnail_url?: string | null
           title?: string
           updated_at?: string
+          virtual_tour_url?: string | null
         }
         Relationships: []
       }
