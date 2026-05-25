@@ -409,6 +409,7 @@ const AppContent = () => {
               <Routes location={location}>
                 <Route path="/" element={<Index />} />
                 <Route path="/landing" element={<InvestorLandingPage />} />
+                <Route path="/luxe" element={<LuxeExperience />} />
                 <Route path="/investor-landing" element={<InvestorLandingPage />} />
                 <Route path="/onboarding/investor" element={<InvestorOnboarding />} />
                 <Route path="/onboarding/investor-wizard" element={<InvestorOnboardingWizard />} />
