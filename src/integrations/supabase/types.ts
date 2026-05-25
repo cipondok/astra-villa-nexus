@@ -47621,6 +47621,7 @@ export type Database = {
       properties: {
         Row: {
           address: string
+          area_sqm: number | null
           bathrooms: number
           bedrooms: number
           building_sqm: number
@@ -47633,15 +47634,21 @@ export type Database = {
           images: string[]
           land_sqm: number
           listing_type: string
+          location: string | null
           meta: Json
+          owner_id: string | null
+          price: number | null
           price_idr: number
+          property_type: string | null
           slug: string
           status: string
+          thumbnail_url: string | null
           title: string
           updated_at: string
         }
         Insert: {
           address?: string
+          area_sqm?: number | null
           bathrooms?: number
           bedrooms?: number
           building_sqm?: number
@@ -47654,15 +47661,21 @@ export type Database = {
           images?: string[]
           land_sqm?: number
           listing_type?: string
+          location?: string | null
           meta?: Json
+          owner_id?: string | null
+          price?: number | null
           price_idr?: number
+          property_type?: string | null
           slug: string
           status?: string
+          thumbnail_url?: string | null
           title: string
           updated_at?: string
         }
         Update: {
           address?: string
+          area_sqm?: number | null
           bathrooms?: number
           bedrooms?: number
           building_sqm?: number
@@ -47675,10 +47688,15 @@ export type Database = {
           images?: string[]
           land_sqm?: number
           listing_type?: string
+          location?: string | null
           meta?: Json
+          owner_id?: string | null
+          price?: number | null
           price_idr?: number
+          property_type?: string | null
           slug?: string
           status?: string
+          thumbnail_url?: string | null
           title?: string
           updated_at?: string
         }
