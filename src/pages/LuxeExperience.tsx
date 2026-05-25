@@ -691,90 +691,116 @@ export default function LuxeExperience() {
         </div>
       </section>
 
+      <AtmosDivider tone="cool" />
+
       {/* ============== CONCIERGE / INVESTOR DASHBOARD PREVIEW ============== */}
       <section className="relative py-28 md:py-40">
         <div className="mx-auto max-w-[1440px] px-5 md:px-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <span className="luxe-eyebrow">Investor Layer</span>
-            <h2 className="font-serif-l text-[36px] md:text-[56px] leading-[1.02] mt-5 tracking-tight">
-              Your private <em className="not-italic text-luxe-gold">villa portfolio</em>, always lit.
-            </h2>
-            <p className="mt-6 text-[15px] leading-relaxed text-luxe-fg/70 max-w-lg">
-              Real-time occupancy, yield, and demand. Predictive pricing tuned nightly.
-              A concierge that speaks five languages and never sleeps.
-            </p>
-            <div className="mt-10 grid grid-cols-2 gap-4 max-w-md">
-              {[
-                ["98.4%", "AI match accuracy"],
-                ["9.6%", "Avg net yield"],
-                ["24/7", "Concierge desk"],
-                ["142", "Verified villas"],
-              ].map(([v, k]) => (
-                <div key={k} className="luxe-glass-card rounded-xl p-4">
-                  <div className="font-serif-l text-2xl text-luxe-gold">{v}</div>
-                  <div className="text-[11px] text-luxe-mut mt-1">{k}</div>
-                </div>
-              ))}
-            </div>
-            <button className="luxe-gold-btn mt-10 rounded-full px-6 py-3.5 text-[13px] font-medium inline-flex items-center gap-2">
-              Open the Investor OS <ArrowUpRight className="w-4 h-4" />
-            </button>
-          </div>
-
-          {/* Mock dashboard panel */}
-          <div className="relative">
-            <div className="luxe-glass-card rounded-3xl p-6 md:p-8 relative overflow-hidden">
-              <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full"
-                   style={{ background: "radial-gradient(circle, rgba(200,169,107,0.25), transparent 70%)" }} />
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-[color:var(--luxe-emerald)] shadow-[0_0_10px_rgba(79,178,134,0.8)]" />
-                  <span className="text-[11px] font-mono-l text-luxe-mut">PORTFOLIO · LIVE</span>
-                </div>
-                <span className="text-[11px] text-luxe-mut">Bali · IDR</span>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3 mb-6">
+          <Reveal>
+            <div>
+              <span className="luxe-eyebrow">Investor Layer</span>
+              <h2 className="font-serif-l text-[36px] md:text-[56px] leading-[1.02] mt-5 tracking-tight">
+                Your private <em className="not-italic text-luxe-gold">villa portfolio</em>, always lit.
+              </h2>
+              <p className="mt-6 text-[15px] leading-relaxed text-luxe-fg/70 max-w-lg">
+                Real-time occupancy, yield, and demand. Predictive pricing tuned nightly.
+                A concierge that speaks five languages and never sleeps.
+              </p>
+              <div className="mt-10 grid grid-cols-2 gap-4 max-w-md">
                 {[
-                  ["Net Yield", "9.6%", "var(--luxe-emerald)"],
-                  ["Occupancy", "92%", "var(--luxe-gold)"],
-                  ["ADR", "$2,310", "var(--luxe-cyan)"],
-                ].map(([k, v, color]) => (
-                  <div key={k} className="rounded-xl bg-[#0a0d14] border border-luxe p-4">
-                    <div className="text-[10px] text-luxe-mut uppercase tracking-wider">{k}</div>
-                    <div className="font-serif-l text-2xl mt-2" style={{ color: color as string }}>{v}</div>
-                  </div>
+                  ["98.4%", "AI match accuracy"],
+                  ["9.6%", "Avg net yield"],
+                  ["24/7", "Concierge desk"],
+                  ["142", "Verified villas"],
+                ].map(([v, k], i) => (
+                  <Reveal key={k} delay={0.1 + i * 0.08}>
+                    <div className="luxe-glass-card luxe-card-glow rounded-xl p-4 hover:-translate-y-0.5 transition-transform duration-500">
+                      <div className="font-serif-l text-2xl text-luxe-gold"><CountUp value={v} /></div>
+                      <div className="text-[11px] text-luxe-mut mt-1">{k}</div>
+                    </div>
+                  </Reveal>
                 ))}
               </div>
-
-              {/* Faux chart */}
-              <div className="rounded-xl bg-[#0a0d14] border border-luxe p-5">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-[11px] text-luxe-mut uppercase tracking-wider">12-mo Forecast</span>
-                  <span className="text-[11px] text-luxe-gold">+12.7%</span>
-                </div>
-                <svg viewBox="0 0 320 80" className="w-full h-20">
-                  <defs>
-                    <linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
-                      <stop offset="0%" stopColor="#C8A96B" stopOpacity="0.5" />
-                      <stop offset="100%" stopColor="#C8A96B" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                  <path d="M0 60 L30 50 L60 55 L90 40 L120 45 L150 32 L180 38 L210 24 L240 30 L270 18 L300 22 L320 10"
-                        fill="none" stroke="#C8A96B" strokeWidth="1.5" />
-                  <path d="M0 60 L30 50 L60 55 L90 40 L120 45 L150 32 L180 38 L210 24 L240 30 L270 18 L300 22 L320 10 L320 80 L0 80 Z"
-                        fill="url(#g)" />
-                </svg>
-              </div>
-
-              <div className="mt-6 flex items-center justify-between text-[11px] text-luxe-mut">
-                <span>Updated 2s ago</span>
-                <span className="inline-flex items-center gap-1"><ShieldCheck className="w-3 h-3 text-[color:var(--luxe-emerald)]" /> Encrypted</span>
-              </div>
+              <button className="luxe-gold-btn mt-10 rounded-full px-6 py-3.5 text-[13px] font-medium inline-flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5">
+                Open the Investor OS <ArrowUpRight className="w-4 h-4" />
+              </button>
             </div>
-          </div>
+          </Reveal>
+
+          {/* Mock dashboard panel */}
+          <Reveal delay={0.15}>
+            <div className="relative [perspective:1400px]">
+              <TiltCard className="luxe-glass-card rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-[0_50px_120px_-40px_rgba(0,0,0,0.8)] will-change-transform">
+                <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full luxe-bloom-a"
+                     style={{ background: "radial-gradient(circle, rgba(200,169,107,0.28), transparent 70%)" }} />
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex">
+                      <span className="absolute inset-0 rounded-full bg-[color:var(--luxe-emerald)] luxe-pulse" />
+                      <span className="relative w-2 h-2 rounded-full bg-[color:var(--luxe-emerald)] shadow-[0_0_10px_rgba(79,178,134,0.8)]" />
+                    </span>
+                    <span className="text-[11px] font-mono-l text-luxe-mut">PORTFOLIO · LIVE</span>
+                  </div>
+                  <span className="text-[11px] text-luxe-mut">Bali · IDR</span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-3 mb-6">
+                  {[
+                    ["Net Yield", "9.6%", "var(--luxe-emerald)"],
+                    ["Occupancy", "92%", "var(--luxe-gold)"],
+                    ["ADR", "$2,310", "var(--luxe-cyan)"],
+                  ].map(([k, v, color]) => (
+                    <div key={k} className="rounded-xl bg-[#0a0d14] border border-luxe p-4 hover:border-[color:var(--luxe-gold)] transition-colors duration-500">
+                      <div className="text-[10px] text-luxe-mut uppercase tracking-wider">{k}</div>
+                      <div className="font-serif-l text-2xl mt-2" style={{ color: color as string }}><CountUp value={v} /></div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Animated chart */}
+                <div className="rounded-xl bg-[#0a0d14] border border-luxe p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-[11px] text-luxe-mut uppercase tracking-wider">12-mo Forecast</span>
+                    <span className="text-[11px] text-luxe-gold"><CountUp value="+12.7%" /></span>
+                  </div>
+                  <svg viewBox="0 0 320 80" className="w-full h-20">
+                    <defs>
+                      <linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
+                        <stop offset="0%" stopColor="#C8A96B" stopOpacity="0.5" />
+                        <stop offset="100%" stopColor="#C8A96B" stopOpacity="0" />
+                      </linearGradient>
+                    </defs>
+                    <motion.path
+                      d="M0 60 L30 50 L60 55 L90 40 L120 45 L150 32 L180 38 L210 24 L240 30 L270 18 L300 22 L320 10 L320 80 L0 80 Z"
+                      fill="url(#g)"
+                      initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }} transition={{ duration: 1.4, delay: 0.6 }}
+                    />
+                    <motion.path
+                      d="M0 60 L30 50 L60 55 L90 40 L120 45 L150 32 L180 38 L210 24 L240 30 L270 18 L300 22 L320 10"
+                      fill="none" stroke="#C8A96B" strokeWidth="1.5"
+                      initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }}
+                      viewport={{ once: true }} transition={{ duration: 2, ease: EASE }}
+                    />
+                  </svg>
+                </div>
+
+                <div className="mt-6 flex items-center justify-between text-[11px] text-luxe-mut">
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="w-1 h-1 rounded-full bg-[color:var(--luxe-emerald)] luxe-pulse" />
+                    Updated 2s ago
+                  </span>
+                  <span className="inline-flex items-center gap-1"><ShieldCheck className="w-3 h-3 text-[color:var(--luxe-emerald)]" /> Encrypted</span>
+                </div>
+              </TiltCard>
+            </div>
+          </Reveal>
         </div>
       </section>
+
+      <AtmosDivider tone="gold" />
+
+
 
       {/* ============== TESTIMONIAL ============== */}
       <section className="relative py-28 md:py-40">
