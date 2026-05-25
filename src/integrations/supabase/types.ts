@@ -47621,11 +47621,13 @@ export type Database = {
       properties: {
         Row: {
           address: string
+          agent_id: string | null
           approval_status: string | null
           area: string | null
           area_sqm: number | null
           bathrooms: number
           bedrooms: number
+          booking_type: string | null
           building_sqm: number
           city: string
           construction_phase: string | null
@@ -47638,17 +47640,23 @@ export type Database = {
           id: string
           image_urls: string[] | null
           images: string[]
+          investment_score: number | null
           land_sqm: number
           listing_type: string
           location: string | null
           meta: Json
+          minimum_rental_days: number | null
+          online_booking_enabled: boolean | null
+          opportunity_score: number | null
           owner_id: string | null
           owner_type: string | null
           predicted_days_to_sell: number | null
           price: number | null
           price_idr: number
           property_type: string | null
-          slug: string
+          rental_periods: string[] | null
+          slug: string | null
+          sold_at: string | null
           state: string | null
           status: string
           three_d_model_url: string | null
@@ -47659,11 +47667,13 @@ export type Database = {
         }
         Insert: {
           address?: string
+          agent_id?: string | null
           approval_status?: string | null
           area?: string | null
           area_sqm?: number | null
           bathrooms?: number
           bedrooms?: number
+          booking_type?: string | null
           building_sqm?: number
           city?: string
           construction_phase?: string | null
@@ -47676,17 +47686,23 @@ export type Database = {
           id?: string
           image_urls?: string[] | null
           images?: string[]
+          investment_score?: number | null
           land_sqm?: number
           listing_type?: string
           location?: string | null
           meta?: Json
+          minimum_rental_days?: number | null
+          online_booking_enabled?: boolean | null
+          opportunity_score?: number | null
           owner_id?: string | null
           owner_type?: string | null
           predicted_days_to_sell?: number | null
           price?: number | null
           price_idr?: number
           property_type?: string | null
-          slug: string
+          rental_periods?: string[] | null
+          slug?: string | null
+          sold_at?: string | null
           state?: string | null
           status?: string
           three_d_model_url?: string | null
@@ -47697,11 +47713,13 @@ export type Database = {
         }
         Update: {
           address?: string
+          agent_id?: string | null
           approval_status?: string | null
           area?: string | null
           area_sqm?: number | null
           bathrooms?: number
           bedrooms?: number
+          booking_type?: string | null
           building_sqm?: number
           city?: string
           construction_phase?: string | null
@@ -47714,17 +47732,23 @@ export type Database = {
           id?: string
           image_urls?: string[] | null
           images?: string[]
+          investment_score?: number | null
           land_sqm?: number
           listing_type?: string
           location?: string | null
           meta?: Json
+          minimum_rental_days?: number | null
+          online_booking_enabled?: boolean | null
+          opportunity_score?: number | null
           owner_id?: string | null
           owner_type?: string | null
           predicted_days_to_sell?: number | null
           price?: number | null
           price_idr?: number
           property_type?: string | null
-          slug?: string
+          rental_periods?: string[] | null
+          slug?: string | null
+          sold_at?: string | null
           state?: string | null
           status?: string
           three_d_model_url?: string | null
