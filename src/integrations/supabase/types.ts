@@ -2061,14 +2061,23 @@ export type Database = {
         Row: {
           created_at: string
           email: string
+          is_super_admin: boolean | null
+          updated_at: string | null
+          user_id: string | null
         }
         Insert: {
           created_at?: string
           email: string
+          is_super_admin?: boolean | null
+          updated_at?: string | null
+          user_id?: string | null
         }
         Update: {
           created_at?: string
           email?: string
+          is_super_admin?: boolean | null
+          updated_at?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
