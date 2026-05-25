@@ -276,10 +276,35 @@ export default function LuxeExperience() {
           background: rgba(231,206,150,0.55); box-shadow: 0 0 6px rgba(231,206,150,0.6);
           animation: luxeSpark 9s linear infinite;
         }
+        @keyframes luxeMesh { 0%,100% { transform: translate3d(0,0,0) } 50% { transform: translate3d(2%,-1.5%,0) } }
+        .luxe-mesh-a { animation: luxeMesh 28s ease-in-out infinite; }
+        @keyframes luxePulse { 0%,100% { opacity:.55; transform:scale(1) } 50% { opacity:1; transform:scale(1.25) } }
+        .luxe-pulse { animation: luxePulse 2.6s ease-in-out infinite; }
+        .luxe-card-glow {
+          position:relative;
+        }
+        .luxe-card-glow::after{
+          content:""; position:absolute; inset:-1px; border-radius:inherit; pointer-events:none;
+          background: radial-gradient(120% 80% at 50% 0%, rgba(200,169,107,0.18), transparent 60%);
+          opacity:0; transition:opacity .6s ease;
+        }
+        .luxe-card-glow:hover::after{ opacity:1; }
         @media (prefers-reduced-motion: reduce) {
-          .luxe-float,.luxe-bloom-a,.luxe-bloom-b,.luxe-kenburns,.luxe-cue,.luxe-gold-shimmer,.luxe-particles span { animation: none !important; }
+          .luxe-mesh-a,.luxe-pulse { animation: none !important; }
         }
       `}</style>
+
+      {/* ============== AMBIENT BACKGROUND MESH (site-wide) ============== */}
+      <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+        <div className="absolute -top-1/3 -left-1/4 w-[80vw] h-[80vw] rounded-full luxe-mesh-a opacity-70"
+             style={{ background: "radial-gradient(closest-side, rgba(200,169,107,0.10), transparent 70%)", filter: "blur(60px)" }} />
+        <div className="absolute -bottom-1/3 -right-1/4 w-[70vw] h-[70vw] rounded-full luxe-mesh-a opacity-60"
+             style={{ background: "radial-gradient(closest-side, rgba(79,178,134,0.08), transparent 70%)", filter: "blur(80px)", animationDelay: "-9s" }} />
+        <div className="absolute inset-0 luxe-grain" />
+      </div>
+
+      <div className="relative z-10">
+
 
       {/* ============== NAV ============== */}
       <header
