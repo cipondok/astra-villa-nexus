@@ -30232,7 +30232,22 @@ export type Database = {
           type?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "in_app_notifications_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "in_app_notifications_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       indonesian_business_categories: {
         Row: {
@@ -34369,6 +34384,13 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -42295,6 +42317,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "orders_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "orders_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
@@ -47629,6 +47658,7 @@ export type Database = {
         Row: {
           address: string
           agent_id: string | null
+          ai_estimated_price: number | null
           approval_status: string | null
           area: string | null
           area_sqm: number | null
@@ -47641,14 +47671,19 @@ export type Database = {
           cover_image: string | null
           created_at: string
           days_on_market: number | null
+          demand_heat_score: number | null
+          demand_score: number | null
           description: string
           development_status: string | null
           featured: boolean
+          has_pool: boolean | null
           id: string
           image_urls: string[] | null
           images: string[]
           investment_score: number | null
+          land_area_sqm: number | null
           land_sqm: number
+          listed_at: string | null
           listing_type: string
           location: string | null
           meta: Json
@@ -47675,6 +47710,7 @@ export type Database = {
         Insert: {
           address?: string
           agent_id?: string | null
+          ai_estimated_price?: number | null
           approval_status?: string | null
           area?: string | null
           area_sqm?: number | null
@@ -47687,14 +47723,19 @@ export type Database = {
           cover_image?: string | null
           created_at?: string
           days_on_market?: number | null
+          demand_heat_score?: number | null
+          demand_score?: number | null
           description?: string
           development_status?: string | null
           featured?: boolean
+          has_pool?: boolean | null
           id?: string
           image_urls?: string[] | null
           images?: string[]
           investment_score?: number | null
+          land_area_sqm?: number | null
           land_sqm?: number
+          listed_at?: string | null
           listing_type?: string
           location?: string | null
           meta?: Json
@@ -47721,6 +47762,7 @@ export type Database = {
         Update: {
           address?: string
           agent_id?: string | null
+          ai_estimated_price?: number | null
           approval_status?: string | null
           area?: string | null
           area_sqm?: number | null
@@ -47733,14 +47775,19 @@ export type Database = {
           cover_image?: string | null
           created_at?: string
           days_on_market?: number | null
+          demand_heat_score?: number | null
+          demand_score?: number | null
           description?: string
           development_status?: string | null
           featured?: boolean
+          has_pool?: boolean | null
           id?: string
           image_urls?: string[] | null
           images?: string[]
           investment_score?: number | null
+          land_area_sqm?: number | null
           land_sqm?: number
+          listed_at?: string | null
           listing_type?: string
           location?: string | null
           meta?: Json
@@ -52103,6 +52150,13 @@ export type Database = {
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rental_bookings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
         ]
@@ -67013,6 +67067,129 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      public_properties: {
+        Row: {
+          address: string | null
+          agent_id: string | null
+          ai_estimated_price: number | null
+          area: string | null
+          area_sqm: number | null
+          bathrooms: number | null
+          bedrooms: number | null
+          building_sqm: number | null
+          city: string | null
+          cover_image: string | null
+          created_at: string | null
+          days_on_market: number | null
+          demand_heat_score: number | null
+          demand_score: number | null
+          description: string | null
+          featured: boolean | null
+          has_pool: boolean | null
+          id: string | null
+          image_urls: string[] | null
+          images: string[] | null
+          investment_score: number | null
+          land_area_sqm: number | null
+          land_sqm: number | null
+          listed_at: string | null
+          listing_type: string | null
+          location: string | null
+          opportunity_score: number | null
+          owner_id: string | null
+          predicted_days_to_sell: number | null
+          price: number | null
+          price_idr: number | null
+          property_type: string | null
+          slug: string | null
+          state: string | null
+          status: string | null
+          thumbnail_url: string | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          agent_id?: string | null
+          ai_estimated_price?: number | null
+          area?: string | null
+          area_sqm?: number | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          building_sqm?: number | null
+          city?: string | null
+          cover_image?: string | null
+          created_at?: string | null
+          days_on_market?: number | null
+          demand_heat_score?: number | null
+          demand_score?: number | null
+          description?: string | null
+          featured?: boolean | null
+          has_pool?: boolean | null
+          id?: string | null
+          image_urls?: string[] | null
+          images?: string[] | null
+          investment_score?: number | null
+          land_area_sqm?: number | null
+          land_sqm?: number | null
+          listed_at?: string | null
+          listing_type?: string | null
+          location?: string | null
+          opportunity_score?: number | null
+          owner_id?: string | null
+          predicted_days_to_sell?: number | null
+          price?: number | null
+          price_idr?: number | null
+          property_type?: string | null
+          slug?: string | null
+          state?: string | null
+          status?: string | null
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          agent_id?: string | null
+          ai_estimated_price?: number | null
+          area?: string | null
+          area_sqm?: number | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          building_sqm?: number | null
+          city?: string | null
+          cover_image?: string | null
+          created_at?: string | null
+          days_on_market?: number | null
+          demand_heat_score?: number | null
+          demand_score?: number | null
+          description?: string | null
+          featured?: boolean | null
+          has_pool?: boolean | null
+          id?: string | null
+          image_urls?: string[] | null
+          images?: string[] | null
+          investment_score?: number | null
+          land_area_sqm?: number | null
+          land_sqm?: number | null
+          listed_at?: string | null
+          listing_type?: string | null
+          location?: string | null
+          opportunity_score?: number | null
+          owner_id?: string | null
+          predicted_days_to_sell?: number | null
+          price?: number | null
+          price_idr?: number | null
+          property_type?: string | null
+          slug?: string | null
+          state?: string | null
+          status?: string | null
+          thumbnail_url?: string | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       public_social_platforms: {
         Row: {
