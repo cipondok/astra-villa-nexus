@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { motion, useScroll, useTransform, useInView, useMotionValue, useSpring, type Variants } from "framer-motion";
 import {
   Search, Calendar, Users, Sparkles, ArrowUpRight, MapPin, Star,
   Bot, TrendingUp, LineChart, Compass, Wand2, ShieldCheck, Globe2,
@@ -11,6 +11,101 @@ import villa1 from "@/assets/luxe-villa-1.jpg";
 import villa2 from "@/assets/luxe-villa-2.jpg";
 import villa3 from "@/assets/luxe-villa-3.jpg";
 import { cn } from "@/lib/utils";
+
+/* Cinematic easing — Apple-like */
+const EASE = [0.22, 1, 0.36, 1] as const;
+
+/* Premium scroll reveal: fade + slight rise + blur lift */
+const revealVariants: Variants = {
+  hidden: { opacity: 0, y: 36, filter: "blur(14px)" },
+  show:   { opacity: 1, y: 0,  filter: "blur(0px)", transition: { duration: 1.1, ease: EASE } },
+};
+
+function Reveal({
+  children, delay = 0, y = 36, className, as: As = "div",
+}: { children: ReactNode; delay?: number; y?: number; className?: string; as?: any }) {
+  const Comp = motion(As);
+  return (
+    <Comp
+      initial={{ opacity: 0, y, filter: "blur(14px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      viewport={{ once: true, margin: "-90px" }}
+      transition={{ duration: 1.1, delay, ease: EASE }}
+      className={className}
+    >
+      {children}
+    </Comp>
+  );
+}
+
+/* Atmospheric divider — soft gold horizon between sections */
+function AtmosDivider({ tone = "gold" }: { tone?: "gold" | "emerald" | "cool" }) {
+  const tint =
+    tone === "emerald" ? "rgba(79,178,134,0.18)"
+    : tone === "cool"  ? "rgba(124,231,255,0.14)"
+    : "rgba(200,169,107,0.22)";
+  return (
+    <div aria-hidden className="relative h-32 md:h-44 -my-16 md:-my-20 pointer-events-none overflow-hidden">
+      <div className="absolute inset-x-0 top-0 h-1/2"
+           style={{ background: `linear-gradient(to bottom, transparent, ${tint} 70%, transparent)` }} />
+      <div className="absolute inset-x-0 bottom-0 h-1/2"
+           style={{ background: "linear-gradient(to top, #050505, transparent)" }} />
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-px"
+           style={{ background: "linear-gradient(90deg, transparent, rgba(200,169,107,0.45), transparent)" }} />
+    </div>
+  );
+}
+
+/* Animated count-up for metric values (handles "%", "$", "+", "/", non-numeric strings) */
+function CountUp({ value, duration = 1.6 }: { value: string; duration?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const match = value.match(/-?\d+(\.\d+)?/);
+  const [display, setDisplay] = useState(match ? value.replace(match[0], "0") : value);
+
+  useEffect(() => {
+    if (!inView || !match) return;
+    const target = parseFloat(match[0]);
+    const start = performance.now();
+    let raf = 0;
+    const tick = (t: number) => {
+      const p = Math.min(1, (t - start) / (duration * 1000));
+      const eased = 1 - Math.pow(1 - p, 3);
+      const cur = (target * eased);
+      const text = match[0].includes(".") ? cur.toFixed(1) : Math.round(cur).toString();
+      setDisplay(value.replace(match[0], text));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [inView, value, duration, match]);
+
+  return <span ref={ref}>{display}</span>;
+}
+
+/* Cinematic 3D tilt card */
+function TiltCard({ children, className }: { children: ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const rx = useSpring(useTransform(my, [-0.5, 0.5], [6, -6]), { stiffness: 140, damping: 18 });
+  const ry = useSpring(useTransform(mx, [-0.5, 0.5], [-8, 8]), { stiffness: 140, damping: 18 });
+  return (
+    <motion.div
+      ref={ref}
+      onMouseMove={(e) => {
+        const r = ref.current!.getBoundingClientRect();
+        mx.set((e.clientX - r.left) / r.width - 0.5);
+        my.set((e.clientY - r.top) / r.height - 0.5);
+      }}
+      onMouseLeave={() => { mx.set(0); my.set(0); }}
+      style={{ rotateX: rx, rotateY: ry, transformPerspective: 1200 }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 /* ============================================================
    ASTRA VILLA — Luxe Experience (Property OS, Bali)
