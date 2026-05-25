@@ -843,6 +843,7 @@ export default function LuxeExperience() {
           </div>
         </div>
       </footer>
+      </div>
     </div>
   );
 }
