@@ -225,7 +225,7 @@ const DatabaseUserManagement = () => {
           user_id: userId,
           is_super_admin: isSuperAdmin,
           updated_at: new Date().toISOString()
-        });
+        } as any);
       
       if (adminError) {
         throw new Error(`Failed to grant admin access: ${adminError.message}`);
