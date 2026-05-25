@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { motion, useScroll, useTransform, useInView, useMotionValue, useSpring, type Variants } from "framer-motion";
 import {
   Search, Calendar, Users, Sparkles, ArrowUpRight, MapPin, Star,
   Bot, TrendingUp, LineChart, Compass, Wand2, ShieldCheck, Globe2,
@@ -11,6 +11,101 @@ import villa1 from "@/assets/luxe-villa-1.jpg";
 import villa2 from "@/assets/luxe-villa-2.jpg";
 import villa3 from "@/assets/luxe-villa-3.jpg";
 import { cn } from "@/lib/utils";
+
+/* Cinematic easing — Apple-like */
+const EASE = [0.22, 1, 0.36, 1] as const;
+
+/* Premium scroll reveal: fade + slight rise + blur lift */
+const revealVariants: Variants = {
+  hidden: { opacity: 0, y: 36, filter: "blur(14px)" },
+  show:   { opacity: 1, y: 0,  filter: "blur(0px)", transition: { duration: 1.1, ease: EASE } },
+};
+
+function Reveal({
+  children, delay = 0, y = 36, className, as = "div",
+}: { children: ReactNode; delay?: number; y?: number; className?: string; as?: "div" | "article" | "section" | "li" | "span" }) {
+  const Tag: any = (motion as any)[as];
+  return (
+    <Tag
+      initial={{ opacity: 0, y, filter: "blur(14px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      viewport={{ once: true, margin: "-90px" }}
+      transition={{ duration: 1.1, delay, ease: EASE }}
+      className={className}
+    >
+      {children}
+    </Tag>
+  );
+}
+
+/* Atmospheric divider — soft gold horizon between sections */
+function AtmosDivider({ tone = "gold" }: { tone?: "gold" | "emerald" | "cool" }) {
+  const tint =
+    tone === "emerald" ? "rgba(79,178,134,0.18)"
+    : tone === "cool"  ? "rgba(124,231,255,0.14)"
+    : "rgba(200,169,107,0.22)";
+  return (
+    <div aria-hidden className="relative h-32 md:h-44 -my-16 md:-my-20 pointer-events-none overflow-hidden">
+      <div className="absolute inset-x-0 top-0 h-1/2"
+           style={{ background: `linear-gradient(to bottom, transparent, ${tint} 70%, transparent)` }} />
+      <div className="absolute inset-x-0 bottom-0 h-1/2"
+           style={{ background: "linear-gradient(to top, #050505, transparent)" }} />
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-px"
+           style={{ background: "linear-gradient(90deg, transparent, rgba(200,169,107,0.45), transparent)" }} />
+    </div>
+  );
+}
+
+/* Animated count-up for metric values (handles "%", "$", "+", "/", non-numeric strings) */
+function CountUp({ value, duration = 1.6 }: { value: string; duration?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const match = value.match(/-?\d+(\.\d+)?/);
+  const [display, setDisplay] = useState(match ? value.replace(match[0], "0") : value);
+
+  useEffect(() => {
+    if (!inView || !match) return;
+    const target = parseFloat(match[0]);
+    const start = performance.now();
+    let raf = 0;
+    const tick = (t: number) => {
+      const p = Math.min(1, (t - start) / (duration * 1000));
+      const eased = 1 - Math.pow(1 - p, 3);
+      const cur = (target * eased);
+      const text = match[0].includes(".") ? cur.toFixed(1) : Math.round(cur).toString();
+      setDisplay(value.replace(match[0], text));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [inView, value, duration, match]);
+
+  return <span ref={ref}>{display}</span>;
+}
+
+/* Cinematic 3D tilt card */
+function TiltCard({ children, className }: { children: ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const rx = useSpring(useTransform(my, [-0.5, 0.5], [6, -6]), { stiffness: 140, damping: 18 });
+  const ry = useSpring(useTransform(mx, [-0.5, 0.5], [-8, 8]), { stiffness: 140, damping: 18 });
+  return (
+    <motion.div
+      ref={ref}
+      onMouseMove={(e) => {
+        const r = ref.current!.getBoundingClientRect();
+        mx.set((e.clientX - r.left) / r.width - 0.5);
+        my.set((e.clientY - r.top) / r.height - 0.5);
+      }}
+      onMouseLeave={() => { mx.set(0); my.set(0); }}
+      style={{ rotateX: rx, rotateY: ry, transformPerspective: 1200 }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 /* ============================================================
    ASTRA VILLA — Luxe Experience (Property OS, Bali)
@@ -181,10 +276,35 @@ export default function LuxeExperience() {
           background: rgba(231,206,150,0.55); box-shadow: 0 0 6px rgba(231,206,150,0.6);
           animation: luxeSpark 9s linear infinite;
         }
+        @keyframes luxeMesh { 0%,100% { transform: translate3d(0,0,0) } 50% { transform: translate3d(2%,-1.5%,0) } }
+        .luxe-mesh-a { animation: luxeMesh 28s ease-in-out infinite; }
+        @keyframes luxePulse { 0%,100% { opacity:.55; transform:scale(1) } 50% { opacity:1; transform:scale(1.25) } }
+        .luxe-pulse { animation: luxePulse 2.6s ease-in-out infinite; }
+        .luxe-card-glow {
+          position:relative;
+        }
+        .luxe-card-glow::after{
+          content:""; position:absolute; inset:-1px; border-radius:inherit; pointer-events:none;
+          background: radial-gradient(120% 80% at 50% 0%, rgba(200,169,107,0.18), transparent 60%);
+          opacity:0; transition:opacity .6s ease;
+        }
+        .luxe-card-glow:hover::after{ opacity:1; }
         @media (prefers-reduced-motion: reduce) {
-          .luxe-float,.luxe-bloom-a,.luxe-bloom-b,.luxe-kenburns,.luxe-cue,.luxe-gold-shimmer,.luxe-particles span { animation: none !important; }
+          .luxe-mesh-a,.luxe-pulse { animation: none !important; }
         }
       `}</style>
+
+      {/* ============== AMBIENT BACKGROUND MESH (site-wide) ============== */}
+      <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+        <div className="absolute -top-1/3 -left-1/4 w-[80vw] h-[80vw] rounded-full luxe-mesh-a opacity-70"
+             style={{ background: "radial-gradient(closest-side, rgba(200,169,107,0.10), transparent 70%)", filter: "blur(60px)" }} />
+        <div className="absolute -bottom-1/3 -right-1/4 w-[70vw] h-[70vw] rounded-full luxe-mesh-a opacity-60"
+             style={{ background: "radial-gradient(closest-side, rgba(79,178,134,0.08), transparent 70%)", filter: "blur(80px)", animationDelay: "-9s" }} />
+        <div className="absolute inset-0 luxe-grain" />
+      </div>
+
+      <div className="relative z-10">
+
 
       {/* ============== NAV ============== */}
       <header
@@ -406,94 +526,108 @@ export default function LuxeExperience() {
         </div>
       </section>
 
+      <AtmosDivider tone="gold" />
+
       {/* ============== AI FEATURES STRIP ============== */}
       <section className="relative py-24 md:py-32">
         <div className="mx-auto max-w-[1440px] px-5 md:px-10">
-          <SectionHead eyebrow="The Intelligence Layer" title={<>A villa platform that <em className="text-luxe-gold not-italic">thinks</em>.</>} />
+          <Reveal>
+            <SectionHead eyebrow="The Intelligence Layer" title={<>A villa platform that <em className="text-luxe-gold not-italic">thinks</em>.</>} />
+          </Reveal>
 
-          <div className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-4 [perspective:1200px]">
             {AI_CARDS.map((c, i) => (
-              <motion.div
-                key={c.k}
-                initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.7, delay: i * 0.08 }}
-                className="luxe-glass-card rounded-2xl p-6 group hover:border-[color:var(--luxe-gold)] transition-all"
-              >
-                <div className="flex items-center justify-between mb-8">
-                  <c.icon className="w-5 h-5 text-luxe-gold" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--luxe-emerald)]" />
-                </div>
-                <div className="font-serif-l text-4xl mb-2">{c.v}</div>
-                <div className="text-[13px] text-luxe-fg/85">{c.k}</div>
-                <div className="text-[11px] text-luxe-mut mt-1">{c.sub}</div>
-              </motion.div>
+              <Reveal key={c.k} delay={i * 0.08}>
+                <TiltCard className="luxe-glass-card luxe-card-glow rounded-2xl p-6 group hover:border-[color:var(--luxe-gold)] transition-all duration-500 will-change-transform">
+                  <div className="flex items-center justify-between mb-8">
+                    <c.icon className="w-5 h-5 text-luxe-gold transition-transform duration-500 group-hover:-translate-y-0.5" />
+                    <span className="relative flex">
+                      <span className="absolute inset-0 rounded-full bg-[color:var(--luxe-emerald)] luxe-pulse" />
+                      <span className="relative w-1.5 h-1.5 rounded-full bg-[color:var(--luxe-emerald)]" />
+                    </span>
+                  </div>
+                  <div className="font-serif-l text-4xl mb-2"><CountUp value={c.v} /></div>
+                  <div className="text-[13px] text-luxe-fg/85">{c.k}</div>
+                  <div className="text-[11px] text-luxe-mut mt-1">{c.sub}</div>
+                </TiltCard>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
+
+      <AtmosDivider tone="emerald" />
 
       {/* ============== FEATURED VILLAS ============== */}
       <section className="relative py-24 md:py-32">
         <div className="mx-auto max-w-[1440px] px-5 md:px-10">
           <div className="flex items-end justify-between gap-6 mb-14">
-            <SectionHead eyebrow="The Collection" title={<>Hand-picked villas, <em className="not-italic text-luxe-gold">cinematically</em> rendered.</>} />
-            <a href="#" className="hidden md:inline-flex items-center gap-1.5 text-[12px] text-luxe-fg/70 hover:text-luxe-gold">
-              View all 142 villas <ChevronRight className="w-4 h-4" />
-            </a>
+            <Reveal>
+              <SectionHead eyebrow="The Collection" title={<>Hand-picked villas, <em className="not-italic text-luxe-gold">cinematically</em> rendered.</>} />
+            </Reveal>
+            <Reveal delay={0.15}>
+              <a href="#" className="hidden md:inline-flex items-center gap-1.5 text-[12px] text-luxe-fg/70 hover:text-luxe-gold transition-colors">
+                View all 142 villas <ChevronRight className="w-4 h-4" />
+              </a>
+            </Reveal>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 [perspective:1400px]">
             {FEATURED.map((v, i) => (
-              <motion.article
-                key={v.name}
-                initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, delay: i * 0.1 }}
-                className="group relative overflow-hidden rounded-3xl border border-luxe bg-[#0a0a0a]"
-              >
-                <div className="aspect-[4/5] overflow-hidden">
-                  <img src={v.img} alt={v.name} loading="lazy" width={1280} height={1600}
-                       className="w-full h-full object-cover transition-transform duration-[1600ms] group-hover:scale-110" />
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-
-                <div className="absolute top-4 left-4 flex items-center gap-2">
-                  <span className="px-2.5 py-1 rounded-full text-[10px] tracking-wider uppercase luxe-glass-card text-luxe-gold">{v.tag}</span>
-                </div>
-                <div className="absolute top-4 right-4">
-                  <button className="w-9 h-9 grid place-items-center rounded-full luxe-glass-card hover:text-luxe-gold transition-colors" aria-label="Save">
-                    <Heart className="w-4 h-4" />
-                  </button>
-                </div>
-
-                <div className="absolute inset-x-4 bottom-4 luxe-glass-card rounded-2xl p-4">
-                  <div className="flex items-start justify-between gap-3 mb-2">
-                    <div>
-                      <h3 className="font-serif-l text-xl leading-tight">{v.name}</h3>
-                      <div className="text-[11px] text-luxe-mut mt-0.5 flex items-center gap-1.5">
-                        <MapPin className="w-3 h-3" /> {v.area}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-serif-l text-lg text-luxe-gold">{v.price}</div>
-                      <div className="text-[10px] text-luxe-mut">/ night</div>
-                    </div>
+              <Reveal key={v.name} delay={i * 0.12} as="article">
+                <TiltCard className="group relative overflow-hidden rounded-3xl border border-luxe bg-[#0a0a0a] luxe-card-glow shadow-[0_30px_60px_-30px_rgba(0,0,0,0.8)] hover:shadow-[0_40px_80px_-30px_rgba(200,169,107,0.35)] transition-shadow duration-700 will-change-transform">
+                  <div className="aspect-[4/5] overflow-hidden">
+                    <img src={v.img} alt={v.name} loading="lazy" width={1280} height={1600}
+                         className="w-full h-full object-cover transition-transform duration-[2000ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]" />
                   </div>
-                  <div className="flex items-center justify-between pt-3 border-t border-luxe">
-                    <div className="flex items-center gap-1.5 text-[12px]">
-                      <Star className="w-3.5 h-3.5 fill-[color:var(--luxe-gold)] text-[color:var(--luxe-gold)]" />
-                      <span>{v.rating}</span>
-                      <span className="text-luxe-mut">· 124 stays</span>
-                    </div>
-                    <button className="text-[11px] inline-flex items-center gap-1 text-luxe-gold hover:gap-2 transition-all">
-                      Explore in 3D <Box className="w-3 h-3" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+                  {/* glass reflection sweep */}
+                  <div aria-hidden className="pointer-events-none absolute -inset-x-1/4 -top-1/2 h-full rotate-12 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+                       style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)" }} />
+
+                  <div className="absolute top-4 left-4 flex items-center gap-2">
+                    <span className="px-2.5 py-1 rounded-full text-[10px] tracking-wider uppercase luxe-glass-card text-luxe-gold">{v.tag}</span>
+                  </div>
+                  <div className="absolute top-4 right-4">
+                    <button className="w-9 h-9 grid place-items-center rounded-full luxe-glass-card hover:text-luxe-gold hover:scale-110 transition-all duration-300" aria-label="Save">
+                      <Heart className="w-4 h-4" />
                     </button>
                   </div>
-                </div>
-              </motion.article>
+
+                  <div className="absolute inset-x-4 bottom-4 luxe-glass-card rounded-2xl p-4 translate-y-1 group-hover:translate-y-0 transition-transform duration-700">
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <div>
+                        <h3 className="font-serif-l text-xl leading-tight">{v.name}</h3>
+                        <div className="text-[11px] text-luxe-mut mt-0.5 flex items-center gap-1.5">
+                          <MapPin className="w-3 h-3" /> {v.area}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-serif-l text-lg text-luxe-gold">{v.price}</div>
+                        <div className="text-[10px] text-luxe-mut">/ night</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between pt-3 border-t border-luxe">
+                      <div className="flex items-center gap-1.5 text-[12px]">
+                        <Star className="w-3.5 h-3.5 fill-[color:var(--luxe-gold)] text-[color:var(--luxe-gold)]" />
+                        <span>{v.rating}</span>
+                        <span className="text-luxe-mut">· 124 stays</span>
+                      </div>
+                      <button className="text-[11px] inline-flex items-center gap-1 text-luxe-gold hover:gap-2 transition-all">
+                        Explore in 3D <Box className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+                </TiltCard>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
+
+      <AtmosDivider tone="gold" />
+
+
 
       {/* ============== PROPERTY OS ============== */}
       <section className="relative py-28 md:py-40">
@@ -557,90 +691,116 @@ export default function LuxeExperience() {
         </div>
       </section>
 
+      <AtmosDivider tone="cool" />
+
       {/* ============== CONCIERGE / INVESTOR DASHBOARD PREVIEW ============== */}
       <section className="relative py-28 md:py-40">
         <div className="mx-auto max-w-[1440px] px-5 md:px-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <span className="luxe-eyebrow">Investor Layer</span>
-            <h2 className="font-serif-l text-[36px] md:text-[56px] leading-[1.02] mt-5 tracking-tight">
-              Your private <em className="not-italic text-luxe-gold">villa portfolio</em>, always lit.
-            </h2>
-            <p className="mt-6 text-[15px] leading-relaxed text-luxe-fg/70 max-w-lg">
-              Real-time occupancy, yield, and demand. Predictive pricing tuned nightly.
-              A concierge that speaks five languages and never sleeps.
-            </p>
-            <div className="mt-10 grid grid-cols-2 gap-4 max-w-md">
-              {[
-                ["98.4%", "AI match accuracy"],
-                ["9.6%", "Avg net yield"],
-                ["24/7", "Concierge desk"],
-                ["142", "Verified villas"],
-              ].map(([v, k]) => (
-                <div key={k} className="luxe-glass-card rounded-xl p-4">
-                  <div className="font-serif-l text-2xl text-luxe-gold">{v}</div>
-                  <div className="text-[11px] text-luxe-mut mt-1">{k}</div>
-                </div>
-              ))}
-            </div>
-            <button className="luxe-gold-btn mt-10 rounded-full px-6 py-3.5 text-[13px] font-medium inline-flex items-center gap-2">
-              Open the Investor OS <ArrowUpRight className="w-4 h-4" />
-            </button>
-          </div>
-
-          {/* Mock dashboard panel */}
-          <div className="relative">
-            <div className="luxe-glass-card rounded-3xl p-6 md:p-8 relative overflow-hidden">
-              <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full"
-                   style={{ background: "radial-gradient(circle, rgba(200,169,107,0.25), transparent 70%)" }} />
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-[color:var(--luxe-emerald)] shadow-[0_0_10px_rgba(79,178,134,0.8)]" />
-                  <span className="text-[11px] font-mono-l text-luxe-mut">PORTFOLIO · LIVE</span>
-                </div>
-                <span className="text-[11px] text-luxe-mut">Bali · IDR</span>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3 mb-6">
+          <Reveal>
+            <div>
+              <span className="luxe-eyebrow">Investor Layer</span>
+              <h2 className="font-serif-l text-[36px] md:text-[56px] leading-[1.02] mt-5 tracking-tight">
+                Your private <em className="not-italic text-luxe-gold">villa portfolio</em>, always lit.
+              </h2>
+              <p className="mt-6 text-[15px] leading-relaxed text-luxe-fg/70 max-w-lg">
+                Real-time occupancy, yield, and demand. Predictive pricing tuned nightly.
+                A concierge that speaks five languages and never sleeps.
+              </p>
+              <div className="mt-10 grid grid-cols-2 gap-4 max-w-md">
                 {[
-                  ["Net Yield", "9.6%", "var(--luxe-emerald)"],
-                  ["Occupancy", "92%", "var(--luxe-gold)"],
-                  ["ADR", "$2,310", "var(--luxe-cyan)"],
-                ].map(([k, v, color]) => (
-                  <div key={k} className="rounded-xl bg-[#0a0d14] border border-luxe p-4">
-                    <div className="text-[10px] text-luxe-mut uppercase tracking-wider">{k}</div>
-                    <div className="font-serif-l text-2xl mt-2" style={{ color: color as string }}>{v}</div>
-                  </div>
+                  ["98.4%", "AI match accuracy"],
+                  ["9.6%", "Avg net yield"],
+                  ["24/7", "Concierge desk"],
+                  ["142", "Verified villas"],
+                ].map(([v, k], i) => (
+                  <Reveal key={k} delay={0.1 + i * 0.08}>
+                    <div className="luxe-glass-card luxe-card-glow rounded-xl p-4 hover:-translate-y-0.5 transition-transform duration-500">
+                      <div className="font-serif-l text-2xl text-luxe-gold"><CountUp value={v} /></div>
+                      <div className="text-[11px] text-luxe-mut mt-1">{k}</div>
+                    </div>
+                  </Reveal>
                 ))}
               </div>
-
-              {/* Faux chart */}
-              <div className="rounded-xl bg-[#0a0d14] border border-luxe p-5">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-[11px] text-luxe-mut uppercase tracking-wider">12-mo Forecast</span>
-                  <span className="text-[11px] text-luxe-gold">+12.7%</span>
-                </div>
-                <svg viewBox="0 0 320 80" className="w-full h-20">
-                  <defs>
-                    <linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
-                      <stop offset="0%" stopColor="#C8A96B" stopOpacity="0.5" />
-                      <stop offset="100%" stopColor="#C8A96B" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                  <path d="M0 60 L30 50 L60 55 L90 40 L120 45 L150 32 L180 38 L210 24 L240 30 L270 18 L300 22 L320 10"
-                        fill="none" stroke="#C8A96B" strokeWidth="1.5" />
-                  <path d="M0 60 L30 50 L60 55 L90 40 L120 45 L150 32 L180 38 L210 24 L240 30 L270 18 L300 22 L320 10 L320 80 L0 80 Z"
-                        fill="url(#g)" />
-                </svg>
-              </div>
-
-              <div className="mt-6 flex items-center justify-between text-[11px] text-luxe-mut">
-                <span>Updated 2s ago</span>
-                <span className="inline-flex items-center gap-1"><ShieldCheck className="w-3 h-3 text-[color:var(--luxe-emerald)]" /> Encrypted</span>
-              </div>
+              <button className="luxe-gold-btn mt-10 rounded-full px-6 py-3.5 text-[13px] font-medium inline-flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5">
+                Open the Investor OS <ArrowUpRight className="w-4 h-4" />
+              </button>
             </div>
-          </div>
+          </Reveal>
+
+          {/* Mock dashboard panel */}
+          <Reveal delay={0.15}>
+            <div className="relative [perspective:1400px]">
+              <TiltCard className="luxe-glass-card rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-[0_50px_120px_-40px_rgba(0,0,0,0.8)] will-change-transform">
+                <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full luxe-bloom-a"
+                     style={{ background: "radial-gradient(circle, rgba(200,169,107,0.28), transparent 70%)" }} />
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex">
+                      <span className="absolute inset-0 rounded-full bg-[color:var(--luxe-emerald)] luxe-pulse" />
+                      <span className="relative w-2 h-2 rounded-full bg-[color:var(--luxe-emerald)] shadow-[0_0_10px_rgba(79,178,134,0.8)]" />
+                    </span>
+                    <span className="text-[11px] font-mono-l text-luxe-mut">PORTFOLIO · LIVE</span>
+                  </div>
+                  <span className="text-[11px] text-luxe-mut">Bali · IDR</span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-3 mb-6">
+                  {[
+                    ["Net Yield", "9.6%", "var(--luxe-emerald)"],
+                    ["Occupancy", "92%", "var(--luxe-gold)"],
+                    ["ADR", "$2,310", "var(--luxe-cyan)"],
+                  ].map(([k, v, color]) => (
+                    <div key={k} className="rounded-xl bg-[#0a0d14] border border-luxe p-4 hover:border-[color:var(--luxe-gold)] transition-colors duration-500">
+                      <div className="text-[10px] text-luxe-mut uppercase tracking-wider">{k}</div>
+                      <div className="font-serif-l text-2xl mt-2" style={{ color: color as string }}><CountUp value={v} /></div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Animated chart */}
+                <div className="rounded-xl bg-[#0a0d14] border border-luxe p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-[11px] text-luxe-mut uppercase tracking-wider">12-mo Forecast</span>
+                    <span className="text-[11px] text-luxe-gold"><CountUp value="+12.7%" /></span>
+                  </div>
+                  <svg viewBox="0 0 320 80" className="w-full h-20">
+                    <defs>
+                      <linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
+                        <stop offset="0%" stopColor="#C8A96B" stopOpacity="0.5" />
+                        <stop offset="100%" stopColor="#C8A96B" stopOpacity="0" />
+                      </linearGradient>
+                    </defs>
+                    <motion.path
+                      d="M0 60 L30 50 L60 55 L90 40 L120 45 L150 32 L180 38 L210 24 L240 30 L270 18 L300 22 L320 10 L320 80 L0 80 Z"
+                      fill="url(#g)"
+                      initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }} transition={{ duration: 1.4, delay: 0.6 }}
+                    />
+                    <motion.path
+                      d="M0 60 L30 50 L60 55 L90 40 L120 45 L150 32 L180 38 L210 24 L240 30 L270 18 L300 22 L320 10"
+                      fill="none" stroke="#C8A96B" strokeWidth="1.5"
+                      initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }}
+                      viewport={{ once: true }} transition={{ duration: 2, ease: EASE }}
+                    />
+                  </svg>
+                </div>
+
+                <div className="mt-6 flex items-center justify-between text-[11px] text-luxe-mut">
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="w-1 h-1 rounded-full bg-[color:var(--luxe-emerald)] luxe-pulse" />
+                    Updated 2s ago
+                  </span>
+                  <span className="inline-flex items-center gap-1"><ShieldCheck className="w-3 h-3 text-[color:var(--luxe-emerald)]" /> Encrypted</span>
+                </div>
+              </TiltCard>
+            </div>
+          </Reveal>
         </div>
       </section>
+
+      <AtmosDivider tone="gold" />
+
+
 
       {/* ============== TESTIMONIAL ============== */}
       <section className="relative py-28 md:py-40">
@@ -723,6 +883,7 @@ export default function LuxeExperience() {
           </div>
         </div>
       </footer>
+      </div>
     </div>
   );
 }
