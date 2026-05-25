@@ -80,7 +80,7 @@ const UserRolesManagement = () => {
         console.error('Error fetching admin users:', error);
         return [];
       }
-      return data || [];
+      return (data || []) as any;
     },
   });
 
@@ -143,7 +143,7 @@ const UserRolesManagement = () => {
         .upsert({
           user_id: userId,
           is_super_admin: isSuperAdmin
-        });
+        } as any);
       
       if (adminError) throw adminError;
       return { userId, isSuperAdmin };

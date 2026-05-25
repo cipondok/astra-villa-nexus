@@ -94,7 +94,7 @@ const PropertySlideSection = ({ title, subtitle, type, language, limit = 8 }: Pr
               name: ownerData.full_name || 'Anonymous',
               avatar_url: ownerData.avatar_url,
               verification_status: ownerData.verification_status || 'unverified',
-              joining_date: ownerData.created_at
+              joining_date: (ownerData as any).created_at
             } : undefined
           };
         });
