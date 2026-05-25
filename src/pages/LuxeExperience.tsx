@@ -526,94 +526,108 @@ export default function LuxeExperience() {
         </div>
       </section>
 
+      <AtmosDivider tone="gold" />
+
       {/* ============== AI FEATURES STRIP ============== */}
       <section className="relative py-24 md:py-32">
         <div className="mx-auto max-w-[1440px] px-5 md:px-10">
-          <SectionHead eyebrow="The Intelligence Layer" title={<>A villa platform that <em className="text-luxe-gold not-italic">thinks</em>.</>} />
+          <Reveal>
+            <SectionHead eyebrow="The Intelligence Layer" title={<>A villa platform that <em className="text-luxe-gold not-italic">thinks</em>.</>} />
+          </Reveal>
 
-          <div className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-4 [perspective:1200px]">
             {AI_CARDS.map((c, i) => (
-              <motion.div
-                key={c.k}
-                initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.7, delay: i * 0.08 }}
-                className="luxe-glass-card rounded-2xl p-6 group hover:border-[color:var(--luxe-gold)] transition-all"
-              >
-                <div className="flex items-center justify-between mb-8">
-                  <c.icon className="w-5 h-5 text-luxe-gold" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--luxe-emerald)]" />
-                </div>
-                <div className="font-serif-l text-4xl mb-2">{c.v}</div>
-                <div className="text-[13px] text-luxe-fg/85">{c.k}</div>
-                <div className="text-[11px] text-luxe-mut mt-1">{c.sub}</div>
-              </motion.div>
+              <Reveal key={c.k} delay={i * 0.08}>
+                <TiltCard className="luxe-glass-card luxe-card-glow rounded-2xl p-6 group hover:border-[color:var(--luxe-gold)] transition-all duration-500 will-change-transform">
+                  <div className="flex items-center justify-between mb-8">
+                    <c.icon className="w-5 h-5 text-luxe-gold transition-transform duration-500 group-hover:-translate-y-0.5" />
+                    <span className="relative flex">
+                      <span className="absolute inset-0 rounded-full bg-[color:var(--luxe-emerald)] luxe-pulse" />
+                      <span className="relative w-1.5 h-1.5 rounded-full bg-[color:var(--luxe-emerald)]" />
+                    </span>
+                  </div>
+                  <div className="font-serif-l text-4xl mb-2"><CountUp value={c.v} /></div>
+                  <div className="text-[13px] text-luxe-fg/85">{c.k}</div>
+                  <div className="text-[11px] text-luxe-mut mt-1">{c.sub}</div>
+                </TiltCard>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
+
+      <AtmosDivider tone="emerald" />
 
       {/* ============== FEATURED VILLAS ============== */}
       <section className="relative py-24 md:py-32">
         <div className="mx-auto max-w-[1440px] px-5 md:px-10">
           <div className="flex items-end justify-between gap-6 mb-14">
-            <SectionHead eyebrow="The Collection" title={<>Hand-picked villas, <em className="not-italic text-luxe-gold">cinematically</em> rendered.</>} />
-            <a href="#" className="hidden md:inline-flex items-center gap-1.5 text-[12px] text-luxe-fg/70 hover:text-luxe-gold">
-              View all 142 villas <ChevronRight className="w-4 h-4" />
-            </a>
+            <Reveal>
+              <SectionHead eyebrow="The Collection" title={<>Hand-picked villas, <em className="not-italic text-luxe-gold">cinematically</em> rendered.</>} />
+            </Reveal>
+            <Reveal delay={0.15}>
+              <a href="#" className="hidden md:inline-flex items-center gap-1.5 text-[12px] text-luxe-fg/70 hover:text-luxe-gold transition-colors">
+                View all 142 villas <ChevronRight className="w-4 h-4" />
+              </a>
+            </Reveal>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 [perspective:1400px]">
             {FEATURED.map((v, i) => (
-              <motion.article
-                key={v.name}
-                initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, delay: i * 0.1 }}
-                className="group relative overflow-hidden rounded-3xl border border-luxe bg-[#0a0a0a]"
-              >
-                <div className="aspect-[4/5] overflow-hidden">
-                  <img src={v.img} alt={v.name} loading="lazy" width={1280} height={1600}
-                       className="w-full h-full object-cover transition-transform duration-[1600ms] group-hover:scale-110" />
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-
-                <div className="absolute top-4 left-4 flex items-center gap-2">
-                  <span className="px-2.5 py-1 rounded-full text-[10px] tracking-wider uppercase luxe-glass-card text-luxe-gold">{v.tag}</span>
-                </div>
-                <div className="absolute top-4 right-4">
-                  <button className="w-9 h-9 grid place-items-center rounded-full luxe-glass-card hover:text-luxe-gold transition-colors" aria-label="Save">
-                    <Heart className="w-4 h-4" />
-                  </button>
-                </div>
-
-                <div className="absolute inset-x-4 bottom-4 luxe-glass-card rounded-2xl p-4">
-                  <div className="flex items-start justify-between gap-3 mb-2">
-                    <div>
-                      <h3 className="font-serif-l text-xl leading-tight">{v.name}</h3>
-                      <div className="text-[11px] text-luxe-mut mt-0.5 flex items-center gap-1.5">
-                        <MapPin className="w-3 h-3" /> {v.area}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-serif-l text-lg text-luxe-gold">{v.price}</div>
-                      <div className="text-[10px] text-luxe-mut">/ night</div>
-                    </div>
+              <Reveal key={v.name} delay={i * 0.12} as="article">
+                <TiltCard className="group relative overflow-hidden rounded-3xl border border-luxe bg-[#0a0a0a] luxe-card-glow shadow-[0_30px_60px_-30px_rgba(0,0,0,0.8)] hover:shadow-[0_40px_80px_-30px_rgba(200,169,107,0.35)] transition-shadow duration-700 will-change-transform">
+                  <div className="aspect-[4/5] overflow-hidden">
+                    <img src={v.img} alt={v.name} loading="lazy" width={1280} height={1600}
+                         className="w-full h-full object-cover transition-transform duration-[2000ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]" />
                   </div>
-                  <div className="flex items-center justify-between pt-3 border-t border-luxe">
-                    <div className="flex items-center gap-1.5 text-[12px]">
-                      <Star className="w-3.5 h-3.5 fill-[color:var(--luxe-gold)] text-[color:var(--luxe-gold)]" />
-                      <span>{v.rating}</span>
-                      <span className="text-luxe-mut">· 124 stays</span>
-                    </div>
-                    <button className="text-[11px] inline-flex items-center gap-1 text-luxe-gold hover:gap-2 transition-all">
-                      Explore in 3D <Box className="w-3 h-3" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+                  {/* glass reflection sweep */}
+                  <div aria-hidden className="pointer-events-none absolute -inset-x-1/4 -top-1/2 h-full rotate-12 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+                       style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)" }} />
+
+                  <div className="absolute top-4 left-4 flex items-center gap-2">
+                    <span className="px-2.5 py-1 rounded-full text-[10px] tracking-wider uppercase luxe-glass-card text-luxe-gold">{v.tag}</span>
+                  </div>
+                  <div className="absolute top-4 right-4">
+                    <button className="w-9 h-9 grid place-items-center rounded-full luxe-glass-card hover:text-luxe-gold hover:scale-110 transition-all duration-300" aria-label="Save">
+                      <Heart className="w-4 h-4" />
                     </button>
                   </div>
-                </div>
-              </motion.article>
+
+                  <div className="absolute inset-x-4 bottom-4 luxe-glass-card rounded-2xl p-4 translate-y-1 group-hover:translate-y-0 transition-transform duration-700">
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <div>
+                        <h3 className="font-serif-l text-xl leading-tight">{v.name}</h3>
+                        <div className="text-[11px] text-luxe-mut mt-0.5 flex items-center gap-1.5">
+                          <MapPin className="w-3 h-3" /> {v.area}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-serif-l text-lg text-luxe-gold">{v.price}</div>
+                        <div className="text-[10px] text-luxe-mut">/ night</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between pt-3 border-t border-luxe">
+                      <div className="flex items-center gap-1.5 text-[12px]">
+                        <Star className="w-3.5 h-3.5 fill-[color:var(--luxe-gold)] text-[color:var(--luxe-gold)]" />
+                        <span>{v.rating}</span>
+                        <span className="text-luxe-mut">· 124 stays</span>
+                      </div>
+                      <button className="text-[11px] inline-flex items-center gap-1 text-luxe-gold hover:gap-2 transition-all">
+                        Explore in 3D <Box className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+                </TiltCard>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
+
+      <AtmosDivider tone="gold" />
+
+
 
       {/* ============== PROPERTY OS ============== */}
       <section className="relative py-28 md:py-40">
