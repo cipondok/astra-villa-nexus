@@ -19008,7 +19008,22 @@ export type Database = {
           property_id?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "favorites_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "favorites_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       fcss_capital_efficiency: {
         Row: {
@@ -47665,6 +47680,7 @@ export type Database = {
           bathrooms: number
           bedrooms: number
           booking_type: string | null
+          building_area_sqm: number | null
           building_sqm: number
           city: string
           construction_phase: string | null
@@ -47683,6 +47699,7 @@ export type Database = {
           investment_score: number | null
           land_area_sqm: number | null
           land_sqm: number
+          liquidity_score: number | null
           listed_at: string | null
           listing_type: string
           location: string | null
@@ -47695,8 +47712,12 @@ export type Database = {
           predicted_days_to_sell: number | null
           price: number | null
           price_idr: number
+          property_features: Json | null
           property_type: string | null
           rental_periods: string[] | null
+          rental_yield: number | null
+          rental_yield_percentage: number | null
+          saves_count: number | null
           slug: string | null
           sold_at: string | null
           state: string | null
@@ -47705,7 +47726,9 @@ export type Database = {
           thumbnail_url: string | null
           title: string
           updated_at: string
+          views_count: number | null
           virtual_tour_url: string | null
+          wna_eligible: boolean | null
         }
         Insert: {
           address?: string
@@ -47717,6 +47740,7 @@ export type Database = {
           bathrooms?: number
           bedrooms?: number
           booking_type?: string | null
+          building_area_sqm?: number | null
           building_sqm?: number
           city?: string
           construction_phase?: string | null
@@ -47735,6 +47759,7 @@ export type Database = {
           investment_score?: number | null
           land_area_sqm?: number | null
           land_sqm?: number
+          liquidity_score?: number | null
           listed_at?: string | null
           listing_type?: string
           location?: string | null
@@ -47747,8 +47772,12 @@ export type Database = {
           predicted_days_to_sell?: number | null
           price?: number | null
           price_idr?: number
+          property_features?: Json | null
           property_type?: string | null
           rental_periods?: string[] | null
+          rental_yield?: number | null
+          rental_yield_percentage?: number | null
+          saves_count?: number | null
           slug?: string | null
           sold_at?: string | null
           state?: string | null
@@ -47757,7 +47786,9 @@ export type Database = {
           thumbnail_url?: string | null
           title: string
           updated_at?: string
+          views_count?: number | null
           virtual_tour_url?: string | null
+          wna_eligible?: boolean | null
         }
         Update: {
           address?: string
@@ -47769,6 +47800,7 @@ export type Database = {
           bathrooms?: number
           bedrooms?: number
           booking_type?: string | null
+          building_area_sqm?: number | null
           building_sqm?: number
           city?: string
           construction_phase?: string | null
@@ -47787,6 +47819,7 @@ export type Database = {
           investment_score?: number | null
           land_area_sqm?: number | null
           land_sqm?: number
+          liquidity_score?: number | null
           listed_at?: string | null
           listing_type?: string
           location?: string | null
@@ -47799,8 +47832,12 @@ export type Database = {
           predicted_days_to_sell?: number | null
           price?: number | null
           price_idr?: number
+          property_features?: Json | null
           property_type?: string | null
           rental_periods?: string[] | null
+          rental_yield?: number | null
+          rental_yield_percentage?: number | null
+          saves_count?: number | null
           slug?: string | null
           sold_at?: string | null
           state?: string | null
@@ -47809,7 +47846,9 @@ export type Database = {
           thumbnail_url?: string | null
           title?: string
           updated_at?: string
+          views_count?: number | null
           virtual_tour_url?: string | null
+          wna_eligible?: boolean | null
         }
         Relationships: []
       }
