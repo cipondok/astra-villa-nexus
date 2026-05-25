@@ -47687,31 +47687,46 @@ export type Database = {
           cover_image: string | null
           created_at: string
           days_on_market: number | null
+          deal_score: number | null
           demand_heat_score: number | null
           demand_score: number | null
           description: string
           development_status: string | null
           featured: boolean
           floors: number | null
+          furnishing: string | null
+          garage_count: number | null
+          handover_year: number | null
+          has_360_view: boolean | null
+          has_drone_video: boolean | null
+          has_interactive_floorplan: boolean | null
           has_pool: boolean | null
+          has_vr: boolean | null
           id: string
           image_urls: string[] | null
           images: string[]
           investment_score: number | null
+          investor_highlight: boolean | null
           is_featured: boolean | null
           land_area_sqm: number | null
           land_sqm: number
+          latitude: number | null
+          legal_status: string | null
           liquidity_score: number | null
           listed_at: string | null
           listing_type: string
           location: string | null
+          longitude: number | null
           market_heat_score: number | null
           meta: Json
           minimum_rental_days: number | null
+          nearby_facilities: Json | null
           online_booking_enabled: boolean | null
           opportunity_score: number | null
           owner_id: string | null
           owner_type: string | null
+          payment_methods: Json | null
+          payment_plan_available: boolean | null
           predicted_days_to_sell: number | null
           price: number | null
           price_idr: number
@@ -47721,6 +47736,8 @@ export type Database = {
           rental_yield: number | null
           rental_yield_percentage: number | null
           risk_level: string | null
+          roi_percentage: number | null
+          save_count: number | null
           saves_count: number | null
           slug: string | null
           sold_at: string | null
@@ -47730,6 +47747,7 @@ export type Database = {
           thumbnail_url: string | null
           title: string
           updated_at: string
+          view_type: string | null
           views_count: number | null
           virtual_tour_url: string | null
           wna_eligible: boolean | null
@@ -47751,31 +47769,46 @@ export type Database = {
           cover_image?: string | null
           created_at?: string
           days_on_market?: number | null
+          deal_score?: number | null
           demand_heat_score?: number | null
           demand_score?: number | null
           description?: string
           development_status?: string | null
           featured?: boolean
           floors?: number | null
+          furnishing?: string | null
+          garage_count?: number | null
+          handover_year?: number | null
+          has_360_view?: boolean | null
+          has_drone_video?: boolean | null
+          has_interactive_floorplan?: boolean | null
           has_pool?: boolean | null
+          has_vr?: boolean | null
           id?: string
           image_urls?: string[] | null
           images?: string[]
           investment_score?: number | null
+          investor_highlight?: boolean | null
           is_featured?: boolean | null
           land_area_sqm?: number | null
           land_sqm?: number
+          latitude?: number | null
+          legal_status?: string | null
           liquidity_score?: number | null
           listed_at?: string | null
           listing_type?: string
           location?: string | null
+          longitude?: number | null
           market_heat_score?: number | null
           meta?: Json
           minimum_rental_days?: number | null
+          nearby_facilities?: Json | null
           online_booking_enabled?: boolean | null
           opportunity_score?: number | null
           owner_id?: string | null
           owner_type?: string | null
+          payment_methods?: Json | null
+          payment_plan_available?: boolean | null
           predicted_days_to_sell?: number | null
           price?: number | null
           price_idr?: number
@@ -47785,6 +47818,8 @@ export type Database = {
           rental_yield?: number | null
           rental_yield_percentage?: number | null
           risk_level?: string | null
+          roi_percentage?: number | null
+          save_count?: number | null
           saves_count?: number | null
           slug?: string | null
           sold_at?: string | null
@@ -47794,6 +47829,7 @@ export type Database = {
           thumbnail_url?: string | null
           title: string
           updated_at?: string
+          view_type?: string | null
           views_count?: number | null
           virtual_tour_url?: string | null
           wna_eligible?: boolean | null
@@ -47815,31 +47851,46 @@ export type Database = {
           cover_image?: string | null
           created_at?: string
           days_on_market?: number | null
+          deal_score?: number | null
           demand_heat_score?: number | null
           demand_score?: number | null
           description?: string
           development_status?: string | null
           featured?: boolean
           floors?: number | null
+          furnishing?: string | null
+          garage_count?: number | null
+          handover_year?: number | null
+          has_360_view?: boolean | null
+          has_drone_video?: boolean | null
+          has_interactive_floorplan?: boolean | null
           has_pool?: boolean | null
+          has_vr?: boolean | null
           id?: string
           image_urls?: string[] | null
           images?: string[]
           investment_score?: number | null
+          investor_highlight?: boolean | null
           is_featured?: boolean | null
           land_area_sqm?: number | null
           land_sqm?: number
+          latitude?: number | null
+          legal_status?: string | null
           liquidity_score?: number | null
           listed_at?: string | null
           listing_type?: string
           location?: string | null
+          longitude?: number | null
           market_heat_score?: number | null
           meta?: Json
           minimum_rental_days?: number | null
+          nearby_facilities?: Json | null
           online_booking_enabled?: boolean | null
           opportunity_score?: number | null
           owner_id?: string | null
           owner_type?: string | null
+          payment_methods?: Json | null
+          payment_plan_available?: boolean | null
           predicted_days_to_sell?: number | null
           price?: number | null
           price_idr?: number
@@ -47849,6 +47900,8 @@ export type Database = {
           rental_yield?: number | null
           rental_yield_percentage?: number | null
           risk_level?: string | null
+          roi_percentage?: number | null
+          save_count?: number | null
           saves_count?: number | null
           slug?: string | null
           sold_at?: string | null
@@ -47858,6 +47911,7 @@ export type Database = {
           thumbnail_url?: string | null
           title?: string
           updated_at?: string
+          view_type?: string | null
           views_count?: number | null
           virtual_tour_url?: string | null
           wna_eligible?: boolean | null

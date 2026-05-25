@@ -1,0 +1,20 @@
+
+ALTER TABLE public.properties
+  ADD COLUMN IF NOT EXISTS deal_score numeric,
+  ADD COLUMN IF NOT EXISTS roi_percentage numeric,
+  ADD COLUMN IF NOT EXISTS latitude numeric,
+  ADD COLUMN IF NOT EXISTS longitude numeric,
+  ADD COLUMN IF NOT EXISTS save_count integer DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS garage_count integer DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS view_type text,
+  ADD COLUMN IF NOT EXISTS furnishing text,
+  ADD COLUMN IF NOT EXISTS legal_status text,
+  ADD COLUMN IF NOT EXISTS payment_plan_available boolean DEFAULT false,
+  ADD COLUMN IF NOT EXISTS handover_year integer,
+  ADD COLUMN IF NOT EXISTS has_vr boolean DEFAULT false,
+  ADD COLUMN IF NOT EXISTS has_360_view boolean DEFAULT false,
+  ADD COLUMN IF NOT EXISTS has_drone_video boolean DEFAULT false,
+  ADD COLUMN IF NOT EXISTS has_interactive_floorplan boolean DEFAULT false,
+  ADD COLUMN IF NOT EXISTS nearby_facilities jsonb DEFAULT '[]'::jsonb,
+  ADD COLUMN IF NOT EXISTS payment_methods jsonb DEFAULT '[]'::jsonb,
+  ADD COLUMN IF NOT EXISTS investor_highlight boolean DEFAULT false;
