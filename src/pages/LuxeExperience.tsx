@@ -354,29 +354,55 @@ export default function LuxeExperience() {
           {/* Search bar */}
           <motion.div
             initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.45 }}
+            transition={{ duration: 1, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
             className="mt-16 md:mt-24"
           >
-            <div className="luxe-glass-card rounded-2xl md:rounded-full p-2 flex flex-col md:flex-row items-stretch md:items-center gap-2 md:gap-0">
-              <SearchField icon={MapPin} label="Where" value="Bali, Indonesia" />
-              <div className="hidden md:block h-10 w-px bg-luxe-line" />
-              <SearchField icon={Calendar} label="When" value="Add dates" />
-              <div className="hidden md:block h-10 w-px bg-luxe-line" />
-              <SearchField icon={Users} label="Guests" value="2 adults" />
-              <button className="luxe-gold-btn rounded-xl md:rounded-full px-6 py-3.5 text-[13px] font-medium inline-flex items-center justify-center gap-2 md:ml-2">
-                <Search className="w-4 h-4" /> Search Villas
-              </button>
+            <div className="relative">
+              <div className="absolute -inset-px rounded-2xl md:rounded-full bg-gradient-to-r from-[color:var(--luxe-gold)]/25 via-transparent to-[color:var(--luxe-emerald)]/15 blur-md opacity-60 pointer-events-none" />
+              <div className="relative luxe-glass-card rounded-2xl md:rounded-full p-2 flex flex-col md:flex-row items-stretch md:items-center gap-2 md:gap-0 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)]">
+                <SearchField icon={MapPin} label="Where" value="Bali, Indonesia" />
+                <div className="hidden md:block h-10 w-px bg-luxe-line" />
+                <SearchField icon={Calendar} label="When" value="Add dates" />
+                <div className="hidden md:block h-10 w-px bg-luxe-line" />
+                <SearchField icon={Users} label="Guests" value="2 adults" />
+                <button className="luxe-gold-btn rounded-xl md:rounded-full px-6 py-3.5 text-[13px] font-medium inline-flex items-center justify-center gap-2 md:ml-2 transition-transform duration-300 hover:-translate-y-0.5">
+                  <Search className="w-4 h-4" /> Search Villas
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-4 flex items-center gap-2.5 text-[12px] text-luxe-fg/65 min-h-[20px]" aria-live="polite">
+              <Sparkles className="w-3.5 h-3.5 text-luxe-gold shrink-0" />
+              <span className="font-mono-l text-[11px] text-luxe-mut">ASTRA suggests</span>
+              <motion.span
+                key={suggestIdx}
+                initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="truncate"
+              >
+                {SUGGESTIONS[suggestIdx]}
+              </motion.span>
             </div>
 
             <div className="mt-5 flex flex-wrap gap-2">
-              {CHIPS.map(c => (
-                <button key={c}
-                  className="text-[12px] px-3.5 py-1.5 rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] hover:text-luxe-gold transition-colors">
+              {CHIPS.map((c, i) => (
+                <motion.button
+                  key={c}
+                  initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.7 + i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                  className="text-[12px] px-3.5 py-1.5 rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] hover:text-luxe-gold transition-all duration-300 hover:-translate-y-0.5"
+                >
                   {c}
-                </button>
+                </motion.button>
               ))}
             </div>
           </motion.div>
+        </div>
+
+        {/* Scroll cue */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center gap-2 text-luxe-mut">
+          <span className="luxe-eyebrow text-[10px]">Scroll</span>
+          <span className="luxe-cue inline-block w-px h-8 bg-gradient-to-b from-[color:var(--luxe-gold)] to-transparent" />
         </div>
       </section>
 
