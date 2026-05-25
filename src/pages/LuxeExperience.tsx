@@ -19,6 +19,12 @@ import { cn } from "@/lib/utils";
    ============================================================ */
 
 const CHIPS = ["Beachfront", "Rice Field View", "Jungle Retreat", "Family Friendly", "Newly Added"];
+const SUGGESTIONS = [
+  "Cliffside villa in Uluwatu with infinity pool…",
+  "Jungle sanctuary near Ubud, 4 bedrooms…",
+  "Beachfront retreat in Canggu for 6 guests…",
+  "Architectural pavilion with private chef…",
+];
 
 const FEATURED = [
   { img: villa3, name: "Villa Anantara", area: "Uluwatu · Beachfront", price: "$2,850", rating: 4.98, tag: "Editor's Pick" },
@@ -56,10 +62,36 @@ export default function LuxeExperience() {
   const heroOpacity = useTransform(scrollY, [0, 600], [1, 0.35]);
 
   const [scrolled, setScrolled] = useState(false);
+  const [suggestIdx, setSuggestIdx] = useState(0);
+  const [spot, setSpot] = useState({ x: 50, y: 40 });
+
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", on, { passive: true });
     return () => window.removeEventListener("scroll", on);
+  }, []);
+
+  useEffect(() => {
+    const id = window.setInterval(() => setSuggestIdx(i => (i + 1) % SUGGESTIONS.length), 3200);
+    return () => window.clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    let raf = 0;
+    const onMove = (e: MouseEvent) => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const r = el.getBoundingClientRect();
+        setSpot({
+          x: ((e.clientX - r.left) / r.width) * 100,
+          y: ((e.clientY - r.top) / r.height) * 100,
+        });
+      });
+    };
+    el.addEventListener("mousemove", onMove);
+    return () => { el.removeEventListener("mousemove", onMove); cancelAnimationFrame(raf); };
   }, []);
 
   return (
@@ -127,6 +159,31 @@ export default function LuxeExperience() {
         }
         @keyframes luxeFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
         .luxe-float { animation: luxeFloat 6s ease-in-out infinite; }
+        @keyframes luxeBloomA { 0%,100% { transform: translate3d(0,0,0) scale(1); opacity:.55 } 50% { transform: translate3d(3%,-2%,0) scale(1.08); opacity:.8 } }
+        @keyframes luxeBloomB { 0%,100% { transform: translate3d(0,0,0) scale(1); opacity:.4 } 50% { transform: translate3d(-2%,3%,0) scale(1.12); opacity:.65 } }
+        @keyframes luxeKenBurns { 0% { transform: scale(1.05) translate3d(0,0,0) } 100% { transform: scale(1.14) translate3d(-1.5%,-1%,0) } }
+        @keyframes luxeShimmer { 0% { background-position: -200% 0 } 100% { background-position: 200% 0 } }
+        @keyframes luxeCue { 0%,100% { transform: translateY(0); opacity:.5 } 50% { transform: translateY(6px); opacity:1 } }
+        @keyframes luxeSpark { 0% { opacity:0; transform: translateY(0) } 10% { opacity:.6 } 100% { opacity:0; transform: translateY(-80px) } }
+        .luxe-bloom-a { animation: luxeBloomA 14s ease-in-out infinite; }
+        .luxe-bloom-b { animation: luxeBloomB 18s ease-in-out infinite; }
+        .luxe-kenburns { animation: luxeKenBurns 22s ease-in-out infinite alternate; }
+        .luxe-cue { animation: luxeCue 2.4s ease-in-out infinite; }
+        .luxe-gold-shimmer {
+          background: linear-gradient(90deg, #C8A96B 0%, #F2E0B2 45%, #C8A96B 60%, #B6914F 100%);
+          background-size: 200% 100%;
+          -webkit-background-clip: text; background-clip: text; color: transparent;
+          animation: luxeShimmer 7s linear infinite;
+        }
+        .luxe-particles { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+        .luxe-particles span {
+          position:absolute; bottom:-10px; width:2px; height:2px; border-radius:9999px;
+          background: rgba(231,206,150,0.55); box-shadow: 0 0 6px rgba(231,206,150,0.6);
+          animation: luxeSpark 9s linear infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .luxe-float,.luxe-bloom-a,.luxe-bloom-b,.luxe-kenburns,.luxe-cue,.luxe-gold-shimmer,.luxe-particles span { animation: none !important; }
+        }
       `}</style>
 
       {/* ============== NAV ============== */}
@@ -182,15 +239,27 @@ export default function LuxeExperience() {
       <section ref={heroRef} className="relative min-h-[100svh] overflow-hidden luxe-grain">
         <motion.div
           style={{ y: heroY, scale: heroScale, opacity: heroOpacity }}
-          className="absolute inset-0"
+          className="absolute inset-0 will-change-transform"
         >
           <img
             src={heroImg}
             alt="Cinematic Bali luxury villa with infinity pool at golden hour"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover luxe-kenburns"
             width={1920} height={1280}
+            loading="eager"
+            decoding="async"
           />
         </motion.div>
+
+        {/* Ambient bloom layers */}
+        <div className="absolute inset-0 pointer-events-none luxe-bloom-a"
+          style={{ background: "radial-gradient(40% 30% at 78% 22%, rgba(231,206,150,0.30), transparent 70%)" }} />
+        <div className="absolute inset-0 pointer-events-none luxe-bloom-b"
+          style={{ background: "radial-gradient(34% 28% at 18% 78%, rgba(79,178,134,0.18), transparent 70%)" }} />
+
+        {/* Mouse-tracked cinematic spotlight */}
+        <div className="absolute inset-0 pointer-events-none transition-[background] duration-300"
+          style={{ background: `radial-gradient(420px 320px at ${spot.x}% ${spot.y}%, rgba(255,255,255,0.06), transparent 70%)` }} />
 
         {/* Cinematic overlays */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/20 to-[#050505]" />
@@ -201,36 +270,61 @@ export default function LuxeExperience() {
           background: "linear-gradient(180deg, rgba(11,18,32,0.35) 0%, transparent 30%, transparent 60%, rgba(5,5,5,0.6) 100%)"
         }} />
 
+        {/* Floating gold particles */}
+        <div className="luxe-particles" aria-hidden="true">
+          {Array.from({ length: 14 }).map((_, i) => (
+            <span key={i} style={{
+              left: `${(i * 7.3) % 100}%`,
+              animationDelay: `${(i * 0.7) % 9}s`,
+              animationDuration: `${8 + (i % 5)}s`,
+              opacity: 0,
+            }} />
+          ))}
+        </div>
+
         <div className="relative z-10 mx-auto max-w-[1440px] px-5 md:px-10 pt-32 md:pt-44 pb-20">
           <motion.div
-            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            initial="hidden" animate="show"
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } } }}
             className="max-w-3xl"
           >
-            <div className="flex items-center gap-3 mb-6">
+            <motion.div
+              variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } } }}
+              className="flex items-center gap-3 mb-6"
+            >
               <span className="luxe-eyebrow">Bali · Est. MMXXVI</span>
               <span className="w-10 h-px bg-[color:var(--luxe-gold)]/60" />
               <span className="text-[11px] text-luxe-mut font-mono-l">AI Property OS · v2.0</span>
-            </div>
+            </motion.div>
 
-            <h1 className="font-serif-l text-[44px] sm:text-[64px] md:text-[88px] leading-[0.95] tracking-tight">
-              Discover <em className="not-italic text-luxe-gold">Extraordinary</em>
+            <motion.h1
+              variants={{ hidden: { opacity: 0, y: 28 }, show: { opacity: 1, y: 0, transition: { duration: 1.1, ease: [0.22, 1, 0.36, 1] } } }}
+              className="font-serif-l text-[44px] sm:text-[64px] md:text-[96px] leading-[0.95] tracking-tight"
+              style={{ textShadow: "0 2px 40px rgba(0,0,0,0.55)" }}
+            >
+              Discover <em className="not-italic luxe-gold-shimmer">Extraordinary</em>
               <br /> Villas in Bali.
-            </h1>
+            </motion.h1>
 
-            <p className="mt-7 max-w-xl text-[15px] md:text-[17px] leading-relaxed text-luxe-fg/75">
-              AI-powered luxury villa experiences with immersive property intelligence,
-              premium concierge services, and next-generation booking technology.
-            </p>
+            <motion.p
+              variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 1, ease: [0.22, 1, 0.36, 1] } } }}
+              className="mt-7 max-w-xl text-[15px] md:text-[18px] leading-relaxed text-luxe-fg/80"
+            >
+              AI-powered luxury villa experiences with immersive property intelligence
+              and premium concierge services.
+            </motion.p>
 
-            <div className="mt-10 flex flex-wrap items-center gap-3">
-              <button className="luxe-gold-btn rounded-full px-6 py-3.5 text-[13px] font-medium tracking-wide inline-flex items-center gap-2">
-                Begin Your Stay <ArrowUpRight className="w-4 h-4" />
+            <motion.div
+              variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } } }}
+              className="mt-10 flex flex-wrap items-center gap-3"
+            >
+              <button className="luxe-gold-btn rounded-full px-6 py-3.5 text-[13px] font-medium tracking-wide inline-flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-12px_rgba(200,169,107,0.6)]">
+                Begin Your Stay <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               </button>
-              <button className="rounded-full px-5 py-3.5 text-[13px] font-medium tracking-wide bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors inline-flex items-center gap-2">
+              <button className="rounded-full px-5 py-3.5 text-[13px] font-medium tracking-wide bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-all duration-300 hover:-translate-y-0.5 inline-flex items-center gap-2">
                 <PlayCircle className="w-4 h-4 text-luxe-gold" /> Watch the Film
               </button>
-            </div>
+            </motion.div>
           </motion.div>
 
           {/* Floating AI signal panel */}
@@ -260,29 +354,55 @@ export default function LuxeExperience() {
           {/* Search bar */}
           <motion.div
             initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.45 }}
+            transition={{ duration: 1, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
             className="mt-16 md:mt-24"
           >
-            <div className="luxe-glass-card rounded-2xl md:rounded-full p-2 flex flex-col md:flex-row items-stretch md:items-center gap-2 md:gap-0">
-              <SearchField icon={MapPin} label="Where" value="Bali, Indonesia" />
-              <div className="hidden md:block h-10 w-px bg-luxe-line" />
-              <SearchField icon={Calendar} label="When" value="Add dates" />
-              <div className="hidden md:block h-10 w-px bg-luxe-line" />
-              <SearchField icon={Users} label="Guests" value="2 adults" />
-              <button className="luxe-gold-btn rounded-xl md:rounded-full px-6 py-3.5 text-[13px] font-medium inline-flex items-center justify-center gap-2 md:ml-2">
-                <Search className="w-4 h-4" /> Search Villas
-              </button>
+            <div className="relative">
+              <div className="absolute -inset-px rounded-2xl md:rounded-full bg-gradient-to-r from-[color:var(--luxe-gold)]/25 via-transparent to-[color:var(--luxe-emerald)]/15 blur-md opacity-60 pointer-events-none" />
+              <div className="relative luxe-glass-card rounded-2xl md:rounded-full p-2 flex flex-col md:flex-row items-stretch md:items-center gap-2 md:gap-0 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)]">
+                <SearchField icon={MapPin} label="Where" value="Bali, Indonesia" />
+                <div className="hidden md:block h-10 w-px bg-luxe-line" />
+                <SearchField icon={Calendar} label="When" value="Add dates" />
+                <div className="hidden md:block h-10 w-px bg-luxe-line" />
+                <SearchField icon={Users} label="Guests" value="2 adults" />
+                <button className="luxe-gold-btn rounded-xl md:rounded-full px-6 py-3.5 text-[13px] font-medium inline-flex items-center justify-center gap-2 md:ml-2 transition-transform duration-300 hover:-translate-y-0.5">
+                  <Search className="w-4 h-4" /> Search Villas
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-4 flex items-center gap-2.5 text-[12px] text-luxe-fg/65 min-h-[20px]" aria-live="polite">
+              <Sparkles className="w-3.5 h-3.5 text-luxe-gold shrink-0" />
+              <span className="font-mono-l text-[11px] text-luxe-mut">ASTRA suggests</span>
+              <motion.span
+                key={suggestIdx}
+                initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="truncate"
+              >
+                {SUGGESTIONS[suggestIdx]}
+              </motion.span>
             </div>
 
             <div className="mt-5 flex flex-wrap gap-2">
-              {CHIPS.map(c => (
-                <button key={c}
-                  className="text-[12px] px-3.5 py-1.5 rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] hover:text-luxe-gold transition-colors">
+              {CHIPS.map((c, i) => (
+                <motion.button
+                  key={c}
+                  initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.7 + i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                  className="text-[12px] px-3.5 py-1.5 rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] hover:text-luxe-gold transition-all duration-300 hover:-translate-y-0.5"
+                >
                   {c}
-                </button>
+                </motion.button>
               ))}
             </div>
           </motion.div>
+        </div>
+
+        {/* Scroll cue */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center gap-2 text-luxe-mut">
+          <span className="luxe-eyebrow text-[10px]">Scroll</span>
+          <span className="luxe-cue inline-block w-px h-8 bg-gradient-to-b from-[color:var(--luxe-gold)] to-transparent" />
         </div>
       </section>
 
