@@ -19,6 +19,12 @@ import { cn } from "@/lib/utils";
    ============================================================ */
 
 const CHIPS = ["Beachfront", "Rice Field View", "Jungle Retreat", "Family Friendly", "Newly Added"];
+const SUGGESTIONS = [
+  "Cliffside villa in Uluwatu with infinity pool…",
+  "Jungle sanctuary near Ubud, 4 bedrooms…",
+  "Beachfront retreat in Canggu for 6 guests…",
+  "Architectural pavilion with private chef…",
+];
 
 const FEATURED = [
   { img: villa3, name: "Villa Anantara", area: "Uluwatu · Beachfront", price: "$2,850", rating: 4.98, tag: "Editor's Pick" },
@@ -56,10 +62,36 @@ export default function LuxeExperience() {
   const heroOpacity = useTransform(scrollY, [0, 600], [1, 0.35]);
 
   const [scrolled, setScrolled] = useState(false);
+  const [suggestIdx, setSuggestIdx] = useState(0);
+  const [spot, setSpot] = useState({ x: 50, y: 40 });
+
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", on, { passive: true });
     return () => window.removeEventListener("scroll", on);
+  }, []);
+
+  useEffect(() => {
+    const id = window.setInterval(() => setSuggestIdx(i => (i + 1) % SUGGESTIONS.length), 3200);
+    return () => window.clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    let raf = 0;
+    const onMove = (e: MouseEvent) => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const r = el.getBoundingClientRect();
+        setSpot({
+          x: ((e.clientX - r.left) / r.width) * 100,
+          y: ((e.clientY - r.top) / r.height) * 100,
+        });
+      });
+    };
+    el.addEventListener("mousemove", onMove);
+    return () => { el.removeEventListener("mousemove", onMove); cancelAnimationFrame(raf); };
   }, []);
 
   return (
