@@ -239,15 +239,27 @@ export default function LuxeExperience() {
       <section ref={heroRef} className="relative min-h-[100svh] overflow-hidden luxe-grain">
         <motion.div
           style={{ y: heroY, scale: heroScale, opacity: heroOpacity }}
-          className="absolute inset-0"
+          className="absolute inset-0 will-change-transform"
         >
           <img
             src={heroImg}
             alt="Cinematic Bali luxury villa with infinity pool at golden hour"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover luxe-kenburns"
             width={1920} height={1280}
+            loading="eager"
+            decoding="async"
           />
         </motion.div>
+
+        {/* Ambient bloom layers */}
+        <div className="absolute inset-0 pointer-events-none luxe-bloom-a"
+          style={{ background: "radial-gradient(40% 30% at 78% 22%, rgba(231,206,150,0.30), transparent 70%)" }} />
+        <div className="absolute inset-0 pointer-events-none luxe-bloom-b"
+          style={{ background: "radial-gradient(34% 28% at 18% 78%, rgba(79,178,134,0.18), transparent 70%)" }} />
+
+        {/* Mouse-tracked cinematic spotlight */}
+        <div className="absolute inset-0 pointer-events-none transition-[background] duration-300"
+          style={{ background: `radial-gradient(420px 320px at ${spot.x}% ${spot.y}%, rgba(255,255,255,0.06), transparent 70%)` }} />
 
         {/* Cinematic overlays */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/20 to-[#050505]" />
@@ -258,36 +270,61 @@ export default function LuxeExperience() {
           background: "linear-gradient(180deg, rgba(11,18,32,0.35) 0%, transparent 30%, transparent 60%, rgba(5,5,5,0.6) 100%)"
         }} />
 
+        {/* Floating gold particles */}
+        <div className="luxe-particles" aria-hidden="true">
+          {Array.from({ length: 14 }).map((_, i) => (
+            <span key={i} style={{
+              left: `${(i * 7.3) % 100}%`,
+              animationDelay: `${(i * 0.7) % 9}s`,
+              animationDuration: `${8 + (i % 5)}s`,
+              opacity: 0,
+            }} />
+          ))}
+        </div>
+
         <div className="relative z-10 mx-auto max-w-[1440px] px-5 md:px-10 pt-32 md:pt-44 pb-20">
           <motion.div
-            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            initial="hidden" animate="show"
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } } }}
             className="max-w-3xl"
           >
-            <div className="flex items-center gap-3 mb-6">
+            <motion.div
+              variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } } }}
+              className="flex items-center gap-3 mb-6"
+            >
               <span className="luxe-eyebrow">Bali · Est. MMXXVI</span>
               <span className="w-10 h-px bg-[color:var(--luxe-gold)]/60" />
               <span className="text-[11px] text-luxe-mut font-mono-l">AI Property OS · v2.0</span>
-            </div>
+            </motion.div>
 
-            <h1 className="font-serif-l text-[44px] sm:text-[64px] md:text-[88px] leading-[0.95] tracking-tight">
-              Discover <em className="not-italic text-luxe-gold">Extraordinary</em>
+            <motion.h1
+              variants={{ hidden: { opacity: 0, y: 28 }, show: { opacity: 1, y: 0, transition: { duration: 1.1, ease: [0.22, 1, 0.36, 1] } } }}
+              className="font-serif-l text-[44px] sm:text-[64px] md:text-[96px] leading-[0.95] tracking-tight"
+              style={{ textShadow: "0 2px 40px rgba(0,0,0,0.55)" }}
+            >
+              Discover <em className="not-italic luxe-gold-shimmer">Extraordinary</em>
               <br /> Villas in Bali.
-            </h1>
+            </motion.h1>
 
-            <p className="mt-7 max-w-xl text-[15px] md:text-[17px] leading-relaxed text-luxe-fg/75">
-              AI-powered luxury villa experiences with immersive property intelligence,
-              premium concierge services, and next-generation booking technology.
-            </p>
+            <motion.p
+              variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 1, ease: [0.22, 1, 0.36, 1] } } }}
+              className="mt-7 max-w-xl text-[15px] md:text-[18px] leading-relaxed text-luxe-fg/80"
+            >
+              AI-powered luxury villa experiences with immersive property intelligence
+              and premium concierge services.
+            </motion.p>
 
-            <div className="mt-10 flex flex-wrap items-center gap-3">
-              <button className="luxe-gold-btn rounded-full px-6 py-3.5 text-[13px] font-medium tracking-wide inline-flex items-center gap-2">
-                Begin Your Stay <ArrowUpRight className="w-4 h-4" />
+            <motion.div
+              variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } } }}
+              className="mt-10 flex flex-wrap items-center gap-3"
+            >
+              <button className="luxe-gold-btn rounded-full px-6 py-3.5 text-[13px] font-medium tracking-wide inline-flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-12px_rgba(200,169,107,0.6)]">
+                Begin Your Stay <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               </button>
-              <button className="rounded-full px-5 py-3.5 text-[13px] font-medium tracking-wide bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors inline-flex items-center gap-2">
+              <button className="rounded-full px-5 py-3.5 text-[13px] font-medium tracking-wide bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-all duration-300 hover:-translate-y-0.5 inline-flex items-center gap-2">
                 <PlayCircle className="w-4 h-4 text-luxe-gold" /> Watch the Film
               </button>
-            </div>
+            </motion.div>
           </motion.div>
 
           {/* Floating AI signal panel */}
