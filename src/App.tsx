@@ -407,9 +407,10 @@ const AppContent = () => {
           <PageTransition key={location.pathname}>
             <Suspense fallback={<PageLoader />}>
               <Routes location={location}>
-                <Route path="/" element={<Index />} />
+                <Route path="/" element={<LuxeExperience />} />
                 <Route path="/landing" element={<InvestorLandingPage />} />
                 <Route path="/luxe" element={<LuxeExperience />} />
+                <Route path="/classic" element={<Index />} />
                 <Route path="/investor-landing" element={<InvestorLandingPage />} />
                 <Route path="/onboarding/investor" element={<InvestorOnboarding />} />
                 <Route path="/onboarding/investor-wizard" element={<InvestorOnboardingWizard />} />
