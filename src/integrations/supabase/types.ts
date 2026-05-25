@@ -47692,17 +47692,20 @@ export type Database = {
           description: string
           development_status: string | null
           featured: boolean
+          floors: number | null
           has_pool: boolean | null
           id: string
           image_urls: string[] | null
           images: string[]
           investment_score: number | null
+          is_featured: boolean | null
           land_area_sqm: number | null
           land_sqm: number
           liquidity_score: number | null
           listed_at: string | null
           listing_type: string
           location: string | null
+          market_heat_score: number | null
           meta: Json
           minimum_rental_days: number | null
           online_booking_enabled: boolean | null
@@ -47717,6 +47720,7 @@ export type Database = {
           rental_periods: string[] | null
           rental_yield: number | null
           rental_yield_percentage: number | null
+          risk_level: string | null
           saves_count: number | null
           slug: string | null
           sold_at: string | null
@@ -47752,17 +47756,20 @@ export type Database = {
           description?: string
           development_status?: string | null
           featured?: boolean
+          floors?: number | null
           has_pool?: boolean | null
           id?: string
           image_urls?: string[] | null
           images?: string[]
           investment_score?: number | null
+          is_featured?: boolean | null
           land_area_sqm?: number | null
           land_sqm?: number
           liquidity_score?: number | null
           listed_at?: string | null
           listing_type?: string
           location?: string | null
+          market_heat_score?: number | null
           meta?: Json
           minimum_rental_days?: number | null
           online_booking_enabled?: boolean | null
@@ -47777,6 +47784,7 @@ export type Database = {
           rental_periods?: string[] | null
           rental_yield?: number | null
           rental_yield_percentage?: number | null
+          risk_level?: string | null
           saves_count?: number | null
           slug?: string | null
           sold_at?: string | null
@@ -47812,17 +47820,20 @@ export type Database = {
           description?: string
           development_status?: string | null
           featured?: boolean
+          floors?: number | null
           has_pool?: boolean | null
           id?: string
           image_urls?: string[] | null
           images?: string[]
           investment_score?: number | null
+          is_featured?: boolean | null
           land_area_sqm?: number | null
           land_sqm?: number
           liquidity_score?: number | null
           listed_at?: string | null
           listing_type?: string
           location?: string | null
+          market_heat_score?: number | null
           meta?: Json
           minimum_rental_days?: number | null
           online_booking_enabled?: boolean | null
@@ -47837,6 +47848,7 @@ export type Database = {
           rental_periods?: string[] | null
           rental_yield?: number | null
           rental_yield_percentage?: number | null
+          risk_level?: string | null
           saves_count?: number | null
           slug?: string | null
           sold_at?: string | null
@@ -48218,6 +48230,20 @@ export type Database = {
             columns: ["owner_id"]
             isOneToOne: false
             referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_bookings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_bookings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "public_properties"
             referencedColumns: ["id"]
           },
           {
