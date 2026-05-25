@@ -22,11 +22,11 @@ const revealVariants: Variants = {
 };
 
 function Reveal({
-  children, delay = 0, y = 36, className, as: As = "div",
-}: { children: ReactNode; delay?: number; y?: number; className?: string; as?: any }) {
-  const Comp = motion(As);
+  children, delay = 0, y = 36, className, as = "div",
+}: { children: ReactNode; delay?: number; y?: number; className?: string; as?: "div" | "article" | "section" | "li" | "span" }) {
+  const Tag: any = (motion as any)[as];
   return (
-    <Comp
+    <Tag
       initial={{ opacity: 0, y, filter: "blur(14px)" }}
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "-90px" }}
@@ -34,7 +34,7 @@ function Reveal({
       className={className}
     >
       {children}
-    </Comp>
+    </Tag>
   );
 }
 
