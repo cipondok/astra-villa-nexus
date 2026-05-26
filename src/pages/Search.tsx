@@ -367,7 +367,7 @@ const Search = () => {
       {/* Results Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
         {/* Active Filters & Count */}
-        {(searchTerm || selectedType !== 'all' || selectedLocation !== 'all') && (
+        {(searchTerm || selectedType !== 'all' || selectedLocation !== 'all' || locationText || whenDate || guests) && (
           <div className="mb-4 flex flex-wrap items-center gap-2">
             {searchTerm && (
               <Badge variant="secondary" className="text-xs px-2.5 py-1 rounded-lg gap-1">
@@ -381,10 +381,20 @@ const Search = () => {
                 {selectedType}
               </Badge>
             )}
-            {selectedLocation !== 'all' && (
+            {(selectedLocation !== 'all' || locationText) && (
               <Badge variant="secondary" className="text-xs px-2.5 py-1 rounded-lg gap-1">
                 <MapPin className="h-3 w-3" />
-                {selectedLocation}
+                {selectedLocation !== 'all' ? selectedLocation : locationText}
+              </Badge>
+            )}
+            {whenDate && (
+              <Badge variant="secondary" className="text-xs px-2.5 py-1 rounded-lg gap-1">
+                {whenDate}
+              </Badge>
+            )}
+            {guests && (
+              <Badge variant="secondary" className="text-xs px-2.5 py-1 rounded-lg gap-1">
+                {guests} {Number(guests) === 1 ? 'guest' : 'guests'}
               </Badge>
             )}
             <span className="text-muted-foreground text-xs ml-auto">
