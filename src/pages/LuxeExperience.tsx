@@ -422,7 +422,7 @@ export default function LuxeExperience() {
           /* Native vertical pan + momentum — fixes touch-stutter on mobile */
           touch-action: pan-y;
           -webkit-overflow-scrolling: touch;
-          overscroll-behavior-y: contain;
+          overscroll-behavior-y: auto;
         }
         /* Decorative layers must never intercept finger drags */
         .luxe-root [aria-hidden="true"] { pointer-events: none; }
