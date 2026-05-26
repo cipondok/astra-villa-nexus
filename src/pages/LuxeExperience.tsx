@@ -449,7 +449,7 @@ export default function LuxeExperience() {
 
             <motion.h1
               variants={{ hidden: { opacity: 0, y: 28 }, show: { opacity: 1, y: 0, transition: { duration: 1.1, ease: [0.22, 1, 0.36, 1] } } }}
-              className="font-serif-l text-[44px] sm:text-[64px] md:text-[96px] leading-[0.95] tracking-tight"
+              className="font-serif-l text-[40px] xs:text-[46px] sm:text-[64px] md:text-[96px] leading-[1.02] sm:leading-[0.98] md:leading-[0.95] tracking-tight text-balance"
               style={{ textShadow: "0 2px 40px rgba(0,0,0,0.55)" }}
             >
               Discover <em className="not-italic luxe-gold-shimmer">Extraordinary</em>
@@ -458,7 +458,7 @@ export default function LuxeExperience() {
 
             <motion.p
               variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 1, ease: [0.22, 1, 0.36, 1] } } }}
-              className="mt-7 max-w-xl text-[15px] md:text-[18px] leading-relaxed text-luxe-fg/80"
+              className="mt-6 md:mt-7 max-w-xl text-[15px] md:text-[18px] leading-relaxed text-luxe-fg/80 text-balance"
             >
               AI-powered luxury villa experiences with immersive property intelligence
               and premium concierge services.
