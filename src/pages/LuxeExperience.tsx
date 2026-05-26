@@ -151,12 +151,16 @@ type FeaturedVilla = {
   price: string;
   rating: number;
   tag: string;
+  investmentScore?: number | null;
+  demandScore?: number | null;
+  roi?: number | null;
+  yieldPct?: number | null;
 };
 
 const FEATURED_FALLBACK: FeaturedVilla[] = [
-  { img: villa3, name: "Villa Anantara",  area: "Uluwatu · Beachfront",   price: "$2,850", rating: 4.98, tag: "Editor's Pick" },
-  { img: villa1, name: "Cliff House No. 9", area: "Bingin · Ocean Cliff", price: "$3,420", rating: 4.96, tag: "New" },
-  { img: villa2, name: "Pavilion Ubud",   area: "Ubud · Jungle Retreat",  price: "$1,980", rating: 4.94, tag: "Concierge" },
+  { img: villa3, name: "Villa Anantara",  area: "Uluwatu · Beachfront",   price: "$2,850", rating: 4.98, tag: "Editor's Pick", investmentScore: 92, demandScore: 88, roi: 9.4, yieldPct: 7.8 },
+  { img: villa1, name: "Cliff House No. 9", area: "Bingin · Ocean Cliff", price: "$3,420", rating: 4.96, tag: "New",           investmentScore: 89, demandScore: 94, roi: 10.2, yieldPct: 8.1 },
+  { img: villa2, name: "Pavilion Ubud",   area: "Ubud · Jungle Retreat",  price: "$1,980", rating: 4.94, tag: "Concierge",     investmentScore: 86, demandScore: 81, roi: 8.7, yieldPct: 7.2 },
 ];
 
 function formatPrice(n: number | null | undefined): string {
@@ -166,17 +170,18 @@ function formatPrice(n: number | null | undefined): string {
   return `Rp ${n.toLocaleString("id-ID")}`;
 }
 
-function useFeaturedVillas(): FeaturedVilla[] {
-  const { data } = useQuery({
-    queryKey: ["luxe-featured-villas"],
+function useFeaturedVillas(): { villas: FeaturedVilla[]; isLoading: boolean; isFallback: boolean } {
+  const { data, isLoading } = useQuery({
+    queryKey: ["luxe-featured-villas-v2"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("properties")
-        .select("id,title,location,price,images,property_type")
+        .select("id,title,location,city,area,price,price_idr,images,image_urls,cover_image,investment_score,demand_heat_score,roi_percentage,rental_yield_percentage,is_featured,featured")
         .eq("status", "active")
-        .not("images", "is", null)
+        .order("is_featured", { ascending: false, nullsFirst: false } as any)
+        .order("investment_score", { ascending: false, nullsFirst: false } as any)
         .order("created_at", { ascending: false })
-        .limit(3);
+        .limit(6);
       if (error) throw error;
       return data ?? [];
     },
@@ -184,18 +189,61 @@ function useFeaturedVillas(): FeaturedVilla[] {
     retry: 0,
   });
 
-  if (!data || data.length === 0) return FEATURED_FALLBACK;
-  const tags = ["Editor's Pick", "New", "Concierge"];
+  if (isLoading) return { villas: [], isLoading: true, isFallback: false };
+  if (!data || data.length === 0) return { villas: FEATURED_FALLBACK, isLoading: false, isFallback: true };
+
+  const tags = ["Editor's Pick", "Trending", "Concierge", "Investor's Choice", "New", "Rare Find"];
   const fallbackImgs = [villa3, villa1, villa2];
-  return data.map((p: any, i: number) => ({
-    id: p.id,
-    img: (Array.isArray(p.images) && p.images[0]) || fallbackImgs[i % 3],
-    name: p.title ?? "Untitled Villa",
-    area: p.location ?? "Bali",
-    price: formatPrice(Number(p.price)),
-    rating: 4.94,
-    tag: tags[i % tags.length],
-  }));
+  const villas = data.map((p: any, i: number): FeaturedVilla => {
+    const img =
+      p.cover_image ||
+      (Array.isArray(p.image_urls) && p.image_urls[0]) ||
+      (Array.isArray(p.images) && p.images[0]) ||
+      fallbackImgs[i % 3];
+    const priceNum = Number(p.price_idr ?? p.price ?? 0);
+    const area = [p.area ?? p.location, p.city].filter(Boolean).join(" · ") || "Bali";
+    return {
+      id: p.id,
+      img,
+      name: p.title ?? "Untitled Villa",
+      area,
+      price: formatPrice(priceNum),
+      rating: 4.94,
+      tag: p.is_featured || p.featured ? "Editor's Pick" : tags[i % tags.length],
+      investmentScore: p.investment_score != null ? Math.round(Number(p.investment_score)) : null,
+      demandScore: p.demand_heat_score != null ? Math.round(Number(p.demand_heat_score)) : null,
+      roi: p.roi_percentage != null ? Number(p.roi_percentage) : null,
+      yieldPct: p.rental_yield_percentage != null ? Number(p.rental_yield_percentage) : null,
+    };
+  });
+  return { villas, isLoading: false, isFallback: false };
+}
+
+/* Luxury shimmer skeleton for villa cards */
+function VillaSkeleton() {
+  return (
+    <div className="rounded-3xl border border-luxe bg-[#0a0a0a] overflow-hidden">
+      <div className="aspect-[4/5] luxe-shimmer" />
+      <div className="p-4 space-y-2">
+        <div className="h-4 w-2/3 luxe-shimmer rounded" />
+        <div className="h-3 w-1/2 luxe-shimmer rounded" />
+      </div>
+    </div>
+  );
+}
+
+/* Compact AI score chip used inside villa cards */
+function ScoreChip({ label, value, tone = "gold" }: { label: string; value: string; tone?: "gold" | "ember" | "emerald" }) {
+  const color =
+    tone === "ember"   ? "text-[#ffb27a] border-[#ffb27a]/30"
+    : tone === "emerald" ? "text-[#7be0b3] border-[#7be0b3]/30"
+    : "text-luxe-gold border-[color:var(--luxe-gold)]/35";
+  return (
+    <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] tracking-wider uppercase luxe-glass-card border", color)}>
+      <span className="opacity-70">{label}</span>
+      <span className="font-medium">{value}</span>
+    </span>
+  );
 }
 
 const AI_CARDS = [
