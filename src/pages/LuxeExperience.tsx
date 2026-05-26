@@ -1603,4 +1603,33 @@ function SearchField({ icon: Icon, label, value, to }: { icon: any; label: strin
   );
 }
 
+function SearchInput({
+  icon: Icon, label, value, onChange, placeholder, type = "text", min,
+}: {
+  icon: any;
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  type?: "text" | "date" | "number";
+  min?: number;
+}) {
+  return (
+    <label className="flex-1 flex items-center gap-3 px-5 py-2.5 rounded-xl md:rounded-full hover:bg-white/5 transition-colors text-left cursor-text">
+      <Icon className="w-4 h-4 text-luxe-gold shrink-0" />
+      <div className="min-w-0 flex-1">
+        <div className="text-[10px] uppercase tracking-[0.2em] text-luxe-mut">{label}</div>
+        <input
+          type={type}
+          value={value}
+          min={min}
+          placeholder={placeholder}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full bg-transparent border-0 outline-none text-[13px] text-luxe-fg placeholder:text-luxe-mut/70 p-0 focus:ring-0"
+        />
+      </div>
+    </label>
+  );
+}
+
 
