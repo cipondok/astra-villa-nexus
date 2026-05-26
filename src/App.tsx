@@ -203,6 +203,7 @@ const AdvancedSearchPage = lazy(() => import('@/pages/AdvancedSearchPage'));
 const AstraDevelopment = lazy(() => import('@/pages/AstraDevelopment'));
 const BookingsPage = lazy(() => import('@/pages/BookingsPage'));
 const LocationMap = lazy(() => import('@/pages/LocationMap'));
+const Locations = lazy(() => import('@/pages/Locations'));
 const AIMapSearchPage = lazy(() => import('@/pages/AIMapSearchPage'));
 const PropertyMapSearchPage = lazy(() => import('@/pages/PropertyMapSearch'));
 const DigitalTwinPage = lazy(() => import('@/pages/DigitalTwinPage'));
@@ -392,6 +393,7 @@ const AppContent = () => {
     '/', '/luxe', '/properties', '/search',
     '/dijual', '/buy', '/disewa', '/rent', '/sewa',
     '/pre-launching', '/pre-launch', '/new-projects',
+    '/location', '/locations',
   ]);
   const isLuxeRoute =
     LUXE_PATHS.has(path) ||
@@ -685,7 +687,8 @@ const AppContent = () => {
                 <Route path="/astra-development" element={<AstraDevelopment />} />
                 <Route path="/membership" element={<MembershipPage />} />
                 <Route path="/bookings" element={<BookingsPage />} />
-                <Route path="/location" element={<LocationMap />} />
+                <Route path="/location" element={<Locations />} />
+                <Route path="/locations" element={<Locations />} />
                 <Route path="/location-map" element={<LocationMap />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/help" element={<Help />} />
