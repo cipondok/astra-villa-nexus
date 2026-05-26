@@ -370,15 +370,15 @@ export default function LuxeExperience() {
         }
         @keyframes luxeFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
         .luxe-float { animation: luxeFloat 6s ease-in-out infinite; }
-        @keyframes luxeBloomA { 0%,100% { transform: translate3d(0,0,0) scale(1); opacity:.55 } 50% { transform: translate3d(3%,-2%,0) scale(1.08); opacity:.8 } }
-        @keyframes luxeBloomB { 0%,100% { transform: translate3d(0,0,0) scale(1); opacity:.4 } 50% { transform: translate3d(-2%,3%,0) scale(1.12); opacity:.65 } }
-        @keyframes luxeKenBurns { 0% { transform: scale(1.05) translate3d(0,0,0) } 100% { transform: scale(1.14) translate3d(-1.5%,-1%,0) } }
+        @keyframes luxeBloomA { 0%,100% { transform: translate3d(0,0,0) scale(1); opacity:.45 } 50% { transform: translate3d(2%,-1%,0) scale(1.04); opacity:.6 } }
+        @keyframes luxeBloomB { 0%,100% { transform: translate3d(0,0,0) scale(1); opacity:.3 } 50% { transform: translate3d(-1%,2%,0) scale(1.05); opacity:.45 } }
+        @keyframes luxeKenBurns { 0% { transform: scale(1.03) translate3d(0,0,0) } 100% { transform: scale(1.07) translate3d(-0.8%,-0.6%,0) } }
         @keyframes luxeShimmer { 0% { background-position: -200% 0 } 100% { background-position: 200% 0 } }
         @keyframes luxeCue { 0%,100% { transform: translateY(0); opacity:.5 } 50% { transform: translateY(6px); opacity:1 } }
-        @keyframes luxeSpark { 0% { opacity:0; transform: translateY(0) } 10% { opacity:.6 } 100% { opacity:0; transform: translateY(-80px) } }
-        .luxe-bloom-a { animation: luxeBloomA 14s ease-in-out infinite; }
-        .luxe-bloom-b { animation: luxeBloomB 18s ease-in-out infinite; }
-        .luxe-kenburns { animation: luxeKenBurns 22s ease-in-out infinite alternate; }
+        @keyframes luxeSpark { 0% { opacity:0; transform: translateY(0) } 10% { opacity:.5 } 100% { opacity:0; transform: translateY(-80px) } }
+        .luxe-bloom-a { animation: luxeBloomA 22s ease-in-out infinite; }
+        .luxe-bloom-b { animation: luxeBloomB 28s ease-in-out infinite; }
+        .luxe-kenburns { animation: luxeKenBurns 30s ease-in-out infinite alternate; }
         .luxe-cue { animation: luxeCue 2.4s ease-in-out infinite; }
         .luxe-gold-shimmer {
           background: linear-gradient(90deg, #C8A96B 0%, #F2E0B2 45%, #C8A96B 60%, #B6914F 100%);
