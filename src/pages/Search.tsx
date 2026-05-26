@@ -321,7 +321,14 @@ const Search = () => {
             </Select>
 
             {/* Location Filter */}
-            <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+            <Select
+              value={selectedLocation}
+              onValueChange={(v) => {
+                setSelectedLocation(v);
+                // Dropdown is now the source of truth — drop any stale free-text.
+                if (v !== 'all') setLocationText('');
+              }}
+            >
               <SelectTrigger className="h-10 text-xs sm:text-sm w-28 sm:w-32 rounded-xl border-border/40 bg-muted/20">
                 <MapPin className="h-3.5 w-3.5 text-muted-foreground mr-1.5 shrink-0" />
                 <SelectValue placeholder="Location" />
