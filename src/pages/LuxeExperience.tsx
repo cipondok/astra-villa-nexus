@@ -582,15 +582,30 @@ export default function LuxeExperience() {
               scrolled ? "py-2 md:py-2.5 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] bg-[rgba(8,8,10,0.72)]" : "py-2.5 md:py-3"
             )}
           >
-            <Link to="/" className="flex items-center gap-2.5 shrink-0">
-              <div className="w-8 h-8 rounded-full grid place-items-center"
-                   style={{ background: "linear-gradient(135deg,#C8A96B,#8C6B2F)" }}>
-                <span className="font-serif-l text-[15px] text-black">A</span>
-              </div>
-              <span className="font-serif-l text-[17px] tracking-wide">Astra<span className="text-luxe-gold"> Villa</span></span>
+            {/* === Logo — hairline gold ring + monogram === */}
+            <Link to="/" aria-label="ASTRA Villa — home" className="flex items-center gap-2.5 shrink-0 group">
+              <span
+                aria-hidden
+                className="relative w-9 h-9 rounded-full grid place-items-center transition-transform duration-500 group-hover:scale-[1.04]"
+                style={{
+                  background: "radial-gradient(120% 120% at 30% 25%, #E7CE96 0%, #C8A96B 45%, #6F5320 100%)",
+                  boxShadow: "0 6px 20px -8px rgba(200,169,107,0.55), inset 0 0 0 1px rgba(255,255,255,0.18)",
+                }}
+              >
+                <span
+                  className="absolute inset-[3px] rounded-full"
+                  style={{ boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.35)" }}
+                />
+                <span className="relative font-serif-l text-[15px] text-[#0a0a0a] leading-none tracking-tight">A</span>
+              </span>
+              <span className="hidden sm:flex flex-col leading-none">
+                <span className="font-serif-l text-[17px] tracking-wide">Astra<span className="text-luxe-gold"> Villa</span></span>
+                <span className="text-[9px] uppercase tracking-[0.32em] text-luxe-mut mt-1">Property OS</span>
+              </span>
             </Link>
 
-            <div className="hidden lg:flex items-center gap-6 xl:gap-7 text-[13px] text-luxe-fg/75">
+            {/* === Desktop nav with mega-menu === */}
+            <div className="hidden lg:flex items-center gap-5 xl:gap-7 text-[13px] text-luxe-fg/75">
               <Link
                 to="/"
                 className={cn(
@@ -605,39 +620,174 @@ export default function LuxeExperience() {
               </Link>
               {NAV_LINKS.map(link => {
                 const active = link.match ? pathname.startsWith(link.match) : false;
+                const hasMega = !!link.mega?.length;
                 return (
-                  <Link
-                    key={link.to}
-                    to={link.to}
-                    className={cn(
-                      "relative py-1 transition-colors duration-300 hover:text-luxe-gold",
-                      active && "text-luxe-gold"
+                  <div key={link.to} className={cn("relative", hasMega && "group")}>
+                    <Link
+                      to={link.to}
+                      className={cn(
+                        "relative py-1 inline-flex items-center gap-1 transition-colors duration-300 hover:text-luxe-gold",
+                        active && "text-luxe-gold"
+                      )}
+                    >
+                      {link.label}
+                      {hasMega && <ChevronRight className="w-3 h-3 rotate-90 opacity-50 group-hover:opacity-100 transition-opacity" />}
+                      {active && (
+                        <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[color:var(--luxe-gold)]" />
+                      )}
+                    </Link>
+                    {hasMega && (
+                      <div
+                        className="absolute left-1/2 -translate-x-1/2 top-full pt-4 w-[320px] opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50"
+                      >
+                        <div className="luxe-glass-card rounded-2xl p-2 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.7)] bg-[rgba(8,8,10,0.92)]">
+                          {link.mega!.map(sub => (
+                            <Link
+                              key={sub.to}
+                              to={sub.to}
+                              className="flex items-start justify-between gap-3 px-3 py-2.5 rounded-xl hover:bg-white/[0.04] transition-colors group/sub"
+                            >
+                              <div>
+                                <div className="text-[13px] text-luxe-fg/90 group-hover/sub:text-luxe-gold transition-colors">{sub.label}</div>
+                                {sub.desc && <div className="text-[11px] text-luxe-mut mt-0.5">{sub.desc}</div>}
+                              </div>
+                              <ChevronRight className="w-3.5 h-3.5 text-luxe-mut group-hover/sub:text-luxe-gold transition-colors mt-0.5" />
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
                     )}
-                  >
-                    {link.label}
-                    {active && (
-                      <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[color:var(--luxe-gold)]" />
-                    )}
-                  </Link>
+                  </div>
                 );
               })}
             </div>
 
+            {/* === Secondary actions === */}
             <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
-              <Link to="/ai-concierge" className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-full bg-luxe-glass border border-luxe text-[12px] hover:border-[color:var(--luxe-gold)] transition-colors">
+              <Link to="/properties" aria-label="Search villas" className="hidden md:grid w-9 h-9 place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] hover:text-luxe-gold transition-colors">
+                <Search className="w-4 h-4" />
+              </Link>
+              <Link to="/ai-concierge" className="hidden xl:flex items-center gap-1.5 px-3 py-2 rounded-full bg-luxe-glass border border-luxe text-[12px] hover:border-[color:var(--luxe-gold)] transition-colors">
                 <Sparkles className="w-3.5 h-3.5 text-luxe-gold" /> AI Concierge
               </Link>
-              <Link to="/favorites" className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Favorites">
+              <Link to="/favorites" aria-label="Wishlist" className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] hover:text-luxe-gold transition-colors">
                 <Heart className="w-4 h-4" />
               </Link>
-              <Link to={profileHref} className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Profile">
+              {user && (
+                <Link to="/notifications" aria-label="Notifications" className="hidden md:grid relative w-9 h-9 place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] hover:text-luxe-gold transition-colors">
+                  <Bell className="w-4 h-4" />
+                  <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[color:var(--luxe-gold)]" />
+                </Link>
+              )}
+              <Link to={profileHref} aria-label="Profile" className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] hover:text-luxe-gold transition-colors">
                 <User2 className="w-4 h-4" />
               </Link>
+              <button
+                type="button"
+                onClick={() => setMobileOpen(true)}
+                aria-label="Open menu"
+                className="lg:hidden w-10 h-10 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors"
+              >
+                <Menu className="w-4 h-4" />
+              </button>
             </div>
 
           </nav>
         </div>
       </header>
+
+      {/* ============== MOBILE FULLSCREEN MENU ============== */}
+      <div
+        className={cn(
+          "fixed inset-0 z-[60] lg:hidden transition-opacity duration-500",
+          mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        )}
+        aria-hidden={!mobileOpen}
+      >
+        <div
+          className="absolute inset-0"
+          style={{ background: "radial-gradient(70% 60% at 50% 30%, #0c0c10 0%, #050505 100%)" }}
+          onClick={() => setMobileOpen(false)}
+        />
+        <div
+          className={cn(
+            "relative h-full overflow-y-auto px-6 pt-6 pb-12 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
+            mobileOpen ? "translate-y-0" : "translate-y-3"
+          )}
+        >
+          <div className="flex items-center justify-between mb-10">
+            <Link to="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-2.5">
+              <span
+                aria-hidden
+                className="w-9 h-9 rounded-full grid place-items-center"
+                style={{
+                  background: "radial-gradient(120% 120% at 30% 25%, #E7CE96 0%, #C8A96B 45%, #6F5320 100%)",
+                  boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.18)",
+                }}
+              >
+                <span className="font-serif-l text-[15px] text-[#0a0a0a]">A</span>
+              </span>
+              <span className="font-serif-l text-[18px]">Astra<span className="text-luxe-gold"> Villa</span></span>
+            </Link>
+            <button
+              type="button"
+              onClick={() => setMobileOpen(false)}
+              aria-label="Close menu"
+              className="w-11 h-11 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          <nav className="flex flex-col">
+            {[{ label: "Home", to: "/" }, ...NAV_LINKS].map((link, i) => (
+              <div key={link.to} className="border-b border-luxe">
+                <Link
+                  to={link.to}
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center justify-between py-5 group"
+                  style={{
+                    transitionDelay: `${mobileOpen ? i * 40 : 0}ms`,
+                  }}
+                >
+                  <span className="font-serif-l text-[28px] leading-none group-hover:text-luxe-gold transition-colors">
+                    {link.label}
+                  </span>
+                  <ArrowUpRight className="w-5 h-5 text-luxe-mut group-hover:text-luxe-gold transition-colors" />
+                </Link>
+                {"mega" in link && link.mega && (
+                  <div className="pb-4 pl-1 space-y-1">
+                    {link.mega.map(sub => (
+                      <Link
+                        key={sub.to}
+                        to={sub.to}
+                        onClick={() => setMobileOpen(false)}
+                        className="block text-[13px] text-luxe-mut hover:text-luxe-gold py-1.5 transition-colors"
+                      >
+                        — {sub.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </nav>
+
+          <div className="mt-10 grid grid-cols-2 gap-3">
+            <Link to="/properties" onClick={() => setMobileOpen(false)} className="flex items-center justify-center gap-2 py-4 rounded-2xl luxe-glass-card text-[12px] hover:text-luxe-gold transition-colors">
+              <Search className="w-4 h-4" /> Search Villas
+            </Link>
+            <Link to="/ai-concierge" onClick={() => setMobileOpen(false)} className="flex items-center justify-center gap-2 py-4 rounded-2xl luxe-gold-btn text-[12px] font-medium">
+              <Sparkles className="w-4 h-4" /> AI Concierge
+            </Link>
+          </div>
+
+          <div className="mt-8 text-center text-[10px] uppercase tracking-[0.32em] text-luxe-mut">
+            ASTRA Villa · Property OS
+          </div>
+        </div>
+      </div>
+
 
 
       {/* ============== HERO ============== */}
