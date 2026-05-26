@@ -348,6 +348,14 @@ export default function LuxeExperience() {
   const handleHeroSearch = (e?: React.FormEvent) => {
     e?.preventDefault();
 
+    // [debug] confirm submit handler fires + show captured values
+    // TODO: remove after QA
+    console.log("[hero-search] submit fired", {
+      where: searchWhere,
+      when: searchWhen,
+      guests: searchGuests,
+    });
+
     // Guests: must be a whole number >= 1
     const guestsNum = Number(searchGuests);
     if (!Number.isFinite(guestsNum) || guestsNum < 1) {
@@ -377,7 +385,13 @@ export default function LuxeExperience() {
     }
     if (searchWhen) params.set("when", searchWhen);
     params.set("guests", String(guestsNum));
-    navigate(`/search?${params.toString()}`);
+    const url = `/search?${params.toString()}`;
+
+    // [debug] confirm generated URL — remove after QA
+    console.log("[hero-search] navigating to", url);
+    toast.success("Searching villas…", { description: url });
+
+    navigate(url);
   };
 
   // Lock body scroll when mobile menu is open
