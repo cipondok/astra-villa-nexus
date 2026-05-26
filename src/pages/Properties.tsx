@@ -108,7 +108,7 @@ export default function Properties() {
   }, [q, location, tag, collection, intent, type, sort, listingType, pathname]);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["luxe-properties", { q, location, tag, collection, intent, type, sort }],
+    queryKey: ["luxe-properties", { q, location, tag, collection, intent, type, sort, listingType }],
     queryFn: async (): Promise<Listing[]> => {
       let query = supabase
         .from("properties")
@@ -121,6 +121,7 @@ export default function Properties() {
         query = query.or(`city.ilike.%${location}%,area.ilike.%${location}%,location.ilike.%${location}%`);
       }
       if (type !== "all") query = query.eq("property_type", type);
+      if (listingType) query = query.eq("listing_type", listingType);
 
       switch (sort) {
         case "price-asc":  query = query.order("price", { ascending: true,  nullsFirst: false } as any); break;
@@ -140,13 +141,14 @@ export default function Properties() {
   const collectionTitle = collection ? (COLLECTION_LABELS[collection] || collection) : null;
 
   const heading = useMemo(() => {
+    if (preset.heading)  return preset.heading;
     if (collectionTitle) return collectionTitle;
     if (tag)             return `${tag[0].toUpperCase()}${tag.slice(1)} Villas`;
     if (intent === "investment") return "Investment Villas";
     if (q)               return `Results for “${q}”`;
     if (location)        return `Villas in ${location}`;
     return "All Villas";
-  }, [collectionTitle, tag, intent, q, location]);
+  }, [preset.heading, collectionTitle, tag, intent, q, location]);
 
   const subheading = useMemo(() => {
     const parts: string[] = [];
