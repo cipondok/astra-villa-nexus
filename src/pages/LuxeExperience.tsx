@@ -466,12 +466,12 @@ export default function LuxeExperience() {
 
             <motion.div
               variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } } }}
-              className="mt-10 flex flex-wrap items-center gap-3"
+              className="mt-9 md:mt-10 flex flex-wrap items-center gap-3"
             >
-              <button className="luxe-gold-btn rounded-full px-6 py-3.5 text-[13px] font-medium tracking-wide inline-flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-12px_rgba(200,169,107,0.6)]">
+              <button className="luxe-gold-btn luxe-tap rounded-full px-6 py-4 md:py-3.5 text-[13px] font-medium tracking-wide inline-flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-12px_rgba(200,169,107,0.6)] min-h-[48px]">
                 Begin Your Stay <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               </button>
-              <button className="rounded-full px-5 py-3.5 text-[13px] font-medium tracking-wide bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-all duration-300 hover:-translate-y-0.5 inline-flex items-center gap-2">
+              <button className="luxe-tap rounded-full px-5 py-4 md:py-3.5 text-[13px] font-medium tracking-wide bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-all duration-300 hover:-translate-y-0.5 inline-flex items-center gap-2 min-h-[48px]">
                 <PlayCircle className="w-4 h-4 text-luxe-gold" /> Watch the Film
               </button>
             </motion.div>
