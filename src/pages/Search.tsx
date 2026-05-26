@@ -221,7 +221,12 @@ const Search = () => {
     const params = new URLSearchParams();
     if (searchTerm) params.set('q', searchTerm);
     if (selectedType !== 'all') params.set('type', selectedType);
+    // When the dropdown is set, that wins; otherwise preserve any free-text
+    // location (e.g. "Bali, Indonesia" arriving from the hero search bar).
     if (selectedLocation !== 'all') params.set('location', selectedLocation);
+    else if (locationText) params.set('location', locationText);
+    if (whenDate) params.set('when', whenDate);
+    if (guests) params.set('guests', guests);
     setSearchParams(params);
   };
 
@@ -229,6 +234,9 @@ const Search = () => {
     setSearchTerm('');
     setSelectedType('all');
     setSelectedLocation('all');
+    setLocationText('');
+    setWhenDate('');
+    setGuests('');
     setSearchParams({});
   };
 
