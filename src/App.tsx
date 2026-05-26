@@ -74,7 +74,7 @@ const LuxeExperience = lazy(() => import('@/pages/LuxeExperience'));
 const CityInvestmentPage = lazy(() => import('@/pages/CityInvestmentPage'));
 const InvestorOnboarding = lazy(() => import('@/pages/InvestorOnboarding'));
 const AIListingGenerator = lazy(() => import('@/pages/AIListingGenerator'));
-const Search = lazy(() => import('@/pages/Search'));
+const Search = lazy(() => import('@/pages/Properties'));
 const ErrorPage = lazy(() => import('@/pages/ErrorPage'));
 const Auth = lazy(() => import('@/pages/Auth'));
 const ResetPassword = lazy(() => import('@/pages/ResetPassword'));
@@ -392,6 +392,7 @@ const AppContent = () => {
     path === '/' ||
     path === '/luxe' ||
     path === '/properties' ||
+    path === '/search' ||
     path.startsWith('/properties/') ||
     path.startsWith('/property/');
   const hideAppShell = isAdminRoute || isLuxeRoute;
