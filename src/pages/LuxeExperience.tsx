@@ -295,6 +295,33 @@ export default function LuxeExperience() {
         @media (prefers-reduced-motion: reduce) {
           .luxe-mesh-a,.luxe-pulse { animation: none !important; }
         }
+        /* ============ Mobile-luxury polish ============ */
+        .luxe-root { -webkit-tap-highlight-color: transparent; }
+        .luxe-root { scroll-behavior: smooth; }
+        /* iOS-quality momentum scrolling */
+        html, body { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+        .luxe-tap { transition: transform .35s cubic-bezier(0.22,1,0.36,1), box-shadow .35s ease; }
+        .luxe-tap:active { transform: scale(0.97); }
+        /* Hide native scrollbars on mobile snap rails */
+        .luxe-snap-x { -ms-overflow-style: none; scrollbar-width: none; }
+        .luxe-snap-x::-webkit-scrollbar { display: none; }
+        /* Mobile dock — floating glass nav */
+        .luxe-dock {
+          background: linear-gradient(180deg, rgba(10,10,10,0.72), rgba(10,10,10,0.55));
+          border: 1px solid var(--luxe-line);
+          backdrop-filter: blur(24px) saturate(160%);
+          -webkit-backdrop-filter: blur(24px) saturate(160%);
+          box-shadow: 0 24px 60px -20px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        .luxe-dock-active {
+          background: radial-gradient(60% 100% at 50% 0%, rgba(200,169,107,0.22), transparent 70%);
+        }
+        @media (max-width: 767px) {
+          /* Cheaper blur on mobile to prevent jank */
+          .luxe-glass-card { backdrop-filter: blur(12px) saturate(130%); -webkit-backdrop-filter: blur(12px) saturate(130%); }
+          /* Smaller ambient mesh, lower cost */
+          .luxe-mesh-a { filter: blur(40px) !important; }
+        }
       `}</style>
 
       {/* ============== AMBIENT BACKGROUND MESH (site-wide) ============== */}
