@@ -248,10 +248,10 @@ export default function LuxeExperience() {
   const heroRef = useRef<HTMLDivElement>(null);
   const spotRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
-  // Lighter parallax on mobile to keep GPU happy
-  const heroY = useTransform(scrollY, [0, 800], [0, isMobile ? 80 : 160]);
-  const heroScale = useTransform(scrollY, [0, 800], [1.05, isMobile ? 1.10 : 1.18]);
-  const heroOpacity = useTransform(scrollY, [0, 600], [1, isMobile ? 0.5 : 0.35]);
+  // Calmer parallax — less travel, no aggressive zoom
+  const heroY = useTransform(scrollY, [0, 800], [0, isMobile ? 40 : 90]);
+  const heroScale = useTransform(scrollY, [0, 800], [1.04, isMobile ? 1.06 : 1.09]);
+  const heroOpacity = useTransform(scrollY, [0, 600], [1, isMobile ? 0.6 : 0.5]);
 
   const [scrolled, setScrolled] = useState(false);
   const [suggestIdx, setSuggestIdx] = useState(0);
