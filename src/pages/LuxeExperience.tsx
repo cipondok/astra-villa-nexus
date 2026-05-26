@@ -1440,9 +1440,9 @@ export default function LuxeExperience() {
           <div className="grid grid-cols-2 md:grid-cols-5 gap-10">
             <div className="col-span-2">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full grid place-items-center"
+                <div className="w-8 h-8 rounded-full grid place-items-center overflow-hidden"
                      style={{ background: "linear-gradient(135deg,#C8A96B,#8C6B2F)" }}>
-                  <span className="font-serif-l text-[15px] text-black">A</span>
+                  <img src={brandLogo} alt="Astra Villa" className="w-6 h-6 object-contain" />
                 </div>
                 <span className="font-serif-l text-[18px]">Astra<span className="text-luxe-gold"> Villa</span></span>
               </div>
