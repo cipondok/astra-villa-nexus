@@ -840,8 +840,8 @@ const AppContent = () => {
         </Suspense>
       )}
 
-      {/* Mobile bottom tab bar */}
-      <Suspense fallback={null}><MobileBottomTabBar /></Suspense>
+      {/* Mobile bottom tab bar — legacy only; luxe routes use LuxeMobileDock */}
+      {!hideAppShell && <Suspense fallback={null}><MobileBottomTabBar /></Suspense>}
     </div>
   );
 };
