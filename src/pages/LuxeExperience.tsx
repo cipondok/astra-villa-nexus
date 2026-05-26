@@ -150,9 +150,28 @@ const COLLECTIONS = [
   { img: villa1, t: "Cliffside Architecture", c: "06 villas" },
 ];
 
+/* Adaptive device tier — gates expensive effects on weaker devices */
+function useDeviceTier(): "low" | "mid" | "high" {
+  const [tier, setTier] = useState<"low" | "mid" | "high">("high");
+  useEffect(() => {
+    const n: any = navigator;
+    const mem = n.deviceMemory ?? 8;
+    const cores = n.hardwareConcurrency ?? 8;
+    const saveData = n.connection?.saveData === true;
+    const slowNet = /(^|-)2g$/.test(n.connection?.effectiveType ?? "");
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced || saveData || slowNet || mem <= 2 || cores <= 2) setTier("low");
+    else if (mem <= 4 || cores <= 4) setTier("mid");
+    else setTier("high");
+  }, []);
+  return tier;
+}
+
 export default function LuxeExperience() {
   const { isMobile } = useIsMobile();
+  const tier = useDeviceTier();
   const heroRef = useRef<HTMLDivElement>(null);
+  const spotRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
   // Lighter parallax on mobile to keep GPU happy
   const heroY = useTransform(scrollY, [0, 800], [0, isMobile ? 80 : 160]);
@@ -161,7 +180,7 @@ export default function LuxeExperience() {
 
   const [scrolled, setScrolled] = useState(false);
   const [suggestIdx, setSuggestIdx] = useState(0);
-  const [spot, setSpot] = useState({ x: 50, y: 40 });
+  const [booted, setBooted] = useState(false);
 
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 40);
@@ -174,23 +193,41 @@ export default function LuxeExperience() {
     return () => window.clearInterval(id);
   }, []);
 
+  // Cinematic boot fade — runs once on mount
   useEffect(() => {
+    const t = window.setTimeout(() => setBooted(true), 60);
+    return () => window.clearTimeout(t);
+  }, []);
+
+  // Preload the hero LCP image at high priority
+  useEffect(() => {
+    const link = document.createElement("link");
+    link.rel = "preload"; link.as = "image"; link.href = heroImg;
+    (link as any).fetchPriority = "high";
+    document.head.appendChild(link);
+    return () => { document.head.removeChild(link); };
+  }, []);
+
+  // Mouse spotlight — desktop + high-tier only, mutates CSS vars (zero React rerenders)
+  useEffect(() => {
+    if (isMobile || tier !== "high") return;
     const el = heroRef.current;
-    if (!el) return;
+    const spot = spotRef.current;
+    if (!el || !spot) return;
     let raf = 0;
     const onMove = (e: MouseEvent) => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
         const r = el.getBoundingClientRect();
-        setSpot({
-          x: ((e.clientX - r.left) / r.width) * 100,
-          y: ((e.clientY - r.top) / r.height) * 100,
-        });
+        const x = ((e.clientX - r.left) / r.width) * 100;
+        const y = ((e.clientY - r.top) / r.height) * 100;
+        spot.style.setProperty("--sx", `${x}%`);
+        spot.style.setProperty("--sy", `${y}%`);
       });
     };
-    el.addEventListener("mousemove", onMove);
+    el.addEventListener("mousemove", onMove, { passive: true });
     return () => { el.removeEventListener("mousemove", onMove); cancelAnimationFrame(raf); };
-  }, []);
+  }, [isMobile, tier]);
 
   return (
     <div className="luxe-root relative min-h-screen text-luxe-fg antialiased">
@@ -321,8 +358,35 @@ export default function LuxeExperience() {
           .luxe-glass-card { backdrop-filter: blur(12px) saturate(130%); -webkit-backdrop-filter: blur(12px) saturate(130%); }
           /* Smaller ambient mesh, lower cost */
           .luxe-mesh-a { filter: blur(40px) !important; }
+          /* No grain on small screens — cheap visual win */
+          .luxe-grain::before { display: none; }
+        }
+        /* Below-fold sections skip paint until near viewport */
+        .luxe-cv { content-visibility: auto; contain-intrinsic-size: 1px 800px; }
+        /* Premium boot fade — cinematic mount */
+        .luxe-boot {
+          position: fixed; inset: 0; z-index: 100; pointer-events: none;
+          background: radial-gradient(60% 50% at 50% 50%, #0b0b0b 0%, #050505 100%);
+          opacity: 1; transition: opacity 900ms cubic-bezier(0.22,1,0.36,1);
+        }
+        .luxe-boot.ready { opacity: 0; }
+        .luxe-boot-mark {
+          position:absolute; left:50%; top:50%; transform: translate(-50%,-50%);
+          width: 64px; height: 64px; border-radius: 9999px;
+          background: linear-gradient(135deg,#C8A96B,#8C6B2F);
+          display: grid; place-items: center;
+          box-shadow: 0 20px 60px -20px rgba(200,169,107,0.6);
+          animation: luxePulse 2.6s ease-in-out infinite;
         }
       `}</style>
+
+      {/* Premium boot fade overlay */}
+      <div className={cn("luxe-boot", booted && "ready")} aria-hidden={booted}>
+        <div className="luxe-boot-mark">
+          <span className="font-serif-l text-[22px] text-black">A</span>
+        </div>
+      </div>
+
 
       {/* ============== AMBIENT BACKGROUND MESH (site-wide) ============== */}
       <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
@@ -401,15 +465,28 @@ export default function LuxeExperience() {
           />
         </motion.div>
 
-        {/* Ambient bloom layers */}
-        <div className="absolute inset-0 pointer-events-none luxe-bloom-a"
-          style={{ background: "radial-gradient(40% 30% at 78% 22%, rgba(231,206,150,0.30), transparent 70%)" }} />
-        <div className="absolute inset-0 pointer-events-none luxe-bloom-b"
-          style={{ background: "radial-gradient(34% 28% at 18% 78%, rgba(79,178,134,0.18), transparent 70%)" }} />
+        {/* Ambient bloom layers — disabled on low-tier devices */}
+        {tier !== "low" && (
+          <>
+            <div className="absolute inset-0 pointer-events-none luxe-bloom-a"
+              style={{ background: "radial-gradient(40% 30% at 78% 22%, rgba(231,206,150,0.30), transparent 70%)" }} />
+            <div className="absolute inset-0 pointer-events-none luxe-bloom-b"
+              style={{ background: "radial-gradient(34% 28% at 18% 78%, rgba(79,178,134,0.18), transparent 70%)" }} />
+          </>
+        )}
 
-        {/* Mouse-tracked cinematic spotlight */}
-        <div className="absolute inset-0 pointer-events-none transition-[background] duration-300"
-          style={{ background: `radial-gradient(420px 320px at ${spot.x}% ${spot.y}%, rgba(255,255,255,0.06), transparent 70%)` }} />
+        {/* Mouse-tracked cinematic spotlight — desktop high-tier only, mutated via CSS vars */}
+        {!isMobile && tier === "high" && (
+          <div
+            ref={spotRef}
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              ['--sx' as any]: '50%',
+              ['--sy' as any]: '40%',
+              background: 'radial-gradient(420px 320px at var(--sx) var(--sy), rgba(255,255,255,0.06), transparent 70%)',
+            }}
+          />
+        )}
 
         {/* Cinematic overlays */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/20 to-[#050505]" />
@@ -420,9 +497,10 @@ export default function LuxeExperience() {
           background: "linear-gradient(180deg, rgba(11,18,32,0.35) 0%, transparent 30%, transparent 60%, rgba(5,5,5,0.6) 100%)"
         }} />
 
-        {/* Floating gold particles — fewer on mobile */}
-        <div className="luxe-particles" aria-hidden="true">
-          {Array.from({ length: isMobile ? 6 : 14 }).map((_, i) => (
+        {/* Floating gold particles — adaptive count; off on low-tier */}
+        {tier !== "low" && (
+          <div className="luxe-particles" aria-hidden="true">
+            {Array.from({ length: tier === "mid" || isMobile ? 6 : 14 }).map((_, i) => (
             <span key={i} style={{
               left: `${(i * 13.7) % 100}%`,
               animationDelay: `${(i * 0.7) % 9}s`,
@@ -430,7 +508,8 @@ export default function LuxeExperience() {
               opacity: 0,
             }} />
           ))}
-        </div>
+          </div>
+        )}
 
         <div className="relative z-10 mx-auto max-w-[1440px] px-5 md:px-10 pt-28 sm:pt-32 md:pt-44 pb-24 md:pb-20 mobile-safe-bottom">
           <motion.div
@@ -559,7 +638,7 @@ export default function LuxeExperience() {
       <AtmosDivider tone="gold" />
 
       {/* ============== AI FEATURES STRIP ============== */}
-      <section className="relative py-24 md:py-32">
+      <section className="relative py-24 md:py-32 luxe-cv">
         <div className="mx-auto max-w-[1440px] px-5 md:px-10">
           <Reveal>
             <SectionHead eyebrow="The Intelligence Layer" title={<>A villa platform that <em className="text-luxe-gold not-italic">thinks</em>.</>} />
@@ -589,7 +668,7 @@ export default function LuxeExperience() {
       <AtmosDivider tone="emerald" />
 
       {/* ============== FEATURED VILLAS ============== */}
-      <section className="relative py-24 md:py-32">
+      <section className="relative py-24 md:py-32 luxe-cv">
         <div className="mx-auto max-w-[1440px] px-5 md:px-10">
           <div className="flex items-end justify-between gap-6 mb-14">
             <Reveal>
@@ -661,7 +740,7 @@ export default function LuxeExperience() {
 
 
       {/* ============== PROPERTY OS ============== */}
-      <section className="relative py-28 md:py-40">
+      <section className="relative py-28 md:py-40 luxe-cv">
         <div
           className="absolute inset-0 opacity-60 pointer-events-none"
           style={{ background: "radial-gradient(60% 50% at 50% 30%, rgba(200,169,107,0.08), transparent 70%)" }}
@@ -696,7 +775,7 @@ export default function LuxeExperience() {
       </section>
 
       {/* ============== COLLECTIONS / DESTINATION ============== */}
-      <section className="relative py-24 md:py-32">
+      <section className="relative py-24 md:py-32 luxe-cv">
         <div className="mx-auto max-w-[1440px] px-5 md:px-10">
           <SectionHead eyebrow="Curated Worlds" title={<>Villa <em className="not-italic text-luxe-gold">collections</em>, shaped by intent.</>} />
 
@@ -725,7 +804,7 @@ export default function LuxeExperience() {
       <AtmosDivider tone="cool" />
 
       {/* ============== CONCIERGE / INVESTOR DASHBOARD PREVIEW ============== */}
-      <section className="relative py-28 md:py-40">
+      <section className="relative py-28 md:py-40 luxe-cv">
         <div className="mx-auto max-w-[1440px] px-5 md:px-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <Reveal>
             <div>
@@ -834,7 +913,7 @@ export default function LuxeExperience() {
 
 
       {/* ============== TESTIMONIAL ============== */}
-      <section className="relative py-28 md:py-40">
+      <section className="relative py-28 md:py-40 luxe-cv">
         <div className="mx-auto max-w-4xl px-5 md:px-10 text-center">
           <span className="luxe-eyebrow">Whispered Praise</span>
           <blockquote className="font-serif-l text-[28px] md:text-[44px] leading-[1.15] mt-8 tracking-tight">
@@ -849,7 +928,7 @@ export default function LuxeExperience() {
       </section>
 
       {/* ============== CTA ============== */}
-      <section className="relative py-28 md:py-36">
+      <section className="relative py-28 md:py-36 luxe-cv">
         <div className="mx-auto max-w-[1240px] px-5 md:px-10">
           <div className="relative overflow-hidden rounded-[32px] border border-luxe luxe-grain"
                style={{ background: "linear-gradient(135deg, #0B1220 0%, #050505 70%)" }}>
