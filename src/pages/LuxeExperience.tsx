@@ -976,8 +976,6 @@ function MobileDock() {
     </nav>
   );
 }
-  );
-}
 
 function SectionHead({ eyebrow, title }: { eyebrow: string; title: React.ReactNode }) {
   return (
