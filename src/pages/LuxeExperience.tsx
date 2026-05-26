@@ -5,7 +5,7 @@ import { motion, useScroll, useTransform, useInView, useMotionValue, useSpring, 
 import {
   Search, Calendar, Users, Sparkles, ArrowUpRight, MapPin, Star,
   Bot, TrendingUp, LineChart, Compass, Wand2, ShieldCheck, Globe2,
-  PlayCircle, ChevronRight, Heart, Languages, Moon, User2, Box, Home,
+  PlayCircle, ChevronRight, Heart, User2, Box, Home,
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import heroImg from "@/assets/luxe-hero-bali.jpg";
@@ -21,22 +21,22 @@ import { supabase } from "@/integrations/supabase/client";
 /* Cinematic easing — Apple-like */
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-/* Premium scroll reveal: fade + slight rise + blur lift */
+/* Premium scroll reveal — calm: shorter rise, lighter blur, faster ease */
 const revealVariants: Variants = {
-  hidden: { opacity: 0, y: 36, filter: "blur(14px)" },
-  show:   { opacity: 1, y: 0,  filter: "blur(0px)", transition: { duration: 1.1, ease: EASE } },
+  hidden: { opacity: 0, y: 18, filter: "blur(6px)" },
+  show:   { opacity: 1, y: 0,  filter: "blur(0px)", transition: { duration: 0.7, ease: EASE } },
 };
 
 function Reveal({
-  children, delay = 0, y = 36, className, as = "div",
+  children, delay = 0, y = 18, className, as = "div",
 }: { children: ReactNode; delay?: number; y?: number; className?: string; as?: "div" | "article" | "section" | "li" | "span" }) {
   const Tag: any = (motion as any)[as];
   return (
     <Tag
-      initial={{ opacity: 0, y, filter: "blur(14px)" }}
+      initial={{ opacity: 0, y, filter: "blur(6px)" }}
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once: true, margin: "-90px" }}
-      transition={{ duration: 1.1, delay, ease: EASE }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.7, delay, ease: EASE }}
       className={className}
     >
       {children}
@@ -133,12 +133,14 @@ const SUGGESTIONS = [
   "Architectural pavilion with private chef…",
 ];
 
-const NAV_LINKS: { label: string; to: string }[] = [
-  { label: "Villas",      to: "/properties" },
-  { label: "Collections", to: "/properties?collection=curated" },
-  { label: "Investor OS", to: "/investment" },
-  { label: "Concierge",   to: "/wealth-advisor" },
-  { label: "Journal",     to: "/community" },
+const NAV_LINKS: { label: string; to: string; match?: string }[] = [
+  { label: "Villas",        to: "/properties",     match: "/properties" },
+  { label: "Investment",    to: "/investment",     match: "/investment" },
+  { label: "Virtual Tours", to: "/virtual-tour",   match: "/virtual-tour" },
+  { label: "AI Concierge",  to: "/ai-concierge",   match: "/ai-concierge" },
+  { label: "Experiences",   to: "/experiences",    match: "/experiences" },
+  { label: "Dashboard",     to: "/dashboard",      match: "/dashboard" },
+  { label: "Contact",       to: "/contact",        match: "/contact" },
 ];
 
 type FeaturedVilla = {
@@ -240,16 +242,17 @@ export default function LuxeExperience() {
   const { isMobile } = useIsMobile();
   const tier = useDeviceTier();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { user } = useAuth();
   const FEATURED = useFeaturedVillas();
   const profileHref = user ? "/profile" : "/auth";
   const heroRef = useRef<HTMLDivElement>(null);
   const spotRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
-  // Lighter parallax on mobile to keep GPU happy
-  const heroY = useTransform(scrollY, [0, 800], [0, isMobile ? 80 : 160]);
-  const heroScale = useTransform(scrollY, [0, 800], [1.05, isMobile ? 1.10 : 1.18]);
-  const heroOpacity = useTransform(scrollY, [0, 600], [1, isMobile ? 0.5 : 0.35]);
+  // Calmer parallax — less travel, no aggressive zoom
+  const heroY = useTransform(scrollY, [0, 800], [0, isMobile ? 40 : 90]);
+  const heroScale = useTransform(scrollY, [0, 800], [1.04, isMobile ? 1.06 : 1.09]);
+  const heroOpacity = useTransform(scrollY, [0, 600], [1, isMobile ? 0.6 : 0.5]);
 
   const [scrolled, setScrolled] = useState(false);
   const [suggestIdx, setSuggestIdx] = useState(0);
@@ -367,15 +370,15 @@ export default function LuxeExperience() {
         }
         @keyframes luxeFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
         .luxe-float { animation: luxeFloat 6s ease-in-out infinite; }
-        @keyframes luxeBloomA { 0%,100% { transform: translate3d(0,0,0) scale(1); opacity:.55 } 50% { transform: translate3d(3%,-2%,0) scale(1.08); opacity:.8 } }
-        @keyframes luxeBloomB { 0%,100% { transform: translate3d(0,0,0) scale(1); opacity:.4 } 50% { transform: translate3d(-2%,3%,0) scale(1.12); opacity:.65 } }
-        @keyframes luxeKenBurns { 0% { transform: scale(1.05) translate3d(0,0,0) } 100% { transform: scale(1.14) translate3d(-1.5%,-1%,0) } }
+        @keyframes luxeBloomA { 0%,100% { transform: translate3d(0,0,0) scale(1); opacity:.45 } 50% { transform: translate3d(2%,-1%,0) scale(1.04); opacity:.6 } }
+        @keyframes luxeBloomB { 0%,100% { transform: translate3d(0,0,0) scale(1); opacity:.3 } 50% { transform: translate3d(-1%,2%,0) scale(1.05); opacity:.45 } }
+        @keyframes luxeKenBurns { 0% { transform: scale(1.03) translate3d(0,0,0) } 100% { transform: scale(1.07) translate3d(-0.8%,-0.6%,0) } }
         @keyframes luxeShimmer { 0% { background-position: -200% 0 } 100% { background-position: 200% 0 } }
         @keyframes luxeCue { 0%,100% { transform: translateY(0); opacity:.5 } 50% { transform: translateY(6px); opacity:1 } }
-        @keyframes luxeSpark { 0% { opacity:0; transform: translateY(0) } 10% { opacity:.6 } 100% { opacity:0; transform: translateY(-80px) } }
-        .luxe-bloom-a { animation: luxeBloomA 14s ease-in-out infinite; }
-        .luxe-bloom-b { animation: luxeBloomB 18s ease-in-out infinite; }
-        .luxe-kenburns { animation: luxeKenBurns 22s ease-in-out infinite alternate; }
+        @keyframes luxeSpark { 0% { opacity:0; transform: translateY(0) } 10% { opacity:.5 } 100% { opacity:0; transform: translateY(-80px) } }
+        .luxe-bloom-a { animation: luxeBloomA 22s ease-in-out infinite; }
+        .luxe-bloom-b { animation: luxeBloomB 28s ease-in-out infinite; }
+        .luxe-kenburns { animation: luxeKenBurns 30s ease-in-out infinite alternate; }
         .luxe-cue { animation: luxeCue 2.4s ease-in-out infinite; }
         .luxe-gold-shimmer {
           background: linear-gradient(90deg, #C8A96B 0%, #F2E0B2 45%, #C8A96B 60%, #B6914F 100%);
@@ -477,17 +480,17 @@ export default function LuxeExperience() {
       <header
         className={cn(
           "fixed top-0 inset-x-0 z-50 transition-all duration-500",
-          scrolled ? "py-3" : "py-5"
+          scrolled ? "py-2.5" : "py-5"
         )}
       >
         <div className="mx-auto max-w-[1440px] px-5 md:px-10">
           <nav
             className={cn(
-              "luxe-glass-card flex items-center justify-between rounded-full px-4 md:px-6 py-2.5 md:py-3 transition-all",
-              scrolled && "shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)]"
+              "luxe-glass-card flex items-center justify-between rounded-full px-4 md:px-6 transition-all duration-500",
+              scrolled ? "py-2 md:py-2.5 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] bg-[rgba(8,8,10,0.72)]" : "py-2.5 md:py-3"
             )}
           >
-            <Link to="/" className="flex items-center gap-2.5">
+            <Link to="/" className="flex items-center gap-2.5 shrink-0">
               <div className="w-8 h-8 rounded-full grid place-items-center"
                    style={{ background: "linear-gradient(135deg,#C8A96B,#8C6B2F)" }}>
                 <span className="font-serif-l text-[15px] text-black">A</span>
@@ -495,23 +498,44 @@ export default function LuxeExperience() {
               <span className="font-serif-l text-[17px] tracking-wide">Astra<span className="text-luxe-gold"> Villa</span></span>
             </Link>
 
-            <div className="hidden lg:flex items-center gap-8 text-[13px] text-luxe-fg/80">
-              {NAV_LINKS.map(link => (
-                <Link key={link.to} to={link.to} className="hover:text-luxe-gold transition-colors">{link.label}</Link>
-              ))}
+            <div className="hidden lg:flex items-center gap-6 xl:gap-7 text-[13px] text-luxe-fg/75">
+              <Link
+                to="/"
+                className={cn(
+                  "relative py-1 transition-colors duration-300 hover:text-luxe-gold",
+                  pathname === "/" && "text-luxe-gold"
+                )}
+              >
+                Home
+                {pathname === "/" && (
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[color:var(--luxe-gold)]" />
+                )}
+              </Link>
+              {NAV_LINKS.map(link => {
+                const active = link.match ? pathname.startsWith(link.match) : false;
+                return (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    className={cn(
+                      "relative py-1 transition-colors duration-300 hover:text-luxe-gold",
+                      active && "text-luxe-gold"
+                    )}
+                  >
+                    {link.label}
+                    {active && (
+                      <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[color:var(--luxe-gold)]" />
+                    )}
+                  </Link>
+                );
+              })}
             </div>
 
-            <div className="flex items-center gap-1.5 md:gap-2">
-              <Link to="/wealth-advisor" className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-full bg-luxe-glass border border-luxe text-[12px] hover:border-[color:var(--luxe-gold)] transition-colors">
+            <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
+              <Link to="/ai-concierge" className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-full bg-luxe-glass border border-luxe text-[12px] hover:border-[color:var(--luxe-gold)] transition-colors">
                 <Sparkles className="w-3.5 h-3.5 text-luxe-gold" /> AI Concierge
               </Link>
-              <Link to="/settings" className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Language">
-                <Languages className="w-4 h-4" />
-              </Link>
-              <Link to="/settings" className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Theme">
-                <Moon className="w-4 h-4" />
-              </Link>
-              <Link to="/favorites" className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Wishlist">
+              <Link to="/favorites" className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Favorites">
                 <Heart className="w-4 h-4" />
               </Link>
               <Link to={profileHref} className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Profile">
@@ -522,6 +546,7 @@ export default function LuxeExperience() {
           </nav>
         </div>
       </header>
+
 
       {/* ============== HERO ============== */}
       <section ref={heroRef} className="relative min-h-[100svh] overflow-hidden luxe-grain">
@@ -539,14 +564,10 @@ export default function LuxeExperience() {
           />
         </motion.div>
 
-        {/* Ambient bloom layers — disabled on low-tier devices */}
-        {tier !== "low" && (
-          <>
-            <div className="absolute inset-0 pointer-events-none luxe-bloom-a"
-              style={{ background: "radial-gradient(40% 30% at 78% 22%, rgba(231,206,150,0.30), transparent 70%)" }} />
-            <div className="absolute inset-0 pointer-events-none luxe-bloom-b"
-              style={{ background: "radial-gradient(34% 28% at 18% 78%, rgba(79,178,134,0.18), transparent 70%)" }} />
-          </>
+        {/* Ambient bloom layer — single soft glow on high-tier only */}
+        {tier === "high" && !isMobile && (
+          <div className="absolute inset-0 pointer-events-none luxe-bloom-a"
+            style={{ background: "radial-gradient(40% 30% at 78% 22%, rgba(231,206,150,0.22), transparent 70%)" }} />
         )}
 
         {/* Mouse-tracked cinematic spotlight — desktop high-tier only, mutated via CSS vars */}
@@ -557,7 +578,7 @@ export default function LuxeExperience() {
             style={{
               ['--sx' as any]: '50%',
               ['--sy' as any]: '40%',
-              background: 'radial-gradient(420px 320px at var(--sx) var(--sy), rgba(255,255,255,0.06), transparent 70%)',
+              background: 'radial-gradient(340px 260px at var(--sx) var(--sy), rgba(255,255,255,0.04), transparent 70%)',
             }}
           />
         )}
@@ -571,19 +592,20 @@ export default function LuxeExperience() {
           background: "linear-gradient(180deg, rgba(11,18,32,0.35) 0%, transparent 30%, transparent 60%, rgba(5,5,5,0.6) 100%)"
         }} />
 
-        {/* Floating gold particles — adaptive count; off on low-tier */}
-        {tier !== "low" && (
+        {/* Floating gold particles — high-tier desktop only, minimal count */}
+        {tier === "high" && !isMobile && (
           <div className="luxe-particles" aria-hidden="true">
-            {Array.from({ length: tier === "mid" || isMobile ? 6 : 14 }).map((_, i) => (
+            {Array.from({ length: 6 }).map((_, i) => (
             <span key={i} style={{
-              left: `${(i * 13.7) % 100}%`,
-              animationDelay: `${(i * 0.7) % 9}s`,
-              animationDuration: `${8 + (i % 5)}s`,
+              left: `${(i * 17.3) % 100}%`,
+              animationDelay: `${(i * 1.1) % 9}s`,
+              animationDuration: `${10 + (i % 4)}s`,
               opacity: 0,
             }} />
           ))}
           </div>
         )}
+
 
         <div className="relative z-10 mx-auto max-w-[1440px] px-5 md:px-10 pt-28 sm:pt-32 md:pt-44 pb-24 md:pb-20 mobile-safe-bottom">
           <motion.div
