@@ -326,6 +326,8 @@ export default function LuxeExperience() {
   const { user } = useAuth();
   const { villas: FEATURED, isLoading: featuredLoading, isFallback: featuredFallback } = useFeaturedVillas();
   const profileHref = user ? "/profile" : "/auth";
+  const { logoUrl: headerLogo } = useBrandingLogo("headerLogo", brandLogoFallback);
+  const { logoUrl: footerLogo } = useBrandingLogo("footerLogo", brandLogoFallback);
   const heroRef = useRef<HTMLDivElement>(null);
   const spotRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
