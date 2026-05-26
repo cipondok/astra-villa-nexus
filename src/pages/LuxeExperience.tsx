@@ -422,6 +422,11 @@ export default function LuxeExperience() {
         @keyframes luxeBloomB { 0%,100% { transform: translate3d(0,0,0) scale(1); opacity:.3 } 50% { transform: translate3d(-1%,2%,0) scale(1.05); opacity:.45 } }
         @keyframes luxeKenBurns { 0% { transform: scale(1.03) translate3d(0,0,0) } 100% { transform: scale(1.07) translate3d(-0.8%,-0.6%,0) } }
         @keyframes luxeShimmer { 0% { background-position: -200% 0 } 100% { background-position: 200% 0 } }
+        .luxe-shimmer {
+          background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(200,169,107,0.08) 50%, rgba(255,255,255,0.02) 100%);
+          background-size: 200% 100%;
+          animation: luxeShimmer 1.8s ease-in-out infinite;
+        }
         @keyframes luxeCue { 0%,100% { transform: translateY(0); opacity:.5 } 50% { transform: translateY(6px); opacity:1 } }
         @keyframes luxeSpark { 0% { opacity:0; transform: translateY(0) } 10% { opacity:.5 } 100% { opacity:0; transform: translateY(-80px) } }
         .luxe-bloom-a { animation: luxeBloomA 22s ease-in-out infinite; }
