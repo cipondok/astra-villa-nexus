@@ -378,9 +378,15 @@ export default function LuxeExperience() {
           box-shadow: 0 20px 60px -20px rgba(200,169,107,0.6);
           animation: luxePulse 2.6s ease-in-out infinite;
         }
-        @media (max-width: 360px) {
-        }
       `}</style>
+
+      {/* Premium boot fade overlay */}
+      <div className={cn("luxe-boot", booted && "ready")} aria-hidden={booted}>
+        <div className="luxe-boot-mark">
+          <span className="font-serif-l text-[22px] text-black">A</span>
+        </div>
+      </div>
+
 
       {/* ============== AMBIENT BACKGROUND MESH (site-wide) ============== */}
       <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
