@@ -388,11 +388,13 @@ const AppContent = () => {
   const isAdminRoute = ['/admin', '/admin-dashboard', '/settings', '/admin/ai-performance', '/admin/listing-review', '/admin/deal-command', '/immersive-viewer'].includes(location.pathname) || location.pathname.startsWith('/admin/');
   // Luxe shell owns its own header/footer/dock — skip the legacy app chrome on these routes
   const path = location.pathname;
+  const LUXE_PATHS = new Set<string>([
+    '/', '/luxe', '/properties', '/search',
+    '/dijual', '/buy', '/disewa', '/rent', '/sewa',
+    '/pre-launching', '/pre-launch', '/new-projects',
+  ]);
   const isLuxeRoute =
-    path === '/' ||
-    path === '/luxe' ||
-    path === '/properties' ||
-    path === '/search' ||
+    LUXE_PATHS.has(path) ||
     path.startsWith('/properties/') ||
     path.startsWith('/property/');
   const hideAppShell = isAdminRoute || isLuxeRoute;
@@ -479,12 +481,14 @@ const AppContent = () => {
                 <Route path="/services/category/:categoryId" element={<ServiceCategory />} />
                 <Route path="/vendor/:vendorId" element={<ServiceProviderProfile />} />
                 <Route path="/legal-services" element={<LegalServices />} />
-                <Route path="/dijual" element={<Dijual />} />
-                <Route path="/buy" element={<Dijual />} />
-                <Route path="/disewa" element={<Disewa />} />
-                <Route path="/rent" element={<Disewa />} />
-                <Route path="/pre-launching" element={<PreLaunching />} />
-                <Route path="/new-projects" element={<NewProjects />} />
+                <Route path="/dijual" element={<Properties />} />
+                <Route path="/buy" element={<Properties />} />
+                <Route path="/disewa" element={<Properties />} />
+                <Route path="/rent" element={<Properties />} />
+                <Route path="/sewa" element={<Properties />} />
+                <Route path="/pre-launching" element={<Properties />} />
+                <Route path="/pre-launch" element={<Properties />} />
+                <Route path="/new-projects" element={<Properties />} />
                 <Route path="/properties" element={<Properties />} />
                 <Route path="/3d-showcase" element={<Navigate to="/vr-tour" replace />} />
                 <Route path="/vr-tour" element={<VRTourShowcase />} />
