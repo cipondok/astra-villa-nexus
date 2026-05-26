@@ -316,10 +316,10 @@ export default function LuxeExperience() {
   const heroRef = useRef<HTMLDivElement>(null);
   const spotRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
-  // Calmer parallax — less travel, no aggressive zoom
-  const heroY = useTransform(scrollY, [0, 800], [0, isMobile ? 40 : 90]);
-  const heroScale = useTransform(scrollY, [0, 800], [1.04, isMobile ? 1.06 : 1.09]);
-  const heroOpacity = useTransform(scrollY, [0, 600], [1, isMobile ? 0.6 : 0.5]);
+  // Parallax disabled on mobile to free the scroll thread (eliminates touch stutter)
+  const heroY = useTransform(scrollY, [0, 800], [0, isMobile ? 0 : 90]);
+  const heroScale = useTransform(scrollY, [0, 800], [1.04, isMobile ? 1.04 : 1.09]);
+  const heroOpacity = useTransform(scrollY, [0, 600], [1, isMobile ? 1 : 0.5]);
 
   const [scrolled, setScrolled] = useState(false);
   const [suggestIdx, setSuggestIdx] = useState(0);
