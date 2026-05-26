@@ -602,16 +602,17 @@ export default function LuxeExperience() {
             </Reveal>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 [perspective:1400px]">
+          {/* Mobile: horizontal snap rail. Desktop: 3-col tilt grid */}
+          <div className="luxe-snap-x -mx-5 px-5 md:mx-0 md:px-0 flex md:grid md:grid-cols-3 gap-5 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none [perspective:1400px] pb-2 md:pb-0">
             {FEATURED.map((v, i) => (
-              <Reveal key={v.name} delay={i * 0.12} as="article">
-                <TiltCard className="group relative overflow-hidden rounded-3xl border border-luxe bg-[#0a0a0a] luxe-card-glow shadow-[0_30px_60px_-30px_rgba(0,0,0,0.8)] hover:shadow-[0_40px_80px_-30px_rgba(200,169,107,0.35)] transition-shadow duration-700 will-change-transform">
+              <Reveal key={v.name} delay={i * 0.12} as="article"
+                className="snap-center shrink-0 w-[82%] sm:w-[60%] md:w-auto first:pl-0 last:pr-0">
+                <TiltCard className="group relative overflow-hidden rounded-3xl border border-luxe bg-[#0a0a0a] luxe-card-glow shadow-[0_30px_60px_-30px_rgba(0,0,0,0.8)] hover:shadow-[0_40px_80px_-30px_rgba(200,169,107,0.35)] transition-shadow duration-700 will-change-transform luxe-tap">
                   <div className="aspect-[4/5] overflow-hidden">
                     <img src={v.img} alt={v.name} loading="lazy" width={1280} height={1600}
                          className="w-full h-full object-cover transition-transform duration-[2000ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]" />
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-                  {/* glass reflection sweep */}
                   <div aria-hidden className="pointer-events-none absolute -inset-x-1/4 -top-1/2 h-full rotate-12 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
                        style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)" }} />
 
@@ -619,7 +620,7 @@ export default function LuxeExperience() {
                     <span className="px-2.5 py-1 rounded-full text-[10px] tracking-wider uppercase luxe-glass-card text-luxe-gold">{v.tag}</span>
                   </div>
                   <div className="absolute top-4 right-4">
-                    <button className="w-9 h-9 grid place-items-center rounded-full luxe-glass-card hover:text-luxe-gold hover:scale-110 transition-all duration-300" aria-label="Save">
+                    <button className="w-11 h-11 md:w-9 md:h-9 grid place-items-center rounded-full luxe-glass-card hover:text-luxe-gold hover:scale-110 transition-all duration-300" aria-label="Save">
                       <Heart className="w-4 h-4" />
                     </button>
                   </div>
