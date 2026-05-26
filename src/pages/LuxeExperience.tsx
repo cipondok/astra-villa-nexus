@@ -772,13 +772,13 @@ export default function LuxeExperience() {
             <Link to="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-2.5">
               <span
                 aria-hidden
-                className="w-9 h-9 rounded-full grid place-items-center"
+                className="w-9 h-9 rounded-full grid place-items-center overflow-hidden"
                 style={{
                   background: "radial-gradient(120% 120% at 30% 25%, #E7CE96 0%, #C8A96B 45%, #6F5320 100%)",
                   boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.18)",
                 }}
               >
-                <span className="font-serif-l text-[15px] text-[#0a0a0a]">A</span>
+                <img src={brandLogo} alt="" className="w-7 h-7 object-contain" />
               </span>
               <span className="font-serif-l text-[18px]">Astra<span className="text-luxe-gold"> Villa</span></span>
             </Link>
