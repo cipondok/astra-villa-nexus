@@ -867,9 +867,13 @@ export default function LuxeExperience() {
                   <div aria-hidden className="pointer-events-none absolute -inset-x-1/4 -top-1/2 h-full rotate-12 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
                        style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)" }} />
 
-                  <div className="absolute top-4 left-4 flex items-center gap-2 z-20">
+                  <div className="absolute top-4 left-4 right-16 flex flex-wrap items-center gap-1.5 z-20">
                     <span className="px-2.5 py-1 rounded-full text-[10px] tracking-wider uppercase luxe-glass-card text-luxe-gold">{v.tag}</span>
+                    {v.investmentScore != null && <ScoreChip label="AI" value={`${v.investmentScore}`} tone="gold" />}
+                    {v.demandScore != null && v.demandScore >= 70 && <ScoreChip label="Heat" value={`${v.demandScore}`} tone="ember" />}
+                    {v.roi != null && v.roi > 0 && <ScoreChip label="ROI" value={`${v.roi.toFixed(1)}%`} tone="emerald" />}
                   </div>
+
                   <div className="absolute top-4 right-4 z-20">
                     <Link to="/favorites" onClick={(e) => e.stopPropagation()} className="w-11 h-11 md:w-9 md:h-9 grid place-items-center rounded-full luxe-glass-card hover:text-luxe-gold hover:scale-110 transition-all duration-300" aria-label="Save">
                       <Heart className="w-4 h-4" />
