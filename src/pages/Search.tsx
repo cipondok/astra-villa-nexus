@@ -138,7 +138,7 @@ const Search = () => {
   const paginatedProperties = properties.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   // Reset page when filters change
-  useEffect(() => { setCurrentPage(1); }, [searchTerm, selectedType, selectedLocation]);
+  useEffect(() => { setCurrentPage(1); }, [searchTerm, selectedType, selectedLocation, locationText]);
 
   // Pull-to-refresh
   const {
