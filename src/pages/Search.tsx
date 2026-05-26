@@ -37,16 +37,49 @@ interface Property {
   virtual_tour_url?: string;
 }
 
+const KNOWN_LOCATIONS = ['jakarta', 'bali', 'bandung', 'surabaya'];
+
+// Normalize free-text location ("Bali, Indonesia" / "BALI") into a dropdown enum
+// value if it matches a known city; otherwise return 'all' so the dropdown is
+// neutral while the raw text is still used as the query filter.
+const matchKnownLocation = (raw: string | null): string => {
+  if (!raw) return 'all';
+  const lower = raw.toLowerCase();
+  return KNOWN_LOCATIONS.find(loc => lower.includes(loc)) || 'all';
+};
+
 const Search = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
+
+  const urlQ = searchParams.get('q') || '';
+  const urlLocationRaw = searchParams.get('location') || '';
+  const urlWhen = searchParams.get('when') || '';
+  const urlGuests = searchParams.get('guests') || '';
+
+  const [searchTerm, setSearchTerm] = useState(urlQ);
   const [selectedType, setSelectedType] = useState(searchParams.get('type') || 'all');
-  const [selectedLocation, setSelectedLocation] = useState(searchParams.get('location') || 'all');
+  const [selectedLocation, setSelectedLocation] = useState(matchKnownLocation(urlLocationRaw));
+  // Free-text location preserved from URL (e.g. "Bali, Indonesia"); used for the
+  // DB filter when it doesn't match the dropdown enum.
+  const [locationText, setLocationText] = useState(urlLocationRaw);
+  const [whenDate, setWhenDate] = useState(urlWhen);
+  const [guests, setGuests] = useState(urlGuests);
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 28;
-  
+
+  // Keep state in sync when the URL changes externally (back/forward, deep link).
+  useEffect(() => {
+    setSearchTerm(searchParams.get('q') || '');
+    setSelectedType(searchParams.get('type') || 'all');
+    const rawLoc = searchParams.get('location') || '';
+    setLocationText(rawLoc);
+    setSelectedLocation(matchKnownLocation(rawLoc));
+    setWhenDate(searchParams.get('when') || '');
+    setGuests(searchParams.get('guests') || '');
+  }, [searchParams]);
+
   // Pull-to-refresh state
   const [newPropertyIds, setNewPropertyIds] = useState<Set<string>>(new Set());
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -54,20 +87,26 @@ const Search = () => {
   const previousPropertyIdsRef = useRef<Set<string>>(new Set());
 
   const { data: dbProperties = [], isLoading, refetch } = useQuery({
-    queryKey: ['search-properties', searchTerm, selectedType, selectedLocation],
+    queryKey: ['search-properties', searchTerm, selectedType, selectedLocation, locationText],
     queryFn: async () => {
       let query = supabase.from('properties').select('*');
-      
+
       if (searchTerm) {
         query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%`);
       }
-      
+
       if (selectedType !== 'all') {
         query = query.eq('property_type', selectedType);
       }
-      
-      if (selectedLocation !== 'all') {
-        query = query.ilike('city', `%${selectedLocation}%`);
+
+      // Prefer the dropdown enum when set; otherwise fall back to free-text
+      // (e.g. came from hero search as "Bali, Indonesia").
+      const locFilter =
+        selectedLocation !== 'all'
+          ? selectedLocation
+          : locationText.split(',')[0].trim();
+      if (locFilter) {
+        query = query.or(`city.ilike.%${locFilter}%,location.ilike.%${locFilter}%`);
       }
 
       const { data, error } = await query.order('created_at', { ascending: false });
@@ -99,7 +138,7 @@ const Search = () => {
   const paginatedProperties = properties.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   // Reset page when filters change
-  useEffect(() => { setCurrentPage(1); }, [searchTerm, selectedType, selectedLocation]);
+  useEffect(() => { setCurrentPage(1); }, [searchTerm, selectedType, selectedLocation, locationText]);
 
   // Pull-to-refresh
   const {
@@ -182,7 +221,12 @@ const Search = () => {
     const params = new URLSearchParams();
     if (searchTerm) params.set('q', searchTerm);
     if (selectedType !== 'all') params.set('type', selectedType);
+    // When the dropdown is set, that wins; otherwise preserve any free-text
+    // location (e.g. "Bali, Indonesia" arriving from the hero search bar).
     if (selectedLocation !== 'all') params.set('location', selectedLocation);
+    else if (locationText) params.set('location', locationText);
+    if (whenDate) params.set('when', whenDate);
+    if (guests) params.set('guests', guests);
     setSearchParams(params);
   };
 
@@ -190,6 +234,9 @@ const Search = () => {
     setSearchTerm('');
     setSelectedType('all');
     setSelectedLocation('all');
+    setLocationText('');
+    setWhenDate('');
+    setGuests('');
     setSearchParams({});
   };
 
@@ -274,7 +321,14 @@ const Search = () => {
             </Select>
 
             {/* Location Filter */}
-            <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+            <Select
+              value={selectedLocation}
+              onValueChange={(v) => {
+                setSelectedLocation(v);
+                // Dropdown is now the source of truth — drop any stale free-text.
+                if (v !== 'all') setLocationText('');
+              }}
+            >
               <SelectTrigger className="h-10 text-xs sm:text-sm w-28 sm:w-32 rounded-xl border-border/40 bg-muted/20">
                 <MapPin className="h-3.5 w-3.5 text-muted-foreground mr-1.5 shrink-0" />
                 <SelectValue placeholder="Location" />
@@ -297,9 +351,9 @@ const Search = () => {
               Search
             </Button>
             
-            {(searchTerm || selectedType !== 'all' || selectedLocation !== 'all') && (
-              <Button 
-                variant="ghost" 
+            {(searchTerm || selectedType !== 'all' || selectedLocation !== 'all' || locationText || whenDate || guests) && (
+              <Button
+                variant="ghost"
                 onClick={clearFilters}
                 className="h-10 px-3 text-sm text-muted-foreground hover:text-foreground"
               >
@@ -313,7 +367,7 @@ const Search = () => {
       {/* Results Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
         {/* Active Filters & Count */}
-        {(searchTerm || selectedType !== 'all' || selectedLocation !== 'all') && (
+        {(searchTerm || selectedType !== 'all' || selectedLocation !== 'all' || locationText || whenDate || guests) && (
           <div className="mb-4 flex flex-wrap items-center gap-2">
             {searchTerm && (
               <Badge variant="secondary" className="text-xs px-2.5 py-1 rounded-lg gap-1">
@@ -327,10 +381,20 @@ const Search = () => {
                 {selectedType}
               </Badge>
             )}
-            {selectedLocation !== 'all' && (
+            {(selectedLocation !== 'all' || locationText) && (
               <Badge variant="secondary" className="text-xs px-2.5 py-1 rounded-lg gap-1">
                 <MapPin className="h-3 w-3" />
-                {selectedLocation}
+                {selectedLocation !== 'all' ? selectedLocation : locationText}
+              </Badge>
+            )}
+            {whenDate && (
+              <Badge variant="secondary" className="text-xs px-2.5 py-1 rounded-lg gap-1">
+                {whenDate}
+              </Badge>
+            )}
+            {guests && (
+              <Badge variant="secondary" className="text-xs px-2.5 py-1 rounded-lg gap-1">
+                {guests} {Number(guests) === 1 ? 'guest' : 'guests'}
               </Badge>
             )}
             <span className="text-muted-foreground text-xs ml-auto">
