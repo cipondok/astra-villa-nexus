@@ -691,15 +691,18 @@ export default function LuxeExperience() {
 
             <div className="mt-5 flex flex-wrap gap-2">
               {CHIPS.map((c, i) => (
-                <motion.button
-                  key={c}
+                <motion.span
+                  key={c.label}
                   initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.7 + i * 0.06, ease: [0.22, 1, 0.36, 1] }}
-                  className="text-[12px] px-3.5 py-1.5 rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] hover:text-luxe-gold transition-all duration-300 hover:-translate-y-0.5"
+                  className="inline-block"
                 >
-                  {c}
-                </motion.button>
+                  <Link to={c.to} className="text-[12px] px-3.5 py-1.5 rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] hover:text-luxe-gold transition-all duration-300 hover:-translate-y-0.5 inline-block">
+                    {c.label}
+                  </Link>
+                </motion.span>
               ))}
+
             </div>
           </motion.div>
         </div>
