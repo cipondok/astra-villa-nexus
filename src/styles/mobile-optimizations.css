@@ -4,6 +4,8 @@
    All layout/typography uses Tailwind responsive classes.
    ============================================= */
 
+@tailwind utilities;
+
 @layer utilities {
   /* Safe-area insets for notched devices */
   .mobile-safe-area {

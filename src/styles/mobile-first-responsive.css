@@ -3,6 +3,8 @@
    Viewport-based utilities that Tailwind can't provide.
    ============================================= */
 
+@tailwind utilities;
+
 @layer utilities {
   /* Stable viewport min-height (avoids browser UI bar jumps) */
   .min-h-stable {
