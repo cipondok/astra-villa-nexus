@@ -21,22 +21,22 @@ import { supabase } from "@/integrations/supabase/client";
 /* Cinematic easing — Apple-like */
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-/* Premium scroll reveal: fade + slight rise + blur lift */
+/* Premium scroll reveal — calm: shorter rise, lighter blur, faster ease */
 const revealVariants: Variants = {
-  hidden: { opacity: 0, y: 36, filter: "blur(14px)" },
-  show:   { opacity: 1, y: 0,  filter: "blur(0px)", transition: { duration: 1.1, ease: EASE } },
+  hidden: { opacity: 0, y: 18, filter: "blur(6px)" },
+  show:   { opacity: 1, y: 0,  filter: "blur(0px)", transition: { duration: 0.7, ease: EASE } },
 };
 
 function Reveal({
-  children, delay = 0, y = 36, className, as = "div",
+  children, delay = 0, y = 18, className, as = "div",
 }: { children: ReactNode; delay?: number; y?: number; className?: string; as?: "div" | "article" | "section" | "li" | "span" }) {
   const Tag: any = (motion as any)[as];
   return (
     <Tag
-      initial={{ opacity: 0, y, filter: "blur(14px)" }}
+      initial={{ opacity: 0, y, filter: "blur(6px)" }}
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once: true, margin: "-90px" }}
-      transition={{ duration: 1.1, delay, ease: EASE }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.7, delay, ease: EASE }}
       className={className}
     >
       {children}
