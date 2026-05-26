@@ -133,12 +133,14 @@ const SUGGESTIONS = [
   "Architectural pavilion with private chef…",
 ];
 
-const NAV_LINKS: { label: string; to: string }[] = [
-  { label: "Villas",      to: "/properties" },
-  { label: "Collections", to: "/properties?collection=curated" },
-  { label: "Investor OS", to: "/investment" },
-  { label: "Concierge",   to: "/wealth-advisor" },
-  { label: "Journal",     to: "/community" },
+const NAV_LINKS: { label: string; to: string; match?: string }[] = [
+  { label: "Villas",        to: "/properties",     match: "/properties" },
+  { label: "Investment",    to: "/investment",     match: "/investment" },
+  { label: "Virtual Tours", to: "/virtual-tour",   match: "/virtual-tour" },
+  { label: "AI Concierge",  to: "/ai-concierge",   match: "/ai-concierge" },
+  { label: "Experiences",   to: "/experiences",    match: "/experiences" },
+  { label: "Dashboard",     to: "/dashboard",      match: "/dashboard" },
+  { label: "Contact",       to: "/contact",        match: "/contact" },
 ];
 
 type FeaturedVilla = {
