@@ -768,46 +768,90 @@ export default function LuxeExperience() {
           </div>
 
           <nav className="flex flex-col">
-            {[{ label: "Home", to: "/" }, ...NAV_LINKS].map((link, i) => (
-              <div key={link.to} className="border-b border-luxe">
-                <Link
-                  to={link.to}
-                  onClick={() => setMobileOpen(false)}
-                  className="flex items-center justify-between py-5 group"
-                  style={{
-                    transitionDelay: `${mobileOpen ? i * 40 : 0}ms`,
-                  }}
-                >
-                  <span className="font-serif-l text-[28px] leading-none group-hover:text-luxe-gold transition-colors">
-                    {link.label}
-                  </span>
-                  <ArrowUpRight className="w-5 h-5 text-luxe-mut group-hover:text-luxe-gold transition-colors" />
-                </Link>
-                {"mega" in link && link.mega && (
-                  <div className="pb-4 pl-1 space-y-1">
-                    {link.mega.map(sub => (
-                      <Link
-                        key={sub.to}
-                        to={sub.to}
-                        onClick={() => setMobileOpen(false)}
-                        className="block text-[13px] text-luxe-mut hover:text-luxe-gold py-1.5 transition-colors"
-                      >
-                        — {sub.label}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
+            {[{ label: "Home", to: "/" } as NavLink, ...NAV_LINKS].map((link, i) => {
+              const linkActive = link.to === "/" ? pathname === "/" : pathname.startsWith(link.to);
+              return (
+                <div key={link.to} className="border-b border-luxe">
+                  <Link
+                    to={link.to}
+                    onClick={() => setMobileOpen(false)}
+                    aria-current={linkActive ? "page" : undefined}
+                    className="flex items-center justify-between py-5 group"
+                    style={{
+                      transitionDelay: `${mobileOpen ? i * 40 : 0}ms`,
+                    }}
+                  >
+                    <span className={cn(
+                      "font-serif-l text-[28px] leading-none transition-colors",
+                      linkActive ? "text-luxe-gold" : "group-hover:text-luxe-gold"
+                    )}>
+                      {link.label}
+                    </span>
+                    <span className="flex items-center gap-2">
+                      {linkActive && (
+                        <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-[color:var(--luxe-gold)] shadow-[0_0_10px_rgba(200,169,107,0.7)]" />
+                      )}
+                      <ArrowUpRight className={cn(
+                        "w-5 h-5 transition-colors",
+                        linkActive ? "text-luxe-gold" : "text-luxe-mut group-hover:text-luxe-gold"
+                      )} />
+                    </span>
+                  </Link>
+                  {"mega" in link && link.mega && (
+                    <div className="pb-4 pl-1 space-y-1">
+                      {link.mega.map(sub => {
+                        const subActive = pathname === sub.to.split("?")[0] || pathname.startsWith(sub.to.split("?")[0] + "/");
+                        return (
+                          <Link
+                            key={sub.to}
+                            to={sub.to}
+                            onClick={() => setMobileOpen(false)}
+                            aria-current={subActive ? "page" : undefined}
+                            className={cn(
+                              "block text-[13px] py-1.5 transition-colors",
+                              subActive ? "text-luxe-gold" : "text-luxe-mut hover:text-luxe-gold"
+                            )}
+                          >
+                            — {sub.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </nav>
 
           <div className="mt-10 grid grid-cols-2 gap-3">
-            <Link to="/properties" onClick={() => setMobileOpen(false)} className="flex items-center justify-center gap-2 py-4 rounded-2xl luxe-glass-card text-[12px] hover:text-luxe-gold transition-colors">
-              <Search className="w-4 h-4" /> Search Villas
-            </Link>
-            <Link to="/ai-concierge" onClick={() => setMobileOpen(false)} className="flex items-center justify-center gap-2 py-4 rounded-2xl luxe-gold-btn text-[12px] font-medium">
-              <Sparkles className="w-4 h-4" /> AI Concierge
-            </Link>
+            {(() => {
+              const searchActive = pathname.startsWith("/properties") || pathname.startsWith("/search");
+              const conciergeActive = pathname.startsWith("/wealth-advisor");
+              return (
+                <>
+                  <Link to="/properties" onClick={() => setMobileOpen(false)}
+                    aria-current={searchActive ? "page" : undefined}
+                    className={cn(
+                      "flex items-center justify-center gap-2 py-4 rounded-2xl text-[12px] transition-colors",
+                      searchActive
+                        ? "luxe-glass-card border border-[color:var(--luxe-gold)]/55 text-luxe-gold"
+                        : "luxe-glass-card hover:text-luxe-gold"
+                    )}>
+                    <Search className="w-4 h-4" /> Search Villas
+                  </Link>
+                  <Link to="/wealth-advisor" onClick={() => setMobileOpen(false)}
+                    aria-current={conciergeActive ? "page" : undefined}
+                    className={cn(
+                      "flex items-center justify-center gap-2 py-4 rounded-2xl text-[12px] font-medium",
+                      conciergeActive
+                        ? "luxe-gold-btn ring-2 ring-[color:var(--luxe-gold)]/40 ring-offset-2 ring-offset-[#050505]"
+                        : "luxe-gold-btn"
+                    )}>
+                    <Sparkles className="w-4 h-4" /> AI Concierge
+                  </Link>
+                </>
+              );
+            })()}
           </div>
 
           <div className="mt-8 text-center text-[10px] uppercase tracking-[0.32em] text-luxe-mut">
