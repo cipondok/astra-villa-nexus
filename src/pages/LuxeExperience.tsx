@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { motion, useScroll, useTransform, useInView, useMotionValue, useSpring, type Variants } from "framer-motion";
 import {
   Search, Calendar, Users, Sparkles, ArrowUpRight, MapPin, Star,
@@ -12,6 +14,9 @@ import villa2 from "@/assets/luxe-villa-2.jpg";
 import villa3 from "@/assets/luxe-villa-3.jpg";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+
 
 /* Cinematic easing — Apple-like */
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -114,7 +119,13 @@ function TiltCard({ children, className }: { children: ReactNode; className?: st
    so it doesn't fight the app's global theme.
    ============================================================ */
 
-const CHIPS = ["Beachfront", "Rice Field View", "Jungle Retreat", "Family Friendly", "Newly Added"];
+const CHIPS = [
+  { label: "Beachfront", to: "/properties?tag=beachfront" },
+  { label: "Rice Field View", to: "/properties?tag=rice-field" },
+  { label: "Jungle Retreat", to: "/properties?tag=jungle" },
+  { label: "Family Friendly", to: "/properties?tag=family" },
+  { label: "Newly Added", to: "/properties?sort=newest" },
+];
 const SUGGESTIONS = [
   "Cliffside villa in Uluwatu with infinity pool…",
   "Jungle sanctuary near Ubud, 4 bedrooms…",
@@ -122,11 +133,68 @@ const SUGGESTIONS = [
   "Architectural pavilion with private chef…",
 ];
 
-const FEATURED = [
-  { img: villa3, name: "Villa Anantara", area: "Uluwatu · Beachfront", price: "$2,850", rating: 4.98, tag: "Editor's Pick" },
-  { img: villa1, name: "Cliff House No. 9", area: "Bingin · Ocean Cliff", price: "$3,420", rating: 4.96, tag: "New" },
-  { img: villa2, name: "Pavilion Ubud", area: "Ubud · Jungle Retreat", price: "$1,980", rating: 4.94, tag: "Concierge" },
+const NAV_LINKS: { label: string; to: string }[] = [
+  { label: "Villas",      to: "/properties" },
+  { label: "Collections", to: "/properties?collection=curated" },
+  { label: "Investor OS", to: "/investment" },
+  { label: "Concierge",   to: "/wealth-advisor" },
+  { label: "Journal",     to: "/community" },
 ];
+
+type FeaturedVilla = {
+  id?: string;
+  img: string;
+  name: string;
+  area: string;
+  price: string;
+  rating: number;
+  tag: string;
+};
+
+const FEATURED_FALLBACK: FeaturedVilla[] = [
+  { img: villa3, name: "Villa Anantara",  area: "Uluwatu · Beachfront",   price: "$2,850", rating: 4.98, tag: "Editor's Pick" },
+  { img: villa1, name: "Cliff House No. 9", area: "Bingin · Ocean Cliff", price: "$3,420", rating: 4.96, tag: "New" },
+  { img: villa2, name: "Pavilion Ubud",   area: "Ubud · Jungle Retreat",  price: "$1,980", rating: 4.94, tag: "Concierge" },
+];
+
+function formatPrice(n: number | null | undefined): string {
+  if (!n || n <= 0) return "On request";
+  if (n >= 1_000_000_000) return `Rp ${(n / 1_000_000_000).toFixed(1)}B`;
+  if (n >= 1_000_000) return `Rp ${(n / 1_000_000).toFixed(1)}M`;
+  return `Rp ${n.toLocaleString("id-ID")}`;
+}
+
+function useFeaturedVillas(): FeaturedVilla[] {
+  const { data } = useQuery({
+    queryKey: ["luxe-featured-villas"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("properties")
+        .select("id,title,location,price,images,property_type")
+        .eq("status", "active")
+        .not("images", "is", null)
+        .order("created_at", { ascending: false })
+        .limit(3);
+      if (error) throw error;
+      return data ?? [];
+    },
+    staleTime: 5 * 60 * 1000,
+    retry: 0,
+  });
+
+  if (!data || data.length === 0) return FEATURED_FALLBACK;
+  const tags = ["Editor's Pick", "New", "Concierge"];
+  const fallbackImgs = [villa3, villa1, villa2];
+  return data.map((p: any, i: number) => ({
+    id: p.id,
+    img: (Array.isArray(p.images) && p.images[0]) || fallbackImgs[i % 3],
+    name: p.title ?? "Untitled Villa",
+    area: p.location ?? "Bali",
+    price: formatPrice(Number(p.price)),
+    rating: 4.94,
+    tag: tags[i % tags.length],
+  }));
+}
 
 const AI_CARDS = [
   { icon: Wand2, k: "AI Match Accuracy", v: "98.4%", sub: "Personal taste model" },
@@ -136,19 +204,20 @@ const AI_CARDS = [
 ];
 
 const OS_FEATURES = [
-  { icon: Sparkles, t: "AI Property Intelligence", d: "Live signals from every listing, transaction and inquiry — synthesized into clarity." },
-  { icon: Box, t: "3D Digital Twin", d: "Walk every villa before you arrive. Photoreal, frame-perfect, instant." },
-  { icon: LineChart, t: "Investment Analytics", d: "Yield, occupancy, micro-market — modeled, ranked, explained." },
-  { icon: TrendingUp, t: "Predictive Pricing", d: "Demand and seasonality forecasted nightly, not quarterly." },
-  { icon: Compass, t: "Immersive Tours", d: "Cinematic walkthroughs with narrated context and lighting moods." },
-  { icon: Globe2, t: "Global Investor Layer", d: "Curated cross-border deals with verified provenance and escrow." },
+  { icon: Sparkles, t: "AI Property Intelligence", d: "Live signals from every listing, transaction and inquiry — synthesized into clarity.", to: "/intelligence-os" },
+  { icon: Box, t: "3D Digital Twin", d: "Walk every villa before you arrive. Photoreal, frame-perfect, instant.", to: "/vr-tour" },
+  { icon: LineChart, t: "Investment Analytics", d: "Yield, occupancy, micro-market — modeled, ranked, explained.", to: "/investment" },
+  { icon: TrendingUp, t: "Predictive Pricing", d: "Demand and seasonality forecasted nightly, not quarterly.", to: "/price-prediction" },
+  { icon: Compass, t: "Immersive Tours", d: "Cinematic walkthroughs with narrated context and lighting moods.", to: "/vr-tour" },
+  { icon: Globe2, t: "Global Investor Layer", d: "Curated cross-border deals with verified provenance and escrow.", to: "/global-deal-flow" },
 ];
 
 const COLLECTIONS = [
-  { img: villa3, t: "The Coastal Series", c: "11 villas" },
-  { img: villa2, t: "Jungle Sanctuaries", c: "08 villas" },
-  { img: villa1, t: "Cliffside Architecture", c: "06 villas" },
+  { img: villa3, t: "The Coastal Series",       c: "11 villas", to: "/properties?collection=coastal" },
+  { img: villa2, t: "Jungle Sanctuaries",       c: "08 villas", to: "/properties?collection=jungle" },
+  { img: villa1, t: "Cliffside Architecture",   c: "06 villas", to: "/properties?collection=cliffside" },
 ];
+
 
 /* Adaptive device tier — gates expensive effects on weaker devices */
 function useDeviceTier(): "low" | "mid" | "high" {
@@ -170,6 +239,10 @@ function useDeviceTier(): "low" | "mid" | "high" {
 export default function LuxeExperience() {
   const { isMobile } = useIsMobile();
   const tier = useDeviceTier();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const FEATURED = useFeaturedVillas();
+  const profileHref = user ? "/profile" : "/auth";
   const heroRef = useRef<HTMLDivElement>(null);
   const spotRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
@@ -414,37 +487,38 @@ export default function LuxeExperience() {
               scrolled && "shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)]"
             )}
           >
-            <a href="/" className="flex items-center gap-2.5">
+            <Link to="/" className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-full grid place-items-center"
                    style={{ background: "linear-gradient(135deg,#C8A96B,#8C6B2F)" }}>
                 <span className="font-serif-l text-[15px] text-black">A</span>
               </div>
               <span className="font-serif-l text-[17px] tracking-wide">Astra<span className="text-luxe-gold"> Villa</span></span>
-            </a>
+            </Link>
 
             <div className="hidden lg:flex items-center gap-8 text-[13px] text-luxe-fg/80">
-              {["Villas", "Collections", "Investor OS", "Concierge", "Journal"].map(i => (
-                <a key={i} className="hover:text-luxe-gold transition-colors" href="#">{i}</a>
+              {NAV_LINKS.map(link => (
+                <Link key={link.to} to={link.to} className="hover:text-luxe-gold transition-colors">{link.label}</Link>
               ))}
             </div>
 
             <div className="flex items-center gap-1.5 md:gap-2">
-              <button className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-full bg-luxe-glass border border-luxe text-[12px] hover:border-[color:var(--luxe-gold)] transition-colors">
+              <Link to="/wealth-advisor" className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-full bg-luxe-glass border border-luxe text-[12px] hover:border-[color:var(--luxe-gold)] transition-colors">
                 <Sparkles className="w-3.5 h-3.5 text-luxe-gold" /> AI Concierge
-              </button>
-              <button className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Language">
+              </Link>
+              <Link to="/settings" className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Language">
                 <Languages className="w-4 h-4" />
-              </button>
-              <button className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Theme">
+              </Link>
+              <Link to="/settings" className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Theme">
                 <Moon className="w-4 h-4" />
-              </button>
-              <button className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Wishlist">
+              </Link>
+              <Link to="/favorites" className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Wishlist">
                 <Heart className="w-4 h-4" />
-              </button>
-              <button className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Profile">
+              </Link>
+              <Link to={profileHref} className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Profile">
                 <User2 className="w-4 h-4" />
-              </button>
+              </Link>
             </div>
+
           </nav>
         </div>
       </header>
@@ -547,12 +621,13 @@ export default function LuxeExperience() {
               variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } } }}
               className="mt-9 md:mt-10 flex flex-wrap items-center gap-3"
             >
-              <button className="luxe-gold-btn luxe-tap rounded-full px-6 py-4 md:py-3.5 text-[13px] font-medium tracking-wide inline-flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-12px_rgba(200,169,107,0.6)] min-h-[48px]">
+              <Link to="/properties" className="luxe-gold-btn luxe-tap rounded-full px-6 py-4 md:py-3.5 text-[13px] font-medium tracking-wide inline-flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-12px_rgba(200,169,107,0.6)] min-h-[48px]">
                 Begin Your Stay <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-              </button>
-              <button className="luxe-tap rounded-full px-5 py-4 md:py-3.5 text-[13px] font-medium tracking-wide bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-all duration-300 hover:-translate-y-0.5 inline-flex items-center gap-2 min-h-[48px]">
+              </Link>
+              <Link to="/vr-tour" className="luxe-tap rounded-full px-5 py-4 md:py-3.5 text-[13px] font-medium tracking-wide bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-all duration-300 hover:-translate-y-0.5 inline-flex items-center gap-2 min-h-[48px]">
                 <PlayCircle className="w-4 h-4 text-luxe-gold" /> Watch the Film
-              </button>
+              </Link>
+
             </motion.div>
           </motion.div>
 
@@ -589,15 +664,16 @@ export default function LuxeExperience() {
             <div className="relative">
               <div className="absolute -inset-px rounded-2xl md:rounded-full bg-gradient-to-r from-[color:var(--luxe-gold)]/25 via-transparent to-[color:var(--luxe-emerald)]/15 blur-md opacity-60 pointer-events-none" />
               <div className="relative luxe-glass-card rounded-2xl md:rounded-full p-2 flex flex-col md:flex-row items-stretch md:items-center gap-2 md:gap-0 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)]">
-                <SearchField icon={MapPin} label="Where" value="Bali, Indonesia" />
+                <SearchField icon={MapPin} label="Where" value="Bali, Indonesia" to="/search?where=bali" />
                 <div className="hidden md:block h-10 w-px bg-luxe-line" />
-                <SearchField icon={Calendar} label="When" value="Add dates" />
+                <SearchField icon={Calendar} label="When" value="Add dates" to="/search?step=dates" />
                 <div className="hidden md:block h-10 w-px bg-luxe-line" />
-                <SearchField icon={Users} label="Guests" value="2 adults" />
-                <button className="luxe-gold-btn rounded-xl md:rounded-full px-6 py-3.5 text-[13px] font-medium inline-flex items-center justify-center gap-2 md:ml-2 transition-transform duration-300 hover:-translate-y-0.5">
+                <SearchField icon={Users} label="Guests" value="2 adults" to="/search?step=guests" />
+                <Link to="/search" className="luxe-gold-btn rounded-xl md:rounded-full px-6 py-3.5 text-[13px] font-medium inline-flex items-center justify-center gap-2 md:ml-2 transition-transform duration-300 hover:-translate-y-0.5">
                   <Search className="w-4 h-4" /> Search Villas
-                </button>
+                </Link>
               </div>
+
             </div>
 
             <div className="mt-4 flex items-center gap-2.5 text-[12px] text-luxe-fg/65 min-h-[20px]" aria-live="polite">
@@ -615,15 +691,18 @@ export default function LuxeExperience() {
 
             <div className="mt-5 flex flex-wrap gap-2">
               {CHIPS.map((c, i) => (
-                <motion.button
-                  key={c}
+                <motion.span
+                  key={c.label}
                   initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.7 + i * 0.06, ease: [0.22, 1, 0.36, 1] }}
-                  className="text-[12px] px-3.5 py-1.5 rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] hover:text-luxe-gold transition-all duration-300 hover:-translate-y-0.5"
+                  className="inline-block"
                 >
-                  {c}
-                </motion.button>
+                  <Link to={c.to} className="text-[12px] px-3.5 py-1.5 rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] hover:text-luxe-gold transition-all duration-300 hover:-translate-y-0.5 inline-block">
+                    {c.label}
+                  </Link>
+                </motion.span>
               ))}
+
             </div>
           </motion.div>
         </div>
@@ -675,18 +754,22 @@ export default function LuxeExperience() {
               <SectionHead eyebrow="The Collection" title={<>Hand-picked villas, <em className="not-italic text-luxe-gold">cinematically</em> rendered.</>} />
             </Reveal>
             <Reveal delay={0.15}>
-              <a href="#" className="hidden md:inline-flex items-center gap-1.5 text-[12px] text-luxe-fg/70 hover:text-luxe-gold transition-colors">
-                View all 142 villas <ChevronRight className="w-4 h-4" />
-              </a>
+              <Link to="/properties" className="hidden md:inline-flex items-center gap-1.5 text-[12px] text-luxe-fg/70 hover:text-luxe-gold transition-colors">
+                View all villas <ChevronRight className="w-4 h-4" />
+              </Link>
+
             </Reveal>
           </div>
 
           {/* Mobile: horizontal snap rail. Desktop: 3-col tilt grid */}
           <div className="luxe-snap-x -mx-5 px-5 md:mx-0 md:px-0 flex md:grid md:grid-cols-3 gap-5 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none [perspective:1400px] pb-2 md:pb-0">
-            {FEATURED.map((v, i) => (
-              <Reveal key={v.name} delay={i * 0.12} as="article"
+            {FEATURED.map((v, i) => {
+              const detailHref = v.id ? `/properties/${v.id}` : "/properties";
+              return (
+              <Reveal key={v.id ?? v.name} delay={i * 0.12} as="article"
                 className="snap-center shrink-0 w-[82%] sm:w-[60%] md:w-auto first:pl-0 last:pr-0">
                 <TiltCard className="group relative overflow-hidden rounded-3xl border border-luxe bg-[#0a0a0a] luxe-card-glow shadow-[0_30px_60px_-30px_rgba(0,0,0,0.8)] hover:shadow-[0_40px_80px_-30px_rgba(200,169,107,0.35)] transition-shadow duration-700 will-change-transform luxe-tap">
+                  <Link to={detailHref} aria-label={`View ${v.name}`} className="absolute inset-0 z-10" />
                   <div className="aspect-[4/5] overflow-hidden">
                     <img src={v.img} alt={v.name} loading="lazy" width={1280} height={1600}
                          className="w-full h-full object-cover transition-transform duration-[2000ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]" />
@@ -695,16 +778,16 @@ export default function LuxeExperience() {
                   <div aria-hidden className="pointer-events-none absolute -inset-x-1/4 -top-1/2 h-full rotate-12 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
                        style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)" }} />
 
-                  <div className="absolute top-4 left-4 flex items-center gap-2">
+                  <div className="absolute top-4 left-4 flex items-center gap-2 z-20">
                     <span className="px-2.5 py-1 rounded-full text-[10px] tracking-wider uppercase luxe-glass-card text-luxe-gold">{v.tag}</span>
                   </div>
-                  <div className="absolute top-4 right-4">
-                    <button className="w-11 h-11 md:w-9 md:h-9 grid place-items-center rounded-full luxe-glass-card hover:text-luxe-gold hover:scale-110 transition-all duration-300" aria-label="Save">
+                  <div className="absolute top-4 right-4 z-20">
+                    <Link to="/favorites" onClick={(e) => e.stopPropagation()} className="w-11 h-11 md:w-9 md:h-9 grid place-items-center rounded-full luxe-glass-card hover:text-luxe-gold hover:scale-110 transition-all duration-300" aria-label="Save">
                       <Heart className="w-4 h-4" />
-                    </button>
+                    </Link>
                   </div>
 
-                  <div className="absolute inset-x-4 bottom-4 luxe-glass-card rounded-2xl p-4 translate-y-1 group-hover:translate-y-0 transition-transform duration-700">
+                  <div className="absolute inset-x-4 bottom-4 luxe-glass-card rounded-2xl p-4 translate-y-1 group-hover:translate-y-0 transition-transform duration-700 z-20">
                     <div className="flex items-start justify-between gap-3 mb-2">
                       <div>
                         <h3 className="font-serif-l text-xl leading-tight">{v.name}</h3>
@@ -723,14 +806,16 @@ export default function LuxeExperience() {
                         <span>{v.rating}</span>
                         <span className="text-luxe-mut">· 124 stays</span>
                       </div>
-                      <button className="text-[11px] inline-flex items-center gap-1 text-luxe-gold hover:gap-2 transition-all">
+                      <Link to="/vr-tour" onClick={(e) => e.stopPropagation()} className="text-[11px] inline-flex items-center gap-1 text-luxe-gold hover:gap-2 transition-all relative">
                         Explore in 3D <Box className="w-3 h-3" />
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 </TiltCard>
               </Reveal>
-            ))}
+              );
+            })}
+
           </div>
         </div>
       </section>
@@ -765,11 +850,12 @@ export default function LuxeExperience() {
                 <f.icon className="w-6 h-6 text-luxe-gold mb-8" />
                 <h3 className="font-serif-l text-2xl mb-3 leading-tight">{f.t}</h3>
                 <p className="text-[13px] leading-relaxed text-luxe-fg/65">{f.d}</p>
-                <div className="mt-8 inline-flex items-center gap-1.5 text-[11px] text-luxe-mut group-hover:text-luxe-gold transition-colors">
+                <Link to={f.to} className="mt-8 inline-flex items-center gap-1.5 text-[11px] text-luxe-mut group-hover:text-luxe-gold transition-colors">
                   Learn more <ChevronRight className="w-3 h-3" />
-                </div>
+                </Link>
               </motion.div>
             ))}
+
           </div>
         </div>
       </section>
@@ -781,10 +867,12 @@ export default function LuxeExperience() {
 
           <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-5">
             {COLLECTIONS.map((c, i) => (
-              <motion.a key={c.t} href="#"
+              <motion.div key={c.t}
                 initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ duration: 0.7, delay: i * 0.1 }}
                 className="group relative aspect-[3/4] rounded-3xl overflow-hidden border border-luxe block">
+                <Link to={c.to} aria-label={c.t} className="absolute inset-0 z-10" />
+
                 <img src={c.img} alt={c.t} loading="lazy" width={1280} height={1600}
                      className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
@@ -795,7 +883,7 @@ export default function LuxeExperience() {
                     Enter collection <ArrowUpRight className="w-3.5 h-3.5" />
                   </div>
                 </div>
-              </motion.a>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -831,9 +919,10 @@ export default function LuxeExperience() {
                   </Reveal>
                 ))}
               </div>
-              <button className="luxe-gold-btn mt-10 rounded-full px-6 py-3.5 text-[13px] font-medium inline-flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5">
+              <Link to="/investment" className="luxe-gold-btn mt-10 rounded-full px-6 py-3.5 text-[13px] font-medium inline-flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5">
                 Open the Investor OS <ArrowUpRight className="w-4 h-4" />
-              </button>
+              </Link>
+
             </div>
           </Reveal>
 
@@ -946,12 +1035,13 @@ export default function LuxeExperience() {
                 </p>
               </div>
               <div className="flex flex-col gap-3">
-                <button className="luxe-gold-btn rounded-full px-6 py-4 text-[13px] font-medium inline-flex items-center justify-center gap-2">
+                <Link to="/properties" className="luxe-gold-btn rounded-full px-6 py-4 text-[13px] font-medium inline-flex items-center justify-center gap-2">
                   Find My Villa <ArrowUpRight className="w-4 h-4" />
-                </button>
-                <button className="rounded-full px-6 py-4 text-[13px] font-medium bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors inline-flex items-center justify-center gap-2">
+                </Link>
+                <Link to="/wealth-advisor" className="rounded-full px-6 py-4 text-[13px] font-medium bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors inline-flex items-center justify-center gap-2">
                   <Bot className="w-4 h-4 text-luxe-gold" /> Speak to AI Concierge
-                </button>
+                </Link>
+
               </div>
             </div>
           </div>
@@ -974,18 +1064,21 @@ export default function LuxeExperience() {
                 The AI Property Operating System for Bali. Quiet luxury, told in code and light.
               </p>
             </div>
-            {[
-              ["Discover", ["Villas", "Collections", "Destinations", "Editorial"]],
-              ["Platform", ["Investor OS", "3D Tours", "Concierge", "Analytics"]],
-              ["Astra", ["About", "Press", "Careers", "Contact"]],
-            ].map(([h, items]) => (
-              <div key={h as string}>
-                <div className="luxe-eyebrow mb-5">{h as string}</div>
+            {([
+              ["Discover", [["Villas","/properties"],["Collections","/properties?collection=curated"],["Destinations","/area-guides"],["Editorial","/community"]]],
+              ["Platform", [["Investor OS","/investment"],["3D Tours","/vr-tour"],["Concierge","/wealth-advisor"],["Analytics","/market-heatmap"]]],
+              ["Astra", [["About","/about"],["Press","/community"],["Careers","/contact"],["Contact","/contact"]]],
+            ] as [string, [string, string][]][]).map(([h, items]) => (
+              <div key={h}>
+                <div className="luxe-eyebrow mb-5">{h}</div>
                 <ul className="space-y-3 text-[13px] text-luxe-fg/75">
-                  {(items as string[]).map(i => <li key={i}><a href="#" className="hover:text-luxe-gold transition-colors">{i}</a></li>)}
+                  {items.map(([label, to]) => (
+                    <li key={label}><Link to={to} className="hover:text-luxe-gold transition-colors">{label}</Link></li>
+                  ))}
                 </ul>
               </div>
             ))}
+
           </div>
           <div className="mt-16 pt-6 border-t border-luxe flex flex-col md:flex-row justify-between gap-3 text-[11px] text-luxe-mut font-mono-l">
             <span>© MMXXVI ASTRA VILLA · Denpasar · Bali</span>
@@ -1002,14 +1095,17 @@ export default function LuxeExperience() {
 }
 
 function MobileDock() {
-  const [active, setActive] = useState("home");
+  const { pathname } = useLocation();
+  const { user } = useAuth();
   const items = [
-    { id: "home",      icon: Home,      label: "Home" },
-    { id: "discover",  icon: Compass,   label: "Discover" },
-    { id: "concierge", icon: Sparkles,  label: "Concierge", accent: true },
-    { id: "wishlist",  icon: Heart,     label: "Saved" },
-    { id: "profile",   icon: User2,     label: "You" },
+    { id: "home",      to: "/",               icon: Home,     label: "Home" },
+    { id: "discover",  to: "/properties",     icon: Compass,  label: "Discover" },
+    { id: "concierge", to: "/wealth-advisor", icon: Sparkles, label: "Concierge", accent: true },
+    { id: "wishlist",  to: "/favorites",      icon: Heart,    label: "Saved" },
+    { id: "profile",   to: user ? "/profile" : "/auth", icon: User2, label: "You" },
   ] as const;
+
+  const isActiveFor = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 
   return (
     <nav
@@ -1018,12 +1114,12 @@ function MobileDock() {
       style={{ bottom: "calc(env(safe-area-inset-bottom) + 12px)" }}
     >
       {items.map((it) => {
-        const isActive = active === it.id;
+        const isActive = isActiveFor(it.to);
         const Icon = it.icon;
         return (
-          <button
+          <Link
             key={it.id}
-            onClick={() => setActive(it.id)}
+            to={it.to}
             aria-current={isActive ? "page" : undefined}
             aria-label={it.label}
             className={cn(
@@ -1049,7 +1145,7 @@ function MobileDock() {
               )}
               <span className="text-[9px] tracking-[0.16em] uppercase font-mono-l opacity-80">{it.label}</span>
             </span>
-          </button>
+          </Link>
         );
       })}
     </nav>
@@ -1065,14 +1161,16 @@ function SectionHead({ eyebrow, title }: { eyebrow: string; title: React.ReactNo
   );
 }
 
-function SearchField({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+function SearchField({ icon: Icon, label, value, to }: { icon: any; label: string; value: string; to: string }) {
   return (
-    <button className="flex-1 flex items-center gap-3 px-5 py-3 rounded-xl md:rounded-full hover:bg-white/5 transition-colors text-left">
+    <Link to={to} className="flex-1 flex items-center gap-3 px-5 py-3 rounded-xl md:rounded-full hover:bg-white/5 transition-colors text-left">
       <Icon className="w-4 h-4 text-luxe-gold shrink-0" />
       <div className="min-w-0">
         <div className="text-[10px] uppercase tracking-[0.2em] text-luxe-mut">{label}</div>
         <div className="text-[13px] truncate">{value}</div>
       </div>
-    </button>
+    </Link>
   );
 }
+
+

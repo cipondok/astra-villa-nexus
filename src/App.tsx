@@ -386,6 +386,9 @@ const AppContent = () => {
   const location = useLocation();
   const { language } = useTranslation();
   const isAdminRoute = ['/admin', '/admin-dashboard', '/settings', '/admin/ai-performance', '/admin/listing-review', '/admin/deal-command', '/immersive-viewer'].includes(location.pathname) || location.pathname.startsWith('/admin/');
+  // Luxe shell owns its own header/footer/dock — skip the legacy app chrome on these routes
+  const isLuxeRoute = location.pathname === '/' || location.pathname === '/luxe';
+  const hideAppShell = isAdminRoute || isLuxeRoute;
   const { isMobile } = useIsMobile();
   const { isAdmin } = useAdminCheck();
   const { maintenanceMode, maintenanceMessage } = useMaintenanceMode();
@@ -400,9 +403,10 @@ const AppContent = () => {
       <NetworkStatusIndicator />
       <Suspense fallback={null}><AuthenticatedHooks /></Suspense>
       <Suspense fallback={null}><GlobalLoadingIndicator /></Suspense>
-      {!isAdminRoute && <Suspense fallback={null}><Navigation /></Suspense>}
+      {!hideAppShell && <Suspense fallback={null}><Navigation /></Suspense>}
       
-      <main className={isAdminRoute ? '' : 'pt-10 md:pt-11 lg:pt-12 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0'}>
+      <main className={hideAppShell ? '' : 'pt-10 md:pt-11 lg:pt-12 pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0'}>
+
         <AnimatePresence mode="popLayout" initial={false}>
           <PageTransition key={location.pathname}>
             <Suspense fallback={<PageLoader />}>
@@ -824,11 +828,12 @@ const AppContent = () => {
           </PageTransition>
         </AnimatePresence>
       </main>
-      {!isAdminRoute && (
+      {!hideAppShell && (
         <Suspense fallback={<div style={{ minHeight: isMobile ? '64px' : '180px' }} />}>
           {isMobile ? <MobileFooter /> : <ProfessionalFooter language={language} />}
         </Suspense>
       )}
+
       {/* Mobile bottom tab bar */}
       <Suspense fallback={null}><MobileBottomTabBar /></Suspense>
     </div>
