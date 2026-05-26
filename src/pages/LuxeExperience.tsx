@@ -338,10 +338,7 @@ export default function LuxeExperience() {
   const heroScale = useTransform(scrollY, [0, 800], [1.04, isMobile ? 1.04 : 1.09]);
   const heroOpacity = useTransform(scrollY, [0, 600], [1, isMobile ? 1 : 0.5]);
 
-  const [scrolled, setScrolled] = useState(false);
   const [suggestIdx, setSuggestIdx] = useState(0);
-  const [booted, setBooted] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [searchWhere, setSearchWhere] = useState("Bali, Indonesia");
   const [searchWhen, setSearchWhen] = useState("");
   const [searchGuests, setSearchGuests] = useState(2);
