@@ -1,6 +1,7 @@
 /* All @import statements MUST be at the very top */
 @import './styles/mobile-optimizations.css';
 @import './styles/mobile-first-responsive.css';
+@import './styles/luxe.css';
 /* Google Fonts loaded via <link preload> in index.html — no CSS @import to avoid render-blocking */
 
 /* Force font-display:swap to prevent invisible text during font load */
