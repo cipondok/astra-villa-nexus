@@ -1064,18 +1064,21 @@ export default function LuxeExperience() {
                 The AI Property Operating System for Bali. Quiet luxury, told in code and light.
               </p>
             </div>
-            {[
-              ["Discover", ["Villas", "Collections", "Destinations", "Editorial"]],
-              ["Platform", ["Investor OS", "3D Tours", "Concierge", "Analytics"]],
-              ["Astra", ["About", "Press", "Careers", "Contact"]],
-            ].map(([h, items]) => (
-              <div key={h as string}>
-                <div className="luxe-eyebrow mb-5">{h as string}</div>
+            {([
+              ["Discover", [["Villas","/properties"],["Collections","/properties?collection=curated"],["Destinations","/area-guides"],["Editorial","/community"]]],
+              ["Platform", [["Investor OS","/investment"],["3D Tours","/vr-tour"],["Concierge","/wealth-advisor"],["Analytics","/market-heatmap"]]],
+              ["Astra", [["About","/about"],["Press","/community"],["Careers","/contact"],["Contact","/contact"]]],
+            ] as [string, [string, string][]][]).map(([h, items]) => (
+              <div key={h}>
+                <div className="luxe-eyebrow mb-5">{h}</div>
                 <ul className="space-y-3 text-[13px] text-luxe-fg/75">
-                  {(items as string[]).map(i => <li key={i}><a href="#" className="hover:text-luxe-gold transition-colors">{i}</a></li>)}
+                  {items.map(([label, to]) => (
+                    <li key={label}><Link to={to} className="hover:text-luxe-gold transition-colors">{label}</Link></li>
+                  ))}
                 </ul>
               </div>
             ))}
+
           </div>
           <div className="mt-16 pt-6 border-t border-luxe flex flex-col md:flex-row justify-between gap-3 text-[11px] text-luxe-mut font-mono-l">
             <span>© MMXXVI ASTRA VILLA · Denpasar · Bali</span>
