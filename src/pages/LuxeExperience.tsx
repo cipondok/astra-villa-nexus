@@ -133,9 +133,29 @@ const SUGGESTIONS = [
   "Architectural pavilion with private chef…",
 ];
 
-const NAV_LINKS: { label: string; to: string; match?: string }[] = [
-  { label: "Villas",        to: "/properties",     match: "/properties" },
-  { label: "Investment",    to: "/investment",     match: "/investment" },
+type NavSubLink = { label: string; to: string; desc?: string };
+type NavLink = { label: string; to: string; match?: string; mega?: NavSubLink[] };
+
+const NAV_LINKS: NavLink[] = [
+  {
+    label: "Villas", to: "/properties", match: "/properties",
+    mega: [
+      { label: "Luxury Collection",   to: "/properties?collection=luxury",     desc: "Editor-curated icons" },
+      { label: "Beachfront Villas",   to: "/properties?tag=beachfront",        desc: "Ocean cliffs & sand" },
+      { label: "Jungle Sanctuaries",  to: "/properties?tag=jungle",            desc: "Ubud, Sayan, Tabanan" },
+      { label: "Family Villas",       to: "/properties?tag=family",            desc: "4+ bedrooms, secure" },
+      { label: "Investment Villas",   to: "/properties?intent=investment",     desc: "ROI-ranked picks" },
+    ],
+  },
+  {
+    label: "Investment", to: "/investment", match: "/investment",
+    mega: [
+      { label: "ROI Insights",        to: "/investment",                       desc: "Yield, occupancy, IRR" },
+      { label: "Market Trends",       to: "/market-intelligence",              desc: "Live Bali micro-market" },
+      { label: "Investor Dashboard",  to: "/dashboard",                        desc: "Your portfolio at a glance" },
+      { label: "Price Prediction",    to: "/price-prediction",                 desc: "AI 12-month forecast" },
+    ],
+  },
   { label: "Virtual Tours", to: "/virtual-tour",   match: "/virtual-tour" },
   { label: "AI Concierge",  to: "/ai-concierge",   match: "/ai-concierge" },
   { label: "Experiences",   to: "/experiences",    match: "/experiences" },
