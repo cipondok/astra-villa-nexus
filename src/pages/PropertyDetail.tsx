@@ -132,7 +132,7 @@ const PropertyDetail = () => {
       title: property.title,
       price: property.price || 0,
       location: property.location || property.city || "",
-      image: images[0],
+      images: images.slice(0, 1),
     });
   };
 
