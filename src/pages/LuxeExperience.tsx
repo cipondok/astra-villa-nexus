@@ -511,9 +511,8 @@ export default function LuxeExperience() {
         }
         /* ============ Mobile-luxury polish ============ */
         .luxe-root { -webkit-tap-highlight-color: transparent; }
-        .luxe-root { scroll-behavior: smooth; }
-        /* iOS-quality momentum scrolling */
-        html, body { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+        /* iOS-quality momentum scrolling — native, no smooth-scroll hijack */
+        html, body { -webkit-overflow-scrolling: touch; overscroll-behavior-y: auto; }
         .luxe-tap { transition: transform .35s cubic-bezier(0.22,1,0.36,1), box-shadow .35s ease; }
         .luxe-tap:active { transform: scale(0.97); }
         /* Hide native scrollbars on mobile snap rails */
