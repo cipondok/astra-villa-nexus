@@ -119,7 +119,13 @@ function TiltCard({ children, className }: { children: ReactNode; className?: st
    so it doesn't fight the app's global theme.
    ============================================================ */
 
-const CHIPS = ["Beachfront", "Rice Field View", "Jungle Retreat", "Family Friendly", "Newly Added"];
+const CHIPS = [
+  { label: "Beachfront", to: "/properties?tag=beachfront" },
+  { label: "Rice Field View", to: "/properties?tag=rice-field" },
+  { label: "Jungle Retreat", to: "/properties?tag=jungle" },
+  { label: "Family Friendly", to: "/properties?tag=family" },
+  { label: "Newly Added", to: "/properties?sort=newest" },
+];
 const SUGGESTIONS = [
   "Cliffside villa in Uluwatu with infinity pool…",
   "Jungle sanctuary near Ubud, 4 bedrooms…",
@@ -127,11 +133,68 @@ const SUGGESTIONS = [
   "Architectural pavilion with private chef…",
 ];
 
-const FEATURED = [
-  { img: villa3, name: "Villa Anantara", area: "Uluwatu · Beachfront", price: "$2,850", rating: 4.98, tag: "Editor's Pick" },
-  { img: villa1, name: "Cliff House No. 9", area: "Bingin · Ocean Cliff", price: "$3,420", rating: 4.96, tag: "New" },
-  { img: villa2, name: "Pavilion Ubud", area: "Ubud · Jungle Retreat", price: "$1,980", rating: 4.94, tag: "Concierge" },
+const NAV_LINKS: { label: string; to: string }[] = [
+  { label: "Villas",      to: "/properties" },
+  { label: "Collections", to: "/properties?collection=curated" },
+  { label: "Investor OS", to: "/investment" },
+  { label: "Concierge",   to: "/wealth-advisor" },
+  { label: "Journal",     to: "/community" },
 ];
+
+type FeaturedVilla = {
+  id?: string;
+  img: string;
+  name: string;
+  area: string;
+  price: string;
+  rating: number;
+  tag: string;
+};
+
+const FEATURED_FALLBACK: FeaturedVilla[] = [
+  { img: villa3, name: "Villa Anantara",  area: "Uluwatu · Beachfront",   price: "$2,850", rating: 4.98, tag: "Editor's Pick" },
+  { img: villa1, name: "Cliff House No. 9", area: "Bingin · Ocean Cliff", price: "$3,420", rating: 4.96, tag: "New" },
+  { img: villa2, name: "Pavilion Ubud",   area: "Ubud · Jungle Retreat",  price: "$1,980", rating: 4.94, tag: "Concierge" },
+];
+
+function formatPrice(n: number | null | undefined): string {
+  if (!n || n <= 0) return "On request";
+  if (n >= 1_000_000_000) return `Rp ${(n / 1_000_000_000).toFixed(1)}B`;
+  if (n >= 1_000_000) return `Rp ${(n / 1_000_000).toFixed(1)}M`;
+  return `Rp ${n.toLocaleString("id-ID")}`;
+}
+
+function useFeaturedVillas(): FeaturedVilla[] {
+  const { data } = useQuery({
+    queryKey: ["luxe-featured-villas"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("properties")
+        .select("id,title,location,price,images,property_type")
+        .eq("status", "active")
+        .not("images", "is", null)
+        .order("created_at", { ascending: false })
+        .limit(3);
+      if (error) throw error;
+      return data ?? [];
+    },
+    staleTime: 5 * 60 * 1000,
+    retry: 0,
+  });
+
+  if (!data || data.length === 0) return FEATURED_FALLBACK;
+  const tags = ["Editor's Pick", "New", "Concierge"];
+  const fallbackImgs = [villa3, villa1, villa2];
+  return data.map((p: any, i: number) => ({
+    id: p.id,
+    img: (Array.isArray(p.images) && p.images[0]) || fallbackImgs[i % 3],
+    name: p.title ?? "Untitled Villa",
+    area: p.location ?? "Bali",
+    price: formatPrice(Number(p.price)),
+    rating: 4.94,
+    tag: tags[i % tags.length],
+  }));
+}
 
 const AI_CARDS = [
   { icon: Wand2, k: "AI Match Accuracy", v: "98.4%", sub: "Personal taste model" },
@@ -141,19 +204,20 @@ const AI_CARDS = [
 ];
 
 const OS_FEATURES = [
-  { icon: Sparkles, t: "AI Property Intelligence", d: "Live signals from every listing, transaction and inquiry — synthesized into clarity." },
-  { icon: Box, t: "3D Digital Twin", d: "Walk every villa before you arrive. Photoreal, frame-perfect, instant." },
-  { icon: LineChart, t: "Investment Analytics", d: "Yield, occupancy, micro-market — modeled, ranked, explained." },
-  { icon: TrendingUp, t: "Predictive Pricing", d: "Demand and seasonality forecasted nightly, not quarterly." },
-  { icon: Compass, t: "Immersive Tours", d: "Cinematic walkthroughs with narrated context and lighting moods." },
-  { icon: Globe2, t: "Global Investor Layer", d: "Curated cross-border deals with verified provenance and escrow." },
+  { icon: Sparkles, t: "AI Property Intelligence", d: "Live signals from every listing, transaction and inquiry — synthesized into clarity.", to: "/intelligence-os" },
+  { icon: Box, t: "3D Digital Twin", d: "Walk every villa before you arrive. Photoreal, frame-perfect, instant.", to: "/vr-tour" },
+  { icon: LineChart, t: "Investment Analytics", d: "Yield, occupancy, micro-market — modeled, ranked, explained.", to: "/investment" },
+  { icon: TrendingUp, t: "Predictive Pricing", d: "Demand and seasonality forecasted nightly, not quarterly.", to: "/price-prediction" },
+  { icon: Compass, t: "Immersive Tours", d: "Cinematic walkthroughs with narrated context and lighting moods.", to: "/vr-tour" },
+  { icon: Globe2, t: "Global Investor Layer", d: "Curated cross-border deals with verified provenance and escrow.", to: "/global-deal-flow" },
 ];
 
 const COLLECTIONS = [
-  { img: villa3, t: "The Coastal Series", c: "11 villas" },
-  { img: villa2, t: "Jungle Sanctuaries", c: "08 villas" },
-  { img: villa1, t: "Cliffside Architecture", c: "06 villas" },
+  { img: villa3, t: "The Coastal Series",       c: "11 villas", to: "/properties?collection=coastal" },
+  { img: villa2, t: "Jungle Sanctuaries",       c: "08 villas", to: "/properties?collection=jungle" },
+  { img: villa1, t: "Cliffside Architecture",   c: "06 villas", to: "/properties?collection=cliffside" },
 ];
+
 
 /* Adaptive device tier — gates expensive effects on weaker devices */
 function useDeviceTier(): "low" | "mid" | "high" {
