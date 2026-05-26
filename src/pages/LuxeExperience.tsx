@@ -358,6 +358,27 @@ export default function LuxeExperience() {
           .luxe-glass-card { backdrop-filter: blur(12px) saturate(130%); -webkit-backdrop-filter: blur(12px) saturate(130%); }
           /* Smaller ambient mesh, lower cost */
           .luxe-mesh-a { filter: blur(40px) !important; }
+          /* No grain on small screens — cheap visual win */
+          .luxe-grain::before { display: none; }
+        }
+        /* Below-fold sections skip paint until near viewport */
+        .luxe-cv { content-visibility: auto; contain-intrinsic-size: 1px 800px; }
+        /* Premium boot fade — cinematic mount */
+        .luxe-boot {
+          position: fixed; inset: 0; z-index: 100; pointer-events: none;
+          background: radial-gradient(60% 50% at 50% 50%, #0b0b0b 0%, #050505 100%);
+          opacity: 1; transition: opacity 900ms cubic-bezier(0.22,1,0.36,1);
+        }
+        .luxe-boot.ready { opacity: 0; }
+        .luxe-boot-mark {
+          position:absolute; left:50%; top:50%; transform: translate(-50%,-50%);
+          width: 64px; height: 64px; border-radius: 9999px;
+          background: linear-gradient(135deg,#C8A96B,#8C6B2F);
+          display: grid; place-items: center;
+          box-shadow: 0 20px 60px -20px rgba(200,169,107,0.6);
+          animation: luxePulse 2.6s ease-in-out infinite;
+        }
+        @media (max-width: 360px) {
         }
       `}</style>
 
