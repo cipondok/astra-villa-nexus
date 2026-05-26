@@ -867,10 +867,12 @@ export default function LuxeExperience() {
 
           <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-5">
             {COLLECTIONS.map((c, i) => (
-              <motion.a key={c.t} href="#"
+              <motion.div key={c.t}
                 initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ duration: 0.7, delay: i * 0.1 }}
                 className="group relative aspect-[3/4] rounded-3xl overflow-hidden border border-luxe block">
+                <Link to={c.to} aria-label={c.t} className="absolute inset-0 z-10" />
+
                 <img src={c.img} alt={c.t} loading="lazy" width={1280} height={1600}
                      className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
