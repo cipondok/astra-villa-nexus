@@ -335,7 +335,17 @@ export default function LuxeExperience() {
   }, [mobileOpen]);
 
   useEffect(() => {
-    const on = () => setScrolled(window.scrollY > 40);
+    let ticking = false;
+    let last = false;
+    const on = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const next = window.scrollY > 40;
+        if (next !== last) { last = next; setScrolled(next); }
+        ticking = false;
+      });
+    };
     window.addEventListener("scroll", on, { passive: true });
     return () => window.removeEventListener("scroll", on);
   }, []);
