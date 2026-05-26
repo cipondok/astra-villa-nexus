@@ -1338,7 +1338,7 @@ export default function LuxeExperience() {
         <div className="mx-auto max-w-[1240px] px-5 md:px-10">
           <div className="relative overflow-hidden rounded-[32px] border border-luxe luxe-grain"
                style={{ background: "linear-gradient(135deg, #0B1220 0%, #050505 70%)" }}>
-            <div className="absolute -top-40 -right-40 w-[480px] h-[480px] rounded-full"
+            <div aria-hidden className="absolute -top-40 -right-40 w-[480px] h-[480px] rounded-full pointer-events-none"
                  style={{ background: "radial-gradient(circle, rgba(200,169,107,0.22), transparent 70%)" }} />
             <div className="relative p-10 md:p-20 grid md:grid-cols-[1.4fr_1fr] gap-10 items-center">
               <div>
