@@ -387,7 +387,13 @@ const AppContent = () => {
   const { language } = useTranslation();
   const isAdminRoute = ['/admin', '/admin-dashboard', '/settings', '/admin/ai-performance', '/admin/listing-review', '/admin/deal-command', '/immersive-viewer'].includes(location.pathname) || location.pathname.startsWith('/admin/');
   // Luxe shell owns its own header/footer/dock — skip the legacy app chrome on these routes
-  const isLuxeRoute = location.pathname === '/' || location.pathname === '/luxe';
+  const path = location.pathname;
+  const isLuxeRoute =
+    path === '/' ||
+    path === '/luxe' ||
+    path === '/properties' ||
+    path.startsWith('/properties/') ||
+    path.startsWith('/property/');
   const hideAppShell = isAdminRoute || isLuxeRoute;
   const { isMobile } = useIsMobile();
   const { isAdmin } = useAdminCheck();
