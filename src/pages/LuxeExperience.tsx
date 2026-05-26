@@ -754,9 +754,10 @@ export default function LuxeExperience() {
               <SectionHead eyebrow="The Collection" title={<>Hand-picked villas, <em className="not-italic text-luxe-gold">cinematically</em> rendered.</>} />
             </Reveal>
             <Reveal delay={0.15}>
-              <a href="#" className="hidden md:inline-flex items-center gap-1.5 text-[12px] text-luxe-fg/70 hover:text-luxe-gold transition-colors">
-                View all 142 villas <ChevronRight className="w-4 h-4" />
-              </a>
+              <Link to="/properties" className="hidden md:inline-flex items-center gap-1.5 text-[12px] text-luxe-fg/70 hover:text-luxe-gold transition-colors">
+                View all villas <ChevronRight className="w-4 h-4" />
+              </Link>
+
             </Reveal>
           </div>
 
