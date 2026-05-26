@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { motion, useScroll, useTransform, useInView, useMotionValue, useSpring, type Variants } from "framer-motion";
@@ -66,25 +66,36 @@ function AtmosDivider({ tone = "gold" }: { tone?: "gold" | "emerald" | "cool" })
 function CountUp({ value, duration = 1.6 }: { value: string; duration?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
-  const match = value.match(/-?\d+(\.\d+)?/);
-  const [display, setDisplay] = useState(match ? value.replace(match[0], "0") : value);
+  const matchStr = useMemo(() => value.match(/-?\d+(\.\d+)?/)?.[0] ?? null, [value]);
+  const hasDecimal = matchStr?.includes(".") ?? false;
+  const [display, setDisplay] = useState(matchStr ? value.replace(matchStr, "0") : value);
+  const doneRef = useRef(false);
 
   useEffect(() => {
-    if (!inView || !match) return;
-    const target = parseFloat(match[0]);
+    if (!inView || !matchStr || doneRef.current) {
+      if (!matchStr) setDisplay(value);
+      return;
+    }
+    const target = parseFloat(matchStr);
     const start = performance.now();
     let raf = 0;
     const tick = (t: number) => {
       const p = Math.min(1, (t - start) / (duration * 1000));
       const eased = 1 - Math.pow(1 - p, 3);
-      const cur = (target * eased);
-      const text = match[0].includes(".") ? cur.toFixed(1) : Math.round(cur).toString();
-      setDisplay(value.replace(match[0], text));
-      if (p < 1) raf = requestAnimationFrame(tick);
+      const cur = target * eased;
+      const text = hasDecimal ? cur.toFixed(1) : Math.round(cur).toString();
+      setDisplay(value.replace(matchStr, text));
+      if (p < 1) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        // Snap to final exact value
+        setDisplay(value);
+        doneRef.current = true;
+      }
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [inView, value, duration, match]);
+  }, [inView, value, duration, matchStr, hasDecimal]);
 
   return <span ref={ref}>{display}</span>;
 }
