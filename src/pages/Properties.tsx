@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
@@ -72,28 +72,43 @@ const SORT_OPTIONS = [
   { id: "score",     label: "AI Score" },
 ] as const;
 
+/** Path-based preset filters (legacy URLs kept intact, but routed to luxe Properties) */
+const PATH_PRESETS: Record<string, { listingType?: string; collection?: string; heading?: string }> = {
+  "/dijual":        { listingType: "sale", heading: "Villas Dijual" },
+  "/buy":           { listingType: "sale", heading: "Properties for Sale" },
+  "/disewa":        { listingType: "rent", heading: "Villas Disewa" },
+  "/rent":          { listingType: "rent", heading: "Properties for Rent" },
+  "/sewa":          { listingType: "rent", heading: "Properties for Rent" },
+  "/pre-launching": { collection: "pre-launch", heading: "Pre-Launch Collection" },
+  "/pre-launch":    { collection: "pre-launch", heading: "Pre-Launch Collection" },
+  "/new-projects":  { collection: "new-projects", heading: "New Projects" },
+};
+
 export default function Properties() {
+  const { pathname } = useLocation();
+  const preset = PATH_PRESETS[pathname] ?? {};
   const [params, setParams] = useSearchParams();
 
   const q          = params.get("q") || params.get("query") || "";
   const location   = params.get("location") || "";
   const tag        = params.get("tag") || "";
-  const collection = params.get("collection") || "";
+  const collection = params.get("collection") || preset.collection || "";
   const intent     = params.get("intent") || "";
   const type       = (params.get("type") || "all").toLowerCase();
   const sort       = (params.get("sort") || "newest").toLowerCase();
   const guests     = params.get("guests") || "";
   const when       = params.get("when") || "";
+  const listingType = (params.get("listing_type") || preset.listingType || "").toLowerCase();
 
   const [filterOpen, setFilterOpen] = useState(false);
 
   // Scroll to top on filter change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [q, location, tag, collection, intent, type, sort]);
+  }, [q, location, tag, collection, intent, type, sort, listingType, pathname]);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["luxe-properties", { q, location, tag, collection, intent, type, sort }],
+    queryKey: ["luxe-properties", { q, location, tag, collection, intent, type, sort, listingType }],
     queryFn: async (): Promise<Listing[]> => {
       let query = supabase
         .from("properties")
@@ -106,6 +121,7 @@ export default function Properties() {
         query = query.or(`city.ilike.%${location}%,area.ilike.%${location}%,location.ilike.%${location}%`);
       }
       if (type !== "all") query = query.eq("property_type", type);
+      if (listingType) query = query.eq("listing_type", listingType);
 
       switch (sort) {
         case "price-asc":  query = query.order("price", { ascending: true,  nullsFirst: false } as any); break;
@@ -125,13 +141,14 @@ export default function Properties() {
   const collectionTitle = collection ? (COLLECTION_LABELS[collection] || collection) : null;
 
   const heading = useMemo(() => {
+    if (preset.heading)  return preset.heading;
     if (collectionTitle) return collectionTitle;
     if (tag)             return `${tag[0].toUpperCase()}${tag.slice(1)} Villas`;
     if (intent === "investment") return "Investment Villas";
     if (q)               return `Results for “${q}”`;
     if (location)        return `Villas in ${location}`;
     return "All Villas";
-  }, [collectionTitle, tag, intent, q, location]);
+  }, [preset.heading, collectionTitle, tag, intent, q, location]);
 
   const subheading = useMemo(() => {
     const parts: string[] = [];

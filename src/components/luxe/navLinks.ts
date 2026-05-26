@@ -3,13 +3,32 @@ export type LuxeNavLink = { label: string; to: string; match?: string; mega?: Lu
 
 export const LUXE_NAV_LINKS: LuxeNavLink[] = [
   {
-    label: "Villas", to: "/properties", match: "/properties",
+    label: "Properties", to: "/properties", match: "/properties",
     mega: [
-      { label: "Luxury Collection",   to: "/properties?collection=luxury",    desc: "Editor-curated icons" },
-      { label: "Beachfront Villas",   to: "/properties?tag=beachfront",       desc: "Ocean cliffs & sand" },
-      { label: "Jungle Sanctuaries",  to: "/properties?tag=jungle",           desc: "Ubud, Sayan, Tabanan" },
-      { label: "Family Villas",       to: "/properties?tag=family",           desc: "4+ bedrooms, secure" },
-      { label: "Investment Villas",   to: "/properties?intent=investment",    desc: "ROI-ranked picks" },
+      { label: "All Villas",       to: "/properties",           desc: "Every active listing" },
+      { label: "For Sale (Dijual)",to: "/dijual",               desc: "Ownership opportunities" },
+      { label: "For Rent (Disewa)",to: "/disewa",               desc: "Short & long-term stays" },
+      { label: "Buy",              to: "/buy",                  desc: "International buyers" },
+      { label: "New Projects",     to: "/new-projects",         desc: "Just-launched developments" },
+      { label: "Pre-Launch",       to: "/pre-launching",        desc: "Early-access pricing" },
+    ],
+  },
+  {
+    label: "Locations", to: "/location", match: "/location",
+    mega: [
+      { label: "Bali",          to: "/properties?location=Bali",      desc: "Uluwatu, Ubud, Canggu" },
+      { label: "Jakarta",       to: "/properties?location=Jakarta",   desc: "Capital metropolitan" },
+      { label: "Lombok",        to: "/properties?location=Lombok",    desc: "Emerging coastline" },
+      { label: "Destination Map", to: "/location",                    desc: "Interactive explorer" },
+    ],
+  },
+  {
+    label: "Experiences", to: "/properties?tag=experiences", match: "/experiences",
+    mega: [
+      { label: "Beachfront",     to: "/properties?tag=beachfront",  desc: "Ocean cliffs & sand" },
+      { label: "Jungle Retreat", to: "/properties?tag=jungle",      desc: "Ubud, Sayan, Tabanan" },
+      { label: "Wellness",       to: "/properties?tag=wellness",    desc: "Spa & yoga sanctuaries" },
+      { label: "Family Villas",  to: "/properties?tag=family",      desc: "4+ bedrooms, secure" },
     ],
   },
   {
@@ -21,8 +40,13 @@ export const LUXE_NAV_LINKS: LuxeNavLink[] = [
       { label: "Price Estimator",     to: "/ai-pricing",          desc: "AI valuation & forecast" },
     ],
   },
-  { label: "Virtual Tours", to: "/vr-tour",        match: "/vr-tour" },
-  { label: "AI Concierge",  to: "/wealth-advisor", match: "/wealth-advisor" },
+  {
+    label: "Technology", to: "/vr-tour", match: "/vr-tour",
+    mega: [
+      { label: "Virtual Tours", to: "/vr-tour",        desc: "3D immersive showcases" },
+      { label: "AI Concierge",  to: "/wealth-advisor", desc: "Personal property AI" },
+    ],
+  },
 ];
 
 /** Nav links shown only when the user is authenticated. */
