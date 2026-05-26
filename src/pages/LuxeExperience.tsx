@@ -151,12 +151,16 @@ type FeaturedVilla = {
   price: string;
   rating: number;
   tag: string;
+  investmentScore?: number | null;
+  demandScore?: number | null;
+  roi?: number | null;
+  yieldPct?: number | null;
 };
 
 const FEATURED_FALLBACK: FeaturedVilla[] = [
-  { img: villa3, name: "Villa Anantara",  area: "Uluwatu · Beachfront",   price: "$2,850", rating: 4.98, tag: "Editor's Pick" },
-  { img: villa1, name: "Cliff House No. 9", area: "Bingin · Ocean Cliff", price: "$3,420", rating: 4.96, tag: "New" },
-  { img: villa2, name: "Pavilion Ubud",   area: "Ubud · Jungle Retreat",  price: "$1,980", rating: 4.94, tag: "Concierge" },
+  { img: villa3, name: "Villa Anantara",  area: "Uluwatu · Beachfront",   price: "$2,850", rating: 4.98, tag: "Editor's Pick", investmentScore: 92, demandScore: 88, roi: 9.4, yieldPct: 7.8 },
+  { img: villa1, name: "Cliff House No. 9", area: "Bingin · Ocean Cliff", price: "$3,420", rating: 4.96, tag: "New",           investmentScore: 89, demandScore: 94, roi: 10.2, yieldPct: 8.1 },
+  { img: villa2, name: "Pavilion Ubud",   area: "Ubud · Jungle Retreat",  price: "$1,980", rating: 4.94, tag: "Concierge",     investmentScore: 86, demandScore: 81, roi: 8.7, yieldPct: 7.2 },
 ];
 
 function formatPrice(n: number | null | undefined): string {
@@ -166,17 +170,18 @@ function formatPrice(n: number | null | undefined): string {
   return `Rp ${n.toLocaleString("id-ID")}`;
 }
 
-function useFeaturedVillas(): FeaturedVilla[] {
-  const { data } = useQuery({
-    queryKey: ["luxe-featured-villas"],
+function useFeaturedVillas(): { villas: FeaturedVilla[]; isLoading: boolean; isFallback: boolean } {
+  const { data, isLoading } = useQuery({
+    queryKey: ["luxe-featured-villas-v2"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("properties")
-        .select("id,title,location,price,images,property_type")
+        .select("id,title,location,city,area,price,price_idr,images,image_urls,cover_image,investment_score,demand_heat_score,roi_percentage,rental_yield_percentage,is_featured,featured")
         .eq("status", "active")
-        .not("images", "is", null)
+        .order("is_featured", { ascending: false, nullsFirst: false } as any)
+        .order("investment_score", { ascending: false, nullsFirst: false } as any)
         .order("created_at", { ascending: false })
-        .limit(3);
+        .limit(6);
       if (error) throw error;
       return data ?? [];
     },
@@ -184,18 +189,61 @@ function useFeaturedVillas(): FeaturedVilla[] {
     retry: 0,
   });
 
-  if (!data || data.length === 0) return FEATURED_FALLBACK;
-  const tags = ["Editor's Pick", "New", "Concierge"];
+  if (isLoading) return { villas: [], isLoading: true, isFallback: false };
+  if (!data || data.length === 0) return { villas: FEATURED_FALLBACK, isLoading: false, isFallback: true };
+
+  const tags = ["Editor's Pick", "Trending", "Concierge", "Investor's Choice", "New", "Rare Find"];
   const fallbackImgs = [villa3, villa1, villa2];
-  return data.map((p: any, i: number) => ({
-    id: p.id,
-    img: (Array.isArray(p.images) && p.images[0]) || fallbackImgs[i % 3],
-    name: p.title ?? "Untitled Villa",
-    area: p.location ?? "Bali",
-    price: formatPrice(Number(p.price)),
-    rating: 4.94,
-    tag: tags[i % tags.length],
-  }));
+  const villas = data.map((p: any, i: number): FeaturedVilla => {
+    const img =
+      p.cover_image ||
+      (Array.isArray(p.image_urls) && p.image_urls[0]) ||
+      (Array.isArray(p.images) && p.images[0]) ||
+      fallbackImgs[i % 3];
+    const priceNum = Number(p.price_idr ?? p.price ?? 0);
+    const area = [p.area ?? p.location, p.city].filter(Boolean).join(" · ") || "Bali";
+    return {
+      id: p.id,
+      img,
+      name: p.title ?? "Untitled Villa",
+      area,
+      price: formatPrice(priceNum),
+      rating: 4.94,
+      tag: p.is_featured || p.featured ? "Editor's Pick" : tags[i % tags.length],
+      investmentScore: p.investment_score != null ? Math.round(Number(p.investment_score)) : null,
+      demandScore: p.demand_heat_score != null ? Math.round(Number(p.demand_heat_score)) : null,
+      roi: p.roi_percentage != null ? Number(p.roi_percentage) : null,
+      yieldPct: p.rental_yield_percentage != null ? Number(p.rental_yield_percentage) : null,
+    };
+  });
+  return { villas, isLoading: false, isFallback: false };
+}
+
+/* Luxury shimmer skeleton for villa cards */
+function VillaSkeleton() {
+  return (
+    <div className="rounded-3xl border border-luxe bg-[#0a0a0a] overflow-hidden">
+      <div className="aspect-[4/5] luxe-shimmer" />
+      <div className="p-4 space-y-2">
+        <div className="h-4 w-2/3 luxe-shimmer rounded" />
+        <div className="h-3 w-1/2 luxe-shimmer rounded" />
+      </div>
+    </div>
+  );
+}
+
+/* Compact AI score chip used inside villa cards */
+function ScoreChip({ label, value, tone = "gold" }: { label: string; value: string; tone?: "gold" | "ember" | "emerald" }) {
+  const color =
+    tone === "ember"   ? "text-[#ffb27a] border-[#ffb27a]/30"
+    : tone === "emerald" ? "text-[#7be0b3] border-[#7be0b3]/30"
+    : "text-luxe-gold border-[color:var(--luxe-gold)]/35";
+  return (
+    <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] tracking-wider uppercase luxe-glass-card border", color)}>
+      <span className="opacity-70">{label}</span>
+      <span className="font-medium">{value}</span>
+    </span>
+  );
 }
 
 const AI_CARDS = [
@@ -244,7 +292,7 @@ export default function LuxeExperience() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { user } = useAuth();
-  const FEATURED = useFeaturedVillas();
+  const { villas: FEATURED, isLoading: featuredLoading, isFallback: featuredFallback } = useFeaturedVillas();
   const profileHref = user ? "/profile" : "/auth";
   const heroRef = useRef<HTMLDivElement>(null);
   const spotRef = useRef<HTMLDivElement>(null);
@@ -374,6 +422,11 @@ export default function LuxeExperience() {
         @keyframes luxeBloomB { 0%,100% { transform: translate3d(0,0,0) scale(1); opacity:.3 } 50% { transform: translate3d(-1%,2%,0) scale(1.05); opacity:.45 } }
         @keyframes luxeKenBurns { 0% { transform: scale(1.03) translate3d(0,0,0) } 100% { transform: scale(1.07) translate3d(-0.8%,-0.6%,0) } }
         @keyframes luxeShimmer { 0% { background-position: -200% 0 } 100% { background-position: 200% 0 } }
+        .luxe-shimmer {
+          background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(200,169,107,0.08) 50%, rgba(255,255,255,0.02) 100%);
+          background-size: 200% 100%;
+          animation: luxeShimmer 1.8s ease-in-out infinite;
+        }
         @keyframes luxeCue { 0%,100% { transform: translateY(0); opacity:.5 } 50% { transform: translateY(6px); opacity:1 } }
         @keyframes luxeSpark { 0% { opacity:0; transform: translateY(0) } 10% { opacity:.5 } 100% { opacity:0; transform: translateY(-80px) } }
         .luxe-bloom-a { animation: luxeBloomA 22s ease-in-out infinite; }
@@ -773,19 +826,38 @@ export default function LuxeExperience() {
         <div className="mx-auto max-w-[1440px] px-5 md:px-10">
           <div className="flex items-end justify-between gap-6 mb-14">
             <Reveal>
-              <SectionHead eyebrow="The Collection" title={<>Hand-picked villas, <em className="not-italic text-luxe-gold">cinematically</em> rendered.</>} />
+              <SectionHead
+                eyebrow={user ? "Curated for you" : "The Collection"}
+                title={user
+                  ? <>Villas matched to your <em className="not-italic text-luxe-gold">taste signal</em>.</>
+                  : <>Hand-picked villas, <em className="not-italic text-luxe-gold">cinematically</em> rendered.</>}
+              />
             </Reveal>
             <Reveal delay={0.15}>
               <Link to="/properties" className="hidden md:inline-flex items-center gap-1.5 text-[12px] text-luxe-fg/70 hover:text-luxe-gold transition-colors">
                 View all villas <ChevronRight className="w-4 h-4" />
               </Link>
-
             </Reveal>
           </div>
 
+          {featuredFallback && (
+            <Reveal>
+              <div className="mb-6 inline-flex items-center gap-2 px-3 py-1.5 rounded-full luxe-glass-card text-[10px] tracking-wider uppercase text-luxe-mut">
+                <span className="w-1.5 h-1.5 rounded-full bg-luxe-gold animate-pulse" />
+                Showing concierge preview — live inventory syncing
+              </div>
+            </Reveal>
+          )}
+
+
           {/* Mobile: horizontal snap rail. Desktop: 3-col tilt grid */}
           <div className="luxe-snap-x -mx-5 px-5 md:mx-0 md:px-0 flex md:grid md:grid-cols-3 gap-5 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none [perspective:1400px] pb-2 md:pb-0">
-            {FEATURED.map((v, i) => {
+            {featuredLoading && Array.from({ length: 6 }).map((_, i) => (
+              <div key={`sk-${i}`} className="snap-center shrink-0 w-[82%] sm:w-[60%] md:w-auto">
+                <VillaSkeleton />
+              </div>
+            ))}
+            {!featuredLoading && FEATURED.map((v, i) => {
               const detailHref = v.id ? `/properties/${v.id}` : "/properties";
               return (
               <Reveal key={v.id ?? v.name} delay={i * 0.12} as="article"
@@ -800,9 +872,13 @@ export default function LuxeExperience() {
                   <div aria-hidden className="pointer-events-none absolute -inset-x-1/4 -top-1/2 h-full rotate-12 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
                        style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)" }} />
 
-                  <div className="absolute top-4 left-4 flex items-center gap-2 z-20">
+                  <div className="absolute top-4 left-4 right-16 flex flex-wrap items-center gap-1.5 z-20">
                     <span className="px-2.5 py-1 rounded-full text-[10px] tracking-wider uppercase luxe-glass-card text-luxe-gold">{v.tag}</span>
+                    {v.investmentScore != null && <ScoreChip label="AI" value={`${v.investmentScore}`} tone="gold" />}
+                    {v.demandScore != null && v.demandScore >= 70 && <ScoreChip label="Heat" value={`${v.demandScore}`} tone="ember" />}
+                    {v.roi != null && v.roi > 0 && <ScoreChip label="ROI" value={`${v.roi.toFixed(1)}%`} tone="emerald" />}
                   </div>
+
                   <div className="absolute top-4 right-4 z-20">
                     <Link to="/favorites" onClick={(e) => e.stopPropagation()} className="w-11 h-11 md:w-9 md:h-9 grid place-items-center rounded-full luxe-glass-card hover:text-luxe-gold hover:scale-110 transition-all duration-300" aria-label="Save">
                       <Heart className="w-4 h-4" />
