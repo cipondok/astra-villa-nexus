@@ -487,37 +487,38 @@ export default function LuxeExperience() {
               scrolled && "shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)]"
             )}
           >
-            <a href="/" className="flex items-center gap-2.5">
+            <Link to="/" className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-full grid place-items-center"
                    style={{ background: "linear-gradient(135deg,#C8A96B,#8C6B2F)" }}>
                 <span className="font-serif-l text-[15px] text-black">A</span>
               </div>
               <span className="font-serif-l text-[17px] tracking-wide">Astra<span className="text-luxe-gold"> Villa</span></span>
-            </a>
+            </Link>
 
             <div className="hidden lg:flex items-center gap-8 text-[13px] text-luxe-fg/80">
-              {["Villas", "Collections", "Investor OS", "Concierge", "Journal"].map(i => (
-                <a key={i} className="hover:text-luxe-gold transition-colors" href="#">{i}</a>
+              {NAV_LINKS.map(link => (
+                <Link key={link.to} to={link.to} className="hover:text-luxe-gold transition-colors">{link.label}</Link>
               ))}
             </div>
 
             <div className="flex items-center gap-1.5 md:gap-2">
-              <button className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-full bg-luxe-glass border border-luxe text-[12px] hover:border-[color:var(--luxe-gold)] transition-colors">
+              <Link to="/wealth-advisor" className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-full bg-luxe-glass border border-luxe text-[12px] hover:border-[color:var(--luxe-gold)] transition-colors">
                 <Sparkles className="w-3.5 h-3.5 text-luxe-gold" /> AI Concierge
-              </button>
-              <button className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Language">
+              </Link>
+              <Link to="/settings" className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Language">
                 <Languages className="w-4 h-4" />
-              </button>
-              <button className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Theme">
+              </Link>
+              <Link to="/settings" className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Theme">
                 <Moon className="w-4 h-4" />
-              </button>
-              <button className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Wishlist">
+              </Link>
+              <Link to="/favorites" className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Wishlist">
                 <Heart className="w-4 h-4" />
-              </button>
-              <button className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Profile">
+              </Link>
+              <Link to={profileHref} className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Profile">
                 <User2 className="w-4 h-4" />
-              </button>
+              </Link>
             </div>
+
           </nav>
         </div>
       </header>
