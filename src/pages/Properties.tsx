@@ -112,7 +112,7 @@ export default function Properties() {
     queryFn: async (): Promise<Listing[]> => {
       let query = supabase
         .from("properties")
-        .select("id,title,city,area,location,price,price_idr,property_type,listing_type,bedrooms,bathrooms,area_sqm,images,image_urls,cover_image,investment_score,roi_percentage,rental_yield_percentage,is_featured,status")
+        .select("id,title,city,area,location,price,price_idr,property_type,listing_type,bedrooms,bathrooms,area_sqm,images,image_urls,cover_image,investment_score,roi_percentage,rental_yield_percentage,is_featured,status,development_status")
         .eq("status", "active")
         .limit(60);
 
@@ -122,6 +122,15 @@ export default function Properties() {
       }
       if (type !== "all") query = query.eq("property_type", type);
       if (listingType) query = query.eq("listing_type", listingType);
+
+      // Map URL collection -> DB development_status
+      const COLLECTION_TO_DEV: Record<string, string[]> = {
+        "pre-launch":   ["pre_launch", "pre-launch", "prelaunch"],
+        "new-projects": ["new_project", "new-projects", "new_projects"],
+      };
+      const devStatuses = collection ? COLLECTION_TO_DEV[collection] : null;
+      if (devStatuses?.length) query = query.in("development_status", devStatuses);
+
 
       switch (sort) {
         case "price-asc":  query = query.order("price", { ascending: true,  nullsFirst: false } as any); break;
