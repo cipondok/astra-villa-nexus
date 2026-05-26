@@ -821,8 +821,9 @@ export default function LuxeExperience() {
       {/* ============== HERO ============== */}
       <section ref={heroRef} className="relative min-h-[100svh] overflow-hidden luxe-grain">
         <motion.div
+          aria-hidden
           style={{ y: heroY, scale: heroScale, opacity: heroOpacity }}
-          className="absolute inset-0 will-change-transform"
+          className="absolute inset-0 will-change-transform pointer-events-none"
         >
           <img
             src={heroImg}
@@ -836,7 +837,7 @@ export default function LuxeExperience() {
 
         {/* Ambient bloom layer — single soft glow on high-tier only */}
         {tier === "high" && !isMobile && (
-          <div className="absolute inset-0 pointer-events-none luxe-bloom-a"
+          <div aria-hidden className="absolute inset-0 pointer-events-none luxe-bloom-a"
             style={{ background: "radial-gradient(40% 30% at 78% 22%, rgba(231,206,150,0.22), transparent 70%)" }} />
         )}
 
@@ -844,6 +845,7 @@ export default function LuxeExperience() {
         {!isMobile && tier === "high" && (
           <div
             ref={spotRef}
+            aria-hidden
             className="absolute inset-0 pointer-events-none"
             style={{
               ['--sx' as any]: '50%',
@@ -854,11 +856,11 @@ export default function LuxeExperience() {
         )}
 
         {/* Cinematic overlays */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/20 to-[#050505]" />
-        <div className="absolute inset-0" style={{
+        <div aria-hidden className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/55 via-black/20 to-[#050505]" />
+        <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
           background: "radial-gradient(60% 50% at 50% 90%, rgba(5,5,5,0.85), transparent 70%)"
         }} />
-        <div className="absolute inset-0" style={{
+        <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
           background: "linear-gradient(180deg, rgba(11,18,32,0.35) 0%, transparent 30%, transparent 60%, rgba(5,5,5,0.6) 100%)"
         }} />
 
@@ -1245,7 +1247,7 @@ export default function LuxeExperience() {
           <Reveal delay={0.15}>
             <div className="relative [perspective:1400px]">
               <TiltCard className="luxe-glass-card rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-[0_50px_120px_-40px_rgba(0,0,0,0.8)] will-change-transform">
-                <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full luxe-bloom-a"
+                <div aria-hidden className="absolute -top-32 -right-32 w-80 h-80 rounded-full luxe-bloom-a pointer-events-none"
                      style={{ background: "radial-gradient(circle, rgba(200,169,107,0.28), transparent 70%)" }} />
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-2">
@@ -1336,7 +1338,7 @@ export default function LuxeExperience() {
         <div className="mx-auto max-w-[1240px] px-5 md:px-10">
           <div className="relative overflow-hidden rounded-[32px] border border-luxe luxe-grain"
                style={{ background: "linear-gradient(135deg, #0B1220 0%, #050505 70%)" }}>
-            <div className="absolute -top-40 -right-40 w-[480px] h-[480px] rounded-full"
+            <div aria-hidden className="absolute -top-40 -right-40 w-[480px] h-[480px] rounded-full pointer-events-none"
                  style={{ background: "radial-gradient(circle, rgba(200,169,107,0.22), transparent 70%)" }} />
             <div className="relative p-10 md:p-20 grid md:grid-cols-[1.4fr_1fr] gap-10 items-center">
               <div>
