@@ -398,7 +398,6 @@ export default function LuxeExperience() {
   }, []);
 
 
-  }, []);
 
   // Preload the hero LCP image at high priority
   useEffect(() => {
