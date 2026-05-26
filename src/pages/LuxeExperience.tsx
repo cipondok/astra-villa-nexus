@@ -151,14 +151,13 @@ const NAV_LINKS: NavLink[] = [
     label: "Investment", to: "/investment", match: "/investment",
     mega: [
       { label: "ROI Insights",        to: "/investment",                       desc: "Yield, occupancy, IRR" },
-      { label: "Market Trends",       to: "/market-intelligence",              desc: "Live Bali micro-market" },
+      { label: "Market Intelligence", to: "/market-intelligence",              desc: "Live Bali micro-market" },
       { label: "Investor Dashboard",  to: "/dashboard",                        desc: "Your portfolio at a glance" },
-      { label: "Price Prediction",    to: "/price-prediction",                 desc: "AI 12-month forecast" },
+      { label: "Price Estimator",     to: "/ai-pricing",                       desc: "AI valuation & forecast" },
     ],
   },
-  { label: "Virtual Tours", to: "/virtual-tour",   match: "/virtual-tour" },
-  { label: "AI Concierge",  to: "/ai-concierge",   match: "/ai-concierge" },
-  { label: "Experiences",   to: "/experiences",    match: "/experiences" },
+  { label: "Virtual Tours", to: "/vr-tour",        match: "/vr-tour" },
+  { label: "AI Concierge",  to: "/wealth-advisor", match: "/wealth-advisor" },
   { label: "Dashboard",     to: "/dashboard",      match: "/dashboard" },
   { label: "Contact",       to: "/contact",        match: "/contact" },
 ];
@@ -277,7 +276,7 @@ const OS_FEATURES = [
   { icon: Sparkles, t: "AI Property Intelligence", d: "Live signals from every listing, transaction and inquiry — synthesized into clarity.", to: "/intelligence-os" },
   { icon: Box, t: "3D Digital Twin", d: "Walk every villa before you arrive. Photoreal, frame-perfect, instant.", to: "/vr-tour" },
   { icon: LineChart, t: "Investment Analytics", d: "Yield, occupancy, micro-market — modeled, ranked, explained.", to: "/investment" },
-  { icon: TrendingUp, t: "Predictive Pricing", d: "Demand and seasonality forecasted nightly, not quarterly.", to: "/price-prediction" },
+  { icon: TrendingUp, t: "Predictive Pricing", d: "Demand and seasonality forecasted nightly, not quarterly.", to: "/ai-pricing" },
   { icon: Compass, t: "Immersive Tours", d: "Cinematic walkthroughs with narrated context and lighting moods.", to: "/vr-tour" },
   { icon: Globe2, t: "Global Investor Layer", d: "Curated cross-border deals with verified provenance and escrow.", to: "/global-deal-flow" },
 ];
