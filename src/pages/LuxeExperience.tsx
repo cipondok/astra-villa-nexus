@@ -883,7 +883,7 @@ export default function LuxeExperience() {
                     Enter collection <ArrowUpRight className="w-3.5 h-3.5" />
                   </div>
                 </div>
-              </motion.a>
+              </motion.div>
             ))}
           </div>
         </div>
