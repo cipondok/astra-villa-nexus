@@ -638,7 +638,7 @@ export default function LuxeExperience() {
       <AtmosDivider tone="gold" />
 
       {/* ============== AI FEATURES STRIP ============== */}
-      <section className="relative py-24 md:py-32">
+      <section className="relative py-24 md:py-32 luxe-cv">
         <div className="mx-auto max-w-[1440px] px-5 md:px-10">
           <Reveal>
             <SectionHead eyebrow="The Intelligence Layer" title={<>A villa platform that <em className="text-luxe-gold not-italic">thinks</em>.</>} />
@@ -668,7 +668,7 @@ export default function LuxeExperience() {
       <AtmosDivider tone="emerald" />
 
       {/* ============== FEATURED VILLAS ============== */}
-      <section className="relative py-24 md:py-32">
+      <section className="relative py-24 md:py-32 luxe-cv">
         <div className="mx-auto max-w-[1440px] px-5 md:px-10">
           <div className="flex items-end justify-between gap-6 mb-14">
             <Reveal>
@@ -740,7 +740,7 @@ export default function LuxeExperience() {
 
 
       {/* ============== PROPERTY OS ============== */}
-      <section className="relative py-28 md:py-40">
+      <section className="relative py-28 md:py-40 luxe-cv">
         <div
           className="absolute inset-0 opacity-60 pointer-events-none"
           style={{ background: "radial-gradient(60% 50% at 50% 30%, rgba(200,169,107,0.08), transparent 70%)" }}
@@ -775,7 +775,7 @@ export default function LuxeExperience() {
       </section>
 
       {/* ============== COLLECTIONS / DESTINATION ============== */}
-      <section className="relative py-24 md:py-32">
+      <section className="relative py-24 md:py-32 luxe-cv">
         <div className="mx-auto max-w-[1440px] px-5 md:px-10">
           <SectionHead eyebrow="Curated Worlds" title={<>Villa <em className="not-italic text-luxe-gold">collections</em>, shaped by intent.</>} />
 
@@ -804,7 +804,7 @@ export default function LuxeExperience() {
       <AtmosDivider tone="cool" />
 
       {/* ============== CONCIERGE / INVESTOR DASHBOARD PREVIEW ============== */}
-      <section className="relative py-28 md:py-40">
+      <section className="relative py-28 md:py-40 luxe-cv">
         <div className="mx-auto max-w-[1440px] px-5 md:px-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <Reveal>
             <div>
@@ -913,7 +913,7 @@ export default function LuxeExperience() {
 
 
       {/* ============== TESTIMONIAL ============== */}
-      <section className="relative py-28 md:py-40">
+      <section className="relative py-28 md:py-40 luxe-cv">
         <div className="mx-auto max-w-4xl px-5 md:px-10 text-center">
           <span className="luxe-eyebrow">Whispered Praise</span>
           <blockquote className="font-serif-l text-[28px] md:text-[44px] leading-[1.15] mt-8 tracking-tight">
@@ -928,7 +928,7 @@ export default function LuxeExperience() {
       </section>
 
       {/* ============== CTA ============== */}
-      <section className="relative py-28 md:py-36">
+      <section className="relative py-28 md:py-36 luxe-cv">
         <div className="mx-auto max-w-[1240px] px-5 md:px-10">
           <div className="relative overflow-hidden rounded-[32px] border border-luxe luxe-grain"
                style={{ background: "linear-gradient(135deg, #0B1220 0%, #050505 70%)" }}>
