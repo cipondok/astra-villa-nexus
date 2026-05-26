@@ -1,6 +1,6 @@
 import { useState, type ComponentType, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, MapPin, Home, Tag } from "lucide-react";
+import { Search, MapPin, Home, Tag, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface LuxeSearchBarProps {
@@ -80,7 +80,12 @@ export function LuxeSearchBar({
 }
 
 function Divider() {
-  return <span aria-hidden className="hidden md:block w-px self-stretch my-2 bg-[color:var(--luxe-line)]" />;
+  return (
+    <span
+      aria-hidden
+      className="hidden md:block w-px self-stretch my-3 bg-gradient-to-b from-transparent via-[color:var(--luxe-gold)]/35 to-transparent"
+    />
+  );
 }
 
 function Field({
@@ -94,10 +99,19 @@ function Field({
   placeholder?: string;
 }) {
   return (
-    <label className="flex-1 flex items-center gap-3 px-5 py-2.5 rounded-xl md:rounded-full hover:bg-white/5 transition-colors text-left cursor-text">
-      <Icon className="w-4 h-4 text-luxe-gold shrink-0" />
+    <label
+      className={cn(
+        "group flex-1 flex items-center gap-3 px-5 py-3 rounded-2xl md:rounded-full",
+        "transition-all duration-300 cursor-text",
+        "hover:bg-white/[0.04] focus-within:bg-white/[0.06]",
+        "focus-within:ring-1 focus-within:ring-[color:var(--luxe-gold)]/40"
+      )}
+    >
+      <span className="grid place-items-center w-8 h-8 rounded-full bg-[color:var(--luxe-gold)]/10 text-luxe-gold shrink-0 group-focus-within:bg-[color:var(--luxe-gold)]/20 transition-colors">
+        <Icon className="w-3.5 h-3.5" />
+      </span>
       <div className="min-w-0 flex-1">
-        <div className="text-[10px] uppercase tracking-[0.2em] text-luxe-mut">{label}</div>
+        <div className="text-[9px] uppercase tracking-[0.28em] text-luxe-mut/80 font-medium">{label}</div>
         <input
           type="text"
           value={value}
@@ -109,7 +123,7 @@ function Field({
               onSubmit?.();
             }
           }}
-          className="w-full bg-transparent border-0 outline-none text-[13px] text-luxe-fg placeholder:text-luxe-mut/70 p-0 focus:ring-0"
+          className="w-full bg-transparent border-0 outline-none text-[14px] text-luxe-fg placeholder:text-luxe-mut/55 p-0 mt-0.5 focus:ring-0"
         />
       </div>
     </label>
@@ -125,15 +139,30 @@ function SelectField({
   onChange: (v: string) => void;
   options: { value: string; label: string }[];
 }) {
+  const current = options.find((o) => o.value === value)?.label ?? "";
   return (
-    <label className="flex-1 flex items-center gap-3 px-5 py-2.5 rounded-xl md:rounded-full hover:bg-white/5 transition-colors text-left cursor-pointer">
-      <Icon className="w-4 h-4 text-luxe-gold shrink-0" />
+    <label
+      className={cn(
+        "group relative flex-1 flex items-center gap-3 px-5 py-3 rounded-2xl md:rounded-full",
+        "transition-all duration-300 cursor-pointer",
+        "hover:bg-white/[0.04] focus-within:bg-white/[0.06]",
+        "focus-within:ring-1 focus-within:ring-[color:var(--luxe-gold)]/40"
+      )}
+    >
+      <span className="grid place-items-center w-8 h-8 rounded-full bg-[color:var(--luxe-gold)]/10 text-luxe-gold shrink-0 group-focus-within:bg-[color:var(--luxe-gold)]/20 transition-colors">
+        <Icon className="w-3.5 h-3.5" />
+      </span>
       <div className="min-w-0 flex-1">
-        <div className="text-[10px] uppercase tracking-[0.2em] text-luxe-mut">{label}</div>
+        <div className="text-[9px] uppercase tracking-[0.28em] text-luxe-mut/80 font-medium">{label}</div>
+        <div className="mt-0.5 flex items-center justify-between gap-2">
+          <span className="text-[14px] text-luxe-fg truncate">{current}</span>
+          <ChevronDown className="w-3.5 h-3.5 text-luxe-mut group-hover:text-luxe-gold transition-colors shrink-0" />
+        </div>
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full bg-transparent border-0 outline-none text-[13px] text-luxe-fg p-0 focus:ring-0 appearance-none cursor-pointer"
+          aria-label={label}
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
         >
           {options.map((o) => (
             <option key={o.value} value={o.value} className="bg-[#0b0b0d] text-luxe-fg">
@@ -145,3 +174,4 @@ function SelectField({
     </label>
   );
 }
+
