@@ -1,6 +1,6 @@
 import { useState, type ComponentType, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, MapPin, Home, Tag } from "lucide-react";
+import { Search, MapPin, Home, Tag, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface LuxeSearchBarProps {
