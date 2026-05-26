@@ -23,6 +23,9 @@ export const LUXE_NAV_LINKS: LuxeNavLink[] = [
   },
   { label: "Virtual Tours", to: "/vr-tour",        match: "/vr-tour" },
   { label: "AI Concierge",  to: "/wealth-advisor", match: "/wealth-advisor" },
-  { label: "Dashboard",     to: "/dashboard",      match: "/dashboard" },
-  { label: "Contact",       to: "/contact",        match: "/contact" },
+];
+
+/** Nav links shown only when the user is authenticated. */
+export const LUXE_NAV_LINKS_AUTH: LuxeNavLink[] = [
+  { label: "Dashboard", to: "/dashboard", match: "/dashboard" },
 ];
