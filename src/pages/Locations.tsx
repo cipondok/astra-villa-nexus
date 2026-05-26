@@ -127,10 +127,10 @@ export default function Locations() {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <LuxeButton as={Link} to="/properties" variant="gold">
+              <LuxeButton to="/properties" variant="gold">
                 Explore all properties
               </LuxeButton>
-              <LuxeButton as={Link} to="/location-map" variant="glass">
+              <LuxeButton to="/location-map" variant="outline">
                 Open interactive map
               </LuxeButton>
             </div>
@@ -175,7 +175,7 @@ export default function Locations() {
         <CinematicMap />
 
         <div className="mt-8 text-center">
-          <LuxeButton as={Link} to="/location-map" variant="gold">
+          <LuxeButton to="/location-map" variant="gold">
             Launch full interactive map
           </LuxeButton>
         </div>
