@@ -604,21 +604,23 @@ export default function LuxeExperience() {
               scrolled ? "py-2 md:py-2.5 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] bg-[rgba(8,8,10,0.72)]" : "py-2.5 md:py-3"
             )}
           >
-            {/* === Logo — hairline gold ring + monogram === */}
+            {/* === Logo — brand mark === */}
             <Link to="/" aria-label="ASTRA Villa — home" className="flex items-center gap-2.5 shrink-0 group">
               <span
                 aria-hidden
-                className="relative w-9 h-9 rounded-full grid place-items-center transition-transform duration-500 group-hover:scale-[1.04]"
+                className="relative w-9 h-9 rounded-full grid place-items-center overflow-hidden transition-transform duration-500 group-hover:scale-[1.04]"
                 style={{
                   background: "radial-gradient(120% 120% at 30% 25%, #E7CE96 0%, #C8A96B 45%, #6F5320 100%)",
                   boxShadow: "0 6px 20px -8px rgba(200,169,107,0.55), inset 0 0 0 1px rgba(255,255,255,0.18)",
                 }}
               >
-                <span
-                  className="absolute inset-[3px] rounded-full"
-                  style={{ boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.35)" }}
+                <img
+                  src={brandLogo}
+                  alt=""
+                  className="relative w-7 h-7 object-contain"
+                  loading="eager"
+                  decoding="async"
                 />
-                <span className="relative font-serif-l text-[15px] text-[#0a0a0a] leading-none tracking-tight">A</span>
               </span>
               <span className="hidden sm:flex flex-col leading-none">
                 <span className="font-serif-l text-[17px] tracking-wide">Astra<span className="text-luxe-gold"> Villa</span></span>
