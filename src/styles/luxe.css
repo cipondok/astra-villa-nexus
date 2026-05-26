@@ -1,0 +1,232 @@
+/* ============================================================
+   ASTRA Villa — Luxe Design System (Global)
+   Cinematic dark luxury tokens, utilities & animations.
+   Promoted from the scoped .luxe-root block into the global
+   layer so every page can compose them without re-declaration.
+   ============================================================ */
+
+:root {
+  /* Surfaces */
+  --luxe-bg:        #050505;
+  --luxe-bg-2:      #07090e;
+  --luxe-bg-3:      #0B1220;
+  --luxe-surface:   #0a0a0a;
+
+  /* Brand */
+  --luxe-gold:        #C8A96B;
+  --luxe-gold-soft:   #E7CE96;
+  --luxe-gold-deep:   #8C6B2F;
+  --luxe-emerald:     #4FB286;
+  --luxe-cyan:        #7CE7FF;
+  --luxe-ember:       #FFB27A;
+
+  /* Foreground */
+  --luxe-fg:   #ECE9E0;
+  --luxe-mut:  #8A8576;
+  --luxe-line: rgba(236,233,224,0.08);
+
+  /* Glass + blur */
+  --luxe-glass:        rgba(255,255,255,0.04);
+  --luxe-glass-strong: rgba(255,255,255,0.06);
+  --luxe-blur:         blur(20px) saturate(140%);
+  --luxe-blur-mobile:  blur(12px) saturate(130%);
+
+  /* Typography */
+  --luxe-serif: 'Cormorant Garamond','Playfair Display',ui-serif,Georgia,serif;
+  --luxe-sans:  'Inter','SF Pro Display',ui-sans-serif,system-ui,sans-serif;
+  --luxe-mono:  ui-monospace,SFMono-Regular,Menlo,monospace;
+
+  /* Motion */
+  --luxe-ease:        cubic-bezier(0.22, 1, 0.36, 1);
+  --luxe-dur-fast:    220ms;
+  --luxe-dur-base:    420ms;
+  --luxe-dur-slow:    700ms;
+  --luxe-dur-cinema:  1200ms;
+
+  /* Shadows */
+  --luxe-shadow-card:  0 24px 60px -28px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.04) inset;
+  --luxe-shadow-float: 0 30px 80px -30px rgba(0,0,0,0.85);
+  --luxe-shadow-gold:  0 10px 30px -10px rgba(200,169,107,0.55);
+
+  /* Spacing rhythm — cinematic */
+  --luxe-gutter:    20px;
+  --luxe-gutter-md: 40px;
+  --luxe-section-y: 96px;
+
+  /* Radius */
+  --luxe-radius-sm: 12px;
+  --luxe-radius-md: 20px;
+  --luxe-radius-lg: 28px;
+  --luxe-radius-pill: 9999px;
+}
+
+/* ---------- Page shell ---------- */
+.luxe-root {
+  position: relative;
+  min-height: 100vh;
+  color: var(--luxe-fg);
+  font-family: var(--luxe-sans);
+  background:
+    radial-gradient(1200px 700px at 80% -10%, rgba(200,169,107,0.10), transparent 60%),
+    radial-gradient(900px 600px at -10% 30%, rgba(79,178,134,0.08), transparent 60%),
+    linear-gradient(180deg, #050505 0%, #07090e 40%, #050709 100%);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: auto;
+}
+.luxe-root [aria-hidden="true"] { pointer-events: none; }
+
+/* ---------- Foreground utilities ---------- */
+.text-luxe-fg    { color: var(--luxe-fg); }
+.text-luxe-mut   { color: var(--luxe-mut); }
+.text-luxe-gold  { color: var(--luxe-gold); }
+.bg-luxe-glass   { background: var(--luxe-glass); }
+.bg-luxe-surface { background: var(--luxe-surface); }
+.border-luxe     { border-color: var(--luxe-line); }
+.font-serif-l    { font-family: var(--luxe-serif); font-weight: 400; letter-spacing: -0.01em; }
+.font-mono-l     { font-family: var(--luxe-mono); }
+
+/* ---------- Glass card ---------- */
+.luxe-glass-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
+  border: 1px solid var(--luxe-line);
+  backdrop-filter: var(--luxe-blur);
+  -webkit-backdrop-filter: var(--luxe-blur);
+}
+.luxe-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
+  border: 1px solid var(--luxe-line);
+  border-radius: var(--luxe-radius-lg);
+  box-shadow: var(--luxe-shadow-card);
+}
+.luxe-card-glow { position: relative; }
+.luxe-card-glow::after {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(120% 80% at 50% 0%, rgba(200,169,107,0.18), transparent 60%);
+  opacity: 0; transition: opacity .6s var(--luxe-ease);
+}
+.luxe-card-glow:hover::after { opacity: 1; }
+
+/* ---------- Buttons ---------- */
+.luxe-gold-btn {
+  background: linear-gradient(180deg, #D7B97A 0%, #B6914F 100%);
+  color: #0a0a0a;
+  box-shadow: var(--luxe-shadow-gold), inset 0 1px 0 rgba(255,255,255,0.35);
+  transition: filter var(--luxe-dur-fast) var(--luxe-ease), transform var(--luxe-dur-fast) var(--luxe-ease);
+}
+.luxe-gold-btn:hover { filter: brightness(1.05); }
+.luxe-gold-btn:active { transform: scale(0.98); }
+
+.luxe-ghost-btn {
+  background: var(--luxe-glass);
+  border: 1px solid var(--luxe-line);
+  color: var(--luxe-fg);
+  transition: border-color var(--luxe-dur-fast) var(--luxe-ease), color var(--luxe-dur-fast) var(--luxe-ease);
+}
+.luxe-ghost-btn:hover {
+  border-color: var(--luxe-gold);
+  color: var(--luxe-gold);
+}
+
+/* ---------- Decorative ---------- */
+.luxe-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(200,169,107,0.45), transparent);
+}
+.luxe-eyebrow {
+  font-family: var(--luxe-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  font-size: 11px;
+  color: var(--luxe-gold);
+}
+.luxe-grain::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .06; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>");
+}
+
+/* ---------- Animations ---------- */
+@keyframes luxeFloat   { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes luxeBloomA  { 0%,100% { transform: translate3d(0,0,0) scale(1); opacity:.45 } 50% { transform: translate3d(2%,-1%,0) scale(1.04); opacity:.6 } }
+@keyframes luxeBloomB  { 0%,100% { transform: translate3d(0,0,0) scale(1); opacity:.3 }  50% { transform: translate3d(-1%,2%,0) scale(1.05); opacity:.45 } }
+@keyframes luxeKenBurns{ 0% { transform: scale(1.03) translate3d(0,0,0) } 100% { transform: scale(1.07) translate3d(-0.8%,-0.6%,0) } }
+@keyframes luxeShimmer { 0% { background-position: -200% 0 } 100% { background-position: 200% 0 } }
+@keyframes luxeMesh    { 0%,100% { transform: translate3d(0,0,0) } 50% { transform: translate3d(2%,-1.5%,0) } }
+@keyframes luxePulse   { 0%,100% { opacity:.55; transform: scale(1) } 50% { opacity:1; transform: scale(1.25) } }
+@keyframes luxeCue     { 0%,100% { transform: translateY(0); opacity:.5 } 50% { transform: translateY(6px); opacity:1 } }
+
+.luxe-float    { animation: luxeFloat 6s ease-in-out infinite; }
+.luxe-bloom-a  { animation: luxeBloomA 22s ease-in-out infinite; }
+.luxe-bloom-b  { animation: luxeBloomB 28s ease-in-out infinite; }
+.luxe-mesh-a   { animation: luxeMesh 28s ease-in-out infinite; }
+.luxe-kenburns { animation: luxeKenBurns 30s ease-in-out infinite alternate; }
+.luxe-pulse    { animation: luxePulse 2.6s ease-in-out infinite; }
+.luxe-cue      { animation: luxeCue 2.4s ease-in-out infinite; }
+.luxe-shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(200,169,107,0.08) 50%, rgba(255,255,255,0.02) 100%);
+  background-size: 200% 100%;
+  animation: luxeShimmer 1.8s ease-in-out infinite;
+}
+.luxe-gold-shimmer {
+  background: linear-gradient(90deg, #C8A96B 0%, #F2E0B2 45%, #C8A96B 60%, #B6914F 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: luxeShimmer 7s linear infinite;
+}
+
+/* ---------- Tap feedback ---------- */
+.luxe-tap { transition: transform .35s var(--luxe-ease), box-shadow .35s ease; }
+.luxe-tap:active { transform: scale(0.97); }
+
+/* ---------- Snap rails ---------- */
+.luxe-snap-x { -ms-overflow-style: none; scrollbar-width: none; }
+.luxe-snap-x::-webkit-scrollbar { display: none; }
+
+/* ---------- Mobile dock ---------- */
+.luxe-dock {
+  background: linear-gradient(180deg, rgba(10,10,10,0.72), rgba(10,10,10,0.55));
+  border: 1px solid var(--luxe-line);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  box-shadow: 0 24px 60px -20px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.luxe-dock-active {
+  background: radial-gradient(60% 100% at 50% 0%, rgba(200,169,107,0.22), transparent 70%);
+}
+
+/* ---------- Performance gates ---------- */
+.luxe-cv { content-visibility: auto; contain-intrinsic-size: 1px 800px; }
+
+/* ---------- Boot fade ---------- */
+.luxe-boot {
+  position: fixed; inset: 0; z-index: 100; pointer-events: none;
+  background: radial-gradient(60% 50% at 50% 50%, #0b0b0b 0%, #050505 100%);
+  opacity: 1; transition: opacity 900ms var(--luxe-ease);
+}
+.luxe-boot.ready { opacity: 0; }
+.luxe-boot-mark {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+  width: 64px; height: 64px; border-radius: 9999px;
+  background: linear-gradient(135deg,#C8A96B,#8C6B2F);
+  display: grid; place-items: center;
+  box-shadow: 0 20px 60px -20px rgba(200,169,107,0.6);
+  animation: luxePulse 2.6s ease-in-out infinite;
+}
+
+/* ---------- Mobile polish + perf ---------- */
+@media (max-width: 767px) {
+  .luxe-glass-card {
+    backdrop-filter: var(--luxe-blur-mobile);
+    -webkit-backdrop-filter: var(--luxe-blur-mobile);
+  }
+  .luxe-mesh-a { filter: blur(40px) !important; animation: none !important; }
+  .luxe-grain::before { display: none; }
+  .luxe-bloom-a, .luxe-bloom-b, .luxe-kenburns, .luxe-pulse { animation: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .luxe-mesh-a, .luxe-pulse, .luxe-bloom-a, .luxe-bloom-b,
+  .luxe-kenburns, .luxe-float, .luxe-cue, .luxe-shimmer { animation: none !important; }
+}
