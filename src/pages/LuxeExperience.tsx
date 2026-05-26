@@ -1051,6 +1051,7 @@ export default function LuxeExperience() {
                   label="Where"
                   value={searchWhere}
                   onChange={setSearchWhere}
+                  onSubmit={handleHeroSearch}
                   placeholder="Bali, Indonesia"
                   type="text"
                 />
@@ -1060,6 +1061,7 @@ export default function LuxeExperience() {
                   label="When"
                   value={searchWhen}
                   onChange={setSearchWhen}
+                  onSubmit={handleHeroSearch}
                   placeholder="Add dates"
                   type="date"
                 />
@@ -1069,6 +1071,7 @@ export default function LuxeExperience() {
                   label="Guests"
                   value={String(searchGuests)}
                   onChange={(v) => setSearchGuests(Math.max(1, Number(v) || 1))}
+                  onSubmit={handleHeroSearch}
                   placeholder="2"
                   type="number"
                   min={1}
@@ -1604,12 +1607,13 @@ function SearchField({ icon: Icon, label, value, to }: { icon: any; label: strin
 }
 
 function SearchInput({
-  icon: Icon, label, value, onChange, placeholder, type = "text", min,
+  icon: Icon, label, value, onChange, onSubmit, placeholder, type = "text", min,
 }: {
   icon: any;
   label: string;
   value: string;
   onChange: (v: string) => void;
+  onSubmit?: () => void;
   placeholder?: string;
   type?: "text" | "date" | "number";
   min?: number;
@@ -1625,6 +1629,12 @@ function SearchInput({
           min={min}
           placeholder={placeholder}
           onChange={(e) => onChange(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              onSubmit?.();
+            }
+          }}
           className="w-full bg-transparent border-0 outline-none text-[13px] text-luxe-fg placeholder:text-luxe-mut/70 p-0 focus:ring-0"
         />
       </div>
