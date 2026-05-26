@@ -1035,12 +1035,13 @@ export default function LuxeExperience() {
                 </p>
               </div>
               <div className="flex flex-col gap-3">
-                <button className="luxe-gold-btn rounded-full px-6 py-4 text-[13px] font-medium inline-flex items-center justify-center gap-2">
+                <Link to="/properties" className="luxe-gold-btn rounded-full px-6 py-4 text-[13px] font-medium inline-flex items-center justify-center gap-2">
                   Find My Villa <ArrowUpRight className="w-4 h-4" />
-                </button>
-                <button className="rounded-full px-6 py-4 text-[13px] font-medium bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors inline-flex items-center justify-center gap-2">
+                </Link>
+                <Link to="/wealth-advisor" className="rounded-full px-6 py-4 text-[13px] font-medium bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors inline-flex items-center justify-center gap-2">
                   <Bot className="w-4 h-4 text-luxe-gold" /> Speak to AI Concierge
-                </button>
+                </Link>
+
               </div>
             </div>
           </div>
