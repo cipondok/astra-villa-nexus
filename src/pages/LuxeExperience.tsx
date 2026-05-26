@@ -239,6 +239,10 @@ function useDeviceTier(): "low" | "mid" | "high" {
 export default function LuxeExperience() {
   const { isMobile } = useIsMobile();
   const tier = useDeviceTier();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const FEATURED = useFeaturedVillas();
+  const profileHref = user ? "/profile" : "/auth";
   const heroRef = useRef<HTMLDivElement>(null);
   const spotRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
