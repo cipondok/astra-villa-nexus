@@ -919,9 +919,10 @@ export default function LuxeExperience() {
                   </Reveal>
                 ))}
               </div>
-              <button className="luxe-gold-btn mt-10 rounded-full px-6 py-3.5 text-[13px] font-medium inline-flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5">
+              <Link to="/investment" className="luxe-gold-btn mt-10 rounded-full px-6 py-3.5 text-[13px] font-medium inline-flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5">
                 Open the Investor OS <ArrowUpRight className="w-4 h-4" />
-              </button>
+              </Link>
+
             </div>
           </Reveal>
 
