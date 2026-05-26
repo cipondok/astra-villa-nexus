@@ -847,7 +847,12 @@ export default function LuxeExperience() {
 
           {/* Mobile: horizontal snap rail. Desktop: 3-col tilt grid */}
           <div className="luxe-snap-x -mx-5 px-5 md:mx-0 md:px-0 flex md:grid md:grid-cols-3 gap-5 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none [perspective:1400px] pb-2 md:pb-0">
-            {FEATURED.map((v, i) => {
+            {featuredLoading && Array.from({ length: 6 }).map((_, i) => (
+              <div key={`sk-${i}`} className="snap-center shrink-0 w-[82%] sm:w-[60%] md:w-auto">
+                <VillaSkeleton />
+              </div>
+            ))}
+            {!featuredLoading && FEATURED.map((v, i) => {
               const detailHref = v.id ? `/properties/${v.id}` : "/properties";
               return (
               <Reveal key={v.id ?? v.name} delay={i * 0.12} as="article"
