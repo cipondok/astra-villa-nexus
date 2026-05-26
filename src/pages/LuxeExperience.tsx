@@ -1042,16 +1042,44 @@ export default function LuxeExperience() {
           >
             <div className="relative">
               <div className="absolute -inset-px rounded-2xl md:rounded-full bg-gradient-to-r from-[color:var(--luxe-gold)]/25 via-transparent to-[color:var(--luxe-emerald)]/15 blur-md opacity-60 pointer-events-none" />
-              <div className="relative luxe-glass-card rounded-2xl md:rounded-full p-2 flex flex-col md:flex-row items-stretch md:items-center gap-2 md:gap-0 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)]">
-                <SearchField icon={MapPin} label="Where" value="Bali, Indonesia" to="/search?where=bali" />
+              <form
+                onSubmit={handleHeroSearch}
+                className="relative luxe-glass-card rounded-2xl md:rounded-full p-2 flex flex-col md:flex-row items-stretch md:items-center gap-2 md:gap-0 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)]"
+              >
+                <SearchInput
+                  icon={MapPin}
+                  label="Where"
+                  value={searchWhere}
+                  onChange={setSearchWhere}
+                  placeholder="Bali, Indonesia"
+                  type="text"
+                />
                 <div className="hidden md:block h-10 w-px bg-luxe-line" />
-                <SearchField icon={Calendar} label="When" value="Add dates" to="/search?step=dates" />
+                <SearchInput
+                  icon={Calendar}
+                  label="When"
+                  value={searchWhen}
+                  onChange={setSearchWhen}
+                  placeholder="Add dates"
+                  type="date"
+                />
                 <div className="hidden md:block h-10 w-px bg-luxe-line" />
-                <SearchField icon={Users} label="Guests" value="2 adults" to="/search?step=guests" />
-                <Link to="/search" className="luxe-gold-btn rounded-xl md:rounded-full px-6 py-3.5 text-[13px] font-medium inline-flex items-center justify-center gap-2 md:ml-2 transition-transform duration-300 hover:-translate-y-0.5">
+                <SearchInput
+                  icon={Users}
+                  label="Guests"
+                  value={String(searchGuests)}
+                  onChange={(v) => setSearchGuests(Math.max(1, Number(v) || 1))}
+                  placeholder="2"
+                  type="number"
+                  min={1}
+                />
+                <button
+                  type="submit"
+                  className="luxe-gold-btn rounded-xl md:rounded-full px-6 py-3.5 text-[13px] font-medium inline-flex items-center justify-center gap-2 md:ml-2 transition-transform duration-300 hover:-translate-y-0.5 min-h-[48px]"
+                >
                   <Search className="w-4 h-4" /> Search Villas
-                </Link>
-              </div>
+                </button>
+              </form>
 
             </div>
 
