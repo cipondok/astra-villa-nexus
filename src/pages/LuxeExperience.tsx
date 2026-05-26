@@ -242,6 +242,7 @@ export default function LuxeExperience() {
   const { isMobile } = useIsMobile();
   const tier = useDeviceTier();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { user } = useAuth();
   const FEATURED = useFeaturedVillas();
   const profileHref = user ? "/profile" : "/auth";
