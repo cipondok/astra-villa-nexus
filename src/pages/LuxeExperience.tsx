@@ -663,24 +663,53 @@ export default function LuxeExperience() {
 
             {/* === Secondary actions === */}
             <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
-              <Link to="/properties" aria-label="Search villas" className="hidden md:grid w-9 h-9 place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] hover:text-luxe-gold transition-colors">
-                <Search className="w-4 h-4" />
-              </Link>
-              <Link to="/ai-concierge" className="hidden xl:flex items-center gap-1.5 px-3 py-2 rounded-full bg-luxe-glass border border-luxe text-[12px] hover:border-[color:var(--luxe-gold)] transition-colors">
-                <Sparkles className="w-3.5 h-3.5 text-luxe-gold" /> AI Concierge
-              </Link>
-              <Link to="/favorites" aria-label="Wishlist" className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] hover:text-luxe-gold transition-colors">
-                <Heart className="w-4 h-4" />
-              </Link>
-              {user && (
-                <Link to="/notifications" aria-label="Notifications" className="hidden md:grid relative w-9 h-9 place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] hover:text-luxe-gold transition-colors">
-                  <Bell className="w-4 h-4" />
-                  <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[color:var(--luxe-gold)]" />
-                </Link>
-              )}
-              <Link to={profileHref} aria-label="Profile" className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] hover:text-luxe-gold transition-colors">
-                <User2 className="w-4 h-4" />
-              </Link>
+              {(() => {
+                const baseIcon = "relative w-9 h-9 grid place-items-center rounded-full border transition-colors";
+                const idleIcon = "bg-luxe-glass border-luxe hover:border-[color:var(--luxe-gold)] hover:text-luxe-gold";
+                const activeIcon = "bg-[color:var(--luxe-gold)]/12 border-[color:var(--luxe-gold)]/55 text-luxe-gold shadow-[0_0_0_1px_rgba(200,169,107,0.25)]";
+                const isActive = (p: string) => pathname === p || pathname.startsWith(p + "/");
+                const ActiveDot = () => (
+                  <span aria-hidden className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[color:var(--luxe-gold)]" />
+                );
+                const searchActive = isActive("/search") || pathname === "/properties";
+                const wishActive = isActive("/favorites") || isActive("/saved");
+                const notifActive = isActive("/notifications");
+                const profileActive = isActive(profileHref) || isActive("/profile") || isActive("/auth");
+                return (
+                  <>
+                    <Link to="/properties" aria-label="Search villas" aria-current={searchActive ? "page" : undefined}
+                      className={cn(baseIcon, "hidden md:grid", searchActive ? activeIcon : idleIcon)}>
+                      <Search className="w-4 h-4" />
+                      {searchActive && <ActiveDot />}
+                    </Link>
+                    <Link to="/wealth-advisor" aria-current={isActive("/wealth-advisor") ? "page" : undefined}
+                      className={cn("hidden xl:flex items-center gap-1.5 px-3 py-2 rounded-full border text-[12px] transition-colors",
+                        isActive("/wealth-advisor")
+                          ? "bg-[color:var(--luxe-gold)]/12 border-[color:var(--luxe-gold)]/55 text-luxe-gold"
+                          : "bg-luxe-glass border-luxe hover:border-[color:var(--luxe-gold)]")}>
+                      <Sparkles className="w-3.5 h-3.5 text-luxe-gold" /> AI Concierge
+                    </Link>
+                    <Link to="/favorites" aria-label="Wishlist" aria-current={wishActive ? "page" : undefined}
+                      className={cn(baseIcon, wishActive ? activeIcon : idleIcon)}>
+                      <Heart className={cn("w-4 h-4", wishActive && "fill-[color:var(--luxe-gold)]/30")} />
+                      {wishActive && <ActiveDot />}
+                    </Link>
+                    {user && (
+                      <Link to="/notifications" aria-label="Notifications" aria-current={notifActive ? "page" : undefined}
+                        className={cn(baseIcon, "hidden md:grid", notifActive ? activeIcon : idleIcon)}>
+                        <Bell className="w-4 h-4" />
+                        <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[color:var(--luxe-gold)]" />
+                        {notifActive && <ActiveDot />}
+                      </Link>
+                    )}
+                    <Link to={profileHref} aria-label="Profile" aria-current={profileActive ? "page" : undefined}
+                      className={cn(baseIcon, profileActive ? activeIcon : idleIcon)}>
+                      <User2 className="w-4 h-4" />
+                      {profileActive && <ActiveDot />}
+                    </Link>
+                  </>
+                );
+              })()}
               <button
                 type="button"
                 onClick={() => setMobileOpen(true)}
