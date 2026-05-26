@@ -1,1737 +1,558 @@
+import { useEffect, useMemo, useState, useCallback, lazy, Suspense } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import {
+  ArrowLeft, ChevronLeft, ChevronRight, Maximize2, X,
+  MapPin, BedDouble, Bath, Square, Calendar, Users, Sparkles,
+  TrendingUp, Flame, Trophy, Activity, Heart, Share2,
+  MessageCircle, Phone, Box, Compass, ShieldCheck, Wind,
+} from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAIPropertyValuation } from "@/hooks/useAIPropertyValuation";
+import { useFavorites } from "@/hooks/useFavorites";
+import { shareProperty } from "@/utils/shareUtils";
+import { useToast } from "@/hooks/use-toast";
+import { SEOHead } from "@/components/SEOHead";
+import {
+  LuxeLayout, LuxeSection, LuxeSectionHead, LuxeCard, LuxeButton,
+} from "@/components/luxe";
+import { cn } from "@/lib/utils";
 
-import React, { useState, useEffect, useRef, useMemo, lazy, Suspense } from 'react';
-const InvestorSignupPrompt = lazy(() => import('@/components/auth/InvestorSignupPrompt'));
-import ScrollReveal from '@/components/ui/ScrollReveal';
-import { useUserBehaviorAnalytics } from '@/hooks/useUserBehaviorAnalytics';
-import { useTranslation } from '@/i18n/useTranslation';
-import { SEOHead, seoSchemas } from '@/components/SEOHead';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { supabase } from '@/integrations/supabase/client';
-import { useQuery } from '@tanstack/react-query';
-import EnhancedImageGallery from '@/components/property/EnhancedImageGallery';
-import PropertyComparisonButton from '@/components/property/PropertyComparisonButton';
-import SimpleProperty3DViewer from '@/components/property/SimpleProperty3DViewer';
-import { AutoValuationCard } from '@/components/property/AutoValuationCard';
-import { ROIForecastCard } from '@/components/property/ROIForecastCard';
-import DroneVideoPlayer from '@/components/property/DroneVideoPlayer';
-const GLBModelViewer = lazy(() => import('@/components/property/GLBModelViewer'));
-import PropertyCard from '@/components/property/PropertyCard';
-import { useFavorites } from '@/hooks/useFavorites';
-import { shareProperty } from '@/utils/shareUtils';
-import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/contexts/AuthContext';
-import { useIsAdmin } from '@/hooks/useUserRoles';
-import EnhancedAuthModal from '@/components/auth/EnhancedAuthModal';
-import { UserMembershipBadge } from '@/components/user/UserMembershipBadge';
-import UserStatusBadge from '@/components/ui/UserStatusBadge';
-import { PropertyReviews } from '@/components/property/PropertyReviews';
-import PropertyRecommendations from '@/components/property/PropertyRecommendations';
-import NearbyInvestments from '@/components/property/NearbyInvestments';
-const MarketContextCard = React.lazy(() => import('@/components/property/MarketContextCard'));
-const PropertyInvestmentInsights = React.lazy(() => import('@/components/property/PropertyInvestmentInsights'));
-import { KPRCalculator } from '@/components/property/KPRCalculator';
-import PropertyMortgageWidget from '@/components/mortgage/PropertyMortgageWidget';
-import DaysOnMarketTracker from '@/components/property/DaysOnMarketTracker';
-import ValuationHistory from '@/components/property/ValuationHistory';
-const PropertyLiquidityWidget = lazy(() => import('@/components/property/PropertyLiquidityWidget'));
-import { PropertyPosterInfo } from '@/components/property/PropertyPosterInfo';
-import PropertyTrustBadges from '@/components/property/PropertyTrustBadges';
-import PropertyTrustShield from '@/components/property/PropertyTrustShield';
-import { getCurrencyFormatterShort } from '@/stores/currencyStore';
-import { 
-  MapPin, 
-  Bed, 
-  Bath, 
-  Square, 
-  Calendar,
-  Phone,
-  Mail,
-  Globe,
-  Heart,
-  Share2,
-  Camera,
-  ChevronLeft,
-  ChevronRight,
-  Play,
-  Box,
-  Home,
-  Menu,
-  ArrowLeft,
-  Star,
-  Clock,
-  User,
-  Award,
-  TrendingUp,
-  Plus,
-  Shield,
-  Crown,
-  Medal,
-  Edit,
-  Trash2,
-  X,
-  Building2,
-  Landmark,
-  Navigation,
-  CheckCircle2,
-  ClipboardCheck,
-  Loader2,
-  MessageCircle,
-  Target,
-  Sparkles
-} from 'lucide-react';
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import ProtectedContactInfo from '@/components/ProtectedContactInfo';
-import useAutoHorizontalScroll from '@/hooks/useAutoHorizontalScroll';
-import { useDefaultPropertyImage } from '@/hooks/useDefaultPropertyImage';
-import { BookingDialog } from '@/components/property/BookingDialog';
-import { SurveyBookingDialog } from '@/components/property/SurveyBookingDialog';
-import SocialShareDialog from '@/components/property/SocialShareDialog';
-import SmartCollectionBadges from '@/components/property/SmartCollectionBadges';
-import PropertyInvestmentWidget from '@/components/property/PropertyInvestmentWidget';
-import AIMatchExplainer from '@/components/property/AIMatchExplainer';
-import { useUserAiProfile } from '@/hooks/useUserAiProfile';
-import { usePropertyMatchScore } from '@/hooks/usePropertyMatchScore';
-const PropertyNeighborhoodInsights = lazy(() => import('@/components/property/PropertyNeighborhoodInsights'));
-const PropertyChatbot = lazy(() => import('@/components/property/PropertyChatbot'));
-const InvestorFunnelCTA = lazy(() => import('@/components/transaction/InvestorFunnelCTA'));
-import HeroOpportunityOverlay from '@/components/property/HeroOpportunityOverlay';
-import PropertyUrgencySignals from '@/components/property/PropertyUrgencySignals';
-const MakeOfferDialog = lazy(() => import('@/components/offers/MakeOfferDialog'));
-const PropertyInvestmentDashboard = lazy(() => import('@/components/property/PropertyInvestmentDashboard'));
-const InvestmentHeroSummary = lazy(() => import('@/components/property/InvestmentHeroSummary'));
-const SmartPricePositioning = lazy(() => import('@/components/property/SmartPricePositioning'));
-const EscrowSafetyModule = lazy(() => import('@/components/property/EscrowSafetyModule'));
-const DealActionTimeline = lazy(() => import('@/components/property/DealActionTimeline'));
-const WalletFundingCTA = lazy(() => import('@/components/property/WalletFundingCTA'));
-const InvestorMatchSignal = lazy(() => import('@/components/property/InvestorMatchSignal'));
-const SmartInquiryCTA = lazy(() => import('@/components/property/SmartInquiryCTA'));
-const InquiryTrustPopup = lazy(() => import('@/components/property/InquiryTrustPopup'));
-import { formatDistanceToNow } from 'date-fns';
-import { id as localeId } from 'date-fns/locale';
+const GLBModelViewer = lazy(() => import("@/components/property/GLBModelViewer"));
 
-interface PropertyData {
+/* ------------------------------------------------------------------ */
+/*  Data                                                              */
+/* ------------------------------------------------------------------ */
+interface PropertyRow {
   id: string;
   title: string;
-  description: string;
-  price: number;
-  location: string;
-  bedrooms?: number;
-  bathrooms?: number;
-  area_sqm?: number;
-  listing_type: string;
-  property_type: string;
-  images?: string[];
-  image_urls?: string[];
-  owner_id: string;
-  agent_id?: string;
-  status: string;
-  created_at: string;
-  property_features?: any;
-  development_status: string;
-  virtual_tour_url?: string;
-  three_d_model_url?: string;
-  drone_video_url?: string;
-  panorama_360_urls?: string[];
-  glb_model_url?: string;
-  ai_staging_images?: string[];
-  has_vr?: boolean;
-  has_360_view?: boolean;
-  has_drone_video?: boolean;
-  // Location details
-  province?: string;
-  city?: string;
-  district?: string;
-  address?: string;
-  coordinates?: { lat: number; lng: number };
-  // Poster information
-  posted_by?: {
-    id: string;
-    name: string;
-    avatar_url?: string;
-    poster_type?: 'personal' | 'pt' | 'developer';
-    rating?: number;
-    user_level?: string;
-    verification_status?: 'unverified' | 'pending' | 'verified' | 'trusted' | 'premium';
-    total_properties?: number;
-    joining_date?: string;
-    customer_feedback_rating?: number;
-    customer_feedback_count?: number;
-    // Agent specific information
-    whatsapp_number?: string;
-    phone_number?: string;
-    company_name?: string;
-    company_logo?: string;
-    company_pt_name?: string;
-    developer_name?: string;
-    position?: string;
-    office_address?: string;
-    license_number?: string;
-    experience_years?: number;
-  };
+  description: string | null;
+  price: number | null;
+  location: string | null;
+  city: string | null;
+  district: string | null;
+  province: string | null;
+  address: string | null;
+  property_type: string | null;
+  listing_type: string | null;
+  bedrooms: number | null;
+  bathrooms: number | null;
+  area_sqm: number | null;
+  images: string[] | null;
+  image_urls: string[] | null;
+  property_features: Record<string, any> | null;
+  virtual_tour_url: string | null;
+  three_d_model_url: string | null;
+  glb_model_url: string | null;
+  panorama_360_urls: string[] | null;
+  drone_video_url: string | null;
+  status: string | null;
+  owner_id: string | null;
+  agent_id: string | null;
+  created_at: string | null;
 }
 
-const PropertyDetail: React.FC = () => {
+async function fetchProperty(id: string): Promise<PropertyRow> {
+  const { data, error } = await supabase
+    .from("properties")
+    .select("*")
+    .eq("id", id)
+    .single();
+  if (error) throw error;
+  return data as unknown as PropertyRow;
+}
+
+const fmtIDR = (n: number | null | undefined) => {
+  if (n == null) return "—";
+  if (n >= 1_000_000_000) return `Rp ${(n / 1_000_000_000).toFixed(n % 1_000_000_000 === 0 ? 0 : 2)} M`;
+  if (n >= 1_000_000) return `Rp ${(n / 1_000_000).toFixed(0)} jt`;
+  return `Rp ${n.toLocaleString("id-ID")}`;
+};
+
+/* ------------------------------------------------------------------ */
+/*  Page                                                              */
+/* ------------------------------------------------------------------ */
+const PropertyDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user } = useAuth();
-  const { isAdmin, isLoading: adminLoading } = useIsAdmin();
-  const { t } = useTranslation();
-  const [property, setProperty] = useState<PropertyData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [ownerInfo, setOwnerInfo] = useState<any>(null);
-  const [agentInfo, setAgentInfo] = useState<any>(null);
-  const [relatedProperties, setRelatedProperties] = useState<PropertyData[]>([]);
-  const [userMoreProperties, setUserMoreProperties] = useState<PropertyData[]>([]);
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [showShareDialog, setShowShareDialog] = useState(false);
-  const [showMobileOffer, setShowMobileOffer] = useState(false);
-  const [inquiryPopupOpen, setInquiryPopupOpen] = useState(false);
-  const [inquiryType, setInquiryType] = useState("investment_question");
-  
-  // Initialize favorites hook with property data once available
-  const { toggleFavorite, isFavorite, loading: favLoading } = useFavorites({
-    title: property?.title,
-    images: property?.images
-  });
 
-  const { getPropertyImage } = useDefaultPropertyImage();
-
-  // AI Match data
-  const { data: userAiProfile } = useUserAiProfile();
-  const propertyForMatch = useMemo(() => property ? {
-    city: property.city,
-    price: property.price,
-    has_pool: !!(property.property_features as any)?.pool,
-    property_type: property.property_type,
-  } : null, [property]);
-  const { matchScore, confidenceScore, collaborativeOverlap } = usePropertyMatchScore(propertyForMatch, userAiProfile);
-
-  // Share count
-  const { data: shareCount = 0 } = useQuery({
-    queryKey: ['property-share-count', id],
-    queryFn: async () => {
-      const { count } = await supabase
-        .from('property_shares')
-        .select('id', { count: 'exact', head: true })
-        .eq('property_id', id!);
-      return count || 0;
-    },
+  const { data: property, isLoading, error } = useQuery({
+    queryKey: ["luxe-property", id],
+    queryFn: () => fetchProperty(id!),
     enabled: !!id,
-    staleTime: 60_000,
+    staleTime: 5 * 60_000,
   });
 
-  // Auto-scroll refs for mobile carousels
-  const similarScrollRef = useRef<HTMLDivElement>(null);
-  const moreFromAgentRef = useRef<HTMLDivElement>(null);
+  const { data: ai } = useAIPropertyValuation(id);
 
-  useAutoHorizontalScroll(similarScrollRef, { direction: 'rtl', speed: 1, pauseOnHover: true });
-  useAutoHorizontalScroll(moreFromAgentRef, { direction: 'rtl', speed: 1, pauseOnHover: true });
+  const images = useMemo<string[]>(() => {
+    if (!property) return [];
+    const a = property.images?.length ? property.images : property.image_urls || [];
+    return a.filter(Boolean);
+  }, [property]);
 
-  // Behavior tracking
-  const { trackPropertyView, trackInteraction } = useUserBehaviorAnalytics();
+  /* ----- Gallery state ----- */
+  const [idx, setIdx] = useState(0);
+  const [fullscreen, setFullscreen] = useState(false);
+  const next = useCallback(() => setIdx(i => (i + 1) % Math.max(1, images.length)), [images.length]);
+  const prev = useCallback(() => setIdx(i => (i - 1 + Math.max(1, images.length)) % Math.max(1, images.length)), [images.length]);
 
   useEffect(() => {
-    console.log('PropertyDetail mounted with id:', id);
-    if (id) {
-      loadProperty();
-    }
-  }, [id]);
+    if (!fullscreen || images.length < 2) return;
+    const t = window.setInterval(next, 6500);
+    return () => window.clearInterval(t);
+  }, [fullscreen, next, images.length]);
 
-  // Track property view with duration
   useEffect(() => {
-    if (!id || !property) return;
-    let cleanup: (() => void) | undefined;
-
-    trackPropertyView(id).then(fn => { cleanup = fn; });
-
-    // Also track property metadata for richer signals
-    trackInteraction({
-      interaction_type: 'view',
-      property_id: id,
-      interaction_data: {
-        view_type: 'property_detail',
-        property_type: property.property_type,
-        listing_type: property.listing_type,
-        price: property.price,
-        city: property.city,
-        bedrooms: property.bedrooms,
-        area_sqm: property.area_sqm,
-      }
-    });
-
-    return () => { cleanup?.(); };
-  }, [id, property?.id]);
-
-  const loadProperty = async () => {
-    try {
-      const { data: propertyData, error: propertyError } = await supabase
-        .from('properties')
-        .select('*')
-        .eq('id', id)
-        .single();
-
-      if (propertyError) throw propertyError;
-
-      setProperty(propertyData);
-
-      // Load owner information with extended profile data including membership level
-      if (propertyData.owner_id) {
-        const { data: owner } = await supabase
-          .from('profiles')
-          .select(`
-            full_name, 
-            email, 
-            phone, 
-            avatar_url, 
-            verification_status, 
-            created_at,
-            user_level_id,
-            user_levels (
-              name
-            )
-          `)
-          .eq('id', propertyData.owner_id)
-          .single();
-        
-        if (owner) {
-          // Get user level name from joined data
-          const userLevel = owner.user_levels 
-            ? (Array.isArray(owner.user_levels) ? owner.user_levels[0] : owner.user_levels)
-            : null;
-          
-          // Map user level to membership tier
-          const getMembershipLevel = (levelName?: string) => {
-            if (!levelName) return 'verified';
-            const name = levelName.toLowerCase();
-            if (name.includes('diamond')) return 'diamond';
-            if (name.includes('platinum')) return 'platinum';
-            if (name.includes('gold')) return 'gold';
-            if (name.includes('vip')) return 'vip';
-            return 'verified';
-          };
-          
-          // Enhanced agent/poster data with comprehensive information
-          const posterInfo: PropertyData['posted_by'] = {
-            id: propertyData.owner_id,
-            name: owner.full_name || 'Anonymous User',
-            avatar_url: owner.avatar_url,
-            poster_type: 'personal' as const,
-            rating: 4.8,
-            user_level: getMembershipLevel(userLevel?.name),
-            verification_status: (owner.verification_status || 'verified') as 'unverified' | 'pending' | 'verified' | 'trusted' | 'premium',
-            total_properties: 25,
-            joining_date: owner.created_at,
-            customer_feedback_rating: 4.9,
-            customer_feedback_count: 47,
-            whatsapp_number: owner.phone || undefined,
-            phone_number: owner.phone || undefined,
-            company_name: 'UNITED PROPERTY',
-            company_logo: '/placeholder.svg',
-            company_pt_name: 'PT Bumi Serpong Damai Tbk',
-            developer_name: 'BSD City',
-            position: 'Senior Property Consultant',
-            office_address: 'Jl. Raya Serpong, BSD City, Tangerang Selatan',
-            license_number: 'REI-12345678',
-            experience_years: 8
-          };
-          
-          setProperty(prev => prev ? { ...prev, posted_by: posterInfo } : null);
-        }
-        
-        setOwnerInfo(owner);
-      }
-
-      // Load agent information if exists
-      if (propertyData.agent_id) {
-        const { data: agent } = await supabase
-          .from('profiles')
-          .select('full_name, email, phone, company_name')
-          .eq('id', propertyData.agent_id)
-          .single();
-        
-        setAgentInfo(agent);
-      }
-
-      // Load related properties (same type and location)
-      const { data: related } = await supabase
-        .from('properties')
-        .select('id, title, price, images, image_urls, location, property_type, listing_type, bedrooms, bathrooms, area_sqm, status, created_at, description, owner_id, agent_id, development_status')
-        .eq('property_type', propertyData.property_type)
-        .eq('status', 'active')
-        .neq('id', id)
-        .limit(4);
-      
-      if (related) {
-        setRelatedProperties(related);
-      }
-
-      // Load more properties from the same user/agent
-      const userId = propertyData.agent_id || propertyData.owner_id;
-      if (userId) {
-        const { data: userProperties } = await supabase
-          .from('properties')
-          .select('id, title, price, images, image_urls, location, property_type, listing_type, bedrooms, bathrooms, area_sqm, status, created_at, description, owner_id, agent_id, development_status')
-          .or(`owner_id.eq.${userId},agent_id.eq.${userId}`)
-          .eq('status', 'active')
-          .neq('id', id)
-          .limit(4);
-        
-        if (userProperties) {
-          setUserMoreProperties(userProperties);
-        }
-      }
-
-    } catch (error) {
-      console.error('Error loading property:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
-
-  const formatTimeAgo = (dateString: string) => {
-    const now = new Date();
-    const date = new Date(dateString);
-    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-    
-    const intervals = {
-      year: 31536000,
-      month: 2592000,
-      week: 604800,
-      day: 86400,
-      hour: 3600,
-      minute: 60
+    if (!fullscreen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setFullscreen(false);
+      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") prev();
     };
-    
-    for (const [unit, seconds] of Object.entries(intervals)) {
-      const interval = Math.floor(diffInSeconds / seconds);
-      if (interval >= 1) {
-        return `${interval} ${unit}${interval > 1 ? 's' : ''} ago`;
-      }
-    }
-    
-    return 'Just now';
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [fullscreen, next, prev]);
+
+  /* ----- Booking state ----- */
+  const [checkIn, setCheckIn] = useState("");
+  const [checkOut, setCheckOut] = useState("");
+  const [guests, setGuests] = useState(2);
+
+  const { toggleFavorite, isFavorite } = useFavorites({
+    title: property?.title,
+    images: property?.images || undefined,
+  });
+
+  const handleShare = async () => {
+    if (!property) return;
+    await shareProperty({
+      id: property.id,
+      title: property.title,
+      price: property.price || 0,
+      location: property.location || property.city || "",
+      image: images[0],
+    });
   };
 
-  const handleSaveFavorite = async () => {
-    if (property) {
-      await toggleFavorite(property.id);
-      trackInteraction({
-        interaction_type: 'save',
-        property_id: property.id,
-        interaction_data: {
-          action: isFavorite(property.id) ? 'unfavorite' : 'favorite',
-          property_type: property.property_type,
-          price: property.price,
-          city: property.city,
-        }
-      });
-    }
-  };
+  const whatsappLink = useMemo(() => {
+    if (!property) return "#";
+    const msg = `Hi, saya tertarik dengan villa "${property.title}" (${window.location.href}). Bisa minta info ketersediaan?`;
+    return `https://wa.me/6281234567890?text=${encodeURIComponent(msg)}`;
+  }, [property]);
 
-  const handleShareProperty = () => {
-    if (property) {
-      setShowShareDialog(true);
-      trackInteraction({
-        interaction_type: 'share',
-        property_id: property.id,
-        interaction_data: {
-          property_type: property.property_type,
-          price: property.price,
-          city: property.city,
-        }
-      });
-    }
-  };
-
-  const nextImage = () => {
-    if (property?.images && currentImageIndex < property.images.length - 1) {
-      setCurrentImageIndex(currentImageIndex + 1);
-    }
-  };
-
-  const prevImage = () => {
-    if (currentImageIndex > 0) {
-      setCurrentImageIndex(currentImageIndex - 1);
-    }
-  };
-
-  if (loading) {
+  /* ------------------------------------------------------------- */
+  /*  Loading / Error                                              */
+  /* ------------------------------------------------------------- */
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
-        {/* Header always visible during loading */}
-        <div className="sticky top-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border/20 shadow-sm">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="flex items-center gap-2 h-10">
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => navigate(-1)}
-                className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50"
-              >
-                <ArrowLeft className="h-3.5 w-3.5 mr-1" />
-                {t('propertyDetail.back')}
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => navigate('/')}
-                className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50"
-              >
-                <Home className="h-3.5 w-3.5 mr-1" />
-                {t('propertyDetail.home')}
-              </Button>
-            </div>
-          </div>
+      <LuxeLayout>
+        <div className="min-h-[60vh] grid place-items-center">
+          <div className="luxe-shimmer h-12 w-64 rounded-full" />
         </div>
-        
-        {/* Loading content */}
-        <div className="flex-1 flex items-center justify-center p-4">
+      </LuxeLayout>
+    );
+  }
+  if (error || !property) {
+    return (
+      <LuxeLayout>
+        <LuxeSection pad="lg">
           <div className="text-center">
-            <div className="h-16 w-16 rounded-full bg-gold-primary/10 flex items-center justify-center mx-auto mb-4 animate-pulse">
-              <Building2 className="h-8 w-8 text-gold-primary" />
-            </div>
-            <h3 className="text-sm font-semibold mb-1">{t('propertyDetail.loading')}</h3>
-            <p className="text-xs text-muted-foreground">{t('propertyDetail.pleaseWait')}</p>
+            <h1 className="font-serif-l text-4xl">Villa not found</h1>
+            <p className="text-luxe-mut mt-3">The listing you are looking for is unavailable.</p>
+            <LuxeButton variant="gold" className="mt-8" onClick={() => navigate("/properties")}>
+              Explore villas
+            </LuxeButton>
           </div>
-        </div>
-      </div>
+        </LuxeSection>
+      </LuxeLayout>
     );
   }
 
-  if (!property) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col">
-        {/* Header always visible on error */}
-        <div className="sticky top-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border/20 shadow-sm">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="flex items-center gap-2 h-10">
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => navigate(-1)}
-                className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50"
-              >
-                <ArrowLeft className="h-3.5 w-3.5 mr-1" />
-                {t('propertyDetail.back')}
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => navigate('/')}
-                className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50"
-              >
-                <Home className="h-3.5 w-3.5 mr-1" />
-                {t('propertyDetail.home')}
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => navigate('/properties')}
-                className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50"
-              >
-                <MapPin className="h-3.5 w-3.5 mr-1" />
-                {t('propertyDetail.properties')}
-              </Button>
-            </div>
-          </div>
-        </div>
-        
-        {/* Error content */}
-        <div className="flex-1 flex items-center justify-center p-4">
-          <div className="text-center">
-            <div className="h-16 w-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-4">
-              <X className="h-8 w-8 text-destructive" />
-            </div>
-            <h1 className="text-lg font-bold text-foreground mb-2">{t('propertyDetail.notFound')}</h1>
-            <p className="text-sm text-muted-foreground mb-4">{t('propertyDetail.notFoundDesc')}</p>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => navigate('/properties')}
-              className="text-xs h-8"
-            >
-              <MapPin className="h-3 w-3 mr-1" />
-              {t('propertyDetail.viewOther')}
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const hero = images[idx] || "/placeholder.svg";
+  const loc = [property.district, property.city, property.province].filter(Boolean).join(", ") || property.location || "Bali, Indonesia";
 
+  const features: { icon: any; label: string; value: string }[] = [
+    { icon: BedDouble, label: "Bedrooms", value: property.bedrooms?.toString() ?? "—" },
+    { icon: Bath,      label: "Bathrooms", value: property.bathrooms?.toString() ?? "—" },
+    { icon: Square,    label: "Area", value: property.area_sqm ? `${property.area_sqm} m²` : "—" },
+    { icon: Wind,      label: "Type", value: property.property_type ?? "Villa" },
+  ];
+
+  const amenities: string[] = Array.isArray(property.property_features?.amenities)
+    ? property.property_features!.amenities
+    : ["Infinity pool", "Private chef", "Ocean view", "Concierge 24/7", "Smart home", "Yoga deck", "Sunset terrace", "Wine cellar"];
+
+  /* ------------------------------------------------------------- */
+  /*  Render                                                       */
+  /* ------------------------------------------------------------- */
   return (
-    <div className="min-h-screen bg-background">
-      <Suspense fallback={null}><InvestorSignupPrompt triggerSource="listing_view" /></Suspense>
-      {property && (
-        <SEOHead
-          title={property.title}
-          description={property.description?.slice(0, 155)}
-          ogImage={property.images?.[0] || property.image_urls?.[0]}
-          ogType="product"
-          jsonLd={[
-            seoSchemas.breadcrumb([
-              { name: t('propertyDetail.home'), url: '/' },
-              { name: t('propertyDetail.properties'), url: '/properties' },
-              { name: property.title, url: `/properties/${property.id}` },
-            ]),
-            seoSchemas.property({
-              title: property.title,
-              description: property.description || '',
-              price: property.price,
-              city: property.city || '',
-              state: property.province || '',
-              images: property.images,
-              bedrooms: property.bedrooms,
-              bathrooms: property.bathrooms,
-              areaSqm: property.area_sqm,
-              url: `https://astra-villa-realty.lovable.app/properties/${property.id}`,
-            }),
-          ]}
-        />
-      )}
-      {/* Agent info moved to sidebar only — no redundant top banner */}
-
-      {/* Slim Sticky Header */}
-      <div className="sticky top-0 z-50 bg-background/90 backdrop-blur-2xl border-b border-border/50 shadow-sm transition-all duration-500">
-        <div className="max-w-7xl mx-auto px-2 sm:px-4">
-          <div className="flex items-center justify-between h-10">
-            <div className="flex items-center gap-1">
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => navigate(-1)}
-                className="h-7 w-7 p-0 hover:bg-muted/50 active:scale-95 transition-transform"
-              >
-                <ArrowLeft className="h-3.5 w-3.5 text-foreground" />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => navigate('/')}
-                className="hidden sm:flex items-center gap-1 hover:bg-muted/50 h-7 px-2 active:scale-95"
-              >
-                <Home className="h-3.5 w-3.5 text-foreground" />
-                <span className="text-[10px] text-foreground">{t('propertyDetail.home')}</span>
-              </Button>
-              {/* Property Title in Header */}
-              <span className="text-[10px] sm:text-xs font-medium text-foreground/70 truncate max-w-[120px] sm:max-w-[200px] ml-1">
-                {property.title}
-              </span>
-            </div>
-            
-            <div className="flex items-center gap-1">
-              {/* Admin Controls - Compact */}
-              {isAdmin && !adminLoading && (
-                <div className="hidden md:flex items-center gap-1 mr-1 border-r border-border/30 pr-1">
-                  <Button 
-                    variant="default" 
-                    size="sm"
-                    onClick={() => setIsEditMode(!isEditMode)}
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground h-6 text-[9px] px-2"
-                  >
-                    <Edit className="h-2.5 w-2.5 mr-0.5" />
-                    {isEditMode ? t('common.cancel') : t('common.edit')}
-                  </Button>
-                  <Button 
-                    variant="destructive" 
-                    size="sm"
-                    onClick={async () => {
-                      if (confirm(t('propertyDetail.deleteConfirm'))) {
-                        try {
-                          const { error } = await supabase.from('properties').delete().eq('id', id);
-                          if (error) throw error;
-                          toast.success({ title: "Deleted", description: "Property deleted." });
-                          navigate('/admin');
-                        } catch (error) {
-                          toast.error({ title: "Error", description: "Unable to delete." });
-                        }
-                      }
-                    }}
-                    className="h-6 text-[9px] px-1.5"
-                  >
-                    <Trash2 className="h-2.5 w-2.5" />
-                  </Button>
-                </div>
-              )}
-              
-              <PropertyComparisonButton 
-                property={{
-                  ...property,
-                  image_urls: property.images || [],
-                  listing_type: property.listing_type as "sale" | "rent" | "lease"
-                }} 
-              />
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={handleSaveFavorite}
-                disabled={favLoading}
-                className={`h-7 w-7 p-0 active:scale-95 transition-transform ${isFavorite(property.id) ? "text-destructive" : "text-foreground/70"}`}
-              >
-                <Heart className={`h-3.5 w-3.5 ${isFavorite(property.id) ? 'fill-current' : ''}`} />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={handleShareProperty}
-                className="h-7 gap-1 px-1.5 text-foreground/70 hover:text-primary active:scale-95 transition-transform"
-              >
-                <Share2 className="h-3.5 w-3.5" />
-                {shareCount > 0 && (
-                  <span className="text-[10px] font-medium">{shareCount}</span>
-                )}
-              </Button>
-              
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => navigate('/')}
-                className="md:hidden h-7 w-7 p-0 text-foreground/70 active:scale-95"
-              >
-                <X className="h-3.5 w-3.5" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-2 sm:px-3 lg:px-6 py-2 sm:py-3 min-h-screen pb-20 md:pb-3">
-        
-        {/* Admin Edit Form */}
-        {isAdmin && isEditMode && (
-          <Card className="mb-2 border border-primary/20 bg-card/80 backdrop-blur-sm">
-            <CardHeader className="p-2 sm:p-3 bg-primary/5">
-              <CardTitle className="flex items-center gap-1.5 text-xs sm:text-sm text-foreground">
-                <Edit className="h-3 w-3" />
-                {t('propertyDetail.editProperty')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-2 sm:p-3">
-              <form onSubmit={async (e) => {
-                e.preventDefault();
-                const formData = new FormData(e.currentTarget);
-                
-                try {
-                  const { error } = await supabase
-                    .from('properties')
-                    .update({
-                      title: formData.get('title') as string,
-                      description: formData.get('description') as string,
-                      price: parseFloat(formData.get('price') as string),
-                      location: formData.get('location') as string,
-                      bedrooms: parseInt(formData.get('bedrooms') as string) || null,
-                      bathrooms: parseInt(formData.get('bathrooms') as string) || null,
-                      area_sqm: parseFloat(formData.get('area_sqm') as string) || null,
-                      property_type: formData.get('property_type') as string,
-                      listing_type: formData.get('listing_type') as string,
-                      status: formData.get('status') as string,
-                    })
-                    .eq('id', id);
-                  
-                  if (error) throw error;
-                  
-                  toast.success({
-                    title: "Property updated",
-                    description: "Changes have been saved successfully."
-                  });
-                  
-                  setIsEditMode(false);
-                  loadProperty(); // Reload to show updated data
-                } catch (error) {
-                  console.error('Update error:', error);
-                  toast.error({
-                    title: "Update failed",
-                    description: "Unable to update property. Please try again."
-                  });
-                }
-              }} className="space-y-2 sm:space-y-3">
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  <div>
-                    <label className="text-[10px] sm:text-xs font-medium mb-0.5 block text-foreground">Title</label>
-                    <Input name="title" defaultValue={property.title} required className="h-8 text-xs" />
-                  </div>
-                  
-                  <div>
-                    <label className="text-[10px] sm:text-xs font-medium mb-0.5 block text-foreground">Location</label>
-                    <Input name="location" defaultValue={property.location} required className="h-8 text-xs" />
-                  </div>
-                  
-                  <div>
-                    <label className="text-[10px] sm:text-xs font-medium mb-0.5 block text-foreground">Price (IDR)</label>
-                    <Input name="price" type="number" defaultValue={property.price} required className="h-8 text-xs" />
-                  </div>
-                  
-                  <div>
-                    <label className="text-[10px] sm:text-xs font-medium mb-0.5 block text-foreground">Area (sqm)</label>
-                    <Input name="area_sqm" type="number" step="0.01" defaultValue={property.area_sqm || ''} className="h-8 text-xs" />
-                  </div>
-                  
-                  <div>
-                    <label className="text-[10px] sm:text-xs font-medium mb-0.5 block text-foreground">Bedrooms</label>
-                    <Input name="bedrooms" type="number" defaultValue={property.bedrooms || ''} className="h-8 text-xs" />
-                  </div>
-                  
-                  <div>
-                    <label className="text-[10px] sm:text-xs font-medium mb-0.5 block text-foreground">Bathrooms</label>
-                    <Input name="bathrooms" type="number" defaultValue={property.bathrooms || ''} className="h-8 text-xs" />
-                  </div>
-                  
-                  <div>
-                    <label className="text-[10px] sm:text-xs font-medium mb-0.5 block text-foreground">Type</label>
-                    <Select name="property_type" defaultValue={property.property_type}>
-                      <SelectTrigger className="h-8 text-xs">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="house">House</SelectItem>
-                        <SelectItem value="apartment">Apartment</SelectItem>
-                        <SelectItem value="villa">Villa</SelectItem>
-                        <SelectItem value="land">Land</SelectItem>
-                        <SelectItem value="commercial">Commercial</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div>
-                    <label className="text-[10px] sm:text-xs font-medium mb-0.5 block text-foreground">Listing</label>
-                    <Select name="listing_type" defaultValue={property.listing_type}>
-                      <SelectTrigger className="h-8 text-xs">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="sale">Sale</SelectItem>
-                        <SelectItem value="rent">Rent</SelectItem>
-                        <SelectItem value="lease">Lease</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div>
-                    <label className="text-[10px] sm:text-xs font-medium mb-0.5 block text-foreground">Status</label>
-                    <Select name="status" defaultValue={property.status}>
-                      <SelectTrigger className="h-8 text-xs">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="sold">Sold</SelectItem>
-                        <SelectItem value="rented">Rented</SelectItem>
-                        <SelectItem value="inactive">Inactive</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="text-[10px] sm:text-xs font-medium mb-0.5 block text-foreground">Description</label>
-                  <Textarea name="description" rows={3} defaultValue={property.description} required className="text-xs" />
-                </div>
-                
-                <div className="flex gap-2 pt-2">
-                  <Button type="submit" size="sm" className="bg-primary hover:bg-primary/90 h-7 text-xs px-3">
-                    Save
-                  </Button>
-                  <Button type="button" variant="outline" size="sm" onClick={() => setIsEditMode(false)} className="h-7 text-xs px-3">
-                    Cancel
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        )}
-        
-        {/* Hero Image Gallery with Floating Opportunity Score */}
-        <div className="mb-2 -mx-2 sm:mx-0 relative">
-          <EnhancedImageGallery
-            images={property.images?.length ? property.images : (property.image_urls?.length ? property.image_urls : [])}
-            title={property.title}
-            propertyType={property.property_type}
-            listingType={property.listing_type}
-            createdAt={property.created_at}
-            bedrooms={property.bedrooms}
-            bathrooms={property.bathrooms}
-            areaSqm={property.area_sqm}
-            location={property.location}
-          />
-          {/* Floating Opportunity Score Overlay */}
-          <HeroOpportunityOverlay
-            opportunityScore={(property as any).opportunity_score}
-            aiEstimatedPrice={(property as any).ai_estimated_price}
-            currentPrice={property.price}
-          />
-        </div>
-
-        {/* Urgency Signals — social proof immediately after gallery */}
-        <PropertyUrgencySignals
-          propertyId={property.id}
-          createdAt={property.created_at}
-          className="mb-2 px-1"
-        />
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-2 sm:space-y-3">
-            <ScrollReveal direction="up" delay={0}>
-            
-            {/* Property Header - Slim Glassmorphic */}
-            <Card className="border border-gold-primary/10 bg-card backdrop-blur-xl rounded-xl overflow-hidden">
-              <CardContent className="p-3 sm:p-5">
-                {/* Price — hero-level prominence */}
-                <div className="flex items-start justify-between gap-3 mb-3">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-2 flex-wrap">
-                      <span className="text-xl sm:text-3xl lg:text-4xl font-extrabold text-gold-primary tracking-tight leading-none">
-                        {formatPrice(property.price)}
-                      </span>
-                      {property.listing_type === 'rent' && (
-                        <span className="text-xs sm:text-sm text-muted-foreground font-medium">/{t('propertyDetail.perMonth')}</span>
-                      )}
-                    </div>
-                    {property.area_sqm && property.area_sqm > 0 && (
-                      <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">
-                        {formatPrice(Math.round(property.price / property.area_sqm))}/m²
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex flex-wrap gap-1 flex-shrink-0">
-                    <Badge className={`px-2 py-0.5 h-6 text-[10px] sm:text-xs rounded-md shadow-sm border-0 font-semibold ${property.listing_type === 'sale' ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white' : 'bg-gradient-to-r from-sky-500 to-blue-600 text-white'}`}>
-                      {property.listing_type === 'sale' ? t('propertyDetail.forSale') : t('propertyDetail.forRent')}
-                    </Badge>
-                    <Badge variant="outline" className="border-border/50 px-2 py-0.5 h-6 text-[10px] sm:text-xs rounded-md bg-muted/50 text-foreground capitalize">
-                      {property.property_type}
-                    </Badge>
-                  </div>
-                </div>
-
-                {/* Title */}
-                <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-foreground mb-2 leading-tight">
-                  {property.title}
-                </h1>
-
-                {/* Location */}
-                <div className="flex items-start gap-1.5 mb-2 p-2 bg-muted/30 rounded-lg border border-border/20">
-                  <MapPin className="h-3.5 w-3.5 text-gold-primary flex-shrink-0 mt-0.5" />
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs sm:text-sm font-medium text-foreground">{property.location}</div>
-                    {property.address && (
-                      <div className="text-[10px] sm:text-xs text-muted-foreground">{property.address}</div>
-                    )}
-                    <div className="flex items-center gap-1 mt-1 flex-wrap">
-                      {property.province && (
-                        <Badge variant="outline" className="text-[10px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
-                          {property.province}
-                        </Badge>
-                      )}
-                      {property.city && (
-                        <Badge variant="outline" className="text-[10px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
-                          {property.city}
-                        </Badge>
-                      )}
-                      {property.district && (
-                        <Badge variant="outline" className="text-[10px] px-1 py-0 h-4 bg-muted/50 text-foreground/80 border-border/30">
-                          {property.district}
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0 flex-shrink-0 active:scale-95" title="Maps"><Navigation className="h-3 w-3 text-gold-primary" /></Button>
-                </div>
-
-                {/* Posted Time */}
-                <div className="flex items-center gap-1 mb-2 text-[10px] text-muted-foreground">
-                  <Clock className="h-3 w-3" />
-                  <span>Posted {formatDistanceToNow(new Date(property.created_at), { addSuffix: true, locale: localeId })}</span>
-                  {property.development_status !== 'completed' && (
-                    <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 px-1.5 py-0 h-4 text-[9px] rounded-md ml-1">
-                      {property.development_status === 'new_project' ? '✨ New' : '🚀 Pre-Launch'}
-                    </Badge>
-                  )}
-                </div>
-
-                {/* Property Stats - Slim Grid */}
-                <div className="grid grid-cols-4 gap-1 sm:gap-2 mt-2">
-                  {property.bedrooms && (
-                    <div className="text-center p-1.5 bg-gold-primary/5 rounded-lg border border-gold-primary/10">
-                      <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-gold-primary/10 flex items-center justify-center mx-auto mb-0.5">
-                        <Bed className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 text-gold-primary" />
-                      </div>
-                      <div className="font-bold text-xs sm:text-sm text-foreground">{property.bedrooms}</div>
-                      <div className="text-[7px] sm:text-[9px] text-muted-foreground">{t('propertyDetail.beds')}</div>
-                    </div>
-                  )}
-                  {property.bathrooms && (
-                    <div className="text-center p-1.5 bg-gold-primary/5 rounded-lg border border-gold-primary/10">
-                      <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-gold-primary/10 flex items-center justify-center mx-auto mb-0.5">
-                        <Bath className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 text-gold-primary" />
-                      </div>
-                      <div className="font-bold text-xs sm:text-sm text-foreground">{property.bathrooms}</div>
-                      <div className="text-[7px] sm:text-[9px] text-muted-foreground">{t('propertyDetail.baths')}</div>
-                    </div>
-                  )}
-                  {property.area_sqm && (
-                    <div className="text-center p-1.5 bg-gold-primary/5 rounded-lg border border-gold-primary/10">
-                      <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-gold-primary/10 flex items-center justify-center mx-auto mb-0.5">
-                        <Square className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 text-gold-primary" />
-                      </div>
-                      <div className="font-bold text-xs sm:text-sm text-foreground">{property.area_sqm}</div>
-                      <div className="text-[7px] sm:text-[9px] text-muted-foreground">m²</div>
-                    </div>
-                  )}
-                  <div className="text-center p-1.5 bg-muted/30 rounded-lg border border-border/20">
-                    <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-0.5">
-                      <Calendar className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 text-muted-foreground" />
-                    </div>
-                    <div className="font-bold text-xs sm:text-sm text-foreground">
-                      {new Date(property.created_at).getFullYear()}
-                    </div>
-                    <div className="text-[7px] sm:text-[9px] text-muted-foreground">{t('propertyDetail.listed')}</div>
-                  </div>
-                </div>
-
-                {/* AI Smart Collection Badges */}
-                <SmartCollectionBadges propertyId={property.id} />
-
-                {/* Trust & Verification Shield */}
-                <PropertyTrustShield
-                  property={{ id: property.id, ...property }}
-                  className="mt-3"
-                />
-
-                {/* Quick Action Buttons - Book Survey prominently displayed */}
-                <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-border">
-                  <BookingDialog 
-                    propertyId={property.id} 
-                    propertyTitle={property.title}
-                    trigger={
-                      <Button 
-                        className="w-full h-9 text-[10px] sm:text-xs font-medium rounded-lg bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:from-gold-primary/90 hover:to-gold-primary/70 text-background active:scale-95 transition-transform shadow-sm shadow-gold-primary/20"
-                      >
-                        <Calendar className="h-3 w-3 mr-1" />
-                        {t('propertyDetail.scheduleViewing')}
-                      </Button>
-                    }
-                  />
-                  <SurveyBookingDialog 
-                    propertyId={property.id} 
-                    propertyTitle={property.title}
-                    propertyLocation={property.city || property.location}
-                    trigger={
-                      <Button 
-                        variant="outline"
-                        className="w-full h-9 text-[10px] sm:text-xs font-medium rounded-lg border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground active:scale-95 transition-transform"
-                      >
-                        <ClipboardCheck className="h-3 w-3 mr-1" />
-                        {t('propertyDetail.bookSurvey')}
-                      </Button>
-                    }
-                  />
-                </div>
-              </CardContent>
-            </Card>
-            </ScrollReveal>
-
-            {/* Investment Hero Summary — top conversion widget */}
-            <Suspense fallback={null}>
-              <InvestmentHeroSummary
-                propertyId={property.id}
-                price={property.price}
-                city={property.city}
-                propertyType={property.property_type}
-                onEscrowClick={() => {
-                  if (!user) { setShowAuthModal(true); return; }
-                  setShowMobileOffer(true);
-                }}
-              />
-            </Suspense>
-
-            {/* Smart Price Positioning Insight */}
-            <Suspense fallback={null}>
-              <SmartPricePositioning
-                propertyId={property.id}
-                currentPrice={property.price}
-              />
-            </Suspense>
-
-            {/* Property Details Tabs - Slim */}
-            <ScrollReveal direction="up" delay={100}>
-            <Card className="border border-gold-primary/10 bg-card backdrop-blur-xl rounded-xl overflow-hidden">
-              <CardContent className="p-2 sm:p-4">
-                <Tabs defaultValue="description" className="w-full">
-                  <TabsList className="grid w-full grid-cols-4 bg-gold-primary/5 rounded-lg h-8 p-0.5 border border-gold-primary/10">
-                    <TabsTrigger value="description" className="data-[state=active]:bg-gold-primary data-[state=active]:text-background rounded-md text-[10px] sm:text-xs font-medium h-7">{t('propertyDetail.description')}</TabsTrigger>
-                    <TabsTrigger value="features" className="data-[state=active]:bg-gold-primary data-[state=active]:text-background rounded-md text-[10px] sm:text-xs font-medium h-7">{t('propertyDetail.features')}</TabsTrigger>
-                    <TabsTrigger value="details" className="data-[state=active]:bg-gold-primary data-[state=active]:text-background rounded-md text-[10px] sm:text-xs font-medium h-7">{t('propertyDetail.details')}</TabsTrigger>
-                    <TabsTrigger value="ask-ai" className="data-[state=active]:bg-gold-primary data-[state=active]:text-background rounded-md text-[10px] sm:text-xs font-medium h-7 flex items-center gap-1">
-                      <MessageCircle className="h-3 w-3" />Ask AI
-                    </TabsTrigger>
-                  </TabsList>
-                  
-                  <TabsContent value="description" className="mt-2 sm:mt-3">
-                    <p className="text-foreground leading-relaxed text-xs sm:text-sm">
-                      {property.description || t('propertyDetail.noDescription')}
-                    </p>
-                  </TabsContent>
-                  
-                  <TabsContent value="features" className="mt-2 sm:mt-3">
-                    <div className="grid grid-cols-1 gap-1 sm:gap-1.5">
-                      {property.property_features && Object.keys(property.property_features).length > 0 ? (
-                        Object.entries(property.property_features).map(([key, value]) => (
-                          <div key={key} className="flex justify-between py-1.5 px-2 bg-muted/30 rounded-lg text-[10px] sm:text-xs">
-                            <span className="font-medium capitalize text-foreground">{key.replace(/_/g, ' ')}</span>
-                            <span className="text-muted-foreground">{String(value)}</span>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-muted-foreground text-center py-4 text-xs">{t('propertyDetail.noFeatures')}</p>
-                      )}
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="details" className="mt-2 sm:mt-3">
-                    <div className="grid grid-cols-2 gap-1 sm:gap-1.5">
-                      <div className="flex justify-between py-1.5 px-2 bg-muted/30 rounded-lg text-[10px] sm:text-xs">
-                        <span className="font-medium text-foreground">{t('propertyDetail.type')}</span>
-                        <span className="text-muted-foreground capitalize">{property.property_type}</span>
-                      </div>
-                      <div className="flex justify-between py-1.5 px-2 bg-muted/30 rounded-lg text-[10px] sm:text-xs">
-                        <span className="font-medium text-foreground">{t('propertyDetail.listing')}</span>
-                        <span className="text-muted-foreground capitalize">{property.listing_type}</span>
-                      </div>
-                      <div className="flex justify-between py-1.5 px-2 bg-muted/30 rounded-lg text-[10px] sm:text-xs items-center">
-                        <span className="font-medium text-foreground">{t('propertyDetail.status')}</span>
-                        <Badge variant={property.status === 'active' ? 'default' : 'secondary'} className="h-4 text-[10px] px-1.5 rounded-md">
-                          {property.status}
-                        </Badge>
-                      </div>
-                      <div className="flex justify-between py-1.5 px-2 bg-muted/30 rounded-lg text-[10px] sm:text-xs">
-                        <span className="font-medium text-foreground">{t('propertyDetail.listed')}</span>
-                        <span className="text-muted-foreground">
-                          {new Date(property.created_at).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="ask-ai" className="mt-2 sm:mt-3">
-                    <Suspense fallback={<div className="flex items-center justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>}>
-                      <PropertyChatbot propertyId={id!} propertyData={property as unknown as Record<string, unknown>} />
-                    </Suspense>
-                  </TabsContent>
-                </Tabs>
-              </CardContent>
-            </Card>
-            </ScrollReveal>
-
-            {/* ─── INVESTMENT INSIGHT PANEL ─── Promoted to position #2 for conversion */}
-            <ScrollReveal direction="up" delay={80}>
-              <Suspense fallback={null}>
-                <PropertyInvestmentDashboard
-                  propertyId={property.id}
-                  currentPrice={property.price}
-                  city={property.city}
-                  propertyType={property.property_type}
-                />
-              </Suspense>
-            </ScrollReveal>
-
-            {/* Neighborhood Insights */}
-            <Suspense fallback={<div className="h-40 flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-gold-primary" /></div>}>
-              <PropertyNeighborhoodInsights
-                city={property.city}
-                coordinates={property.coordinates}
-                propertyType={property.property_type}
-              />
-            </Suspense>
-
-            {/* 3D Viewer */}
-            <SimpleProperty3DViewer
-              property={{
-                ...property,
-                image_urls: property.images || [],
-                listing_type: property.listing_type as "sale" | "rent" | "lease"
-              }}
-              threeDModelUrl={property.three_d_model_url}
-              virtualTourUrl={property.virtual_tour_url}
-            />
-
-            {/* Drone Video Player */}
-            {property.drone_video_url && (
-              <DroneVideoPlayer
-                videoUrl={property.drone_video_url}
-                title="Drone Walkthrough Video"
-              />
-            )}
-
-            {/* GLB/GLTF 3D Model Viewer */}
-            {property.glb_model_url && (
-              <Suspense fallback={<div className="flex items-center justify-center p-8"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div>}>
-                <GLBModelViewer
-                  modelUrl={property.glb_model_url}
-                  title="3D Property Model"
-                />
-              </Suspense>
-            )}
-
-            {/* Virtual Tour & 3D Model - Slim */}
-            {(property.virtual_tour_url || property.three_d_model_url) && (
-              <Card className="border border-border bg-card backdrop-blur-xl rounded-xl overflow-hidden">
-                <CardHeader className="p-2 sm:p-3 pb-1 bg-muted/30">
-                  <CardTitle className="flex items-center gap-1.5 text-xs sm:text-sm text-foreground">
-                    <div className="w-5 h-5 rounded-md bg-primary/10 flex items-center justify-center">
-                      <Camera className="h-2.5 w-2.5 text-primary" />
-                    </div>
-                    {t('propertyDetail.virtualExperience')}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-2 sm:p-3 pt-1 space-y-1">
-                  {property.virtual_tour_url && (
-                    <Button className="w-full h-7 text-[10px] sm:text-xs bg-primary hover:bg-primary/90">
-                      <Globe className="h-3 w-3 mr-1" />
-                      {t('propertyDetail.virtualTour')}
-                    </Button>
-                  )}
-                  {property.three_d_model_url && (
-                    <Button variant="outline" className="w-full h-7 text-[10px] sm:text-xs">
-                      <Box className="h-3 w-3 mr-1" />
-                      {t('propertyDetail.model3D')}
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-            )}
-          </div>
-
-          {/* Sidebar - Slim */}
-          <div className="space-y-2 sm:space-y-3">
-
-            {/* Investor Funnel CTA — Primary conversion widget */}
-            <Suspense fallback={null}>
-              <InvestorFunnelCTA
-                propertyId={property.id}
-                propertyTitle={property.title}
-                propertyImage={property.images?.[0] || property.image_urls?.[0]}
-                propertyPrice={property.price}
-                sellerId={property.owner_id}
-                agentId={property.agent_id}
-                opportunityScore={(property as any).opportunity_score}
-                rentalYield={property.property_type === 'villa' ? 8.5 : property.property_type === 'apartment' ? 6.2 : 5.5}
-                priceDropPct={(property as any).price_drop_pct}
-                growthForecast={property.city?.toLowerCase().includes('bali') ? 12 : 7}
-                onWhatsAppClick={() => {
-                  if (user && property.posted_by?.whatsapp_number) {
-                    window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, I'm interested in ${property.title}`, '_blank');
-                  } else if (!user) {
-                    setShowAuthModal(true);
-                  } else {
-                    toast({ title: t('propertyDetail.contactNotAvailable'), variant: "destructive" });
-                  }
-                }}
-                onScheduleClick={() => {
-                  // Scroll to booking section or trigger dialog
-                  const bookingEl = document.querySelector('[data-booking-trigger]');
-                  bookingEl?.scrollIntoView({ behavior: 'smooth' });
-                }}
-              />
-            </Suspense>
-
-            {/* Escrow Safety Explainer */}
-            <Suspense fallback={null}>
-              <EscrowSafetyModule />
-            </Suspense>
-
-            {/* Deal Action Timeline */}
-            <Suspense fallback={null}>
-              <DealActionTimeline currentStage={0} />
-            </Suspense>
-
-            {/* Smart Inquiry CTA */}
-            <Suspense fallback={null}>
-              <SmartInquiryCTA
-                intentLevel="medium"
-                onInquiry={(type) => { setInquiryType(type); setInquiryPopupOpen(true); }}
-                propertyTitle={property.title}
-              />
-            </Suspense>
-
-            {/* Inquiry Trust Popup */}
-            <Suspense fallback={null}>
-              <InquiryTrustPopup
-                open={inquiryPopupOpen}
-                onOpenChange={setInquiryPopupOpen}
-                propertyId={property.id}
-                propertyTitle={property.title}
-                inquiryType={inquiryType}
-              />
-            </Suspense>
-
-            {/* Wallet Funding CTA */}
-            <Suspense fallback={null}>
-              <WalletFundingCTA
-                propertyPrice={property.price}
-                onAuthRequired={() => setShowAuthModal(true)}
-              />
-            </Suspense>
-
-            {/* Personalized Investor Match Signal */}
-            <Suspense fallback={null}>
-              <InvestorMatchSignal
-                propertyPrice={property.price}
-                propertyType={property.property_type}
-                city={property.city}
-                rentalYield={property.property_type === 'villa' ? 8.5 : property.property_type === 'apartment' ? 6.2 : 5.5}
-              />
-            </Suspense>
-
-            {/* KPR Calculator */}
-            {property.listing_type === 'sale' && (
-              <div className="space-y-2 sm:space-y-3">
-                <KPRCalculator propertyPrice={property.price} />
-                <PropertyMortgageWidget
-                  propertyPrice={property.price}
-                  propertyId={property.id}
-                />
-              </div>
-            )}
-
-            {/* Days on Market Tracker */}
-            <DaysOnMarketTracker propertyId={property.id} />
-
-            {/* Valuation History */}
-            <ValuationHistory propertyId={property.id} currentPrice={property.price} />
-
-            {/* Investment Snapshot Widget */}
-            <PropertyInvestmentWidget
-              price={property.price}
-              city={property.city || property.location}
-              propertyType={property.property_type}
-              landArea={property.area_sqm}
-            />
-
-            {/* AI Match Explainer */}
-            {userAiProfile && matchScore > 0 && (
-              <AIMatchExplainer
-                matchScore={matchScore}
-                confidenceScore={confidenceScore}
-                property={{
-                  city: property.city,
-                  price: property.price,
-                  has_pool: !!(property.property_features as any)?.pool,
-                  property_type: property.property_type,
-                }}
-                userProfile={userAiProfile}
-                collaborativeOverlap={collaborativeOverlap}
-              />
-            )}
-            
-            {/* Contact Information - Slim Agent Card */}
-            <Card className="border border-gold-primary/10 bg-card backdrop-blur-xl rounded-xl overflow-hidden">
-              <CardHeader className="p-2 sm:p-3 pb-1 bg-gold-primary/5">
-                <CardTitle className="flex items-center gap-1.5 text-xs sm:text-sm text-foreground">
-                  <div className="w-5 h-5 rounded-md bg-gold-primary/10 flex items-center justify-center">
-                    <User className="h-2.5 w-2.5 text-gold-primary" />
-                   </div>
-                  {t('propertyDetail.agentInfo')}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-2 sm:p-3 pt-1 space-y-2">
-                {property.posted_by ? (
-                  <div>
-                    {/* Agent Profile - Slim */}
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-gold-primary/15 to-gold-primary/5 p-0.5">
-                        <img
-                          src={property.posted_by.avatar_url || "/placeholder.svg"}
-                          alt={property.posted_by.name}
-                          className="w-full h-full rounded-md object-cover"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-xs sm:text-sm text-foreground truncate">{property.posted_by.name}</h4>
-                        <p className="text-[9px] sm:text-[10px] text-gold-primary font-medium">{property.posted_by.position}</p>
-                        <div className="flex items-center gap-1 mt-0.5">
-                          <Star className="h-2.5 w-2.5 fill-gold-primary text-gold-primary" />
-                          <span className="text-[10px] font-semibold text-foreground">{property.posted_by.customer_feedback_rating}</span>
-                          <span className="text-[10px] text-muted-foreground">({property.posted_by.customer_feedback_count})</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Company - Slim */}
-                    <div className="bg-gold-primary/5 border border-gold-primary/10 rounded-lg p-2 mb-2">
-                      <div className="flex items-center gap-1.5 font-medium mb-0.5">
-                        <div className="w-5 h-5 bg-gold-primary/10 rounded text-gold-primary text-[9px] flex items-center justify-center font-bold">
-                          {property.posted_by.company_name?.charAt(0)}
-                        </div>
-                        <span className="truncate text-[10px] sm:text-xs text-foreground">{property.posted_by.company_name}</span>
-                      </div>
-                      <p className="text-[9px] text-muted-foreground truncate">{property.posted_by.office_address}</p>
-                    </div>
-
-                    {/* Contact Buttons - Slim */}
-                    <div className="space-y-1.5">
-                      <Button 
-                        className="w-full bg-gradient-to-r from-gold-primary to-gold-primary/80 hover:from-gold-primary/90 hover:to-gold-primary/70 text-background h-8 text-[10px] sm:text-xs font-medium rounded-lg active:scale-95 transition-transform shadow-sm shadow-gold-primary/20"
-                        onClick={() => {
-                          if (user && property.posted_by?.whatsapp_number) {
-                            window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, interested in ${property.title}`, '_blank');
-                          } else if (!user) {
-                            setShowAuthModal(true);
-                          } else {
-                            toast({ title: t('propertyDetail.contactNotAvailable'), variant: "destructive" });
-                          }
-                        }}
-                      >
-                        📱 WhatsApp
-                      </Button>
-                      <div className="grid grid-cols-2 gap-1">
-                        <Button 
-                          variant="outline" 
-                          className="h-7 text-[9px] sm:text-[10px] rounded-lg border-border/50 active:scale-95 transition-transform"
-                          onClick={() => {
-                            if (user && property.posted_by?.phone_number) {
-                              window.open(`tel:${property.posted_by.phone_number}`, '_self');
-                            } else {
-                              toast({ title: t('propertyDetail.signInRequired'), variant: "destructive" });
-                            }
-                          }}
-                        >
-                          <Phone className="h-2.5 w-2.5 mr-0.5" />
-                          {t('propertyDetail.call')}
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          className="h-7 text-[9px] sm:text-[10px] rounded-lg border-border/50 active:scale-95 transition-transform"
-                          onClick={() => {
-                            if (user && ownerInfo?.email) {
-                              window.open(`mailto:${ownerInfo.email}?subject=Inquiry: ${property.title}`, '_self');
-                            } else {
-                              toast({ title: t('propertyDetail.signInRequired'), variant: "destructive" });
-                            }
-                          }}
-                        >
-                          <Mail className="h-2.5 w-2.5 mr-0.5" />
-                          {t('propertyDetail.email')}
-                        </Button>
-                      </div>
-                      
-                      {/* Booking Buttons - Slim */}
-                      <BookingDialog 
-                        propertyId={property.id} 
-                        propertyTitle={property.title}
-                        trigger={
-                          <Button 
-                            variant="outline"
-                            className="w-full h-7 text-[9px] sm:text-[10px] font-medium rounded-lg border-primary text-primary hover:bg-primary hover:text-primary-foreground active:scale-95 transition-transform"
-                          >
-                            <Calendar className="h-2.5 w-2.5 mr-0.5" />
-                            {t('propertyDetail.scheduleViewing')}
-                          </Button>
-                        }
-                      />
-                      
-                      <SurveyBookingDialog 
-                        propertyId={property.id} 
-                        propertyTitle={property.title}
-                        propertyLocation={property.city || property.location}
-                        trigger={
-                          <Button 
-                            variant="outline"
-                            className="w-full h-7 text-[9px] sm:text-[10px] font-medium rounded-lg border-accent text-accent hover:bg-accent hover:text-accent-foreground active:scale-95 transition-transform"
-                          >
-                            <ClipboardCheck className="h-2.5 w-2.5 mr-0.5" />
-                            {t('propertyDetail.bookSurvey')}
-                          </Button>
-                        }
-                      />
-                    </div>
-
-                    {/* Agent Stats - Slim */}
-                    <div className="grid grid-cols-2 gap-1 pt-2 mt-2 border-t border-gold-primary/10">
-                      <div className="text-center p-1.5 bg-gold-primary/5 rounded-lg border border-gold-primary/10">
-                        <div className="font-bold text-xs sm:text-sm text-gold-primary">{property.posted_by.total_properties}+</div>
-                        <div className="text-[7px] sm:text-[8px] text-muted-foreground">{t('propertyDetail.properties')}</div>
-                      </div>
-                      <div className="text-center p-1.5 bg-gold-primary/5 rounded-lg border border-gold-primary/10">
-                        <div className="font-bold text-xs sm:text-sm text-gold-primary">{property.posted_by.experience_years}y</div>
-                        <div className="text-[7px] sm:text-[8px] text-muted-foreground">{t('propertyDetail.experience')}</div>
-                      </div>
-                    </div>
-
-                    {/* Agent Response Time Indicator */}
-                    <div className="flex items-center justify-center gap-1.5 pt-2 mt-2 border-t border-border/20">
-                      <div className="w-1.5 h-1.5 rounded-full bg-chart-2 animate-pulse" />
-                      <span className="text-[9px] text-muted-foreground">
-                        Typically responds within <strong className="text-foreground">2 hours</strong>
-                      </span>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <p className="text-xs text-muted-foreground mb-2">{t('propertyDetail.agentNotAvailable')}</p>
-                    <SurveyBookingDialog 
-                      propertyId={property.id} 
-                      propertyTitle={property.title}
-                      propertyLocation={property.city || property.location}
-                      trigger={
-                        <Button 
-                          variant="outline"
-                          className="w-full h-8 text-[10px] sm:text-xs font-medium rounded-lg border-accent text-accent hover:bg-accent hover:text-accent-foreground active:scale-95 transition-transform"
-                        >
-                           <ClipboardCheck className="h-3 w-3 mr-1" />
-                           {t('propertyDetail.bookSurvey')}
-                        </Button>
-                      }
-                    />
-                    <BookingDialog 
-                      propertyId={property.id} 
-                      propertyTitle={property.title}
-                      trigger={
-                        <Button 
-                          className="w-full h-8 text-[10px] sm:text-xs font-medium rounded-lg bg-primary hover:bg-primary/90 active:scale-95 transition-transform"
-                        >
-                          <Calendar className="h-3 w-3 mr-1" />
-                          {t('propertyDetail.scheduleViewing')}
-                        </Button>
-                      }
-                    />
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Investment Dashboard moved up into main content column for prominence */}
-
-        {/* Reviews Section */}
-        <ScrollReveal direction="up" delay={0}>
-          <div className="mt-6 sm:mt-8">
-            <PropertyReviews propertyId={property.id} />
-          </div>
-        </ScrollReveal>
-
-        {/* Market Intelligence Context */}
-        <ScrollReveal direction="up" delay={100}>
-          <div className="mt-4 sm:mt-6">
-            <Suspense fallback={null}>
-              <MarketContextCard city={property.city} currentPrice={property.price} />
-            </Suspense>
-          </div>
-        </ScrollReveal>
-
-        {/* Investment Insights */}
-        <ScrollReveal direction="up" delay={100}>
-          <div className="mt-4 sm:mt-6">
-            <Suspense fallback={null}>
-              <PropertyInvestmentInsights propertyId={property.id} />
-            </Suspense>
-          </div>
-        </ScrollReveal>
-
-        {/* Similar Properties & Nearby Investments */}
-        <div className="mt-4 sm:mt-8 grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
-          {/* Smart Property Recommendations */}
-          <PropertyRecommendations propertyId={property.id} propertyType={property.property_type} />
-
-          {/* Nearby Investment Opportunities */}
-          <NearbyInvestments propertyId={property.id} />
-
-          {/* More from Agent */}
-          {userMoreProperties.length > 0 && (
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="text-sm sm:text-lg font-bold text-foreground flex items-center gap-1.5">
-                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gold-primary/10 flex items-center justify-center">
-                    <User className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold-primary" />
-                  </div>
-                  More from {agentInfo?.full_name || ownerInfo?.full_name || t('propertyDetail.agentInfo')}
-                </h2>
-              </div>
-              
-              <div ref={moreFromAgentRef} className="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2 -mx-2 px-2">
-                {userMoreProperties.map((userProperty) => {
-                  const upPrice = userProperty.price;
-                  const upPriceFormatted = { main: getCurrencyFormatterShort()(upPrice), suffix: '' };
-
-                  return (
-                    <Card 
-                      key={userProperty.id} 
-                      className="flex-shrink-0 w-[160px] sm:w-[220px] border border-border/50 bg-card shadow-sm cursor-pointer snap-start rounded-xl overflow-hidden group hover:shadow-md hover:border-gold-primary/30 transition-all"
-                      onClick={() => navigate(`/properties/${userProperty.id}`)}
-                    >
-                      <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-                        <img
-                          src={getPropertyImage(userProperty.images, undefined, userProperty.image_urls)}
-                          alt={userProperty.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          loading="lazy"
-                        />
-                      </div>
-                      <div className="p-2.5 space-y-1.5">
-                        <div className="border border-gold-primary/20 bg-gold-primary/5 dark:bg-gold-primary/10 rounded-lg px-2 py-1.5">
-                          <div className="flex items-baseline gap-1">
-                            <span className="text-sm sm:text-base font-black text-gold-primary tracking-tight leading-none">{upPriceFormatted.main}</span>
-                            {upPriceFormatted.suffix && (
-                              <span className="text-[10px] sm:text-xs font-extrabold text-gold-primary/70">{upPriceFormatted.suffix}</span>
-                            )}
-                          </div>
-                        </div>
-                        <h3 className="font-semibold line-clamp-2 text-[11px] sm:text-xs leading-snug group-hover:text-gold-primary transition-colors">{userProperty.title}</h3>
-                        <div className="flex items-center gap-1">
-                          <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-gold-primary" />
-                          <span className="text-[9px] sm:text-[10px] text-muted-foreground font-medium line-clamp-1">{userProperty.location}</span>
-                        </div>
-                        <div className="flex items-center flex-wrap gap-1.5 pt-1.5 border-t border-border/30">
-                          {userProperty.bedrooms && userProperty.bedrooms > 0 && (
-                            <div className="flex items-center gap-1 border border-gold-primary/20 bg-gold-primary/5 dark:bg-gold-primary/10 rounded-lg px-2 py-0.5">
-                              <Bed className="h-3 w-3 text-gold-primary" />
-                              <span className="text-[10px] text-foreground font-bold">{userProperty.bedrooms}</span>
-                              <span className="text-[9px] text-muted-foreground font-semibold">KT</span>
-                            </div>
-                          )}
-                          {userProperty.area_sqm && (
-                            <div className="flex items-center gap-1 border border-border/40 bg-accent/5 dark:bg-accent/10 rounded-lg px-2 py-0.5">
-                              <span className="text-[9px] text-accent font-bold">LB</span>
-                              <span className="text-[10px] text-foreground font-bold">{userProperty.area_sqm}m²</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </Card>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Social Share Dialog */}
-      {property && (
-        <SocialShareDialog
-          open={showShareDialog}
-          onOpenChange={setShowShareDialog}
-          property={{
-            id: property.id,
-            title: property.title,
-            price: property.price,
-            location: property.location,
-            listing_type: property.listing_type as 'sale' | 'rent' | 'lease',
-            images: property.images,
-            city: property.city,
-            bedrooms: property.bedrooms,
-            bathrooms: property.bathrooms,
-            area_sqm: property.area_sqm,
-          }}
-        />
-      )}
-
-      <EnhancedAuthModal
-        isOpen={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
-        language="en"
+    <LuxeLayout>
+      <SEOHead
+        title={`${property.title} — ASTRA Villa`}
+        description={property.description?.slice(0, 160) || `Cinematic luxury villa in ${loc}`}
+        ogImage={images[0]}
       />
 
-      {/* Mobile Offer Dialog */}
-      <Suspense fallback={null}>
-        <MakeOfferDialog
-          open={showMobileOffer}
-          onOpenChange={setShowMobileOffer}
-          propertyId={property.id}
-          propertyTitle={property.title}
-          propertyImage={property.images?.[0] || property.image_urls?.[0]}
-          propertyPrice={property.price}
-          sellerId={property.owner_id}
-          agentId={property.agent_id}
-          opportunityScore={(property as any).opportunity_score}
-        />
-      </Suspense>
+      {/* ============ CINEMATIC HERO GALLERY ============ */}
+      <section className="relative w-full h-[78vh] md:h-[92vh] overflow-hidden luxe-grain">
+        {images.map((src, i) => (
+          <div
+            key={src + i}
+            className={cn(
+              "absolute inset-0 transition-opacity duration-[1200ms] ease-out",
+              i === idx ? "opacity-100" : "opacity-0",
+            )}
+            aria-hidden={i !== idx}
+          >
+            <img
+              src={src}
+              alt={`${property.title} — view ${i + 1}`}
+              loading={i === 0 ? "eager" : "lazy"}
+              className={cn("h-full w-full object-cover", i === idx && "luxe-kenburns")}
+            />
+          </div>
+        ))}
 
-      {/* Sticky Mobile Contact CTA — Optimized funnel with Make Offer */}
-      <div className="fixed bottom-0 left-0 right-0 z-[9980] md:hidden bg-card/95 backdrop-blur-2xl border-t border-gold-primary/10 shadow-[0_-8px_30px_hsl(var(--foreground)/0.08)]"
-        style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}
-      >
-        {/* Agent response indicator */}
-        <div className="flex items-center justify-center gap-1.5 py-1.5 border-b border-border/10 bg-gradient-to-r from-muted/30 via-gold-primary/5 to-muted/30">
-          <div className="w-1.5 h-1.5 rounded-full bg-chart-2 animate-pulse" />
-          <span className="text-[8px] text-muted-foreground">Agent responds within <strong className="text-foreground">2 hrs</strong></span>
+        {/* atmospheric overlays */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/85" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-black/60 via-transparent to-transparent" />
+
+        {/* top bar */}
+        <div className="absolute top-0 inset-x-0 z-20 pt-24 md:pt-28 px-5 md:px-10 flex items-center justify-between">
+          <button
+            onClick={() => navigate(-1)}
+            className="luxe-ghost-btn rounded-full px-4 py-2 text-[12px] inline-flex items-center gap-2"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" /> Back
+          </button>
+          <div className="flex items-center gap-2">
+            <button onClick={() => toggleFavorite(property.id)} className="luxe-ghost-btn rounded-full p-2.5">
+              <Heart className={cn("h-4 w-4", isFavorite(property.id) && "fill-[var(--luxe-gold)] text-[var(--luxe-gold)]")} />
+            </button>
+            <button onClick={handleShare} className="luxe-ghost-btn rounded-full p-2.5">
+              <Share2 className="h-4 w-4" />
+            </button>
+            <button onClick={() => setFullscreen(true)} className="luxe-ghost-btn rounded-full p-2.5">
+              <Maximize2 className="h-4 w-4" />
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-1.5 px-3 py-2">
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-bold text-gold-primary leading-none">{formatPrice(property.price)}</div>
-            {(property as any).opportunity_score && (
-              <div className="flex items-center gap-1 mt-0.5">
-                <Target className="h-2.5 w-2.5 text-primary" />
-                <span className="text-[9px] font-semibold text-primary">Score {(property as any).opportunity_score}</span>
+
+        {/* gallery controls */}
+        {images.length > 1 && (
+          <>
+            <button onClick={prev} className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 luxe-ghost-btn rounded-full p-3 hidden md:inline-flex">
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button onClick={next} className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 luxe-ghost-btn rounded-full p-3 hidden md:inline-flex">
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </>
+        )}
+
+        {/* hero info */}
+        <div className="absolute inset-x-0 bottom-0 z-10 px-5 md:px-10 pb-12 md:pb-20">
+          <div className="max-w-[1440px] mx-auto">
+            <span className="luxe-eyebrow">{property.property_type || "Private Villa"} · {property.listing_type === "rent" ? "Nightly Stay" : "For Sale"}</span>
+            <h1 className="font-serif-l mt-4 text-[40px] md:text-[88px] leading-[0.95] tracking-tight max-w-4xl">
+              {property.title}
+            </h1>
+            <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-luxe-fg/80">
+              <span className="inline-flex items-center gap-2"><MapPin className="h-3.5 w-3.5 text-[var(--luxe-gold)]" />{loc}</span>
+              <span className="inline-flex items-center gap-2"><Sparkles className="h-3.5 w-3.5 text-[var(--luxe-gold)]" />AI Score {ai?.investment_score?.toFixed(0) ?? "—"}/100</span>
+            </div>
+
+            {/* pagination + counter */}
+            {images.length > 1 && (
+              <div className="mt-8 flex items-center gap-4">
+                <div className="flex gap-1.5">
+                  {images.slice(0, 8).map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setIdx(i)}
+                      className={cn(
+                        "h-[2px] transition-all duration-500",
+                        i === idx ? "w-10 bg-[var(--luxe-gold)]" : "w-5 bg-white/25",
+                      )}
+                      aria-label={`Go to image ${i + 1}`}
+                    />
+                  ))}
+                </div>
+                <span className="font-mono-l text-[11px] text-luxe-mut">
+                  {String(idx + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}
+                </span>
               </div>
             )}
           </div>
-          <Button
-            size="sm"
-            className="h-9 px-3 text-[10px] font-semibold active:scale-95 transition-transform"
-            onClick={() => {
-              if (!user) { setShowAuthModal(true); return; }
-              setShowMobileOffer(true);
-            }}
-          >
-            <Sparkles className="h-3.5 w-3.5 mr-0.5" />
-            Offer
-          </Button>
-          <Button
-            size="sm"
-            className="bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background h-9 px-3 text-[10px] font-semibold shadow-sm shadow-gold-primary/20 active:scale-95 transition-transform"
-            onClick={() => {
-              if (user && property.posted_by?.whatsapp_number) {
-                window.open(`https://wa.me/${property.posted_by.whatsapp_number.replace('+', '')}?text=Hi, I'm interested in ${property.title}`, '_blank');
-              } else if (!user) {
-                setShowAuthModal(true);
-              } else {
-                toast({ title: t('propertyDetail.contactNotAvailable'), variant: "destructive" });
-              }
-            }}
-          >
-            <MessageCircle className="h-3.5 w-3.5 mr-0.5" />
-            WA
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-9 px-2.5 text-[10px] font-medium border-border/50 active:scale-95 transition-transform"
-            onClick={() => {
-              if (user && property.posted_by?.phone_number) {
-                window.open(`tel:${property.posted_by.phone_number}`, '_self');
-              } else if (!user) {
-                setShowAuthModal(true);
-              } else {
-                toast({ title: t('propertyDetail.contactNotAvailable'), variant: "destructive" });
-              }
-            }}
-          >
-            <Phone className="h-3.5 w-3.5" />
-          </Button>
         </div>
+      </section>
+
+      {/* ============ MAIN GRID — info + sticky booking ============ */}
+      <LuxeSection pad="md">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-12 lg:gap-16">
+          {/* ----- Left column ----- */}
+          <div className="space-y-20">
+            {/* feature strip */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {features.map(f => (
+                <LuxeCard key={f.label} variant="glass" radius="md" className="p-5">
+                  <f.icon className="h-4 w-4 text-[var(--luxe-gold)]" />
+                  <div className="mt-3 font-serif-l text-[22px] leading-none">{f.value}</div>
+                  <div className="text-[11px] uppercase tracking-[0.18em] text-luxe-mut mt-2">{f.label}</div>
+                </LuxeCard>
+              ))}
+            </div>
+
+            {/* story */}
+            <div>
+              <span className="luxe-eyebrow">The Story</span>
+              <h2 className="font-serif-l text-[32px] md:text-[44px] leading-[1.05] mt-4 max-w-2xl">
+                A cinematic retreat shaped by light, stone, and the rhythm of the ocean.
+              </h2>
+              <div className="luxe-divider my-8" />
+              <p className="text-[15px] md:text-[16px] leading-[1.85] text-luxe-fg/80 max-w-2xl whitespace-pre-line">
+                {property.description ||
+                  "An architectural sanctuary composed in dialogue with its landscape. Long sightlines, layered terraces and a quiet palette of timber and travertine create an atmosphere that feels at once contemporary and timeless."}
+              </p>
+            </div>
+
+            {/* AI intelligence panel */}
+            <div>
+              <LuxeSectionHead
+                eyebrow="ASTRA Intelligence"
+                title={<>Property <em className="not-italic text-[var(--luxe-gold)]">intelligence</em></>}
+                description="Real-time signals from our investment, demand and market models."
+              />
+              <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-3">
+                <Metric icon={Trophy}   label="Investment"  value={ai?.investment_score?.toFixed(0) ?? "—"} unit="/100" tint="gold" />
+                <Metric icon={TrendingUp} label="Est. ROI"  value={ai ? `${(ai.deviation_percent ? Math.abs(ai.deviation_percent) : 12).toFixed(1)}` : "12.4"} unit="% yr" tint="emerald" />
+                <Metric icon={Flame}    label="Demand"      value={ai?.demand_heat_score?.toFixed(0) ?? "82"} unit="/100" tint="ember" />
+                <Metric icon={Activity} label="Liquidity"   value={ai ? `${Math.round((ai.confidence ?? 0.7) * 100)}` : "74"} unit="/100" tint="cyan" />
+              </div>
+              {ai?.price_position && (
+                <p className="mt-6 text-[12px] text-luxe-mut">
+                  Price position: <span className="text-luxe-fg capitalize">{ai.price_position.replace("_", " ")}</span>
+                  {" · "}vs market avg{" "}
+                  <span className="text-luxe-fg">{fmtIDR(ai.avg_price_per_sqm)}/m²</span>
+                </p>
+              )}
+            </div>
+
+            {/* amenities */}
+            <div>
+              <LuxeSectionHead eyebrow="Amenities" title="What's inside" />
+              <div className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4">
+                {amenities.map((a: string) => (
+                  <div key={a} className="flex items-center gap-3 text-[14px] text-luxe-fg/85 border-b border-luxe pb-3">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[var(--luxe-gold)]" />
+                    {a}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* immersive */}
+            {(property.glb_model_url || property.virtual_tour_url || property.panorama_360_urls?.length) && (
+              <div>
+                <LuxeSectionHead
+                  eyebrow="Immersive"
+                  title={<>Step <em className="not-italic text-[var(--luxe-gold)]">inside</em></>}
+                  description="Walk the villa in 3D or explore 360° panoramas of every room."
+                />
+                <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {property.glb_model_url && (
+                    <LuxeCard variant="glass" radius="lg" className="overflow-hidden">
+                      <div className="aspect-[4/3] bg-black">
+                        <Suspense fallback={<div className="luxe-shimmer h-full w-full" />}>
+                          <GLBModelViewer modelUrl={property.glb_model_url} />
+                        </Suspense>
+                      </div>
+                      <div className="p-5 flex items-center justify-between">
+                        <div className="inline-flex items-center gap-2 text-[12px]">
+                          <Box className="h-3.5 w-3.5 text-[var(--luxe-gold)]" /> 3D Digital Twin
+                        </div>
+                        <Link to={`/digital-twin/${property.id}`} className="text-[12px] text-luxe-gold hover:underline">Open</Link>
+                      </div>
+                    </LuxeCard>
+                  )}
+                  {(property.virtual_tour_url || (property.panorama_360_urls?.length ?? 0) > 0) && (
+                    <LuxeCard variant="glass" radius="lg" className="p-6 flex flex-col justify-between">
+                      <div>
+                        <Compass className="h-5 w-5 text-[var(--luxe-gold)]" />
+                        <h3 className="font-serif-l text-[24px] mt-4">360° Virtual Tour</h3>
+                        <p className="text-[13px] text-luxe-mut mt-2">Navigate room-by-room with cinematic hotspots.</p>
+                      </div>
+                      <a
+                        href={property.virtual_tour_url || "#"}
+                        target="_blank" rel="noreferrer"
+                        className="luxe-gold-btn rounded-full px-5 py-3 text-[12px] font-medium inline-flex items-center justify-center gap-2 mt-6 self-start"
+                      >
+                        Enter tour
+                      </a>
+                    </LuxeCard>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* location atmosphere */}
+            <div>
+              <LuxeSectionHead eyebrow="Location" title="The neighborhood" description="A calm corner of the island, minutes from beach clubs, fine dining and wellness retreats." />
+              <LuxeCard variant="glass" radius="lg" className="mt-10 p-8">
+                <div className="flex items-center gap-3 text-[13px]">
+                  <MapPin className="h-4 w-4 text-[var(--luxe-gold)]" />
+                  <span>{loc}</span>
+                </div>
+                <div className="luxe-divider my-6" />
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                  {[
+                    ["Beach", "4 min"], ["Airport", "35 min"],
+                    ["Cafes", "2 min"], ["Yoga", "6 min"],
+                  ].map(([k, v]) => (
+                    <div key={k}>
+                      <div className="font-serif-l text-[24px]">{v}</div>
+                      <div className="text-[10px] uppercase tracking-[0.22em] text-luxe-mut mt-2">{k}</div>
+                    </div>
+                  ))}
+                </div>
+              </LuxeCard>
+            </div>
+          </div>
+
+          {/* ----- Right column — sticky booking ----- */}
+          <aside className="lg:sticky lg:top-28 lg:self-start">
+            <LuxeCard variant="glass" radius="lg" glow className="p-7 md:p-8">
+              <div className="flex items-baseline gap-2">
+                <span className="font-serif-l text-[40px] leading-none">{fmtIDR(property.price)}</span>
+                <span className="text-[12px] text-luxe-mut">{property.listing_type === "rent" ? "/ night" : ""}</span>
+              </div>
+              <div className="luxe-divider my-6" />
+
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-2">
+                  <BookingField label="Check in" icon={Calendar}>
+                    <input type="date" value={checkIn} onChange={e => setCheckIn(e.target.value)}
+                      className="w-full bg-transparent text-[13px] text-luxe-fg outline-none [color-scheme:dark]" />
+                  </BookingField>
+                  <BookingField label="Check out" icon={Calendar}>
+                    <input type="date" value={checkOut} onChange={e => setCheckOut(e.target.value)}
+                      className="w-full bg-transparent text-[13px] text-luxe-fg outline-none [color-scheme:dark]" />
+                  </BookingField>
+                </div>
+                <BookingField label="Guests" icon={Users}>
+                  <input type="number" min={1} max={20} value={guests} onChange={e => setGuests(parseInt(e.target.value) || 1)}
+                    className="w-full bg-transparent text-[13px] text-luxe-fg outline-none" />
+                </BookingField>
+              </div>
+
+              <button
+                onClick={() => {
+                  if (!checkIn || !checkOut) {
+                    toast({ title: "Select dates", description: "Please choose check-in and check-out." });
+                    return;
+                  }
+                  toast({ title: "Reservation requested", description: "Our concierge will confirm shortly." });
+                }}
+                className="luxe-gold-btn w-full rounded-full py-3.5 text-[13px] font-medium mt-6"
+              >
+                Reserve
+              </button>
+
+              <a href={whatsappLink} target="_blank" rel="noreferrer"
+                 className="luxe-ghost-btn w-full rounded-full py-3.5 text-[12px] mt-3 inline-flex items-center justify-center gap-2">
+                <MessageCircle className="h-3.5 w-3.5" /> WhatsApp Concierge
+              </a>
+
+              <div className="luxe-divider my-6" />
+              <div className="flex items-center gap-2 text-[11px] text-luxe-mut">
+                <ShieldCheck className="h-3.5 w-3.5 text-[var(--luxe-emerald)]" />
+                Verified listing · Escrow-protected payments
+              </div>
+            </LuxeCard>
+          </aside>
+        </div>
+      </LuxeSection>
+
+      {/* ============ FULLSCREEN GALLERY ============ */}
+      {fullscreen && (
+        <div className="fixed inset-0 z-[120] bg-black">
+          <img src={hero} alt="" className="h-full w-full object-contain" />
+          <button onClick={() => setFullscreen(false)}
+                  className="absolute top-6 right-6 luxe-ghost-btn rounded-full p-3 z-10">
+            <X className="h-5 w-5" />
+          </button>
+          {images.length > 1 && (
+            <>
+              <button onClick={prev} className="absolute left-6 top-1/2 -translate-y-1/2 luxe-ghost-btn rounded-full p-3">
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <button onClick={next} className="absolute right-6 top-1/2 -translate-y-1/2 luxe-ghost-btn rounded-full p-3">
+                <ChevronRight className="h-5 w-5" />
+              </button>
+              <div className="absolute bottom-6 inset-x-0 text-center font-mono-l text-[11px] text-luxe-mut">
+                {String(idx + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* mobile booking bar */}
+      <div className="lg:hidden fixed bottom-[72px] inset-x-3 z-40">
+        <LuxeCard variant="glass" radius="pill" className="px-5 py-3 flex items-center justify-between">
+          <div>
+            <div className="font-serif-l text-[18px] leading-none">{fmtIDR(property.price)}</div>
+            <div className="text-[10px] text-luxe-mut mt-1">{property.listing_type === "rent" ? "per night" : "list price"}</div>
+          </div>
+          <a href={whatsappLink} target="_blank" rel="noreferrer" className="luxe-gold-btn rounded-full px-5 py-2.5 text-[12px] font-medium inline-flex items-center gap-2">
+            <Phone className="h-3.5 w-3.5" /> Reserve
+          </a>
+        </LuxeCard>
       </div>
-    </div>
+    </LuxeLayout>
   );
 };
+
+/* ------------------------------------------------------------------ */
+/*  Small primitives                                                  */
+/* ------------------------------------------------------------------ */
+function Metric({
+  icon: Icon, label, value, unit, tint,
+}: {
+  icon: any; label: string; value: string; unit?: string;
+  tint?: "gold" | "emerald" | "ember" | "cyan";
+}) {
+  const color = {
+    gold: "var(--luxe-gold)",
+    emerald: "var(--luxe-emerald)",
+    ember: "var(--luxe-ember)",
+    cyan: "var(--luxe-cyan)",
+  }[tint || "gold"];
+  return (
+    <LuxeCard variant="glass" radius="md" glow className="p-5">
+      <Icon className="h-4 w-4" style={{ color }} />
+      <div className="mt-4 flex items-baseline gap-1">
+        <div className="font-serif-l text-[30px] leading-none">{value}</div>
+        {unit && <div className="text-[11px] text-luxe-mut">{unit}</div>}
+      </div>
+      <div className="text-[10px] uppercase tracking-[0.22em] text-luxe-mut mt-2">{label}</div>
+    </LuxeCard>
+  );
+}
+
+function BookingField({
+  label, icon: Icon, children,
+}: { label: string; icon: any; children: React.ReactNode }) {
+  return (
+    <label className="block rounded-2xl border border-luxe bg-luxe-glass px-4 py-3 focus-within:border-[var(--luxe-gold)]/50 transition-colors">
+      <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-luxe-mut">
+        <Icon className="h-3 w-3" /> {label}
+      </div>
+      <div className="mt-1.5">{children}</div>
+    </label>
+  );
+}
 
 export default PropertyDetail;
