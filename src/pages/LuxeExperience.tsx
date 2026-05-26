@@ -151,11 +151,13 @@ const COLLECTIONS = [
 ];
 
 export default function LuxeExperience() {
+  const { isMobile } = useIsMobile();
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
-  const heroY = useTransform(scrollY, [0, 800], [0, 160]);
-  const heroScale = useTransform(scrollY, [0, 800], [1.05, 1.18]);
-  const heroOpacity = useTransform(scrollY, [0, 600], [1, 0.35]);
+  // Lighter parallax on mobile to keep GPU happy
+  const heroY = useTransform(scrollY, [0, 800], [0, isMobile ? 80 : 160]);
+  const heroScale = useTransform(scrollY, [0, 800], [1.05, isMobile ? 1.10 : 1.18]);
+  const heroOpacity = useTransform(scrollY, [0, 600], [1, isMobile ? 0.5 : 0.35]);
 
   const [scrolled, setScrolled] = useState(false);
   const [suggestIdx, setSuggestIdx] = useState(0);
