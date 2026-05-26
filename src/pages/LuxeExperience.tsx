@@ -1173,7 +1173,4 @@ function SearchField({ icon: Icon, label, value, to }: { icon: any; label: strin
   );
 }
 
-      </div>
-    </button>
-  );
-}
+
