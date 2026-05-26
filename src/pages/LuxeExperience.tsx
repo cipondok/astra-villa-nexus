@@ -564,14 +564,10 @@ export default function LuxeExperience() {
           />
         </motion.div>
 
-        {/* Ambient bloom layers — disabled on low-tier devices */}
-        {tier !== "low" && (
-          <>
-            <div className="absolute inset-0 pointer-events-none luxe-bloom-a"
-              style={{ background: "radial-gradient(40% 30% at 78% 22%, rgba(231,206,150,0.30), transparent 70%)" }} />
-            <div className="absolute inset-0 pointer-events-none luxe-bloom-b"
-              style={{ background: "radial-gradient(34% 28% at 18% 78%, rgba(79,178,134,0.18), transparent 70%)" }} />
-          </>
+        {/* Ambient bloom layer — single soft glow on high-tier only */}
+        {tier === "high" && !isMobile && (
+          <div className="absolute inset-0 pointer-events-none luxe-bloom-a"
+            style={{ background: "radial-gradient(40% 30% at 78% 22%, rgba(231,206,150,0.22), transparent 70%)" }} />
         )}
 
         {/* Mouse-tracked cinematic spotlight — desktop high-tier only, mutated via CSS vars */}
@@ -582,7 +578,7 @@ export default function LuxeExperience() {
             style={{
               ['--sx' as any]: '50%',
               ['--sy' as any]: '40%',
-              background: 'radial-gradient(420px 320px at var(--sx) var(--sy), rgba(255,255,255,0.06), transparent 70%)',
+              background: 'radial-gradient(340px 260px at var(--sx) var(--sy), rgba(255,255,255,0.04), transparent 70%)',
             }}
           />
         )}
@@ -596,19 +592,20 @@ export default function LuxeExperience() {
           background: "linear-gradient(180deg, rgba(11,18,32,0.35) 0%, transparent 30%, transparent 60%, rgba(5,5,5,0.6) 100%)"
         }} />
 
-        {/* Floating gold particles — adaptive count; off on low-tier */}
-        {tier !== "low" && (
+        {/* Floating gold particles — high-tier desktop only, minimal count */}
+        {tier === "high" && !isMobile && (
           <div className="luxe-particles" aria-hidden="true">
-            {Array.from({ length: tier === "mid" || isMobile ? 6 : 14 }).map((_, i) => (
+            {Array.from({ length: 6 }).map((_, i) => (
             <span key={i} style={{
-              left: `${(i * 13.7) % 100}%`,
-              animationDelay: `${(i * 0.7) % 9}s`,
-              animationDuration: `${8 + (i % 5)}s`,
+              left: `${(i * 17.3) % 100}%`,
+              animationDelay: `${(i * 1.1) % 9}s`,
+              animationDuration: `${10 + (i % 4)}s`,
               opacity: 0,
             }} />
           ))}
           </div>
         )}
+
 
         <div className="relative z-10 mx-auto max-w-[1440px] px-5 md:px-10 pt-28 sm:pt-32 md:pt-44 pb-24 md:pb-20 mobile-safe-bottom">
           <motion.div
