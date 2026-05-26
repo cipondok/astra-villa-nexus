@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import heroImg from "@/assets/luxe-hero-bali.jpg";
+import brandLogo from "@/assets/astra-logo-optimized.png";
 import villa1 from "@/assets/luxe-villa-1.jpg";
 import villa2 from "@/assets/luxe-villa-2.jpg";
 import villa3 from "@/assets/luxe-villa-3.jpg";
