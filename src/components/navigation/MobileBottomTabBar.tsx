@@ -23,7 +23,7 @@ export default function MobileBottomTabBar() {
 
   // Hide on admin routes and on the Luxe homepage (which has its own luxury dock)
   if (pathname.startsWith('/admin')) return null;
-  if (pathname === '/') return null;
+  if (pathname === '/' || pathname === '/luxe') return null;
 
   const isActive = (path: string) => {
     if (path === '/') return pathname === '/';
