@@ -203,6 +203,7 @@ const AdvancedSearchPage = lazy(() => import('@/pages/AdvancedSearchPage'));
 const AstraDevelopment = lazy(() => import('@/pages/AstraDevelopment'));
 const BookingsPage = lazy(() => import('@/pages/BookingsPage'));
 const LocationMap = lazy(() => import('@/pages/LocationMap'));
+const Locations = lazy(() => import('@/pages/Locations'));
 const AIMapSearchPage = lazy(() => import('@/pages/AIMapSearchPage'));
 const PropertyMapSearchPage = lazy(() => import('@/pages/PropertyMapSearch'));
 const DigitalTwinPage = lazy(() => import('@/pages/DigitalTwinPage'));
