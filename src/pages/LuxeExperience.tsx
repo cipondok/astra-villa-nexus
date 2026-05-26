@@ -9,7 +9,8 @@ import {
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import heroImg from "@/assets/luxe-hero-bali.jpg";
-import brandLogo from "@/assets/astra-logo-optimized.png";
+import brandLogoFallback from "@/assets/astra-logo-optimized.png";
+import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 import villa1 from "@/assets/luxe-villa-1.jpg";
 import villa2 from "@/assets/luxe-villa-2.jpg";
 import villa3 from "@/assets/luxe-villa-3.jpg";
@@ -325,6 +326,8 @@ export default function LuxeExperience() {
   const { user } = useAuth();
   const { villas: FEATURED, isLoading: featuredLoading, isFallback: featuredFallback } = useFeaturedVillas();
   const profileHref = user ? "/profile" : "/auth";
+  const { logoUrl: headerLogo } = useBrandingLogo("headerLogo", brandLogoFallback);
+  const { logoUrl: footerLogo } = useBrandingLogo("footerLogo", brandLogoFallback);
   const heroRef = useRef<HTMLDivElement>(null);
   const spotRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
@@ -615,7 +618,7 @@ export default function LuxeExperience() {
                 }}
               >
                 <img
-                  src={brandLogo}
+                  src={headerLogo}
                   alt=""
                   className="relative w-7 h-7 object-contain"
                   loading="eager"
@@ -778,7 +781,7 @@ export default function LuxeExperience() {
                   boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.18)",
                 }}
               >
-                <img src={brandLogo} alt="" className="w-7 h-7 object-contain" />
+                <img src={headerLogo} alt="" className="w-7 h-7 object-contain" />
               </span>
               <span className="font-serif-l text-[18px]">Astra<span className="text-luxe-gold"> Villa</span></span>
             </Link>
@@ -1442,7 +1445,7 @@ export default function LuxeExperience() {
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-full grid place-items-center overflow-hidden"
                      style={{ background: "linear-gradient(135deg,#C8A96B,#8C6B2F)" }}>
-                  <img src={brandLogo} alt="Astra Villa" className="w-6 h-6 object-contain" />
+                  <img src={footerLogo} alt="Astra Villa" className="w-6 h-6 object-contain" />
                 </div>
                 <span className="font-serif-l text-[18px]">Astra<span className="text-luxe-gold"> Villa</span></span>
               </div>
