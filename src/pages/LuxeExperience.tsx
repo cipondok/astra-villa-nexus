@@ -533,9 +533,11 @@ export default function LuxeExperience() {
           /* Cheaper blur on mobile to prevent jank */
           .luxe-glass-card { backdrop-filter: blur(12px) saturate(130%); -webkit-backdrop-filter: blur(12px) saturate(130%); }
           /* Smaller ambient mesh, lower cost */
-          .luxe-mesh-a { filter: blur(40px) !important; }
+          .luxe-mesh-a { filter: blur(40px) !important; animation: none !important; }
           /* No grain on small screens — cheap visual win */
           .luxe-grain::before { display: none; }
+          /* Pause expensive ambient animations on mobile to keep scroll silky */
+          .luxe-bloom-a, .luxe-bloom-b, .luxe-kenburns, .luxe-pulse { animation: none !important; }
         }
         /* Below-fold sections skip paint until near viewport */
         .luxe-cv { content-visibility: auto; contain-intrinsic-size: 1px 800px; }
