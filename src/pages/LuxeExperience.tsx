@@ -481,7 +481,8 @@ export default function LuxeExperience() {
               opacity: 0,
             }} />
           ))}
-        </div>
+          </div>
+        )}
 
         <div className="relative z-10 mx-auto max-w-[1440px] px-5 md:px-10 pt-28 sm:pt-32 md:pt-44 pb-24 md:pb-20 mobile-safe-bottom">
           <motion.div
