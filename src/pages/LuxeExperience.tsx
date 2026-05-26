@@ -821,15 +821,29 @@ export default function LuxeExperience() {
         <div className="mx-auto max-w-[1440px] px-5 md:px-10">
           <div className="flex items-end justify-between gap-6 mb-14">
             <Reveal>
-              <SectionHead eyebrow="The Collection" title={<>Hand-picked villas, <em className="not-italic text-luxe-gold">cinematically</em> rendered.</>} />
+              <SectionHead
+                eyebrow={user ? "Curated for you" : "The Collection"}
+                title={user
+                  ? <>Villas matched to your <em className="not-italic text-luxe-gold">taste signal</em>.</>
+                  : <>Hand-picked villas, <em className="not-italic text-luxe-gold">cinematically</em> rendered.</>}
+              />
             </Reveal>
             <Reveal delay={0.15}>
               <Link to="/properties" className="hidden md:inline-flex items-center gap-1.5 text-[12px] text-luxe-fg/70 hover:text-luxe-gold transition-colors">
                 View all villas <ChevronRight className="w-4 h-4" />
               </Link>
-
             </Reveal>
           </div>
+
+          {featuredFallback && (
+            <Reveal>
+              <div className="mb-6 inline-flex items-center gap-2 px-3 py-1.5 rounded-full luxe-glass-card text-[10px] tracking-wider uppercase text-luxe-mut">
+                <span className="w-1.5 h-1.5 rounded-full bg-luxe-gold animate-pulse" />
+                Showing concierge preview — live inventory syncing
+              </div>
+            </Reveal>
+          )}
+
 
           {/* Mobile: horizontal snap rail. Desktop: 3-col tilt grid */}
           <div className="luxe-snap-x -mx-5 px-5 md:mx-0 md:px-0 flex md:grid md:grid-cols-3 gap-5 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none [perspective:1400px] pb-2 md:pb-0">
