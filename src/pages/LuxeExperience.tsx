@@ -292,7 +292,7 @@ export default function LuxeExperience() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { user } = useAuth();
-  const FEATURED = useFeaturedVillas();
+  const { villas: FEATURED, isLoading: featuredLoading, isFallback: featuredFallback } = useFeaturedVillas();
   const profileHref = user ? "/profile" : "/auth";
   const heroRef = useRef<HTMLDivElement>(null);
   const spotRef = useRef<HTMLDivElement>(null);
