@@ -150,9 +150,28 @@ const COLLECTIONS = [
   { img: villa1, t: "Cliffside Architecture", c: "06 villas" },
 ];
 
+/* Adaptive device tier — gates expensive effects on weaker devices */
+function useDeviceTier(): "low" | "mid" | "high" {
+  const [tier, setTier] = useState<"low" | "mid" | "high">("high");
+  useEffect(() => {
+    const n: any = navigator;
+    const mem = n.deviceMemory ?? 8;
+    const cores = n.hardwareConcurrency ?? 8;
+    const saveData = n.connection?.saveData === true;
+    const slowNet = /(^|-)2g$/.test(n.connection?.effectiveType ?? "");
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced || saveData || slowNet || mem <= 2 || cores <= 2) setTier("low");
+    else if (mem <= 4 || cores <= 4) setTier("mid");
+    else setTier("high");
+  }, []);
+  return tier;
+}
+
 export default function LuxeExperience() {
   const { isMobile } = useIsMobile();
+  const tier = useDeviceTier();
   const heroRef = useRef<HTMLDivElement>(null);
+  const spotRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
   // Lighter parallax on mobile to keep GPU happy
   const heroY = useTransform(scrollY, [0, 800], [0, isMobile ? 80 : 160]);
@@ -161,7 +180,7 @@ export default function LuxeExperience() {
 
   const [scrolled, setScrolled] = useState(false);
   const [suggestIdx, setSuggestIdx] = useState(0);
-  const [spot, setSpot] = useState({ x: 50, y: 40 });
+  const [booted, setBooted] = useState(false);
 
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 40);
@@ -174,23 +193,41 @@ export default function LuxeExperience() {
     return () => window.clearInterval(id);
   }, []);
 
+  // Cinematic boot fade — runs once on mount
   useEffect(() => {
+    const t = window.setTimeout(() => setBooted(true), 60);
+    return () => window.clearTimeout(t);
+  }, []);
+
+  // Preload the hero LCP image at high priority
+  useEffect(() => {
+    const link = document.createElement("link");
+    link.rel = "preload"; link.as = "image"; link.href = heroImg;
+    (link as any).fetchPriority = "high";
+    document.head.appendChild(link);
+    return () => { document.head.removeChild(link); };
+  }, []);
+
+  // Mouse spotlight — desktop + high-tier only, mutates CSS vars (zero React rerenders)
+  useEffect(() => {
+    if (isMobile || tier !== "high") return;
     const el = heroRef.current;
-    if (!el) return;
+    const spot = spotRef.current;
+    if (!el || !spot) return;
     let raf = 0;
     const onMove = (e: MouseEvent) => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
         const r = el.getBoundingClientRect();
-        setSpot({
-          x: ((e.clientX - r.left) / r.width) * 100,
-          y: ((e.clientY - r.top) / r.height) * 100,
-        });
+        const x = ((e.clientX - r.left) / r.width) * 100;
+        const y = ((e.clientY - r.top) / r.height) * 100;
+        spot.style.setProperty("--sx", `${x}%`);
+        spot.style.setProperty("--sy", `${y}%`);
       });
     };
-    el.addEventListener("mousemove", onMove);
+    el.addEventListener("mousemove", onMove, { passive: true });
     return () => { el.removeEventListener("mousemove", onMove); cancelAnimationFrame(raf); };
-  }, []);
+  }, [isMobile, tier]);
 
   return (
     <div className="luxe-root relative min-h-screen text-luxe-fg antialiased">
