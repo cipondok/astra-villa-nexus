@@ -189,11 +189,12 @@ export default function Properties() {
 
         <div className="mt-10">
           <LuxeSearchBar
-            defaultLocation={location || "Bali, Indonesia"}
-            defaultWhen={when}
-            defaultGuests={Number(guests) || 2}
+            defaultLocation={location}
+            defaultType={type !== "all" ? type : "all"}
+            defaultQuery={q}
             action="/properties"
           />
+
         </div>
 
         {/* Active filter chips + controls */}
