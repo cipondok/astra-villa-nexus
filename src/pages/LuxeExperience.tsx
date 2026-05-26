@@ -438,15 +438,28 @@ export default function LuxeExperience() {
           />
         </motion.div>
 
-        {/* Ambient bloom layers */}
-        <div className="absolute inset-0 pointer-events-none luxe-bloom-a"
-          style={{ background: "radial-gradient(40% 30% at 78% 22%, rgba(231,206,150,0.30), transparent 70%)" }} />
-        <div className="absolute inset-0 pointer-events-none luxe-bloom-b"
-          style={{ background: "radial-gradient(34% 28% at 18% 78%, rgba(79,178,134,0.18), transparent 70%)" }} />
+        {/* Ambient bloom layers — disabled on low-tier devices */}
+        {tier !== "low" && (
+          <>
+            <div className="absolute inset-0 pointer-events-none luxe-bloom-a"
+              style={{ background: "radial-gradient(40% 30% at 78% 22%, rgba(231,206,150,0.30), transparent 70%)" }} />
+            <div className="absolute inset-0 pointer-events-none luxe-bloom-b"
+              style={{ background: "radial-gradient(34% 28% at 18% 78%, rgba(79,178,134,0.18), transparent 70%)" }} />
+          </>
+        )}
 
-        {/* Mouse-tracked cinematic spotlight */}
-        <div className="absolute inset-0 pointer-events-none transition-[background] duration-300"
-          style={{ background: `radial-gradient(420px 320px at ${spot.x}% ${spot.y}%, rgba(255,255,255,0.06), transparent 70%)` }} />
+        {/* Mouse-tracked cinematic spotlight — desktop high-tier only, mutated via CSS vars */}
+        {!isMobile && tier === "high" && (
+          <div
+            ref={spotRef}
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              ['--sx' as any]: '50%',
+              ['--sy' as any]: '40%',
+              background: 'radial-gradient(420px 320px at var(--sx) var(--sy), rgba(255,255,255,0.06), transparent 70%)',
+            }}
+          />
+        )}
 
         {/* Cinematic overlays */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/20 to-[#050505]" />
@@ -457,9 +470,10 @@ export default function LuxeExperience() {
           background: "linear-gradient(180deg, rgba(11,18,32,0.35) 0%, transparent 30%, transparent 60%, rgba(5,5,5,0.6) 100%)"
         }} />
 
-        {/* Floating gold particles — fewer on mobile */}
-        <div className="luxe-particles" aria-hidden="true">
-          {Array.from({ length: isMobile ? 6 : 14 }).map((_, i) => (
+        {/* Floating gold particles — adaptive count; off on low-tier */}
+        {tier !== "low" && (
+          <div className="luxe-particles" aria-hidden="true">
+            {Array.from({ length: tier === "mid" || isMobile ? 6 : 14 }).map((_, i) => (
             <span key={i} style={{
               left: `${(i * 13.7) % 100}%`,
               animationDelay: `${(i * 0.7) % 9}s`,
