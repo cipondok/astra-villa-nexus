@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform, useInView, useMotionValue, useSpring, 
 import {
   Search, Calendar, Users, Sparkles, ArrowUpRight, MapPin, Star,
   Bot, TrendingUp, LineChart, Compass, Wand2, ShieldCheck, Globe2,
-  PlayCircle, ChevronRight, Heart, Languages, Moon, User2, Box,
+  PlayCircle, ChevronRight, Heart, Languages, Moon, User2, Box, Home,
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import heroImg from "@/assets/luxe-hero-bali.jpg";
@@ -11,6 +11,7 @@ import villa1 from "@/assets/luxe-villa-1.jpg";
 import villa2 from "@/assets/luxe-villa-2.jpg";
 import villa3 from "@/assets/luxe-villa-3.jpg";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 /* Cinematic easing — Apple-like */
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -150,11 +151,13 @@ const COLLECTIONS = [
 ];
 
 export default function LuxeExperience() {
+  const { isMobile } = useIsMobile();
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
-  const heroY = useTransform(scrollY, [0, 800], [0, 160]);
-  const heroScale = useTransform(scrollY, [0, 800], [1.05, 1.18]);
-  const heroOpacity = useTransform(scrollY, [0, 600], [1, 0.35]);
+  // Lighter parallax on mobile to keep GPU happy
+  const heroY = useTransform(scrollY, [0, 800], [0, isMobile ? 80 : 160]);
+  const heroScale = useTransform(scrollY, [0, 800], [1.05, isMobile ? 1.10 : 1.18]);
+  const heroOpacity = useTransform(scrollY, [0, 600], [1, isMobile ? 0.5 : 0.35]);
 
   const [scrolled, setScrolled] = useState(false);
   const [suggestIdx, setSuggestIdx] = useState(0);
@@ -292,6 +295,33 @@ export default function LuxeExperience() {
         @media (prefers-reduced-motion: reduce) {
           .luxe-mesh-a,.luxe-pulse { animation: none !important; }
         }
+        /* ============ Mobile-luxury polish ============ */
+        .luxe-root { -webkit-tap-highlight-color: transparent; }
+        .luxe-root { scroll-behavior: smooth; }
+        /* iOS-quality momentum scrolling */
+        html, body { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+        .luxe-tap { transition: transform .35s cubic-bezier(0.22,1,0.36,1), box-shadow .35s ease; }
+        .luxe-tap:active { transform: scale(0.97); }
+        /* Hide native scrollbars on mobile snap rails */
+        .luxe-snap-x { -ms-overflow-style: none; scrollbar-width: none; }
+        .luxe-snap-x::-webkit-scrollbar { display: none; }
+        /* Mobile dock — floating glass nav */
+        .luxe-dock {
+          background: linear-gradient(180deg, rgba(10,10,10,0.72), rgba(10,10,10,0.55));
+          border: 1px solid var(--luxe-line);
+          backdrop-filter: blur(24px) saturate(160%);
+          -webkit-backdrop-filter: blur(24px) saturate(160%);
+          box-shadow: 0 24px 60px -20px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        .luxe-dock-active {
+          background: radial-gradient(60% 100% at 50% 0%, rgba(200,169,107,0.22), transparent 70%);
+        }
+        @media (max-width: 767px) {
+          /* Cheaper blur on mobile to prevent jank */
+          .luxe-glass-card { backdrop-filter: blur(12px) saturate(130%); -webkit-backdrop-filter: blur(12px) saturate(130%); }
+          /* Smaller ambient mesh, lower cost */
+          .luxe-mesh-a { filter: blur(40px) !important; }
+        }
       `}</style>
 
       {/* ============== AMBIENT BACKGROUND MESH (site-wide) ============== */}
@@ -390,11 +420,11 @@ export default function LuxeExperience() {
           background: "linear-gradient(180deg, rgba(11,18,32,0.35) 0%, transparent 30%, transparent 60%, rgba(5,5,5,0.6) 100%)"
         }} />
 
-        {/* Floating gold particles */}
+        {/* Floating gold particles — fewer on mobile */}
         <div className="luxe-particles" aria-hidden="true">
-          {Array.from({ length: 14 }).map((_, i) => (
+          {Array.from({ length: isMobile ? 6 : 14 }).map((_, i) => (
             <span key={i} style={{
-              left: `${(i * 7.3) % 100}%`,
+              left: `${(i * 13.7) % 100}%`,
               animationDelay: `${(i * 0.7) % 9}s`,
               animationDuration: `${8 + (i % 5)}s`,
               opacity: 0,
@@ -402,7 +432,7 @@ export default function LuxeExperience() {
           ))}
         </div>
 
-        <div className="relative z-10 mx-auto max-w-[1440px] px-5 md:px-10 pt-32 md:pt-44 pb-20">
+        <div className="relative z-10 mx-auto max-w-[1440px] px-5 md:px-10 pt-28 sm:pt-32 md:pt-44 pb-24 md:pb-20 mobile-safe-bottom">
           <motion.div
             initial="hidden" animate="show"
             variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } } }}
@@ -419,7 +449,7 @@ export default function LuxeExperience() {
 
             <motion.h1
               variants={{ hidden: { opacity: 0, y: 28 }, show: { opacity: 1, y: 0, transition: { duration: 1.1, ease: [0.22, 1, 0.36, 1] } } }}
-              className="font-serif-l text-[44px] sm:text-[64px] md:text-[96px] leading-[0.95] tracking-tight"
+              className="font-serif-l text-[40px] xs:text-[46px] sm:text-[64px] md:text-[96px] leading-[1.02] sm:leading-[0.98] md:leading-[0.95] tracking-tight text-balance"
               style={{ textShadow: "0 2px 40px rgba(0,0,0,0.55)" }}
             >
               Discover <em className="not-italic luxe-gold-shimmer">Extraordinary</em>
@@ -428,7 +458,7 @@ export default function LuxeExperience() {
 
             <motion.p
               variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 1, ease: [0.22, 1, 0.36, 1] } } }}
-              className="mt-7 max-w-xl text-[15px] md:text-[18px] leading-relaxed text-luxe-fg/80"
+              className="mt-6 md:mt-7 max-w-xl text-[15px] md:text-[18px] leading-relaxed text-luxe-fg/80 text-balance"
             >
               AI-powered luxury villa experiences with immersive property intelligence
               and premium concierge services.
@@ -436,12 +466,12 @@ export default function LuxeExperience() {
 
             <motion.div
               variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } } }}
-              className="mt-10 flex flex-wrap items-center gap-3"
+              className="mt-9 md:mt-10 flex flex-wrap items-center gap-3"
             >
-              <button className="luxe-gold-btn rounded-full px-6 py-3.5 text-[13px] font-medium tracking-wide inline-flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-12px_rgba(200,169,107,0.6)]">
+              <button className="luxe-gold-btn luxe-tap rounded-full px-6 py-4 md:py-3.5 text-[13px] font-medium tracking-wide inline-flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-12px_rgba(200,169,107,0.6)] min-h-[48px]">
                 Begin Your Stay <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               </button>
-              <button className="rounded-full px-5 py-3.5 text-[13px] font-medium tracking-wide bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-all duration-300 hover:-translate-y-0.5 inline-flex items-center gap-2">
+              <button className="luxe-tap rounded-full px-5 py-4 md:py-3.5 text-[13px] font-medium tracking-wide bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-all duration-300 hover:-translate-y-0.5 inline-flex items-center gap-2 min-h-[48px]">
                 <PlayCircle className="w-4 h-4 text-luxe-gold" /> Watch the Film
               </button>
             </motion.div>
@@ -572,16 +602,17 @@ export default function LuxeExperience() {
             </Reveal>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 [perspective:1400px]">
+          {/* Mobile: horizontal snap rail. Desktop: 3-col tilt grid */}
+          <div className="luxe-snap-x -mx-5 px-5 md:mx-0 md:px-0 flex md:grid md:grid-cols-3 gap-5 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none [perspective:1400px] pb-2 md:pb-0">
             {FEATURED.map((v, i) => (
-              <Reveal key={v.name} delay={i * 0.12} as="article">
-                <TiltCard className="group relative overflow-hidden rounded-3xl border border-luxe bg-[#0a0a0a] luxe-card-glow shadow-[0_30px_60px_-30px_rgba(0,0,0,0.8)] hover:shadow-[0_40px_80px_-30px_rgba(200,169,107,0.35)] transition-shadow duration-700 will-change-transform">
+              <Reveal key={v.name} delay={i * 0.12} as="article"
+                className="snap-center shrink-0 w-[82%] sm:w-[60%] md:w-auto first:pl-0 last:pr-0">
+                <TiltCard className="group relative overflow-hidden rounded-3xl border border-luxe bg-[#0a0a0a] luxe-card-glow shadow-[0_30px_60px_-30px_rgba(0,0,0,0.8)] hover:shadow-[0_40px_80px_-30px_rgba(200,169,107,0.35)] transition-shadow duration-700 will-change-transform luxe-tap">
                   <div className="aspect-[4/5] overflow-hidden">
                     <img src={v.img} alt={v.name} loading="lazy" width={1280} height={1600}
                          className="w-full h-full object-cover transition-transform duration-[2000ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]" />
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-                  {/* glass reflection sweep */}
                   <div aria-hidden className="pointer-events-none absolute -inset-x-1/4 -top-1/2 h-full rotate-12 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
                        style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)" }} />
 
@@ -589,7 +620,7 @@ export default function LuxeExperience() {
                     <span className="px-2.5 py-1 rounded-full text-[10px] tracking-wider uppercase luxe-glass-card text-luxe-gold">{v.tag}</span>
                   </div>
                   <div className="absolute top-4 right-4">
-                    <button className="w-9 h-9 grid place-items-center rounded-full luxe-glass-card hover:text-luxe-gold hover:scale-110 transition-all duration-300" aria-label="Save">
+                    <button className="w-11 h-11 md:w-9 md:h-9 grid place-items-center rounded-full luxe-glass-card hover:text-luxe-gold hover:scale-110 transition-all duration-300" aria-label="Save">
                       <Heart className="w-4 h-4" />
                     </button>
                   </div>
@@ -884,7 +915,65 @@ export default function LuxeExperience() {
         </div>
       </footer>
       </div>
+
+      {/* ============== LUXURY MOBILE DOCK ============== */}
+      <MobileDock />
     </div>
+  );
+}
+
+function MobileDock() {
+  const [active, setActive] = useState("home");
+  const items = [
+    { id: "home",      icon: Home,      label: "Home" },
+    { id: "discover",  icon: Compass,   label: "Discover" },
+    { id: "concierge", icon: Sparkles,  label: "Concierge", accent: true },
+    { id: "wishlist",  icon: Heart,     label: "Saved" },
+    { id: "profile",   icon: User2,     label: "You" },
+  ] as const;
+
+  return (
+    <nav
+      aria-label="Primary mobile"
+      className="md:hidden fixed left-3 right-3 z-[60] luxe-dock rounded-[28px] px-2 py-2 flex items-center justify-between"
+      style={{ bottom: "calc(env(safe-area-inset-bottom) + 12px)" }}
+    >
+      {items.map((it) => {
+        const isActive = active === it.id;
+        const Icon = it.icon;
+        return (
+          <button
+            key={it.id}
+            onClick={() => setActive(it.id)}
+            aria-current={isActive ? "page" : undefined}
+            aria-label={it.label}
+            className={cn(
+              "relative flex-1 min-h-[52px] grid place-items-center rounded-2xl luxe-tap transition-colors",
+              isActive ? "text-[color:var(--luxe-gold)]" : "text-luxe-fg/65"
+            )}
+          >
+            {isActive && (
+              <motion.span
+                layoutId="luxe-dock-pill"
+                className="absolute inset-1 rounded-2xl luxe-dock-active border border-[color:var(--luxe-gold)]/20"
+                transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                aria-hidden
+              />
+            )}
+            <span className="relative flex flex-col items-center gap-0.5">
+              {(it as any).accent ? (
+                <span className="w-10 h-10 grid place-items-center rounded-full luxe-gold-btn shadow-[0_10px_24px_-8px_rgba(200,169,107,0.7)]">
+                  <Icon className="w-[18px] h-[18px]" />
+                </span>
+              ) : (
+                <Icon className={cn("w-[20px] h-[20px] transition-transform", isActive && "scale-110 drop-shadow-[0_0_8px_rgba(200,169,107,0.55)]")} />
+              )}
+              <span className="text-[9px] tracking-[0.16em] uppercase font-mono-l opacity-80">{it.label}</span>
+            </span>
+          </button>
+        );
+      })}
+    </nav>
   );
 }
 
