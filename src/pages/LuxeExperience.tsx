@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform, useInView, useMotionValue, useSpring, 
 import {
   Search, Calendar, Users, Sparkles, ArrowUpRight, MapPin, Star,
   Bot, TrendingUp, LineChart, Compass, Wand2, ShieldCheck, Globe2,
-  PlayCircle, ChevronRight, Heart, Languages, Moon, User2, Box,
+  PlayCircle, ChevronRight, Heart, Languages, Moon, User2, Box, Home,
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import heroImg from "@/assets/luxe-hero-bali.jpg";
@@ -11,6 +11,7 @@ import villa1 from "@/assets/luxe-villa-1.jpg";
 import villa2 from "@/assets/luxe-villa-2.jpg";
 import villa3 from "@/assets/luxe-villa-3.jpg";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 /* Cinematic easing — Apple-like */
 const EASE = [0.22, 1, 0.36, 1] as const;
