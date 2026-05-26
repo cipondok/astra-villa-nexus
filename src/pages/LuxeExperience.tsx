@@ -316,10 +316,10 @@ export default function LuxeExperience() {
   const heroRef = useRef<HTMLDivElement>(null);
   const spotRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
-  // Calmer parallax — less travel, no aggressive zoom
-  const heroY = useTransform(scrollY, [0, 800], [0, isMobile ? 40 : 90]);
-  const heroScale = useTransform(scrollY, [0, 800], [1.04, isMobile ? 1.06 : 1.09]);
-  const heroOpacity = useTransform(scrollY, [0, 600], [1, isMobile ? 0.6 : 0.5]);
+  // Parallax disabled on mobile to free the scroll thread (eliminates touch stutter)
+  const heroY = useTransform(scrollY, [0, 800], [0, isMobile ? 0 : 90]);
+  const heroScale = useTransform(scrollY, [0, 800], [1.04, isMobile ? 1.04 : 1.09]);
+  const heroOpacity = useTransform(scrollY, [0, 600], [1, isMobile ? 1 : 0.5]);
 
   const [scrolled, setScrolled] = useState(false);
   const [suggestIdx, setSuggestIdx] = useState(0);
@@ -335,7 +335,17 @@ export default function LuxeExperience() {
   }, [mobileOpen]);
 
   useEffect(() => {
-    const on = () => setScrolled(window.scrollY > 40);
+    let ticking = false;
+    let last = false;
+    const on = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const next = window.scrollY > 40;
+        if (next !== last) { last = next; setScrolled(next); }
+        ticking = false;
+      });
+    };
     window.addEventListener("scroll", on, { passive: true });
     return () => window.removeEventListener("scroll", on);
   }, []);
@@ -412,7 +422,7 @@ export default function LuxeExperience() {
           /* Native vertical pan + momentum — fixes touch-stutter on mobile */
           touch-action: pan-y;
           -webkit-overflow-scrolling: touch;
-          overscroll-behavior-y: contain;
+          overscroll-behavior-y: auto;
         }
         /* Decorative layers must never intercept finger drags */
         .luxe-root [aria-hidden="true"] { pointer-events: none; }
@@ -501,9 +511,8 @@ export default function LuxeExperience() {
         }
         /* ============ Mobile-luxury polish ============ */
         .luxe-root { -webkit-tap-highlight-color: transparent; }
-        .luxe-root { scroll-behavior: smooth; }
-        /* iOS-quality momentum scrolling */
-        html, body { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+        /* iOS-quality momentum scrolling — native, no smooth-scroll hijack */
+        html, body { -webkit-overflow-scrolling: touch; overscroll-behavior-y: auto; }
         .luxe-tap { transition: transform .35s cubic-bezier(0.22,1,0.36,1), box-shadow .35s ease; }
         .luxe-tap:active { transform: scale(0.97); }
         /* Hide native scrollbars on mobile snap rails */
@@ -524,9 +533,11 @@ export default function LuxeExperience() {
           /* Cheaper blur on mobile to prevent jank */
           .luxe-glass-card { backdrop-filter: blur(12px) saturate(130%); -webkit-backdrop-filter: blur(12px) saturate(130%); }
           /* Smaller ambient mesh, lower cost */
-          .luxe-mesh-a { filter: blur(40px) !important; }
+          .luxe-mesh-a { filter: blur(40px) !important; animation: none !important; }
           /* No grain on small screens — cheap visual win */
           .luxe-grain::before { display: none; }
+          /* Pause expensive ambient animations on mobile to keep scroll silky */
+          .luxe-bloom-a, .luxe-bloom-b, .luxe-kenburns, .luxe-pulse { animation: none !important; }
         }
         /* Below-fold sections skip paint until near viewport */
         .luxe-cv { content-visibility: auto; contain-intrinsic-size: 1px 800px; }
