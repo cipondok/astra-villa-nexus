@@ -37,16 +37,49 @@ interface Property {
   virtual_tour_url?: string;
 }
 
+const KNOWN_LOCATIONS = ['jakarta', 'bali', 'bandung', 'surabaya'];
+
+// Normalize free-text location ("Bali, Indonesia" / "BALI") into a dropdown enum
+// value if it matches a known city; otherwise return 'all' so the dropdown is
+// neutral while the raw text is still used as the query filter.
+const matchKnownLocation = (raw: string | null): string => {
+  if (!raw) return 'all';
+  const lower = raw.toLowerCase();
+  return KNOWN_LOCATIONS.find(loc => lower.includes(loc)) || 'all';
+};
+
 const Search = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
+
+  const urlQ = searchParams.get('q') || '';
+  const urlLocationRaw = searchParams.get('location') || '';
+  const urlWhen = searchParams.get('when') || '';
+  const urlGuests = searchParams.get('guests') || '';
+
+  const [searchTerm, setSearchTerm] = useState(urlQ);
   const [selectedType, setSelectedType] = useState(searchParams.get('type') || 'all');
-  const [selectedLocation, setSelectedLocation] = useState(searchParams.get('location') || 'all');
+  const [selectedLocation, setSelectedLocation] = useState(matchKnownLocation(urlLocationRaw));
+  // Free-text location preserved from URL (e.g. "Bali, Indonesia"); used for the
+  // DB filter when it doesn't match the dropdown enum.
+  const [locationText, setLocationText] = useState(urlLocationRaw);
+  const [whenDate, setWhenDate] = useState(urlWhen);
+  const [guests, setGuests] = useState(urlGuests);
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 28;
-  
+
+  // Keep state in sync when the URL changes externally (back/forward, deep link).
+  useEffect(() => {
+    setSearchTerm(searchParams.get('q') || '');
+    setSelectedType(searchParams.get('type') || 'all');
+    const rawLoc = searchParams.get('location') || '';
+    setLocationText(rawLoc);
+    setSelectedLocation(matchKnownLocation(rawLoc));
+    setWhenDate(searchParams.get('when') || '');
+    setGuests(searchParams.get('guests') || '');
+  }, [searchParams]);
+
   // Pull-to-refresh state
   const [newPropertyIds, setNewPropertyIds] = useState<Set<string>>(new Set());
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -54,20 +87,26 @@ const Search = () => {
   const previousPropertyIdsRef = useRef<Set<string>>(new Set());
 
   const { data: dbProperties = [], isLoading, refetch } = useQuery({
-    queryKey: ['search-properties', searchTerm, selectedType, selectedLocation],
+    queryKey: ['search-properties', searchTerm, selectedType, selectedLocation, locationText],
     queryFn: async () => {
       let query = supabase.from('properties').select('*');
-      
+
       if (searchTerm) {
         query = query.or(`title.ilike.%${searchTerm}%,location.ilike.%${searchTerm}%,city.ilike.%${searchTerm}%`);
       }
-      
+
       if (selectedType !== 'all') {
         query = query.eq('property_type', selectedType);
       }
-      
-      if (selectedLocation !== 'all') {
-        query = query.ilike('city', `%${selectedLocation}%`);
+
+      // Prefer the dropdown enum when set; otherwise fall back to free-text
+      // (e.g. came from hero search as "Bali, Indonesia").
+      const locFilter =
+        selectedLocation !== 'all'
+          ? selectedLocation
+          : locationText.split(',')[0].trim();
+      if (locFilter) {
+        query = query.or(`city.ilike.%${locFilter}%,location.ilike.%${locFilter}%`);
       }
 
       const { data, error } = await query.order('created_at', { ascending: false });
