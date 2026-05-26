@@ -1051,6 +1051,7 @@ export default function LuxeExperience() {
                   label="Where"
                   value={searchWhere}
                   onChange={setSearchWhere}
+                  onSubmit={handleHeroSearch}
                   placeholder="Bali, Indonesia"
                   type="text"
                 />
@@ -1060,6 +1061,7 @@ export default function LuxeExperience() {
                   label="When"
                   value={searchWhen}
                   onChange={setSearchWhen}
+                  onSubmit={handleHeroSearch}
                   placeholder="Add dates"
                   type="date"
                 />
@@ -1069,6 +1071,7 @@ export default function LuxeExperience() {
                   label="Guests"
                   value={String(searchGuests)}
                   onChange={(v) => setSearchGuests(Math.max(1, Number(v) || 1))}
+                  onSubmit={handleHeroSearch}
                   placeholder="2"
                   type="number"
                   min={1}
