@@ -325,6 +325,15 @@ export default function LuxeExperience() {
   const [scrolled, setScrolled] = useState(false);
   const [suggestIdx, setSuggestIdx] = useState(0);
   const [booted, setBooted] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, [mobileOpen]);
 
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 40);
