@@ -1095,14 +1095,17 @@ export default function LuxeExperience() {
 }
 
 function MobileDock() {
-  const [active, setActive] = useState("home");
+  const { pathname } = useLocation();
+  const { user } = useAuth();
   const items = [
-    { id: "home",      icon: Home,      label: "Home" },
-    { id: "discover",  icon: Compass,   label: "Discover" },
-    { id: "concierge", icon: Sparkles,  label: "Concierge", accent: true },
-    { id: "wishlist",  icon: Heart,     label: "Saved" },
-    { id: "profile",   icon: User2,     label: "You" },
+    { id: "home",      to: "/",               icon: Home,     label: "Home" },
+    { id: "discover",  to: "/properties",     icon: Compass,  label: "Discover" },
+    { id: "concierge", to: "/wealth-advisor", icon: Sparkles, label: "Concierge", accent: true },
+    { id: "wishlist",  to: "/favorites",      icon: Heart,    label: "Saved" },
+    { id: "profile",   to: user ? "/profile" : "/auth", icon: User2, label: "You" },
   ] as const;
+
+  const isActiveFor = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 
   return (
     <nav
@@ -1111,12 +1114,12 @@ function MobileDock() {
       style={{ bottom: "calc(env(safe-area-inset-bottom) + 12px)" }}
     >
       {items.map((it) => {
-        const isActive = active === it.id;
+        const isActive = isActiveFor(it.to);
         const Icon = it.icon;
         return (
-          <button
+          <Link
             key={it.id}
-            onClick={() => setActive(it.id)}
+            to={it.to}
             aria-current={isActive ? "page" : undefined}
             aria-label={it.label}
             className={cn(
@@ -1142,7 +1145,7 @@ function MobileDock() {
               )}
               <span className="text-[9px] tracking-[0.16em] uppercase font-mono-l opacity-80">{it.label}</span>
             </span>
-          </button>
+          </Link>
         );
       })}
     </nav>
@@ -1158,13 +1161,18 @@ function SectionHead({ eyebrow, title }: { eyebrow: string; title: React.ReactNo
   );
 }
 
-function SearchField({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+function SearchField({ icon: Icon, label, value, to }: { icon: any; label: string; value: string; to: string }) {
   return (
-    <button className="flex-1 flex items-center gap-3 px-5 py-3 rounded-xl md:rounded-full hover:bg-white/5 transition-colors text-left">
+    <Link to={to} className="flex-1 flex items-center gap-3 px-5 py-3 rounded-xl md:rounded-full hover:bg-white/5 transition-colors text-left">
       <Icon className="w-4 h-4 text-luxe-gold shrink-0" />
       <div className="min-w-0">
         <div className="text-[10px] uppercase tracking-[0.2em] text-luxe-mut">{label}</div>
         <div className="text-[13px] truncate">{value}</div>
+      </div>
+    </Link>
+  );
+}
+
       </div>
     </button>
   );
