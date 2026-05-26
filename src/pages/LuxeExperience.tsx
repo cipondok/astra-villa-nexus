@@ -340,6 +340,19 @@ export default function LuxeExperience() {
   const [suggestIdx, setSuggestIdx] = useState(0);
   const [booted, setBooted] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchWhere, setSearchWhere] = useState("Bali, Indonesia");
+  const [searchWhen, setSearchWhen] = useState("");
+  const [searchGuests, setSearchGuests] = useState(2);
+
+  const handleHeroSearch = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    const params = new URLSearchParams();
+    if (searchWhere.trim()) params.set("q", searchWhere.trim());
+    if (searchWhere.trim()) params.set("location", searchWhere.trim());
+    if (searchWhen) params.set("when", searchWhen);
+    if (searchGuests) params.set("guests", String(searchGuests));
+    navigate(`/search?${params.toString()}`);
+  };
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
