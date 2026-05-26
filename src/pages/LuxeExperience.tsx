@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import heroImg from "@/assets/luxe-hero-bali.jpg";
+import brandLogo from "@/assets/astra-logo-optimized.png";
 import villa1 from "@/assets/luxe-villa-1.jpg";
 import villa2 from "@/assets/luxe-villa-2.jpg";
 import villa3 from "@/assets/luxe-villa-3.jpg";
@@ -603,21 +604,23 @@ export default function LuxeExperience() {
               scrolled ? "py-2 md:py-2.5 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] bg-[rgba(8,8,10,0.72)]" : "py-2.5 md:py-3"
             )}
           >
-            {/* === Logo — hairline gold ring + monogram === */}
+            {/* === Logo — brand mark === */}
             <Link to="/" aria-label="ASTRA Villa — home" className="flex items-center gap-2.5 shrink-0 group">
               <span
                 aria-hidden
-                className="relative w-9 h-9 rounded-full grid place-items-center transition-transform duration-500 group-hover:scale-[1.04]"
+                className="relative w-9 h-9 rounded-full grid place-items-center overflow-hidden transition-transform duration-500 group-hover:scale-[1.04]"
                 style={{
                   background: "radial-gradient(120% 120% at 30% 25%, #E7CE96 0%, #C8A96B 45%, #6F5320 100%)",
                   boxShadow: "0 6px 20px -8px rgba(200,169,107,0.55), inset 0 0 0 1px rgba(255,255,255,0.18)",
                 }}
               >
-                <span
-                  className="absolute inset-[3px] rounded-full"
-                  style={{ boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.35)" }}
+                <img
+                  src={brandLogo}
+                  alt=""
+                  className="relative w-7 h-7 object-contain"
+                  loading="eager"
+                  decoding="async"
                 />
-                <span className="relative font-serif-l text-[15px] text-[#0a0a0a] leading-none tracking-tight">A</span>
               </span>
               <span className="hidden sm:flex flex-col leading-none">
                 <span className="font-serif-l text-[17px] tracking-wide">Astra<span className="text-luxe-gold"> Villa</span></span>
@@ -769,13 +772,13 @@ export default function LuxeExperience() {
             <Link to="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-2.5">
               <span
                 aria-hidden
-                className="w-9 h-9 rounded-full grid place-items-center"
+                className="w-9 h-9 rounded-full grid place-items-center overflow-hidden"
                 style={{
                   background: "radial-gradient(120% 120% at 30% 25%, #E7CE96 0%, #C8A96B 45%, #6F5320 100%)",
                   boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.18)",
                 }}
               >
-                <span className="font-serif-l text-[15px] text-[#0a0a0a]">A</span>
+                <img src={brandLogo} alt="" className="w-7 h-7 object-contain" />
               </span>
               <span className="font-serif-l text-[18px]">Astra<span className="text-luxe-gold"> Villa</span></span>
             </Link>
@@ -1437,9 +1440,9 @@ export default function LuxeExperience() {
           <div className="grid grid-cols-2 md:grid-cols-5 gap-10">
             <div className="col-span-2">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full grid place-items-center"
+                <div className="w-8 h-8 rounded-full grid place-items-center overflow-hidden"
                      style={{ background: "linear-gradient(135deg,#C8A96B,#8C6B2F)" }}>
-                  <span className="font-serif-l text-[15px] text-black">A</span>
+                  <img src={brandLogo} alt="Astra Villa" className="w-6 h-6 object-contain" />
                 </div>
                 <span className="font-serif-l text-[18px]">Astra<span className="text-luxe-gold"> Villa</span></span>
               </div>
