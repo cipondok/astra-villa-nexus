@@ -821,8 +821,9 @@ export default function LuxeExperience() {
       {/* ============== HERO ============== */}
       <section ref={heroRef} className="relative min-h-[100svh] overflow-hidden luxe-grain">
         <motion.div
+          aria-hidden
           style={{ y: heroY, scale: heroScale, opacity: heroOpacity }}
-          className="absolute inset-0 will-change-transform"
+          className="absolute inset-0 will-change-transform pointer-events-none"
         >
           <img
             src={heroImg}
@@ -836,7 +837,7 @@ export default function LuxeExperience() {
 
         {/* Ambient bloom layer — single soft glow on high-tier only */}
         {tier === "high" && !isMobile && (
-          <div className="absolute inset-0 pointer-events-none luxe-bloom-a"
+          <div aria-hidden className="absolute inset-0 pointer-events-none luxe-bloom-a"
             style={{ background: "radial-gradient(40% 30% at 78% 22%, rgba(231,206,150,0.22), transparent 70%)" }} />
         )}
 
@@ -844,6 +845,7 @@ export default function LuxeExperience() {
         {!isMobile && tier === "high" && (
           <div
             ref={spotRef}
+            aria-hidden
             className="absolute inset-0 pointer-events-none"
             style={{
               ['--sx' as any]: '50%',
@@ -854,11 +856,11 @@ export default function LuxeExperience() {
         )}
 
         {/* Cinematic overlays */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/20 to-[#050505]" />
-        <div className="absolute inset-0" style={{
+        <div aria-hidden className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/55 via-black/20 to-[#050505]" />
+        <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
           background: "radial-gradient(60% 50% at 50% 90%, rgba(5,5,5,0.85), transparent 70%)"
         }} />
-        <div className="absolute inset-0" style={{
+        <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
           background: "linear-gradient(180deg, rgba(11,18,32,0.35) 0%, transparent 30%, transparent 60%, rgba(5,5,5,0.6) 100%)"
         }} />
 
