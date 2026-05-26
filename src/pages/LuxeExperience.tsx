@@ -410,7 +410,17 @@ export default function LuxeExperience() {
             linear-gradient(180deg, #050505 0%, #07090e 40%, #050709 100%);
           color: var(--luxe-fg);
           font-family: var(--luxe-sans);
+          /* Native vertical pan + momentum — fixes touch-stutter on mobile */
+          touch-action: pan-y;
+          -webkit-overflow-scrolling: touch;
+          overscroll-behavior-y: contain;
         }
+        /* Decorative layers must never intercept finger drags */
+        .luxe-root [aria-hidden="true"] { pointer-events: none; }
+        .luxe-root .luxe-grain,
+        .luxe-root .luxe-mesh-a,
+        .luxe-root .luxe-bloom-a,
+        .luxe-root .luxe-bloom-b { pointer-events: none; }
         .luxe-root .text-luxe-fg { color: var(--luxe-fg); }
         .luxe-root .text-luxe-mut { color: var(--luxe-mut); }
         .luxe-root .text-luxe-gold { color: var(--luxe-gold); }
