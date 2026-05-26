@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 import brandLogoFallback from "@/assets/astra-logo-optimized.png";
-import { LUXE_NAV_LINKS, type LuxeNavLink } from "./navLinks";
+import { LUXE_NAV_LINKS, LUXE_NAV_LINKS_AUTH, type LuxeNavLink } from "./navLinks";
 
 /**
  * LuxeHeader — fixed cinematic glass header + fullscreen mobile menu.
@@ -40,6 +40,7 @@ export function LuxeHeader() {
   useEffect(() => { setMobileOpen(false); }, [pathname]);
 
   const isActive = (p: string) => pathname === p || pathname.startsWith(p + "/");
+  const navLinks: LuxeNavLink[] = user ? [...LUXE_NAV_LINKS, ...LUXE_NAV_LINKS_AUTH] : LUXE_NAV_LINKS;
 
   return (
     <>
@@ -86,7 +87,7 @@ export function LuxeHeader() {
                   <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[color:var(--luxe-gold)]" />
                 )}
               </Link>
-              {LUXE_NAV_LINKS.map((link) => {
+              {navLinks.map((link) => {
                 const active = link.match ? pathname.startsWith(link.match) : false;
                 const hasMega = !!link.mega?.length;
                 return (
@@ -224,7 +225,7 @@ export function LuxeHeader() {
           </div>
 
           <nav className="flex flex-col">
-            {([{ label: "Home", to: "/" } as LuxeNavLink, ...LUXE_NAV_LINKS]).map((link) => {
+            {([{ label: "Home", to: "/" } as LuxeNavLink, ...navLinks]).map((link) => {
               const linkActive = link.to === "/" ? pathname === "/" : pathname.startsWith(link.to);
               return (
                 <div key={link.to} className="border-b border-luxe">
