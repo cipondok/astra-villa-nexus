@@ -850,11 +850,12 @@ export default function LuxeExperience() {
                 <f.icon className="w-6 h-6 text-luxe-gold mb-8" />
                 <h3 className="font-serif-l text-2xl mb-3 leading-tight">{f.t}</h3>
                 <p className="text-[13px] leading-relaxed text-luxe-fg/65">{f.d}</p>
-                <div className="mt-8 inline-flex items-center gap-1.5 text-[11px] text-luxe-mut group-hover:text-luxe-gold transition-colors">
+                <Link to={f.to} className="mt-8 inline-flex items-center gap-1.5 text-[11px] text-luxe-mut group-hover:text-luxe-gold transition-colors">
                   Learn more <ChevronRight className="w-3 h-3" />
-                </div>
+                </Link>
               </motion.div>
             ))}
+
           </div>
         </div>
       </section>
