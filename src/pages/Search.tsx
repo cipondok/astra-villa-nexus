@@ -351,9 +351,9 @@ const Search = () => {
               Search
             </Button>
             
-            {(searchTerm || selectedType !== 'all' || selectedLocation !== 'all') && (
-              <Button 
-                variant="ghost" 
+            {(searchTerm || selectedType !== 'all' || selectedLocation !== 'all' || locationText || whenDate || guests) && (
+              <Button
+                variant="ghost"
                 onClick={clearFilters}
                 className="h-10 px-3 text-sm text-muted-foreground hover:text-foreground"
               >
