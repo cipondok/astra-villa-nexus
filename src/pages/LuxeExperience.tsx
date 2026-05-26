@@ -479,17 +479,17 @@ export default function LuxeExperience() {
       <header
         className={cn(
           "fixed top-0 inset-x-0 z-50 transition-all duration-500",
-          scrolled ? "py-3" : "py-5"
+          scrolled ? "py-2.5" : "py-5"
         )}
       >
         <div className="mx-auto max-w-[1440px] px-5 md:px-10">
           <nav
             className={cn(
-              "luxe-glass-card flex items-center justify-between rounded-full px-4 md:px-6 py-2.5 md:py-3 transition-all",
-              scrolled && "shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)]"
+              "luxe-glass-card flex items-center justify-between rounded-full px-4 md:px-6 transition-all duration-500",
+              scrolled ? "py-2 md:py-2.5 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] bg-[rgba(8,8,10,0.72)]" : "py-2.5 md:py-3"
             )}
           >
-            <Link to="/" className="flex items-center gap-2.5">
+            <Link to="/" className="flex items-center gap-2.5 shrink-0">
               <div className="w-8 h-8 rounded-full grid place-items-center"
                    style={{ background: "linear-gradient(135deg,#C8A96B,#8C6B2F)" }}>
                 <span className="font-serif-l text-[15px] text-black">A</span>
@@ -497,23 +497,44 @@ export default function LuxeExperience() {
               <span className="font-serif-l text-[17px] tracking-wide">Astra<span className="text-luxe-gold"> Villa</span></span>
             </Link>
 
-            <div className="hidden lg:flex items-center gap-8 text-[13px] text-luxe-fg/80">
-              {NAV_LINKS.map(link => (
-                <Link key={link.to} to={link.to} className="hover:text-luxe-gold transition-colors">{link.label}</Link>
-              ))}
+            <div className="hidden lg:flex items-center gap-6 xl:gap-7 text-[13px] text-luxe-fg/75">
+              <Link
+                to="/"
+                className={cn(
+                  "relative py-1 transition-colors duration-300 hover:text-luxe-gold",
+                  pathname === "/" && "text-luxe-gold"
+                )}
+              >
+                Home
+                {pathname === "/" && (
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[color:var(--luxe-gold)]" />
+                )}
+              </Link>
+              {NAV_LINKS.map(link => {
+                const active = link.match ? pathname.startsWith(link.match) : false;
+                return (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    className={cn(
+                      "relative py-1 transition-colors duration-300 hover:text-luxe-gold",
+                      active && "text-luxe-gold"
+                    )}
+                  >
+                    {link.label}
+                    {active && (
+                      <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[color:var(--luxe-gold)]" />
+                    )}
+                  </Link>
+                );
+              })}
             </div>
 
-            <div className="flex items-center gap-1.5 md:gap-2">
-              <Link to="/wealth-advisor" className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-full bg-luxe-glass border border-luxe text-[12px] hover:border-[color:var(--luxe-gold)] transition-colors">
+            <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
+              <Link to="/ai-concierge" className="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-full bg-luxe-glass border border-luxe text-[12px] hover:border-[color:var(--luxe-gold)] transition-colors">
                 <Sparkles className="w-3.5 h-3.5 text-luxe-gold" /> AI Concierge
               </Link>
-              <Link to="/settings" className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Language">
-                <Languages className="w-4 h-4" />
-              </Link>
-              <Link to="/settings" className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Theme">
-                <Moon className="w-4 h-4" />
-              </Link>
-              <Link to="/favorites" className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Wishlist">
+              <Link to="/favorites" className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Favorites">
                 <Heart className="w-4 h-4" />
               </Link>
               <Link to={profileHref} className="w-9 h-9 grid place-items-center rounded-full bg-luxe-glass border border-luxe hover:border-[color:var(--luxe-gold)] transition-colors" aria-label="Profile">
@@ -524,6 +545,7 @@ export default function LuxeExperience() {
           </nav>
         </div>
       </header>
+
 
       {/* ============== HERO ============== */}
       <section ref={heroRef} className="relative min-h-[100svh] overflow-hidden luxe-grain">
