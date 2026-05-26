@@ -1247,7 +1247,7 @@ export default function LuxeExperience() {
           <Reveal delay={0.15}>
             <div className="relative [perspective:1400px]">
               <TiltCard className="luxe-glass-card rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-[0_50px_120px_-40px_rgba(0,0,0,0.8)] will-change-transform">
-                <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full luxe-bloom-a"
+                <div aria-hidden className="absolute -top-32 -right-32 w-80 h-80 rounded-full luxe-bloom-a pointer-events-none"
                      style={{ background: "radial-gradient(circle, rgba(200,169,107,0.28), transparent 70%)" }} />
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-2">
