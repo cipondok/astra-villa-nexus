@@ -393,6 +393,7 @@ const AppContent = () => {
     '/', '/luxe', '/properties', '/search',
     '/dijual', '/buy', '/disewa', '/rent', '/sewa',
     '/pre-launching', '/pre-launch', '/new-projects',
+    '/location', '/locations',
   ]);
   const isLuxeRoute =
     LUXE_PATHS.has(path) ||
@@ -686,7 +687,8 @@ const AppContent = () => {
                 <Route path="/astra-development" element={<AstraDevelopment />} />
                 <Route path="/membership" element={<MembershipPage />} />
                 <Route path="/bookings" element={<BookingsPage />} />
-                <Route path="/location" element={<LocationMap />} />
+                <Route path="/location" element={<Locations />} />
+                <Route path="/locations" element={<Locations />} />
                 <Route path="/location-map" element={<LocationMap />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/help" element={<Help />} />
