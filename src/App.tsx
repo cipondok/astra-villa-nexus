@@ -828,11 +828,12 @@ const AppContent = () => {
           </PageTransition>
         </AnimatePresence>
       </main>
-      {!isAdminRoute && (
+      {!hideAppShell && (
         <Suspense fallback={<div style={{ minHeight: isMobile ? '64px' : '180px' }} />}>
           {isMobile ? <MobileFooter /> : <ProfessionalFooter language={language} />}
         </Suspense>
       )}
+
       {/* Mobile bottom tab bar */}
       <Suspense fallback={null}><MobileBottomTabBar /></Suspense>
     </div>
