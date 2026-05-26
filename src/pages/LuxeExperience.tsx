@@ -392,39 +392,12 @@ export default function LuxeExperience() {
     navigate(url);
   };
 
-  // Lock body scroll when mobile menu is open
-  useEffect(() => {
-    if (!mobileOpen) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prev; };
-  }, [mobileOpen]);
-
-  useEffect(() => {
-    let ticking = false;
-    let last = false;
-    const on = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const next = window.scrollY > 40;
-        if (next !== last) { last = next; setScrolled(next); }
-        ticking = false;
-      });
-    };
-    window.addEventListener("scroll", on, { passive: true });
-    return () => window.removeEventListener("scroll", on);
-  }, []);
-
   useEffect(() => {
     const id = window.setInterval(() => setSuggestIdx(i => (i + 1) % SUGGESTIONS.length), 3200);
     return () => window.clearInterval(id);
   }, []);
 
-  // Cinematic boot fade — runs once on mount
-  useEffect(() => {
-    const t = window.setTimeout(() => setBooted(true), 60);
-    return () => window.clearTimeout(t);
+
   }, []);
 
   // Preload the hero LCP image at high priority
