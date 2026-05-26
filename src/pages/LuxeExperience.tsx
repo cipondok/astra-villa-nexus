@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 
 /* Cinematic easing — Apple-like */
@@ -346,11 +347,36 @@ export default function LuxeExperience() {
 
   const handleHeroSearch = (e?: React.FormEvent) => {
     e?.preventDefault();
+
+    // Guests: must be a whole number >= 1
+    const guestsNum = Number(searchGuests);
+    if (!Number.isFinite(guestsNum) || guestsNum < 1) {
+      toast.error("Please add at least 1 guest.");
+      return;
+    }
+
+    // When: optional, but if provided must be a valid, non-past date
+    if (searchWhen) {
+      const d = new Date(searchWhen);
+      if (Number.isNaN(d.getTime())) {
+        toast.error("Please pick a valid date.");
+        return;
+      }
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (d < today) {
+        toast.error("Date cannot be in the past.");
+        return;
+      }
+    }
+
     const params = new URLSearchParams();
-    if (searchWhere.trim()) params.set("q", searchWhere.trim());
-    if (searchWhere.trim()) params.set("location", searchWhere.trim());
+    if (searchWhere.trim()) {
+      params.set("q", searchWhere.trim());
+      params.set("location", searchWhere.trim());
+    }
     if (searchWhen) params.set("when", searchWhen);
-    if (searchGuests) params.set("guests", String(searchGuests));
+    params.set("guests", String(guestsNum));
     navigate(`/search?${params.toString()}`);
   };
 
