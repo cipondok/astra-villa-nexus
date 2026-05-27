@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 import brandLogoFallback from "@/assets/astra-logo-optimized.png";
 import { LUXE_NAV_LINKS, LUXE_NAV_LINKS_AUTH, type LuxeNavLink } from "./navLinks";
+import { LuxeThemeToggle } from "./LuxeThemeToggle";
 
 /**
  * LuxeHeader — fixed cinematic glass header + fullscreen mobile menu.
@@ -55,7 +56,7 @@ export function LuxeHeader() {
             className={cn(
               "luxe-glass-card flex items-center justify-between rounded-full px-4 md:px-6 transition-all duration-500",
               scrolled
-                ? "py-2 md:py-2.5 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] bg-[rgba(8,8,10,0.72)]"
+                ? "py-2 md:py-2.5 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.4)] bg-[color:var(--luxe-header-scrolled-bg)]"
                 : "py-2.5 md:py-3"
             )}
           >
