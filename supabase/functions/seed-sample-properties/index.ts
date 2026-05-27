@@ -105,6 +105,9 @@ function generateProperty(
     wna_eligible: Math.random() > 0.7,
     is_featured: Math.random() > 0.9,
     investment_score: rand(30, 95),
+    latitude,
+    longitude,
+    development_status: pickDevelopmentStatus(),
     property_features: {
       parking: rand(0, 3),
       ac: rand(0, bedrooms),
