@@ -39,10 +39,33 @@ function generatePrice(type: string, listing: string): number {
   return price;
 }
 
+const PROVINCE_CENTERS: Record<string, [number, number]> = {
+  "Jawa Tengah": [-7.3, 110.2],
+  "Jawa Barat": [-6.9, 107.6],
+  "Jawa Timur": [-7.5, 112.5],
+  "DKI Jakarta": [-6.2, 106.85],
+  "Bali": [-8.4, 115.2],
+  "Nusa Tenggara Barat": [-8.65, 116.3],
+  "Yogyakarta": [-7.8, 110.4],
+  "Banten": [-6.4, 106.1],
+  "Sumatera Utara": [3.6, 98.7],
+  "Sulawesi Selatan": [-5.1, 119.4],
+};
+
+function pickDevelopmentStatus(): string {
+  const r = Math.random();
+  if (r < 0.15) return "pre_launch";
+  if (r < 0.30) return "new_project";
+  return "completed";
+}
+
 function generateProperty(
   type: string,
   loc: { province_name: string; city_name: string; city_type: string; district_name: string; subdistrict_name: string; postal_code: string }
 ) {
+  const center = PROVINCE_CENTERS[loc.province_name] || [-2.5, 118.0];
+  const latitude = center[0] + (Math.random() - 0.5) * 1.6;
+  const longitude = center[1] + (Math.random() - 0.5) * 2.0;
   const listing = pick(LISTING_TYPES);
   const price = generatePrice(type, listing);
   const bedrooms = type === "land" || type === "warehouse" ? 0 : rand(1, 6);
