@@ -1,35 +1,47 @@
 /* ============================================================
-   ASTRA Villa — Luxe Design System (Global)
-   Cinematic dark luxury tokens, utilities & animations.
-   Promoted from the scoped .luxe-root block into the global
-   layer so every page can compose them without re-declaration.
+   ASTRA Villa — Luxe Design System (Global, Dual-Theme)
+   Cinematic luxury tokens, utilities & animations.
+   Default = LIGHT (warm editorial). `.dark` on <html> = DARK.
    ============================================================ */
 
 :root {
-  /* Surfaces */
-  --luxe-bg:        #050505;
-  --luxe-bg-2:      #07090e;
-  --luxe-bg-3:      #0B1220;
-  --luxe-surface:   #0a0a0a;
+  /* ---- LIGHT THEME (default) — warm editorial luxury ---- */
+  --luxe-bg:        #F7F2E9;   /* warm ivory base */
+  --luxe-bg-2:      #EFE7D6;   /* soft champagne */
+  --luxe-bg-3:      #E6DDC8;   /* light stone */
+  --luxe-surface:   #FFFBF3;   /* card surface, warm white */
 
-  /* Brand */
-  --luxe-gold:        #C8A96B;
-  --luxe-gold-soft:   #E7CE96;
-  --luxe-gold-deep:   #8C6B2F;
-  --luxe-emerald:     #4FB286;
-  --luxe-cyan:        #7CE7FF;
-  --luxe-ember:       #FFB27A;
+  /* Brand (shared) */
+  --luxe-gold:        #B8924A;
+  --luxe-gold-soft:   #D9B872;
+  --luxe-gold-deep:   #7A5E22;
+  --luxe-emerald:     #4F8F6B;
+  --luxe-cyan:        #3FA3B8;
+  --luxe-ember:       #C97A3E;
 
   /* Foreground */
-  --luxe-fg:   #ECE9E0;
-  --luxe-mut:  #8A8576;
-  --luxe-line: rgba(236,233,224,0.08);
+  --luxe-fg:   #1A1611;        /* near-black graphite */
+  --luxe-mut:  #6E6657;        /* muted warm gray */
+  --luxe-line: rgba(26,22,17,0.10);
 
-  /* Glass + blur */
-  --luxe-glass:        rgba(255,255,255,0.04);
-  --luxe-glass-strong: rgba(255,255,255,0.06);
-  --luxe-blur:         blur(20px) saturate(140%);
-  --luxe-blur-mobile:  blur(12px) saturate(130%);
+  /* Glass */
+  --luxe-glass:         rgba(255,251,243,0.55);
+  --luxe-glass-strong:  rgba(255,251,243,0.78);
+  --luxe-blur:          blur(20px) saturate(140%);
+  --luxe-blur-mobile:   blur(12px) saturate(130%);
+
+  /* Page composition */
+  --luxe-page-bg:
+    radial-gradient(1200px 700px at 80% -10%, rgba(184,146,74,0.14), transparent 60%),
+    radial-gradient(900px 600px at -10% 30%, rgba(79,143,107,0.10), transparent 60%),
+    linear-gradient(180deg, #F7F2E9 0%, #EFE7D6 50%, #E9DFCB 100%);
+  --luxe-header-scrolled-bg:  rgba(255,251,243,0.78);
+  --luxe-mega-bg:             rgba(255,251,243,0.96);
+  --luxe-dock-bg:             linear-gradient(180deg, rgba(255,251,243,0.85), rgba(255,251,243,0.68));
+  --luxe-mobile-menu-bg:      radial-gradient(70% 60% at 50% 30%, #FFFBF3 0%, #EFE7D6 100%);
+  --luxe-boot-bg:             radial-gradient(60% 50% at 50% 50%, #FFFBF3 0%, #EFE7D6 100%);
+  --luxe-gold-btn-fg:         #1A1611;
+  --luxe-on-hover-tint:       rgba(26,22,17,0.04);
 
   /* Typography */
   --luxe-serif: 'Cormorant Garamond','Playfair Display',ui-serif,Georgia,serif;
@@ -44,11 +56,11 @@
   --luxe-dur-cinema:  1200ms;
 
   /* Shadows */
-  --luxe-shadow-card:  0 24px 60px -28px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.04) inset;
-  --luxe-shadow-float: 0 30px 80px -30px rgba(0,0,0,0.85);
-  --luxe-shadow-gold:  0 10px 30px -10px rgba(200,169,107,0.55);
+  --luxe-shadow-card:  0 24px 60px -28px rgba(70,55,30,0.25), 0 1px 0 rgba(255,255,255,0.6) inset;
+  --luxe-shadow-float: 0 30px 80px -30px rgba(70,55,30,0.35);
+  --luxe-shadow-gold:  0 10px 30px -10px rgba(184,146,74,0.45);
 
-  /* Spacing rhythm — cinematic */
+  /* Rhythm */
   --luxe-gutter:    20px;
   --luxe-gutter-md: 40px;
   --luxe-section-y: 96px;
@@ -60,16 +72,65 @@
   --luxe-radius-pill: 9999px;
 }
 
+/* ---- DARK THEME ---- */
+:root.dark {
+  --luxe-bg:        #050505;
+  --luxe-bg-2:      #07090e;
+  --luxe-bg-3:      #0B1220;
+  --luxe-surface:   #0a0a0a;
+
+  --luxe-gold:        #C8A96B;
+  --luxe-gold-soft:   #E7CE96;
+  --luxe-gold-deep:   #8C6B2F;
+  --luxe-emerald:     #4FB286;
+  --luxe-cyan:        #7CE7FF;
+  --luxe-ember:       #FFB27A;
+
+  --luxe-fg:   #ECE9E0;
+  --luxe-mut:  #8A8576;
+  --luxe-line: rgba(236,233,224,0.08);
+
+  --luxe-glass:        rgba(255,255,255,0.04);
+  --luxe-glass-strong: rgba(255,255,255,0.06);
+
+  --luxe-page-bg:
+    radial-gradient(1200px 700px at 80% -10%, rgba(200,169,107,0.10), transparent 60%),
+    radial-gradient(900px 600px at -10% 30%, rgba(79,178,134,0.08), transparent 60%),
+    linear-gradient(180deg, #050505 0%, #07090e 40%, #050709 100%);
+  --luxe-header-scrolled-bg:  rgba(8,8,10,0.72);
+  --luxe-mega-bg:             rgba(8,8,10,0.92);
+  --luxe-dock-bg:             linear-gradient(180deg, rgba(10,10,10,0.72), rgba(10,10,10,0.55));
+  --luxe-mobile-menu-bg:      radial-gradient(70% 60% at 50% 30%, #0c0c10 0%, #050505 100%);
+  --luxe-boot-bg:             radial-gradient(60% 50% at 50% 50%, #0b0b0b 0%, #050505 100%);
+  --luxe-gold-btn-fg:         #0a0a0a;
+  --luxe-on-hover-tint:       rgba(255,255,255,0.04);
+
+  --luxe-shadow-card:  0 24px 60px -28px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.04) inset;
+  --luxe-shadow-float: 0 30px 80px -30px rgba(0,0,0,0.85);
+  --luxe-shadow-gold:  0 10px 30px -10px rgba(200,169,107,0.55);
+}
+
+/* ---------- Smooth theme transition ---------- */
+:root,
+.luxe-root,
+.luxe-root * {
+  transition:
+    background-color 380ms var(--luxe-ease, ease),
+    border-color 380ms var(--luxe-ease, ease),
+    color 220ms var(--luxe-ease, ease),
+    box-shadow 380ms var(--luxe-ease, ease);
+}
+@media (prefers-reduced-motion: reduce) {
+  :root, .luxe-root, .luxe-root * { transition: none !important; }
+}
+
 /* ---------- Page shell ---------- */
 .luxe-root {
   position: relative;
   min-height: 100vh;
   color: var(--luxe-fg);
   font-family: var(--luxe-sans);
-  background:
-    radial-gradient(1200px 700px at 80% -10%, rgba(200,169,107,0.10), transparent 60%),
-    radial-gradient(900px 600px at -10% 30%, rgba(79,178,134,0.08), transparent 60%),
-    linear-gradient(180deg, #050505 0%, #07090e 40%, #050709 100%);
+  background: var(--luxe-page-bg);
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
   touch-action: pan-y;
@@ -90,13 +151,13 @@
 
 /* ---------- Glass card ---------- */
 .luxe-glass-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
+  background: var(--luxe-glass);
   border: 1px solid var(--luxe-line);
   backdrop-filter: var(--luxe-blur);
   -webkit-backdrop-filter: var(--luxe-blur);
 }
 .luxe-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
+  background: var(--luxe-glass-strong);
   border: 1px solid var(--luxe-line);
   border-radius: var(--luxe-radius-lg);
   box-shadow: var(--luxe-shadow-card);
@@ -104,15 +165,15 @@
 .luxe-card-glow { position: relative; }
 .luxe-card-glow::after {
   content: ""; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none;
-  background: radial-gradient(120% 80% at 50% 0%, rgba(200,169,107,0.18), transparent 60%);
+  background: radial-gradient(120% 80% at 50% 0%, rgba(200,169,107,0.22), transparent 60%);
   opacity: 0; transition: opacity .6s var(--luxe-ease);
 }
 .luxe-card-glow:hover::after { opacity: 1; }
 
 /* ---------- Buttons ---------- */
 .luxe-gold-btn {
-  background: linear-gradient(180deg, #D7B97A 0%, #B6914F 100%);
-  color: #0a0a0a;
+  background: linear-gradient(180deg, var(--luxe-gold-soft) 0%, var(--luxe-gold) 100%);
+  color: var(--luxe-gold-btn-fg);
   box-shadow: var(--luxe-shadow-gold), inset 0 1px 0 rgba(255,255,255,0.35);
   transition: filter var(--luxe-dur-fast) var(--luxe-ease), transform var(--luxe-dur-fast) var(--luxe-ease);
 }
@@ -170,7 +231,7 @@
   animation: luxeShimmer 1.8s ease-in-out infinite;
 }
 .luxe-gold-shimmer {
-  background: linear-gradient(90deg, #C8A96B 0%, #F2E0B2 45%, #C8A96B 60%, #B6914F 100%);
+  background: linear-gradient(90deg, var(--luxe-gold) 0%, var(--luxe-gold-soft) 45%, var(--luxe-gold) 60%, var(--luxe-gold-deep) 100%);
   background-size: 200% 100%;
   -webkit-background-clip: text; background-clip: text; color: transparent;
   animation: luxeShimmer 7s linear infinite;
@@ -186,10 +247,13 @@
 
 /* ---------- Mobile dock ---------- */
 .luxe-dock {
-  background: linear-gradient(180deg, rgba(10,10,10,0.72), rgba(10,10,10,0.55));
+  background: var(--luxe-dock-bg);
   border: 1px solid var(--luxe-line);
   backdrop-filter: blur(24px) saturate(160%);
   -webkit-backdrop-filter: blur(24px) saturate(160%);
+  box-shadow: 0 24px 60px -20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.4);
+}
+:root.dark .luxe-dock {
   box-shadow: 0 24px 60px -20px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);
 }
 .luxe-dock-active {
@@ -202,14 +266,14 @@
 /* ---------- Boot fade ---------- */
 .luxe-boot {
   position: fixed; inset: 0; z-index: 100; pointer-events: none;
-  background: radial-gradient(60% 50% at 50% 50%, #0b0b0b 0%, #050505 100%);
+  background: var(--luxe-boot-bg);
   opacity: 1; transition: opacity 900ms var(--luxe-ease);
 }
 .luxe-boot.ready { opacity: 0; }
 .luxe-boot-mark {
   position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
   width: 64px; height: 64px; border-radius: 9999px;
-  background: linear-gradient(135deg,#C8A96B,#8C6B2F);
+  background: linear-gradient(135deg,var(--luxe-gold-soft),var(--luxe-gold-deep));
   display: grid; place-items: center;
   box-shadow: 0 20px 60px -20px rgba(200,169,107,0.6);
   animation: luxePulse 2.6s ease-in-out infinite;
