@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 import brandLogoFallback from "@/assets/astra-logo-optimized.png";
 import { LUXE_NAV_LINKS, LUXE_NAV_LINKS_AUTH, type LuxeNavLink } from "./navLinks";
+import { LuxeThemeToggle } from "./LuxeThemeToggle";
 
 /**
  * LuxeHeader — fixed cinematic glass header + fullscreen mobile menu.
