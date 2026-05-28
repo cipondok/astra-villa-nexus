@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
-  Search, Sparkles, Heart, User2, Bell, Menu, X, ArrowUpRight, ChevronRight,
+  Search, Sparkles, Heart, User2, Menu, X, ArrowUpRight, ChevronRight, Plus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,6 +9,7 @@ import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 import brandLogoFallback from "@/assets/astra-logo-optimized.png";
 import { LUXE_NAV_LINKS, LUXE_NAV_LINKS_AUTH, type LuxeNavLink } from "./navLinks";
 import { LuxeThemeToggle } from "./LuxeThemeToggle";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 /**
  * LuxeHeader — fixed cinematic glass header + fullscreen mobile menu.
