@@ -164,11 +164,18 @@ export function LuxeHeader() {
                       {wishActive && <ActiveDot />}
                     </Link>
                     {user && (
-                      <Link to="/notifications" aria-label="Notifications" aria-current={notifActive ? "page" : undefined}
-                        className={cn(baseIcon, "hidden md:grid", notifActive ? activeIcon : idleIcon)}>
-                        <Bell className="w-4 h-4" />
-                        <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[color:var(--luxe-gold)]" />
-                        {notifActive && <ActiveDot />}
+                      <div className="hidden md:grid place-items-center luxe-notif-bell">
+                        <NotificationBell />
+                      </div>
+                    )}
+                    <LuxeThemeToggle className="hidden sm:grid" />
+                    {user && (
+                      <Link
+                        to="/add-property"
+                        aria-label="List a property"
+                        className="hidden md:inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-[12px] font-medium luxe-gold-btn transition-all hover:shadow-[0_10px_28px_-12px_rgba(200,169,107,0.7)]"
+                      >
+                        <Plus className="w-3.5 h-3.5" /> List Property
                       </Link>
                     )}
                     <Link to={profileHref} aria-label="Profile" aria-current={profileActive ? "page" : undefined}
