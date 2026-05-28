@@ -35,17 +35,26 @@ export function LuxeLayout({
   boot = true,
   className,
 }: LuxeLayoutProps) {
-  const [booted, setBooted] = useState(!boot);
+  // Boot fade only once per browser session — prevents the jarring "jump to top"
+  // overlay overlay on every SPA route change.
+  const shouldBoot =
+    boot &&
+    typeof window !== "undefined" &&
+    !window.sessionStorage.getItem("luxe-booted");
+  const [booted, setBooted] = useState(!shouldBoot);
 
   useEffect(() => {
-    if (!boot) return;
-    const t = window.setTimeout(() => setBooted(true), 60);
+    if (!shouldBoot) return;
+    const t = window.setTimeout(() => {
+      setBooted(true);
+      try { window.sessionStorage.setItem("luxe-booted", "1"); } catch {}
+    }, 60);
     return () => window.clearTimeout(t);
-  }, [boot]);
+  }, [shouldBoot]);
 
   return (
     <div className={cn("luxe-root", className)}>
-      {boot && (
+      {shouldBoot && (
         <div className={cn("luxe-boot", booted && "ready")} aria-hidden={booted}>
           <div className="luxe-boot-mark">
             <span className="font-serif-l text-[22px] text-black">A</span>

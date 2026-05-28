@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
-  Search, Sparkles, Heart, User2, Bell, Menu, X, ArrowUpRight, ChevronRight,
+  Search, Sparkles, Heart, User2, Menu, X, ArrowUpRight, ChevronRight, Plus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,6 +9,7 @@ import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 import brandLogoFallback from "@/assets/astra-logo-optimized.png";
 import { LUXE_NAV_LINKS, LUXE_NAV_LINKS_AUTH, type LuxeNavLink } from "./navLinks";
 import { LuxeThemeToggle } from "./LuxeThemeToggle";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 /**
  * LuxeHeader — fixed cinematic glass header + fullscreen mobile menu.
@@ -163,11 +164,18 @@ export function LuxeHeader() {
                       {wishActive && <ActiveDot />}
                     </Link>
                     {user && (
-                      <Link to="/notifications" aria-label="Notifications" aria-current={notifActive ? "page" : undefined}
-                        className={cn(baseIcon, "hidden md:grid", notifActive ? activeIcon : idleIcon)}>
-                        <Bell className="w-4 h-4" />
-                        <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[color:var(--luxe-gold)]" />
-                        {notifActive && <ActiveDot />}
+                      <div className="hidden md:grid place-items-center luxe-notif-bell">
+                        <NotificationBell />
+                      </div>
+                    )}
+                    <LuxeThemeToggle className="hidden sm:grid" />
+                    {user && (
+                      <Link
+                        to="/add-property"
+                        aria-label="List a property"
+                        className="hidden md:inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-[12px] font-medium luxe-gold-btn transition-all hover:shadow-[0_10px_28px_-12px_rgba(200,169,107,0.7)]"
+                      >
+                        <Plus className="w-3.5 h-3.5" /> List Property
                       </Link>
                     )}
                     <Link to={profileHref} aria-label="Profile" aria-current={profileActive ? "page" : undefined}
@@ -267,12 +275,20 @@ export function LuxeHeader() {
           </nav>
 
           <div className="mt-10 grid grid-cols-2 gap-3">
-            <Link to="/properties" className="luxe-glass-card flex items-center justify-center gap-2 py-4 rounded-2xl text-[12px] hover:text-luxe-gold">
+            <Link to="/properties" onClick={() => setMobileOpen(false)} className="luxe-glass-card flex items-center justify-center gap-2 py-4 rounded-2xl text-[12px] hover:text-luxe-gold">
               <Search className="w-4 h-4" /> Search Villas
             </Link>
-            <Link to="/wealth-advisor" className="luxe-gold-btn flex items-center justify-center gap-2 py-4 rounded-2xl text-[12px] font-medium">
+            <Link to="/wealth-advisor" onClick={() => setMobileOpen(false)} className="luxe-gold-btn flex items-center justify-center gap-2 py-4 rounded-2xl text-[12px] font-medium">
               <Sparkles className="w-4 h-4" /> AI Concierge
             </Link>
+            <Link to="/add-property" onClick={() => setMobileOpen(false)} className="luxe-glass-card flex items-center justify-center gap-2 py-4 rounded-2xl text-[12px] hover:text-luxe-gold col-span-2">
+              <Plus className="w-4 h-4" /> List Your Property
+            </Link>
+          </div>
+
+          <div className="mt-6 flex items-center justify-center gap-3">
+            <span className="text-[10px] uppercase tracking-[0.32em] text-luxe-mut">Theme</span>
+            <LuxeThemeToggle variant="pill" />
           </div>
 
           <div className="mt-8 text-center text-[10px] uppercase tracking-[0.32em] text-luxe-mut">
