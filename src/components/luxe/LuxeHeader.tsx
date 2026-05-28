@@ -275,12 +275,20 @@ export function LuxeHeader() {
           </nav>
 
           <div className="mt-10 grid grid-cols-2 gap-3">
-            <Link to="/properties" className="luxe-glass-card flex items-center justify-center gap-2 py-4 rounded-2xl text-[12px] hover:text-luxe-gold">
+            <Link to="/properties" onClick={() => setMobileOpen(false)} className="luxe-glass-card flex items-center justify-center gap-2 py-4 rounded-2xl text-[12px] hover:text-luxe-gold">
               <Search className="w-4 h-4" /> Search Villas
             </Link>
-            <Link to="/wealth-advisor" className="luxe-gold-btn flex items-center justify-center gap-2 py-4 rounded-2xl text-[12px] font-medium">
+            <Link to="/wealth-advisor" onClick={() => setMobileOpen(false)} className="luxe-gold-btn flex items-center justify-center gap-2 py-4 rounded-2xl text-[12px] font-medium">
               <Sparkles className="w-4 h-4" /> AI Concierge
             </Link>
+            <Link to="/add-property" onClick={() => setMobileOpen(false)} className="luxe-glass-card flex items-center justify-center gap-2 py-4 rounded-2xl text-[12px] hover:text-luxe-gold col-span-2">
+              <Plus className="w-4 h-4" /> List Your Property
+            </Link>
+          </div>
+
+          <div className="mt-6 flex items-center justify-center gap-3">
+            <span className="text-[10px] uppercase tracking-[0.32em] text-luxe-mut">Theme</span>
+            <LuxeThemeToggle variant="pill" />
           </div>
 
           <div className="mt-8 text-center text-[10px] uppercase tracking-[0.32em] text-luxe-mut">
