@@ -18,7 +18,7 @@ const AddProperty = () => {
   const { isAuthenticated, profile, user } = useAuth();
   const { language } = useTranslation();
   const { isAdmin, isLoading: adminLoading } = useIsAdmin();
-  const [activeTab, setActiveTab] = useState<string>("manual");
+  const [activeTab, setActiveTab] = useState<string>("studio");
   const { toast } = useToast();
   const { data: userRoles = [] } = useUserRoles();
   const navigate = useNavigate();
