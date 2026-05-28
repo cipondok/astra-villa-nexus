@@ -4,10 +4,11 @@ import { useTranslation } from "@/i18n/useTranslation";
 import { useNavigate, Link } from "react-router-dom";
 import MultiStepPropertyForm from "@/components/property/MultiStepPropertyForm";
 import PropertyImporter from "@/components/property/PropertyImporter";
+import LuxeListingStudio from "@/components/listing-studio/LuxeListingStudio";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 // Tabs removed - using inline toggle buttons in header
-import { LogIn, UserPlus, Lock, ArrowLeft, Building, Crown, AlertTriangle, Link2, PenTool, Plus, ArrowRight } from "lucide-react";
+import { LogIn, UserPlus, Lock, ArrowLeft, Building, Crown, AlertTriangle, Link2, PenTool, Plus, ArrowRight, Wand2 } from "lucide-react";
 import { useIsAdmin, useUserRoles } from "@/hooks/useUserRoles";
 import { useVIPLimits } from "@/hooks/useVIPLimits";
 import VIPLimitAlert from "@/components/property/VIPLimitAlert";
@@ -17,7 +18,7 @@ const AddProperty = () => {
   const { isAuthenticated, profile, user } = useAuth();
   const { language } = useTranslation();
   const { isAdmin, isLoading: adminLoading } = useIsAdmin();
-  const [activeTab, setActiveTab] = useState<string>("manual");
+  const [activeTab, setActiveTab] = useState<string>("studio");
   const { toast } = useToast();
   const { data: userRoles = [] } = useUserRoles();
   const navigate = useNavigate();
