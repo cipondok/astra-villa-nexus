@@ -90,9 +90,12 @@
   --luxe-emerald:     #4FB286;
   --luxe-cyan:        #7CE7FF;
   --luxe-ember:       #FFB27A;
-
   --luxe-fg:   #ECE9E0;
   --luxe-mut:  #8A8576;
+  --luxe-sub:  #B7B0A1;
+  --luxe-muted-fg: #8A8576;
+  --luxe-line: rgba(236,233,224,0.08);
+
   --luxe-line: rgba(236,233,224,0.08);
 
   --luxe-glass:        rgba(255,255,255,0.04);
