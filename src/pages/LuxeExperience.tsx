@@ -733,15 +733,16 @@ export default function LuxeExperience() {
               return (
               <Reveal key={v.id ?? v.name} delay={i * 0.12} as="article"
                 className="snap-center shrink-0 w-[82%] sm:w-[60%] md:w-auto first:pl-0 last:pr-0">
-                <TiltCard className="group relative overflow-hidden rounded-3xl border border-luxe bg-[#0a0a0a] luxe-card-glow shadow-[0_30px_60px_-30px_rgba(0,0,0,0.8)] hover:shadow-[0_40px_80px_-30px_rgba(200,169,107,0.35)] transition-shadow duration-700 will-change-transform luxe-tap">
+                <TiltCard className="group relative overflow-hidden rounded-3xl border border-luxe bg-luxe-surface luxe-card-glow shadow-[var(--luxe-shadow-card)] hover:shadow-[var(--luxe-shadow-float)] transition-shadow duration-700 will-change-transform luxe-tap">
                   <Link to={detailHref} aria-label={`View ${v.name}`} className="absolute inset-0 z-10" />
                   <div className="aspect-[4/5] overflow-hidden">
                     <img src={v.img} alt={v.name} loading="lazy" width={1280} height={1600}
                          className="w-full h-full object-cover transition-transform duration-[2000ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]" />
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[rgba(10,10,10,0.75)] via-[rgba(10,10,10,0.25)] to-transparent" />
                   <div aria-hidden className="pointer-events-none absolute -inset-x-1/4 -top-1/2 h-full rotate-12 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-                       style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)" }} />
+                       style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)" }} />
+
 
                   <div className="absolute top-4 left-4 right-16 flex flex-wrap items-center gap-1.5 z-20">
                     <span className="px-2.5 py-1 rounded-full text-[10px] tracking-wider uppercase luxe-glass-card text-luxe-gold">{v.tag}</span>
