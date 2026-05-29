@@ -109,7 +109,8 @@ export function LuxeHeader() {
                     </Link>
                     {hasMega && (
                       <div className="absolute left-1/2 -translate-x-1/2 top-full pt-4 w-[320px] opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50">
-                        <div className="luxe-glass-card rounded-2xl p-2 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.7)] bg-[rgba(8,8,10,0.92)]">
+                        <div className="luxe-glass-card rounded-2xl p-2 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.4)]" style={{ background: "var(--luxe-mega-bg)" }}>
+
                           {link.mega!.map((sub) => (
                             <Link
                               key={sub.to}
@@ -147,24 +148,24 @@ export function LuxeHeader() {
                 return (
                   <>
                     <Link to="/properties" aria-label="Search villas" aria-current={searchActive ? "page" : undefined}
-                      className={cn(baseIcon, "hidden md:grid", searchActive ? activeIcon : idleIcon)}>
+                      className={cn(baseIcon, "hidden lg:grid", searchActive ? activeIcon : idleIcon)}>
                       <Search className="w-4 h-4" />
                       {searchActive && <ActiveDot />}
                     </Link>
                     <Link to="/wealth-advisor" aria-current={isActive("/wealth-advisor") ? "page" : undefined}
-                      className={cn("hidden xl:flex items-center gap-1.5 px-3 py-2 rounded-full border text-[12px] transition-colors",
+                      className={cn("hidden 2xl:flex items-center gap-1.5 px-3 py-2 rounded-full border text-[12px] transition-colors",
                         isActive("/wealth-advisor")
                           ? "bg-[color:var(--luxe-gold)]/12 border-[color:var(--luxe-gold)]/55 text-luxe-gold"
                           : "bg-luxe-glass border-luxe hover:border-[color:var(--luxe-gold)]")}>
                       <Sparkles className="w-3.5 h-3.5 text-luxe-gold" /> AI Concierge
                     </Link>
                     <Link to="/favorites" aria-label="Wishlist" aria-current={wishActive ? "page" : undefined}
-                      className={cn(baseIcon, wishActive ? activeIcon : idleIcon)}>
+                      className={cn(baseIcon, "hidden lg:grid", wishActive ? activeIcon : idleIcon)}>
                       <Heart className={cn("w-4 h-4", wishActive && "fill-[color:var(--luxe-gold)]/30")} />
                       {wishActive && <ActiveDot />}
                     </Link>
                     {user && (
-                      <div className="hidden md:grid place-items-center luxe-notif-bell">
+                      <div className="hidden lg:grid place-items-center luxe-notif-bell">
                         <NotificationBell />
                       </div>
                     )}
@@ -173,9 +174,11 @@ export function LuxeHeader() {
                       <Link
                         to="/add-property"
                         aria-label="List a property"
-                        className="hidden md:inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-[12px] font-medium luxe-gold-btn transition-all hover:shadow-[0_10px_28px_-12px_rgba(200,169,107,0.7)]"
+                        title="List a property"
+                        className="hidden sm:inline-flex items-center gap-1.5 rounded-full text-[12px] font-medium luxe-gold-btn transition-all hover:shadow-[0_10px_28px_-12px_rgba(200,169,107,0.7)] h-9 px-2.5 xl:px-3.5"
                       >
-                        <Plus className="w-3.5 h-3.5" /> List Property
+                        <Plus className="w-3.5 h-3.5" />
+                        <span className="hidden xl:inline">List Property</span>
                       </Link>
                     )}
                     <Link to={profileHref} aria-label="Profile" aria-current={profileActive ? "page" : undefined}
@@ -183,6 +186,7 @@ export function LuxeHeader() {
                       <User2 className="w-4 h-4" />
                       {profileActive && <ActiveDot />}
                     </Link>
+
                   </>
                 );
               })()}
@@ -209,9 +213,10 @@ export function LuxeHeader() {
       >
         <div
           className="absolute inset-0"
-          style={{ background: "radial-gradient(70% 60% at 50% 30%, #0c0c10 0%, #050505 100%)" }}
+          style={{ background: "var(--luxe-mobile-menu-bg)" }}
           onClick={() => setMobileOpen(false)}
         />
+
         <div className={cn(
           "relative h-full overflow-y-auto px-6 pt-6 pb-12 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
           mobileOpen ? "translate-y-0" : "translate-y-3"
