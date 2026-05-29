@@ -815,7 +815,9 @@ export default function LuxeExperience() {
                 key={f.t}
                 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
                 viewport={{ once: true }} transition={{ duration: 0.7, delay: i * 0.06 }}
-                className="bg-[#070808] p-8 md:p-10 group hover:bg-[#0b0e15] transition-colors"
+                className="bg-luxe-surface p-8 md:p-10 group hover:bg-[color:var(--luxe-bg-2)] transition-colors"
+              >
+
               >
                 <f.icon className="w-6 h-6 text-luxe-gold mb-8" />
                 <h3 className="font-serif-l text-2xl mb-3 leading-tight">{f.t}</h3>
