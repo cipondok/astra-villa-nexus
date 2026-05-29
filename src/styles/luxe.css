@@ -163,6 +163,10 @@
   border: 1px solid var(--luxe-line);
   backdrop-filter: var(--luxe-blur);
   -webkit-backdrop-filter: var(--luxe-blur);
+  box-shadow: var(--luxe-shadow-card);
+}
+:root:not(.dark) .luxe-glass-card {
+  border-color: rgba(200,169,107,0.22);
 }
 .luxe-card {
   background: var(--luxe-glass-strong);
@@ -170,6 +174,10 @@
   border-radius: var(--luxe-radius-lg);
   box-shadow: var(--luxe-shadow-card);
 }
+:root:not(.dark) .luxe-card {
+  border-color: rgba(200,169,107,0.25);
+}
+
 .luxe-card-glow { position: relative; }
 .luxe-card-glow::after {
   content: ""; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none;
