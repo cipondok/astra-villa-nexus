@@ -256,7 +256,7 @@ function useFeaturedVillas(): { villas: FeaturedVilla[]; isLoading: boolean; isF
 /* Luxury shimmer skeleton for villa cards */
 function VillaSkeleton() {
   return (
-    <div className="rounded-3xl border border-luxe bg-[#0a0a0a] overflow-hidden">
+    <div className="rounded-3xl border border-luxe bg-luxe-surface overflow-hidden">
       <div className="aspect-[4/5] luxe-shimmer" />
       <div className="p-4 space-y-2">
         <div className="h-4 w-2/3 luxe-shimmer rounded" />
@@ -477,13 +477,9 @@ export default function LuxeExperience() {
         )}
 
         {/* Cinematic overlays */}
-        <div aria-hidden className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/55 via-black/20 to-[#050505]" />
-        <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
-          background: "radial-gradient(60% 50% at 50% 90%, rgba(5,5,5,0.85), transparent 70%)"
-        }} />
-        <div aria-hidden className="absolute inset-0 pointer-events-none" style={{
-          background: "linear-gradient(180deg, rgba(11,18,32,0.35) 0%, transparent 30%, transparent 60%, rgba(5,5,5,0.6) 100%)"
-        }} />
+        <div aria-hidden className="absolute inset-0 pointer-events-none" style={{ background: "var(--luxe-hero-vignette)" }} />
+        <div aria-hidden className="absolute inset-0 pointer-events-none" style={{ background: "var(--luxe-hero-floor)" }} />
+        <div aria-hidden className="absolute inset-0 pointer-events-none" style={{ background: "var(--luxe-hero-depth)" }} />
 
         {/* Floating gold particles — high-tier desktop only, minimal count */}
         {tier === "high" && !isMobile && (
@@ -991,7 +987,7 @@ export default function LuxeExperience() {
       <section className="relative py-28 md:py-36 luxe-cv">
         <div className="mx-auto max-w-[1240px] px-5 md:px-10">
           <div className="relative overflow-hidden rounded-[32px] border border-luxe luxe-grain"
-               style={{ background: "linear-gradient(135deg, #0B1220 0%, #050505 70%)" }}>
+               style={{ background: "var(--luxe-cta-bg)" }}>
             <div aria-hidden className="absolute -top-40 -right-40 w-[480px] h-[480px] rounded-full pointer-events-none"
                  style={{ background: "radial-gradient(circle, rgba(200,169,107,0.22), transparent 70%)" }} />
             <div className="relative p-10 md:p-20 grid md:grid-cols-[1.4fr_1fr] gap-10 items-center">
