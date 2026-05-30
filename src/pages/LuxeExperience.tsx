@@ -790,42 +790,128 @@ export default function LuxeExperience() {
 
 
 
-      {/* ============== PROPERTY OS ============== */}
+      {/* ============== PROPERTY OS — Sage Glass Editorial Bento ============== */}
       <section className="relative py-28 md:py-40 luxe-cv">
         <div
           className="absolute inset-0 opacity-60 pointer-events-none"
-          style={{ background: "radial-gradient(60% 50% at 50% 30%, rgba(200,169,107,0.08), transparent 70%)" }}
+          style={{ background: "radial-gradient(60% 50% at 50% 30%, rgba(125,155,118,0.10), transparent 70%)" }}
         />
-        <div className="mx-auto max-w-[1440px] px-5 md:px-10 relative">
-          <div className="text-center max-w-3xl mx-auto mb-20">
-            <span className="luxe-eyebrow">The Property Operating System</span>
-            <h2 className="font-serif-l text-[40px] md:text-[64px] leading-[1.02] mt-5 tracking-tight">
-              One quiet interface for <em className="not-italic text-luxe-gold">every</em> villa decision.
-            </h2>
-            <div className="luxe-divider mt-10 max-w-xs mx-auto" />
+        <div className="mx-auto max-w-[1280px] px-5 md:px-10 relative">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 md:mb-20">
+            <div className="max-w-2xl">
+              <span className="luxe-eyebrow">The Property Operating System</span>
+              <h2 className="font-display-l text-[36px] md:text-[56px] leading-[1.02] mt-5 tracking-tight">
+                One quiet interface for <span className="text-luxe-sage">every</span> villa decision.
+              </h2>
+              <p className="mt-6 text-[15px] md:text-[17px] leading-relaxed text-luxe-fg/65 max-w-xl font-light">
+                Unified intelligence layer managing the entire lifecycle of luxury villa investment and experience — through spatial data and predictive modeling.
+              </p>
+            </div>
+            <div className="text-luxe-gold flex items-center gap-3 shrink-0">
+              <div className="h-px w-24 bg-[color:var(--luxe-gold)]/30" />
+              <span className="text-[11px] font-bold tracking-[0.22em] uppercase">V.2.0 Active</span>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-luxe-line rounded-3xl overflow-hidden border border-luxe">
-            {OS_FEATURES.map((f, i) => (
-              <motion.div
-                key={f.t}
-                initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
-                viewport={{ once: true }} transition={{ duration: 0.7, delay: i * 0.06 }}
-                className="bg-luxe-surface p-8 md:p-10 group hover:bg-[color:var(--luxe-bg-2)] transition-colors"
-              >
+          {/* Bento Grid — 6 OS tiles */}
+          <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 md:grid-rows-2 gap-5 md:gap-6 md:auto-rows-fr">
+            {OS_FEATURES.map((f, i) => {
+              const spans = [
+                "md:col-span-3 md:row-span-2",            // 0 AI Intelligence (feature)
+                "md:col-span-3 lg:col-span-1",            // 1 3D Twin
+                "md:col-span-3 lg:col-span-2",            // 2 Investment Analytics
+                "md:col-span-2",                          // 3 Predictive Pricing (sage solid)
+                "md:col-span-1",                          // 4 Immersive Tours
+                "md:col-span-2 lg:col-span-3",            // 5 Global Investor (dashed)
+              ];
+              const isFeature = i === 0;
+              const isPricing = i === 3;
+              const isInvestor = i === 5;
+              return (
+                <motion.div
+                  key={f.t}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ duration: 0.7, delay: i * 0.06, ease: EASE }}
+                  className={cn(
+                    "relative overflow-hidden rounded-[28px] md:rounded-[32px] p-7 md:p-9 group flex flex-col justify-between",
+                    "transition-all duration-500",
+                    spans[i],
+                    isFeature && "bg-luxe-sage-soft border border-[color:var(--luxe-sage)]/25 min-h-[360px] md:min-h-0",
+                    isPricing && "bg-[color:var(--luxe-sage)] text-[color:var(--luxe-bg)] border border-[color:var(--luxe-sage)]",
+                    isInvestor && "bg-luxe-surface/40 border-2 border-dashed border-[color:var(--luxe-sage)]/40 hover:border-[color:var(--luxe-sage)]",
+                    !isFeature && !isPricing && !isInvestor && "bg-luxe-surface border border-luxe luxe-shadow-card hover:-translate-y-0.5",
+                  )}
+                >
+                  <div className="relative z-10">
+                    <div
+                      className={cn(
+                        "w-12 h-12 rounded-2xl flex items-center justify-center mb-6 transition-colors",
+                        isFeature && "bg-luxe-surface shadow-sm",
+                        isPricing && "bg-white/15",
+                        isInvestor && "bg-luxe-surface",
+                        !isFeature && !isPricing && !isInvestor && "bg-luxe-sage-soft",
+                      )}
+                    >
+                      <f.icon
+                        className={cn(
+                          "w-5 h-5",
+                          isPricing ? "text-[color:var(--luxe-bg)]" : "text-luxe-sage"
+                        )}
+                      />
+                    </div>
+                    <h3
+                      className={cn(
+                        "font-display-l mb-3 leading-tight",
+                        isFeature ? "text-[26px] md:text-[34px]" : "text-[18px] md:text-[20px]"
+                      )}
+                    >
+                      {f.t}
+                    </h3>
+                    <p
+                      className={cn(
+                        "leading-relaxed font-light",
+                        isFeature ? "text-[15px] md:text-[16px] max-w-md text-luxe-fg/70" : "text-[12.5px] text-luxe-fg/65",
+                        isPricing && "!text-[color:var(--luxe-bg)]/80"
+                      )}
+                    >
+                      {f.d}
+                    </p>
+                  </div>
 
-                <f.icon className="w-6 h-6 text-luxe-gold mb-8" />
-                <h3 className="font-serif-l text-2xl mb-3 leading-tight">{f.t}</h3>
-                <p className="text-[13px] leading-relaxed text-luxe-fg/65">{f.d}</p>
-                <Link to={f.to} className="mt-8 inline-flex items-center gap-1.5 text-[11px] text-luxe-mut group-hover:text-luxe-gold transition-colors">
-                  Learn more <ChevronRight className="w-3 h-3" />
-                </Link>
-              </motion.div>
-            ))}
+                  <div className="relative z-10 mt-6 flex items-center justify-between gap-3">
+                    <Link
+                      to={f.to}
+                      className={cn(
+                        "inline-flex items-center gap-1.5 text-[11px] tracking-wide uppercase font-semibold transition-colors",
+                        isPricing ? "text-[color:var(--luxe-bg)]/90 hover:text-[color:var(--luxe-bg)]" : "text-luxe-mut group-hover:text-luxe-gold"
+                      )}
+                    >
+                      Learn more <ChevronRight className="w-3.5 h-3.5" />
+                    </Link>
+                    {isInvestor && (
+                      <span className="w-11 h-11 rounded-full bg-luxe-surface border border-luxe grid place-items-center group-hover:bg-[color:var(--luxe-sage)] group-hover:text-[color:var(--luxe-bg)] group-hover:border-[color:var(--luxe-sage)] transition-colors">
+                        <ArrowUpRight className="w-4 h-4" />
+                      </span>
+                    )}
+                  </div>
 
+                  {/* Decorative brass hairline on hover for feature tile */}
+                  {isFeature && (
+                    <div
+                      aria-hidden
+                      className="absolute -bottom-px left-8 right-8 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+                      style={{ background: "linear-gradient(90deg, transparent, var(--luxe-gold), transparent)" }}
+                    />
+                  )}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
+
 
       {/* ============== COLLECTIONS / DESTINATION ============== */}
       <section className="relative py-24 md:py-32 luxe-cv">
