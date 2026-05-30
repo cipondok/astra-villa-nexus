@@ -5,53 +5,56 @@
    ============================================================ */
 
 :root {
-  /* ---- LIGHT THEME (default) — Aman x Architectural Digest ---- */
-  --luxe-bg:        #F7F4EE;   /* Ivory */
-  --luxe-bg-2:      #EFEAE2;   /* Warm Stone */
-  --luxe-bg-3:      #F5F1EA;   /* Champagne */
-  --luxe-surface:   #FBF8F2;   /* Card surface, warm white */
+  /* ---- LIGHT THEME (default) — Resort Sage × Apple Luxury ---- */
+  --luxe-bg:        #F5F0E8;   /* Ivory */
+  --luxe-bg-2:      #DCE5D4;   /* Sage Mist */
+  --luxe-bg-3:      #EDE7DC;   /* Champagne */
+  --luxe-surface:   #FFFFFF;   /* Card surface, pure paper */
 
-  /* Brand (shared) */
-  --luxe-gold:        #C8A96B;
+  /* Brand (shared, light-tuned) */
+  --luxe-gold:        #C8A96A;
   --luxe-gold-soft:   #D9BE85;
   --luxe-gold-deep:   #B99652;
-  --luxe-emerald:     #2E6E62;   /* Soft emerald */
+  --luxe-emerald:     #7D9B76;   /* Sage Deep — primary accent in light */
+  --luxe-sage:        #7D9B76;
+  --luxe-sage-soft:   #DCE5D4;
   --luxe-cyan:        #3FA3B8;
   --luxe-ember:       #C97A3E;
 
   /* Foreground */
-  --luxe-fg:   #1C1C1C;        /* Primary text */
-  --luxe-mut:  #5E6660;        /* alias kept for compat */
-  --luxe-sub:  #5E5A55;        /* Secondary text */
-  --luxe-muted-fg: #7A746D;    /* Muted text */
+  --luxe-fg:   #1C1C1C;
+  --luxe-mut:  #5E6660;
+  --luxe-sub:  #5E5A55;
+  --luxe-muted-fg: #7A746D;
   --luxe-line: rgba(28,28,28,0.10);
 
   /* Glass */
-  --luxe-glass:         rgba(255,255,255,0.55);
-  --luxe-glass-strong:  rgba(255,255,255,0.78);
+  --luxe-glass:         rgba(255,255,255,0.72);
+  --luxe-glass-strong:  rgba(255,255,255,0.88);
   --luxe-blur:          blur(22px) saturate(150%);
   --luxe-blur-mobile:   blur(14px) saturate(135%);
 
   /* Page composition */
   --luxe-page-bg:
-    radial-gradient(1200px 700px at 80% -10%, rgba(200,169,107,0.18), transparent 60%),
-    radial-gradient(900px 600px at -10% 30%, rgba(46,110,98,0.08), transparent 60%),
-    linear-gradient(180deg, #F7F4EE 0%, #F5F1EA 50%, #EFEAE2 100%);
-  --luxe-header-scrolled-bg:  rgba(247,244,238,0.82);
-  --luxe-mega-bg:             rgba(251,248,242,0.96);
-  --luxe-dock-bg:             linear-gradient(180deg, rgba(251,248,242,0.88), rgba(247,244,238,0.72));
-  --luxe-mobile-menu-bg:      radial-gradient(70% 60% at 50% 30%, #FBF8F2 0%, #EFEAE2 100%);
-  --luxe-boot-bg:             radial-gradient(60% 50% at 50% 50%, #FBF8F2 0%, #EFEAE2 100%);
-  --luxe-cta-bg:              linear-gradient(135deg, #FBF8F2 0%, #F5F1EA 52%, #EFEAE2 100%);
-  --luxe-hero-vignette:       linear-gradient(180deg, rgba(28,28,28,0.22) 0%, rgba(28,28,28,0.06) 42%, rgba(247,244,238,0.78) 100%);
-  --luxe-hero-floor:          radial-gradient(60% 50% at 50% 90%, rgba(247,244,238,0.82), transparent 70%);
-  --luxe-hero-depth:          linear-gradient(180deg, rgba(200,169,107,0.12) 0%, transparent 30%, transparent 60%, rgba(239,234,226,0.72) 100%);
+    radial-gradient(1200px 700px at 80% -10%, rgba(125,155,118,0.14), transparent 60%),
+    radial-gradient(900px 600px at -10% 30%, rgba(200,169,107,0.12), transparent 60%),
+    linear-gradient(180deg, #F5F0E8 0%, #EDE7DC 50%, #DCE5D4 100%);
+  --luxe-header-scrolled-bg:  rgba(245,240,232,0.82);
+  --luxe-mega-bg:             rgba(255,255,255,0.96);
+  --luxe-dock-bg:             linear-gradient(180deg, rgba(255,255,255,0.88), rgba(245,240,232,0.72));
+  --luxe-mobile-menu-bg:      radial-gradient(70% 60% at 50% 30%, #FFFFFF 0%, #DCE5D4 100%);
+  --luxe-boot-bg:             radial-gradient(60% 50% at 50% 50%, #FFFFFF 0%, #DCE5D4 100%);
+  --luxe-cta-bg:              linear-gradient(135deg, #FFFFFF 0%, #EDE7DC 52%, #DCE5D4 100%);
+  --luxe-hero-vignette:       linear-gradient(180deg, rgba(28,28,28,0.22) 0%, rgba(28,28,28,0.06) 42%, rgba(245,240,232,0.78) 100%);
+  --luxe-hero-floor:          radial-gradient(60% 50% at 50% 90%, rgba(245,240,232,0.82), transparent 70%);
+  --luxe-hero-depth:          linear-gradient(180deg, rgba(125,155,118,0.14) 0%, transparent 30%, transparent 60%, rgba(220,229,212,0.72) 100%);
   --luxe-gold-btn-fg:         #1C1C1C;
   --luxe-on-hover-tint:       rgba(28,28,28,0.04);
 
   /* Typography */
   --luxe-serif: 'Cormorant Garamond','Playfair Display',ui-serif,Georgia,serif;
   --luxe-sans:  'Inter','SF Pro Display',ui-sans-serif,system-ui,sans-serif;
+  --luxe-display: 'Sora','Inter',ui-sans-serif,system-ui,sans-serif;
   --luxe-mono:  ui-monospace,SFMono-Regular,Menlo,monospace;
 
   /* Motion */
