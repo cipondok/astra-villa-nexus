@@ -42,6 +42,10 @@
   --luxe-dock-bg:             linear-gradient(180deg, rgba(251,248,242,0.88), rgba(247,244,238,0.72));
   --luxe-mobile-menu-bg:      radial-gradient(70% 60% at 50% 30%, #FBF8F2 0%, #EFEAE2 100%);
   --luxe-boot-bg:             radial-gradient(60% 50% at 50% 50%, #FBF8F2 0%, #EFEAE2 100%);
+  --luxe-cta-bg:              linear-gradient(135deg, #FBF8F2 0%, #F5F1EA 52%, #EFEAE2 100%);
+  --luxe-hero-vignette:       linear-gradient(180deg, rgba(28,28,28,0.22) 0%, rgba(28,28,28,0.06) 42%, rgba(247,244,238,0.78) 100%);
+  --luxe-hero-floor:          radial-gradient(60% 50% at 50% 90%, rgba(247,244,238,0.82), transparent 70%);
+  --luxe-hero-depth:          linear-gradient(180deg, rgba(200,169,107,0.12) 0%, transparent 30%, transparent 60%, rgba(239,234,226,0.72) 100%);
   --luxe-gold-btn-fg:         #1C1C1C;
   --luxe-on-hover-tint:       rgba(28,28,28,0.04);
 
@@ -110,6 +114,10 @@
   --luxe-dock-bg:             linear-gradient(180deg, rgba(10,10,10,0.72), rgba(10,10,10,0.55));
   --luxe-mobile-menu-bg:      radial-gradient(70% 60% at 50% 30%, #0c0c10 0%, #050505 100%);
   --luxe-boot-bg:             radial-gradient(60% 50% at 50% 50%, #0b0b0b 0%, #050505 100%);
+  --luxe-cta-bg:              linear-gradient(135deg, #0B1220 0%, #050505 70%);
+  --luxe-hero-vignette:       linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.20) 45%, #050505 100%);
+  --luxe-hero-floor:          radial-gradient(60% 50% at 50% 90%, rgba(5,5,5,0.85), transparent 70%);
+  --luxe-hero-depth:          linear-gradient(180deg, rgba(11,18,32,0.35) 0%, transparent 30%, transparent 60%, rgba(5,5,5,0.6) 100%);
   --luxe-gold-btn-fg:         #0a0a0a;
   --luxe-on-hover-tint:       rgba(255,255,255,0.04);
 
