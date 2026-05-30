@@ -576,7 +576,7 @@ export default function LuxeExperience() {
               <div className="absolute -inset-px rounded-2xl md:rounded-full bg-gradient-to-r from-[color:var(--luxe-gold)]/25 via-transparent to-[color:var(--luxe-emerald)]/15 blur-md opacity-60 pointer-events-none" />
               <form
                 onSubmit={handleHeroSearch}
-                className="relative luxe-glass-card rounded-2xl md:rounded-full p-2 flex flex-col md:flex-row items-stretch md:items-center gap-2 md:gap-0 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)]"
+                className="relative luxe-glass-card rounded-2xl md:rounded-full p-2 flex flex-col md:flex-row items-stretch md:items-center gap-2 md:gap-0 luxe-shadow-float"
               >
                 <SearchInput
                   icon={MapPin}
@@ -842,7 +842,7 @@ export default function LuxeExperience() {
 
                 <img src={c.img} alt={c.t} loading="lazy" width={1280} height={1600}
                      className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[rgba(10,10,10,0.78)] via-[rgba(10,10,10,0.28)] to-transparent" />
                 <div className="absolute inset-x-6 bottom-6">
                   <div className="luxe-eyebrow mb-2">{c.c}</div>
                   <h3 className="font-serif-l text-3xl">{c.t}</h3>
