@@ -16,7 +16,7 @@ import {
 export type ChatButtonVariant = "pulse" | "glow" | "subtle";
 
 interface ChatButtonProps {
-  onClick: () => void;
+  onClick: (event?: React.MouseEvent | React.KeyboardEvent) => void;
   unreadCount?: number;
   variant?: ChatButtonVariant;
   className?: string;
@@ -161,7 +161,7 @@ const ChatButton = forwardRef<HTMLDivElement, ChatButtonProps>(({
     } else if (!isLongPress) {
       e?.preventDefault?.();
       e?.stopPropagation?.();
-      setTimeout(() => onClick(), 0);
+      setTimeout(() => onClick(e), 0);
     }
     setIsLongPress(false);
   };
@@ -227,7 +227,7 @@ const ChatButton = forwardRef<HTMLDivElement, ChatButtonProps>(({
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          onClick();
+          onClick(e);
         }
       }}
     >
