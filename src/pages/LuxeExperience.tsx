@@ -51,15 +51,15 @@ function Reveal({
 /* Atmospheric divider — soft gold horizon between sections */
 function AtmosDivider({ tone = "gold" }: { tone?: "gold" | "emerald" | "cool" }) {
   const tint =
-    tone === "emerald" ? "rgba(79,178,134,0.18)"
-    : tone === "cool"  ? "rgba(124,231,255,0.14)"
-    : "rgba(200,169,107,0.22)";
+    tone === "emerald" ? "rgba(125,155,118,0.22)"
+    : tone === "cool"  ? "rgba(63,163,184,0.14)"
+    : "rgba(200,169,107,0.20)";
   return (
     <div aria-hidden className="relative h-32 md:h-44 -my-16 md:-my-20 pointer-events-none overflow-hidden">
       <div className="absolute inset-x-0 top-0 h-1/2"
            style={{ background: `linear-gradient(to bottom, transparent, ${tint} 70%, transparent)` }} />
       <div className="absolute inset-x-0 bottom-0 h-1/2"
-           style={{ background: "linear-gradient(to top, #050505, transparent)" }} />
+           style={{ background: "linear-gradient(to top, var(--luxe-bg), rgba(245,240,232,0))" }} />
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-px"
            style={{ background: "linear-gradient(90deg, transparent, rgba(200,169,107,0.45), transparent)" }} />
     </div>
