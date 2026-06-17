@@ -92,28 +92,28 @@ const tokens = `
 
 /* ---------- Top tabs (under header) ---------- */
 const topTabs = [
-  { icon: LayoutDashboard, label: "Dashboard", active: true },
-  { icon: Building2, label: "Properties" },
-  { icon: TrendingUp, label: "Investment" },
-  { icon: Banknote, label: "Finance" },
-  { icon: Scale, label: "Legal" },
-  { icon: Wrench, label: "Management" },
-  { icon: Store, label: "Vendors" },
-  { icon: Cpu, label: "AI Center" },
-  { icon: MoreHorizontal, label: "More" },
+  { icon: LayoutDashboard, label: "Dashboard", to: "/", active: true },
+  { icon: Building2, label: "Properties", to: "/properties" },
+  { icon: TrendingUp, label: "Investment", to: "/investment" },
+  { icon: Banknote, label: "Finance", to: "/wallet" },
+  { icon: Scale, label: "Legal", to: "/legal-services" },
+  { icon: Wrench, label: "Management", to: "/agent-dashboard" },
+  { icon: Store, label: "Vendors", to: "/services" },
+  { icon: Cpu, label: "AI Center", to: "/ai-search" },
+  { icon: MoreHorizontal, label: "More", to: "/search" },
 ];
 
 /* ---------- Sidebar ---------- */
 const sideNav = [
-  { icon: Eye, label: "Overview", active: true },
-  { icon: BarChart3, label: "Market Intelligence" },
-  { icon: BookmarkPlus, label: "Watchlist" },
-  { icon: Wallet, label: "My Portfolio" },
-  { icon: MessageSquare, label: "Messages", badge: 12 },
-  { icon: ArrowLeftRight, label: "Transactions" },
-  { icon: Calendar, label: "Calendar" },
-  { icon: FileText, label: "Documents" },
-  { icon: LifeBuoy, label: "Support Center" },
+  { icon: Eye, label: "Overview", to: "/", active: true },
+  { icon: BarChart3, label: "Market Intelligence", to: "/market-heatmap" },
+  { icon: BookmarkPlus, label: "Watchlist", to: "/favorites" },
+  { icon: Wallet, label: "My Portfolio", to: "/investment-performance" },
+  { icon: MessageSquare, label: "Messages", to: "/messages", badge: 12 },
+  { icon: ArrowLeftRight, label: "Transactions", to: "/wallet" },
+  { icon: Calendar, label: "Calendar", to: "/profile" },
+  { icon: FileText, label: "Documents", to: "/documents" },
+  { icon: LifeBuoy, label: "Support Center", to: "/support" },
 ];
 
 /* ---------- Hub cards (6) ---------- */
