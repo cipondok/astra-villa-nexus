@@ -47157,21 +47157,26 @@ export type Database = {
           company_registration_number: string | null
           company_verified: boolean | null
           company_verified_at: string | null
+          country: string | null
           created_at: string | null
           email: string
           full_name: string | null
           id: string
+          interests: string[] | null
           is_suspended: boolean | null
+          language: string | null
           last_profile_change_at: string | null
           last_risk_evaluated_at: string | null
           last_seen_at: string | null
           license_number: string | null
           npwp_number: string | null
+          onboarded_at: string | null
           phone: string | null
           profile_change_count: number | null
           profile_change_history: Json | null
           profile_completion_percentage: number | null
           profile_locked_until: string | null
+          profile_type: Database["public"]["Enums"]["profile_type"] | null
           risk_level: string | null
           risk_score: number | null
           specializations: string | null
@@ -47193,21 +47198,26 @@ export type Database = {
           company_registration_number?: string | null
           company_verified?: boolean | null
           company_verified_at?: string | null
+          country?: string | null
           created_at?: string | null
           email: string
           full_name?: string | null
           id: string
+          interests?: string[] | null
           is_suspended?: boolean | null
+          language?: string | null
           last_profile_change_at?: string | null
           last_risk_evaluated_at?: string | null
           last_seen_at?: string | null
           license_number?: string | null
           npwp_number?: string | null
+          onboarded_at?: string | null
           phone?: string | null
           profile_change_count?: number | null
           profile_change_history?: Json | null
           profile_completion_percentage?: number | null
           profile_locked_until?: string | null
+          profile_type?: Database["public"]["Enums"]["profile_type"] | null
           risk_level?: string | null
           risk_score?: number | null
           specializations?: string | null
@@ -47229,21 +47239,26 @@ export type Database = {
           company_registration_number?: string | null
           company_verified?: boolean | null
           company_verified_at?: string | null
+          country?: string | null
           created_at?: string | null
           email?: string
           full_name?: string | null
           id?: string
+          interests?: string[] | null
           is_suspended?: boolean | null
+          language?: string | null
           last_profile_change_at?: string | null
           last_risk_evaluated_at?: string | null
           last_seen_at?: string | null
           license_number?: string | null
           npwp_number?: string | null
+          onboarded_at?: string | null
           phone?: string | null
           profile_change_count?: number | null
           profile_change_history?: Json | null
           profile_completion_percentage?: number | null
           profile_locked_until?: string | null
+          profile_type?: Database["public"]["Enums"]["profile_type"] | null
           risk_level?: string | null
           risk_score?: number | null
           specializations?: string | null
@@ -69102,6 +69117,15 @@ export type Database = {
         | "per_item"
         | "daily"
         | "fixed"
+      profile_type:
+        | "buyer"
+        | "investor"
+        | "developer"
+        | "owner"
+        | "agent"
+        | "vendor"
+        | "lawyer"
+        | "consultant"
       social_post_type: "opportunity" | "insight" | "discussion" | "watchlist"
       team_department:
         | "technology"
@@ -69370,6 +69394,16 @@ export const Constants = {
         "smart_home_installer",
       ],
       pricing_model: ["hourly", "sqm", "project", "per_item", "daily", "fixed"],
+      profile_type: [
+        "buyer",
+        "investor",
+        "developer",
+        "owner",
+        "agent",
+        "vendor",
+        "lawyer",
+        "consultant",
+      ],
       social_post_type: ["opportunity", "insight", "discussion", "watchlist"],
       team_department: [
         "technology",
