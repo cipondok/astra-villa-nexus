@@ -2438,9 +2438,10 @@ html, body {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.08) 45%, rgba(255,255,255,0) 60%);
+  background: var(--titanium-sheen);
   pointer-events: none;
 }
+
 .btn-titanium:hover {
   background: var(--titanium-grad-hover);
   transform: translateY(-1px);
