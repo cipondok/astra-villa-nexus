@@ -45,6 +45,10 @@ const tokens = `
     --text-3: #6B6760;
     --success: #4ADE80;
     --danger: #F87171;
+    --gold-fg: #161208;
+    --promo-gradient: linear-gradient(180deg, #1a1408, #0e0a04);
+    --promo-gradient-diag: linear-gradient(135deg, #1a1408, #0e0a04);
+    --hotspot-bg: radial-gradient(ellipse at 60% 60%, rgba(200,169,106,0.06), transparent 70%), #0a0a0c;
     color: var(--text);
     background: var(--bg);
     font-family: 'Inter', 'SF Pro Display', system-ui, sans-serif;
@@ -66,14 +70,17 @@ const tokens = `
     --text-3: #8A8478;
     --success: #15803D;
     --danger: #B91C1C;
+    --gold-fg: #161208;
+    --promo-gradient: linear-gradient(180deg, #2A1F0A, #1A1408);
+    --promo-gradient-diag: linear-gradient(135deg, #2A1F0A, #1A1408);
+    --hotspot-bg: radial-gradient(ellipse at 60% 60%, rgba(176,138,62,0.10), transparent 70%), #F3EFE6;
   }
   .reos *::selection { background: var(--gold); color: #fff; }
   .reos-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
   .reos-card-2 { background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; }
   .reos-gold { color: var(--gold-2); }
-  .reos-cta { background: linear-gradient(180deg, var(--gold-2), var(--gold)); color: #fff; font-weight: 600; border: 1px solid var(--line-strong); }
-  html:not(.dark) .reos-cta { color: #fff; }
-  html.dark .reos-cta { color: #161208; border-color: rgba(255,225,160,0.4); }
+  .reos-cta { background: linear-gradient(180deg, var(--gold-2), var(--gold)); color: var(--gold-fg); font-weight: 600; border: 1px solid var(--line-strong); }
+  .reos-cta:hover { filter: brightness(1.06); }
   .reos-cta:hover { filter: brightness(1.06); }
   .reos-outline { border: 1px solid var(--line-strong); }
   .reos-chip { border: 1px solid var(--line); color: var(--text-2); }
@@ -387,7 +394,7 @@ export default function AstraReosHome() {
                 className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center relative"
               >
                 <Bell className="h-4 w-4 text-[var(--text-2)]" />
-                <span className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full bg-[var(--gold)] text-[10px] text-black font-bold flex items-center justify-center">3</span>
+                <span className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full bg-[var(--gold)] text-[10px] text-[var(--gold-fg)] font-bold flex items-center justify-center">3</span>
               </button>
               <button
                 type="button"
@@ -482,7 +489,7 @@ export default function AstraReosHome() {
                   {sideNav.map(n => (
                     <Link key={n.label} to={n.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
                       <n.icon className="h-4 w-4" /><span className="flex-1">{n.label}</span>
-                      {n.badge && <span className="text-[10px] bg-[var(--gold)] text-black font-bold px-1.5 py-0.5 rounded">{n.badge}</span>}
+                      {n.badge && <span className="text-[10px] bg-[var(--gold)] text-[var(--gold-fg)] font-bold px-1.5 py-0.5 rounded">{n.badge}</span>}
                     </Link>
                   ))}
                 </div>
@@ -505,14 +512,14 @@ export default function AstraReosHome() {
                   >
                     <n.icon className="h-4 w-4" />
                     <span className="flex-1 text-left">{n.label}</span>
-                    {n.badge && <span className="text-[10px] bg-[var(--gold)] text-black font-bold px-1.5 py-0.5 rounded">{n.badge}</span>}
+                    {n.badge && <span className="text-[10px] bg-[var(--gold)] text-[var(--gold-fg)] font-bold px-1.5 py-0.5 rounded">{n.badge}</span>}
                   </Link>
                 </motion.div>
               ))}
             </div>
 
             {/* Investor club promo */}
-            <div className="reos-card relative overflow-hidden p-5 text-center" style={{ background: "linear-gradient(180deg, #1a1408, #0e0a04)" }}>
+            <div className="reos-card relative overflow-hidden p-5 text-center" style={{ background: "var(--promo-gradient)" }}>
               <div className="absolute inset-0 opacity-30" style={{ background: "radial-gradient(circle at 50% 0%, var(--gold), transparent 60%)" }} />
               <div className="relative">
                 <Crown className="h-6 w-6 reos-gold mx-auto" />
@@ -537,7 +544,7 @@ export default function AstraReosHome() {
                   { b: "Download on the", n: "App Store", href: "https://apps.apple.com/" },
                   { b: "GET IT ON", n: "Google Play", href: "https://play.google.com/" },
                 ].map(a => (
-                  <a key={a.n} href={a.href} target="_blank" rel="noopener noreferrer" className="w-full h-11 px-3 rounded-xl bg-black border border-[var(--line)] flex items-center gap-2 text-left hover:border-[var(--line-strong)] transition">
+                  <a key={a.n} href={a.href} target="_blank" rel="noopener noreferrer" className="w-full h-11 px-3 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] flex items-center gap-2 text-left hover:border-[var(--line-strong)] transition">
                     <div className="h-5 w-5 rounded reos-gold flex items-center justify-center">●</div>
                     <div className="leading-tight">
                       <div className="text-[9px] text-[var(--text-2)]">{a.b}</div>
@@ -573,7 +580,7 @@ export default function AstraReosHome() {
                     <div className="reos-card-2 p-1.5 inline-flex gap-1 mb-2.5 bg-[var(--surface)]/80 backdrop-blur">
                       {searchTabs.map(t => (
                         <button key={t} onClick={() => setActiveSearchTab(t)}
-                          className={`text-[12px] px-3 h-7 rounded-md transition ${activeSearchTab === t ? "bg-[var(--text)] text-black font-medium" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}>
+                          className={`text-[12px] px-3 h-7 rounded-md transition ${activeSearchTab === t ? "bg-[var(--text)] text-[var(--bg)] font-medium" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}>
                           {t}
                         </button>
                       ))}
@@ -697,7 +704,7 @@ export default function AstraReosHome() {
                 <div className="grid grid-cols-2 gap-3">
                   {featured.map((p: any) => {
                     const badgeColor: Record<string, string> = {
-                      FEATURED: "bg-[var(--gold)] text-black",
+                      FEATURED: "bg-[var(--gold)] text-[var(--gold-fg)]",
                       NEW: "bg-[#3B82F6] text-white",
                       HOT: "bg-[#EF4444] text-white",
                       INVESTMENT: "bg-[#10B981] text-white",
@@ -742,7 +749,7 @@ export default function AstraReosHome() {
                   <div className="text-[14px] font-semibold">Investment Hotspots</div>
                   <Link to="/market-heatmap" className="text-[11px] reos-gold inline-flex items-center gap-1 hover:underline">View All <ArrowUpRight className="h-3 w-3" /></Link>
                 </div>
-                <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-[var(--line)]" style={{ background: "radial-gradient(ellipse at 60% 60%, rgba(200,169,106,0.06), transparent 70%), #0a0a0c" }}>
+                <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-[var(--line)]" style={{ background: "var(--hotspot-bg)" }}>
                   <div className="absolute inset-0 origin-center transition-transform" style={{ transform: `scale(${hotspotZoom})` }}>
                     <svg viewBox="0 0 100 75" className="absolute inset-0 h-full w-full opacity-30">
                       <path d="M10,40 q15,-10 30,-5 q15,5 25,0 q10,-3 20,5 q5,8 -5,12 q-20,4 -40,2 q-25,-2 -30,-14z" fill="none" stroke="#C8A96A" strokeWidth="0.3" />
@@ -847,7 +854,7 @@ export default function AstraReosHome() {
               ))}
 
               {/* Generate report */}
-              <motion.div variants={fadeUp} className="reos-card p-4 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #1a1408, #0e0a04)" }}>
+              <motion.div variants={fadeUp} className="reos-card p-4 relative overflow-hidden" style={{ background: "var(--promo-gradient-diag)" }}>
                 <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full blur-2xl" style={{ background: "radial-gradient(circle, var(--gold), transparent 70%)" }} />
                 <div className="relative">
                   <div className="text-[11px] font-semibold">Get AI Investment Report</div>
