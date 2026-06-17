@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Search, Bell, Globe, Heart, Sparkles, ChevronDown, ChevronRight,
   LayoutDashboard, Building2, TrendingUp, Banknote, Scale, Wrench,
   Store, Cpu, MoreHorizontal, Eye, BookmarkPlus, Wallet, MessageSquare,
   ArrowLeftRight, Calendar, FileText, LifeBuoy, Crown, ArrowUpRight,
   MapPin, BedDouble, Bath, Maximize, Shield, BarChart3, Loader2, X,
-  Sliders, Plus, Minus, CheckCircle2,
+  Sliders, Plus, Minus, CheckCircle2, Sun, Moon, Menu, LogOut, User,
 } from "lucide-react";
 import {
   LineChart, Line, ResponsiveContainer,
@@ -16,6 +16,8 @@ import heroImg from "@/assets/reos-hero.jpg";
 import { useReosMarket, formatIDR } from "@/hooks/useReosMarket";
 import { useReosAiSearch } from "@/hooks/useReosAiSearch";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/components/ThemeProvider";
 import { ReosAuthModal } from "@/components/auth/ReosAuthModal";
 
 
@@ -90,38 +92,38 @@ const tokens = `
 
 /* ---------- Top tabs (under header) ---------- */
 const topTabs = [
-  { icon: LayoutDashboard, label: "Dashboard", active: true },
-  { icon: Building2, label: "Properties" },
-  { icon: TrendingUp, label: "Investment" },
-  { icon: Banknote, label: "Finance" },
-  { icon: Scale, label: "Legal" },
-  { icon: Wrench, label: "Management" },
-  { icon: Store, label: "Vendors" },
-  { icon: Cpu, label: "AI Center" },
-  { icon: MoreHorizontal, label: "More" },
+  { icon: LayoutDashboard, label: "Dashboard", to: "/", active: true },
+  { icon: Building2, label: "Properties", to: "/properties" },
+  { icon: TrendingUp, label: "Investment", to: "/investment" },
+  { icon: Banknote, label: "Finance", to: "/wallet" },
+  { icon: Scale, label: "Legal", to: "/legal-services" },
+  { icon: Wrench, label: "Management", to: "/agent-dashboard" },
+  { icon: Store, label: "Vendors", to: "/services" },
+  { icon: Cpu, label: "AI Center", to: "/ai-search" },
+  { icon: MoreHorizontal, label: "More", to: "/search" },
 ];
 
 /* ---------- Sidebar ---------- */
 const sideNav = [
-  { icon: Eye, label: "Overview", active: true },
-  { icon: BarChart3, label: "Market Intelligence" },
-  { icon: BookmarkPlus, label: "Watchlist" },
-  { icon: Wallet, label: "My Portfolio" },
-  { icon: MessageSquare, label: "Messages", badge: 12 },
-  { icon: ArrowLeftRight, label: "Transactions" },
-  { icon: Calendar, label: "Calendar" },
-  { icon: FileText, label: "Documents" },
-  { icon: LifeBuoy, label: "Support Center" },
+  { icon: Eye, label: "Overview", to: "/", active: true },
+  { icon: BarChart3, label: "Market Intelligence", to: "/market-heatmap" },
+  { icon: BookmarkPlus, label: "Watchlist", to: "/favorites" },
+  { icon: Wallet, label: "My Portfolio", to: "/investment-performance" },
+  { icon: MessageSquare, label: "Messages", to: "/messages", badge: 12 },
+  { icon: ArrowLeftRight, label: "Transactions", to: "/wallet" },
+  { icon: Calendar, label: "Calendar", to: "/profile" },
+  { icon: FileText, label: "Documents", to: "/documents" },
+  { icon: LifeBuoy, label: "Support Center", to: "/support" },
 ];
 
 /* ---------- Hub cards (6) ---------- */
 const hubs = [
   { icon: Building2,  title: "Properties\nMarketplace", desc: "10,234+ Listings", to: "/properties" },
   { icon: BarChart3,  title: "Investment\nHub", desc: "High ROI Opportunities", to: "/investment" },
-  { icon: Scale,      title: "Finance\nHub", desc: "KPR & Funding Solutions", to: "/finance" },
-  { icon: Shield,     title: "Legal\nHub", desc: "Verified & Secure", to: "/legal" },
-  { icon: Sparkles,   title: "AI Investment\nAdvisor", desc: "Smart Recommendations", to: "/ai" },
-  { icon: Wrench,     title: "Property\nManagement", desc: "Manage Your Assets", to: "/management" },
+  { icon: Scale,      title: "Finance\nHub", desc: "KPR & Funding Solutions", to: "/wallet" },
+  { icon: Shield,     title: "Legal\nHub", desc: "Verified & Secure", to: "/legal-services" },
+  { icon: Sparkles,   title: "AI Investment\nAdvisor", desc: "Smart Recommendations", to: "/ai-search" },
+  { icon: Wrench,     title: "Property\nManagement", desc: "Manage Your Assets", to: "/agent-dashboard" },
 ];
 
 /* ---------- Search tabs ---------- */
@@ -141,12 +143,12 @@ const marketKPIs = [
 
 /* ---------- Hotspots ---------- */
 const hotspots = [
-  { city: "Phuket",     roi: "16.6%", x: 25, y: 28 },
-  { city: "Kuala Lumpur", roi: "11.2%", x: 36, y: 38 },
-  { city: "Singapore",  roi: "9.7%",  x: 44, y: 50 },
-  { city: "Jakarta",    roi: "12.4%", x: 50, y: 70 },
-  { city: "Bali",       roi: "18.5%", x: 78, y: 70 },
-  { city: "Lombok",     roi: "24.3%", x: 88, y: 72 },
+  { city: "Phuket",       roi: "16.6%", x: 25, y: 28, slug: "phuket" },
+  { city: "Kuala Lumpur", roi: "11.2%", x: 36, y: 38, slug: "kuala-lumpur" },
+  { city: "Singapore",    roi: "9.7%",  x: 44, y: 50, slug: "singapore" },
+  { city: "Jakarta",      roi: "12.4%", x: 50, y: 70, slug: "jakarta" },
+  { city: "Bali",         roi: "18.5%", x: 78, y: 70, slug: "bali" },
+  { city: "Lombok",       roi: "24.3%", x: 88, y: 72, slug: "lombok" },
 ];
 
 const aiRecs = [
@@ -192,10 +194,22 @@ export default function AstraReosHome() {
   const [showAiSheet, setShowAiSheet] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [authInitial, setAuthInitial] = useState<"login" | "register">("login");
-  const { user, profile } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [countryOpen, setCountryOpen] = useState(false);
+  const [country, setCountry] = useState("Indonesia");
+  const [hotspotZoom, setHotspotZoom] = useState(1);
+  const navigate = useNavigate();
+  const { user, profile, signOut } = useAuth();
+  const { language, setLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
   const { data: market, loading: marketLoading } = useReosMarket();
   const { search, data: aiData, loading: aiLoading, error: aiError, reset: resetAi } = useReosAiSearch();
 
+  const langRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
+  const countryRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.title = "ASTRA Villa REOS — AI Real Estate Operating System";
@@ -203,11 +217,43 @@ export default function AstraReosHome() {
     return () => document.documentElement.removeAttribute("data-reos-theme");
   }, []);
 
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      const t = e.target as Node;
+      if (langRef.current && !langRef.current.contains(t)) setLangOpen(false);
+      if (profileRef.current && !profileRef.current.contains(t)) setProfileOpen(false);
+      if (countryRef.current && !countryRef.current.contains(t)) setCountryOpen(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
+
   const submitAi = async () => {
     if (!aiQuery.trim()) return;
     setShowAiSheet(true);
     await search(aiQuery);
   };
+
+  const runSearch = () => {
+    if (!aiQuery.trim()) {
+      navigate("/search");
+      return;
+    }
+    navigate(`/search?q=${encodeURIComponent(aiQuery)}`);
+  };
+
+  const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
+
+  const languages: { code: any; label: string }[] = [
+    { code: "en", label: "EN" },
+    { code: "id", label: "ID" },
+    { code: "zh", label: "ZH" },
+    { code: "ja", label: "JA" },
+    { code: "ko", label: "KO" },
+    { code: "ru", label: "RU" },
+  ];
+  const countries = ["Indonesia", "Singapore", "Malaysia", "Thailand", "Vietnam", "Philippines"];
+
 
   const featured = useMemo(() => {
     const base = market?.featured ?? [];
@@ -228,60 +274,137 @@ export default function AstraReosHome() {
       <div className="reos min-h-screen">
         {/* ===================== HEADER ===================== */}
         <header className="sticky top-0 z-40 backdrop-blur-xl bg-[var(--bg)]/80 border-b border-[var(--line)]">
-          <div className="mx-auto max-w-[1600px] px-6 h-[68px] flex items-center gap-6">
+          <div className="mx-auto max-w-[1600px] px-6 h-[68px] flex items-center gap-4 md:gap-6">
+            {/* Mobile menu */}
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Open menu"
+              className="lg:hidden h-10 w-10 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center"
+            >
+              <Menu className="h-5 w-5 text-[var(--text)]" />
+            </button>
+
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2.5 shrink-0">
+            <Link to="/" aria-label="ASTRA Villa home" className="flex items-center gap-2.5 shrink-0">
               <div className="h-10 w-10 rounded-xl reos-cta flex items-center justify-center text-base font-bold">A</div>
-              <div className="leading-none">
+              <div className="leading-none hidden sm:block">
                 <div className="font-semibold tracking-[0.18em] text-[15px]">ASTRA<span className="reos-gold ml-1">VILLA</span></div>
                 <div className="text-[9px] tracking-[0.28em] text-[var(--text-3)] mt-1">REAL ESTATE OPERATING SYSTEM</div>
               </div>
             </Link>
 
             {/* Center search */}
-            <div className="flex-1 max-w-3xl mx-auto relative">
+            <div className="flex-1 max-w-3xl mx-auto relative hidden md:block">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-2)]" />
               <input
                 value={aiQuery}
                 onChange={(e) => setAiQuery(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter") submitAi(); }}
+                onKeyDown={(e) => { if (e.key === "Enter") runSearch(); }}
                 placeholder="AI Search: Properties, Locations, ROI, Developers, Laws…"
+                aria-label="Search"
                 className="w-full h-11 pl-11 pr-12 rounded-xl bg-[var(--surface)] border border-[var(--line)] focus:border-[var(--line-strong)] outline-none text-sm placeholder:text-[var(--text-2)]"
               />
-              <button className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 rounded-md hover:bg-[var(--surface-2)] flex items-center justify-center">
+              <button
+                type="button"
+                onClick={() => navigate("/search-advanced")}
+                aria-label="Advanced search"
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 rounded-md hover:bg-[var(--surface-2)] flex items-center justify-center"
+              >
                 <Sliders className="h-3.5 w-3.5 text-[var(--text-2)]" />
               </button>
             </div>
 
             {/* Right actions */}
-            <div className="flex items-center gap-2 shrink-0">
-              <button className="h-9 px-3 rounded-lg inline-flex items-center gap-1.5 text-xs hover:bg-[var(--surface)] text-[var(--text-2)]">
-                <Globe className="h-4 w-4" /> EN <ChevronDown className="h-3 w-3" />
+            <div className="flex items-center gap-1 md:gap-2 shrink-0 ml-auto">
+              {/* Language */}
+              <div className="relative" ref={langRef}>
+                <button
+                  type="button"
+                  onClick={() => setLangOpen(o => !o)}
+                  aria-haspopup="menu"
+                  aria-expanded={langOpen}
+                  className="h-9 px-3 rounded-lg inline-flex items-center gap-1.5 text-xs hover:bg-[var(--surface)] text-[var(--text-2)]"
+                >
+                  <Globe className="h-4 w-4" /> {language.toUpperCase()} <ChevronDown className="h-3 w-3" />
+                </button>
+                {langOpen && (
+                  <div role="menu" className="absolute right-0 mt-2 w-32 reos-card p-1 z-50 shadow-2xl">
+                    {languages.map(l => (
+                      <button
+                        key={l.code}
+                        type="button"
+                        onClick={() => { setLanguage(l.code); setLangOpen(false); }}
+                        className={`w-full text-left px-3 py-2 rounded-md text-[12px] hover:bg-[var(--surface-2)] ${language === l.code ? "reos-gold" : "text-[var(--text)]"}`}
+                      >
+                        {l.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Theme toggle */}
+              <button
+                type="button"
+                onClick={toggleTheme}
+                aria-label="Toggle theme"
+                className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center"
+              >
+                {theme === "dark" ? <Sun className="h-4 w-4 text-[var(--text-2)]" /> : <Moon className="h-4 w-4 text-[var(--text-2)]" />}
               </button>
-              <button className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center relative">
+
+              <button
+                type="button"
+                onClick={() => navigate("/notifications")}
+                aria-label="Notifications"
+                className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center relative"
+              >
                 <Bell className="h-4 w-4 text-[var(--text-2)]" />
                 <span className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full bg-[var(--gold)] text-[10px] text-black font-bold flex items-center justify-center">3</span>
               </button>
-              <button className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center">
+              <button
+                type="button"
+                onClick={() => navigate("/favorites")}
+                aria-label="Saved"
+                className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center"
+              >
                 <Heart className="h-4 w-4 text-[var(--text-2)]" />
               </button>
               {user ? (
-                <div className="h-9 pl-1.5 pr-3 rounded-full bg-[var(--surface)] border border-[var(--line)] flex items-center gap-2">
-                  <div className="h-7 w-7 rounded-full reos-cta flex items-center justify-center text-[11px] font-bold">{(profile?.full_name || user.email || "U").charAt(0).toUpperCase()}</div>
-                  <div className="leading-none">
-                    <div className="text-[12px] font-medium truncate max-w-[120px]">{profile?.full_name || user.email}</div>
-                    <div className="text-[9px] reos-gold mt-0.5">Premium Investor</div>
-                  </div>
+                <div className="relative" ref={profileRef}>
+                  <button
+                    type="button"
+                    onClick={() => setProfileOpen(o => !o)}
+                    aria-haspopup="menu"
+                    aria-expanded={profileOpen}
+                    className="h-9 pl-1.5 pr-3 rounded-full bg-[var(--surface)] border border-[var(--line)] flex items-center gap-2 hover:border-[var(--line-strong)]"
+                  >
+                    <div className="h-7 w-7 rounded-full reos-cta flex items-center justify-center text-[11px] font-bold">{(profile?.full_name || user.email || "U").charAt(0).toUpperCase()}</div>
+                    <div className="leading-none hidden md:block">
+                      <div className="text-[12px] font-medium truncate max-w-[120px] text-left">{profile?.full_name || user.email}</div>
+                      <div className="text-[9px] reos-gold mt-0.5 text-left">Premium Investor</div>
+                    </div>
+                    <ChevronDown className="h-3 w-3 text-[var(--text-2)]" />
+                  </button>
+                  {profileOpen && (
+                    <div role="menu" className="absolute right-0 mt-2 w-48 reos-card p-1 z-50 shadow-2xl">
+                      <button type="button" onClick={() => { setProfileOpen(false); navigate("/profile"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2"><User className="h-3.5 w-3.5" /> My Profile</button>
+                      <button type="button" onClick={() => { setProfileOpen(false); navigate("/wallet"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2"><Wallet className="h-3.5 w-3.5" /> Wallet</button>
+                      <button type="button" onClick={() => { setProfileOpen(false); navigate("/favorites"); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] inline-flex items-center gap-2"><Heart className="h-3.5 w-3.5" /> Saved</button>
+                      <div className="reos-divider my-1" />
+                      <button type="button" onClick={async () => { setProfileOpen(false); await signOut(); }} className="w-full text-left px-3 py-2 rounded-md text-[12.5px] hover:bg-[var(--surface-2)] text-[var(--danger)] inline-flex items-center gap-2"><LogOut className="h-3.5 w-3.5" /> Sign out</button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <>
-                  <button onClick={() => { setAuthInitial("login"); setShowAuth(true); }} className="h-9 px-4 rounded-lg text-[12.5px] hover:bg-[var(--surface)] text-[var(--text)] transition">Sign in</button>
-                  <button onClick={() => { setAuthInitial("register"); setShowAuth(true); }} className="h-9 px-4 rounded-lg reos-cta text-[12.5px] inline-flex items-center gap-1.5">
+                  <button type="button" onClick={() => { setAuthInitial("login"); setShowAuth(true); }} className="h-9 px-4 rounded-lg text-[12.5px] hover:bg-[var(--surface)] text-[var(--text)] transition">Sign in</button>
+                  <button type="button" onClick={() => { setAuthInitial("register"); setShowAuth(true); }} className="h-9 px-4 rounded-lg reos-cta text-[12.5px] inline-flex items-center gap-1.5">
                     Get Started <ChevronRight className="h-3.5 w-3.5" />
                   </button>
                 </>
               )}
-
             </div>
           </div>
 
@@ -289,16 +412,56 @@ export default function AstraReosHome() {
           <div className="border-t border-[var(--line)]">
             <div className="mx-auto max-w-[1600px] px-6 h-[52px] flex items-center gap-8 overflow-x-auto reos-scrollbar">
               {topTabs.map(t => (
-                <button
+                <Link
                   key={t.label}
+                  to={t.to}
                   className={`relative inline-flex items-center gap-2 text-[13px] whitespace-nowrap transition-colors ${t.active ? "reos-tab-active font-medium" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}
                 >
                   <t.icon className="h-4 w-4" /> {t.label}
-                </button>
+                </Link>
               ))}
             </div>
           </div>
         </header>
+
+        {/* ===================== MOBILE DRAWER ===================== */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm lg:hidden"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <motion.aside
+                initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }}
+                transition={{ type: "spring", stiffness: 280, damping: 32 }}
+                onClick={(e) => e.stopPropagation()}
+                className="w-[82%] max-w-[320px] h-full overflow-y-auto reos-scrollbar border-r border-[var(--line-strong)] p-4"
+                style={{ background: "var(--bg)" }}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="font-semibold tracking-[0.18em] text-[14px]">ASTRA<span className="reos-gold ml-1">VILLA</span></div>
+                  <button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu" className="h-9 w-9 rounded-md hover:bg-[var(--surface)] flex items-center justify-center"><X className="h-4 w-4" /></button>
+                </div>
+                <div className="space-y-1">
+                  {topTabs.map(t => (
+                    <Link key={t.label} to={t.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
+                      <t.icon className="h-4 w-4" /> {t.label}
+                    </Link>
+                  ))}
+                  <div className="reos-divider my-3" />
+                  {sideNav.map(n => (
+                    <Link key={n.label} to={n.to} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]">
+                      <n.icon className="h-4 w-4" /><span className="flex-1">{n.label}</span>
+                      {n.badge && <span className="text-[10px] bg-[var(--gold)] text-black font-bold px-1.5 py-0.5 rounded">{n.badge}</span>}
+                    </Link>
+                  ))}
+                </div>
+              </motion.aside>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
 
         {/* ===================== LAYOUT ===================== */}
         <div className="mx-auto max-w-[1600px] px-6 py-6 flex gap-6">
@@ -306,15 +469,16 @@ export default function AstraReosHome() {
           <aside className="hidden xl:flex flex-col w-[230px] shrink-0 gap-4">
             <div className="reos-card p-2">
               {sideNav.map((n, i) => (
-                <motion.button
-                  key={n.label}
-                  initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.03 }}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] mb-0.5 transition-colors ${n.active ? "bg-[var(--gold-soft)] reos-gold" : "text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]"}`}
-                >
-                  <n.icon className="h-4 w-4" />
-                  <span className="flex-1 text-left">{n.label}</span>
-                  {n.badge && <span className="text-[10px] bg-[var(--gold)] text-black font-bold px-1.5 py-0.5 rounded">{n.badge}</span>}
-                </motion.button>
+                <motion.div key={n.label} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.03 }}>
+                  <Link
+                    to={n.to}
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] mb-0.5 transition-colors ${n.active ? "bg-[var(--gold-soft)] reos-gold" : "text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]"}`}
+                  >
+                    <n.icon className="h-4 w-4" />
+                    <span className="flex-1 text-left">{n.label}</span>
+                    {n.badge && <span className="text-[10px] bg-[var(--gold)] text-black font-bold px-1.5 py-0.5 rounded">{n.badge}</span>}
+                  </Link>
+                </motion.div>
               ))}
             </div>
 
@@ -326,7 +490,11 @@ export default function AstraReosHome() {
                 <div className="mt-2 font-semibold tracking-wider text-sm">ASTRA VILLA</div>
                 <div className="text-[10px] tracking-[0.3em] reos-gold">INVESTOR CLUB</div>
                 <p className="mt-3 text-[11px] text-[var(--text-2)] leading-relaxed">Join exclusive investor community and get premium benefits.</p>
-                <button className="mt-4 w-full h-9 rounded-lg reos-cta text-xs inline-flex items-center justify-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => user ? navigate("/astra-tokens") : (setAuthInitial("register"), setShowAuth(true))}
+                  className="mt-4 w-full h-9 rounded-lg reos-cta text-xs inline-flex items-center justify-center gap-1.5"
+                >
                   Join Now <ChevronRight className="h-3.5 w-3.5" />
                 </button>
               </div>
@@ -336,17 +504,21 @@ export default function AstraReosHome() {
             <div className="px-1">
               <div className="text-[11px] uppercase tracking-[0.2em] text-[var(--text-2)] mb-2">Download Our Apps</div>
               <div className="space-y-2">
-                {[{ b: "Download on the", n: "App Store" }, { b: "GET IT ON", n: "Google Play" }].map(a => (
-                  <button key={a.n} className="w-full h-11 px-3 rounded-xl bg-black border border-[var(--line)] flex items-center gap-2 text-left hover:border-[var(--line-strong)] transition">
+                {[
+                  { b: "Download on the", n: "App Store", href: "https://apps.apple.com/" },
+                  { b: "GET IT ON", n: "Google Play", href: "https://play.google.com/" },
+                ].map(a => (
+                  <a key={a.n} href={a.href} target="_blank" rel="noopener noreferrer" className="w-full h-11 px-3 rounded-xl bg-black border border-[var(--line)] flex items-center gap-2 text-left hover:border-[var(--line-strong)] transition">
                     <div className="h-5 w-5 rounded reos-gold flex items-center justify-center">●</div>
                     <div className="leading-tight">
                       <div className="text-[9px] text-[var(--text-2)]">{a.b}</div>
                       <div className="text-[12px] font-medium">{a.n}</div>
                     </div>
-                  </button>
+                  </a>
                 ))}
               </div>
             </div>
+
           </aside>
 
           {/* ============ MAIN ============ */}
@@ -392,11 +564,20 @@ export default function AstraReosHome() {
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {locationChips.map(c => (
-                        <button key={c} onClick={() => { setAiQuery(`Properties in ${c}`); }} className="reos-chip text-[11px] px-3 py-1 rounded-full bg-[var(--surface)]/70 backdrop-blur">
+                        <button
+                          key={c}
+                          type="button"
+                          onClick={() => navigate(`/search?q=${encodeURIComponent(`Properties in ${c}`)}`)}
+                          className="reos-chip text-[11px] px-3 py-1 rounded-full bg-[var(--surface)]/70 backdrop-blur"
+                        >
                           {c}
                         </button>
                       ))}
-                      <button className="reos-chip text-[11px] px-3 py-1 rounded-full bg-[var(--surface)]/70 backdrop-blur inline-flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => navigate("/search-advanced")}
+                        className="reos-chip text-[11px] px-3 py-1 rounded-full bg-[var(--surface)]/70 backdrop-blur inline-flex items-center gap-1"
+                      >
                         More <ChevronDown className="h-3 w-3" />
                       </button>
                     </div>
@@ -408,7 +589,31 @@ export default function AstraReosHome() {
               <motion.div variants={fadeUp} className="col-span-12 lg:col-span-3 reos-card p-5">
                 <div className="flex items-center justify-between">
                   <div className="text-[14px] font-semibold">Market Overview</div>
-                  <button className="text-[11px] text-[var(--text-2)] inline-flex items-center gap-1 hover:text-[var(--text)]">Indonesia <ChevronDown className="h-3 w-3" /></button>
+                  <div className="relative" ref={countryRef}>
+                    <button
+                      type="button"
+                      onClick={() => setCountryOpen(o => !o)}
+                      className="text-[11px] text-[var(--text-2)] inline-flex items-center gap-1 hover:text-[var(--text)]"
+                      aria-haspopup="menu"
+                      aria-expanded={countryOpen}
+                    >
+                      {country} <ChevronDown className="h-3 w-3" />
+                    </button>
+                    {countryOpen && (
+                      <div role="menu" className="absolute right-0 mt-2 w-40 reos-card p-1 z-30 shadow-2xl">
+                        {countries.map(c => (
+                          <button
+                            key={c}
+                            type="button"
+                            onClick={() => { setCountry(c); setCountryOpen(false); }}
+                            className={`w-full text-left px-3 py-2 rounded-md text-[12px] hover:bg-[var(--surface-2)] ${country === c ? "reos-gold" : "text-[var(--text)]"}`}
+                          >
+                            {c}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="mt-4 space-y-4">
                   {marketKPIs.map(k => (
@@ -427,7 +632,11 @@ export default function AstraReosHome() {
                     </div>
                   ))}
                 </div>
-                <button className="mt-5 text-[12px] reos-gold inline-flex items-center gap-1 hover:underline">
+                <button
+                  type="button"
+                  onClick={() => navigate("/market-heatmap")}
+                  className="mt-5 text-[12px] reos-gold inline-flex items-center gap-1 hover:underline"
+                >
                   View Full Market Report <ArrowUpRight className="h-3 w-3" />
                 </button>
               </motion.div>
@@ -467,7 +676,7 @@ export default function AstraReosHome() {
                     const img = p.cover_image || p.images?.[0] || heroImg;
                     return (
                       <motion.div key={p.id} variants={fadeUp} whileHover={{ y: -3 }} className="reos-card-2 overflow-hidden group">
-                        <Link to={`/property/${p.slug ?? p.id}`}>
+                        <Link to={`/properties/${p.slug ?? p.id}`}>
                           <div className="relative h-28 overflow-hidden">
                             <img src={img} alt={p.title} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                             <span className={`absolute top-2 left-2 text-[9px] font-bold tracking-wider px-1.5 py-0.5 rounded ${badgeColor[p._badge]}`}>{p._badge}</span>
@@ -502,29 +711,37 @@ export default function AstraReosHome() {
               <Section className="col-span-12 lg:col-span-4 reos-card p-5">
                 <div className="flex items-center justify-between mb-4">
                   <div className="text-[14px] font-semibold">Investment Hotspots</div>
-                  <Link to="/intelligence" className="text-[11px] reos-gold inline-flex items-center gap-1 hover:underline">View All <ArrowUpRight className="h-3 w-3" /></Link>
+                  <Link to="/market-heatmap" className="text-[11px] reos-gold inline-flex items-center gap-1 hover:underline">View All <ArrowUpRight className="h-3 w-3" /></Link>
                 </div>
                 <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-[var(--line)]" style={{ background: "radial-gradient(ellipse at 60% 60%, rgba(200,169,106,0.06), transparent 70%), #0a0a0c" }}>
-                  {/* simple "map" — stylized dots/regions */}
-                  <svg viewBox="0 0 100 75" className="absolute inset-0 h-full w-full opacity-30">
-                    <path d="M10,40 q15,-10 30,-5 q15,5 25,0 q10,-3 20,5 q5,8 -5,12 q-20,4 -40,2 q-25,-2 -30,-14z" fill="none" stroke="#C8A96A" strokeWidth="0.3" />
-                    <path d="M45,55 q10,-3 18,2 q6,8 -4,12 q-12,2 -18,-4 q-4,-6 4,-10z" fill="none" stroke="#C8A96A" strokeWidth="0.3" />
-                  </svg>
-                  {hotspots.map(h => (
-                    <div key={h.city} className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: `${h.x}%`, top: `${h.y}%` }}>
-                      <div className="relative">
-                        <div className="absolute inset-0 rounded-full bg-[var(--gold)] opacity-30 blur-md scale-150" />
-                        <div className="relative h-2.5 w-2.5 rounded-full bg-[var(--gold-2)] ring-2 ring-[var(--gold)]/40" />
-                      </div>
-                      <div className="absolute left-4 top-1/2 -translate-y-1/2 whitespace-nowrap">
-                        <div className="text-[10px] font-semibold">{h.city}</div>
-                        <div className="text-[9px] reos-gold">ROI {h.roi}</div>
-                      </div>
-                    </div>
-                  ))}
-                  <div className="absolute bottom-2 left-2 flex flex-col gap-1">
-                    <button className="h-6 w-6 rounded bg-[var(--surface)] border border-[var(--line)] flex items-center justify-center"><Plus className="h-3 w-3" /></button>
-                    <button className="h-6 w-6 rounded bg-[var(--surface)] border border-[var(--line)] flex items-center justify-center"><Minus className="h-3 w-3" /></button>
+                  <div className="absolute inset-0 origin-center transition-transform" style={{ transform: `scale(${hotspotZoom})` }}>
+                    <svg viewBox="0 0 100 75" className="absolute inset-0 h-full w-full opacity-30">
+                      <path d="M10,40 q15,-10 30,-5 q15,5 25,0 q10,-3 20,5 q5,8 -5,12 q-20,4 -40,2 q-25,-2 -30,-14z" fill="none" stroke="#C8A96A" strokeWidth="0.3" />
+                      <path d="M45,55 q10,-3 18,2 q6,8 -4,12 q-12,2 -18,-4 q-4,-6 4,-10z" fill="none" stroke="#C8A96A" strokeWidth="0.3" />
+                    </svg>
+                    {hotspots.map(h => (
+                      <button
+                        key={h.city}
+                        type="button"
+                        onClick={() => navigate(`/invest/${h.slug}`)}
+                        aria-label={`${h.city} investment hotspot`}
+                        className="absolute -translate-x-1/2 -translate-y-1/2 group cursor-pointer"
+                        style={{ left: `${h.x}%`, top: `${h.y}%` }}
+                      >
+                        <div className="relative">
+                          <div className="absolute inset-0 rounded-full bg-[var(--gold)] opacity-30 blur-md scale-150 group-hover:opacity-60" />
+                          <div className="relative h-2.5 w-2.5 rounded-full bg-[var(--gold-2)] ring-2 ring-[var(--gold)]/40 group-hover:scale-125 transition-transform" />
+                        </div>
+                        <div className="absolute left-4 top-1/2 -translate-y-1/2 whitespace-nowrap text-left">
+                          <div className="text-[10px] font-semibold">{h.city}</div>
+                          <div className="text-[9px] reos-gold">ROI {h.roi}</div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="absolute bottom-2 left-2 flex flex-col gap-1 z-10">
+                    <button type="button" onClick={() => setHotspotZoom(z => Math.min(2, +(z + 0.2).toFixed(2)))} aria-label="Zoom in" className="h-6 w-6 rounded bg-[var(--surface)] border border-[var(--line)] flex items-center justify-center hover:border-[var(--line-strong)]"><Plus className="h-3 w-3" /></button>
+                    <button type="button" onClick={() => setHotspotZoom(z => Math.max(0.6, +(z - 0.2).toFixed(2)))} aria-label="Zoom out" className="h-6 w-6 rounded bg-[var(--surface)] border border-[var(--line)] flex items-center justify-center hover:border-[var(--line-strong)]"><Minus className="h-3 w-3" /></button>
                   </div>
                 </div>
                 <div className="mt-3 flex items-center justify-between text-[10px] text-[var(--text-2)]">
@@ -539,7 +756,7 @@ export default function AstraReosHome() {
                 <Section className="reos-card p-5">
                   <div className="flex items-center justify-between mb-3">
                     <div className="text-[13px] font-semibold">AI Recommendation</div>
-                    <Link to="/ai" className="text-[10px] reos-gold inline-flex items-center gap-1">View All <ArrowUpRight className="h-3 w-3" /></Link>
+                    <Link to="/ai-search" className="text-[10px] reos-gold inline-flex items-center gap-1">View All <ArrowUpRight className="h-3 w-3" /></Link>
                   </div>
                   <div className="space-y-3">
                     {aiRecs.map(r => (
@@ -562,7 +779,7 @@ export default function AstraReosHome() {
                 <Section className="reos-card p-5">
                   <div className="flex items-center justify-between mb-3">
                     <div className="text-[13px] font-semibold">Market Intelligence</div>
-                    <Link to="/intelligence" className="text-[10px] reos-gold inline-flex items-center gap-1">View All <ArrowUpRight className="h-3 w-3" /></Link>
+                    <Link to="/market-heatmap" className="text-[10px] reos-gold inline-flex items-center gap-1">View All <ArrowUpRight className="h-3 w-3" /></Link>
                   </div>
                   <div className="space-y-2.5">
                     {marketReports.map(r => (
@@ -606,7 +823,11 @@ export default function AstraReosHome() {
                 <div className="relative">
                   <div className="text-[11px] font-semibold">Get AI Investment Report</div>
                   <div className="text-[10px] text-[var(--text-2)] mt-1 leading-tight">Personalized report based on your investment goals.</div>
-                  <button className="mt-3 h-8 px-3 rounded-lg reos-cta text-[11px] inline-flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => user ? navigate("/wealth-advisor") : (setAuthInitial("login"), setShowAuth(true))}
+                    className="mt-3 h-8 px-3 rounded-lg reos-cta text-[11px] inline-flex items-center gap-1.5"
+                  >
                     <Sparkles className="h-3 w-3" /> Generate Now
                   </button>
                 </div>
