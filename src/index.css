@@ -215,27 +215,28 @@ html, body {
 
 @layer base {
   :root {
-    /* Light Mode - Bright Sky Blue + Yellow/Green Brand */
-    --background: 200 100% 97%; /* Very light sky blue */
-    --foreground: 210 60% 12%; /* Deep navy text */
-    --card: 0 0% 100%; /* White cards */
-    --card-foreground: 210 60% 12%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 210 60% 12%;
-    --primary: 200 100% 48%; /* Bright Sky Blue #00A3F5 */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 200 50% 92%; /* Light sky blue */
-    --secondary-foreground: 210 60% 12%;
-    --muted: 200 30% 94%;
-    --muted-foreground: 210 20% 45%;
-    --accent: 90 75% 45%; /* Lime green accent */
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
+    /* ASTRA Villa REOS — Obsidian Black + Champagne Gold (single palette, dark-first) */
+    --background: 240 4% 5%;          /* #0B0B0C */
+    --foreground: 40 30% 94%;         /* #F4F1EA */
+    --card: 240 5% 8%;                /* #121214 */
+    --card-foreground: 40 30% 94%;
+    --popover: 240 5% 9%;             /* #17171A */
+    --popover-foreground: 40 30% 94%;
+    --primary: 39 45% 60%;            /* #C8A96A champagne gold */
+    --primary-foreground: 30 25% 8%;  /* near-black on gold */
+    --secondary: 240 4% 12%;
+    --secondary-foreground: 40 30% 94%;
+    --muted: 240 4% 12%;
+    --muted-foreground: 40 8% 60%;    /* #9A958A */
+    --accent: 40 60% 70%;             /* #E0C384 bright gold */
+    --accent-foreground: 30 25% 8%;
+    --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 100%;
-    --border: 200 25% 88%;
-    --input: 200 25% 90%;
-    --ring: 200 100% 48%;
-    --radius: 10px;
+    --border: 41 25% 22%;             /* warm gold-tinted line */
+    --input: 41 25% 22%;
+    --ring: 39 45% 60%;
+    --radius: 14px;
+
     
     /* ASTRA Brand Colors - Light Mode */
     --gold-primary: 48 100% 52%; /* Bright Yellow #FFCC0A */
@@ -325,26 +326,27 @@ html, body {
   }
 
   .dark {
-    /* Dark Mode - Deep Ocean Blue Theme */
-    --background: 210 55% 8%; /* Deep ocean */
-    --foreground: 200 12% 93%; /* Slightly brighter for better readability */
-    --card: 210 45% 13%; /* Dark blue card */
-    --card-foreground: 200 12% 93%;
-    --popover: 210 50% 11%;
-    --popover-foreground: 200 12% 93%;
-    --primary: 200 100% 55%; /* Bright sky blue */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 210 35% 18%;
-    --secondary-foreground: 200 12% 88%;
-    --muted: 210 30% 16%;
-    --muted-foreground: 200 15% 70%; /* Boosted to 70% for WCAG AA+ contrast on dark */
-    --accent: 90 75% 50%; /* Lime green */
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 210 25% 24%; /* Slightly brighter for better card separation */
-    --input: 210 35% 16%;
-    --ring: 200 100% 55%;
+    /* Dark mode = same Obsidian Black + Champagne Gold (single source of truth) */
+    --background: 240 4% 5%;
+    --foreground: 40 30% 94%;
+    --card: 240 5% 8%;
+    --card-foreground: 40 30% 94%;
+    --popover: 240 5% 9%;
+    --popover-foreground: 40 30% 94%;
+    --primary: 39 45% 60%;
+    --primary-foreground: 30 25% 8%;
+    --secondary: 240 4% 12%;
+    --secondary-foreground: 40 30% 94%;
+    --muted: 240 4% 12%;
+    --muted-foreground: 40 8% 60%;
+    --accent: 40 60% 70%;
+    --accent-foreground: 30 25% 8%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 41 25% 22%;
+    --input: 41 25% 22%;
+    --ring: 39 45% 60%;
+
     
     /* ASTRA Brand Colors - Dark Mode (boosted for contrast on dark backgrounds) */
     --gold-primary: 45 100% 62%; /* Brighter gold for WCAG AA on dark bg */
