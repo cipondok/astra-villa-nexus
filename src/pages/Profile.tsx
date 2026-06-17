@@ -448,7 +448,7 @@ const Profile = () => {
               </button>
             </div>
           </CardContent>
-        </Card>
+        </AstraCard>
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
