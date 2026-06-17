@@ -371,8 +371,8 @@ const Profile = () => {
         </div>
 
         {/* Profile Header Card */}
-        <Card className="mb-4 border-gold-primary/15 bg-card/60 backdrop-blur-xl overflow-hidden">
-          <div className="h-20 bg-gradient-to-r from-gold-primary/20 via-gold-primary/10 to-gold-primary/5"></div>
+        <AstraCard glass className="mb-4 overflow-hidden">
+          <div className="h-20 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/5"></div>
           <CardContent className="pt-0 pb-4 px-4">
           <div className="flex items-end gap-4 -mt-10">
               {/* Avatar with TikTok/FB style badge */}
