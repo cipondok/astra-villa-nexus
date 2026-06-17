@@ -48,6 +48,7 @@ export default function GlobalHeader({
   const { language, setLanguage } = useLanguage();
   const [searchValue, setSearchValue] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { logoUrl: headerLogo } = useBrandingLogo('headerLogo', '/astra-logo.png');
 
   // Lock body scroll when mobile drawer is open
   useEffect(() => {
@@ -86,7 +87,7 @@ export default function GlobalHeader({
           aria-label={`${brand} home`}
         >
           <img
-            src="/astra-logo.png"
+            src={headerLogo}
             alt={brand}
             className="h-8 w-8 rounded-full object-contain shadow-sm bg-primary/10 md:h-9 md:w-9"
           />
