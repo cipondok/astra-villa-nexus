@@ -272,27 +272,14 @@ const ResponsiveAIChatWidget = ({
 
     loadPreferences();
 
-    // Check if user has seen quick actions hint
-    const seenQuickActions = localStorage.getItem('chatbot-seen-quick-actions');
-    const seenTooltip = localStorage.getItem('chatbot-seen-tooltip');
-    
-    if (!seenQuickActions) {
-      const timer = setTimeout(() => {
-        setShowQuickActionsHint(true);
-        setTimeout(() => {
-          setShowQuickActionsHint(false);
-          localStorage.setItem('chatbot-seen-quick-actions', 'true');
-          setHasSeenQuickActions(true);
-        }, 4000);
-      }, 3000);
-      return () => clearTimeout(timer);
-    } else {
-      setHasSeenQuickActions(true);
-    }
-
-    if (!seenTooltip) {
-      setShowTooltip(true);
-    }
+    // Suppress auto hint/tooltip popups on page load to avoid the chat appearing
+    // to "open itself and minimize" on every navigation. The user can still
+    // discover quick actions on hover.
+    setHasSeenQuickActions(true);
+    setShowQuickActionsHint(false);
+    setShowTooltip(false);
+    localStorage.setItem('chatbot-seen-quick-actions', 'true');
+    localStorage.setItem('chatbot-seen-tooltip', 'true');
   }, [isMobile, isAuthenticated, isSyncLoading]);
 
   // Sync preferences to cloud when they change (debounced 5s)
