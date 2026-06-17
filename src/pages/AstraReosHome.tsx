@@ -823,7 +823,11 @@ export default function AstraReosHome() {
                 <div className="relative">
                   <div className="text-[11px] font-semibold">Get AI Investment Report</div>
                   <div className="text-[10px] text-[var(--text-2)] mt-1 leading-tight">Personalized report based on your investment goals.</div>
-                  <button className="mt-3 h-8 px-3 rounded-lg reos-cta text-[11px] inline-flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => user ? navigate("/wealth-advisor") : (setAuthInitial("login"), setShowAuth(true))}
+                    className="mt-3 h-8 px-3 rounded-lg reos-cta text-[11px] inline-flex items-center gap-1.5"
+                  >
                     <Sparkles className="h-3 w-3" /> Generate Now
                   </button>
                 </div>
