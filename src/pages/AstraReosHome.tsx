@@ -70,7 +70,7 @@ const tokens = `
     --text-3: #8A8478;
     --success: #15803D;
     --danger: #B91C1C;
-    --gold-fg: #FFFFFF;
+    --gold-fg: #161208;
     --promo-gradient: linear-gradient(180deg, #2A1F0A, #1A1408);
     --promo-gradient-diag: linear-gradient(135deg, #2A1F0A, #1A1408);
     --hotspot-bg: radial-gradient(ellipse at 60% 60%, rgba(176,138,62,0.10), transparent 70%), #F3EFE6;
