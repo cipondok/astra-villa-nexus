@@ -143,12 +143,12 @@ const marketKPIs = [
 
 /* ---------- Hotspots ---------- */
 const hotspots = [
-  { city: "Phuket",     roi: "16.6%", x: 25, y: 28 },
-  { city: "Kuala Lumpur", roi: "11.2%", x: 36, y: 38 },
-  { city: "Singapore",  roi: "9.7%",  x: 44, y: 50 },
-  { city: "Jakarta",    roi: "12.4%", x: 50, y: 70 },
-  { city: "Bali",       roi: "18.5%", x: 78, y: 70 },
-  { city: "Lombok",     roi: "24.3%", x: 88, y: 72 },
+  { city: "Phuket",       roi: "16.6%", x: 25, y: 28, slug: "phuket" },
+  { city: "Kuala Lumpur", roi: "11.2%", x: 36, y: 38, slug: "kuala-lumpur" },
+  { city: "Singapore",    roi: "9.7%",  x: 44, y: 50, slug: "singapore" },
+  { city: "Jakarta",      roi: "12.4%", x: 50, y: 70, slug: "jakarta" },
+  { city: "Bali",         roi: "18.5%", x: 78, y: 70, slug: "bali" },
+  { city: "Lombok",       roi: "24.3%", x: 88, y: 72, slug: "lombok" },
 ];
 
 const aiRecs = [
