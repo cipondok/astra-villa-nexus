@@ -15,6 +15,9 @@ import {
 import heroImg from "@/assets/reos-hero.jpg";
 import { useReosMarket, formatIDR } from "@/hooks/useReosMarket";
 import { useReosAiSearch } from "@/hooks/useReosAiSearch";
+import { useAuth } from "@/contexts/AuthContext";
+import { ReosAuthModal } from "@/components/auth/ReosAuthModal";
+
 
 /* ============================================================
    ASTRA Villa — REOS Landing
@@ -187,8 +190,12 @@ export default function AstraReosHome() {
   const [activeSearchTab, setActiveSearchTab] = useState("All");
   const [aiQuery, setAiQuery] = useState("");
   const [showAiSheet, setShowAiSheet] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
+  const [authInitial, setAuthInitial] = useState<"login" | "register">("login");
+  const { user, profile } = useAuth();
   const { data: market, loading: marketLoading } = useReosMarket();
   const { search, data: aiData, loading: aiLoading, error: aiError, reset: resetAi } = useReosAiSearch();
+
 
   useEffect(() => {
     document.title = "ASTRA Villa REOS — AI Real Estate Operating System";
