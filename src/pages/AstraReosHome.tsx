@@ -1,153 +1,200 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
-  Search, Bell, MessageSquare, Globe, Sun, Moon, User,
-  LayoutDashboard, Building2, TrendingUp, Banknote, Scale,
-  Wrench, Store, BarChart3, Sparkles, Settings as Cog,
-  ArrowUpRight, ShieldCheck, MapPin, Cpu, Zap, ChevronRight,
-  Activity, DollarSign, Star, Loader2, X,
+  Search, Bell, Globe, Heart, Sparkles, ChevronDown, ChevronRight,
+  LayoutDashboard, Building2, TrendingUp, Banknote, Scale, Wrench,
+  Store, Cpu, MoreHorizontal, Eye, BookmarkPlus, Wallet, MessageSquare,
+  ArrowLeftRight, Calendar, FileText, LifeBuoy, Crown, ArrowUpRight,
+  MapPin, BedDouble, Bath, Maximize, Shield, BarChart3, Loader2, X,
+  Sliders, Plus, Minus, CheckCircle2,
 } from "lucide-react";
 import {
-  LineChart, Line, AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip,
+  LineChart, Line, ResponsiveContainer,
 } from "recharts";
 import heroImg from "@/assets/reos-hero.jpg";
 import { useReosMarket, formatIDR } from "@/hooks/useReosMarket";
-import { useReosAiSearch, type ReosAiResult } from "@/hooks/useReosAiSearch";
+import { useReosAiSearch } from "@/hooks/useReosAiSearch";
 
 /* ============================================================
-   ASTRA Villa — REOS Landing (motion + live data + AI search)
+   ASTRA Villa — REOS Landing
+   Matches the "Bloomberg Terminal of Real Estate" reference:
+   Black / Gold luxury palette, dashboard-style composition.
    ============================================================ */
 
 const tokens = `
-  .reos-root {
-    --bg: #050505; --card: #0D0D0D; --card-2: #111111;
-    --gold: #D4AF37; --gold-bright: #FFD700;
-    --text: #FFFFFF; --text-2: #B8B8B8;
-    --border: rgba(255,215,0,0.12); --border-strong: rgba(255,215,0,0.28);
-    --success: #22C55E; --danger: #EF4444; --info: #3B82F6;
-    --grid: rgba(255,255,255,0.04);
-    color: var(--text); background: var(--bg);
+  .reos {
+    --bg: #0B0B0C;
+    --bg-2: #0F0F11;
+    --surface: #121214;
+    --surface-2: #17171A;
+    --line: rgba(200,169,106,0.14);
+    --line-strong: rgba(200,169,106,0.32);
+    --gold: #C8A96A;
+    --gold-2: #E0C384;
+    --gold-soft: rgba(200,169,106,0.10);
+    --text: #F4F1EA;
+    --text-2: #9A958A;
+    --text-3: #6B6760;
+    --success: #4ADE80;
+    --danger: #F87171;
+    color: var(--text);
+    background: var(--bg);
     font-family: 'Inter', 'SF Pro Display', system-ui, sans-serif;
-    font-feature-settings: 'ss01','cv11'; letter-spacing: -0.01em;
+    letter-spacing: -0.005em;
   }
-  .reos-root.light {
-    --bg: #F8F9FB; --card: #FFFFFF; --card-2: #FAFAFA;
-    --gold: #B8941F; --gold-bright: #D4AF37;
-    --text: #111111; --text-2: #666666;
-    --border: #EAEAEA; --border-strong: rgba(184,148,31,0.35);
-    --grid: rgba(0,0,0,0.04);
-  }
-  .reos-glass { background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid var(--border); }
-  .reos-root.light .reos-glass { background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7)); }
-  .reos-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; transition: transform .35s cubic-bezier(.2,.7,.2,1), border-color .35s, box-shadow .35s; }
-  .reos-card:hover { border-color: var(--border-strong); transform: translateY(-3px); box-shadow: 0 24px 60px -28px rgba(212,175,55,0.35); }
-  .reos-gold { color: var(--gold-bright); }
-  .reos-grid-bg { background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 56px 56px; }
-  .reos-pulse::after{ content:""; position:absolute; inset:-2px; border-radius:inherit; border:1px solid var(--gold); opacity:.0; animation: reos-pulse 2.4s ease-out infinite; }
-  @keyframes reos-pulse { 0%{opacity:.6; transform:scale(1)} 100%{opacity:0; transform:scale(1.08)} }
-  .reos-shine { background: linear-gradient(110deg, transparent 30%, rgba(255,215,0,0.18) 50%, transparent 70%); background-size: 200% 100%; animation: reos-shine 6s linear infinite; }
-  @keyframes reos-shine { from{background-position:200% 0} to{background-position:-200% 0} }
-  .reos-cta { background: linear-gradient(135deg, var(--gold), var(--gold-bright)); color: #0a0a0a; font-weight: 600; }
-  .reos-cta:hover { filter: brightness(1.08); }
-  .reos-outline { border: 1px solid var(--border-strong); color: var(--text); }
+  .reos *::selection { background: var(--gold); color: #111; }
+  .reos-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
+  .reos-card-2 { background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; }
+  .reos-gold { color: var(--gold-2); }
+  .reos-cta { background: linear-gradient(180deg, var(--gold-2), var(--gold)); color: #161208; font-weight: 600; border: 1px solid rgba(255,225,160,0.4); }
+  .reos-cta:hover { filter: brightness(1.06); }
+  .reos-outline { border: 1px solid var(--line-strong); }
+  .reos-chip { border: 1px solid var(--line); color: var(--text-2); }
+  .reos-chip:hover { border-color: var(--line-strong); color: var(--text); }
+  .reos-tab-active { color: var(--gold-2); }
+  .reos-tab-active::after { content:''; position:absolute; left:50%; bottom:-10px; transform:translateX(-50%); width: 28px; height: 2px; background: var(--gold); border-radius: 2px; }
+  .reos-divider { background-image: linear-gradient(90deg, transparent, var(--line-strong), transparent); height: 1px; }
+  .reos-shadow { box-shadow: 0 24px 60px -28px rgba(200,169,106,0.25); }
   .reos-scrollbar::-webkit-scrollbar{width:6px;height:6px}
-  .reos-scrollbar::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:3px}
+  .reos-scrollbar::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:3px}
+
+  /* === Global override while REOS is mounted — restyle the floating ASTRA chat widget === */
+  html[data-reos-theme="on"] {
+    --background: 240 4% 6%;
+    --foreground: 40 30% 94%;
+    --card: 240 5% 8%;
+    --card-foreground: 40 30% 94%;
+    --popover: 240 5% 8%;
+    --popover-foreground: 40 30% 94%;
+    --primary: 41 45% 60%;
+    --primary-foreground: 30 25% 8%;
+    --secondary: 240 4% 12%;
+    --secondary-foreground: 40 30% 94%;
+    --muted: 240 4% 12%;
+    --muted-foreground: 40 8% 60%;
+    --accent: 41 60% 70%;
+    --accent-foreground: 30 25% 8%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 41 25% 22%;
+    --input: 41 25% 22%;
+    --ring: 41 45% 60%;
+    --chart-1: 41 45% 60%;
+    --chart-5: 41 60% 70%;
+  }
 `;
 
-const sidebarItems = [
-  { icon: LayoutDashboard, label: "Dashboard" },
+/* ---------- Top tabs (under header) ---------- */
+const topTabs = [
+  { icon: LayoutDashboard, label: "Dashboard", active: true },
   { icon: Building2, label: "Properties" },
   { icon: TrendingUp, label: "Investment" },
   { icon: Banknote, label: "Finance" },
   { icon: Scale, label: "Legal" },
+  { icon: Wrench, label: "Management" },
   { icon: Store, label: "Vendors" },
-  { icon: BarChart3, label: "Market Intel" },
-  { icon: Sparkles, label: "AI Center" },
-  { icon: Cog, label: "Settings" },
+  { icon: Cpu, label: "AI Center" },
+  { icon: MoreHorizontal, label: "More" },
 ];
 
-const modules = [
-  { icon: Building2, title: "Properties Marketplace", desc: "Villas, apartments, hotels, land", to: "/properties" },
-  { icon: TrendingUp, title: "Investment Hub", desc: "Fractional & full-asset opportunities", to: "/investment" },
-  { icon: Banknote, title: "Finance Hub", desc: "Mortgages, KPR, escrow, insurance", to: "/finance" },
-  { icon: Scale, title: "Legal Hub", desc: "Due diligence, PMA, compliance", to: "/legal" },
-  { icon: Wrench, title: "Property Management", desc: "Occupancy, rent, maintenance", to: "/management" },
-  { icon: Cpu, title: "AI Advisor", desc: "Investment intelligence on demand", to: "/ai" },
-  { icon: Store, title: "Vendor Marketplace", desc: "Verified architects & contractors", to: "/vendors" },
-  { icon: BarChart3, title: "Data Intelligence", desc: "Price, yield, demand, sentiment", to: "/intelligence" },
+/* ---------- Sidebar ---------- */
+const sideNav = [
+  { icon: Eye, label: "Overview", active: true },
+  { icon: BarChart3, label: "Market Intelligence" },
+  { icon: BookmarkPlus, label: "Watchlist" },
+  { icon: Wallet, label: "My Portfolio" },
+  { icon: MessageSquare, label: "Messages", badge: 12 },
+  { icon: ArrowLeftRight, label: "Transactions" },
+  { icon: Calendar, label: "Calendar" },
+  { icon: FileText, label: "Documents" },
+  { icon: LifeBuoy, label: "Support Center" },
 ];
 
-/* ---------- motion presets ---------- */
-const fadeUp: any = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
-};
-const stagger: any = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.07, delayChildren: 0.05 } },
-};
+/* ---------- Hub cards (6) ---------- */
+const hubs = [
+  { icon: Building2,  title: "Properties\nMarketplace", desc: "10,234+ Listings", to: "/properties" },
+  { icon: BarChart3,  title: "Investment\nHub", desc: "High ROI Opportunities", to: "/investment" },
+  { icon: Scale,      title: "Finance\nHub", desc: "KPR & Funding Solutions", to: "/finance" },
+  { icon: Shield,     title: "Legal\nHub", desc: "Verified & Secure", to: "/legal" },
+  { icon: Sparkles,   title: "AI Investment\nAdvisor", desc: "Smart Recommendations", to: "/ai" },
+  { icon: Wrench,     title: "Property\nManagement", desc: "Manage Your Assets", to: "/management" },
+];
+
+/* ---------- Search tabs ---------- */
+const searchTabs = ["All", "Properties", "Investments", "Locations", "Developers", "Vendors", "Laws"];
+const locationChips = ["Bali", "Jakarta", "Phuket", "Singapore", "Kuala Lumpur"];
+
+/* ---------- Mock market sparklines (gold/green) ---------- */
+const spark = (seed: number) =>
+  Array.from({ length: 24 }, (_, i) => ({ i, v: 50 + Math.sin(i / 2 + seed) * 8 + Math.cos(i / 3 + seed) * 6 + i * 0.4 }));
+
+const marketKPIs = [
+  { label: "Property Price Index", value: "132.45", delta: "+6.24%", seed: 1 },
+  { label: "Rental Yield Index", value: "8.74%", delta: "+2.13%", seed: 2 },
+  { label: "Market Growth", value: "5.62%", delta: "+1.34%", seed: 3 },
+  { label: "Tourism Growth", value: "12.38%", delta: "+3.87%", seed: 4 },
+];
+
+/* ---------- Hotspots ---------- */
+const hotspots = [
+  { city: "Phuket",     roi: "16.6%", x: 25, y: 28 },
+  { city: "Kuala Lumpur", roi: "11.2%", x: 36, y: 38 },
+  { city: "Singapore",  roi: "9.7%",  x: 44, y: 50 },
+  { city: "Jakarta",    roi: "12.4%", x: 50, y: 70 },
+  { city: "Bali",       roi: "18.5%", x: 78, y: 70 },
+  { city: "Lombok",     roi: "24.3%", x: 88, y: 72 },
+];
+
+const aiRecs = [
+  { city: "Bali", title: "Luxury Villa in Bali",  roi: "18.5%", tag: "High Demand",   color: "#4ADE80" },
+  { city: "Lombok", title: "Lombok Resort Land",  roi: "24.3%", tag: "High Growth",   color: "#FBBF24" },
+  { city: "Jakarta", title: "Jakarta Commercial", roi: "12.9%", tag: "Stable Income", color: "#60A5FA" },
+];
+
+const marketReports = [
+  { title: "Bali Property Market Report",        date: "May 2024" },
+  { title: "Indonesia Property Outlook",         date: "Q2 2024"  },
+  { title: "Southeast Asia Investment Report",   date: "May 2024" },
+];
+
+const banks = ["BCA", "Mandiri", "CIMB NIAGA", "HSBC", "DBS", "Maybank", "UOB", "OCBC NISP", "BNI", "BRI"];
 
 /* ---------- atoms ---------- */
-const Stat = ({ label, value, delta, positive = true }: { label: string; value: string; delta?: string; positive?: boolean }) => (
-  <motion.div variants={fadeUp} className="reos-card p-4">
-    <div className="text-[11px] uppercase tracking-[0.18em] text-[var(--text-2)]">{label}</div>
-    <div className="mt-2 flex items-baseline justify-between">
-      <div className="text-2xl font-semibold">{value}</div>
-      {delta && (
-        <div className={`text-xs font-medium ${positive ? "text-[var(--success)]" : "text-[var(--danger)]"}`}>
-          {positive ? "▲" : "▼"} {delta}
-        </div>
-      )}
-    </div>
-  </motion.div>
+const Spark = ({ seed, color = "#4ADE80" }: { seed: number; color?: string }) => (
+  <div className="h-9 w-full">
+    <ResponsiveContainer width="100%" height="100%">
+      <LineChart data={spark(seed)}>
+        <Line type="monotone" dataKey="v" stroke={color} strokeWidth={1.6} dot={false} isAnimationActive />
+      </LineChart>
+    </ResponsiveContainer>
+  </div>
 );
 
+const fadeUp: any = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } } };
+const stagger: any = { hidden: {}, show: { transition: { staggerChildren: 0.05 } } };
+
 const Section = ({ children, className = "" }: any) => (
-  <motion.section
-    initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }}
-    variants={stagger} className={className}
-  >
+  <motion.section initial="hidden" whileInView="show" viewport={{ once: true, margin: "-60px" }} variants={stagger} className={className}>
     {children}
   </motion.section>
 );
 
-/* ---------- page ---------- */
+/* ============================================================
+   PAGE
+   ============================================================ */
 export default function AstraReosHome() {
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [activeSearchTab, setActiveSearchTab] = useState("All");
   const [aiQuery, setAiQuery] = useState("");
   const [showAiSheet, setShowAiSheet] = useState(false);
   const { data: market, loading: marketLoading } = useReosMarket();
   const { search, data: aiData, loading: aiLoading, error: aiError, reset: resetAi } = useReosAiSearch();
 
   useEffect(() => {
-    document.title = "ASTRA Villa — Southeast Asia's AI Real Estate Operating System";
+    document.title = "ASTRA Villa REOS — AI Real Estate Operating System";
+    document.documentElement.setAttribute("data-reos-theme", "on");
+    return () => document.documentElement.removeAttribute("data-reos-theme");
   }, []);
-
-  // Hero parallax
-  const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollY } = useScroll();
-  const heroImgY = useTransform(scrollY, [0, 600], [0, 140]);
-  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.55]);
-
-  const trendData = useMemo(() => {
-    if (!market?.trend?.length) {
-      return Array.from({ length: 12 }, (_, i) => ({ i, v: 100 + Math.sin(i / 2) * 6 + i * 0.8 }));
-    }
-    return market.trend.map(t => ({ i: t.i, v: t.listings || 1, price: t.avg_price }));
-  }, [market]);
-
-  const cityCards = useMemo(() => {
-    if (!market?.by_city?.length) {
-      return [
-        { city: "Bali", active_listings: 0, avg_yield: 8.4, avg_roi: 14.2 },
-        { city: "Jakarta", active_listings: 0, avg_yield: 6.1, avg_roi: 9.4 },
-        { city: "Lombok", active_listings: 0, avg_yield: 9.2, avg_roi: 15.6 },
-        { city: "Batam", active_listings: 0, avg_yield: 7.0, avg_roi: 10.1 },
-      ];
-    }
-    return market.by_city.slice(0, 8);
-  }, [market]);
 
   const submitAi = async () => {
     if (!aiQuery.trim()) return;
@@ -155,426 +202,452 @@ export default function AstraReosHome() {
     await search(aiQuery);
   };
 
+  const featured = useMemo(() => {
+    const base = market?.featured ?? [];
+    const badges = ["FEATURED", "NEW", "HOT", "INVESTMENT"];
+    const fallback = [
+      { id: "f1", title: "Luxury Ocean View Villa", city: "Bali, Indonesia",  type: "Villa",     price: 18_500_000_000, roi: 18.5, beds: 4, baths: 5, area: 600,  cover_image: heroImg },
+      { id: "f2", title: "Premium Apartment",        city: "Jakarta, Indonesia", type: "Apartment", price: 3_200_000_000,  roi: 12.4, beds: 2, baths: 2, area: 120,  cover_image: heroImg },
+      { id: "f3", title: "Beachfront Resort",        city: "Phuket, Thailand",   type: "Resort",    price: 24_700_000_000, roi: 22.1, beds: 8, baths: 10, area: 1200, cover_image: heroImg },
+      { id: "f4", title: "Ocean View Land",          city: "Lombok, Indonesia",  type: "Land",      price: 6_800_000_000,  roi: 24.3, area: 1000, cover_image: heroImg },
+    ];
+    const src = base.length ? base : fallback;
+    return src.slice(0, 4).map((p: any, i: number) => ({ ...p, _badge: badges[i % badges.length] }));
+  }, [market]);
+
   return (
     <>
       <style>{tokens}</style>
-      <motion.div
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}
-        className={`reos-root ${theme === "light" ? "light" : ""} min-h-screen`}
-      >
-        {/* HEADER */}
-        <header className="sticky top-0 z-40 reos-glass border-b border-[var(--border)]">
-          <div className="mx-auto max-w-[1600px] px-5 h-16 flex items-center gap-4">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg reos-cta flex items-center justify-center">
-                <span className="text-[13px] font-bold">A</span>
+      <div className="reos min-h-screen">
+        {/* ===================== HEADER ===================== */}
+        <header className="sticky top-0 z-40 backdrop-blur-xl bg-[var(--bg)]/80 border-b border-[var(--line)]">
+          <div className="mx-auto max-w-[1600px] px-6 h-[68px] flex items-center gap-6">
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-2.5 shrink-0">
+              <div className="h-10 w-10 rounded-xl reos-cta flex items-center justify-center text-base font-bold">A</div>
+              <div className="leading-none">
+                <div className="font-semibold tracking-[0.18em] text-[15px]">ASTRA<span className="reos-gold ml-1">VILLA</span></div>
+                <div className="text-[9px] tracking-[0.28em] text-[var(--text-3)] mt-1">REAL ESTATE OPERATING SYSTEM</div>
               </div>
-              <span className="font-semibold tracking-[0.2em] text-sm">ASTRA VILLA</span>
-              <span className="text-[10px] uppercase tracking-[0.2em] reos-gold ml-1">REOS</span>
             </Link>
-            <div className="flex-1 max-w-2xl mx-auto relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-2)]" />
+
+            {/* Center search */}
+            <div className="flex-1 max-w-3xl mx-auto relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-2)]" />
               <input
                 value={aiQuery}
                 onChange={(e) => setAiQuery(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") submitAi(); }}
-                placeholder="Search properties, ROI, developers, laws, vendors, opportunities…"
-                className="w-full h-10 pl-9 pr-20 rounded-xl bg-transparent border border-[var(--border)] focus:border-[var(--border-strong)] outline-none text-sm placeholder:text-[var(--text-2)]"
+                placeholder="AI Search: Properties, Locations, ROI, Developers, Laws…"
+                className="w-full h-11 pl-11 pr-12 rounded-xl bg-[var(--surface)] border border-[var(--line)] focus:border-[var(--line-strong)] outline-none text-sm placeholder:text-[var(--text-2)]"
               />
-              <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] uppercase tracking-[0.18em] reos-gold border border-[var(--border-strong)] px-2 py-1 rounded-md">AI · ⌘K</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <button className="h-9 w-9 rounded-lg flex items-center justify-center hover:bg-[var(--card-2)]"><Bell className="h-4 w-4" /></button>
-              <button className="h-9 w-9 rounded-lg flex items-center justify-center hover:bg-[var(--card-2)]"><MessageSquare className="h-4 w-4" /></button>
-              <button className="h-9 w-9 rounded-lg flex items-center justify-center hover:bg-[var(--card-2)]"><Globe className="h-4 w-4" /></button>
-              <button onClick={() => setTheme(t => t === "dark" ? "light" : "dark")} className="h-9 w-9 rounded-lg flex items-center justify-center hover:bg-[var(--card-2)]">
-                {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              <button className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 rounded-md hover:bg-[var(--surface-2)] flex items-center justify-center">
+                <Sliders className="h-3.5 w-3.5 text-[var(--text-2)]" />
               </button>
-              <div className="h-9 w-9 rounded-full reos-glass flex items-center justify-center ml-1"><User className="h-4 w-4" /></div>
+            </div>
+
+            {/* Right actions */}
+            <div className="flex items-center gap-2 shrink-0">
+              <button className="h-9 px-3 rounded-lg inline-flex items-center gap-1.5 text-xs hover:bg-[var(--surface)] text-[var(--text-2)]">
+                <Globe className="h-4 w-4" /> EN <ChevronDown className="h-3 w-3" />
+              </button>
+              <button className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center relative">
+                <Bell className="h-4 w-4 text-[var(--text-2)]" />
+                <span className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full bg-[var(--gold)] text-[10px] text-black font-bold flex items-center justify-center">3</span>
+              </button>
+              <button className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center">
+                <Heart className="h-4 w-4 text-[var(--text-2)]" />
+              </button>
+              <div className="h-9 pl-1.5 pr-3 rounded-full bg-[var(--surface)] border border-[var(--line)] flex items-center gap-2">
+                <div className="h-7 w-7 rounded-full reos-cta flex items-center justify-center text-[11px] font-bold">M</div>
+                <div className="leading-none">
+                  <div className="text-[12px] font-medium">Michael Tan</div>
+                  <div className="text-[9px] reos-gold mt-0.5">Premium Investor</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Top tab bar */}
+          <div className="border-t border-[var(--line)]">
+            <div className="mx-auto max-w-[1600px] px-6 h-[52px] flex items-center gap-8 overflow-x-auto reos-scrollbar">
+              {topTabs.map(t => (
+                <button
+                  key={t.label}
+                  className={`relative inline-flex items-center gap-2 text-[13px] whitespace-nowrap transition-colors ${t.active ? "reos-tab-active font-medium" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}
+                >
+                  <t.icon className="h-4 w-4" /> {t.label}
+                </button>
+              ))}
             </div>
           </div>
         </header>
 
-        <div className="mx-auto max-w-[1600px] flex">
-          {/* SIDEBAR */}
-          <aside className="hidden lg:flex flex-col w-60 shrink-0 border-r border-[var(--border)] min-h-[calc(100vh-64px)] sticky top-16 self-start">
-            <nav className="p-3 space-y-1">
-              {sidebarItems.map((it, idx) => (
+        {/* ===================== LAYOUT ===================== */}
+        <div className="mx-auto max-w-[1600px] px-6 py-6 flex gap-6">
+          {/* ============ SIDEBAR ============ */}
+          <aside className="hidden xl:flex flex-col w-[230px] shrink-0 gap-4">
+            <div className="reos-card p-2">
+              {sideNav.map((n, i) => (
                 <motion.button
-                  key={it.label}
-                  initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.04 * idx, duration: 0.4 }}
-                  whileHover={{ x: 3 }}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${idx === 0 ? "bg-[var(--card-2)] reos-gold" : "text-[var(--text-2)] hover:bg-[var(--card-2)] hover:text-[var(--text)]"}`}
+                  key={n.label}
+                  initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.03 }}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] mb-0.5 transition-colors ${n.active ? "bg-[var(--gold-soft)] reos-gold" : "text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]"}`}
                 >
-                  <it.icon className="h-4 w-4" />
-                  <span>{it.label}</span>
+                  <n.icon className="h-4 w-4" />
+                  <span className="flex-1 text-left">{n.label}</span>
+                  {n.badge && <span className="text-[10px] bg-[var(--gold)] text-black font-bold px-1.5 py-0.5 rounded">{n.badge}</span>}
                 </motion.button>
               ))}
-            </nav>
+            </div>
+
+            {/* Investor club promo */}
+            <div className="reos-card relative overflow-hidden p-5 text-center" style={{ background: "linear-gradient(180deg, #1a1408, #0e0a04)" }}>
+              <div className="absolute inset-0 opacity-30" style={{ background: "radial-gradient(circle at 50% 0%, var(--gold), transparent 60%)" }} />
+              <div className="relative">
+                <Crown className="h-6 w-6 reos-gold mx-auto" />
+                <div className="mt-2 font-semibold tracking-wider text-sm">ASTRA VILLA</div>
+                <div className="text-[10px] tracking-[0.3em] reos-gold">INVESTOR CLUB</div>
+                <p className="mt-3 text-[11px] text-[var(--text-2)] leading-relaxed">Join exclusive investor community and get premium benefits.</p>
+                <button className="mt-4 w-full h-9 rounded-lg reos-cta text-xs inline-flex items-center justify-center gap-1.5">
+                  Join Now <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Apps */}
+            <div className="px-1">
+              <div className="text-[11px] uppercase tracking-[0.2em] text-[var(--text-2)] mb-2">Download Our Apps</div>
+              <div className="space-y-2">
+                {[{ b: "Download on the", n: "App Store" }, { b: "GET IT ON", n: "Google Play" }].map(a => (
+                  <button key={a.n} className="w-full h-11 px-3 rounded-xl bg-black border border-[var(--line)] flex items-center gap-2 text-left hover:border-[var(--line-strong)] transition">
+                    <div className="h-5 w-5 rounded reos-gold flex items-center justify-center">●</div>
+                    <div className="leading-tight">
+                      <div className="text-[9px] text-[var(--text-2)]">{a.b}</div>
+                      <div className="text-[12px] font-medium">{a.n}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
           </aside>
 
-          {/* MAIN */}
-          <main className="flex-1 min-w-0">
-            {/* HERO */}
-            <section ref={heroRef} className="relative overflow-hidden">
-              <motion.img
-                src={heroImg} alt="Luxury villa overlooking the ocean at sunset"
-                width={1920} height={1080}
-                style={{ y: heroImgY, opacity: heroOpacity }}
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-              <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(5,5,5,0.55) 0%, rgba(5,5,5,0.85) 60%, var(--bg) 100%)" }} />
-              <div className="relative px-6 md:px-10 pt-20 pb-28">
-                <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }}>
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full reos-glass text-[11px] uppercase tracking-[0.22em]">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[var(--success)] animate-pulse" />
-                    Live · ASEAN Real Estate Operating System
-                  </div>
-                  <h1 className="mt-6 text-5xl md:text-7xl font-bold leading-[1.02] tracking-tight max-w-4xl">
-                    <motion.span initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.7 }} className="block">Southeast Asia's</motion.span>
-                    <motion.span initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.7 }} className="block reos-gold">AI-Powered Real Estate</motion.span>
-                    <motion.span initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.7 }} className="block">Operating System</motion.span>
+          {/* ============ MAIN ============ */}
+          <main className="flex-1 min-w-0 space-y-6">
+
+            {/* ===== HERO + MARKET OVERVIEW ===== */}
+            <Section className="grid grid-cols-12 gap-5">
+              {/* Hero */}
+              <motion.div variants={fadeUp} className="col-span-12 lg:col-span-9 reos-card overflow-hidden relative min-h-[420px]">
+                <img src={heroImg} alt="Luxury villa overlooking the ocean" className="absolute inset-0 w-full h-full object-cover" />
+                <div className="absolute inset-0" style={{ background: "linear-gradient(110deg, rgba(11,11,12,0.92) 0%, rgba(11,11,12,0.55) 55%, transparent 100%)" }} />
+
+                <div className="relative p-8 md:p-10 flex flex-col h-full">
+                  <h1 className="text-4xl md:text-5xl font-semibold leading-[1.05] tracking-tight max-w-xl">
+                    <span className="block">Southeast Asia's</span>
+                    <span className="block"><span className="reos-gold">AI-Powered</span> Real Estate</span>
+                    <span className="block">Operating System</span>
                   </h1>
-                  <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="mt-6 text-lg text-[var(--text-2)] max-w-2xl">
-                    Buy. Invest. Manage. Finance. Verify. Grow. One terminal for property, capital and intelligence across the region.
-                  </motion.p>
-                  <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="mt-8 flex flex-wrap gap-3">
-                    <Link to="/properties" className="h-12 px-6 rounded-xl reos-cta inline-flex items-center gap-2 text-sm transition-transform hover:-translate-y-0.5">
-                      Explore Properties <ChevronRight className="h-4 w-4" />
-                    </Link>
-                    <Link to="/investment" className="h-12 px-6 rounded-xl reos-outline inline-flex items-center gap-2 text-sm hover:bg-[var(--card-2)] transition">
-                      <TrendingUp className="h-4 w-4" /> Start Investing
-                    </Link>
-                    <button onClick={() => { setAiQuery("Best ROI villas in Bali under $1M"); setShowAiSheet(true); search("Best ROI villas in Bali under $1M"); }}
-                      className="h-12 px-6 rounded-xl reos-outline inline-flex items-center gap-2 text-sm hover:bg-[var(--card-2)] transition">
-                      <Sparkles className="h-4 w-4 reos-gold" /> AI Investment Advisor
-                    </button>
+                  <p className="mt-4 text-[15px] text-[var(--text-2)] max-w-md">Buy. Invest. Manage. Finance. Verify. Grow.</p>
+
+                  {/* Search box */}
+                  <motion.div variants={fadeUp} className="mt-8 max-w-xl">
+                    <div className="reos-card-2 p-1.5 inline-flex gap-1 mb-2.5 bg-[var(--surface)]/80 backdrop-blur">
+                      {searchTabs.map(t => (
+                        <button key={t} onClick={() => setActiveSearchTab(t)}
+                          className={`text-[12px] px-3 h-7 rounded-md transition ${activeSearchTab === t ? "bg-[var(--text)] text-black font-medium" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}>
+                          {t}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="reos-card-2 bg-[var(--surface)]/95 backdrop-blur p-1.5 flex items-center gap-2">
+                      <Search className="h-4 w-4 text-[var(--text-2)] ml-2" />
+                      <input
+                        value={aiQuery}
+                        onChange={(e) => setAiQuery(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === "Enter") submitAi(); }}
+                        placeholder="Search properties, locations, ROI, developers, laws…"
+                        className="flex-1 bg-transparent outline-none text-sm placeholder:text-[var(--text-2)] py-2"
+                      />
+                      <button onClick={submitAi} disabled={aiLoading} className="h-9 px-4 rounded-lg reos-cta text-xs inline-flex items-center gap-1.5 disabled:opacity-60">
+                        {aiLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />} AI Search
+                      </button>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {locationChips.map(c => (
+                        <button key={c} onClick={() => { setAiQuery(`Properties in ${c}`); }} className="reos-chip text-[11px] px-3 py-1 rounded-full bg-[var(--surface)]/70 backdrop-blur">
+                          {c}
+                        </button>
+                      ))}
+                      <button className="reos-chip text-[11px] px-3 py-1 rounded-full bg-[var(--surface)]/70 backdrop-blur inline-flex items-center gap-1">
+                        More <ChevronDown className="h-3 w-3" />
+                      </button>
+                    </div>
                   </motion.div>
-                </motion.div>
+                </div>
+              </motion.div>
 
-                <motion.div initial="hidden" animate="show" variants={stagger}
-                  className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl">
-                  <Stat label="Active Listings" value={marketLoading ? "…" : (market?.totals.active_listings ?? 0).toLocaleString("id-ID")} delta="live" />
-                  <Stat label="Avg Yield" value={marketLoading ? "…" : `${market?.totals.avg_yield ?? 0}%`} delta="+0.6%" />
-                  <Stat label="Avg ROI" value={marketLoading ? "…" : `${market?.totals.avg_roi ?? 0}%`} delta="+1.2%" />
-                  <Stat label="Avg Price" value={marketLoading ? "…" : formatIDR(market?.totals.avg_price_idr ?? 0)} delta="+4.2%" />
-                </motion.div>
-              </div>
-            </section>
+              {/* Market overview */}
+              <motion.div variants={fadeUp} className="col-span-12 lg:col-span-3 reos-card p-5">
+                <div className="flex items-center justify-between">
+                  <div className="text-[14px] font-semibold">Market Overview</div>
+                  <button className="text-[11px] text-[var(--text-2)] inline-flex items-center gap-1 hover:text-[var(--text)]">Indonesia <ChevronDown className="h-3 w-3" /></button>
+                </div>
+                <div className="mt-4 space-y-4">
+                  {marketKPIs.map(k => (
+                    <div key={k.label} className="grid grid-cols-[24px_1fr_90px] items-center gap-2">
+                      <div className="h-6 w-6 rounded-md bg-[var(--gold-soft)] flex items-center justify-center">
+                        <BarChart3 className="h-3.5 w-3.5 reos-gold" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-[11px] text-[var(--text-2)] truncate">{k.label}</div>
+                        <div className="flex items-baseline gap-2">
+                          <div className="text-[15px] font-semibold">{k.value}</div>
+                          <div className="text-[10px] text-[var(--success)]">▲ {k.delta}</div>
+                        </div>
+                      </div>
+                      <Spark seed={k.seed} />
+                    </div>
+                  ))}
+                </div>
+                <button className="mt-5 text-[12px] reos-gold inline-flex items-center gap-1 hover:underline">
+                  View Full Market Report <ArrowUpRight className="h-3 w-3" />
+                </button>
+              </motion.div>
+            </Section>
 
-            {/* AI COMMAND CENTER */}
-            <Section className="px-6 md:px-10 -mt-12 relative z-10">
-              <motion.div variants={fadeUp} className="reos-card p-6 md:p-8 relative overflow-hidden">
-                <div className="absolute inset-x-0 top-0 reos-shine h-px" />
-                <div className="flex items-center justify-between flex-wrap gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="relative h-10 w-10 rounded-xl reos-cta flex items-center justify-center reos-pulse">
-                      <Cpu className="h-5 w-5" />
+            {/* ===== HUB CARDS ===== */}
+            <Section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+              {hubs.map(h => (
+                <motion.div key={h.title} variants={fadeUp} whileHover={{ y: -3 }}>
+                  <Link to={h.to} className="block reos-card p-4 h-full hover:border-[var(--line-strong)] transition">
+                    <div className="h-9 w-9 rounded-lg bg-[var(--gold-soft)] flex items-center justify-center mb-3">
+                      <h.icon className="h-4.5 w-4.5 reos-gold" />
                     </div>
-                    <div>
-                      <div className="text-xs uppercase tracking-[0.2em] reos-gold">AI Command Center</div>
-                      <div className="text-lg font-semibold">Ask anything about property, capital, or markets</div>
+                    <div className="text-[13px] font-semibold whitespace-pre-line leading-tight">{h.title}</div>
+                    <div className="mt-1.5 text-[11px] text-[var(--text-2)]">{h.desc}</div>
+                  </Link>
+                </motion.div>
+              ))}
+            </Section>
+
+            {/* ===== FEATURED + HOTSPOTS + AI RECS ===== */}
+            <div className="grid grid-cols-12 gap-5">
+              {/* Featured Properties */}
+              <Section className="col-span-12 lg:col-span-5 reos-card p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="text-[14px] font-semibold">Featured Properties</div>
+                  <Link to="/properties" className="text-[11px] reos-gold inline-flex items-center gap-1 hover:underline">View All <ArrowUpRight className="h-3 w-3" /></Link>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {featured.map((p: any) => {
+                    const badgeColor: Record<string, string> = {
+                      FEATURED: "bg-[var(--gold)] text-black",
+                      NEW: "bg-[#3B82F6] text-white",
+                      HOT: "bg-[#EF4444] text-white",
+                      INVESTMENT: "bg-[#10B981] text-white",
+                    };
+                    const img = p.cover_image || p.images?.[0] || heroImg;
+                    return (
+                      <motion.div key={p.id} variants={fadeUp} whileHover={{ y: -3 }} className="reos-card-2 overflow-hidden group">
+                        <Link to={`/property/${p.slug ?? p.id}`}>
+                          <div className="relative h-28 overflow-hidden">
+                            <img src={img} alt={p.title} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                            <span className={`absolute top-2 left-2 text-[9px] font-bold tracking-wider px-1.5 py-0.5 rounded ${badgeColor[p._badge]}`}>{p._badge}</span>
+                          </div>
+                          <div className="p-3">
+                            <div className="text-[10px] text-[var(--text-2)] truncate">{p.city || p.location}</div>
+                            <div className="text-[12px] font-semibold leading-tight mt-0.5 line-clamp-1">{p.title}</div>
+                            <div className="text-[10px] text-[var(--text-3)] capitalize">{p.type || "Property"}</div>
+                            <div className="mt-2 flex items-baseline justify-between">
+                              <div className="text-[12px] font-bold reos-gold">{formatIDR(Number(p.price))}</div>
+                              {(p.roi || p.roi_percentage) && (
+                                <div className="text-[10px] text-[var(--success)] font-medium">ROI {Number(p.roi || p.roi_percentage).toFixed(1)}%</div>
+                              )}
+                            </div>
+                            <div className="mt-2 flex items-center gap-2 text-[10px] text-[var(--text-2)]">
+                              {p.beds && <span className="inline-flex items-center gap-1"><BedDouble className="h-3 w-3" />{p.beds}</span>}
+                              {p.baths && <span className="inline-flex items-center gap-1"><Bath className="h-3 w-3" />{p.baths}</span>}
+                              {p.area && <span className="inline-flex items-center gap-1"><Maximize className="h-3 w-3" />{p.area} m²</span>}
+                            </div>
+                          </div>
+                        </Link>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+                <div className="mt-4 flex justify-center gap-1.5">
+                  {[0,1,2,3].map(i => <span key={i} className={`h-1.5 rounded-full transition-all ${i === 0 ? "w-5 bg-[var(--gold)]" : "w-1.5 bg-[var(--line-strong)]"}`} />)}
+                </div>
+              </Section>
+
+              {/* Investment Hotspots */}
+              <Section className="col-span-12 lg:col-span-4 reos-card p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="text-[14px] font-semibold">Investment Hotspots</div>
+                  <Link to="/intelligence" className="text-[11px] reos-gold inline-flex items-center gap-1 hover:underline">View All <ArrowUpRight className="h-3 w-3" /></Link>
+                </div>
+                <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-[var(--line)]" style={{ background: "radial-gradient(ellipse at 60% 60%, rgba(200,169,106,0.06), transparent 70%), #0a0a0c" }}>
+                  {/* simple "map" — stylized dots/regions */}
+                  <svg viewBox="0 0 100 75" className="absolute inset-0 h-full w-full opacity-30">
+                    <path d="M10,40 q15,-10 30,-5 q15,5 25,0 q10,-3 20,5 q5,8 -5,12 q-20,4 -40,2 q-25,-2 -30,-14z" fill="none" stroke="#C8A96A" strokeWidth="0.3" />
+                    <path d="M45,55 q10,-3 18,2 q6,8 -4,12 q-12,2 -18,-4 q-4,-6 4,-10z" fill="none" stroke="#C8A96A" strokeWidth="0.3" />
+                  </svg>
+                  {hotspots.map(h => (
+                    <div key={h.city} className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: `${h.x}%`, top: `${h.y}%` }}>
+                      <div className="relative">
+                        <div className="absolute inset-0 rounded-full bg-[var(--gold)] opacity-30 blur-md scale-150" />
+                        <div className="relative h-2.5 w-2.5 rounded-full bg-[var(--gold-2)] ring-2 ring-[var(--gold)]/40" />
+                      </div>
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 whitespace-nowrap">
+                        <div className="text-[10px] font-semibold">{h.city}</div>
+                        <div className="text-[9px] reos-gold">ROI {h.roi}</div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-xs text-[var(--text-2)] flex items-center gap-2">
-                    <Activity className="h-3.5 w-3.5 reos-gold" /> Live · ASEAN data
+                  ))}
+                  <div className="absolute bottom-2 left-2 flex flex-col gap-1">
+                    <button className="h-6 w-6 rounded bg-[var(--surface)] border border-[var(--line)] flex items-center justify-center"><Plus className="h-3 w-3" /></button>
+                    <button className="h-6 w-6 rounded bg-[var(--surface)] border border-[var(--line)] flex items-center justify-center"><Minus className="h-3 w-3" /></button>
                   </div>
                 </div>
+                <div className="mt-3 flex items-center justify-between text-[10px] text-[var(--text-2)]">
+                  <span>Low ROI</span>
+                  <div className="flex-1 mx-3 h-1.5 rounded-full" style={{ background: "linear-gradient(90deg, rgba(200,169,106,0.15), var(--gold))" }} />
+                  <span>High ROI</span>
+                </div>
+              </Section>
 
-                <div className="mt-5 relative">
-                  <textarea
-                    rows={3}
-                    value={aiQuery}
-                    onChange={(e) => setAiQuery(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) submitAi(); }}
-                    placeholder="e.g. Show me Bali villas under Rp 5M with ROI above 12% near Canggu."
-                    className="w-full p-4 pr-32 rounded-xl bg-[var(--card-2)] border border-[var(--border)] focus:border-[var(--border-strong)] outline-none text-sm placeholder:text-[var(--text-2)] resize-none"
-                  />
-                  <button
-                    onClick={submitAi}
-                    disabled={aiLoading || !aiQuery.trim()}
-                    className="absolute bottom-3 right-3 h-9 px-4 rounded-lg reos-cta text-xs inline-flex items-center gap-2 disabled:opacity-60"
-                  >
-                    {aiLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Zap className="h-3.5 w-3.5" />}
-                    {aiLoading ? "Thinking…" : "Ask AI"}
+              {/* AI Recommendation + Market Intelligence */}
+              <div className="col-span-12 lg:col-span-3 space-y-5">
+                <Section className="reos-card p-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="text-[13px] font-semibold">AI Recommendation</div>
+                    <Link to="/ai" className="text-[10px] reos-gold inline-flex items-center gap-1">View All <ArrowUpRight className="h-3 w-3" /></Link>
+                  </div>
+                  <div className="space-y-3">
+                    {aiRecs.map(r => (
+                      <motion.div key={r.title} variants={fadeUp} className="flex items-center gap-3">
+                        <div className="h-10 w-12 rounded-md overflow-hidden shrink-0">
+                          <img src={heroImg} alt={r.city} className="h-full w-full object-cover" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-[11px] font-medium truncate">{r.title}</div>
+                          <div className="flex items-center gap-1.5 mt-0.5">
+                            <span className="text-[10px] reos-gold">ROI {r.roi}</span>
+                            <span className="text-[9px] px-1.5 py-0.5 rounded" style={{ background: `${r.color}20`, color: r.color }}>{r.tag}</span>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </Section>
+
+                <Section className="reos-card p-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="text-[13px] font-semibold">Market Intelligence</div>
+                    <Link to="/intelligence" className="text-[10px] reos-gold inline-flex items-center gap-1">View All <ArrowUpRight className="h-3 w-3" /></Link>
+                  </div>
+                  <div className="space-y-2.5">
+                    {marketReports.map(r => (
+                      <motion.div key={r.title} variants={fadeUp} className="flex items-center gap-2.5">
+                        <FileText className="h-4 w-4 reos-gold shrink-0" />
+                        <div className="min-w-0 flex-1">
+                          <div className="text-[11px] font-medium truncate">{r.title}</div>
+                        </div>
+                        <div className="text-[10px] text-[var(--text-2)]">{r.date}</div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </Section>
+              </div>
+            </div>
+
+            {/* ===== BOTTOM STATS ===== */}
+            <Section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+              {[
+                { label: "My Portfolio Value", value: "IDR 28.6 M", delta: "▲ 8.24%", chart: true },
+                { label: "Total Investments", value: "7", sub: "Properties" },
+                { label: "Average ROI", value: "15.6%", sub: "Per Year", chart: true },
+                { label: "Total Rental Income", value: "IDR 245.8 M", delta: "▲ 12.3% This Year" },
+                { label: "Active Tenants", value: "23", sub: "Tenants" },
+              ].map(s => (
+                <motion.div key={s.label} variants={fadeUp} className="reos-card p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="text-[11px] text-[var(--text-2)]">{s.label}</div>
+                    <MoreHorizontal className="h-3.5 w-3.5 text-[var(--text-3)]" />
+                  </div>
+                  <div className="mt-2 text-[18px] font-semibold reos-gold">{s.value}</div>
+                  {s.sub && <div className="text-[10px] text-[var(--text-2)] mt-0.5">{s.sub}</div>}
+                  {s.delta && <div className="text-[10px] text-[var(--success)] mt-0.5">{s.delta}</div>}
+                  {s.chart && <div className="mt-2"><Spark seed={Math.random() * 10} color="#C8A96A" /></div>}
+                </motion.div>
+              ))}
+
+              {/* Generate report */}
+              <motion.div variants={fadeUp} className="reos-card p-4 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #1a1408, #0e0a04)" }}>
+                <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full blur-2xl" style={{ background: "radial-gradient(circle, var(--gold), transparent 70%)" }} />
+                <div className="relative">
+                  <div className="text-[11px] font-semibold">Get AI Investment Report</div>
+                  <div className="text-[10px] text-[var(--text-2)] mt-1 leading-tight">Personalized report based on your investment goals.</div>
+                  <button className="mt-3 h-8 px-3 rounded-lg reos-cta text-[11px] inline-flex items-center gap-1.5">
+                    <Sparkles className="h-3 w-3" /> Generate Now
                   </button>
                 </div>
+              </motion.div>
+            </Section>
 
-                <div className="mt-4 flex flex-wrap gap-2">
+            {/* ===== TRUSTED BY ===== */}
+            <Section className="reos-card p-5">
+              <div className="flex items-center flex-wrap gap-5 justify-between">
+                <div className="text-[12px] text-[var(--text-2)]">Trusted By Thousands</div>
+                <div className="flex items-center flex-wrap gap-x-7 gap-y-2">
+                  {banks.map(b => (
+                    <span key={b} className="text-[12px] font-bold tracking-wider text-[var(--text-2)]/70 hover:text-[var(--text)] transition">{b}</span>
+                  ))}
+                </div>
+                <div className="flex items-center gap-5 text-[11px]">
                   {[
-                    "Top ROI properties in Bali",
-                    "Houses under Rp 1M with high yield",
-                    "Commercial in Jakarta with strong demand",
-                    "Beachfront listings best for rental",
-                    "Most liquid properties this month",
-                  ].map(s => (
-                    <button key={s} onClick={() => { setAiQuery(s); setShowAiSheet(true); search(s); }}
-                      className="text-xs px-3 py-1.5 rounded-full border border-[var(--border)] text-[var(--text-2)] hover:text-[var(--gold-bright)] hover:border-[var(--border-strong)] transition">
-                      {s}
-                    </button>
+                    { icon: CheckCircle2, label: "Verified Properties", sub: "100% Verified" },
+                    { icon: Shield, label: "Secure Transactions", sub: "Bank-Level Security" },
+                    { icon: LifeBuoy, label: "Expert Support", sub: "24/7 Assistance" },
+                  ].map(t => (
+                    <div key={t.label} className="flex items-center gap-2">
+                      <t.icon className="h-4 w-4 reos-gold" />
+                      <div className="leading-tight">
+                        <div className="text-[11px] font-medium">{t.label}</div>
+                        <div className="text-[9px] text-[var(--text-2)]">{t.sub}</div>
+                      </div>
+                    </div>
                   ))}
                 </div>
-              </motion.div>
-            </Section>
-
-            {/* LIVE MARKET OVERVIEW */}
-            <Section className="px-6 md:px-10 mt-12">
-              <motion.div variants={fadeUp} className="flex items-end justify-between mb-5">
-                <div>
-                  <div className="text-xs uppercase tracking-[0.22em] reos-gold">Live Market</div>
-                  <h2 className="text-2xl md:text-3xl font-semibold mt-1">ASEAN Property Intelligence</h2>
-                </div>
-                <Link to="/intelligence" className="text-xs text-[var(--text-2)] hover:reos-gold inline-flex items-center gap-1">
-                  Open terminal <ArrowUpRight className="h-3 w-3" />
-                </Link>
-              </motion.div>
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <motion.div variants={fadeUp} className="reos-card p-5 lg:col-span-2">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-xs text-[var(--text-2)] uppercase tracking-[0.18em]">Listing Velocity (12-week)</div>
-                      <div className="text-3xl font-semibold mt-1">
-                        {marketLoading ? "…" : (market?.totals.active_listings ?? 0).toLocaleString("id-ID")}{" "}
-                        <span className="text-sm text-[var(--success)]">active</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs text-[var(--text-2)]">
-                      <span className="px-2 py-1 rounded-md border border-[var(--border)]">1W</span>
-                      <span className="px-2 py-1 rounded-md reos-gold border border-[var(--border-strong)]">12W</span>
-                      <span className="px-2 py-1 rounded-md border border-[var(--border)]">1Y</span>
-                    </div>
-                  </div>
-                  <div className="h-56 mt-4">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={trendData}>
-                        <defs>
-                          <linearGradient id="gd" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#FFD700" stopOpacity={0.45} />
-                            <stop offset="100%" stopColor="#FFD700" stopOpacity={0} />
-                          </linearGradient>
-                        </defs>
-                        <XAxis dataKey="i" hide />
-                        <YAxis hide domain={["dataMin", "dataMax+2"]} />
-                        <Tooltip contentStyle={{ background: "#0D0D0D", border: "1px solid rgba(255,215,0,0.25)", borderRadius: 8, fontSize: 12 }} />
-                        <Area type="monotone" dataKey="v" stroke="#FFD700" strokeWidth={2} fill="url(#gd)" />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </motion.div>
-
-                <motion.div variants={fadeUp} className="space-y-4">
-                  <div className="reos-card p-5">
-                    <div className="text-xs text-[var(--text-2)] uppercase tracking-[0.18em]">Average Rental Yield</div>
-                    <div className="text-2xl font-semibold mt-1">{marketLoading ? "…" : `${market?.totals.avg_yield ?? 0}%`}</div>
-                    <div className="h-20 mt-2">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={trendData}>
-                          <Line type="monotone" dataKey="v" stroke="#22C55E" strokeWidth={2} dot={false} />
-                        </LineChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </div>
-                  <div className="reos-card p-5">
-                    <div className="text-xs text-[var(--text-2)] uppercase tracking-[0.18em]">Top Cities by Inventory</div>
-                    <div className="mt-3 space-y-2">
-                      {cityCards.slice(0, 4).map(c => {
-                        const max = Math.max(...cityCards.map(x => x.active_listings)) || 1;
-                        const pct = Math.round((c.active_listings / max) * 100);
-                        return (
-                          <div key={c.city}>
-                            <div className="flex justify-between text-[11px] text-[var(--text-2)]">
-                              <span>{c.city}</span><span>{c.active_listings.toLocaleString("id-ID")}</span>
-                            </div>
-                            <div className="h-1.5 rounded-full bg-[var(--card-2)] overflow-hidden">
-                              <motion.div initial={{ width: 0 }} whileInView={{ width: `${pct}%` }} viewport={{ once: true }} transition={{ duration: 0.8, ease: "easeOut" }} className="h-full reos-cta" />
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </motion.div>
               </div>
             </Section>
 
-            {/* ECOSYSTEM MODULES */}
-            <Section className="px-6 md:px-10 mt-16">
-              <motion.div variants={fadeUp}>
-                <div className="text-xs uppercase tracking-[0.22em] reos-gold">Operating System</div>
-                <h2 className="text-2xl md:text-3xl font-semibold mt-1">Eight modules. One terminal.</h2>
-              </motion.div>
-              <motion.div variants={stagger} className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {modules.map(m => (
-                  <motion.div key={m.title} variants={fadeUp} whileHover={{ y: -4 }}>
-                    <Link to={m.to} className="block reos-card p-5 h-full group relative overflow-hidden">
-                      <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"
-                        style={{ background: "radial-gradient(circle, var(--gold) 0%, transparent 60%)" }} />
-                      <div className="flex items-start justify-between">
-                        <div className="h-11 w-11 rounded-xl reos-glass flex items-center justify-center">
-                          <m.icon className="h-5 w-5 reos-gold" />
-                        </div>
-                        <ArrowUpRight className="h-4 w-4 text-[var(--text-2)] group-hover:reos-gold transition-colors" />
-                      </div>
-                      <div className="mt-4 text-base font-semibold">{m.title}</div>
-                      <div className="mt-1 text-sm text-[var(--text-2)]">{m.desc}</div>
-                    </Link>
-                  </motion.div>
-                ))}
-              </motion.div>
-            </Section>
-
-            {/* FEATURED PROPERTIES (live) */}
-            <Section className="px-6 md:px-10 mt-16">
-              <motion.div variants={fadeUp} className="flex items-end justify-between mb-5">
-                <div>
-                  <div className="text-xs uppercase tracking-[0.22em] reos-gold">Featured</div>
-                  <h2 className="text-2xl md:text-3xl font-semibold mt-1">Live Investment Properties</h2>
-                </div>
-                <Link to="/properties" className="text-xs text-[var(--text-2)] hover:reos-gold inline-flex items-center gap-1">
-                  View all <ArrowUpRight className="h-3 w-3" />
-                </Link>
-              </motion.div>
-              <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {(market?.featured ?? []).map((p: any) => {
-                  const img = p.cover_image || p.images?.[0] || heroImg;
-                  return (
-                    <motion.div key={p.id} variants={fadeUp} whileHover={{ y: -4 }} className="reos-card overflow-hidden group">
-                      <Link to={`/property/${p.slug ?? p.id}`}>
-                        <div className="relative h-44 overflow-hidden">
-                          <img src={img} alt={p.title} loading="lazy" width={800} height={600}
-                            className="h-full w-full object-cover scale-110 group-hover:scale-100 transition-transform duration-700" />
-                          <div className="absolute inset-0 bg-gradient-to-t from-[var(--card)] via-transparent to-transparent" />
-                          <div className="absolute top-3 left-3 flex gap-1.5">
-                            <span className="text-[10px] uppercase tracking-[0.15em] px-2 py-1 rounded-md reos-glass inline-flex items-center gap-1">
-                              <ShieldCheck className="h-3 w-3 reos-gold" /> Verified
-                            </span>
-                          </div>
-                          {p.investment_score != null && (
-                            <div className="absolute top-3 right-3 text-[10px] reos-glass px-2 py-1 rounded-md inline-flex items-center gap-1">
-                              <Star className="h-3 w-3 reos-gold" /> {Math.round(Number(p.investment_score))}
-                            </div>
-                          )}
-                        </div>
-                        <div className="p-4">
-                          <div className="flex items-center text-xs text-[var(--text-2)] gap-1 truncate">
-                            <MapPin className="h-3 w-3 shrink-0" /> <span className="truncate">{p.city || p.location}</span>
-                          </div>
-                          <div className="mt-1 font-semibold line-clamp-1">{p.title}</div>
-                          <div className="mt-3 flex items-center justify-between">
-                            <div className="text-lg font-semibold reos-gold">{formatIDR(Number(p.price))}</div>
-                            <div className="text-right text-[11px] text-[var(--text-2)]">
-                              {p.roi_percentage != null && <>ROI <span className="text-[var(--success)] font-medium">{Number(p.roi_percentage).toFixed(1)}%</span></>}
-                              {p.rental_yield_percentage != null && <> · Yield <span className="font-medium">{Number(p.rental_yield_percentage).toFixed(1)}%</span></>}
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-                {!marketLoading && !(market?.featured?.length) && (
-                  <div className="col-span-full text-sm text-[var(--text-2)] text-center py-8">No featured properties yet.</div>
-                )}
-              </motion.div>
-            </Section>
-
-            {/* ASEAN HEATMAP (real city aggregates) */}
-            <Section className="px-6 md:px-10 mt-16">
-              <motion.div variants={fadeUp} className="reos-card p-6 md:p-8 relative overflow-hidden reos-grid-bg">
-                <div className="flex items-end justify-between flex-wrap gap-4 mb-6">
-                  <div>
-                    <div className="text-xs uppercase tracking-[0.22em] reos-gold">ASEAN Network</div>
-                    <h2 className="text-2xl md:text-3xl font-semibold mt-1">Regional Yield & Inventory Heatmap</h2>
-                  </div>
-                  <div className="text-xs text-[var(--text-2)] flex items-center gap-3">
-                    <span className="inline-flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-[var(--gold-bright)]" /> Yield</span>
-                    <span className="inline-flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-[var(--success)] " /> Listings</span>
-                  </div>
-                </div>
-                <motion.div variants={stagger} className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {cityCards.map(c => (
-                    <motion.div key={c.city} variants={fadeUp} whileHover={{ y: -3 }} className="reos-glass rounded-xl p-4 relative overflow-hidden">
-                      <div className="flex items-center justify-between">
-                        <div className="font-medium truncate">{c.city}</div>
-                        <MapPin className="h-3.5 w-3.5 reos-gold shrink-0" />
-                      </div>
-                      <div className="mt-3 flex items-baseline gap-2">
-                        <div className="text-2xl font-semibold reos-gold">{c.avg_yield || 0}%</div>
-                        <div className="text-[11px] text-[var(--text-2)]">avg yield</div>
-                      </div>
-                      <div className="mt-1 text-xs text-[var(--success)]">{c.active_listings.toLocaleString("id-ID")} listings</div>
-                      <div className="absolute -bottom-6 -right-6 h-20 w-20 rounded-full blur-2xl"
-                        style={{ background: "radial-gradient(circle, rgba(212,175,55,0.35), transparent 70%)" }} />
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </motion.div>
-            </Section>
-
-
-            {/* FOOTER */}
-            <footer className="mt-20 border-t border-[var(--border)]">
-              <div className="px-6 md:px-10 py-10 grid grid-cols-2 md:grid-cols-5 gap-6 text-sm">
-                <div className="col-span-2">
-                  <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-lg reos-cta flex items-center justify-center"><span className="text-[13px] font-bold">A</span></div>
-                    <span className="font-semibold tracking-[0.2em]">ASTRA VILLA</span>
-                  </div>
-                  <p className="mt-3 text-[var(--text-2)] max-w-sm">
-                    Southeast Asia's AI-powered Real Estate Operating System. Buy. Invest. Manage. Finance. Verify. Grow.
-                  </p>
-                  <div className="mt-4 flex items-center gap-2 text-xs text-[var(--text-2)]">
-                    <DollarSign className="h-3 w-3 reos-gold" />
-                    {market?.totals.active_listings ?? 0} listings · {market?.totals.investors_tracked ?? 0} investors
-                  </div>
-                </div>
-                {[
-                  { h: "Platform", l: ["Properties", "Investment", "Finance", "Legal"] },
-                  { h: "Company", l: ["About", "Investors", "Careers", "Contact"] },
-                  { h: "Legal", l: ["Privacy", "Terms", "Compliance", "Security"] },
-                ].map(c => (
-                  <div key={c.h}>
-                    <div className="text-xs uppercase tracking-[0.22em] reos-gold mb-3">{c.h}</div>
-                    <ul className="space-y-2 text-[var(--text-2)]">
-                      {c.l.map(i => <li key={i}><a href="#" className="hover:text-[var(--text)] transition">{i}</a></li>)}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-              <div className="px-6 md:px-10 py-5 border-t border-[var(--border)] text-xs text-[var(--text-2)] flex flex-wrap items-center justify-between gap-3">
-                <div>© {new Date().getFullYear()} ASTRA Villa REOS. All rights reserved.</div>
-                <div className="flex items-center gap-3">
-                  <span>Built for ASEAN</span>
-                  <span className="reos-gold">●</span>
-                  <span>Enterprise-grade · SOC2 ready</span>
-                </div>
-              </div>
-            </footer>
+            <div className="text-center text-[11px] text-[var(--text-3)] py-6">
+              © {new Date().getFullYear()} ASTRA Villa REOS · Built for ASEAN · Enterprise-grade
+            </div>
           </main>
         </div>
 
-        {/* AI RESULTS SHEET */}
+        {/* ===== AI Results Sheet ===== */}
         <AnimatePresence>
           {showAiSheet && (
-            <motion.div
-              key="overlay"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex justify-end"
-              onClick={() => { setShowAiSheet(false); resetAi(); }}
-            >
+              onClick={() => { setShowAiSheet(false); resetAi(); }}>
               <motion.aside
                 initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
                 transition={{ type: "spring", stiffness: 280, damping: 32 }}
                 onClick={(e) => e.stopPropagation()}
-                className="w-full md:w-[560px] h-full reos-glass border-l border-[var(--border-strong)] overflow-y-auto reos-scrollbar"
+                className="w-full md:w-[560px] h-full overflow-y-auto reos-scrollbar border-l border-[var(--line-strong)]"
                 style={{ background: "var(--bg)" }}
               >
-                <div className="sticky top-0 reos-glass border-b border-[var(--border)] px-5 py-4 flex items-center justify-between z-10">
+                <div className="sticky top-0 backdrop-blur-xl bg-[var(--bg)]/85 border-b border-[var(--line)] px-5 py-4 flex items-center justify-between z-10">
                   <div className="flex items-center gap-2">
                     <Sparkles className="h-4 w-4 reos-gold" />
                     <span className="text-sm font-semibold tracking-wide">AI Investment Results</span>
                   </div>
-                  <button onClick={() => { setShowAiSheet(false); resetAi(); }} className="h-8 w-8 rounded-md hover:bg-[var(--card-2)] flex items-center justify-center">
+                  <button onClick={() => { setShowAiSheet(false); resetAi(); }} className="h-8 w-8 rounded-md hover:bg-[var(--surface)] flex items-center justify-center">
                     <X className="h-4 w-4" />
                   </button>
                 </div>
@@ -585,58 +658,38 @@ export default function AstraReosHome() {
 
                   {aiLoading && (
                     <div className="reos-card p-6 flex items-center gap-3 text-sm">
-                      <Loader2 className="h-4 w-4 animate-spin reos-gold" />
-                      Scoring properties with AI…
+                      <Loader2 className="h-4 w-4 animate-spin reos-gold" /> Scoring properties with AI…
                     </div>
                   )}
-
-                  {aiError && (
-                    <div className="reos-card p-4 text-sm text-[var(--danger)]">{aiError}</div>
-                  )}
+                  {aiError && <div className="reos-card p-4 text-sm text-[var(--danger)]">{aiError}</div>}
 
                   {aiData && !aiLoading && (
                     <>
                       {aiData.insight && (
-                        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="reos-card p-4">
+                        <div className="reos-card p-4">
                           <div className="text-xs uppercase tracking-[0.2em] reos-gold mb-2">AI Insight</div>
-                          <div className="text-sm leading-relaxed">{aiData.insight}</div>
-                        </motion.div>
+                          <div className="text-sm text-[var(--text-2)] leading-relaxed">{aiData.insight}</div>
+                        </div>
                       )}
-                      <div className="text-xs text-[var(--text-2)]">
-                        {aiData.results.length} ranked · {aiData.total_pool} candidates analyzed
+                      <div className="space-y-3">
+                        {(aiData.results || []).map((r: any, idx: number) => (
+                          <motion.div key={r.id ?? idx} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.04 }}
+                            className="reos-card p-4 flex gap-3">
+                            <div className="h-16 w-20 rounded-lg overflow-hidden shrink-0">
+                              <img src={r.cover_image || heroImg} alt={r.title} className="h-full w-full object-cover" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="text-sm font-semibold truncate">{r.title}</div>
+                              <div className="text-[11px] text-[var(--text-2)] flex items-center gap-1"><MapPin className="h-3 w-3" />{r.city || r.location}</div>
+                              <div className="mt-1.5 flex items-baseline gap-3">
+                                <div className="text-sm font-semibold reos-gold">{formatIDR(Number(r.price))}</div>
+                                {r.ai_score != null && <div className="text-[11px] text-[var(--success)]">Score {Math.round(r.ai_score)}</div>}
+                              </div>
+                              {r.reason && <div className="mt-1 text-[11px] text-[var(--text-2)] line-clamp-2">{r.reason}</div>}
+                            </div>
+                          </motion.div>
+                        ))}
                       </div>
-                      <motion.div initial="hidden" animate="show" variants={stagger} className="space-y-3">
-                        {aiData.results.map((r: ReosAiResult) => {
-                          const img = r.cover_image || r.images?.[0] || heroImg;
-                          return (
-                            <motion.div key={r.id} variants={fadeUp}>
-                              <Link to={`/property/${r.slug ?? r.id}`} className="reos-card p-3 flex gap-3 hover:border-[var(--border-strong)]">
-                                <img src={img} alt={r.title} className="h-20 w-28 rounded-lg object-cover shrink-0" loading="lazy" />
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center justify-between gap-2">
-                                    <div className="text-sm font-semibold truncate">{r.title}</div>
-                                    <div className="text-[10px] uppercase tracking-[0.15em] reos-cta px-2 py-0.5 rounded-md shrink-0">
-                                      AI {r.ai_score}
-                                    </div>
-                                  </div>
-                                  <div className="text-xs text-[var(--text-2)] truncate">{r.city} · {r.property_type}</div>
-                                  <div className="mt-1 flex items-center justify-between text-[11px]">
-                                    <span className="reos-gold font-semibold">{formatIDR(Number(r.price))}</span>
-                                    <span className="text-[var(--text-2)]">
-                                      {r.rental_yield_percentage != null && <>Yield {Number(r.rental_yield_percentage).toFixed(1)}%</>}
-                                      {r.roi_percentage != null && <> · ROI {Number(r.roi_percentage).toFixed(1)}%</>}
-                                    </span>
-                                  </div>
-                                  <div className="mt-1 text-[11px] text-[var(--text-2)] line-clamp-2">{r.ai_reason}</div>
-                                </div>
-                              </Link>
-                            </motion.div>
-                          );
-                        })}
-                        {!aiData.results.length && (
-                          <div className="reos-card p-4 text-sm text-[var(--text-2)]">No properties matched. Try broadening your query.</div>
-                        )}
-                      </motion.div>
                     </>
                   )}
                 </div>
@@ -644,7 +697,7 @@ export default function AstraReosHome() {
             </motion.div>
           )}
         </AnimatePresence>
-      </motion.div>
+      </div>
     </>
   );
 }
