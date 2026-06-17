@@ -512,7 +512,7 @@ export default function AstraReosHome() {
                   >
                     <n.icon className="h-4 w-4" />
                     <span className="flex-1 text-left">{n.label}</span>
-                    {n.badge && <span className="text-[10px] bg-[var(--gold)] text-black font-bold px-1.5 py-0.5 rounded">{n.badge}</span>}
+                    {n.badge && <span className="text-[10px] bg-[var(--gold)] text-[var(--gold-fg)] font-bold px-1.5 py-0.5 rounded">{n.badge}</span>}
                   </Link>
                 </motion.div>
               ))}
@@ -544,7 +544,7 @@ export default function AstraReosHome() {
                   { b: "Download on the", n: "App Store", href: "https://apps.apple.com/" },
                   { b: "GET IT ON", n: "Google Play", href: "https://play.google.com/" },
                 ].map(a => (
-                  <a key={a.n} href={a.href} target="_blank" rel="noopener noreferrer" className="w-full h-11 px-3 rounded-xl bg-black border border-[var(--line)] flex items-center gap-2 text-left hover:border-[var(--line-strong)] transition">
+                  <a key={a.n} href={a.href} target="_blank" rel="noopener noreferrer" className="w-full h-11 px-3 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] flex items-center gap-2 text-left hover:border-[var(--line-strong)] transition">
                     <div className="h-5 w-5 rounded reos-gold flex items-center justify-center">●</div>
                     <div className="leading-tight">
                       <div className="text-[9px] text-[var(--text-2)]">{a.b}</div>
@@ -580,7 +580,7 @@ export default function AstraReosHome() {
                     <div className="reos-card-2 p-1.5 inline-flex gap-1 mb-2.5 bg-[var(--surface)]/80 backdrop-blur">
                       {searchTabs.map(t => (
                         <button key={t} onClick={() => setActiveSearchTab(t)}
-                          className={`text-[12px] px-3 h-7 rounded-md transition ${activeSearchTab === t ? "bg-[var(--text)] text-black font-medium" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}>
+                          className={`text-[12px] px-3 h-7 rounded-md transition ${activeSearchTab === t ? "bg-[var(--text)] text-[var(--bg)] font-medium" : "text-[var(--text-2)] hover:text-[var(--text)]"}`}>
                           {t}
                         </button>
                       ))}
@@ -704,7 +704,7 @@ export default function AstraReosHome() {
                 <div className="grid grid-cols-2 gap-3">
                   {featured.map((p: any) => {
                     const badgeColor: Record<string, string> = {
-                      FEATURED: "bg-[var(--gold)] text-black",
+                      FEATURED: "bg-[var(--gold)] text-[var(--gold-fg)]",
                       NEW: "bg-[#3B82F6] text-white",
                       HOT: "bg-[#EF4444] text-white",
                       INVESTMENT: "bg-[#10B981] text-white",
