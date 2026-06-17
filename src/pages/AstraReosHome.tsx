@@ -447,7 +447,7 @@ export default function AstraReosHome() {
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <img src="/astra-logo.png" alt="ASTRA Villa" className="h-8 w-8 rounded-full object-contain shadow-sm" />
+                    <img src={headerLogo} alt="ASTRA Villa" className="h-8 w-8 rounded-full object-contain shadow-sm" />
                     <span className="font-semibold tracking-[0.18em] text-[14px]">ASTRA<span className="reos-gold ml-1">VILLA</span></span>
                   </div>
                   <button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu" className="h-9 w-9 rounded-md hover:bg-[var(--surface)] flex items-center justify-center"><X className="h-4 w-4" /></button>
