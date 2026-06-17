@@ -281,6 +281,7 @@ const SellerIntelligencePage = lazy(() => import('@/pages/SellerIntelligencePage
 const ListingOptimizerPage = lazy(() => import('@/pages/ListingOptimizerPage'));
 const PropertyMarketDashboard = lazy(() => import('@/pages/PropertyMarketDashboard'));
 const LocationIntelligencePage = lazy(() => import('@/pages/LocationIntelligencePage'));
+const LocationDetailPage = lazy(() => import('@/pages/LocationDetailPage'));
 const InvestorAlertsPage = lazy(() => import('@/pages/InvestorAlertsPage'));
 const InvestorLanding = lazy(() => import('@/pages/InvestorLanding'));
 const PortfolioBuilderPage = lazy(() => import('@/pages/PortfolioBuilderPage'));
@@ -498,7 +499,7 @@ const AppContent = () => {
                 <Route path="/sell" element={<PageShell contained={false}><SellerIntelligencePage /></PageShell>} />
                 <Route path="/luxury" element={<Properties />} />
                 <Route path="/investment-opportunities" element={<PageShell contained={false}><OpportunityDiscoveryEnginePage /></PageShell>} />
-                <Route path="/location/:slug" element={<PageShell contained={false}><LocationIntelligencePage /></PageShell>} />
+                <Route path="/location/:slug" element={<PageShell contained={false}><LocationDetailPage /></PageShell>} />
                 <Route path="/properties" element={<Properties />} />
                 <Route path="/3d-showcase" element={<Navigate to="/vr-tour" replace />} />
                 <Route path="/vr-tour" element={<VRTourShowcase />} />
