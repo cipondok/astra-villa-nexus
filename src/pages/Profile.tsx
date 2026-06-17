@@ -473,14 +473,14 @@ const Profile = () => {
 
           {/* Profile Tab */}
           <TabsContent value="profile" className="space-y-4 mt-0">
-            <Card className="border-gold-primary/15 bg-card/60 backdrop-blur-xl">
+            <AstraCard glass>
               <CardHeader className="pb-2 flex flex-row items-center justify-between">
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4 text-muted-foreground" />
                   <span className="font-semibold text-sm">{t.editProfile}</span>
                 </div>
                 {!isEditing && (
-                  <Button
+                  <AstraButton
                     variant="outline"
                     size="sm"
                     onClick={handleStartEdit}
@@ -489,7 +489,7 @@ const Profile = () => {
                   >
                     <Edit2 className="h-3.5 w-3.5" />
                     {t.edit}
-                  </Button>
+                  </AstraButton>
                 )}
               </CardHeader>
               <CardContent className="space-y-3">
