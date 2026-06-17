@@ -524,7 +524,7 @@ export default function AstraReosHome() {
             <Section className="px-6 md:px-10 mt-16">
               <motion.div variants={fadeUp}>
                 <div className="text-xs uppercase tracking-[0.22em] reos-gold">Investor Club</div>
-                <h2 className="text-2xl md:text-3xl font-semibold mt-1">Private access. Institutional intelligence.</h2>
+                
               </motion.div>
               <motion.div variants={stagger} className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
