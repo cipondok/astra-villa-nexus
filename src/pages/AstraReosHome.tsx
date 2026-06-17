@@ -45,6 +45,10 @@ const tokens = `
     --text-3: #6B6760;
     --success: #4ADE80;
     --danger: #F87171;
+    --gold-fg: #161208;
+    --promo-gradient: linear-gradient(180deg, #1a1408, #0e0a04);
+    --promo-gradient-diag: linear-gradient(135deg, #1a1408, #0e0a04);
+    --hotspot-bg: radial-gradient(ellipse at 60% 60%, rgba(200,169,106,0.06), transparent 70%), #0a0a0c;
     color: var(--text);
     background: var(--bg);
     font-family: 'Inter', 'SF Pro Display', system-ui, sans-serif;
@@ -66,6 +70,10 @@ const tokens = `
     --text-3: #8A8478;
     --success: #15803D;
     --danger: #B91C1C;
+    --gold-fg: #FFFFFF;
+    --promo-gradient: linear-gradient(180deg, #2A1F0A, #1A1408);
+    --promo-gradient-diag: linear-gradient(135deg, #2A1F0A, #1A1408);
+    --hotspot-bg: radial-gradient(ellipse at 60% 60%, rgba(176,138,62,0.10), transparent 70%), #F3EFE6;
   }
   .reos *::selection { background: var(--gold); color: #fff; }
   .reos-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
