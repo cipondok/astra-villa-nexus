@@ -519,7 +519,7 @@ export default function AstraReosHome() {
             </div>
 
             {/* Investor club promo */}
-            <div className="reos-card relative overflow-hidden p-5 text-center" style={{ background: "linear-gradient(180deg, #1a1408, #0e0a04)" }}>
+            <div className="reos-card relative overflow-hidden p-5 text-center" style={{ background: "var(--promo-gradient)" }}>
               <div className="absolute inset-0 opacity-30" style={{ background: "radial-gradient(circle at 50% 0%, var(--gold), transparent 60%)" }} />
               <div className="relative">
                 <Crown className="h-6 w-6 reos-gold mx-auto" />
@@ -749,7 +749,7 @@ export default function AstraReosHome() {
                   <div className="text-[14px] font-semibold">Investment Hotspots</div>
                   <Link to="/market-heatmap" className="text-[11px] reos-gold inline-flex items-center gap-1 hover:underline">View All <ArrowUpRight className="h-3 w-3" /></Link>
                 </div>
-                <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-[var(--line)]" style={{ background: "radial-gradient(ellipse at 60% 60%, rgba(200,169,106,0.06), transparent 70%), #0a0a0c" }}>
+                <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-[var(--line)]" style={{ background: "var(--hotspot-bg)" }}>
                   <div className="absolute inset-0 origin-center transition-transform" style={{ transform: `scale(${hotspotZoom})` }}>
                     <svg viewBox="0 0 100 75" className="absolute inset-0 h-full w-full opacity-30">
                       <path d="M10,40 q15,-10 30,-5 q15,5 25,0 q10,-3 20,5 q5,8 -5,12 q-20,4 -40,2 q-25,-2 -30,-14z" fill="none" stroke="#C8A96A" strokeWidth="0.3" />
@@ -854,7 +854,7 @@ export default function AstraReosHome() {
               ))}
 
               {/* Generate report */}
-              <motion.div variants={fadeUp} className="reos-card p-4 relative overflow-hidden" style={{ background: "linear-gradient(135deg, #1a1408, #0e0a04)" }}>
+              <motion.div variants={fadeUp} className="reos-card p-4 relative overflow-hidden" style={{ background: "var(--promo-gradient-diag)" }}>
                 <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full blur-2xl" style={{ background: "radial-gradient(circle, var(--gold), transparent 70%)" }} />
                 <div className="relative">
                   <div className="text-[11px] font-semibold">Get AI Investment Report</div>
