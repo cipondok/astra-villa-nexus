@@ -60,6 +60,7 @@ const FOOTER_LINKS = [
 
 export default function GlobalFooter() {
   const year = new Date().getFullYear();
+  const { logoUrl: footerLogo } = useBrandingLogo('footerLogo', '/astra-logo.png');
 
   return (
     <footer className="border-t border-border/60 bg-background text-foreground mt-auto">
