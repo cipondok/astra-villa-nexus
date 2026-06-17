@@ -136,18 +136,18 @@ const Settings = () => {
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 bg-background">
-        <div className="text-center max-w-md mx-auto border border-gold-primary/15 bg-card/60 backdrop-blur-xl rounded-2xl p-8">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gold-primary/10 border border-gold-primary/20 flex items-center justify-center">
-            <User className="h-10 w-10 text-gold-primary" />
+        <AstraCard glass className="text-center max-w-md mx-auto p-8">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+            <User className="h-10 w-10 text-primary" />
           </div>
           <h1 className="text-3xl font-bold mb-3 text-foreground">Settings</h1>
           <p className="text-muted-foreground mb-8">
             Sign in to access your settings and preferences
           </p>
-          <Button onClick={() => navigate('/auth')} size="lg" className="bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background shadow-md shadow-gold-primary/20">
+          <AstraButton onClick={() => navigate('/auth')} size="lg">
             Sign In
-          </Button>
-        </div>
+          </AstraButton>
+        </AstraCard>
       </div>
     );
   }
