@@ -494,6 +494,11 @@ const AppContent = () => {
                 <Route path="/pre-launching" element={<Properties />} />
                 <Route path="/pre-launch" element={<Properties />} />
                 <Route path="/new-projects" element={<Properties />} />
+                <Route path="/projects" element={<PageShell contained={false}><NewProjects /></PageShell>} />
+                <Route path="/sell" element={<PageShell contained={false}><SellerIntelligencePage /></PageShell>} />
+                <Route path="/luxury" element={<Properties />} />
+                <Route path="/investment-opportunities" element={<PageShell contained={false}><OpportunityDiscoveryEnginePage /></PageShell>} />
+                <Route path="/location/:slug" element={<PageShell contained={false}><LocationIntelligencePage /></PageShell>} />
                 <Route path="/properties" element={<Properties />} />
                 <Route path="/3d-showcase" element={<Navigate to="/vr-tour" replace />} />
                 <Route path="/vr-tour" element={<VRTourShowcase />} />
