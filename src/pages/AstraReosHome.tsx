@@ -714,7 +714,10 @@ export default function AstraReosHome() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        <ReosAuthModal open={showAuth} onOpenChange={setShowAuth} initialMode={authInitial} />
       </div>
     </>
   );
 }
+
