@@ -2411,6 +2411,7 @@ html, body {
   --titanium-icon-bg: linear-gradient(135deg, #ffffff 0%, #e8f5ff 55%, #bce0ff 100%);
   --titanium-icon-border: rgba(255,255,255,0.95);
   --titanium-icon-color: #0a4a7a;
+  --titanium-sheen: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.10) 45%, rgba(255,255,255,0) 60%);
 }
 .dark {
   --titanium-grad: linear-gradient(135deg, #1d3a55 0%, #2a5878 30%, #3a7aa3 60%, #4a93c2 85%, #5aa8d6 100%);
@@ -2421,6 +2422,8 @@ html, body {
   --titanium-icon-bg: linear-gradient(135deg, #4a93c2 0%, #2a5878 60%, #1d3a55 100%);
   --titanium-icon-border: rgba(180,220,250,0.45);
   --titanium-icon-color: #e6f3ff;
+  --titanium-sheen: linear-gradient(180deg, rgba(180,220,250,0.22) 0%, rgba(180,220,250,0.05) 45%, rgba(255,255,255,0) 60%);
+
 }
 .btn-titanium {
   background: var(--titanium-grad);
