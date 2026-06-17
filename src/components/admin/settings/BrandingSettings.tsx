@@ -149,6 +149,32 @@ const BrandingSettings = ({ settings, loading, onInputChange, onSave }: Branding
     finally { setDeleting(null); }
   };
 
+  const handleClearAllLogos = async () => {
+    const configured = ALL_LOGO_KEYS.filter(item => settings[item.key]);
+    if (configured.length === 0) {
+      showError("Nothing to clear", "No logos are currently set");
+      return;
+    }
+    const ok = window.confirm(
+      `Delete all ${configured.length} configured logo(s) from your branding collection? This cannot be undone.`
+    );
+    if (!ok) return;
+    setDeleting('__all__');
+    try {
+      for (const item of configured) {
+        onInputChange(item.key, '');
+        await persistSetting(item.key, '');
+      }
+      queryClient.invalidateQueries({ queryKey: ["system-setting"] });
+      queryClient.invalidateQueries({ queryKey: ["branding-logo"] });
+      showSuccess("Cleared", `Removed ${configured.length} logo(s)`);
+    } catch (error: any) {
+      showError("Clear Failed", error?.message || "Failed to clear all logos");
+    } finally {
+      setDeleting(null);
+    }
+  };
+
   const generateLogo = async () => {
     if (!logoPrompt.trim()) { showError("Prompt Required", "Enter a description"); return; }
     setGenerating(true); setMasterLogo(null); setGeneratedLogos([]);
