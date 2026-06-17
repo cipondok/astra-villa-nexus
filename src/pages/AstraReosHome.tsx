@@ -79,9 +79,8 @@ const tokens = `
   .reos-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
   .reos-card-2 { background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; }
   .reos-gold { color: var(--gold-2); }
-  .reos-cta { background: linear-gradient(180deg, var(--gold-2), var(--gold)); color: #fff; font-weight: 600; border: 1px solid var(--line-strong); }
-  html:not(.dark) .reos-cta { color: #fff; }
-  html.dark .reos-cta { color: #161208; border-color: rgba(255,225,160,0.4); }
+  .reos-cta { background: linear-gradient(180deg, var(--gold-2), var(--gold)); color: var(--gold-fg); font-weight: 600; border: 1px solid var(--line-strong); }
+  .reos-cta:hover { filter: brightness(1.06); }
   .reos-cta:hover { filter: brightness(1.06); }
   .reos-outline { border: 1px solid var(--line-strong); }
   .reos-chip { border: 1px solid var(--line); color: var(--text-2); }
