@@ -20,6 +20,7 @@ import ErrorBoundary from '@/components/ErrorBoundary';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AdminOnlyRoute from '@/components/AdminOnlyRoute';
 import { DesignSystemProvider } from '@/components/DesignSystemProvider';
+import PageShell from '@/components/layout/PageShell';
 import CookieSystem from '@/components/cookies/CookieSystem';
 import { useTranslation } from '@/i18n/useTranslation';
 import { useCLSMonitor } from '@/hooks/useCLSMonitor';
