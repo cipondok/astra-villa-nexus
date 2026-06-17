@@ -359,7 +359,7 @@ const Profile = () => {
           <div className="flex-1">
             <h1 className="text-lg font-bold">{t.profile}</h1>
           </div>
-          <Button
+          <AstraButton
             variant="outline"
             size="sm"
             onClick={handleSignOut}
@@ -367,7 +367,7 @@ const Profile = () => {
           >
             <LogOut className="h-3.5 w-3.5" />
             {t.signOut}
-          </Button>
+          </AstraButton>
         </div>
 
         {/* Profile Header Card */}
