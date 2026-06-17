@@ -636,3 +636,7 @@ verify_jwt = false
 
 [functions.handle-email-suppression]
 verify_jwt = false
+
+[functions.reos-ai-search]
+verify_jwt = false
+
