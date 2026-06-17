@@ -87,7 +87,7 @@ export default function GlobalHeader({
           <img
             src="/astra-logo.png"
             alt={brand}
-            className="h-8 w-8 rounded-full object-contain shadow-sm md:h-9 md:w-9"
+            className="h-8 w-8 rounded-full object-contain shadow-sm bg-primary/10 md:h-9 md:w-9"
           />
           <span className="hidden text-sm sm:inline-block md:text-base">{brand}</span>
         </Link>
