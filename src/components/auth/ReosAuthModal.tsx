@@ -531,8 +531,8 @@ export function ReosAuthModal({
                 <div className="border-t border-white/5 px-6 md:px-7 py-3 flex items-center justify-between text-[10.5px] text-[#6B6760]">
                   <span>© {new Date().getFullYear()} ASTRA Villa</span>
                   <div className="flex items-center gap-4">
-                    <a href="/privacy" className="hover:text-white">Privacy</a>
-                    <a href="/terms" className="hover:text-white">Terms</a>
+                    <Link to="/legal-services" onClick={() => onOpenChange(false)} className="hover:text-white">Privacy</Link>
+                    <Link to="/legal-services" onClick={() => onOpenChange(false)} className="hover:text-white">Terms</Link>
                   </div>
                 </div>
               )}
