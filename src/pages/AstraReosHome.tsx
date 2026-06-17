@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 import {
   Search, Bell, MessageSquare, Globe, Sun, Moon, User,
   LayoutDashboard, Building2, TrendingUp, Banknote, Scale,
-  Wrench, Store, BarChart3, Crown, Sparkles, Settings as Cog,
+  Wrench, Store, BarChart3, Sparkles, Settings as Cog,
   ArrowUpRight, ShieldCheck, MapPin, Cpu, Zap, ChevronRight,
-  Activity, DollarSign, Eye, Star, Loader2, X,
+  Activity, DollarSign, Star, Loader2, X,
 } from "lucide-react";
 import {
   LineChart, Line, AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip,
@@ -61,10 +61,8 @@ const sidebarItems = [
   { icon: TrendingUp, label: "Investment" },
   { icon: Banknote, label: "Finance" },
   { icon: Scale, label: "Legal" },
-  { icon: Wrench, label: "Management" },
   { icon: Store, label: "Vendors" },
   { icon: BarChart3, label: "Market Intel" },
-  { icon: Crown, label: "Investor Club" },
   { icon: Sparkles, label: "AI Center" },
   { icon: Cog, label: "Settings" },
 ];
@@ -213,13 +211,6 @@ export default function AstraReosHome() {
                 </motion.button>
               ))}
             </nav>
-            <div className="mt-auto p-4">
-              <motion.div whileHover={{ y: -2 }} className="reos-card p-4">
-                <div className="flex items-center gap-2 text-xs reos-gold"><Crown className="h-3.5 w-3.5" /> Investor Club</div>
-                <div className="mt-1 text-sm">Unlock Platinum reports</div>
-                <button className="mt-3 w-full h-8 text-xs reos-cta rounded-md">Upgrade</button>
-              </motion.div>
-            </div>
           </aside>
 
           {/* MAIN */}
@@ -520,35 +511,6 @@ export default function AstraReosHome() {
               </motion.div>
             </Section>
 
-            {/* INVESTOR CLUB */}
-            <Section className="px-6 md:px-10 mt-16">
-              <motion.div variants={fadeUp}>
-                <div className="text-xs uppercase tracking-[0.22em] reos-gold">Investor Club</div>
-                
-              </motion.div>
-              <motion.div variants={stagger} className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                {[
-                  { tier: "Silver", price: "$99/mo", perks: ["Weekly market reports", "Standard alerts", "Email support"] },
-                  { tier: "Gold", price: "$299/mo", perks: ["Daily intelligence briefings", "Exclusive deals", "Dedicated advisor"], featured: true },
-                  { tier: "Platinum", price: "$999/mo", perks: ["Private deal flow", "VIP property tours", "Bespoke wealth planning"] },
-                ].map(t => (
-                  <motion.div key={t.tier} variants={fadeUp} whileHover={{ y: -4 }} className={`reos-card p-6 relative ${t.featured ? "ring-1 ring-[var(--gold-bright)]" : ""}`}>
-                    {t.featured && <div className="absolute -top-3 left-6 text-[10px] uppercase tracking-[0.2em] reos-cta px-2 py-1 rounded-md">Most Popular</div>}
-                    <div className="flex items-center gap-2">
-                      <Crown className="h-4 w-4 reos-gold" />
-                      <span className="text-sm uppercase tracking-[0.18em]">{t.tier}</span>
-                    </div>
-                    <div className="mt-3 text-3xl font-semibold">{t.price}</div>
-                    <ul className="mt-5 space-y-2 text-sm text-[var(--text-2)]">
-                      {t.perks.map(p => <li key={p} className="flex items-center gap-2"><Eye className="h-3.5 w-3.5 reos-gold" />{p}</li>)}
-                    </ul>
-                    <button className={`mt-6 w-full h-11 rounded-xl text-sm transition ${t.featured ? "reos-cta" : "reos-outline hover:bg-[var(--card-2)]"}`}>
-                      Join {t.tier}
-                    </button>
-                  </motion.div>
-                ))}
-              </motion.div>
-            </Section>
 
             {/* FOOTER */}
             <footer className="mt-20 border-t border-[var(--border)]">
