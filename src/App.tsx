@@ -38,6 +38,8 @@ import { DataSaverProvider } from '@/contexts/DataSaverContext';
 const Navigation = lazy(() => import('@/components/Navigation'));
 const ProfessionalFooter = lazy(() => import('@/components/ProfessionalFooter'));
 const MobileFooter = lazy(() => import('@/components/MobileFooter'));
+const GlobalFooter = lazy(() => import('@/components/layout/GlobalFooter'));
+const AppSidebar = lazy(() => import('@/components/layout/AppSidebar'));
 const GlobalLoadingIndicator = lazy(() => import('@/components/ui/GlobalLoadingIndicator'));
 
 
@@ -404,6 +406,9 @@ const AppContent = () => {
     path.startsWith('/properties/') ||
     path.startsWith('/property/');
   const hideAppShell = isAdminRoute || isLuxeRoute;
+  // ASTRA V3: routes that get the unified app sidebar (auth/workspace surfaces)
+  const APP_ROUTE_PREFIXES = ['/dashboard', '/admin', '/admin-dashboard', '/settings', '/profile', '/my-properties', '/my-rental-inquiries', '/favorites', '/vendor-marketplace', '/ai-center'];
+  const isAppRoute = APP_ROUTE_PREFIXES.some((p) => path === p || path.startsWith(p + '/'));
   const { isMobile } = useIsMobile();
   const { isAdmin } = useAdminCheck();
   const { maintenanceMode, maintenanceMessage } = useMaintenanceMode();
