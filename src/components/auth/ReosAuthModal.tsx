@@ -306,7 +306,21 @@ export function ReosAuthModal({
                             className="h-3.5 w-3.5 rounded border-white/20 bg-transparent accent-[#C8A96A]" />
                           Remember me
                         </label>
-                        <Link to="/forgot-password" onClick={() => onOpenChange(false)} className="hover:underline" style={{ color: "#E0C384" }}>Forgot password?</Link>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            const email = loginEmail.trim();
+                            if (!email) { toast.error("Enter your email above first"); return; }
+                            const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                              redirectTo: `${window.location.origin}/reset-password`,
+                            });
+                            if (error) toast.error(error.message);
+                            else toast.success("Password reset link sent. Check your email.");
+                          }}
+                          className="hover:underline" style={{ color: "#E0C384" }}
+                        >
+                          Forgot password?
+                        </button>
                       </div>
 
                       <PrimaryButton type="submit" loading={submitting} disabled={submitting}>
