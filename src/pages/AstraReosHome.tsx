@@ -406,7 +406,7 @@ export default function AstraReosHome() {
                           <div className="text-[10px] text-[var(--success)]">▲ {k.delta}</div>
                         </div>
                       </div>
-                      <Spark seed={k.seed} />
+                      <Spark seed={k.seed} color="#C8A96A" />
                     </div>
                   ))}
                 </div>
