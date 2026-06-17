@@ -197,10 +197,12 @@ const AstraHero = ({ language = "en", onSearch, onLiveSearch, resultsCount }: As
                 <button
                   key={link.label}
                   onClick={() => navigate(link.path)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/20 dark:bg-white/10 text-white text-xs font-semibold hover:bg-white/30 dark:hover:bg-white/20 transition-colors backdrop-blur-sm border border-white/20"
+                  className="btn-titanium inline-flex items-center gap-2 pl-1.5 pr-3.5 py-1.5 rounded-full text-xs font-semibold"
                 >
-                  <link.icon className="h-3.5 w-3.5" />
-                  {link.label}
+                  <span className="titanium-icon inline-flex items-center justify-center w-6 h-6 rounded-full shrink-0">
+                    <link.icon className="h-3.5 w-3.5" />
+                  </span>
+                  <span className="relative">{link.label}</span>
                 </button>
               ))}
             </div>
