@@ -7,6 +7,7 @@ import { useTheme } from '@/components/ThemeProvider';
 import { createCacheUtils } from '@/lib/queryClient';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { AstraCard, AstraButton } from '@/components/astra';
 import { Progress } from '@/components/ui/progress';
 import { Switch } from '@/components/ui/switch';
 import {
