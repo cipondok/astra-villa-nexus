@@ -602,8 +602,11 @@ export default function AstraReosHome() {
                         placeholder="Search properties, locations, ROI, developers, laws…"
                         className="flex-1 bg-transparent outline-none text-sm placeholder:text-[var(--text-2)] py-2"
                       />
-                      <button onClick={submitAi} disabled={aiLoading} className="h-9 px-4 rounded-lg reos-cta text-xs inline-flex items-center gap-1.5 disabled:opacity-60">
-                        {aiLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />} AI Search
+                      <button onClick={submitAi} disabled={aiLoading} className="btn-titanium h-9 pl-1.5 pr-3.5 rounded-lg text-xs inline-flex items-center gap-1.5 font-semibold disabled:opacity-60">
+                        <span className="titanium-icon inline-flex items-center justify-center w-6 h-6 rounded-md shrink-0">
+                          {aiLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
+                        </span>
+                        <span className="relative">AI Search</span>
                       </button>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
@@ -612,7 +615,7 @@ export default function AstraReosHome() {
                           key={c}
                           type="button"
                           onClick={() => navigate(`/search?q=${encodeURIComponent(`Properties in ${c}`)}`)}
-                          className="reos-chip text-[11px] px-3 py-1 rounded-full bg-[var(--surface)]/70 backdrop-blur"
+                          className="btn-titanium text-[11px] px-3 py-1 rounded-full font-semibold"
                         >
                           {c}
                         </button>
@@ -620,10 +623,11 @@ export default function AstraReosHome() {
                       <button
                         type="button"
                         onClick={() => navigate("/search-advanced")}
-                        className="reos-chip text-[11px] px-3 py-1 rounded-full bg-[var(--surface)]/70 backdrop-blur inline-flex items-center gap-1"
+                        className="btn-titanium text-[11px] px-3 py-1 rounded-full font-semibold inline-flex items-center gap-1"
                       >
                         More <ChevronDown className="h-3 w-3" />
                       </button>
+
                     </div>
                   </motion.div>
                 </div>
