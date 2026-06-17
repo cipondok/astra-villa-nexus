@@ -70,6 +70,7 @@ const PropertyOwnerOnlyRoute = lazy(() => import('@/components/PropertyOwnerOnly
 // All pages — lazy loaded for minimum initial bundle
 const Index = lazy(() => import('@/pages/Index'));
 const LuxeExperience = lazy(() => import('@/pages/LuxeExperience'));
+const AstraReosHome = lazy(() => import('@/pages/AstraReosHome'));
 
 const CityInvestmentPage = lazy(() => import('@/pages/CityInvestmentPage'));
 const InvestorOnboarding = lazy(() => import('@/pages/InvestorOnboarding'));
@@ -422,7 +423,7 @@ const AppContent = () => {
           <PageTransition key={location.pathname}>
             <Suspense fallback={<PageLoader />}>
               <Routes location={location}>
-                <Route path="/" element={<LuxeExperience />} />
+                <Route path="/" element={<AstraReosHome />} />
                 <Route path="/landing" element={<InvestorLandingPage />} />
                 <Route path="/luxe" element={<LuxeExperience />} />
                 <Route path="/classic" element={<Index />} />
