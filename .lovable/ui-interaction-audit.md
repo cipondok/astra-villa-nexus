@@ -81,3 +81,25 @@ Every `<Link>` and `navigate()` target on the homepage now resolves to a route r
 - Pagination dots beneath Featured Properties are purely decorative (no carousel implementation — design says "do not redesign"). Left visual-only.
 - Bottom stats `MoreHorizontal` ellipsis icons are visual affordances; no menu was specified.
 - "Trusted By" bank wordmarks are not links (no partner pages exist).
+
+---
+
+## Re-audit (after build verification)
+
+Browser-tested live preview at `/`:
+
+- Sign in modal: opens, closes, switches to register — ✅
+- Get Started modal: opens at step 1/3 of register flow — ✅
+- Console: only preview-iframe `manifest.json` 401s and Lovable cross-origin `postMessage` warnings remain (platform-side, not app code) — ✅ no app-level React errors or warnings
+- TypeScript: `tsc --noEmit` clean across the home + auth files — ✅
+
+### Additional repairs in this pass
+
+| Element | Issue | Fix |
+| --- | --- | --- |
+| `ReosAuthModal` "Forgot password?" | `<Link to="/forgot-password">` — route did not exist (would 404) | Converted to button that calls `supabase.auth.resetPasswordForEmail` with `redirectTo: /reset-password`, toasts success/error |
+| `ReosAuthModal` Privacy / Terms footer links | `<a href="/privacy">` / `/terms` — both caused full-page reload to 404 | Converted to `<Link to="/legal-services">` so they stay within the SPA and resolve to an existing page |
+
+### Tailwind ambiguity warnings
+
+Warnings like `ease-[cubic-bezier(...)]` / `duration-[1200ms]` are emitted by Tailwind in unrelated routes (`LuxeExperience`, `Properties`, `PropertyDetail`, `Locations`, `Navigation`, `ModernSearchPanel`, `LuxeThemeToggle`, `LuxeHeader`). None originate from the homepage or auth flow and they are non-blocking. Out of scope for this pass.

@@ -306,7 +306,21 @@ export function ReosAuthModal({
                             className="h-3.5 w-3.5 rounded border-white/20 bg-transparent accent-[#C8A96A]" />
                           Remember me
                         </label>
-                        <Link to="/forgot-password" onClick={() => onOpenChange(false)} className="hover:underline" style={{ color: "#E0C384" }}>Forgot password?</Link>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            const email = loginEmail.trim();
+                            if (!email) { toast.error("Enter your email above first"); return; }
+                            const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                              redirectTo: `${window.location.origin}/reset-password`,
+                            });
+                            if (error) toast.error(error.message);
+                            else toast.success("Password reset link sent. Check your email.");
+                          }}
+                          className="hover:underline" style={{ color: "#E0C384" }}
+                        >
+                          Forgot password?
+                        </button>
                       </div>
 
                       <PrimaryButton type="submit" loading={submitting} disabled={submitting}>
@@ -517,8 +531,8 @@ export function ReosAuthModal({
                 <div className="border-t border-white/5 px-6 md:px-7 py-3 flex items-center justify-between text-[10.5px] text-[#6B6760]">
                   <span>© {new Date().getFullYear()} ASTRA Villa</span>
                   <div className="flex items-center gap-4">
-                    <a href="/privacy" className="hover:text-white">Privacy</a>
-                    <a href="/terms" className="hover:text-white">Terms</a>
+                    <Link to="/legal-services" onClick={() => onOpenChange(false)} className="hover:text-white">Privacy</Link>
+                    <Link to="/legal-services" onClick={() => onOpenChange(false)} className="hover:text-white">Terms</Link>
                   </div>
                 </div>
               )}
