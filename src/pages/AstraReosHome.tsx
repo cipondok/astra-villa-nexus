@@ -19,6 +19,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/components/ThemeProvider";
 import { ReosAuthModal } from "@/components/auth/ReosAuthModal";
+import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 
 
 /* ============================================================
@@ -204,6 +205,7 @@ export default function AstraReosHome() {
   const { user, profile, signOut } = useAuth();
   const { language, setLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
+  const { logoUrl: headerLogo } = useBrandingLogo('headerLogo', '/astra-logo.png');
   const { data: market, loading: marketLoading } = useReosMarket();
   const { search, data: aiData, loading: aiLoading, error: aiError, reset: resetAi } = useReosAiSearch();
 
@@ -288,7 +290,7 @@ export default function AstraReosHome() {
             {/* Logo */}
             <Link to="/" aria-label="ASTRA Villa home" className="flex items-center gap-2.5 shrink-0">
               <img
-                src="/astra-logo.png"
+                src={headerLogo}
                 alt="ASTRA Villa"
                 className="h-9 w-9 rounded-full object-contain shadow-sm"
               />
@@ -445,7 +447,7 @@ export default function AstraReosHome() {
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <img src="/astra-logo.png" alt="ASTRA Villa" className="h-8 w-8 rounded-full object-contain shadow-sm" />
+                    <img src={headerLogo} alt="ASTRA Villa" className="h-8 w-8 rounded-full object-contain shadow-sm" />
                     <span className="font-semibold tracking-[0.18em] text-[14px]">ASTRA<span className="reos-gold ml-1">VILLA</span></span>
                   </div>
                   <button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu" className="h-9 w-9 rounded-md hover:bg-[var(--surface)] flex items-center justify-center"><X className="h-4 w-4" /></button>
