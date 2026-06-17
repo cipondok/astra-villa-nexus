@@ -1,8 +1,12 @@
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { MapPin, ArrowUpRight, Compass, Globe2, Mountain, Waves } from "lucide-react";
+import { MapPin, ArrowUpRight, Compass, Globe2, Mountain, Waves, Building2 } from "lucide-react";
 import { LuxeLayout, LuxeSection, LuxeSectionHead, LuxeCard, LuxeButton } from "@/components/luxe";
 import { SEOHead } from "@/components/SEOHead";
+import AstraPropertyMap, { MapMarker } from "@/components/maps/AstraPropertyMap";
+import { supabase } from "@/integrations/supabase/client";
+import { formatCurrencyIDRShort } from "@/lib/indonesianFormat";
 import { cn } from "@/lib/utils";
 
 import baliImg from "@/assets/luxe-loc-bali.jpg";
