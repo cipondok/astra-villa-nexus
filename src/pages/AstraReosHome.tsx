@@ -287,7 +287,11 @@ export default function AstraReosHome() {
 
             {/* Logo */}
             <Link to="/" aria-label="ASTRA Villa home" className="flex items-center gap-2.5 shrink-0">
-              <div className="h-10 w-10 rounded-xl reos-cta flex items-center justify-center text-base font-bold">A</div>
+              <img
+                src="/astra-logo.png"
+                alt="ASTRA Villa"
+                className="h-9 w-9 rounded-full object-contain shadow-sm"
+              />
               <div className="leading-none hidden sm:block">
                 <div className="font-semibold tracking-[0.18em] text-[15px]">ASTRA<span className="reos-gold ml-1">VILLA</span></div>
                 <div className="text-[9px] tracking-[0.28em] text-[var(--text-3)] mt-1">REAL ESTATE OPERATING SYSTEM</div>
@@ -440,7 +444,10 @@ export default function AstraReosHome() {
                 style={{ background: "var(--bg)" }}
               >
                 <div className="flex items-center justify-between mb-4">
-                  <div className="font-semibold tracking-[0.18em] text-[14px]">ASTRA<span className="reos-gold ml-1">VILLA</span></div>
+                  <div className="flex items-center gap-2">
+                    <img src="/astra-logo.png" alt="ASTRA Villa" className="h-8 w-8 rounded-full object-contain shadow-sm" />
+                    <span className="font-semibold tracking-[0.18em] text-[14px]">ASTRA<span className="reos-gold ml-1">VILLA</span></span>
+                  </div>
                   <button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu" className="h-9 w-9 rounded-md hover:bg-[var(--surface)] flex items-center justify-center"><X className="h-4 w-4" /></button>
                 </div>
                 <div className="space-y-1">
