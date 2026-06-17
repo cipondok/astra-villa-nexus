@@ -2403,14 +2403,14 @@ html, body {
 
 /* ═══ Glossy Titanium Button (Light Blue, theme-aware) ═══ */
 :root {
-  --titanium-grad: linear-gradient(135deg, #e8f4ff 0%, #b8dcf5 28%, #7fbde8 55%, #5aa3d4 78%, #4090c8 100%);
-  --titanium-grad-hover: linear-gradient(135deg, #f2f9ff 0%, #c9e6fb 28%, #91cbef 55%, #6cb1dc 78%, #4a9cd0 100%);
-  --titanium-text: #0b3a5c;
-  --titanium-border: rgba(255,255,255,0.65);
-  --titanium-shadow: 0 6px 18px -6px rgba(64,144,200,0.55), inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(0,0,0,0.08);
-  --titanium-icon-bg: linear-gradient(135deg, #ffffff 0%, #d8ecfb 60%, #a8cee8 100%);
-  --titanium-icon-border: rgba(255,255,255,0.9);
-  --titanium-icon-color: #0b3a5c;
+  --titanium-grad: linear-gradient(135deg, #f5fbff 0%, #dff0ff 22%, #b8e0ff 48%, #96d0f8 72%, #72baf0 100%);
+  --titanium-grad-hover: linear-gradient(135deg, #ffffff 0%, #eaf6ff 22%, #c8eaff 48%, #a8dafb 72%, #84c8f5 100%);
+  --titanium-text: #0a4a7a;
+  --titanium-border: rgba(255,255,255,0.85);
+  --titanium-shadow: 0 6px 18px -6px rgba(90,170,230,0.45), inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -1px 0 rgba(0,60,120,0.06);
+  --titanium-icon-bg: linear-gradient(135deg, #ffffff 0%, #e8f5ff 55%, #bce0ff 100%);
+  --titanium-icon-border: rgba(255,255,255,0.95);
+  --titanium-icon-color: #0a4a7a;
 }
 .dark {
   --titanium-grad: linear-gradient(135deg, #1d3a55 0%, #2a5878 30%, #3a7aa3 60%, #4a93c2 85%, #5aa8d6 100%);
