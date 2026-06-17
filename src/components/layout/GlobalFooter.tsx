@@ -70,7 +70,7 @@ export default function GlobalFooter() {
           <div className="col-span-2">
             <Link to="/" className="inline-flex items-center gap-2">
               <img
-                src="/astra-logo.png"
+                src={footerLogo}
                 alt="ASTRA Villa"
                 className="h-9 w-9 rounded-full object-contain shadow-sm bg-primary/10"
               />
