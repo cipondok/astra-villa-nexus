@@ -5,6 +5,7 @@ import { formatMemberDuration } from '@/utils/dateUtils';
 import { useAlert } from '@/contexts/AlertContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { AstraCard, AstraButton, AstraInput } from '@/components/astra';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -319,18 +320,18 @@ const Profile = () => {
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 bg-background">
-        <Card className="w-full max-w-sm border-gold-primary/15 bg-card/60 backdrop-blur-xl">
+        <AstraCard glass className="w-full max-w-sm">
           <CardContent className="pt-8 pb-6 text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gold-primary/10 flex items-center justify-center">
-              <User className="h-8 w-8 text-gold-primary" />
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
+              <User className="h-8 w-8 text-primary" />
             </div>
             <h1 className="text-xl font-bold mb-2">{t.profile}</h1>
             <p className="text-sm text-muted-foreground mb-6">{t.signInPrompt}</p>
-            <Button onClick={() => navigate('/auth')} className="w-full bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background shadow-md shadow-gold-primary/20">
+            <AstraButton onClick={() => navigate('/auth')} className="w-full">
               {t.signIn}
-            </Button>
+            </AstraButton>
           </CardContent>
-        </Card>
+        </AstraCard>
       </div>
     );
   }
@@ -358,7 +359,7 @@ const Profile = () => {
           <div className="flex-1">
             <h1 className="text-lg font-bold">{t.profile}</h1>
           </div>
-          <Button
+          <AstraButton
             variant="outline"
             size="sm"
             onClick={handleSignOut}
@@ -366,12 +367,12 @@ const Profile = () => {
           >
             <LogOut className="h-3.5 w-3.5" />
             {t.signOut}
-          </Button>
+          </AstraButton>
         </div>
 
         {/* Profile Header Card */}
-        <Card className="mb-4 border-gold-primary/15 bg-card/60 backdrop-blur-xl overflow-hidden">
-          <div className="h-20 bg-gradient-to-r from-gold-primary/20 via-gold-primary/10 to-gold-primary/5"></div>
+        <AstraCard glass className="mb-4 overflow-hidden">
+          <div className="h-20 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/5"></div>
           <CardContent className="pt-0 pb-4 px-4">
           <div className="flex items-end gap-4 -mt-10">
               {/* Avatar with TikTok/FB style badge */}
@@ -447,7 +448,7 @@ const Profile = () => {
               </button>
             </div>
           </CardContent>
-        </Card>
+        </AstraCard>
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -472,14 +473,14 @@ const Profile = () => {
 
           {/* Profile Tab */}
           <TabsContent value="profile" className="space-y-4 mt-0">
-            <Card className="border-gold-primary/15 bg-card/60 backdrop-blur-xl">
+            <AstraCard glass>
               <CardHeader className="pb-2 flex flex-row items-center justify-between">
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4 text-muted-foreground" />
                   <span className="font-semibold text-sm">{t.editProfile}</span>
                 </div>
                 {!isEditing && (
-                  <Button
+                  <AstraButton
                     variant="outline"
                     size="sm"
                     onClick={handleStartEdit}
@@ -488,7 +489,7 @@ const Profile = () => {
                   >
                     <Edit2 className="h-3.5 w-3.5" />
                     {t.edit}
-                  </Button>
+                  </AstraButton>
                 )}
               </CardHeader>
               <CardContent className="space-y-3">
@@ -528,7 +529,7 @@ const Profile = () => {
                             <Badge variant="outline" className="text-[9px] px-1 py-0 text-destructive border-destructive/30">Locked</Badge>
                           )}
                         </Label>
-                        <Input
+                        <AstraInput
                           id="full_name"
                           value={formData.full_name}
                           onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
@@ -543,7 +544,7 @@ const Profile = () => {
                             <Badge variant="outline" className="text-[9px] px-1 py-0 text-destructive border-destructive/30">Locked</Badge>
                           )}
                         </Label>
-                        <Input
+                        <AstraInput
                           id="phone"
                           value={formData.phone}
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -566,7 +567,7 @@ const Profile = () => {
                             </Badge>
                           )}
                         </Label>
-                        <Input
+                        <AstraInput
                           id="company_name"
                           value={formData.company_name}
                           onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
@@ -586,9 +587,9 @@ const Profile = () => {
                       )}
                       
                       {/* Location & Address Section */}
-                       <div className="space-y-1.5 p-3 rounded-lg bg-gold-primary/5 border border-gold-primary/10">
+                       <div className="space-y-1.5 p-3 rounded-lg bg-primary/5 border border-primary/10">
                         <div className="flex items-center gap-2 mb-2">
-                          <MapPin className="h-4 w-4 text-gold-primary" />
+                          <MapPin className="h-4 w-4 text-primary" />
                           <Label className="text-xs font-medium">{t.address}</Label>
                         </div>
                         <ProfileLocationSelector
@@ -632,14 +633,14 @@ const Profile = () => {
                     </div>
 
                     <div className="flex gap-2 pt-2">
-                      <Button onClick={handleSave} disabled={isSaving} className="flex-1 h-9 bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background shadow-md shadow-gold-primary/20">
+                      <AstraButton onClick={handleSave} disabled={isSaving} className="flex-1 h-9">
                         <Save className="h-4 w-4 mr-1.5" />
                         {isSaving ? t.saving : t.save}
-                      </Button>
-                      <Button variant="outline" onClick={handleCancel} disabled={isSaving} className="flex-1 h-9">
+                      </AstraButton>
+                      <AstraButton variant="outline" onClick={handleCancel} disabled={isSaving} className="flex-1 h-9">
                         <X className="h-4 w-4 mr-1.5" />
                         {t.cancel}
-                      </Button>
+                      </AstraButton>
                     </div>
                   </div>
                 ) : (
@@ -662,7 +663,7 @@ const Profile = () => {
                   />
                 )}
               </CardContent>
-            </Card>
+            </AstraCard>
 
             {/* Profile Completion Status */}
             <ProfileCompletionStatus
@@ -674,22 +675,22 @@ const Profile = () => {
 
             {/* Quick Actions */}
             <div className="flex gap-2">
-              <Button 
-                variant="outline" 
+              <AstraButton
+                variant="outline"
                 className="flex-1 h-10 gap-2"
                 onClick={() => navigate('/settings')}
               >
                 <Settings className="h-4 w-4" />
                 {t.settings}
-              </Button>
-              <Button 
-                variant="outline" 
+              </AstraButton>
+              <AstraButton
+                variant="outline"
                 className="flex-1 h-10 gap-2"
                 onClick={() => navigate('/')}
               >
                 <Home className="h-4 w-4" />
                 {t.home}
-              </Button>
+              </AstraButton>
             </div>
           </TabsContent>
 
