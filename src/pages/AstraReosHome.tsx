@@ -759,10 +759,11 @@ export default function AstraReosHome() {
                 </div>
                 <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-[var(--line)]" style={{ background: "var(--hotspot-bg)" }}>
                   <div className="absolute inset-0 origin-center transition-transform" style={{ transform: `scale(${hotspotZoom})` }}>
-                    <svg viewBox="0 0 100 75" className="absolute inset-0 h-full w-full opacity-30">
-                      <path d="M10,40 q15,-10 30,-5 q15,5 25,0 q10,-3 20,5 q5,8 -5,12 q-20,4 -40,2 q-25,-2 -30,-14z" fill="none" stroke="#C8A96A" strokeWidth="0.3" />
-                      <path d="M45,55 q10,-3 18,2 q6,8 -4,12 q-12,2 -18,-4 q-4,-6 4,-10z" fill="none" stroke="#C8A96A" strokeWidth="0.3" />
+                    <svg viewBox="0 0 100 75" className="absolute inset-0 h-full w-full opacity-30" style={{ color: "var(--gold)" }}>
+                      <path d="M10,40 q15,-10 30,-5 q15,5 25,0 q10,-3 20,5 q5,8 -5,12 q-20,4 -40,2 q-25,-2 -30,-14z" fill="none" stroke="currentColor" strokeWidth="0.3" />
+                      <path d="M45,55 q10,-3 18,2 q6,8 -4,12 q-12,2 -18,-4 q-4,-6 4,-10z" fill="none" stroke="currentColor" strokeWidth="0.3" />
                     </svg>
+
                     {hotspots.map(h => (
                       <button
                         key={h.city}
