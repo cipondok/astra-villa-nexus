@@ -394,7 +394,7 @@ export default function AstraReosHome() {
                 className="h-9 w-9 rounded-lg hover:bg-[var(--surface)] flex items-center justify-center relative"
               >
                 <Bell className="h-4 w-4 text-[var(--text-2)]" />
-                <span className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full bg-[var(--gold)] text-[10px] text-black font-bold flex items-center justify-center">3</span>
+                <span className="absolute top-1.5 right-1.5 h-4 w-4 rounded-full bg-[var(--gold)] text-[10px] text-[var(--gold-fg)] font-bold flex items-center justify-center">3</span>
               </button>
               <button
                 type="button"
