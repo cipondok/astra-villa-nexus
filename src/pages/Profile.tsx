@@ -320,18 +320,18 @@ const Profile = () => {
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4 bg-background">
-        <Card className="w-full max-w-sm border-gold-primary/15 bg-card/60 backdrop-blur-xl">
+        <AstraCard glass className="w-full max-w-sm">
           <CardContent className="pt-8 pb-6 text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gold-primary/10 flex items-center justify-center">
-              <User className="h-8 w-8 text-gold-primary" />
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-primary/10 flex items-center justify-center">
+              <User className="h-8 w-8 text-primary" />
             </div>
             <h1 className="text-xl font-bold mb-2">{t.profile}</h1>
             <p className="text-sm text-muted-foreground mb-6">{t.signInPrompt}</p>
-            <Button onClick={() => navigate('/auth')} className="w-full bg-gradient-to-r from-gold-primary to-gold-primary/80 text-background shadow-md shadow-gold-primary/20">
+            <AstraButton onClick={() => navigate('/auth')} className="w-full">
               {t.signIn}
-            </Button>
+            </AstraButton>
           </CardContent>
-        </Card>
+        </AstraCard>
       </div>
     );
   }
