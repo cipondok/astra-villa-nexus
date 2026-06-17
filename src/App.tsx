@@ -886,8 +886,6 @@ function SidebarProviderConditional({
   children: React.ReactNode;
 }) {
   if (!enabled) return <>{children}</>;
-  // Lazy import to avoid SSR/circular issues
-  const { SidebarProvider } = require('@/components/ui/sidebar');
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full">{children}</div>
