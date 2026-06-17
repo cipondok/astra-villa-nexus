@@ -7,32 +7,38 @@ import { createContext, useContext, useEffect, useState, useCallback } from "rea
  *   • astra-black-gold  → dark default (Obsidian Black + Champagne Gold)
  *   • astra-pearl-white → light default (Warm Ivory + Deep Gold)
  *
- * Legacy values 'dark' | 'light' | 'system' remain accepted and are
- * mapped to the new ASTRA themes so existing callers keep working.
+ * Backwards compat: `theme` is exposed as the legacy 'dark' | 'light'
+ * union (black-gold === 'dark', pearl-white === 'light') so existing
+ * comparisons across the codebase keep working. Use `astraTheme` for
+ * the full ASTRA name when needed.
  */
 export type AstraTheme = "astra-black-gold" | "astra-pearl-white";
-export type Theme = AstraTheme | "dark" | "light" | "system";
+export type ThemePreference = AstraTheme | "dark" | "light" | "system";
+/** Legacy-compatible theme value emitted by useTheme().theme. */
+export type Theme = "dark" | "light";
 
 type ThemeProviderProps = {
   children: React.ReactNode;
-  defaultTheme?: Theme;
+  defaultTheme?: ThemePreference;
   storageKey?: string;
 };
 
 type ThemeProviderState = {
-  /** The resolved ASTRA theme currently applied to <html>. */
-  theme: AstraTheme;
+  /** Legacy compat value: 'dark' (Black Gold) or 'light' (Pearl White). */
+  theme: Theme;
+  /** Full ASTRA theme name currently applied. */
+  astraTheme: AstraTheme;
   /** Raw stored preference (may be 'system'). */
-  preference: Theme;
-  /** Set a new preference. Persists to localStorage. */
-  setTheme: (theme: Theme) => void;
+  preference: ThemePreference;
+  /** Set a new preference. Accepts ASTRA names or legacy 'dark'|'light'|'system'. */
+  setTheme: (theme: ThemePreference) => void;
   /** Toggle between the two ASTRA themes. */
   toggleTheme: () => void;
 };
 
 const STORAGE_KEY_DEFAULT = "astra-villa-theme";
 
-function normalize(value: Theme | null | undefined): AstraTheme | "system" {
+function normalize(value: ThemePreference | null | undefined): AstraTheme | "system" {
   if (value === "astra-black-gold" || value === "dark") return "astra-black-gold";
   if (value === "astra-pearl-white" || value === "light") return "astra-pearl-white";
   return "system";
@@ -46,7 +52,8 @@ function resolveSystem(): AstraTheme {
 }
 
 const initialState: ThemeProviderState = {
-  theme: "astra-black-gold",
+  theme: "dark",
+  astraTheme: "astra-black-gold",
   preference: "astra-black-gold",
   setTheme: () => null,
   toggleTheme: () => null,
@@ -59,10 +66,10 @@ export function ThemeProvider({
   defaultTheme = "astra-black-gold",
   storageKey = STORAGE_KEY_DEFAULT,
 }: ThemeProviderProps) {
-  const [preference, setPreference] = useState<Theme>(() => {
+  const [preference, setPreference] = useState<ThemePreference>(() => {
     try {
       if (typeof window !== "undefined" && window.localStorage) {
-        const saved = localStorage.getItem(storageKey) as Theme | null;
+        const saved = localStorage.getItem(storageKey) as ThemePreference | null;
         if (saved) return saved;
       }
     } catch {
@@ -72,20 +79,20 @@ export function ThemeProvider({
   });
 
   const normalized = normalize(preference);
-  const resolved: AstraTheme = normalized === "system" ? resolveSystem() : normalized;
+  const astraTheme: AstraTheme =
+    normalized === "system" ? resolveSystem() : normalized;
+  const theme: Theme = astraTheme === "astra-black-gold" ? "dark" : "light";
 
   // Apply the resolved theme to <html>
   useEffect(() => {
     const root = window.document.documentElement;
     root.classList.remove("light", "dark", "astra-pearl-white", "astra-black-gold");
 
-    if (resolved === "astra-black-gold") {
-      root.classList.add("dark");
-      root.classList.add("astra-black-gold");
+    if (astraTheme === "astra-black-gold") {
+      root.classList.add("dark", "astra-black-gold");
       root.setAttribute("data-theme", "astra-black-gold");
     } else {
-      root.classList.add("light");
-      root.classList.add("astra-pearl-white");
+      root.classList.add("light", "astra-pearl-white");
       root.setAttribute("data-theme", "astra-pearl-white");
     }
 
@@ -95,16 +102,15 @@ export function ThemeProvider({
     const onChange = () => {
       root.classList.remove("light", "dark", "astra-pearl-white", "astra-black-gold");
       const next: AstraTheme = mq.matches ? "astra-black-gold" : "astra-pearl-white";
-      root.classList.add(next === "astra-black-gold" ? "dark" : "light");
-      root.classList.add(next);
+      root.classList.add(next === "astra-black-gold" ? "dark" : "light", next);
       root.setAttribute("data-theme", next);
     };
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
-  }, [resolved, normalized]);
+  }, [astraTheme, normalized]);
 
   const setTheme = useCallback(
-    (next: Theme) => {
+    (next: ThemePreference) => {
       try {
         localStorage.setItem(storageKey, next);
       } catch {
@@ -116,12 +122,12 @@ export function ThemeProvider({
   );
 
   const toggleTheme = useCallback(() => {
-    setTheme(resolved === "astra-black-gold" ? "astra-pearl-white" : "astra-black-gold");
-  }, [resolved, setTheme]);
+    setTheme(astraTheme === "astra-black-gold" ? "astra-pearl-white" : "astra-black-gold");
+  }, [astraTheme, setTheme]);
 
   return (
     <ThemeProviderContext.Provider
-      value={{ theme: resolved, preference, setTheme, toggleTheme }}
+      value={{ theme, astraTheme, preference, setTheme, toggleTheme }}
     >
       {children}
     </ThemeProviderContext.Provider>

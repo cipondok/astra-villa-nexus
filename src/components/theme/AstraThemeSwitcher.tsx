@@ -12,8 +12,8 @@ interface Props {
  * Single-button, instant. Keyboard accessible. Persists via ThemeProvider.
  */
 export default function AstraThemeSwitcher({ className, size = "icon" }: Props) {
-  const { theme, toggleTheme } = useTheme();
-  const isDark = theme === "astra-black-gold";
+  const { astraTheme, toggleTheme } = useTheme();
+  const isDark = astraTheme === "astra-black-gold";
   const label = isDark ? "Switch to Pearl White" : "Switch to Black Gold";
 
   return (
