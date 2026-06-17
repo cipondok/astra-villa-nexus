@@ -15,6 +15,8 @@ const PropertyListingMapView = lazy(() => import('@/components/property/Property
 import SearchAlertSubscribeButton from '@/components/search/SearchAlertSubscribeButton';
 import PropertyCardSkeleton from '@/components/property/PropertyCardSkeleton';
 import { useTranslation } from '@/i18n/useTranslation';
+import AISearchBar from '@/components/search/AISearchBar';
+import { NLPFilters } from '@/hooks/useNLPSearch';
 
 interface PropertyListingPageProps {
   pageType: 'buy' | 'rent' | 'new-projects' | 'pre-launching';
