@@ -572,15 +572,16 @@ export default function AstraReosHome() {
               {/* Hero */}
               <motion.div variants={fadeUp} className="col-span-12 lg:col-span-9 reos-card overflow-hidden relative min-h-[420px]">
                 <img src={heroImg} alt="Luxury villa overlooking the ocean" className="absolute inset-0 w-full h-full object-cover" />
-                <div className="absolute inset-0" style={{ background: "linear-gradient(110deg, rgba(11,11,12,0.92) 0%, rgba(11,11,12,0.55) 55%, transparent 100%)" }} />
+                <div className="absolute inset-0" style={{ background: "var(--hero-overlay)" }} />
 
-                <div className="relative p-8 md:p-10 flex flex-col h-full">
-                  <h1 className="text-4xl md:text-5xl font-semibold leading-[1.05] tracking-tight max-w-xl">
+                <div className="relative p-8 md:p-10 flex flex-col h-full" style={{ color: "var(--hero-text)" }}>
+                  <h1 className="text-4xl md:text-5xl font-semibold leading-[1.05] tracking-tight max-w-xl" style={{ color: "var(--hero-text)" }}>
                     <span className="block">Southeast Asia's</span>
                     <span className="block"><span className="reos-gold">AI-Powered</span> Real Estate</span>
                     <span className="block">Operating System</span>
                   </h1>
-                  <p className="mt-4 text-[15px] text-[var(--text-2)] max-w-md">Buy. Invest. Manage. Finance. Verify. Grow.</p>
+                  <p className="mt-4 text-[15px] max-w-md" style={{ color: "var(--hero-text-2)" }}>Buy. Invest. Manage. Finance. Verify. Grow.</p>
+
 
                   {/* Search box */}
                   <motion.div variants={fadeUp} className="mt-8 max-w-xl">
