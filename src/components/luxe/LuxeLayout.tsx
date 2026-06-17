@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { LuxeAmbient } from "./LuxeAmbient";
-import { LuxeHeader } from "./LuxeHeader";
+import GlobalHeader from "@/components/layout/GlobalHeader";
 import { LuxeFooter } from "./LuxeFooter";
 import { LuxeMobileDock } from "./LuxeMobileDock";
 
@@ -65,7 +65,7 @@ export function LuxeLayout({
       <LuxeAmbient />
 
       <div className="relative z-10">
-        <LuxeHeader />
+        <GlobalHeader />
         <main>{children}</main>
         {!hideFooter && <LuxeFooter />}
       </div>
