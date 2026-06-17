@@ -65,7 +65,7 @@ export function LuxeLayout({
       <LuxeAmbient />
 
       <div className="relative z-10">
-        <LuxeHeader />
+        <GlobalHeader />
         <main>{children}</main>
         {!hideFooter && <LuxeFooter />}
       </div>
