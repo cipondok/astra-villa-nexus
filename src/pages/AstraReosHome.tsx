@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 import {
   Search, Bell, MessageSquare, Globe, Sun, Moon, User,
   LayoutDashboard, Building2, TrendingUp, Banknote, Scale,
-  Wrench, Store, BarChart3, Crown, Sparkles, Settings as Cog,
+  Wrench, Store, BarChart3, Sparkles, Settings as Cog,
   ArrowUpRight, ShieldCheck, MapPin, Cpu, Zap, ChevronRight,
-  Activity, DollarSign, Eye, Star, Loader2, X,
+  Activity, DollarSign, Star, Loader2, X,
 } from "lucide-react";
 import {
   LineChart, Line, AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip,
