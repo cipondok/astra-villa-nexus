@@ -675,22 +675,22 @@ const Profile = () => {
 
             {/* Quick Actions */}
             <div className="flex gap-2">
-              <Button 
-                variant="outline" 
+              <AstraButton
+                variant="outline"
                 className="flex-1 h-10 gap-2"
                 onClick={() => navigate('/settings')}
               >
                 <Settings className="h-4 w-4" />
                 {t.settings}
-              </Button>
-              <Button 
-                variant="outline" 
+              </AstraButton>
+              <AstraButton
+                variant="outline"
                 className="flex-1 h-10 gap-2"
                 onClick={() => navigate('/')}
               >
                 <Home className="h-4 w-4" />
                 {t.home}
-              </Button>
+              </AstraButton>
             </div>
           </TabsContent>
 
