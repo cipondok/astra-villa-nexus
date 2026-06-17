@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 import {
   Building2,
   Mail,
