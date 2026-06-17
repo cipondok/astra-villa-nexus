@@ -290,7 +290,7 @@ export default function AstraReosHome() {
             {/* Logo */}
             <Link to="/" aria-label="ASTRA Villa home" className="flex items-center gap-2.5 shrink-0">
               <img
-                src="/astra-logo.png"
+                src={headerLogo}
                 alt="ASTRA Villa"
                 className="h-9 w-9 rounded-full object-contain shadow-sm"
               />
