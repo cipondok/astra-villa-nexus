@@ -469,15 +469,16 @@ export default function AstraReosHome() {
           <aside className="hidden xl:flex flex-col w-[230px] shrink-0 gap-4">
             <div className="reos-card p-2">
               {sideNav.map((n, i) => (
-                <motion.button
-                  key={n.label}
-                  initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.03 }}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] mb-0.5 transition-colors ${n.active ? "bg-[var(--gold-soft)] reos-gold" : "text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]"}`}
-                >
-                  <n.icon className="h-4 w-4" />
-                  <span className="flex-1 text-left">{n.label}</span>
-                  {n.badge && <span className="text-[10px] bg-[var(--gold)] text-black font-bold px-1.5 py-0.5 rounded">{n.badge}</span>}
-                </motion.button>
+                <motion.div key={n.label} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.03 }}>
+                  <Link
+                    to={n.to}
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] mb-0.5 transition-colors ${n.active ? "bg-[var(--gold-soft)] reos-gold" : "text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text)]"}`}
+                  >
+                    <n.icon className="h-4 w-4" />
+                    <span className="flex-1 text-left">{n.label}</span>
+                    {n.badge && <span className="text-[10px] bg-[var(--gold)] text-black font-bold px-1.5 py-0.5 rounded">{n.badge}</span>}
+                  </Link>
+                </motion.div>
               ))}
             </div>
 
@@ -489,7 +490,11 @@ export default function AstraReosHome() {
                 <div className="mt-2 font-semibold tracking-wider text-sm">ASTRA VILLA</div>
                 <div className="text-[10px] tracking-[0.3em] reos-gold">INVESTOR CLUB</div>
                 <p className="mt-3 text-[11px] text-[var(--text-2)] leading-relaxed">Join exclusive investor community and get premium benefits.</p>
-                <button className="mt-4 w-full h-9 rounded-lg reos-cta text-xs inline-flex items-center justify-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => user ? navigate("/astra-tokens") : (setAuthInitial("register"), setShowAuth(true))}
+                  className="mt-4 w-full h-9 rounded-lg reos-cta text-xs inline-flex items-center justify-center gap-1.5"
+                >
                   Join Now <ChevronRight className="h-3.5 w-3.5" />
                 </button>
               </div>
@@ -499,17 +504,21 @@ export default function AstraReosHome() {
             <div className="px-1">
               <div className="text-[11px] uppercase tracking-[0.2em] text-[var(--text-2)] mb-2">Download Our Apps</div>
               <div className="space-y-2">
-                {[{ b: "Download on the", n: "App Store" }, { b: "GET IT ON", n: "Google Play" }].map(a => (
-                  <button key={a.n} className="w-full h-11 px-3 rounded-xl bg-black border border-[var(--line)] flex items-center gap-2 text-left hover:border-[var(--line-strong)] transition">
+                {[
+                  { b: "Download on the", n: "App Store", href: "https://apps.apple.com/" },
+                  { b: "GET IT ON", n: "Google Play", href: "https://play.google.com/" },
+                ].map(a => (
+                  <a key={a.n} href={a.href} target="_blank" rel="noopener noreferrer" className="w-full h-11 px-3 rounded-xl bg-black border border-[var(--line)] flex items-center gap-2 text-left hover:border-[var(--line-strong)] transition">
                     <div className="h-5 w-5 rounded reos-gold flex items-center justify-center">●</div>
                     <div className="leading-tight">
                       <div className="text-[9px] text-[var(--text-2)]">{a.b}</div>
                       <div className="text-[12px] font-medium">{a.n}</div>
                     </div>
-                  </button>
+                  </a>
                 ))}
               </div>
             </div>
+
           </aside>
 
           {/* ============ MAIN ============ */}
