@@ -49,6 +49,9 @@ const tokens = `
     --promo-gradient: linear-gradient(180deg, #1a1408, #0e0a04);
     --promo-gradient-diag: linear-gradient(135deg, #1a1408, #0e0a04);
     --hotspot-bg: radial-gradient(ellipse at 60% 60%, rgba(200,169,106,0.06), transparent 70%), #0a0a0c;
+    --hero-overlay: linear-gradient(110deg, rgba(11,11,12,0.92) 0%, rgba(11,11,12,0.55) 55%, transparent 100%);
+    --hero-text: #F4F1EA;
+    --hero-text-2: #C8C2B4;
     color: var(--text);
     background: var(--bg);
     font-family: 'Inter', 'SF Pro Display', system-ui, sans-serif;
