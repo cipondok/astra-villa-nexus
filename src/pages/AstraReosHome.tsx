@@ -711,29 +711,37 @@ export default function AstraReosHome() {
               <Section className="col-span-12 lg:col-span-4 reos-card p-5">
                 <div className="flex items-center justify-between mb-4">
                   <div className="text-[14px] font-semibold">Investment Hotspots</div>
-                  <Link to="/intelligence" className="text-[11px] reos-gold inline-flex items-center gap-1 hover:underline">View All <ArrowUpRight className="h-3 w-3" /></Link>
+                  <Link to="/market-heatmap" className="text-[11px] reos-gold inline-flex items-center gap-1 hover:underline">View All <ArrowUpRight className="h-3 w-3" /></Link>
                 </div>
                 <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-[var(--line)]" style={{ background: "radial-gradient(ellipse at 60% 60%, rgba(200,169,106,0.06), transparent 70%), #0a0a0c" }}>
-                  {/* simple "map" — stylized dots/regions */}
-                  <svg viewBox="0 0 100 75" className="absolute inset-0 h-full w-full opacity-30">
-                    <path d="M10,40 q15,-10 30,-5 q15,5 25,0 q10,-3 20,5 q5,8 -5,12 q-20,4 -40,2 q-25,-2 -30,-14z" fill="none" stroke="#C8A96A" strokeWidth="0.3" />
-                    <path d="M45,55 q10,-3 18,2 q6,8 -4,12 q-12,2 -18,-4 q-4,-6 4,-10z" fill="none" stroke="#C8A96A" strokeWidth="0.3" />
-                  </svg>
-                  {hotspots.map(h => (
-                    <div key={h.city} className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: `${h.x}%`, top: `${h.y}%` }}>
-                      <div className="relative">
-                        <div className="absolute inset-0 rounded-full bg-[var(--gold)] opacity-30 blur-md scale-150" />
-                        <div className="relative h-2.5 w-2.5 rounded-full bg-[var(--gold-2)] ring-2 ring-[var(--gold)]/40" />
-                      </div>
-                      <div className="absolute left-4 top-1/2 -translate-y-1/2 whitespace-nowrap">
-                        <div className="text-[10px] font-semibold">{h.city}</div>
-                        <div className="text-[9px] reos-gold">ROI {h.roi}</div>
-                      </div>
-                    </div>
-                  ))}
-                  <div className="absolute bottom-2 left-2 flex flex-col gap-1">
-                    <button className="h-6 w-6 rounded bg-[var(--surface)] border border-[var(--line)] flex items-center justify-center"><Plus className="h-3 w-3" /></button>
-                    <button className="h-6 w-6 rounded bg-[var(--surface)] border border-[var(--line)] flex items-center justify-center"><Minus className="h-3 w-3" /></button>
+                  <div className="absolute inset-0 origin-center transition-transform" style={{ transform: `scale(${hotspotZoom})` }}>
+                    <svg viewBox="0 0 100 75" className="absolute inset-0 h-full w-full opacity-30">
+                      <path d="M10,40 q15,-10 30,-5 q15,5 25,0 q10,-3 20,5 q5,8 -5,12 q-20,4 -40,2 q-25,-2 -30,-14z" fill="none" stroke="#C8A96A" strokeWidth="0.3" />
+                      <path d="M45,55 q10,-3 18,2 q6,8 -4,12 q-12,2 -18,-4 q-4,-6 4,-10z" fill="none" stroke="#C8A96A" strokeWidth="0.3" />
+                    </svg>
+                    {hotspots.map(h => (
+                      <button
+                        key={h.city}
+                        type="button"
+                        onClick={() => navigate(`/invest/${h.slug}`)}
+                        aria-label={`${h.city} investment hotspot`}
+                        className="absolute -translate-x-1/2 -translate-y-1/2 group cursor-pointer"
+                        style={{ left: `${h.x}%`, top: `${h.y}%` }}
+                      >
+                        <div className="relative">
+                          <div className="absolute inset-0 rounded-full bg-[var(--gold)] opacity-30 blur-md scale-150 group-hover:opacity-60" />
+                          <div className="relative h-2.5 w-2.5 rounded-full bg-[var(--gold-2)] ring-2 ring-[var(--gold)]/40 group-hover:scale-125 transition-transform" />
+                        </div>
+                        <div className="absolute left-4 top-1/2 -translate-y-1/2 whitespace-nowrap text-left">
+                          <div className="text-[10px] font-semibold">{h.city}</div>
+                          <div className="text-[9px] reos-gold">ROI {h.roi}</div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="absolute bottom-2 left-2 flex flex-col gap-1 z-10">
+                    <button type="button" onClick={() => setHotspotZoom(z => Math.min(2, +(z + 0.2).toFixed(2)))} aria-label="Zoom in" className="h-6 w-6 rounded bg-[var(--surface)] border border-[var(--line)] flex items-center justify-center hover:border-[var(--line-strong)]"><Plus className="h-3 w-3" /></button>
+                    <button type="button" onClick={() => setHotspotZoom(z => Math.max(0.6, +(z - 0.2).toFixed(2)))} aria-label="Zoom out" className="h-6 w-6 rounded bg-[var(--surface)] border border-[var(--line)] flex items-center justify-center hover:border-[var(--line-strong)]"><Minus className="h-3 w-3" /></button>
                   </div>
                 </div>
                 <div className="mt-3 flex items-center justify-between text-[10px] text-[var(--text-2)]">
