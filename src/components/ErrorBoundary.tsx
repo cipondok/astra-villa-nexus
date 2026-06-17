@@ -2,6 +2,7 @@ import React, { Component, ErrorInfo, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, Home, RefreshCw } from "lucide-react";
+import { logComponentError } from "@/utils/errorLogger";
 
 interface Props {
   children: ReactNode;
@@ -21,12 +22,14 @@ class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  public componentDidCatch(error: Error, _errorInfo: ErrorInfo) {
-    // In production: send to error tracking service (e.g. Sentry)
-    // Avoid logging stack traces to console in production
+  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     if (process.env.NODE_ENV === 'development') {
       console.error("Error caught by boundary:", error);
     }
+    // Report to admin error monitoring dashboard
+    void logComponentError('RootErrorBoundary', error, {
+      componentStack: errorInfo?.componentStack,
+    });
   }
 
   public render() {
