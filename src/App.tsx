@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { CurrencyProvider } from '@/contexts/CurrencyContext';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import ThemeProfileSync from '@/components/theme/ThemeProfileSync';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { AlertProvider } from '@/contexts/AlertContext';
 import { NotificationProvider } from '@/contexts/NotificationContext';
@@ -874,12 +875,13 @@ function App() {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <Router key="app" future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <ThemeProvider defaultTheme="light" storageKey="astra-villa-theme">
+          <ThemeProvider defaultTheme="astra-black-gold" storageKey="astra-villa-theme">
             <DesignSystemProvider>
               <LanguageProvider>
                 <CurrencyProvider>
                 <AlertProvider>
                   <AuthProvider>
+                    <ThemeProfileSync />
                     <NotificationProvider>
                       <DataSaverProvider>
                       <PropertyComparisonProvider>
