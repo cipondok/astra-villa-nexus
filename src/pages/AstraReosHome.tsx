@@ -61,10 +61,8 @@ const sidebarItems = [
   { icon: TrendingUp, label: "Investment" },
   { icon: Banknote, label: "Finance" },
   { icon: Scale, label: "Legal" },
-  { icon: Wrench, label: "Management" },
   { icon: Store, label: "Vendors" },
   { icon: BarChart3, label: "Market Intel" },
-  { icon: Crown, label: "Investor Club" },
   { icon: Sparkles, label: "AI Center" },
   { icon: Cog, label: "Settings" },
 ];
