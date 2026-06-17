@@ -30,6 +30,7 @@ import { useBrandingLogo } from "@/hooks/useBrandingLogo";
 
 const tokens = `
   .reos {
+    /* Dark (default) */
     --bg: #0B0B0C;
     --bg-2: #0F0F11;
     --surface: #121214;
@@ -49,11 +50,30 @@ const tokens = `
     font-family: 'Inter', 'SF Pro Display', system-ui, sans-serif;
     letter-spacing: -0.005em;
   }
-  .reos *::selection { background: var(--gold); color: #111; }
+  /* Light mode overrides — Pearl White + Gold */
+  html:not(.dark) .reos {
+    --bg: #FAF8F3;
+    --bg-2: #F3EFE6;
+    --surface: #FFFFFF;
+    --surface-2: #F7F3EA;
+    --line: rgba(120,95,40,0.16);
+    --line-strong: rgba(120,95,40,0.34);
+    --gold: #B08A3E;
+    --gold-2: #8A6B25;
+    --gold-soft: rgba(176,138,62,0.10);
+    --text: #1A1814;
+    --text-2: #5A554B;
+    --text-3: #8A8478;
+    --success: #15803D;
+    --danger: #B91C1C;
+  }
+  .reos *::selection { background: var(--gold); color: #fff; }
   .reos-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
   .reos-card-2 { background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; }
   .reos-gold { color: var(--gold-2); }
-  .reos-cta { background: linear-gradient(180deg, var(--gold-2), var(--gold)); color: #161208; font-weight: 600; border: 1px solid rgba(255,225,160,0.4); }
+  .reos-cta { background: linear-gradient(180deg, var(--gold-2), var(--gold)); color: #fff; font-weight: 600; border: 1px solid var(--line-strong); }
+  html:not(.dark) .reos-cta { color: #fff; }
+  html.dark .reos-cta { color: #161208; border-color: rgba(255,225,160,0.4); }
   .reos-cta:hover { filter: brightness(1.06); }
   .reos-outline { border: 1px solid var(--line-strong); }
   .reos-chip { border: 1px solid var(--line); color: var(--text-2); }
@@ -65,8 +85,8 @@ const tokens = `
   .reos-scrollbar::-webkit-scrollbar{width:6px;height:6px}
   .reos-scrollbar::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:3px}
 
-  /* === Global override while REOS is mounted — restyle the floating ASTRA chat widget === */
-  html[data-reos-theme="on"] {
+  /* === Global override while REOS is mounted — restyle floating chat widget === */
+  html[data-reos-theme="on"].dark {
     --background: 240 4% 6%;
     --foreground: 40 30% 94%;
     --card: 240 5% 8%;
