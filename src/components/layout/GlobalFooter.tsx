@@ -67,9 +67,11 @@ export default function GlobalFooter() {
           {/* Brand */}
           <div className="col-span-2">
             <Link to="/" className="inline-flex items-center gap-2">
-              <span className="h-9 w-9 rounded-xl bg-primary/10 grid place-items-center">
-                <Building2 className="h-5 w-5 text-primary" />
-              </span>
+              <img
+                src="/astra-logo.png"
+                alt="ASTRA Villa"
+                className="h-9 w-9 rounded-full object-contain shadow-sm bg-primary/10"
+              />
               <span className="font-bold text-lg tracking-tight">
                 ASTRA <span className="text-primary">Villa</span>
               </span>
