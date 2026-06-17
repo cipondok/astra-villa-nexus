@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { isSessionCheckSuppressed } from '@/hooks/useSessionMonitor';
 import { isValidUUID } from '@/utils/uuid-validation';
 import { validateUUIDWithLogging } from '@/utils/uuid-validation-logger';
+import { logAuthFailure } from '@/utils/globalErrorReporter';
 
 export type UserRole = 'general_user' | 'property_owner' | 'agent' | 'vendor' | 'admin' | 'customer_service' | 'super_admin';
 
