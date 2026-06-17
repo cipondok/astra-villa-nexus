@@ -567,7 +567,7 @@ const Profile = () => {
                             </Badge>
                           )}
                         </Label>
-                        <Input
+                        <AstraInput
                           id="company_name"
                           value={formData.company_name}
                           onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
