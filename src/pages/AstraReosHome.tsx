@@ -205,6 +205,7 @@ export default function AstraReosHome() {
   const { user, profile, signOut } = useAuth();
   const { language, setLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
+  const headerLogo = useBrandingLogo('headerLogo', '/astra-logo.png');
   const { data: market, loading: marketLoading } = useReosMarket();
   const { search, data: aiData, loading: aiLoading, error: aiError, reset: resetAi } = useReosAiSearch();
 
